@@ -303,6 +303,13 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(Icon.AUTO_EXPORT_OFF, Settings.AUTO_EXPORT, YesNo.NO,
                     ButtonToolTips.AutoExport,
                     ButtonToolTips.AutoExportOff);
+
+            registerApp(Icon.INSCRIBER_BUFFER_HIGH, Settings.INSCRIBER_BUFFER_SIZE, YesNo.YES,
+                    ButtonToolTips.InscriberBufferSize,
+                    ButtonToolTips.InscriberBufferHigh);
+            registerApp(Icon.INSCRIBER_BUFFER_LOW, Settings.INSCRIBER_BUFFER_SIZE, YesNo.NO,
+                    ButtonToolTips.InscriberBufferSize,
+                    ButtonToolTips.InscriberBufferLow);
         }
     }
 

@@ -129,6 +129,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
         this.configManager = new ConfigManager(this::onConfigChanged);
         this.configManager.registerSetting(Settings.INSCRIBER_SEPARATE_SIDES, YesNo.NO);
         this.configManager.registerSetting(Settings.AUTO_EXPORT, YesNo.NO);
+        this.configManager.registerSetting(Settings.INSCRIBER_BUFFER_SIZE, YesNo.YES);
 
         var automationFilter = new AutomationFilter();
         this.topItemHandlerExtern = new FilteredInternalInventory(this.topItemHandler, automationFilter);
@@ -456,6 +457,18 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
             // Send a block update since our exposed inventory changed...
             // In theory this shouldn't be necessary, but we do it just in case...
             markForUpdate();
+        }
+
+        if (setting == Settings.INSCRIBER_BUFFER_SIZE) {
+            if (configManager.getSetting(Settings.INSCRIBER_BUFFER_SIZE) == YesNo.YES) {
+                topItemHandler.setMaxStackSize(0, 64);
+                sideItemHandler.setMaxStackSize(0, 64);
+                bottomItemHandler.setMaxStackSize(0, 64);
+            } else {
+                topItemHandler.setMaxStackSize(0, 4);
+                sideItemHandler.setMaxStackSize(0, 4);
+                bottomItemHandler.setMaxStackSize(0, 4);
+            }
         }
 
         saveChanges();

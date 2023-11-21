@@ -36,7 +36,7 @@ import appeng.api.storage.cells.CellState;
 /**
  * Utility class to render LEDs for storage cells from a Block entity Renderer.
  */
-class CellLedRenderer {
+public class CellLedRenderer {
 
     private static final EnumMap<CellState, Vector3f> STATE_COLORS;
 

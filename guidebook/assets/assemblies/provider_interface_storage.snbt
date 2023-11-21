@@ -1,0 +1,25 @@
+{
+    DataVersion: 3465,
+    size: [6, 2, 4],
+    data: [
+        {pos: [0, 0, 0], state: "minecraft:barrel{facing:up,open:false}", nbt: {Items: [], id: "minecraft:barrel"}},
+        {pos: [0, 0, 1], state: "minecraft:barrel{facing:up,open:false}", nbt: {Items: [], id: "minecraft:barrel"}},
+        {pos: [0, 0, 2], state: "minecraft:barrel{facing:up,open:false}", nbt: {Items: [], id: "minecraft:barrel"}},
+        {pos: [0, 0, 3], state: "minecraft:barrel{facing:up,open:false}", nbt: {Items: [], id: "minecraft:barrel"}},
+        {pos: [1, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {p: 0}, id: "ae2:green_smart_cable", visual: {channelsSouth: 5, connections: ["south"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {access: "READ_WRITE", filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {p: 0}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}}},
+        {pos: [1, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {p: 0}, id: "ae2:green_smart_cable", visual: {channelsEast: 5, channelsNorth: 5, channelsSouth: 5, connections: ["north", "south", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {access: "READ_WRITE", filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {p: 0}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}}},
+        {pos: [1, 0, 2], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {p: 0}, id: "ae2:green_smart_cable", visual: {channelsNorth: 5, channelsSouth: 5, connections: ["north", "south"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {access: "READ_WRITE", filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {p: 0}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}}},
+        {pos: [1, 0, 3], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {p: 0}, id: "ae2:green_smart_cable", visual: {channelsNorth: 5, connections: ["north"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {access: "READ_WRITE", filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {p: 0}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}}},
+        {pos: [2, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {p: 0}, id: "ae2:green_smart_cable", visual: {channelsUp: 5, channelsWest: 5, connections: ["up", "west"], missingChannel: 0b, powered: 1b}}, east: {fuzzy_mode: "IGNORE_ALL", gn: {p: 0}, id: "ae2:cable_interface", priority: 0, visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [3, 0, 1], state: "ae2:pattern_provider{push_direction:west}", nbt: {blocking_mode: "NO", id: "ae2:pattern_provider", lock_crafting_mode: "NONE", pattern_access_terminal: "YES", priority: 0, proxy: {p: 0}, returnInv: [], sendList: [], visual: {}}},
+        {pos: [4, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 1, channelsWest: 1, connections: ["west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 1, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {p: 0}, id: "ae2:green_smart_cable", visual: {channelsDown: 5, connections: ["down"], missingChannel: 0b, powered: 1b}}, east: {gn: {p: 0}, id: "ae2:quartz_fiber", outer: {p: 0}, visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [3, 1, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {p: 0}, id: "ae2:blue_smart_cable", visual: {channelsDown: 1, channelsWest: 1, connections: ["down", "west"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "minecraft:barrel{facing:up,open:false}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "ae2:pattern_provider{push_direction:west}"
+    ]
+}

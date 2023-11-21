@@ -29,7 +29,9 @@ They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 By default the bus will not export anything. Items inserted into its filter slots will act as a whitelist,
 allowing those specific items to be exported.
 
-Items can be dragged into the slots from JEI/REI even if you don't actually have any of that item.
+Items and fluids can be dragged into the slots from JEI/REI even if you don't actually have any of that item.
+
+Right-click with a fluid container (like a bucket or fluid tank) to set that fluid as a filter instead of the bucket or tank item.
 
 ## Upgrades
 

@@ -23,6 +23,10 @@ The Level Emitter emits a redstone signal depending on the quantity of an item i
 There is also a version that emits a redstone signal depending on the [energy](../ae2-mechanics/energy.md) stored
 in your network.
 
+Items and fluids can be dragged into the slot from JEI/REI even if you don't actually have any of that item.
+
+Right-click with a fluid container (like a bucket or fluid tank) to set that fluid as a filter instead of the bucket or tank item.
+
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
 Unlike other [devices](../ae2-mechanics/devices.md), level emitters *do not* require a [channel](../ae2-mechanics/channels.md).

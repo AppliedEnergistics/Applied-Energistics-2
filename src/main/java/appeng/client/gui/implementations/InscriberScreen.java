@@ -35,6 +35,7 @@ public class InscriberScreen extends UpgradeableScreen<InscriberMenu> {
     private final ProgressBar pb;
     private final SettingToggleButton<YesNo> separateSidesBtn;
     private final SettingToggleButton<YesNo> autoExportBtn;
+    private final SettingToggleButton<YesNo> bufferSizeBtn;
 
     public InscriberScreen(InscriberMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
@@ -48,6 +49,9 @@ public class InscriberScreen extends UpgradeableScreen<InscriberMenu> {
 
         this.autoExportBtn = new ServerSettingToggleButton<>(Settings.AUTO_EXPORT, YesNo.NO);
         this.addToLeftToolbar(autoExportBtn);
+
+        this.bufferSizeBtn = new ServerSettingToggleButton<>(Settings.INSCRIBER_BUFFER_SIZE, YesNo.YES);
+        this.addToLeftToolbar(bufferSizeBtn);
     }
 
     @Override
@@ -59,5 +63,6 @@ public class InscriberScreen extends UpgradeableScreen<InscriberMenu> {
 
         this.separateSidesBtn.set(getMenu().getSeparateSides());
         this.autoExportBtn.set(getMenu().getAutoExport());
+        this.bufferSizeBtn.set(getMenu().getBufferSize());
     }
 }

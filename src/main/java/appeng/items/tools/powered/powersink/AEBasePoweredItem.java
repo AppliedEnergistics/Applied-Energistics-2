@@ -166,18 +166,14 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
      */
     protected final void setAEMaxPowerMultiplier(ItemStack stack, int multiplier) {
         multiplier = Mth.clamp(multiplier, 1, 100);
-        if (multiplier == 1) {
-            resetAEMaxPower(stack);
-        } else {
-            setAEMaxPower(stack, multiplier * powerCapacity.getAsDouble());
-        }
+        setAEMaxPower(stack, multiplier * powerCapacity.getAsDouble());
     }
 
     /**
      * Clears any custom maximum power from the given stack.
      */
     protected final void resetAEMaxPower(ItemStack stack) {
-        stack.removeTagKey(MAX_POWER_NBT_KEY);
+        setAEMaxPower(stack, powerCapacity.getAsDouble());
     }
 
     @Override
