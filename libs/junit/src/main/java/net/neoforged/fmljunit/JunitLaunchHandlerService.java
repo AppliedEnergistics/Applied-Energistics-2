@@ -55,12 +55,6 @@ public class JunitLaunchHandlerService extends ForgeUserdevLaunchHandler {
                     .get()
                     .getExtension();
             extension.accept(Dist.CLIENT);
-//
-//            var clientClass = mcLoader.loadClass("net.minecraft.client.Minecraft");
-//            var clientMock = Mockito.mock(clientClass);
-//            var mocked = Mockito.mockStatic(clientClass, Mockito.CALLS_REAL_METHODS);
-//            mocked.when(() -> clientClass.getDeclaredMethod("getInstance").invoke(null))
-//                    .thenReturn(clientMock);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

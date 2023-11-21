@@ -432,8 +432,8 @@ runs {
         ]
     }
     guide {
-        configure("client")
         with commonRunProperties
+        configure("client")
         systemProperties = [
                 "guideDev.ae2guide.sources"    : file("guidebook").absolutePath,
                 "guideDev.ae2guide.startupPage": "ae2:index.md"
@@ -452,8 +452,8 @@ runs {
         ]
     }
     guideexport {
-        configure("client")
         with commonRunProperties
+        configure("client")
         systemProperties = [
                 "appeng.runGuideExportAndExit": "true",
                 "appeng.guideExportFolder"    : file("$buildDir/guide").absolutePath,
@@ -462,7 +462,7 @@ runs {
     }
     // Use to run the tests
     gametest {
-        configure("server")
+        configure("gameTestServer")
         with commonRunProperties
         workingDirectory = project.file("build/gametest")
     }
