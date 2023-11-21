@@ -51,6 +51,18 @@ jobs:
           CROWDIN_TOKEN: ${{ secrets.CROWDIN_TOKEN }}
         continue-on-error: true
         if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+
+      # Always upload test results
+      - name: Merge Test Reports
+        if: success() || failure()
+        run: npx junit-report-merger junit.xml "**/TEST-*.xml"
+
+      - uses: actions/upload-artifact@v3
+        if: success() || failure()
+        with:
+          name: test-results
+          path: junit.xml
+
       - uses: actions/upload-artifact@v3
         with:
           name: dist

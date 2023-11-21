@@ -43,6 +43,11 @@ class PageCompilerTest {
     }
 
     private static Path findGuidebookFolder() throws Exception {
+        var sources = System.getProperty("guideDev.ae2guide.sources");
+        if (sources != null) {
+            return Paths.get(sources);
+        }
+
         // Search up for the guidebook folder
         var url = PageCompilerTest.class.getProtectionDomain().getCodeSource().getLocation();
         var jarPath = Paths.get(url.toURI());
