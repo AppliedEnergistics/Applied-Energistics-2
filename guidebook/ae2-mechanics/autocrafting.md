@@ -44,6 +44,14 @@ Here is what happens:
 
 5.  If that craft is a prerequisite for another craft in the request, the items are stored in that crafting CPU and then used in that craft.
 
+## Recursive Recipes
+
+<ItemImage id="minecraft:netherite_upgrade_smithing_template" scale="4" />
+
+One thing the autocrafting algorithm *cannot* handle is recursive recipes. For example, duplication recipes like
+"1 redstone dust = 2 redstone dust", from throwing redstone in a Botania manapool. Another example would be smithing templates
+in vanilla Minecraft. However, there is [a way to handle these recipes.](../example-setups/recursive-crafting-setup.md)
+
 # Patterns
 
 <ItemImage id="crafting_pattern" scale="4" />

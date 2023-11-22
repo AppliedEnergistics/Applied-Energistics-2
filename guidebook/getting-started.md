@@ -90,7 +90,7 @@ The inscriber is a sided machine, much like the vanilla furnace. Inserting from 
 
 To facilitate automation with hoppers (and possibly reduce pipe spaghetti), inscribers can be rotated with a <ItemLink id="certus_quartz_wrench" />.
 
-Produce a few of each type of processor in preparation for the next step, making a very basic ME system. Automating processor production is "left as an exercise for the reader".
+Produce a few of each type of processor in preparation for the next step, making a very basic ME system. Automating processor production is "[left as an exercise for the reader](example-setups/processor-automation.md)".
 
 ## Matter Energy Tech: ME Networks and Storage
 
@@ -113,8 +113,8 @@ The <ItemLink id="chest" /> shows you the contents of the Cell as soon as its pl
 can add and remove items from it as if it were a <ItemLink id="minecraft:chest" />, with the exception that the items are
 actually stored in the Storage cells, and not the <ItemLink id="chest" /> itself.
 
-While the <ItemLink id="chest" /> is a great way to get introduced to the concept of ME, to really
-take advantage you need to set up an [ME Network](ae2-mechanics/me-network-connections.md).
+The <ItemLink id="chest" /> is quite situational and limited in utility. To really
+take advantage of AE2, you need to set up an [ME Network](ae2-mechanics/me-network-connections.md).
 
 ## Your Very First ME System
 
