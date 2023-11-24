@@ -221,7 +221,7 @@ public class GuidebookLevelRenderer {
             MultiBufferSource buffers) {
         var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
         var renderer = dispatcher.getRenderer(blockEntity);
-        if (renderer != null) {
+        if (renderer != null && renderer.shouldRender(blockEntity, blockEntity.getBlockPos().getCenter())) {
             var pos = blockEntity.getBlockPos();
             stack.pushPose();
             stack.translate(pos.getX(), pos.getY(), pos.getZ());
