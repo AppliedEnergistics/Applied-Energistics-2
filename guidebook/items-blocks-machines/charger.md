@@ -27,7 +27,7 @@ from <ItemLink id="certus_quartz_crystal" />, and <ItemLink id="meteorite_compas
 
 To power it manually, place a <ItemLink id="crank" /> on the top or bottom and right-click it until the item is charged.
 
-It also acts as the workstation for the AE2 villager.
+It also acts as the workstation for the [Fluix Researcher](fluix_researcher.md).
 
 ## Simple Automation
 
