@@ -4,14 +4,6 @@ pluginManagement {
             name = 'NeoForged'
             url = 'https://maven.neoforged.net/releases'
         }
-        maven {
-            name = 'NeoGradle'
-            url = 'https://ldtteam.jfrog.io/artifactory/neogradle-next'
-        }
-        maven {
-            name = "Sponge"
-            url = 'https://repo.spongepowered.org/maven'
-        }
         gradlePluginPortal()
         mavenCentral()
     }
