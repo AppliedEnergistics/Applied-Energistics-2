@@ -21,9 +21,9 @@ package appeng.init;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 
 import appeng.menu.implementations.CellWorkbenchMenu;
 import appeng.menu.implementations.ChestMenu;
@@ -66,7 +66,7 @@ public final class InitMenuTypes {
     private InitMenuTypes() {
     }
 
-    public static void init(IForgeRegistry<MenuType<?>> registry) {
+    public static void init(Registry<MenuType<?>> registry) {
         registerAll(registry,
                 CellWorkbenchMenu.TYPE,
                 ChestMenu.TYPE,
@@ -109,11 +109,11 @@ public final class InitMenuTypes {
                 WirelessAccessPointMenu.TYPE);
     }
 
-    private static void registerAll(IForgeRegistry<MenuType<?>> registry, MenuType<?>... types) {
+    private static void registerAll(Registry<MenuType<?>> registry, MenuType<?>... types) {
         // Flush the registration queue. Calling the static ctor of each menu class will have
         // filled it.
         for (var entry : REGISTRATION_QUEUE.entrySet()) {
-            registry.register(entry.getKey(), entry.getValue());
+            Registry.register(registry, entry.getKey(), entry.getValue());
         }
         REGISTRATION_QUEUE.clear();
 

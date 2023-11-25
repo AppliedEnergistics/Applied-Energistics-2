@@ -52,8 +52,6 @@ import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
@@ -131,10 +129,10 @@ public abstract class AppEngBase implements AppEng {
         modEventBus.addListener(MainCreativeTab::initExternal);
         modEventBus.addListener((RegisterEvent event) -> {
             if (event.getRegistryKey().equals(Registries.SOUND_EVENT)) {
-                registerSounds(ForgeRegistries.SOUND_EVENTS);
+                registerSounds(BuiltInRegistries.SOUND_EVENT);
                 return;
             } else if (event.getRegistryKey() == Registries.CREATIVE_MODE_TAB) {
-                registerCreativeTabs(event.getVanillaRegistry());
+                registerCreativeTabs(BuiltInRegistries.CREATIVE_MODE_TAB);
                 return;
             }
 
@@ -144,14 +142,14 @@ public abstract class AppEngBase implements AppEng {
             // Register everything in the block registration event ;)
 
             InitTiers.init();
-            InitBlocks.init(ForgeRegistries.BLOCKS);
-            InitItems.init(ForgeRegistries.ITEMS);
-            InitEntityTypes.init(ForgeRegistries.ENTITY_TYPES);
-            InitParticleTypes.init(ForgeRegistries.PARTICLE_TYPES);
-            InitBlockEntities.init(ForgeRegistries.BLOCK_ENTITY_TYPES);
-            InitMenuTypes.init(ForgeRegistries.MENU_TYPES);
-            InitRecipeTypes.init(ForgeRegistries.RECIPE_TYPES);
-            InitRecipeSerializers.init(ForgeRegistries.RECIPE_SERIALIZERS);
+            InitBlocks.init(BuiltInRegistries.BLOCK);
+            InitItems.init(BuiltInRegistries.ITEM);
+            InitEntityTypes.init(BuiltInRegistries.ENTITY_TYPE);
+            InitParticleTypes.init(BuiltInRegistries.PARTICLE_TYPE);
+            InitBlockEntities.init(BuiltInRegistries.BLOCK_ENTITY_TYPE);
+            InitMenuTypes.init(BuiltInRegistries.MENU);
+            InitRecipeTypes.init(BuiltInRegistries.RECIPE_TYPE);
+            InitRecipeSerializers.init(BuiltInRegistries.RECIPE_SERIALIZER);
             InitStructures.init();
             registerKeyTypes();
             InitVillager.init();
@@ -217,7 +215,7 @@ public abstract class AppEngBase implements AppEng {
         new AECommand().register(dispatcher);
     }
 
-    public void registerSounds(IForgeRegistry<SoundEvent> registry) {
+    public void registerSounds(Registry<SoundEvent> registry) {
         AppEngSounds.register(registry);
     }
 
@@ -225,10 +223,10 @@ public abstract class AppEngBase implements AppEng {
         Registry.register(BuiltInRegistries.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
                 SpatialStorageChunkGenerator.CODEC);
 
-        var supplier = e.create(new RegistryBuilder<AEKeyType>()
-                .setMaxID(127)
-                .setName(AppEng.makeId("keytypes")));
-        AEKeyTypesInternal.setRegistry(supplier);
+        var registry = e.create(new RegistryBuilder<>(AEKeyType.REGISTRY_KEY)
+                .sync(true)
+                .maxId(127));
+        AEKeyTypesInternal.setRegistry(registry);
     }
 
     private void onServerAboutToStart(final ServerAboutToStartEvent evt) {

@@ -16,7 +16,7 @@ pluginManagement {
         mavenCentral()
     }
     plugins {
-        id 'net.neoforged.gradle.userdev' version '7.0.43'
+        id 'net.neoforged.gradle.userdev' version '7.0.47'
         id 'com.diffplug.spotless' version '5.12.4'
         id 'io.github.juuxel.loom-quiltflower' version '1.10.0'
         id 'com.github.johnrengelman.shadow' version '7.0.0'
