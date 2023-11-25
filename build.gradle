@@ -141,6 +141,8 @@ dependencies {
         compileOnly topDependency
     }
 
+    implementation files("C:\\AE2\\securejarhandler\\build\\libs\\securejarhandler-2.1.21.jar")
+
     // unit test dependencies
     testImplementation(platform("org.junit:junit-bom:${project.junit_version}"))
     testRuntimeOnly(project(":libs:junit"))
@@ -377,7 +379,6 @@ def legacyCPLibs = [
         "io.methvin:directory-watcher:${directory_watcher_version}",
         "org.yaml:snakeyaml:${snakeyaml_version}",
         "com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}",
-        "org.bytedeco:ffmpeg-platform:6.0-1.5.9",
 ]
 
 tasks.withType(ClasspathSerializer).configureEach {
@@ -387,11 +388,16 @@ tasks.withType(ClasspathSerializer).configureEach {
         def libJar = libArtifact + "-" + libVersion + ".jar"
 
         def libFile = project.configurations.runtimeClasspath.find({
-            return it.name.equals(libJar)
+            return it.name == libJar
         })
 
         it.inputFiles.from libFile
     }
+    project.configurations.runtimeClasspath.each({f ->
+        if (f.name.startsWith("javacpp") || f.name.startsWith("ffmpeg")) {
+            it.inputFiles.from f
+        }
+    })
     libSrcSets.each { srcSet ->
         it.inputFiles.from srcSet.output
     }

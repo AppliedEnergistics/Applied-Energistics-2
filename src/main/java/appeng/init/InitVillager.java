@@ -6,6 +6,8 @@ import com.google.common.collect.ImmutableSet;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +17,6 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
@@ -37,8 +38,8 @@ public class InitVillager {
             e -> e.is(POI_KEY), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_LIBRARIAN);
 
     public static void init() {
-        ForgeRegistries.POI_TYPES.register(ID, POI_TYPE);
-        ForgeRegistries.VILLAGER_PROFESSIONS.register(ID, PROFESSION);
+        Registry.register(BuiltInRegistries.POINT_OF_INTEREST_TYPE, ID, POI_TYPE);
+        Registry.register(BuiltInRegistries.VILLAGER_PROFESSION, ID, PROFESSION);
 
         buyItems(1, AEItems.CERTUS_QUARTZ_CRYSTAL, 3, 4, 10);
         buyItems(1, AEItems.METEORITE_COMPASS, 2, 1, 5);

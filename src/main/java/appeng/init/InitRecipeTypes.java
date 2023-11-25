@@ -3,10 +3,10 @@ package appeng.init;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 
 public class InitRecipeTypes {
     private record ToRegister(RecipeType<?> recipeType, ResourceLocation id) {
@@ -20,9 +20,9 @@ public class InitRecipeTypes {
         return type;
     }
 
-    public static void init(IForgeRegistry<RecipeType<?>> registry) {
+    public static void init(Registry<RecipeType<?>> registry) {
         for (var toRegister : toRegister) {
-            registry.register(toRegister.id, toRegister.recipeType);
+            Registry.register(registry, toRegister.id, toRegister.recipeType);
         }
     }
 
