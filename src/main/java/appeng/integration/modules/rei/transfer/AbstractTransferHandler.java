@@ -1,8 +1,9 @@
 package appeng.integration.modules.rei.transfer;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.Nullable;
 
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandler;
@@ -49,7 +50,7 @@ public abstract class AbstractTransferHandler<T extends AEBaseMenu> implements T
         // Displays can be based on completely custom objects, or on actual Vanilla recipes
         var origin = DisplayRegistry.getInstance().getDisplayOrigin(display);
 
-        return origin instanceof RecipeHolder<?> holder ? holder : null;
+        return origin instanceof RecipeHolder<?>holder ? holder : null;
     }
 
     protected final boolean isCraftingRecipe(Recipe<?> recipe, Display display) {
