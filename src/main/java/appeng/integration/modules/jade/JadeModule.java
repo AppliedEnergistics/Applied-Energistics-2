@@ -27,8 +27,8 @@ public class JadeModule implements IWailaPlugin {
         TooltipProviders.loadCommon(new CommonRegistration() {
             @Override
             public <T extends BlockEntity> void addBlockEntityData(ResourceLocation id,
-                                                                   Class<T> blockEntityClass,
-                                                                   ServerDataProvider<? super T> provider) {
+                    Class<T> blockEntityClass,
+                    ServerDataProvider<? super T> provider) {
                 var adapter = new ServerDataProviderAdapter<>(id, provider, blockEntityClass);
                 registration.registerBlockDataProvider(adapter, blockEntityClass);
             }

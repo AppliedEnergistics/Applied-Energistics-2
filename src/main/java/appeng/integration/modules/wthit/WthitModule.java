@@ -34,7 +34,7 @@ public class WthitModule implements IWailaPlugin {
         TooltipProviders.loadCommon(new CommonRegistration() {
             @Override
             public <T extends BlockEntity> void addBlockEntityData(ResourceLocation id, Class<T> blockEntityClass,
-                                                                   ServerDataProvider<? super T> provider) {
+                    ServerDataProvider<? super T> provider) {
                 registrar.addBlockData((data, accessor, config) -> {
                     var obj = blockEntityClass.cast(accessor.getTarget());
                     provider.provideServerData(accessor.getPlayer(), obj, data);
