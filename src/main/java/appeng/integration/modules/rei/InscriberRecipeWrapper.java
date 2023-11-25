@@ -24,6 +24,7 @@ import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
@@ -33,12 +34,13 @@ import me.shedaniel.rei.api.common.util.EntryIngredients;
 import appeng.recipes.handlers.InscriberRecipe;
 
 class InscriberRecipeWrapper implements Display {
-    private final InscriberRecipe recipe;
+    private final RecipeHolder<InscriberRecipe> holder;
     private final List<EntryIngredient> inputs;
     private final List<EntryIngredient> outputs;
 
-    public InscriberRecipeWrapper(InscriberRecipe recipe) {
-        this.recipe = recipe;
+    public InscriberRecipeWrapper(RecipeHolder<InscriberRecipe> holder) {
+        this.holder = holder;
+        var recipe = holder.value();
         this.inputs = ImmutableList.of(
                 EntryIngredients.ofIngredient(recipe.getTopOptional()),
                 EntryIngredients.ofIngredient(recipe.getMiddleInput()),
@@ -63,6 +65,6 @@ class InscriberRecipeWrapper implements Display {
 
     @Override
     public Optional<ResourceLocation> getDisplayLocation() {
-        throw new UnsupportedOperationException(); // TODO
+        return Optional.of(holder.id());
     }
 }

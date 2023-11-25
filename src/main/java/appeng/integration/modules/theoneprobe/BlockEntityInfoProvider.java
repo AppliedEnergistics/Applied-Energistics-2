@@ -66,8 +66,8 @@ public final class BlockEntityInfoProvider implements IProbeInfoProvider, IBlock
     public BlockEntityInfoProvider() {
         TooltipProviders.loadCommon(new CommonRegistration() {
             @Override
-            public <T extends BlockEntity> void addBlockEntityData(Class<T> blockEntityClass,
-                    ServerDataProvider<? super T> provider) {
+            public <T extends BlockEntity> void addBlockEntityData(ResourceLocation id, Class<T> blockEntityClass,
+                                                                   ServerDataProvider<? super T> provider) {
                 dataCollectors.add((blockEntity, player, serverData) -> {
                     if (blockEntityClass.isInstance(blockEntity)) {
                         var obj = blockEntityClass.cast(blockEntity);

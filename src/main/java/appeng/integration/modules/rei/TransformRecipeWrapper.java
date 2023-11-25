@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
@@ -15,14 +16,14 @@ import appeng.recipes.transform.TransformRecipe;
 
 public class TransformRecipeWrapper implements Display {
 
-    private final TransformRecipe recipe;
+    private final RecipeHolder<TransformRecipe> holder;
     private final List<EntryIngredient> inputs;
     private final List<EntryIngredient> outputs;
 
-    public TransformRecipeWrapper(TransformRecipe recipe) {
-        this.recipe = recipe;
-        this.inputs = EntryIngredients.ofIngredients(recipe.getIngredients());
-        this.outputs = List.of(EntryIngredients.of(recipe.getResultItem()));
+    public TransformRecipeWrapper(RecipeHolder<TransformRecipe> holder) {
+        this.holder = holder;
+        this.inputs = EntryIngredients.ofIngredients(holder.value().getIngredients());
+        this.outputs = List.of(EntryIngredients.of(holder.value().getResultItem()));
     }
 
     @Override
@@ -37,7 +38,7 @@ public class TransformRecipeWrapper implements Display {
 
     @Override
     public Optional<ResourceLocation> getDisplayLocation() {
-        return Optional.of(recipe.getId());
+        return Optional.of(holder.id());
     }
 
     @Override
@@ -46,6 +47,6 @@ public class TransformRecipeWrapper implements Display {
     }
 
     public TransformCircumstance getTransformCircumstance() {
-        return recipe.circumstance;
+        return holder.value().circumstance;
     }
 }
