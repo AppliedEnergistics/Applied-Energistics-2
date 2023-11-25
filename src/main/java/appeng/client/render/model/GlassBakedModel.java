@@ -124,8 +124,8 @@ class GlassBakedModel implements IDynamicBakedModel {
         final int cy = Math.abs(glassState.getY() % 10);
         final int cz = Math.abs(glassState.getZ() % 10);
 
-        int u = OFFSETS[cx][cy][cz] % 4;
-        int v = OFFSETS[9 - cx][9 - cy][9 - cz] % 4;
+        var u = (OFFSETS[cx][cy][cz] % 4) / 16f;
+        var v = (OFFSETS[9 - cx][9 - cy][9 - cz] % 4) / 16f;
 
         int texIdx = Math.abs((OFFSETS[cx][cy][cz] + (glassState.getX() + glassState.getY() + glassState.getZ())) % 4);
 
@@ -215,10 +215,10 @@ class GlassBakedModel implements IDynamicBakedModel {
 
         // Apply the u,v shift.
         // This mirrors the logic from OffsetIcon from 1.7
-        float u1 = Mth.clamp(0 - uOffset, 0, 16);
-        float u2 = Mth.clamp(16 - uOffset, 0, 16);
-        float v1 = Mth.clamp(0 - vOffset, 0, 16);
-        float v2 = Mth.clamp(16 - vOffset, 0, 16);
+        float u1 = Mth.clamp(0 - uOffset, 0, 1);
+        float u2 = Mth.clamp(1 - uOffset, 0, 1);
+        float v1 = Mth.clamp(0 - vOffset, 0, 1);
+        float v2 = Mth.clamp(1 - vOffset, 0, 1);
 
         var result = new MutableObject<BakedQuad>();
         var builder = new QuadBakingVertexConsumer(result::setValue);

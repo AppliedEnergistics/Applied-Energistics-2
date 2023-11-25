@@ -110,63 +110,74 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
         VertexConsumer buffer = buffers.getBuffer(RenderType.solid());
 
         // Bottom of Top Stamp
-        addVertex(buffer, ms, tas, TwoPx, middle + press, TwoPx, 2, 13, combinedOverlay, combinedLight, Direction.DOWN);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, TwoPx, 14, 13, combinedOverlay, combinedLight,
+        addVertex(buffer, ms, tas, TwoPx, middle + press, TwoPx, 0.125f, 0.8125f, combinedOverlay, combinedLight,
                 Direction.DOWN);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, 1.0f - TwoPx, 14, 2, combinedOverlay, combinedLight,
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, TwoPx, 0.875f, 0.8125f, combinedOverlay, combinedLight,
                 Direction.DOWN);
-        addVertex(buffer, ms, tas, TwoPx, middle + press, 1.0f - TwoPx, 2, 2, combinedOverlay, combinedLight,
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, 1.0f - TwoPx, 0.875f, 0.125f, combinedOverlay,
+                combinedLight,
+                Direction.DOWN);
+        addVertex(buffer, ms, tas, TwoPx, middle + press, 1.0f - TwoPx, 0.125f, 0.125f, combinedOverlay, combinedLight,
                 Direction.DOWN);
 
         // Front of Top Stamp
-        addVertex(buffer, ms, tas, TwoPx, middle + base, TwoPx, 2, 3 - 16 * (press - base), combinedOverlay,
+        addVertex(buffer, ms, tas, TwoPx, middle + base, TwoPx, 0.125f, 0.1875f - (press - base), combinedOverlay,
                 combinedLight, Direction.NORTH);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + base, TwoPx, 14, 3 - 16 * (press - base), combinedOverlay,
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + base, TwoPx, 0.875f, 0.1875f - (press - base),
+                combinedOverlay,
                 combinedLight, Direction.NORTH);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, TwoPx, 14, 3, combinedOverlay, combinedLight,
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, TwoPx, 0.875f, 0.1875f, combinedOverlay, combinedLight,
                 Direction.NORTH);
-        addVertex(buffer, ms, tas, TwoPx, middle + press, TwoPx, 2, 3, combinedOverlay, combinedLight, Direction.NORTH);
+        addVertex(buffer, ms, tas, TwoPx, middle + press, TwoPx, 0.125f, 0.1875f, combinedOverlay, combinedLight,
+                Direction.NORTH);
 
         // Rear of Top Stamp
-        addVertex(buffer, ms, tas, TwoPx, middle + base, 1.0f - TwoPx, 2, 3 - 16 * (press - base), combinedOverlay,
+        addVertex(buffer, ms, tas, TwoPx, middle + base, 1.0f - TwoPx, 0.125f, 0.1875f - (press - base),
+                combinedOverlay,
                 combinedLight, Direction.SOUTH);
-        addVertex(buffer, ms, tas, TwoPx, middle + press, 1.0f - TwoPx, 2, 3, combinedOverlay, combinedLight,
+        addVertex(buffer, ms, tas, TwoPx, middle + press, 1.0f - TwoPx, 0.125f, 0.1875f, combinedOverlay, combinedLight,
                 Direction.SOUTH);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, 1.0f - TwoPx, 14, 3, combinedOverlay, combinedLight,
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, 1.0f - TwoPx, 0.875f, 0.1875f, combinedOverlay,
+                combinedLight,
                 Direction.SOUTH);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + base, 1.0f - TwoPx, 14, 3 - 16 * (press - base),
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + base, 1.0f - TwoPx, 0.875f, 0.1875f - (press - base),
                 combinedOverlay,
                 combinedLight, Direction.SOUTH);
 
         // Top of Bottom Stamp
         middle -= 2.0f * 0.02f;
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, TwoPx, 2, 13, combinedOverlay, combinedLight,
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, TwoPx, 0.125f, 0.8125f, combinedOverlay, combinedLight,
                 Direction.UP);
-        addVertex(buffer, ms, tas, TwoPx, middle - press, TwoPx, 14, 13, combinedOverlay, combinedLight, Direction.UP);
-        addVertex(buffer, ms, tas, TwoPx, middle - press, 1.0f - TwoPx, 14, 2, combinedOverlay, combinedLight,
+        addVertex(buffer, ms, tas, TwoPx, middle - press, TwoPx, 0.875f, 0.8125f, combinedOverlay, combinedLight,
                 Direction.UP);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, 1.0f - TwoPx, 2, 2, combinedOverlay, combinedLight,
+        addVertex(buffer, ms, tas, TwoPx, middle - press, 1.0f - TwoPx, 0.875f, 0.125f, combinedOverlay, combinedLight,
+                Direction.UP);
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, 1.0f - TwoPx, 0.125f, 0.125f, combinedOverlay,
+                combinedLight,
                 Direction.UP);
 
         // Front of Bottom Stamp
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - base, TwoPx, 2, 3 - 16 * (press - base), combinedOverlay,
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - base, TwoPx, 0.125f, 0.1875f - (press - base),
+                combinedOverlay,
                 combinedLight, Direction.NORTH);
-        addVertex(buffer, ms, tas, TwoPx, middle - base, TwoPx, 14, 3 - 16 * (press - base), combinedOverlay,
+        addVertex(buffer, ms, tas, TwoPx, middle - base, TwoPx, 0.875f, 0.1875f - (press - base), combinedOverlay,
                 combinedLight, Direction.NORTH);
-        addVertex(buffer, ms, tas, TwoPx, middle - press, TwoPx, 14, 3, combinedOverlay, combinedLight,
+        addVertex(buffer, ms, tas, TwoPx, middle - press, TwoPx, 0.875f, 0.1875f, combinedOverlay, combinedLight,
                 Direction.NORTH);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, TwoPx, 2, 3, combinedOverlay, combinedLight,
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, TwoPx, 0.125f, 0.1875f, combinedOverlay, combinedLight,
                 Direction.NORTH);
 
         // Rear of Bottom Stamp
-        addVertex(buffer, ms, tas, TwoPx, middle - press, 1.0f - TwoPx, 14, 3, combinedOverlay, combinedLight,
+        addVertex(buffer, ms, tas, TwoPx, middle - press, 1.0f - TwoPx, 0.875f, 0.1875f, combinedOverlay, combinedLight,
                 Direction.SOUTH);
-        addVertex(buffer, ms, tas, TwoPx, middle - base, 1.0f - TwoPx, 14, 3 - 16 * (press - base), combinedOverlay,
-                combinedLight, Direction.SOUTH);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - base, 1.0f - TwoPx, 2, 3 - 16 * (press - base),
+        addVertex(buffer, ms, tas, TwoPx, middle - base, 1.0f - TwoPx, 0.875f, 0.1875f - (press - base),
                 combinedOverlay,
                 combinedLight, Direction.SOUTH);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, 1.0f - TwoPx, 2, 3, combinedOverlay, combinedLight,
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - base, 1.0f - TwoPx, 0.125f, 0.1875f - (press - base),
+                combinedOverlay,
+                combinedLight, Direction.SOUTH);
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, 1.0f - TwoPx, 0.125f, 0.1875f, combinedOverlay,
+                combinedLight,
                 Direction.SOUTH);
 
         // render items.

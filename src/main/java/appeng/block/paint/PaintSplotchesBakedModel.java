@@ -113,7 +113,7 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
 
             TextureAtlasSprite ico = this.textures[s.getSeed() % this.textures.length];
             builder.setTexture(ico);
-            builder.setCustomUv(s.getSide().getOpposite(), 0, 0, 16, 16);
+            builder.setCustomUv(s.getSide().getOpposite(), 0, 0, 1, 1);
 
             switch (s.getSide()) {
                 case UP:
