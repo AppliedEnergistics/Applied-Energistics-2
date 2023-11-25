@@ -431,7 +431,8 @@ runs {
     }
     gametestWorld {
         configure("client")
-        programArguments = ["--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld"]
+        with commonRunProperties
+        programArguments("--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld")
         systemProperties = [
                 "appeng.tests"             : "true",
                 "guideDev.ae2guide.sources": file("guidebook").absolutePath,
