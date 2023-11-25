@@ -400,8 +400,6 @@ tasks.withType(ClasspathSerializer).configureEach {
 
 def commonRunProperties = {
     workingDirectory = project.file('run')
-//    jvmArgs "--add-opens", "java.base/sun.security.util=ALL-UNNAMED"
-//    jvmArgs "--add-opens", "java.base/java.util.jar=ALL-UNNAMED"
     systemProperties = commonSystemProperties
     // property "mixin.debug.export", "true"
     modSources = [sourceSets.main]
@@ -485,11 +483,12 @@ processResources {
     }
 }
 
-jar.enabled = false // Replaced by "shadowJar"
+jar {
+    finalizedBy shadowJar
+    archiveClassifier = "plain"
+}
 
 shadowJar {
-    finalizedBy 'reobfShadowJar'
-
     from sourceSets.main.output.classesDirs
     from sourceSets.main.output.resourcesDir
 
@@ -515,15 +514,7 @@ shadowJar {
     archiveClassifier = null
 }
 
-//reobf {
-//    shadowJar {}
-//}
-
-//afterEvaluate {
-//    tasks.reobfJar.enabled = false
-//}
-
-//tasks.assemble.dependsOn reobfShadowJar
+assemble.dependsOn shadowJar
 
 def publicApiIncludePatterns = {
     exclude "**/*Internal.*"
