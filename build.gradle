@@ -523,6 +523,21 @@ def publicApiIncludePatterns = {
     include "appeng/api/**"
 }
 
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = sourceSets.main.compileClasspath + sourceSets.main.output
+
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+}
+javadoc publicApiIncludePatterns
+
+task javadocJar(type: Jar, dependsOn: javadoc, group: "build") {
+    archiveClassifier = "javadoc"
+    from javadoc.destinationDir
+}
+
 task sourcesJar(type: Jar) {
     archiveClassifier = "sources"
     from sourceSets.main.allJava
@@ -540,6 +555,7 @@ task apiJar(type: Jar, group: "build") {
 apiJar publicApiIncludePatterns
 
 artifacts {
+    archives javadocJar
     archives sourcesJar
     archives apiJar
 }
@@ -562,6 +578,7 @@ publishing {
             from components.java
             artifact shadowJar
             artifact sourcesJar
+            artifact javadocJar
             artifact apiJar
         }
     }
