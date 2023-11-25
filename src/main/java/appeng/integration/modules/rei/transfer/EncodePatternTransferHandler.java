@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.widgets.Slot;
@@ -46,7 +46,10 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
     }
 
     @Override
-    protected Result transferRecipe(T menu, Recipe<?> recipe, Display display, boolean doTransfer) {
+    protected Result transferRecipe(T menu, RecipeHolder<?> holder, Display display, boolean doTransfer) {
+
+        var recipeId = holder != null ? holder.id() : null;
+        var recipe = holder != null ? holder.value() : null;
 
         // Crafting recipe slots are not grouped, hence they must fit into the 3x3 grid.
         boolean craftingRecipe = isCraftingRecipe(recipe, display);
@@ -55,9 +58,9 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
         }
 
         if (doTransfer) {
-            if (craftingRecipe) {
+            if (craftingRecipe && recipeId != null) {
                 EncodingHelper.encodeCraftingRecipe(menu,
-                        recipe,
+                        new RecipeHolder<>(recipeId, recipe),
                         getGuiIngredientsForCrafting(display),
                         this::isIngredientVisible);
             } else {

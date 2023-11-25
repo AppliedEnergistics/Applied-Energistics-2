@@ -1,0 +1,6 @@
+{
+  "ae2:wthit": {
+    "initializer": "appeng.integration.modules.wthit.WthitModule",
+    "side": "*"
+  }
+}

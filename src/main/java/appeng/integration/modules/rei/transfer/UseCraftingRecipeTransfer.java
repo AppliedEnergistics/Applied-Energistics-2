@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import me.shedaniel.math.Rectangle;
@@ -50,7 +51,10 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
     }
 
     @Override
-    protected Result transferRecipe(T menu, Recipe<?> recipe, Display display, boolean doTransfer) {
+    protected Result transferRecipe(T menu, RecipeHolder<?> holder, Display display, boolean doTransfer) {
+
+        var recipeId = holder != null ? holder.id() : null;
+        var recipe = holder != null ? holder.value() : null;
 
         boolean craftingRecipe = isCraftingRecipe(recipe, display);
         if (!craftingRecipe) {
@@ -90,7 +94,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
                 return result;
             }
         } else {
-            CraftingHelper.performTransfer(menu, recipe, craftMissing);
+            CraftingHelper.performTransfer(menu, recipeId, recipe, craftMissing);
         }
 
         // No error

@@ -30,7 +30,6 @@ sourceSets {
     main {
         java {
             srcDir 'src/main/flatbuffers/generated'
-            exclude "**/integration/modules/rei/**"
             exclude "**/integration/modules/jei/**"
         }
         resources {
@@ -97,18 +96,11 @@ dependencies {
     if (project.runtime_itemlist_mod == "jei") {
         runtimeOnly "mezz.jei:jei-${jei_minecraft_version}-forge:${jei_version}"
 
-        compileOnly "me.shedaniel.cloth:basic-math:0.6.1"
-        compileOnly("dev.architectury:architectury-forge:${project.architectury_version}")
-        compileOnly("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
+        compileOnly("me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}")
     } else if (project.runtime_itemlist_mod == "rei") {
-        implementation "me.shedaniel.cloth:basic-math:0.6.1"
-        implementation("me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}")
-        implementation("dev.architectury:architectury-forge:${project.architectury_version}")
-        implementation("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
+        implementation("me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}")
     } else {
-        compileOnly("me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}")
-        compileOnly("dev.architectury:architectury-forge:${project.architectury_version}")
-        compileOnly("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
+        compileOnly("me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}")
     }
 
     // Locally sourced extra mods for runtime (i.e. testing)
@@ -121,11 +113,9 @@ dependencies {
         runtimeOnly("extra-mods:$artifactId:$version")
     }
 
+    compileOnly "mcp.mobius.waila:wthit-api:neo-${project.wthit_version}"
     if (project.runtime_tooltip_mod == "wthit") {
-        runtimeOnly("mcp.mobius.waila:wthit:forge-${project.wthit_version}")
-        runtimeOnly("lol.bai:badpackets:forge-0.1.2")
-    } else {
-        compileOnly "mcp.mobius.waila:wthit-api:forge-${project.wthit_version}"
+        runtimeOnly("mcp.mobius.waila:wthit:neo-${project.wthit_version}")
     }
 
     if (project.runtime_tooltip_mod == "jade") {

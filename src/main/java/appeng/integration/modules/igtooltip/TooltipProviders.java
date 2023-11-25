@@ -1,7 +1,10 @@
 package appeng.integration.modules.igtooltip;
 
+import java.util.Locale;
 import java.util.ServiceLoader;
 
+import appeng.core.AppEng;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,14 +75,18 @@ public final class TooltipProviders implements TooltipProvider {
 
         for (var clazz : baseClasses.getBaseClasses()) {
             LOGGER.debug("Registering default-data for BE {} and sub-classes", clazz);
-            registration.addBlockEntityData(clazz.blockEntity(), new GridNodeStateDataProvider());
-            registration.addBlockEntityData(clazz.blockEntity(), new PowerStorageDataProvider());
-            registration.addBlockEntityData(clazz.blockEntity(), DebugProvider::provideBlockEntityData);
+            registration.addBlockEntityData(AppEng.makeId("grid_node"), clazz.blockEntity(), new GridNodeStateDataProvider());
+            registration.addBlockEntityData(AppEng.makeId("power_storage"), clazz.blockEntity(), new PowerStorageDataProvider());
+            registration.addBlockEntityData(AppEng.makeId("debug"), clazz.blockEntity(), DebugProvider::provideBlockEntityData);
         }
 
         for (var clazz : baseClasses.getPartHostClasses()) {
             LOGGER.debug("Registering part host provider for {} and sub-classes", clazz);
-            registration.addBlockEntityData(clazz.blockEntity(), PartHostTooltips::provideServerData);
+            registration.addBlockEntityData(
+                    AppEng.makeId("base_" +  clazz.blockEntity().getSimpleName().toLowerCase(Locale.ROOT)),
+                    clazz.blockEntity(),
+                    PartHostTooltips::provideServerData
+            );
         }
     }
 
@@ -139,8 +146,10 @@ public final class TooltipProviders implements TooltipProvider {
     @Override
     public void registerCommon(CommonRegistration registration) {
         registration.addBlockEntityData(
+                AppEng.makeId("pattern_provider"),
                 PatternProviderBlockEntity.class,
-                new PatternProviderDataProvider());
+                new PatternProviderDataProvider()
+        );
     }
 
     @Override
