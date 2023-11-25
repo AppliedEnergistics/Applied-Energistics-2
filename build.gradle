@@ -297,7 +297,14 @@ test {
                 "ae2%%" + it
             }.collect(Collectors.joining(File.pathSeparator))
     )
-    environment("fmljunit.assetsDir", new File(gradle.gradleUserHomeDir, "caches/minecraft/assets/1.20.2/").absolutePath)
+
+    def fmlVersion = "1.0.10"
+
+    environment("fmljunit.assetsDir", new File(gradle.gradleUserHomeDir, "caches/minecraft/assets/${minecraft_version}/").absolutePath)
+    environment("fmljunit.neoForgeVersion", neoforge_version)
+    environment("fmljunit.fmlVersion", fmlVersion)
+    environment("fmljunit.mcVersion", minecraft_version)
+    environment("fmljunit.neoFormVersion", "20231019.002635")
 
     jvmArgumentProviders.add(new CommandLineArgumentProvider() {
         @Override
@@ -323,14 +330,14 @@ test {
     })
 
     doFirst {
-        var classPathLines = new File("$aeDir/build/neoForm/neoFormJoined1.20.2-20231019.002635/steps/writeMinecraftClasspath/classpath.txt").readLines()
+        var classPathLines = tasks.writeMinecraftClasspath.output.asFile.get().readLines()
         classPathLines.addAll(test.classpath
                 .filter { it.name.startsWith("fmljunit") })
         new File("$aeDir/build/test_classpath.txt").text = classPathLines.join("\n")
     }
 
     jvmArgs = [
-            "-DignoreList=junit,securejarhandler,asm,asm-commons,asm-tree,asm-util,asm-analysis,bootstraplauncher,JarJarFileSystems,events-1.0.9.jar,core-1.0.9.jar,language-java,language-lowcode,language-minecraft,client-extra,neoforge-",
+            "-DignoreList=junit,securejarhandler,asm,asm-commons,asm-tree,asm-util,asm-analysis,bootstraplauncher,JarJarFileSystems,events-${fmlVersion}.jar,core-${fmlVersion}.jar,language-java,language-lowcode,language-minecraft,client-extra,neoforge-",
             "--add-modules",
             "ALL-MODULE-PATH",
             "--add-opens", "java.base/java.util.jar=cpw.mods.securejarhandler",
@@ -338,10 +345,10 @@ test {
             "--add-exports", "java.base/sun.security.util=cpw.mods.securejarhandler",
             "--add-exports", "jdk.naming.dns/com.sun.jndi.dns=java.naming",
             "-DlegacyClassPath.file=$aeDir/build/test_classpath.txt",
-            "-Dfml.gameLayerLibraries=events-1.0.9.jar",
+            "-Dfml.gameLayerLibraries=events-${fmlVersion}.jar",
             "-DmergeModules=jna-5.10.0.jar,jna-platform-5.10.0.jar",
             "-Djava.net.preferIPv6Addresses=system",
-            "-Dfml.pluginLayerLibraries=core-1.0.9.jar,language-java-1.0.9.jar,language-lowcode-1.0.9.jar,language-minecraft-1.0.9.jar",
+            "-Dfml.pluginLayerLibraries=core-${fmlVersion}.jar,language-java-${fmlVersion}.jar,language-lowcode-${fmlVersion}.jar,language-minecraft-${fmlVersion}.jar",
     ]
 }
 

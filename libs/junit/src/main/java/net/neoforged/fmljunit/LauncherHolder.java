@@ -14,23 +14,21 @@ final class LauncherHolder {
         if (transformingClassLoader == null) {
             var originalLoader = Thread.currentThread().getContextClassLoader();
 
-            var assetsDir = System.getenv("fmljunit.assetsDir");
-
             try {
                 BootstrapLauncher.main("-launchTarget", "JUnit", "--assetIndex",
                         "asset-index",
                         "--assetsDir",
-                        assetsDir,
+                        System.getenv("fmljunit.assetsDir"),
                         "--gameDir",
                         ".",
                         "--fml.neoForgeVersion",
-                        "20.2.43-beta",
+                        System.getenv("fmljunit.neoForgeVersion"),
                         "--fml.fmlVersion",
-                        "1.0.9",
+                        System.getenv("fmljunit.fmlVersion"),
                         "--fml.mcVersion",
-                        "1.20.2",
+                        System.getenv("fmljunit.mcVersion"),
                         "--fml.neoFormVersion",
-                        "20231019.002635");
+                        System.getenv("fmljunit.neoFormVersion"));
 
                 transformingClassLoader = Thread.currentThread().getContextClassLoader();
             } finally {
