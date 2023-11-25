@@ -98,6 +98,7 @@ dependencies {
 
         compileOnly("me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}")
     } else if (project.runtime_itemlist_mod == "rei") {
+        implementation("dev.architectury:architectury-neoforge:10.0.16")
         implementation("me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}")
     } else {
         compileOnly("me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}")
