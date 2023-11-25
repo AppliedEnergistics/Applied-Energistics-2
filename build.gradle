@@ -141,8 +141,6 @@ dependencies {
         compileOnly topDependency
     }
 
-    implementation files("C:\\AE2\\securejarhandler\\build\\libs\\securejarhandler-2.1.21.jar")
-
     // unit test dependencies
     testImplementation(platform("org.junit:junit-bom:${project.junit_version}"))
     testRuntimeOnly(project(":libs:junit"))
