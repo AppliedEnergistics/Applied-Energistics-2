@@ -18,6 +18,13 @@ dependencies {
 
 repositories {
     maven {
+        name = 'Minecraft Libraries'
+        url = 'https://libraries.minecraft.net'
+        metadataSources {
+            artifact()
+        }
+    }
+    maven {
         name = 'NeoForged'
         url = 'https://maven.neoforged.net/releases'
     }

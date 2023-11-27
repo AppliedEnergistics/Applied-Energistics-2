@@ -143,52 +143,51 @@ allprojects {
         }
     }
 
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven {
-            url "https://maven.shedaniel.me/"
-            content {
-                includeGroup "me.shedaniel"
-                includeGroup "me.shedaniel.cloth"
-                includeGroup "dev.architectury"
-            }
-        }
-        maven {
-            url "https://maven2.bai.lol"
-            content {
-                includeGroup "mcp.mobius.waila"
-                includeGroup "lol.bai"
-            }
-        }
-        maven {
-            name 'modmaven'
-            url "https://modmaven.dev/"
-            content {
-                includeGroup "mezz.jei"
-            }
-        }
-        maven {
-            name 'cursemaven'
-            url "https://www.cursemaven.com"
-            content {
-                includeGroup "curse.maven"
-            }
-        }
-        maven { // for TOP
-            url "https://maven.k-4u.nl/"
-            content {
-                includeGroup "mcjty"
-            }
-        }
-    }
-
     // ensure everything uses UTF-8 and not some random codepage chosen by gradle
-    compileJava.options.encoding = 'UTF-8'
-    tasks.withType(JavaCompile) {
+    tasks.withType(JavaCompile).configureEach {
         options.encoding = 'UTF-8'
         options.deprecation = false
         options.compilerArgs << "-Xmaxerrs" << "9999"
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url "https://maven.shedaniel.me/"
+        content {
+            includeGroup "me.shedaniel"
+            includeGroup "me.shedaniel.cloth"
+            includeGroup "dev.architectury"
+        }
+    }
+    maven {
+        url "https://maven2.bai.lol"
+        content {
+            includeGroup "mcp.mobius.waila"
+            includeGroup "lol.bai"
+        }
+    }
+    maven {
+        name 'modmaven'
+        url "https://modmaven.dev/"
+        content {
+            includeGroup "mezz.jei"
+        }
+    }
+    maven {
+        name 'cursemaven'
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven { // for TOP
+        url "https://maven.k-4u.nl/"
+        content {
+            includeGroup "mcjty"
+        }
     }
 }
 
