@@ -1,5 +1,7 @@
 package appeng.integration.modules.wthit;
 
+import mcp.mobius.waila.api.IDataWriter;
+import mcp.mobius.waila.api.IServerAccessor;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -35,9 +37,9 @@ public class WthitModule implements IWailaPlugin {
             @Override
             public <T extends BlockEntity> void addBlockEntityData(ResourceLocation id, Class<T> blockEntityClass,
                     ServerDataProvider<? super T> provider) {
-                registrar.addBlockData((data, accessor, config) -> {
+                registrar.addBlockData((IDataWriter data, IServerAccessor<T> accessor, IPluginConfig config) -> {
                     var obj = blockEntityClass.cast(accessor.getTarget());
-                    provider.provideServerData(accessor.getPlayer(), obj, data);
+                    provider.provideServerData(accessor.getPlayer(), obj, data.raw());
                 }, blockEntityClass);
             }
         });
@@ -123,8 +125,8 @@ public class WthitModule implements IWailaPlugin {
 
     private static TooltipContext getContext(IBlockAccessor accessor) {
         return new TooltipContext(
-                accessor.getServerData(),
-                accessor.getHitResult().getLocation(),
+                accessor.getData().raw(),
+                accessor.getBlockHitResult().getLocation(),
                 accessor.getPlayer());
     }
 }

@@ -101,16 +101,4 @@ public interface IGridServiceProvider {
      */
     default void saveNodeData(IGridNode gridNode, CompoundTag savedData) {
     }
-
-    @Deprecated(forRemoval = true, since = "1.20.1")
-    default void onSplit(IGridStorage destinationStorage) {
-    }
-
-    @Deprecated(forRemoval = true, since = "1.20.1")
-    default void onJoin(IGridStorage sourceStorage) {
-    }
-
-    @Deprecated(forRemoval = true, since = "1.20.1")
-    default void populateGridStorage(IGridStorage destinationStorage) {
-    }
 }
