@@ -58,10 +58,6 @@ configurations {
     configurations.testRuntimeClasspath.extendsFrom(internal)
 }
 
-// All jar files from this folder will be added automatically as runtime mod dependencies
-def extraModsDir = "extra-mods-${minecraft_version}"
-file(extraModsDir).mkdir()
-
 dependencies {
     // To be copied into the jar file
     shaded project(path: ':libs:markdown', configuration: "archives")
@@ -102,16 +98,6 @@ dependencies {
         implementation("me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}")
     } else {
         compileOnly("me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}")
-    }
-
-    // Locally sourced extra mods for runtime (i.e. testing)
-    for (extraModJar in fileTree(dir: extraModsDir, include: '*.jar')) {
-        def basename = extraModJar.name.substring(0, extraModJar.name.length() - ".jar".length())
-        def versionSep = basename.lastIndexOf('-')
-        assert versionSep != -1
-        def artifactId = basename.substring(0, versionSep)
-        def version = basename.substring(versionSep + 1)
-        runtimeOnly("extra-mods:$artifactId:$version")
     }
 
     compileOnly "mcp.mobius.waila:wthit-api:neo-${project.wthit_version}"
@@ -176,27 +162,12 @@ allprojects {
             }
         }
         maven {
-            url "https://maven.parchmentmc.net/"
-            content {
-                includeGroup "org.parchmentmc.data"
-            }
-        }
-        // For the "No Indium?" mod
-        maven {
-            url = 'https://maven.cafeteria.dev/releases/'
-            content {
-                includeGroup "me.luligabi"
-            }
-        }
-
-        maven {
             name 'modmaven'
             url "https://modmaven.dev/"
             content {
                 includeGroup "mezz.jei"
             }
         }
-
         maven {
             name 'cursemaven'
             url "https://www.cursemaven.com"
@@ -204,25 +175,12 @@ allprojects {
                 includeGroup "curse.maven"
             }
         }
-
-        maven {
-            url "https://maven.blamejared.com"
-            content {
-                includeGroup "vazkii.patchouli"
-            }
-        }
-
-        flatDir {
-            name "extra-mods"
-            dir file(extraModsDir)
-        }
         maven { // for TOP
             url "https://maven.k-4u.nl/"
             content {
                 includeGroup "mcjty"
             }
         }
-        maven { url = 'https://repo.spongepowered.org/maven' }
     }
 
     // ensure everything uses UTF-8 and not some random codepage chosen by gradle
