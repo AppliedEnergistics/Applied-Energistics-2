@@ -1,7 +1,5 @@
 package appeng.integration.modules.wthit;
 
-import mcp.mobius.waila.api.IDataWriter;
-import mcp.mobius.waila.api.IServerAccessor;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -12,8 +10,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IBlockComponentProvider;
+import mcp.mobius.waila.api.IDataWriter;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IRegistrar;
+import mcp.mobius.waila.api.IServerAccessor;
 import mcp.mobius.waila.api.ITooltip;
 import mcp.mobius.waila.api.ITooltipComponent;
 import mcp.mobius.waila.api.IWailaPlugin;
