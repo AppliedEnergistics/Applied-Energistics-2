@@ -35,7 +35,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.world.ForcedChunkManager;
+import net.neoforged.neoforge.common.world.chunk.ForcedChunkManager;
 
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
@@ -335,7 +335,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
         }
 
         ServerLevel level = this.getServerLevel();
-        boolean forced = ChunkLoadingService.getInstance().forceChunk(level, this.getBlockPos(), chunkPos, true);
+        boolean forced = ChunkLoadingService.getInstance().forceChunk(level, this.getBlockPos(), chunkPos);
 
         if (forced) {
             this.chunks.add(chunkPos);
@@ -349,7 +349,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
 
     private boolean release(ChunkPos chunkPos, boolean remove) {
         ServerLevel level = this.getServerLevel();
-        boolean removed = ChunkLoadingService.getInstance().releaseChunk(level, this.getBlockPos(), chunkPos, true);
+        boolean removed = ChunkLoadingService.getInstance().releaseChunk(level, this.getBlockPos(), chunkPos);
 
         if (removed && remove) {
             this.chunks.remove(chunkPos);
