@@ -38,10 +38,12 @@ jobs:
           gunzip build/guide/guide.*.json.gz
           zopfli build/guide/guide.*.json
           rm -f build/guide/guide.*.json
+      - name: Compress guide files before upload as artifact
+        run: tar cf guide.tar build/guide/
       - uses: actions/upload-artifact@v3
         with:
           name: guide
-          path: build/guide/
+          path: guide.tar
 
   # Attach the guide as a release artifact if we're building a tag which might be a release
   attach-release-artifact:
@@ -50,10 +52,12 @@ jobs:
     name: Attach Release Artifact
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - id: download
+        uses: actions/download-artifact@v3
         with:
           name: guide
-          path: build/guide/
+      - name: Decompress guide tar
+        run: tar xf ${{steps.download.outputs.download-path}}
       - name: Create ZIP
         working-directory: build/guide
         run: zip -r ../../guide-assets.zip .
@@ -73,10 +77,12 @@ jobs:
     environment: Production
     if: startsWith(github.ref, 'refs/tags/neoforge/v')
     steps:
-      - uses: actions/download-artifact@v3
+      - id: download
+        uses: actions/download-artifact@v3
         with:
           name: guide
-          path: build/guide/
+      - name: Decompress guide tar
+        run: tar xf ${{steps.download.outputs.download-path}}
       - id: versions
         name: Determine Game and Mod-Version
         run: |
@@ -110,12 +116,14 @@ jobs:
     name: Publish Snapshot to Web
     runs-on: ubuntu-latest
     environment: Production
-    if: github.ref == 'refs/heads/master' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
     steps:
-      - uses: actions/download-artifact@v3
+      - id: download
+        uses: actions/download-artifact@v3
         with:
           name: guide
-          path: build/guide/
+      - name: Decompress guide tar
+        run: tar xf ${{steps.download.outputs.download-path}}
       # Finally, upload to S3
       - uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
         with:

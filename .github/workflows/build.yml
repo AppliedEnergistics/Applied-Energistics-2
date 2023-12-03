@@ -2,6 +2,9 @@ name: 'Build and Test'
 
 on:
   push:
+    # Only on branches, not tags/releases
+    branches:
+      - '**'
   pull_request:
     branches:
       - '*'
