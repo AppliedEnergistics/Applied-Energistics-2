@@ -77,12 +77,11 @@ jobs:
     environment: Production
     if: startsWith(github.ref, 'refs/tags/neoforge/v')
     steps:
-      - id: download
-        uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v3
         with:
           name: guide
       - name: Decompress guide tar
-        run: tar xf ${{steps.download.outputs.download-path}}
+        run: tar xf guide.tar
       - id: versions
         name: Determine Game and Mod-Version
         run: |
@@ -118,12 +117,11 @@ jobs:
     environment: Production
     if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
     steps:
-      - id: download
-        uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v3
         with:
           name: guide
       - name: Decompress guide tar
-        run: tar xf ${{steps.download.outputs.download-path}}
+        run: tar xf guide.tar
       # Finally, upload to S3
       - uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
         with:
