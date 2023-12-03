@@ -54,10 +54,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.api.inventories.ISegmentedInventory;
@@ -423,16 +420,6 @@ public class AEBaseBlockEntity extends BlockEntity
     @Override
     public ModelData getModelData() {
         return AEModelData.create();
-    }
-
-    /**
-     * AE Block entities will generally confine themselves to rendering within the bounding block. Forge however would
-     * retrieve the collision box here, which is very expensive.
-     */
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public AABB getRenderBoundingBox() {
-        return new AABB(worldPosition, worldPosition.offset(1, 1, 1));
     }
 
     /**
