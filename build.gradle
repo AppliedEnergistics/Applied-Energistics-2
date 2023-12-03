@@ -246,7 +246,7 @@ test {
             }.collect(Collectors.joining(File.pathSeparator))
     )
 
-    def fmlVersion = "1.0.10"
+    def fmlVersion = "1.0.16"
 
     environment("fmljunit.assetsDir", new File(gradle.gradleUserHomeDir, "caches/minecraft/assets/${minecraft_version}/").absolutePath)
     environment("fmljunit.neoForgeVersion", neoforge_version)
@@ -285,7 +285,7 @@ test {
     }
 
     jvmArgs = [
-            "-DignoreList=junit,securejarhandler,asm,asm-commons,asm-tree,asm-util,asm-analysis,bootstraplauncher,JarJarFileSystems,events-${fmlVersion}.jar,core-${fmlVersion}.jar,language-java,language-lowcode,language-minecraft,client-extra,neoforge-",
+            "-DignoreList=junit,securejarhandler,asm,asm-commons,asm-tree,asm-util,asm-analysis,bootstraplauncher,JarJarFileSystems,events-${fmlVersion}.jar,core-${fmlVersion}.jar,language-java,language-lowcode,language-minecraft,client-extra,neoforge-,mixinextras-",
             "--add-modules",
             "ALL-MODULE-PATH",
             "--add-opens", "java.base/java.util.jar=cpw.mods.securejarhandler",
