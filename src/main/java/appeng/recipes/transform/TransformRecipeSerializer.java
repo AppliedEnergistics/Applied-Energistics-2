@@ -37,7 +37,7 @@ public class TransformRecipeSerializer implements RecipeSerializer<TransformReci
 
     public static final TransformRecipeSerializer INSTANCE = new TransformRecipeSerializer();
 
-    private static Codec<TransformRecipe> CODEC = RecordCodecBuilder.create(builder -> {
+    private static final Codec<TransformRecipe> CODEC = RecordCodecBuilder.create(builder -> {
         return builder.group(
                 Ingredient.CODEC_NONEMPTY
                         .listOf()

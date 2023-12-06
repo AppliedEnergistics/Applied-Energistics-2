@@ -68,15 +68,14 @@ public record PatternContainerGroup(
 
     @Nullable
     public static PatternContainerGroup fromMachine(Level level, BlockPos pos, Direction side) {
-        var target = level.getBlockEntity(pos);
-
         // Check for first-class support
-        var craftingMachine = ICraftingMachine.of(level, pos, side, target);
+        var craftingMachine = ICraftingMachine.of(level, pos, side);
         if (craftingMachine != null) {
             return craftingMachine.getCraftingMachineInfo();
         }
 
         // Anything else requires a block entity
+        var target = level.getBlockEntity(pos);
         if (target == null) {
             return null;
         }

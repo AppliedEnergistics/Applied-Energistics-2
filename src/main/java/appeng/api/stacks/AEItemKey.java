@@ -21,28 +21,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.capabilities.CapabilityProvider;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
 import appeng.util.Platform;
 
 public final class AEItemKey extends AEKey {
-    private static final MethodHandle SERIALIZE_CAPS_HANDLE;
-    static {
-        try {
-            var method = CapabilityProvider.class.getDeclaredMethod("serializeCaps");
-            method.setAccessible(true);
-            SERIALIZE_CAPS_HANDLE = MethodHandles.lookup().unreflect(method);
-        } catch (Exception exception) {
-            throw new RuntimeException("Failed to create serializeCaps method handle", exception);
-        }
-    }
-
     @Nullable
     private static CompoundTag serializeStackCaps(ItemStack stack) {
         try {
-            var caps = (CompoundTag) SERIALIZE_CAPS_HANDLE.invokeExact((CapabilityProvider) stack);
+
+            var caps = stack.serializeAttachments();
             // Ensure stacks with no serializable cap providers are treated the same as stacks with no caps!
             return caps == null || caps.isEmpty() ? null : caps;
         } catch (Throwable ex) {

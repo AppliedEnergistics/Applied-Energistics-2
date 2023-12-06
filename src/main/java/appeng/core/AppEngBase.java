@@ -23,6 +23,7 @@ import java.util.Collections;
 
 import com.mojang.brigadier.CommandDispatcher;
 
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.commands.CommandSourceStack;
@@ -128,6 +129,7 @@ public abstract class AppEngBase implements AppEng {
         modEventBus.addListener(this::registerRegistries);
         modEventBus.addListener(MainCreativeTab::initExternal);
         modEventBus.addListener(ChunkLoadingService.getInstance()::register);
+        modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener((RegisterEvent event) -> {
             if (event.getRegistryKey().equals(Registries.SOUND_EVENT)) {
                 registerSounds(BuiltInRegistries.SOUND_EVENT);
@@ -181,6 +183,10 @@ public abstract class AppEngBase implements AppEng {
         });
 
         HotkeyActions.init();
+    }
+
+    private void registerCapabilities(RegisterCapabilitiesEvent event) {
+
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

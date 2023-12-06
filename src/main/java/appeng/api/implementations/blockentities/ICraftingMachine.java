@@ -42,22 +42,18 @@ public interface ICraftingMachine {
 
     @Nullable
     static ICraftingMachine of(@Nullable BlockEntity blockEntity, Direction side) {
-        if (blockEntity == null) {
+        if (blockEntity == null || blockEntity.getLevel() == null) {
             return null;
         }
 
-        return of(blockEntity.getLevel(), blockEntity.getBlockPos(), side, blockEntity);
+        return blockEntity.getLevel().getCapability(
+                Capabilities.CRAFTING_MACHINE, blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, side
+        );
     }
 
     @Nullable
-    static ICraftingMachine of(Level level, BlockPos pos, Direction side,
-            @Nullable BlockEntity blockEntity) {
-        if (blockEntity != null) {
-            return blockEntity.getCapability(Capabilities.CRAFTING_MACHINE, side).orElse(null);
-        } else {
-            return null;
-        }
-
+    static ICraftingMachine of(Level level, BlockPos pos, Direction side) {
+        return level.getCapability(Capabilities.CRAFTING_MACHINE, pos, side);
     }
 
     /**
