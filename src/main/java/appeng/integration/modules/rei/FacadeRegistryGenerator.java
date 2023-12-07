@@ -40,6 +40,7 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.FacadeItem;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 /**
  * This plugin will dynamically add facade recipes for any item that can be turned into a facade.
@@ -97,6 +98,7 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
         ingredients.set(5, Ingredient.of(cableAnchor));
         ingredients.set(7, Ingredient.of(cableAnchor));
         ingredients.set(4, Ingredient.of(textureItem));
+        var pattern = new ShapedRecipePattern( 3, 3, ingredients, Optional.empty());
 
         result.setCount(4);
 
@@ -105,7 +107,7 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
         return new DefaultShapedDisplay(
                 new RecipeHolder<>(
                         id,
-                        new ShapedRecipe("", CraftingBookCategory.MISC, 3, 3, ingredients, result)));
+                        new ShapedRecipe("", CraftingBookCategory.MISC, pattern, result)));
     }
 
 }

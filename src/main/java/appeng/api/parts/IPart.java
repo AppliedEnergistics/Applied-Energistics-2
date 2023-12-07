@@ -52,9 +52,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.CapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
@@ -420,18 +417,6 @@ public interface IPart extends ICustomCableConnection, Clearable {
     default IPartModel getStaticModels() {
         return new IPartModel() {
         };
-    }
-
-    /**
-     * Implement this method if your part exposes capabilitys. Any requests for capabilities on the cable bus will be
-     * forwarded to parts on the appropriate side.
-     *
-     * @see CapabilityProvider#getCapability(Capability, Direction)
-     *
-     * @return The capability
-     */
-    default <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
-        return LazyOptional.empty();
     }
 
     /**

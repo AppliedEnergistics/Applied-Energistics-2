@@ -3,6 +3,7 @@ package appeng.api.implementations.blockentities;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -80,10 +81,13 @@ public record PatternContainerGroup(
             return null;
         }
 
-        // Heuristic: If it doesn't allow any transfers, ignore it
-        var adaptor = InternalInventory.wrapExternal(target, side);
-        if (adaptor == null || !adaptor.mayAllowInsertion()) {
-            return null;
+        // Heuristic: If it doesn't allow item or fluid transfers, ignore it
+        var itemHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, target.getBlockState(), target, side);
+        if (itemHandler == null || itemHandler.getSlots() <= 0) {
+            var fluidHandler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, target.getBlockState(), target, side);
+            if (fluidHandler == null || fluidHandler.getTanks() == 0) {
+                return null;
+            }
         }
 
         AEItemKey icon;

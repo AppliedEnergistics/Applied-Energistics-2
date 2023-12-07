@@ -1,19 +1,12 @@
 package appeng.blockentity.storage;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.IFluidTank;
@@ -33,8 +26,6 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
             SkyStoneTankBlockEntity.this.setChanged();
         }
     };
-
-    private final LazyOptional<IFluidHandler> holder = LazyOptional.of(() -> tank);
 
     public SkyStoneTankBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -58,17 +49,12 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
         return FluidUtil.interactWithFluidHandler(player, hand, tank);
     }
 
-    public IFluidTank getStorage() {
+    public IFluidTank getTank() {
         return tank;
     }
 
-    @Override
-    @Nonnull
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-        if (capability == Capabilities.FLUID_HANDLER) {
-            return holder.cast();
-        }
-        return super.getCapability(capability, facing);
+    public IFluidHandler getFluidHandler() {
+        return tank;
     }
 
     protected boolean readFromStream(FriendlyByteBuf data) {

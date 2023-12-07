@@ -9,7 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -33,7 +32,7 @@ public class ChargerRecipe implements Recipe<Container> {
                     .group(
                             Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(ChargerRecipe::getIngredient),
                             // We only support items for now
-                            CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.fieldOf("result")
+                            ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result")
                                     .xmap(ItemStack::getItem, ItemStack::new).forGetter(cr -> cr.result))
                     .apply(builder, ChargerRecipe::new));
 

@@ -1,35 +1,33 @@
 package appeng.parts.automation;
 
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
 
 import appeng.api.behaviors.StackExportStrategy;
 import appeng.api.behaviors.StackTransferContext;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.StorageHelper;
-import appeng.util.BlockApiCache;
 
-public class StorageExportStrategy<C, S> implements StackExportStrategy {
+public class StorageExportStrategy<T, S> implements StackExportStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(StorageExportStrategy.class);
-    private final BlockApiCache<C> apiCache;
-    private final Direction fromSide;
-    private final HandlerStrategy<C, S> handlerStrategy;
+    private final BlockCapabilityCache<T, Direction> cache;
+    private final HandlerStrategy<T, S> handlerStrategy;
 
-    protected StorageExportStrategy(Capability<C> apiLookup,
-            HandlerStrategy<C, S> handlerStrategy,
-            ServerLevel level,
-            BlockPos fromPos,
-            Direction fromSide) {
+    protected StorageExportStrategy(BlockCapability<T, Direction> capability,
+                                    HandlerStrategy<T, S> handlerStrategy,
+                                    ServerLevel level,
+                                    BlockPos fromPos,
+                                    Direction fromSide) {
         this.handlerStrategy = handlerStrategy;
-        this.apiCache = BlockApiCache.create(apiLookup, level, fromPos);
-        this.fromSide = fromSide;
+        this.cache = BlockCapabilityCache.create(capability, level, fromPos, fromSide);
     }
 
     @Override
@@ -38,7 +36,7 @@ public class StorageExportStrategy<C, S> implements StackExportStrategy {
             return 0;
         }
 
-        var adjacentStorage = apiCache.find(fromSide);
+        var adjacentStorage = cache.getCapability();
         if (adjacentStorage == null) {
             return 0;
         }
@@ -86,7 +84,7 @@ public class StorageExportStrategy<C, S> implements StackExportStrategy {
             return 0;
         }
 
-        var adjacentStorage = apiCache.find(fromSide);
+        var adjacentStorage = cache.getCapability();
         if (adjacentStorage == null) {
             return 0;
         }
@@ -96,7 +94,7 @@ public class StorageExportStrategy<C, S> implements StackExportStrategy {
 
     public static StackExportStrategy createItem(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageExportStrategy<>(
-                Capabilities.ITEM_HANDLER,
+                Capabilities.ItemHandler.BLOCK,
                 HandlerStrategy.ITEMS,
                 level,
                 fromPos,
@@ -105,7 +103,7 @@ public class StorageExportStrategy<C, S> implements StackExportStrategy {
 
     public static StackExportStrategy createFluid(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageExportStrategy<>(
-                Capabilities.FLUID_HANDLER,
+                Capabilities.FluidHandler.BLOCK,
                 HandlerStrategy.FLUIDS,
                 level,
                 fromPos,

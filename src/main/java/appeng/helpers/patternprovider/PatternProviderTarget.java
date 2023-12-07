@@ -36,7 +36,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.MEStorage;
-import appeng.capabilities.Capabilities;
+import appeng.capabilities.AppEngCapabilities;
 import appeng.me.storage.CompositeStorage;
 import appeng.parts.automation.StackWorldBehaviors;
 
@@ -47,11 +47,14 @@ public interface PatternProviderTarget {
     @Nullable
     static PatternProviderTarget get(Level l, BlockPos pos, @Nullable BlockEntity be, Direction side,
             IActionSource src) {
-        if (be == null)
-            return null;
 
         // our capability first: allows any storage channel
-        var storage = be.getCapability(Capabilities.STORAGE, side).orElse(null);
+        MEStorage storage;
+        if (be != null) {
+            storage = l.getCapability(AppEngCapabilities.ME_STORAGE, be.getBlockPos(), be.getBlockState(), be, side);
+        } else {
+            storage = l.getCapability(AppEngCapabilities.ME_STORAGE, pos, side);
+        }
         if (storage != null) {
             return wrapMeStorage(storage, src);
         }
@@ -67,7 +70,7 @@ public interface PatternProviderTarget {
             }
         }
 
-        if (externalStorages.size() > 0) {
+        if (!externalStorages.isEmpty()) {
             return wrapMeStorage(new CompositeStorage(externalStorages), src);
         }
 

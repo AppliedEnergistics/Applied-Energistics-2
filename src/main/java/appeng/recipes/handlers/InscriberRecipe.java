@@ -27,7 +27,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -36,6 +35,8 @@ import net.minecraft.world.level.Level;
 
 import appeng.core.AppEng;
 import appeng.init.InitRecipeTypes;
+
+import java.util.Objects;
 
 public class InscriberRecipe implements Recipe<Container> {
 
@@ -53,12 +54,12 @@ public class InscriberRecipe implements Recipe<Container> {
             builder -> builder
                     .group(
                             Ingredient.CODEC_NONEMPTY.fieldOf("middle")
-                                    .fieldOf("ingredients").forGetter(ir -> ir.middleInput),
-                            CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.fieldOf("result").forGetter(ir -> ir.output),
+                                    .fieldOf("middle").forGetter(ir -> ir.middleInput),
+                            ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(ir -> ir.output),
                             ExtraCodecs.strictOptionalField(Ingredient.CODEC, "top", Ingredient.EMPTY)
-                                    .fieldOf("ingredients").forGetter(ir -> ir.topOptional),
+                                    .fieldOf("top").forGetter(ir -> ir.topOptional),
                             ExtraCodecs.strictOptionalField(Ingredient.CODEC, "bottom", Ingredient.EMPTY)
-                                    .fieldOf("ingredients").forGetter(ir -> ir.bottomOptional),
+                                    .fieldOf("bottom").forGetter(ir -> ir.bottomOptional),
                             MODE_CODEC.fieldOf("mode").forGetter(ir -> ir.processType))
                     .apply(builder, InscriberRecipe::new));
 
@@ -74,11 +75,11 @@ public class InscriberRecipe implements Recipe<Container> {
 
     public InscriberRecipe(Ingredient middleInput, ItemStack output,
             Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
-        this.middleInput = middleInput;
-        this.output = output;
-        this.topOptional = topOptional;
-        this.bottomOptional = bottomOptional;
-        this.processType = processType;
+        this.middleInput = Objects.requireNonNull(middleInput, "middleInput");
+        this.output = Objects.requireNonNull(output, "output");
+        this.topOptional = Objects.requireNonNull(topOptional, "topOptional");
+        this.bottomOptional = Objects.requireNonNull(bottomOptional, "bottomOptional");
+        this.processType = Objects.requireNonNull(processType, "processType");
     }
 
     @Override

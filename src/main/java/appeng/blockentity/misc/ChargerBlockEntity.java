@@ -33,8 +33,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -52,7 +50,6 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
-import appeng.capabilities.Capabilities;
 import appeng.core.AEConfig;
 import appeng.core.settings.TickRates;
 import appeng.util.Platform;
@@ -254,21 +251,6 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
             return new Crankable();
         }
         return null;
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
-        if (Capabilities.CRANKABLE.equals(capability)) {
-            var crankable = getCrankable(facing);
-            if (crankable == null) {
-                return LazyOptional.empty();
-            }
-            return Capabilities.CRANKABLE.orEmpty(
-                    capability,
-                    LazyOptional.of(() -> crankable));
-        }
-
-        return super.getCapability(capability, facing);
     }
 
     private record ChargerInvFilter(ChargerBlockEntity chargerBlockEntity) implements IAEItemFilter {

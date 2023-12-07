@@ -11,13 +11,15 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.mojang.serialization.JsonOps;
 
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.world.item.crafting.Recipe;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -64,14 +66,8 @@ class CraftingPatternItemTest {
             }
 
             @Override
-            public void accept(FinishedRecipe finishedRecipe, ICondition... conditions) {
-                // Serialize & Deserialize
-                var serializedRecipe = finishedRecipe.serializeRecipe();
-
-                var recipe = (ShapedRecipe) RecipeSerializer.SHAPED_RECIPE.codec().parse(
-                        JsonOps.INSTANCE,
-                        serializedRecipe).result().get();
-                result.set(recipe);
+            public void accept(ResourceLocation id, Recipe<?> recipe, @Nullable AdvancementHolder advancement, ICondition... conditions) {
+                result.set((ShapedRecipe) recipe);
             }
         }, TEST_RECIPE_ID);
         return new RecipeHolder<>(TEST_RECIPE_ID, Objects.requireNonNull(result.get()));

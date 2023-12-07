@@ -18,16 +18,11 @@
 
 package appeng.blockentity.misc;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -42,7 +37,6 @@ import appeng.api.storage.MEStorage;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseInvBlockEntity;
-import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEItems;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
@@ -190,19 +184,6 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     public MEStorage getMEStorage() {
         return meStorage;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (capability == net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER) {
-            return (LazyOptional<T>) LazyOptional.of(this.externalInv::toItemHandler);
-        } else if (capability == net.neoforged.neoforge.common.capabilities.Capabilities.FLUID_HANDLER) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this.fluidHandler);
-        } else if (capability == Capabilities.STORAGE) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this.meStorage);
-        }
-        return super.getCapability(capability, facing);
     }
 
     private class CondenseItemHandler extends BaseInternalInventory {

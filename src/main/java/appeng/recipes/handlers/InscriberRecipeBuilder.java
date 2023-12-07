@@ -1,26 +1,16 @@
 package appeng.recipes.handlers;
 
-import java.util.Locale;
-
-import com.google.gson.JsonObject;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 
 public class InscriberRecipeBuilder {
     private final Ingredient middleInput;
-    private Ingredient topOptional;
-    private Ingredient bottomOptional;
+    private Ingredient topOptional = Ingredient.EMPTY;
+    private Ingredient bottomOptional = Ingredient.EMPTY;
     private final ItemLike output;
     private final int count;
     private InscriberProcessType mode = InscriberProcessType.INSCRIBE;
@@ -59,52 +49,13 @@ public class InscriberRecipeBuilder {
     }
 
     public void save(RecipeOutput consumer, ResourceLocation id) {
-        consumer.accept(new Result(id));
-    }
+        var result = output.asItem().getDefaultInstance();
+        result.setCount(count);
 
-    class Result implements FinishedRecipe {
-        private final ResourceLocation id;
+        var recipe = new InscriberRecipe(
+                middleInput, result, topOptional, bottomOptional, mode
+        );
 
-        public Result(ResourceLocation id) {
-            this.id = id;
-        }
-
-        @Override
-        public void serializeRecipeData(JsonObject json) {
-            json.addProperty("mode", mode.name().toLowerCase(Locale.ROOT));
-
-            var result = new JsonObject();
-            result.addProperty("item", BuiltInRegistries.ITEM.getKey(output.asItem()).toString());
-            if (count > 1) {
-                result.addProperty("count", count);
-            }
-            json.add("result", result);
-
-            var ingredients = new JsonObject();
-            ingredients.add("middle", middleInput.toJson(false));
-            if (topOptional != null) {
-                ingredients.add("top", topOptional.toJson(true));
-            }
-            if (bottomOptional != null) {
-                ingredients.add("bottom", bottomOptional.toJson(true));
-            }
-            json.add("ingredients", ingredients);
-        }
-
-        @Override
-        public ResourceLocation id() {
-            return id;
-        }
-
-        @Override
-        public RecipeSerializer<?> type() {
-            return InscriberRecipeSerializer.INSTANCE;
-        }
-
-        @Nullable
-        @Override
-        public AdvancementHolder advancement() {
-            return null;
-        }
+        consumer.accept(id, recipe, null);
     }
 }

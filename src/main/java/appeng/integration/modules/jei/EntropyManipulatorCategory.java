@@ -89,7 +89,7 @@ public class EntropyManipulatorCategory extends ViewBasedCategory<EntropyRecipe>
             public void buildSlots(IRecipeLayoutBuilder builder) {
                 var input = builder.addSlot(RecipeIngredientRole.INPUT, centerX - 36, 15)
                         .setBackground(slotBackground, -1, -1);
-                setFluidOrBlockSlot(input, recipe.getInputBlock(), recipe.getInputFluid());
+                setFluidOrBlockSlot(input, recipe.getInputBlock (), recipe.getInputFluid());
 
                 int x = centerX + 20;
 

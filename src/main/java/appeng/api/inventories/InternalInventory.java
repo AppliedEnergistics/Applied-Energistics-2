@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
 
+import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,8 +38,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
@@ -47,19 +46,12 @@ import appeng.util.helpers.ItemComparisonHelper;
 public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
 
     @Nullable
-    static ItemTransfer wrapExternal(@Nullable BlockEntity be, Direction side) {
-        if (be == null) {
-            return null;
-        }
-
-        return be.getCapability(Capabilities.ITEM_HANDLER, side)
-                .map(PlatformInventoryWrapper::new)
-                .orElse(null);
-    }
-
-    @Nullable
     static ItemTransfer wrapExternal(Level level, BlockPos pos, Direction side) {
-        return wrapExternal(level.getBlockEntity(pos), side);
+        var handler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, side);
+        if (handler != null) {
+            return new PlatformInventoryWrapper(handler);
+        }
+        return null;
     }
 
     static InternalInventory empty() {
@@ -394,11 +386,6 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
             }
             return result;
         }
-    }
-
-    @Override
-    default boolean mayAllowInsertion() {
-        return size() > 0;
     }
 
     /**

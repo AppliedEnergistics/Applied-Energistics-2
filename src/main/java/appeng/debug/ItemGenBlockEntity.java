@@ -21,10 +21,7 @@ package appeng.debug;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -33,14 +30,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public class ItemGenBlockEntity extends AEBaseBlockEntity implements InternalInventoryHost {
 
@@ -83,14 +78,8 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity implements InternalInv
         super.loadTag(data);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    @Nullable
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (Capabilities.ITEM_HANDLER == capability) {
-            return (LazyOptional<T>) LazyOptional.of(this.inv::toItemHandler);
-        }
-        return super.getCapability(capability, facing);
+    public IItemHandler getItemHandler() {
+        return inv.toItemHandler();
     }
 
     public void setItem(Item item) {

@@ -3,31 +3,29 @@ package appeng.parts.automation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
 
 import appeng.api.behaviors.StackImportStrategy;
 import appeng.api.behaviors.StackTransferContext;
 import appeng.api.config.Actionable;
 import appeng.core.AELog;
-import appeng.util.BlockApiCache;
 
 /**
  * Strategy for efficiently importing stacks from external storage into an internal
  * {@link appeng.api.storage.MEStorage}.
  */
-public class StorageImportStrategy<C, S> implements StackImportStrategy {
-    private final BlockApiCache<C> apiCache;
-    private final Direction fromSide;
-    private final HandlerStrategy<C, S> conversion;
+public class StorageImportStrategy<T, S> implements StackImportStrategy {
+    private final BlockCapabilityCache<T, Direction> cache;
+    private final HandlerStrategy<T, S> conversion;
 
-    public StorageImportStrategy(Capability<C> capability,
-            HandlerStrategy<C, S> conversion,
-            ServerLevel level,
-            BlockPos fromPos,
-            Direction fromSide) {
-        this.apiCache = BlockApiCache.create(capability, level, fromPos);
-        this.fromSide = fromSide;
+    public StorageImportStrategy(BlockCapability<T, Direction> capability,
+                                 HandlerStrategy<T, S> conversion,
+                                 ServerLevel level,
+                                 BlockPos fromPos,
+                                 Direction fromSide) {
+        this.cache = BlockCapabilityCache.create(capability, level, fromPos, fromSide);
         this.conversion = conversion;
     }
 
@@ -37,7 +35,7 @@ public class StorageImportStrategy<C, S> implements StackImportStrategy {
             return false;
         }
 
-        var adjacentHandler = apiCache.find(fromSide);
+        var adjacentHandler = cache.getCapability();
         if (adjacentHandler == null) {
             return false;
         }
@@ -93,7 +91,7 @@ public class StorageImportStrategy<C, S> implements StackImportStrategy {
 
     public static StackImportStrategy createItem(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageImportStrategy<>(
-                Capabilities.ITEM_HANDLER,
+                Capabilities.ItemHandler.BLOCK,
                 HandlerStrategy.ITEMS,
                 level,
                 fromPos,
@@ -102,7 +100,7 @@ public class StorageImportStrategy<C, S> implements StackImportStrategy {
 
     public static StackImportStrategy createFluid(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageImportStrategy<>(
-                Capabilities.FLUID_HANDLER,
+                Capabilities.FluidHandler.BLOCK,
                 HandlerStrategy.FLUIDS,
                 level,
                 fromPos,

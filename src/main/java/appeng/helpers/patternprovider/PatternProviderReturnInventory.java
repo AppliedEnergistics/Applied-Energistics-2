@@ -24,15 +24,11 @@ import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
-import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
-import appeng.capabilities.Capabilities;
 import appeng.helpers.externalstorage.GenericStackInv;
 
 public class PatternProviderReturnInventory extends GenericStackInv {
@@ -43,7 +39,6 @@ public class PatternProviderReturnInventory extends GenericStackInv {
      * bus on the pattern provider could potentially void items.
      */
     private boolean injectingIntoNetwork = false;
-    private final LazyOptional<GenericInternalInventory> genericInternalInventory = LazyOptional.of(() -> this);
 
     public PatternProviderReturnInventory(Runnable listener) {
         super(listener, NUMBER_OF_SLOTS);
@@ -99,14 +94,6 @@ public class PatternProviderReturnInventory extends GenericStackInv {
             if (stack != null) {
                 stack.what().addDrops(stack.amount(), drops, level, pos);
             }
-        }
-    }
-
-    public <T> LazyOptional<T> getCapability(Capability<T> capability) {
-        if (capability == Capabilities.GENERIC_INTERNAL_INV) {
-            return genericInternalInventory.cast();
-        } else {
-            return LazyOptional.empty();
         }
     }
 }

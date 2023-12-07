@@ -17,6 +17,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+import net.minecraft.nbt.NbtAccounter;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
@@ -111,7 +112,7 @@ public class GuidebookStructureCommands {
                             }
                         } else {
                             try (var is = new BufferedInputStream(new FileInputStream(selectedPath))) {
-                                compound = NbtIo.readCompressed(is);
+                                compound = NbtIo.readCompressed(is, NbtAccounter.unlimitedHeap());
                             }
                         }
                         var structure = manager.readStructure(compound);
@@ -207,7 +208,7 @@ public class GuidebookStructureCommands {
                                     NbtUtils.structureToSnbt(compound),
                                     StandardCharsets.UTF_8);
                         } else {
-                            NbtIo.writeCompressed(compound, new File(selectedPath));
+                            NbtIo.writeCompressed(compound, Paths.get(selectedPath));
                         }
 
                         player.sendSystemMessage(Component.literal("Saved structure"));

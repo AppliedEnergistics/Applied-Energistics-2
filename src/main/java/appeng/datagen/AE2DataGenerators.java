@@ -53,9 +53,11 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
@@ -95,7 +97,9 @@ public class AE2DataGenerators {
         pack.addProvider(packOutput -> new PartModelProvider(packOutput, existingFileHelper));
 
         // Misc
-        pack.addProvider(packOutput -> new AdvancementGenerator(packOutput, localization));
+        pack.addProvider(packOutput -> new AdvancementProvider(packOutput, registries, existingFileHelper, List.of(
+                new AdvancementGenerator(localization)
+        )));
 
         // Recipes
         pack.addProvider(bindRegistries(DecorationRecipes::new, registries));

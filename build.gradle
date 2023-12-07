@@ -277,8 +277,12 @@ test {
         }
     })
 
+    afterEvaluate {
+        dependsOn tasks.named("writeMinecraftClasspathClient")
+    }
+
     doFirst {
-        var classPathLines = tasks.writeMinecraftClasspath.output.asFile.get().readLines()
+        var classPathLines = tasks.getByName("writeMinecraftClasspathClient").output.asFile.get().readLines()
         classPathLines.addAll(test.classpath
                 .filter { it.name.startsWith("fmljunit") })
         new File("$aeDir/build/test_classpath.txt").text = classPathLines.join("\n")

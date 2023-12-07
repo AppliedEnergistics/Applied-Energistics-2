@@ -32,8 +32,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
@@ -191,10 +189,5 @@ public class PatternProviderPart extends AEBasePart implements PatternProviderLo
     @Override
     public ItemStack getMainMenuIcon() {
         return AEParts.PATTERN_PROVIDER.stack();
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
-        return this.logic.getCapability(capabilityClass);
     }
 }

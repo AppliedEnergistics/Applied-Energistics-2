@@ -47,7 +47,7 @@ public final class SkyStoneTankBlockEntityRenderer implements BlockEntityRendere
     @Override
     public void render(SkyStoneTankBlockEntity tank, float tickDelta, PoseStack ms, MultiBufferSource vertexConsumers,
             int light, int overlay) {
-        if (!tank.getStorage().getFluid().isEmpty()) {
+        if (!tank.getTank().getFluid().isEmpty()) {
 
             /*
              * 
@@ -55,8 +55,8 @@ public final class SkyStoneTankBlockEntityRenderer implements BlockEntityRendere
              * FacingToRotation.get(tank.getForward(), tank.getUp()).push(ms); ms.translate(-0.5, -0.5, -0.5);
              */
 
-            drawFluidInTank(tank, ms, vertexConsumers, tank.getStorage().getFluid(),
-                    (float) tank.getStorage().getFluid().getAmount() / tank.getStorage().getCapacity());
+            drawFluidInTank(tank, ms, vertexConsumers, tank.getTank().getFluid(),
+                    (float) tank.getTank().getFluid().getAmount() / tank.getTank().getCapacity());
 
             // ms.popPose();
         }

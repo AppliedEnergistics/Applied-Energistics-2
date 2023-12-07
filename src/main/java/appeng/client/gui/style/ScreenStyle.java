@@ -39,7 +39,7 @@ public class ScreenStyle {
 
     public static final Gson GSON = new GsonBuilder()
             .disableHtmlEscaping()
-            .registerTypeHierarchyAdapter(Component.class, new Serializer())
+            .registerTypeHierarchyAdapter(Component.class, new Component.SerializerAdapter())
             .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
             .registerTypeAdapter(Blitter.class, BlitterDeserializer.INSTANCE)
             .registerTypeAdapter(Rect2i.class, Rectangle2dDeserializer.INSTANCE)

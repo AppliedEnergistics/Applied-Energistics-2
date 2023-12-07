@@ -18,21 +18,11 @@
 
 package appeng.recipes.mattercannon;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
+import appeng.core.AppEng;
+import appeng.init.InitRecipeTypes;
 import com.google.common.base.Preconditions;
-import com.google.gson.JsonObject;
-import com.mojang.serialization.JsonOps;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.Util;
-import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -45,12 +35,10 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.conditions.NotCondition;
 import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 
-import appeng.core.AppEng;
-import appeng.init.InitRecipeTypes;
+import java.util.Objects;
 
 /**
  * Defines a type of ammo that can be used for the {@link appeng.items.tools.powered.MatterCannonItem}.
@@ -72,15 +60,17 @@ public class MatterCannonAmmo implements Recipe<Container> {
     }
 
     public static void ammo(RecipeOutput consumer, ResourceLocation id, ItemLike item, float weight) {
-        consumer.accept(new Ammo(id, null, Ingredient.of(item), weight));
+        consumer.accept(id, new MatterCannonAmmo(Ingredient.of(item), weight), null);
     }
 
     public static void ammo(RecipeOutput consumer, ResourceLocation id, Ingredient ammo, float weight) {
-        consumer.accept(new Ammo(id, null, ammo, weight));
+        consumer.accept(id, new MatterCannonAmmo(ammo, weight), null);
     }
 
     public static void ammo(RecipeOutput consumer, ResourceLocation id, TagKey<Item> tag, float weight) {
-        consumer.accept(new Ammo(id, tag, null, weight));
+        consumer.accept(id, new MatterCannonAmmo(Ingredient.of(tag), weight), null, new NotCondition(
+                new TagEmptyCondition(tag.location()))
+        );
     }
 
     @Override
@@ -124,41 +114,5 @@ public class MatterCannonAmmo implements Recipe<Container> {
 
     public float getWeight() {
         return weight;
-    }
-
-    public record Ammo(ResourceLocation id, TagKey<Item> tag, Ingredient nonTag,
-            float weight) implements FinishedRecipe {
-
-        public void serializeRecipeData(JsonObject json) {
-            List<ICondition> conditions = new ArrayList<>();
-            if (tag != null) {
-                json.add("ammo", Ingredient.of(tag).toJson(false));
-                conditions.add(new NotCondition(
-                        new TagEmptyCondition(tag.location())));
-            } else if (nonTag != null) {
-                json.add("ammo", nonTag.toJson(false));
-            }
-
-            json.addProperty("weight", this.weight);
-            var conditionsJson = Util.getOrThrow(ICondition.LIST_CODEC.encodeStart(JsonOps.INSTANCE, conditions),
-                    IllegalStateException::new);
-            json.add("conditions", conditionsJson);
-        }
-
-        @Override
-        public ResourceLocation id() {
-            return this.id;
-        }
-
-        @Override
-        public RecipeSerializer<?> type() {
-            return MatterCannonAmmoSerializer.INSTANCE;
-        }
-
-        @Nullable
-        @Override
-        public AdvancementHolder advancement() {
-            return null;
-        }
     }
 }

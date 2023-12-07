@@ -7,6 +7,7 @@ import static appeng.integration.modules.jeirei.TransferHelper.RED_SLOT_HIGHLIGH
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.NonNullList;
@@ -29,6 +30,7 @@ import appeng.core.localization.ItemModText;
 import appeng.integration.modules.jeirei.CraftingHelper;
 import appeng.integration.modules.jeirei.TransferHelper;
 import appeng.menu.me.items.CraftingTermMenu;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 /**
  * Recipe transfer implementation with the intended purpose of actually crafting an item. Most of the work is done
@@ -112,9 +114,8 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
             ingredients.set(i, ingredient);
         }
 
-        return new ShapedRecipe("", CraftingBookCategory.MISC, CRAFTING_GRID_WIDTH,
-                CRAFTING_GRID_HEIGHT,
-                ingredients, ItemStack.EMPTY);
+        var pattern = new ShapedRecipePattern(CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT, ingredients, Optional.empty());
+        return new ShapedRecipe("", CraftingBookCategory.MISC, pattern, ItemStack.EMPTY);
     }
 
     public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(Recipe<?> recipe) {

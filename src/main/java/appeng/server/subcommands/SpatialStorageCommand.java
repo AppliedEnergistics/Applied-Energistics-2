@@ -18,21 +18,22 @@
 
 package appeng.server.subcommands;
 
-import static net.minecraft.commands.Commands.literal;
-
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.UnaryOperator;
-
+import appeng.api.features.IPlayerRegistry;
+import appeng.core.definitions.AEItems;
+import appeng.core.localization.PlayerMessages;
+import appeng.items.storage.SpatialStorageCellItem;
+import appeng.server.ISubCommand;
+import appeng.spatial.SpatialStorageDimensionIds;
+import appeng.spatial.SpatialStoragePlot;
+import appeng.spatial.SpatialStoragePlotManager;
+import appeng.spatial.TransitionInfo;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.ChatFormatting;
-import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -47,20 +48,24 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.features.IPlayerRegistry;
-import appeng.core.definitions.AEItems;
-import appeng.core.localization.PlayerMessages;
-import appeng.items.storage.SpatialStorageCellItem;
-import appeng.server.ISubCommand;
-import appeng.spatial.SpatialStorageDimensionIds;
-import appeng.spatial.SpatialStoragePlot;
-import appeng.spatial.SpatialStoragePlotManager;
-import appeng.spatial.TransitionInfo;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.UnaryOperator;
+
+import static net.minecraft.commands.Commands.literal;
 
 /**
  * This admin command allows management of spatial storage plots.
  */
 public class SpatialStorageCommand implements ISubCommand {
+
+    public static final DynamicCommandExceptionType PLOT_NOT_FOUND = new DynamicCommandExceptionType(PlayerMessages.PlotNotFound::text);
+    public static final SimpleCommandExceptionType PLOT_NOT_FOUND_FOR_POSITION = new SimpleCommandExceptionType(PlayerMessages.PlotNotFoundForCurrentPosition.text());
+    public static final SimpleCommandExceptionType NOT_IN_SPATIAL_STORAGE_LEVEL = new SimpleCommandExceptionType(PlayerMessages.NotInSpatialStorageLevel.text());
+    public static final SimpleCommandExceptionType NOT_STORAGE_CELL = new SimpleCommandExceptionType(PlayerMessages.NotStorageCell.text());
+    public static final SimpleCommandExceptionType NO_LAST_TRANSITION = new SimpleCommandExceptionType(PlayerMessages.NoLastTransition.text());
 
     @Override
     public void addArguments(LiteralArgumentBuilder<CommandSourceStack> builder) {
@@ -104,10 +109,10 @@ public class SpatialStorageCommand implements ISubCommand {
     /**
      * If the player is currently within a spatial storage plot, teleports them back to the last source of transition.
      */
-    private void teleportBack(CommandSourceStack source) {
+    private void teleportBack(CommandSourceStack source) throws CommandSyntaxException {
 
         if (source.getLevel().dimension() != SpatialStorageDimensionIds.WORLD_ID) {
-            throw new CommandRuntimeException(PlayerMessages.NotInSpatialStorageLevel.text());
+            throw NOT_IN_SPATIAL_STORAGE_LEVEL.create();
         }
 
         BlockPos playerPos = BlockPos.containing(source.getPosition());
@@ -126,17 +131,17 @@ public class SpatialStorageCommand implements ISubCommand {
             }
         }
 
-        throw new CommandRuntimeException(PlayerMessages.PlotNotFoundForCurrentPosition.text());
+        throw PLOT_NOT_FOUND_FOR_POSITION.create();
 
     }
 
     /**
      * Teleports back from the given plot.
      */
-    private void teleportBack(CommandSourceStack source, SpatialStoragePlot plot) {
+    private void teleportBack(CommandSourceStack source, SpatialStoragePlot plot) throws CommandSyntaxException {
         TransitionInfo lastTransition = plot.getLastTransition();
         if (lastTransition == null) {
-            throw new CommandRuntimeException(PlayerMessages.NoLastTransition.text());
+            throw NO_LAST_TRANSITION.create();
         }
 
         String command = getTeleportCommand(lastTransition.getWorldId(), lastTransition.getMin().offset(0, 1, 0));
@@ -209,7 +214,7 @@ public class SpatialStorageCommand implements ISubCommand {
 
     }
 
-    private static void teleportToPlot(CommandSourceStack source, int plotId) {
+    private static void teleportToPlot(CommandSourceStack source, int plotId) throws CommandSyntaxException {
         SpatialStoragePlot plot = getPlot(plotId);
 
         String teleportCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.location(),
@@ -234,7 +239,7 @@ public class SpatialStorageCommand implements ISubCommand {
         }
 
         if (!(cell.getItem() instanceof SpatialStorageCellItem spatialCellItem)) {
-            throw new CommandRuntimeException(PlayerMessages.NotStorageCell.text());
+            throw NOT_STORAGE_CELL.create();
         }
 
         spatialCellItem.setStoredDimension(cell, plotId, plot.getSize());
@@ -314,10 +319,10 @@ public class SpatialStorageCommand implements ISubCommand {
         return "/execute in " + worldId + " run tp @s " + pos.getX() + " " + (pos.getY() + 1) + " " + pos.getZ();
     }
 
-    private static SpatialStoragePlot getPlot(int plotId) {
+    private static SpatialStoragePlot getPlot(int plotId) throws CommandSyntaxException {
         SpatialStoragePlot plot = SpatialStoragePlotManager.INSTANCE.getPlot(plotId);
         if (plot == null) {
-            throw new CommandRuntimeException(PlayerMessages.PlotNotFound.text(plotId));
+            throw PLOT_NOT_FOUND.create(plotId);
         }
         return plot;
     }
@@ -333,9 +338,9 @@ public class SpatialStorageCommand implements ISubCommand {
     /**
      * Gets the spatial storage plot that the command source is currently in.
      */
-    private static SpatialStoragePlot getCurrentPlot(CommandSourceStack source) {
+    private static SpatialStoragePlot getCurrentPlot(CommandSourceStack source) throws CommandSyntaxException {
         if (source.getLevel().dimension() != SpatialStorageDimensionIds.WORLD_ID) {
-            throw new CommandRuntimeException(PlayerMessages.NotInSpatialStorageLevel.text());
+            throw NOT_IN_SPATIAL_STORAGE_LEVEL.create();
         }
 
         BlockPos playerPos = BlockPos.containing(source.getPosition());
@@ -352,7 +357,7 @@ public class SpatialStorageCommand implements ISubCommand {
             }
         }
 
-        throw new CommandRuntimeException(PlayerMessages.PlotNotFoundForCurrentPosition.text());
+        throw PLOT_NOT_FOUND_FOR_POSITION.create();
     }
 
 }

@@ -140,7 +140,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAddit
             return;
         }
 
-        final Explosion ex = new Explosion(this.level(), this, null, null, this.getX(), this.getY(), this.getZ(),
+        final Explosion ex = new Explosion(this.level(), this, this.getX(), this.getY(), this.getZ(),
                 0.2f, false, AEConfig.instance().isTinyTntBlockDamageEnabled() ? BlockInteraction.DESTROY_WITH_DECAY
                         : BlockInteraction.KEEP);
         final AABB area = new AABB(this.getX() - 1.5, this.getY() - 1.5f, this.getZ() - 1.5,

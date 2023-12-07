@@ -40,8 +40,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.LockCraftingMode;
@@ -740,10 +738,6 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     public long getSortValue() {
         final BlockEntity te = this.host.getBlockEntity();
         return te.getBlockPos().getZ() << 24 ^ te.getBlockPos().getX() << 8 ^ te.getBlockPos().getY();
-    }
-
-    public <T> LazyOptional<T> getCapability(Capability<T> capability) {
-        return this.returnInv.getCapability(capability);
     }
 
     @Nullable

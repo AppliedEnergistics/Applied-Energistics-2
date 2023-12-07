@@ -27,13 +27,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.GenericStack;
 import appeng.util.inv.InternalInventoryHost;
+import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements InternalInventoryHost {
 
@@ -104,17 +103,12 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
         return this.getInternalInventory();
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
-        if (capability == Capabilities.ITEM_HANDLER) {
-            if (facing == null) {
-                return (LazyOptional<T>) LazyOptional.of(getInternalInventory()::toItemHandler);
-            } else {
-                return (LazyOptional<T>) LazyOptional.of(() -> getExposedInventoryForSide(facing).toItemHandler());
-            }
+    public IItemHandler getExposedItemHandler(@Nullable Direction side) {
+        if (side == null) {
+            return getInternalInventory().toItemHandler();
+        } else {
+            return getExposedInventoryForSide(side).toItemHandler();
         }
-        return super.getCapability(capability, facing);
     }
 
 }

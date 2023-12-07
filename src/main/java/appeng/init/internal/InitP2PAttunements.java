@@ -19,9 +19,10 @@
 package appeng.init.internal;
 
 import appeng.api.features.P2PTunnelAttunement;
-import appeng.capabilities.Capabilities;
+import appeng.capabilities.AppEngCapabilities;
 import appeng.core.definitions.AEParts;
 import appeng.core.localization.GuiText;
+import net.neoforged.neoforge.capabilities.Capabilities;
 
 public final class InitP2PAttunements {
 
@@ -36,10 +37,11 @@ public final class InitP2PAttunements {
         P2PTunnelAttunement.registerAttunementTag(AEParts.ITEM_P2P_TUNNEL);
         P2PTunnelAttunement.registerAttunementTag(AEParts.LIGHT_P2P_TUNNEL);
 
-        P2PTunnelAttunement.registerAttunementApi(P2PTunnelAttunement.ENERGY_TUNNEL, Capabilities.FORGE_ENERGY,
+        P2PTunnelAttunement.registerAttunementApi(P2PTunnelAttunement.ENERGY_TUNNEL,
+                Capabilities.EnergyStorage.ITEM,
                 GuiText.P2PAttunementEnergy.text());
         P2PTunnelAttunement.registerAttunementApi(P2PTunnelAttunement.FLUID_TUNNEL,
-                net.neoforged.neoforge.common.capabilities.Capabilities.FLUID_HANDLER,
+                Capabilities.FluidHandler.ITEM,
                 GuiText.P2PAttunementFluid.text());
     }
 }

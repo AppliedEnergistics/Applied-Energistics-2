@@ -20,12 +20,13 @@ package appeng.parts.p2p;
 
 import java.util.List;
 
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.capabilities.Capabilities;
+import appeng.capabilities.AppEngCapabilities;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 
@@ -39,7 +40,7 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IE
     }
 
     public FEP2PTunnelPart(IPartItem<?> partItem) {
-        super(partItem, Capabilities.FORGE_ENERGY);
+        super(partItem, Capabilities.EnergyStorage.BLOCK);
         inputHandler = new InputEnergyStorage();
         outputHandler = new OutputEnergyStorage();
         emptyHandler = NULL_ENERGY_STORAGE;

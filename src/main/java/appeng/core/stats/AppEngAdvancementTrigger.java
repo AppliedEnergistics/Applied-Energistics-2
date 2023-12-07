@@ -27,16 +27,20 @@ import java.util.Set;
 
 import com.google.gson.JsonObject;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.CriterionValidator;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 public class AppEngAdvancementTrigger
         implements CriterionTrigger<AppEngAdvancementTrigger.Instance>, IAdvancementTrigger {
+
+    private static final Codec<AppEngAdvancementTrigger.Instance> CODEC = Codec.unit(new Instance());
+
     private final Map<PlayerAdvancements, Listeners> listeners = new HashMap<>();
 
     public AppEngAdvancementTrigger() {
@@ -49,6 +53,11 @@ public class AppEngAdvancementTrigger
 
     public Instance instance() {
         return new Instance();
+    }
+
+    @Override
+    public Codec<Instance> codec() {
+        return CODEC;
     }
 
     @Override
@@ -84,11 +93,6 @@ public class AppEngAdvancementTrigger
     }
 
     @Override
-    public Instance createInstance(JsonObject object, DeserializationContext conditions) {
-        return new Instance();
-    }
-
-    @Override
     public void trigger(ServerPlayer parPlayer) {
         Listeners l = this.listeners.get(parPlayer.getAdvancements());
 
@@ -103,8 +107,7 @@ public class AppEngAdvancementTrigger
         }
 
         @Override
-        public JsonObject serializeToJson() {
-            return new JsonObject();
+        public void validate(CriterionValidator validator) {
         }
     }
 

@@ -21,7 +21,7 @@ package appeng.parts.p2p;
 import java.util.List;
 
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
@@ -42,7 +42,7 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
     }
 
     public ItemP2PTunnelPart(IPartItem<?> partItem) {
-        super(partItem, Capabilities.ITEM_HANDLER);
+        super(partItem, Capabilities.ItemHandler.BLOCK);
         inputHandler = new InputItemHandler();
         outputHandler = new OutputItemHandler();
         emptyHandler = NULL_ITEM_HANDLER;

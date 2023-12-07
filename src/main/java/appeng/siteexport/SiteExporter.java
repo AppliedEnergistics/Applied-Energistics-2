@@ -18,6 +18,7 @@ import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
 import com.mojang.blaze3d.platform.NativeImage;
 
+import net.neoforged.neoforge.capabilities.BaseCapability;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -422,7 +423,7 @@ public final class SiteExporter implements ResourceExporter {
 
             // Export attunement info
             var attunementInfo = P2PTunnelAttunementInternal.getAttunementInfo(tunnelItem);
-            attunementInfo.apis().stream().map(lookup -> lookup.getName())
+            attunementInfo.apis().stream().map(c -> c.name().toString())
                     .forEach(typeInfo.attunementApiClasses::add);
 
             usedVanillaItems.addAll(items);

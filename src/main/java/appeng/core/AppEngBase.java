@@ -21,9 +21,9 @@ package appeng.core;
 import java.util.Collection;
 import java.util.Collections;
 
+import appeng.init.InitCapabilityProviders;
 import com.mojang.brigadier.CommandDispatcher;
 
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.commands.CommandSourceStack;
@@ -70,7 +70,6 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.hotkeys.HotkeyActions;
 import appeng.init.InitBlockEntities;
 import appeng.init.InitBlocks;
-import appeng.init.InitCapabilities;
 import appeng.init.InitCauldronInteraction;
 import appeng.init.InitDispenserBehavior;
 import appeng.init.InitEntityTypes;
@@ -129,7 +128,8 @@ public abstract class AppEngBase implements AppEng {
         modEventBus.addListener(this::registerRegistries);
         modEventBus.addListener(MainCreativeTab::initExternal);
         modEventBus.addListener(ChunkLoadingService.getInstance()::register);
-        modEventBus.addListener(this::registerCapabilities);
+        modEventBus.addListener(InitCapabilityProviders::register);
+        modEventBus.addListener(EventPriority.LOWEST, InitCapabilityProviders::registerGenericAdapters);
         modEventBus.addListener((RegisterEvent event) -> {
             if (event.getRegistryKey().equals(Registries.SOUND_EVENT)) {
                 registerSounds(BuiltInRegistries.SOUND_EVENT);
@@ -158,7 +158,6 @@ public abstract class AppEngBase implements AppEng {
             InitVillager.init();
         });
 
-        modEventBus.addListener(InitCapabilities::init);
         modEventBus.addListener(Integrations::enqueueIMC);
         modEventBus.addListener(this::commonSetup);
 
@@ -173,7 +172,6 @@ public abstract class AppEngBase implements AppEng {
 
         NeoForge.EVENT_BUS.addListener(WrenchHook::onPlayerUseBlockEvent);
         NeoForge.EVENT_BUS.addListener(SkyStoneBreakSpeed::handleBreakFaster);
-        NeoForge.EVENT_BUS.addGenericListener(BlockEntity.class, InitCapabilities::registerGenericInvWrapper);
         // Workaround for https://github.com/MinecraftForge/MinecraftForge/issues/9158.
         // Can be removed once it's fixed in Forge.
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, (PlayerInteractEvent.RightClickBlock event) -> {
@@ -183,10 +181,6 @@ public abstract class AppEngBase implements AppEng {
         });
 
         HotkeyActions.init();
-    }
-
-    private void registerCapabilities(RegisterCapabilitiesEvent event) {
-
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

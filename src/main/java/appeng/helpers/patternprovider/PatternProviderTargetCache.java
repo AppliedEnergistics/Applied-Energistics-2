@@ -4,6 +4,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -16,20 +17,17 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.MEStorage;
-import appeng.capabilities.Capabilities;
+import appeng.capabilities.AppEngCapabilities;
 import appeng.me.storage.CompositeStorage;
 import appeng.parts.automation.StackWorldBehaviors;
-import appeng.util.BlockApiCache;
 
 class PatternProviderTargetCache {
-    private final BlockApiCache<MEStorage> cache;
-    private final Direction direction;
+    private final BlockCapabilityCache<MEStorage, Direction> cache;
     private final IActionSource src;
     private final Map<AEKeyType, ExternalStorageStrategy> strategies;
 
     PatternProviderTargetCache(ServerLevel l, BlockPos pos, Direction direction, IActionSource src) {
-        this.cache = BlockApiCache.create(Capabilities.STORAGE, l, pos);
-        this.direction = direction;
+        this.cache = BlockCapabilityCache.create(AppEngCapabilities.ME_STORAGE, l, pos, direction);
         this.src = src;
         this.strategies = StackWorldBehaviors.createExternalStorageStrategies(l, pos, direction);
     }
@@ -37,7 +35,7 @@ class PatternProviderTargetCache {
     @Nullable
     PatternProviderTarget find() {
         // our capability first: allows any storage channel
-        var meStorage = cache.find(direction);
+        var meStorage = cache.getCapability();
         if (meStorage != null) {
             return wrapMeStorage(meStorage);
         }
@@ -52,7 +50,7 @@ class PatternProviderTargetCache {
             }
         }
 
-        if (externalStorages.size() > 0) {
+        if (!externalStorages.isEmpty()) {
             return wrapMeStorage(new CompositeStorage(externalStorages));
         }
 

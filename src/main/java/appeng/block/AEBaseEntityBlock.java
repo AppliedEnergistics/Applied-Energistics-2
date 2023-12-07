@@ -21,11 +21,11 @@ package appeng.block;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.network.chat.contents.PlainTextContents;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -177,7 +177,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
         }
 
         var hoverName = is.getHoverName();
-        if (hoverName.getContents() instanceof LiteralContents text) {
+        if (hoverName.getContents() instanceof PlainTextContents text) {
             blockEntity.setName(text.text());
         }
 

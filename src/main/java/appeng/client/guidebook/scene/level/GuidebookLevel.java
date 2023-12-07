@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import net.minecraft.world.TickRateManager;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -72,6 +73,8 @@ public class GuidebookLevel extends Level {
      */
     private final LongSet litSections = new LongOpenHashSet();
     private final DataLayer defaultDataLayer;
+
+    private final TickRateManager tickRateManager = new TickRateManager();
 
     public GuidebookLevel() {
         this(Platform.getClientRegistryAccess());
@@ -203,6 +206,11 @@ public class GuidebookLevel extends Level {
     @Override
     public Entity getEntity(int id) {
         return getEntities().get(id);
+    }
+
+    @Override
+    public TickRateManager tickRateManager() {
+        return tickRateManager;
     }
 
     @Override

@@ -31,7 +31,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -196,8 +195,4 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
         return AccessRestriction.WRITE;
     }
 
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        return new PoweredItemCapabilities(stack, this);
-    }
 }

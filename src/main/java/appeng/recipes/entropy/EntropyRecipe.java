@@ -18,13 +18,10 @@
 
 package appeng.recipes.entropy;
 
-import java.util.List;
-import java.util.Objects;
-
+import appeng.core.AppEng;
+import appeng.init.InitRecipeTypes;
+import appeng.items.tools.powered.EntropyManipulatorItem;
 import com.google.common.base.Preconditions;
-
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -41,10 +38,12 @@ import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.core.AppEng;
-import appeng.init.InitRecipeTypes;
-import appeng.items.tools.powered.EntropyManipulatorItem;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A special recipe used for the {@link EntropyManipulatorItem}.
@@ -60,47 +59,53 @@ public class EntropyRecipe implements Recipe<Container> {
     @Nullable
     private final Block inputBlock;
 
-    private final List<StateMatcher> inputBlockMatchers;
+    private final Map<String, PropertyValueMatcher> inputBlockMatchers;
 
     @Nullable
     private final Fluid inputFluid;
 
-    private final List<StateMatcher> inputFluidMatchers;
+    private final Map<String, PropertyValueMatcher> inputFluidMatchers;
 
     @Nullable
     private final Block outputBlock;
 
-    private final List<StateApplier<?>> outputBlockStateAppliers;
+    private final Map<String, String> outputBlockStateAppliers;
     private final boolean outputBlockKeep;
     @Nullable
     private final Fluid outputFluid;
 
-    private final List<StateApplier<?>> outputFluidStateAppliers;
+    private final Map<String, String> outputFluidStateAppliers;
     private final boolean outputFluidKeep;
 
     private final List<ItemStack> drops;
 
-    public EntropyRecipe(EntropyMode mode, Block inputBlock, List<StateMatcher> inputBlockMatchers,
-            Fluid inputFluid, List<StateMatcher> inputFluidMatchers, Block outputBlock,
-            List<StateApplier<?>> outputBlockStateAppliers, boolean outputBlockKeep, Fluid outputFluid,
-            List<StateApplier<?>> outputFluidStateAppliers, boolean outputFluidKeep, List<ItemStack> drops) {
-        Preconditions.checkArgument(inputBlock != null || inputFluid != null,
+    public EntropyRecipe(EntropyMode mode, Optional<Block> optionalInputBlock, Map<String, PropertyValueMatcher> inputBlockMatchers,
+                         Optional<Fluid> optionalInputFluid, Map<String, PropertyValueMatcher> inputFluidMatchers, Optional<Block> optionalOutputBlock,
+                         Map<String, String> outputBlockStateAppliers, boolean outputBlockKeep, Optional<Fluid> optionalOutputFluid,
+                         Map<String, String> outputFluidStateAppliers, boolean outputFluidKeep, List<ItemStack> drops) {
+        Preconditions.checkArgument(optionalInputBlock.isPresent() || optionalInputFluid.isPresent(),
                 "One of inputBlock or inputFluid must not be null");
 
         this.mode = Objects.requireNonNull(mode, "mode must not be null");
 
-        this.inputBlock = inputBlock;
+        this.inputBlock = optionalInputBlock.orElse(null);
         this.inputBlockMatchers = Objects.requireNonNull(inputBlockMatchers, "inputBlockMatchers must be not null");
+        if (this.inputBlock != null) {
+            PropertyUtils.validatePropertyMatchers(inputBlock.getStateDefinition(), inputBlockMatchers);
+        }
 
-        this.inputFluid = inputFluid;
+        this.inputFluid = optionalInputFluid.orElse(null);
         this.inputFluidMatchers = Objects.requireNonNull(inputFluidMatchers, "inputFluidMatchers must be not null");
+        if (this.inputFluid != null) {
+            PropertyUtils.validatePropertyMatchers(inputFluid.getStateDefinition(), inputFluidMatchers);
+        }
 
-        this.outputBlock = outputBlock;
+        this.outputBlock = optionalOutputBlock.orElse(null);
         this.outputBlockStateAppliers = Objects.requireNonNull(outputBlockStateAppliers,
                 "outputBlockStateAppliers must be not null");
         this.outputBlockKeep = outputBlockKeep;
 
-        this.outputFluid = outputFluid;
+        this.outputFluid = optionalOutputFluid.orElse(null);
         this.outputFluidStateAppliers = Objects.requireNonNull(outputFluidStateAppliers,
                 "outputFluidStateAppliers must be not null");
         this.outputFluidKeep = outputFluidKeep;
@@ -147,19 +152,16 @@ public class EntropyRecipe implements Recipe<Container> {
         return this.mode;
     }
 
-    @Nullable
-    public Block getInputBlock() {
-        return this.inputBlock;
+    public Optional<Block> getInputBlock() {
+        return Optional.ofNullable(this.inputBlock);
     }
 
-    @Nullable
-    public Fluid getInputFluid() {
-        return this.inputFluid;
+    public Optional<Fluid> getInputFluid() {
+        return Optional.ofNullable(this.inputFluid);
     }
 
-    @Nullable
-    public Block getOutputBlock() {
-        return this.outputBlock;
+    public Optional<Block> getOutputBlock() {
+        return Optional.ofNullable(this.outputBlock);
     }
 
     public boolean getOutputBlockKeep() {
@@ -168,11 +170,11 @@ public class EntropyRecipe implements Recipe<Container> {
 
     @Nullable
     public BlockState getOutputBlockState(BlockState originalBlockState) {
-        if (this.getOutputBlock() == null) {
+        if (outputBlock == null) {
             return null;
         }
 
-        BlockState state = getOutputBlock().defaultBlockState();
+        BlockState state = outputBlock.defaultBlockState();
 
         if (this.outputBlockKeep) {
             for (Property<?> property : originalBlockState.getProperties()) {
@@ -180,16 +182,14 @@ public class EntropyRecipe implements Recipe<Container> {
             }
         }
 
-        for (StateApplier<?> entry : this.outputBlockStateAppliers) {
-            state = entry.apply(state);
-        }
+        var stateDefinition = originalBlockState.getBlock().getStateDefinition();
+        state = PropertyUtils.applyProperties(stateDefinition, state, outputBlockStateAppliers);
 
         return state;
     }
 
-    @Nullable
-    public Fluid getOutputFluid() {
-        return this.outputFluid;
+    public Optional<Fluid> getOutputFluid() {
+        return Optional.ofNullable(this.outputFluid);
     }
 
     public boolean getOutputFluidKeep() {
@@ -198,11 +198,11 @@ public class EntropyRecipe implements Recipe<Container> {
 
     @Nullable
     public FluidState getOutputFluidState(FluidState originalFluidState) {
-        if (this.getOutputFluid() == null) {
+        if (outputFluid == null) {
             return null;
         }
 
-        FluidState state = getOutputFluid().defaultFluidState();
+        FluidState state = outputFluid.defaultFluidState();
 
         if (this.outputFluidKeep) {
             for (Property<?> property : originalFluidState.getProperties()) {
@@ -210,9 +210,8 @@ public class EntropyRecipe implements Recipe<Container> {
             }
         }
 
-        for (StateApplier<?> entry : this.outputFluidStateAppliers) {
-            state = entry.apply(state);
-        }
+        var stateDefinition = state.getType().getStateDefinition();
+        state = PropertyUtils.applyProperties(stateDefinition, state, outputBlockStateAppliers);
 
         return state;
     }
@@ -226,36 +225,42 @@ public class EntropyRecipe implements Recipe<Container> {
             return false;
         }
 
-        if (blockState.getBlock() != this.getInputBlock() && this.getInputBlock() != null) {
-            return false;
+        if (inputBlock != null) {
+            if (blockState.getBlock() != inputBlock) {
+                return false;
+            }
+            var stateDefinition = inputBlock.getStateDefinition();
+            if (!PropertyUtils.doPropertiesMatch(stateDefinition, blockState, inputBlockMatchers)) {
+                return false;
+            }
         }
 
-        if (fluidState.getType() != this.getInputFluid() && this.getInputFluid() != null) {
-            return false;
+        if (inputFluid != null) {
+            if (fluidState.getType() != inputFluid) {
+                return false;
+            }
+            var stateDefinition = inputFluid.getStateDefinition();
+            if (!PropertyUtils.doPropertiesMatch(stateDefinition, fluidState, inputFluidMatchers)) {
+                return false;
+            }
         }
 
-        boolean isValid = true;
-
-        if (fluidState.getType() == this.getInputFluid()) {
-            isValid = this.inputFluidMatchers.stream().allMatch(m -> m.matches(fluidState));
-        }
-
-        return isValid;
+        return true;
     }
 
-    List<StateMatcher> getInputBlockMatchers() {
+    Map<String, PropertyValueMatcher> getInputBlockMatchers() {
         return inputBlockMatchers;
     }
 
-    List<StateMatcher> getInputFluidMatchers() {
+    Map<String, PropertyValueMatcher> getInputFluidMatchers() {
         return inputFluidMatchers;
     }
 
-    List<StateApplier<?>> getOutputBlockStateAppliers() {
+    Map<String, String> getOutputBlockStateAppliers() {
         return outputBlockStateAppliers;
     }
 
-    List<StateApplier<?>> getOutputFluidStateAppliers() {
+    Map<String, String> getOutputFluidStateAppliers() {
         return outputFluidStateAppliers;
     }
 
@@ -263,7 +268,7 @@ public class EntropyRecipe implements Recipe<Container> {
      * Copies a property from one stateholder to another (if that stateholder also has that property).
      */
     private static <T extends Comparable<T>, SH extends StateHolder<?, SH>> SH copyProperty(SH from, SH to,
-            Property<T> property) {
+                                                                                            Property<T> property) {
         if (to.hasProperty(property)) {
             return to.setValue(property, from.getValue(property));
         } else {

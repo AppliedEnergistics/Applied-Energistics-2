@@ -16,6 +16,7 @@ import appeng.core.definitions.AEItems;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
 import appeng.spatial.SpatialStoragePlotManager;
+import net.minecraft.world.phys.Vec3;
 
 public final class SpatialTestPlots {
     private SpatialTestPlots() {
@@ -145,8 +146,9 @@ public final class SpatialTestPlots {
         return new PlotInfo(
                 SpatialStoragePlotManager.INSTANCE.getLevel(),
                 new AABB(
-                        plot.getOrigin(),
-                        plot.getOrigin().offset(plot.getSize())),
+                        Vec3.atLowerCornerOf(plot.getOrigin()),
+                        Vec3.atLowerCornerOf(plot.getOrigin().offset(plot.getSize()))
+                ),
                 plot.getOrigin());
     }
 
