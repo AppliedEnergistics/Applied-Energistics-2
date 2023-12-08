@@ -193,6 +193,19 @@ public final class AEBlockEntities {
         return result;
     }
 
+    /**
+     * Get all block entity types whose implementations implement the given interface.
+     */
+    public static List<BlockEntityType<?>> getImplementorsOf(Class<?> iface) {
+        var result = new ArrayList<BlockEntityType<?>>();
+        for (var pair : BLOCK_ENTITY_TYPES_WITH_CLASSES) {
+            if (iface.isAssignableFrom(pair.implementation)) {
+                result.add(pair.type);
+            }
+        }
+        return result;
+    }
+
     @SuppressWarnings("unchecked")
     @SafeVarargs
     private static <T extends AEBaseBlockEntity> BlockEntityType<T> create(String shortId,

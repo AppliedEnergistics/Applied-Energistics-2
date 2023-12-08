@@ -18,10 +18,10 @@
 
 package appeng.core.stats;
 
+import java.util.Optional;
+
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.PlayerTrigger;
-
-import java.util.Optional;
 
 public class AdvancementTriggers {
     /**

@@ -21,9 +21,9 @@ package appeng.me.service;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.minecraft.advancements.critereon.PlayerTrigger;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 

@@ -13,6 +13,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.implementations.items.IAEItemPowerStorage;
+import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.parts.RegisterPartCapabilitiesEvent;
 import appeng.api.parts.RegisterPartCapabilitiesEventInternal;
 import appeng.blockentity.AEBaseInvBlockEntity;
@@ -64,6 +65,10 @@ public final class InitCapabilityProviders {
         for (var type : AEBlockEntities.getSubclassesOf(AEBasePoweredBlockEntity.class)) {
             event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, type,
                     AEBasePoweredBlockEntity::getEnergyStorage);
+        }
+        for (var type : AEBlockEntities.getImplementorsOf(IInWorldGridNodeHost.class)) {
+            event.registerBlockEntity(AppEngCapabilities.IN_WORLD_GRID_NODE_HOST, type,
+                    (object, context) -> (IInWorldGridNodeHost) object);
         }
     }
 
