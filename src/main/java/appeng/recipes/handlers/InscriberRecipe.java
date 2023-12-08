@@ -158,10 +158,10 @@ public class InscriberRecipe implements Recipe<Container> {
             Ingredient middle,
             Ingredient bottom) {
         public static final Codec<Ingredients> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                Ingredient.CODEC_NONEMPTY.fieldOf("middle")
-                        .forGetter(Ingredients::middle),
                 ExtraCodecs.strictOptionalField(Ingredient.CODEC, "top", Ingredient.EMPTY)
                         .forGetter(Ingredients::top),
+                Ingredient.CODEC_NONEMPTY.fieldOf("middle")
+                        .forGetter(Ingredients::middle),
                 ExtraCodecs.strictOptionalField(Ingredient.CODEC, "bottom", Ingredient.EMPTY)
                         .forGetter(Ingredients::bottom))
                 .apply(builder, Ingredients::new));
