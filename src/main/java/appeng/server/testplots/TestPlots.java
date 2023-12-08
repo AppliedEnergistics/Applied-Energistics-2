@@ -848,8 +848,8 @@ public final class TestPlots {
                 .part(Direction.WEST, AEParts.STORAGE_BUS);
         plot.block(origin.west(), AEBlocks.SKY_STONE_TANK);
         plot.block(origin.east(), Blocks.LAVA_CAULDRON);
-        if (SharedConstants.VERSION_STRING.equals("1.20.2")) {
-            return; // TODO: Re-enable in 1.20.3 with cap rework
+        if (SharedConstants.VERSION_STRING.equals("1.20.3")) {
+            return; // TODO: Re-enable in 1.20.4 with cap rework
         }
         plot.test(helper -> {
             helper.succeedWhen(() -> {
