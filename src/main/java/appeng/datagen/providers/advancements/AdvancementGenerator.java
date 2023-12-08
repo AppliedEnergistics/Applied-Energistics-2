@@ -324,7 +324,7 @@ public class AdvancementGenerator implements AdvancementProvider.AdvancementGene
                         false /* hidden */
                 )
                 .parent(glassCable)
-                .addCriterion("cable", AdvancementTriggers.NETWORK_APPRENTICE.criterion())
+                .addCriterion("cable", AdvancementTriggers.networkApprenticeCriterion())
                 .save(consumer, "ae2:main/network1");
 
         var network2 = Advancement.Builder.advancement()
@@ -340,7 +340,7 @@ public class AdvancementGenerator implements AdvancementProvider.AdvancementGene
                         false /* hidden */
                 )
                 .parent(network1)
-                .addCriterion("cable", AdvancementTriggers.NETWORK_ENGINEER.criterion())
+                .addCriterion("cable", AdvancementTriggers.networkEngineerCriterion())
                 .save(consumer, "ae2:main/network2");
 
         var network3 = Advancement.Builder.advancement()
@@ -356,7 +356,7 @@ public class AdvancementGenerator implements AdvancementProvider.AdvancementGene
                         false /* hidden */
                 )
                 .parent(network2)
-                .addCriterion("cable", AdvancementTriggers.NETWORK_ADMIN.criterion())
+                .addCriterion("cable", AdvancementTriggers.networkAdminCriterion())
                 .save(consumer, "ae2:main/network3");
 
         var networkTool = Advancement.Builder.advancement()
@@ -455,7 +455,7 @@ public class AdvancementGenerator implements AdvancementProvider.AdvancementGene
                         false,
                         false)
                 .parent(spatialIoport)
-                .addCriterion("explorer", AdvancementTriggers.SPATIAL_EXPLORER.criterion())
+                .addCriterion("explorer", AdvancementTriggers.spatialExplorerCriterion())
                 .save(consumer, "ae2:main/spatial_explorer");
 
         var storageBus = Advancement.Builder.advancement()
@@ -486,7 +486,7 @@ public class AdvancementGenerator implements AdvancementProvider.AdvancementGene
                         false /* hidden */
                 )
                 .parent(storageBus)
-                .addCriterion("recursive", AdvancementTriggers.RECURSIVE.criterion())
+                .addCriterion("recursive", AdvancementTriggers.recursiveCriterion())
                 .save(consumer, "ae2:main/recursive");
 
     }

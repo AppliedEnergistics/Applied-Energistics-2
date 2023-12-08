@@ -21,6 +21,7 @@ package appeng.me.service;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.minecraft.advancements.critereon.PlayerTrigger;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
@@ -44,7 +45,6 @@ import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.stats.AdvancementTriggers;
-import appeng.core.stats.IAdvancementTrigger;
 import appeng.me.Grid;
 import appeng.me.pathfinding.AdHocChannelUpdater;
 import appeng.me.pathfinding.ChannelFinalizer;
@@ -287,8 +287,8 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         var server = grid.getPivot().getLevel().getServer();
 
         if (this.lastChannels != this.channelsInUse) {
-            final IAdvancementTrigger currentBracket = this.getAchievementBracket(this.channelsInUse);
-            final IAdvancementTrigger lastBracket = this.getAchievementBracket(this.lastChannels);
+            final PlayerTrigger currentBracket = this.getAchievementBracket(this.channelsInUse);
+            final PlayerTrigger lastBracket = this.getAchievementBracket(this.lastChannels);
             if (currentBracket != lastBracket && currentBracket != null) {
                 for (var n : this.nodesNeedingChannels) {
                     var player = IPlayerRegistry.getConnected(server, n.getOwningPlayerId());
@@ -301,7 +301,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         this.lastChannels = this.channelsInUse;
     }
 
-    private IAdvancementTrigger getAchievementBracket(int ch) {
+    private PlayerTrigger getAchievementBracket(int ch) {
         if (ch < 8) {
             return null;
         }
