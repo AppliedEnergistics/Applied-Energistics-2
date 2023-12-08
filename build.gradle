@@ -80,7 +80,7 @@ dependencies {
         transitive = false
     }
     // Used for the guide export
-    implementation("org.bytedeco:ffmpeg-platform:6.0-1.5.9")
+    implementation("org.bytedeco:ffmpeg-platform:${ffmpeg_version}")
 
     implementation "net.neoforged:neoforge:${neoforge_version}"
 
@@ -328,44 +328,28 @@ import net.neoforged.gradle.userdev.runtime.tasks.ClasspathSerializer
 
 import java.util.stream.Collectors
 
-def libSrcSets = [
-        project(":libs:markdown").sourceSets.main
-]
-
-def legacyCPLibs = [
-        "io.methvin:directory-watcher:${directory_watcher_version}",
-        "org.yaml:snakeyaml:${snakeyaml_version}",
-        "com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}",
-]
-
-tasks.withType(ClasspathSerializer).configureEach {
-    legacyCPLibs.each { lib ->
-        def libArtifact = lib.split(":")[1]
-        def libVersion = lib.split(":")[2]
-        def libJar = libArtifact + "-" + libVersion + ".jar"
-
-        def libFile = project.configurations.runtimeClasspath.find({
-            return it.name == libJar
-        })
-
-        it.inputFiles.from libFile
-    }
-    project.configurations.runtimeClasspath.each({f ->
-        if (f.name.startsWith("javacpp") || f.name.startsWith("ffmpeg")) {
-            it.inputFiles.from f
-        }
-    })
-    libSrcSets.each { srcSet ->
-        it.inputFiles.from srcSet.output
-    }
-}
-
-def commonRunProperties = {
-    workingDirectory = project.file('run')
-    systemProperties = commonSystemProperties
-    // property "mixin.debug.export", "true"
-    modSources = [sourceSets.main]
-}
+//
+//tasks.withType(ClasspathSerializer).configureEach {
+//    legacyCPLibs.each { lib ->
+//        def libArtifact = lib.split(":")[1]
+//        def libVersion = lib.split(":")[2]
+//        def libJar = libArtifact + "-" + libVersion + ".jar"
+//
+//        def libFile = project.configurations.runtimeClasspath.find({
+//            return it.name == libJar
+//        })
+//
+//        it.inputFiles.from libFile
+//    }
+//    project.configurations.runtimeClasspath.each({f ->
+//        if (f.name.startsWith("javacpp") || f.name.startsWith("ffmpeg")) {
+//            it.inputFiles.from f
+//        }
+//    })
+//    libSrcSets.each { srcSet ->
+//        it.inputFiles.from srcSet.output
+//    }
+//}
 
 ////////////////////
 // Forge/Minecraft
@@ -376,8 +360,21 @@ minecraft {
 }
 
 runs {
+    configureEach {
+        workingDirectory = project.file('run')
+        systemProperties = commonSystemProperties
+        // property "mixin.debug.export", "true"
+        modSources = [sourceSets.main]
+
+        dependencies {
+            runtime project(":libs:markdown")
+            runtime "io.methvin:directory-watcher:${directory_watcher_version}"
+            runtime "org.yaml:snakeyaml:${snakeyaml_version}"
+            runtime "com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}"
+            runtime "org.bytedeco:ffmpeg-platform:${ffmpeg_version}"
+        }
+    }
     client {
-        with commonRunProperties
         systemProperties = [
                 *                          : commonSystemProperties,
                 "appeng.tests"             : "true",
@@ -386,7 +383,6 @@ runs {
     }
     gametestWorld {
         configure("client")
-        with commonRunProperties
         programArguments("--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld")
         systemProperties = [
                 "appeng.tests"             : "true",
@@ -394,7 +390,6 @@ runs {
         ]
     }
     guide {
-        with commonRunProperties
         configure("client")
         systemProperties = [
                 "guideDev.ae2guide.sources"    : file("guidebook").absolutePath,
@@ -402,10 +397,8 @@ runs {
         ]
     }
     server {
-        with commonRunProperties
     }
     data {
-        with commonRunProperties
         programArguments = [
                 '--mod', 'ae2',
                 '--all',
@@ -414,7 +407,6 @@ runs {
         ]
     }
     guideexport {
-        with commonRunProperties
         configure("client")
         systemProperties = [
                 "appeng.runGuideExportAndExit": "true",
@@ -425,7 +417,6 @@ runs {
     // Use to run the tests
     gametest {
         configure("gameTestServer")
-        with commonRunProperties
         workingDirectory = project.file("build/gametest")
     }
 }
