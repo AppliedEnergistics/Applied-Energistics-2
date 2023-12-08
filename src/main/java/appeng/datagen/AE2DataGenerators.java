@@ -18,6 +18,22 @@
 
 package appeng.datagen;
 
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
+
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.data.AdvancementProvider;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+
 import appeng.core.AppEng;
 import appeng.core.definitions.AEDamageTypes;
 import appeng.datagen.providers.advancements.AdvancementGenerator;
@@ -46,21 +62,6 @@ import appeng.datagen.providers.tags.PoiTypeTagsProvider;
 import appeng.init.worldgen.InitBiomes;
 import appeng.init.worldgen.InitDimensionTypes;
 import appeng.init.worldgen.InitStructures;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.PackOutput;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.data.AdvancementProvider;
-import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
-import net.neoforged.neoforge.data.event.GatherDataEvent;
-
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
 
 @Mod.EventBusSubscriber(modid = AppEng.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AE2DataGenerators {
@@ -74,7 +75,8 @@ public class AE2DataGenerators {
         var existingFileHelper = event.getExistingFileHelper();
 
         // Worldgen et al
-        pack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, registries, createDatapackEntriesBuilder(), Set.of(AppEng.MOD_ID)));
+        pack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, registries,
+                createDatapackEntriesBuilder(), Set.of(AppEng.MOD_ID)));
 
         // Loot
         pack.addProvider(BlockDropProvider::new);
@@ -98,8 +100,7 @@ public class AE2DataGenerators {
 
         // Misc
         pack.addProvider(packOutput -> new AdvancementProvider(packOutput, registries, existingFileHelper, List.of(
-                new AdvancementGenerator(localization)
-        )));
+                new AdvancementGenerator(localization))));
 
         // Recipes
         pack.addProvider(bindRegistries(DecorationRecipes::new, registries));

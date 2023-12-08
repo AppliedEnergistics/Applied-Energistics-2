@@ -47,8 +47,8 @@ public interface ICraftingMachine {
         }
 
         return blockEntity.getLevel().getCapability(
-                AppEngCapabilities.CRAFTING_MACHINE, blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, side
-        );
+                AppEngCapabilities.CRAFTING_MACHINE, blockEntity.getBlockPos(), blockEntity.getBlockState(),
+                blockEntity, side);
     }
 
     @Nullable

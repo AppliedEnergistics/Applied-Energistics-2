@@ -18,21 +18,21 @@
 
 package appeng.server.subcommands;
 
-import appeng.api.features.IPlayerRegistry;
-import appeng.core.definitions.AEItems;
-import appeng.core.localization.PlayerMessages;
-import appeng.items.storage.SpatialStorageCellItem;
-import appeng.server.ISubCommand;
-import appeng.spatial.SpatialStorageDimensionIds;
-import appeng.spatial.SpatialStoragePlot;
-import appeng.spatial.SpatialStoragePlotManager;
-import appeng.spatial.TransitionInfo;
+import static net.minecraft.commands.Commands.literal;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.UnaryOperator;
+
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -48,24 +48,31 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.UnaryOperator;
-
-import static net.minecraft.commands.Commands.literal;
+import appeng.api.features.IPlayerRegistry;
+import appeng.core.definitions.AEItems;
+import appeng.core.localization.PlayerMessages;
+import appeng.items.storage.SpatialStorageCellItem;
+import appeng.server.ISubCommand;
+import appeng.spatial.SpatialStorageDimensionIds;
+import appeng.spatial.SpatialStoragePlot;
+import appeng.spatial.SpatialStoragePlotManager;
+import appeng.spatial.TransitionInfo;
 
 /**
  * This admin command allows management of spatial storage plots.
  */
 public class SpatialStorageCommand implements ISubCommand {
 
-    public static final DynamicCommandExceptionType PLOT_NOT_FOUND = new DynamicCommandExceptionType(PlayerMessages.PlotNotFound::text);
-    public static final SimpleCommandExceptionType PLOT_NOT_FOUND_FOR_POSITION = new SimpleCommandExceptionType(PlayerMessages.PlotNotFoundForCurrentPosition.text());
-    public static final SimpleCommandExceptionType NOT_IN_SPATIAL_STORAGE_LEVEL = new SimpleCommandExceptionType(PlayerMessages.NotInSpatialStorageLevel.text());
-    public static final SimpleCommandExceptionType NOT_STORAGE_CELL = new SimpleCommandExceptionType(PlayerMessages.NotStorageCell.text());
-    public static final SimpleCommandExceptionType NO_LAST_TRANSITION = new SimpleCommandExceptionType(PlayerMessages.NoLastTransition.text());
+    public static final DynamicCommandExceptionType PLOT_NOT_FOUND = new DynamicCommandExceptionType(
+            PlayerMessages.PlotNotFound::text);
+    public static final SimpleCommandExceptionType PLOT_NOT_FOUND_FOR_POSITION = new SimpleCommandExceptionType(
+            PlayerMessages.PlotNotFoundForCurrentPosition.text());
+    public static final SimpleCommandExceptionType NOT_IN_SPATIAL_STORAGE_LEVEL = new SimpleCommandExceptionType(
+            PlayerMessages.NotInSpatialStorageLevel.text());
+    public static final SimpleCommandExceptionType NOT_STORAGE_CELL = new SimpleCommandExceptionType(
+            PlayerMessages.NotStorageCell.text());
+    public static final SimpleCommandExceptionType NO_LAST_TRANSITION = new SimpleCommandExceptionType(
+            PlayerMessages.NoLastTransition.text());
 
     @Override
     public void addArguments(LiteralArgumentBuilder<CommandSourceStack> builder) {

@@ -1,13 +1,13 @@
 package appeng.parts.automation;
 
-import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
 
 import appeng.api.behaviors.ExternalStorageStrategy;
 import appeng.api.storage.MEStorage;
@@ -17,10 +17,10 @@ public class ForgeExternalStorageStrategy<T, S> implements ExternalStorageStrate
     private final HandlerStrategy<T, S> conversion;
 
     public ForgeExternalStorageStrategy(BlockCapability<T, Direction> capability,
-                                        HandlerStrategy<T, S> conversion,
-                                        ServerLevel level,
-                                        BlockPos fromPos,
-                                        Direction fromSide) {
+            HandlerStrategy<T, S> conversion,
+            ServerLevel level,
+            BlockPos fromPos,
+            Direction fromSide) {
         this.cache = BlockCapabilityCache.create(capability, level, fromPos, fromSide);
         this.conversion = conversion;
     }

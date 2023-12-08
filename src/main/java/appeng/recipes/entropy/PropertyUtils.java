@@ -18,14 +18,15 @@
 
 package appeng.recipes.entropy;
 
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.StateHolder;
-import net.minecraft.world.level.block.state.properties.Property;
+import java.util.Map;
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-import java.util.Objects;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.StateHolder;
+import net.minecraft.world.level.block.state.properties.Property;
 
 final class PropertyUtils {
     private static final Logger LOG = LoggerFactory.getLogger(PropertyUtils.class);
@@ -51,7 +52,8 @@ final class PropertyUtils {
                         + property.getName()));
     }
 
-    static void validatePropertyMatchers(StateDefinition<?, ?> stateDefinition, Map<String, PropertyValueMatcher> properties) {
+    static void validatePropertyMatchers(StateDefinition<?, ?> stateDefinition,
+            Map<String, PropertyValueMatcher> properties) {
         for (var entry : properties.entrySet()) {
             var property = stateDefinition.getProperty(entry.getKey());
             if (property == null) {
@@ -64,7 +66,8 @@ final class PropertyUtils {
         }
     }
 
-    public static <SH extends StateHolder<?, SH>> boolean doPropertiesMatch(StateDefinition<?, SH> stateDefinition, SH state, Map<String, PropertyValueMatcher> properties) {
+    public static <SH extends StateHolder<?, SH>> boolean doPropertiesMatch(StateDefinition<?, SH> stateDefinition,
+            SH state, Map<String, PropertyValueMatcher> properties) {
         for (var entry : properties.entrySet()) {
             var property = stateDefinition.getProperty(entry.getKey());
             if (property == null) {
@@ -79,20 +82,23 @@ final class PropertyUtils {
         return true;
     }
 
-    static <SH extends StateHolder<?, SH>> SH applyProperties(StateDefinition<?, SH> stateDefinition, SH state, Map<String, String> properties) {
+    static <SH extends StateHolder<?, SH>> SH applyProperties(StateDefinition<?, SH> stateDefinition, SH state,
+            Map<String, String> properties) {
         for (var entry : properties.entrySet()) {
             // Get property
             var property = stateDefinition.getProperty(entry.getKey());
             if (property != null) {
                 state = applyProperty(state, property, entry.getValue());
             } else {
-                LOG.warn("Cannot apply property {} since {} does not have that property", entry.getKey(), stateDefinition);
+                LOG.warn("Cannot apply property {} since {} does not have that property", entry.getKey(),
+                        stateDefinition);
             }
         }
         return state;
     }
 
-    static <T extends Comparable<T>, SH extends StateHolder<?, SH>> SH applyProperty(SH state, Property<T> property, String value) {
+    static <T extends Comparable<T>, SH extends StateHolder<?, SH>> SH applyProperty(SH state, Property<T> property,
+            String value) {
         var parsedValue = property.getValue(value);
         return parsedValue.map(t -> state.trySetValue(property, t)).orElse(state);
     }

@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
@@ -16,7 +17,6 @@ import appeng.core.definitions.AEItems;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
 import appeng.spatial.SpatialStoragePlotManager;
-import net.minecraft.world.phys.Vec3;
 
 public final class SpatialTestPlots {
     private SpatialTestPlots() {
@@ -147,8 +147,7 @@ public final class SpatialTestPlots {
                 SpatialStoragePlotManager.INSTANCE.getLevel(),
                 new AABB(
                         Vec3.atLowerCornerOf(plot.getOrigin()),
-                        Vec3.atLowerCornerOf(plot.getOrigin().offset(plot.getSize()))
-                ),
+                        Vec3.atLowerCornerOf(plot.getOrigin().offset(plot.getSize()))),
                 plot.getOrigin());
     }
 

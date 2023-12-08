@@ -58,7 +58,8 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Ser
         final int energyToInsert = IntMath.pow(BASE_ENERGY, tier);
 
         for (Direction facing : Direction.values()) {
-            var consumer = getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(facing), facing.getOpposite());
+            var consumer = getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(facing),
+                    facing.getOpposite());
             if (consumer != null && consumer.canReceive()) {
                 consumer.receiveEnergy(energyToInsert, false);
             }

@@ -19,6 +19,7 @@
 package appeng.recipes.entropy;
 
 import com.mojang.serialization.Codec;
+
 import net.minecraft.util.StringRepresentable;
 
 public enum EntropyMode implements StringRepresentable {

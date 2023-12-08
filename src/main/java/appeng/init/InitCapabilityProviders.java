@@ -1,5 +1,16 @@
 package appeng.init;
 
+import java.util.function.Function;
+
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.neoforged.fml.ModLoader;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.parts.RegisterPartCapabilitiesEvent;
@@ -24,16 +35,6 @@ import appeng.parts.networking.EnergyAcceptorPart;
 import appeng.parts.p2p.FEP2PTunnelPart;
 import appeng.parts.p2p.FluidP2PTunnelPart;
 import appeng.parts.p2p.ItemP2PTunnelPart;
-import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.neoforged.fml.ModLoader;
-import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-
-import java.util.function.Function;
 
 public final class InitCapabilityProviders {
 
@@ -57,16 +58,17 @@ public final class InitCapabilityProviders {
         initCrankable(event);
 
         for (var type : AEBlockEntities.getSubclassesOf(AEBaseInvBlockEntity.class)) {
-            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, type, AEBaseInvBlockEntity::getExposedItemHandler);
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, type,
+                    AEBaseInvBlockEntity::getExposedItemHandler);
         }
         for (var type : AEBlockEntities.getSubclassesOf(AEBasePoweredBlockEntity.class)) {
-            event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, type, AEBasePoweredBlockEntity::getEnergyStorage);
+            event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, type,
+                    AEBasePoweredBlockEntity::getEnergyStorage);
         }
     }
 
     /**
-     * This registration is called with the lowest possible priority to register
-     * adapters.
+     * This registration is called with the lowest possible priority to register adapters.
      */
     public static void registerGenericAdapters(RegisterCapabilitiesEvent event) {
 
@@ -80,21 +82,21 @@ public final class InitCapabilityProviders {
     }
 
     private static <T> void registerGenericInvAdapter(RegisterCapabilitiesEvent event,
-                                                      Block block,
-                                                      BlockCapability<T, Direction> capability,
-                                                      Function<GenericInternalInventory, T> adapter) {
+            Block block,
+            BlockCapability<T, Direction> capability,
+            Function<GenericInternalInventory, T> adapter) {
         if (!event.isBlockRegistered(capability, block)) {
             event.registerBlock(
                     capability,
                     (level, pos, state, blockEntity, context) -> {
-                        var genericInv = level.getCapability(AppEngCapabilities.GENERIC_INTERNAL_INV, pos, state, blockEntity, context);
+                        var genericInv = level.getCapability(AppEngCapabilities.GENERIC_INTERNAL_INV, pos, state,
+                                blockEntity, context);
                         if (genericInv != null) {
                             return adapter.apply(genericInv);
                         }
                         return null;
                     },
-                    block
-            );
+                    block);
         }
     }
 
@@ -102,8 +104,7 @@ public final class InitCapabilityProviders {
         event.registerBlockEntity(
                 AppEngCapabilities.GENERIC_INTERNAL_INV,
                 AEBlockEntities.INTERFACE,
-                (be, context) -> be.getInterfaceLogic().getStorage()
-        );
+                (be, context) -> be.getInterfaceLogic().getStorage());
 
         event.registerBlockEntity(
                 AppEngCapabilities.ME_STORAGE,
@@ -117,8 +118,7 @@ public final class InitCapabilityProviders {
         event.registerBlockEntity(
                 AppEngCapabilities.GENERIC_INTERNAL_INV,
                 AEBlockEntities.PATTERN_PROVIDER,
-                (blockEntity, context) -> blockEntity.getLogic().getReturnInv()
-        );
+                (blockEntity, context) -> blockEntity.getLogic().getReturnInv());
     }
 
     private static void initCondenser(RegisterCapabilitiesEvent event) {
@@ -127,16 +127,18 @@ public final class InitCapabilityProviders {
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, AEBlockEntities.CONDENSER, (blockEntity, context) -> {
             return blockEntity.getExternalInv().toItemHandler();
         });
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, AEBlockEntities.CONDENSER, ((blockEntity, context) -> {
-            return blockEntity.getFluidHandler();
-        }));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, AEBlockEntities.CONDENSER,
+                ((blockEntity, context) -> {
+                    return blockEntity.getFluidHandler();
+                }));
         event.registerBlockEntity(AppEngCapabilities.ME_STORAGE, AEBlockEntities.CONDENSER, (blockEntity, context) -> {
             return blockEntity.getMEStorage();
         });
     }
 
     private static void initMEChest(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, AEBlockEntities.CHEST, ChestBlockEntity::getFluidHandler);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, AEBlockEntities.CHEST,
+                ChestBlockEntity::getFluidHandler);
         event.registerBlockEntity(AppEngCapabilities.ME_STORAGE, AEBlockEntities.CHEST, ChestBlockEntity::getMEStorage);
     }
 
@@ -144,23 +146,19 @@ public final class InitCapabilityProviders {
         event.registerBlockEntity(
                 AppEngCapabilities.CRAFTING_MACHINE,
                 AEBlockEntities.MOLECULAR_ASSEMBLER,
-                (object, context) -> object
-        );
+                (object, context) -> object);
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 AEBlockEntities.DEBUG_ITEM_GEN,
-                (object, context) -> object.getItemHandler()
-        );
+                (object, context) -> object.getItemHandler());
         event.registerBlockEntity(
                 Capabilities.EnergyStorage.BLOCK,
                 AEBlockEntities.DEBUG_ENERGY_GEN,
-                (object, context) -> object
-        );
+                (object, context) -> object);
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 AEBlockEntities.SKY_STONE_TANK,
-                (object, context) -> object.getFluidHandler()
-        );
+                (object, context) -> object.getFluidHandler());
     }
 
     private static void initPoweredItem(RegisterCapabilitiesEvent event) {
@@ -182,36 +180,43 @@ public final class InitCapabilityProviders {
         registerPowerStorageItem(event, AEItems.WIRELESS_CRAFTING_TERMINAL);
     }
 
-    private static <T extends Item & IAEItemPowerStorage> void registerPowerStorageItem(RegisterCapabilitiesEvent event, ItemDefinition<T> definition) {
+    private static <T extends Item & IAEItemPowerStorage> void registerPowerStorageItem(RegisterCapabilitiesEvent event,
+            ItemDefinition<T> definition) {
         IAEItemPowerStorage powerStorage = definition.asItem();
 
         event.registerItem(
                 Capabilities.EnergyStorage.ITEM,
                 (object, context) -> new PoweredItemCapabilities(object, powerStorage),
-                definition
-        );
+                definition);
     }
 
     private static void initCrankable(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(AppEngCapabilities.CRANKABLE, AEBlockEntities.CHARGER, ChargerBlockEntity::getCrankable);
-        event.registerBlockEntity(AppEngCapabilities.CRANKABLE, AEBlockEntities.INSCRIBER, InscriberBlockEntity::getCrankable);
-        event.registerBlockEntity(AppEngCapabilities.CRANKABLE, AEBlockEntities.GROWTH_ACCELERATOR, GrowthAcceleratorBlockEntity::getCrankable);
+        event.registerBlockEntity(AppEngCapabilities.CRANKABLE, AEBlockEntities.CHARGER,
+                ChargerBlockEntity::getCrankable);
+        event.registerBlockEntity(AppEngCapabilities.CRANKABLE, AEBlockEntities.INSCRIBER,
+                InscriberBlockEntity::getCrankable);
+        event.registerBlockEntity(AppEngCapabilities.CRANKABLE, AEBlockEntities.GROWTH_ACCELERATOR,
+                GrowthAcceleratorBlockEntity::getCrankable);
     }
 
     private static void registerPartCapabilities(RegisterPartCapabilitiesEvent event) {
-        event.register(Capabilities.ItemHandler.BLOCK, (part, direction) -> part.getLogic().getBlankPatternInv().toItemHandler(),
+        event.register(Capabilities.ItemHandler.BLOCK,
+                (part, direction) -> part.getLogic().getBlankPatternInv().toItemHandler(),
                 PatternEncodingTerminalPart.class);
         event.register(AppEngCapabilities.GENERIC_INTERNAL_INV, (part, context) -> part.getLogic().getReturnInv(),
                 PatternProviderPart.class);
-        event.register(AppEngCapabilities.GENERIC_INTERNAL_INV, (part, context) -> part.getInterfaceLogic().getStorage(),
+        event.register(AppEngCapabilities.GENERIC_INTERNAL_INV,
+                (part, context) -> part.getInterfaceLogic().getStorage(),
                 InterfacePart.class);
         event.register(AppEngCapabilities.ME_STORAGE,
                 (part, context) -> part.getInterfaceLogic().getInventory(), InterfacePart.class);
 
-
-        event.register(Capabilities.ItemHandler.BLOCK, (part, context) -> part.getExposedApi(), ItemP2PTunnelPart.class);
-        event.register(Capabilities.EnergyStorage.BLOCK, (part, context) -> part.getExposedApi(), FEP2PTunnelPart.class);
-        event.register(Capabilities.FluidHandler.BLOCK, (part, context) -> part.getExposedApi(), FluidP2PTunnelPart.class);
+        event.register(Capabilities.ItemHandler.BLOCK, (part, context) -> part.getExposedApi(),
+                ItemP2PTunnelPart.class);
+        event.register(Capabilities.EnergyStorage.BLOCK, (part, context) -> part.getExposedApi(),
+                FEP2PTunnelPart.class);
+        event.register(Capabilities.FluidHandler.BLOCK, (part, context) -> part.getExposedApi(),
+                FluidP2PTunnelPart.class);
 
         event.register(Capabilities.EnergyStorage.BLOCK, (part, context) -> part.getEnergyStorage(),
                 EnergyAcceptorPart.class);

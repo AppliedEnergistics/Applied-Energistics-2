@@ -1,5 +1,7 @@
 package appeng.recipes.transform;
 
+import java.util.Collections;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -7,12 +9,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
-import java.util.Collections;
-
 public class TransformRecipeBuilder {
 
     public static void transform(RecipeOutput consumer, ResourceLocation id, ItemLike output, int count,
-                                 TransformCircumstance circumstance, ItemLike... inputs) {
+            TransformCircumstance circumstance, ItemLike... inputs) {
         var ingredients = NonNullList.<Ingredient>createWithCapacity(inputs.length);
         for (var input : inputs) {
             ingredients.add(Ingredient.of(input));
@@ -22,7 +22,7 @@ public class TransformRecipeBuilder {
     }
 
     public static void transform(RecipeOutput consumer, ResourceLocation id, ItemLike output, int count,
-                                 TransformCircumstance circumstance, Ingredient... inputs) {
+            TransformCircumstance circumstance, Ingredient... inputs) {
         var ingredients = NonNullList.<Ingredient>createWithCapacity(inputs.length);
         Collections.addAll(ingredients, inputs);
         var recipe = new TransformRecipe(ingredients, toStack(output, count), circumstance);

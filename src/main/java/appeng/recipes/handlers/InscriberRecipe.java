@@ -18,10 +18,11 @@
 
 package appeng.recipes.handlers;
 
-import appeng.core.AppEng;
-import appeng.init.InitRecipeTypes;
+import java.util.Objects;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -34,24 +35,26 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-import java.util.Objects;
+import appeng.core.AppEng;
+import appeng.init.InitRecipeTypes;
 
 public class InscriberRecipe implements Recipe<Container> {
 
     private static final Codec<InscriberProcessType> MODE_CODEC = ExtraCodecs.stringResolverCodec(
             mode -> switch (mode) {
-                case INSCRIBE -> "inscribe";
-                case PRESS -> "press";
+            case INSCRIBE -> "inscribe";
+            case PRESS -> "press";
             },
             mode -> switch (mode) {
-                default -> InscriberProcessType.INSCRIBE;
-                case "press" -> InscriberProcessType.PRESS;
+            default -> InscriberProcessType.INSCRIBE;
+            case "press" -> InscriberProcessType.PRESS;
             });
 
     public static final Codec<InscriberRecipe> CODEC = RecordCodecBuilder.create(
             builder -> builder
                     .group(
-                            Ingredients.CODEC.fieldOf("ingredients").forGetter(InscriberRecipe::getSerializedIngredients),
+                            Ingredients.CODEC.fieldOf("ingredients")
+                                    .forGetter(InscriberRecipe::getSerializedIngredients),
                             ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(ir -> ir.output),
                             MODE_CODEC.fieldOf("mode").forGetter(ir -> ir.processType))
                     .apply(builder, InscriberRecipe::new));
@@ -71,7 +74,7 @@ public class InscriberRecipe implements Recipe<Container> {
     }
 
     public InscriberRecipe(Ingredient middleInput, ItemStack output,
-                           Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
+            Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
         this.middleInput = Objects.requireNonNull(middleInput, "middleInput");
         this.output = Objects.requireNonNull(output, "output");
         this.topOptional = Objects.requireNonNull(topOptional, "topOptional");
@@ -147,23 +150,21 @@ public class InscriberRecipe implements Recipe<Container> {
         return new Ingredients(
                 topOptional,
                 middleInput,
-                bottomOptional
-        );
+                bottomOptional);
     }
 
     private record Ingredients(
             Ingredient top,
             Ingredient middle,
-            Ingredient bottom
-    ) {
+            Ingredient bottom) {
         public static final Codec<Ingredients> CODEC = RecordCodecBuilder.create(builder -> builder.group(
                 Ingredient.CODEC_NONEMPTY.fieldOf("middle")
                         .forGetter(Ingredients::middle),
                 ExtraCodecs.strictOptionalField(Ingredient.CODEC, "top", Ingredient.EMPTY)
                         .forGetter(Ingredients::top),
                 ExtraCodecs.strictOptionalField(Ingredient.CODEC, "bottom", Ingredient.EMPTY)
-                        .forGetter(Ingredients::bottom)
-        ).apply(builder, Ingredients::new));
+                        .forGetter(Ingredients::bottom))
+                .apply(builder, Ingredients::new));
     }
 
 }

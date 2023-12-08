@@ -185,9 +185,29 @@ public class EntropyRecipeBuilder {
         Preconditions.checkState(inputBlock != null || inputFluid != null,
                 "Either inputBlock or inputFluid needs to be not null");
 
-        return new EntropyRecipe(mode, Optional.ofNullable(inputBlock), inputBlockMatchers, Optional.ofNullable(inputFluid), inputFluidMatchers, Optional.ofNullable(outputBlock),
-                outputBlockStateAppliers, outputBlockKeep, Optional.ofNullable(outputFluid), outputFluidStateAppliers, outputFluidKeep,
+        EntropyRecipe.BlockInput blockInput = null;
+        if (inputBlock != null) {
+            blockInput = new EntropyRecipe.BlockInput(inputBlock, inputBlockMatchers);
+        }
+        EntropyRecipe.FluidInput fluidInput = null;
+        if (inputFluid != null) {
+            fluidInput = new EntropyRecipe.FluidInput(inputFluid, inputFluidMatchers);
+        }
+        var input = new EntropyRecipe.Input(Optional.ofNullable(blockInput), Optional.ofNullable(fluidInput));
+
+        EntropyRecipe.BlockOutput blockOutput = null;
+        if (outputBlock != null) {
+            blockOutput = new EntropyRecipe.BlockOutput(outputBlock, outputBlockKeep, outputBlockStateAppliers);
+        }
+        EntropyRecipe.FluidOutput fluidOutput = null;
+        if (outputFluid != null) {
+            fluidOutput = new EntropyRecipe.FluidOutput(outputFluid, outputFluidKeep, outputFluidStateAppliers);
+        }
+
+        var output = new EntropyRecipe.Output(Optional.ofNullable(blockOutput), Optional.ofNullable(fluidOutput),
                 drops);
+
+        return new EntropyRecipe(mode, input, output);
     }
 
     public void save(RecipeOutput consumer, ResourceLocation id) {

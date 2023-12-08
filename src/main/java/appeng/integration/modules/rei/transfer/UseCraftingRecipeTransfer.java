@@ -17,6 +17,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.widgets.Slot;
@@ -30,7 +31,6 @@ import appeng.core.localization.ItemModText;
 import appeng.integration.modules.jeirei.CraftingHelper;
 import appeng.integration.modules.jeirei.TransferHelper;
 import appeng.menu.me.items.CraftingTermMenu;
-import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 /**
  * Recipe transfer implementation with the intended purpose of actually crafting an item. Most of the work is done

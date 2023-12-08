@@ -26,7 +26,6 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.capabilities.AppEngCapabilities;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 

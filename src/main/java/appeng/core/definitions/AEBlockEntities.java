@@ -18,6 +18,24 @@
 
 package appeng.core.definitions;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
+import net.minecraft.world.level.block.state.BlockState;
+
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.ClientTickingBlockEntity;
@@ -57,22 +75,6 @@ import appeng.debug.CubeGeneratorBlockEntity;
 import appeng.debug.EnergyGeneratorBlockEntity;
 import appeng.debug.ItemGenBlockEntity;
 import appeng.debug.PhantomNodeBlockEntity;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
-import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 @SuppressWarnings("unused")
 public final class AEBlockEntities {
@@ -194,9 +196,9 @@ public final class AEBlockEntities {
     @SuppressWarnings("unchecked")
     @SafeVarargs
     private static <T extends AEBaseBlockEntity> BlockEntityType<T> create(String shortId,
-                                                                           Class<T> entityClass,
-                                                                           BlockEntityFactory<T> factory,
-                                                                           BlockDefinition<? extends AEBaseEntityBlock<?>>... blockDefinitions) {
+            Class<T> entityClass,
+            BlockEntityFactory<T> factory,
+            BlockDefinition<? extends AEBaseEntityBlock<?>>... blockDefinitions) {
         Preconditions.checkArgument(blockDefinitions.length > 0);
 
         ResourceLocation id = AppEng.makeId(shortId);
@@ -243,7 +245,7 @@ public final class AEBlockEntities {
         T create(BlockEntityType<T> type, BlockPos pos, BlockState state);
     }
 
-    private record BlockEntityTypeWithClass<T extends BlockEntity>(BlockEntityType<T> type, Class<T> implementation) {
+    private record BlockEntityTypeWithClass<T extends BlockEntity> (BlockEntityType<T> type, Class<T> implementation) {
     }
 
 }

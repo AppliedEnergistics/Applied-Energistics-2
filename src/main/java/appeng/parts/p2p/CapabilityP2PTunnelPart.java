@@ -18,6 +18,8 @@
 
 package appeng.parts.p2p;
 
+import java.util.Objects;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -25,8 +27,6 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 
 import appeng.api.parts.IPartItem;
 import appeng.hooks.ticking.TickHandler;
-
-import java.util.Objects;
 
 /**
  * Base class for simple capability-based p2p tunnels. Don't forget to set the 3 handlers in the constructor of the
@@ -92,8 +92,7 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
             } else if (accessDepth == 1) {
                 if (isActive()) {
                     var cap = getLevel().getCapability(
-                            capability, getFacingPos(), getSide().getOpposite()
-                    );
+                            capability, getFacingPos(), getSide().getOpposite());
                     return Objects.requireNonNullElse(cap, emptyHandler);
                 }
 

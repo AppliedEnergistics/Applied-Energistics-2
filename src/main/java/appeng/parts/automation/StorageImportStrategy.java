@@ -21,10 +21,10 @@ public class StorageImportStrategy<T, S> implements StackImportStrategy {
     private final HandlerStrategy<T, S> conversion;
 
     public StorageImportStrategy(BlockCapability<T, Direction> capability,
-                                 HandlerStrategy<T, S> conversion,
-                                 ServerLevel level,
-                                 BlockPos fromPos,
-                                 Direction fromSide) {
+            HandlerStrategy<T, S> conversion,
+            ServerLevel level,
+            BlockPos fromPos,
+            Direction fromSide) {
         this.cache = BlockCapabilityCache.create(capability, level, fromPos, fromSide);
         this.conversion = conversion;
     }

@@ -28,7 +28,6 @@ import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
 
-import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,6 +37,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;

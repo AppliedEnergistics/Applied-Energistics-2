@@ -18,11 +18,11 @@
 
 package appeng.init.internal;
 
+import net.neoforged.neoforge.capabilities.Capabilities;
+
 import appeng.api.features.P2PTunnelAttunement;
-import appeng.capabilities.AppEngCapabilities;
 import appeng.core.definitions.AEParts;
 import appeng.core.localization.GuiText;
-import net.neoforged.neoforge.capabilities.Capabilities;
 
 public final class InitP2PAttunements {
 

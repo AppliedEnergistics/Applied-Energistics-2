@@ -23,6 +23,8 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -39,7 +41,6 @@ import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.helpers.ForgeEnergyAdapter;
 import appeng.me.energy.StoredEnergyAmount;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
         implements IAEPowerStorage, IExternalPowerSink {

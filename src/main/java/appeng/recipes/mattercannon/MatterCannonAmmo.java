@@ -18,9 +18,10 @@
 
 package appeng.recipes.mattercannon;
 
-import appeng.core.AppEng;
-import appeng.init.InitRecipeTypes;
+import java.util.Objects;
+
 import com.google.common.base.Preconditions;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -38,7 +39,8 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.conditions.NotCondition;
 import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 
-import java.util.Objects;
+import appeng.core.AppEng;
+import appeng.init.InitRecipeTypes;
 
 /**
  * Defines a type of ammo that can be used for the {@link appeng.items.tools.powered.MatterCannonItem}.
@@ -69,8 +71,7 @@ public class MatterCannonAmmo implements Recipe<Container> {
 
     public static void ammo(RecipeOutput consumer, ResourceLocation id, TagKey<Item> tag, float weight) {
         consumer.accept(id, new MatterCannonAmmo(Ingredient.of(tag), weight), null, new NotCondition(
-                new TagEmptyCondition(tag.location()))
-        );
+                new TagEmptyCondition(tag.location())));
     }
 
     @Override

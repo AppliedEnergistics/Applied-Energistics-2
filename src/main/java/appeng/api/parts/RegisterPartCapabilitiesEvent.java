@@ -1,13 +1,5 @@
 package appeng.api.parts;
 
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.bus.api.Event;
-import net.neoforged.fml.event.IModBusEvent;
-import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.ICapabilityProvider;
-
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,6 +7,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
+
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.bus.api.Event;
+import net.neoforged.fml.event.IModBusEvent;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 
 public class RegisterPartCapabilitiesEvent extends Event implements IModBusEvent {
 
@@ -24,11 +24,10 @@ public class RegisterPartCapabilitiesEvent extends Event implements IModBusEvent
 
     final Map<BlockCapability<?, ?>, BlockCapabilityRegistration<?, ?>> capabilityRegistrations = new HashMap<>();
 
-    record BlockCapabilityRegistration<T, C>(
+    record BlockCapabilityRegistration<T, C> (
             BlockCapability<T, C> capability,
             Function<C, Direction> contextToSide,
-            Map<Class<? extends IPart>, ICapabilityProvider<?, C, T>> parts
-    ) {
+            Map<Class<? extends IPart>, ICapabilityProvider<?, C, T>> parts) {
         public BlockCapabilityRegistration(BlockCapability<T, C> capability, Function<C, Direction> contextToSide) {
             this(capability, contextToSide, new HashMap<>());
         }
@@ -63,9 +62,9 @@ public class RegisterPartCapabilitiesEvent extends Event implements IModBusEvent
     }
 
     /**
-     * When using capabilities with a context other than {@link Direction}, you need to register
-     * a mapping function for AE2 to get the side from the context. It cannot determine
-     * which part on a part host should handle the capability otherwise.
+     * When using capabilities with a context other than {@link Direction}, you need to register a mapping function for
+     * AE2 to get the side from the context. It cannot determine which part on a part host should handle the capability
+     * otherwise.
      */
     public <T, C> void registerContext(BlockCapability<T, C> capability, Function<C, Direction> directionGetter) {
         contextMappers.put(capability, directionGetter);
@@ -83,8 +82,8 @@ public class RegisterPartCapabilitiesEvent extends Event implements IModBusEvent
      */
     @SuppressWarnings("unchecked")
     public <T, C, P extends IPart> void register(BlockCapability<T, C> capability,
-                                                 ICapabilityProvider<P, C, T> provider,
-                                                 Class<P> partClass) {
+            ICapabilityProvider<P, C, T> provider,
+            Class<P> partClass) {
         Objects.requireNonNull(capability, "capability");
         Objects.requireNonNull(partClass, "partClass");
         Objects.requireNonNull(provider, "provider");

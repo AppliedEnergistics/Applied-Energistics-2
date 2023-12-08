@@ -36,14 +36,7 @@ package appeng.datagen.providers.advancements;
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-
-import com.google.common.collect.Sets;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
@@ -52,12 +45,10 @@ import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.common.data.AdvancementProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
@@ -65,11 +56,8 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.stats.AdvancementTriggers;
-import appeng.datagen.providers.IAE2DataProvider;
 import appeng.datagen.providers.localization.LocalizationProvider;
 import appeng.datagen.providers.tags.ConventionTags;
-import net.neoforged.neoforge.common.data.AdvancementProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class AdvancementGenerator implements AdvancementProvider.AdvancementGenerator {
     private final LocalizationProvider localization;
@@ -79,7 +67,8 @@ public class AdvancementGenerator implements AdvancementProvider.AdvancementGene
     }
 
     @Override
-    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer,
+            ExistingFileHelper existingFileHelper) {
         var root = Advancement.Builder.advancement()
                 .display(
                         AEItems.CERTUS_QUARTZ_CRYSTAL,

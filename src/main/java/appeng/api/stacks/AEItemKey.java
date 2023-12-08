@@ -1,7 +1,5 @@
 package appeng.api.stacks;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Objects;

@@ -1,41 +1,46 @@
 package appeng.recipes.entropy;
 
+import java.util.List;
+import java.util.Map;
+
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
 
-import java.util.List;
-import java.util.Map;
-
-public sealed interface PropertyValueMatcher permits PropertyValueMatcher.SingleValue, PropertyValueMatcher.MultiValue, PropertyValueMatcher.Range {
+public sealed interface PropertyValueMatcher permits PropertyValueMatcher.SingleValue,PropertyValueMatcher.MultiValue,PropertyValueMatcher.Range {
     Codec<PropertyValueMatcher> CODEC = new Codec<>() {
         @Override
         public <T> DataResult<Pair<PropertyValueMatcher, T>> decode(DynamicOps<T> ops, T input) {
             // Try single string value first
-            var singleValueResult = Codec.STRING.decode(ops, input).map(pair -> pair.mapFirst(value -> (PropertyValueMatcher) new SingleValue(value)));
+            var singleValueResult = Codec.STRING.decode(ops, input)
+                    .map(pair -> pair.mapFirst(value -> (PropertyValueMatcher) new SingleValue(value)));
             if (singleValueResult.error().isEmpty()) {
                 return singleValueResult;
             }
 
             // Then try list value
-            var listValueResult = Codec.STRING.listOf().decode(ops, input).map(pair -> pair.mapFirst(value -> (PropertyValueMatcher) new MultiValue(value)));
+            var listValueResult = Codec.STRING.listOf().decode(ops, input)
+                    .map(pair -> pair.mapFirst(value -> (PropertyValueMatcher) new MultiValue(value)));
             if (listValueResult.error().isEmpty()) {
                 return listValueResult;
             }
 
             // Then try min/max object
-            var rangeValueResult = Range.CODEC.decode(ops, input).map(pair -> pair.mapFirst(value -> (PropertyValueMatcher) value));
+            var rangeValueResult = Range.CODEC.decode(ops, input)
+                    .map(pair -> pair.mapFirst(value -> (PropertyValueMatcher) value));
             if (rangeValueResult.error().isEmpty()) {
                 return rangeValueResult;
             }
 
             // If all three fail, combine the errors
-            return DataResult.error(() -> "Property values need to be strings, list of strings, or objects with min/max properties");
+            return DataResult.error(
+                    () -> "Property values need to be strings, list of strings, or objects with min/max properties");
         }
 
         @Override
@@ -56,7 +61,7 @@ public sealed interface PropertyValueMatcher permits PropertyValueMatcher.Single
 
     static PropertyValueMatcher fromNetwork(FriendlyByteBuf buffer) {
         var type = buffer.readByte();
-        return switch (type){
+        return switch (type) {
             case 0 -> new SingleValue(buffer.readUtf());
             case 1 -> new MultiValue(buffer.readList(FriendlyByteBuf::readUtf));
             case 2 -> new Range(buffer.readUtf(), buffer.readUtf());
@@ -84,7 +89,8 @@ public sealed interface PropertyValueMatcher permits PropertyValueMatcher.Single
         @Override
         public void validate(Property<? extends Comparable<?>> property) {
             if (property.getValue(value).isEmpty()) {
-                throw new IllegalStateException("Property " + property.getName() + " does not have value '" + value + "'");
+                throw new IllegalStateException(
+                        "Property " + property.getName() + " does not have value '" + value + "'");
             }
         }
 
@@ -106,7 +112,8 @@ public sealed interface PropertyValueMatcher permits PropertyValueMatcher.Single
         public void validate(Property<? extends Comparable<?>> property) {
             for (String value : values) {
                 if (property.getValue(value).isEmpty()) {
-                    throw new IllegalStateException("Property " + property.getName() + " does not have value '" + value + "'");
+                    throw new IllegalStateException(
+                            "Property " + property.getName() + " does not have value '" + value + "'");
                 }
             }
         }
@@ -124,8 +131,7 @@ public sealed interface PropertyValueMatcher permits PropertyValueMatcher.Single
     record Range(String min, String max) implements PropertyValueMatcher {
         static Codec<Range> CODEC = RecordCodecBuilder.create(builder -> builder.group(
                 Codec.STRING.fieldOf("min").forGetter(Range::min),
-                Codec.STRING.fieldOf("max").forGetter(Range::max)
-        ).apply(builder, Range::new));
+                Codec.STRING.fieldOf("max").forGetter(Range::max)).apply(builder, Range::new));
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer) {
@@ -137,10 +143,12 @@ public sealed interface PropertyValueMatcher permits PropertyValueMatcher.Single
         @Override
         public void validate(Property<? extends Comparable<?>> property) {
             if (property.getValue(min).isEmpty()) {
-                throw new IllegalStateException("Property " + property.getName() + " does not have value '" + min + "'");
+                throw new IllegalStateException(
+                        "Property " + property.getName() + " does not have value '" + min + "'");
             }
             if (property.getValue(max).isEmpty()) {
-                throw new IllegalStateException("Property " + property.getName() + " does not have value '" + max + "'");
+                throw new IllegalStateException(
+                        "Property " + property.getName() + " does not have value '" + max + "'");
             }
         }
 

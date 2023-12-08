@@ -1,14 +1,14 @@
 package appeng.parts.automation;
 
-import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
 
 import appeng.api.behaviors.StackExportStrategy;
 import appeng.api.behaviors.StackTransferContext;
@@ -22,10 +22,10 @@ public class StorageExportStrategy<T, S> implements StackExportStrategy {
     private final HandlerStrategy<T, S> handlerStrategy;
 
     protected StorageExportStrategy(BlockCapability<T, Direction> capability,
-                                    HandlerStrategy<T, S> handlerStrategy,
-                                    ServerLevel level,
-                                    BlockPos fromPos,
-                                    Direction fromSide) {
+            HandlerStrategy<T, S> handlerStrategy,
+            ServerLevel level,
+            BlockPos fromPos,
+            Direction fromSide) {
         this.handlerStrategy = handlerStrategy;
         this.cache = BlockCapabilityCache.create(capability, level, fromPos, fromSide);
     }

@@ -1,14 +1,15 @@
 package appeng.recipes.entropy;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.mojang.serialization.JsonOps;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.mojang.serialization.JsonOps;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 class PropertyValueMatcherTest {
 

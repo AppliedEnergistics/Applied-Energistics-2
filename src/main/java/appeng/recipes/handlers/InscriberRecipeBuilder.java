@@ -53,8 +53,7 @@ public class InscriberRecipeBuilder {
         result.setCount(count);
 
         var recipe = new InscriberRecipe(
-                middleInput, result, topOptional, bottomOptional, mode
-        );
+                middleInput, result, topOptional, bottomOptional, mode);
 
         consumer.accept(id, recipe, null);
     }

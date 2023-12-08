@@ -21,7 +21,6 @@ package appeng.core;
 import java.util.Collection;
 import java.util.Collections;
 
-import appeng.init.InitCapabilityProviders;
 import com.mojang.brigadier.CommandDispatcher;
 
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +39,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
@@ -70,6 +68,7 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.hotkeys.HotkeyActions;
 import appeng.init.InitBlockEntities;
 import appeng.init.InitBlocks;
+import appeng.init.InitCapabilityProviders;
 import appeng.init.InitCauldronInteraction;
 import appeng.init.InitDispenserBehavior;
 import appeng.init.InitEntityTypes;
