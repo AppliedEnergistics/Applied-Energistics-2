@@ -18,18 +18,26 @@
 
 package appeng.client.gui.style;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.mojang.serialization.JsonOps;
+import net.minecraft.Util;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.chat.Style;
+import org.jetbrains.annotations.Nullable;
+
+import java.lang.reflect.Type;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 
 /**
  * A screen style document defines various visual aspects of AE2 screens.
@@ -39,7 +47,7 @@ public class ScreenStyle {
     public static final Gson GSON = new GsonBuilder()
             .disableHtmlEscaping()
             .registerTypeHierarchyAdapter(Component.class, new Component.SerializerAdapter())
-            .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
+            .registerTypeAdapter(Style.class, new StyleSerializer())
             .registerTypeAdapter(Blitter.class, BlitterDeserializer.INSTANCE)
             .registerTypeAdapter(Rect2i.class, Rectangle2dDeserializer.INSTANCE)
             .registerTypeAdapter(Color.class, ColorDeserializer.INSTANCE)
@@ -154,4 +162,15 @@ public class ScreenStyle {
         }
     }
 
+    private static class StyleSerializer implements JsonSerializer<Style>, JsonDeserializer<Style> {
+        @Override
+        public Style deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            return Util.getOrThrow(Style.Serializer.CODEC.parse(JsonOps.INSTANCE, json), JsonParseException::new);
+        }
+
+        @Override
+        public JsonElement serialize(Style src, Type typeOfSrc, JsonSerializationContext context) {
+            return Util.getOrThrow(Style.Serializer.CODEC.encodeStart(JsonOps.INSTANCE, src), JsonParseException::new);
+        }
+    }
 }
