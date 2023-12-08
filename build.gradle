@@ -322,35 +322,6 @@ def commonSystemProperties = [
         'appeng.tests'               : 'true',
 ]
 
-// NG hacks to add our deps to the legacy classpath
-// If anything changes here you have to delete the build folder for the neoforge:...:writeMinecraftClasspath task
-import net.neoforged.gradle.userdev.runtime.tasks.ClasspathSerializer
-
-import java.util.stream.Collectors
-
-//
-//tasks.withType(ClasspathSerializer).configureEach {
-//    legacyCPLibs.each { lib ->
-//        def libArtifact = lib.split(":")[1]
-//        def libVersion = lib.split(":")[2]
-//        def libJar = libArtifact + "-" + libVersion + ".jar"
-//
-//        def libFile = project.configurations.runtimeClasspath.find({
-//            return it.name == libJar
-//        })
-//
-//        it.inputFiles.from libFile
-//    }
-//    project.configurations.runtimeClasspath.each({f ->
-//        if (f.name.startsWith("javacpp") || f.name.startsWith("ffmpeg")) {
-//            it.inputFiles.from f
-//        }
-//    })
-//    libSrcSets.each { srcSet ->
-//        it.inputFiles.from srcSet.output
-//    }
-//}
-
 ////////////////////
 // Forge/Minecraft
 minecraft {
