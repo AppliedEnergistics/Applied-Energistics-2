@@ -17,7 +17,6 @@ import com.google.common.collect.Sets;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
