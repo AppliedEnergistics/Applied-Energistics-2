@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 
+import appeng.integration.modules.emi.EmiText;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 
@@ -57,6 +58,7 @@ public class LocalizationProvider implements IAE2DataProvider {
         addEnum(InGameTooltip.class);
         addEnum(ItemModText.class);
         addEnum(GuidebookText.class);
+        addEnum(EmiText.class);
         // Can't implement LocalizationEnum since it's not in the API, but PowerUnits is
         for (var powerUnit : PowerUnits.values()) {
             add(powerUnit.unlocalizedName, powerUnit.symbolName);

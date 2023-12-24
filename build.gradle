@@ -1,5 +1,3 @@
-import java.util.stream.Collectors
-
 /*
  * This file is part of Applied Energistics 2.
  * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
@@ -30,7 +28,6 @@ sourceSets {
     main {
         java {
             srcDir 'src/main/flatbuffers/generated'
-            exclude "**/integration/modules/jei/**"
         }
         resources {
             srcDir 'src/generated/resources'
@@ -69,10 +66,10 @@ repositories {
         }
     }
     maven {
-        name 'modmaven'
-        url "https://modmaven.dev/"
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
         content {
-            includeGroup "mezz.jei"
+            includeGroup "dev.emi"
         }
     }
     maven {
@@ -126,19 +123,17 @@ dependencies {
     implementation "net.neoforged:neoforge:${neoforge_version}"
 
     // compile against provided APIs
-    compileOnly "mezz.jei:jei-${jei_minecraft_version}-common-api:${jei_version}"
-    compileOnly "mezz.jei:jei-${jei_minecraft_version}-forge-api:${jei_version}"
+    compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
 
     // Always depend on the REI API to compile
-    if (project.runtime_itemlist_mod == "jei") {
-        runtimeOnly "mezz.jei:jei-${jei_minecraft_version}-forge:${jei_version}"
+    if (project.runtime_itemlist_mod == "emi") {
+        runtimeOnly "dev.emi:emi-neoforge:${emi_version}"
 
-        compileOnly("me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}")
+        compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     } else if (project.runtime_itemlist_mod == "rei") {
-        implementation("dev.architectury:architectury-neoforge:10.0.16")
-        implementation("me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}")
+        implementation "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     } else {
-        compileOnly("me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}")
+        compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     }
 
     compileOnly "mcp.mobius.waila:wthit-api:neo-${project.wthit_version}"
@@ -404,7 +399,7 @@ processResources {
 
     filesMatching("META-INF/mods.toml") {
         expand 'minecraft_version': project.minecraft_version_range, 'neoforge_version': project.neoforge_version_range,
-                'jei_version': project.jei_version_range, 'top_version': project.top_version_range,
+                'top_version': project.top_version_range,
                 'jade_version': project.jade_version_range
         filter { line ->
             line.replace('version="0.0.0"', "version=\"$version\"")
