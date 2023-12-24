@@ -15,4 +15,8 @@ runs:
       with:
         distribution: 'microsoft'
         java-version: '17'
-        cache: 'gradle'
+
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        cache-read-only: ${{ github.ref != 'refs/heads/main' }}

@@ -314,9 +314,9 @@ test {
     ]
 }
 
-//tasks.named('test').configure {
-//    it.inputs.file(tasks.named('writeMinecraftClasspath').map { it.outputs.files.singleFile })
-//}
+tasks.named('test').configure {
+    it.inputs.file(tasks.named('writeMinecraftClasspath').map { it.outputs.files.singleFile })
+}
 
 dependencies {
     buildtoolsImplementation 'de.siegmar:fastcsv:2.1.0'

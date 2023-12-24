@@ -22,16 +22,21 @@ class EntropyRecipeSerializerTest {
                 .build();
 
         var recipeJson = Recipe.CODEC.encodeStart(JsonOps.INSTANCE, recipe).get().left().get();
-        assertEquals("""
-                {"mode":"cool","input":{"block":{"id":"minecraft:grass_block"}},"output":{"block":{"id":"minecraft:dirt"}},"type":"ae2:entropy"}
-                """.trim(), recipeJson.toString());
+        assertEquals(
+                """
+                        {"mode":"cool","input":{"block":{"id":"minecraft:grass_block"}},"output":{"block":{"id":"minecraft:dirt"}},"type":"ae2:entropy"}
+                        """
+                        .trim(),
+                recipeJson.toString());
     }
 
     @Test
     void testCodecDecodeMinimal() {
-        var jsonEl = new Gson().fromJson("""
-                {"mode":"cool","input":{"block":{"id":"minecraft:grass_block"}},"output":{"block":{"id":"minecraft:dirt"}},"type":"ae2:entropy"}
-                """, JsonElement.class);
+        var jsonEl = new Gson().fromJson(
+                """
+                        {"mode":"cool","input":{"block":{"id":"minecraft:grass_block"}},"output":{"block":{"id":"minecraft:dirt"}},"type":"ae2:entropy"}
+                        """,
+                JsonElement.class);
 
         var recipe = (EntropyRecipe) Recipe.CODEC.decode(JsonOps.INSTANCE, jsonEl).getOrThrow(false, s -> {
             throw new RuntimeException(s);
