@@ -422,7 +422,7 @@ public final class SiteExporter implements ResourceExporter {
 
             // Export attunement info
             var attunementInfo = P2PTunnelAttunementInternal.getAttunementInfo(tunnelItem);
-            attunementInfo.apis().stream().map(lookup -> lookup.getName())
+            attunementInfo.apis().stream().map(c -> c.name().toString())
                     .forEach(typeInfo.attunementApiClasses::add);
 
             usedVanillaItems.addAll(items);

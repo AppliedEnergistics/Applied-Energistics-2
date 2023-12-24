@@ -2,6 +2,9 @@ package appeng.core.worlddata;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import com.mojang.logging.LogUtils;
 
@@ -24,7 +27,8 @@ public abstract class AESavedData extends SavedData {
             return;
         }
 
-        File tempFile = file.toPath().getParent().resolve(file.getName() + ".temp").toFile();
+        var targetPath = file.toPath().toAbsolutePath();
+        var tempFile = targetPath.getParent().resolve(file.getName() + ".temp");
 
         CompoundTag compoundTag = new CompoundTag();
         compoundTag.put("data", this.save(new CompoundTag()));
@@ -32,15 +36,11 @@ public abstract class AESavedData extends SavedData {
         try {
             // Write to temp file first.
             NbtIo.writeCompressed(compoundTag, tempFile);
-            // Delete old file.
-            if (file.exists()) {
-                if (!file.delete()) {
-                    LOGGER.error("Could not delete old file {}", file);
-                }
-            }
-            // Rename temp file to the correct name.
-            if (!tempFile.renameTo(file)) {
-                LOGGER.error("Could not rename file {} to {}", tempFile, file);
+            // Try atomic move
+            try {
+                Files.move(tempFile, targetPath, StandardCopyOption.ATOMIC_MOVE);
+            } catch (AtomicMoveNotSupportedException ignored) {
+                Files.move(tempFile, targetPath, StandardCopyOption.REPLACE_EXISTING);
             }
         } catch (IOException iOException) {
             LOGGER.error("Could not save data {}", this, iOException);

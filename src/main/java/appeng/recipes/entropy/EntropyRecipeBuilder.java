@@ -18,40 +18,35 @@
 
 package appeng.recipes.entropy;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.JsonObject;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
 public class EntropyRecipeBuilder {
     private EntropyMode mode;
-
     private Block inputBlock;
-    private List<StateMatcher> inputBlockMatchers = Collections.emptyList();
+    private final Map<String, PropertyValueMatcher> inputBlockMatchers = new HashMap<>();
 
     private Fluid inputFluid;
-    private List<StateMatcher> inputFluidMatchers = Collections.emptyList();
+    private final Map<String, PropertyValueMatcher> inputFluidMatchers = new HashMap<>();
 
     private Block outputBlock;
-    private List<StateApplier<?>> outputBlockStateAppliers = Collections.emptyList();
+    private final Map<String, String> outputBlockStateAppliers = new HashMap<>();
     private boolean outputBlockKeep;
     private Fluid outputFluid;
-    private List<StateApplier<?>> outputFluidStateAppliers = Collections.emptyList();
+    private final Map<String, String> outputFluidStateAppliers = new HashMap<>();
     private boolean outputFluidKeep;
     private List<ItemStack> drops = Collections.emptyList();
 
@@ -109,54 +104,78 @@ public class EntropyRecipeBuilder {
         return setDrops(Arrays.asList(drops));
     }
 
-    public EntropyRecipeBuilder addBlockStateMatcher(StateMatcher matcher) {
+    public EntropyRecipeBuilder addBlockStateMatcher(String property, PropertyValueMatcher valueMatcher) {
         Preconditions.checkState(this.inputBlock != null,
                 "Can only add appliers when an input block is present.");
 
-        if (this.inputBlockMatchers.isEmpty()) {
-            this.inputBlockMatchers = new ArrayList<>();
-        }
-
-        this.inputBlockMatchers.add(matcher);
+        this.inputBlockMatchers.put(property, valueMatcher);
 
         return this;
     }
 
-    public EntropyRecipeBuilder addFluidStateMatcher(StateMatcher matcher) {
+    public EntropyRecipeBuilder setBlockStateMatchers(Map<String, PropertyValueMatcher> properties) {
+        Preconditions.checkState(this.inputBlock != null,
+                "Can only add appliers when an input block is present.");
+
+        this.inputBlockMatchers.clear();
+        this.inputBlockMatchers.putAll(properties);
+
+        return this;
+    }
+
+    public EntropyRecipeBuilder addFluidStateMatcher(String property, PropertyValueMatcher valueMatcher) {
         Preconditions.checkState(this.inputFluid != null,
                 "Can only add appliers when an input fluid is present.");
 
-        if (this.inputFluidMatchers.isEmpty()) {
-            this.inputFluidMatchers = new ArrayList<>();
-        }
-
-        this.inputFluidMatchers.add(matcher);
+        this.inputFluidMatchers.put(property, valueMatcher);
 
         return this;
     }
 
-    public EntropyRecipeBuilder addBlockStateAppliers(StateApplier<?> applier) {
+    public EntropyRecipeBuilder setFluidStateMatchers(Map<String, PropertyValueMatcher> properties) {
+        Preconditions.checkState(this.inputFluid != null,
+                "Can only add appliers when an input fluid is present.");
+
+        this.inputFluidMatchers.clear();
+        this.inputFluidMatchers.putAll(properties);
+
+        return this;
+    }
+
+    public EntropyRecipeBuilder addBlockStateAppliers(String property, String value) {
         Preconditions.checkState(this.outputBlock != null,
                 "Can only add appliers when an output block is present.");
 
-        if (this.outputBlockStateAppliers.isEmpty()) {
-            this.outputBlockStateAppliers = new ArrayList<>();
-        }
-
-        this.outputBlockStateAppliers.add(applier);
+        this.outputBlockStateAppliers.put(property, value);
 
         return this;
     }
 
-    public EntropyRecipeBuilder addFluidStateAppliers(StateApplier<?> applier) {
+    public EntropyRecipeBuilder setBlockStateAppliers(Map<String, String> properties) {
+        Preconditions.checkState(this.outputBlock != null,
+                "Can only add appliers when an output block is present.");
+
+        this.outputBlockStateAppliers.clear();
+        this.outputBlockStateAppliers.putAll(properties);
+
+        return this;
+    }
+
+    public EntropyRecipeBuilder addFluidStateAppliers(String property, String value) {
         Preconditions.checkState(this.outputFluid != null,
                 "Can only add appliers when an output fluid is present.");
 
-        if (this.outputFluidStateAppliers.isEmpty()) {
-            this.outputFluidStateAppliers = new ArrayList<>();
-        }
+        this.outputFluidStateAppliers.put(property, value);
 
-        this.outputFluidStateAppliers.add(applier);
+        return this;
+    }
+
+    public EntropyRecipeBuilder setFluidStateAppliers(Map<String, String> properties) {
+        Preconditions.checkState(this.outputFluid != null,
+                "Can only add appliers when an output fluid is present.");
+
+        this.outputFluidStateAppliers.clear();
+        this.outputFluidStateAppliers.putAll(properties);
 
         return this;
     }
@@ -166,42 +185,33 @@ public class EntropyRecipeBuilder {
         Preconditions.checkState(inputBlock != null || inputFluid != null,
                 "Either inputBlock or inputFluid needs to be not null");
 
-        return new EntropyRecipe(mode, inputBlock, inputBlockMatchers, inputFluid, inputFluidMatchers, outputBlock,
-                outputBlockStateAppliers, outputBlockKeep, outputFluid, outputFluidStateAppliers, outputFluidKeep,
+        EntropyRecipe.BlockInput blockInput = null;
+        if (inputBlock != null) {
+            blockInput = new EntropyRecipe.BlockInput(inputBlock, inputBlockMatchers);
+        }
+        EntropyRecipe.FluidInput fluidInput = null;
+        if (inputFluid != null) {
+            fluidInput = new EntropyRecipe.FluidInput(inputFluid, inputFluidMatchers);
+        }
+        var input = new EntropyRecipe.Input(Optional.ofNullable(blockInput), Optional.ofNullable(fluidInput));
+
+        EntropyRecipe.BlockOutput blockOutput = null;
+        if (outputBlock != null) {
+            blockOutput = new EntropyRecipe.BlockOutput(outputBlock, outputBlockKeep, outputBlockStateAppliers);
+        }
+        EntropyRecipe.FluidOutput fluidOutput = null;
+        if (outputFluid != null) {
+            fluidOutput = new EntropyRecipe.FluidOutput(outputFluid, outputFluidKeep, outputFluidStateAppliers);
+        }
+
+        var output = new EntropyRecipe.Output(Optional.ofNullable(blockOutput), Optional.ofNullable(fluidOutput),
                 drops);
+
+        return new EntropyRecipe(mode, input, output);
     }
 
     public void save(RecipeOutput consumer, ResourceLocation id) {
-        consumer.accept(new Result(id));
-    }
-
-    private class Result implements FinishedRecipe {
-        private final ResourceLocation id;
-
-        public Result(ResourceLocation id) {
-            this.id = id;
-        }
-
-        @Override
-        public void serializeRecipeData(JsonObject json) {
-            EntropyRecipeSerializer.writeToJson(json, build());
-        }
-
-        @Override
-        public ResourceLocation id() {
-            return id;
-        }
-
-        @Override
-        public RecipeSerializer<?> type() {
-            return EntropyRecipeSerializer.INSTANCE;
-        }
-
-        @Nullable
-        @Override
-        public AdvancementHolder advancement() {
-            return null;
-        }
+        consumer.accept(id, build(), null);
     }
 
 }

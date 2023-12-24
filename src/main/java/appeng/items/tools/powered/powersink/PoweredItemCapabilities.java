@@ -18,41 +18,25 @@
 
 package appeng.items.tools.powered.powersink;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
 import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.capabilities.Capabilities;
 
 /**
  * The capability provider to expose chargable items to other mods.
  */
-class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage {
+public class PoweredItemCapabilities implements IEnergyStorage {
 
     private final ItemStack is;
 
     private final IAEItemPowerStorage item;
 
-    PoweredItemCapabilities(ItemStack is, IAEItemPowerStorage item) {
+    public PoweredItemCapabilities(ItemStack is, IAEItemPowerStorage item) {
         this.is = is;
         this.item = item;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (capability == Capabilities.FORGE_ENERGY) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this);
-        }
-        return LazyOptional.empty();
     }
 
     @Override

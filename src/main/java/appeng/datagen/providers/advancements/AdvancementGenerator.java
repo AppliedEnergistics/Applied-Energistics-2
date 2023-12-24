@@ -36,26 +36,19 @@ package appeng.datagen.providers.advancements;
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-
-import com.google.common.collect.Sets;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRequirements;
-import net.minecraft.advancements.FrameType;
+import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.common.data.AdvancementProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
@@ -63,43 +56,19 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.stats.AdvancementTriggers;
-import appeng.datagen.providers.IAE2DataProvider;
 import appeng.datagen.providers.localization.LocalizationProvider;
 import appeng.datagen.providers.tags.ConventionTags;
 
-public class AdvancementGenerator implements IAE2DataProvider {
-
-    private final PackOutput output;
-
+public class AdvancementGenerator implements AdvancementProvider.AdvancementGenerator {
     private final LocalizationProvider localization;
 
-    public AdvancementGenerator(PackOutput output, LocalizationProvider localization) {
-        this.output = output;
+    public AdvancementGenerator(LocalizationProvider localization) {
         this.localization = localization;
     }
 
     @Override
-    public CompletableFuture<?> run(CachedOutput cache) {
-        Path path = this.output.getOutputFolder();
-        Set<ResourceLocation> set = Sets.newHashSet();
-        var futures = new ArrayList<CompletableFuture<?>>();
-        Consumer<AdvancementHolder> consumer = (advancement) -> {
-            if (!set.add(advancement.id())) {
-                throw new IllegalStateException("Duplicate advancement " + advancement.id());
-            } else {
-                Path path1 = createPath(path, advancement);
-
-                futures.add(DataProvider.saveStable(cache, advancement.value().serializeToJson(), path1));
-            }
-        };
-
-        generateAdvancements(consumer);
-
-        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
-    }
-
-    private void generateAdvancements(Consumer<AdvancementHolder> consumer) {
-
+    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer,
+            ExistingFileHelper existingFileHelper) {
         var root = Advancement.Builder.advancement()
                 .display(
                         AEItems.CERTUS_QUARTZ_CRYSTAL,
@@ -107,7 +76,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.Root.desc",
                                 "When a chest is simply not enough. Acquire Copper to start your AE2 adventure."),
                         AppEng.makeId("textures/block/sky_stone_brick.png"),
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         false /* showToast */,
                         false /* announceChat */,
                         false /* hidden */
@@ -121,7 +90,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.Charger", "It's Chargin' Time !"),
                         localization.component("achievement.ae2.Charger.desc", "Craft a Charger"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -136,7 +105,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.Compass", "Meteorite Hunter"),
                         localization.component("achievement.ae2.Compass.desc", "Craft a Meteorite Compass"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -151,7 +120,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.ChargedQuartz", "Shocking"),
                         localization.component("achievement.ae2.ChargedQuartz.desc", "Charge Quartz with a Charger"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -167,7 +136,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.Presses", "Unknown Technology"),
                         localization.component("achievement.ae2.Presses.desc", "Find all Processor Presses"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -187,7 +156,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.Controller", "Networking Switchboard"),
                         localization.component("achievement.ae2.Controller.desc", "Craft a Controller"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -202,7 +171,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.StorageCell", "Better Than Chests"),
                         localization.component("achievement.ae2.StorageCell.desc", "Craft a Storage Cell"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         false,
                         false,
                         false)
@@ -221,7 +190,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.IOPort", "Storage Cell Shuffle"),
                         localization.component("achievement.ae2.IOPort.desc", "Craft an IO Port"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -236,7 +205,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.CraftingTerminal", "A (Much) Bigger Table"),
                         localization.component("achievement.ae2.CraftingTerminal.desc", "Craft a Crafting Terminal"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -252,7 +221,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.PatternTerminal.desc",
                                 "Craft a Pattern Encoding Terminal"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -268,7 +237,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.CraftingCPU", "Next Gen Crafting"),
                         localization.component("achievement.ae2.CraftingCPU.desc", "Craft a Crafting Unit"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         false,
                         false,
                         false)
@@ -283,7 +252,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.Fluix", "Unnatural"),
                         localization.component("achievement.ae2.Fluix.desc", "Create Fluix Crystals"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -298,7 +267,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.GlassCable", "Fluix Energy Connection"),
                         localization.component("achievement.ae2.GlassCable.desc", "Craft ME Glass Cable"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -315,7 +284,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.Facade", "Network Aesthetics"),
                         localization.component("achievement.ae2.Facade.desc", "Craft a Cable Facade"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -332,7 +301,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.CrystalGrowthAccelerator.desc",
                                 "Craft a Crystal Growth Accelerator"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -349,13 +318,13 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.Networking1.desc",
                                 "Reach 8 channels using devices on a network."),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
                 )
                 .parent(glassCable)
-                .addCriterion("cable", AdvancementTriggers.NETWORK_APPRENTICE.criterion())
+                .addCriterion("cable", AdvancementTriggers.networkApprenticeCriterion())
                 .save(consumer, "ae2:main/network1");
 
         var network2 = Advancement.Builder.advancement()
@@ -365,13 +334,13 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.Networking2.desc",
                                 "Reach 128 channels using devices on a network."),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
                 )
                 .parent(network1)
-                .addCriterion("cable", AdvancementTriggers.NETWORK_ENGINEER.criterion())
+                .addCriterion("cable", AdvancementTriggers.networkEngineerCriterion())
                 .save(consumer, "ae2:main/network2");
 
         var network3 = Advancement.Builder.advancement()
@@ -381,13 +350,13 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.Networking3.desc",
                                 "Reach 2048 channels using devices on a network."),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
                 )
                 .parent(network2)
-                .addCriterion("cable", AdvancementTriggers.NETWORK_ADMIN.criterion())
+                .addCriterion("cable", AdvancementTriggers.networkAdminCriterion())
                 .save(consumer, "ae2:main/network3");
 
         var networkTool = Advancement.Builder.advancement()
@@ -396,7 +365,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.NetworkTool", "Network Diagnostics"),
                         localization.component("achievement.ae2.NetworkTool.desc", "Craft a Network Tool"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -411,7 +380,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.P2P", "Point to Point Networking"),
                         localization.component("achievement.ae2.P2P.desc", "Craft a P2P Tunnel"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -426,7 +395,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.PortableCell", "Storage Nomad"),
                         localization.component("achievement.ae2.PortableCell.desc", "Craft a Portable Cell"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         false,
                         false,
                         false)
@@ -450,7 +419,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.QNB", "Quantum Tunneling"),
                         localization.component("achievement.ae2.QNB.desc", "Craft a Quantum Link"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -465,7 +434,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.SpatialIO", "Spatial Coordination"),
                         localization.component("achievement.ae2.SpatialIO.desc", "Craft a Spatial IO Port"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -481,12 +450,12 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.SpatialIOExplorer.desc",
                                 "Get stored in a spatial storage cell"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         false,
                         false,
                         false)
                 .parent(spatialIoport)
-                .addCriterion("explorer", AdvancementTriggers.SPATIAL_EXPLORER.criterion())
+                .addCriterion("explorer", AdvancementTriggers.spatialExplorerCriterion())
                 .save(consumer, "ae2:main/spatial_explorer");
 
         var storageBus = Advancement.Builder.advancement()
@@ -495,7 +464,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.StorageBus", "Limitless Potential"),
                         localization.component("achievement.ae2.StorageBus.desc", "Craft a Storage Bus"),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
@@ -511,24 +480,14 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         localization.component("achievement.ae2.Recursive.desc",
                                 "Place a Storage Bus on an Interface."),
                         null /* background */,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true /* showToast */,
                         true /* announceChat */,
                         false /* hidden */
                 )
                 .parent(storageBus)
-                .addCriterion("recursive", AdvancementTriggers.RECURSIVE.criterion())
+                .addCriterion("recursive", AdvancementTriggers.recursiveCriterion())
                 .save(consumer, "ae2:main/recursive");
 
-    }
-
-    private static Path createPath(Path basePath, AdvancementHolder advancement) {
-        return basePath.resolve("data/" + advancement.id().getNamespace()
-                + "/advancements/" + advancement.id().getPath() + ".json");
-    }
-
-    @Override
-    public String getName() {
-        return "Advancements";
     }
 }

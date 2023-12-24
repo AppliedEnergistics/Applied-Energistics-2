@@ -3,7 +3,6 @@ package appeng.client.guidebook.command;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -30,6 +29,7 @@ import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
@@ -111,7 +111,7 @@ public class GuidebookStructureCommands {
                             }
                         } else {
                             try (var is = new BufferedInputStream(new FileInputStream(selectedPath))) {
-                                compound = NbtIo.readCompressed(is);
+                                compound = NbtIo.readCompressed(is, NbtAccounter.unlimitedHeap());
                             }
                         }
                         var structure = manager.readStructure(compound);
@@ -207,7 +207,7 @@ public class GuidebookStructureCommands {
                                     NbtUtils.structureToSnbt(compound),
                                     StandardCharsets.UTF_8);
                         } else {
-                            NbtIo.writeCompressed(compound, new File(selectedPath));
+                            NbtIo.writeCompressed(compound, Paths.get(selectedPath));
                         }
 
                         player.sendSystemMessage(Component.literal("Saved structure"));

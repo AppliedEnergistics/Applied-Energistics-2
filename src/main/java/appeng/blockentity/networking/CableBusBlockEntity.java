@@ -42,8 +42,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
@@ -309,20 +307,6 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
 
     private void setCableBus(CableBusContainer cb) {
         this.cb = cb;
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, @Nullable Direction partLocation) {
-        // Note that null will be translated to INTERNAL here
-
-        IPart part = this.getPart(partLocation);
-        LazyOptional<T> result = part == null ? LazyOptional.empty() : part.getCapability(capabilityClass);
-
-        if (result.isPresent()) {
-            return result;
-        }
-
-        return super.getCapability(capabilityClass, partLocation);
     }
 
     @Override

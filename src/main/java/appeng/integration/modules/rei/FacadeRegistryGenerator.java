@@ -30,6 +30,7 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 import me.shedaniel.rei.api.client.registry.display.DynamicDisplayGenerator;
 import me.shedaniel.rei.api.common.entry.EntryStack;
@@ -97,6 +98,7 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
         ingredients.set(5, Ingredient.of(cableAnchor));
         ingredients.set(7, Ingredient.of(cableAnchor));
         ingredients.set(4, Ingredient.of(textureItem));
+        var pattern = new ShapedRecipePattern(3, 3, ingredients, Optional.empty());
 
         result.setCount(4);
 
@@ -105,7 +107,7 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
         return new DefaultShapedDisplay(
                 new RecipeHolder<>(
                         id,
-                        new ShapedRecipe("", CraftingBookCategory.MISC, 3, 3, ingredients, result)));
+                        new ShapedRecipe("", CraftingBookCategory.MISC, pattern, result)));
     }
 
 }

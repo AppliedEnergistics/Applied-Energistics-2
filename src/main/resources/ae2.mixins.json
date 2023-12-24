@@ -12,6 +12,7 @@
     "EnchantmentHelperMixin",
     "ItemEntityMixin",
     "tests.StructureUtilsMixin",
+    "tests.TestCommandMixin",
     "StructureTemplateMixin",
     "UnbreakingMixin"
   ],

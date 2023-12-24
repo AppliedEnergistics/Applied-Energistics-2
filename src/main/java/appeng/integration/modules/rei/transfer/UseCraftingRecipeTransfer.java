@@ -7,6 +7,7 @@ import static appeng.integration.modules.jeirei.TransferHelper.RED_SLOT_HIGHLIGH
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.NonNullList;
@@ -16,6 +17,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.widgets.Slot;
@@ -112,9 +114,8 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
             ingredients.set(i, ingredient);
         }
 
-        return new ShapedRecipe("", CraftingBookCategory.MISC, CRAFTING_GRID_WIDTH,
-                CRAFTING_GRID_HEIGHT,
-                ingredients, ItemStack.EMPTY);
+        var pattern = new ShapedRecipePattern(CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT, ingredients, Optional.empty());
+        return new ShapedRecipe("", CraftingBookCategory.MISC, pattern, ItemStack.EMPTY);
     }
 
     public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(Recipe<?> recipe) {

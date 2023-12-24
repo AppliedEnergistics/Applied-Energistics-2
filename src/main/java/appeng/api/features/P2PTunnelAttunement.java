@@ -37,7 +37,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.PartItem;
@@ -110,7 +110,7 @@ public final class P2PTunnelAttunement {
      * @param tunnelPart  The P2P-tunnel part item.
      * @param description Description for display in REI/JEI.
      */
-    public synchronized static <T> void registerAttunementApi(ItemLike tunnelPart, Capability<?> cap,
+    public synchronized static void registerAttunementApi(ItemLike tunnelPart, ItemCapability<?, Void> cap,
             Component description) {
         Objects.requireNonNull(cap, "cap");
         apiAttunements.add(new ApiAttunement(cap, validateTunnelPartItem(tunnelPart), description));
@@ -160,11 +160,11 @@ public final class P2PTunnelAttunement {
     }
 
     record ApiAttunement(
-            Capability<?> capability,
+            ItemCapability<?, Void> capability,
             Item tunnelType,
             Component component) {
         public boolean hasApi(ItemStack stack) {
-            return stack.getCapability(capability).isPresent();
+            return stack.getCapability(capability) != null;
         }
     }
 }

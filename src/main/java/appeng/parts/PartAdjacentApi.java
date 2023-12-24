@@ -2,27 +2,28 @@ package appeng.parts;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 
-import appeng.util.BlockApiCache;
 import appeng.util.Platform;
 
 /**
  * Utility class to cache an API that is adjacent to a part.
  */
-public class PartAdjacentApi<C> {
+public class PartAdjacentApi<T> {
     private final AEBasePart part;
-    private final Capability<C> apiLookup;
-    private BlockApiCache<C> apiCache;
+    private final BlockCapability<T, Direction> capability;
+    private BlockCapabilityCache<T, Direction> cache;
 
-    public PartAdjacentApi(AEBasePart part, Capability<C> apiLookup) {
-        this.apiLookup = apiLookup;
+    public PartAdjacentApi(AEBasePart part, BlockCapability<T, Direction> capability) {
+        this.capability = capability;
         this.part = part;
     }
 
     @Nullable
-    public C find() {
+    public T find() {
         if (!(part.getLevel() instanceof ServerLevel serverLevel)) {
             return null;
         }
@@ -35,10 +36,10 @@ public class PartAdjacentApi<C> {
             return null;
         }
 
-        if (apiCache == null) {
-            apiCache = BlockApiCache.create(apiLookup, serverLevel, targetPos);
+        if (cache == null) {
+            cache = BlockCapabilityCache.create(capability, serverLevel, targetPos, attachedSide.getOpposite());
         }
 
-        return apiCache.find(attachedSide.getOpposite());
+        return cache.getCapability();
     }
 }

@@ -30,8 +30,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
@@ -117,15 +115,6 @@ public class InterfaceBlockEntity extends AENetworkBlockEntity
     @Override
     public ItemStack getMainMenuIcon() {
         return AEBlocks.INTERFACE.stack();
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        LazyOptional<T> result = this.logic.getCapability(capability, facing);
-        if (result.isPresent()) {
-            return result;
-        }
-        return super.getCapability(capability, facing);
     }
 
     @Nullable

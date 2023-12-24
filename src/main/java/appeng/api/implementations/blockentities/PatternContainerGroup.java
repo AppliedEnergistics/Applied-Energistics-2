@@ -13,8 +13,8 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.Capabilities;
 
-import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartHost;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.localization.GuiText;
@@ -68,23 +68,27 @@ public record PatternContainerGroup(
 
     @Nullable
     public static PatternContainerGroup fromMachine(Level level, BlockPos pos, Direction side) {
-        var target = level.getBlockEntity(pos);
-
         // Check for first-class support
-        var craftingMachine = ICraftingMachine.of(level, pos, side, target);
+        var craftingMachine = ICraftingMachine.of(level, pos, side);
         if (craftingMachine != null) {
             return craftingMachine.getCraftingMachineInfo();
         }
 
         // Anything else requires a block entity
+        var target = level.getBlockEntity(pos);
         if (target == null) {
             return null;
         }
 
-        // Heuristic: If it doesn't allow any transfers, ignore it
-        var adaptor = InternalInventory.wrapExternal(target, side);
-        if (adaptor == null || !adaptor.mayAllowInsertion()) {
-            return null;
+        // Heuristic: If it doesn't allow item or fluid transfers, ignore it
+        var itemHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, target.getBlockState(), target,
+                side);
+        if (itemHandler == null || itemHandler.getSlots() <= 0) {
+            var fluidHandler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, target.getBlockState(), target,
+                    side);
+            if (fluidHandler == null || fluidHandler.getTanks() == 0) {
+                return null;
+            }
         }
 
         AEItemKey icon;

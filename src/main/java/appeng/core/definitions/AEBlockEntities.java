@@ -18,8 +18,10 @@
 
 package appeng.core.definitions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -28,6 +30,7 @@ import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
@@ -77,6 +80,8 @@ import appeng.debug.PhantomNodeBlockEntity;
 public final class AEBlockEntities {
 
     private static final Map<ResourceLocation, BlockEntityType<?>> BLOCK_ENTITY_TYPES = new HashMap<>();
+
+    private static final List<BlockEntityTypeWithClass<?>> BLOCK_ENTITY_TYPES_WITH_CLASSES = new ArrayList<>();
 
     public static final BlockEntityType<InscriberBlockEntity> INSCRIBER = create("inscriber",
             InscriberBlockEntity.class,
@@ -174,6 +179,33 @@ public final class AEBlockEntities {
         return ImmutableMap.copyOf(BLOCK_ENTITY_TYPES);
     }
 
+    /**
+     * Get all block entity types whose implementations extends the given base class.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends BlockEntity> List<BlockEntityType<? extends T>> getSubclassesOf(Class<T> baseClass) {
+        var result = new ArrayList<BlockEntityType<? extends T>>();
+        for (var pair : BLOCK_ENTITY_TYPES_WITH_CLASSES) {
+            if (baseClass.isAssignableFrom(pair.implementation)) {
+                result.add((BlockEntityType<? extends T>) pair.type);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Get all block entity types whose implementations implement the given interface.
+     */
+    public static List<BlockEntityType<?>> getImplementorsOf(Class<?> iface) {
+        var result = new ArrayList<BlockEntityType<?>>();
+        for (var pair : BLOCK_ENTITY_TYPES_WITH_CLASSES) {
+            if (iface.isAssignableFrom(pair.implementation)) {
+                result.add(pair.type);
+            }
+        }
+        return result;
+    }
+
     @SuppressWarnings("unchecked")
     @SafeVarargs
     private static <T extends AEBaseBlockEntity> BlockEntityType<T> create(String shortId,
@@ -194,6 +226,7 @@ public final class AEBlockEntities {
         var type = Builder.of(supplier, blocks).build(null);
         typeHolder.set(type); // Makes it available to the supplier used above
         BLOCK_ENTITY_TYPES.put(id, type);
+        BLOCK_ENTITY_TYPES_WITH_CLASSES.add(new BlockEntityTypeWithClass<>(type, entityClass));
 
         AEBaseBlockEntity.registerBlockEntityItem(type, blockDefinitions[0].asItem());
 
@@ -223,6 +256,9 @@ public final class AEBlockEntities {
     @FunctionalInterface
     interface BlockEntityFactory<T extends AEBaseBlockEntity> {
         T create(BlockEntityType<T> type, BlockPos pos, BlockState state);
+    }
+
+    private record BlockEntityTypeWithClass<T extends BlockEntity> (BlockEntityType<T> type, Class<T> implementation) {
     }
 
 }

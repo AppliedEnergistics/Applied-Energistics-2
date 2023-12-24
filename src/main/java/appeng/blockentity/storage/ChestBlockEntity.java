@@ -36,8 +36,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.IFluidTank;
@@ -74,7 +72,6 @@ import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
-import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MachineSource;
@@ -446,7 +443,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public InternalInventory getExposedInventoryForSide(Direction side) {
+    protected InternalInventory getExposedInventoryForSide(Direction side) {
         if (side == this.getFront()) {
             return this.cellInventory;
         } else {
@@ -723,20 +720,5 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     @Override
     public void returnToMainMenu(Player player, ISubMenu subMenu) {
         MenuOpener.returnTo(ChestMenu.TYPE, player, MenuLocators.forBlockEntity(this));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        this.updateHandler();
-        if (capability == net.neoforged.neoforge.common.capabilities.Capabilities.FLUID_HANDLER
-                && this.fluidHandler != null
-                && facing != getFront()) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this.fluidHandler);
-        }
-        if (capability == Capabilities.STORAGE && facing != getFront()) {
-            return (LazyOptional<T>) LazyOptional.of(this::getInventory);
-        }
-        return super.getCapability(capability, facing);
     }
 }

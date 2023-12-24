@@ -32,13 +32,10 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -61,7 +58,6 @@ import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.capabilities.Capabilities;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -517,13 +513,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             return output;
         }
 
-        final BlockEntity te = this.getLevel().getBlockEntity(this.worldPosition.relative(d));
-
-        if (te == null) {
-            return output;
-        }
-
-        var adaptor = InternalInventory.wrapExternal(te, d.getOpposite());
+        var adaptor = InternalInventory.wrapExternal(getLevel(), this.worldPosition.relative(d), d.getOpposite());
         if (adaptor == null) {
             return output;
         }
@@ -581,15 +571,6 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     @Override
     public IUpgradeInventory getUpgrades() {
         return upgrades;
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
-        if (Capabilities.CRAFTING_MACHINE == capability) {
-            return Capabilities.CRAFTING_MACHINE.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-
-        return super.getCapability(capability, facing);
     }
 
     @Nullable

@@ -29,7 +29,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
@@ -37,7 +36,7 @@ public class TransformRecipeSerializer implements RecipeSerializer<TransformReci
 
     public static final TransformRecipeSerializer INSTANCE = new TransformRecipeSerializer();
 
-    private static Codec<TransformRecipe> CODEC = RecordCodecBuilder.create(builder -> {
+    private static final Codec<TransformRecipe> CODEC = RecordCodecBuilder.create(builder -> {
         return builder.group(
                 Ingredient.CODEC_NONEMPTY
                         .listOf()
@@ -47,7 +46,7 @@ public class TransformRecipeSerializer implements RecipeSerializer<TransformReci
                                     .success(NonNullList.of(Ingredient.EMPTY, ingredients.toArray(Ingredient[]::new)));
                         }, DataResult::success)
                         .forGetter(r -> r.ingredients),
-                CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.fieldOf("result").forGetter(r -> r.output),
+                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(r -> r.output),
                 ExtraCodecs
                         .strictOptionalField(TransformCircumstance.CODEC, "circumstance",
                                 TransformCircumstance.fluid(FluidTags.WATER))

@@ -18,6 +18,8 @@
 
 package appeng.recipes.handlers;
 
+import java.util.Objects;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -27,7 +29,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -52,13 +53,9 @@ public class InscriberRecipe implements Recipe<Container> {
     public static final Codec<InscriberRecipe> CODEC = RecordCodecBuilder.create(
             builder -> builder
                     .group(
-                            Ingredient.CODEC_NONEMPTY.fieldOf("middle")
-                                    .fieldOf("ingredients").forGetter(ir -> ir.middleInput),
-                            CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.fieldOf("result").forGetter(ir -> ir.output),
-                            ExtraCodecs.strictOptionalField(Ingredient.CODEC, "top", Ingredient.EMPTY)
-                                    .fieldOf("ingredients").forGetter(ir -> ir.topOptional),
-                            ExtraCodecs.strictOptionalField(Ingredient.CODEC, "bottom", Ingredient.EMPTY)
-                                    .fieldOf("ingredients").forGetter(ir -> ir.bottomOptional),
+                            Ingredients.CODEC.fieldOf("ingredients")
+                                    .forGetter(InscriberRecipe::getSerializedIngredients),
+                            ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(ir -> ir.output),
                             MODE_CODEC.fieldOf("mode").forGetter(ir -> ir.processType))
                     .apply(builder, InscriberRecipe::new));
 
@@ -72,13 +69,17 @@ public class InscriberRecipe implements Recipe<Container> {
     private final ItemStack output;
     private final InscriberProcessType processType;
 
+    private InscriberRecipe(Ingredients ingredients, ItemStack output, InscriberProcessType processType) {
+        this(ingredients.middle(), output, ingredients.top(), ingredients.bottom(), processType);
+    }
+
     public InscriberRecipe(Ingredient middleInput, ItemStack output,
             Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
-        this.middleInput = middleInput;
-        this.output = output;
-        this.topOptional = topOptional;
-        this.bottomOptional = bottomOptional;
-        this.processType = processType;
+        this.middleInput = Objects.requireNonNull(middleInput, "middleInput");
+        this.output = Objects.requireNonNull(output, "output");
+        this.topOptional = Objects.requireNonNull(topOptional, "topOptional");
+        this.bottomOptional = Objects.requireNonNull(bottomOptional, "bottomOptional");
+        this.processType = Objects.requireNonNull(processType, "processType");
     }
 
     @Override
@@ -144,4 +145,26 @@ public class InscriberRecipe implements Recipe<Container> {
     public boolean isSpecial() {
         return true;
     }
+
+    private Ingredients getSerializedIngredients() {
+        return new Ingredients(
+                topOptional,
+                middleInput,
+                bottomOptional);
+    }
+
+    private record Ingredients(
+            Ingredient top,
+            Ingredient middle,
+            Ingredient bottom) {
+        public static final Codec<Ingredients> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+                ExtraCodecs.strictOptionalField(Ingredient.CODEC, "top", Ingredient.EMPTY)
+                        .forGetter(Ingredients::top),
+                Ingredient.CODEC_NONEMPTY.fieldOf("middle")
+                        .forGetter(Ingredients::middle),
+                ExtraCodecs.strictOptionalField(Ingredient.CODEC, "bottom", Ingredient.EMPTY)
+                        .forGetter(Ingredients::bottom))
+                .apply(builder, Ingredients::new));
+    }
+
 }

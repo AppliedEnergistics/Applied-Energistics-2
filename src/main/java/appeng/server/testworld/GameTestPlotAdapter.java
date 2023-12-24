@@ -4,16 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestGenerator;
+import net.minecraft.gametest.framework.GameTestInfo;
+import net.minecraft.gametest.framework.StructureUtils;
 import net.minecraft.gametest.framework.TestFunction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.StructureBlockEntity;
+import net.minecraft.world.level.block.state.properties.StructureMode;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
@@ -80,25 +85,34 @@ public class GameTestPlotAdapter {
     /**
      * Place our test plot when a structure block using a fake plot ID is being spawned.
      */
-    public static void createStructure(StructureBlockEntity structureBlock) {
-        var id = ResourceLocation.tryParse(structureBlock.getStructureName());
-        if (id == null) {
-            return;
-        }
+    public static StructureBlockEntity createStructure(Plot plot, GameTestInfo info, BlockPos pos, ServerLevel level) {
 
-        var plot = TestPlots.getById(id);
+        var plotBounds = plot.getBounds();
+        Vec3i size = new Vec3i(plotBounds.getXSpan(), plotBounds.getYSpan(), plotBounds.getZSpan());
 
-        if (plot != null) {
-            var bounds = plot.getBounds();
-            var origin = structureBlock.getBlockPos()
-                    .offset(structureBlock.getStructurePos())
-                    .offset(getPlotTranslation(bounds));
-            var level = (ServerLevel) structureBlock.getLevel();
-            plot.build(
-                    level,
-                    Platform.getFakePlayer(level, null),
-                    origin);
-        }
+        var boundingbox = StructureUtils.getStructureBoundingBox(pos, size, Rotation.NONE);
+        boundingbox.intersectingChunks().forEach(cp -> level.setChunkForced(cp.x, cp.z, true));
+
+        StructureUtils.clearSpaceForStructure(boundingbox, level);
+
+        level.setBlockAndUpdate(pos, Blocks.STRUCTURE_BLOCK.defaultBlockState());
+        var structureBlock = (StructureBlockEntity) level.getBlockEntity(pos);
+        structureBlock.setMode(StructureMode.LOAD);
+        structureBlock.setIgnoreEntities(false);
+        structureBlock.setStructureName(new ResourceLocation(info.getStructureName()));
+        structureBlock.setMetaData(info.getTestName());
+        structureBlock.setStructureSize(size);
+
+        var bounds = plot.getBounds();
+        var origin = pos
+                .offset(structureBlock.getStructurePos())
+                .offset(getPlotTranslation(bounds));
+        plot.build(
+                level,
+                Platform.getFakePlayer(level, null),
+                origin);
+
+        return structureBlock;
     }
 
     private static BlockPos getPlotTranslation(BoundingBox bounds) {

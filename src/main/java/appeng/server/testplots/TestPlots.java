@@ -848,16 +848,16 @@ public final class TestPlots {
                 .part(Direction.WEST, AEParts.STORAGE_BUS);
         plot.block(origin.west(), AEBlocks.SKY_STONE_TANK);
         plot.block(origin.east(), Blocks.LAVA_CAULDRON);
-        if (SharedConstants.VERSION_STRING.equals("1.20.2")) {
-            return; // TODO: Re-enable in 1.20.3 with cap rework
+        if (SharedConstants.VERSION_STRING.equals("1.20.3")) {
+            return; // TODO: Re-enable in 1.20.4 with cap rework
         }
         plot.test(helper -> {
             helper.succeedWhen(() -> {
                 helper.assertBlockPresent(Blocks.CAULDRON, origin.east());
                 var tank = (SkyStoneTankBlockEntity) helper.getBlockEntity(origin.west());
-                helper.check(tank.getStorage().getFluidAmount() == AEFluidKey.AMOUNT_BUCKET,
+                helper.check(tank.getTank().getFluidAmount() == AEFluidKey.AMOUNT_BUCKET,
                         "Less than a bucket stored");
-                helper.check(tank.getStorage().getFluid().getFluid() == Fluids.LAVA,
+                helper.check(tank.getTank().getFluid().getFluid() == Fluids.LAVA,
                         "Something other than lava stored");
             });
         });

@@ -19,8 +19,7 @@
 package appeng.parts.networking;
 
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -31,7 +30,6 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.blockentity.powersink.IExternalPowerSink;
-import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.helpers.ForgeEnergyAdapter;
 import appeng.items.parts.PartModels;
@@ -43,22 +41,15 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
     @PartModels
     private static final IPartModel MODELS = new PartModel(new ResourceLocation(AppEng.MOD_ID, "part/energy_acceptor"));
     private ForgeEnergyAdapter forgeEnergyAdapter;
-    private LazyOptional<ForgeEnergyAdapter> forgeEnergyAdapterOptional;
 
     public EnergyAcceptorPart(IPartItem<?> partItem) {
         super(partItem);
         this.getMainNode().setIdlePowerUsage(0);
         this.forgeEnergyAdapter = new ForgeEnergyAdapter(this);
-        this.forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
     }
 
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability) {
-        if (capability == Capabilities.FORGE_ENERGY) {
-            return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
-        }
-
-        return super.getCapability(capability);
+    public IEnergyStorage getEnergyStorage() {
+        return forgeEnergyAdapter;
     }
 
     @Override

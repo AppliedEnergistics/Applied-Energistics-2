@@ -28,8 +28,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
@@ -187,10 +185,5 @@ public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
     @Override
     public ItemStack getMainMenuIcon() {
         return new ItemStack(getPartItem());
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
-        return this.logic.getCapability(capabilityClass, this.getSide());
     }
 }

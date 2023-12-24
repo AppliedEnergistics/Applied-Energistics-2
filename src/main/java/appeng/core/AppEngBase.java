@@ -39,7 +39,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
@@ -69,7 +68,7 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.hotkeys.HotkeyActions;
 import appeng.init.InitBlockEntities;
 import appeng.init.InitBlocks;
-import appeng.init.InitCapabilities;
+import appeng.init.InitCapabilityProviders;
 import appeng.init.InitCauldronInteraction;
 import appeng.init.InitDispenserBehavior;
 import appeng.init.InitEntityTypes;
@@ -128,6 +127,8 @@ public abstract class AppEngBase implements AppEng {
         modEventBus.addListener(this::registerRegistries);
         modEventBus.addListener(MainCreativeTab::initExternal);
         modEventBus.addListener(ChunkLoadingService.getInstance()::register);
+        modEventBus.addListener(InitCapabilityProviders::register);
+        modEventBus.addListener(EventPriority.LOWEST, InitCapabilityProviders::registerGenericAdapters);
         modEventBus.addListener((RegisterEvent event) -> {
             if (event.getRegistryKey().equals(Registries.SOUND_EVENT)) {
                 registerSounds(BuiltInRegistries.SOUND_EVENT);
@@ -156,7 +157,6 @@ public abstract class AppEngBase implements AppEng {
             InitVillager.init();
         });
 
-        modEventBus.addListener(InitCapabilities::init);
         modEventBus.addListener(Integrations::enqueueIMC);
         modEventBus.addListener(this::commonSetup);
 
@@ -171,7 +171,6 @@ public abstract class AppEngBase implements AppEng {
 
         NeoForge.EVENT_BUS.addListener(WrenchHook::onPlayerUseBlockEvent);
         NeoForge.EVENT_BUS.addListener(SkyStoneBreakSpeed::handleBreakFaster);
-        NeoForge.EVENT_BUS.addGenericListener(BlockEntity.class, InitCapabilities::registerGenericInvWrapper);
         // Workaround for https://github.com/MinecraftForge/MinecraftForge/issues/9158.
         // Can be removed once it's fixed in Forge.
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, (PlayerInteractEvent.RightClickBlock event) -> {

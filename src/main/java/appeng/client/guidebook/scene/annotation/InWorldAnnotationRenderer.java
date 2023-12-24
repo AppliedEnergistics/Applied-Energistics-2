@@ -33,7 +33,7 @@ public final class InWorldAnnotationRenderer {
             true,
             RenderType.CompositeState.builder()
                     .setLightmapState(RenderType.LIGHTMAP)
-                    .setShaderState(RenderType.RENDERTYPE_TRANSLUCENT_NO_CRUMBLING_SHADER)
+                    .setShaderState(RenderType.RENDERTYPE_TRANSLUCENT_SHADER)
                     .setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .setDepthTestState(new RenderStateShard.DepthTestStateShard(">", GL11.GL_GREATER))

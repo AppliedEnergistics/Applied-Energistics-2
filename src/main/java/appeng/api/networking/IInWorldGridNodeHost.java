@@ -27,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.AutoRegisterCapability;
 
 import appeng.api.util.AECableType;
 
@@ -37,7 +36,6 @@ import appeng.api.util.AECableType;
  * <p>
  * Can either be implemented by the block entity itself, or provided via a lookup/capability with null direction.
  */
-@AutoRegisterCapability
 public interface IInWorldGridNodeHost {
     /**
      * get the grid node for a particular side of a block, you can return null, by returning a valid node later and

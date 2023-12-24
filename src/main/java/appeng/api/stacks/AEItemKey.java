@@ -1,7 +1,5 @@
 package appeng.api.stacks;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Objects;
@@ -21,28 +19,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.capabilities.CapabilityProvider;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
 import appeng.util.Platform;
 
 public final class AEItemKey extends AEKey {
-    private static final MethodHandle SERIALIZE_CAPS_HANDLE;
-    static {
-        try {
-            var method = CapabilityProvider.class.getDeclaredMethod("serializeCaps");
-            method.setAccessible(true);
-            SERIALIZE_CAPS_HANDLE = MethodHandles.lookup().unreflect(method);
-        } catch (Exception exception) {
-            throw new RuntimeException("Failed to create serializeCaps method handle", exception);
-        }
-    }
-
     @Nullable
     private static CompoundTag serializeStackCaps(ItemStack stack) {
         try {
-            var caps = (CompoundTag) SERIALIZE_CAPS_HANDLE.invokeExact((CapabilityProvider) stack);
+
+            var caps = stack.serializeAttachments();
             // Ensure stacks with no serializable cap providers are treated the same as stacks with no caps!
             return caps == null || caps.isEmpty() ? null : caps;
         } catch (Throwable ex) {
@@ -264,19 +251,19 @@ public final class AEItemKey extends AEKey {
         data.writeVarInt(Item.getId(item));
         CompoundTag compoundTag = null;
         if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
-            compoundTag = item.getShareTag(toStack());
+            compoundTag = internedTag.tag;
         }
         data.writeNbt(compoundTag);
+        data.writeNbt(internedCaps.tag);
     }
 
     public static AEItemKey fromPacket(FriendlyByteBuf data) {
         int i = data.readVarInt();
         var item = Item.byId(i);
-        var shareTag = data.readNbt();
-        var stack = new ItemStack(item);
-        stack.readShareTag(shareTag);
-        return new AEItemKey(item, InternedTag.of(stack.getTag(), true),
-                InternedTag.of(serializeStackCaps(stack), true));
+        var compoundTag = data.readNbt();
+        var attachedCapsData = data.readNbt();
+        return new AEItemKey(item, InternedTag.of(compoundTag, true),
+                InternedTag.of(attachedCapsData, true));
     }
 
     @Override

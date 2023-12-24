@@ -182,7 +182,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos,
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos,
             Player player) {
         var v3 = target.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
         var sp = this.cb(level, pos).selectPartLocal(v3);
