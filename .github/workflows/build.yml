@@ -55,13 +55,13 @@ jobs:
         if: success() || failure()
         run: npx junit-report-merger junit.xml "**/TEST-*.xml"
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: test-results
           path: junit.xml
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: dist
           path: build/libs/
