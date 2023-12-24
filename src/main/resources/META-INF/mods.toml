@@ -1,10 +1,8 @@
 modLoader="javafml"
 loaderVersion="[1,)"
-#updateJSONURL=""
 issueTrackerURL="https://github.com/AppliedEnergistics/Applied-Energistics-2/issues"
 displayURL="https://github.com/AppliedEnergistics/Applied-Energistics-2"
 logoFile="logo.png"
-#credits="Thanks for this example mod goes to Java"
 authors="TeamAppliedEnergistics"
 license="See GitHub repository for details"
 
@@ -19,35 +17,35 @@ config="ae2.mixins.json"
 
 [[dependencies.ae2]]
     modId="neoforge"
-    mandatory=true
+    type="REQUIRED"
     versionRange="${neoforge_version}"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.ae2]]
     modId="minecraft"
-    mandatory=true
+    type="REQUIRED"
     versionRange="${minecraft_version}"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.ae2]]
     modId="jei"
-    mandatory=false
+    type="OPTIONAL"
     versionRange="${jei_version}"
     ordering="AFTER"
     side="CLIENT"
 
 [[dependencies.ae2]]
     modId="theoneprobe"
-    mandatory=false
+    type="OPTIONAL"
     versionRange="${top_version}"
     ordering="AFTER"
     side="BOTH"
 
 [[dependencies.ae2]]
     modId="jade"
-    mandatory=false
+    type="OPTIONAL"
     versionRange="${jade_version}"
     ordering="AFTER"
     side="BOTH"
