@@ -144,7 +144,8 @@ public final class Guide implements PageCollection {
             PackRepository packRepository = new PackRepository(
                     new ServerPacksSource(new DirectoryValidator(path -> false)));
             net.neoforged.neoforge.resource.ResourcePackLoader.loadResourcePacks(packRepository,
-                    net.neoforged.neoforge.server.ServerLifecycleHooks::buildPackFinder);
+                    map -> net.neoforged.neoforge.resource.ResourcePackLoader.buildPackFinder(map,
+                            PackType.SERVER_DATA));
             packRepository.reload();
             packRepository.setSelected(packRepository.getAvailableIds());
 

@@ -251,19 +251,19 @@ public final class AEItemKey extends AEKey {
         data.writeVarInt(Item.getId(item));
         CompoundTag compoundTag = null;
         if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
-            compoundTag = item.getShareTag(toStack());
+            compoundTag = internedTag.tag;
         }
         data.writeNbt(compoundTag);
+        data.writeNbt(internedCaps.tag);
     }
 
     public static AEItemKey fromPacket(FriendlyByteBuf data) {
         int i = data.readVarInt();
         var item = Item.byId(i);
-        var shareTag = data.readNbt();
-        var stack = new ItemStack(item);
-        stack.readShareTag(shareTag);
-        return new AEItemKey(item, InternedTag.of(stack.getTag(), true),
-                InternedTag.of(serializeStackCaps(stack), true));
+        var compoundTag = data.readNbt();
+        var attachedCapsData = data.readNbt();
+        return new AEItemKey(item, InternedTag.of(compoundTag, true),
+                InternedTag.of(attachedCapsData, true));
     }
 
     @Override

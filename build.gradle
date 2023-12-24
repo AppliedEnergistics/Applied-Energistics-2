@@ -24,8 +24,6 @@ plugins {
     id "de.undercouch.download"
 }
 
-evaluationDependsOn(":libs:markdown")
-
 sourceSets {
     main {
         java {
@@ -35,8 +33,6 @@ sourceSets {
         resources {
             srcDir 'src/generated/resources'
         }
-    }
-    test {
     }
     buildtools
 }
@@ -56,6 +52,55 @@ configurations {
     configurations.runtimeClasspath.extendsFrom(internal)
     configurations.testCompileClasspath.extendsFrom(internal)
     configurations.testRuntimeClasspath.extendsFrom(internal)
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url "https://maven.shedaniel.me/"
+        content {
+            includeGroup "me.shedaniel"
+            includeGroup "me.shedaniel.cloth"
+            includeGroup "dev.architectury"
+        }
+    }
+    maven {
+        url "https://maven2.bai.lol"
+        content {
+            includeGroup "mcp.mobius.waila"
+            includeGroup "lol.bai"
+        }
+    }
+    maven {
+        name 'modmaven'
+        url "https://modmaven.dev/"
+        content {
+            includeGroup "mezz.jei"
+        }
+    }
+    maven {
+        name 'cursemaven'
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven { // for TOP
+        url "https://maven.k-4u.nl/"
+        content {
+            includeGroup "mcjty"
+        }
+    }
+    maven {
+        url "https://maven.parchmentmc.org//"
+        content {
+            includeGroup "org.parchmentmc.data"
+        }
+    }
+    maven {
+        url "https://maven.neoforged.net/snapshots/"
+    }
 }
 
 dependencies {
@@ -131,6 +176,9 @@ dependencies {
     testImplementation("cpw.mods:securejarhandler:2.1.20")
 
     compileOnly 'org.apache.commons:commons-configuration2:2.9.0'
+
+    buildtoolsImplementation 'de.siegmar:fastcsv:2.1.0'
+    buildtoolsImplementation 'com.google.code.gson:gson:2.8.9'
 }
 archivesBaseName = artifact_basename
 
@@ -148,46 +196,6 @@ allprojects {
         options.encoding = 'UTF-8'
         options.deprecation = false
         options.compilerArgs << "-Xmaxerrs" << "9999"
-    }
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-        url "https://maven.shedaniel.me/"
-        content {
-            includeGroup "me.shedaniel"
-            includeGroup "me.shedaniel.cloth"
-            includeGroup "dev.architectury"
-        }
-    }
-    maven {
-        url "https://maven2.bai.lol"
-        content {
-            includeGroup "mcp.mobius.waila"
-            includeGroup "lol.bai"
-        }
-    }
-    maven {
-        name 'modmaven'
-        url "https://modmaven.dev/"
-        content {
-            includeGroup "mezz.jei"
-        }
-    }
-    maven {
-        name 'cursemaven'
-        url "https://www.cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-    maven { // for TOP
-        url "https://maven.k-4u.nl/"
-        content {
-            includeGroup "mcjty"
-        }
     }
 }
 
@@ -246,13 +254,14 @@ test {
             }.collect(java.util.stream.Collectors.joining(File.pathSeparator))
     )
 
-    def fmlVersion = "1.0.16"
+    def fmlVersion = "2.0.1"
 
     environment("fmljunit.assetsDir", new File(gradle.gradleUserHomeDir, "caches/minecraft/assets/${minecraft_version}/").absolutePath)
     environment("fmljunit.neoForgeVersion", neoforge_version)
     environment("fmljunit.fmlVersion", fmlVersion)
     environment("fmljunit.mcVersion", minecraft_version)
-    environment("fmljunit.neoFormVersion", "20231019.002635")
+    environment("fmljunit.neoFormVersion", neoFormRuntime.findIn(configurations.runtimeClasspath).first().specification.neoFormVersion)
+    println(neoFormRuntime.findIn(configurations.runtimeClasspath).first().specification.neoFormVersion)
 
     jvmArgumentProviders.add(new CommandLineArgumentProvider() {
         @Override
@@ -298,6 +307,7 @@ test {
             "--add-exports", "jdk.naming.dns/com.sun.jndi.dns=java.naming",
             "-DlegacyClassPath.file=$aeDir/build/test_classpath.txt",
             "-Dfml.gameLayerLibraries=events-${fmlVersion}.jar",
+            "-DignoreList=securejarhandler-2.1.24.jar,asm-9.5.jar,asm-commons-9.5.jar,asm-tree-9.5.jar,asm-util-9.5.jar,asm-analysis-9.5.jar,bootstraplauncher-1.1.2.jar,JarJarFileSystems-0.4.0.jar,events-2.0.1.jar,core-2.0.1.jar,language-java-2.0.1.jar,language-lowcode-2.0.1.jar,language-minecraft-2.0.1.jar,mixinextras-neoforge-0.3.2.jar,client-extra,neoforge-",
             "-DmergeModules=jna-5.10.0.jar,jna-platform-5.10.0.jar",
             "-Djava.net.preferIPv6Addresses=system",
             "-Dfml.pluginLayerLibraries=core-${fmlVersion}.jar,language-java-${fmlVersion}.jar,language-lowcode-${fmlVersion}.jar,language-minecraft-${fmlVersion}.jar",
