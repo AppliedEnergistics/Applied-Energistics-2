@@ -44,16 +44,10 @@ configurations {
         transitive = false
     }
     buildtoolsImplementation.extendsFrom(compileClasspath)
-
-    internal {
-        visible = false
-        canBeConsumed = false
-        canBeResolved = false
-    }
-    configurations.compileClasspath.extendsFrom(internal)
-    configurations.runtimeClasspath.extendsFrom(internal)
-    configurations.testCompileClasspath.extendsFrom(internal)
-    configurations.testRuntimeClasspath.extendsFrom(internal)
+    // Dependencies only used for the guide export, but not shipped
+    guideExportOnly
+    configurations.compileClasspath.extendsFrom(guideExportOnly)
+    configurations.runtimeClasspath.extendsFrom(guideExportOnly)
 }
 
 repositories {
@@ -127,7 +121,7 @@ dependencies {
         transitive = false
     }
     // Used for the guide export
-    implementation("org.bytedeco:ffmpeg-platform:${ffmpeg_version}")
+    guideExportOnly("org.bytedeco:ffmpeg-platform:${ffmpeg_version}")
 
     implementation "net.neoforged:neoforge:${neoforge_version}"
 
@@ -355,11 +349,8 @@ runs {
         modSources = [sourceSets.main]
 
         dependencies {
-            runtime project(":libs:markdown")
-            runtime "io.methvin:directory-watcher:${directory_watcher_version}"
-            runtime "org.yaml:snakeyaml:${snakeyaml_version}"
-            runtime "com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}"
-            runtime "org.bytedeco:ffmpeg-platform:${ffmpeg_version}"
+            runtime configurations.shaded
+            runtime configurations.guideExportOnly
         }
     }
     client {

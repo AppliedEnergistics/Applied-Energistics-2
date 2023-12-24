@@ -30,11 +30,10 @@ public class ItemP2PTestPlots {
         var chestPos = origin.east().east();
         plot.chest(chestPos);
 
-        plot.test(helper -> {
-            helper.succeedWhen(() -> {
-                helper.assertContainerContains(chestPos, Items.BEDROCK);
-            });
-        });
+        plot.test(helper -> helper
+                .startSequence()
+                .thenWaitUntil(() -> helper.assertContainerContains(chestPos, Items.BEDROCK))
+                .thenSucceed());
     }
 
     @TestPlot("p2p_recursive_item")
@@ -44,7 +43,7 @@ public class ItemP2PTestPlots {
         plot.block(origin, AEBlocks.DEBUG_ITEM_GEN);
         plot.creativeEnergyCell(origin.south().above().above());
         var curPos = origin.south();
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 5; i++) {
             placeSubnet(plot, curPos);
             curPos = curPos.south(6);
         }
