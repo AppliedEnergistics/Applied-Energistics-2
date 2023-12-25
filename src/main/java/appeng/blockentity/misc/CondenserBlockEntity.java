@@ -18,12 +18,9 @@
 
 package appeng.blockentity.misc;
 
-import java.util.Collections;
-import java.util.Iterator;
-
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
@@ -63,7 +60,9 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     private final AppEngInternalInventory outputSlot = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory storageSlot = new AppEngInternalInventory(this, 1);
     private final InternalInventory inputSlot = new CondenseItemHandler();
-    private final Storage<FluidVariant> fluidHandler = new FluidHandler();
+    private final Storage<FluidVariant> fluidHandler = new CondenseStorage<>(
+            1.0 / AEKeyType.fluids().getAmountPerOperation(),
+            AEFluidKey.AMOUNT_BUCKET);
 
     /**
      * This is used to expose a fake ME subnetwork that is only composed of this condenser. The purpose of this is to
@@ -225,27 +224,30 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return ItemStack.EMPTY;
         }
-    }
-
-    /**
-     * A fluid handler that exposes a 1 bucket tank that can only be filled, and - when filled - will add power to this
-     * condenser.
-     */
-    private class FluidHandler extends SnapshotParticipant<Double> implements InsertionOnlyStorage<FluidVariant> {
-        private double pendingEnergy = 0;
 
         @Override
-        public long insert(FluidVariant resource, long maxAmount, TransactionContext transaction) {
-            // We allow up to a bucket per insert
-            var amount = Math.min(AEFluidKey.AMOUNT_BUCKET, maxAmount);
-            updateSnapshots(transaction);
-            pendingEnergy += amount / AEKeyType.fluids().getAmountPerOperation();
-            return amount;
+        protected Storage<ItemVariant> createStorage() {
+            return new CondenseStorage<>(1.0, Long.MAX_VALUE);
+        }
+    }
+
+    private class CondenseStorage<T> extends SnapshotParticipant<Double> implements InsertionOnlyStorage<T> {
+        private double pendingEnergy = 0;
+        private final double energyFactor;
+        private final long maxAmountPerOperation;
+
+        public CondenseStorage(double energyFactor, long maxAmountPerOperation) {
+            this.energyFactor = energyFactor;
+            this.maxAmountPerOperation = maxAmountPerOperation;
         }
 
         @Override
-        public Iterator<StorageView<FluidVariant>> iterator() {
-            return Collections.emptyIterator();
+        public long insert(T resource, long maxAmount, TransactionContext transaction) {
+            // Clamp the amount per operation
+            var amount = Math.min(maxAmountPerOperation, maxAmount);
+            updateSnapshots(transaction);
+            pendingEnergy += amount * energyFactor;
+            return amount;
         }
 
         @Override
