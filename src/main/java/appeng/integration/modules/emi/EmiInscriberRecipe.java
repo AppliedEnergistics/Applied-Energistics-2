@@ -17,7 +17,7 @@ class EmiInscriberRecipe extends BasicEmiRecipe {
     private final InscriberRecipe recipe;
 
     public EmiInscriberRecipe(RecipeHolder<InscriberRecipe> holder) {
-        super(CATEGORY, holder.id(), 90, 64);
+        super(CATEGORY, holder.id(), 97, 64);
 
         recipe = holder.value();
 
@@ -41,9 +41,13 @@ class EmiInscriberRecipe extends BasicEmiRecipe {
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
-        ResourceLocation location = AppEng.makeId("textures/guis/inscriber.png");
+        ResourceLocation background = AppEng.makeId("textures/guis/inscriber.png");
 
-        widgets.addTexture(location, 0, 0, 90, 64, 44, 15);
+        widgets.addTexture(background, 0, 0, 97, 64, 44, 15);
+
+        widgets.addAnimatedTexture(background, 91, 24, 6, 18, 135, 177,
+                2000, false, true, false
+        );
 
         widgets.addSlot(EmiIngredient.of(recipe.getTopOptional()), 0, 0)
                 .drawBack(false);

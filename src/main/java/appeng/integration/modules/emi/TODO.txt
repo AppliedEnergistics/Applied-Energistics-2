@@ -1,1 +1,0 @@
-- Item tooltips show in the P2P attunement category inputs, but should be hidden

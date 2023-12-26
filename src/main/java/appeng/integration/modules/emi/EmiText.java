@@ -8,9 +8,10 @@ import java.util.Locale;
  * EMI integration translations.
  */
 public enum EmiText implements LocalizationEnum {
-    CATEGORY_INSCRIBER("Inscriber"),
     CATEGORY_CHARGER("Charger"),
+    CATEGORY_CONDENSER("Condenser"),
     CATEGORY_ENTROPY_MANIPULATOR("Entropy Manipulator"),
+    CATEGORY_INSCRIBER("Inscriber")
     ;
 
     private final String englishText;
