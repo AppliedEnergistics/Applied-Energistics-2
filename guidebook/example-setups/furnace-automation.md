@@ -39,7 +39,7 @@ Here's how you can do it with just 1 channel:
   </BoxAnnotation>
 
 <BoxAnnotation color="#dddddd" min="0 2 0" max="1 2.3 1">
-        (4) Storage Bus #2: IFiltered to blacklist coal, using an inverter card.
+        (4) Storage Bus #2: Filtered to blacklist coal, using an inverter card.
         <Row><ItemImage id="minecraft:coal" scale="2" /><ItemImage id="inverter_card" scale="2" /></Row>
   </BoxAnnotation>
 

@@ -2,7 +2,7 @@
 navigation:
   parent: example-setups/example-setups-index.md
   title: Processor Automation
-  icon: inscriber
+  icon: logic_processor
 ---
 
 # Automation of Processor Production
@@ -22,6 +22,15 @@ setup. If you just want to automate a processors standalone, replace the pattern
 This happens to be backwards-compatible
 with previous AE2 versions, because even if the <ItemLink id="inscriber" />s are sided, the pipe subnets still insert to and
 extract from the correct faces.
+
+## A Lesson In Pattern Encoding
+
+Often, the [pattern](../items-blocks-machines/patterns.md) you need to encode **WILL NOT MATCH WHAT YOU SEE IN JEI**, or what JEI outputs when you click the + button.
+In this case, JEI will output 2 separate patterns, one for the printed components and one for the final assembly, and the printed
+components pattern will include a [press](../items-blocks-machines/presses.md). This is not what we want, because this is not what the setup will do. We want 1 pattern that
+inputs the raw resources and outputs the completed processor, and since the press is already in the inscriber, we should not put it in the pattern.
+
+---
 
 <GameScene zoom="4" interactive={true}>
   <ImportStructure src="../assets/assemblies/processor_automation.snbt" />
@@ -141,6 +150,7 @@ extract from the correct faces.
 ## Configurations
 
 * The <ItemLink id="pattern_provider" /> (1) is in its default configuration, with the relevant <ItemLink id="processing_pattern" />s.
+  Note that the patterns go direct from raw resources to the completed processor, and do **NOT** include the [press](../items-blocks-machines/presses.md).
 
   ![Logic Pattern](../assets/diagrams/logic_pattern.png)
   ![Calculation Pattern](../assets/diagrams/calculation_pattern.png)

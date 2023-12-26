@@ -1,8 +1,8 @@
 ---
 navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
-  title: FLuix Researcher (Villager)
-  icon: minecraft_emerald
+  title: Fluix Researcher (Villager)
+  icon: minecraft:emerald
   position: 310
 categories:
 - tools
