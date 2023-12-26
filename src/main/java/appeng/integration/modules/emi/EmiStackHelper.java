@@ -1,26 +1,26 @@
 package appeng.integration.modules.emi;
 
-import appeng.api.integrations.emi.EmiStackConverter;
-import appeng.api.integrations.emi.EmiStackConverters;
-import appeng.api.stacks.GenericStack;
-import dev.emi.emi.api.recipe.EmiRecipe;
-import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.EmiStack;
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import org.jetbrains.annotations.Nullable;
+
+import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
+
+import appeng.api.integrations.emi.EmiStackConverters;
+import appeng.api.stacks.GenericStack;
 
 public final class EmiStackHelper {
     private EmiStackHelper() {
     }
 
     @Nullable
-    public static GenericStack ingredientToStack(EmiStack emiStack) {
+    public static GenericStack toGenericStack(EmiStack emiStack) {
         for (var converter : EmiStackConverters.getConverters()) {
-            var stack = tryConvertToStack(converter, emiStack);
+            var stack = converter.toGenericStack(emiStack);
             if (stack != null) {
                 return stack;
             }
@@ -30,8 +30,15 @@ public final class EmiStackHelper {
     }
 
     @Nullable
-    private static GenericStack tryConvertToStack(EmiStackConverter converter, EmiStack emiStack) {
-        return converter.getStackFromIngredient(emiStack);
+    public static EmiStack toEmiStack(GenericStack stack) {
+        for (var converter : EmiStackConverters.getConverters()) {
+            var emiStack = converter.toEmiStack(stack);
+            if (emiStack != null) {
+                return emiStack;
+            }
+        }
+
+        return null;
     }
 
     public static List<List<GenericStack>> ofInputs(EmiRecipe emiRecipe) {
@@ -40,7 +47,7 @@ public final class EmiStackHelper {
 
     public static List<GenericStack> ofOutputs(EmiRecipe emiRecipe) {
         return emiRecipe.getOutputs().stream()
-                .map(EmiStackHelper::ingredientToStack)
+                .map(EmiStackHelper::toGenericStack)
                 .filter(Objects::nonNull)
                 .toList();
     }
@@ -52,7 +59,7 @@ public final class EmiStackHelper {
 
         return emiIngredient.getEmiStacks()
                 .stream()
-                .map(EmiStackHelper::ingredientToStack)
+                .map(EmiStackHelper::toGenericStack)
                 .filter(Objects::nonNull)
                 .toList();
     }

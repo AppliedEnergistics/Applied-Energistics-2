@@ -1,20 +1,23 @@
 package appeng.integration.modules.emi;
 
-import appeng.blockentity.misc.ChargerBlockEntity;
-import appeng.blockentity.misc.CrankBlockEntity;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.localization.ItemModText;
-import appeng.recipes.handlers.ChargerRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+
 import dev.emi.emi.api.recipe.BasicEmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
-import net.minecraft.world.item.crafting.RecipeHolder;
+
+import appeng.blockentity.misc.ChargerBlockEntity;
+import appeng.blockentity.misc.CrankBlockEntity;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.localization.ItemModText;
+import appeng.recipes.handlers.ChargerRecipe;
 
 class EmiChargerRecipe extends BasicEmiRecipe {
-    public static final EmiRecipeCategory CATEGORY = new AppEngRecipeCategory("charger", EmiStack.of(AEBlocks.CHARGER), EmiText.CATEGORY_CHARGER);
+    public static final EmiRecipeCategory CATEGORY = new AppEngRecipeCategory("charger", EmiStack.of(AEBlocks.CHARGER),
+            EmiText.CATEGORY_CHARGER);
     private final ChargerRecipe recipe;
 
     private final EmiIngredient ingredient;

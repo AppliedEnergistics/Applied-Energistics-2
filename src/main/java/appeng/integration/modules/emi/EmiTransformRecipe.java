@@ -1,10 +1,11 @@
 package appeng.integration.modules.emi;
 
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.localization.ItemModText;
-import appeng.recipes.transform.TransformCircumstance;
-import appeng.recipes.transform.TransformRecipe;
+import java.util.List;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.block.Blocks;
+
 import dev.emi.emi.api.recipe.BasicEmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiTexture;
@@ -12,14 +13,15 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.TextWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.block.Blocks;
 
-import java.util.List;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.localization.ItemModText;
+import appeng.recipes.transform.TransformRecipe;
 
 class EmiTransformRecipe extends BasicEmiRecipe {
-    public static final EmiRecipeCategory CATEGORY = new AppEngRecipeCategory("item_transformation", EmiStack.of(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED), ItemModText.TRANSFORM_CATEGORY);
+    public static final EmiRecipeCategory CATEGORY = new AppEngRecipeCategory("item_transformation",
+            EmiStack.of(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED), ItemModText.TRANSFORM_CATEGORY);
 
     private final TransformRecipe recipe;
 
@@ -68,8 +70,7 @@ class EmiTransformRecipe extends BasicEmiRecipe {
         final int col3 = col2 + arrow1.getBounds().width() + 6;
         if (recipe.circumstance.isFluid()) {
             var ingredient = EmiIngredient.of(
-                    recipe.circumstance.getFluidsForRendering().stream().map(EmiStack::of).toList()
-            );
+                    recipe.circumstance.getFluidsForRendering().stream().map(EmiStack::of).toList());
             widgets.add(new EmiFluidBlockSlot(ingredient, col3 - 1, yOffset - 1)
                     .drawBack(false));
         } else if (recipe.circumstance.isExplosion()) {

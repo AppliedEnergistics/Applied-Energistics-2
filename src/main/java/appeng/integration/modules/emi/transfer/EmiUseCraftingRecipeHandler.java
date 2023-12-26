@@ -1,11 +1,12 @@
 package appeng.integration.modules.emi.transfer;
 
-import appeng.core.localization.ItemModText;
-import appeng.integration.modules.jeirei.CraftingHelper;
-import appeng.integration.modules.jeirei.TransferHelper;
-import appeng.menu.me.items.CraftingTermMenu;
-import dev.emi.emi.api.recipe.EmiRecipe;
-import dev.emi.emi.api.stack.EmiStack;
+import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
+import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -16,12 +17,13 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.stack.EmiStack;
 
-import static appeng.integration.modules.jeirei.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
-import static appeng.integration.modules.jeirei.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
+import appeng.core.localization.ItemModText;
+import appeng.integration.modules.itemlists.CraftingHelper;
+import appeng.integration.modules.itemlists.TransferHelper;
+import appeng.menu.me.items.CraftingTermMenu;
 
 /**
  * Recipe transfer implementation with the intended purpose of actually crafting an item. Most of the work is done
@@ -70,7 +72,8 @@ public class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends Abs
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
             // All missing, can't do much...
-            return Result.createFailed(ItemModText.NO_ITEMS.text()); // TODO .renderer(createErrorRenderer(missingSlots));
+            return Result.createFailed(ItemModText.NO_ITEMS.text()); // TODO
+                                                                     // .renderer(createErrorRenderer(missingSlots));
         }
 
         if (!doTransfer) {
@@ -101,8 +104,7 @@ public class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends Abs
         for (int i = 0; i < Math.min(display.getInputs().size(), ingredients.size()); i++) {
             var ingredient = Ingredient.of(display.getInputs().get(i).getEmiStacks().stream()
                     .map(EmiStack::getItemStack)
-                    .filter(is -> !is.isEmpty())
-            );
+                    .filter(is -> !is.isEmpty()));
             ingredients.set(i, ingredient);
         }
 
@@ -136,25 +138,26 @@ public class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends Abs
     /**
      * Draw missing slots.
      */
-    // TODO private static TransferHandlerRenderer createErrorRenderer(CraftingTermMenu.MissingIngredientSlots indices) {
-    // TODO     return (guiGraphics, mouseX, mouseY, delta, widgets, bounds, display) -> {
-    // TODO         int i = 0;
-    // TODO         for (Widget widget : widgets) {
-    // TODO             if (widget instanceof Slot slot && slot.getNoticeMark() == Slot.INPUT) {
-    // TODO                 boolean missing = indices.missingSlots().contains(i);
-    // TODO                 boolean craftable = indices.craftableSlots().contains(i);
-    // TODO                 i++;
-    // TODO                 if (missing || craftable) {
-    // TODO                     var poseStack = guiGraphics.pose();
-    // TODO                     poseStack.pushPose();
-    // TODO                     poseStack.translate(0, 0, 400);
-    // TODO                     Rectangle innerBounds = slot.getInnerBounds();
-    // TODO                     guiGraphics.fill(innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
-    // TODO                             innerBounds.getMaxY(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
-    // TODO                     poseStack.popPose();
-    // TODO                 }
-    // TODO             }
-    // TODO         }
-    // TODO     };
+    // TODO private static TransferHandlerRenderer createErrorRenderer(CraftingTermMenu.MissingIngredientSlots indices)
+    // {
+    // TODO return (guiGraphics, mouseX, mouseY, delta, widgets, bounds, display) -> {
+    // TODO int i = 0;
+    // TODO for (Widget widget : widgets) {
+    // TODO if (widget instanceof Slot slot && slot.getNoticeMark() == Slot.INPUT) {
+    // TODO boolean missing = indices.missingSlots().contains(i);
+    // TODO boolean craftable = indices.craftableSlots().contains(i);
+    // TODO i++;
+    // TODO if (missing || craftable) {
+    // TODO var poseStack = guiGraphics.pose();
+    // TODO poseStack.pushPose();
+    // TODO poseStack.translate(0, 0, 400);
+    // TODO Rectangle innerBounds = slot.getInnerBounds();
+    // TODO guiGraphics.fill(innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
+    // TODO innerBounds.getMaxY(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
+    // TODO poseStack.popPose();
+    // TODO }
+    // TODO }
+    // TODO }
+    // TODO };
     // TODO }
 }

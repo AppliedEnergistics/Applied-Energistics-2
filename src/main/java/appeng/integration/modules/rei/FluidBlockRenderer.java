@@ -13,7 +13,7 @@ import me.shedaniel.rei.api.common.entry.EntryStack;
 
 import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEFluidKey;
-import appeng.integration.modules.jeirei.FluidBlockRendering;
+import appeng.integration.modules.itemlists.FluidBlockRendering;
 
 public class FluidBlockRenderer implements EntryRenderer<FluidStack> {
     @Override

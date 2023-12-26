@@ -1,4 +1,4 @@
-package appeng.integration.modules.jeirei;
+package appeng.integration.modules.itemlists;
 
 import java.util.ArrayList;
 import java.util.List;

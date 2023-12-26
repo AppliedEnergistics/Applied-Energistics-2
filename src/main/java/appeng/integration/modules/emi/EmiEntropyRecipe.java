@@ -1,10 +1,13 @@
 package appeng.integration.modules.emi;
 
-import appeng.core.AELog;
-import appeng.core.AppEng;
-import appeng.core.localization.ItemModText;
-import appeng.items.tools.powered.EntropyManipulatorItem;
-import appeng.recipes.entropy.EntropyRecipe;
+import java.util.List;
+
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+
 import dev.emi.emi.api.recipe.BasicEmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiRenderable;
@@ -12,20 +15,19 @@ import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.TextWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.FlowingFluid;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 
-import java.util.List;
-
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.core.localization.ItemModText;
+import appeng.items.tools.powered.EntropyManipulatorItem;
+import appeng.recipes.entropy.EntropyRecipe;
 
 /**
  * Adapts {@link appeng.recipes.entropy.EntropyRecipe} for EMI.
  */
 public class EmiEntropyRecipe extends BasicEmiRecipe {
-    public static final EmiRecipeCategory CATEGORY = new AppEngRecipeCategory("entropy", createIcon(), EmiText.CATEGORY_ENTROPY_MANIPULATOR);
+    public static final EmiRecipeCategory CATEGORY = new AppEngRecipeCategory("entropy", createIcon(),
+            EmiText.CATEGORY_ENTROPY_MANIPULATOR);
 
     private static final int BODY_TEXT_COLOR = 0x7E7E7E;
 
@@ -45,8 +47,7 @@ public class EmiEntropyRecipe extends BasicEmiRecipe {
         var input = recipe.getInput();
         inputBlockIngredient = createIngredient(
                 input.block().map(EntropyRecipe.BlockInput::block).orElse(null),
-                input.fluid().map(EntropyRecipe.FluidInput::fluid).orElse(null)
-        );
+                input.fluid().map(EntropyRecipe.FluidInput::fluid).orElse(null));
         inputFluidFlowing = input.fluid().map(EntropyRecipe.FluidInput::fluid).map(this::isFlowing).orElse(false);
         inputs.add(inputBlockIngredient);
 
@@ -54,8 +55,7 @@ public class EmiEntropyRecipe extends BasicEmiRecipe {
         var output = recipe.getOutput();
         outputBlockIngredient = createIngredient(
                 output.block().map(EntropyRecipe.BlockOutput::block).orElse(null),
-                output.fluid().map(EntropyRecipe.FluidOutput::fluid).orElse(null)
-        );
+                output.fluid().map(EntropyRecipe.FluidOutput::fluid).orElse(null));
         outputFluidFlowing = output.fluid().map(EntropyRecipe.FluidOutput::fluid).map(this::isFlowing).orElse(false);
         if (!outputBlockIngredient.isEmpty()) {
             outputs.add(outputBlockIngredient);
@@ -133,8 +133,7 @@ public class EmiEntropyRecipe extends BasicEmiRecipe {
                 16,
                 16,
                 16,
-                16
-        );
+                16);
     }
 
     private static EmiStack createIngredient(Block block, Fluid fluid) {

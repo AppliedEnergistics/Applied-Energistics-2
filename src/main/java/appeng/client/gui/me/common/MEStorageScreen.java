@@ -80,12 +80,12 @@ import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.InventoryAction;
+import appeng.integration.abstraction.ItemListMod;
 import appeng.items.storage.ViewCellItem;
 import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
-import appeng.util.ExternalSearch;
 import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
@@ -200,7 +200,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         // Clear external search on open if configured, but not upon returning from a sub-screen
         if (!menu.isReturnedFromSubScreen() && config.isUseExternalSearch() && config.isClearExternalSearchOnOpen()) {
-            ExternalSearch.clearExternalSearchText();
+            ItemListMod.setSearchText("");
         }
     }
 
@@ -359,7 +359,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     private void updateSearch() {
         if (config.isUseExternalSearch()) {
             this.searchField.setVisible(false);
-            var externalSearchText = ExternalSearch.getExternalSearchText();
+            var externalSearchText = ItemListMod.getSearchText();
             if (!Objects.equals(repo.getSearchString(), externalSearchText)) {
                 setSearchText(externalSearchText);
             }
@@ -387,9 +387,10 @@ public class MEStorageScreen<C extends MEStorageMenu>
             // Sync the search text both ways but make the direction depend on which search has the focus
             if (config.isSyncWithExternalSearch()) {
                 if (searchField.isFocused()) {
-                    ExternalSearch.setExternalSearchText(searchField.getValue());
-                } else if (ExternalSearch.isExternalSearchFocused()) {
-                    var externalSearchText = ExternalSearch.getExternalSearchText();
+                    String text = searchField.getValue();
+                    ItemListMod.setSearchText(text);
+                } else if (ItemListMod.hasSearchFocus()) {
+                    var externalSearchText = ItemListMod.getSearchText();
                     if (!Objects.equals(externalSearchText, searchField.getValue())) {
                         searchField.setValue(externalSearchText);
                     }

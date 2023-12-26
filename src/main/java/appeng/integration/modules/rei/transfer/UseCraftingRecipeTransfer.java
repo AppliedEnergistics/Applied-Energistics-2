@@ -1,9 +1,9 @@
 package appeng.integration.modules.rei.transfer;
 
-import static appeng.integration.modules.jeirei.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
-import static appeng.integration.modules.jeirei.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
-import static appeng.integration.modules.jeirei.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
-import static appeng.integration.modules.jeirei.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
+import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
+import static appeng.integration.modules.itemlists.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
+import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
+import static appeng.integration.modules.itemlists.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,8 +28,8 @@ import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 
 import appeng.core.localization.ItemModText;
-import appeng.integration.modules.jeirei.CraftingHelper;
-import appeng.integration.modules.jeirei.TransferHelper;
+import appeng.integration.modules.itemlists.CraftingHelper;
+import appeng.integration.modules.itemlists.TransferHelper;
 import appeng.menu.me.items.CraftingTermMenu;
 
 /**

@@ -59,7 +59,7 @@ public class FakeSlot extends AppEngSlot {
         return false;
     }
 
-    // Used by REI/JEI dragging ghost items to determine if this is a valid destination
+    // Used by item list mod dragging ghost items to determine if this is a valid destination
     public boolean canSetFilterTo(ItemStack stack) {
         return slot < getInventory().size() && getInventory().isItemValid(slot, stack);
     }

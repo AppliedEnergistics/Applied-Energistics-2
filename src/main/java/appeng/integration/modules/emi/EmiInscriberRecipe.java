@@ -1,19 +1,22 @@
 package appeng.integration.modules.emi;
 
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.recipes.handlers.InscriberProcessType;
-import appeng.recipes.handlers.InscriberRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
+
 import dev.emi.emi.api.recipe.BasicEmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeHolder;
+
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.recipes.handlers.InscriberProcessType;
+import appeng.recipes.handlers.InscriberRecipe;
 
 class EmiInscriberRecipe extends BasicEmiRecipe {
-    public static final EmiRecipeCategory CATEGORY = new AppEngRecipeCategory("inscriber", EmiStack.of(AEBlocks.INSCRIBER), EmiText.CATEGORY_INSCRIBER);
+    public static final EmiRecipeCategory CATEGORY = new AppEngRecipeCategory("inscriber",
+            EmiStack.of(AEBlocks.INSCRIBER), EmiText.CATEGORY_INSCRIBER);
     private final InscriberRecipe recipe;
 
     public EmiInscriberRecipe(RecipeHolder<InscriberRecipe> holder) {
@@ -46,8 +49,7 @@ class EmiInscriberRecipe extends BasicEmiRecipe {
         widgets.addTexture(background, 0, 0, 97, 64, 44, 15);
 
         widgets.addAnimatedTexture(background, 91, 24, 6, 18, 135, 177,
-                2000, false, true, false
-        );
+                2000, false, true, false);
 
         widgets.addSlot(EmiIngredient.of(recipe.getTopOptional()), 0, 0)
                 .drawBack(false);

@@ -1,5 +1,23 @@
 package appeng.integration.modules.emi;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+
+import com.google.common.base.Splitter;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
+
+import dev.emi.emi.api.recipe.BasicEmiRecipe;
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.widget.WidgetHolder;
+
 import appeng.api.config.CondenserOutput;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.blockentity.misc.CondenserBlockEntity;
@@ -7,27 +25,13 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.ButtonToolTips;
-import com.google.common.base.Splitter;
-import dev.emi.emi.api.recipe.BasicEmiRecipe;
-import dev.emi.emi.api.recipe.EmiRecipeCategory;
-import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.EmiStack;
-import dev.emi.emi.api.widget.WidgetHolder;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Virtual recipe used to represent the types of {@link CondenserOutput} that actually produce can output.
  */
-public class EmiCondenserRecipe extends BasicEmiRecipe {
-    public static final EmiRecipeCategory CATEGORY = new AppEngRecipeCategory("condenser", EmiStack.of(AEBlocks.CONDENSER), EmiText.CATEGORY_CONDENSER);
+class EmiCondenserRecipe extends BasicEmiRecipe {
+    public static final EmiRecipeCategory CATEGORY = new AppEngRecipeCategory("condenser",
+            EmiStack.of(AEBlocks.CONDENSER), EmiText.CATEGORY_CONDENSER);
     private final CondenserOutput type;
     private final EmiIngredient viableStorageComponents;
     private final EmiStack output;
@@ -52,8 +56,7 @@ public class EmiCondenserRecipe extends BasicEmiRecipe {
         widgets.addTexture(statesLocation, 78, 28, 16, 16, 240, 240);
 
         widgets.addAnimatedTexture(background, 70, 0, 6, 18, 178, 25,
-                2000, false, true, false
-        );
+                2000, false, true, false);
 
         if (type == CondenserOutput.MATTER_BALLS) {
             widgets.addTexture(statesLocation, 78, 28, 14, 14, 16, 112);
@@ -86,7 +89,7 @@ public class EmiCondenserRecipe extends BasicEmiRecipe {
     }
 
     private void addViableComponent(CondenserOutput condenserOutput, List<EmiStack> viableComponents,
-                                    ItemLike item) {
+            ItemLike item) {
         IStorageComponent comp = (IStorageComponent) item.asItem();
         int storage = comp.getBytes(item.asItem().getDefaultInstance()) * CondenserBlockEntity.BYTE_MULTIPLIER;
         if (storage >= condenserOutput.requiredPower) {

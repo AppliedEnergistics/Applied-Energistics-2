@@ -1,20 +1,24 @@
 package appeng.integration.modules.emi.transfer;
 
-import appeng.integration.modules.jeirei.EncodingHelper;
-import appeng.menu.AEBaseMenu;
-import dev.emi.emi.api.recipe.EmiPlayerInventory;
-import dev.emi.emi.api.recipe.EmiRecipe;
-import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
-import dev.emi.emi.api.recipe.handler.EmiCraftContext;
-import dev.emi.emi.api.recipe.handler.EmiRecipeHandler;
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import dev.emi.emi.api.recipe.EmiPlayerInventory;
+import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
+import dev.emi.emi.api.recipe.handler.EmiCraftContext;
+import dev.emi.emi.api.recipe.handler.EmiRecipeHandler;
+
+import appeng.integration.modules.itemlists.EncodingHelper;
+import appeng.menu.AEBaseMenu;
 
 public abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeHandler<T> {
     protected static final int CRAFTING_GRID_WIDTH = 3;
@@ -32,9 +36,9 @@ public abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements Emi
     }
 
     protected abstract Result transferRecipe(T menu,
-                                             @Nullable RecipeHolder<?> holder,
-                                             EmiRecipe emiRecipe,
-                                             boolean doTransfer);
+            @Nullable RecipeHolder<?> holder,
+            EmiRecipe emiRecipe,
+            boolean doTransfer);
 
     protected final Result transferRecipe(EmiRecipe emiRecipe, EmiCraftContext<T> context, boolean doTransfer) {
         if (!containerClass.isInstance(context.getScreenHandler())) {
@@ -45,9 +49,12 @@ public abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements Emi
 
         var holder = getRecipeHolder(context.getScreenHandler().getPlayer().level(), emiRecipe);
 
-        return transferRecipe(menu, holder, emiRecipe, doTransfer);
+        var result = transferRecipe(menu, holder, emiRecipe, doTransfer);
+        if (result instanceof Result.Success && doTransfer) {
+            Minecraft.getInstance().setScreen(context.getScreen());
+        }
+        return result;
     }
-
 
     @Override
     public boolean supportsRecipe(EmiRecipe recipe) {

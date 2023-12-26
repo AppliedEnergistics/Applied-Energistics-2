@@ -1,22 +1,24 @@
 package appeng.integration.modules.emi;
 
-import appeng.api.client.AEKeyRendering;
-import appeng.api.stacks.AEFluidKey;
-import appeng.core.localization.ItemModText;
-import dev.emi.emi.api.stack.EmiStack;
-import dev.emi.emi.api.widget.SlotWidget;
+import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
 
-import java.util.List;
+import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.widget.SlotWidget;
+
+import appeng.api.client.AEKeyRendering;
+import appeng.api.stacks.AEFluidKey;
+import appeng.core.localization.ItemModText;
 
 /**
  * Extended slot used in {@link EmiEntropyRecipe}.
  */
-public class EmiEntropySlot extends SlotWidget {
+class EmiEntropySlot extends SlotWidget {
     private final boolean consumed;
     private final boolean flowing;
 
@@ -40,8 +42,7 @@ public class EmiEntropySlot extends SlotWidget {
             if (!fluidTooltip.isEmpty() && flowing) {
                 fluidTooltip.set(
                         0,
-                        ItemModText.FLOWING_FLUID_NAME.text(fluidTooltip.get(0))
-                );
+                        ItemModText.FLOWING_FLUID_NAME.text(fluidTooltip.get(0)));
             }
 
             fluidTooltip.stream()

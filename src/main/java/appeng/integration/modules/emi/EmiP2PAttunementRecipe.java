@@ -1,20 +1,23 @@
 package appeng.integration.modules.emi;
 
-import appeng.core.definitions.AEParts;
-import appeng.core.localization.ItemModText;
+import net.minecraft.network.chat.Component;
+
 import dev.emi.emi.api.recipe.BasicEmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
-import net.minecraft.network.chat.Component;
+
+import appeng.core.definitions.AEParts;
+import appeng.core.localization.ItemModText;
 
 /**
  * Represents a specific source of attuning a subtype of {@link appeng.parts.p2p.P2PTunnelPart} to EMI.
  */
 class EmiP2PAttunementRecipe extends BasicEmiRecipe {
-    public static final EmiRecipeCategory CATEGORY = new AppEngRecipeCategory("p2p_attunement", EmiStack.of(AEParts.ME_P2P_TUNNEL), ItemModText.P2P_TUNNEL_ATTUNEMENT);
+    public static final EmiRecipeCategory CATEGORY = new AppEngRecipeCategory("p2p_attunement",
+            EmiStack.of(AEParts.ME_P2P_TUNNEL), ItemModText.P2P_TUNNEL_ATTUNEMENT);
     private final EmiIngredient input;
     private final EmiStack p2pTunnel;
     private final Component description;

@@ -1,15 +1,17 @@
 package appeng.integration.modules.emi;
 
-import appeng.core.definitions.AEParts;
-import appeng.items.parts.FacadeItem;
+import java.util.List;
+import java.util.Optional;
+
+import net.minecraft.world.item.ItemStack;
+
 import dev.emi.emi.api.recipe.EmiCraftingRecipe;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
-import net.minecraft.world.item.ItemStack;
 
-import java.util.List;
-import java.util.Optional;
+import appeng.core.definitions.AEParts;
+import appeng.items.parts.FacadeItem;
 
 /**
  * This plugin will dynamically add facade recipes for any item that can be turned into a facade.
@@ -46,15 +48,13 @@ class EmiFacadeGenerator {
                 EmiStack.of(cableAnchor),
                 EmiStack.EMPTY,
                 EmiStack.of(cableAnchor),
-                EmiStack.EMPTY
-        );
+                EmiStack.EMPTY);
 
         return new EmiCraftingRecipe(
                 input,
                 EmiStack.of(result, 4),
                 null,
-                false
-        );
+                false);
     }
 
 }

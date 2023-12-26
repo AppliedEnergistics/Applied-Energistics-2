@@ -1,8 +1,10 @@
 package appeng.api.integrations.emi;
 
-import appeng.api.stacks.GenericStack;
-import dev.emi.emi.api.stack.EmiStack;
 import org.jetbrains.annotations.Nullable;
+
+import dev.emi.emi.api.stack.EmiStack;
+
+import appeng.api.stacks.GenericStack;
 
 /**
  * Implement this interface to provide AE2s EMI integration with a new way to convert between AE2 {@link GenericStack}
@@ -17,8 +19,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface EmiStackConverter {
     /**
-     * The EMI {@link EmiStack#getKeyOfType key type} handled by this converter.
-     * AE2 handles {@link net.minecraft.world.level.material.Fluid} and {@link net.minecraft.world.item.Item} already.
+     * The EMI {@link EmiStack#getKeyOfType key type} handled by this converter. AE2 handles
+     * {@link net.minecraft.world.level.material.Fluid} and {@link net.minecraft.world.item.Item} already.
      */
     Class<?> getKeyType();
 
@@ -33,14 +35,13 @@ public interface EmiStackConverter {
      * @return Null if the converter can't handle the stack.
      */
     @Nullable
-    EmiStack getIngredientFromStack(GenericStack stack);
+    EmiStack toEmiStack(GenericStack stack);
 
     /**
      * Converts an EmiStack handled by this converter into a generic stack.
      *
-     * @return Null if the ingredient represents an "empty" ingredient (i.e.
-     *         {@link EmiStack#EMPTY}.
+     * @return Null if the ingredient represents an "empty" ingredient (i.e. {@link EmiStack#EMPTY}.
      */
     @Nullable
-    GenericStack getStackFromIngredient(EmiStack stack);
+    GenericStack toGenericStack(EmiStack stack);
 }

@@ -1,4 +1,4 @@
-package appeng.integration.modules.jeirei;
+package appeng.integration.modules.itemlists;
 
 import net.neoforged.fml.ModList;
 

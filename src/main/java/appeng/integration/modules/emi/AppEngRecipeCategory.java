@@ -1,10 +1,12 @@
 package appeng.integration.modules.emi;
 
-import appeng.core.AppEng;
-import appeng.core.localization.LocalizationEnum;
+import net.minecraft.network.chat.Component;
+
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiRenderable;
-import net.minecraft.network.chat.Component;
+
+import appeng.core.AppEng;
+import appeng.core.localization.LocalizationEnum;
 
 class AppEngRecipeCategory extends EmiRecipeCategory {
     private final Component name;

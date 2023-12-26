@@ -1,22 +1,16 @@
 package appeng.integration.modules.emi;
 
-import appeng.api.client.AEKeyRendering;
-import appeng.api.stacks.AEFluidKey;
-import appeng.integration.modules.jeirei.FluidBlockRendering;
-import dev.emi.emi.api.render.EmiRender;
-import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.EmiStack;
-import dev.emi.emi.api.widget.Bounds;
-import dev.emi.emi.api.widget.SlotWidget;
+import java.util.List;
+
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.common.Tags;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.widget.Bounds;
+import dev.emi.emi.api.widget.SlotWidget;
+
+import appeng.integration.modules.itemlists.FluidBlockRendering;
 
 class EmiFluidBlockSlot extends SlotWidget {
 
