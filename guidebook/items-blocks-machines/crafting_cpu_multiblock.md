@@ -102,10 +102,16 @@ with more ingredients.
 
 <BlockImage id="crafting_accelerator" scale="4" />
 
-(Optional) Crafting co-processors make the system send out ingredient batches from <ItemLink id="pattern_provider" />s more often.
+(Optional) Crafting co-processors make the system send out ingredient batches from <ItemLink id="pattern_provider" />s more often
+by making the CPU tick faster.
 This allows them to keep up with machines that process quickly. An example of this is a pattern provider surrounded by
 <ItemLink id="molecular_assembler" />s being able to push ingredients faster than a single assembler can process, and thus
 distributing the ingredient batches between the surrounding assemblers.
+
+Some complex recipes have multiple steps that can be done in parallel, like making planks and books simultaneously for making bookshelves.
+In the crafting status screen (visible by right clicking a CPU or with the hammer icon in a [terminal](terminals.md)), these
+steps will all show up as "scheduled". Each extra coprocessor allows one more of these steps to be done in parallel (and thus show up as "crafting").
+However, this is not as relevant because you'll typically have more coprocessors purely for the insertion speed than a recipe has steps that could conceivably be done in parallel.
 
 <RecipeFor id="crafting_accelerator" />
 

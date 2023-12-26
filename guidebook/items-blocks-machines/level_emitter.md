@@ -63,8 +63,8 @@ is in the emitter's filter slot.
 This "pattern" does not define, or even care about ingredients.
 All it says is "If you emit redstone from this level emitter, the ME system will recieve this item at some point in the
 near or distant future". This is usually used to activate and deactivate infinite farms which require no input ingredients,
-or to activate a system that handles recursive recipes (which standard autocafting cannot understand) like, for example, "1 cobblestone = 2 cobblestone"
-if you have a machine that duplicates cobblestone.
+or to activate [a system that handles recursive recipes](../example-setups/recursive-crafting-setup.md) (which standard autocafting cannot understand)
+like, for example, "1 cobblestone = 2 cobblestone" if you have a machine that duplicates cobblestone.
 
 ## Recipe
 
