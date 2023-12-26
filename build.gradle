@@ -197,18 +197,6 @@ allprojects {
 
 ///////////////////
 // Version Number
-version = version_major + "." + version_minor + "." + version_patch
-
-ext.pr = System.getenv('PR_NUMBER') ?: ""
-if (ext.pr) {
-    version = version + "+pr." + ext.pr
-}
-
-ext.branch = System.getenv('BRANCH') ?: ""
-if (ext.branch) {
-    version = version + "+branch." + ext.branch
-}
-
 ext.tag = System.getenv('TAG') ?: ""
 if (ext.tag) {
     if (!ext.tag.startsWith("neoforge/v")) {
@@ -225,10 +213,19 @@ if (ext.tag) {
     } else {
         throw new GradleException("Invalid semver: $version")
     }
-}
+} else {
+    version = version_major + "." + version_minor + "." + version_patch
 
-ext.isAlpha = project.version.contains("alpha")
-ext.isBeta = project.version.contains("beta")
+    def pr = System.getenv('PR_NUMBER') ?: ""
+    if (pr) {
+        version += "+pr." + pr
+    }
+
+    def branch = System.getenv('BRANCH') ?: ""
+    if (branch) {
+        version += "+branch." + branch
+    }
+}
 
 test {
     useJUnitPlatform()
