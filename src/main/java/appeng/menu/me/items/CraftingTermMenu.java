@@ -261,12 +261,16 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
             return missingSlots.size() + craftableSlots.size();
         }
 
+        public boolean anyMissingOrCraftable() {
+            return anyMissing() || anyCraftable();
+        }
+
         public boolean anyMissing() {
-            return missingSlots.size() > 0;
+            return !missingSlots.isEmpty();
         }
 
         public boolean anyCraftable() {
-            return craftableSlots.size() > 0;
+            return !craftableSlots.isEmpty();
         }
     }
 

@@ -76,7 +76,7 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
                     .collect(Collectors.toSet()) : Set.of();
 
             var anyCraftable = display.getInputEntries().stream().anyMatch(ing -> isCraftable(craftableKeys, ing));
-            var tooltip = TransferHelper.createEncodingTooltip(anyCraftable);
+            var tooltip = TransferHelper.createEncodingTooltip(anyCraftable, true);
             return Result.createSuccessful()
                     .blocksFurtherHandling()
                     .overrideTooltipRenderer((point, sink) -> sink.accept(Tooltip.create(tooltip)))

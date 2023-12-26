@@ -37,8 +37,6 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
 import appeng.core.localization.LocalizationEnum;
 import appeng.integration.abstraction.ItemListMod;
-import appeng.integration.modules.emi.transfer.EmiEncodePatternHandler;
-import appeng.integration.modules.emi.transfer.EmiUseCraftingRecipeHandler;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.recipes.entropy.EntropyRecipe;

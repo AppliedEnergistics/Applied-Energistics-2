@@ -1,13 +1,12 @@
 package appeng.integration.modules.itemlists;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import appeng.core.localization.ItemModText;
+import appeng.menu.me.items.CraftingTermMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
-import appeng.core.localization.ItemModText;
-import appeng.menu.me.items.CraftingTermMenu;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransferHelper {
     // Colors for the slot highlights
@@ -18,9 +17,11 @@ public class TransferHelper {
     public static final int ORANGE_PLUS_BUTTON_COLOR = 0x80FFA500;
 
     public static List<Component> createCraftingTooltip(CraftingTermMenu.MissingIngredientSlots missingSlots,
-            boolean craftMissing) {
+                                                        boolean craftMissing, boolean withTitle) {
         List<Component> tooltip = new ArrayList<>();
-        tooltip.add(ItemModText.MOVE_ITEMS.text());
+        if (withTitle) {
+            tooltip.add(ItemModText.MOVE_ITEMS.text());
+        }
         if (missingSlots.anyCraftable()) {
             if (craftMissing) {
                 tooltip.add(ItemModText.WILL_CRAFT.text().withStyle(ChatFormatting.BLUE));
@@ -34,9 +35,11 @@ public class TransferHelper {
         return tooltip;
     }
 
-    public static List<Component> createEncodingTooltip(boolean hasEncoded) {
+    public static List<Component> createEncodingTooltip(boolean hasEncoded, boolean withTitle) {
         List<Component> tooltip = new ArrayList<>();
-        tooltip.add(ItemModText.ENCODE_PATTERN.text());
+        if (withTitle) {
+            tooltip.add(ItemModText.ENCODE_PATTERN.text());
+        }
         if (hasEncoded) {
             tooltip.add(ItemModText.HAS_ENCODED_INGREDIENTS.text().withStyle(ChatFormatting.BLUE));
         }

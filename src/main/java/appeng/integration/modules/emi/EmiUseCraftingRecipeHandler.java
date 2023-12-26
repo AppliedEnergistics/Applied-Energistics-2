@@ -1,4 +1,4 @@
-package appeng.integration.modules.emi.transfer;
+package appeng.integration.modules.emi;
 
 import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
 import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
@@ -39,7 +39,7 @@ import appeng.menu.me.items.CraftingTermMenu;
  * <li><b>Some items are missing, some not craftable:</b> orange, same action as above.</li>
  * </ul>
  */
-public class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends AbstractRecipeHandler<T> {
+class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends AbstractRecipeHandler<T> {
 
     public EmiUseCraftingRecipeHandler(Class<T> containerClass) {
         super(containerClass);
@@ -64,32 +64,23 @@ public class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends Abs
             recipe = createFakeRecipe(emiRecipe);
         }
 
-        // Thank you RS for pioneering this amazing feature! :)
-        boolean craftMissing = AbstractContainerScreen.hasControlDown();
         // Find missing ingredient
         var slotToIngredientMap = getGuiSlotToIngredientMap(recipe);
         var missingSlots = menu.findMissingIngredients(getGuiSlotToIngredientMap(recipe));
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
             // All missing, can't do much...
-            return Result.createFailed(ItemModText.NO_ITEMS.text()); // TODO
-                                                                     // .renderer(createErrorRenderer(missingSlots));
+            return Result.createFailed(ItemModText.NO_ITEMS.text(), missingSlots.missingSlots());
         }
 
         if (!doTransfer) {
-            if (missingSlots.totalSize() != 0) {
+            if (missingSlots.anyMissingOrCraftable()) {
                 // Highlight the slots with missing ingredients
-                int color = missingSlots.anyMissing() ? ORANGE_PLUS_BUTTON_COLOR : BLUE_PLUS_BUTTON_COLOR;
-                var result = Result.createSuccessful();
-                // TODO .color(color)
-                // TODO .renderer(createErrorRenderer(missingSlots));
-
-                var tooltip = TransferHelper.createCraftingTooltip(missingSlots, craftMissing);
-                // TODO result.overrideTooltipRenderer((point, sink) -> sink.accept(Tooltip.create(tooltip)));
-
-                return result;
+                return new Result.PartiallyCraftable(missingSlots);
             }
         } else {
+            // Thank you RS for pioneering this amazing feature! :)
+            boolean craftMissing = AbstractContainerScreen.hasControlDown();
             CraftingHelper.performTransfer(menu, recipeId, recipe, craftMissing);
         }
 
@@ -135,29 +126,4 @@ public class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends Abs
         return result;
     }
 
-    /**
-     * Draw missing slots.
-     */
-    // TODO private static TransferHandlerRenderer createErrorRenderer(CraftingTermMenu.MissingIngredientSlots indices)
-    // {
-    // TODO return (guiGraphics, mouseX, mouseY, delta, widgets, bounds, display) -> {
-    // TODO int i = 0;
-    // TODO for (Widget widget : widgets) {
-    // TODO if (widget instanceof Slot slot && slot.getNoticeMark() == Slot.INPUT) {
-    // TODO boolean missing = indices.missingSlots().contains(i);
-    // TODO boolean craftable = indices.craftableSlots().contains(i);
-    // TODO i++;
-    // TODO if (missing || craftable) {
-    // TODO var poseStack = guiGraphics.pose();
-    // TODO poseStack.pushPose();
-    // TODO poseStack.translate(0, 0, 400);
-    // TODO Rectangle innerBounds = slot.getInnerBounds();
-    // TODO guiGraphics.fill(innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
-    // TODO innerBounds.getMaxY(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
-    // TODO poseStack.popPose();
-    // TODO }
-    // TODO }
-    // TODO }
-    // TODO };
-    // TODO }
 }
