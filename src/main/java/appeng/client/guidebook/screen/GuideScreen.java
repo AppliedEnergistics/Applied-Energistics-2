@@ -22,6 +22,8 @@ import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.client.event.ScreenEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 import appeng.client.Point;
 import appeng.client.gui.DashPattern;
@@ -257,6 +259,11 @@ public class GuideScreen extends Screen {
 
     }
 
+    @Override
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        // Stub this out otherwise vanilla renders a background on top of our content
+    }
+
     private void renderTitle(LytRect documentRect, SimpleRenderContext context) {
         var buffers = context.beginBatch();
         pageTitle.renderBatch(context, buffers);
@@ -273,6 +280,8 @@ public class GuideScreen extends Screen {
         RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1.0F);
         guiGraphics.blit(BACKGROUND_TEXTURE, 0, 0, 0, 0.0F, 0.0F, this.width, this.height, 32, 32);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
+        NeoForge.EVENT_BUS.post(new ScreenEvent.BackgroundRendered(this, guiGraphics));
     }
 
     private void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
