@@ -93,7 +93,6 @@ public class EmiEntropyRecipe extends BasicEmiRecipe {
         var modeLabel = widgets.addText(labelText, centerX + 4, 2, BODY_TEXT_COLOR, false)
                 .horizontalAlign(TextWidget.Alignment.CENTER);
         var modeLabelX = modeLabel.getBounds().x();
-        widgets.add(modeLabel);
         switch (recipe.getMode()) {
             case HEAT -> widgets.addTexture(AppEngEmiPlugin.TEXTURE, modeLabelX - 9, 3, 6, 6, 0, 68);
             case COOL -> widgets.addTexture(AppEngEmiPlugin.TEXTURE, modeLabelX - 9, 3, 6, 6, 6, 68);
