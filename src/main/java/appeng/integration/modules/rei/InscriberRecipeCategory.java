@@ -37,14 +37,14 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 
-class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeWrapper> {
+class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeDisplay> {
 
     private static final int PADDING = 5;
     private static final int SLOT_INPUT_TOP = 0;
     private static final int SLOT_INPUT_MIDDLE = 1;
     private static final int SLOT_INPUT_BOTTOM = 2;
 
-    static final CategoryIdentifier<InscriberRecipeWrapper> ID = CategoryIdentifier
+    static final CategoryIdentifier<InscriberRecipeDisplay> ID = CategoryIdentifier
             .of(AppEng.makeId("ae2.inscriber"));
 
     @Override
@@ -54,16 +54,16 @@ class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeWrapper>
 
     @Override
     public Component getTitle() {
-        return Component.translatable("block.ae2.inscriber");
+        return AEBlocks.INSCRIBER.asItem().getDescription();
     }
 
     @Override
-    public CategoryIdentifier<InscriberRecipeWrapper> getCategoryIdentifier() {
+    public CategoryIdentifier<InscriberRecipeDisplay> getCategoryIdentifier() {
         return ID;
     }
 
     @Override
-    public List<Widget> setupDisplay(InscriberRecipeWrapper recipeDisplay, Rectangle bounds) {
+    public List<Widget> setupDisplay(InscriberRecipeDisplay recipeDisplay, Rectangle bounds) {
         ResourceLocation location = AppEng.makeId("textures/guis/inscriber.png");
 
         List<Widget> widgets = new ArrayList<>();
@@ -94,7 +94,7 @@ class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeWrapper>
     }
 
     @Override
-    public int getDisplayWidth(InscriberRecipeWrapper display) {
+    public int getDisplayWidth(InscriberRecipeDisplay display) {
         return 97 + 2 * PADDING;
     }
 }

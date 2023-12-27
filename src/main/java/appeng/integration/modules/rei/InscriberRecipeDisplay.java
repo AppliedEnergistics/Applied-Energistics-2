@@ -33,12 +33,12 @@ import me.shedaniel.rei.api.common.util.EntryIngredients;
 
 import appeng.recipes.handlers.InscriberRecipe;
 
-class InscriberRecipeWrapper implements Display {
+class InscriberRecipeDisplay implements Display {
     private final RecipeHolder<InscriberRecipe> holder;
     private final List<EntryIngredient> inputs;
     private final List<EntryIngredient> outputs;
 
-    public InscriberRecipeWrapper(RecipeHolder<InscriberRecipe> holder) {
+    public InscriberRecipeDisplay(RecipeHolder<InscriberRecipe> holder) {
         this.holder = holder;
         var recipe = holder.value();
         this.inputs = ImmutableList.of(
