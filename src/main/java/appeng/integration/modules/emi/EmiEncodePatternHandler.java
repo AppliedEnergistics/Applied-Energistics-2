@@ -1,5 +1,14 @@
 package appeng.integration.modules.emi;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import net.minecraft.world.item.crafting.RecipeHolder;
+
+import dev.emi.emi.api.recipe.EmiRecipe;
+
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -7,13 +16,6 @@ import appeng.core.localization.ItemModText;
 import appeng.integration.modules.itemlists.EncodingHelper;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.items.PatternEncodingTermMenu;
-import dev.emi.emi.api.recipe.EmiRecipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Handles encoding patterns in the {@link PatternEncodingTermMenu} by clicking the + button on recipes shown in REI (or

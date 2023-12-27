@@ -1,10 +1,22 @@
 package appeng.integration.modules.emi;
 
-import appeng.api.stacks.AEKey;
-import appeng.integration.modules.itemlists.EncodingHelper;
-import appeng.integration.modules.itemlists.TransferHelper;
-import appeng.menu.AEBaseMenu;
-import appeng.menu.me.items.CraftingTermMenu;
+import static appeng.integration.modules.itemlists.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
+import static appeng.integration.modules.itemlists.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
+
+import java.util.List;
+import java.util.Set;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.Level;
+
 import dev.emi.emi.api.recipe.EmiPlayerInventory;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
@@ -14,21 +26,12 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.Widget;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Set;
-
-import static appeng.integration.modules.itemlists.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
-import static appeng.integration.modules.itemlists.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
+import appeng.api.stacks.AEKey;
+import appeng.integration.modules.itemlists.EncodingHelper;
+import appeng.integration.modules.itemlists.TransferHelper;
+import appeng.menu.AEBaseMenu;
+import appeng.menu.me.items.CraftingTermMenu;
 
 abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeHandler<T> {
     protected static final int CRAFTING_GRID_WIDTH = 3;
@@ -46,9 +49,9 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
     }
 
     protected abstract Result transferRecipe(T menu,
-                                             @Nullable RecipeHolder<?> holder,
-                                             EmiRecipe emiRecipe,
-                                             boolean doTransfer);
+            @Nullable RecipeHolder<?> holder,
+            EmiRecipe emiRecipe,
+            boolean doTransfer);
 
     protected final Result transferRecipe(EmiRecipe emiRecipe, EmiCraftContext<T> context, boolean doTransfer) {
         if (!containerClass.isInstance(context.getScreenHandler())) {
@@ -132,7 +135,8 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
 
         abstract boolean canCraft();
 
-        void render(EmiRecipe recipe, EmiCraftContext<? extends AEBaseMenu> context, List<Widget> widgets, GuiGraphics draw) {
+        void render(EmiRecipe recipe, EmiCraftContext<? extends AEBaseMenu> context, List<Widget> widgets,
+                GuiGraphics draw) {
         }
 
         static final class Success extends Result {
@@ -164,8 +168,10 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
             }
 
             @Override
-            void render(EmiRecipe recipe, EmiCraftContext<? extends AEBaseMenu> context, List<Widget> widgets, GuiGraphics guiGraphics) {
-                renderMissingAndCraftableSlotOverlays(widgets, guiGraphics, missingSlots.missingSlots(), missingSlots.craftableSlots());
+            void render(EmiRecipe recipe, EmiCraftContext<? extends AEBaseMenu> context, List<Widget> widgets,
+                    GuiGraphics guiGraphics) {
+                renderMissingAndCraftableSlotOverlays(widgets, guiGraphics, missingSlots.missingSlots(),
+                        missingSlots.craftableSlots());
             }
         }
 
@@ -198,7 +204,8 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
             }
 
             @Override
-            void render(EmiRecipe recipe, EmiCraftContext<? extends AEBaseMenu> context, List<Widget> widgets, GuiGraphics guiGraphics) {
+            void render(EmiRecipe recipe, EmiCraftContext<? extends AEBaseMenu> context, List<Widget> widgets,
+                    GuiGraphics guiGraphics) {
                 for (var widget : widgets) {
                     if (widget instanceof SlotWidget slot && isInputSlot(slot)) {
                         if (isCraftable(craftableKeys, slot.getStack())) {
@@ -206,7 +213,8 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
                             poseStack.pushPose();
                             poseStack.translate(0, 0, 400);
                             var bounds = getInnerBounds(slot);
-                            guiGraphics.fill(bounds.x(), bounds.y(), bounds.right(), bounds.bottom(), BLUE_SLOT_HIGHLIGHT_COLOR);
+                            guiGraphics.fill(bounds.x(), bounds.y(), bounds.right(), bounds.bottom(),
+                                    BLUE_SLOT_HIGHLIGHT_COLOR);
                             poseStack.popPose();
                         }
                     }
@@ -247,7 +255,8 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
             }
 
             @Override
-            void render(EmiRecipe recipe, EmiCraftContext<? extends AEBaseMenu> context, List<Widget> widgets, GuiGraphics guiGraphics) {
+            void render(EmiRecipe recipe, EmiCraftContext<? extends AEBaseMenu> context, List<Widget> widgets,
+                    GuiGraphics guiGraphics) {
                 renderMissingAndCraftableSlotOverlays(widgets, guiGraphics, missingSlots, Set.of());
             }
         }
@@ -269,7 +278,8 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
         }
     }
 
-    private static void renderMissingAndCraftableSlotOverlays(List<Widget> widgets, GuiGraphics guiGraphics, Set<Integer> missingSlots, Set<Integer> craftableSlots) {
+    private static void renderMissingAndCraftableSlotOverlays(List<Widget> widgets, GuiGraphics guiGraphics,
+            Set<Integer> missingSlots, Set<Integer> craftableSlots) {
         int i = 0;
         for (var widget : widgets) {
             if (widget instanceof SlotWidget slot && isInputSlot(slot)) {
@@ -299,7 +309,6 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
                 bounds.x() + 1,
                 bounds.y() + 1,
                 bounds.width() - 2,
-                bounds.height() - 2
-        );
+                bounds.height() - 2);
     }
 }

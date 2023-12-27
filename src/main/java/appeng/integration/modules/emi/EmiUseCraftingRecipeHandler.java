@@ -1,8 +1,5 @@
 package appeng.integration.modules.emi;
 
-import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
-import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -22,7 +19,6 @@ import dev.emi.emi.api.stack.EmiStack;
 
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.itemlists.CraftingHelper;
-import appeng.integration.modules.itemlists.TransferHelper;
 import appeng.menu.me.items.CraftingTermMenu;
 
 /**

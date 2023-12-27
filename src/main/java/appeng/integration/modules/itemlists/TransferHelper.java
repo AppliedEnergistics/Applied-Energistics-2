@@ -1,12 +1,13 @@
 package appeng.integration.modules.itemlists;
 
-import appeng.core.localization.ItemModText;
-import appeng.menu.me.items.CraftingTermMenu;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import appeng.core.localization.ItemModText;
+import appeng.menu.me.items.CraftingTermMenu;
 
 public class TransferHelper {
     // Colors for the slot highlights
@@ -17,7 +18,7 @@ public class TransferHelper {
     public static final int ORANGE_PLUS_BUTTON_COLOR = 0x80FFA500;
 
     public static List<Component> createCraftingTooltip(CraftingTermMenu.MissingIngredientSlots missingSlots,
-                                                        boolean craftMissing, boolean withTitle) {
+            boolean craftMissing, boolean withTitle) {
         List<Component> tooltip = new ArrayList<>();
         if (withTitle) {
             tooltip.add(ItemModText.MOVE_ITEMS.text());
