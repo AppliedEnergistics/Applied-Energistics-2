@@ -8,7 +8,7 @@
       "faces": {
         "north": {
           "texture": "#base",
-          "uv": [4.0, 4.0, 12.0, 11.0]
+          "uv": [6.0, 6.0, 10.0, 10.0]
         },
         "east": {
           "texture": "#base",
@@ -16,7 +16,7 @@
         },
         "south": {
           "texture": "#base",
-          "uv": [11.0, 4.0, 4.0, 12.0]
+          "uv": [10.0, 6.0, 6.0, 10.0]
         },
         "west": {
           "texture": "#base",
