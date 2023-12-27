@@ -1,9 +1,4 @@
-package appeng.integration.modules.rei.transfer;
-
-import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
-import static appeng.integration.modules.itemlists.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
-import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
-import static appeng.integration.modules.itemlists.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
+package appeng.integration.modules.emi;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,17 +14,11 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
-import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.client.gui.widgets.Slot;
-import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
-import me.shedaniel.rei.api.client.gui.widgets.Widget;
-import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRenderer;
-import me.shedaniel.rei.api.common.display.Display;
-import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
+import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.stack.EmiStack;
 
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.itemlists.CraftingHelper;
-import appeng.integration.modules.itemlists.TransferHelper;
 import appeng.menu.me.items.CraftingTermMenu;
 
 /**
@@ -46,71 +35,63 @@ import appeng.menu.me.items.CraftingTermMenu;
  * <li><b>Some items are missing, some not craftable:</b> orange, same action as above.</li>
  * </ul>
  */
-public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends AbstractTransferHandler<T> {
+class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends AbstractRecipeHandler<T> {
 
-    public UseCraftingRecipeTransfer(Class<T> containerClass) {
+    public EmiUseCraftingRecipeHandler(Class<T> containerClass) {
         super(containerClass);
     }
 
     @Override
-    protected Result transferRecipe(T menu, RecipeHolder<?> holder, Display display, boolean doTransfer) {
+    protected Result transferRecipe(T menu, RecipeHolder<?> holder, EmiRecipe emiRecipe, boolean doTransfer) {
 
         var recipeId = holder != null ? holder.id() : null;
         var recipe = holder != null ? holder.value() : null;
 
-        boolean craftingRecipe = isCraftingRecipe(recipe, display);
+        boolean craftingRecipe = isCraftingRecipe(recipe, emiRecipe);
         if (!craftingRecipe) {
             return Result.createNotApplicable();
         }
 
-        if (!fitsIn3x3Grid(recipe, display)) {
+        if (!fitsIn3x3Grid(recipe, emiRecipe)) {
             return Result.createFailed(ItemModText.RECIPE_TOO_LARGE.text());
         }
 
         if (recipe == null) {
-            recipe = createFakeRecipe(display);
+            recipe = createFakeRecipe(emiRecipe);
         }
 
-        // Thank you RS for pioneering this amazing feature! :)
-        boolean craftMissing = AbstractContainerScreen.hasControlDown();
         // Find missing ingredient
         var slotToIngredientMap = getGuiSlotToIngredientMap(recipe);
         var missingSlots = menu.findMissingIngredients(getGuiSlotToIngredientMap(recipe));
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
             // All missing, can't do much...
-            return Result.createFailed(ItemModText.NO_ITEMS.text()).renderer(createErrorRenderer(missingSlots));
+            return Result.createFailed(ItemModText.NO_ITEMS.text(), missingSlots.missingSlots());
         }
 
         if (!doTransfer) {
             if (missingSlots.anyMissingOrCraftable()) {
                 // Highlight the slots with missing ingredients
-                int color = missingSlots.anyMissing() ? ORANGE_PLUS_BUTTON_COLOR : BLUE_PLUS_BUTTON_COLOR;
-                var result = Result.createSuccessful()
-                        .color(color)
-                        .renderer(createErrorRenderer(missingSlots));
-
-                var tooltip = TransferHelper.createCraftingTooltip(missingSlots, craftMissing, true);
-                result.overrideTooltipRenderer((point, sink) -> sink.accept(Tooltip.create(tooltip)));
-
-                return result;
+                return new Result.PartiallyCraftable(missingSlots);
             }
         } else {
+            // Thank you RS for pioneering this amazing feature! :)
+            boolean craftMissing = AbstractContainerScreen.hasControlDown();
             CraftingHelper.performTransfer(menu, recipeId, recipe, craftMissing);
         }
 
         // No error
-        return Result.createSuccessful().blocksFurtherHandling();
+        return Result.createSuccessful();
     }
 
-    private Recipe<?> createFakeRecipe(Display display) {
+    private Recipe<?> createFakeRecipe(EmiRecipe display) {
         var ingredients = NonNullList.withSize(CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT,
                 Ingredient.EMPTY);
 
-        for (int i = 0; i < Math.min(display.getInputEntries().size(), ingredients.size()); i++) {
-            var ingredient = Ingredient.of(display.getInputEntries().get(i).stream()
-                    .filter(es -> es.getType() == VanillaEntryTypes.ITEM)
-                    .map(es -> (ItemStack) es.castValue()));
+        for (int i = 0; i < Math.min(display.getInputs().size(), ingredients.size()); i++) {
+            var ingredient = Ingredient.of(display.getInputs().get(i).getEmiStacks().stream()
+                    .map(EmiStack::getItemStack)
+                    .filter(is -> !is.isEmpty()));
             ingredients.set(i, ingredient);
         }
 
@@ -141,28 +122,4 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
         return result;
     }
 
-    /**
-     * Draw missing slots.
-     */
-    private static TransferHandlerRenderer createErrorRenderer(CraftingTermMenu.MissingIngredientSlots indices) {
-        return (guiGraphics, mouseX, mouseY, delta, widgets, bounds, display) -> {
-            int i = 0;
-            for (Widget widget : widgets) {
-                if (widget instanceof Slot slot && slot.getNoticeMark() == Slot.INPUT) {
-                    boolean missing = indices.missingSlots().contains(i);
-                    boolean craftable = indices.craftableSlots().contains(i);
-                    i++;
-                    if (missing || craftable) {
-                        var poseStack = guiGraphics.pose();
-                        poseStack.pushPose();
-                        poseStack.translate(0, 0, 400);
-                        Rectangle innerBounds = slot.getInnerBounds();
-                        guiGraphics.fill(innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
-                                innerBounds.getMaxY(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
-                        poseStack.popPose();
-                    }
-                }
-            }
-        };
-    }
 }

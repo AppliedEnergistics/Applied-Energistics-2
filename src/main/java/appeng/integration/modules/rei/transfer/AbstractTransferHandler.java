@@ -11,7 +11,7 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.display.SimpleGridMenuDisplay;
 
-import appeng.integration.modules.jeirei.EncodingHelper;
+import appeng.integration.modules.itemlists.EncodingHelper;
 import appeng.menu.AEBaseMenu;
 
 public abstract class AbstractTransferHandler<T extends AEBaseMenu> implements TransferHandler {

@@ -1,4 +1,4 @@
-package appeng.integration.modules.jeirei;
+package appeng.integration.modules.itemlists;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -51,7 +51,7 @@ public final class FluidBlockRendering {
         worldMatStack.translate(width / 2.f, height / 2.f, 0);
         worldMatStack.scale(width, height, 1);
 
-        setupOrtographicProjection(worldMatStack);
+        setupOrthographicProjection(worldMatStack);
 
         var tesselator = Tesselator.getInstance();
         BufferBuilder builder = tesselator.getBuilder();
@@ -72,8 +72,8 @@ public final class FluidBlockRendering {
         RenderSystem.applyModelViewMatrix();
     }
 
-    private static void setupOrtographicProjection(PoseStack worldMatStack) {
-        // Set up ortographic rendering for the block
+    private static void setupOrthographicProjection(PoseStack worldMatStack) {
+        // Set up orthographic rendering for the block
         float angle = 36;
         float rotation = 45;
 
