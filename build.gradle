@@ -72,7 +72,6 @@ dependencies {
     shaded project(path: ':libs:markdown', configuration: "archives")
     shaded "io.methvin:directory-watcher:${directory_watcher_version}"
     shaded "org.yaml:snakeyaml:${snakeyaml_version}"
-    shaded "com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}"
 
     minecraftLibrary(project(':libs:markdown')) {
         transitive = false
@@ -90,6 +89,7 @@ dependencies {
     }
     // Used for the guide export
     minecraftLibrary("org.bytedeco:ffmpeg-platform:6.0-1.5.9")
+    minecraftLibrary("com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}")
 
     minecraft "net.neoforged:forge:${minecraft_version}-${neoforge_version}"
 
