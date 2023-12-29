@@ -38,6 +38,8 @@ import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.ticks.LevelChunkTicks;
 import net.minecraft.world.ticks.ScheduledTick;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
 import appeng.api.ids.AETags;
 import appeng.api.movable.BlockEntityMoveStrategies;
 import appeng.api.movable.IBlockEntityMoveStrategy;
@@ -126,20 +128,24 @@ public class CachedPlane {
 
                         var strategy = BlockEntityMoveStrategies.get(blockEntity);
                         var savedData = strategy.beginMove(blockEntity);
+                        var section = c.getSection(c.getSectionIndex(entry.getKey().getY()));
+
+                        // Coordinate within the section
+                        int sx = entry.getKey().getX() & (LevelChunkSection.SECTION_WIDTH - 1);
+                        int sy = entry.getKey().getY() & (LevelChunkSection.SECTION_HEIGHT - 1);
+                        int sz = entry.getKey().getZ() & (LevelChunkSection.SECTION_WIDTH - 1);
+                        var state = section.getBlockState(sx, sy, sz);
+
                         if (savedData != null) {
-                            this.blockEntities.add(new BlockEntityMoveRecord(strategy, blockEntity, savedData));
+                            this.blockEntities.add(
+                                    new BlockEntityMoveRecord(strategy, blockEntity, savedData, entry.getKey(), state));
+
+                            // Set the state to AIR now since that prevents it from being resurrected recursively
+                            section.setBlockState(sx, sy, sz, Blocks.AIR.defaultBlockState());
                             c.removeBlockEntity(entry.getKey());
                         } else {
-                            final BlockStorageData details = new BlockStorageData();
-                            Column column = this.myColumns[pos.getX() - minX][pos.getZ() - minZ];
-                            final int y = pos.getY();
-                            final LevelChunkSection[] storage = column.c.getSections();
-                            final LevelChunkSection extendedblockstorage = storage[y >> 4];
-
-                            details.state = extendedblockstorage.getBlockState(column.x, y & 15, column.z);
-
                             // don't skip air, just let the code replace it...
-                            if (details.state.isAir()) {
+                            if (state.isAir()) {
                                 level.removeBlock(pos, false);
                             } else {
                                 this.myColumns[pos.getX() - minX][pos.getZ() - minZ].setSkip(pos.getY());
@@ -158,6 +164,7 @@ public class CachedPlane {
                 });
             }
         }
+
     }
 
     void swap(CachedPlane dst) {
@@ -251,19 +258,33 @@ public class CachedPlane {
 
     private void addBlockEntity(int x, int y, int z, BlockEntityMoveRecord moveRecord) {
         try {
+            var originalPos = moveRecord.pos();
+
             var c = this.myColumns[x][z];
             if (!c.doNotSkip(y + this.y_offset)) {
                 AELog.warn(
                         "Block entity %s was queued to be moved from %s, but it's position then skipped during the move.",
-                        moveRecord.blockEntity(), moveRecord.blockEntity().getBlockPos());
+                        moveRecord.blockEntity(), originalPos);
                 return;
             }
+
+            var newPosition = new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset);
+
+            // Restore original block state to the section directly. The chunk would create the BE and notify neighbors.
+            var chunk = this.level.getChunk(newPosition);
+            var section = chunk.getSection(chunk.getSectionIndex(newPosition.getY()));
+            section.setBlockState(
+                    newPosition.getX() & (LevelChunkSection.SECTION_WIDTH - 1),
+                    newPosition.getY() & (LevelChunkSection.SECTION_HEIGHT - 1),
+                    newPosition.getZ() & (LevelChunkSection.SECTION_WIDTH - 1),
+                    moveRecord.state);
 
             var strategy = moveRecord.strategy();
             boolean success;
             try {
-                success = strategy.completeMove(moveRecord.blockEntity(), moveRecord.savedData(), this.level,
-                        new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset));
+                success = strategy.completeMove(moveRecord.blockEntity(), moveRecord.state(), moveRecord.savedData(),
+                        this.level,
+                        newPosition);
             } catch (Throwable e) {
                 AELog.warn(e);
                 success = false;
@@ -346,6 +367,7 @@ public class CachedPlane {
 
         private final LevelChunk c;
         private List<Integer> skipThese = null;
+        private Int2ObjectMap<BlockState> savedBlockStates = null;
 
         public Column(LevelChunk chunk, int x, int z) {
             this.x = x;
@@ -374,10 +396,12 @@ public class CachedPlane {
         }
     }
 
-    private static record BlockEntityMoveRecord(
+    private record BlockEntityMoveRecord(
             IBlockEntityMoveStrategy strategy,
             BlockEntity blockEntity,
-            CompoundTag savedData) {
+            CompoundTag savedData,
+            BlockPos pos,
+            BlockState state) {
     }
 
 }
