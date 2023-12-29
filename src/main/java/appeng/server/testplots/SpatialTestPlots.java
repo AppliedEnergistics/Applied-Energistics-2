@@ -62,6 +62,36 @@ public final class SpatialTestPlots {
     }
 
     /**
+     * Validates that crafting CPUs inside of SCSs do not cause crashes. Regression test for
+     * <a href="https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/7513">issue 7513</a>.
+     */
+    @TestPlot("crafting_cpu_inside_scs")
+    public static void craftingCpuInsideScs(PlotBuilder plot) {
+        // Outer network
+        plot.creativeEnergyCell("0 0 0");
+        plot.block("[1,10] 0 0", AEBlocks.SPATIAL_PYLON);
+        plot.block("0 [1,10] 0", AEBlocks.SPATIAL_PYLON);
+        plot.block("0 0 [1,10]", AEBlocks.SPATIAL_PYLON);
+        plot.blockEntity("-1 0 0", AEBlocks.SPATIAL_IO_PORT, port -> {
+            port.getInternalInventory().insertItem(0, AEItems.SPATIAL_CELL128.stack(), false);
+        });
+        var leverPos = plot.leverOn(new BlockPos(-1, 0, 0), Direction.WEST);
+
+        // Inner network
+        plot.creativeEnergyCell("3 0 3");
+        plot.block("[2,4] [1,3] [2,4]", AEBlocks.CRAFTING_STORAGE_64K);
+
+        // Woosh!
+        plot.test(helper -> {
+            helper.startSequence()
+                    .thenIdle(5)
+                    .thenExecute(() -> helper.pullLever(leverPos))
+                    .thenIdle(5)
+                    .thenSucceed();
+        });
+    }
+
+    /**
      * Tests that entities can be stored and retrieved from spatial I/O without a player being present and loading the
      * chunks. <a href="https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6397">issue 6397</a>.
      */
