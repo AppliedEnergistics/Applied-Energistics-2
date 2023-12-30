@@ -33,6 +33,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
@@ -143,7 +144,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
                 // Not using flag 2 here (only send to clients, prevent block update) will cause
                 // infinite loops
                 // In case there is an inconsistency in the crafting clusters.
-                this.level.setBlock(this.worldPosition, newState, 2);
+                this.level.setBlock(this.worldPosition, newState, Block.UPDATE_CLIENTS);
             }
         }
 
