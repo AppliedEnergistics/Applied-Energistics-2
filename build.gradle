@@ -48,7 +48,6 @@ configurations {
 }
 
 repositories {
-    mavenCentral()
     maven {
         url "https://maven.shedaniel.me/"
         content {
@@ -84,15 +83,7 @@ repositories {
             includeGroup "mcjty"
         }
     }
-    maven {
-        url "https://maven.parchmentmc.org//"
-        content {
-            includeGroup "org.parchmentmc.data"
-        }
-    }
-    maven {
-        url "https://maven.neoforged.net/snapshots/"
-    }
+    mavenCentral()
 }
 
 dependencies {
@@ -220,7 +211,6 @@ if (ext.tag) {
         version += "+branch." + branch
     }
 }
-
 test {
     useJUnitPlatform()
 
@@ -241,7 +231,7 @@ test {
             }.collect(java.util.stream.Collectors.joining(File.pathSeparator))
     )
 
-    def fmlVersion = "2.0.4"
+    def fmlVersion = "2.0.6"
 
     environment("fmljunit.assetsDir", new File(gradle.gradleUserHomeDir, "caches/minecraft/assets/${minecraft_version}/").absolutePath)
     environment("fmljunit.neoForgeVersion", neoforge_version)
