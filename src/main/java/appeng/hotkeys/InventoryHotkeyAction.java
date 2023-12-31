@@ -8,15 +8,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.features.HotkeyAction;
 
-public class InventoryHotkeyAction implements HotkeyAction {
-
-    private final Predicate<ItemStack> locatable;
-    private final Opener opener;
-
-    public InventoryHotkeyAction(Predicate<ItemStack> locatable, Opener opener) {
-        this.locatable = locatable;
-        this.opener = opener;
-    }
+public record InventoryHotkeyAction(Predicate<ItemStack> locatable, Opener opener) implements HotkeyAction {
 
     public InventoryHotkeyAction(Item item, Opener opener) {
         this((stack) -> stack.getItem() == item, opener);
@@ -37,6 +29,6 @@ public class InventoryHotkeyAction implements HotkeyAction {
 
     @FunctionalInterface
     public interface Opener {
-        boolean open(Player player, int inventorySlot);
+        boolean open(Player player, int inventorySlot);// TODO use MenuLocator
     }
 }

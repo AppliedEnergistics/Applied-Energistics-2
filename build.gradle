@@ -83,6 +83,12 @@ repositories {
             includeGroup "mcjty"
         }
     }
+    maven {
+        url = "https://maven.theillusivec4.top/"
+        content {
+            includeGroup "top.theillusivec4"
+        }
+    }
     mavenCentral()
 }
 
@@ -142,6 +148,10 @@ dependencies {
         implementation(topDependency)
     } else {
         compileOnly topDependency
+    }
+
+    if(project.runtime_curio) {
+        runtimeOnly("top.theillusivec4.curios:curios-neoforge:${project.curios_version}")
     }
 
     // unit test dependencies
