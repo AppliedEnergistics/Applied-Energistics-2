@@ -48,6 +48,6 @@ public final class EnchantmentUtil {
             int level = entry.getValue();
             enchantList.add(EnchantmentHelper.storeEnchantment(EnchantmentHelper.getEnchantmentId(enchantment), level));
         }
-        tag.put("Enchantments", enchantList);
+        tag.put(ItemStack.TAG_ENCH, enchantList);
     }
 }
