@@ -27,6 +27,7 @@ import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.upgrades.Upgrades;
+import appeng.menu.locator.MenuItemLocator;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -37,9 +38,9 @@ public class NetworkToolMenuHost extends ItemMenuHost implements InternalInvento
     @Nullable
     private final IInWorldGridNodeHost host;
 
-    public NetworkToolMenuHost(Player player, @Nullable Integer slot, ItemStack is,
+    public NetworkToolMenuHost(Player player, @Nullable MenuItemLocator locator, ItemStack is,
             @Nullable IInWorldGridNodeHost host) {
-        super(player, slot, is);
+        super(player, locator, is);
         this.host = host;
         this.inv = new AppEngInternalInventory(this, 9);
         this.inv.setEnableClientEvents(true); // Also write to NBT on the client to prevent desyncs

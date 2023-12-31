@@ -43,6 +43,7 @@ import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.menu.ISubMenu;
+import appeng.menu.locator.MenuItemLocator;
 
 public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableTerminal, IActionHost {
 
@@ -57,9 +58,9 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
      */
     private double currentDistanceFromGrid = Double.MAX_VALUE;
 
-    public WirelessTerminalMenuHost(Player player, @Nullable Integer slot, ItemStack itemStack,
+    public WirelessTerminalMenuHost(Player player, @Nullable MenuItemLocator locator, ItemStack itemStack,
             BiConsumer<Player, ISubMenu> returnToMainMenu) {
-        super(player, slot, itemStack);
+        super(player, locator, itemStack);
         if (!(itemStack.getItem() instanceof WirelessTerminalItem wirelessTerminalItem)) {
             throw new IllegalArgumentException("Can only use this class with subclasses of WirelessTerminalItem");
         }

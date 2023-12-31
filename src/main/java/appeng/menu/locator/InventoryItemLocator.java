@@ -19,14 +19,14 @@ import appeng.core.AELog;
  */
 record InventoryItemLocator(
         int itemIndex,
-        @Nullable BlockPos blockPos) implements MenuLocator {
+        @Nullable BlockPos blockPos) implements MenuItemLocator {
     @Nullable
     public <T> T locate(Player player, Class<T> hostInterface) {
-        ItemStack it = player.getInventory().getItem(itemIndex);
+        ItemStack it = locateItem(player);
 
         if (!it.isEmpty() && it.getItem() instanceof IMenuItem guiItem) {
             // Optionally contains the block the item was used on to open the menu
-            ItemMenuHost menuHost = guiItem.getMenuHost(player, itemIndex, it, blockPos);
+            ItemMenuHost menuHost = guiItem.getMenuHost(player, this, it, blockPos);
             if (hostInterface.isInstance(menuHost)) {
                 return hostInterface.cast(menuHost);
             } else if (menuHost != null) {
@@ -39,6 +39,16 @@ record InventoryItemLocator(
         }
 
         return null;
+    }
+
+    public ItemStack locateItem(Player player) {
+        return player.getInventory().getItem(itemIndex);
+    }
+
+    @Override
+    public boolean setItem(Player player, ItemStack stack) {
+        player.getInventory().setItem(itemIndex, stack);
+        return true;
     }
 
     public void writeToPacket(FriendlyByteBuf buf) {

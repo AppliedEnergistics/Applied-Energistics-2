@@ -35,6 +35,7 @@ import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.items.AEBaseItem;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.QuartzKnifeMenu;
+import appeng.menu.locator.MenuItemLocator;
 import appeng.menu.locator.MenuLocators;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
@@ -82,7 +83,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
 
     @Nullable
     @Override
-    public ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
-        return new ItemMenuHost(player, inventorySlot, stack);
+    public ItemMenuHost getMenuHost(Player player, MenuItemLocator locator, ItemStack stack, @Nullable BlockPos pos) {
+        return new ItemMenuHost(player, locator, stack);
     }
 }

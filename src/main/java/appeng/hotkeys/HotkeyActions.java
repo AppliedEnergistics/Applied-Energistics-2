@@ -26,10 +26,10 @@ public class HotkeyActions {
 
     public static void init() {
         register(AEItems.WIRELESS_TERMINAL.asItem(),
-                (player, i) -> AEItems.WIRELESS_TERMINAL.asItem().openFromInventory(player, i),
+                (player, locator) -> AEItems.WIRELESS_TERMINAL.asItem().openFromInventory(player, locator),
                 WIRELESS_TERMINAL);
         register(AEItems.WIRELESS_CRAFTING_TERMINAL.asItem(),
-                (player, i) -> AEItems.WIRELESS_CRAFTING_TERMINAL.asItem().openFromInventory(player, i),
+                (player, locator) -> AEItems.WIRELESS_CRAFTING_TERMINAL.asItem().openFromInventory(player, locator),
                 WIRELESS_TERMINAL);
 
         registerPortableCell(AEItems.PORTABLE_ITEM_CELL1K, PORTABLE_ITEM_CELL);

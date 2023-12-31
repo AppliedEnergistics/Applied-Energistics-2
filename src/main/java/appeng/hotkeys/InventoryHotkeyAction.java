@@ -7,6 +7,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.features.HotkeyAction;
+import appeng.menu.locator.MenuItemLocator;
+import appeng.menu.locator.MenuLocators;
 
 public record InventoryHotkeyAction(Predicate<ItemStack> locatable, Opener opener) implements HotkeyAction {
 
@@ -19,7 +21,7 @@ public record InventoryHotkeyAction(Predicate<ItemStack> locatable, Opener opene
         var items = player.getInventory().items;
         for (int i = 0; i < items.size(); i++) {
             if (locatable.test(items.get(i))) {
-                if (opener.open(player, i)) {
+                if (opener.open(player, MenuLocators.forInventorySlot(i))) {
                     return true;
                 }
             }
@@ -29,6 +31,6 @@ public record InventoryHotkeyAction(Predicate<ItemStack> locatable, Opener opene
 
     @FunctionalInterface
     public interface Opener {
-        boolean open(Player player, int inventorySlot);// TODO use MenuLocator
+        boolean open(Player player, MenuItemLocator locator);
     }
 }

@@ -23,7 +23,7 @@ public record CurioHotkeyAction(Predicate<ItemStack> locatable,
             return false;
         for (int i = 0; i < cap.getSlots(); i++) {
             if (locatable.test(cap.getStackInSlot(i))) {
-                if (opener.open(player, i)) {// FIXME use MenuLocator in opener
+                if (opener.open(player, new CurioItemLocator(i))) {
                     return true;
                 }
             }

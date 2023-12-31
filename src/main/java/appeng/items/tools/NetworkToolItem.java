@@ -51,6 +51,7 @@ import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuItemLocator;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
@@ -63,13 +64,13 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem
     }
 
     @Override
-    public NetworkToolMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
+    public NetworkToolMenuHost getMenuHost(Player player, MenuItemLocator locator, ItemStack stack, BlockPos pos) {
         var level = player.level();
         if (pos == null) {
-            return new NetworkToolMenuHost(player, inventorySlot, stack, null);
+            return new NetworkToolMenuHost(player, locator, stack, null);
         }
         var host = GridHelper.getNodeHost(level, pos);
-        return new NetworkToolMenuHost(player, inventorySlot, stack, host);
+        return new NetworkToolMenuHost(player, locator, stack, host);
     }
 
     @Override
@@ -147,7 +148,7 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem
         for (int x = 0; x < pi.getContainerSize(); x++) {
             var pii = pi.getItem(x);
             if (!pii.isEmpty() && pii.getItem() instanceof NetworkToolItem networkToolItem) {
-                return networkToolItem.getMenuHost(pi.player, x, pii, null);
+                return networkToolItem.getMenuHost(pi.player, MenuLocators.forInventorySlot(x), pii, null);
             }
         }
         return null;

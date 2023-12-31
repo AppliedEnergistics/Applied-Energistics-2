@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import appeng.integration.modules.curio.CurioModule;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.events.Event;
 import appeng.api.events.EventFactory;
+import appeng.integration.modules.curio.CurioModule;
 
 public class SearchInventoryEvent {
     /**
@@ -29,7 +29,8 @@ public class SearchInventoryEvent {
         EVENT.register((stacks, player) -> stacks.addAll(player.getInventory().items));
         SearchInventoryEvent.EVENT.register((stacks, player) -> {
             var cap = CurioModule.ITEM_HANDLER.getCapability(player, null);
-            if (cap == null) return;
+            if (cap == null)
+                return;
             for (int i = 0; i < cap.getSlots(); i++) {
                 stacks.add(cap.getStackInSlot(i));
             }

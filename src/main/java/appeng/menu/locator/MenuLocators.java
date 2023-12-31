@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import appeng.integration.modules.curio.CurioItemLocator;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -13,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import appeng.integration.modules.curio.CurioItemLocator;
 import appeng.parts.AEBasePart;
 
 /**
@@ -29,7 +29,8 @@ public final class MenuLocators {
         register(BlockEntityLocator.class, BlockEntityLocator::writeToPacket, BlockEntityLocator::readFromPacket);
         register(PartLocator.class, PartLocator::writeToPacket, PartLocator::readFromPacket);
         register(InventoryItemLocator.class, InventoryItemLocator::writeToPacket, InventoryItemLocator::readFromPacket);
-        MenuLocators.register(CurioItemLocator.class, CurioItemLocator::writeToPacket, CurioItemLocator::readFromPacket);
+        MenuLocators.register(CurioItemLocator.class, CurioItemLocator::writeToPacket,
+                CurioItemLocator::readFromPacket);
     }
 
     /**
@@ -84,7 +85,7 @@ public final class MenuLocators {
      * Construct a menu locator for an item being used on a block. The item could still open a menu for itself, but it
      * might also open a special menu for the block being right-clicked.
      */
-    public static MenuLocator forItemUseContext(UseOnContext context) {
+    public static MenuItemLocator forItemUseContext(UseOnContext context) {
         Player player = context.getPlayer();
         if (player == null) {
             throw new IllegalArgumentException("Cannot open a menu without a player");
@@ -93,12 +94,12 @@ public final class MenuLocators {
         return new InventoryItemLocator(slot, context.getClickedPos());
     }
 
-    public static MenuLocator forHand(Player player, InteractionHand hand) {
+    public static MenuItemLocator forHand(Player player, InteractionHand hand) {
         int slot = getPlayerInventorySlotFromHand(player, hand);
         return forInventorySlot(slot);
     }
 
-    public static MenuLocator forInventorySlot(int inventorySlot) {
+    public static MenuItemLocator forInventorySlot(int inventorySlot) {
         return new InventoryItemLocator(inventorySlot, null);
     }
 

@@ -29,18 +29,20 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.menu.locator.MenuItemLocator;
+
 /**
  * Implemented on Item objects, to return objects used to manage, and interact with the contents.
  */
 public interface IMenuItem {
     /**
-     * @param player        The player opening the menu.
-     * @param inventorySlot The slot in the player's inventory the item is in.
-     * @param stack         The item used to open the menu.
-     * @param pos           If the item was used on a block in the world, has that block's position. Null if no block
-     *                      was targeted.
+     * @param player  The player opening the menu.
+     * @param locator The locator the item can be found with.
+     * @param stack   The item used to open the menu.
+     * @param pos     If the item was used on a block in the world, has that block's position. Null if no block was
+     *                targeted.
      * @return Null if no menu host is available.
      */
     @Nullable
-    ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos);
+    ItemMenuHost getMenuHost(Player player, MenuItemLocator locator, ItemStack stack, @Nullable BlockPos pos);
 }

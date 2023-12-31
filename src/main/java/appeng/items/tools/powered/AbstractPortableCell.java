@@ -41,6 +41,7 @@ import appeng.items.contents.PortableCellMenuHost;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuItemLocator;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
 
@@ -69,14 +70,14 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
      *
      * @return True if the menu was opened.
      */
-    public boolean openFromInventory(Player player, int inventorySlot) {
-        return openFromInventory(player, inventorySlot, false);
+    public boolean openFromInventory(Player player, MenuItemLocator locator) {
+        return openFromInventory(player, locator, false);
     }
 
-    protected boolean openFromInventory(Player player, int inventorySlot, boolean returningFromSubmenu) {
-        var is = player.getInventory().getItem(inventorySlot);
+    protected boolean openFromInventory(Player player, MenuItemLocator locator, boolean returningFromSubmenu) {
+        var is = locator.locateItem(player);
         if (is.getItem() == this) {
-            return MenuOpener.open(this.menuType, player, MenuLocators.forInventorySlot(inventorySlot),
+            return MenuOpener.open(this.menuType, player, locator,
                     returningFromSubmenu);
         } else {
             return false;
@@ -85,9 +86,10 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
 
     @Nullable
     @Override
-    public PortableCellMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
-        return new PortableCellMenuHost(player, inventorySlot, this, stack,
-                (p, sm) -> openFromInventory(p, inventorySlot, true));
+    public PortableCellMenuHost getMenuHost(Player player, MenuItemLocator locator, ItemStack stack,
+            @Nullable BlockPos pos) {
+        return new PortableCellMenuHost(player, locator, this, stack,
+                (p, sm) -> openFromInventory(p, locator, true));
     }
 
     @Override
@@ -200,7 +202,7 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
             return 0;
         }
 
-        var host = getMenuHost(player, -1, stack, null);
+        var host = getMenuHost(player, null, stack, null);// TODO maybe use a dummy Locator instead
         if (host == null) {
             return 0;
         }
