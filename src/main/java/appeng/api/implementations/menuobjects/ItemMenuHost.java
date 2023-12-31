@@ -40,7 +40,7 @@ public class ItemMenuHost implements IUpgradeableObject {
 
     private final Player player;
     @Nullable
-    private final MenuItemLocator locator;// TODO evaluate whether or not this should be nullable
+    private final MenuItemLocator locator;
     private final ItemStack itemStack;
     private final IUpgradeInventory upgrades;
     private int powerTicks = 0;
@@ -71,6 +71,10 @@ public class ItemMenuHost implements IUpgradeableObject {
     @Nullable
     public Integer getSlot() {
         return null;// FIXME
+    }
+    @Nullable
+    public MenuItemLocator getLocator() {
+        return locator;
     }
 
     /**
