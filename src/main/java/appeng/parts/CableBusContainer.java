@@ -39,6 +39,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -651,6 +652,16 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             var part = this.getPart(s);
             if (part != null) {
                 part.onNeighborChanged(level, pos, neighbor);
+            }
+        }
+    }
+
+    @Override
+    public void onUpdateShape(LevelAccessor level, BlockPos pos, Direction side) {
+        for (var s : Platform.DIRECTIONS_WITH_NULL) {
+            var part = this.getPart(s);
+            if (part != null) {
+                part.onUpdateShape(side);
             }
         }
 
