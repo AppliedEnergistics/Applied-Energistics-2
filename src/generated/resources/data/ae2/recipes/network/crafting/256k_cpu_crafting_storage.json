@@ -3,10 +3,10 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "ae2:cell_component_256k"
+      "item": "ae2:crafting_unit"
     },
     {
-      "item": "ae2:crafting_unit"
+      "item": "ae2:cell_component_256k"
     }
   ],
   "result": {

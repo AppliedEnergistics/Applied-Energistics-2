@@ -18,12 +18,16 @@
 
 package appeng.core.sync.network;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.client.Minecraft;
 
-import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 
 public class ClientPacketHandler {
+    private static final Logger LOG = LoggerFactory.getLogger(ClientPacketHandler.class);
+
     private ClientPacketHandler() {
     }
 
@@ -31,7 +35,7 @@ public class ClientPacketHandler {
         try {
             packet.clientPacketData(Minecraft.getInstance().player);
         } catch (final IllegalArgumentException e) {
-            AELog.debug(e);
+            LOG.error("Failed handling packet", e);
         }
     }
 }
