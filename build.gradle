@@ -86,7 +86,7 @@ repositories {
     maven {
         url = "https://maven.theillusivec4.top/"
         content {
-            includeGroup "top.theillusivec4"
+            includeGroup "top.theillusivec4.curios"
         }
     }
     mavenCentral()
