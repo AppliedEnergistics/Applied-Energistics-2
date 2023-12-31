@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import appeng.integration.modules.curio.CurioLocator;
+import appeng.integration.modules.curio.CurioItemLocator;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -28,8 +28,8 @@ public final class MenuLocators {
     static {
         register(BlockEntityLocator.class, BlockEntityLocator::writeToPacket, BlockEntityLocator::readFromPacket);
         register(PartLocator.class, PartLocator::writeToPacket, PartLocator::readFromPacket);
-        register(MenuItemLocator.class, MenuItemLocator::writeToPacket, MenuItemLocator::readFromPacket);
-        MenuLocators.register(CurioLocator.class, CurioLocator::writeToPacket, CurioLocator::readFromPacket);
+        register(InventoryItemLocator.class, InventoryItemLocator::writeToPacket, InventoryItemLocator::readFromPacket);
+        MenuLocators.register(CurioItemLocator.class, CurioItemLocator::writeToPacket, CurioItemLocator::readFromPacket);
     }
 
     /**
@@ -90,7 +90,7 @@ public final class MenuLocators {
             throw new IllegalArgumentException("Cannot open a menu without a player");
         }
         int slot = getPlayerInventorySlotFromHand(player, context.getHand());
-        return new MenuItemLocator(slot, context.getClickedPos());
+        return new InventoryItemLocator(slot, context.getClickedPos());
     }
 
     public static MenuLocator forHand(Player player, InteractionHand hand) {
@@ -99,7 +99,7 @@ public final class MenuLocators {
     }
 
     public static MenuLocator forInventorySlot(int inventorySlot) {
-        return new MenuItemLocator(inventorySlot, null);
+        return new InventoryItemLocator(inventorySlot, null);
     }
 
     private static int getPlayerInventorySlotFromHand(Player player, InteractionHand hand) {

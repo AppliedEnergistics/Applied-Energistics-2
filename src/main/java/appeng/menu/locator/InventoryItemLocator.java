@@ -17,7 +17,7 @@ import appeng.core.AELog;
  * Optionally also contains a block position and side in case the menu is to be opened by the item but for a clicked
  * host (i.e. network tool).
  */
-record MenuItemLocator(
+record InventoryItemLocator(
         int itemIndex,
         @Nullable BlockPos blockPos) implements MenuLocator {
     @Nullable
@@ -49,13 +49,13 @@ record MenuItemLocator(
         }
     }
 
-    public static MenuItemLocator readFromPacket(FriendlyByteBuf buf) {
+    public static InventoryItemLocator readFromPacket(FriendlyByteBuf buf) {
         var itemIndex = buf.readInt();
         BlockPos blockPos = null;
         if (buf.readBoolean()) {
             blockPos = buf.readBlockPos();
         }
-        return new MenuItemLocator(itemIndex, blockPos);
+        return new InventoryItemLocator(itemIndex, blockPos);
     }
 
     @Override
