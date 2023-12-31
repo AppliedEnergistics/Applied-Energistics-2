@@ -95,7 +95,8 @@ public final class TestPlots {
                 SpatialTestPlots.class,
                 QnbTestPlots.class,
                 GuidebookPlot.class,
-                SubnetPlots.class));
+                SubnetPlots.class,
+                AnnihilationPlaneTests.class));
     }
 
     private TestPlots() {

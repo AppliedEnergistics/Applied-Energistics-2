@@ -156,8 +156,22 @@ public interface IPart extends ICustomCableConnection, Clearable {
 
     /**
      * a block around the bus's host has been changed.
+     * 
+     * @see net.neoforged.neoforge.common.extensions.IBlockExtension#onNeighborChange
      */
     default void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
+    }
+
+    /**
+     * The block state in a block adjacent to the part host may have changed. Note that this may be called quite often
+     * and should not lead to immediate block notifications. Any action resulting from this notification should be
+     * delayed until at least the end of tick.
+     * <p/>
+     * It is the parts responsibility to only react to changes on sides that are relevant for it.
+     *
+     * @see net.minecraft.world.level.block.Block#updateShape
+     */
+    default void onUpdateShape(Direction side) {
     }
 
     /**
