@@ -23,6 +23,7 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -157,6 +158,20 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
                 getPlacementStrategies().clearBlocked();
             }
         } else {
+            connectionHelper.updateConnections();
+        }
+    }
+
+    @Override
+    public void onUpdateShape(Direction side) {
+        var ourSide = getSide();
+        // A block might have been changed in front of us
+        if (side.equals(ourSide)) {
+            if (!isClientSide()) {
+                getPlacementStrategies().clearBlocked();
+            }
+        } else if (ourSide.getAxis() != side.getAxis()) {
+            // Changes perpendicular to our side may change the connected plane model to change
             connectionHelper.updateConnections();
         }
     }

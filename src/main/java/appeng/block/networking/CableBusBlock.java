@@ -129,11 +129,6 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
-        this.cb(level, pos).onNeighborChanged(level, pos, neighbor);
-    }
-
-    @Override
     public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction side) {
         return this.cb(level, pos).isProvidingWeakPower(side.getOpposite()); // TODO:
         // IS
@@ -325,7 +320,14 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
             level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
+        this.cb(level, currentPos).onUpdateShape(level, currentPos, facing);
+
         return super.updateShape(blockState, facing, facingState, level, currentPos, facingPos);
+    }
+
+    @Override
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
+        this.cb(level, pos).onNeighborChanged(level, pos, neighbor);
     }
 
     @Environment(EnvType.CLIENT)

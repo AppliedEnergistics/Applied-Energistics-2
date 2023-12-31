@@ -198,7 +198,19 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
             if (!isClientSide()) {
                 this.refresh();
             }
-        } else {
+        }
+    }
+
+    @Override
+    public void onUpdateShape(Direction side) {
+        var ourSide = getSide();
+        // A block might have been placed in front of us
+        if (side.equals(ourSide)) {
+            if (!isClientSide()) {
+                this.refresh();
+            }
+        } else if (ourSide.getAxis() != side.getAxis()) {
+            // Changes perpendicular to our side may change the connected plane model to change
             connectionHelper.updateConnections();
         }
     }

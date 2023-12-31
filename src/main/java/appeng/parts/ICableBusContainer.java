@@ -29,6 +29,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.parts.SelectedPart;
@@ -49,6 +50,8 @@ public interface ICableBusContainer {
 
     void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor);
 
+    void onUpdateShape(LevelAccessor level, BlockPos pos, Direction side);
+
     boolean isEmpty();
 
     SelectedPart selectPartLocal(Vec3 v3);
@@ -63,5 +66,4 @@ public interface ICableBusContainer {
     int getLightValue();
 
     CableBusRenderState getRenderState();
-
 }
