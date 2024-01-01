@@ -1,4 +1,4 @@
-package appeng.integration.modules.curio;
+package appeng.menu.locator;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -9,9 +9,9 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.core.AELog;
-import appeng.menu.locator.MenuItemLocator;
+import appeng.integration.modules.curio.CurioModule;
 
-public record CurioItemLocator(int itemIndex) implements MenuItemLocator {
+record CurioItemLocator(int itemIndex) implements MenuItemLocator {
     @Override
     public <T> @Nullable T locate(Player player, Class<T> hostInterface) {
         ItemStack it = locateItem(player);

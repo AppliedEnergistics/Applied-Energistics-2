@@ -32,6 +32,7 @@ import appeng.api.upgrades.IUpgradeableItem;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.menu.locator.MenuItemLocator;
+import appeng.menu.locator.MenuLocators;
 
 /**
  * Base interface for an adapter that connects an item stack in a player inventory with a menu that is opened by it.
@@ -70,8 +71,9 @@ public class ItemMenuHost implements IUpgradeableObject {
      */
     @Nullable
     public Integer getSlot() {
-        return null;// FIXME
+        return MenuLocators.inventorySlot(locator);
     }
+
     @Nullable
     public MenuItemLocator getLocator() {
         return locator;

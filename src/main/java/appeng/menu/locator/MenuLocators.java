@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -12,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.integration.modules.curio.CurioItemLocator;
 import appeng.parts.AEBasePart;
 
 /**
@@ -101,6 +102,15 @@ public final class MenuLocators {
 
     public static MenuItemLocator forInventorySlot(int inventorySlot) {
         return new InventoryItemLocator(inventorySlot, null);
+    }
+
+    public static MenuItemLocator forCurioSlot(int inventorySlot) {
+        return new CurioItemLocator(inventorySlot);
+    }
+
+    @Nullable
+    public static Integer inventorySlot(MenuItemLocator locator) {
+        return locator instanceof InventoryItemLocator inventoryLocator ? inventoryLocator.itemIndex() : null;
     }
 
     private static int getPlayerInventorySlotFromHand(Player player, InteractionHand hand) {

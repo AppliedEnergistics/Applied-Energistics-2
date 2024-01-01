@@ -1,11 +1,11 @@
 package appeng.menu;
 
-import appeng.menu.locator.MenuItemLocator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.tools.NetworkToolItem;
+import appeng.menu.locator.MenuItemLocator;
 import appeng.menu.slot.RestrictedInputSlot;
 
 /**
@@ -23,7 +23,7 @@ public class ToolboxMenu {
         if (inv != null) {
             this.locator = inv.getLocator();
             Integer slot = inv.getSlot();
-            if(slot != null) {
+            if (slot != null) {
                 menu.lockPlayerInventorySlot(slot);
             }
         } else {
@@ -53,7 +53,7 @@ public class ToolboxMenu {
             if (currentItem != inv.getItemStack()) {
                 if (!currentItem.isEmpty()) {
                     if (ItemStack.isSameItem(inv.getItemStack(), currentItem)) {
-                        if(!locator.setItem(inv.getPlayer(), inv.getItemStack())) {
+                        if (!locator.setItem(inv.getPlayer(), inv.getItemStack())) {
                             menu.setValidMenu(false);
                         }
                     } else {

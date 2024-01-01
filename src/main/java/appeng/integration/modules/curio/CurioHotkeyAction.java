@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.features.HotkeyAction;
 import appeng.hotkeys.InventoryHotkeyAction;
+import appeng.menu.locator.MenuLocators;
 
 public record CurioHotkeyAction(Predicate<ItemStack> locatable,
         InventoryHotkeyAction.Opener opener) implements HotkeyAction {
@@ -23,7 +24,7 @@ public record CurioHotkeyAction(Predicate<ItemStack> locatable,
             return false;
         for (int i = 0; i < cap.getSlots(); i++) {
             if (locatable.test(cap.getStackInSlot(i))) {
-                if (opener.open(player, new CurioItemLocator(i))) {
+                if (opener.open(player, MenuLocators.forCurioSlot(i))) {
                     return true;
                 }
             }
