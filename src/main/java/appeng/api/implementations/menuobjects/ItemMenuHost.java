@@ -123,6 +123,7 @@ public class ItemMenuHost implements IUpgradeableObject {
             } else if (ItemStack.isSameItem(expectedItem, currentItem)) {
                 // If the items are still equivalent, we just restore referential equality so that modifications
                 // to the GUI item are reflected in the slot
+                //TODO maybe replace the menuHosts ItemStack instead?
                 return locator.setItem(player, expectedItem);
             }
         }
