@@ -16,13 +16,12 @@ import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.behaviors.PickupSink;
 import appeng.api.behaviors.PickupStrategy;
-import appeng.api.behaviors.PickupStrategy.Result;
 import appeng.api.config.Actionable;
 import appeng.api.ids.AETags;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.core.AppEng;
-import appeng.core.sync.packets.BlockTransitionEffectPacket;
+import appeng.core.network.clientbound.BlockTransitionEffectPacket;
 import appeng.util.GenericContainerHelper;
 import appeng.util.Platform;
 

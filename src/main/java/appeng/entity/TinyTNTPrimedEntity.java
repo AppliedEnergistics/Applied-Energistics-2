@@ -25,8 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -43,17 +41,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.entity.IEntityAdditionalSpawnData;
+import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.network.NetworkHooks;
 
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
-import appeng.core.sync.packets.MockExplosionPacket;
+import appeng.core.network.clientbound.MockExplosionPacket;
 
-public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAdditionalSpawnData {
+public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithComplexSpawn {
 
     private LivingEntity placedBy;
 
@@ -192,11 +189,6 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAddit
 
         AppEng.instance().sendToAllNearExcept(null, this.getX(), this.getY(), this.getZ(), 64, this.level(),
                 new MockExplosionPacket(this.getX(), this.getY(), this.getZ()));
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override

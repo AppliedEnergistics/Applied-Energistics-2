@@ -438,10 +438,6 @@ public final class AEConfig {
         return COMMON.blockUpdateLog.get();
     }
 
-    public boolean isPacketLogEnabled() {
-        return COMMON.packetLog.get();
-    }
-
     public boolean isChunkLoggerTraceEnabled() {
         return COMMON.chunkLoggerTrace.get();
     }
@@ -648,7 +644,6 @@ public final class AEConfig {
 
         // Logging
         public final BooleanOption blockUpdateLog;
-        public final BooleanOption packetLog;
         public final BooleanOption craftingLog;
         public final BooleanOption debugLog;
         public final BooleanOption gridLog;
@@ -735,7 +730,6 @@ public final class AEConfig {
 
             var logging = root.subsection("logging");
             blockUpdateLog = logging.addBoolean("blockUpdateLog", false);
-            packetLog = logging.addBoolean("packetLog", false);
             craftingLog = logging.addBoolean("craftingLog", false);
             debugLog = logging.addBoolean("debugLog", false);
             gridLog = logging.addBoolean("gridLog", false);

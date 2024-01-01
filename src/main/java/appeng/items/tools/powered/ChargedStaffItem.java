@@ -25,7 +25,7 @@ import net.minecraft.world.phys.AABB;
 import appeng.api.config.Actionable;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.core.sync.packets.LightningPacket;
+import appeng.core.network.clientbound.LightningPacket;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.Platform;
 

@@ -47,7 +47,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ISubMenuHost;
 import appeng.core.AELog;
-import appeng.core.sync.packets.CraftConfirmPlanPacket;
+import appeng.core.network.clientbound.CraftConfirmPlanPacket;
 import appeng.crafting.execution.CraftingSubmitResult;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.me.helpers.PlayerSource;

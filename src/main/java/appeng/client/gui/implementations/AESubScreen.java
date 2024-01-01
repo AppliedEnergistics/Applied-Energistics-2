@@ -26,8 +26,8 @@ import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.widgets.TabButton;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.SwitchGuisPacket;
+import appeng.core.network.NetworkHandler;
+import appeng.core.network.serverbound.SwitchGuisPacket;
 import appeng.menu.ISubMenu;
 
 /**

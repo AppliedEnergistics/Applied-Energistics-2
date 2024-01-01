@@ -30,7 +30,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -51,6 +50,7 @@ import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
@@ -60,8 +60,9 @@ import appeng.api.parts.CableRenderMode;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.AEKeyTypesInternal;
-import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.NetworkHandler;
+import appeng.core.network.ClientboundPacket;
+import appeng.core.network.InitNetwork;
+import appeng.core.network.NetworkHandler;
 import appeng.hooks.SkyStoneBreakSpeed;
 import appeng.hooks.WrenchHook;
 import appeng.hooks.ticking.TickHandler;
@@ -126,6 +127,7 @@ public abstract class AppEngBase implements AppEng {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::registerRegistries);
         modEventBus.addListener(MainCreativeTab::initExternal);
+        modEventBus.addListener(InitNetwork::init);
         modEventBus.addListener(ChunkLoadingService.getInstance()::register);
         modEventBus.addListener(InitCapabilityProviders::register);
         modEventBus.addListener(EventPriority.LOWEST, InitCapabilityProviders::registerGenericAdapters);
@@ -202,7 +204,6 @@ public abstract class AppEngBase implements AppEng {
 
         AEConfig.instance().save();
         InitUpgrades.init();
-        NetworkHandler.init(new ResourceLocation(MOD_ID, "main"));
     }
 
     public void registerKeyTypes() {
@@ -259,20 +260,16 @@ public abstract class AppEngBase implements AppEng {
 
     @Override
     public void sendToAllNearExcept(Player p, double x, double y, double z,
-            double dist, Level level, BasePacket packet) {
+            double dist, Level level, ClientboundPacket packet) {
         if (level.isClientSide()) {
             return;
         }
-        for (ServerPlayer o : getPlayers()) {
-            if (o != p && o.level() == level) {
-                final double dX = x - o.getX();
-                final double dY = y - o.getY();
-                final double dZ = z - o.getZ();
-                if (dX * dX + dY * dY + dZ * dZ < dist * dist) {
-                    NetworkHandler.instance().sendTo(packet, o);
-                }
-            }
+        ServerPlayer except = null;
+        if (p instanceof ServerPlayer) {
+            except = (ServerPlayer) p;
         }
+        NetworkHandler.instance().sendToAllAround(packet, new PacketDistributor.TargetPoint(
+                except, x, y, z, dist * dist, level.dimension()));
     }
 
     @Override

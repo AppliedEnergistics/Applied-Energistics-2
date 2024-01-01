@@ -5,8 +5,8 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.core.definitions.AEItems;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ColorApplicatorSelectColorPacket;
+import appeng.core.network.NetworkHandler;
+import appeng.core.network.serverbound.ColorApplicatorSelectColorPacket;
 
 public final class ColorApplicatorPickColorHook {
     private ColorApplicatorPickColorHook() {

@@ -47,8 +47,8 @@ import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.SwitchGuisPacket;
+import appeng.core.network.NetworkHandler;
+import appeng.core.network.serverbound.SwitchGuisPacket;
 import appeng.menu.implementations.PriorityMenu;
 
 /**

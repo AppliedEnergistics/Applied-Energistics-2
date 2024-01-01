@@ -14,7 +14,7 @@ import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.sync.packets.CraftingJobStatusPacket;
+import appeng.core.network.clientbound.CraftingJobStatusPacket;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.util.SearchInventoryEvent;
 
