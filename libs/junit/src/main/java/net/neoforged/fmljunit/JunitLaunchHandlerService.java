@@ -1,13 +1,9 @@
 package net.neoforged.fmljunit;
 
 import cpw.mods.modlauncher.Launcher;
-import cpw.mods.modlauncher.api.IEnvironment;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.targets.ForgeUserdevLaunchHandler;
-import org.mockito.Mockito;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.Consumer;
 
@@ -34,6 +30,11 @@ public class JunitLaunchHandlerService extends ForgeUserdevLaunchHandler {
                     .getMethod("bootStrap")
                     .invoke(null);
 
+            Consumer<Dist> extension = Launcher.INSTANCE.environment().findLaunchPlugin("runtimedistcleaner")
+                    .get()
+                    .getExtension();
+            extension.accept(Dist.CLIENT);
+
             var fmlCoreLoader = gameLayer.findLoader("fml_core");
 
             var modLoaderClass = fmlCoreLoader.loadClass("net.neoforged.fml.ModLoader");
@@ -50,11 +51,6 @@ public class JunitLaunchHandlerService extends ForgeUserdevLaunchHandler {
             callMethod(modLoaderClass, "gatherAndInitializeMods", modLoader, syncExecutor, parallelExecutor, periodicTasks);
             callMethod(modLoaderClass, "loadMods", modLoader, syncExecutor, parallelExecutor, periodicTasks);
             callMethod(modLoaderClass, "finishMods", modLoader, syncExecutor, parallelExecutor, periodicTasks);
-
-            Consumer<Dist> extension = Launcher.INSTANCE.environment().findLaunchPlugin("runtimedistcleaner")
-                    .get()
-                    .getExtension();
-            extension.accept(Dist.CLIENT);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
