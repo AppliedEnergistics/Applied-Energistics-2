@@ -4,13 +4,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.AEKey;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.core.network.ClientboundPacket;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 public record AssemblerAnimationPacket(BlockPos pos, byte rate, AEKey what) implements ClientboundPacket {
     public static AssemblerAnimationPacket decode(FriendlyByteBuf data) {

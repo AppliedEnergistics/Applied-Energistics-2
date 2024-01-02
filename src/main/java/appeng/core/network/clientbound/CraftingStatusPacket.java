@@ -5,12 +5,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.client.gui.me.crafting.CraftingCPUScreen;
 import appeng.core.network.ClientboundPacket;
 import appeng.menu.me.crafting.CraftingStatus;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 public record CraftingStatusPacket(CraftingStatus status) implements ClientboundPacket {
     public static CraftingStatusPacket decode(FriendlyByteBuf buffer) {

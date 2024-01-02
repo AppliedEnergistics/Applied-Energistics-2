@@ -5,14 +5,14 @@ import java.util.UUID;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.AEKey;
 import appeng.client.gui.me.common.PendingCraftingJobs;
 import appeng.client.gui.me.common.PinnedKeys;
 import appeng.core.AEConfig;
 import appeng.core.network.ClientboundPacket;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Confirms to the player that a crafting job has started.

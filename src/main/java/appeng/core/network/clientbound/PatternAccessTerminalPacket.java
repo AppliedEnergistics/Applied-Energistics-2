@@ -5,6 +5,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -12,8 +14,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.core.network.ClientboundPacket;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Sends the content for a single {@link appeng.helpers.patternprovider.PatternContainer} shown in the pattern access

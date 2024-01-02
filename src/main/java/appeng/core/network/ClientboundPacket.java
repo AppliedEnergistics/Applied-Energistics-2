@@ -1,11 +1,12 @@
 package appeng.core.network;
 
-import appeng.core.AppEng;
+import java.util.Locale;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
-import java.util.Locale;
+import appeng.core.AppEng;
 
 public interface ClientboundPacket extends CustomAppEngPayload {
     @Override

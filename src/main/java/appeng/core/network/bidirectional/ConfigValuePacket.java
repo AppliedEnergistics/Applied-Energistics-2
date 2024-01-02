@@ -3,14 +3,14 @@ package appeng.core.network.bidirectional;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.config.Setting;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.ServerboundPacket;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 public record ConfigValuePacket(String name, String value) implements ClientboundPacket, ServerboundPacket {
     public static ConfigValuePacket decode(FriendlyByteBuf stream) {

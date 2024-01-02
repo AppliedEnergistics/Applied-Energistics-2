@@ -4,11 +4,11 @@ package appeng.core.network.clientbound;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.core.network.ClientboundPacket;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Clears all data from the pattern access terminal before a full reset.

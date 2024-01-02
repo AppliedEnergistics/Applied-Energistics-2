@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +14,8 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;

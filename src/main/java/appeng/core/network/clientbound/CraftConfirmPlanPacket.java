@@ -3,12 +3,12 @@ package appeng.core.network.clientbound;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.core.network.ClientboundPacket;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingPlanSummary;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Transfers a {@link CraftingPlanSummary} to the client for a {@link CraftConfirmMenu}

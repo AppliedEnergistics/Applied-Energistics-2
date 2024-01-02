@@ -5,10 +5,10 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-
-import appeng.core.network.ClientboundPacket;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import appeng.core.network.ClientboundPacket;
 
 public record MockExplosionPacket(double x, double y, double z) implements ClientboundPacket {
 

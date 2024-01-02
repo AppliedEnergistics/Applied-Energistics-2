@@ -8,11 +8,11 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.core.network.ClientboundPacket;
 import appeng.menu.AEBaseMenu;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * This packet is used to synchronize menu-fields from server to client.

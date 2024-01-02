@@ -5,12 +5,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.core.network.ClientboundPacket;
 import appeng.menu.me.networktool.NetworkStatus;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 public record NetworkStatusPacket(NetworkStatus status) implements ClientboundPacket {
 
