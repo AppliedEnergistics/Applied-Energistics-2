@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -226,6 +228,7 @@ public record MEInventoryUpdatePacket(
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handleOnClient(Player player) {
         if (player.containerMenu.containerId == containerId
                 && player.containerMenu instanceof MEStorageMenu meMenu) {

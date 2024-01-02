@@ -9,6 +9,8 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.ServerboundPacket;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public record ConfigValuePacket(String name, String value) implements ClientboundPacket, ServerboundPacket {
     public static ConfigValuePacket decode(FriendlyByteBuf stream) {
@@ -35,6 +37,7 @@ public record ConfigValuePacket(String name, String value) implements Clientboun
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handleOnClient(Player player) {
         if (player.containerMenu instanceof IConfigurableObject configurableObject) {
             loadSetting(configurableObject);

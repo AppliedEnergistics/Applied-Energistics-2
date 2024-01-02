@@ -7,6 +7,8 @@ import net.minecraft.world.entity.player.Player;
 import appeng.core.network.ClientboundPacket;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingPlanSummary;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Transfers a {@link CraftingPlanSummary} to the client for a {@link CraftConfirmMenu}
@@ -22,6 +24,7 @@ public record CraftConfirmPlanPacket(CraftingPlanSummary plan) implements Client
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handleOnClient(Player player) {
         if (player.containerMenu instanceof CraftConfirmMenu menu) {
             menu.setPlan(plan);

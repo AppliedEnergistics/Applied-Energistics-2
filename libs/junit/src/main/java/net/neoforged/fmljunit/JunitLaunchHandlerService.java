@@ -30,11 +30,6 @@ public class JunitLaunchHandlerService extends ForgeUserdevLaunchHandler {
                     .getMethod("bootStrap")
                     .invoke(null);
 
-            Consumer<Dist> extension = Launcher.INSTANCE.environment().findLaunchPlugin("runtimedistcleaner")
-                    .get()
-                    .getExtension();
-            extension.accept(Dist.CLIENT);
-
             var fmlCoreLoader = gameLayer.findLoader("fml_core");
 
             var modLoaderClass = fmlCoreLoader.loadClass("net.neoforged.fml.ModLoader");
@@ -51,6 +46,11 @@ public class JunitLaunchHandlerService extends ForgeUserdevLaunchHandler {
             callMethod(modLoaderClass, "gatherAndInitializeMods", modLoader, syncExecutor, parallelExecutor, periodicTasks);
             callMethod(modLoaderClass, "loadMods", modLoader, syncExecutor, parallelExecutor, periodicTasks);
             callMethod(modLoaderClass, "finishMods", modLoader, syncExecutor, parallelExecutor, periodicTasks);
+
+            Consumer<Dist> extension = Launcher.INSTANCE.environment().findLaunchPlugin("runtimedistcleaner")
+                    .get()
+                    .getExtension();
+            extension.accept(Dist.CLIENT);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

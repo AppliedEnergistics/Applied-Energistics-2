@@ -1,12 +1,11 @@
 package appeng.core.network;
 
-import java.util.Locale;
-
+import appeng.core.AppEng;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
-import appeng.core.AppEng;
+import java.util.Locale;
 
 public interface ClientboundPacket extends CustomAppEngPayload {
     @Override
@@ -20,5 +19,7 @@ public interface ClientboundPacket extends CustomAppEngPayload {
         });
     }
 
-    void handleOnClient(Player player);
+    default void handleOnClient(Player player) {
+        throw new AbstractMethodError("Unimplemented method on " + getClass());
+    }
 }

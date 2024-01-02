@@ -9,6 +9,8 @@ import appeng.api.stacks.AEKey;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.core.network.ClientboundPacket;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public record AssemblerAnimationPacket(BlockPos pos, byte rate, AEKey what) implements ClientboundPacket {
     public static AssemblerAnimationPacket decode(FriendlyByteBuf data) {
@@ -26,6 +28,7 @@ public record AssemblerAnimationPacket(BlockPos pos, byte rate, AEKey what) impl
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handleOnClient(Player player) {
         BlockEntity te = player.getCommandSenderWorld().getBlockEntity(pos);
         if (te instanceof MolecularAssemblerBlockEntity ma) {

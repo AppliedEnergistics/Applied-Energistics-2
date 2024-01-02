@@ -11,6 +11,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import appeng.core.network.ClientboundPacket;
 import appeng.menu.AEBaseMenu;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * This packet is used to synchronize menu-fields from server to client.
@@ -34,6 +36,7 @@ public record GuiDataSyncPacket(int containerId, FriendlyByteBuf syncData) imple
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handleOnClient(Player player) {
         AbstractContainerMenu c = player.containerMenu;
         if (c instanceof AEBaseMenu baseMenu && c.containerId == this.containerId) {

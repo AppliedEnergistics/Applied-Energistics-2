@@ -7,6 +7,8 @@ import net.minecraft.world.entity.player.Player;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.network.ClientboundPacket;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public record MatterCannonPacket(double x,
         double y,
@@ -52,6 +54,7 @@ public record MatterCannonPacket(double x,
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handleOnClient(Player player) {
         try {
             for (int a = 1; a < this.len; a++) {

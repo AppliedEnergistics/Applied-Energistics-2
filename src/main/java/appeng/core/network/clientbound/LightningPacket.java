@@ -7,6 +7,8 @@ import net.minecraft.world.entity.player.Player;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.network.ClientboundPacket;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public record LightningPacket(
         double x,
@@ -28,6 +30,7 @@ public record LightningPacket(
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handleOnClient(Player player) {
         try {
             if (AEConfig.instance().isEnableEffects()) {

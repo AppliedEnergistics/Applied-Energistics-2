@@ -12,6 +12,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.core.network.ClientboundPacket;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Sends the content for a single {@link appeng.helpers.patternprovider.PatternContainer} shown in the pattern access
@@ -89,6 +91,7 @@ public record PatternAccessTerminalPacket(
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handleOnClient(Player player) {
         if (Minecraft.getInstance().screen instanceof PatternAccessTermScreen<?>patternAccessTerminal) {
             if (fullUpdate) {

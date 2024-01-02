@@ -9,6 +9,8 @@ import net.minecraft.world.entity.player.Player;
 import appeng.client.gui.me.crafting.CraftingCPUScreen;
 import appeng.core.network.ClientboundPacket;
 import appeng.menu.me.crafting.CraftingStatus;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public record CraftingStatusPacket(CraftingStatus status) implements ClientboundPacket {
     public static CraftingStatusPacket decode(FriendlyByteBuf buffer) {
@@ -21,6 +23,7 @@ public record CraftingStatusPacket(CraftingStatus status) implements Clientbound
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handleOnClient(Player player) {
         Screen screen = Minecraft.getInstance().screen;
 

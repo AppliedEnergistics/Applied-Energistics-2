@@ -16,6 +16,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.registries.GameData;
 
@@ -65,12 +67,14 @@ public record BlockTransitionEffectPacket(BlockPos pos,
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handleOnClient(Player player) {
         spawnParticles();
 
         playBreakOrPickupSound();
     }
 
+    @OnlyIn(Dist.CLIENT)
     private void spawnParticles() {
 
         EnergyParticleData data = new EnergyParticleData(false, direction);
@@ -89,6 +93,7 @@ public record BlockTransitionEffectPacket(BlockPos pos,
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     private void playBreakOrPickupSound() {
 
         SoundEvent soundEvent;

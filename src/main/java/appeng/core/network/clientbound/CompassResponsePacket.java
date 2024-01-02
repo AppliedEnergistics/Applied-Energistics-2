@@ -7,6 +7,8 @@ import net.minecraft.world.entity.player.Player;
 import appeng.core.network.ClientboundPacket;
 import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public record CompassResponsePacket(long attunement,
         int cx,
@@ -37,6 +39,7 @@ public record CompassResponsePacket(long attunement,
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handleOnClient(Player player) {
         CompassManager.INSTANCE.postResult(this.attunement, this.cx << 4, this.cdy << 5, this.cz << 4, this.cr);
     }

@@ -10,6 +10,8 @@ import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AppEngClient;
 import appeng.core.network.ClientboundPacket;
 import appeng.util.Platform;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Plays a transition particle effect into the supplied direction. Used primarily by annihilation planes.
@@ -36,6 +38,7 @@ public record ItemTransitionEffectPacket(double x,
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handleOnClient(Player player) {
         EnergyParticleData data = new EnergyParticleData(true, this.d);
         for (int zz = 0; zz < 8; zz++) {

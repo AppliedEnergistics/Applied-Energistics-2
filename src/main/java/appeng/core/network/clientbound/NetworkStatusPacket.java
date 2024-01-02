@@ -9,6 +9,8 @@ import net.minecraft.world.entity.player.Player;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.core.network.ClientboundPacket;
 import appeng.menu.me.networktool.NetworkStatus;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public record NetworkStatusPacket(NetworkStatus status) implements ClientboundPacket {
 
@@ -23,6 +25,7 @@ public record NetworkStatusPacket(NetworkStatus status) implements ClientboundPa
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handleOnClient(Player player) {
         final Screen gs = Minecraft.getInstance().screen;
 

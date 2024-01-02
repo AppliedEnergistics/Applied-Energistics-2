@@ -7,6 +7,8 @@ import net.minecraft.world.entity.player.Player;
 
 import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.core.network.ClientboundPacket;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Clears all data from the pattern access terminal before a full reset.
@@ -21,6 +23,7 @@ public record ClearPatternAccessTerminalPacket() implements ClientboundPacket {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handleOnClient(Player player) {
         if (Minecraft.getInstance().screen instanceof PatternAccessTermScreen<?>patternAccessTerminal) {
             patternAccessTerminal.clear();
