@@ -72,12 +72,11 @@ record InventoryItemLocator(
     public String toString() {
         StringBuilder result = new StringBuilder("MenuItem");
         result.append('{');
-        result.append("slot=").append(itemIndex);
+        result.append("InventorySlot=").append(itemIndex);
         if (blockPos != null) {
             result.append(',').append("pos=").append(blockPos);
         }
         result.append('}');
         return result.toString();
     }
-
 }

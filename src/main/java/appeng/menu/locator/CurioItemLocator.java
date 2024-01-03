@@ -55,4 +55,9 @@ record CurioItemLocator(int itemIndex) implements MenuItemLocator {
     public static CurioItemLocator readFromPacket(FriendlyByteBuf buf) {
         return new CurioItemLocator(buf.readInt());
     }
+
+    @Override
+    public String toString() {
+        return "MenuItem{CurioSlot=" + itemIndex + "}";
+    }
 }
