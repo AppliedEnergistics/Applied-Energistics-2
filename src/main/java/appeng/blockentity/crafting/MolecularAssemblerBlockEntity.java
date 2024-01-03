@@ -36,6 +36,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -65,9 +66,8 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.network.TargetPoint;
-import appeng.core.sync.packets.AssemblerAnimationPacket;
+import appeng.core.network.NetworkHandler;
+import appeng.core.network.clientbound.AssemblerAnimationPacket;
 import appeng.crafting.CraftingEvent;
 import appeng.menu.AutoCraftingMenu;
 import appeng.util.inv.AppEngInternalInventory;
@@ -449,9 +449,10 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
                 var item = AEItemKey.of(output);
                 if (item != null) {
-                    final TargetPoint where = new TargetPoint(this.worldPosition.getX(), this.worldPosition.getY(),
+                    final PacketDistributor.TargetPoint where = new PacketDistributor.TargetPoint(
+                            this.worldPosition.getX(), this.worldPosition.getY(),
                             this.worldPosition.getZ(), 32,
-                            this.level);
+                            this.level.dimension());
                     NetworkHandler.instance()
                             .sendToAllAround(new AssemblerAnimationPacket(this.worldPosition, (byte) speed, item),
                                     where);

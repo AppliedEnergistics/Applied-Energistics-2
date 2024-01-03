@@ -19,8 +19,8 @@
 package appeng.client.gui.widgets;
 
 import appeng.api.config.Setting;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigButtonPacket;
+import appeng.core.network.NetworkHandler;
+import appeng.core.network.serverbound.ConfigButtonPacket;
 
 /**
  * Convenience button that automatically sends settings changes to the server.

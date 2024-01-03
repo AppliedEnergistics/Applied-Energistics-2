@@ -38,7 +38,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
-import net.neoforged.neoforge.network.NetworkHooks;
 
 import appeng.core.AppEng;
 import appeng.init.InitMenuTypes;
@@ -156,7 +155,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
             m.setLocator(locator);
             return m;
         }, title);
-        NetworkHooks.openScreen((ServerPlayer) player, menu, buffer -> {
+        player.openMenu(menu, buffer -> {
             MenuLocators.writeToPacket(buffer, locator);
             buffer.writeBoolean(fromSubMenu);
             if (initialDataSerializer != null) {

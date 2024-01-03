@@ -12,8 +12,8 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 import appeng.api.parts.IPartHost;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PartLeftClickPacket;
+import appeng.core.network.NetworkHandler;
+import appeng.core.network.serverbound.PartLeftClickPacket;
 import appeng.util.InteractionUtil;
 
 /**

@@ -12,8 +12,8 @@ import net.minecraft.world.item.crafting.Recipe;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.core.AELog;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.FillCraftingGridFromRecipePacket;
+import appeng.core.network.NetworkHandler;
+import appeng.core.network.serverbound.FillCraftingGridFromRecipePacket;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.items.CraftingTermMenu;

@@ -1,13 +1,9 @@
 package net.neoforged.fmljunit;
 
 import cpw.mods.modlauncher.Launcher;
-import cpw.mods.modlauncher.api.IEnvironment;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.targets.ForgeUserdevLaunchHandler;
-import org.mockito.Mockito;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.Consumer;
 

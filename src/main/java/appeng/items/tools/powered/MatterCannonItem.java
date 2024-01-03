@@ -73,7 +73,7 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEDamageTypes;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.PlayerMessages;
-import appeng.core.sync.packets.MatterCannonPacket;
+import appeng.core.network.clientbound.MatterCannonPacket;
 import appeng.items.contents.CellConfig;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
