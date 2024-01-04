@@ -72,6 +72,7 @@ import appeng.me.helpers.BaseActionSource;
 import appeng.me.service.PathingService;
 import appeng.menu.AutoCraftingMenu;
 import appeng.parts.crafting.PatternProviderPart;
+import appeng.parts.misc.InterfacePart;
 import appeng.server.testworld.Plot;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.TestCraftingJob;
@@ -1061,4 +1062,19 @@ public final class TestPlots {
                 .thenSucceed());
     }
 
+    @TestPlot("interface_part_caps")
+    public static void interfacePartCaps(PlotBuilder plot) {
+        plot.cable(BlockPos.ZERO).part(Direction.UP, AEParts.INTERFACE);
+        plot.hopper(BlockPos.ZERO.above(), Direction.DOWN, Items.DIRT);
+
+        plot.test(helper -> {
+            helper.startSequence()
+                    .thenWaitUntil(() -> {
+                        var interfacePart = helper.getPart(BlockPos.ZERO, Direction.UP, InterfacePart.class);
+                        var storage = interfacePart.getInterfaceLogic().getStorage();
+                        helper.assertEquals(BlockPos.ZERO, AEItemKey.of(Items.DIRT), storage.getKey(0));
+                    })
+                    .thenSucceed();
+        });
+    }
 }

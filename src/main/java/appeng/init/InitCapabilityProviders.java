@@ -90,19 +90,17 @@ public final class InitCapabilityProviders {
             Block block,
             BlockCapability<T, Direction> capability,
             Function<GenericInternalInventory, T> adapter) {
-        if (!event.isBlockRegistered(capability, block)) {
-            event.registerBlock(
-                    capability,
-                    (level, pos, state, blockEntity, context) -> {
-                        var genericInv = level.getCapability(AppEngCapabilities.GENERIC_INTERNAL_INV, pos, state,
-                                blockEntity, context);
-                        if (genericInv != null) {
-                            return adapter.apply(genericInv);
-                        }
-                        return null;
-                    },
-                    block);
-        }
+        event.registerBlock(
+                capability,
+                (level, pos, state, blockEntity, context) -> {
+                    var genericInv = level.getCapability(AppEngCapabilities.GENERIC_INTERNAL_INV, pos, state,
+                            blockEntity, context);
+                    if (genericInv != null) {
+                        return adapter.apply(genericInv);
+                    }
+                    return null;
+                },
+                block);
     }
 
     private static void initInterface(RegisterCapabilitiesEvent event) {
