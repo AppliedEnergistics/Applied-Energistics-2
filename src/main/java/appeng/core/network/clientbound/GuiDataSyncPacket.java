@@ -17,22 +17,29 @@ import appeng.menu.AEBaseMenu;
 /**
  * This packet is used to synchronize menu-fields from server to client.
  */
-public record GuiDataSyncPacket(int containerId, FriendlyByteBuf syncData) implements ClientboundPacket {
+public record GuiDataSyncPacket(int containerId, byte[] syncData) implements ClientboundPacket {
     public GuiDataSyncPacket(int containerId, Consumer<FriendlyByteBuf> writer) {
-        this(containerId, new FriendlyByteBuf(Unpooled.buffer()));
-        writer.accept(syncData);
+        this(containerId, createSyncData(writer));
+    }
+
+    private static byte[] createSyncData(Consumer<FriendlyByteBuf> writer) {
+        var buffer = new FriendlyByteBuf(Unpooled.buffer());
+        writer.accept(buffer);
+        var result = new byte[buffer.readableBytes()];
+        buffer.readBytes(result);
+        return result;
     }
 
     public static GuiDataSyncPacket decode(FriendlyByteBuf data) {
         var containerId = data.readVarInt();
-        var syncData = new FriendlyByteBuf(data.copy());
+        var syncData = data.readByteArray();
         return new GuiDataSyncPacket(containerId, syncData);
     }
 
     @Override
     public void write(FriendlyByteBuf data) {
         data.writeVarInt(containerId);
-        this.syncData.getBytes(0, data);
+        data.writeByteArray(syncData);
     }
 
     @Override
@@ -40,7 +47,7 @@ public record GuiDataSyncPacket(int containerId, FriendlyByteBuf syncData) imple
     public void handleOnClient(Player player) {
         AbstractContainerMenu c = player.containerMenu;
         if (c instanceof AEBaseMenu baseMenu && c.containerId == this.containerId) {
-            baseMenu.receiveServerSyncData(this.syncData);
+            baseMenu.receiveServerSyncData(new FriendlyByteBuf(Unpooled.wrappedBuffer(this.syncData)));
         }
     }
 

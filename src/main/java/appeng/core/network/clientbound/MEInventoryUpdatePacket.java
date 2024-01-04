@@ -62,7 +62,7 @@ public record MEInventoryUpdatePacket(
             if (encodedEntries == null) {
                 throw new UnsupportedOperationException("Use the builder");
             }
-            encodedEntries.getBytes(0, data);
+            encodedEntries.getBytes(encodedEntries.readerIndex(), data, encodedEntries.readableBytes());
         }
     }
 
