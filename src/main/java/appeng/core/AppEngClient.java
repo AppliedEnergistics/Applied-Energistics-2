@@ -49,6 +49,7 @@ import net.neoforged.neoforge.client.event.ModelEvent.RegisterGeometryLoaders;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -94,6 +95,8 @@ import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
 import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.siteexport.SiteExporter;
+import appeng.spatial.SpatialStorageDimensionIds;
+import appeng.spatial.SpatialStorageSkyProperties;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
@@ -129,6 +132,7 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerEntityRenderers);
         modEventBus.addListener(this::registerEntityLayerDefinitions);
         modEventBus.addListener(this::registerHotkeys);
+        modEventBus.addListener(this::registerDimensionSpecialEffects);
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
@@ -156,6 +160,12 @@ public class AppEngClient extends AppEngBase {
                 Hotkeys.checkHotkeys();
             }
         });
+    }
+
+    private void registerDimensionSpecialEffects(RegisterDimensionSpecialEffectsEvent event) {
+        event.register(
+                SpatialStorageDimensionIds.DIMENSION_TYPE_ID.location(),
+                SpatialStorageSkyProperties.INSTANCE);
     }
 
     private void registerClientCommands() {
