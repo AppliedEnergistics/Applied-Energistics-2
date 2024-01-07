@@ -95,8 +95,10 @@ public class SpatialSkyRender {
             RenderSystem.defaultBlendFunc();
 
             RenderSystem.setShaderColor(fade, fade, fade, 1.0f);
+            sparkleBuffer.bind();
             sparkleBuffer.drawWithShader(poseStack.last().pose(), projectionMatrix,
                     GameRenderer.getPositionColorShader());
+            VertexBuffer.unbind();
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         }
 
@@ -149,6 +151,8 @@ public class SpatialSkyRender {
             }
         }
 
+        sparkleBuffer.bind();
         sparkleBuffer.upload(vb.end());
+        VertexBuffer.unbind();
     }
 }
