@@ -44,6 +44,7 @@ import net.minecraftforge.client.event.ModelEvent.RegisterGeometryLoaders;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -91,6 +92,8 @@ import appeng.init.client.InitRenderTypes;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
 import appeng.items.storage.StorageCellTooltipComponent;
+import appeng.spatial.SpatialStorageDimensionIds;
+import appeng.spatial.SpatialStorageSkyProperties;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
@@ -125,6 +128,7 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerEntityRenderers);
         modEventBus.addListener(this::registerEntityLayerDefinitions);
         modEventBus.addListener(this::registerHotkeys);
+        modEventBus.addListener(this::registerDimensionSpecialEffects);
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
@@ -152,6 +156,12 @@ public class AppEngClient extends AppEngBase {
             PendingCraftingJobs.clearPendingJobs();
             PinnedKeys.clearPinnedKeys();
         });
+    }
+
+    private void registerDimensionSpecialEffects(RegisterDimensionSpecialEffectsEvent event) {
+        event.register(
+                SpatialStorageDimensionIds.DIMENSION_TYPE_ID.location(),
+                SpatialStorageSkyProperties.INSTANCE);
     }
 
     private void registerClientCommands() {

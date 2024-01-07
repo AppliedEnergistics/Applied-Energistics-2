@@ -15,8 +15,6 @@
     "StructureTemplateMixin"
   ],
   "client": [
-    "spatial.SkyRenderMixin",
-    "spatial.SkyPropertiesMixin",
     "unlitquad.ModelBakeryMixin",
     "unlitquad.BlockModelMixin",
     "unlitquad.BlockPartFaceDeserializerMixin",
