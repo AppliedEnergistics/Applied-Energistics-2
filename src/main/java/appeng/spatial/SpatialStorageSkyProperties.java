@@ -18,11 +18,11 @@
 
 package appeng.spatial;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import javax.annotation.Nullable;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
+
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
@@ -62,7 +62,7 @@ public class SpatialStorageSkyProperties {
 
         @Override
         public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera,
-                                 Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
+                Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
             SpatialSkyRender.getInstance().render(poseStack, projectionMatrix);
             return true;
         }
