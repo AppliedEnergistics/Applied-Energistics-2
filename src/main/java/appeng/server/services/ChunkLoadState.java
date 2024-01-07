@@ -12,6 +12,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.saveddata.SavedData;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -25,11 +26,16 @@ import appeng.core.worlddata.AESavedData;
  * Implementation detail of {@link ChunkLoadingService} on Fabric, as {@code ForgeChunkManager} is not available there.
  */
 class ChunkLoadState extends AESavedData {
+
     public static final String NAME = AppEng.MOD_ID + "_chunk_load_state";
 
     public static ChunkLoadState get(ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(tag -> new ChunkLoadState(level, tag),
-                () -> new ChunkLoadState(level), NAME);
+        return level.getDataStorage().computeIfAbsent(
+                new SavedData.Factory<>(
+                        () -> new ChunkLoadState(level),
+                        tag -> new ChunkLoadState(level, tag),
+                        null),
+                NAME);
     }
 
     private final ServerLevel level;

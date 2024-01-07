@@ -49,6 +49,11 @@ connected to the network, and it all fits in a smaller space too.
 
 <a name="terminal-ui"></a>
 
+# Terminal Search
+
+The searchbox accepts Regex terms, so you can, for example, write "gtceu:.*ore" to get all ores from Gregtech. Learning
+Regex is left as an exercise for the reader.
+
 # Terminal
 
 <GameScene zoom="6" background="transparent">

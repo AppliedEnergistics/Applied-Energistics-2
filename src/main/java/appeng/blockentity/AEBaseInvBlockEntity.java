@@ -20,6 +20,8 @@ package appeng.blockentity;
 
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -27,6 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.GenericStack;
@@ -97,8 +100,16 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     @Override
     public abstract void onChangeInventory(InternalInventory inv, int slot);
 
-    public InternalInventory getExposedInventoryForSide(Direction side) {
+    protected InternalInventory getExposedInventoryForSide(Direction side) {
         return this.getInternalInventory();
+    }
+
+    public IItemHandler getExposedItemHandler(@Nullable Direction side) {
+        if (side == null) {
+            return getInternalInventory().toItemHandler();
+        } else {
+            return getExposedInventoryForSide(side).toItemHandler();
+        }
     }
 
 }

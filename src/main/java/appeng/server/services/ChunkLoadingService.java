@@ -22,21 +22,34 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.common.world.chunk.LoadingValidationCallback;
+import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
+import net.neoforged.neoforge.common.world.chunk.TicketController;
+import net.neoforged.neoforge.common.world.chunk.TicketHelper;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 
 import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
+import appeng.core.AppEng;
 
-public class ChunkLoadingService {
+public class ChunkLoadingService implements LoadingValidationCallback {
 
     private static final ChunkLoadingService INSTANCE = new ChunkLoadingService();
 
     // Flag to ignore a server after it is stopping as grid nodes might reevaluate their grids during a shutdown.
     private boolean running = true;
 
-    public void onServerAboutToStart() {
+    private final TicketController controller = new TicketController(AppEng.makeId("default"), this);
+
+    public void register(RegisterTicketControllersEvent event) {
+        event.register(controller);
+    }
+
+    public void onServerAboutToStart(ServerAboutToStartEvent evt) {
         this.running = true;
     }
 
-    public void onServerStopping() {
+    public void onServerStopping(ServerStoppingEvent event) {
         this.running = false;
     }
 
@@ -44,30 +57,27 @@ public class ChunkLoadingService {
         return INSTANCE;
     }
 
-    public void validateTickets(ServerLevel level) {
-        var state = ChunkLoadState.get(level);
-
-        for (var entry : state.getAllBlocks().entrySet()) {
-            var blockPos = entry.getKey();
-            var chunks = entry.getValue();
+    @Override
+    public void validateTickets(ServerLevel level, TicketHelper ticketHelper) {
+        // Iterate over all blockpos registered as chunk loader to initialize them
+        ticketHelper.getBlockTickets().forEach((blockPos, chunks) -> {
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
 
             // Add all persisted chunks to the list of handled ones by each anchor.
             // Or remove all in case the anchor no longer exists.
             if (blockEntity instanceof SpatialAnchorBlockEntity anchor) {
-                for (long chunk : chunks) {
+                for (Long chunk : chunks.ticking()) {
                     anchor.registerChunk(new ChunkPos(chunk));
                 }
             } else {
-                state.releaseAll(blockPos);
+                ticketHelper.removeAllTickets(blockPos);
             }
-        }
+        });
     }
 
     public boolean forceChunk(ServerLevel level, BlockPos owner, ChunkPos position) {
         if (running) {
-            ChunkLoadState.get(level).forceChunk(position, owner);
-            return true;
+            return controller.forceChunk(level, owner, position.x, position.z, true, true);
         }
 
         return false;
@@ -75,8 +85,7 @@ public class ChunkLoadingService {
 
     public boolean releaseChunk(ServerLevel level, BlockPos owner, ChunkPos position) {
         if (running) {
-            ChunkLoadState.get(level).releaseChunk(position, owner);
-            return true;
+            return controller.forceChunk(level, owner, position.x, position.z, false, true);
         }
 
         return false;

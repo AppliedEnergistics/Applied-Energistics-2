@@ -48,10 +48,14 @@ class MeshBuildingBufferSource extends MultiBufferSource.BufferSource {
             vertexBuffer.put(vbSource);
             vertexBuffer.flip();
 
+            // Copy the index buffer
+            ByteBuffer indexBuffer = null;
             var ibSource = buffer.indexBuffer();
-            var indexBuffer = ByteBuffer.allocate(ibSource.remaining());
-            indexBuffer.put(ibSource);
-            indexBuffer.flip();
+            if (ibSource != null) {
+                indexBuffer = ByteBuffer.allocate(ibSource.remaining());
+                indexBuffer.put(ibSource);
+                indexBuffer.flip();
+            }
 
             this.meshes.add(new Mesh(
                     drawState,

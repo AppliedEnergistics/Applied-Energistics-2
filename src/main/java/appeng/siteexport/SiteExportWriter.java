@@ -27,8 +27,6 @@ import com.google.gson.stream.JsonWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
@@ -46,6 +44,7 @@ import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.compiler.MdAstNodeAdapter;
@@ -161,15 +160,15 @@ public class SiteExportWriter {
         siteExport.items.put(itemInfo.id, itemInfo);
     }
 
-    public void addFluid(String id, FluidVariant fluid, String iconPath) {
+    public void addFluid(String id, FluidStack fluid, String iconPath) {
         var fluidInfo = new FluidInfoJson();
         fluidInfo.id = id;
         fluidInfo.icon = iconPath;
-        fluidInfo.displayName = FluidVariantRendering.getTooltip(fluid).get(0).getString();
+        fluidInfo.displayName = fluid.getDisplayName().getString();
         siteExport.fluids.put(fluidInfo.id, fluidInfo);
     }
 
-    public void addRecipe(CraftingRecipe recipe) {
+    public void addRecipe(ResourceLocation id, CraftingRecipe recipe) {
         Map<String, Object> fields = new HashMap<>();
         if (recipe instanceof ShapedRecipe shapedRecipe) {
             fields.put("shapeless", false);
@@ -184,12 +183,12 @@ public class SiteExportWriter {
         fields.put("resultCount", resultItem.getCount());
         fields.put("ingredients", recipe.getIngredients());
 
-        addRecipe(recipe, fields);
+        addRecipe(id, recipe, fields);
     }
 
-    public void addRecipe(InscriberRecipe recipe) {
+    public void addRecipe(ResourceLocation id, InscriberRecipe recipe) {
         var resultItem = recipe.getResultItem();
-        addRecipe(recipe, Map.of(
+        addRecipe(id, recipe, Map.of(
                 "top", recipe.getTopOptional(),
                 "middle", recipe.getMiddleInput(),
                 "bottom", recipe.getBottomOptional(),
@@ -198,13 +197,13 @@ public class SiteExportWriter {
                 "consumesTopAndBottom", recipe.getProcessType() == InscriberProcessType.PRESS));
     }
 
-    public void addRecipe(AbstractCookingRecipe recipe) {
-        addRecipe(recipe, Map.of(
+    public void addRecipe(ResourceLocation id, AbstractCookingRecipe recipe) {
+        addRecipe(id, recipe, Map.of(
                 "resultItem", recipe.getResultItem(null),
                 "ingredient", recipe.getIngredients().get(0)));
     }
 
-    public void addRecipe(TransformRecipe recipe) {
+    public void addRecipe(ResourceLocation id, TransformRecipe recipe) {
 
         Map<String, Object> circumstanceJson = new HashMap<>();
         var circumstance = recipe.circumstance;
@@ -223,58 +222,56 @@ public class SiteExportWriter {
             throw new IllegalStateException("Unknown circumstance: " + circumstance.toJson());
         }
 
-        addRecipe(recipe, Map.of(
+        addRecipe(id, recipe, Map.of(
                 "resultItem", recipe.getResultItem(null),
                 "ingredients", recipe.getIngredients(),
                 "circumstance", circumstanceJson));
     }
 
-    public void addRecipe(EntropyRecipe recipe) {
-        addRecipe(recipe, Map.of(
+    public void addRecipe(ResourceLocation id, EntropyRecipe recipe) {
+        addRecipe(id, recipe, Map.of(
                 "mode", recipe.getMode().name().toLowerCase(Locale.ROOT)));
     }
 
-    public void addRecipe(MatterCannonAmmo recipe) {
-        addRecipe(recipe, Map.of(
+    public void addRecipe(ResourceLocation id, MatterCannonAmmo recipe) {
+        addRecipe(id, recipe, Map.of(
                 "ammo", recipe.getAmmo(),
                 "damage", MatterCannonItem.getDamageFromPenetration(recipe.getWeight())));
     }
 
-    public void addRecipe(ChargerRecipe recipe) {
-        addRecipe(recipe, Map.of(
+    public void addRecipe(ResourceLocation id, ChargerRecipe recipe) {
+        addRecipe(id, recipe, Map.of(
                 "resultItem", recipe.getResultItem(),
                 "ingredient", recipe.getIngredient()));
     }
 
-    public void addRecipe(SmithingTransformRecipe recipe) {
-        addRecipe(recipe, Map.of(
+    public void addRecipe(ResourceLocation id, SmithingTransformRecipe recipe) {
+        addRecipe(id, recipe, Map.of(
                 "resultItem", recipe.getResultItem(null),
                 "base", recipe.base,
                 "addition", recipe.addition,
                 "template", recipe.template));
     }
 
-    public void addRecipe(SmithingTrimRecipe recipe) {
-        addRecipe(recipe, Map.of(
+    public void addRecipe(ResourceLocation id, SmithingTrimRecipe recipe) {
+        addRecipe(id, recipe, Map.of(
                 "base", recipe.base,
                 "addition", recipe.addition,
                 "template", recipe.template));
     }
 
-    public void addRecipe(StonecutterRecipe recipe) {
-        addRecipe(
-                recipe,
+    public void addRecipe(ResourceLocation id, StonecutterRecipe recipe) {
+        addRecipe(id, recipe,
                 Map.of(
                         "resultItem", recipe.getResultItem(null),
                         "ingredient", recipe.getIngredients().get(0)));
     }
 
-    public void addRecipe(Recipe<?> recipe, Map<String, Object> element) {
+    public void addRecipe(ResourceLocation id, Recipe<?> recipe, Map<String, Object> element) {
         // Auto-transform ingredients
 
         var jsonElement = GSON.toJsonTree(element);
 
-        var id = recipe.getId();
         var type = BuiltInRegistries.RECIPE_TYPE.getKey(recipe.getType()).toString();
         jsonElement.getAsJsonObject().addProperty("type", type);
 

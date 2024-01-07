@@ -7,7 +7,6 @@ import java.util.WeakHashMap;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -26,15 +25,29 @@ import appeng.core.AELog;
 import appeng.util.Platform;
 
 public final class AEItemKey extends AEKey {
+    @Nullable
+    private static CompoundTag serializeStackCaps(ItemStack stack) {
+        try {
+
+            var caps = stack.serializeAttachments();
+            // Ensure stacks with no serializable cap providers are treated the same as stacks with no caps!
+            return caps == null || caps.isEmpty() ? null : caps;
+        } catch (Throwable ex) {
+            throw new RuntimeException("Failed to call serializeCaps", ex);
+        }
+    }
+
     private final Item item;
     private final InternedTag internedTag;
+    private final InternedTag internedCaps;
     private final int hashCode;
     private final int cachedDamage;
 
-    private AEItemKey(Item item, InternedTag internedTag) {
+    private AEItemKey(Item item, InternedTag internedTag, InternedTag internedCaps) {
         this.item = item;
         this.internedTag = internedTag;
-        this.hashCode = item.hashCode() * 31 + internedTag.hashCode;
+        this.internedCaps = internedCaps;
+        this.hashCode = Objects.hash(item, internedTag, internedCaps);
         if (internedTag.tag != null && internedTag.tag.get("Damage") instanceof NumericTag numericTag) {
             this.cachedDamage = numericTag.getAsInt();
         } else {
@@ -43,19 +56,11 @@ public final class AEItemKey extends AEKey {
     }
 
     @Nullable
-    public static AEItemKey of(ItemVariant variant) {
-        if (variant.isBlank()) {
-            return null;
-        }
-        return of(variant.getItem(), variant.getNbt());
-    }
-
-    @Nullable
     public static AEItemKey of(ItemStack stack) {
         if (stack.isEmpty()) {
             return null;
         }
-        return of(stack.getItem(), stack.getTag());
+        return of(stack.getItem(), stack.getTag(), serializeStackCaps(stack));
     }
 
     public static boolean matches(AEKey what, ItemStack itemStack) {
@@ -87,7 +92,7 @@ public final class AEItemKey extends AEKey {
         if (o == null || getClass() != o.getClass())
             return false;
         AEItemKey aeItemKey = (AEItemKey) o;
-        return item == aeItemKey.item && internedTag == aeItemKey.internedTag;
+        return item == aeItemKey.item && internedTag == aeItemKey.internedTag && internedCaps == aeItemKey.internedCaps;
     }
 
     @Override
@@ -100,11 +105,17 @@ public final class AEItemKey extends AEKey {
     }
 
     public static AEItemKey of(ItemLike item, @Nullable CompoundTag tag) {
-        return new AEItemKey(item.asItem(), InternedTag.of(tag, false));
+        return of(item, tag, null);
+    }
+
+    private static AEItemKey of(ItemLike item, @Nullable CompoundTag tag, @Nullable CompoundTag caps) {
+        return new AEItemKey(item.asItem(), InternedTag.of(tag, false), InternedTag.of(caps, false));
     }
 
     public boolean matches(ItemStack stack) {
-        return !stack.isEmpty() && stack.is(item) && Objects.equals(stack.getTag(), internedTag.tag);
+        // TODO: remove or optimize cap check if it becomes too slow >:-(
+        return !stack.isEmpty() && stack.is(item) && Objects.equals(stack.getTag(), internedTag.tag)
+                && Objects.equals(serializeStackCaps(stack), internedCaps.tag);
     }
 
     public ItemStack toStack() {
@@ -116,9 +127,8 @@ public final class AEItemKey extends AEKey {
             return ItemStack.EMPTY;
         }
 
-        var result = new ItemStack(item);
+        var result = new ItemStack(item, count, internedCaps.tag);
         result.setTag(copyTag());
-        result.setCount(count);
         return result;
     }
 
@@ -132,7 +142,8 @@ public final class AEItemKey extends AEKey {
             var item = BuiltInRegistries.ITEM.getOptional(new ResourceLocation(tag.getString("id")))
                     .orElseThrow(() -> new IllegalArgumentException("Unknown item id."));
             var extraTag = tag.contains("tag") ? tag.getCompound("tag") : null;
-            return of(item, extraTag);
+            var extraCaps = tag.contains("caps") ? tag.getCompound("caps") : null;
+            return of(item, extraTag, extraCaps);
         } catch (Exception e) {
             AELog.debug("Tried to load an invalid item key from NBT: %s", tag, e);
             return null;
@@ -146,6 +157,9 @@ public final class AEItemKey extends AEKey {
 
         if (internedTag.tag != null) {
             result.put("tag", internedTag.tag.copy());
+        }
+        if (internedCaps.tag != null) {
+            result.put("caps", internedCaps.tag.copy());
         }
 
         return result;
@@ -175,10 +189,6 @@ public final class AEItemKey extends AEKey {
     @Override
     public ResourceLocation getId() {
         return BuiltInRegistries.ITEM.getKey(item);
-    }
-
-    public ItemVariant toVariant() {
-        return ItemVariant.of(item, internedTag.tag);
     }
 
     /**
@@ -244,13 +254,16 @@ public final class AEItemKey extends AEKey {
             compoundTag = internedTag.tag;
         }
         data.writeNbt(compoundTag);
+        data.writeNbt(internedCaps.tag);
     }
 
     public static AEItemKey fromPacket(FriendlyByteBuf data) {
         int i = data.readVarInt();
         var item = Item.byId(i);
-        var tag = data.readNbt();
-        return new AEItemKey(item, InternedTag.of(tag, true));
+        var compoundTag = data.readNbt();
+        var attachedCapsData = data.readNbt();
+        return new AEItemKey(item, InternedTag.of(compoundTag, true),
+                InternedTag.of(attachedCapsData, true));
     }
 
     @Override

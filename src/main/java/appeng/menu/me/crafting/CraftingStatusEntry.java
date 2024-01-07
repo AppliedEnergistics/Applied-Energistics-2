@@ -72,12 +72,12 @@ public class CraftingStatusEntry implements Comparable<CraftingStatusEntry> {
         return what;
     }
 
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeVarLong(serial);
-        buffer.writeVarLong(activeAmount);
-        buffer.writeVarLong(storedAmount);
-        buffer.writeVarLong(pendingAmount);
-        AEKey.writeOptionalKey(buffer, what);
+    public static void write(FriendlyByteBuf buffer, CraftingStatusEntry entry) {
+        buffer.writeVarLong(entry.serial);
+        buffer.writeVarLong(entry.activeAmount);
+        buffer.writeVarLong(entry.storedAmount);
+        buffer.writeVarLong(entry.pendingAmount);
+        AEKey.writeOptionalKey(buffer, entry.what);
     }
 
     public static CraftingStatusEntry read(FriendlyByteBuf buffer) {

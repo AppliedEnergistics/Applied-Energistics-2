@@ -30,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 
 import io.netty.buffer.Unpooled;
 
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
@@ -56,6 +55,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
@@ -74,15 +74,7 @@ import appeng.util.SettingsFrom;
 import appeng.util.helpers.ItemComparisonHelper;
 
 public class AEBaseBlockEntity extends BlockEntity
-        implements Nameable, ISegmentedInventory,
-        RenderAttachmentBlockEntity, Clearable {
-
-    static {
-        DeferredBlockEntityUnloader.register();
-    }
-
-    protected void onChunkUnloaded() {
-    }
+        implements Nameable, ISegmentedInventory, Clearable {
 
     private static final Map<BlockEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
     @Nullable
@@ -90,7 +82,7 @@ public class AEBaseBlockEntity extends BlockEntity
     private boolean setChangedQueued = false;
     /**
      * For diagnosing issues with the delayed block entity initialization, this tracks how often this BE has been queued
-     * for defered initializiation using {@link appeng.api.networking.GridHelper#onFirstTick}.
+     * for defered initializiation using {@link GridHelper#onFirstTick}.
      */
     private byte queuedForReady = 0;
     /**
@@ -100,7 +92,7 @@ public class AEBaseBlockEntity extends BlockEntity
     private byte readyInvoked = 0;
 
     // Remove in 1.20.1+: Convert legacy NBT orientation to blockstate
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     private BlockOrientation pendingOrientationChange;
 
     public AEBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -139,6 +131,7 @@ public class AEBaseBlockEntity extends BlockEntity
             if (readUpdateData(new FriendlyByteBuf(Unpooled.wrappedBuffer(updateData)))) {
                 // Triggers a chunk re-render if the level is already loaded
                 if (level != null) {
+                    requestModelDataUpdate();
                     level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
                 }
             }
@@ -271,6 +264,9 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     public void markForUpdate() {
+        // Clearing the cached model-data is always harmless regardless of status
+        this.requestModelDataUpdate();
+
         // TODO: Optimize Network Load
         if (this.level != null && !this.isRemoved() && !notLoaded()) {
 
@@ -421,10 +417,9 @@ public class AEBaseBlockEntity extends BlockEntity
         return null;
     }
 
-    @Nullable
     @Override
-    public Object getRenderAttachmentData() {
-        return new AEModelData();
+    public ModelData getModelData() {
+        return AEModelData.create();
     }
 
     /**

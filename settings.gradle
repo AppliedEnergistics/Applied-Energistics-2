@@ -1,14 +1,15 @@
-
 pluginManagement {
     repositories {
+        mavenLocal()
         maven {
-            name = 'Fabric'
-            url = 'https://maven.fabricmc.net/'
+            name = 'NeoForged'
+            url = 'https://maven.neoforged.net/releases'
         }
         gradlePluginPortal()
+        mavenCentral()
     }
     plugins {
-        id 'fabric-loom' version '1.3-SNAPSHOT'
+        id 'net.neoforged.gradle.userdev' version '7.0.78'
         id 'com.diffplug.spotless' version '5.12.4'
         id 'io.github.juuxel.loom-quiltflower' version '1.10.0'
         id 'com.github.johnrengelman.shadow' version '7.0.0'
@@ -16,4 +17,7 @@ pluginManagement {
     }
 }
 
+rootProject.name = 'ae2';
+
 include 'libs:markdown'
+include 'libs:junit'

@@ -19,7 +19,7 @@ import appeng.util.Platform;
 public final class PowerStorageDataProvider implements BodyProvider<BlockEntity>, ServerDataProvider<BlockEntity> {
 
     /**
-     * Power key used for the transferred {@link net.minecraft.nbt.CompoundTag}
+     * Power key used for the transferred {@link CompoundTag}
      */
     private static final String TAG_CURRENT_POWER = "currentPower";
     private static final String TAG_MAX_POWER = "maxPower";

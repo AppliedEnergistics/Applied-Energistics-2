@@ -22,8 +22,8 @@ import appeng.core.AELog;
  * Uniquely identifies something that "stacks" within an ME inventory.
  * <p/>
  * For example for items, this is the combination of an {@link net.minecraft.world.item.Item} and optional
- * {@link net.minecraft.nbt.CompoundTag}. To account for common indexing scenarios, a key is (optionally) split into a
- * primary and secondary component, which serves two purposes:
+ * {@link CompoundTag}. To account for common indexing scenarios, a key is (optionally) split into a primary and
+ * secondary component, which serves two purposes:
  * <ul>
  * <li>Fuzzy cards allow setting filters for the primary component of a key, i.e. for an
  * {@link net.minecraft.world.item.Item}, while disregarding the compound tag.</li>

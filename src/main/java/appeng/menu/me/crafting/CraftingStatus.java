@@ -97,10 +97,7 @@ public class CraftingStatus {
         buffer.writeVarLong(elapsedTime);
         buffer.writeVarLong(remainingItemCount);
         buffer.writeVarLong(startItemCount);
-        buffer.writeVarInt(entries.size());
-        for (CraftingStatusEntry entry : entries) {
-            entry.write(buffer);
-        }
+        buffer.writeCollection(entries, CraftingStatusEntry::write);
     }
 
     public static CraftingStatus read(FriendlyByteBuf buffer) {
@@ -108,14 +105,8 @@ public class CraftingStatus {
         long elapsedTime = buffer.readVarLong();
         long remainingItemCount = buffer.readVarLong();
         long startItemCount = buffer.readVarLong();
-        int entryCount = buffer.readVarInt();
-
-        ImmutableList.Builder<CraftingStatusEntry> entries = ImmutableList.builder();
-        for (int i = 0; i < entryCount; i++) {
-            entries.add(CraftingStatusEntry.read(buffer));
-        }
-
-        return new CraftingStatus(fullStatus, elapsedTime, remainingItemCount, startItemCount, entries.build());
+        var entries = buffer.readList(CraftingStatusEntry::read);
+        return new CraftingStatus(fullStatus, elapsedTime, remainingItemCount, startItemCount, List.copyOf(entries));
     }
 
     public static CraftingStatus create(IncrementalUpdateHelper changes, CraftingCpuLogic logic) {

@@ -31,8 +31,6 @@ import com.google.common.collect.EnumHashBiMap;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -60,6 +58,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -126,7 +126,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     private static final String TAG_COLOR = "color";
 
-    public ColorApplicatorItem(Item.Properties props) {
+    public ColorApplicatorItem(Properties props) {
         super(AEConfig.instance().getColorApplicatorBattery(), props);
     }
 
@@ -456,7 +456,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);

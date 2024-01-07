@@ -27,7 +27,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonElement;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +39,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.loot.LootDataType;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -109,15 +107,16 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
             if (entry.getKey().location().getNamespace().equals(AppEng.MOD_ID)) {
                 builder = overrides.getOrDefault(entry.getValue(), this::defaultBuilder).apply(entry.getValue());
 
-                futures.add(DataProvider.saveStable(cache, toJson(builder),
+                futures.add(DataProvider.saveStable(cache, LootTable.CODEC, finishBuilding(builder),
                         getPath(outputFolder, entry.getKey().location())));
             }
         }
 
-        futures.add(DataProvider.saveStable(cache, toJson(LootTable.lootTable()
+        var table = LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .setRolls(UniformGenerator.between(1, 3))
-                        .add(LootItem.lootTableItem(AEBlocks.SKY_STONE_BLOCK)))),
+                        .add(LootItem.lootTableItem(AEBlocks.SKY_STONE_BLOCK)));
+        futures.add(DataProvider.saveStable(cache, LootTable.CODEC, finishBuilding(table),
                 getPath(outputFolder, AppEng.makeId("chests/meteorite"))));
 
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
@@ -158,10 +157,6 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
 
     private Path getPath(Path root, ResourceLocation id) {
         return root.resolve("data/" + id.getNamespace() + "/loot_tables/blocks/" + id.getPath() + ".json");
-    }
-
-    public JsonElement toJson(LootTable.Builder builder) {
-        return LootDataType.TABLE.parser().toJsonTree(finishBuilding(builder));
     }
 
     public LootTable finishBuilding(LootTable.Builder builder) {

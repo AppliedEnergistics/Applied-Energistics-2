@@ -335,15 +335,15 @@ class InternalInventoryTest {
             assertSame(ItemStack.EMPTY, inv.addItems(stackableItem(64)));
             assertThat(reportAllSlots(inv))
                     .containsExactly(
-                            "16 ender_pearl",
-                            "10 ender_pearl",
-                            "1 ender_pearl [has NBT]",
-                            "16 ender_pearl",
-                            "16 ender_pearl",
-                            "16 ender_pearl",
-                            "16 ender_pearl",
-                            "16 ender_pearl",
-                            "13 ender_pearl");
+                            "16 minecraft:ender_pearl",
+                            "10 minecraft:ender_pearl",
+                            "1 minecraft:ender_pearl [has NBT]",
+                            "16 minecraft:ender_pearl",
+                            "16 minecraft:ender_pearl",
+                            "16 minecraft:ender_pearl",
+                            "16 minecraft:ender_pearl",
+                            "16 minecraft:ender_pearl",
+                            "13 minecraft:ender_pearl");
         }
 
         @Test
@@ -394,18 +394,18 @@ class InternalInventoryTest {
             assertThat(reportAllSlots(inv))
                     .containsExactly(
                             // This was the remainder after stacking into everything else
-                            "13 ender_pearl",
+                            "13 minecraft:ender_pearl",
                             // Can't fill this one up past 10 due to a slot-count-limit
-                            "10 ender_pearl",
+                            "10 minecraft:ender_pearl",
                             // Can't fill because non-stackable (due to NBT)
-                            "1 ender_pearl [has NBT]",
+                            "1 minecraft:ender_pearl [has NBT]",
                             // Filled this from 15->16 due to max stack size
-                            "16 ender_pearl",
+                            "16 minecraft:ender_pearl",
                             // This slot was already at max stack size
-                            "16 ender_pearl",
-                            "0 air",
+                            "16 minecraft:ender_pearl",
+                            "0 minecraft:air",
                             // Filled this from 14->16 due to max stack size
-                            "16 ender_pearl");
+                            "16 minecraft:ender_pearl");
         }
     }
 
@@ -424,13 +424,13 @@ class InternalInventoryTest {
             assertThat(reportAllSlots(inv))
                     .containsExactly(
                             // This slot was empty
-                            "16 ender_pearl",
-                            "10 ender_pearl",
-                            "1 ender_pearl [has NBT]",
-                            "15 ender_pearl",
-                            "16 ender_pearl",
-                            "0 air",
-                            "14 ender_pearl");
+                            "16 minecraft:ender_pearl",
+                            "10 minecraft:ender_pearl",
+                            "1 minecraft:ender_pearl [has NBT]",
+                            "15 minecraft:ender_pearl",
+                            "16 minecraft:ender_pearl",
+                            "0 minecraft:air",
+                            "14 minecraft:ender_pearl");
         }
 
     }
@@ -481,66 +481,66 @@ class InternalInventoryTest {
         class NoFilters {
             @Test
             void testTakeAll() {
-                assertEquals("15 stick", inv.removeItems(15, ItemStack.EMPTY, null).toString());
+                assertEquals("15 minecraft:stick", inv.removeItems(15, ItemStack.EMPTY, null).toString());
                 assertThat(reportFilledSlots(inv)).containsOnly(
-                        "10 stick [has NBT]",
-                        "10 diamond_sword [has NBT]",
-                        "1 diamond_sword [has NBT]",
-                        "5 stick [has NBT]",
-                        "5 diamond_sword [has NBT]",
-                        "1 diamond_sword [has NBT]");
+                        "10 minecraft:stick [has NBT]",
+                        "10 minecraft:diamond_sword [has NBT]",
+                        "1 minecraft:diamond_sword [has NBT]",
+                        "5 minecraft:stick [has NBT]",
+                        "5 minecraft:diamond_sword [has NBT]",
+                        "1 minecraft:diamond_sword [has NBT]");
 
-                assertEquals("15 stick", inv.removeItems(15, ItemStack.EMPTY, null).toString());
+                assertEquals("15 minecraft:stick", inv.removeItems(15, ItemStack.EMPTY, null).toString());
                 assertThat(reportFilledSlots(inv)).containsOnly(
-                        "10 diamond_sword [has NBT]",
-                        "1 diamond_sword [has NBT]",
-                        "5 diamond_sword [has NBT]",
-                        "1 diamond_sword [has NBT]");
+                        "10 minecraft:diamond_sword [has NBT]",
+                        "1 minecraft:diamond_sword [has NBT]",
+                        "5 minecraft:diamond_sword [has NBT]",
+                        "1 minecraft:diamond_sword [has NBT]");
 
                 // Note how it'll extract only 1 sword of each slot per-iteration because
                 // due to IItemHandler#extractItem being the basis for our extractItem,
                 // it'll adhere to Vanilla stack size limits.
-                assertEquals("2 diamond_sword", inv.removeItems(15, ItemStack.EMPTY, null).toString());
+                assertEquals("2 minecraft:diamond_sword", inv.removeItems(15, ItemStack.EMPTY, null).toString());
                 assertThat(reportFilledSlots(inv)).containsOnly(
-                        "9 diamond_sword [has NBT]",
-                        "1 diamond_sword [has NBT]",
-                        "4 diamond_sword [has NBT]",
-                        "1 diamond_sword [has NBT]");
+                        "9 minecraft:diamond_sword [has NBT]",
+                        "1 minecraft:diamond_sword [has NBT]",
+                        "4 minecraft:diamond_sword [has NBT]",
+                        "1 minecraft:diamond_sword [has NBT]");
                 // Extract the rest of it
                 for (var i = 0; i < 4; i++) {
-                    assertEquals("2 diamond_sword", inv.removeItems(15, ItemStack.EMPTY, null).toString());
+                    assertEquals("2 minecraft:diamond_sword", inv.removeItems(15, ItemStack.EMPTY, null).toString());
                 }
                 for (var i = 0; i < 5; i++) {
-                    assertEquals("1 diamond_sword", inv.removeItems(15, ItemStack.EMPTY, null).toString());
+                    assertEquals("1 minecraft:diamond_sword", inv.removeItems(15, ItemStack.EMPTY, null).toString());
                 }
                 assertThat(reportFilledSlots(inv)).containsOnly(
-                        "1 diamond_sword [has NBT]",
-                        "1 diamond_sword [has NBT]");
+                        "1 minecraft:diamond_sword [has NBT]",
+                        "1 minecraft:diamond_sword [has NBT]");
 
                 // Now extract the damaged sword
                 var damagedSwords = inv.removeItems(15, ItemStack.EMPTY, null);
-                assertEquals("2 diamond_sword", damagedSwords.toString());
+                assertEquals("2 minecraft:diamond_sword", damagedSwords.toString());
                 assertEquals(1, damagedSwords.getDamageValue());
                 assertThat(reportFilledSlots(inv)).containsOnly();
             }
 
             @Test
             void testTakeLessThanAvailable() {
-                assertEquals("14 stick", inv.removeItems(14, ItemStack.EMPTY, null).toString());
+                assertEquals("14 minecraft:stick", inv.removeItems(14, ItemStack.EMPTY, null).toString());
                 assertThat(reportFilledSlots(inv)).containsOnly(
-                        "10 stick [has NBT]",
-                        "10 diamond_sword [has NBT]",
-                        "1 diamond_sword [has NBT]",
-                        // This is the remainder of the 15 sticks previously in the inventory
-                        "1 stick",
-                        "5 stick [has NBT]",
-                        "5 diamond_sword [has NBT]",
-                        "1 diamond_sword [has NBT]");
+                        "10 minecraft:stick [has NBT]",
+                        "10 minecraft:diamond_sword [has NBT]",
+                        "1 minecraft:diamond_sword [has NBT]",
+                        // This is the remainder of the 15 minecraft:sticks previously in the inventory
+                        "1 minecraft:stick",
+                        "5 minecraft:stick [has NBT]",
+                        "5 minecraft:diamond_sword [has NBT]",
+                        "1 minecraft:diamond_sword [has NBT]");
             }
 
             @Test
             void testTakeMoreThanAvailable() {
-                assertEquals("15 stick", inv.removeItems(30, ItemStack.EMPTY, null).toString());
+                assertEquals("15 minecraft:stick", inv.removeItems(30, ItemStack.EMPTY, null).toString());
 
                 assertThat(inv).noneMatch(s -> ItemStack.isSameItemSameTags(s, item1));
             }
@@ -555,7 +555,7 @@ class InternalInventoryTest {
                     }
                 });
                 var extracted = describeStack(inv.removeItems(15, ItemStack.EMPTY, null));
-                assertEquals("15 stick [has NBT]", extracted);
+                assertEquals("15 minecraft:stick [has NBT]", extracted);
             }
         }
 
@@ -568,7 +568,7 @@ class InternalInventoryTest {
                 var calls = new ArrayList<ItemStack>();
 
                 // Only accept item 2
-                assertEquals("15 stick", inv.removeItems(15, ItemStack.EMPTY, is -> {
+                assertEquals("15 minecraft:stick", inv.removeItems(15, ItemStack.EMPTY, is -> {
                     calls.add(is.copy());
                     return ItemStack.isSameItemSameTags(is, item2);
                 }).toString());
@@ -578,7 +578,7 @@ class InternalInventoryTest {
                 assertThat(calls)
                         .extracting(InternalInventoryTest::describeStack)
                         .containsExactly(
-                                "10 stick", "10 stick [has NBT]", "5 stick [has NBT]");
+                                "10 minecraft:stick", "10 minecraft:stick [has NBT]", "5 minecraft:stick [has NBT]");
             }
 
             // Test that removeItems performs a simulated extract and passes the result of that to the filter
@@ -599,8 +599,8 @@ class InternalInventoryTest {
                         .extracting(InternalInventoryTest::describeStack)
                         .containsOnly(
                                 // It's called twice because there are two slots.
-                                "1 diamond_sword [has NBT]",
-                                "1 diamond_sword [has NBT]");
+                                "1 minecraft:diamond_sword [has NBT]",
+                                "1 minecraft:diamond_sword [has NBT]");
             }
 
             @Test

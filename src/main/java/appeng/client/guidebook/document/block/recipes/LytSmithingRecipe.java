@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.item.crafting.SmithingTrimRecipe;
@@ -36,9 +37,9 @@ public class LytSmithingRecipe extends LytRecipeBox implements ExportableResourc
 
     private final LytSlot resultSlot;
 
-    public LytSmithingRecipe(SmithingRecipe recipe) {
-        super(recipe);
-        this.recipe = recipe;
+    public LytSmithingRecipe(RecipeHolder<SmithingRecipe> holder) {
+        super(holder);
+        this.recipe = holder.value();
         setPadding(5);
         paddingTop = 15;
 

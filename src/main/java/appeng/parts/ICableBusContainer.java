@@ -18,8 +18,6 @@
 
 package appeng.parts;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -29,7 +27,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
@@ -49,6 +50,8 @@ public interface ICableBusContainer {
 
     void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor);
 
+    void onUpdateShape(LevelAccessor level, BlockPos pos, Direction side);
+
     boolean isEmpty();
 
     SelectedPart selectPartLocal(Vec3 v3);
@@ -57,11 +60,10 @@ public interface ICableBusContainer {
 
     boolean isLadder(LivingEntity entity);
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     void animateTick(Level level, BlockPos pos, RandomSource r);
 
     int getLightValue();
 
     CableBusRenderState getRenderState();
-
 }

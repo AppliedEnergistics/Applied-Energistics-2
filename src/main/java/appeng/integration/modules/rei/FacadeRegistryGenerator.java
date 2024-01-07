@@ -28,7 +28,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 import me.shedaniel.rei.api.client.registry.display.DynamicDisplayGenerator;
 import me.shedaniel.rei.api.common.entry.EntryStack;
@@ -90,19 +92,22 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
     }
 
     private DefaultShapedDisplay make(ItemStack textureItem, ItemStack cableAnchor, ItemStack result) {
-        // This id should only be used within JEI and not really matter
-        ResourceLocation id = AppEng.makeId("facade/" + Item.getId(textureItem.getItem()));
-
         var ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
         ingredients.set(1, Ingredient.of(cableAnchor));
         ingredients.set(3, Ingredient.of(cableAnchor));
         ingredients.set(5, Ingredient.of(cableAnchor));
         ingredients.set(7, Ingredient.of(cableAnchor));
         ingredients.set(4, Ingredient.of(textureItem));
+        var pattern = new ShapedRecipePattern(3, 3, ingredients, Optional.empty());
 
         result.setCount(4);
 
-        return new DefaultShapedDisplay(new ShapedRecipe(id, "", CraftingBookCategory.MISC, 3, 3, ingredients, result));
+        // This id should only be used within REI and not really matter
+        ResourceLocation id = AppEng.makeId("facade/" + Item.getId(textureItem.getItem()));
+        return new DefaultShapedDisplay(
+                new RecipeHolder<>(
+                        id,
+                        new ShapedRecipe("", CraftingBookCategory.MISC, pattern, result)));
     }
 
 }

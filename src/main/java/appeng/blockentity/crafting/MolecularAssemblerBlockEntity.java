@@ -22,8 +22,6 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -34,9 +32,11 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -66,9 +66,8 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.network.TargetPoint;
-import appeng.core.sync.packets.AssemblerAnimationPacket;
+import appeng.core.network.NetworkHandler;
+import appeng.core.network.clientbound.AssemblerAnimationPacket;
 import appeng.crafting.CraftingEvent;
 import appeng.menu.AutoCraftingMenu;
 import appeng.util.inv.AppEngInternalInventory;
@@ -99,7 +98,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     private boolean forcePlan = false;
     private boolean reboot = true;
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private AssemblerAnimationStatus animationStatus;
 
     public MolecularAssemblerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -344,7 +343,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public InternalInventory getExposedInventoryForSide(Direction side) {
+    protected InternalInventory getExposedInventoryForSide(Direction side) {
         return this.gridInvExt;
     }
 
@@ -450,9 +449,10 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
                 var item = AEItemKey.of(output);
                 if (item != null) {
-                    final TargetPoint where = new TargetPoint(this.worldPosition.getX(), this.worldPosition.getY(),
+                    final PacketDistributor.TargetPoint where = new PacketDistributor.TargetPoint(
+                            this.worldPosition.getX(), this.worldPosition.getY(),
                             this.worldPosition.getZ(), 32,
-                            this.level);
+                            this.level.dimension());
                     NetworkHandler.instance()
                             .sendToAllAround(new AssemblerAnimationPacket(this.worldPosition, (byte) speed, item),
                                     where);
@@ -514,13 +514,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             return output;
         }
 
-        final BlockEntity te = this.getLevel().getBlockEntity(this.worldPosition.relative(d));
-
-        if (te == null) {
-            return output;
-        }
-
-        var adaptor = InternalInventory.wrapExternal(te, d.getOpposite());
+        var adaptor = InternalInventory.wrapExternal(getLevel(), this.worldPosition.relative(d), d.getOpposite());
         if (adaptor == null) {
             return output;
         }
@@ -564,12 +558,12 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         return this.isPowered;
     }
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void setAnimationStatus(@Nullable AssemblerAnimationStatus status) {
         this.animationStatus = status;
     }
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Nullable
     public AssemblerAnimationStatus getAnimationStatus() {
         return this.animationStatus;

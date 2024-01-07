@@ -7,7 +7,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.AmethystClusterBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
@@ -20,7 +19,7 @@ public class BuddingCertusQuartzBlock extends AEBaseBlock {
     public static final int DECAY_CHANCE = 12;
     private static final Direction[] DIRECTIONS = Direction.values();
 
-    public BuddingCertusQuartzBlock(BlockBehaviour.Properties properties) {
+    public BuddingCertusQuartzBlock(Properties properties) {
         super(properties);
     }
 

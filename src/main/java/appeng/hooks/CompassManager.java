@@ -21,8 +21,8 @@ package appeng.hooks;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.CompassRequestPacket;
+import appeng.core.network.NetworkHandler;
+import appeng.core.network.serverbound.CompassRequestPacket;
 
 public class CompassManager {
 

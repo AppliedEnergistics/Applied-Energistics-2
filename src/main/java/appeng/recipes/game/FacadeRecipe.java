@@ -19,7 +19,6 @@
 package appeng.recipes.game;
 
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -39,8 +38,8 @@ public final class FacadeRecipe extends CustomRecipe {
     private final ItemDefinition<?> anchor = AEParts.CABLE_ANCHOR;
     private final FacadeItem facade;
 
-    public FacadeRecipe(ResourceLocation id, CraftingBookCategory category, FacadeItem facade) {
-        super(id, category);
+    public FacadeRecipe(CraftingBookCategory category, FacadeItem facade) {
+        super(category);
         this.facade = facade;
     }
 
@@ -82,7 +81,7 @@ public final class FacadeRecipe extends CustomRecipe {
 
     public static RecipeSerializer<FacadeRecipe> getSerializer(FacadeItem facade) {
         if (SERIALIZER == null) {
-            SERIALIZER = new SimpleCraftingRecipeSerializer<>((id, category) -> new FacadeRecipe(id, category, facade));
+            SERIALIZER = new SimpleCraftingRecipeSerializer<>((category) -> new FacadeRecipe(category, facade));
         }
         return SERIALIZER;
     }

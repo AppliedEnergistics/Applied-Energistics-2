@@ -6,7 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
 
 /**
- * Extends {@link net.minecraft.core.Direction} with an 'all' key.
+ * Extends {@link Direction} with an 'all' key.
  */
 public enum PushDirection implements StringRepresentable {
     DOWN(Direction.DOWN),
@@ -17,7 +17,7 @@ public enum PushDirection implements StringRepresentable {
     EAST(Direction.EAST),
     ALL;
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     private final Direction direction;
 
     PushDirection(Direction direction) {
@@ -28,7 +28,7 @@ public enum PushDirection implements StringRepresentable {
         this.direction = null;
     }
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     public Direction getDirection() {
         return direction;
     }

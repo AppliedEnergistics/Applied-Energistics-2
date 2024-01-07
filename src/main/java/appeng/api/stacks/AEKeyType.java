@@ -34,10 +34,12 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 
 import appeng.api.storage.AEKeyFilter;
+import appeng.core.AppEng;
 import appeng.util.ReadableNumberConverter;
 
 /**
@@ -45,6 +47,9 @@ import appeng.util.ReadableNumberConverter;
  * {@link AEItemKeys}.
  */
 public abstract class AEKeyType {
+    public static final ResourceKey<Registry<AEKeyType>> REGISTRY_KEY = ResourceKey
+            .createRegistryKey(AppEng.makeId("keytypes"));
+
     private final ResourceLocation id;
     private final Class<? extends AEKey> keyClass;
     private final AEKeyFilter filter;
@@ -231,7 +236,7 @@ public abstract class AEKeyType {
     /**
      * Returns all tags that apply to keys of this type. Is an optional operation is keys of this type cannot have tags,
      * and {@link AEKey#isTagged(TagKey)} is not implemented for this key type.
-     * 
+     *
      * @see Registry#getTagNames()
      */
     public Stream<TagKey<?>> getTagNames() {

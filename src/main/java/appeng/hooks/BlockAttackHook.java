@@ -1,49 +1,52 @@
 package appeng.hooks;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 import appeng.api.parts.IPartHost;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PartLeftClickPacket;
+import appeng.core.network.NetworkHandler;
+import appeng.core.network.serverbound.PartLeftClickPacket;
 import appeng.util.InteractionUtil;
 
 /**
  * Handles the client->server interaction when a player left-clicks on an {@link appeng.api.parts.IPart} attached to a
- * {@link appeng.api.parts.IPartHost}, and that part implements {@link appeng.api.parts.IPart#onClicked(Player, Vec3)}
- * or {@link appeng.api.parts.IPart#onShiftClicked(Player, Vec3)}.
+ * {@link IPartHost}, and that part implements {@link appeng.api.parts.IPart#onClicked(Player, Vec3)} or
+ * {@link appeng.api.parts.IPart#onShiftClicked(Player, Vec3)}.
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public final class BlockAttackHook {
     private BlockAttackHook() {
     }
 
     public static void install() {
-        AttackBlockCallback.EVENT.register(BlockAttackHook::onBlockAttackedOnClient);
+        NeoForge.EVENT_BUS.addListener(BlockAttackHook::onBlockAttackedOnClientEvent);
     }
 
     /**
      * We intercept when the player attacks a cable bus and send an interaction handling packet instead.
      */
-    public static InteractionResult onBlockAttackedOnClient(Player player, Level level, InteractionHand interactionHand,
-            BlockPos blockPos, Direction direction) {
+    private static void onBlockAttackedOnClientEvent(PlayerInteractEvent.LeftClickBlock event) {
+
+        var level = event.getLevel();
 
         // Do not process this event on the server since we're handling the server-side ourselves
         if (!level.isClientSide()) {
-            return InteractionResult.PASS;
+            return;
         }
 
-        return onBlockAttackedOnClient(player, level);
+        var result = onBlockAttackedOnClient(event.getEntity(), level);
+        if (result != InteractionResult.PASS) {
+            event.setCanceled(true);
+            event.setCancellationResult(result);
+        }
     }
 
     private static InteractionResult onBlockAttackedOnClient(Player player, Level level) {

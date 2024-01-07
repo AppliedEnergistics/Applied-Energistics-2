@@ -10,10 +10,6 @@ import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -23,6 +19,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import appeng.client.guidebook.GuidebookText;
 import appeng.client.guidebook.PageAnchor;
@@ -38,6 +38,11 @@ import appeng.core.AppEngClient;
 public final class OpenGuideHotkey {
     private static final KeyMapping OPEN_GUIDE_MAPPING = new KeyMapping(
             "key.ae2.guide", GLFW.GLFW_KEY_G, "key.ae2.category");
+
+    static {
+        // Should only occur in tooltips (which is only in UI)
+        OPEN_GUIDE_MAPPING.setKeyConflictContext(KeyConflictContext.GUI);
+    }
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenGuideHotkey.class);
 
@@ -60,10 +65,9 @@ public final class OpenGuideHotkey {
 
     public static void init() {
         if (AEConfig.instance().isGuideHotkeyEnabled()) {
-            KeyBindingHelper.registerKeyBinding(OPEN_GUIDE_MAPPING);
-            ItemTooltipCallback.EVENT.register(TOOLTIP_PHASE, OpenGuideHotkey::handleTooltip);
-            ItemTooltipCallback.EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, TOOLTIP_PHASE);
-            ClientTickEvents.START_CLIENT_TICK.register(client -> newTick = true);
+            NeoForge.EVENT_BUS.addListener(
+                    (ItemTooltipEvent evt) -> handleTooltip(evt.getItemStack(), evt.getFlags(), evt.getToolTip()));
+            NeoForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent evt) -> newTick = true);
         } else {
             LOG.info("AE2 guide hotkey is disabled via config.");
         }
@@ -181,8 +185,7 @@ public final class OpenGuideHotkey {
      * This circumvents any current UI key handling.
      */
     private static boolean isKeyHeld() {
-        var boundKey = KeyBindingHelper.getBoundKeyOf(getHotkey());
-        int keyCode = boundKey.getValue();
+        int keyCode = getHotkey().getKey().getValue();
         var window = Minecraft.getInstance().getWindow().getWindow();
 
         return InputConstants.isKeyDown(window, keyCode);

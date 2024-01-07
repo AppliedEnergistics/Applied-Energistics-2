@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 
 import appeng.api.stacks.AEItemKey;
@@ -58,11 +59,12 @@ class StonecuttingPatternEncoding {
         return new ResourceLocation(nbt.getString(NBT_RECIPE_ID));
     }
 
-    public static void encode(CompoundTag tag, StonecutterRecipe recipe, AEItemKey input, AEItemKey output,
+    public static void encode(CompoundTag tag, RecipeHolder<StonecutterRecipe> recipe, AEItemKey input,
+            AEItemKey output,
             boolean allowSubstitution) {
         tag.put(NBT_INPUT, input.toTag());
         tag.put(NBT_OUTPUT, output.toTag());
         tag.putBoolean(NBT_SUBSITUTE, allowSubstitution);
-        tag.putString(NBT_RECIPE_ID, recipe.getId().toString());
+        tag.putString(NBT_RECIPE_ID, recipe.id().toString());
     }
 }

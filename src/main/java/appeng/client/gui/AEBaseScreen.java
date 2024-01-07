@@ -80,9 +80,9 @@ import appeng.core.AppEng;
 import appeng.core.AppEngClient;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.Tooltips;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.InventoryActionPacket;
-import appeng.core.sync.packets.SwapSlotsPacket;
+import appeng.core.network.NetworkHandler;
+import appeng.core.network.serverbound.InventoryActionPacket;
+import appeng.core.network.serverbound.SwapSlotsPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
@@ -238,7 +238,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         this.updateBeforeRender();
         this.widgets.updateBeforeRender();
 
-        super.renderBackground(guiGraphics);
+        super.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         renderTooltips(guiGraphics, mouseX, mouseY);
@@ -514,8 +514,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    public boolean mouseScrolled(double x, double y, double wheelDelta) {
-        if (wheelDelta != 0 && widgets.onMouseWheel(getMousePoint(x, y), wheelDelta)) {
+    public boolean mouseScrolled(double x, double y, double deltaX, double deltaY) {
+        if (deltaY != 0 && widgets.onMouseWheel(getMousePoint(x, y), deltaY)) {
             return true;
         }
         return false;
@@ -1001,7 +1001,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
     }
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     protected PageAnchor getHelpTopic() {
         // Help topic may be overridden via screen style
         String helpTopic = style.getHelpTopic();

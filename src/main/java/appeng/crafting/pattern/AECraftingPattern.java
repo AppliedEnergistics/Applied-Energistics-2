@@ -81,7 +81,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
 
         // Find recipe
         var recipeId = CraftingPatternEncoding.getRecipeId(tag);
-        this.recipe = level.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId);
+        this.recipe = level.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId).value();
 
         // Build frame and find output
         this.testFrame = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);

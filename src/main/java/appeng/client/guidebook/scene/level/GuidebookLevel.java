@@ -23,6 +23,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.profiling.InactiveProfiler;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.TickRateManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
@@ -72,6 +73,8 @@ public class GuidebookLevel extends Level {
      */
     private final LongSet litSections = new LongOpenHashSet();
     private final DataLayer defaultDataLayer;
+
+    private final TickRateManager tickRateManager = new TickRateManager();
 
     public GuidebookLevel() {
         this(Platform.getClientRegistryAccess());
@@ -203,6 +206,11 @@ public class GuidebookLevel extends Level {
     @Override
     public Entity getEntity(int id) {
         return getEntities().get(id);
+    }
+
+    @Override
+    public TickRateManager tickRateManager() {
+        return tickRateManager;
     }
 
     @Override

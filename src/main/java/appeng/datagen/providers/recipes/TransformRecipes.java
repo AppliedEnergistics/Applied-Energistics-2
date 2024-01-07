@@ -18,10 +18,11 @@
 
 package appeng.datagen.providers.recipes;
 
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -34,12 +35,12 @@ import appeng.recipes.transform.TransformCircumstance;
 import appeng.recipes.transform.TransformRecipeBuilder;
 
 public class TransformRecipes extends AE2RecipeProvider {
-    public TransformRecipes(PackOutput output) {
-        super(output);
+    public TransformRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider);
     }
 
     @Override
-    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(RecipeOutput consumer) {
         TransformCircumstance water = TransformCircumstance.fluid(FluidTags.WATER);
 
         // Fluix crystals

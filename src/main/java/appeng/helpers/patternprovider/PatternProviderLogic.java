@@ -308,10 +308,9 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         // Push to crafting machines first
         for (var direction : getActiveSides()) {
             var adjPos = be.getBlockPos().relative(direction);
-            var adjBe = level.getBlockEntity(adjPos);
             var adjBeSide = direction.getOpposite();
 
-            var craftingMachine = ICraftingMachine.of(level, adjPos, adjBeSide, adjBe);
+            var craftingMachine = ICraftingMachine.of(level, adjPos, adjBeSide);
             if (craftingMachine != null && craftingMachine.acceptsPlans()) {
                 if (craftingMachine.pushPattern(patternDetails, inputHolder, adjBeSide)) {
                     onPushPatternSuccess(patternDetails);

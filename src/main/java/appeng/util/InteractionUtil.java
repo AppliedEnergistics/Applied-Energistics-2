@@ -75,18 +75,6 @@ public final class InteractionUtil {
         return player.isShiftKeyDown();
     }
 
-    public static float getEyeOffset(Player player) {
-        assert player.level().isClientSide : "Valid only on client";
-        // FIXME: The entire premise of this seems broken
-        return (float) (player.getY() + player.getEyeHeight() - /* FIXME player.getDefaultEyeHeight() */ 1.62F);
-    }
-
-    public static LookDirection getPlayerRay(Player playerIn) {
-        // FIXME FABRIC 117 This can currently not be modded in API in Fabric
-        double reachDistance = 36.0D;
-        return getPlayerRay(playerIn, reachDistance);
-    }
-
     public static LookDirection getPlayerRay(Player playerIn, double reachDistance) {
         var x = playerIn.xo + (playerIn.getX() - playerIn.xo);
         var y = playerIn.yo + (playerIn.getY() - playerIn.yo) + playerIn.getEyeHeight();
@@ -116,7 +104,7 @@ public final class InteractionUtil {
         float f1 = p.xRotO + (p.getXRot() - p.xRotO) * f;
         final float f2 = p.yRotO + (p.getYRot() - p.yRotO) * f;
         final double d0 = p.xo + (p.getX() - p.xo) * f;
-        final double d1 = p.yo + (p.getY() - p.yo) * f + 1.62D - p.getMyRidingOffset();
+        final double d1 = p.yo + (p.getY() - p.yo) * f + 1.62D - p.getMyRidingOffset(p);
         final double d2 = p.zo + (p.getZ() - p.zo) * f;
         final Vec3 vec3 = new Vec3(d0, d1, d2);
         final float f3 = Mth.cos(-f2 * 0.017453292F - (float) Math.PI);

@@ -13,12 +13,11 @@ import net.minecraft.data.models.blockstates.Variant;
 import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
-import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
@@ -38,8 +37,8 @@ import appeng.init.client.InitItemModelsProperties;
 
 public class BlockModelProvider extends AE2BlockStateProvider {
 
-    public BlockModelProvider(PackOutput output, ExistingFileHelper exFileHelper) {
-        super(output, AppEng.MOD_ID, exFileHelper);
+    public BlockModelProvider(PackOutput packOutput, ExistingFileHelper exFileHelper) {
+        super(packOutput, AppEng.MOD_ID, exFileHelper);
     }
 
     @Override
@@ -220,7 +219,6 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                 makeId("block/vibration_chamber_front"),
                 makeId("block/vibration_chamber_back"),
                 makeId("block/vibration_chamber"),
-                makeId("block/vibration_chamber"),
                 makeId("block/vibration_chamber"));
         var onModel = models().cube(
                 modelPath(AEBlocks.VIBRATION_CHAMBER) + "_on",
@@ -228,7 +226,6 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                 makeId("block/vibration_chamber_top_on"),
                 makeId("block/vibration_chamber_front_on"),
                 makeId("block/vibration_chamber_back_on"),
-                makeId("block/vibration_chamber_on"),
                 makeId("block/vibration_chamber_on"),
                 makeId("block/vibration_chamber_on"));
 
@@ -350,11 +347,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
     }
 
     private BlockModelBuilder builtInBlockModel(String name) {
-        var model = models().getBuilder("block/" + name);
-        var loaderId = AppEng.makeId("block/" + name);
-        model.customLoader((bmb, efh) -> new CustomLoaderBuilder<>(loaderId, bmb, efh) {
-        });
-        return model;
+        return models().getBuilder("block/" + name);
     }
 
     private void energyCell(

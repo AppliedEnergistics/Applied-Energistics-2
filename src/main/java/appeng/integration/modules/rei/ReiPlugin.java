@@ -29,6 +29,7 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -48,9 +49,11 @@ import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+import me.shedaniel.rei.forge.REIPluginClient;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import me.shedaniel.rei.plugin.common.displays.DefaultInformationDisplay;
 
+import appeng.api.config.Actionable;
 import appeng.api.config.CondenserOutput;
 import appeng.api.features.P2PTunnelAttunementInternal;
 import appeng.api.integrations.rei.IngredientConverters;
@@ -66,18 +69,22 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
-import appeng.integration.abstraction.REIFacade;
-import appeng.integration.modules.jeirei.CompatLayerHelper;
+import appeng.integration.abstraction.ItemListMod;
+import appeng.integration.modules.itemlists.CompatLayerHelper;
 import appeng.integration.modules.rei.transfer.EncodePatternTransferHandler;
 import appeng.integration.modules.rei.transfer.UseCraftingRecipeTransfer;
 import appeng.items.parts.FacadeItem;
+import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
+import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.transform.TransformRecipe;
 
+@REIPluginClient
 public class ReiPlugin implements REIClientPlugin {
+    static final ResourceLocation TEXTURE = AppEng.makeId("textures/guis/jei.png");
 
     // Will be hidden if developer items are disabled in the config
     private List<Predicate<ItemStack>> developerItems;
@@ -92,7 +99,7 @@ public class ReiPlugin implements REIClientPlugin {
         IngredientConverters.register(new ItemIngredientConverter());
         IngredientConverters.register(new FluidIngredientConverter());
 
-        REIFacade.setInstance(new ReiRuntimeAdapter());
+        ItemListMod.setAdapter(new ReiItemListModAdapter());
     }
 
     @Override
@@ -111,6 +118,7 @@ public class ReiPlugin implements REIClientPlugin {
         registry.add(new InscriberRecipeCategory());
         registry.add(new AttunementCategory());
         registry.add(new ChargerCategory());
+        registry.add(new EntropyRecipeCategory());
 
         registerWorkingStations(registry);
     }
@@ -125,9 +133,10 @@ public class ReiPlugin implements REIClientPlugin {
             return;
         }
 
-        registry.registerRecipeFiller(InscriberRecipe.class, InscriberRecipe.TYPE, InscriberRecipeWrapper::new);
+        registry.registerRecipeFiller(InscriberRecipe.class, InscriberRecipe.TYPE, InscriberRecipeDisplay::new);
         registry.registerRecipeFiller(ChargerRecipe.class, ChargerRecipe.TYPE, ChargerDisplay::new);
         registry.registerRecipeFiller(TransformRecipe.class, TransformRecipe.TYPE, TransformRecipeWrapper::new);
+        registry.registerRecipeFiller(EntropyRecipe.class, EntropyRecipe.TYPE, EntropyRecipeDisplay::new);
 
         registry.add(new CondenserOutputDisplay(CondenserOutput.MATTER_BALLS));
         registry.add(new CondenserOutputDisplay(CondenserOutput.SINGULARITY));
@@ -240,21 +249,31 @@ public class ReiPlugin implements REIClientPlugin {
     }
 
     private void registerWorkingStations(CategoryRegistry registry) {
-        ItemStack condenser = AEBlocks.CONDENSER.stack();
+        var condenser = AEBlocks.CONDENSER.stack();
         registry.addWorkstations(CondenserCategory.ID, EntryStacks.of(condenser));
 
-        ItemStack inscriber = AEBlocks.INSCRIBER.stack();
+        var inscriber = AEBlocks.INSCRIBER.stack();
         registry.addWorkstations(InscriberRecipeCategory.ID, EntryStacks.of(inscriber));
         registry.setPlusButtonArea(InscriberRecipeCategory.ID, ButtonArea.defaultArea());
 
-        ItemStack craftingTerminal = AEParts.CRAFTING_TERMINAL.stack();
+        var craftingTerminal = AEParts.CRAFTING_TERMINAL.stack();
         registry.addWorkstations(BuiltinPlugin.CRAFTING, EntryStacks.of(craftingTerminal));
 
-        ItemStack wirelessCraftingTerminal = AEItems.WIRELESS_CRAFTING_TERMINAL.stack();
+        var wirelessCraftingTerminal = chargeFully(AEItems.WIRELESS_CRAFTING_TERMINAL.stack());
         registry.addWorkstations(BuiltinPlugin.CRAFTING, EntryStacks.of(wirelessCraftingTerminal));
 
         registry.addWorkstations(ChargerDisplay.ID, EntryStacks.of(AEBlocks.CHARGER.stack()));
         registry.addWorkstations(ChargerDisplay.ID, EntryStacks.of(AEBlocks.CRANK.stack()));
+
+        var entropyManipulator = chargeFully(chargeFully(AEItems.ENTROPY_MANIPULATOR.stack()));
+        registry.addWorkstations(EntropyRecipeCategory.ID, EntryStacks.of(entropyManipulator));
+    }
+
+    private static ItemStack chargeFully(ItemStack stack) {
+        if (stack.getItem() instanceof AEBasePoweredItem poweredItem) {
+            poweredItem.injectAEPower(stack, poweredItem.getAEMaxPower(stack), Actionable.MODULATE);
+        }
+        return stack;
     }
 
     private void registerDescriptions(DisplayRegistry registry) {

@@ -18,43 +18,53 @@
 
 package appeng.recipes.transform;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 
 public class TransformRecipeSerializer implements RecipeSerializer<TransformRecipe> {
 
     public static final TransformRecipeSerializer INSTANCE = new TransformRecipeSerializer();
 
+    private static final Codec<TransformRecipe> CODEC = RecordCodecBuilder.create(builder -> {
+        return builder.group(
+                Ingredient.CODEC_NONEMPTY
+                        .listOf()
+                        .fieldOf("ingredients")
+                        .flatXmap(ingredients -> {
+                            return DataResult
+                                    .success(NonNullList.of(Ingredient.EMPTY, ingredients.toArray(Ingredient[]::new)));
+                        }, DataResult::success)
+                        .forGetter(r -> r.ingredients),
+                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(r -> r.output),
+                ExtraCodecs
+                        .strictOptionalField(TransformCircumstance.CODEC, "circumstance",
+                                TransformCircumstance.fluid(FluidTags.WATER))
+                        .forGetter(t -> t.circumstance))
+                .apply(builder, TransformRecipe::new);
+    });
+
     private TransformRecipeSerializer() {
     }
 
     @Override
-    public TransformRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-        NonNullList<Ingredient> ingredients = NonNullList.create();
-        GsonHelper.getAsJsonArray(json, "ingredients")
-                .forEach(ingredient -> ingredients.add(Ingredient.fromJson(ingredient)));
-
-        ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
-        TransformCircumstance circumstance = json.has("circumstance")
-                ? TransformCircumstance.fromJson(GsonHelper.getAsJsonObject(json, "circumstance"))
-                : TransformCircumstance.fluid(FluidTags.WATER);
-        return new TransformRecipe(recipeId, ingredients, result, circumstance);
+    public Codec<TransformRecipe> codec() {
+        return CODEC;
     }
 
     @Nullable
     @Override
-    public TransformRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+    public TransformRecipe fromNetwork(FriendlyByteBuf buffer) {
         ItemStack output = buffer.readItem();
 
         int size = buffer.readByte();
@@ -64,7 +74,7 @@ public class TransformRecipeSerializer implements RecipeSerializer<TransformReci
         }
         TransformCircumstance circumstance = TransformCircumstance.fromNetwork(buffer);
 
-        return new TransformRecipe(recipeId, ingredients, output, circumstance);
+        return new TransformRecipe(ingredients, output, circumstance);
     }
 
     @Override

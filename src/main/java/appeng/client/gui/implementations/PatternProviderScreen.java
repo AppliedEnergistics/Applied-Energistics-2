@@ -31,8 +31,8 @@ import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigButtonPacket;
+import appeng.core.network.NetworkHandler;
+import appeng.core.network.serverbound.ConfigButtonPacket;
 import appeng.menu.implementations.PatternProviderMenu;
 
 public class PatternProviderScreen<C extends PatternProviderMenu> extends AEBaseScreen<C> {

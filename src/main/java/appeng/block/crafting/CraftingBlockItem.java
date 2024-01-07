@@ -23,7 +23,6 @@ import java.util.function.Supplier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -43,7 +42,7 @@ public class CraftingBlockItem extends AEBaseBlockItem {
      */
     protected final Supplier<ItemLike> disassemblyExtra;
 
-    public CraftingBlockItem(Block id, Item.Properties props, Supplier<ItemLike> disassemblyExtra) {
+    public CraftingBlockItem(Block id, Properties props, Supplier<ItemLike> disassemblyExtra) {
         super(id, props);
         this.disassemblyExtra = disassemblyExtra;
     }

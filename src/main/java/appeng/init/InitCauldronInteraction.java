@@ -10,7 +10,7 @@ public class InitCauldronInteraction {
         // Undye all dyeable items
         for (var def : AEItems.getItems()) {
             if (def.asItem() instanceof DyeableLeatherItem) {
-                CauldronInteraction.WATER.put(def.asItem(), CauldronInteraction.DYED_ITEM);
+                CauldronInteraction.WATER.map().put(def.asItem(), CauldronInteraction.DYED_ITEM);
             }
         }
     }

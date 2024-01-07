@@ -18,11 +18,8 @@
 
 package appeng.items.tools.powered.powersink;
 
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-
-import team.reborn.energy.api.EnergyStorage;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
@@ -31,59 +28,49 @@ import appeng.api.implementations.items.IAEItemPowerStorage;
 /**
  * The capability provider to expose chargable items to other mods.
  */
-public class PoweredItemCapabilities implements EnergyStorage {
+public class PoweredItemCapabilities implements IEnergyStorage {
 
-    private final ContainerItemContext context;
+    private final ItemStack is;
 
-    public PoweredItemCapabilities(ContainerItemContext context) {
-        this.context = context;
+    private final IAEItemPowerStorage item;
+
+    public PoweredItemCapabilities(ItemStack is, IAEItemPowerStorage item) {
+        this.is = is;
+        this.item = item;
     }
 
     @Override
-    public long insert(long maxReceive, TransactionContext transaction) {
-        var current = context.getItemVariant();
-        if (current.getItem() instanceof IAEItemPowerStorage powerStorage) {
-            var is = current.toStack();
+    public int receiveEnergy(int maxReceive, boolean simulate) {
+        final double convertedOffer = PowerUnits.RF.convertTo(PowerUnits.AE, maxReceive);
+        final double overflow = this.item.injectAEPower(this.is, convertedOffer,
+                simulate ? Actionable.SIMULATE : Actionable.MODULATE);
 
-            var convertedOffer = PowerUnits.TR.convertTo(PowerUnits.AE, maxReceive);
-            var overflow = powerStorage.injectAEPower(is, convertedOffer, Actionable.MODULATE);
-            long inserted = maxReceive - (long) PowerUnits.AE.convertTo(PowerUnits.TR, overflow);
+        return maxReceive - (int) PowerUnits.AE.convertTo(PowerUnits.RF, overflow);
+    }
 
-            if (context.exchange(ItemVariant.of(is), 1, transaction) == 1) {
-                return inserted;
-            }
-        }
-
+    @Override
+    public int extractEnergy(int maxExtract, boolean simulate) {
         return 0;
     }
 
     @Override
-    public long extract(long maxAmount, TransactionContext transaction) {
-        return 0;
+    public int getEnergyStored() {
+        return (int) PowerUnits.AE.convertTo(PowerUnits.RF, this.item.getAECurrentPower(this.is));
     }
 
     @Override
-    public long getAmount() {
-        var current = context.getItemVariant();
-        if (current.getItem() instanceof IAEItemPowerStorage powerStorage) {
-            return (long) PowerUnits.AE.convertTo(PowerUnits.TR, powerStorage.getAECurrentPower(current.toStack()));
-        }
-
-        return 0;
+    public int getMaxEnergyStored() {
+        return (int) PowerUnits.AE.convertTo(PowerUnits.RF, this.item.getAEMaxPower(this.is));
     }
 
     @Override
-    public long getCapacity() {
-        var current = context.getItemVariant();
-        if (current.getItem() instanceof IAEItemPowerStorage powerStorage) {
-            return (int) PowerUnits.AE.convertTo(PowerUnits.TR, powerStorage.getAEMaxPower(current.toStack()));
-        }
-        return 0;
-    }
-
-    @Override
-    public boolean supportsExtraction() {
+    public boolean canExtract() {
         return false;
+    }
+
+    @Override
+    public boolean canReceive() {
+        return true;
     }
 
 }

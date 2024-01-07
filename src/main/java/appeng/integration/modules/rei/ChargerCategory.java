@@ -50,16 +50,18 @@ public class ChargerCategory implements DisplayCategory<ChargerDisplay> {
         var y = bounds.y;
         widgets.add(Widgets.createRecipeBase(bounds));
 
+        var recipe = display.holder().value();
+
         widgets.add(
                 Widgets.createSlot(new Point(x + 31, y + 8))
                         .markInput()
                         .backgroundEnabled(true)
-                        .entries(EntryIngredients.ofIngredient(display.recipe().getIngredient())));
+                        .entries(EntryIngredients.ofIngredient(recipe.getIngredient())));
         widgets.add(
                 Widgets.createSlot(new Point(x + 81, y + 8))
                         .markOutput()
                         .backgroundEnabled(true)
-                        .entry(EntryStacks.of(display.recipe().getResultItem())));
+                        .entry(EntryStacks.of(recipe.getResultItem())));
 
         widgets.add(
                 Widgets.createSlot(new Point(x + 3, y + 30))

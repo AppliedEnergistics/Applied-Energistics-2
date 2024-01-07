@@ -10,22 +10,32 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector4i;
 
-import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
+import appeng.thirdparty.fabric.SpriteFinder;
+
 /**
  * Captured rendering data.
+ * 
+ * @param indexBuffer Can be null if {@link BufferBuilder.DrawState#sequentialIndex()} is true.
  */
 record Mesh(BufferBuilder.DrawState drawState,
         ByteBuffer vertexBuffer,
-        ByteBuffer indexBuffer,
+        @Nullable ByteBuffer indexBuffer,
         RenderType renderType) {
+
+    Mesh {
+        if (indexBuffer == null && !drawState.sequentialIndex()) {
+            throw new NullPointerException("indexBuffer");
+        }
+    }
 
     /**
      * Checks if the mesh contains any texture atlases that are animated.

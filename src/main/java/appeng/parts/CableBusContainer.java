@@ -39,6 +39,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -653,6 +654,16 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                 part.onNeighborChanged(level, pos, neighbor);
             }
         }
+    }
+
+    @Override
+    public void onUpdateShape(LevelAccessor level, BlockPos pos, Direction side) {
+        for (var s : Platform.DIRECTIONS_WITH_NULL) {
+            var part = this.getPart(s);
+            if (part != null) {
+                part.onUpdateShape(side);
+            }
+        }
 
         // Some parts will change their shape (connected texture style)
         invalidateShapes();
@@ -758,7 +769,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return updateBlock;
     }
 
-    private static int getSideIndex(@org.jetbrains.annotations.Nullable Direction side) {
+    private static int getSideIndex(@Nullable Direction side) {
         return side == null ? 6 : side.ordinal();
     }
 
@@ -958,7 +969,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                 continue;
             }
 
-            renderState.getPartModelData().put(side, part.getRenderAttachmentData());
+            renderState.getPartModelData().put(side, part.getModelData());
 
             // This will add the part's bounding boxes to the render state, which is
             // required for facades

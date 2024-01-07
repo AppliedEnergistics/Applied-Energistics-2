@@ -26,7 +26,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.MapColor;
@@ -38,7 +37,7 @@ import appeng.api.orientation.OrientationStrategies;
 
 public abstract class AEBaseBlock extends Block implements IOrientableBlock {
 
-    protected AEBaseBlock(BlockBehaviour.Properties props) {
+    protected AEBaseBlock(Properties props) {
         super(props);
     }
 
@@ -58,27 +57,27 @@ public abstract class AEBaseBlock extends Block implements IOrientableBlock {
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static BlockBehaviour.Properties defaultProps(MapColor mapColor, SoundType soundType) {
-        return BlockBehaviour.Properties.of()
+    public static Properties defaultProps(MapColor mapColor, SoundType soundType) {
+        return Properties.of()
                 // These values previously were encoded in AEBaseBlock
                 .strength(2.2f, 11.f)
                 .mapColor(mapColor)
                 .sound(soundType);
     }
 
-    public static BlockBehaviour.Properties stoneProps() {
+    public static Properties stoneProps() {
         return defaultProps(MapColor.STONE, SoundType.STONE).forceSolidOn();
     }
 
-    public static BlockBehaviour.Properties metalProps() {
+    public static Properties metalProps() {
         return defaultProps(MapColor.METAL, SoundType.METAL).forceSolidOn();
     }
 
-    public static BlockBehaviour.Properties glassProps() {
+    public static Properties glassProps() {
         return defaultProps(MapColor.NONE, SoundType.GLASS);
     }
 
-    public static BlockBehaviour.Properties fixtureProps() {
+    public static Properties fixtureProps() {
         return defaultProps(MapColor.METAL, SoundType.GLASS)
                 .noCollission()
                 .noOcclusion()

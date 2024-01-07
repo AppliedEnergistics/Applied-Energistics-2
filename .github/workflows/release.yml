@@ -33,18 +33,18 @@ jobs:
       - name: Prepare artifact metadata. Note that VERSION is set by the gradle script.
         id: prepare_artifact_metadata
         run: |
-          echo ARTIFACT_PATH=./build/libs/appliedenergistics2-fabric-${VERSION}.jar >> $GITHUB_OUTPUT
-          echo ARTIFACT_NAME=appliedenergistics2-fabric-${VERSION}.jar >> $GITHUB_OUTPUT
-          echo JAVADOC_PATH=./build/libs/appliedenergistics2-fabric-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
-          echo JAVADOC_NAME=appliedenergistics2-fabric-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
-          echo API_PATH=./build/libs/appliedenergistics2-fabric-${VERSION}-api.jar >> $GITHUB_OUTPUT
-          echo API_NAME=appliedenergistics2-fabric-${VERSION}-api.jar >> $GITHUB_OUTPUT
+          echo ARTIFACT_PATH=./build/libs/appliedenergistics2-neoforge-${VERSION}.jar >> $GITHUB_OUTPUT
+          echo ARTIFACT_NAME=appliedenergistics2-neoforge-${VERSION}.jar >> $GITHUB_OUTPUT
+          echo JAVADOC_PATH=./build/libs/appliedenergistics2-neoforge-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
+          echo JAVADOC_NAME=appliedenergistics2-neoforge-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
+          echo API_PATH=./build/libs/appliedenergistics2-neoforge-${VERSION}-api.jar >> $GITHUB_OUTPUT
+          echo API_NAME=appliedenergistics2-neoforge-${VERSION}-api.jar >> $GITHUB_OUTPUT
           echo VERSION=${VERSION} >> $GITHUB_OUTPUT
       - name: Archive build results
         # It is important to  archive .gradle as well since gradle stores the incremental build state there
         run: tar -I zstd -cf build.tar.zst .gradle build src/generated
       - name: Upload build and gradle folders
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: build.tar.zst
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-artifacts
       - name: Unpack build artifact
@@ -98,7 +98,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-artifacts
       - name: Unpack build artifact
@@ -116,7 +116,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-artifacts
       - name: Unpack build artifact
@@ -126,7 +126,7 @@ jobs:
       - name: Upload to Curseforge
         uses: Kir-Antipov/mc-publish@4db8bd126f74d5e143822181a2b1201308e2c796
         with:
-          name: AE2 ${{ needs.build.outputs.VERSION }} [FABRIC]
+          name: AE2 ${{ needs.build.outputs.VERSION }} [NEOFORGE]
           version: ${{ needs.build.outputs.VERSION }}
           files: ${{ needs.build.outputs.ARTIFACT_PATH }}
           dependencies: |
@@ -134,8 +134,11 @@ jobs:
             wthit(optional){modrinth:6AQIaxuO}{curseforge:440979}
             rei(optional){modrinth:nfn13YXA}{curseforge:310111}
             jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}
+            optifine(incompatible)
+            theoneprobe(optional){modrinth:Eyw0UxEx}{curseforge:245211}
           curseforge-id: 223794
           curseforge-token: ${{ secrets.CURSEFORGE }}
+          loaders: neoforge
 
   deploy-modmaven:
     name: Deploy to Modmaven
@@ -145,7 +148,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-artifacts
       - name: Unpack build artifact
@@ -164,7 +167,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-artifacts
       - name: Unpack build artifact
@@ -174,7 +177,7 @@ jobs:
       - name: Upload to Modrinth
         uses: Kir-Antipov/mc-publish@4db8bd126f74d5e143822181a2b1201308e2c796
         with:
-          name: AE2 ${{ needs.build.outputs.VERSION }} [FABRIC]
+          name: AE2 ${{ needs.build.outputs.VERSION }} [NEOFORGE]
           version: ${{ needs.build.outputs.VERSION }}
           files: ${{ needs.build.outputs.ARTIFACT_PATH }}
           dependencies: |
@@ -182,5 +185,8 @@ jobs:
             wthit(optional){modrinth:6AQIaxuO}{curseforge:440979}
             rei(optional){modrinth:nfn13YXA}{curseforge:310111}
             jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}
+            optifine(incompatible)
+            theoneprobe(optional){modrinth:Eyw0UxEx}{curseforge:245211}
           modrinth-id: XxWD5pD3
           modrinth-token: ${{ secrets.MODRINTH }}
+          loaders: neoforge

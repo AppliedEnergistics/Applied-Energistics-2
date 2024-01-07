@@ -1,0 +1,23 @@
+name: 'Test Report'
+on:
+  workflow_run:
+    workflows: ['Build Pull Request']
+    types:
+      - completed
+permissions:
+  contents: read
+  actions: read
+  checks: write
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dorny/test-reporter@afe6793191b75b608954023a46831a3fe10048d4
+        with:
+          artifact: test-results
+          name: Test Report
+          path: '**/*.xml'
+          reporter: java-junit
+        # This should not affect the result of the check created
+        # for the origin PR. This just affects this post-processing job itself.
+        continue-on-error: true

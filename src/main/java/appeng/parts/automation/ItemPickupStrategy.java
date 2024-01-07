@@ -35,8 +35,8 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.AppEng;
-import appeng.core.sync.packets.BlockTransitionEffectPacket;
-import appeng.core.sync.packets.ItemTransitionEffectPacket;
+import appeng.core.network.clientbound.BlockTransitionEffectPacket;
+import appeng.core.network.clientbound.ItemTransitionEffectPacket;
 import appeng.util.Platform;
 
 public class ItemPickupStrategy implements PickupStrategy {

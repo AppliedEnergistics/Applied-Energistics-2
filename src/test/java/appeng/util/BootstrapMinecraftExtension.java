@@ -1,74 +1,68 @@
 package appeng.util;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.function.Consumer;
+import static org.mockito.ArgumentMatchers.any;
 
-import com.google.common.io.MoreFiles;
-import com.google.common.io.RecursiveDeleteOption;
-
-import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.mockito.Mockito;
 
-import net.fabricmc.api.DedicatedServerModInitializer;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.minecraft.SharedConstants;
-import net.minecraft.server.Bootstrap;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.fluids.FluidType;
 
-import appeng.client.guidebook.Guide;
-import appeng.core.AEConfig;
-import appeng.core.AppEngBootstrap;
+public class BootstrapMinecraftExtension implements Extension, BeforeAllCallback {
 
-public class BootstrapMinecraftExtension implements Extension, BeforeAllCallback, AfterAllCallback {
-
-    private static boolean modInitialized;
-
-    Path configDir;
+    private static boolean keyTypesInitialized;
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
-        SharedConstants.tryDetectVersion();
-        Bootstrap.bootStrap();
-        AppEngBootstrap.runEarlyStartup();
+//        SharedConstants.tryDetectVersion();
+//        Bootstrap.bootStrap();
+//        AppEngBootstrap.runEarlyStartup();
+//        Reflection.initialize(AEItems.class);
+//        Reflection.initialize(AEBlocks.class);
+//        Reflection.initialize(AEBlockEntities.class);
+//
+//        var configDir = Files.createTempDirectory("ae2config");
+//        try {
+//            if (AEConfig.instance() == null) {
+//                AEConfig.load(configDir);
+//            }
+//        } finally {
+//            MoreFiles.deleteRecursively(configDir, RecursiveDeleteOption.ALLOW_INSECURE);
+//        }
 
-        configDir = Files.createTempDirectory("ae2config");
-        if (AEConfig.instance() == null) {
-            AEConfig.load(configDir);
+        if (!keyTypesInitialized) {
+//            try {
+//                InitBlocks.init(ForgeRegistries.BLOCKS);
+//                InitItems.init(ForgeRegistries.ITEMS);
+//            } catch (Throwable e) {
+//                throw new RuntimeException(e);
+//            }
+
+//            mockForgeFluidTypes();
+
+//            var e = new NewRegistryEvent();
+//            var supplier = e.create(new RegistryBuilder<AEKeyType>()
+//                    .setMaxID(127)
+//                    .setName(AppEng.makeId("keytypes")));
+//            var m = NewRegistryEvent.class.getDeclaredMethod("fill");
+//            m.setAccessible(true);
+//            m.invoke(e);
+//            AEKeyTypesInternal.setRegistry(supplier);
+//            AEKeyTypes.register(AEKeyType.items());
+//            AEKeyTypes.register(AEKeyType.fluids());
+            keyTypesInitialized = true;
         }
 
-        if (!modInitialized) {
-            modInitialized = true;
-
-            invokeEntrypoints("preLaunch", PreLaunchEntrypoint.class, PreLaunchEntrypoint::onPreLaunch);
-            invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
-            invokeEntrypoints("server", DedicatedServerModInitializer.class,
-                    DedicatedServerModInitializer::onInitializeServer);
-
-            Guide.runDatapackReload();
-        }
     }
 
-    private <T> void invokeEntrypoints(String name, Class<T> type, Consumer<? super T> invoker) {
-        var entrypoints = FabricLoaderImpl.INSTANCE.getEntrypointContainers(name, type);
-
-        for (var container : entrypoints) {
-            var modId = container.getProvider().getMetadata().getId();
-            // Fix WTHIT API runtime protection messing our tests up
-            if (modId.equals("wthit_api")) {
-                continue;
-            }
-            invoker.accept(container.getEntrypoint());
-        }
-    }
-
-    @Override
-    public void afterAll(ExtensionContext context) throws Exception {
-        if (configDir != null && Files.exists(configDir)) {
-            MoreFiles.deleteRecursively(configDir, RecursiveDeleteOption.ALLOW_INSECURE);
-        }
+    private void mockForgeFluidTypes() {
+        // Otherwise constructing ANY FluidKey will crash
+        var mocked = Mockito.mockStatic(CommonHooks.class, Mockito.CALLS_REAL_METHODS);
+        var props = FluidType.Properties.create();
+        props.descriptionId("fluid");
+        mocked.when(() -> CommonHooks.getVanillaFluidType(any()))
+                .thenReturn(new FluidType(props));
     }
 }

@@ -35,7 +35,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -59,7 +58,7 @@ import appeng.util.Platform;
 
 public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem {
 
-    public NetworkToolItem(Item.Properties properties) {
+    public NetworkToolItem(Properties properties) {
         super(properties);
     }
 

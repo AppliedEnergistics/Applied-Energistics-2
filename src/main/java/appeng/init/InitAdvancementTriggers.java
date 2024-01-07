@@ -25,11 +25,11 @@ import appeng.core.stats.AdvancementTriggers;
 public final class InitAdvancementTriggers {
 
     public static void init() {
-        CriteriaTriggers.register(AdvancementTriggers.NETWORK_APPRENTICE);
-        CriteriaTriggers.register(AdvancementTriggers.NETWORK_ENGINEER);
-        CriteriaTriggers.register(AdvancementTriggers.NETWORK_ADMIN);
-        CriteriaTriggers.register(AdvancementTriggers.SPATIAL_EXPLORER);
-        CriteriaTriggers.register(AdvancementTriggers.RECURSIVE);
+        CriteriaTriggers.register("ae2:network_apprentice", AdvancementTriggers.NETWORK_APPRENTICE);
+        CriteriaTriggers.register("ae2:network_engineer", AdvancementTriggers.NETWORK_ENGINEER);
+        CriteriaTriggers.register("ae2:network_admin", AdvancementTriggers.NETWORK_ADMIN);
+        CriteriaTriggers.register("ae2:spatial_explorer", AdvancementTriggers.SPATIAL_EXPLORER);
+        CriteriaTriggers.register("ae2:recursive_networking", AdvancementTriggers.RECURSIVE);
     }
 
 }

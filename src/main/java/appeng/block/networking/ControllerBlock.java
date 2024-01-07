@@ -150,7 +150,7 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
 
     @Override
     public InteractionResult onActivated(Level level, BlockPos pos, Player player, InteractionHand hand,
-            @org.jetbrains.annotations.Nullable ItemStack heldItem, BlockHitResult hit) {
+            @Nullable ItemStack heldItem, BlockHitResult hit) {
         var controller = getBlockEntity(level, pos);
         if (controller != null) {
             if (!level.isClientSide) {

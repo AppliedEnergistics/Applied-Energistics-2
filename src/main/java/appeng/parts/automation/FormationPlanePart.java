@@ -23,6 +23,7 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -32,6 +33,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.api.behaviors.PlacementStrategy;
 import appeng.api.config.Actionable;
@@ -157,6 +159,20 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
                 getPlacementStrategies().clearBlocked();
             }
         } else {
+            connectionHelper.updateConnections();
+        }
+    }
+
+    @Override
+    public void onUpdateShape(Direction side) {
+        var ourSide = getSide();
+        // A block might have been changed in front of us
+        if (side.equals(ourSide)) {
+            if (!isClientSide()) {
+                getPlacementStrategies().clearBlocked();
+            }
+        } else if (ourSide.getAxis() != side.getAxis()) {
+            // Changes perpendicular to our side may change the connected plane model to change
             connectionHelper.updateConnections();
         }
     }
@@ -292,8 +308,10 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
     }
 
     @Override
-    public Object getRenderAttachmentData() {
-        return getConnections();
+    public ModelData getModelData() {
+        return ModelData.builder()
+                .with(PlaneModelData.CONNECTIONS, getConnections())
+                .build();
     }
 
 }

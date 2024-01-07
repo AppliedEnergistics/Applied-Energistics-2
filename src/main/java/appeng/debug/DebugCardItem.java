@@ -33,7 +33,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -47,7 +46,6 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.networking.ControllerBlockEntity;
-import appeng.hooks.AEToolItem;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.AEBaseItem;
 import appeng.me.Grid;
@@ -59,9 +57,9 @@ import appeng.parts.p2p.P2PTunnelPart;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
-public class DebugCardItem extends AEBaseItem implements AEToolItem {
+public class DebugCardItem extends AEBaseItem {
 
-    public DebugCardItem(Item.Properties properties) {
+    public DebugCardItem(Properties properties) {
         super(properties);
     }
 

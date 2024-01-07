@@ -117,8 +117,6 @@ public final class InitMenuTypes {
         }
         REGISTRATION_QUEUE.clear();
 
-        // Fabric registers the container types at creation time, we just do this
-        // to ensure all static CTORs are called in a predictable manner
         for (var type : types) {
             if (registry.getResourceKey(type).isEmpty()) {
                 throw new IllegalStateException("Menu Type " + type + " is not registered");

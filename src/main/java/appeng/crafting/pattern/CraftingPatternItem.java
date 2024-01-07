@@ -8,8 +8,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
+import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -59,7 +61,8 @@ public class CraftingPatternItem extends EncodedPatternItem {
         }
     }
 
-    public ItemStack encode(CraftingRecipe recipe, ItemStack[] in, ItemStack out, boolean allowSubstitutes,
+    public ItemStack encode(RecipeHolder<CraftingRecipe> recipe, ItemStack[] in, ItemStack out,
+            boolean allowSubstitutes,
             boolean allowFluidSubstitutes) {
         var stack = new ItemStack(this);
         CraftingPatternEncoding.encodeCraftingPattern(stack.getOrCreateTag(), recipe, in, out, allowSubstitutes,
@@ -87,14 +90,14 @@ public class CraftingPatternItem extends EncodedPatternItem {
             }
         }
 
-        CraftingRecipe potentialRecipe = recipeManager.getRecipeFor(RecipeType.CRAFTING, testInventory, level)
+        var potentialRecipe = recipeManager.getRecipeFor(RecipeType.CRAFTING, testInventory, level)
                 .orElse(null);
 
         // Check that it matches the expected output
         if (potentialRecipe != null && ItemStack.isSameItemSameTags(product,
-                potentialRecipe.assemble(testInventory, level.registryAccess()))) {
+                potentialRecipe.value().assemble(testInventory, level.registryAccess()))) {
             // Yay we found a match, reencode the pattern
-            AELog.debug("Re-Encoding pattern from %s -> %s", currentRecipeId, potentialRecipe.getId());
+            AELog.debug("Re-Encoding pattern from %s -> %s", currentRecipeId, potentialRecipe.id());
             ItemStack[] in = Arrays.stream(ingredients)
                     .map(stack -> stack.what() instanceof AEItemKey itemKey ? itemKey.toStack() : ItemStack.EMPTY)
                     .toArray(ItemStack[]::new);

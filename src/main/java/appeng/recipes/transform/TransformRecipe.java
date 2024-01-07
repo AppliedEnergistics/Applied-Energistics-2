@@ -14,19 +14,18 @@ import net.minecraft.world.level.Level;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
+import appeng.init.InitRecipeTypes;
 
 public final class TransformRecipe implements Recipe<Container> {
     public static final ResourceLocation TYPE_ID = AppEng.makeId("transform");
-    public static final RecipeType<TransformRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
+    public static final RecipeType<TransformRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
 
-    private final ResourceLocation id;
     public final NonNullList<Ingredient> ingredients;
     public final ItemStack output;
     public final TransformCircumstance circumstance;
 
-    public TransformRecipe(ResourceLocation id, NonNullList<Ingredient> ingredients, ItemStack output,
+    public TransformRecipe(NonNullList<Ingredient> ingredients, ItemStack output,
             TransformCircumstance circumstance) {
-        this.id = id;
         this.ingredients = ingredients;
         this.output = output;
         this.circumstance = circumstance;
@@ -63,11 +62,6 @@ public final class TransformRecipe implements Recipe<Container> {
 
     public ItemStack getResultItem() {
         return output;
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return id;
     }
 
     @Override

@@ -51,7 +51,7 @@ public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/interface_base");
 
-    private static final IGridNodeListener<InterfacePart> NODE_LISTENER = new AEBasePart.NodeListener<>() {
+    private static final IGridNodeListener<InterfacePart> NODE_LISTENER = new NodeListener<>() {
         @Override
         public void onGridChanged(InterfacePart nodeOwner, IGridNode node) {
             super.onGridChanged(nodeOwner, node);

@@ -591,5 +591,4 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
             return host.getMainMenuIcon().getHoverName();
         }
     }
-
 }

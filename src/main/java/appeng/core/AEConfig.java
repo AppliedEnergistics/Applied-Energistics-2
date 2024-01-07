@@ -55,11 +55,21 @@ public final class AEConfig {
     AEConfig(Path configDir) {
         ConfigSection clientRoot = ConfigSection.createRoot();
         CLIENT = new ClientConfig(clientRoot);
-        clientConfigManager = createConfigFileManager(clientRoot, configDir, CLIENT_CONFIG_PATH);
+
+        if (configDir != null) { // Might be null when running from a test...
+            clientConfigManager = createConfigFileManager(clientRoot, configDir, CLIENT_CONFIG_PATH);
+        } else {
+            clientConfigManager = null;
+        }
 
         ConfigSection commonRoot = ConfigSection.createRoot();
         COMMON = new CommonConfig(commonRoot);
-        commonConfigManager = createConfigFileManager(commonRoot, configDir, COMMON_CONFIG_PATH);
+
+        if (configDir != null) {
+            commonConfigManager = createConfigFileManager(commonRoot, configDir, COMMON_CONFIG_PATH);
+        } else {
+            commonConfigManager = null;
+        }
 
         syncClientConfig();
         syncCommonConfig();
@@ -92,7 +102,7 @@ public final class AEConfig {
     }
 
     // Default Energy Conversion Rates
-    private static final double DEFAULT_TR_EXCHANGE = 2.0;
+    private static final double DEFAULT_FE_EXCHANGE = 0.5;
 
     // Config instance
     private static AEConfig instance;
@@ -160,7 +170,7 @@ public final class AEConfig {
     }
 
     private void syncCommonConfig() {
-        PowerUnits.TR.conversionRatio = COMMON.powerRatioTechReborn.get();
+        PowerUnits.RF.conversionRatio = COMMON.powerRatioForgeEnergy.get();
         PowerMultiplier.CONFIG.multiplier = COMMON.powerUsageMultiplier.get();
 
         CondenserOutput.MATTER_BALLS.requiredPower = COMMON.condenserMatterBallsPower.get();
@@ -436,10 +446,6 @@ public final class AEConfig {
         return COMMON.blockUpdateLog.get();
     }
 
-    public boolean isPacketLogEnabled() {
-        return COMMON.packetLog.get();
-    }
-
     public boolean isChunkLoggerTraceEnabled() {
         return COMMON.chunkLoggerTrace.get();
     }
@@ -649,7 +655,6 @@ public final class AEConfig {
 
         // Logging
         public final BooleanOption blockUpdateLog;
-        public final BooleanOption packetLog;
         public final BooleanOption craftingLog;
         public final BooleanOption debugLog;
         public final BooleanOption gridLog;
@@ -680,7 +685,7 @@ public final class AEConfig {
         public final BooleanOption portableCellDisassembly;
 
         // Power Ratios
-        public final DoubleOption powerRatioTechReborn;
+        public final DoubleOption powerRatioForgeEnergy;
         public final DoubleOption powerUsageMultiplier;
         public final DoubleOption gridEnergyStoragePerNode;
 
@@ -736,7 +741,6 @@ public final class AEConfig {
 
             var logging = root.subsection("logging");
             blockUpdateLog = logging.addBoolean("blockUpdateLog", false);
-            packetLog = logging.addBoolean("packetLog", false);
             craftingLog = logging.addBoolean("craftingLog", false);
             debugLog = logging.addBoolean("debugLog", false);
             gridLog = logging.addBoolean("gridLog", false);
@@ -772,7 +776,7 @@ public final class AEConfig {
                     "Allow disassembly of portable cells into the recipe ingredients using shift+right-click");
 
             ConfigSection PowerRatios = root.subsection("PowerRatios");
-            powerRatioTechReborn = PowerRatios.addDouble("TechReborn", DEFAULT_TR_EXCHANGE);
+            powerRatioForgeEnergy = PowerRatios.addDouble("ForgeEnergy", DEFAULT_FE_EXCHANGE);
             powerUsageMultiplier = PowerRatios.addDouble("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
             gridEnergyStoragePerNode = PowerRatios.addDouble("GridEnergyStoragePerNode", 25, 1, 1000000,
                     "How much energy can the internal grid buffer storage per node attached to the grid.");

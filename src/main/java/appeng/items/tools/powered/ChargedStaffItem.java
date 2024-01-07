@@ -19,20 +19,19 @@
 package appeng.items.tools.powered;
 
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 
 import appeng.api.config.Actionable;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.core.sync.packets.LightningPacket;
+import appeng.core.network.clientbound.LightningPacket;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.Platform;
 
 public class ChargedStaffItem extends AEBasePoweredItem {
 
-    public ChargedStaffItem(Item.Properties props) {
+    public ChargedStaffItem(Properties props) {
         super(AEConfig.instance().getChargedStaffBattery(), props);
     }
 

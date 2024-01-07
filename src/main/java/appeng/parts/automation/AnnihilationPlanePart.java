@@ -31,6 +31,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.BlockGetter;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.api.behaviors.PickupStrategy;
 import appeng.api.config.Actionable;
@@ -198,7 +199,19 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
             if (!isClientSide()) {
                 this.refresh();
             }
-        } else {
+        }
+    }
+
+    @Override
+    public void onUpdateShape(Direction side) {
+        var ourSide = getSide();
+        // A block might have been placed in front of us
+        if (side.equals(ourSide)) {
+            if (!isClientSide()) {
+                this.refresh();
+            }
+        } else if (ourSide.getAxis() != side.getAxis()) {
+            // Changes perpendicular to our side may change the connected plane model to change
             connectionHelper.updateConnections();
         }
     }
@@ -335,8 +348,10 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
     }
 
     @Override
-    public Object getRenderAttachmentData() {
-        return getConnections();
+    public ModelData getModelData() {
+        return ModelData.builder()
+                .with(PlaneModelData.CONNECTIONS, getConnections())
+                .build();
     }
 
     private record ContinuousGeneration(

@@ -18,8 +18,8 @@
 
 package appeng.menu.slot;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.client.Point;
 
@@ -35,7 +35,7 @@ public interface IOptionalSlot {
 
     boolean isSlotEnabled();
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     Point getBackgroundPos();
 
 }

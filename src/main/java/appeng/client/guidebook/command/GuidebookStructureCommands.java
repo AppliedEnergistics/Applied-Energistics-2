@@ -3,7 +3,6 @@ package appeng.client.guidebook.command;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -22,8 +21,6 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.commands.CommandSourceStack;
@@ -32,6 +29,7 @@ import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
@@ -41,13 +39,15 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Implements commands that help with the workflow to create and edit structures for use in the guidebook. The commands
  * will not be used directly by users, but rather by command blocks built by
  * {@link appeng.server.testplots.GuidebookPlot}.
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuidebookStructureCommands {
 
     @Nullable
@@ -111,7 +111,7 @@ public class GuidebookStructureCommands {
                             }
                         } else {
                             try (var is = new BufferedInputStream(new FileInputStream(selectedPath))) {
-                                compound = NbtIo.readCompressed(is);
+                                compound = NbtIo.readCompressed(is, NbtAccounter.unlimitedHeap());
                             }
                         }
                         var structure = manager.readStructure(compound);
@@ -207,7 +207,7 @@ public class GuidebookStructureCommands {
                                     NbtUtils.structureToSnbt(compound),
                                     StandardCharsets.UTF_8);
                         } else {
-                            NbtIo.writeCompressed(compound, new File(selectedPath));
+                            NbtIo.writeCompressed(compound, Paths.get(selectedPath));
                         }
 
                         player.sendSystemMessage(Component.literal("Saved structure"));

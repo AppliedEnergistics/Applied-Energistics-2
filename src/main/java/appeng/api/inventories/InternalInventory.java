@@ -31,16 +31,14 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.util.helpers.ItemComparisonHelper;
@@ -48,22 +46,12 @@ import appeng.util.helpers.ItemComparisonHelper;
 public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
 
     @Nullable
-    static ItemTransfer wrapExternal(@Nullable BlockEntity be, Direction side) {
-        if (be == null) {
-            return null;
-        }
-
-        var storage = ItemStorage.SIDED.find(be.getLevel(), be.getBlockPos(), be.getBlockState(), be, side);
-        if (storage != null) {
-            return new PlatformInventoryWrapper(storage);
-        }
-
-        return null;
-    }
-
-    @Nullable
     static ItemTransfer wrapExternal(Level level, BlockPos pos, Direction side) {
-        return wrapExternal(level.getBlockEntity(pos), side);
+        var handler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, side);
+        if (handler != null) {
+            return new PlatformInventoryWrapper(handler);
+        }
+        return null;
     }
 
     static InternalInventory empty() {
@@ -80,8 +68,8 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
         return !iterator().hasNext();
     }
 
-    default Storage<ItemVariant> toStorage() {
-        return new InternalInventoryStorage(this);
+    default IItemHandler toItemHandler() {
+        return new InternalInventoryItemHandler(this);
     }
 
     default Container toContainer() {
@@ -398,11 +386,6 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
             }
             return result;
         }
-    }
-
-    @Override
-    default boolean mayAllowInsertion() {
-        return size() > 0;
     }
 
     /**

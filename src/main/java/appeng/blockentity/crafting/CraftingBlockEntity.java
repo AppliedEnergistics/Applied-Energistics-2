@@ -33,8 +33,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
@@ -142,7 +144,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
                 // Not using flag 2 here (only send to clients, prevent block update) will cause
                 // infinite loops
                 // In case there is an inconsistency in the crafting clusters.
-                this.level.setBlock(this.worldPosition, newState, 2);
+                this.level.setBlock(this.worldPosition, newState, Block.UPDATE_CLIENTS);
             }
         }
 
@@ -289,8 +291,8 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public Object getRenderAttachmentData() {
-        return new CraftingCubeModelData(getConnections());
+    public ModelData getModelData() {
+        return CraftingCubeModelData.create(getConnections());
     }
 
     protected EnumSet<Direction> getConnections() {
@@ -312,6 +314,16 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     private boolean isConnected(BlockGetter level, BlockPos pos, Direction side) {
         BlockPos adjacentPos = pos.relative(side);
         return level.getBlockState(adjacentPos).getBlock() instanceof AbstractCraftingUnitBlock;
+    }
+
+    /**
+     * When the block state changes (i.e. becoming formed or unformed), we need to update the model data since it
+     * contains connections to neighboring block entities.
+     */
+    @Override
+    public void setBlockState(BlockState state) {
+        super.setBlockState(state);
+        requestModelDataUpdate();
     }
 
     private Iterator<IGridNode> getMultiblockNodes() {

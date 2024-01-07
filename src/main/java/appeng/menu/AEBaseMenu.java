@@ -55,9 +55,10 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.core.AELog;
-import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.GuiDataSyncPacket;
+import appeng.core.network.ClientboundPacket;
+import appeng.core.network.NetworkHandler;
+import appeng.core.network.clientbound.GuiDataSyncPacket;
+import appeng.core.network.serverbound.GuiActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.me.helpers.PlayerSource;
@@ -324,7 +325,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 || slotSemantic == SlotSemantics.CRAFTING_GRID;
     }
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     public SlotSemantic getSlotSemantic(Slot s) {
         return semanticBySlot.get(s);
     }
@@ -841,7 +842,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         return !isClientSide();
     }
 
-    protected final void sendPacketToClient(BasePacket packet) {
+    protected final void sendPacketToClient(ClientboundPacket packet) {
         if (getPlayer() instanceof ServerPlayer serverPlayer) {
             NetworkHandler.instance().sendTo(packet, serverPlayer);
         }
@@ -859,24 +860,21 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     /**
      * Receives data from the server for synchronizing fields of this class.
      */
-    public final void receiveServerSyncData(GuiDataSyncPacket packet) {
-        this.dataSync.readUpdate(packet.getData());
+    public final void receiveServerSyncData(FriendlyByteBuf data) {
+        this.dataSync.readUpdate(data);
         this.onServerDataSync();
     }
 
     /**
      * Receives a menu action from the client.
      */
-    public final void receiveClientAction(GuiDataSyncPacket packet) {
-        FriendlyByteBuf data = packet.getData();
-        String name = data.readUtf(256);
-
-        ClientAction<?> action = clientActions.get(name);
+    public final void receiveClientAction(String actionName, @Nullable String jsonPayload) {
+        ClientAction<?> action = clientActions.get(actionName);
         if (action == null) {
-            throw new IllegalArgumentException("Unknown client action: '" + name + "'");
+            throw new IllegalArgumentException("Unknown client action: '" + actionName + "'");
         }
 
-        action.handle(data);
+        action.handle(jsonPayload);
     }
 
     /**
@@ -938,12 +936,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                             + MAX_STRING_LENGTH + " (" + jsonPayload.length() + ")");
         }
 
-        NetworkHandler.instance().sendToServer(new GuiDataSyncPacket(containerId, writer -> {
-            writer.writeUtf(clientAction.name);
-            if (jsonPayload != null) {
-                writer.writeUtf(jsonPayload);
-            }
-        }));
+        NetworkHandler.instance().sendToServer(new GuiActionPacket(containerId, clientAction.name, jsonPayload));
     }
 
     /**
@@ -968,12 +961,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             this.handler = handler;
         }
 
-        public void handle(FriendlyByteBuf buffer) {
+        public void handle(@Nullable String jsonPayload) {
             T arg = null;
             if (argClass != Void.class) {
-                String payload = buffer.readUtf();
-                AELog.debug("Handling client action '%s' with payload %s", name, payload);
-                arg = gson.fromJson(payload, argClass);
+                AELog.debug("Handling client action '%s' with payload %s", name, jsonPayload);
+                arg = gson.fromJson(jsonPayload, argClass);
             } else {
                 AELog.debug("Handling client action '%s'", name);
             }

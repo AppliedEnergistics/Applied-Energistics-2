@@ -164,7 +164,7 @@ stock some things and not stock others, allowing you to remotely push and pull t
   </BoxAnnotation>
 
 <BoxAnnotation color="#dddddd" min="0 1 2" max="1 1.3 3">
-        Storage Bus
+        Interface
   </BoxAnnotation>
 
 <IsometricCamera yaw="195" pitch="30" />

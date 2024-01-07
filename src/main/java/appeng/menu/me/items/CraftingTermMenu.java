@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
 
@@ -30,11 +31,11 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
@@ -44,8 +45,8 @@ import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ITerminalHost;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.InventoryActionPacket;
+import appeng.core.network.NetworkHandler;
+import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.SlotSemantics;
@@ -76,7 +77,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
     private final CraftingContainer recipeTestContainer = new TransientCraftingContainer(this, 3, 3);
 
     private final CraftingTermSlot outputSlot;
-    private Recipe<CraftingContainer> currentRecipe;
+    private RecipeHolder<CraftingRecipe> currentRecipe;
 
     public CraftingTermMenu(int id, Inventory ip, ITerminalHost host) {
         this(TYPE, id, ip, host, true);
@@ -134,7 +135,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
         if (this.currentRecipe == null) {
             this.outputSlot.set(ItemStack.EMPTY);
         } else {
-            this.outputSlot.set(this.currentRecipe.assemble(recipeTestContainer, level.registryAccess()));
+            this.outputSlot.set(this.currentRecipe.value().assemble(recipeTestContainer, level.registryAccess()));
         }
     }
 
@@ -153,7 +154,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
         CraftConfirmMenu.openWithCraftingList(getActionHost(), (ServerPlayer) getPlayer(), getLocator(), toCraft);
     }
 
-    public Recipe<CraftingContainer> getCurrentRecipe() {
+    public RecipeHolder<CraftingRecipe> getCurrentRecipe() {
         return this.currentRecipe;
     }
 
@@ -168,21 +169,21 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
     }
 
     @Override
-    public boolean hasItemType(ItemStack itemStack, int amount) {
+    public boolean hasIngredient(Predicate<ItemStack> predicate, int amount) {
         // In addition to the base item repo, also check the crafting grid if it
         // already contains some of the needed items
-        for (Slot slot : getSlots(SlotSemantics.CRAFTING_GRID)) {
-            ItemStack stackInSlot = slot.getItem();
-            if (!stackInSlot.isEmpty() && ItemStack.isSameItemSameTags(itemStack, stackInSlot)) {
-                if (itemStack.getCount() >= amount) {
+        for (var slot : getSlots(SlotSemantics.CRAFTING_GRID)) {
+            var stackInSlot = slot.getItem();
+            if (!stackInSlot.isEmpty() && predicate.test(stackInSlot)) {
+                if (stackInSlot.getCount() >= amount) {
                     return true;
                 }
-                amount -= itemStack.getCount();
+                amount -= stackInSlot.getCount();
             }
 
         }
 
-        return super.hasItemType(itemStack, amount);
+        return super.hasIngredient(predicate, amount);
     }
 
     /**
@@ -227,15 +228,11 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
 
             // Then check the terminal screen's repository of network items
             if (!found) {
-                for (var stack : ingredient.getItems()) {
-                    // We use AE stacks to get an easily comparable item type key that ignores stack size
-                    var itemKey = AEItemKey.of(stack);
-                    int reservedAmount = reservedGridAmounts.getOrDefault(itemKey, 0) + 1;
-                    if (hasItemType(stack, reservedAmount)) {
-                        reservedGridAmounts.put(itemKey, reservedAmount);
-                        found = true;
-                        break;
-                    }
+                // We use AE stacks to get an easily comparable item type key that ignores stack size
+                int neededAmount = reservedGridAmounts.getOrDefault(ingredient, 0) + 1;
+                if (hasIngredient(ingredient, neededAmount)) {
+                    reservedGridAmounts.put(ingredient, neededAmount);
+                    found = true;
                 }
             }
 
@@ -263,12 +260,16 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
             return missingSlots.size() + craftableSlots.size();
         }
 
+        public boolean anyMissingOrCraftable() {
+            return anyMissing() || anyCraftable();
+        }
+
         public boolean anyMissing() {
-            return missingSlots.size() > 0;
+            return !missingSlots.isEmpty();
         }
 
         public boolean anyCraftable() {
-            return craftableSlots.size() > 0;
+            return !craftableSlots.isEmpty();
         }
     }
 

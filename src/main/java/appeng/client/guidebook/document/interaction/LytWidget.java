@@ -13,7 +13,7 @@ import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.screen.GuideScreen;
 
 /**
- * Wraps an {@link net.minecraft.client.gui.components.AbstractWidget} for use within the guidebook layout tree.
+ * Wraps an {@link AbstractWidget} for use within the guidebook layout tree.
  */
 public class LytWidget extends LytBlock implements InteractiveElement {
     private final AbstractWidget widget;

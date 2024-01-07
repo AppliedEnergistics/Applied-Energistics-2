@@ -18,8 +18,8 @@
 
 package appeng.hooks;
 
-import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
@@ -35,11 +35,11 @@ public final class BlockToolDispenseItemBehavior extends DefaultDispenseItemBeha
     protected ItemStack execute(BlockSource dispenser, ItemStack dispensedItem) {
         final Item i = dispensedItem.getItem();
         if (i instanceof IBlockTool tm) {
-            final Direction direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
+            final Direction direction = dispenser.state().getValue(DispenserBlock.FACING);
 
-            final Level level = dispenser.getLevel();
+            final Level level = dispenser.level();
             if (level instanceof ServerLevel) {
-                UseOnContext context = new DirectionalPlaceContext(level, dispenser.getPos().relative(direction),
+                UseOnContext context = new DirectionalPlaceContext(level, dispenser.pos().relative(direction),
                         direction, dispensedItem, direction.getOpposite());
                 tm.useOn(context);
             }

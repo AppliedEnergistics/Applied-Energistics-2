@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 
 /**
@@ -14,7 +13,7 @@ import net.minecraft.core.Registry;
 @ApiStatus.Internal
 public final class AEKeyTypesInternal {
     @Nullable
-    private static MappedRegistry<AEKeyType> registry;
+    private static Registry<AEKeyType> registry;
 
     private AEKeyTypesInternal() {
     }
@@ -24,7 +23,7 @@ public final class AEKeyTypesInternal {
         return registry;
     }
 
-    public static void setRegistry(MappedRegistry<AEKeyType> registry) {
+    public static void setRegistry(Registry<AEKeyType> registry) {
         Preconditions.checkState(AEKeyTypesInternal.registry == null);
         AEKeyTypesInternal.registry = registry;
     }

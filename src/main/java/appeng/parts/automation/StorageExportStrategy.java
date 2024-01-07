@@ -3,48 +3,40 @@ package appeng.parts.automation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
 
 import appeng.api.behaviors.StackExportStrategy;
 import appeng.api.behaviors.StackTransferContext;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.StorageHelper;
-import appeng.util.IVariantConversion;
-import appeng.util.Platform;
 
-public class StorageExportStrategy<V extends TransferVariant<?>> implements StackExportStrategy {
+public class StorageExportStrategy<T, S> implements StackExportStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(StorageExportStrategy.class);
-    private final BlockApiCache<Storage<V>, Direction> apiCache;
-    private final Direction fromSide;
-    private final IVariantConversion<V> conversion;
+    private final BlockCapabilityCache<T, Direction> cache;
+    private final HandlerStrategy<T, S> handlerStrategy;
 
-    public StorageExportStrategy(BlockApiLookup<Storage<V>, Direction> apiLookup,
-            IVariantConversion<V> conversion,
+    protected StorageExportStrategy(BlockCapability<T, Direction> capability,
+            HandlerStrategy<T, S> handlerStrategy,
             ServerLevel level,
             BlockPos fromPos,
             Direction fromSide) {
-        this.apiCache = BlockApiCache.create(apiLookup, level, fromPos);
-        this.fromSide = fromSide;
-        this.conversion = conversion;
+        this.handlerStrategy = handlerStrategy;
+        this.cache = BlockCapabilityCache.create(capability, level, fromPos, fromSide);
     }
 
     @Override
     public long transfer(StackTransferContext context, AEKey what, long amount) {
-        var variant = conversion.getVariant(what);
-        if (variant.isBlank()) {
+        if (!handlerStrategy.isSupported(what)) {
             return 0;
         }
 
-        var adjacentStorage = apiCache.find(fromSide);
+        var adjacentStorage = cache.getCapability();
         if (adjacentStorage == null) {
             return 0;
         }
@@ -59,19 +51,9 @@ public class StorageExportStrategy<V extends TransferVariant<?>> implements Stac
                 context.getActionSource(),
                 Actionable.SIMULATE);
 
-        if (extracted <= 0) {
-            return 0;
-        }
-
-        // Determine how much we're allowed to insert
-        long wasInserted;
-        try (var tx = Platform.openOrJoinTx()) {
-            wasInserted = adjacentStorage.insert(variant, extracted, tx);
-        }
+        long wasInserted = handlerStrategy.insert(adjacentStorage, what, extracted, Actionable.SIMULATE);
 
         if (wasInserted > 0) {
-            // Now *really* extract because the simulate may have returned more items than we can actually get
-            // (i.e. two storage buses on the same chest).
             extracted = StorageHelper.poweredExtraction(
                     context.getEnergySource(),
                     inv.getInventory(),
@@ -80,10 +62,7 @@ public class StorageExportStrategy<V extends TransferVariant<?>> implements Stac
                     context.getActionSource(),
                     Actionable.MODULATE);
 
-            try (var tx = Platform.openOrJoinTx()) {
-                wasInserted = adjacentStorage.insert(variant, extracted, tx);
-                tx.commit();
-            }
+            wasInserted = handlerStrategy.insert(adjacentStorage, what, extracted, Actionable.MODULATE);
 
             if (wasInserted < extracted) {
                 // Be nice and try to give the overflow back
@@ -101,35 +80,22 @@ public class StorageExportStrategy<V extends TransferVariant<?>> implements Stac
 
     @Override
     public long push(AEKey what, long amount, Actionable mode) {
-        var variant = conversion.getVariant(what);
-        if (variant.isBlank()) {
+        if (!handlerStrategy.isSupported(what)) {
             return 0;
         }
 
-        var adjacentStorage = apiCache.find(fromSide);
+        var adjacentStorage = cache.getCapability();
         if (adjacentStorage == null) {
             return 0;
         }
 
-        try (var tx = Platform.openOrJoinTx()) {
-            long wasInserted = adjacentStorage.insert(variant, amount, tx);
-
-            if (wasInserted > 0) {
-                if (mode == Actionable.MODULATE) {
-                    tx.commit();
-                }
-
-                return wasInserted;
-            }
-        }
-
-        return 0;
+        return handlerStrategy.insert(adjacentStorage, what, amount, mode);
     }
 
     public static StackExportStrategy createItem(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageExportStrategy<>(
-                ItemStorage.SIDED,
-                IVariantConversion.ITEM,
+                Capabilities.ItemHandler.BLOCK,
+                HandlerStrategy.ITEMS,
                 level,
                 fromPos,
                 fromSide);
@@ -137,8 +103,8 @@ public class StorageExportStrategy<V extends TransferVariant<?>> implements Stac
 
     public static StackExportStrategy createFluid(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageExportStrategy<>(
-                FluidStorage.SIDED,
-                IVariantConversion.FLUID,
+                Capabilities.FluidHandler.BLOCK,
+                HandlerStrategy.FLUIDS,
                 level,
                 fromPos,
                 fromSide);

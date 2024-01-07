@@ -18,7 +18,7 @@
 
 package appeng.hooks;
 
-import net.minecraft.core.BlockSource;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -34,7 +34,7 @@ public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemB
     protected ItemStack execute(BlockSource source, ItemStack dispensedItem) {
         if (dispensedItem.getItem() instanceof MatterCannonItem tm) {
             var position = DispenserBlock.getDispensePosition(source);
-            var direction = source.getBlockState().getValue(DispenserBlock.FACING);
+            var direction = source.state().getValue(DispenserBlock.FACING);
 
             var src = new Vec3(
                     position.x(),
@@ -47,9 +47,9 @@ public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemB
                             32 * direction.getStepY(),
                             32 * direction.getStepZ()));
 
-            var level = source.getLevel();
+            var level = source.level();
             var p = Platform.getFakePlayer(level, null);
-            Platform.configurePlayer(p, direction, source.getEntity());
+            Platform.configurePlayer(p, direction, source.blockEntity());
             tm.fireCannon(level, dispensedItem, p, dir);
         }
         return dispensedItem;

@@ -159,7 +159,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
 
     @Override
     public void exportSettings(SettingsFrom mode, CompoundTag output,
-            @org.jetbrains.annotations.Nullable Player player) {
+            @Nullable Player player) {
         super.exportSettings(mode, output, player);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
@@ -172,7 +172,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
 
     @Override
     public void importSettings(SettingsFrom mode, CompoundTag input,
-            @org.jetbrains.annotations.Nullable Player player) {
+            @Nullable Player player) {
         super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.MEMORY_CARD) {

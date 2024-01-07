@@ -41,6 +41,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
@@ -199,13 +200,13 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     @Override
     @Nullable
     public <T extends IPart> T addPart(IPartItem<T> partItem, Direction side,
-            @org.jetbrains.annotations.Nullable Player player) {
+            @Nullable Player player) {
         return cb.addPart(partItem, side, player);
     }
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     @Override
-    public <T extends IPart> T replacePart(IPartItem<T> partItem, @org.jetbrains.annotations.Nullable Direction side,
+    public <T extends IPart> T replacePart(IPartItem<T> partItem, @Nullable Direction side,
             Player owner, InteractionHand hand) {
         return cb.replacePart(partItem, side, owner, hand);
     }
@@ -309,14 +310,15 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public CableBusRenderState getRenderAttachmentData() {
+    public ModelData getModelData() {
+        Level level = getLevel();
         if (level == null) {
-            return null;
+            return ModelData.EMPTY;
         }
 
         CableBusRenderState renderState = this.cb.getRenderState();
-        renderState.setPos(getBlockPos());
-        return renderState;
+        renderState.setPos(worldPosition);
+        return ModelData.builder().with(CableBusRenderState.PROPERTY, renderState).build();
 
     }
 

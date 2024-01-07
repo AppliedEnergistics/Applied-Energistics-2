@@ -32,8 +32,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
@@ -51,6 +49,9 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
@@ -73,7 +74,7 @@ public interface IPart extends ICustomCableConnection, Clearable {
      * Render dynamic portions of this part, as part of the cable bus TESR. This part has to return true for
      * {@link #requireDynamicRender()} in order for this method to be called.
      */
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     default void renderDynamic(float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
             int combinedLightIn, int combinedOverlayIn) {
     }
@@ -155,8 +156,22 @@ public interface IPart extends ICustomCableConnection, Clearable {
 
     /**
      * a block around the bus's host has been changed.
+     * 
+     * @see net.neoforged.neoforge.common.extensions.IBlockExtension#onNeighborChange
      */
     default void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
+    }
+
+    /**
+     * The block state in a block adjacent to the part host may have changed. Note that this may be called quite often
+     * and should not lead to immediate block notifications. Any action resulting from this notification should be
+     * delayed until at least the end of tick.
+     * <p/>
+     * It is the parts responsibility to only react to changes on sides that are relevant for it.
+     *
+     * @see net.minecraft.world.level.block.Block#updateShape
+     */
+    default void onUpdateShape(Direction side) {
     }
 
     /**
@@ -423,9 +438,8 @@ public interface IPart extends ICustomCableConnection, Clearable {
      *
      * @return The model data to pass to the model. Only useful if custom models are used.
      */
-    @Nullable
-    default Object getRenderAttachmentData() {
-        return null;
+    default ModelData getModelData() {
+        return ModelData.EMPTY;
     }
 
     /**

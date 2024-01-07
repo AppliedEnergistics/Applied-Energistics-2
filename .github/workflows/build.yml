@@ -2,6 +2,9 @@ name: 'Build and Test'
 
 on:
   push:
+    # Only on branches, not tags/releases
+    branches:
+      - '**'
   pull_request:
     branches:
       - '*'
@@ -20,12 +23,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'microsoft'
-          java-version: '17'
-          cache: 'gradle'
+      - uses: ./.github/actions/gradle-setup
       - name: Validate no assets
         run: test ! -d ./src/generated
       - name: Generate assets
@@ -51,7 +49,19 @@ jobs:
           CROWDIN_TOKEN: ${{ secrets.CROWDIN_TOKEN }}
         continue-on-error: true
         if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
-      - uses: actions/upload-artifact@v3
+
+      # Always upload test results
+      - name: Merge Test Reports
+        if: success() || failure()
+        run: npx junit-report-merger junit.xml "**/TEST-*.xml"
+
+      - uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: test-results
+          path: junit.xml
+
+      - uses: actions/upload-artifact@v4
         with:
           name: dist
           path: build/libs/

@@ -34,6 +34,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.networking.events.GridEvent;
+import appeng.capabilities.AppEngCapabilities;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.GridConnection;
 import appeng.me.GridEventBus;
@@ -129,11 +130,7 @@ public final class GridHelper {
      */
     @Nullable
     public static IInWorldGridNodeHost getNodeHost(Level level, BlockPos pos) {
-        var be = level.getBlockEntity(pos);
-        if (be instanceof IInWorldGridNodeHost host) {
-            return host;
-        }
-        return IInWorldGridNodeHost.LOOKUP.find(level, pos, null, be, null);
+        return level.getCapability(AppEngCapabilities.IN_WORLD_GRID_NODE_HOST, pos, null);
     }
 
     /**

@@ -54,8 +54,8 @@ public final class StorageCells {
     /**
      * Register a new handler.
      * <p>
-     * Never be call before {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent} was handled by AE2. Will
-     * throw an exception otherwise.
+     * Never be call before {@link net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent} was handled by AE2. Will throw
+     * an exception otherwise.
      *
      * @param handler cell handler
      */

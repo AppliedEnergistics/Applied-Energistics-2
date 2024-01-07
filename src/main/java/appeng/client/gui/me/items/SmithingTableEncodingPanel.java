@@ -89,7 +89,7 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
         if (recipe == null) {
             resultSlot.set(ItemStack.EMPTY);
         } else {
-            resultSlot.set(recipe.assemble(container, level.registryAccess()));
+            resultSlot.set(recipe.value().assemble(container, level.registryAccess()));
         }
     }
 

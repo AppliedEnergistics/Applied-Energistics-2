@@ -1,0 +1,50 @@
+modLoader="javafml"
+loaderVersion="[1,)"
+issueTrackerURL="https://github.com/AppliedEnergistics/Applied-Energistics-2/issues"
+displayURL="https://github.com/AppliedEnergistics/Applied-Energistics-2"
+logoFile="logo.png"
+authors="TeamAppliedEnergistics"
+license="See GitHub repository for details"
+
+[[mods]]
+modId="ae2"
+version="0.0.0"
+displayName="Applied Energistics 2"
+description="A Mod about Matter, Energy and using them to conquer the world.."
+
+[[mixins]]
+config="ae2.mixins.json"
+
+[[dependencies.ae2]]
+    modId="neoforge"
+    type="REQUIRED"
+    versionRange="${neoforge_version}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.ae2]]
+    modId="minecraft"
+    type="REQUIRED"
+    versionRange="${minecraft_version}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.ae2]]
+    modId="emi"
+    type="OPTIONAL"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.ae2]]
+    modId="theoneprobe"
+    type="OPTIONAL"
+    versionRange="${top_version}"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.ae2]]
+    modId="jade"
+    type="OPTIONAL"
+    versionRange="${jade_version}"
+    ordering="AFTER"
+    side="BOTH"

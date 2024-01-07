@@ -72,6 +72,7 @@ import appeng.me.helpers.BaseActionSource;
 import appeng.me.service.PathingService;
 import appeng.menu.AutoCraftingMenu;
 import appeng.parts.crafting.PatternProviderPart;
+import appeng.parts.misc.InterfacePart;
 import appeng.server.testworld.Plot;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.TestCraftingJob;
@@ -95,7 +96,8 @@ public final class TestPlots {
                 SpatialTestPlots.class,
                 QnbTestPlots.class,
                 GuidebookPlot.class,
-                SubnetPlots.class));
+                SubnetPlots.class,
+                AnnihilationPlaneTests.class));
     }
 
     private TestPlots() {
@@ -654,7 +656,8 @@ public final class TestPlots {
             Set<AEItemKey> neededIngredients = new HashSet<>();
             Set<AEItemKey> providedResults = new HashSet<>();
 
-            for (var recipe : craftingRecipes) {
+            for (var holder : craftingRecipes) {
+                var recipe = holder.value();
                 if (recipe.isSpecial()) {
                     continue;
                 }
@@ -670,7 +673,7 @@ public final class TestPlots {
                                 }
                             }).toArray(ItemStack[]::new);
                     craftingPattern = PatternDetailsHelper.encodeCraftingPattern(
-                            recipe,
+                            holder,
                             ingredients,
                             recipe.getResultItem(node.getLevel().registryAccess()),
                             false,
@@ -850,9 +853,9 @@ public final class TestPlots {
             helper.succeedWhen(() -> {
                 helper.assertBlockPresent(Blocks.CAULDRON, origin.east());
                 var tank = (SkyStoneTankBlockEntity) helper.getBlockEntity(origin.west());
-                helper.check(tank.getStorage().amount == AEFluidKey.AMOUNT_BUCKET,
+                helper.check(tank.getTank().getFluidAmount() == AEFluidKey.AMOUNT_BUCKET,
                         "Less than a bucket stored");
-                helper.check(tank.getStorage().variant.getFluid() == Fluids.LAVA,
+                helper.check(tank.getTank().getFluid().getFluid() == Fluids.LAVA,
                         "Something other than lava stored");
             });
         });
@@ -1059,4 +1062,19 @@ public final class TestPlots {
                 .thenSucceed());
     }
 
+    @TestPlot("interface_part_caps")
+    public static void interfacePartCaps(PlotBuilder plot) {
+        plot.cable(BlockPos.ZERO).part(Direction.UP, AEParts.INTERFACE);
+        plot.hopper(BlockPos.ZERO.above(), Direction.DOWN, Items.DIRT);
+
+        plot.test(helper -> {
+            helper.startSequence()
+                    .thenWaitUntil(() -> {
+                        var interfacePart = helper.getPart(BlockPos.ZERO, Direction.UP, InterfacePart.class);
+                        var storage = interfacePart.getInterfaceLogic().getStorage();
+                        helper.assertEquals(BlockPos.ZERO, AEItemKey.of(Items.DIRT), storage.getKey(0));
+                    })
+                    .thenSucceed();
+        });
+    }
 }

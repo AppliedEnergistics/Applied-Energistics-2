@@ -30,22 +30,24 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.core.AppEng;
 
 /**
  * Utility class for drawing rectangular textures in the UI.
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public final class Blitter {
 
     // This assumption is obviously bogus, but currently all textures are this size,
@@ -107,16 +109,20 @@ public final class Blitter {
      * Creates a blitter from a texture atlas sprite.
      */
     public static Blitter sprite(TextureAtlasSprite sprite) {
-        // We use this convoluted method to convert from UV in the range of [0,1] back to pixel values with a
-        // fictitious reference size of a large integer. This is converted back to UV later when we actually blit.
-        final int refSize = Integer.MAX_VALUE / 2; // Don't use max int to prevent overflows after inexact conversions.
+        var atlas = (TextureAtlas) Minecraft.getInstance().getTextureManager().getTexture(sprite.atlasLocation());
 
-        return new Blitter(sprite.atlasLocation(), refSize, refSize)
+        return new Blitter(sprite.atlasLocation(), atlas.getWidth(), atlas.getHeight())
                 .src(
-                        (int) (sprite.getU0() * refSize),
-                        (int) (sprite.getV0() * refSize),
-                        (int) ((sprite.getU1() - sprite.getU0()) * refSize),
-                        (int) ((sprite.getV1() - sprite.getV0()) * refSize));
+                        sprite.getX(),
+                        sprite.getY(),
+                        sprite.contents().width(),
+                        sprite.contents().height());
+    }
+
+    public static Blitter guiSprite(ResourceLocation resourceLocation) {
+        var sprites = Minecraft.getInstance().getGuiSprites();
+        var sprite = sprites.getSprite(resourceLocation);
+        return sprite(sprite);
     }
 
     public Blitter copy() {

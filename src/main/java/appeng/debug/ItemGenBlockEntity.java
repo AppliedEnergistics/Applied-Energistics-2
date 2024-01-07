@@ -21,8 +21,6 @@ package appeng.debug;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -32,6 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.AEBaseBlockEntity;
@@ -79,8 +78,8 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity implements InternalInv
         super.loadTag(data);
     }
 
-    public Storage<ItemVariant> getItemHandler() {
-        return this.inv.toStorage();
+    public IItemHandler getItemHandler() {
+        return inv.toItemHandler();
     }
 
     public void setItem(Item item) {

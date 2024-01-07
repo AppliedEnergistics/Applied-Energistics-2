@@ -18,12 +18,12 @@
 
 package appeng.recipes.mattercannon;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
@@ -31,22 +31,27 @@ public class MatterCannonAmmoSerializer implements RecipeSerializer<MatterCannon
 
     public static final MatterCannonAmmoSerializer INSTANCE = new MatterCannonAmmoSerializer();
 
+    private static final Codec<MatterCannonAmmo> CODEC = RecordCodecBuilder.create((builder) -> {
+        return builder.group(
+                Ingredient.CODEC_NONEMPTY.fieldOf("ammo").forGetter(MatterCannonAmmo::getAmmo),
+                Codec.FLOAT.fieldOf("weight").forGetter(MatterCannonAmmo::getWeight))
+                .apply(builder, MatterCannonAmmo::new);
+    });
+
     private MatterCannonAmmoSerializer() {
     }
 
     @Override
-    public MatterCannonAmmo fromJson(ResourceLocation recipeId, JsonObject json) {
-        var ammo = Ingredient.fromJson(json.get("ammo"));
-        var weight = json.get("weight").getAsFloat();
-        return new MatterCannonAmmo(recipeId, ammo, weight);
+    public Codec<MatterCannonAmmo> codec() {
+        return CODEC;
     }
 
     @Nullable
     @Override
-    public MatterCannonAmmo fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+    public MatterCannonAmmo fromNetwork(FriendlyByteBuf buffer) {
         var ammo = Ingredient.fromNetwork(buffer);
         var weight = buffer.readFloat();
-        return new MatterCannonAmmo(recipeId, ammo, weight);
+        return new MatterCannonAmmo(ammo, weight);
     }
 
     @Override

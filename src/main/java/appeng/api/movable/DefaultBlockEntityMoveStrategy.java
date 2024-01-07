@@ -48,8 +48,9 @@ public abstract class DefaultBlockEntityMoveStrategy implements IBlockEntityMove
     }
 
     @Override
-    public boolean completeMove(BlockEntity blockEntity, CompoundTag savedData, Level newLevel, BlockPos newPosition) {
-        var be = BlockEntity.loadStatic(newPosition, blockEntity.getBlockState(), savedData);
+    public boolean completeMove(BlockEntity blockEntity, BlockState state, CompoundTag savedData, Level newLevel,
+            BlockPos newPosition) {
+        var be = BlockEntity.loadStatic(newPosition, state, savedData);
         if (be != null) {
             newLevel.setBlockEntity(be);
             return true;

@@ -53,6 +53,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
 
     private final AEItemKey definition;
     public final boolean canSubstitute;
+    private final ResourceLocation recipeId;
     private final SmithingRecipe recipe;
     private final Container testFrame;
     private final ItemStack output;
@@ -72,8 +73,8 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         this.canSubstitute = SmithingTablePatternEncoding.canSubstitute(tag);
 
         // Find recipe
-        var recipeId = SmithingTablePatternEncoding.getRecipeId(tag);
-        this.recipe = level.getRecipeManager().byType(RecipeType.SMITHING).get(recipeId);
+        this.recipeId = SmithingTablePatternEncoding.getRecipeId(tag);
+        this.recipe = level.getRecipeManager().byType(RecipeType.SMITHING).get(recipeId).value();
 
         // Build frame and find output
         this.testFrame = new SimpleContainer(3);
@@ -116,7 +117,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
     }
 
     public ResourceLocation getRecipeId() {
-        return recipe.getId();
+        return recipeId;
     }
 
     @Override

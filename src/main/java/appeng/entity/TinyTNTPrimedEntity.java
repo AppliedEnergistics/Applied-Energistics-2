@@ -25,8 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -43,16 +41,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
+import net.neoforged.neoforge.event.EventHooks;
 
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
-import appeng.core.sync.packets.ICustomEntity;
-import appeng.core.sync.packets.MockExplosionPacket;
-import appeng.core.sync.packets.SpawnEntityPacket;
+import appeng.core.network.clientbound.MockExplosionPacket;
 
-public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntity {
+public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithComplexSpawn {
 
     private LivingEntity placedBy;
 
@@ -139,12 +137,14 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
             return;
         }
 
-        final Explosion ex = new Explosion(this.level(), this, null, null, this.getX(), this.getY(), this.getZ(),
+        final Explosion ex = new Explosion(this.level(), this, this.getX(), this.getY(), this.getZ(),
                 0.2f, false, AEConfig.instance().isTinyTntBlockDamageEnabled() ? BlockInteraction.DESTROY_WITH_DECAY
                         : BlockInteraction.KEEP);
         final AABB area = new AABB(this.getX() - 1.5, this.getY() - 1.5f, this.getZ() - 1.5,
                 this.getX() + 1.5, this.getY() + 1.5, this.getZ() + 1.5);
         final List<Entity> list = this.level().getEntities(this, area);
+
+        EventHooks.onExplosionDetonate(this.level(), ex, list, 0.2f * 2d);
 
         for (Entity e : list) {
             e.hurt(level().damageSources().explosion(ex), 6);
@@ -169,17 +169,17 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
                             final float fluidResistance = !state.getFluidState().isEmpty()
                                     ? state.getFluidState().getExplosionResistance()
                                     : 0f;
-                            final float resistance = Math.max(block.getExplosionResistance(), fluidResistance);
-
+                            final float resistance = Math
+                                    .max(block.getExplosionResistance(state, this.level(), point, ex), fluidResistance);
                             strength -= (resistance + 0.3F) * 0.11f;
 
                             if (strength > 0.01 && !state.isAir()) {
                                 if (block.dropFromExplosion(ex)) {
-                                    Block.dropResources(state, this.level(), point);
+                                    block.dropResources(state, this.level(), point);
                                 }
 
                                 level().setBlock(point, Blocks.AIR.defaultBlockState(), 3);
-                                block.wasExploded(this.level(), point, ex);
+                                state.onBlockExploded(this.level(), point, ex);
                             }
                         }
                     }
@@ -192,17 +192,12 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return SpawnEntityPacket.create(this);
+    public void writeSpawnData(FriendlyByteBuf buffer) {
+        buffer.writeByte(this.getFuse());
     }
 
     @Override
-    public void writeAdditionalSpawnData(FriendlyByteBuf buf) {
-        buf.writeByte(this.getFuse());
-    }
-
-    @Override
-    public void readAdditionalSpawnData(FriendlyByteBuf buf) {
-        this.setFuse(buf.readByte());
+    public void readSpawnData(FriendlyByteBuf additionalData) {
+        this.setFuse(additionalData.readByte());
     }
 }

@@ -424,7 +424,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public InternalInventory getExposedInventoryForSide(Direction facing) {
+    protected InternalInventory getExposedInventoryForSide(Direction facing) {
         if (isSeparateSides()) {
             if (facing == this.getTop()) {
                 return this.topItemHandlerExtern;
@@ -516,7 +516,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     /**
      * Allow cranking from any side other than the front.
      */
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     public ICrankable getCrankable(Direction direction) {
         if (direction != getFront()) {
             return new Crankable();
@@ -559,7 +559,8 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
             if (inv == topItemHandler)
                 top = stack;
 
-            for (var recipe : InscriberRecipes.getRecipes(getLevel())) {
+            for (var holder : InscriberRecipes.getRecipes(level)) {
+                var recipe = holder.value();
                 if (!middle.isEmpty() && !recipe.getMiddleInput().test(middle)) {
                     continue;
                 }
