@@ -17,8 +17,6 @@
     "UnbreakingMixin"
   ],
   "client": [
-    "spatial.SkyRenderMixin",
-    "spatial.SkyPropertiesMixin",
     "unlitquad.ModelManagerMixin",
     "unlitquad.BlockModelMixin",
     "unlitquad.BlockPartFaceDeserializerMixin",
