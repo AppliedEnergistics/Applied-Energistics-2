@@ -103,7 +103,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
         if (myOtherSide instanceof QuantumCluster sideB) {
             var sideA = this;
 
-            if (sideA.isActive() && sideB.isActive()) {
+            if (sideA.isActive() && sideB.isActive() && sideA.getNode() != null && sideB.getNode() != null) {
                 if (this.connection != null && this.connection.getConnection() != null) {
                     final IGridNode a = this.connection.getConnection().a();
                     final IGridNode b = this.connection.getConnection().b();
