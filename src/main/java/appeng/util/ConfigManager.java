@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -30,9 +32,10 @@ import net.minecraft.nbt.Tag;
 import appeng.api.config.Setting;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.UnsupportedSettingException;
-import appeng.core.AELog;
 
 public final class ConfigManager implements IConfigManager {
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigManager.class);
+
     private final Map<Setting<?>, Enum<?>> settings = new IdentityHashMap<>();
     @Nullable
     private final IConfigManagerListener listener;
@@ -98,14 +101,14 @@ public final class ConfigManager implements IConfigManager {
     public boolean readFromNBT(CompoundTag tagCompound) {
         boolean anythingRead = false;
         for (var setting : this.settings.keySet()) {
-            try {
-                if (tagCompound.contains(setting.getName(), Tag.TAG_STRING)) {
-                    String value = tagCompound.getString(setting.getName());
+            if (tagCompound.contains(setting.getName(), Tag.TAG_STRING)) {
+                String value = tagCompound.getString(setting.getName());
+                try {
                     setting.setFromString(this, value);
                     anythingRead = true;
+                } catch (IllegalArgumentException e) {
+                    LOG.warn("Failed to load setting {} from value '{}': {}", setting, value, e.getMessage());
                 }
-            } catch (IllegalArgumentException e) {
-                AELog.debug(e);
             }
         }
         return anythingRead;

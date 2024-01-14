@@ -237,14 +237,10 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
             pos = new EntityHitResult(entity, entityIntersection);
         }
 
-        try {
-            AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 256, level,
-                    new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z,
-                            (byte) (pos.getType() == Type.MISS ? 32
-                                    : pos.getLocation().distanceToSqr(vec) + 1)));
-        } catch (Exception err) {
-            AELog.debug(err);
-        }
+        AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 256, level,
+                new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z,
+                        (byte) (pos.getType() == Type.MISS ? 32
+                                : pos.getLocation().distanceToSqr(vec) + 1)));
 
         if (pos.getType() != Type.MISS && type != null && type.getItem() instanceof PaintBallItem ipb) {
 
@@ -329,14 +325,10 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                 pos = new EntityHitResult(entity, entityIntersection);
             }
 
-            try {
-                AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 256, level,
-                        new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y,
-                                (float) direction.z, (byte) (pos.getType() == Type.MISS ? 32
-                                        : pos.getLocation().distanceToSqr(vec) + 1)));
-            } catch (Exception err) {
-                AELog.debug(err);
-            }
+            AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 256, level,
+                    new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y,
+                            (float) direction.z, (byte) (pos.getType() == Type.MISS ? 32
+                                    : pos.getLocation().distanceToSqr(vec) + 1)));
 
             if (pos.getType() != Type.MISS) {
                 final DamageSource dmgSrc = level.damageSources().source(AEDamageTypes.MATTER_CANNON, p);
