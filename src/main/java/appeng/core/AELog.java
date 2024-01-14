@@ -94,13 +94,12 @@ public final class AELog {
      * <p>
      * Similar to {@link AELog#log(Level, String, Object...)}.
      *
-     * @param level     the intended level.
-     * @param exception
-     * @param message   the message to be formatted.
-     * @param params    the parameters used for {@link String#format(String, Object...)}.
+     * @param level   the intended level.
+     * @param message the message to be formatted.
+     * @param params  the parameters used for {@link String#format(String, Object...)}.
      * @see AELog#log(Level, String, Object...)
      */
-    public static void log(Level level, Throwable exception, String message,
+    private static void log(Level level, Throwable exception, String message,
             Object... params) {
         if (AELog.isLogEnabled()) {
             final String formattedMessage = String.format(message, params);
@@ -111,8 +110,6 @@ public final class AELog {
     }
 
     /**
-     * @param format
-     * @param params
      * @see AELog#log(Level, String, Object...)
      */
     public static void info(String format, Object... params) {
@@ -122,7 +119,6 @@ public final class AELog {
     /**
      * Log exception as {@link Level#INFO}
      *
-     * @param exception
      * @see AELog#log(Level, Throwable, String, Object...)
      */
     public static void info(Throwable exception) {
@@ -132,8 +128,6 @@ public final class AELog {
     /**
      * Log exception as {@link Level#INFO}
      *
-     * @param exception
-     * @param message
      * @see AELog#log(Level, Throwable, String, Object...)
      */
     public static void info(Throwable exception, String message) {
@@ -141,8 +135,6 @@ public final class AELog {
     }
 
     /**
-     * @param format
-     * @param params
      * @see AELog#log(Level, String, Object...)
      */
     public static void warn(String format, Object... params) {
@@ -152,7 +144,6 @@ public final class AELog {
     /**
      * Log exception as {@link Level#WARN}
      *
-     * @param exception
      * @see AELog#log(Level, Throwable, String, Object...)
      */
     public static void warn(Throwable exception) {
@@ -162,8 +153,6 @@ public final class AELog {
     /**
      * Log exception as {@link Level#WARN}
      *
-     * @param exception
-     * @param message
      * @see AELog#log(Level, Throwable, String, Object...)
      */
     public static void warn(Throwable exception, String message) {
@@ -171,8 +160,6 @@ public final class AELog {
     }
 
     /**
-     * @param format
-     * @param params
      * @see AELog#log(Level, String, Object...)
      */
     public static void error(String format, Object... params) {
@@ -182,7 +169,6 @@ public final class AELog {
     /**
      * Log exception as {@link Level#ERROR}
      *
-     * @param exception
      * @see AELog#log(Level, Throwable, String, Object...)
      */
     public static void error(Throwable exception) {
@@ -192,8 +178,6 @@ public final class AELog {
     /**
      * Log exception as {@link Level#ERROR}
      *
-     * @param exception
-     * @param message
      * @see AELog#log(Level, Throwable, String, Object...)
      */
     public static void error(Throwable exception, String message) {
@@ -203,38 +187,11 @@ public final class AELog {
     /**
      * Log message as {@link Level#DEBUG}
      *
-     * @param format
-     * @param data
      * @see AELog#log(Level, String, Object...)
      */
     public static void debug(String format, Object... data) {
         if (AELog.isDebugLogEnabled()) {
             log(Level.DEBUG, format, data);
-        }
-    }
-
-    /**
-     * Log exception as {@link Level#DEBUG}
-     *
-     * @param exception
-     * @see AELog#log(Level, Throwable, String, Object...)
-     */
-    public static void debug(Throwable exception) {
-        if (AELog.isDebugLogEnabled()) {
-            log(Level.DEBUG, exception, DEFAULT_EXCEPTION_MESSAGE);
-        }
-    }
-
-    /**
-     * Log exception as {@link Level#DEBUG}
-     *
-     * @param exception
-     * @param message
-     * @see AELog#log(Level, Throwable, String, Object...)
-     */
-    public static void debug(Throwable exception, String message) {
-        if (AELog.isDebugLogEnabled()) {
-            log(Level.DEBUG, exception, message);
         }
     }
 
@@ -258,10 +215,6 @@ public final class AELog {
      * <p>
      * Off by default, can be enabled inside the configuration file.
      *
-     * @param pos
-     * @param currentState
-     * @param newState
-     * @param blockEntity
      * @see AELog#log(Level, String, Object...)
      */
     public static void blockUpdate(BlockPos pos, BlockState currentState,
@@ -287,8 +240,6 @@ public final class AELog {
      * <p>
      * Off by default, can be enabled inside the configuration file.
      *
-     * @param message
-     * @param params
      * @see AELog#log(Level, String, Object...)
      */
     public static void crafting(String message, Object... params) {
@@ -313,8 +264,6 @@ public final class AELog {
      * <p>
      * Off by default, can be enabled inside the configuration file.
      *
-     * @param message
-     * @param params
      * @see AELog#log(Level, String, Object...)
      */
     public static void craftingDebug(String message, Object... params) {

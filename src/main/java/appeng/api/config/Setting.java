@@ -77,4 +77,8 @@ public final class Setting<T extends Enum<T>> {
         to.putSetting(this, from.getSetting(this));
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }
