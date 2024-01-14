@@ -20,6 +20,8 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.PauseScreen;
@@ -49,6 +51,8 @@ import net.neoforged.api.distmarker.OnlyIn;
  */
 @OnlyIn(Dist.CLIENT)
 public class GuidebookStructureCommands {
+
+    private static final Logger LOG = LoggerFactory.getLogger(GuidebookStructureCommands.class);
 
     @Nullable
     private static String lastOpenedOrSavedPath;
@@ -106,6 +110,7 @@ public class GuidebookStructureCommands {
                             try {
                                 compound = NbtUtils.snbtToStructure(textInFile);
                             } catch (CommandSyntaxException e) {
+                                LOG.error("Failed to parse structure.", e);
                                 player.sendSystemMessage(Component.literal(e.toString()));
                                 return null;
                             }
@@ -127,6 +132,7 @@ public class GuidebookStructureCommands {
                             player.sendSystemMessage(Component.literal("Placed structure"));
                         }
                     } catch (Exception e) {
+                        LOG.error("Failed to place structure.", e);
                         player.sendSystemMessage(Component.literal(e.toString()));
                     }
 
@@ -212,6 +218,7 @@ public class GuidebookStructureCommands {
 
                         player.sendSystemMessage(Component.literal("Saved structure"));
                     } catch (IOException e) {
+                        LOG.error("Failed to save structure.", e);
                         player.sendSystemMessage(Component.literal(e.toString()));
                     }
 
