@@ -27,8 +27,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.core.AELog;
-
 public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>, TCluster extends IAECluster> {
 
     /**
@@ -145,8 +143,6 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
                 cluster.updateStatus(updateGrid);
                 return;
             }
-        } catch (Throwable err) {
-            AELog.debug(err);
         } finally {
             setModificationInProgress(null);
         }

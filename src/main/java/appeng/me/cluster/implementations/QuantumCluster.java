@@ -178,11 +178,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
     }
 
     private boolean isActive() {
-        if (this.isDestroyed || !this.registered) {
-            return false;
-        }
-
-        return this.hasQES();
+        return !this.isDestroyed && this.registered && hasQES() && getNode() != null;
     }
 
     private IGridNode getNode() {
