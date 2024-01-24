@@ -202,7 +202,7 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
             return 0;
         }
 
-        var host = getMenuHost(player, null, stack, null);// TODO maybe use a dummy Locator instead
+        var host = getMenuHost(player, null, stack, null);
         if (host == null) {
             return 0;
         }
