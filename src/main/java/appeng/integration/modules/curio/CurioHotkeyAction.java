@@ -19,7 +19,7 @@ public record CurioHotkeyAction(Predicate<ItemStack> locatable,
 
     @Override
     public boolean run(Player player) {
-        var cap = CurioModule.ITEM_HANDLER.getCapability(player, null);
+        var cap = player.getCapability(CurioModule.ITEM_HANDLER);
         if (cap == null)
             return false;
         for (int i = 0; i < cap.getSlots(); i++) {

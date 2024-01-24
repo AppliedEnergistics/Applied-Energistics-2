@@ -33,7 +33,7 @@ record CurioItemLocator(int itemIndex) implements MenuItemLocator {
     }
 
     public ItemStack locateItem(Player player) {
-        var cap = CurioModule.ITEM_HANDLER.getCapability(player, null);
+        var cap = player.getCapability(CurioModule.ITEM_HANDLER);
         if (cap == null)
             return ItemStack.EMPTY;
         return cap.getStackInSlot(itemIndex);
@@ -41,7 +41,7 @@ record CurioItemLocator(int itemIndex) implements MenuItemLocator {
 
     @Override
     public boolean setItem(Player player, ItemStack stack) {
-        var cap = CurioModule.ITEM_HANDLER.getCapability(player, null);
+        var cap = player.getCapability(CurioModule.ITEM_HANDLER);
         if (cap == null)
             return false;
         cap.extractItem(itemIndex, 1, false);

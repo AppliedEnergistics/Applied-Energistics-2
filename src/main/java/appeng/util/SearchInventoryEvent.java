@@ -28,7 +28,7 @@ public class SearchInventoryEvent {
     static {
         EVENT.register((stacks, player) -> stacks.addAll(player.getInventory().items));
         SearchInventoryEvent.EVENT.register((stacks, player) -> {
-            var cap = CurioModule.ITEM_HANDLER.getCapability(player, null);
+            var cap = player.getCapability(CurioModule.ITEM_HANDLER);
             if (cap == null)
                 return;
             for (int i = 0; i < cap.getSlots(); i++) {
