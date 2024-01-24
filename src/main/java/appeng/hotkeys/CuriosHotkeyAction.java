@@ -1,4 +1,4 @@
-package appeng.integration.modules.curio;
+package appeng.hotkeys;
 
 import java.util.function.Predicate;
 
@@ -7,19 +7,19 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.features.HotkeyAction;
-import appeng.hotkeys.InventoryHotkeyAction;
+import appeng.integration.modules.curios.CuriosIntegration;
 import appeng.menu.locator.MenuLocators;
 
-public record CurioHotkeyAction(Predicate<ItemStack> locatable,
+public record CuriosHotkeyAction(Predicate<ItemStack> locatable,
         InventoryHotkeyAction.Opener opener) implements HotkeyAction {
 
-    public CurioHotkeyAction(Item item, InventoryHotkeyAction.Opener opener) {
+    public CuriosHotkeyAction(Item item, InventoryHotkeyAction.Opener opener) {
         this((stack) -> stack.getItem() == item, opener);
     }
 
     @Override
     public boolean run(Player player) {
-        var cap = player.getCapability(CurioModule.ITEM_HANDLER);
+        var cap = player.getCapability(CuriosIntegration.ITEM_HANDLER);
         if (cap == null)
             return false;
         for (int i = 0; i < cap.getSlots(); i++) {

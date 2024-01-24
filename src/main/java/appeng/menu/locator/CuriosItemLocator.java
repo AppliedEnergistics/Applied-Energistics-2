@@ -9,9 +9,9 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.core.AELog;
-import appeng.integration.modules.curio.CurioModule;
+import appeng.integration.modules.curios.CuriosIntegration;
 
-record CurioItemLocator(int itemIndex) implements MenuItemLocator {
+record CuriosItemLocator(int itemIndex) implements MenuItemLocator {
     @Override
     public <T> @Nullable T locate(Player player, Class<T> hostInterface) {
         ItemStack it = locateItem(player);
@@ -21,11 +21,11 @@ record CurioItemLocator(int itemIndex) implements MenuItemLocator {
             if (hostInterface.isInstance(menuHost)) {
                 return hostInterface.cast(menuHost);
             } else if (menuHost != null) {
-                AELog.warn("Item in Curio slot %d of %s did not create a compatible menu of type %s: %s",
+                AELog.warn("Item in Curios slot %d of %s did not create a compatible menu of type %s: %s",
                         itemIndex, player, hostInterface, menuHost);
             }
         } else {
-            AELog.warn("Item in Curio slot %d of %s is not an IMenuItem: %s",
+            AELog.warn("Item in Curios slot %d of %s is not an IMenuItem: %s",
                     itemIndex, player, it);
         }
 
@@ -33,7 +33,7 @@ record CurioItemLocator(int itemIndex) implements MenuItemLocator {
     }
 
     public ItemStack locateItem(Player player) {
-        var cap = player.getCapability(CurioModule.ITEM_HANDLER);
+        var cap = player.getCapability(CuriosIntegration.ITEM_HANDLER);
         if (cap == null)
             return ItemStack.EMPTY;
         return cap.getStackInSlot(itemIndex);
@@ -41,7 +41,7 @@ record CurioItemLocator(int itemIndex) implements MenuItemLocator {
 
     @Override
     public boolean setItem(Player player, ItemStack stack) {
-        var cap = player.getCapability(CurioModule.ITEM_HANDLER);
+        var cap = player.getCapability(CuriosIntegration.ITEM_HANDLER);
         if (cap == null)
             return false;
         cap.extractItem(itemIndex, 1, false);
@@ -52,12 +52,12 @@ record CurioItemLocator(int itemIndex) implements MenuItemLocator {
         buf.writeInt(itemIndex);
     }
 
-    public static CurioItemLocator readFromPacket(FriendlyByteBuf buf) {
-        return new CurioItemLocator(buf.readInt());
+    public static CuriosItemLocator readFromPacket(FriendlyByteBuf buf) {
+        return new CuriosItemLocator(buf.readInt());
     }
 
     @Override
     public String toString() {
-        return "MenuItem{CurioSlot=" + itemIndex + "}";
+        return "MenuItem{CuriosSlot=" + itemIndex + "}";
     }
 }

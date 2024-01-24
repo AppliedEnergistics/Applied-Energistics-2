@@ -30,8 +30,8 @@ public final class MenuLocators {
         register(BlockEntityLocator.class, BlockEntityLocator::writeToPacket, BlockEntityLocator::readFromPacket);
         register(PartLocator.class, PartLocator::writeToPacket, PartLocator::readFromPacket);
         register(InventoryItemLocator.class, InventoryItemLocator::writeToPacket, InventoryItemLocator::readFromPacket);
-        MenuLocators.register(CurioItemLocator.class, CurioItemLocator::writeToPacket,
-                CurioItemLocator::readFromPacket);
+        MenuLocators.register(CuriosItemLocator.class, CuriosItemLocator::writeToPacket,
+                CuriosItemLocator::readFromPacket);
     }
 
     /**
@@ -105,7 +105,7 @@ public final class MenuLocators {
     }
 
     public static MenuItemLocator forCurioSlot(int inventorySlot) {
-        return new CurioItemLocator(inventorySlot);
+        return new CuriosItemLocator(inventorySlot);
     }
 
     @Nullable

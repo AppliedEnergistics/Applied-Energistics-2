@@ -15,7 +15,6 @@ import appeng.api.features.HotkeyAction;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
-import appeng.integration.modules.curio.CurioHotkeyAction;
 import appeng.items.tools.powered.AbstractPortableCell;
 
 /**
@@ -57,7 +56,7 @@ public class HotkeyActions {
      */
     public static void register(Item item, InventoryHotkeyAction.Opener opener, String id) {
         register(new InventoryHotkeyAction(item, opener), id);
-        register(new CurioHotkeyAction(item, opener), id);
+        register(new CuriosHotkeyAction(item, opener), id);
     }
 
     /**

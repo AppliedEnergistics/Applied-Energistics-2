@@ -211,7 +211,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 AEItems.NETHER_QUARTZ_WRENCH.asItem(),
                 AEItems.NETWORK_TOOL.asItem());
 
-        tag(ConventionTags.CURIO).add(
+        tag(ConventionTags.CURIOS).add(
                 AEItems.WIRELESS_TERMINAL.asItem(),
                 AEItems.WIRELESS_CRAFTING_TERMINAL.asItem(),
                 AEItems.PORTABLE_ITEM_CELL1K.asItem(),
