@@ -45,7 +45,7 @@ record CurioItemLocator(int itemIndex) implements MenuItemLocator {
         if (cap == null)
             return false;
         cap.extractItem(itemIndex, 1, false);
-        return cap.insertItem(itemIndex, stack, true).isEmpty();// TODO test if this actually works as expected
+        return cap.insertItem(itemIndex, stack, false).isEmpty();
     }
 
     public void writeToPacket(FriendlyByteBuf buf) {
