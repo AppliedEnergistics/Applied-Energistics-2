@@ -98,8 +98,8 @@ public final class MeteoritePlacer {
         this.type = getFallout(level, settings.getPos(), settings.getFallout());
     }
 
-    private List<BlockState> getQuartzBudList(){
-        if (AEConfig.instance().isSpawnFlawlessOnlyEnabled()){
+    private List<BlockState> getQuartzBudList() {
+        if (AEConfig.instance().isSpawnFlawlessOnlyEnabled()) {
             return Stream.of(AEBlocks.FLAWLESS_BUDDING_QUARTZ).map(def -> def.block().defaultBlockState()).toList();
         }
         return Stream.of(
@@ -108,7 +108,7 @@ public final class MeteoritePlacer {
                 AEBlocks.CHIPPED_BUDDING_QUARTZ,
                 AEBlocks.FLAWED_BUDDING_QUARTZ,
                 AEBlocks.FLAWLESS_BUDDING_QUARTZ).map(def -> def.block().defaultBlockState()).toList();
-    } 
+    }
 
     public void place() {
         // creator
