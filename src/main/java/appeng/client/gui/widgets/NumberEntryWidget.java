@@ -134,26 +134,35 @@ public class NumberEntryWidget implements ICompositeWidget {
      * Sets the bounds of the text field on the screen. This may seem insane, but the text-field background is actually
      * baked into the screens background image, which necessitates setting it precisely.
      */
-    public void setTextFieldBounds(Rect2i bounds) {
+    public void setTextFieldBounds(Rect2i bounds, boolean override) {
         this.textFieldBounds = bounds;
-        this.textField.move(Point.fromTopLeft(bounds));
+        if (!override)
+            this.textField.move(Point.fromTopLeft(bounds));
         this.textField.resize(bounds.getWidth(), bounds.getHeight());
     }
 
+    public void setTextFieldStyleOverride(WidgetStyle style, WidgetStyle overrideStyle) {
+        WidgetStyle styleOverride = new WidgetStyle(style);
+        styleOverride.setWidth(overrideStyle.getWidth());
+        setTextFieldStyleBounds(styleOverride, true);
+    }
+
     public void setTextFieldStyle(WidgetStyle style) {
-        int left = 0;
-        if (style.getLeft() != null) {
-            left = style.getLeft();
-        }
-        int top = 0;
-        if (style.getTop() != null) {
-            top = style.getTop();
-        }
+        this.setTextFieldStyleBounds(style, false);
+    }
+
+    public void setTextFieldStyleBounds(WidgetStyle style, boolean override) {
+        int left = getIntegerValue(style.getLeft());
+        int top = getIntegerValue(style.getTop());
         setTextFieldBounds(new Rect2i(
                 left,
                 top,
                 style.getWidth(),
-                style.getHeight()));
+                style.getHeight()), override);
+    }
+
+    public int getIntegerValue(Integer value) {
+        return value != null ? value : 0;
     }
 
     public void setMinValue(long minValue) {

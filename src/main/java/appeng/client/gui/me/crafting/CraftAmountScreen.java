@@ -66,6 +66,10 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountMenu> {
             var whatToCraft = menu.getWhatToCraft();
             if (whatToCraft != null) {
                 this.amountToCraft.setType(NumberEntryType.of(whatToCraft.what()));
+                if (NumberEntryType.of(whatToCraft.what()).unit() != null) {
+                    this.amountToCraft.setTextFieldStyleOverride(style.getWidget("amountToCraftInput"),
+                            style.getWidget("amountToCraftInputWithUnit"));
+                }
                 this.amountToCraft.setLongValue(whatToCraft.amount());
                 this.amountInitialized = true;
             }

@@ -51,6 +51,14 @@ public class WidgetStyle extends Position {
         return hideEdge;
     }
 
+    public WidgetStyle(WidgetStyle style) {
+        this.setLeft(style.getLeft());
+        this.setTop(style.getTop());
+        this.setHeight(style.getHeight());
+        this.setWidth(style.getWidth());
+        this.setHideEdge(style.isHideEdge());
+    }
+
     public void setHideEdge(boolean hideEdge) {
         this.hideEdge = hideEdge;
     }

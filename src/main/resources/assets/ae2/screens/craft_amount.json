@@ -42,8 +42,11 @@
     "amountToCraftInput": {
       "left": 48,
       "top": 55,
-      "width": 56,
+      "width": 66,
       "height": 12
+    },
+    "amountToCraftInputWithUnit": {
+      "width": 56
     }
   }
 }
