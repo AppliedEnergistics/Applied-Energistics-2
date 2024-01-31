@@ -487,6 +487,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                 return true;
             }
         }
+
         return super.mouseScrolled(x, y, deltaX, deltaY);
     }
 
