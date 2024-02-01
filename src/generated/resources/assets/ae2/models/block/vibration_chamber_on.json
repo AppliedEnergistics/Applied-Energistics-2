@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "ae2:block/vibration_chamber_bottom",
+    "east": "ae2:block/vibration_chamber_on",
+    "north": "ae2:block/vibration_chamber_front_on",
+    "south": "ae2:block/vibration_chamber_back_on",
+    "up": "ae2:block/vibration_chamber_top_on",
+    "west": "ae2:block/vibration_chamber_on"
+  }
+}

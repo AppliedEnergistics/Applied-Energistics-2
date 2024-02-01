@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "ae2:block/sky_stone_small_brick_slab"
+    },
+    "type=double": {
+      "model": "ae2:block/sky_stone_small_brick"
+    },
+    "type=top": {
+      "model": "ae2:block/sky_stone_small_brick_slab_top"
+    }
+  }
+}

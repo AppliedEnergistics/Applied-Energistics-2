@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "ae2:formation_core"
+    },
+    {
+      "item": "ae2:storage_monitor"
+    },
+    {
+      "item": "ae2:annihilation_core"
+    }
+  ],
+  "result": {
+    "item": "ae2:conversion_monitor"
+  }
+}

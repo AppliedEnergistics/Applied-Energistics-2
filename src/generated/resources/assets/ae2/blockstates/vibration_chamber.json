@@ -1,0 +1,224 @@
+{
+  "variants": {
+    "active=false,facing=down,spin=0": {
+      "model": "ae2:block/vibration_chamber",
+      "x": 90
+    },
+    "active=false,facing=down,spin=1": {
+      "ae2:z": 270,
+      "model": "ae2:block/vibration_chamber",
+      "x": 90
+    },
+    "active=false,facing=down,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/vibration_chamber",
+      "x": 90
+    },
+    "active=false,facing=down,spin=3": {
+      "ae2:z": 90,
+      "model": "ae2:block/vibration_chamber",
+      "x": 90
+    },
+    "active=false,facing=east,spin=0": {
+      "model": "ae2:block/vibration_chamber",
+      "y": 90
+    },
+    "active=false,facing=east,spin=1": {
+      "ae2:z": 270,
+      "model": "ae2:block/vibration_chamber",
+      "y": 90
+    },
+    "active=false,facing=east,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/vibration_chamber",
+      "y": 90
+    },
+    "active=false,facing=east,spin=3": {
+      "ae2:z": 90,
+      "model": "ae2:block/vibration_chamber",
+      "y": 90
+    },
+    "active=false,facing=north,spin=0": {
+      "model": "ae2:block/vibration_chamber"
+    },
+    "active=false,facing=north,spin=1": {
+      "ae2:z": 270,
+      "model": "ae2:block/vibration_chamber"
+    },
+    "active=false,facing=north,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/vibration_chamber"
+    },
+    "active=false,facing=north,spin=3": {
+      "ae2:z": 90,
+      "model": "ae2:block/vibration_chamber"
+    },
+    "active=false,facing=south,spin=0": {
+      "model": "ae2:block/vibration_chamber",
+      "y": 180
+    },
+    "active=false,facing=south,spin=1": {
+      "ae2:z": 90,
+      "model": "ae2:block/vibration_chamber",
+      "y": 180
+    },
+    "active=false,facing=south,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/vibration_chamber",
+      "y": 180
+    },
+    "active=false,facing=south,spin=3": {
+      "ae2:z": 270,
+      "model": "ae2:block/vibration_chamber",
+      "y": 180
+    },
+    "active=false,facing=up,spin=0": {
+      "ae2:z": 180,
+      "model": "ae2:block/vibration_chamber",
+      "x": 270
+    },
+    "active=false,facing=up,spin=1": {
+      "ae2:z": 90,
+      "model": "ae2:block/vibration_chamber",
+      "x": 270
+    },
+    "active=false,facing=up,spin=2": {
+      "model": "ae2:block/vibration_chamber",
+      "x": 270
+    },
+    "active=false,facing=up,spin=3": {
+      "ae2:z": 270,
+      "model": "ae2:block/vibration_chamber",
+      "x": 270
+    },
+    "active=false,facing=west,spin=0": {
+      "model": "ae2:block/vibration_chamber",
+      "y": 270
+    },
+    "active=false,facing=west,spin=1": {
+      "ae2:z": 270,
+      "model": "ae2:block/vibration_chamber",
+      "y": 270
+    },
+    "active=false,facing=west,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/vibration_chamber",
+      "y": 270
+    },
+    "active=false,facing=west,spin=3": {
+      "ae2:z": 90,
+      "model": "ae2:block/vibration_chamber",
+      "y": 270
+    },
+    "active=true,facing=down,spin=0": {
+      "model": "ae2:block/vibration_chamber_on",
+      "x": 90
+    },
+    "active=true,facing=down,spin=1": {
+      "ae2:z": 270,
+      "model": "ae2:block/vibration_chamber_on",
+      "x": 90
+    },
+    "active=true,facing=down,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/vibration_chamber_on",
+      "x": 90
+    },
+    "active=true,facing=down,spin=3": {
+      "ae2:z": 90,
+      "model": "ae2:block/vibration_chamber_on",
+      "x": 90
+    },
+    "active=true,facing=east,spin=0": {
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 90
+    },
+    "active=true,facing=east,spin=1": {
+      "ae2:z": 270,
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 90
+    },
+    "active=true,facing=east,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 90
+    },
+    "active=true,facing=east,spin=3": {
+      "ae2:z": 90,
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 90
+    },
+    "active=true,facing=north,spin=0": {
+      "model": "ae2:block/vibration_chamber_on"
+    },
+    "active=true,facing=north,spin=1": {
+      "ae2:z": 270,
+      "model": "ae2:block/vibration_chamber_on"
+    },
+    "active=true,facing=north,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/vibration_chamber_on"
+    },
+    "active=true,facing=north,spin=3": {
+      "ae2:z": 90,
+      "model": "ae2:block/vibration_chamber_on"
+    },
+    "active=true,facing=south,spin=0": {
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 180
+    },
+    "active=true,facing=south,spin=1": {
+      "ae2:z": 90,
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 180
+    },
+    "active=true,facing=south,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 180
+    },
+    "active=true,facing=south,spin=3": {
+      "ae2:z": 270,
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 180
+    },
+    "active=true,facing=up,spin=0": {
+      "ae2:z": 180,
+      "model": "ae2:block/vibration_chamber_on",
+      "x": 270
+    },
+    "active=true,facing=up,spin=1": {
+      "ae2:z": 90,
+      "model": "ae2:block/vibration_chamber_on",
+      "x": 270
+    },
+    "active=true,facing=up,spin=2": {
+      "model": "ae2:block/vibration_chamber_on",
+      "x": 270
+    },
+    "active=true,facing=up,spin=3": {
+      "ae2:z": 270,
+      "model": "ae2:block/vibration_chamber_on",
+      "x": 270
+    },
+    "active=true,facing=west,spin=0": {
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 270
+    },
+    "active=true,facing=west,spin=1": {
+      "ae2:z": 270,
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 270
+    },
+    "active=true,facing=west,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 270
+    },
+    "active=true,facing=west,spin=3": {
+      "ae2:z": 90,
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 270
+    }
+  }
+}
