@@ -29,7 +29,10 @@ jobs:
       - name: Check that datagen ran
         run: test -d ./src/generated/resources/.cache
       - name: Make sure that datagenned files in the repo are up-to-date
-        run: if [ -n "$(git status --porcelain)" ]; then exit 1; fi
+        run: |
+          # Print status for easier debugging
+          git status
+          if [ -n "$(git status --porcelain)" ]; then exit 1; fi
       # Gradle Step for PRs
       - name: Build PR with Gradle
         run: ./gradlew build
