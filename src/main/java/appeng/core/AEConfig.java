@@ -418,6 +418,10 @@ public final class AEConfig {
         return COMMON.spawnPressesInMeteorites.get();
     }
 
+    public boolean isSpawnFlawlessOnlyEnabled() {
+        return COMMON.spawnFlawlessOnly.get();
+    }
+
     public boolean isMatterCanonBlockDamageEnabled() {
         return COMMON.matterCannonBlockDamage.get();
     }
@@ -660,6 +664,7 @@ public final class AEConfig {
 
         // Meteors
         public final BooleanOption spawnPressesInMeteorites;
+        public final BooleanOption spawnFlawlessOnly;
 
         // Wireless
         public final DoubleOption wirelessBaseCost;
@@ -750,6 +755,7 @@ public final class AEConfig {
             ConfigSection worldGen = root.subsection("worldGen");
 
             this.spawnPressesInMeteorites = worldGen.addBoolean("spawnPressesInMeteorites", true);
+            this.spawnFlawlessOnly = worldGen.addBoolean("spawnFlawlessOnly", false);
 
             ConfigSection wireless = root.subsection("wireless");
             this.wirelessBaseCost = wireless.addDouble("wirelessBaseCost", 8.0);
