@@ -19,9 +19,8 @@
 !*.md
 !LICENSE
 
-# include sourcecode except generated
+# include sourcecode
 !src/
-src/generated
 out
 build
 !/libs/
