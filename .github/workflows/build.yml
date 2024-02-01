@@ -24,12 +24,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/gradle-setup
-      - name: Validate no assets
-        run: test ! -d ./src/generated
       - name: Generate assets
         run: ./gradlew runData
-      - name: Validate assets
+      - name: Check that datagen ran
         run: test -d ./src/generated/resources/.cache
+      - name: Make sure that datagenned files in the repo are up-to-date
+        run: if [ -n "$(git status --porcelain)" ]; then exit 1; fi
       # Gradle Step for PRs
       - name: Build PR with Gradle
         run: ./gradlew build
