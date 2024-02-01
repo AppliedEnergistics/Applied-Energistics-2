@@ -132,7 +132,6 @@
   "block.ae2.cut_quartz_stairs": "Cut Certus Quartz Stairs",
   "block.ae2.cut_quartz_wall": "Cut Certus Quartz Wall",
   "block.ae2.damaged_budding_quartz": "Damaged Budding Certus Quartz",
-  "block.ae2.debug_chunk_loader": "Dev.ChunkLoader",
   "block.ae2.debug_cube_gen": "Dev.CubeGen",
   "block.ae2.debug_energy_gen": "Dev.EnergyGen",
   "block.ae2.debug_item_gen": "Dev.ItemGen",
