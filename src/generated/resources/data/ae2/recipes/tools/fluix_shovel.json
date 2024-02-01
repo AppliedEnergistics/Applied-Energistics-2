@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "ae2:fluix_block"
+  },
+  "base": {
+    "tag": "ae2:quartz_shovel"
+  },
+  "result": {
+    "item": "ae2:fluix_shovel"
+  },
+  "template": {
+    "item": "ae2:fluix_upgrade_smithing_template"
+  }
+}

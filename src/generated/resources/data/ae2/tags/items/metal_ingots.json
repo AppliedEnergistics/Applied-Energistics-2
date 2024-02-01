@@ -1,0 +1,32 @@
+{
+  "values": [
+    {
+      "id": "#forge:ingots/copper",
+      "required": false
+    },
+    {
+      "id": "#forge:ingots/tin",
+      "required": false
+    },
+    {
+      "id": "#forge:ingots/iron",
+      "required": false
+    },
+    {
+      "id": "#forge:ingots/gold",
+      "required": false
+    },
+    {
+      "id": "#forge:ingots/brass",
+      "required": false
+    },
+    {
+      "id": "#forge:ingots/nickel",
+      "required": false
+    },
+    {
+      "id": "#forge:ingots/aluminium",
+      "required": false
+    }
+  ]
+}

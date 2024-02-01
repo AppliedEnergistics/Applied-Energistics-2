@@ -21,6 +21,7 @@
 
 # include sourcecode
 !src/
+src/generated/resources/.cache
 out
 build
 !/libs/

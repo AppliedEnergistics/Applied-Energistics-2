@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "ae2:item/color_applicator_colored",
+      "predicate": {
+        "ae2:colored": 1.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "ae2:item/color_applicator"
+  }
+}

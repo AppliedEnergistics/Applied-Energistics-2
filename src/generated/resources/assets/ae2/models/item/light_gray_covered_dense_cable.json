@@ -1,0 +1,6 @@
+{
+  "parent": "ae2:item/covered_dense_cable_base",
+  "textures": {
+    "base": "ae2:part/cable/dense_covered/light_gray"
+  }
+}

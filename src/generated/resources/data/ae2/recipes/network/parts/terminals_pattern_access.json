@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "ae2:illuminated_panel"
+    },
+    {
+      "item": "ae2:engineering_processor"
+    },
+    {
+      "tag": "ae2:pattern_provider"
+    }
+  ],
+  "result": {
+    "item": "ae2:pattern_access_terminal"
+  }
+}

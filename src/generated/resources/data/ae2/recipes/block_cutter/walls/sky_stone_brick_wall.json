@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "item": "ae2:sky_stone_brick"
+  },
+  "result": "ae2:sky_stone_brick_wall"
+}
