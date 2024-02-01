@@ -97,7 +97,6 @@
     "ae2:quartz_pillar_slab",
     "ae2:spatial_anchor",
     "ae2:debug_item_gen",
-    "ae2:debug_chunk_loader",
     "ae2:debug_phantom_node",
     "ae2:debug_cube_gen",
     "ae2:debug_energy_gen",
