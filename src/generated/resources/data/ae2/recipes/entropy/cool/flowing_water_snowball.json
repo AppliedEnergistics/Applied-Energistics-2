@@ -1,0 +1,16 @@
+{
+  "type": "ae2:entropy",
+  "input": {
+    "fluid": {
+      "id": "minecraft:flowing_water"
+    }
+  },
+  "mode": "cool",
+  "output": {
+    "drops": [
+      {
+        "item": "minecraft:snowball"
+      }
+    ]
+  }
+}

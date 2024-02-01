@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "ae2:block/quartz_pillar_slab"
+    },
+    "type=double": {
+      "model": "ae2:block/quartz_pillar"
+    },
+    "type=top": {
+      "model": "ae2:block/quartz_pillar_slab_top"
+    }
+  }
+}

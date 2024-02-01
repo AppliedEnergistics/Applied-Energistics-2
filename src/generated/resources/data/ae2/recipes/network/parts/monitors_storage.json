@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "ae2:level_emitter"
+    },
+    {
+      "tag": "ae2:illuminated_panel"
+    }
+  ],
+  "result": {
+    "item": "ae2:storage_monitor"
+  }
+}

@@ -1,0 +1,224 @@
+{
+  "variants": {
+    "facing=down,powered=false,spin=0": {
+      "model": "ae2:block/spatial_io_port",
+      "x": 90
+    },
+    "facing=down,powered=false,spin=1": {
+      "ae2:z": 270,
+      "model": "ae2:block/spatial_io_port",
+      "x": 90
+    },
+    "facing=down,powered=false,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/spatial_io_port",
+      "x": 90
+    },
+    "facing=down,powered=false,spin=3": {
+      "ae2:z": 90,
+      "model": "ae2:block/spatial_io_port",
+      "x": 90
+    },
+    "facing=down,powered=true,spin=0": {
+      "model": "ae2:block/spatial_io_port_on",
+      "x": 90
+    },
+    "facing=down,powered=true,spin=1": {
+      "ae2:z": 270,
+      "model": "ae2:block/spatial_io_port_on",
+      "x": 90
+    },
+    "facing=down,powered=true,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/spatial_io_port_on",
+      "x": 90
+    },
+    "facing=down,powered=true,spin=3": {
+      "ae2:z": 90,
+      "model": "ae2:block/spatial_io_port_on",
+      "x": 90
+    },
+    "facing=east,powered=false,spin=0": {
+      "model": "ae2:block/spatial_io_port",
+      "y": 90
+    },
+    "facing=east,powered=false,spin=1": {
+      "ae2:z": 270,
+      "model": "ae2:block/spatial_io_port",
+      "y": 90
+    },
+    "facing=east,powered=false,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/spatial_io_port",
+      "y": 90
+    },
+    "facing=east,powered=false,spin=3": {
+      "ae2:z": 90,
+      "model": "ae2:block/spatial_io_port",
+      "y": 90
+    },
+    "facing=east,powered=true,spin=0": {
+      "model": "ae2:block/spatial_io_port_on",
+      "y": 90
+    },
+    "facing=east,powered=true,spin=1": {
+      "ae2:z": 270,
+      "model": "ae2:block/spatial_io_port_on",
+      "y": 90
+    },
+    "facing=east,powered=true,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/spatial_io_port_on",
+      "y": 90
+    },
+    "facing=east,powered=true,spin=3": {
+      "ae2:z": 90,
+      "model": "ae2:block/spatial_io_port_on",
+      "y": 90
+    },
+    "facing=north,powered=false,spin=0": {
+      "model": "ae2:block/spatial_io_port"
+    },
+    "facing=north,powered=false,spin=1": {
+      "ae2:z": 270,
+      "model": "ae2:block/spatial_io_port"
+    },
+    "facing=north,powered=false,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/spatial_io_port"
+    },
+    "facing=north,powered=false,spin=3": {
+      "ae2:z": 90,
+      "model": "ae2:block/spatial_io_port"
+    },
+    "facing=north,powered=true,spin=0": {
+      "model": "ae2:block/spatial_io_port_on"
+    },
+    "facing=north,powered=true,spin=1": {
+      "ae2:z": 270,
+      "model": "ae2:block/spatial_io_port_on"
+    },
+    "facing=north,powered=true,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/spatial_io_port_on"
+    },
+    "facing=north,powered=true,spin=3": {
+      "ae2:z": 90,
+      "model": "ae2:block/spatial_io_port_on"
+    },
+    "facing=south,powered=false,spin=0": {
+      "model": "ae2:block/spatial_io_port",
+      "y": 180
+    },
+    "facing=south,powered=false,spin=1": {
+      "ae2:z": 90,
+      "model": "ae2:block/spatial_io_port",
+      "y": 180
+    },
+    "facing=south,powered=false,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/spatial_io_port",
+      "y": 180
+    },
+    "facing=south,powered=false,spin=3": {
+      "ae2:z": 270,
+      "model": "ae2:block/spatial_io_port",
+      "y": 180
+    },
+    "facing=south,powered=true,spin=0": {
+      "model": "ae2:block/spatial_io_port_on",
+      "y": 180
+    },
+    "facing=south,powered=true,spin=1": {
+      "ae2:z": 90,
+      "model": "ae2:block/spatial_io_port_on",
+      "y": 180
+    },
+    "facing=south,powered=true,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/spatial_io_port_on",
+      "y": 180
+    },
+    "facing=south,powered=true,spin=3": {
+      "ae2:z": 270,
+      "model": "ae2:block/spatial_io_port_on",
+      "y": 180
+    },
+    "facing=up,powered=false,spin=0": {
+      "ae2:z": 180,
+      "model": "ae2:block/spatial_io_port",
+      "x": 270
+    },
+    "facing=up,powered=false,spin=1": {
+      "ae2:z": 90,
+      "model": "ae2:block/spatial_io_port",
+      "x": 270
+    },
+    "facing=up,powered=false,spin=2": {
+      "model": "ae2:block/spatial_io_port",
+      "x": 270
+    },
+    "facing=up,powered=false,spin=3": {
+      "ae2:z": 270,
+      "model": "ae2:block/spatial_io_port",
+      "x": 270
+    },
+    "facing=up,powered=true,spin=0": {
+      "ae2:z": 180,
+      "model": "ae2:block/spatial_io_port_on",
+      "x": 270
+    },
+    "facing=up,powered=true,spin=1": {
+      "ae2:z": 90,
+      "model": "ae2:block/spatial_io_port_on",
+      "x": 270
+    },
+    "facing=up,powered=true,spin=2": {
+      "model": "ae2:block/spatial_io_port_on",
+      "x": 270
+    },
+    "facing=up,powered=true,spin=3": {
+      "ae2:z": 270,
+      "model": "ae2:block/spatial_io_port_on",
+      "x": 270
+    },
+    "facing=west,powered=false,spin=0": {
+      "model": "ae2:block/spatial_io_port",
+      "y": 270
+    },
+    "facing=west,powered=false,spin=1": {
+      "ae2:z": 270,
+      "model": "ae2:block/spatial_io_port",
+      "y": 270
+    },
+    "facing=west,powered=false,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/spatial_io_port",
+      "y": 270
+    },
+    "facing=west,powered=false,spin=3": {
+      "ae2:z": 90,
+      "model": "ae2:block/spatial_io_port",
+      "y": 270
+    },
+    "facing=west,powered=true,spin=0": {
+      "model": "ae2:block/spatial_io_port_on",
+      "y": 270
+    },
+    "facing=west,powered=true,spin=1": {
+      "ae2:z": 270,
+      "model": "ae2:block/spatial_io_port_on",
+      "y": 270
+    },
+    "facing=west,powered=true,spin=2": {
+      "ae2:z": 180,
+      "model": "ae2:block/spatial_io_port_on",
+      "y": 270
+    },
+    "facing=west,powered=true,spin=3": {
+      "ae2:z": 90,
+      "model": "ae2:block/spatial_io_port_on",
+      "y": 270
+    }
+  }
+}

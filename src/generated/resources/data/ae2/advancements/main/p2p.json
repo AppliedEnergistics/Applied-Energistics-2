@@ -1,0 +1,34 @@
+{
+  "parent": "ae2:main/glass_cable",
+  "criteria": {
+    "certus": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:me_p2p_tunnel"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "achievement.ae2.P2P.desc"
+    },
+    "icon": {
+      "item": "ae2:me_p2p_tunnel"
+    },
+    "title": {
+      "translate": "achievement.ae2.P2P"
+    }
+  },
+  "requirements": [
+    [
+      "certus"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

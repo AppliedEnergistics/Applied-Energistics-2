@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "ae2:block/crafting/unit"
+    },
+    "formed=true": {
+      "model": "ae2:block/crafting/unit_formed"
+    }
+  }
+}

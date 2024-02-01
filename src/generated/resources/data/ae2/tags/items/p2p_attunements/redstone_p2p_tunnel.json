@@ -1,0 +1,12 @@
+{
+  "values": [
+    "minecraft:redstone",
+    "minecraft:repeater",
+    "minecraft:redstone_lamp",
+    "minecraft:comparator",
+    "minecraft:daylight_detector",
+    "minecraft:redstone_torch",
+    "minecraft:redstone_block",
+    "minecraft:lever"
+  ]
+}
