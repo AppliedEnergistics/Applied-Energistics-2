@@ -1,0 +1,29 @@
+{
+  "parent": "ae2:block/energy_cell_0",
+  "overrides": [
+    {
+      "model": "ae2:block/energy_cell_1",
+      "predicate": {
+        "ae2:fill_level": 0.2
+      }
+    },
+    {
+      "model": "ae2:block/energy_cell_2",
+      "predicate": {
+        "ae2:fill_level": 0.4
+      }
+    },
+    {
+      "model": "ae2:block/energy_cell_3",
+      "predicate": {
+        "ae2:fill_level": 0.6
+      }
+    },
+    {
+      "model": "ae2:block/energy_cell_4",
+      "predicate": {
+        "ae2:fill_level": 0.8
+      }
+    }
+  ]
+}

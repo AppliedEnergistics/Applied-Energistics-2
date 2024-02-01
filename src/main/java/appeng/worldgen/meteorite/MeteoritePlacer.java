@@ -88,12 +88,7 @@ public final class MeteoritePlacer {
         double realCrater = this.meteoriteSize * 2 + 5;
         this.crater = realCrater * realCrater;
 
-        this.quartzBlocks = Stream.of(
-                AEBlocks.QUARTZ_BLOCK,
-                AEBlocks.DAMAGED_BUDDING_QUARTZ,
-                AEBlocks.CHIPPED_BUDDING_QUARTZ,
-                AEBlocks.FLAWED_BUDDING_QUARTZ,
-                AEBlocks.FLAWLESS_BUDDING_QUARTZ).map(def -> def.block().defaultBlockState()).toList();
+        this.quartzBlocks = getQuartzBudList();
         this.quartzBuds = Stream.of(
                 AEBlocks.SMALL_QUARTZ_BUD,
                 AEBlocks.MEDIUM_QUARTZ_BUD,
@@ -101,6 +96,18 @@ public final class MeteoritePlacer {
         this.skyStone = AEBlocks.SKY_STONE_BLOCK.block().defaultBlockState();
 
         this.type = getFallout(level, settings.getPos(), settings.getFallout());
+    }
+
+    private List<BlockState> getQuartzBudList() {
+        if (AEConfig.instance().isSpawnFlawlessOnlyEnabled()) {
+            return Stream.of(AEBlocks.FLAWLESS_BUDDING_QUARTZ).map(def -> def.block().defaultBlockState()).toList();
+        }
+        return Stream.of(
+                AEBlocks.QUARTZ_BLOCK,
+                AEBlocks.DAMAGED_BUDDING_QUARTZ,
+                AEBlocks.CHIPPED_BUDDING_QUARTZ,
+                AEBlocks.FLAWED_BUDDING_QUARTZ,
+                AEBlocks.FLAWLESS_BUDDING_QUARTZ).map(def -> def.block().defaultBlockState()).toList();
     }
 
     public void place() {

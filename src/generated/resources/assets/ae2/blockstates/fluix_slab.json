@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "ae2:block/fluix_slab"
+    },
+    "type=double": {
+      "model": "ae2:block/fluix_block"
+    },
+    "type=top": {
+      "model": "ae2:block/fluix_slab_top"
+    }
+  }
+}

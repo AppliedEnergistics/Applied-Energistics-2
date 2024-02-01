@@ -1,0 +1,25 @@
+{
+  "parent": "ae2:main/network1",
+  "criteria": {
+    "cable": {
+      "trigger": "ae2:network_engineer"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "achievement.ae2.Networking2.desc"
+    },
+    "icon": {
+      "item": "ae2:fluix_smart_cable"
+    },
+    "title": {
+      "translate": "achievement.ae2.Networking2"
+    }
+  },
+  "requirements": [
+    [
+      "cable"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

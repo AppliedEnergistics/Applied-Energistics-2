@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "ae2:all_nether_quartz"
+    },
+    "b": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "ab"
+  ],
+  "result": {
+    "item": "ae2:light_detector"
+  }
+}
