@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "ae2:block/quartz_brick_slab"
+    },
+    "type=double": {
+      "model": "ae2:block/quartz_bricks"
+    },
+    "type=top": {
+      "model": "ae2:block/quartz_brick_slab_top"
+    }
+  }
+}

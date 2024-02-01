@@ -1,0 +1,6 @@
+{
+  "parent": "ae2:item/glass_cable_base",
+  "textures": {
+    "base": "ae2:part/cable/glass/black"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "ae2:fluix_block"
+  },
+  "base": {
+    "tag": "ae2:quartz_pickaxe"
+  },
+  "result": {
+    "item": "ae2:fluix_pickaxe"
+  },
+  "template": {
+    "item": "ae2:fluix_upgrade_smithing_template"
+  }
+}

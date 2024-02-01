@@ -1,0 +1,11 @@
+{
+  "values": [
+    "ae2:storage_bus",
+    "ae2:export_bus",
+    "ae2:import_bus",
+    "minecraft:hopper",
+    "minecraft:chest",
+    "minecraft:trapped_chest",
+    "#ae2:interface"
+  ]
+}

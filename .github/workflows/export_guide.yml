@@ -19,8 +19,6 @@ jobs:
         run: sudo apt-get install xvfb libgl1-mesa-dri zopfli
       - uses: actions/checkout@v3
       - uses: ./.github/actions/gradle-setup
-      - name: Generate Assets
-        run: ./gradlew runData
       - name: Export Guide
         run: DRI_PRIME=0 xvfb-run ./gradlew runGuideexport
       - name: Optimize PNG compression
