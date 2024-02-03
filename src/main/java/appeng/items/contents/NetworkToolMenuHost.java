@@ -27,7 +27,7 @@ import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.upgrades.Upgrades;
-import appeng.menu.locator.MenuItemLocator;
+import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -38,8 +38,8 @@ public class NetworkToolMenuHost extends ItemMenuHost implements InternalInvento
     @Nullable
     private final IInWorldGridNodeHost host;
 
-    public NetworkToolMenuHost(Player player, @Nullable MenuItemLocator locator, ItemStack is,
-            @Nullable IInWorldGridNodeHost host) {
+    public NetworkToolMenuHost(Player player, @Nullable ItemMenuHostLocator locator, ItemStack is,
+                               @Nullable IInWorldGridNodeHost host) {
         super(player, locator, is);
         this.host = host;
         this.inv = new AppEngInternalInventory(this, 9);

@@ -28,7 +28,7 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.core.AELog;
 import appeng.menu.implementations.MenuTypeBuilder;
-import appeng.menu.locator.MenuLocator;
+import appeng.menu.locator.MenuHostLocator;
 
 /**
  * Forwards a menu open request to the {@link MenuTypeBuilder} that was used to build a {@link MenuType}.
@@ -44,15 +44,15 @@ public final class MenuOpener {
         registry.put(type, opener);
     }
 
-    public static boolean returnTo(MenuType<?> type, Player player, MenuLocator locator) {
+    public static boolean returnTo(MenuType<?> type, Player player, MenuHostLocator locator) {
         return open(type, player, locator, true);
     }
 
-    public static boolean open(MenuType<?> type, Player player, MenuLocator locator) {
+    public static boolean open(MenuType<?> type, Player player, MenuHostLocator locator) {
         return open(type, player, locator, false);
     }
 
-    public static boolean open(MenuType<?> type, Player player, MenuLocator locator, boolean fromSubMenu) {
+    public static boolean open(MenuType<?> type, Player player, MenuHostLocator locator, boolean fromSubMenu) {
         Preconditions.checkArgument(!player.level().isClientSide(), "Menus must be opened on the server.");
         Opener opener = registry.get(type);
         if (opener == null) {
@@ -66,7 +66,7 @@ public final class MenuOpener {
     @FunctionalInterface
     public interface Opener {
 
-        boolean open(Player player, MenuLocator locator, boolean fromSubMenu);
+        boolean open(Player player, MenuHostLocator locator, boolean fromSubMenu);
 
     }
 

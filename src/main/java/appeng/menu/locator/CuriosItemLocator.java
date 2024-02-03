@@ -1,63 +1,51 @@
 package appeng.menu.locator;
 
+import java.util.Optional;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.api.implementations.menuobjects.IMenuItem;
-import appeng.api.implementations.menuobjects.ItemMenuHost;
-import appeng.core.AELog;
 import appeng.integration.modules.curios.CuriosIntegration;
 
-record CuriosItemLocator(int itemIndex) implements MenuItemLocator {
-    @Override
-    public <T> @Nullable T locate(Player player, Class<T> hostInterface) {
-        ItemStack it = locateItem(player);
-
-        if (!it.isEmpty() && it.getItem() instanceof IMenuItem guiItem) {
-            ItemMenuHost menuHost = guiItem.getMenuHost(player, this, it, null);
-            if (hostInterface.isInstance(menuHost)) {
-                return hostInterface.cast(menuHost);
-            } else if (menuHost != null) {
-                AELog.warn("Item in Curios slot %d of %s did not create a compatible menu of type %s: %s",
-                        itemIndex, player, hostInterface, menuHost);
-            }
-        } else {
-            AELog.warn("Item in Curios slot %d of %s is not an IMenuItem: %s",
-                    itemIndex, player, it);
-        }
-
-        return null;
-    }
-
+/**
+ * Implements {@link ItemMenuHostLocator} for items equipped in curios slots.
+ */
+record CuriosItemLocator(int curioSlot, @Nullable BlockHitResult hitResult) implements ItemMenuHostLocator {
     public ItemStack locateItem(Player player) {
         var cap = player.getCapability(CuriosIntegration.ITEM_HANDLER);
-        if (cap == null)
+        if (cap == null || curioSlot >= cap.getSlots()) {
             return ItemStack.EMPTY;
-        return cap.getStackInSlot(itemIndex);
+        }
+        return cap.getStackInSlot(curioSlot);
     }
 
     @Override
     public boolean setItem(Player player, ItemStack stack) {
         var cap = player.getCapability(CuriosIntegration.ITEM_HANDLER);
-        if (cap == null)
+        if (cap == null || curioSlot >= cap.getSlots()) {
             return false;
-        cap.extractItem(itemIndex, 1, false);
-        return cap.insertItem(itemIndex, stack, false).isEmpty();
+        }
+        cap.extractItem(curioSlot, Integer.MAX_VALUE, false);
+        return cap.insertItem(curioSlot, stack, false).isEmpty();
     }
 
     public void writeToPacket(FriendlyByteBuf buf) {
-        buf.writeInt(itemIndex);
+        buf.writeInt(curioSlot);
+        buf.writeOptional(Optional.ofNullable(hitResult), FriendlyByteBuf::writeBlockHitResult);
     }
 
     public static CuriosItemLocator readFromPacket(FriendlyByteBuf buf) {
-        return new CuriosItemLocator(buf.readInt());
+        return new CuriosItemLocator(
+                buf.readInt(),
+                buf.readOptional(FriendlyByteBuf::readBlockHitResult).orElse(null));
     }
 
     @Override
     public String toString() {
-        return "MenuItem{CuriosSlot=" + itemIndex + "}";
+        return "curios slot " + curioSlot;
     }
 }

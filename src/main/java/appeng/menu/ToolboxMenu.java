@@ -5,7 +5,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.tools.NetworkToolItem;
-import appeng.menu.locator.MenuItemLocator;
+import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.slot.RestrictedInputSlot;
 
 /**
@@ -13,7 +13,7 @@ import appeng.menu.slot.RestrictedInputSlot;
  */
 public class ToolboxMenu {
     private final AEBaseMenu menu;
-    private final MenuItemLocator locator;
+    private final ItemMenuHostLocator locator;
     private final NetworkToolMenuHost inv;
 
     public ToolboxMenu(AEBaseMenu menu) {

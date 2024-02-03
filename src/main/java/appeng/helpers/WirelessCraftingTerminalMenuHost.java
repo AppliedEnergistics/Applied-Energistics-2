@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.menu.ISubMenu;
-import appeng.menu.locator.MenuItemLocator;
+import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
@@ -20,8 +20,8 @@ public class WirelessCraftingTerminalMenuHost extends WirelessTerminalMenuHost
         implements ISegmentedInventory, InternalInventoryHost {
     private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory(this, 9);
 
-    public WirelessCraftingTerminalMenuHost(Player player, @Nullable MenuItemLocator locator, ItemStack itemStack,
-            BiConsumer<Player, ISubMenu> returnToMainMenu) {
+    public WirelessCraftingTerminalMenuHost(Player player, @Nullable ItemMenuHostLocator locator, ItemStack itemStack,
+                                            BiConsumer<Player, ISubMenu> returnToMainMenu) {
         super(player, locator, itemStack, returnToMainMenu);
         craftingGrid.readFromNBT(getItemStack().getOrCreateTag(), "craftingGrid");
     }

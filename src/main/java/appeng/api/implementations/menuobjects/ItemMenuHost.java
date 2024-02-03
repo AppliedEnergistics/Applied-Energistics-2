@@ -31,7 +31,7 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableItem;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
-import appeng.menu.locator.MenuItemLocator;
+import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
 
 /**
@@ -41,13 +41,13 @@ public class ItemMenuHost implements IUpgradeableObject {
 
     private final Player player;
     @Nullable
-    private final MenuItemLocator locator;
+    private final ItemMenuHostLocator locator;
     private final ItemStack itemStack;
     private final IUpgradeInventory upgrades;
     private int powerTicks = 0;
     private double powerDrainPerTick = 0.5;
 
-    public ItemMenuHost(Player player, @Nullable MenuItemLocator locator, ItemStack itemStack) {
+    public ItemMenuHost(Player player, @Nullable ItemMenuHostLocator locator, ItemStack itemStack) {
         this.player = player;
         this.locator = locator;
         this.itemStack = itemStack;
@@ -75,7 +75,7 @@ public class ItemMenuHost implements IUpgradeableObject {
     }
 
     @Nullable
-    public MenuItemLocator getLocator() {
+    public ItemMenuHostLocator getLocator() {
         return locator;
     }
 

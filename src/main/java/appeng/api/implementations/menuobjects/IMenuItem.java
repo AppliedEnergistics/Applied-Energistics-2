@@ -25,24 +25,24 @@ package appeng.api.implementations.menuobjects;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.menu.locator.MenuItemLocator;
+import appeng.menu.locator.ItemMenuHostLocator;
 
 /**
  * Implemented on Item objects, to return objects used to manage, and interact with the contents.
  */
 public interface IMenuItem {
     /**
-     * @param player  The player opening the menu.
-     * @param locator The locator the item can be found with.
-     * @param stack   The item used to open the menu.
-     * @param pos     If the item was used on a block in the world, has that block's position. Null if no block was
-     *                targeted.
+     * @param player    The player opening the menu.
+     * @param locator   The locator the item can be found with.
+     * @param stack     The item used to open the menu.
+     * @param hitResult The hit testing result if the item was used on a block to open the menu. May be null.
      * @return Null if no menu host is available.
      */
     @Nullable
-    ItemMenuHost getMenuHost(Player player, MenuItemLocator locator, ItemStack stack, @Nullable BlockPos pos);
+    ItemMenuHost getMenuHost(Player player, ItemMenuHostLocator locator, ItemStack stack,
+                             @Nullable BlockHitResult hitResult);
 }

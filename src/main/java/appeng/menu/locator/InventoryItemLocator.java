@@ -1,11 +1,13 @@
 package appeng.menu.locator;
 
+import java.util.Optional;
+
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -17,16 +19,14 @@ import appeng.core.AELog;
  * Optionally also contains a block position and side in case the menu is to be opened by the item but for a clicked
  * host (i.e. network tool).
  */
-record InventoryItemLocator(
-        int itemIndex,
-        @Nullable BlockPos blockPos) implements MenuItemLocator {
+record InventoryItemLocator(int itemIndex, @Nullable BlockHitResult hitResult) implements ItemMenuHostLocator {
     @Nullable
     public <T> T locate(Player player, Class<T> hostInterface) {
         ItemStack it = locateItem(player);
 
         if (!it.isEmpty() && it.getItem() instanceof IMenuItem guiItem) {
             // Optionally contains the block the item was used on to open the menu
-            ItemMenuHost menuHost = guiItem.getMenuHost(player, this, it, blockPos);
+            ItemMenuHost menuHost = guiItem.getMenuHost(player, this, it, hitResult);
             if (hostInterface.isInstance(menuHost)) {
                 return hostInterface.cast(menuHost);
             } else if (menuHost != null) {
@@ -53,30 +53,22 @@ record InventoryItemLocator(
 
     public void writeToPacket(FriendlyByteBuf buf) {
         buf.writeInt(itemIndex);
-        buf.writeBoolean(blockPos != null);
-        if (blockPos != null) {
-            buf.writeBlockPos(blockPos);
-        }
+        buf.writeOptional(Optional.ofNullable(hitResult), FriendlyByteBuf::writeBlockHitResult);
     }
 
     public static InventoryItemLocator readFromPacket(FriendlyByteBuf buf) {
-        var itemIndex = buf.readInt();
-        BlockPos blockPos = null;
-        if (buf.readBoolean()) {
-            blockPos = buf.readBlockPos();
-        }
-        return new InventoryItemLocator(itemIndex, blockPos);
+        return new InventoryItemLocator(
+                buf.readInt(),
+                buf.readOptional(FriendlyByteBuf::readBlockHitResult).orElse(null));
     }
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder("MenuItem");
-        result.append('{');
-        result.append("InventorySlot=").append(itemIndex);
-        if (blockPos != null) {
-            result.append(',').append("pos=").append(blockPos);
+        StringBuilder result = new StringBuilder();
+        result.append("slot ").append(itemIndex);
+        if (hitResult != null) {
+            result.append(" used on ").append(hitResult.getBlockPos());
         }
-        result.append('}');
         return result.toString();
     }
 }

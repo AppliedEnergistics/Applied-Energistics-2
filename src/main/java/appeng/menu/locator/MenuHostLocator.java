@@ -29,7 +29,7 @@ import net.minecraft.world.entity.player.Player;
  * Both the client and the server need a host to open a menu, but we open menus from the server. This class takes care
  * of serializing the original "location" of the menu so that the client can also have access to it.
  */
-public interface MenuLocator {
+public interface MenuHostLocator {
     /**
      * Locates the menu host in the world and returns it if it satisfies the expected menu host interface.
      */

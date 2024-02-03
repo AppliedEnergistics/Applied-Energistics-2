@@ -43,7 +43,7 @@ import appeng.core.AppEng;
 import appeng.init.InitMenuTypes;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocator;
+import appeng.menu.locator.MenuHostLocator;
 import appeng.menu.locator.MenuLocators;
 
 /**
@@ -133,7 +133,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
         return menu;
     }
 
-    private boolean open(Player player, MenuLocator locator, boolean fromSubMenu) {
+    private boolean open(Player player, MenuHostLocator locator, boolean fromSubMenu) {
         if (!(player instanceof ServerPlayer)) {
             // Cannot open menus on the client or for non-players
             // FIXME logging?
@@ -182,7 +182,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
 
     @FunctionalInterface
     public interface MenuFactory<C, I> {
-        C create(int containerId, Inventory playerInv, I accessObj);
+        C create(int containerId, Inventory playerInv, I menuHost);
     }
 
     @FunctionalInterface

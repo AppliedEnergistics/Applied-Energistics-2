@@ -2,7 +2,6 @@ package appeng.items.tools.powered;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -18,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
@@ -36,17 +36,16 @@ import appeng.block.networking.EnergyCellBlockItem;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.localization.PlayerMessages;
-import appeng.hooks.AEToolItem;
 import appeng.items.contents.PortableCellMenuHost;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuItemLocator;
+import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
 
 public abstract class AbstractPortableCell extends AEBasePoweredItem
-        implements ICellWorkbenchItem, IMenuItem, AEToolItem, DyeableLeatherItem {
+        implements ICellWorkbenchItem, IMenuItem, DyeableLeatherItem {
 
     private final MenuType<?> menuType;
     private final int defaultColor;
@@ -70,11 +69,11 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
      *
      * @return True if the menu was opened.
      */
-    public boolean openFromInventory(Player player, MenuItemLocator locator) {
+    public boolean openFromInventory(Player player, ItemMenuHostLocator locator) {
         return openFromInventory(player, locator, false);
     }
 
-    protected boolean openFromInventory(Player player, MenuItemLocator locator, boolean returningFromSubmenu) {
+    protected boolean openFromInventory(Player player, ItemMenuHostLocator locator, boolean returningFromSubmenu) {
         var is = locator.locateItem(player);
         if (is.getItem() == this) {
             return MenuOpener.open(this.menuType, player, locator,
@@ -86,8 +85,8 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
 
     @Nullable
     @Override
-    public PortableCellMenuHost getMenuHost(Player player, MenuItemLocator locator, ItemStack stack,
-            @Nullable BlockPos pos) {
+    public PortableCellMenuHost getMenuHost(Player player, ItemMenuHostLocator locator, ItemStack stack,
+                                            @Nullable BlockHitResult hitResult) {
         return new PortableCellMenuHost(player, locator, this, stack,
                 (p, sm) -> openFromInventory(p, locator, true));
     }

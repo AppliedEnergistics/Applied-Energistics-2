@@ -7,7 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.features.HotkeyAction;
-import appeng.menu.locator.MenuItemLocator;
+import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
 
 public record InventoryHotkeyAction(Predicate<ItemStack> locatable, Opener opener) implements HotkeyAction {
@@ -31,6 +31,6 @@ public record InventoryHotkeyAction(Predicate<ItemStack> locatable, Opener opene
 
     @FunctionalInterface
     public interface Opener {
-        boolean open(Player player, MenuItemLocator locator);
+        boolean open(Player player, ItemMenuHostLocator locator);
     }
 }
