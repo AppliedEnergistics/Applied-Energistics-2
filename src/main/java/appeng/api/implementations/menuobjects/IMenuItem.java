@@ -44,5 +44,5 @@ public interface IMenuItem {
      */
     @Nullable
     ItemMenuHost getMenuHost(Player player, ItemMenuHostLocator locator, ItemStack stack,
-                             @Nullable BlockHitResult hitResult);
+            @Nullable BlockHitResult hitResult);
 }

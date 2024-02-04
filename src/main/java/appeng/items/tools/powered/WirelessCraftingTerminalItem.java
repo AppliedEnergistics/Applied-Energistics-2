@@ -27,7 +27,7 @@ public class WirelessCraftingTerminalItem extends WirelessTerminalItem {
     @Nullable
     @Override
     public ItemMenuHost getMenuHost(Player player, ItemMenuHostLocator locator, ItemStack stack,
-                                    @Nullable BlockHitResult hitResult) {
+            @Nullable BlockHitResult hitResult) {
         return new WirelessCraftingTerminalMenuHost(player, locator, stack,
                 (p, sm) -> openFromInventory(p, locator, true));
     }

@@ -57,8 +57,8 @@ public class PortableCellMenuHost extends ItemMenuHost implements IPortableTermi
     private final AbstractPortableCell item;
 
     public PortableCellMenuHost(Player player, @Nullable ItemMenuHostLocator locator, AbstractPortableCell item,
-                                ItemStack itemStack,
-                                BiConsumer<Player, ISubMenu> returnMainMenu) {
+            ItemStack itemStack,
+            BiConsumer<Player, ISubMenu> returnMainMenu) {
         super(player, locator, itemStack);
         Preconditions.checkArgument(itemStack.getItem() == item, "Stack doesn't match item");
         this.returnMainMenu = returnMainMenu;
