@@ -30,8 +30,7 @@ public final class MenuLocators {
     static {
         register(BlockEntityLocator.class, BlockEntityLocator::writeToPacket, BlockEntityLocator::readFromPacket);
         register(PartLocator.class, PartLocator::writeToPacket, PartLocator::readFromPacket);
-        register(InventoryItemLocator.class, appeng.menu.locator.InventoryItemLocator::writeToPacket,
-                appeng.menu.locator.InventoryItemLocator::readFromPacket);
+        register(InventoryItemLocator.class, InventoryItemLocator::writeToPacket, InventoryItemLocator::readFromPacket);
         register(CuriosItemLocator.class, CuriosItemLocator::writeToPacket, CuriosItemLocator::readFromPacket);
     }
 
