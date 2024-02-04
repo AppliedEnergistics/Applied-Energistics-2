@@ -63,7 +63,7 @@ import appeng.helpers.InventoryAction;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.guisync.DataSynchronization;
-import appeng.menu.locator.MenuLocator;
+import appeng.menu.locator.MenuHostLocator;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
@@ -91,7 +91,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private final ArrayListMultimap<SlotSemantic, Slot> slotsBySemantic = ArrayListMultimap.create();
     private final Map<String, ClientAction<?>> clientActions = new HashMap<>();
     private boolean menuValid = true;
-    private MenuLocator locator;
+    private MenuHostLocator locator;
     // Slots that are only present on the client-side
     private final Set<Slot> clientSideSlot = new HashSet<>();
     /**
@@ -820,11 +820,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         this.menuValid = isContainerValid;
     }
 
-    public MenuLocator getLocator() {
+    public MenuHostLocator getLocator() {
         return this.locator;
     }
 
-    public void setLocator(MenuLocator locator) {
+    public void setLocator(MenuHostLocator locator) {
         this.locator = locator;
     }
 

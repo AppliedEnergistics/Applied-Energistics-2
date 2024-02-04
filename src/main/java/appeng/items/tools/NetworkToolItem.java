@@ -38,6 +38,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.networking.GridHelper;
@@ -46,30 +47,31 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.INetworkToolAware;
-import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.menu.MenuOpener;
+import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 import appeng.util.Platform;
 
-public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem {
+public class NetworkToolItem extends AEBaseItem implements IMenuItem {
 
     public NetworkToolItem(Properties properties) {
         super(properties);
     }
 
     @Override
-    public NetworkToolMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
+    public NetworkToolMenuHost getMenuHost(Player player, ItemMenuHostLocator locator, ItemStack stack,
+            @Nullable BlockHitResult hitResult) {
         var level = player.level();
-        if (pos == null) {
-            return new NetworkToolMenuHost(player, inventorySlot, stack, null);
+        if (hitResult == null) {
+            return new NetworkToolMenuHost(player, locator, stack, null);
         }
-        var host = GridHelper.getNodeHost(level, pos);
-        return new NetworkToolMenuHost(player, inventorySlot, stack, host);
+        var host = GridHelper.getNodeHost(level, hitResult.getBlockPos());
+        return new NetworkToolMenuHost(player, locator, stack, host);
     }
 
     @Override
@@ -147,7 +149,7 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem
         for (int x = 0; x < pi.getContainerSize(); x++) {
             var pii = pi.getItem(x);
             if (!pii.isEmpty() && pii.getItem() instanceof NetworkToolItem networkToolItem) {
-                return networkToolItem.getMenuHost(pi.player, x, pii, null);
+                return networkToolItem.getMenuHost(pi.player, MenuLocators.forInventorySlot(x), pii, null);
             }
         }
         return null;

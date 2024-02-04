@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.events.Event;
 import appeng.api.events.EventFactory;
+import appeng.integration.modules.curios.CuriosIntegration;
 
 public class SearchInventoryEvent {
     /**
@@ -26,6 +27,14 @@ public class SearchInventoryEvent {
 
     static {
         EVENT.register((stacks, player) -> stacks.addAll(player.getInventory().items));
+        EVENT.register((stacks, player) -> {
+            var cap = player.getCapability(CuriosIntegration.ITEM_HANDLER);
+            if (cap == null)
+                return;
+            for (int i = 0; i < cap.getSlots(); i++) {
+                stacks.add(cap.getStackInSlot(i));
+            }
+        });
     }
 
     public static List<ItemStack> getItems(Player player) {

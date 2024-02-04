@@ -20,7 +20,6 @@ package appeng.api.implementations.menuobjects;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -32,6 +31,8 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableItem;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
+import appeng.menu.locator.ItemMenuHostLocator;
+import appeng.menu.locator.MenuLocators;
 
 /**
  * Base interface for an adapter that connects an item stack in a player inventory with a menu that is opened by it.
@@ -40,15 +41,15 @@ public class ItemMenuHost implements IUpgradeableObject {
 
     private final Player player;
     @Nullable
-    private final Integer slot;
+    private final ItemMenuHostLocator locator;
     private final ItemStack itemStack;
     private final IUpgradeInventory upgrades;
     private int powerTicks = 0;
     private double powerDrainPerTick = 0.5;
 
-    public ItemMenuHost(Player player, @Nullable Integer slot, ItemStack itemStack) {
+    public ItemMenuHost(Player player, @Nullable ItemMenuHostLocator locator, ItemStack itemStack) {
         this.player = player;
-        this.slot = slot;
+        this.locator = locator;
         this.itemStack = itemStack;
         if (itemStack.getItem() instanceof IUpgradeableItem upgradeableItem) {
             this.upgrades = upgradeableItem.getUpgrades(itemStack);
@@ -70,7 +71,12 @@ public class ItemMenuHost implements IUpgradeableObject {
      */
     @Nullable
     public Integer getSlot() {
-        return slot;
+        return MenuLocators.inventorySlot(locator);
+    }
+
+    @Nullable
+    public ItemMenuHostLocator getLocator() {
+        return locator;
     }
 
     /**
@@ -104,22 +110,20 @@ public class ItemMenuHost implements IUpgradeableObject {
      * @return True if {@link #getItemStack()} is still in the expected slot.
      */
     protected boolean ensureItemStillInSlot() {
-        if (slot == null) {
+        if (locator == null) {
             return true;
         }
 
         ItemStack expectedItem = getItemStack();
 
-        Inventory inventory = getPlayer().getInventory();
-        ItemStack currentItem = inventory.getItem(slot);
+        ItemStack currentItem = locator.locateItem(getPlayer());
         if (!currentItem.isEmpty() && !expectedItem.isEmpty()) {
             if (currentItem == expectedItem) {
                 return true;
             } else if (ItemStack.isSameItem(expectedItem, currentItem)) {
                 // If the items are still equivalent, we just restore referential equality so that modifications
                 // to the GUI item are reflected in the slot
-                inventory.setItem(slot, expectedItem);
-                return true;
+                return locator.setItem(player, expectedItem);
             }
         }
         return false;

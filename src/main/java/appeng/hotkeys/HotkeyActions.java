@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.world.item.Item;
+
 import appeng.api.features.HotkeyAction;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
@@ -22,13 +24,11 @@ public class HotkeyActions {
     public static final Map<String, List<HotkeyAction>> REGISTRY = new HashMap<>();
 
     public static void init() {
-        register(
-                new InventoryHotkeyAction(AEItems.WIRELESS_TERMINAL.asItem(),
-                        (player, i) -> AEItems.WIRELESS_TERMINAL.asItem().openFromInventory(player, i)),
+        register(AEItems.WIRELESS_TERMINAL.asItem(),
+                (player, locator) -> AEItems.WIRELESS_TERMINAL.asItem().openFromInventory(player, locator),
                 WIRELESS_TERMINAL);
-        register(
-                new InventoryHotkeyAction(AEItems.WIRELESS_CRAFTING_TERMINAL.asItem(),
-                        (player, i) -> AEItems.WIRELESS_CRAFTING_TERMINAL.asItem().openFromInventory(player, i)),
+        register(AEItems.WIRELESS_CRAFTING_TERMINAL.asItem(),
+                (player, locator) -> AEItems.WIRELESS_CRAFTING_TERMINAL.asItem().openFromInventory(player, locator),
                 WIRELESS_TERMINAL);
 
         registerPortableCell(AEItems.PORTABLE_ITEM_CELL1K, PORTABLE_ITEM_CELL);
@@ -48,7 +48,15 @@ public class HotkeyActions {
      * a convenience helper for registering hotkeys for portable cells
      */
     public static void registerPortableCell(ItemDefinition<? extends AbstractPortableCell> cell, String id) {
-        register(new InventoryHotkeyAction(cell.asItem(), cell.asItem()::openFromInventory), id);
+        register(cell.asItem(), cell.asItem()::openFromInventory, id);
+    }
+
+    /**
+     * a convenience Helper for registering Hotkeys for both the Inventory and Curios (if applicable)
+     */
+    public static void register(Item item, InventoryHotkeyAction.Opener opener, String id) {
+        register(new InventoryHotkeyAction(item, opener), id);
+        register(new CuriosHotkeyAction(item, opener), id);
     }
 
     /**

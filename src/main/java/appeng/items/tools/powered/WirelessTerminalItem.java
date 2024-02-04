@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.Util;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -43,6 +42,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -68,6 +68,7 @@ import appeng.core.localization.Tooltips;
 import appeng.helpers.WirelessTerminalMenuHost;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.menu.MenuOpener;
+import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.util.ConfigManager;
@@ -95,8 +96,8 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
      *
      * @return True if the menu was opened.
      */
-    public boolean openFromInventory(Player player, int inventorySlot) {
-        return openFromInventory(player, inventorySlot, false);
+    public boolean openFromInventory(Player player, ItemMenuHostLocator locator) {
+        return openFromInventory(player, locator, false);
     }
 
     /**
@@ -106,12 +107,11 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
      *                             restore previous search, scrollbar, etc.
      * @return True if the menu was opened.
      */
-    protected boolean openFromInventory(Player player, int inventorySlot, boolean returningFromSubmenu) {
-        var is = player.getInventory().getItem(inventorySlot);
+    protected boolean openFromInventory(Player player, ItemMenuHostLocator locator, boolean returningFromSubmenu) {
+        var is = locator.locateItem(player);
 
         if (checkPreconditions(is, player)) {
-            return MenuOpener.open(getMenuType(), player, MenuLocators.forInventorySlot(inventorySlot),
-                    returningFromSubmenu);
+            return MenuOpener.open(getMenuType(), player, locator, returningFromSubmenu);
         }
         return false;
     }
@@ -216,9 +216,10 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
 
     @Nullable
     @Override
-    public ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
-        return new WirelessTerminalMenuHost(player, inventorySlot, stack,
-                (p, subMenu) -> openFromInventory(p, inventorySlot, true));
+    public ItemMenuHost getMenuHost(Player player, ItemMenuHostLocator locator, ItemStack stack,
+            @Nullable BlockHitResult hitResult) {
+        return new WirelessTerminalMenuHost(player, locator, stack,
+                (p, subMenu) -> openFromInventory(p, locator, true));
     }
 
     /**

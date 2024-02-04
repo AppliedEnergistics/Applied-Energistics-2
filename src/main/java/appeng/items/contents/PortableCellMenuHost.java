@@ -45,6 +45,7 @@ import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.util.IConfigManager;
 import appeng.items.tools.powered.AbstractPortableCell;
 import appeng.menu.ISubMenu;
+import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.util.ConfigManager;
 
 /**
@@ -55,9 +56,10 @@ public class PortableCellMenuHost extends ItemMenuHost implements IPortableTermi
     private final MEStorage cellStorage;
     private final AbstractPortableCell item;
 
-    public PortableCellMenuHost(Player player, @Nullable Integer slot, AbstractPortableCell item, ItemStack itemStack,
+    public PortableCellMenuHost(Player player, @Nullable ItemMenuHostLocator locator, AbstractPortableCell item,
+            ItemStack itemStack,
             BiConsumer<Player, ISubMenu> returnMainMenu) {
-        super(player, slot, itemStack);
+        super(player, locator, itemStack);
         Preconditions.checkArgument(itemStack.getItem() == item, "Stack doesn't match item");
         this.returnMainMenu = returnMainMenu;
         this.cellStorage = StorageCells.getCellInventory(itemStack, null);

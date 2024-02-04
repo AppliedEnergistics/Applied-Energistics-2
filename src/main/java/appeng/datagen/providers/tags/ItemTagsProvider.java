@@ -211,6 +211,20 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 AEItems.NETHER_QUARTZ_WRENCH.asItem(),
                 AEItems.NETWORK_TOOL.asItem());
 
+        tag(ConventionTags.CURIOS).add(
+                AEItems.WIRELESS_TERMINAL.asItem(),
+                AEItems.WIRELESS_CRAFTING_TERMINAL.asItem(),
+                AEItems.PORTABLE_ITEM_CELL1K.asItem(),
+                AEItems.PORTABLE_ITEM_CELL4K.asItem(),
+                AEItems.PORTABLE_ITEM_CELL16K.asItem(),
+                AEItems.PORTABLE_ITEM_CELL64K.asItem(),
+                AEItems.PORTABLE_ITEM_CELL256K.asItem(),
+                AEItems.PORTABLE_FLUID_CELL1K.asItem(),
+                AEItems.PORTABLE_FLUID_CELL4K.asItem(),
+                AEItems.PORTABLE_FLUID_CELL16K.asItem(),
+                AEItems.PORTABLE_FLUID_CELL64K.asItem(),
+                AEItems.PORTABLE_FLUID_CELL256K.asItem());
+
         tag(ConventionTags.CAN_REMOVE_COLOR).add(Items.WATER_BUCKET, Items.SNOWBALL);
 
         // Manually add tags for mods that are unlikely to do it themselves since we don't want to force users to craft

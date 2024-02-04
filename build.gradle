@@ -83,6 +83,12 @@ repositories {
             includeGroup "mcjty"
         }
     }
+    maven {
+        url = "https://maven.theillusivec4.top/"
+        content {
+            includeGroup "top.theillusivec4.curios"
+        }
+    }
     mavenCentral()
 }
 
@@ -144,6 +150,10 @@ dependencies {
         compileOnly topDependency
     }
 
+    if (project.runtime_curio) {
+        runtimeOnly("top.theillusivec4.curios:curios-neoforge:${project.curios_version}")
+    }
+
     // unit test dependencies
     testImplementation(platform("org.junit:junit-bom:${project.junit_version}"))
     testRuntimeOnly(project(":libs:junit"))
@@ -154,7 +164,6 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.19.0")
     testImplementation("com.google.guava:guava-testlib:21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
-//    testImplementation("cpw.mods:securejarhandler:2.1.20")
 
     compileOnly 'org.apache.commons:commons-configuration2:2.9.0'
 

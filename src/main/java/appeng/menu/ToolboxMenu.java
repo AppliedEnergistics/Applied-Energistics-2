@@ -1,12 +1,11 @@
 package appeng.menu;
 
-import java.util.Objects;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.tools.NetworkToolItem;
+import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.slot.RestrictedInputSlot;
 
 /**
@@ -14,7 +13,7 @@ import appeng.menu.slot.RestrictedInputSlot;
  */
 public class ToolboxMenu {
     private final AEBaseMenu menu;
-    private final int slot;
+    private final ItemMenuHostLocator locator;
     private final NetworkToolMenuHost inv;
 
     public ToolboxMenu(AEBaseMenu menu) {
@@ -22,10 +21,13 @@ public class ToolboxMenu {
 
         this.inv = NetworkToolItem.findNetworkToolInv(menu.getPlayer());
         if (inv != null) {
-            this.slot = Objects.requireNonNullElse(inv.getSlot(), 0);
-            menu.lockPlayerInventorySlot(this.slot);
+            this.locator = inv.getLocator();
+            Integer slot = inv.getSlot();
+            if (slot != null) {
+                menu.lockPlayerInventorySlot(slot);
+            }
         } else {
-            this.slot = 0;
+            this.locator = null;
         }
 
         // Add quick access slots for the upgrade cards stored in the toolbox
@@ -46,12 +48,14 @@ public class ToolboxMenu {
 
     public void tick() {
         if (isPresent()) {
-            var currentItem = menu.getPlayerInventory().getItem(slot);
+            var currentItem = locator.locateItem(inv.getPlayer());
 
             if (currentItem != inv.getItemStack()) {
                 if (!currentItem.isEmpty()) {
                     if (ItemStack.isSameItem(inv.getItemStack(), currentItem)) {
-                        menu.getPlayerInventory().setItem(slot, inv.getItemStack());
+                        if (!locator.setItem(inv.getPlayer(), inv.getItemStack())) {
+                            menu.setValidMenu(false);
+                        }
                     } else {
                         menu.setValidMenu(false);
                     }
