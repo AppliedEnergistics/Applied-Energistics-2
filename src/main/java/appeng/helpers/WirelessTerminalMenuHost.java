@@ -58,9 +58,10 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
      */
     private double currentDistanceFromGrid = Double.MAX_VALUE;
 
-    public WirelessTerminalMenuHost(Player player, @Nullable ItemMenuHostLocator locator, ItemStack itemStack,
+    public WirelessTerminalMenuHost(Player player, ItemMenuHostLocator locator,
             BiConsumer<Player, ISubMenu> returnToMainMenu) {
-        super(player, locator, itemStack);
+        super(player, locator);
+        var itemStack = locator.locateItem(player);
         if (!(itemStack.getItem() instanceof WirelessTerminalItem wirelessTerminalItem)) {
             throw new IllegalArgumentException("Can only use this class with subclasses of WirelessTerminalItem");
         }

@@ -28,11 +28,8 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.upgrades.IUpgradeInventory;
-import appeng.api.upgrades.IUpgradeableItem;
 import appeng.api.upgrades.IUpgradeableObject;
-import appeng.api.upgrades.UpgradeInventories;
 import appeng.menu.locator.ItemMenuHostLocator;
-import appeng.menu.locator.MenuLocators;
 
 /**
  * Base interface for an adapter that connects an item stack in a player inventory with a menu that is opened by it.
@@ -40,22 +37,15 @@ import appeng.menu.locator.MenuLocators;
 public class ItemMenuHost implements IUpgradeableObject {
 
     private final Player player;
-    @Nullable
     private final ItemMenuHostLocator locator;
-    private final ItemStack itemStack;
     private final IUpgradeInventory upgrades;
     private int powerTicks = 0;
     private double powerDrainPerTick = 0.5;
 
-    public ItemMenuHost(Player player, @Nullable ItemMenuHostLocator locator, ItemStack itemStack) {
+    public ItemMenuHost(Player player, ItemMenuHostLocator locator) {
         this.player = player;
         this.locator = locator;
-        this.itemStack = itemStack;
-        if (itemStack.getItem() instanceof IUpgradeableItem upgradeableItem) {
-            this.upgrades = upgradeableItem.getUpgrades(itemStack);
-        } else {
-            this.upgrades = UpgradeInventories.empty();
-        }
+        this.upgrades = new DelegateItemUpgradeInventory(this::getItemStack);
     }
 
     /**
@@ -70,8 +60,9 @@ public class ItemMenuHost implements IUpgradeableObject {
      *         not directly accessible via the inventory.
      */
     @Nullable
-    public Integer getSlot() {
-        return MenuLocators.inventorySlot(locator);
+    public Integer getPlayerInventorySlot() {
+        return null;
+//        return locator.getPlayerInventorySlot();
     }
 
     @Nullable
@@ -83,7 +74,7 @@ public class ItemMenuHost implements IUpgradeableObject {
      * @return The item stack hosting the menu.
      */
     public ItemStack getItemStack() {
-        return itemStack;
+        return locator.locateItem(player);
     }
 
     /**
@@ -99,7 +90,7 @@ public class ItemMenuHost implements IUpgradeableObject {
      * @return False to close the menu.
      */
     public boolean onBroadcastChanges(AbstractContainerMenu menu) {
-        return true;
+        return ensureItemStillInSlot();
     }
 
     /**
@@ -118,13 +109,7 @@ public class ItemMenuHost implements IUpgradeableObject {
 
         ItemStack currentItem = locator.locateItem(getPlayer());
         if (!currentItem.isEmpty() && !expectedItem.isEmpty()) {
-            if (currentItem == expectedItem) {
-                return true;
-            } else if (ItemStack.isSameItem(expectedItem, currentItem)) {
-                // If the items are still equivalent, we just restore referential equality so that modifications
-                // to the GUI item are reflected in the slot
-                return locator.setItem(player, expectedItem);
-            }
+            return currentItem == expectedItem || ItemStack.isSameItem(expectedItem, currentItem);
         }
         return false;
     }

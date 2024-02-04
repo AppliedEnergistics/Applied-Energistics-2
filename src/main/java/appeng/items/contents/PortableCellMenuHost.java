@@ -20,10 +20,9 @@ package appeng.items.contents;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
-
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -44,6 +43,7 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.util.IConfigManager;
 import appeng.items.tools.powered.AbstractPortableCell;
+import appeng.me.storage.SupplierStorage;
 import appeng.menu.ISubMenu;
 import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.util.ConfigManager;
@@ -56,13 +56,13 @@ public class PortableCellMenuHost extends ItemMenuHost implements IPortableTermi
     private final MEStorage cellStorage;
     private final AbstractPortableCell item;
 
-    public PortableCellMenuHost(Player player, @Nullable ItemMenuHostLocator locator, AbstractPortableCell item,
-            ItemStack itemStack,
+    public PortableCellMenuHost(Player player, ItemMenuHostLocator locator, AbstractPortableCell item,
+
             BiConsumer<Player, ISubMenu> returnMainMenu) {
-        super(player, locator, itemStack);
-        Preconditions.checkArgument(itemStack.getItem() == item, "Stack doesn't match item");
+        super(player, locator);
+        Preconditions.checkArgument(getItemStack().is(item), "Stack doesn't match item");
         this.returnMainMenu = returnMainMenu;
-        this.cellStorage = StorageCells.getCellInventory(itemStack, null);
+        this.cellStorage = new SupplierStorage(new CellStorageSupplier());
         Objects.requireNonNull(cellStorage, "Portable cell doesn't expose a cell inventory.");
         this.item = item;
     }
@@ -122,5 +122,20 @@ public class PortableCellMenuHost extends ItemMenuHost implements IPortableTermi
         }
 
         return null; // We don't know
+    }
+
+    private class CellStorageSupplier implements Supplier<MEStorage> {
+        private MEStorage currentStorage;
+        private ItemStack currentStack;
+
+        @Override
+        public MEStorage get() {
+            var stack = getItemStack();
+            if (stack != currentStack) {
+                currentStorage = StorageCells.getCellInventory(stack, null);
+                currentStack = stack;
+            }
+            return currentStorage;
+        }
     }
 }

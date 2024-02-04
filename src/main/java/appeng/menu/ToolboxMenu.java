@@ -22,7 +22,7 @@ public class ToolboxMenu {
         this.inv = NetworkToolItem.findNetworkToolInv(menu.getPlayer());
         if (inv != null) {
             this.locator = inv.getLocator();
-            Integer slot = inv.getSlot();
+            Integer slot = inv.getPlayerInventorySlot();
             if (slot != null) {
                 menu.lockPlayerInventorySlot(slot);
             }
@@ -52,11 +52,7 @@ public class ToolboxMenu {
 
             if (currentItem != inv.getItemStack()) {
                 if (!currentItem.isEmpty()) {
-                    if (ItemStack.isSameItem(inv.getItemStack(), currentItem)) {
-                        if (!locator.setItem(inv.getPlayer(), inv.getItemStack())) {
-                            menu.setValidMenu(false);
-                        }
-                    } else {
+                    if (!ItemStack.isSameItem(inv.getItemStack(), currentItem)) {
                         menu.setValidMenu(false);
                     }
                 } else {

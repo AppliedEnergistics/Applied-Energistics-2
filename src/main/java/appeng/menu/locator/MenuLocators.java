@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -82,6 +80,10 @@ public final class MenuLocators {
         return new PartLocator(pos.getPos(), part.getSide());
     }
 
+    public static ItemMenuHostLocator forStack(ItemStack stack) {
+        return new StackItemLocator(stack);
+    }
+
     /**
      * Construct a menu locator for an item being used on a block. The item could still open a menu for itself, but it
      * might also open a special menu for the block being right-clicked.
@@ -112,11 +114,6 @@ public final class MenuLocators {
 
     public static ItemMenuHostLocator forCurioSlot(int curioSlot, UseOnContext context) {
         return new CuriosItemLocator(curioSlot, getHitResult(context));
-    }
-
-    @Nullable
-    public static Integer inventorySlot(ItemMenuHostLocator locator) {
-        return locator instanceof InventoryItemLocator inventoryLocator ? inventoryLocator.itemIndex() : null;
     }
 
     private static int getPlayerInventorySlotFromHand(Player player, InteractionHand hand) {

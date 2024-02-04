@@ -38,13 +38,14 @@ public class NetworkToolMenuHost extends ItemMenuHost implements InternalInvento
     @Nullable
     private final IInWorldGridNodeHost host;
 
-    public NetworkToolMenuHost(Player player, @Nullable ItemMenuHostLocator locator, ItemStack is,
+    public NetworkToolMenuHost(Player player, ItemMenuHostLocator locator,
             @Nullable IInWorldGridNodeHost host) {
-        super(player, locator, is);
+        super(player, locator);
         this.host = host;
         this.inv = new AppEngInternalInventory(this, 9);
         this.inv.setEnableClientEvents(true); // Also write to NBT on the client to prevent desyncs
         this.inv.setFilter(new NetworkToolInventoryFilter());
+        var is = locator.locateItem(player);
         if (is.hasTag()) // prevent crash when opening network status screen.
         {
             this.inv.readFromNBT(is.getOrCreateTag(), "inv");

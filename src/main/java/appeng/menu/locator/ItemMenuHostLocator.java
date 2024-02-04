@@ -1,5 +1,6 @@
 package appeng.menu.locator;
 
+import org.jetbrains.annotations.Nullable;
 import org.jline.utils.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ public interface ItemMenuHostLocator extends MenuHostLocator {
         ItemStack it = locateItem(player);
 
         if (!it.isEmpty() && it.getItem() instanceof IMenuItem menuItem) {
-            ItemMenuHost menuHost = menuItem.getMenuHost(player, this, it, null);
+            ItemMenuHost menuHost = menuItem.getMenuHost(player, this, null);
             if (hostInterface.isInstance(menuHost)) {
                 return hostInterface.cast(menuHost);
             } else if (menuHost != null) {
@@ -38,13 +39,16 @@ public interface ItemMenuHostLocator extends MenuHostLocator {
 
     /**
      * Locates the MenuItem in the Players inventory and returns it if it satisfies the expected menu host interface.
+     * <strong>The returned stack will be modified by the {@link ItemMenuHost}</strong>, it must be updated in-place.
      */
     ItemStack locateItem(Player player);
 
     /**
-     * Replace the Item the MenuItemLocator is pointing to
-     *
-     * @return true if the modification was successful
+     * @return The slot of the item in the player inventory if this locator represents a location in the player
+     *         inventory. Used to lock the slot against accidentally moving the item out.
      */
-    boolean setItem(Player player, ItemStack stack);
+    @Nullable
+    default Integer getPlayerInventorySlot() {
+        return null;
+    }
 }

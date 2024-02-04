@@ -112,8 +112,8 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             throw new IllegalArgumentException("Must have a valid host, instead " + host + " in " + playerInventory);
         }
 
-        if (itemMenuHost != null && itemMenuHost.getSlot() != null) {
-            lockPlayerInventorySlot(itemMenuHost.getSlot());
+        if (itemMenuHost != null && itemMenuHost.getPlayerInventorySlot() != null) {
+            lockPlayerInventorySlot(itemMenuHost.getPlayerInventorySlot());
         }
 
         this.mySrc = new PlayerSource(getPlayer(), this.getActionHost());

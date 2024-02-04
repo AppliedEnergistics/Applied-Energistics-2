@@ -83,8 +83,8 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
 
     @Nullable
     @Override
-    public ItemMenuHost getMenuHost(Player player, ItemMenuHostLocator locator, ItemStack stack,
+    public ItemMenuHost getMenuHost(Player player, ItemMenuHostLocator locator,
             @Nullable BlockHitResult hitResult) {
-        return new ItemMenuHost(player, locator, stack);
+        return new ItemMenuHost(player, locator);
     }
 }
