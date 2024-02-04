@@ -18,11 +18,10 @@
 
 package appeng.api.upgrades;
 
+import appeng.util.inv.AppEngInternalInventory;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
-
-import appeng.api.inventories.InternalInventory;
 
 /**
  * Provides an upgrade inventory that stores the upgrades directly on an {@link ItemStack}, and derives which updates
@@ -44,14 +43,14 @@ final class ItemUpgradeInventory extends UpgradeInventory {
     }
 
     @Override
-    public void saveChanges() {
+    public void saveChangedInventory(AppEngInternalInventory inv) {
         this.writeToNBT(this.stack.getOrCreateTag(), TAG_UPGRADES);
 
-        super.saveChanges();
+        super.saveChangedInventory(inv);
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         super.onChangeInventory(inv, slot);
 
         if (changeCallback != null) {

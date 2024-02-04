@@ -22,7 +22,7 @@ public interface ItemMenuHostLocator extends MenuHostLocator {
         ItemStack it = locateItem(player);
 
         if (!it.isEmpty() && it.getItem() instanceof IMenuItem menuItem) {
-            ItemMenuHost menuHost = menuItem.getMenuHost(player, this, null);
+            var menuHost = menuItem.getMenuHost(player, this, null);
             if (hostInterface.isInstance(menuHost)) {
                 return hostInterface.cast(menuHost);
             } else if (menuHost != null) {

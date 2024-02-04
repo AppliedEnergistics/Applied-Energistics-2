@@ -19,6 +19,7 @@
 package appeng.items.tools.powered;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 
 import com.mojang.datafixers.util.Pair;
@@ -110,7 +111,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
     protected boolean openFromInventory(Player player, ItemMenuHostLocator locator, boolean returningFromSubmenu) {
         var is = locator.locateItem(player);
 
-        if (checkPreconditions(is, player)) {
+        if (!player.level().isClientSide() && checkPreconditions(is)) {
             return MenuOpener.open(getMenuType(), player, locator, returningFromSubmenu);
         }
         return false;
@@ -123,7 +124,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         var is = player.getItemInHand(hand);
 
-        if (checkPreconditions(is, player)) {
+        if (!player.level().isClientSide() && checkPreconditions(is)) {
             if (MenuOpener.open(getMenuType(), player, MenuLocators.forHand(player, hand))) {
                 return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()), is);
             }
@@ -164,39 +165,39 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
     }
 
     @Nullable
-    public IGrid getLinkedGrid(ItemStack item, Level level, @Nullable Player sendMessagesTo) {
+    public IGrid getLinkedGrid(ItemStack item, Level level, @Nullable Consumer<Component> errorConsumer) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return null;
         }
 
         var linkedPos = getLinkedPosition(item);
         if (linkedPos == null) {
-            if (sendMessagesTo != null) {
-                sendMessagesTo.displayClientMessage(PlayerMessages.DeviceNotLinked.text(), true);
+            if (errorConsumer != null) {
+                errorConsumer.accept(PlayerMessages.DeviceNotLinked.text());
             }
             return null;
         }
 
         var linkedLevel = serverLevel.getServer().getLevel(linkedPos.dimension());
         if (linkedLevel == null) {
-            if (sendMessagesTo != null) {
-                sendMessagesTo.displayClientMessage(PlayerMessages.LinkedNetworkNotFound.text(), true);
+            if (errorConsumer != null) {
+                errorConsumer.accept(PlayerMessages.LinkedNetworkNotFound.text());
             }
             return null;
         }
 
         var be = Platform.getTickingBlockEntity(linkedLevel, linkedPos.pos());
         if (!(be instanceof IWirelessAccessPoint accessPoint)) {
-            if (sendMessagesTo != null) {
-                sendMessagesTo.displayClientMessage(PlayerMessages.LinkedNetworkNotFound.text(), true);
+            if (errorConsumer != null) {
+                errorConsumer.accept(PlayerMessages.LinkedNetworkNotFound.text());
             }
             return null;
         }
 
         var grid = accessPoint.getGrid();
         if (grid == null) {
-            if (sendMessagesTo != null) {
-                sendMessagesTo.displayClientMessage(PlayerMessages.LinkedNetworkNotFound.text(), true);
+            if (errorConsumer != null) {
+                errorConsumer.accept(PlayerMessages.LinkedNetworkNotFound.text());
             }
         }
         return grid;
@@ -216,9 +217,9 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
 
     @Nullable
     @Override
-    public ItemMenuHost getMenuHost(Player player, ItemMenuHostLocator locator,
+    public ItemMenuHost<?> getMenuHost(Player player, ItemMenuHostLocator locator,
             @Nullable BlockHitResult hitResult) {
-        return new WirelessTerminalMenuHost(player, locator, (p, subMenu) -> openFromInventory(p, locator, true));
+        return new WirelessTerminalMenuHost<>(this, player, locator, (p, subMenu) -> openFromInventory(p, locator, true));
     }
 
     /**
@@ -226,21 +227,8 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
      *
      * @return True if the wireless terminal can be opened (it's linked, network in range, power, etc.)
      */
-    protected boolean checkPreconditions(ItemStack item, Player player) {
-        if (item.isEmpty() || item.getItem() != this) {
-            return false;
-        }
-
-        var level = player.getCommandSenderWorld();
-        if (getLinkedGrid(item, player.level(), player) == null) {
-            return false;
-        }
-
-        if (!hasPower(player, 0.5, item)) {
-            player.displayClientMessage(PlayerMessages.DeviceNotPowered.text(), true);
-            return false;
-        }
-        return true;
+    protected boolean checkPreconditions(ItemStack item) {
+        return !item.isEmpty() && item.getItem() == this;
     }
 
     /**

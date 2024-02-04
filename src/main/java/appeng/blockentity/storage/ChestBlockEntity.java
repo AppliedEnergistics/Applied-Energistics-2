@@ -20,6 +20,7 @@ package appeng.blockentity.storage;
 
 import java.util.Objects;
 
+import appeng.api.storage.ILinkStatus;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -204,6 +205,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
 
         return new ChestMonitorHandler(cellInventory);
+    }
+
+    @Override
+    public ILinkStatus getLinkStatus() {
+        return ILinkStatus.ofManagedNode(getMainNode());
     }
 
     @Override
@@ -424,7 +430,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         if (inv == this.cellInventory) {
             this.cellHandler = null;
             this.isCached = false; // recalculate the storage cell.

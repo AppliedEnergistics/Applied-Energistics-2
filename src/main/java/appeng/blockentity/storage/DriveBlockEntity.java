@@ -23,6 +23,7 @@ import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Set;
 
+import appeng.util.inv.AppEngInternalInventory;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -328,7 +329,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         if (this.isCached) {
             this.isCached = false; // recalculate the storage cell.
             this.updateState();

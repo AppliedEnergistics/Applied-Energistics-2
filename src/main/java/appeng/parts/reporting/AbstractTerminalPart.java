@@ -20,6 +20,7 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
+import appeng.api.storage.ILinkStatus;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -93,9 +94,13 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
         return this.cm;
     }
 
-    @Override
     public void saveChanges() {
         this.getHost().markForSave();
+    }
+
+    @Override
+    public void saveChangedInventory(AppEngInternalInventory inv) {
+        saveChanges();
     }
 
     @Override
@@ -144,12 +149,17 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
+    public ILinkStatus getLinkStatus() {
+        return ILinkStatus.ofManagedNode(getMainNode());
+    }
+
+    @Override
     public InternalInventory getViewCellStorage() {
         return this.viewCell;
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         this.getHost().markForSave();
     }
 }

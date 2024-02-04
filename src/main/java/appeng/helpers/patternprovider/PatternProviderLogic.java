@@ -225,13 +225,17 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         return this.configManager;
     }
 
-    @Override
     public void saveChanges() {
         this.host.saveChanges();
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void saveChangedInventory(AppEngInternalInventory inv) {
+        this.host.saveChanges();
+    }
+
+    @Override
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         this.saveChanges();
         this.updatePatterns();
     }

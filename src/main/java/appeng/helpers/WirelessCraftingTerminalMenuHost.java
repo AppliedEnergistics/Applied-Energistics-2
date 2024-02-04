@@ -2,6 +2,7 @@ package appeng.helpers;
 
 import java.util.function.BiConsumer;
 
+import appeng.items.tools.powered.WirelessCraftingTerminalItem;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.ResourceLocation;
@@ -15,13 +16,13 @@ import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 
-public class WirelessCraftingTerminalMenuHost extends WirelessTerminalMenuHost
+public class WirelessCraftingTerminalMenuHost<T extends WirelessCraftingTerminalItem> extends WirelessTerminalMenuHost<T>
         implements ISegmentedInventory, InternalInventoryHost {
     private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory(this, 9);
 
-    public WirelessCraftingTerminalMenuHost(Player player, ItemMenuHostLocator locator,
+    public WirelessCraftingTerminalMenuHost(T item, Player player, ItemMenuHostLocator locator,
             BiConsumer<Player, ISubMenu> returnToMainMenu) {
-        super(player, locator, returnToMainMenu);
+        super(item, player, locator, returnToMainMenu);
         craftingGrid.readFromNBT(getItemStack().getOrCreateTag(), "craftingGrid");
     }
 
@@ -36,13 +37,8 @@ public class WirelessCraftingTerminalMenuHost extends WirelessTerminalMenuHost
     }
 
     @Override
-    public void saveChanges() {
+    public void saveChangedInventory(AppEngInternalInventory inv) {
         craftingGrid.writeToNBT(getItemStack().getOrCreateTag(), "craftingGrid");
-    }
-
-    @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
-
     }
 
 }

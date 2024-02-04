@@ -20,6 +20,7 @@ package appeng.blockentity;
 
 import java.util.List;
 
+import appeng.util.inv.AppEngInternalInventory;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -98,7 +99,9 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public abstract void onChangeInventory(InternalInventory inv, int slot);
+    public void saveChangedInventory(AppEngInternalInventory inv) {
+        this.saveChanges();
+    }
 
     protected InternalInventory getExposedInventoryForSide(Direction side) {
         return this.getInternalInventory();

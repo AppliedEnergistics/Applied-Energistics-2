@@ -18,6 +18,7 @@
 
 package appeng.api.implementations.menuobjects;
 
+import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.player.Player;
@@ -34,17 +35,24 @@ import appeng.menu.locator.ItemMenuHostLocator;
 /**
  * Base interface for an adapter that connects an item stack in a player inventory with a menu that is opened by it.
  */
-public class ItemMenuHost implements IUpgradeableObject {
+public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
 
+    private final T item;
     private final Player player;
     private final ItemMenuHostLocator locator;
     private final IUpgradeInventory upgrades;
     private int powerTicks = 0;
     private double powerDrainPerTick = 0.5;
 
-    public ItemMenuHost(Player player, ItemMenuHostLocator locator) {
+    public ItemMenuHost(T item, Player player, ItemMenuHostLocator locator) {
         this.player = player;
         this.locator = locator;
+        this.item = item;
+        var currentStack = getItemStack();
+        if (!currentStack.is(item)) {
+            throw new IllegalArgumentException("The current item in-slot is " + currentStack.getItem() + " but " +
+                                               "this menu requires " + item);
+        }
         this.upgrades = new DelegateItemUpgradeInventory(this::getItemStack);
     }
 
@@ -70,8 +78,12 @@ public class ItemMenuHost implements IUpgradeableObject {
         return locator;
     }
 
+    public T getItem() {
+        return item;
+    }
+
     /**
-     * @return The item stack hosting the menu.
+     * @return The item stack hosting the menu. This can change.
      */
     public ItemStack getItemStack() {
         return locator.locateItem(player);
@@ -94,24 +106,11 @@ public class ItemMenuHost implements IUpgradeableObject {
     }
 
     /**
-     * Ensures that the item stack hosting the menu is still in the expected player inventory slot. If necessary,
-     * referential equality is restored by overwriting the item in the player inventory if it is equal to the expected
-     * item.
-     *
-     * @return True if {@link #getItemStack()} is still in the expected slot.
+     * Ensures that the item this menu was opened from has not changed.
      */
     protected boolean ensureItemStillInSlot() {
-        if (locator == null) {
-            return true;
-        }
-
-        ItemStack expectedItem = getItemStack();
-
-        ItemStack currentItem = locator.locateItem(getPlayer());
-        if (!currentItem.isEmpty() && !expectedItem.isEmpty()) {
-            return currentItem == expectedItem || ItemStack.isSameItem(expectedItem, currentItem);
-        }
-        return false;
+        var currentItem = getItemStack();
+        return !currentItem.isEmpty() && currentItem.is(item);
     }
 
     /**
@@ -123,7 +122,7 @@ public class ItemMenuHost implements IUpgradeableObject {
             return true;
         }
 
-        if (this instanceof IEnergySource energySource) {
+        if (this.powerDrainPerTick > 0 && this instanceof IEnergySource energySource) {
             this.powerTicks++;
             if (this.powerTicks > 10) {
                 var amt = this.powerTicks * this.powerDrainPerTick;

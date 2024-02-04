@@ -1,5 +1,6 @@
 package appeng.core.network;
 
+import appeng.core.network.clientbound.SetLinkStatusPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
@@ -55,6 +56,7 @@ public class InitNetwork {
         clientbound(registrar, MockExplosionPacket.class, MockExplosionPacket::decode);
         clientbound(registrar, NetworkStatusPacket.class, NetworkStatusPacket::decode);
         clientbound(registrar, PatternAccessTerminalPacket.class, PatternAccessTerminalPacket::decode);
+        clientbound(registrar, SetLinkStatusPacket.class, SetLinkStatusPacket::decode);
 
         // Serverbound
         serverbound(registrar, ColorApplicatorSelectColorPacket.class, ColorApplicatorSelectColorPacket::decode);

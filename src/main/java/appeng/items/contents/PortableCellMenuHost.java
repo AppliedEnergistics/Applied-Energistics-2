@@ -18,16 +18,6 @@
 
 package appeng.items.contents;
 
-import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-
-import com.google.common.base.Preconditions;
-
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Settings;
@@ -38,6 +28,7 @@ import appeng.api.features.HotkeyAction;
 import appeng.api.implementations.menuobjects.IPortableTerminal;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.stacks.AEKeyType;
+import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.IBasicCellItem;
@@ -47,19 +38,25 @@ import appeng.me.storage.SupplierStorage;
 import appeng.menu.ISubMenu;
 import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.util.ConfigManager;
+import com.google.common.base.Preconditions;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 /**
  * Hosts the terminal interface for a {@link AbstractPortableCell}.
  */
-public class PortableCellMenuHost extends ItemMenuHost implements IPortableTerminal {
+public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMenuHost<T> implements IPortableTerminal {
     private final BiConsumer<Player, ISubMenu> returnMainMenu;
     private final MEStorage cellStorage;
     private final AbstractPortableCell item;
 
-    public PortableCellMenuHost(Player player, ItemMenuHostLocator locator, AbstractPortableCell item,
-
-            BiConsumer<Player, ISubMenu> returnMainMenu) {
-        super(player, locator);
+    public PortableCellMenuHost(T item, Player player, ItemMenuHostLocator locator, BiConsumer<Player, ISubMenu> returnMainMenu) {
+        super(item, player, locator);
         Preconditions.checkArgument(getItemStack().is(item), "Stack doesn't match item");
         this.returnMainMenu = returnMainMenu;
         this.cellStorage = new SupplierStorage(new CellStorageSupplier());
@@ -70,6 +67,11 @@ public class PortableCellMenuHost extends ItemMenuHost implements IPortableTermi
     @Override
     public boolean onBroadcastChanges(AbstractContainerMenu menu) {
         return ensureItemStillInSlot() && drainPower();
+    }
+
+    @Override
+    public ILinkStatus getLinkStatus() {
+        return ILinkStatus.ofDisconnected(null); // TODO
     }
 
     @Override

@@ -34,6 +34,12 @@ public interface ITerminalHost extends IUpgradeableObject, IConfigurableObject, 
     MEStorage getInventory();
 
     /**
+     * For hosts that do not have a fixed connection to the grid, this method is used to give
+     * feedback to the player about the current connection status.
+     */
+    ILinkStatus getLinkStatus();
+
+    /**
      * An optional hotkey used to close the terminal while its open.
      *
      * @return Hotkey id as it would be registered by {@link Hotkeys}, or null if there isn't one

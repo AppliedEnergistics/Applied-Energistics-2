@@ -18,8 +18,13 @@
 
 package appeng.items.tools.quartz;
 
-import org.jetbrains.annotations.Nullable;
-
+import appeng.api.implementations.menuobjects.IMenuItem;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
+import appeng.items.AEBaseItem;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.QuartzKnifeMenu;
+import appeng.menu.locator.ItemMenuHostLocator;
+import appeng.menu.locator.MenuLocators;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -29,14 +34,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
-
-import appeng.api.implementations.menuobjects.IMenuItem;
-import appeng.api.implementations.menuobjects.ItemMenuHost;
-import appeng.items.AEBaseItem;
-import appeng.menu.MenuOpener;
-import appeng.menu.implementations.QuartzKnifeMenu;
-import appeng.menu.locator.ItemMenuHostLocator;
-import appeng.menu.locator.MenuLocators;
+import org.jetbrains.annotations.Nullable;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
     private final RandomSource random = RandomSource.create();
@@ -83,8 +81,8 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
 
     @Nullable
     @Override
-    public ItemMenuHost getMenuHost(Player player, ItemMenuHostLocator locator,
-            @Nullable BlockHitResult hitResult) {
-        return new ItemMenuHost(player, locator);
+    public ItemMenuHost<?> getMenuHost(Player player, ItemMenuHostLocator locator,
+                                       @Nullable BlockHitResult hitResult) {
+        return new ItemMenuHost<>(this, player, locator);
     }
 }

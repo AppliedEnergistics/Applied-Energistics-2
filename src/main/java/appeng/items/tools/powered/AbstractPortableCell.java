@@ -85,9 +85,9 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
 
     @Nullable
     @Override
-    public PortableCellMenuHost getMenuHost(Player player, ItemMenuHostLocator locator,
+    public PortableCellMenuHost<?> getMenuHost(Player player, ItemMenuHostLocator locator,
             @Nullable BlockHitResult hitResult) {
-        return new PortableCellMenuHost(player, locator, this,
+        return new PortableCellMenuHost<>(this, player, locator,
                 (p, sm) -> openFromInventory(p, locator, true));
     }
 

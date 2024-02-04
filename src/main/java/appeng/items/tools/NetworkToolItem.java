@@ -64,14 +64,14 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem {
     }
 
     @Override
-    public NetworkToolMenuHost getMenuHost(Player player, ItemMenuHostLocator locator,
+    public NetworkToolMenuHost<?> getMenuHost(Player player, ItemMenuHostLocator locator,
             @Nullable BlockHitResult hitResult) {
         var level = player.level();
         if (hitResult == null) {
-            return new NetworkToolMenuHost(player, locator, null);
+            return new NetworkToolMenuHost<>(this, player, locator, null);
         }
         var host = GridHelper.getNodeHost(level, hitResult.getBlockPos());
-        return new NetworkToolMenuHost(player, locator, host);
+        return new NetworkToolMenuHost<>(this, player, locator, host);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem {
 
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        var toolHost = new NetworkToolMenuHost(null, MenuLocators.forStack(stack), null);
+        var toolHost = new NetworkToolMenuHost<>(this, null, MenuLocators.forStack(stack), null);
 
         if (toolHost.getInventory().isEmpty()) {
             return Optional.empty();
@@ -215,11 +215,10 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem {
     }
 
     private void insertIntoTool(ItemStack tool, ItemStack upgrade, Player player) {
-        var toolHost = new NetworkToolMenuHost(player, MenuLocators.forStack(tool), null);
+        var toolHost = new NetworkToolMenuHost<>(this, player, MenuLocators.forStack(tool), null);
         var amount = upgrade.getCount();
         var overflow = toolHost.getInventory().addItems(upgrade);
         upgrade.shrink(amount - overflow.getCount());
-        toolHost.saveChanges();
     }
 
 }

@@ -83,7 +83,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     @Nullable
     private final IPart part;
     @Nullable
-    protected final ItemMenuHost itemMenuHost;
+    protected final ItemMenuHost<?> itemMenuHost;
     private final DataSynchronization dataSync = new DataSynchronization(this);
     private final Inventory playerInventory;
     private final Set<Integer> lockedPlayerInventorySlots = new HashSet<>();
@@ -106,7 +106,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         this.playerInventory = playerInventory;
         this.blockEntity = host instanceof BlockEntity ? (BlockEntity) host : null;
         this.part = host instanceof IPart ? (IPart) host : null;
-        this.itemMenuHost = host instanceof ItemMenuHost ? (ItemMenuHost) host : null;
+        this.itemMenuHost = host instanceof ItemMenuHost<?> ? (ItemMenuHost<?>) host : null;
 
         if (host != null && this.blockEntity == null && this.part == null && this.itemMenuHost == null) {
             throw new IllegalArgumentException("Must have a valid host, instead " + host + " in " + playerInventory);

@@ -18,26 +18,6 @@
 
 package appeng.menu.me.common;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import com.google.common.primitives.Ints;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -50,7 +30,6 @@ import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.implementations.blockentities.IViewCellStorage;
 import appeng.api.implementations.menuobjects.IPortableTerminal;
-import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyService;
@@ -60,7 +39,9 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
+import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.LinkStatus;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.IBasicCellItem;
@@ -71,6 +52,7 @@ import appeng.core.AELog;
 import appeng.core.network.NetworkHandler;
 import appeng.core.network.bidirectional.ConfigValuePacket;
 import appeng.core.network.clientbound.MEInventoryUpdatePacket;
+import appeng.core.network.clientbound.SetLinkStatusPacket;
 import appeng.core.network.serverbound.MEInteractionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.ChannelPowerSrc;
@@ -78,6 +60,7 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.ToolboxMenu;
 import appeng.menu.guisync.GuiSync;
+import appeng.menu.guisync.LinkStatusAwareMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.slot.AppEngSlot;
@@ -85,12 +68,30 @@ import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import com.google.common.primitives.Ints;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @see MEStorageScreen
  */
 public class MEStorageMenu extends AEBaseMenu
-        implements IConfigManagerListener, IConfigurableObject, IMEInteractionHandler {
+        implements IConfigManagerListener, IConfigurableObject, IMEInteractionHandler, LinkStatusAwareMenu {
 
     public static final MenuType<MEStorageMenu> TYPE = MenuTypeBuilder
             .<MEStorageMenu, ITerminalHost>create(MEStorageMenu::new, ITerminalHost.class)
@@ -119,15 +120,19 @@ public class MEStorageMenu extends AEBaseMenu
     @GuiSync(100)
     public int activeCraftingJobs = -1;
 
+    // Client-side: last status received from server
+    // Server-side: last status sent to client
+    private ILinkStatus linkStatus = ILinkStatus.ofDisconnected(null);
+
     private IConfigManagerListener gui;
     private IConfigManager serverCM;
 
     // This is null on the client-side and can be null on the server too
     @Nullable
-    protected final MEStorage storage;
+    protected MEStorage storage;
 
     @Nullable
-    protected final IEnergySource powerSource;
+    protected IEnergySource powerSource;
 
     private final IncrementalUpdateHelper updateHelper = new IncrementalUpdateHelper();
 
@@ -166,30 +171,9 @@ public class MEStorageMenu extends AEBaseMenu
         this.clientCM.registerSetting(Settings.TYPE_FILTER, TypeFilter.ALL);
         this.clientCM.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
-        IEnergySource powerSource = null;
         if (isServerSide()) {
             this.serverCM = host.getConfigManager();
-
-            this.storage = host.getInventory();
-            if (this.storage != null) {
-
-                if (host instanceof IPortableTerminal || host instanceof IMEChest) {
-                    powerSource = (IEnergySource) host;
-                } else if (host instanceof IActionHost actionHost) {
-                    var node = actionHost.getActionableNode();
-                    if (node != null) {
-                        this.networkNode = node;
-                        var g = node.getGrid();
-                        powerSource = new ChannelPowerSrc(this.networkNode, g.getEnergyService());
-                    }
-                }
-            } else {
-                this.setValidMenu(false);
-            }
-        } else {
-            this.storage = null;
         }
-        this.powerSource = powerSource;
 
         // Create slots for the view cells, in case the terminal host supports those
         if (!hideViewCells() && host instanceof IViewCellStorage) {
@@ -229,10 +213,8 @@ public class MEStorageMenu extends AEBaseMenu
 
     public boolean isKeyVisible(AEKey key) {
         // If the host is a basic item cell with a limited key space, account for this
-        if (host instanceof ItemMenuHost itemMenuHost) {
-            if (itemMenuHost.getItemStack().getItem() instanceof IBasicCellItem basicCellItem) {
-                return basicCellItem.getKeyType().contains(key);
-            }
+        if (itemMenuHost != null && itemMenuHost.getItem() instanceof IBasicCellItem basicCellItem) {
+            return basicCellItem.getKeyType().contains(key);
         }
 
         return true;
@@ -243,11 +225,20 @@ public class MEStorageMenu extends AEBaseMenu
         toolboxMenu.tick();
 
         if (isServerSide()) {
-            // Close the screen if the backing network inventory has changed
-            if (this.storage != this.host.getInventory()) {
-                this.setValidMenu(false);
-                return;
+            this.storage = this.host.getInventory();
+            this.networkNode = null;
+            this.powerSource = null;
+            if (host instanceof IPortableTerminal || host instanceof IMEChest) {
+                powerSource = (IEnergySource) host;
+            } else if (host instanceof IActionHost actionHost) {
+                var node = actionHost.getActionableNode();
+                if (node != null) {
+                    this.networkNode = node;
+                    powerSource = new ChannelPowerSrc(this.networkNode, node.getGrid().getEnergyService());
+                }
             }
+
+            this.updateLinkStatus();
 
             this.updateActiveCraftingJobs();
 
@@ -483,7 +474,7 @@ public class MEStorageMenu extends AEBaseMenu
                     }
                 }
             }
-                break;
+            break;
             case ROLL_UP:
             case PICKUP_SINGLE: {
                 // Extract 1 of the hovered stack from the network (or at least try to), and add it to the carried item
@@ -509,7 +500,7 @@ public class MEStorageMenu extends AEBaseMenu
                     }
                 }
             }
-                break;
+            break;
             case PICKUP_OR_SET_DOWN: {
                 if (!getCarried().isEmpty()) {
                     putCarriedItemIntoNetwork(false);
@@ -527,7 +518,7 @@ public class MEStorageMenu extends AEBaseMenu
                     }
                 }
             }
-                break;
+            break;
             case SPLIT_OR_PLACE_SINGLE:
                 if (!getCarried().isEmpty()) {
                     putCarriedItemIntoNetwork(true);
@@ -579,10 +570,10 @@ public class MEStorageMenu extends AEBaseMenu
         // needed for crafting and placement in-world.
         boolean grabbedEmptyBucket = false;
         if (getCarried().isEmpty() && clickedKey instanceof AEFluidKey fluidKey
-                && fluidKey.getFluid().getBucket() != Items.AIR) {
+            && fluidKey.getFluid().getBucket() != Items.AIR) {
             // This costs no energy, but who cares...
             if (storage != null
-                    && storage.extract(AEItemKey.of(Items.BUCKET), 1, Actionable.MODULATE, getActionSource()) >= 1) {
+                && storage.extract(AEItemKey.of(Items.BUCKET), 1, Actionable.MODULATE, getActionSource()) >= 1) {
                 var bucket = Items.BUCKET.getDefaultInstance();
                 setCarried(bucket);
                 grabbedEmptyBucket = true;
@@ -675,6 +666,10 @@ public class MEStorageMenu extends AEBaseMenu
         return this.hasPower;
     }
 
+    public ILinkStatus getLinkStatus() {
+        return linkStatus;
+    }
+
     private IConfigManagerListener getGui() {
         return this.gui;
     }
@@ -750,5 +745,19 @@ public class MEStorageMenu extends AEBaseMenu
 
     public ITerminalHost getHost() {
         return host;
+    }
+
+    // When using a custom implementation of ILinkStatus, override this and implement your own packet
+    protected void updateLinkStatus() {
+        var linkStatus = host.getLinkStatus();
+        if (!Objects.equals(this.linkStatus, linkStatus)) {
+            this.linkStatus = linkStatus;
+            sendPacketToClient(new SetLinkStatusPacket(linkStatus));
+        }
+    }
+
+    @Override
+    public void setLinkStatus(ILinkStatus linkStatus) {
+        this.linkStatus = linkStatus;
     }
 }

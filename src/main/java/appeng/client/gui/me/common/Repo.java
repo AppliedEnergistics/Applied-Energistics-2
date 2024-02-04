@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import appeng.api.storage.ILinkStatus;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
@@ -69,7 +70,7 @@ public class Repo implements IClientRepo {
 
     private int rowSize = 9;
 
-    private boolean hasPower;
+    private boolean enabled = false;
 
     private final BiMap<Long, GridInventoryEntry> entries = HashBiMap.create();
     private final ArrayList<GridInventoryEntry> view = new ArrayList<>();
@@ -352,12 +353,12 @@ public class Repo implements IClientRepo {
         return !this.pinnedRow.isEmpty();
     }
 
-    public final boolean hasPower() {
-        return this.hasPower;
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public final void setPower(boolean hasPower) {
-        this.hasPower = hasPower;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public final int getRowSize() {
