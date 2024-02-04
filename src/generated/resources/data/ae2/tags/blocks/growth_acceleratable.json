@@ -11,6 +11,7 @@
     "minecraft:sweet_berry_bush",
     "minecraft:nether_wart",
     "minecraft:kelp",
+    "minecraft:cocoa",
     {
       "id": "#minecraft:crops",
       "required": false
