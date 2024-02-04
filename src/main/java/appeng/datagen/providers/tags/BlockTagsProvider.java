@@ -63,7 +63,7 @@ public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implem
                 // TODO: Should all be in some conventional tag
                 .add(Blocks.BAMBOO_SAPLING, Blocks.BAMBOO, Blocks.SUGAR_CANE, Blocks.SUGAR_CANE, Blocks.VINE,
                         Blocks.TWISTING_VINES, Blocks.WEEPING_VINES, Blocks.CAVE_VINES, Blocks.SWEET_BERRY_BUSH,
-                        Blocks.NETHER_WART, Blocks.KELP)
+                        Blocks.NETHER_WART, Blocks.KELP, Blocks.COCOA)
                 .addOptionalTag(ConventionTags.CROPS.location())
                 .addOptionalTag(ConventionTags.SAPLINGS.location())
                 .addTag(ConventionTags.BUDDING_BLOCKS_BLOCKS);
