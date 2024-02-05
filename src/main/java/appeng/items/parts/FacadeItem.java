@@ -109,7 +109,8 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
         // Play a placement sound of the underlying block
         BlockState blockState = facade.getBlockState();
         SoundType soundType = blockState.getSoundType();
-        level.playSound(null, blockPos, soundType.getPlaceSound(), SoundSource.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F,
+        level.playSound(null, blockPos, soundType.getPlaceSound(), SoundSource.BLOCKS,
+                (soundType.getVolume() + 1.0F) / 2.0F,
                 soundType.getPitch() * 0.8F);
 
         host.markForSave();

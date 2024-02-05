@@ -27,15 +27,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.NeighborUpdater;
@@ -105,8 +101,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     /**
-     * Changes this block entity to the TESR version if any of the parts require
-     * dynamic rendering.
+     * Changes this block entity to the TESR version if any of the parts require dynamic rendering.
      */
     protected void updateBlockEntitySettings() {
         // FIXME: potentially invalidate voxel shape cache?
@@ -329,16 +324,6 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     public InteractionResult disassembleWithWrench(Player player, Level level, BlockHitResult hitResult,
             ItemStack wrench) {
 
-        // Play a break sound
-        var fac = getFacadeContainer().getFacade(hitResult.getDirection());
-        if (fac != null) {
-            BlockState blockState = fac.getBlockState();
-            SoundType soundType = blockState.getSoundType();
-
-            level.playSound(null, getBlockPos(), soundType.getPlaceSound(), SoundSource.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F,
-                soundType.getPitch() * 0.8F);
-        }
-
         if (!level.isClientSide) {
             var is = new ArrayList<ItemStack>();
             final SelectedPart sp;
@@ -382,9 +367,6 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
                 player.getInventory().placeItemBackInInventory(item);
             }
         }
-
-        // Play a break sound
-        level.playSound(player, getBlockPos(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, .7f, 1f);
 
         return InteractionResult.sidedSuccess(level.isClientSide());
 

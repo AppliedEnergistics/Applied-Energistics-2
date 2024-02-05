@@ -1,5 +1,8 @@
 package appeng.hooks;
 
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -56,6 +59,10 @@ public final class WrenchHook {
                 if (!Platform.hasPermissions(new DimensionalBlockPos(level, hitResult.getBlockPos()), player)) {
                     return InteractionResult.FAIL;
                 }
+
+                // Play a popping sound
+                SoundEvent soundType = SoundEvents.ITEM_FRAME_REMOVE_ITEM;
+                level.playSound(null, hitResult.getBlockPos(), soundType, SoundSource.BLOCKS, 0.7F, 1.0F);
 
                 return baseBlockEntity.disassembleWithWrench(
                         player,
