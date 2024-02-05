@@ -18,6 +18,16 @@
 
 package appeng.items.contents;
 
+import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+
+import com.google.common.base.Preconditions;
+
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Settings;
@@ -33,19 +43,12 @@ import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.util.IConfigManager;
+import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.AbstractPortableCell;
 import appeng.me.storage.SupplierStorage;
 import appeng.menu.ISubMenu;
 import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.util.ConfigManager;
-import com.google.common.base.Preconditions;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 /**
  * Hosts the terminal interface for a {@link AbstractPortableCell}.
@@ -54,8 +57,10 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
     private final BiConsumer<Player, ISubMenu> returnMainMenu;
     private final MEStorage cellStorage;
     private final AbstractPortableCell item;
+    private ILinkStatus linkStatus = ILinkStatus.ofDisconnected();
 
-    public PortableCellMenuHost(T item, Player player, ItemMenuHostLocator locator, BiConsumer<Player, ISubMenu> returnMainMenu) {
+    public PortableCellMenuHost(T item, Player player, ItemMenuHostLocator locator,
+            BiConsumer<Player, ISubMenu> returnMainMenu) {
         super(item, player, locator);
         Preconditions.checkArgument(getItemStack().is(item), "Stack doesn't match item");
         this.returnMainMenu = returnMainMenu;
@@ -66,12 +71,18 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
 
     @Override
     public boolean onBroadcastChanges(AbstractContainerMenu menu) {
-        return ensureItemStillInSlot() && drainPower();
+        if (super.onBroadcastChanges(menu)) {
+            drainPower();
+            linkStatus = isOutOfPower() ? ILinkStatus.ofDisconnected(GuiText.OutOfPower.text())
+                    : ILinkStatus.ofConnected();
+            return true;
+        }
+        return false;
     }
 
     @Override
     public ILinkStatus getLinkStatus() {
-        return ILinkStatus.ofDisconnected(null); // TODO
+        return linkStatus;
     }
 
     @Override

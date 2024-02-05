@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import appeng.api.storage.ILinkStatus;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 

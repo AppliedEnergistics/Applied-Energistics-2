@@ -1032,7 +1032,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             var item = part.getPartItem().asItem();
             var itemId = BuiltInRegistries.ITEM.getKey(item);
             return itemIndex.get(itemId);
-        } else if (target instanceof ItemMenuHost<?> menuHost) {
+        } else if (target instanceof ItemMenuHost<?>menuHost) {
             var item = menuHost.getItem();
             var itemId = BuiltInRegistries.ITEM.getKey(item);
             return itemIndex.get(itemId);

@@ -20,7 +20,6 @@ package appeng.blockentity;
 
 import java.util.List;
 
-import appeng.util.inv.AppEngInternalInventory;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -34,6 +33,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.GenericStack;
+import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 
 public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements InternalInventoryHost {

@@ -18,6 +18,27 @@
 
 package appeng.client.gui.me.common;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+import com.mojang.blaze3d.platform.InputConstants;
+
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.client.AEKeyRendering;
 import appeng.api.config.ActionItems;
@@ -68,24 +89,6 @@ import appeng.menu.me.crafting.CraftingStatusMenu;
 import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 
 public class MEStorageScreen<C extends MEStorageMenu>
         extends AEBaseScreen<C> implements ISortSource, IConfigManagerListener {
@@ -114,7 +117,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     private final Scrollbar scrollbar;
 
     public MEStorageScreen(C menu, Inventory playerInventory,
-                           Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         this.style = style.getTerminalStyle();
@@ -189,7 +192,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         // Restore previous search term
         if ((menu.isReturnedFromSubScreen() || config.isRememberLastSearch()) && rememberedSearch != null
-            && !rememberedSearch.isEmpty()) {
+                && !rememberedSearch.isEmpty()) {
             this.searchField.setValue(rememberedSearch);
             this.searchField.selectAll();
             setSearchText(rememberedSearch);
@@ -211,8 +214,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry entry,
-                                                      int mouseButton,
-                                                      ClickType clickType) {
+            int mouseButton,
+            ClickType clickType) {
         if (entry != null) {
             AELog.debug("Clicked on grid inventory entry serial=%s, key=%s", entry.getSerial(), entry.getWhat());
         }
@@ -250,8 +253,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
                             : InventoryAction.PICKUP_OR_SET_DOWN;
 
                     if (action == InventoryAction.PICKUP_OR_SET_DOWN
-                        && shouldCraftOnClick(entry)
-                        && getMenu().getCarried().isEmpty()) {
+                            && shouldCraftOnClick(entry)
+                            && getMenu().getCarried().isEmpty()) {
                         menu.handleInteraction(serial, InventoryAction.AUTO_CRAFT);
                         return;
                     }
@@ -408,7 +411,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     @Override
     public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
-                       int mouseY) {
+            int mouseY) {
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;
 
@@ -439,8 +442,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     firstSlot.getY() - 1,
                     lastSlot.getX() + 17,
                     lastSlot.getY() + 17,
-                    0x3f000000
-            );
+                    0x3f000000);
 
             // Draw the disconnect status on top of the grid
             var statusDescription = linkStatus.statusDescription();
@@ -457,8 +459,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                         textX,
                         textY,
                         0xffff0000,
-                        true
-                );
+                        true);
             }
         }
     }
@@ -541,7 +542,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         for (var entry : repo.getPinnedEntries()) {
             var info = PinnedKeys.getPinInfo(entry.getWhat());
             if (info != null && info.reason == PinnedKeys.PinReason.CRAFTING
-                && !PendingCraftingJobs.hasPendingJob(entry.getWhat())) {
+                    && !PendingCraftingJobs.hasPendingJob(entry.getWhat())) {
                 info.canPrune = true;
             }
         }
@@ -549,7 +550,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     @Override
     public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
-                       int mouseY, float partialTicks) {
+            int mouseY, float partialTicks) {
 
         style.getHeader()
                 .dest(offsetX, offsetY)
@@ -716,7 +717,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     private boolean shouldAutoFocus() {
         return config.isAutoFocusSearch()
-               && !config.isUseExternalSearch();
+                && !config.isUseExternalSearch();
     }
 
     @Override

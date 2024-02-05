@@ -2,7 +2,6 @@ package appeng.helpers;
 
 import java.util.function.BiConsumer;
 
-import appeng.items.tools.powered.WirelessCraftingTerminalItem;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.ResourceLocation;
@@ -10,13 +9,15 @@ import net.minecraft.world.entity.player.Player;
 
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
+import appeng.items.tools.powered.WirelessCraftingTerminalItem;
 import appeng.menu.ISubMenu;
 import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 
-public class WirelessCraftingTerminalMenuHost<T extends WirelessCraftingTerminalItem> extends WirelessTerminalMenuHost<T>
+public class WirelessCraftingTerminalMenuHost<T extends WirelessCraftingTerminalItem>
+        extends WirelessTerminalMenuHost<T>
         implements ISegmentedInventory, InternalInventoryHost {
     private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory(this, 9);
 

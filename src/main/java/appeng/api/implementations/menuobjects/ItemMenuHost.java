@@ -18,11 +18,11 @@
 
 package appeng.api.implementations.menuobjects;
 
-import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -41,8 +41,8 @@ public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
     private final Player player;
     private final ItemMenuHostLocator locator;
     private final IUpgradeInventory upgrades;
-    private int powerTicks = 0;
-    private double powerDrainPerTick = 0.5;
+    private int powerTicks = 10;
+    private boolean outOfPower;
 
     public ItemMenuHost(T item, Player player, ItemMenuHostLocator locator) {
         this.player = player;
@@ -51,7 +51,7 @@ public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
         var currentStack = getItemStack();
         if (!currentStack.is(item)) {
             throw new IllegalArgumentException("The current item in-slot is " + currentStack.getItem() + " but " +
-                                               "this menu requires " + item);
+                    "this menu requires " + item);
         }
         this.upgrades = new DelegateItemUpgradeInventory(this::getItemStack);
     }
@@ -116,28 +116,36 @@ public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
     /**
      * Can only be used with a host that implements {@link IEnergySource} only call once per broadcastChanges()
      */
-    public boolean drainPower() {
+    public void drainPower() {
         // Do not drain power for creative players
         if (player.isCreative()) {
-            return true;
+            this.outOfPower = false;
+            return;
         }
 
-        if (this.powerDrainPerTick > 0 && this instanceof IEnergySource energySource) {
+        var powerDrainPerTick = getPowerDrainPerTick();
+        if (powerDrainPerTick > 0 && this instanceof IEnergySource energySource) {
             this.powerTicks++;
             if (this.powerTicks > 10) {
-                var amt = this.powerTicks * this.powerDrainPerTick;
+                var amt = this.powerTicks * powerDrainPerTick;
                 this.powerTicks = 0;
-                return energySource.extractAEPower(amt, Actionable.MODULATE, PowerMultiplier.CONFIG) > 0;
+                this.outOfPower = energySource.extractAEPower(amt, Actionable.MODULATE, PowerMultiplier.CONFIG) <= 0;
             }
+        } else {
+            // If no power is being drained, we're never out of power
+            this.outOfPower = false;
         }
-        return true;
     }
 
     /**
-     * Sets how much AE is drained per tick.
+     * Get power drain per tick.
      */
-    protected void setPowerDrainPerTick(double powerDrainPerTick) {
-        this.powerDrainPerTick = powerDrainPerTick;
+    protected double getPowerDrainPerTick() {
+        return 0.5;
+    }
+
+    public final boolean isOutOfPower() {
+        return outOfPower;
     }
 
     @Override

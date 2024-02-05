@@ -1,6 +1,5 @@
 package appeng.core.network;
 
-import appeng.core.network.clientbound.SetLinkStatusPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
@@ -22,6 +21,7 @@ import appeng.core.network.clientbound.MatterCannonPacket;
 import appeng.core.network.clientbound.MockExplosionPacket;
 import appeng.core.network.clientbound.NetworkStatusPacket;
 import appeng.core.network.clientbound.PatternAccessTerminalPacket;
+import appeng.core.network.clientbound.SetLinkStatusPacket;
 import appeng.core.network.serverbound.ColorApplicatorSelectColorPacket;
 import appeng.core.network.serverbound.CompassRequestPacket;
 import appeng.core.network.serverbound.ConfigButtonPacket;

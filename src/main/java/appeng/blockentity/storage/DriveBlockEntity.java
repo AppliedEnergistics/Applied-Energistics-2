@@ -23,7 +23,6 @@ import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Set;
 
-import appeng.util.inv.AppEngInternalInventory;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -65,6 +64,7 @@ import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.DriveMenu;
 import appeng.menu.locator.MenuLocators;
+import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class DriveBlockEntity extends AENetworkInvBlockEntity

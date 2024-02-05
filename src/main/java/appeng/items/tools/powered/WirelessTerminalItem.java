@@ -219,7 +219,8 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
     @Override
     public ItemMenuHost<?> getMenuHost(Player player, ItemMenuHostLocator locator,
             @Nullable BlockHitResult hitResult) {
-        return new WirelessTerminalMenuHost<>(this, player, locator, (p, subMenu) -> openFromInventory(p, locator, true));
+        return new WirelessTerminalMenuHost<>(this, player, locator,
+                (p, subMenu) -> openFromInventory(p, locator, true));
     }
 
     /**

@@ -18,6 +18,27 @@
 
 package appeng.menu.me.common;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import com.google.common.primitives.Ints;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -41,7 +62,6 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.LinkStatus;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.IBasicCellItem;
@@ -68,24 +88,6 @@ import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import com.google.common.primitives.Ints;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * @see MEStorageScreen
@@ -474,7 +476,7 @@ public class MEStorageMenu extends AEBaseMenu
                     }
                 }
             }
-            break;
+                break;
             case ROLL_UP:
             case PICKUP_SINGLE: {
                 // Extract 1 of the hovered stack from the network (or at least try to), and add it to the carried item
@@ -500,7 +502,7 @@ public class MEStorageMenu extends AEBaseMenu
                     }
                 }
             }
-            break;
+                break;
             case PICKUP_OR_SET_DOWN: {
                 if (!getCarried().isEmpty()) {
                     putCarriedItemIntoNetwork(false);
@@ -518,7 +520,7 @@ public class MEStorageMenu extends AEBaseMenu
                     }
                 }
             }
-            break;
+                break;
             case SPLIT_OR_PLACE_SINGLE:
                 if (!getCarried().isEmpty()) {
                     putCarriedItemIntoNetwork(true);
@@ -570,10 +572,10 @@ public class MEStorageMenu extends AEBaseMenu
         // needed for crafting and placement in-world.
         boolean grabbedEmptyBucket = false;
         if (getCarried().isEmpty() && clickedKey instanceof AEFluidKey fluidKey
-            && fluidKey.getFluid().getBucket() != Items.AIR) {
+                && fluidKey.getFluid().getBucket() != Items.AIR) {
             // This costs no energy, but who cares...
             if (storage != null
-                && storage.extract(AEItemKey.of(Items.BUCKET), 1, Actionable.MODULATE, getActionSource()) >= 1) {
+                    && storage.extract(AEItemKey.of(Items.BUCKET), 1, Actionable.MODULATE, getActionSource()) >= 1) {
                 var bucket = Items.BUCKET.getDefaultInstance();
                 setCarried(bucket);
                 grabbedEmptyBucket = true;

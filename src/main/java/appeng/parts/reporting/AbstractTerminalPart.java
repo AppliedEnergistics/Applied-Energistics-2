@@ -20,7 +20,6 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
-import appeng.api.storage.ILinkStatus;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -36,6 +35,7 @@ import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IViewCellStorage;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartItem;
+import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.IConfigManager;

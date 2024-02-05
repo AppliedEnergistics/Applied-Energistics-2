@@ -1,10 +1,12 @@
 package appeng.api.storage;
 
-import appeng.api.networking.IManagedGridNode;
-import appeng.core.localization.GuiText;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.Nullable;
+
+import appeng.api.networking.IManagedGridNode;
+import appeng.core.localization.GuiText;
 
 /**
  * Describes the current connection status of a {@link ITerminalHost} to the grid.
@@ -38,7 +40,7 @@ public interface ILinkStatus {
         if (node.isOnline()) {
             return ofConnected();
         } else if (!node.isPowered()) {
-            return ofDisconnected(GuiText.NoPower.text().withStyle(ChatFormatting.DARK_RED));
+            return ofDisconnected(GuiText.OutOfPower.text().withStyle(ChatFormatting.DARK_RED));
         } else if (node.getNode() != null && !node.getNode().meetsChannelRequirements()) {
             return ofDisconnected(GuiText.NoChannel.text().withStyle(ChatFormatting.DARK_RED));
         } else {
@@ -52,8 +54,8 @@ public interface ILinkStatus {
     boolean connected();
 
     /**
-     * Gives a reason for why the {@linkplain  ITerminalHost host} is disconnected. Can always be null,
-     * but is genereally only not-null if {@link #connected()} returns false.
+     * Gives a reason for why the {@linkplain ITerminalHost host} is disconnected. Can always be null, but is genereally
+     * only not-null if {@link #connected()} returns false.
      */
     @Nullable
     Component statusDescription();

@@ -34,8 +34,8 @@ public interface ITerminalHost extends IUpgradeableObject, IConfigurableObject, 
     MEStorage getInventory();
 
     /**
-     * For hosts that do not have a fixed connection to the grid, this method is used to give
-     * feedback to the player about the current connection status.
+     * For hosts that do not have a fixed connection to the grid, this method is used to give feedback to the player
+     * about the current connection status.
      */
     ILinkStatus getLinkStatus();
 

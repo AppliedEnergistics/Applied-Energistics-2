@@ -18,10 +18,11 @@
 
 package appeng.api.upgrades;
 
-import appeng.util.inv.AppEngInternalInventory;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
+
+import appeng.util.inv.AppEngInternalInventory;
 
 /**
  * Provides an upgrade inventory that stores the upgrades directly on an {@link ItemStack}, and derives which updates

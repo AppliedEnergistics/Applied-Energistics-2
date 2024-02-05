@@ -18,6 +18,11 @@
 
 package appeng.items.contents;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IInWorldGridNodeHost;
@@ -28,9 +33,6 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.SupplierInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 public class NetworkToolMenuHost<T extends NetworkToolItem> extends ItemMenuHost<T> {
     @Nullable
@@ -39,12 +41,11 @@ public class NetworkToolMenuHost<T extends NetworkToolItem> extends ItemMenuHost
     private final SupplierInternalInventory<InternalInventory> supplierInv;
 
     public NetworkToolMenuHost(T item, Player player, ItemMenuHostLocator locator,
-                               @Nullable IInWorldGridNodeHost host) {
+            @Nullable IInWorldGridNodeHost host) {
         super(item, player, locator);
         this.host = host;
         this.supplierInv = new SupplierInternalInventory<>(
-                new StackDependentSupplier<>(this::getItemStack, this::createToolboxInventory)
-        );
+                new StackDependentSupplier<>(this::getItemStack, this::createToolboxInventory));
     }
 
     private InternalInventory createToolboxInventory(ItemStack stack) {
