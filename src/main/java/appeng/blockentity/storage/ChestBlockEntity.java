@@ -81,7 +81,6 @@ import appeng.menu.MenuOpener;
 import appeng.menu.implementations.ChestMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.ConfigManager;
-import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -433,7 +432,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
             // update the neighbors
             if (this.level != null) {
-                Platform.notifyBlocksOfNeighbors(this.level, this.worldPosition);
+                invalidateCapabilities();
                 this.markForUpdate();
             }
         }

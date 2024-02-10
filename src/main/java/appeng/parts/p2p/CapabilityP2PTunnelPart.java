@@ -24,7 +24,6 @@ import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 
 import appeng.api.parts.IPartItem;
-import appeng.hooks.ticking.TickHandler;
 import appeng.parts.PartAdjacentApi;
 
 /**
@@ -137,12 +136,9 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
 
     @Override
     public void onTunnelNetworkChange() {
-        // This might be invoked while the network is being unloaded and we don't want to send a block update then, so
-        // we delay it until the next tick.
-        TickHandler.instance().addCallable(getLevel(), () -> {
-            if (getMainNode().isReady()) { // Check that the p2p tunnel is still there.
-                getBlockEntity().invalidateCapabilities();
-            }
-        });
+        // This might be invoked while the network is being unloaded,
+        // however the capability system should handle this fine.
+        // (Not OK for block updates though, thankfully we don't need them anymore!)
+        getBlockEntity().invalidateCapabilities();
     }
 }
