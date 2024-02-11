@@ -69,8 +69,7 @@ public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
      */
     @Nullable
     public Integer getPlayerInventorySlot() {
-        return null;
-//        return locator.getPlayerInventorySlot();
+        return locator.getPlayerInventorySlot();
     }
 
     @Nullable
