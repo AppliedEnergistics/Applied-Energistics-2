@@ -66,8 +66,4 @@ public class EnergyAcceptorBlockEntity extends AENetworkPowerBlockEntity {
         return InternalInventory.empty();
     }
 
-    @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
-
-    }
 }

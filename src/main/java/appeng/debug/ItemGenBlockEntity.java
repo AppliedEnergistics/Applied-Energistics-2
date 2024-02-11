@@ -32,7 +32,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
 
-import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
@@ -113,7 +112,12 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity implements InternalInv
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void saveChangedInventory(AppEngInternalInventory inv) {
+        saveChanges();
+    }
+
+    @Override
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         if (inv.getStackInSlot(slot).isEmpty()) {
             refillSlot(slot);
         }

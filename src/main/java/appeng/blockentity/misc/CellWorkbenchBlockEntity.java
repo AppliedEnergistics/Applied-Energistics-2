@@ -102,7 +102,12 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void saveChangedInventory(AppEngInternalInventory inv) {
+        saveChanges();
+    }
+
+    @Override
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         if (inv == this.cell && !this.locked) {
             this.locked = true;
             try {

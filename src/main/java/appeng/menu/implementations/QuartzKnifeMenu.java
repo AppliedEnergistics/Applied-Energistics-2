@@ -52,7 +52,7 @@ public class QuartzKnifeMenu extends AEBaseMenu {
 
     private String currentName = "";
 
-    public QuartzKnifeMenu(int id, Inventory ip, ItemMenuHost host) {
+    public QuartzKnifeMenu(int id, Inventory ip, ItemMenuHost<?> host) {
         super(TYPE, id, ip, host);
 
         this.addSlot(

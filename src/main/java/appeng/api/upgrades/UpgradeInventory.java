@@ -94,11 +94,11 @@ abstract class UpgradeInventory extends AppEngInternalInventory implements Inter
     }
 
     @Override
-    public void saveChanges() {
+    public void saveChangedInventory(AppEngInternalInventory inv) {
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         this.installed = null;
     }
 

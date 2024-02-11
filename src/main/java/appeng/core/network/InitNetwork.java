@@ -21,6 +21,7 @@ import appeng.core.network.clientbound.MatterCannonPacket;
 import appeng.core.network.clientbound.MockExplosionPacket;
 import appeng.core.network.clientbound.NetworkStatusPacket;
 import appeng.core.network.clientbound.PatternAccessTerminalPacket;
+import appeng.core.network.clientbound.SetLinkStatusPacket;
 import appeng.core.network.serverbound.ColorApplicatorSelectColorPacket;
 import appeng.core.network.serverbound.CompassRequestPacket;
 import appeng.core.network.serverbound.ConfigButtonPacket;
@@ -55,6 +56,7 @@ public class InitNetwork {
         clientbound(registrar, MockExplosionPacket.class, MockExplosionPacket::decode);
         clientbound(registrar, NetworkStatusPacket.class, NetworkStatusPacket::decode);
         clientbound(registrar, PatternAccessTerminalPacket.class, PatternAccessTerminalPacket::decode);
+        clientbound(registrar, SetLinkStatusPacket.class, SetLinkStatusPacket::decode);
 
         // Serverbound
         serverbound(registrar, ColorApplicatorSelectColorPacket.class, ColorApplicatorSelectColorPacket::decode);

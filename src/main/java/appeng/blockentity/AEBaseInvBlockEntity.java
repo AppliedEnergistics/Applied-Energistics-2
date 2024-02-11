@@ -33,6 +33,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.GenericStack;
+import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 
 public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements InternalInventoryHost {
@@ -98,7 +99,9 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public abstract void onChangeInventory(InternalInventory inv, int slot);
+    public void saveChangedInventory(AppEngInternalInventory inv) {
+        this.saveChanges();
+    }
 
     protected InternalInventory getExposedInventoryForSide(Direction side) {
         return this.getInternalInventory();

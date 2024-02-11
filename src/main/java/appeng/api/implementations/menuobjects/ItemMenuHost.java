@@ -22,40 +22,38 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.upgrades.IUpgradeInventory;
-import appeng.api.upgrades.IUpgradeableItem;
 import appeng.api.upgrades.IUpgradeableObject;
-import appeng.api.upgrades.UpgradeInventories;
 import appeng.menu.locator.ItemMenuHostLocator;
-import appeng.menu.locator.MenuLocators;
 
 /**
  * Base interface for an adapter that connects an item stack in a player inventory with a menu that is opened by it.
  */
-public class ItemMenuHost implements IUpgradeableObject {
+public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
 
+    private final T item;
     private final Player player;
-    @Nullable
     private final ItemMenuHostLocator locator;
-    private final ItemStack itemStack;
     private final IUpgradeInventory upgrades;
-    private int powerTicks = 0;
-    private double powerDrainPerTick = 0.5;
+    private int powerTicks = 10;
+    private boolean outOfPower;
 
-    public ItemMenuHost(Player player, @Nullable ItemMenuHostLocator locator, ItemStack itemStack) {
+    public ItemMenuHost(T item, Player player, ItemMenuHostLocator locator) {
         this.player = player;
         this.locator = locator;
-        this.itemStack = itemStack;
-        if (itemStack.getItem() instanceof IUpgradeableItem upgradeableItem) {
-            this.upgrades = upgradeableItem.getUpgrades(itemStack);
-        } else {
-            this.upgrades = UpgradeInventories.empty();
+        this.item = item;
+        var currentStack = getItemStack();
+        if (!currentStack.is(item)) {
+            throw new IllegalArgumentException("The current item in-slot is " + currentStack.getItem() + " but " +
+                    "this menu requires " + item);
         }
+        this.upgrades = new DelegateItemUpgradeInventory(this::getItemStack);
     }
 
     /**
@@ -70,8 +68,8 @@ public class ItemMenuHost implements IUpgradeableObject {
      *         not directly accessible via the inventory.
      */
     @Nullable
-    public Integer getSlot() {
-        return MenuLocators.inventorySlot(locator);
+    public Integer getPlayerInventorySlot() {
+        return locator.getPlayerInventorySlot();
     }
 
     @Nullable
@@ -79,11 +77,15 @@ public class ItemMenuHost implements IUpgradeableObject {
         return locator;
     }
 
+    public T getItem() {
+        return item;
+    }
+
     /**
-     * @return The item stack hosting the menu.
+     * @return The item stack hosting the menu. This can change.
      */
     public ItemStack getItemStack() {
-        return itemStack;
+        return locator.locateItem(player);
     }
 
     /**
@@ -99,61 +101,50 @@ public class ItemMenuHost implements IUpgradeableObject {
      * @return False to close the menu.
      */
     public boolean onBroadcastChanges(AbstractContainerMenu menu) {
-        return true;
+        return ensureItemStillInSlot();
     }
 
     /**
-     * Ensures that the item stack hosting the menu is still in the expected player inventory slot. If necessary,
-     * referential equality is restored by overwriting the item in the player inventory if it is equal to the expected
-     * item.
-     *
-     * @return True if {@link #getItemStack()} is still in the expected slot.
+     * Ensures that the item this menu was opened from has not changed.
      */
     protected boolean ensureItemStillInSlot() {
-        if (locator == null) {
-            return true;
-        }
-
-        ItemStack expectedItem = getItemStack();
-
-        ItemStack currentItem = locator.locateItem(getPlayer());
-        if (!currentItem.isEmpty() && !expectedItem.isEmpty()) {
-            if (currentItem == expectedItem) {
-                return true;
-            } else if (ItemStack.isSameItem(expectedItem, currentItem)) {
-                // If the items are still equivalent, we just restore referential equality so that modifications
-                // to the GUI item are reflected in the slot
-                return locator.setItem(player, expectedItem);
-            }
-        }
-        return false;
+        var currentItem = getItemStack();
+        return !currentItem.isEmpty() && currentItem.is(item);
     }
 
     /**
      * Can only be used with a host that implements {@link IEnergySource} only call once per broadcastChanges()
      */
-    public boolean drainPower() {
+    public void drainPower() {
         // Do not drain power for creative players
         if (player.isCreative()) {
-            return true;
+            this.outOfPower = false;
+            return;
         }
 
-        if (this instanceof IEnergySource energySource) {
+        var powerDrainPerTick = getPowerDrainPerTick();
+        if (powerDrainPerTick > 0 && this instanceof IEnergySource energySource) {
             this.powerTicks++;
             if (this.powerTicks > 10) {
-                var amt = this.powerTicks * this.powerDrainPerTick;
+                var amt = this.powerTicks * powerDrainPerTick;
                 this.powerTicks = 0;
-                return energySource.extractAEPower(amt, Actionable.MODULATE, PowerMultiplier.CONFIG) > 0;
+                this.outOfPower = energySource.extractAEPower(amt, Actionable.MODULATE, PowerMultiplier.CONFIG) <= 0;
             }
+        } else {
+            // If no power is being drained, we're never out of power
+            this.outOfPower = false;
         }
-        return true;
     }
 
     /**
-     * Sets how much AE is drained per tick.
+     * Get power drain per tick.
      */
-    protected void setPowerDrainPerTick(double powerDrainPerTick) {
-        this.powerDrainPerTick = powerDrainPerTick;
+    protected double getPowerDrainPerTick() {
+        return 0.5;
+    }
+
+    public final boolean isOutOfPower() {
+        return outOfPower;
     }
 
     @Override
