@@ -25,6 +25,7 @@ import java.util.function.Consumer;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.world.item.Items;
@@ -95,18 +96,16 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
                 .unlockedBy(criterionName(AEBlocks.CUT_QUARTZ_BLOCK), has(AEBlocks.CUT_QUARTZ_BLOCK))
                 .save(consumer, AppEng.makeId("decorative/chiseled_quartz_block_from_stonecutting"));
 
-        ShapedRecipeBuilder.shaped(AEBlocks.LIGHT_DETECTOR)
-                .pattern("ab")
-                .define('a', ConventionTags.ALL_NETHER_QUARTZ)
-                .define('b', Items.IRON_INGOT)
+        ShapelessRecipeBuilder.shapeless(AEBlocks.LIGHT_DETECTOR)
+                .requires(ConventionTags.ALL_NETHER_QUARTZ)
+                .requires(Items.IRON_INGOT)
                 .unlockedBy("has_nether_quartz", has(ConventionTags.ALL_NETHER_QUARTZ))
                 .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
                 .save(consumer, AppEng.makeId("decorative/light_detector"));
 
-        ShapedRecipeBuilder.shaped(AEBlocks.QUARTZ_FIXTURE, 2)
-                .pattern("ab")
-                .define('a', AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
-                .define('b', Items.IRON_INGOT)
+        ShapelessRecipeBuilder.shapeless(AEBlocks.QUARTZ_FIXTURE, 2)
+                .requires(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
+                .requires(Items.IRON_INGOT)
                 .unlockedBy(criterionName(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED),
                         has(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED))
                 .save(consumer, AppEng.makeId("decorative/quartz_fixture"));
