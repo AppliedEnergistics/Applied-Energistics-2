@@ -454,9 +454,8 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
         }
 
         if (setting == Settings.INSCRIBER_SEPARATE_SIDES) {
-            // Send a block update since our exposed inventory changed...
-            // In theory this shouldn't be necessary, but we do it just in case...
-            markForUpdate();
+            // Our exposed inventory changed, invalidate caps!
+            invalidateCapabilities();
         }
 
         if (setting == Settings.INSCRIBER_BUFFER_SIZE) {

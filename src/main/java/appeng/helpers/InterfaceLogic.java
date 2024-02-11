@@ -31,7 +31,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -64,7 +63,6 @@ import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DelegatingMEInventory;
 import appeng.util.ConfigInventory;
 import appeng.util.ConfigManager;
-import appeng.util.Platform;
 
 /**
  * Contains behavior for interface blocks and parts, which is independent of the storage channel.
@@ -207,10 +205,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
             });
         }
 
-        final BlockEntity te = this.host.getBlockEntity();
-        if (te != null && te.getLevel() != null) {
-            Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
-        }
+        this.host.getBlockEntity().invalidateCapabilities();
     }
 
     public void gridChanged() {
