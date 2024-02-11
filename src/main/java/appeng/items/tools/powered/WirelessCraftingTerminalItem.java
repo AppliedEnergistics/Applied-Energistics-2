@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -26,9 +25,9 @@ public class WirelessCraftingTerminalItem extends WirelessTerminalItem {
 
     @Nullable
     @Override
-    public ItemMenuHost getMenuHost(Player player, ItemMenuHostLocator locator, ItemStack stack,
+    public ItemMenuHost<?> getMenuHost(Player player, ItemMenuHostLocator locator,
             @Nullable BlockHitResult hitResult) {
-        return new WirelessCraftingTerminalMenuHost(player, locator, stack,
+        return new WirelessCraftingTerminalMenuHost<>(this, player, locator,
                 (p, sm) -> openFromInventory(p, locator, true));
     }
 }

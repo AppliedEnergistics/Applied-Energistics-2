@@ -196,11 +196,6 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
         return this.inv;
     }
 
-    @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
-
-    }
-
     private class SpatialIOFilter implements IAEItemFilter {
         @Override
         public boolean allowExtract(InternalInventory inv, int slot, int amount) {

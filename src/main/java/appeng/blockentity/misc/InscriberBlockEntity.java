@@ -242,7 +242,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         if (slot == 0) {
             boolean sameItemSameTags = ItemStack.isSameItemSameTags(inv.getStackInSlot(0), lastStacks.get(inv));
             lastStacks.put(inv, inv.getStackInSlot(0).copy());

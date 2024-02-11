@@ -85,9 +85,9 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
 
     @Nullable
     @Override
-    public PortableCellMenuHost getMenuHost(Player player, ItemMenuHostLocator locator, ItemStack stack,
+    public PortableCellMenuHost<?> getMenuHost(Player player, ItemMenuHostLocator locator,
             @Nullable BlockHitResult hitResult) {
-        return new PortableCellMenuHost(player, locator, this, stack,
+        return new PortableCellMenuHost<>(this, player, locator,
                 (p, sm) -> openFromInventory(p, locator, true));
     }
 
@@ -201,7 +201,7 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
             return 0;
         }
 
-        var host = getMenuHost(player, null, stack, null);
+        var host = getMenuHost(player, MenuLocators.forStack(stack), null);
         if (host == null) {
             return 0;
         }

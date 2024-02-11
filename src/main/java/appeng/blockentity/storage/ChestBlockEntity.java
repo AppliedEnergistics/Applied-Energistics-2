@@ -60,6 +60,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
+import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.ITerminalHost;
@@ -203,6 +204,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
 
         return new ChestMonitorHandler(cellInventory);
+    }
+
+    @Override
+    public ILinkStatus getLinkStatus() {
+        return ILinkStatus.ofManagedNode(getMainNode());
     }
 
     @Override
@@ -423,7 +429,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         if (inv == this.cellInventory) {
             this.cellHandler = null;
             this.isCached = false; // recalculate the storage cell.

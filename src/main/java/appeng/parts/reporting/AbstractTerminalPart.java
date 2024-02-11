@@ -35,6 +35,7 @@ import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IViewCellStorage;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartItem;
+import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.IConfigManager;
@@ -93,9 +94,13 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
         return this.cm;
     }
 
-    @Override
     public void saveChanges() {
         this.getHost().markForSave();
+    }
+
+    @Override
+    public void saveChangedInventory(AppEngInternalInventory inv) {
+        saveChanges();
     }
 
     @Override
@@ -144,12 +149,17 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
+    public ILinkStatus getLinkStatus() {
+        return ILinkStatus.ofManagedNode(getMainNode());
+    }
+
+    @Override
     public InternalInventory getViewCellStorage() {
         return this.viewCell;
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         this.getHost().markForSave();
     }
 }

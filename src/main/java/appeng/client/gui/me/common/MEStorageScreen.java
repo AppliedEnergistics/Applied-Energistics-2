@@ -430,6 +430,38 @@ public class MEStorageScreen<C extends MEStorageMenu>
             StackSizeRenderer.renderSizeLabel(guiGraphics, font, x - this.leftPos, y - this.topPos,
                     String.valueOf(menu.activeCraftingJobs));
         }
+
+        // Draw an overlay indicating the grid is disconnected
+        var linkStatus = getMenu().getLinkStatus();
+        if (!linkStatus.connected()) {
+            var firstSlot = style.getSlotPos(0, 0);
+            var lastSlot = style.getSlotPos(rows - 1, style.getSlotsPerRow() - 1);
+
+            guiGraphics.fill(
+                    firstSlot.getX() - 1,
+                    firstSlot.getY() - 1,
+                    lastSlot.getX() + 17,
+                    lastSlot.getY() + 17,
+                    0x3f000000);
+
+            // Draw the disconnect status on top of the grid
+            var statusDescription = linkStatus.statusDescription();
+            if (statusDescription != null) {
+                var visualText = statusDescription.getVisualOrderText();
+                var textWidth = font.width(visualText);
+
+                var textX = (firstSlot.getX() + lastSlot.getX() + 16 - textWidth) / 2;
+                var textY = (firstSlot.getY() + lastSlot.getY() + 16 - font.lineHeight) / 2;
+
+                guiGraphics.drawString(
+                        font,
+                        visualText,
+                        textX,
+                        textY,
+                        0xffff0000,
+                        true);
+            }
+        }
     }
 
     private void renderPinnedRowDecorations(GuiGraphics guiGraphics) {
@@ -560,9 +592,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     @Override
     public void renderSlot(GuiGraphics guiGraphics, Slot s) {
         if (s instanceof RepoSlot repoSlot) {
-            if (!this.repo.hasPower()) {
-                guiGraphics.fill(s.x, s.y, 16 + s.x, 16 + s.y, 0x66111111);
-            } else {
+            if (this.menu.getLinkStatus().connected()) {
                 GridInventoryEntry entry = repoSlot.getEntry();
                 if (entry != null) {
                     try {
@@ -712,7 +742,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     @Override
     public void containerTick() {
-        this.repo.setPower(this.menu.isPowered());
+        this.repo.setEnabled(this.menu.getLinkStatus().connected());
 
         if (this.supportsViewCells) {
             List<ItemStack> viewCells = this.menu.getViewCells();

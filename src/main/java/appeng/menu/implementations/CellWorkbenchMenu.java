@@ -121,7 +121,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     protected void setupUpgrades() {
         // We support up to 8 upgrade slots, see ICellWorkbenchItem, but we need to pre-create all slots here
         // while the active number of slots changes depending on the item inserted
-        var upgradeInventory = new SupplierInternalInventory(this::getUpgrades);
+        var upgradeInventory = new SupplierInternalInventory<>(this::getUpgrades);
         for (int i = 0; i < 8; i++) {
             OptionalRestrictedInputSlot slot = new OptionalRestrictedInputSlot(
                     RestrictedInputSlot.PlacableItemType.UPGRADES,

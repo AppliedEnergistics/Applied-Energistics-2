@@ -116,11 +116,6 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
-
-    }
-
-    @Override
     public float getOpenNess(float partialTicks) {
         return this.chestLidController.getOpenness(partialTicks);
     }

@@ -23,16 +23,6 @@ record CuriosItemLocator(int curioSlot, @Nullable BlockHitResult hitResult) impl
         return cap.getStackInSlot(curioSlot);
     }
 
-    @Override
-    public boolean setItem(Player player, ItemStack stack) {
-        var cap = player.getCapability(CuriosIntegration.ITEM_HANDLER);
-        if (cap == null || curioSlot >= cap.getSlots()) {
-            return false;
-        }
-        cap.extractItem(curioSlot, Integer.MAX_VALUE, false);
-        return cap.insertItem(curioSlot, stack, false).isEmpty();
-    }
-
     public void writeToPacket(FriendlyByteBuf buf) {
         buf.writeInt(curioSlot);
         buf.writeOptional(Optional.ofNullable(hitResult), FriendlyByteBuf::writeBlockHitResult);
