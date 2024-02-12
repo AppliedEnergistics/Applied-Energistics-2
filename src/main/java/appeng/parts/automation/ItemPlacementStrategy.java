@@ -58,7 +58,7 @@ public class ItemPlacementStrategy implements PlacementStrategy {
 
         var i = itemKey.getItem();
 
-        var maxStorage = (int) Math.min(amount, i.getMaxStackSize());
+        var maxStorage = (int) Math.min(amount, itemKey.getMaxStackSize());
         var is = itemKey.toStack(maxStorage);
         var worked = false;
 
