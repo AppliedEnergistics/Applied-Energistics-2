@@ -109,7 +109,7 @@ public class MathExpressionParser {
                                 number.push(left.subtract(right));
                             }
                             case '/' -> {
-                                if (right.equals(BigDecimal.ZERO)) {
+                                if (right.compareTo(BigDecimal.ZERO) == 0) {
                                     return Optional.empty(); // division by zeroes
                                 } else {
                                     number.push(left.divide(right, 8, RoundingMode.FLOOR));
