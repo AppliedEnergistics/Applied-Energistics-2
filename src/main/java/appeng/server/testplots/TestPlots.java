@@ -575,8 +575,9 @@ public final class TestPlots {
         ((MatterCannonItem) cannon.getItem()).injectAEPower(cannon, Double.MAX_VALUE, Actionable.MODULATE);
         var cannonInv = BasicCellInventory.createInventory(cannon, null);
         for (var item : ammo) {
+            var key = AEItemKey.of(item);
             cannonInv.insert(
-                    AEItemKey.of(item), item.getMaxStackSize(), Actionable.MODULATE, new BaseActionSource());
+                    key, key.getMaxStackSize(), Actionable.MODULATE, new BaseActionSource());
         }
         return cannon;
     }

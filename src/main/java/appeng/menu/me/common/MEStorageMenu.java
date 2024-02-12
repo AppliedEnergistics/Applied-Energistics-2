@@ -511,7 +511,7 @@ public class MEStorageMenu extends AEBaseMenu
                             powerSource,
                             storage,
                             clickedItem,
-                            clickedItem.getItem().getMaxStackSize(),
+                            clickedItem.getMaxStackSize(),
                             this.getActionSource());
                     if (extracted > 0) {
                         setCarried(clickedItem.toStack((int) extracted));
@@ -527,7 +527,7 @@ public class MEStorageMenu extends AEBaseMenu
                 } else {
                     var extracted = storage.extract(
                             clickedItem,
-                            clickedItem.getItem().getMaxStackSize(),
+                            clickedItem.getMaxStackSize(),
                             Actionable.SIMULATE,
                             this.getActionSource());
 
