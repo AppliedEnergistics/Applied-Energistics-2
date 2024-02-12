@@ -61,7 +61,7 @@ public class ConfigMenuInventory implements InternalInventory {
             // Otherwise, only convert to the real stack if it fits in the max stack size
             if (inv.getMode() == ConfigInventory.Mode.CONFIG_TYPES) {
                 return itemKey.toStack();
-            } else if (stack.amount() > 0 && stack.amount() <= itemKey.getItem().getMaxStackSize()) {
+            } else if (stack.amount() > 0 && stack.amount() <= itemKey.getMaxStackSize()) {
                 return itemKey.toStack((int) stack.amount());
             }
         }
