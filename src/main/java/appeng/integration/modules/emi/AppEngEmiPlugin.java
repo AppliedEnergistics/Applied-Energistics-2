@@ -104,6 +104,11 @@ public class AppEngEmiPlugin implements EmiPlugin {
 
         // Facades
         registry.addDeferredRecipes(this::registerFacades);
+
+        // Remove items
+        if (!AEConfig.instance().isEnableFacadesInJEI()) {
+            registry.removeEmiStacks(stack -> AEItems.FACADE.isSameAs(stack.getItemStack()));
+        }
     }
 
     private void registerWorkstations(EmiRegistry registry) {
