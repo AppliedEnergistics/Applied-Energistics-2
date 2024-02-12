@@ -56,6 +56,11 @@ public final class AEItemKey extends AEKey {
     private final int hashCode;
     private final int cachedDamage;
 
+    /**
+     * Max stack size cache, or {@code -1} if not initialized.
+     */
+    private int maxStackSize = -1;
+
     private AEItemKey(Item item, InternedTag internedTag, InternedTag internedCaps) {
         this.item = item;
         this.internedTag = internedTag;
@@ -73,7 +78,10 @@ public final class AEItemKey extends AEKey {
         if (stack.isEmpty()) {
             return null;
         }
-        return of(stack.getItem(), stack.getTag(), serializeStackCaps(stack));
+        var ret = of(stack.getItem(), stack.getTag(), serializeStackCaps(stack));
+        // Cache max stack size since we already have an ItemStack.
+        ret.maxStackSize = stack.getMaxStackSize();
+        return ret;
     }
 
     public static boolean matches(AEKey what, ItemStack itemStack) {
@@ -234,7 +242,7 @@ public final class AEItemKey extends AEKey {
                 break;
             }
 
-            var taken = Math.min(amount, item.getMaxStackSize());
+            var taken = Math.min(amount, getMaxStackSize());
             amount -= taken;
             drops.add(toStack((int) taken));
         }
@@ -257,6 +265,16 @@ public final class AEItemKey extends AEKey {
      */
     public boolean isDamaged() {
         return cachedDamage > 0;
+    }
+
+    public int getMaxStackSize() {
+        int ret = maxStackSize;
+
+        if (ret == -1) {
+            maxStackSize = ret = toStack().getMaxStackSize();
+        }
+
+        return ret;
     }
 
     @Override

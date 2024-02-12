@@ -222,7 +222,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     @Override
     public long getMaxAmount(AEKey key) {
         if (key instanceof AEItemKey itemKey) {
-            return Math.min(itemKey.getItem().getMaxStackSize(), getCapacity(key.getType()));
+            return Math.min(itemKey.getMaxStackSize(), getCapacity(key.getType()));
         }
         return getCapacity(key.getType());
     }
