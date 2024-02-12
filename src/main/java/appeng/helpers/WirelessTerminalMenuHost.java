@@ -66,7 +66,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
      */
     protected double currentRemainingRange = Double.MIN_VALUE;
     private final MEStorage storage;
-    private ILinkStatus linkStatus = ILinkStatus.ofDisconnected();
+    protected ILinkStatus linkStatus = ILinkStatus.ofDisconnected();
 
     public WirelessTerminalMenuHost(T item, Player player, ItemMenuHostLocator locator,
             BiConsumer<Player, ISubMenu> returnToMainMenu) {
@@ -92,7 +92,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
     }
 
     @Nullable
-    private IGrid getLinkedGrid(ItemStack stack) {
+    protected IGrid getLinkedGrid(ItemStack stack) {
         return getItem().getLinkedGrid(stack, getPlayer().level(), null);
     }
 
@@ -125,7 +125,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
         return null;
     }
 
-    private void rangeCheck() {
+    protected void rangeCheck() {
         this.currentAccessPoint = null;
         this.currentDistanceFromGrid = Double.MAX_VALUE;
         this.currentRemainingRange = Double.MIN_VALUE;
@@ -187,6 +187,22 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
     public record AccessPointSignal(double distanceSquared, double remainingRangeSquared) {
     }
 
+    protected void updateLinkStatus() {
+        if (isOutOfPower()) {
+            this.linkStatus = ILinkStatus.ofDisconnected(GuiText.OutOfPower.text());
+        } else if (currentAccessPoint != null) {
+            this.linkStatus = ILinkStatus.ofConnected();
+        } else {
+            MutableObject<Component> errorHolder = new MutableObject<>();
+            if (getItem().getLinkedGrid(getItemStack(), getPlayer().level(), errorHolder::setValue) == null) {
+                this.linkStatus = ILinkStatus.ofDisconnected(errorHolder.getValue());
+            } else {
+                // If a grid exists, but no access point, we're out of range
+                this.linkStatus = ILinkStatus.ofDisconnected(PlayerMessages.OutOfRange.text());
+            }
+        }
+    }
+
     @Override
     public boolean onBroadcastChanges(AbstractContainerMenu menu) {
         if (super.onBroadcastChanges(menu)) {
@@ -194,19 +210,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
             drainPower();
 
             // Update the link status after checking for range + power
-            if (isOutOfPower()) {
-                this.linkStatus = ILinkStatus.ofDisconnected(GuiText.OutOfPower.text());
-            } else if (currentAccessPoint != null) {
-                this.linkStatus = ILinkStatus.ofConnected();
-            } else {
-                MutableObject<Component> errorHolder = new MutableObject<>();
-                if (getItem().getLinkedGrid(getItemStack(), getPlayer().level(), errorHolder::setValue) == null) {
-                    this.linkStatus = ILinkStatus.ofDisconnected(errorHolder.getValue());
-                } else {
-                    // If a grid exists, but no access point, we're out of range
-                    this.linkStatus = ILinkStatus.ofDisconnected(PlayerMessages.OutOfRange.text());
-                }
-            }
+            updateLinkStatus();
 
             return true;
         }
