@@ -41,6 +41,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.model.WrapperBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -169,10 +170,15 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
                 if (bakedModel instanceof IDynamicPartBakedModel dynamicPartBakedModel) {
                     dynamicPartBakedModel.emitQuads(blockView, state, pos, randomSupplier, context,
                             facing, partModelData);
-                } else if (bakedModel instanceof FabricBakedModel) {
-                    ((FabricBakedModel) bakedModel).emitBlockQuads(blockView, state, pos, randomSupplier, context);
+                } else if (WrapperBakedModel
+                        .unwrap(bakedModel) instanceof IDynamicPartBakedModel dynamicPartBakedModel) {
+                    // Shitty workaround to make our custom part models work even when Continuity wraps them for its
+                    // emissive support.
+                    dynamicPartBakedModel.emitQuads(blockView, state, pos, randomSupplier, context,
+                            facing, partModelData);
+
                 } else {
-                    context.bakedModelConsumer().accept(bakedModel);
+                    bakedModel.emitBlockQuads(blockView, state, pos, randomSupplier, context);
                 }
                 context.popTransform();
             }

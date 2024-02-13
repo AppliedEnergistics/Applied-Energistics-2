@@ -37,10 +37,7 @@ class BakedQuadBuilder extends MutableQuadViewImpl implements QuadEmitter {
     }
 
     @Override
-    public QuadEmitter emit() {
+    public void emitDirectly() {
         output.add(toBakedQuad(finder != null ? finder.find(this) : null));
-
-        clear();
-        return this;
     }
 }
