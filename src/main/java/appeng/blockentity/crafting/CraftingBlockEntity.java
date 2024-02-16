@@ -221,7 +221,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
     public void breakCluster() {
         if (this.cluster != null) {
-            this.cluster.cancel();
+            this.cluster.cancelJob();
             var inv = this.cluster.craftingLogic.getInventory();
 
             // Drop stacks

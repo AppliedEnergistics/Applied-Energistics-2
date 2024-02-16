@@ -198,7 +198,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         return node != null ? node.getGrid() : null;
     }
 
-    public void cancel() {
+    @Override
+    public void cancelJob() {
         craftingLogic.cancel();
     }
 

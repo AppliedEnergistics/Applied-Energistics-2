@@ -123,7 +123,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
             sendClientAction(ACTION_CANCEL_CRAFTING);
         } else {
             if (this.cpu != null) {
-                this.cpu.cancel();
+                this.cpu.cancelJob();
             }
         }
     }
