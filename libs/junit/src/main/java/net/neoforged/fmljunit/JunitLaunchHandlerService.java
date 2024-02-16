@@ -30,7 +30,7 @@ public class JunitLaunchHandlerService extends ForgeUserdevLaunchHandler {
                     .getMethod("bootStrap")
                     .invoke(null);
 
-            var fmlCoreLoader = gameLayer.findLoader("fml_core");
+            var fmlCoreLoader = gameLayer.findLoader("fml_loader");
 
             var modLoaderClass = fmlCoreLoader.loadClass("net.neoforged.fml.ModLoader");
             var syncExecutor = fmlCoreLoader.loadClass("net.neoforged.fml.ModWorkManager")
