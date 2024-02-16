@@ -43,6 +43,11 @@ public interface ICraftingCPU {
     CraftingJobStatus getJobStatus();
 
     /**
+     * Cancels the current job.
+     */
+    void cancelJob();
+
+    /**
      * @return the available storage in bytes
      */
     long getAvailableStorage();
