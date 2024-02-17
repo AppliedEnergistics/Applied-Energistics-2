@@ -269,6 +269,11 @@ public class NumberEntryWidget implements ICompositeWidget {
             return OptionalLong.empty();
         }
 
+        // Reject decimal values if the unit is integral
+        if (type.amountPerUnit() == 1 && internalValue.get().scale() > 0) {
+            return OptionalLong.empty();
+        }
+
         var externalValue = convertToExternalValue(internalValue.get());
         if (externalValue < minValue) {
             return OptionalLong.empty();
