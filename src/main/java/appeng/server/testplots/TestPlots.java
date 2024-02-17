@@ -710,8 +710,8 @@ public final class TestPlots {
 
                 var cellInv = drive.getInternalInventory();
                 for (int i = 0; i < cellInv.size(); i++) {
-                    var creativeCell = AEItems.ITEM_CELL_CREATIVE.stack();
-                    var configInv = AEItems.ITEM_CELL_CREATIVE.asItem().getConfigInventory(creativeCell);
+                    var creativeCell = AEItems.CREATIVE_CELL.stack();
+                    var configInv = AEItems.CREATIVE_CELL.asItem().getConfigInventory(creativeCell);
 
                     for (int j = 0; j < configInv.size(); j++) {
                         if (!keysToAdd.hasNext()) {

@@ -70,7 +70,6 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         storageCell(AEItems.FLUID_CELL_16K, "item/fluid_storage_cell_16k");
         storageCell(AEItems.FLUID_CELL_64K, "item/fluid_storage_cell_64k");
         storageCell(AEItems.FLUID_CELL_256K, "item/fluid_storage_cell_256k");
-        flatSingleLayer(AEItems.FLUID_CELL_CREATIVE, "item/creative_fluid_cell");
         flatSingleLayer(AEItems.FLUID_CELL_HOUSING, "item/fluid_cell_housing");
         flatSingleLayer(AEItems.FLUIX_CRYSTAL, "item/fluix_crystal");
         flatSingleLayer(AEItems.FLUIX_DUST, "item/fluix_dust");
@@ -84,7 +83,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         flatSingleLayer(AEItems.CELL_COMPONENT_4K, "item/cell_component_4k");
         flatSingleLayer(AEItems.CELL_COMPONENT_64K, "item/cell_component_64k");
         flatSingleLayer(AEItems.CELL_COMPONENT_256K, "item/cell_component_256k");
-        flatSingleLayer(AEItems.ITEM_CELL_CREATIVE, "item/creative_item_cell");
+        flatSingleLayer(AEItems.CREATIVE_CELL, "item/creative_storage_cell");
         flatSingleLayer(AEItems.ITEM_CELL_HOUSING, "item/item_cell_housing");
         flatSingleLayer(AEItems.LOGIC_PROCESSOR, "item/logic_processor");
         flatSingleLayer(AEItems.LOGIC_PROCESSOR_PRESS, "item/logic_processor_press");
