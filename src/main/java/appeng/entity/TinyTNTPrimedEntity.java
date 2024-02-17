@@ -177,8 +177,8 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAddit
                             strength -= (resistance + 0.3F) * 0.11f;
 
                             if (strength > 0.01 && !state.isAir()) {
-                                if (block.dropFromExplosion(ex)) {
-                                    block.dropResources(state, this.level(), point);
+                                if (state.canDropFromExplosion(this.level(), point, ex)) {
+                                    Block.dropResources(state, this.level(), point, this.level().getBlockEntity(point));
                                 }
 
                                 level().setBlock(point, Blocks.AIR.defaultBlockState(), 3);
