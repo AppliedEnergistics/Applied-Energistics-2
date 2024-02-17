@@ -56,7 +56,6 @@ import appeng.api.config.ViewItems;
 import appeng.api.features.IGridLinkableHandler;
 import appeng.api.implementations.blockentities.IWirelessAccessPoint;
 import appeng.api.implementations.menuobjects.IMenuItem;
-import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.IGrid;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableItem;
@@ -67,7 +66,6 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.localization.Tooltips;
 import appeng.helpers.WirelessTerminalMenuHost;
-import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
@@ -75,7 +73,7 @@ import appeng.menu.me.common.MEStorageMenu;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
 
-public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem, IUpgradeableItem {
+public class WirelessTerminalItem extends PoweredContainerItem implements IMenuItem, IUpgradeableItem {
 
     private static final Logger LOG = LoggerFactory.getLogger(WirelessTerminalItem.class);
 
@@ -217,7 +215,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
 
     @Nullable
     @Override
-    public ItemMenuHost<?> getMenuHost(Player player, ItemMenuHostLocator locator,
+    public WirelessTerminalMenuHost<?> getMenuHost(Player player, ItemMenuHostLocator locator,
             @Nullable BlockHitResult hitResult) {
         return new WirelessTerminalMenuHost<>(this, player, locator,
                 (p, subMenu) -> openFromInventory(p, locator, true));

@@ -18,14 +18,19 @@
 
 package appeng.items.contents;
 
+import com.google.common.primitives.Ints;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.config.Actionable;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
 import appeng.api.upgrades.Upgrades;
 import appeng.items.tools.NetworkToolItem;
 import appeng.menu.locator.ItemMenuHostLocator;
@@ -81,8 +86,15 @@ public class NetworkToolMenuHost<T extends NetworkToolItem> extends ItemMenuHost
         }
     }
 
-    public InternalInventory getInternalInventory() {
-        return this.supplierInv;
+    @Override
+    public long insert(Player player, AEKey what, long amount, Actionable mode) {
+        if (what instanceof AEItemKey itemKey) {
+            var stack = itemKey.toStack(Ints.saturatedCast(amount));
+            var overflow = getInventory().addItems(stack, mode.isSimulate());
+            return stack.getCount() - overflow.getCount();
+        }
+
+        return 0;
     }
 
     @Nullable

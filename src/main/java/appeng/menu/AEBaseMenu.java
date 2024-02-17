@@ -289,9 +289,12 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             return;
         }
 
-        if (itemMenuHost != null && !itemMenuHost.onBroadcastChanges(this)) {
-            setValidMenu(false);
-            return;
+        if (itemMenuHost != null) {
+            if (!itemMenuHost.isValid()) {
+                setValidMenu(false);
+                return;
+            }
+            itemMenuHost.tick();
         }
 
         if (isServerSide()) {

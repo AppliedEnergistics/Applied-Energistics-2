@@ -11,7 +11,7 @@ import appeng.menu.slot.RestrictedInputSlot;
  */
 public class ToolboxMenu {
     private final AEBaseMenu menu;
-    private final NetworkToolMenuHost inv;
+    private final NetworkToolMenuHost<?> inv;
 
     public ToolboxMenu(AEBaseMenu menu) {
         this.menu = menu;
@@ -24,7 +24,7 @@ public class ToolboxMenu {
             }
 
             // Add quick access slots for the upgrade cards stored in the toolbox
-            var upgradeCardInv = this.inv.getInternalInventory();
+            var upgradeCardInv = this.inv.getInventory();
             for (int i = 0; i < upgradeCardInv.size(); i++) {
                 var slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgradeCardInv, i);
                 // The toolbox is in the network tool that is part of the player inventory
@@ -38,8 +38,12 @@ public class ToolboxMenu {
     }
 
     public void tick() {
-        if (inv != null && !inv.onBroadcastChanges(menu)) {
-            menu.setValidMenu(false);
+        if (inv != null) {
+            if (!inv.isValid()) {
+                menu.setValidMenu(false);
+                return;
+            }
+            inv.tick();
         }
     }
 

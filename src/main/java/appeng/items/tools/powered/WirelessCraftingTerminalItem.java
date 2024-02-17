@@ -8,7 +8,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.helpers.WirelessCraftingTerminalMenuHost;
 import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.me.items.WirelessCraftingTermMenu;
@@ -25,7 +24,7 @@ public class WirelessCraftingTerminalItem extends WirelessTerminalItem {
 
     @Nullable
     @Override
-    public ItemMenuHost<?> getMenuHost(Player player, ItemMenuHostLocator locator,
+    public WirelessCraftingTerminalMenuHost<?> getMenuHost(Player player, ItemMenuHostLocator locator,
             @Nullable BlockHitResult hitResult) {
         return new WirelessCraftingTerminalMenuHost<>(this, player, locator,
                 (p, sm) -> openFromInventory(p, locator, true));
