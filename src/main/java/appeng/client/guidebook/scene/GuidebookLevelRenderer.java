@@ -173,6 +173,7 @@ public class GuidebookLevelRenderer {
                 }
 
                 var model = blockRenderDispatcher.getBlockModel(blockState);
+                modelData = model.getModelData(level, pos, blockState, modelData);
                 var renderTypes = model.getRenderTypes(blockState, randomSource, modelData);
 
                 for (var renderType : renderTypes) {
