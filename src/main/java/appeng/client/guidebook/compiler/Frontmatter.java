@@ -2,12 +2,15 @@ package appeng.client.guidebook.compiler;
 
 import java.util.Map;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
 
 public record Frontmatter(
@@ -34,7 +37,7 @@ public record Frontmatter(
                 position = getInt(navigationMap, "position");
             }
             var iconIdStr = getString(navigationMap, "icon");
-            CompoundTag iconNbt = null; // TODO Icon NBT
+            CompoundTag iconNbt = getCompound(navigationMap, "icon_nbt");
 
             ResourceLocation parentId = null;
             if (parentIdStr != null) {
@@ -72,5 +75,21 @@ public record Frontmatter(
             throw new IllegalArgumentException("Key " + key + " has to be a number!");
         }
         return number.intValue();
+    }
+
+    @Nullable
+    private static CompoundTag getCompound(Map<?, ?> map, String key) {
+        var value = map.get(key);
+        if (value == null) {
+            return null;
+        }
+        if (!(value instanceof String string)) {
+            throw new IllegalArgumentException("Key " + key + " has to be a string (SNBT format)!");
+        }
+        try {
+            return TagParser.parseTag(string);
+        } catch (CommandSyntaxException e) {
+            throw new IllegalArgumentException("Key " + key + " is not a valid SNBT string: " + string, e);
+        }
     }
 }
