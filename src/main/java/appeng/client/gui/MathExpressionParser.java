@@ -26,8 +26,12 @@ public class MathExpressionParser {
 
             if (!wasNumberOrRightBracket || expression.charAt(i) != '-') {
                 var position = new ParsePosition(i);
-                BigDecimal decimal = (BigDecimal) decimalFormat.parse(expression, position);
+                Number parsedNumber = decimalFormat.parse(expression, position);
                 if (position.getErrorIndex() == -1) { // no error
+                    if (!(parsedNumber instanceof BigDecimal decimal)) {
+                        // NaN or infinity
+                        return Optional.empty();
+                    }
                     output.add(decimal);
                     i = position.getIndex();
                     wasNumberOrRightBracket = true;
@@ -136,7 +140,7 @@ public class MathExpressionParser {
         if (number.size() != 1) {
             return Optional.empty();
         } else {
-            return Optional.of(number.pop());
+            return Optional.of(number.pop().stripTrailingZeros());
         }
 
     }

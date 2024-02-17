@@ -38,7 +38,10 @@ public class MathExpressionParserTest {
             "- - - - - 5|-5",
             "-(-(-(-2)))|2",
             "1 - -1|2",
-            "1 + -(2|failed"
+            "1 + -(2|failed",
+            "NaN|failed",
+            "1 / 0|failed",
+            "64/4|16",
     }, delimiter = '|')
     void testThird(String expression, String expected) {
 
