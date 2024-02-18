@@ -28,8 +28,9 @@ import appeng.api.config.Settings;
 import appeng.api.config.ShowPatternProviders;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.api.storage.ILinkStatus;
+import appeng.api.storage.IPatternAccessTermMenuHost;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigurableObject;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuOpener;
@@ -38,7 +39,7 @@ import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartModel;
 import appeng.util.ConfigManager;
 
-public class PatternAccessTerminalPart extends AbstractDisplayPart implements IConfigurableObject {
+public class PatternAccessTerminalPart extends AbstractDisplayPart implements IPatternAccessTermMenuHost {
 
     @PartModels
     public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID,
@@ -86,5 +87,10 @@ public class PatternAccessTerminalPart extends AbstractDisplayPart implements IC
     public void readFromNBT(CompoundTag tag) {
         super.readFromNBT(tag);
         configManager.readFromNBT(tag);
+    }
+
+    @Override
+    public ILinkStatus getLinkStatus() {
+        return ILinkStatus.ofManagedNode(getMainNode());
     }
 }
