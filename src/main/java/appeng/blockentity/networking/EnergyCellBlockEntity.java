@@ -22,26 +22,33 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkStatus;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.blockentity.grid.AENetworkBlockEntity;
-import appeng.hooks.ticking.TickHandler;
 import appeng.me.energy.StoredEnergyAmount;
+import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPowerStorage {
+public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPowerStorage, IGridTickable {
 
     private final StoredEnergyAmount stored;
     private byte currentDisplayLevel;
@@ -51,7 +58,8 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
         super(blockEntityType, pos, blockState);
         this.getMainNode()
                 .setIdlePowerUsage(0)
-                .addService(IAEPowerStorage.class, this);
+                .addService(IAEPowerStorage.class, this)
+                .addService(IGridTickable.class, this);
 
         var cellBlock = (EnergyCellBlock) getBlockState().getBlock();
         this.stored = new StoredEnergyAmount(0, cellBlock.getMaxPower(), this::emitPowerEvent);
@@ -96,17 +104,38 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
         }
     }
 
+    /**
+     * Marks the current chunk as unsaved, without creating additional loading tickets that would potentially keep this
+     * block loaded forever.
+     */
+    private void setChangedNoTicketUpdate() {
+        if (!(this.level instanceof ServerLevel serverLevel)) {
+            throw new IllegalArgumentException("Expected server level, not " + this.level);
+        }
+
+        var pos = getBlockPos();
+        var chunk = serverLevel.getChunkSource().getChunk(
+                SectionPos.blockToSectionCoord(pos.getX()),
+                SectionPos.blockToSectionCoord(pos.getZ()),
+                ChunkStatus.FULL,
+                false // passing false here is the trick to not adding a ticket!
+        );
+        // The chunk might be null, for example if it has a ticket level of 46 (i.e. about to be unloaded).
+        if (chunk != null) {
+            chunk.setUnsaved(true);
+        }
+    }
+
     private void onAmountChanged() {
-        // Delay the notification since this happens while energy is being extracted/injected from the grid
-        // During injection/extraction, the grid should not be modified
+        setChangedNoTicketUpdate();
+
+        // Delay the notification since this happens while energy is being extracted/injected from the grid.
+        // During injection/extraction, the grid should not be modified.
+        // So defer the notification until the next time this cell is in a ticking chunk.
         if (!neighborChangePending) {
             neighborChangePending = true;
-            TickHandler.instance().addCallable(level, () -> {
-                if (!isRemoved() && neighborChangePending) {
-                    neighborChangePending = false;
-                    updateStateForPowerLevel();
-                    setChanged();
-                }
+            getMainNode().ifPresent((grid, node) -> {
+                grid.getTickManager().alertDevice(node);
             });
         }
     }
@@ -115,12 +144,14 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
         data.putDouble("internalCurrentPower", this.stored.getAmount());
+        data.putBoolean("neighborChangePending", this.neighborChangePending);
     }
 
     @Override
     public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.stored.setStored(data.getDouble("internalCurrentPower"));
+        this.neighborChangePending = data.getBoolean("neighborChangePending");
     }
 
     @Override
@@ -192,5 +223,24 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     private void emitPowerEvent(PowerEventType type) {
         getMainNode().ifPresent(
                 grid -> grid.postEvent(new GridPowerStorageStateChanged(this, type)));
+    }
+
+    @Override
+    public TickingRequest getTickingRequest(IGridNode node) {
+        return new TickingRequest(1, 20, !neighborChangePending, true);
+    }
+
+    @Override
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        if (Platform.areBlockEntitiesTicking(getLevel(), getBlockPos())) {
+            if (neighborChangePending) {
+                neighborChangePending = false;
+                setChanged(); // update comparators
+                updateStateForPowerLevel(); // and update block state
+            }
+            return TickRateModulation.SLEEP;
+        } else {
+            return TickRateModulation.IDLE;
+        }
     }
 }
