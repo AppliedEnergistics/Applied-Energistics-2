@@ -21,13 +21,13 @@ package appeng.api.implementations.menuobjects;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergySource;
+import appeng.api.stacks.AEKey;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.menu.locator.ItemMenuHostLocator;
@@ -37,12 +37,17 @@ import appeng.menu.locator.ItemMenuHostLocator;
  */
 public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
 
+    /**
+     * To avoid changing the item stack once every tick, we consume idle power for more than just one tick at a time.
+     * The default is to consume power twice per second.
+     */
+    private static final int BUFFER_ENERGY_TICKS = 10;
+
     private final T item;
     private final Player player;
     private final ItemMenuHostLocator locator;
     private final IUpgradeInventory upgrades;
-    private int powerTicks = 10;
-    private boolean outOfPower;
+    private int remainingEnergyTicks = 0;
 
     public ItemMenuHost(T item, Player player, ItemMenuHostLocator locator) {
         this.player = player;
@@ -97,43 +102,50 @@ public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
 
     /**
      * Gives the item hosting the GUI a chance to do periodic actions when the menu is being ticked.
-     *
-     * @return False to close the menu.
      */
-    public boolean onBroadcastChanges(AbstractContainerMenu menu) {
-        return ensureItemStillInSlot();
+    public void tick() {
     }
 
     /**
-     * Ensures that the item this menu was opened from has not changed.
+     * Checks if the item underlying this host is still in place.
      */
-    protected boolean ensureItemStillInSlot() {
+    public boolean isValid() {
         var currentItem = getItemStack();
         return !currentItem.isEmpty() && currentItem.is(item);
     }
 
     /**
-     * Can only be used with a host that implements {@link IEnergySource} only call once per broadcastChanges()
+     * Can only be used with a host that implements {@link IEnergySource}.
      */
-    public void drainPower() {
+    public boolean consumeIdlePower(Actionable action) {
         // Do not drain power for creative players
         if (player.isCreative()) {
-            this.outOfPower = false;
-            return;
+            return true;
+        }
+
+        // Remaining charge
+        if (remainingEnergyTicks > 0) {
+            if (action == Actionable.MODULATE) {
+                remainingEnergyTicks--;
+            }
+            return true;
         }
 
         var powerDrainPerTick = getPowerDrainPerTick();
         if (powerDrainPerTick > 0 && this instanceof IEnergySource energySource) {
-            this.powerTicks++;
-            if (this.powerTicks > 10) {
-                var amt = this.powerTicks * powerDrainPerTick;
-                this.powerTicks = 0;
-                this.outOfPower = energySource.extractAEPower(amt, Actionable.MODULATE, PowerMultiplier.CONFIG) <= 0;
+            var amt = BUFFER_ENERGY_TICKS * powerDrainPerTick;
+            var actualExtracted = energySource.extractAEPower(amt, action, PowerMultiplier.CONFIG);
+            var remainingEnergyTicks = (int) Math.ceil(actualExtracted / powerDrainPerTick);
+            if (action == Actionable.MODULATE) {
+                this.remainingEnergyTicks = remainingEnergyTicks;
             }
-        } else {
-            // If no power is being drained, we're never out of power
-            this.outOfPower = false;
+
+            // Return true if we drained enough energy to last one tick
+            return remainingEnergyTicks > 0;
         }
+
+        // If no power is being drained, we're never out of power
+        return true;
     }
 
     /**
@@ -143,12 +155,18 @@ public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
         return 0.5;
     }
 
-    public final boolean isOutOfPower() {
-        return outOfPower;
-    }
-
     @Override
     public final IUpgradeInventory getUpgrades() {
         return upgrades;
+    }
+
+    /**
+     * Insert something into the host of this menu (i.e. by dropping onto the hosting item in the player inventory or by
+     * similar mechanisms).
+     *
+     * @return The amount that was inserted.
+     */
+    public long insert(Player player, AEKey what, long amount, Actionable mode) {
+        return 0;
     }
 }

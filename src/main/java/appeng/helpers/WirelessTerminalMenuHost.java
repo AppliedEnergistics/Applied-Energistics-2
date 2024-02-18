@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -37,8 +36,10 @@ import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
+import appeng.api.stacks.AEKey;
 import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.MEStorage;
+import appeng.api.storage.StorageHelper;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
 import appeng.core.AEConfig;
@@ -46,6 +47,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.contents.StackDependentSupplier;
 import appeng.items.tools.powered.WirelessTerminalItem;
+import appeng.me.helpers.PlayerSource;
 import appeng.me.storage.NullInventory;
 import appeng.me.storage.SupplierStorage;
 import appeng.menu.ISubMenu;
@@ -75,6 +77,9 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
 
         this.storage = new SupplierStorage(new StackDependentSupplier<>(
                 this::getItemStack, this::getStorageFromStack));
+
+        updateConnectedAccessPoint();
+        updateLinkStatus();
     }
 
     @Override
@@ -125,7 +130,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
         return null;
     }
 
-    private void rangeCheck() {
+    protected void updateConnectedAccessPoint() {
         this.currentAccessPoint = null;
         this.currentDistanceFromGrid = Double.MAX_VALUE;
         this.currentRemainingRange = Double.MIN_VALUE;
@@ -188,30 +193,30 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
     }
 
     @Override
-    public boolean onBroadcastChanges(AbstractContainerMenu menu) {
-        if (super.onBroadcastChanges(menu)) {
-            rangeCheck();
-            drainPower();
+    public void tick() {
+        updateConnectedAccessPoint();
+        consumeIdlePower(Actionable.MODULATE);
+        updateLinkStatus();
+    }
 
-            // Update the link status after checking for range + power
-            if (isOutOfPower()) {
-                this.linkStatus = ILinkStatus.ofDisconnected(GuiText.OutOfPower.text());
-            } else if (currentAccessPoint != null) {
-                this.linkStatus = ILinkStatus.ofConnected();
+    /**
+     * Recalculate the current {@linkplain #getLinkStatus() link status}.
+     */
+    protected void updateLinkStatus() {
+        // Update the link status after checking for range + power
+        if (!consumeIdlePower(Actionable.SIMULATE)) {
+            this.linkStatus = ILinkStatus.ofDisconnected(GuiText.OutOfPower.text());
+        } else if (currentAccessPoint != null) {
+            this.linkStatus = ILinkStatus.ofConnected();
+        } else {
+            MutableObject<Component> errorHolder = new MutableObject<>();
+            if (getItem().getLinkedGrid(getItemStack(), getPlayer().level(), errorHolder::setValue) == null) {
+                this.linkStatus = ILinkStatus.ofDisconnected(errorHolder.getValue());
             } else {
-                MutableObject<Component> errorHolder = new MutableObject<>();
-                if (getItem().getLinkedGrid(getItemStack(), getPlayer().level(), errorHolder::setValue) == null) {
-                    this.linkStatus = ILinkStatus.ofDisconnected(errorHolder.getValue());
-                } else {
-                    // If a grid exists, but no access point, we're out of range
-                    this.linkStatus = ILinkStatus.ofDisconnected(PlayerMessages.OutOfRange.text());
-                }
+                // If a grid exists, but no access point, we're out of range
+                this.linkStatus = ILinkStatus.ofDisconnected(PlayerMessages.OutOfRange.text());
             }
-
-            return true;
         }
-        linkStatus = ILinkStatus.ofDisconnected();
-        return false;
     }
 
     @Override
@@ -235,5 +240,28 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
 
     public String getCloseHotkey() {
         return HotkeyAction.WIRELESS_TERMINAL;
+    }
+
+    @Override
+    public long insert(Player player, AEKey what, long amount, Actionable mode) {
+        // We do not know the real link-status on the client-side
+        if (isClientSide()) {
+            return 0;
+        }
+
+        if (linkStatus.connected()) {
+            var inv = getInventory();
+            if (inv == null) {
+                return 0;
+            }
+
+            return StorageHelper.poweredInsert(this, inv, what, amount, new PlayerSource(player), mode);
+        } else {
+            var statusText = linkStatus.statusDescription();
+            if (statusText != null && !mode.isSimulate()) {
+                player.displayClientMessage(statusText, false);
+            }
+            return 0;
+        }
     }
 }

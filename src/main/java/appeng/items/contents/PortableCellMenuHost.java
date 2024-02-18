@@ -25,7 +25,6 @@ import java.util.function.Supplier;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -37,14 +36,17 @@ import appeng.api.config.ViewItems;
 import appeng.api.features.HotkeyAction;
 import appeng.api.implementations.menuobjects.IPortableTerminal;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
+import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.util.IConfigManager;
 import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.AbstractPortableCell;
+import appeng.me.helpers.PlayerSource;
 import appeng.me.storage.SupplierStorage;
 import appeng.menu.ISubMenu;
 import appeng.menu.locator.ItemMenuHostLocator;
@@ -67,17 +69,40 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
         this.cellStorage = new SupplierStorage(new CellStorageSupplier());
         Objects.requireNonNull(cellStorage, "Portable cell doesn't expose a cell inventory.");
         this.item = item;
+        this.updateLinkStatus();
     }
 
     @Override
-    public boolean onBroadcastChanges(AbstractContainerMenu menu) {
-        if (super.onBroadcastChanges(menu)) {
-            drainPower();
-            linkStatus = isOutOfPower() ? ILinkStatus.ofDisconnected(GuiText.OutOfPower.text())
-                    : ILinkStatus.ofConnected();
-            return true;
+    public void tick() {
+        super.tick();
+        consumeIdlePower(Actionable.MODULATE);
+        updateLinkStatus();
+    }
+
+    @Override
+    public long insert(Player player, AEKey what, long amount, Actionable mode) {
+        if (linkStatus.connected()) {
+            var inv = getInventory();
+            if (inv == null) {
+                return 0;
+            }
+
+            return StorageHelper.poweredInsert(this, inv, what, amount, new PlayerSource(player), mode);
+        } else {
+            var statusText = linkStatus.statusDescription();
+            if (isClientSide() && statusText != null && !mode.isSimulate()) {
+                player.displayClientMessage(statusText, false);
+            }
+            return 0;
         }
-        return false;
+    }
+
+    private void updateLinkStatus() {
+        if (!consumeIdlePower(Actionable.SIMULATE)) {
+            this.linkStatus = ILinkStatus.ofDisconnected(GuiText.OutOfPower.text());
+        } else {
+            this.linkStatus = ILinkStatus.ofConnected();
+        }
     }
 
     @Override
