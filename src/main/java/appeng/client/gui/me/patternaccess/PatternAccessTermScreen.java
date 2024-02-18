@@ -231,6 +231,40 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                 }
             }
         }
+
+        // Draw an overlay indicating the grid is disconnected
+        var linkStatus = getMenu().getLinkStatus();
+        if (!linkStatus.connected()) {
+            var minX = GUI_PADDING_X - 1;
+            var minY = GUI_HEADER_HEIGHT;
+            var maxX = minX + COLUMNS * 18;
+            var maxY = this.imageHeight - GUI_FOOTER_HEIGHT;
+
+            guiGraphics.fill(
+                    minX,
+                    minY,
+                    maxX,
+                    maxY,
+                    0x3f000000);
+
+            // Draw the disconnect status on top of the grid
+            var statusDescription = linkStatus.statusDescription();
+            if (statusDescription != null) {
+                var visualText = statusDescription.getVisualOrderText();
+                var textWidth = font.width(visualText);
+
+                var textX = (minX + maxX - textWidth) / 2;
+                var textY = (minY + maxY - font.lineHeight) / 2;
+
+                guiGraphics.drawString(
+                        font,
+                        visualText,
+                        textX,
+                        textY,
+                        0xffff0000,
+                        true);
+            }
+        }
     }
 
     @Override
