@@ -80,13 +80,19 @@ repositories {
     maven { // for TOP
         url "https://maven.k-4u.nl/"
         content {
-            includeGroup "mcjty"
+            includeGroup "mcjty.theoneprobe"
         }
     }
     maven {
         url = "https://maven.theillusivec4.top/"
         content {
             includeGroup "top.theillusivec4.curios"
+        }
+    }
+    maven {
+        url = "https://maven.blamejared.com/"
+        content {
+            includeGroup "mezz.jei"
         }
     }
     mavenCentral()
@@ -143,11 +149,10 @@ dependencies {
         compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
     }
 
-    def topDependency = "curse.maven:the-one-probe-245211:4159743"
     if (project.runtime_tooltip_mod == "top") {
-        implementation(topDependency)
+        implementation("mcjty.theoneprobe:theoneprobe:${project.top_version}")
     } else {
-        compileOnly topDependency
+        compileOnly("mcjty.theoneprobe:theoneprobe:${project.top_version}")
     }
 
     if (project.runtime_curio) {
