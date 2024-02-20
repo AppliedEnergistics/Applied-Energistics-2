@@ -38,6 +38,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 import appeng.api.config.Settings;
 import appeng.api.config.ShowPatternProviders;
+import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGrid;
@@ -48,7 +49,6 @@ import appeng.core.AELog;
 import appeng.core.network.clientbound.ClearPatternAccessTerminalPacket;
 import appeng.core.network.clientbound.PatternAccessTerminalPacket;
 import appeng.core.network.clientbound.SetLinkStatusPacket;
-import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.helpers.InventoryAction;
 import appeng.helpers.patternprovider.PatternContainer;
 import appeng.menu.AEBaseMenu;
@@ -419,7 +419,7 @@ public class PatternAccessTermMenu extends AEBaseMenu implements LinkStatusAware
 
         @Override
         public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
-            return !stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem;
+            return !stack.isEmpty() && PatternDetailsHelper.isEncodedPattern(stack);
         }
     }
 
