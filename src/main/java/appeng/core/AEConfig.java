@@ -438,6 +438,10 @@ public final class AEConfig {
         return COMMON.growthAcceleratorSpeed.get();
     }
 
+    public boolean isAnnihilationPlaneSkyDustGenerationEnabled() {
+        return COMMON.annihilationPlaneSkyDustGeneration.get();
+    }
+
     public boolean isBlockUpdateLogEnabled() {
         return COMMON.blockUpdateLog.get();
     }
@@ -641,6 +645,7 @@ public final class AEConfig {
 
         public final BooleanOption disassemblyCrafting;
         public final IntegerOption growthAcceleratorSpeed;
+        public final BooleanOption annihilationPlaneSkyDustGeneration;
 
         // Spatial IO/Dimension
         public final DoubleOption spatialPowerExponent;
@@ -728,6 +733,8 @@ public final class AEConfig {
                     "Enable shift-clicking with the crafting units in hand to disassemble them.");
             growthAcceleratorSpeed = crafting.addInt("growthAccelerator", 10, 1, 100,
                     "Number of ticks between two crystal growth accelerator ticks");
+            annihilationPlaneSkyDustGeneration = crafting.addBoolean("annihilationPlaneSkyDustGeneration", true,
+                    "If enabled, an annihilation placed face up at the maximum world height will generate sky stone passively.");
 
             ConfigSection spatialio = root.subsection("spatialio");
             this.spatialPowerMultiplier = spatialio.addDouble("spatialPowerMultiplier", 1250.0);
