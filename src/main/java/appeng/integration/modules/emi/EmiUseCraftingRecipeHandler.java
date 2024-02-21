@@ -35,7 +35,7 @@ import appeng.menu.me.items.CraftingTermMenu;
  * <li><b>Some items are missing, some not craftable:</b> orange, same action as above.</li>
  * </ul>
  */
-class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends AbstractRecipeHandler<T> {
+public class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends AbstractRecipeHandler<T> {
 
     public EmiUseCraftingRecipeHandler(Class<T> containerClass) {
         super(containerClass);
