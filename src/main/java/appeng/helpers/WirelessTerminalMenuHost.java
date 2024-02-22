@@ -249,7 +249,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
             return 0;
         }
 
-        if (linkStatus.connected()) {
+        if (getLinkStatus().connected()) {
             var inv = getInventory();
             if (inv == null) {
                 return 0;
@@ -257,7 +257,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
 
             return StorageHelper.poweredInsert(this, inv, what, amount, new PlayerSource(player), mode);
         } else {
-            var statusText = linkStatus.statusDescription();
+            var statusText = getLinkStatus().statusDescription();
             if (statusText != null && !mode.isSimulate()) {
                 player.displayClientMessage(statusText, false);
             }

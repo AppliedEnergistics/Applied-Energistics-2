@@ -81,7 +81,7 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
 
     @Override
     public long insert(Player player, AEKey what, long amount, Actionable mode) {
-        if (linkStatus.connected()) {
+        if (getLinkStatus().connected()) {
             var inv = getInventory();
             if (inv == null) {
                 return 0;
@@ -89,7 +89,7 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
 
             return StorageHelper.poweredInsert(this, inv, what, amount, new PlayerSource(player), mode);
         } else {
-            var statusText = linkStatus.statusDescription();
+            var statusText = getLinkStatus().statusDescription();
             if (isClientSide() && statusText != null && !mode.isSimulate()) {
                 player.displayClientMessage(statusText, false);
             }
