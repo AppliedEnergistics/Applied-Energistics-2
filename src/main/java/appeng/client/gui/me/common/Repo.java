@@ -197,7 +197,7 @@ public class Repo implements IClientRepo {
 
     private void addEntriesToView(Collection<GridInventoryEntry> entries) {
         var viewMode = this.sortSrc.getSortDisplay();
-        var typeFilter = this.sortSrc.getTypeFilter().getFilter();
+        var typeFilter = this.sortSrc.getSortKeyTypes();
 
         var hasPinnedRow = !PinnedKeys.isEmpty();
 
@@ -220,7 +220,7 @@ public class Repo implements IClientRepo {
                 continue;
             }
 
-            if (!typeFilter.matches(entry.getWhat())) {
+            if (!typeFilter.contains(entry.getWhat().getType())) {
                 continue;
             }
 

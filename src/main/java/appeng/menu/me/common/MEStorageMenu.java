@@ -46,7 +46,6 @@ import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.config.TypeFilter;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.implementations.blockentities.IViewCellStorage;
@@ -67,6 +66,8 @@ import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.api.util.KeyTypeSelection;
+import appeng.api.util.KeyTypeSelectionHost;
 import appeng.client.gui.me.common.MEStorageScreen;
 import appeng.core.AELog;
 import appeng.core.network.NetworkHandler;
@@ -82,6 +83,7 @@ import appeng.menu.ToolboxMenu;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.guisync.LinkStatusAwareMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.interfaces.KeyTypeSelectionMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.RestrictedInputSlot;
@@ -93,7 +95,8 @@ import appeng.util.Platform;
  * @see MEStorageScreen
  */
 public class MEStorageMenu extends AEBaseMenu
-        implements IConfigManagerListener, IConfigurableObject, IMEInteractionHandler, LinkStatusAwareMenu {
+        implements IConfigManagerListener, IConfigurableObject, IMEInteractionHandler, LinkStatusAwareMenu,
+        KeyTypeSelectionMenu {
 
     public static final MenuType<MEStorageMenu> TYPE = MenuTypeBuilder
             .<MEStorageMenu, ITerminalHost>create(MEStorageMenu::new, ITerminalHost.class)
@@ -121,6 +124,8 @@ public class MEStorageMenu extends AEBaseMenu
      */
     @GuiSync(100)
     public int activeCraftingJobs = -1;
+    @GuiSync(101)
+    public SyncedKeyTypes searchKeyTypes = new SyncedKeyTypes();
 
     // Client-side: last status received from server
     // Server-side: last status sent to client
@@ -170,7 +175,6 @@ public class MEStorageMenu extends AEBaseMenu
 
         this.clientCM.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.clientCM.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        this.clientCM.registerSetting(Settings.TYPE_FILTER, TypeFilter.ALL);
         this.clientCM.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
         if (isServerSide()) {
@@ -252,6 +256,10 @@ public class MEStorageMenu extends AEBaseMenu
                     set.copy(serverCM, clientCM);
                     sendPacketToClient(new ConfigValuePacket(set, serverCM));
                 }
+            }
+
+            if (host instanceof KeyTypeSelectionHost keyTypeSelectionHost) {
+                this.searchKeyTypes = new SyncedKeyTypes(keyTypeSelectionHost.getKeyTypeSelection().enabled());
             }
 
             var craftables = getCraftablesFromGrid();
@@ -742,7 +750,7 @@ public class MEStorageMenu extends AEBaseMenu
     }
 
     public boolean canConfigureTypeFilter() {
-        return this.host.getConfigManager().hasSetting(Settings.TYPE_FILTER);
+        return this.host instanceof KeyTypeSelectionHost;
     }
 
     public ITerminalHost getHost() {
@@ -761,5 +769,15 @@ public class MEStorageMenu extends AEBaseMenu
     @Override
     public void setLinkStatus(ILinkStatus linkStatus) {
         this.linkStatus = linkStatus;
+    }
+
+    @Override
+    public KeyTypeSelection getServerKeyTypeSelection() {
+        return ((KeyTypeSelectionHost) host).getKeyTypeSelection();
+    }
+
+    @Override
+    public SyncedKeyTypes getClientKeyTypeSelection() {
+        return searchKeyTypes;
     }
 }

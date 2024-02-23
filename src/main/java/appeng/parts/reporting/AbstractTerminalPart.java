@@ -30,7 +30,6 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.config.TypeFilter;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IViewCellStorage;
 import appeng.api.inventories.InternalInventory;
@@ -39,6 +38,8 @@ import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.KeyTypeSelection;
+import appeng.api.util.KeyTypeSelectionHost;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
@@ -59,9 +60,10 @@ import appeng.util.inv.InternalInventoryHost;
  * @since rv3
  */
 public abstract class AbstractTerminalPart extends AbstractDisplayPart
-        implements ITerminalHost, IViewCellStorage, InternalInventoryHost {
+        implements ITerminalHost, IViewCellStorage, InternalInventoryHost, KeyTypeSelectionHost {
 
     private final IConfigManager cm = new ConfigManager(this::saveChanges);
+    private final KeyTypeSelection keyTypeSelection = new KeyTypeSelection(this::saveChanges, keyType -> true);
     private final AppEngInternalInventory viewCell = new AppEngInternalInventory(this, 5);
 
     public AbstractTerminalPart(IPartItem<?> partItem) {
@@ -69,7 +71,6 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
 
         this.cm.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.cm.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        this.cm.registerSetting(Settings.TYPE_FILTER, TypeFilter.ALL);
         this.cm.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
     }
 
@@ -107,6 +108,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     public void readFromNBT(CompoundTag data) {
         super.readFromNBT(data);
         this.cm.readFromNBT(data);
+        this.keyTypeSelection.readFromNBT(data);
         this.viewCell.readFromNBT(data, "viewCell");
     }
 
@@ -114,6 +116,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     public void writeToNBT(CompoundTag data) {
         super.writeToNBT(data);
         this.cm.writeToNBT(data);
+        this.keyTypeSelection.writeToNBT(data);
         this.viewCell.writeToNBT(data, "viewCell");
     }
 
@@ -161,5 +164,10 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     @Override
     public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         this.getHost().markForSave();
+    }
+
+    @Override
+    public KeyTypeSelection getKeyTypeSelection() {
+        return this.keyTypeSelection;
     }
 }

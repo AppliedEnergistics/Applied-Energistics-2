@@ -20,8 +20,10 @@ package appeng.client.gui.me.common;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
@@ -46,10 +48,10 @@ import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.config.TypeFilter;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.storage.AEKeyFilter;
 import appeng.api.util.IConfigManager;
@@ -65,6 +67,7 @@ import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ISortSource;
+import appeng.client.gui.widgets.KeyTypeSelectionButton;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
@@ -109,7 +112,6 @@ public class MEStorageScreen<C extends MEStorageMenu>
     private final AETextField searchField;
     private int rows = 0;
     private SettingToggleButton<ViewItems> viewModeToggle;
-    private SettingToggleButton<TypeFilter> filterTypesToggle;
     private SettingToggleButton<SortOrder> sortByToggle;
     private final SettingToggleButton<SortDir> sortDirToggle;
     private int currentMouseX = 0;
@@ -169,9 +171,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         if (this.menu.canConfigureTypeFilter()) {
-            this.filterTypesToggle = this.addToLeftToolbar(new SettingToggleButton<>(
-                    Settings.TYPE_FILTER, getTypeFilter(), this::toggleServerSetting));
-
+            this.addToLeftToolbar(
+                    KeyTypeSelectionButton.create(this, menu.getHost(), GuiText.ConfigureVisibleTypes.text()));
         }
 
         this.addToLeftToolbar(this.sortDirToggle = new SettingToggleButton<>(
@@ -772,8 +773,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public TypeFilter getTypeFilter() {
-        return this.configSrc.getSetting(Settings.TYPE_FILTER);
+    public Set<AEKeyType> getSortKeyTypes() {
+        return new HashSet<>(menu.searchKeyTypes.enabledSet());
     }
 
     @Override
@@ -788,10 +789,6 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         if (this.viewModeToggle != null) {
             this.viewModeToggle.set(getSortDisplay());
-        }
-
-        if (this.filterTypesToggle != null) {
-            this.filterTypesToggle.set(getTypeFilter());
         }
 
         this.repo.updateView();

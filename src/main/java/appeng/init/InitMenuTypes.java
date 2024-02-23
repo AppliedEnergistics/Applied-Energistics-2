@@ -54,6 +54,7 @@ import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingCPUMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
+import appeng.menu.me.items.BasicCellChestMenu;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.menu.me.items.WirelessCraftingTermMenu;
@@ -68,6 +69,7 @@ public final class InitMenuTypes {
 
     public static void init(Registry<MenuType<?>> registry) {
         registerAll(registry,
+                BasicCellChestMenu.TYPE,
                 CellWorkbenchMenu.TYPE,
                 ChestMenu.TYPE,
                 CondenserMenu.TYPE,

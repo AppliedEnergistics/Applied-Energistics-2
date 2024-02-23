@@ -53,7 +53,6 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.TerminalStyle;
-import appeng.api.config.TypeFilter;
 import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
 import appeng.client.gui.AEBaseScreen;
@@ -183,13 +182,6 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     ButtonToolTips.StoredCraftable);
             registerApp(Icon.VIEW_MODE_CRAFTING, Settings.VIEW_MODE, ViewItems.CRAFTABLE, ButtonToolTips.View,
                     ButtonToolTips.Craftable);
-
-            registerApp(Icon.TYPE_FILTER_ALL, Settings.TYPE_FILTER, TypeFilter.ALL, ButtonToolTips.TypeFilter,
-                    ButtonToolTips.ShowAll);
-            registerApp(Icon.TYPE_FILTER_ITEMS, Settings.TYPE_FILTER, TypeFilter.ITEMS, ButtonToolTips.TypeFilter,
-                    ButtonToolTips.ShowItemsOnly);
-            registerApp(Icon.TYPE_FILTER_FLUIDS, Settings.TYPE_FILTER, TypeFilter.FLUIDS, ButtonToolTips.TypeFilter,
-                    ButtonToolTips.ShowFluidsOnly);
 
             registerApp(Icon.FUZZY_PERCENT_25, Settings.FUZZY_MODE, FuzzyMode.PERCENT_25, ButtonToolTips.FuzzyMode,
                     ButtonToolTips.FZPercent_25);

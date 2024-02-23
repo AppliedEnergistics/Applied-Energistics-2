@@ -21,8 +21,12 @@ package appeng.menu.implementations;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
+import appeng.api.util.KeyTypeSelection;
+import appeng.api.util.KeyTypeSelectionHost;
 import appeng.client.gui.implementations.IOBusScreen;
 import appeng.core.definitions.AEItems;
+import appeng.menu.guisync.GuiSync;
+import appeng.menu.interfaces.KeyTypeSelectionMenu;
 import appeng.parts.automation.ExportBusPart;
 import appeng.parts.automation.IOBusPart;
 import appeng.parts.automation.ImportBusPart;
@@ -32,7 +36,7 @@ import appeng.parts.automation.ImportBusPart;
  *
  * @see IOBusScreen
  */
-public class IOBusMenu extends UpgradeableMenu<IOBusPart> {
+public class IOBusMenu extends UpgradeableMenu<IOBusPart> implements KeyTypeSelectionMenu {
 
     public static final MenuType<IOBusMenu> EXPORT_TYPE = MenuTypeBuilder
             .create(IOBusMenu::new, ExportBusPart.class)
@@ -41,6 +45,9 @@ public class IOBusMenu extends UpgradeableMenu<IOBusPart> {
     public static final MenuType<IOBusMenu> IMPORT_TYPE = MenuTypeBuilder
             .create(IOBusMenu::new, ImportBusPart.class)
             .build("import_bus");
+
+    @GuiSync(20)
+    public SyncedKeyTypes importKeyTypes = new SyncedKeyTypes();
 
     public IOBusMenu(MenuType<?> menuType, int id, Inventory ip, IOBusPart host) {
         super(menuType, id, ip, host);
@@ -56,5 +63,26 @@ public class IOBusMenu extends UpgradeableMenu<IOBusPart> {
         final int upgrades = getUpgrades().getInstalledUpgrades(AEItems.CAPACITY_CARD);
 
         return upgrades > idx;
+    }
+
+    @Override
+    public void broadcastChanges() {
+        super.broadcastChanges();
+
+        if (isServerSide()) {
+            if (getHost() instanceof KeyTypeSelectionHost selectionHost) {
+                importKeyTypes = new SyncedKeyTypes(selectionHost.getKeyTypeSelection().enabled());
+            }
+        }
+    }
+
+    @Override
+    public KeyTypeSelection getServerKeyTypeSelection() {
+        return ((KeyTypeSelectionHost) getHost()).getKeyTypeSelection();
+    }
+
+    @Override
+    public SyncedKeyTypes getClientKeyTypeSelection() {
+        return importKeyTypes;
     }
 }
