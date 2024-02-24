@@ -210,8 +210,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
             this.eatFuel();
         }
 
-        return new TickingRequest(TickRates.VibrationChamber,
-                this.getRemainingFuelTicks() <= 0, false);
+        return new TickingRequest(TickRates.VibrationChamber, this.getRemainingFuelTicks() <= 0);
     }
 
     @Override

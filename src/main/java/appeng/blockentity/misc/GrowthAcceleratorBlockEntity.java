@@ -61,7 +61,7 @@ public class GrowthAcceleratorBlockEntity extends AENetworkBlockEntity implement
             @Override
             public TickingRequest getTickingRequest(IGridNode node) {
                 int speed = AEConfig.instance().getGrowthAcceleratorSpeed();
-                return new TickingRequest(speed, speed, false, false);
+                return new TickingRequest(speed, speed, false);
             }
 
             @Override

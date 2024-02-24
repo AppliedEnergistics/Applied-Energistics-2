@@ -290,8 +290,7 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.AnnihilationPlane, false,
-                true);
+        return new TickingRequest(TickRates.AnnihilationPlane, false);
     }
 
     @Override

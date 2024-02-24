@@ -250,7 +250,7 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public final TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.StorageBus, false, true);
+        return new TickingRequest(TickRates.StorageBus, false);
     }
 
     @Override

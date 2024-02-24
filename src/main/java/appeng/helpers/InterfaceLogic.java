@@ -158,8 +158,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     private class Ticker implements IGridTickable {
         @Override
         public TickingRequest getTickingRequest(IGridNode node) {
-            return new TickingRequest(TickRates.Interface, !hasWorkToDo(),
-                    true);
+            return new TickingRequest(TickRates.Interface, !hasWorkToDo());
         }
 
         @Override

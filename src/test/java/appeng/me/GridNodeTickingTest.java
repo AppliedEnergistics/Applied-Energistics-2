@@ -26,7 +26,7 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
     void testAlertDevice() {
         var timesSinceLastTick = new ArrayList<Integer>();
         var node = makeTickingNode(
-                new TickingRequest(10, 10, true, true),
+                new TickingRequest(10, 10, true),
                 (tickingNode, ticksSinceLastCall) -> {
                     timesSinceLastTick.add(ticksSinceLastCall);
                     return TickRateModulation.SAME;
@@ -62,7 +62,7 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
         void testNodesThatStartOutSleeping() {
             var timesSinceLastTick = new ArrayList<Integer>();
             var node = makeTickingNode(
-                    new TickingRequest(1, 1, true, false),
+                    new TickingRequest(1, 1, true),
                     (tickingNode, ticksSinceLastCall) -> {
                         timesSinceLastTick.add(ticksSinceLastCall);
                         return TickRateModulation.SAME;
@@ -88,7 +88,7 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
         void testNodesPuttingThemselvesToSleep() {
             var timesSinceLastTick = new ArrayList<Integer>();
             var node = makeTickingNode(
-                    new TickingRequest(1, 1, false, false),
+                    new TickingRequest(1, 1, false),
                     (tickingNode, ticksSinceLastCall) -> {
                         timesSinceLastTick.add(ticksSinceLastCall);
                         return TickRateModulation.SLEEP;
@@ -115,7 +115,7 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
         void testNodeBeingPutToSleepExternally() {
             var timesSinceLastTick = new ArrayList<Integer>();
             var node = makeTickingNode(
-                    new TickingRequest(5, 5, false, false),
+                    new TickingRequest(5, 5, false),
                     (tickingNode, ticksSinceLastCall) -> {
                         timesSinceLastTick.add(ticksSinceLastCall);
                         return TickRateModulation.SAME;
@@ -144,7 +144,7 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
         void testAwakeNodeThatIsNotAsleep() {
             var timesSinceLastTick = new ArrayList<Integer>();
             var node = makeTickingNode(
-                    new TickingRequest(2, 2, false, false),
+                    new TickingRequest(2, 2, false),
                     (tickingNode, ticksSinceLastCall) -> {
                         timesSinceLastTick.add(ticksSinceLastCall);
                         return TickRateModulation.SAME;
@@ -167,7 +167,7 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
         @ValueSource(strings = { "wake", "alert", "sleep" })
         void testNodesCallingTickManagerFunctionsWhileTheyAreTicking(String operation) {
             var timesSinceLastTick = new ArrayList<Integer>();
-            var node = makeTickingNode(new TickingRequest(1, 10, false, true), (tickingNode, ticksSinceLastCall) -> {
+            var node = makeTickingNode(new TickingRequest(1, 10, false), (tickingNode, ticksSinceLastCall) -> {
                 timesSinceLastTick.add(ticksSinceLastCall);
                 var result = switch (operation) {
                     case "wake" -> tickingNode.getGrid().getTickManager().wakeDevice(tickingNode);
@@ -182,7 +182,7 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
             // the other node at the front of the queue constantly, preventing this node from ticking
             var timesSinceLastTick2 = new ArrayList<Integer>();
             var secondNode = makeTickingNode(
-                    new TickingRequest(6, 6, false, false),
+                    new TickingRequest(6, 6, false),
                     (tickingNode, ticksSinceLastTick) -> {
                         timesSinceLastTick2.add(ticksSinceLastTick);
                         return TickRateModulation.SAME;
@@ -242,7 +242,7 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
      * Tests that the tick rate remains the same when SAME is returned.
      */
     private List<Integer> runTicksWithModulation(TickRateModulation modulation) {
-        var request = new TickingRequest(1, 10, false, false);
+        var request = new TickingRequest(1, 10, false);
         return runTicks(request, modulation);
     }
 

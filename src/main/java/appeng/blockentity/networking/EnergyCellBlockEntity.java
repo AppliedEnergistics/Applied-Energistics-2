@@ -227,7 +227,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(1, 20, !neighborChangePending, true);
+        return new TickingRequest(1, 20, !neighborChangePending);
     }
 
     @Override

@@ -44,7 +44,6 @@ import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
-import appeng.parts.AEBasePart.NodeListener;
 
 public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements IGridTickable {
 
@@ -144,7 +143,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.METunnel, true, false);
+        return new TickingRequest(TickRates.METunnel, true);
     }
 
     @Override
