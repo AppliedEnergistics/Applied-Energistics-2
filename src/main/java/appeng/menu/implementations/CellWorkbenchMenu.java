@@ -31,6 +31,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
+import it.unimi.dsi.fastutil.shorts.ShortSet;
+
 import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
@@ -156,8 +158,8 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     @Override
-    public void onServerDataSync() {
-        super.onServerDataSync();
+    public void onServerDataSync(ShortSet updatedFields) {
+        super.onServerDataSync(updatedFields);
 
         getHost().getConfigManager().putSetting(Settings.COPY_MODE, this.getCopyMode());
     }

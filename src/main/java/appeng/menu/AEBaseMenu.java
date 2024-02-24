@@ -45,6 +45,9 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
+import it.unimi.dsi.fastutil.shorts.ShortSet;
+
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -804,7 +807,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
      * Can be overridden in subclasses to be notified of GUI data updates sent by the server.
      */
     @MustBeInvokedByOverriders
-    public void onServerDataSync() {
+    public void onServerDataSync(ShortSet updatedFields) {
     }
 
     public void onSlotChange(Slot s) {
@@ -864,8 +867,9 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
      * Receives data from the server for synchronizing fields of this class.
      */
     public final void receiveServerSyncData(FriendlyByteBuf data) {
-        this.dataSync.readUpdate(data);
-        this.onServerDataSync();
+        ShortSet updatedFields = new ShortOpenHashSet();
+        this.dataSync.readUpdate(data, updatedFields);
+        this.onServerDataSync(updatedFields);
     }
 
     /**
