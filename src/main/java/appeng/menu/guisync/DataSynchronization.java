@@ -24,6 +24,8 @@ import java.util.Map;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
+import it.unimi.dsi.fastutil.shorts.ShortSet;
+
 import appeng.core.AELog;
 
 /**
@@ -93,7 +95,7 @@ public class DataSynchronization {
         data.writeVarInt(-1);
     }
 
-    public void readUpdate(FriendlyByteBuf data) {
+    public void readUpdate(FriendlyByteBuf data, ShortSet updatedFields) {
         for (short key = data.readShort(); key != -1; key = data.readShort()) {
             SynchronizedField<?> field = fields.get(key);
             if (field == null) {
@@ -102,6 +104,7 @@ public class DataSynchronization {
             }
 
             field.read(data);
+            updatedFields.add(key);
         }
     }
 

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +45,6 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.client.AEKeyRendering;
 import appeng.api.config.ActionItems;
-import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -52,6 +52,7 @@ import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.storage.AEKeyFilter;
 import appeng.api.util.IConfigManager;
@@ -89,12 +90,11 @@ import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
-import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
 public class MEStorageScreen<C extends MEStorageMenu>
-        extends AEBaseScreen<C> implements ISortSource, IConfigManagerListener {
+        extends AEBaseScreen<C> implements ISortSource {
 
     private static final Logger LOG = LoggerFactory.getLogger(MEStorageScreen.class);
 
@@ -143,7 +143,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.imageHeight = this.style.getScreenHeight(0);
 
         this.configSrc = ((IConfigurableObject) this.menu).getConfigManager();
-        this.menu.setGui(this);
+        this.menu.setGui(this::onMenuReceivedClientUpdate);
 
         List<Slot> viewCellSlots = menu.getSlots(SlotSemantics.VIEW_CELL);
         this.supportsViewCells = !viewCellSlots.isEmpty();
@@ -774,11 +774,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     @Override
     public Set<AEKeyType> getSortKeyTypes() {
-        return new HashSet<>(menu.searchKeyTypes.enabledSet());
+        return menu.canConfigureTypeFilter() ? new HashSet<>(menu.searchKeyTypes.enabledSet())
+                : Sets.newHashSet(AEKeyTypes.getAll());
     }
 
-    @Override
-    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
+    public void onMenuReceivedClientUpdate() {
         if (this.sortByToggle != null) {
             this.sortByToggle.set(getSortBy());
         }

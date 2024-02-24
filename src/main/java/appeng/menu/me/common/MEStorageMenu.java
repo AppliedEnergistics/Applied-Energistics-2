@@ -39,6 +39,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import it.unimi.dsi.fastutil.shorts.ShortSet;
+
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -124,14 +126,16 @@ public class MEStorageMenu extends AEBaseMenu
      */
     @GuiSync(100)
     public int activeCraftingJobs = -1;
-    @GuiSync(101)
+    private static final short SEARCH_KEY_TYPES_ID = 101;
+    @GuiSync(SEARCH_KEY_TYPES_ID)
     public SyncedKeyTypes searchKeyTypes = new SyncedKeyTypes();
 
     // Client-side: last status received from server
     // Server-side: last status sent to client
     private ILinkStatus linkStatus = ILinkStatus.ofDisconnected(null);
 
-    private IConfigManagerListener gui;
+    @Nullable
+    private Runnable gui;
     private IConfigManager serverCM;
 
     // This is null on the client-side and can be null on the server too
@@ -303,6 +307,18 @@ public class MEStorageMenu extends AEBaseMenu
 
     }
 
+    @Override
+    public void onServerDataSync(ShortSet updatedFields) {
+        super.onServerDataSync(updatedFields);
+
+        if (updatedFields.contains(SEARCH_KEY_TYPES_ID)) {
+            // Trigger re-sort
+            if (getGui() != null) {
+                getGui().run();
+            }
+        }
+    }
+
     protected boolean showsCraftables() {
         return true;
     }
@@ -365,7 +381,7 @@ public class MEStorageMenu extends AEBaseMenu
     @Override
     public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
         if (this.getGui() != null) {
-            this.getGui().onSettingChanged(manager, setting);
+            this.getGui().run();
         }
     }
 
@@ -680,11 +696,15 @@ public class MEStorageMenu extends AEBaseMenu
         return linkStatus;
     }
 
-    private IConfigManagerListener getGui() {
+    @Nullable
+    private Runnable getGui() {
         return this.gui;
     }
 
-    public void setGui(IConfigManagerListener gui) {
+    /**
+     * Sets the current screen. Will be notified when settings change and it needs to update its sorting.
+     */
+    public void setGui(@Nullable Runnable gui) {
         this.gui = gui;
     }
 
