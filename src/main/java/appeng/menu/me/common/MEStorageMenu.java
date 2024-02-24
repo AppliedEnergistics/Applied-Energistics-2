@@ -403,7 +403,7 @@ public class MEStorageMenu extends AEBaseMenu
      * Checks that the inventory monitor is connected, a power source exists and that it is powered.
      */
     protected final boolean canInteractWithGrid() {
-        return this.storage != null && this.powerSource != null && this.isPowered();
+        return getLinkStatus().connected() && this.storage != null && this.powerSource != null && this.isPowered();
     }
 
     @Override
