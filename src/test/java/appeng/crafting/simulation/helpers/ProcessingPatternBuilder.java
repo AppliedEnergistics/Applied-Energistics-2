@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
@@ -104,7 +105,7 @@ public class ProcessingPatternBuilder {
         return new IPatternDetails() {
             @Override
             public AEItemKey getDefinition() {
-                throw new UnsupportedOperationException();
+                return AEItemKey.of(Items.PAPER);
             }
 
             @Override
