@@ -951,7 +951,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         guiGraphics.fillGradient(RenderType.guiOverlay(), x, y, x + w, y + h, 0x80ffffff, 0x80ffffff, z);
     }
 
-    protected final void switchToScreen(AEBaseScreen<?> screen) {
+    public final void switchToScreen(AEBaseScreen<?> screen) {
         savedSlotInfos.clear();
         for (var slot : menu.slots) {
             savedSlotInfos.add(new SavedSlotInfo(slot));

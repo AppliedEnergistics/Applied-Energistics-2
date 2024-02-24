@@ -33,6 +33,7 @@ import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.core.network.serverbound.MEInteractionPacket;
 import appeng.core.network.serverbound.MouseWheelPacket;
 import appeng.core.network.serverbound.PartLeftClickPacket;
+import appeng.core.network.serverbound.SelectKeyTypePacket;
 import appeng.core.network.serverbound.SwapSlotsPacket;
 import appeng.core.network.serverbound.SwitchGuisPacket;
 
@@ -70,6 +71,7 @@ public class InitNetwork {
         serverbound(registrar, MEInteractionPacket.class, MEInteractionPacket::decode);
         serverbound(registrar, MouseWheelPacket.class, MouseWheelPacket::decode);
         serverbound(registrar, PartLeftClickPacket.class, PartLeftClickPacket::decode);
+        serverbound(registrar, SelectKeyTypePacket.class, SelectKeyTypePacket::decode);
         serverbound(registrar, SwapSlotsPacket.class, SwapSlotsPacket::decode);
         serverbound(registrar, SwitchGuisPacket.class, SwitchGuisPacket::decode);
 

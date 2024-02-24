@@ -51,7 +51,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.config.TypeFilter;
 import appeng.api.config.ViewItems;
 import appeng.api.features.IGridLinkableHandler;
 import appeng.api.implementations.blockentities.IWirelessAccessPoint;
@@ -262,7 +261,6 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
 
         out.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         out.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        out.registerSetting(Settings.TYPE_FILTER, TypeFilter.ALL);
         out.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
         out.readFromNBT(target.getOrCreateTag().copy());

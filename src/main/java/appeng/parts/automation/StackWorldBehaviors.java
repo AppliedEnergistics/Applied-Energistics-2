@@ -5,6 +5,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -74,6 +75,10 @@ public final class StackWorldBehaviors {
         return what -> importStrategies.getMap().containsKey(what.getType());
     }
 
+    public static Predicate<AEKeyType> hasImportStrategyTypeFilter() {
+        return type -> importStrategies.getMap().containsKey(type);
+    }
+
     /**
      * {@return filter matching any key for which there is an export strategy}
      */
@@ -88,10 +93,13 @@ public final class StackWorldBehaviors {
         return what -> placementStrategies.getMap().containsKey(what.getType());
     }
 
-    public static StackImportStrategy createImportFacade(ServerLevel level, BlockPos fromPos, Direction fromSide) {
+    public static StackImportStrategy createImportFacade(ServerLevel level, BlockPos fromPos, Direction fromSide,
+            Predicate<AEKeyType> forTypes) {
         var strategies = new ArrayList<StackImportStrategy>(importStrategies.getMap().size());
-        for (var supplier : importStrategies.getMap().values()) {
-            strategies.add(supplier.create(level, fromPos, fromSide));
+        for (var entry : importStrategies.getMap().entrySet()) {
+            if (forTypes.test(entry.getKey())) {
+                strategies.add(entry.getValue().create(level, fromPos, fromSide));
+            }
         }
         return new StackImportFacade(strategies);
     }

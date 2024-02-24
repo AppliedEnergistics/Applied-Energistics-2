@@ -51,6 +51,8 @@ public enum GuiText implements LocalizationEnum {
     CompatibleUpgrades("Compatible Upgrades:"),
     Condenser("Matter Condenser"),
     Config("Config"),
+    ConfigureImportedTypes("Configure Imported Types"),
+    ConfigureVisibleTypes("Configure Visible Types"),
     ConfirmCraftCpuStatus("Storage: %s : Co Processors: %s"),
     ConfirmCraftNoCpu("Storage: N/A : Co Processors: N/A"),
     CopyMode("Copy Mode"),

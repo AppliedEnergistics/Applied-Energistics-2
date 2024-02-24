@@ -18,6 +18,9 @@
 
 package appeng.parts.automation;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.MenuType;
 
@@ -26,15 +29,27 @@ import appeng.api.networking.IGrid;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.api.util.KeyTypeSelection;
+import appeng.api.util.KeyTypeSelectionHost;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.menu.implementations.IOBusMenu;
 
-public class ImportBusPart extends IOBusPart {
+public class ImportBusPart extends IOBusPart implements KeyTypeSelectionHost {
+    @Nullable
     private StackImportStrategy importStrategy;
+    private final KeyTypeSelection keyTypeSelection;
 
     public ImportBusPart(IPartItem<?> partItem) {
         super(TickRates.ImportBus, StackWorldBehaviors.hasImportStrategyFilter(), partItem);
+
+        this.keyTypeSelection = new KeyTypeSelection(() -> {
+            getHost().markForSave();
+            // Reset strategies
+            importStrategy = null;
+            // We can potentially wake up now
+            getMainNode().ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
+        }, StackWorldBehaviors.hasImportStrategyTypeFilter());
     }
 
     @Override
@@ -43,7 +58,8 @@ public class ImportBusPart extends IOBusPart {
             var self = this.getHost().getBlockEntity();
             var fromPos = self.getBlockPos().relative(this.getSide());
             var fromSide = getSide().getOpposite();
-            importStrategy = StackWorldBehaviors.createImportFacade((ServerLevel) getLevel(), fromPos, fromSide);
+            importStrategy = StackWorldBehaviors.createImportFacade((ServerLevel) getLevel(), fromPos, fromSide,
+                    keyTypeSelection.enabledPredicate());
         }
 
         var context = new StackTransferContextImpl(
@@ -80,5 +96,22 @@ public class ImportBusPart extends IOBusPart {
         } else {
             return MODELS_OFF;
         }
+    }
+
+    @Override
+    public void readFromNBT(CompoundTag extra) {
+        super.readFromNBT(extra);
+        keyTypeSelection.readFromNBT(extra);
+    }
+
+    @Override
+    public void writeToNBT(CompoundTag extra) {
+        super.writeToNBT(extra);
+        keyTypeSelection.writeToNBT(extra);
+    }
+
+    @Override
+    public KeyTypeSelection getKeyTypeSelection() {
+        return keyTypeSelection;
     }
 }

@@ -41,6 +41,8 @@ import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.KeyTypeSelection;
+import appeng.api.util.KeyTypeSelectionHost;
 import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
@@ -54,7 +56,7 @@ import appeng.menu.ISubMenu;
 import appeng.menu.locator.ItemMenuHostLocator;
 
 public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends ItemMenuHost<T>
-        implements IPortableTerminal, IActionHost {
+        implements IPortableTerminal, IActionHost, KeyTypeSelectionHost {
 
     private final BiConsumer<Player, ISubMenu> returnToMainMenu;
     @Nullable
@@ -120,6 +122,11 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
     @Override
     public IConfigManager getConfigManager() {
         return getItem().getConfigManager(getItemStack());
+    }
+
+    @Override
+    public KeyTypeSelection getKeyTypeSelection() {
+        return KeyTypeSelection.forStack(getItemStack(), keyType -> true);
     }
 
     @Override
