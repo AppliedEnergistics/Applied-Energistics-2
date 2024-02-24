@@ -20,8 +20,6 @@ import appeng.client.gui.AESubScreen;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.widgets.AECheckbox;
 import appeng.client.gui.widgets.TabButton;
-import appeng.core.network.NetworkHandler;
-import appeng.core.network.serverbound.SelectKeyTypePacket;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.interfaces.KeyTypeSelectionMenu;
 
@@ -112,12 +110,7 @@ public class KeyTypeSelectionScreen<C extends AEBaseMenu & KeyTypeSelectionMenu,
 
                 var checkbox = new AECheckbox(xPos, yPos, textboxWidth, AECheckbox.SIZE, screen.getStyle(),
                         keyType.getDescription());
-                checkbox.setChangeListener(() -> {
-                    // Send to server
-                    NetworkHandler.instance().sendToServer(new SelectKeyTypePacket(keyType, checkbox.isSelected()));
-                    // Update client
-                    getMenu().getClientKeyTypeSelection().keyTypes().put(keyType, checkbox.isSelected());
-                });
+                checkbox.setChangeListener(() -> getMenu().selectKeyType(keyType, checkbox.isSelected()));
                 addWidget.accept(checkbox);
                 checkboxes.put(keyType, checkbox);
 

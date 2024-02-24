@@ -4,10 +4,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.stacks.AEKeyType;
 import appeng.api.util.KeyTypeSelection;
+import appeng.core.network.NetworkHandler;
 import appeng.core.network.serverbound.SelectKeyTypePacket;
 import appeng.menu.guisync.PacketWritable;
 
@@ -24,6 +27,17 @@ public interface KeyTypeSelectionMenu {
      * Used on the client side to read and <b>write</b> the selected key types.
      */
     SyncedKeyTypes getClientKeyTypeSelection();
+
+    /**
+     * Update a key type on the client side.
+     */
+    @ApiStatus.NonExtendable
+    default void selectKeyType(AEKeyType keyType, boolean enabled) {
+        // Send to server
+        NetworkHandler.instance().sendToServer(new SelectKeyTypePacket(keyType, enabled));
+        // Update client
+        getClientKeyTypeSelection().keyTypes().put(keyType, enabled);
+    }
 
     record SyncedKeyTypes(Map<AEKeyType, Boolean> keyTypes) implements PacketWritable {
         public SyncedKeyTypes() {
