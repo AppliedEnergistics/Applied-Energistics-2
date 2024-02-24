@@ -107,11 +107,17 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
         return this.getInternalInventory();
     }
 
+    @Nullable
     public IItemHandler getExposedItemHandler(@Nullable Direction side) {
         if (side == null) {
             return getInternalInventory().toItemHandler();
         } else {
-            return getExposedInventoryForSide(side).toItemHandler();
+            var exposed = getExposedInventoryForSide(side);
+            // If the inventory has 0 slots, it's probably a dummy.
+            // Return null to avoid pipe connections to it.
+            // isEmpty checks for stacks, use size to only check the slot count.
+            // noinspection SizeReplaceableByIsEmpty
+            return exposed.size() == 0 ? null : exposed.toItemHandler();
         }
     }
 
