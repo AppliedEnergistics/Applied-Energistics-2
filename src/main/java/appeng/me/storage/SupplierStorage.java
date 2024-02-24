@@ -1,6 +1,9 @@
 package appeng.me.storage;
 
+import java.util.Objects;
 import java.util.function.Supplier;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
 
@@ -14,15 +17,19 @@ import appeng.api.storage.MEStorage;
  * Delegates all calls to a {@link MEStorage} returned by a supplier such that the underlying storage can change
  * dynamically.
  */
-public class SupplierStorage implements MEStorage {
-    private final Supplier<MEStorage> supplier;
+public final class SupplierStorage implements MEStorage {
+    private final Supplier<@Nullable MEStorage> supplier;
 
     public SupplierStorage(Supplier<MEStorage> supplier) {
         this.supplier = supplier;
     }
 
+    public boolean isPresent() {
+        return supplier.get() != null;
+    }
+
     private MEStorage getDelegate() {
-        return supplier.get();
+        return Objects.requireNonNullElseGet(supplier.get(), NullInventory::of);
     }
 
     @Override
@@ -53,9 +60,5 @@ public class SupplierStorage implements MEStorage {
     @Override
     public KeyCounter getAvailableStacks() {
         return getDelegate().getAvailableStacks();
-    }
-
-    public static void checkPreconditions(AEKey what, long amount, Actionable mode, IActionSource source) {
-        MEStorage.checkPreconditions(what, amount, mode, source);
     }
 }

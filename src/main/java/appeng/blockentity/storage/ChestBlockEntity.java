@@ -75,6 +75,7 @@ import appeng.api.util.KeyTypeSelectionHost;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.definitions.AEBlocks;
+import appeng.core.localization.PlayerMessages;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DelegatingMEInventory;
@@ -209,6 +210,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public ILinkStatus getLinkStatus() {
+        updateHandler();
+        if (cellHandler == null) {
+            return ILinkStatus.ofDisconnected(PlayerMessages.ChestCannotReadStorageCell.text());
+        }
         return ILinkStatus.ofManagedNode(getMainNode());
     }
 
