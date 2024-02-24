@@ -317,9 +317,9 @@ public final class AELog {
      * @param params
      * @see AELog#log(Level, String, Object...)
      */
-    public static void craftingDebug(String message, Object... params) {
+    public static void craftingDebug(int depth, String message, Object... params) {
         if (AELog.isCraftingDebugLogEnabled()) {
-            log(Level.DEBUG, message, params);
+            log(Level.DEBUG, " ".repeat(depth) + message, params);
         }
     }
 

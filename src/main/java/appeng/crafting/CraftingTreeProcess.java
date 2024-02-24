@@ -26,6 +26,7 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
+import appeng.core.AELog;
 import appeng.crafting.inv.CraftingSimulationState;
 
 /**
@@ -103,15 +104,18 @@ public class CraftingTreeProcess {
         return this.limitQty;
     }
 
-    void request(CraftingSimulationState inv, long times)
+    void request(CraftingSimulationState inv, long times, int depth)
             throws CraftBranchFailure, InterruptedException {
-        this.job.handlePausing();
+        this.job.handlePausing(depth);
+
+        AELog.craftingDebug(depth, "Requesting %d instances of pattern %s", times,
+                this.details.getDefinition().getTag());
 
         var containerItems = this.containerItems ? new KeyCounter() : null;
 
         // request and remove inputs...
         for (var entry : this.nodes.entrySet()) {
-            entry.getKey().request(inv, entry.getValue() * times, containerItems);
+            entry.getKey().request(inv, entry.getValue() * times, containerItems, depth + 1);
         }
 
         // by now we must have succeeded, otherwise an exception would have been thrown by request() above

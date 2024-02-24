@@ -83,7 +83,7 @@ public class CraftingCalculation {
     public ICraftingPlan run() {
         try {
             TickHandler.instance().registerCraftingSimulation(this.level, this);
-            this.handlePausing();
+            this.handlePausing(0);
 
             var plan = computePlan();
             this.logCraftingJob(plan);
@@ -144,7 +144,7 @@ public class CraftingCalculation {
 
         // Do the crafting. Throws in case of failure.
         try {
-            this.tree.request(craftingInventory, amount, null);
+            this.tree.request(craftingInventory, amount, null, 1);
         } catch (CraftBranchFailure failure) {
             if (AELog.isCraftingLogEnabled()) {
                 this.attempts.add(new CraftAttempt(amount + " failed", timer));
@@ -168,7 +168,7 @@ public class CraftingCalculation {
         return plan;
     }
 
-    void handlePausing() throws InterruptedException {
+    void handlePausing(int depth) throws InterruptedException {
         if (this.incTime > 100) {
             this.incTime = 0;
 
@@ -180,13 +180,13 @@ public class CraftingCalculation {
                 }
 
                 if (!this.running) {
-                    AELog.craftingDebug("crafting job will now sleep");
+                    AELog.craftingDebug(depth, "crafting job will now sleep");
 
                     while (!this.running) {
                         this.monitor.wait();
                     }
 
-                    AELog.craftingDebug("crafting job now active");
+                    AELog.craftingDebug(depth, "crafting job now active");
                 }
             }
 
@@ -239,7 +239,7 @@ public class CraftingCalculation {
             this.watch.start();
             this.running = true;
 
-            AELog.craftingDebug("main thread is now going to sleep");
+            AELog.craftingDebug(0, "main thread is now going to sleep");
 
             this.monitor.notify();
 
@@ -250,7 +250,7 @@ public class CraftingCalculation {
                 }
             }
 
-            AELog.craftingDebug("main thread is now active");
+            AELog.craftingDebug(0, "main thread is now active");
         }
 
         return true;

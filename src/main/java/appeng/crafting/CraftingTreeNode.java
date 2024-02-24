@@ -33,6 +33,7 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
+import appeng.core.AELog;
 import appeng.crafting.execution.CraftingCpuHelper;
 import appeng.crafting.execution.InputTemplate;
 import appeng.crafting.inv.ChildCraftingSimulationState;
@@ -166,9 +167,12 @@ public class CraftingTreeNode {
      * @throws CraftBranchFailure If the request failed.
      */
     void request(CraftingSimulationState inv, long requestedAmount,
-            @Nullable KeyCounter containerItems)
+            @Nullable KeyCounter containerItems, int depth)
             throws CraftBranchFailure, InterruptedException {
-        this.job.handlePausing();
+        this.job.handlePausing(depth);
+
+        AELog.craftingDebug(depth, "Entering CraftingTreeNode#request for %dx%s. (this.amount = %d)", requestedAmount,
+                this.what, this.amount);
 
         inv.addStackBytes(what, amount, requestedAmount);
 
@@ -184,8 +188,10 @@ public class CraftingTreeNode {
                 // TODO: it processes the job.
                 requestedAmount -= extracted;
                 addContainerItems(template.key(), extracted, containerItems);
+                AELog.craftingDebug(depth, "Collected %d instances of template %s", extracted, template);
 
                 if (requestedAmount == 0) {
+                    AELog.craftingDebug(depth, "Exiting CraftingTreeNode#request: found enough items.");
                     return;
                 }
             }
@@ -199,6 +205,8 @@ public class CraftingTreeNode {
          */
         if (this.canEmit) {
             inv.emitItems(this.what, this.amount * requestedAmount);
+            AELog.craftingDebug(depth, "Exiting CraftingTreeNode#request: emitted %d items.",
+                    this.amount * requestedAmount);
             return;
         }
 
@@ -220,7 +228,7 @@ public class CraftingTreeNode {
                     // Craft all at once!
                     times = (totalRequestedItems + craftedPerPattern - 1) / craftedPerPattern;
                 }
-                pro.request(inv, times);
+                pro.request(inv, times, depth + 1);
 
                 // by now we have succeeded, as request throws an exception in case of failure
                 // check how much was actually produced
@@ -229,6 +237,8 @@ public class CraftingTreeNode {
                     totalRequestedItems -= available;
 
                     if (totalRequestedItems <= 0) {
+                        AELog.craftingDebug(depth,
+                                "Exiting CraftingTreeNode#request: recursion success (single pattern case).");
                         return;
                     }
                 } else {
@@ -255,7 +265,7 @@ public class CraftingTreeNode {
                     while (pro.possible && totalRequestedItems > 0) {
                         final ChildCraftingSimulationState child = new ChildCraftingSimulationState(inv);
                         // craft one by one, using the sub inventory as target
-                        pro.request(child, 1);
+                        pro.request(child, 1, depth + 1);
 
                         // by now we have succeeded, as request throws an exception in case of failure
                         var available = child.extract(this.what, totalRequestedItems, Actionable.MODULATE);
@@ -266,6 +276,8 @@ public class CraftingTreeNode {
                             totalRequestedItems -= available;
 
                             if (totalRequestedItems <= 0) {
+                                AELog.craftingDebug(depth,
+                                        "Exiting CraftingTreeNode#request: recursion success (multi pattern case).");
                                 return;
                             }
                         } else {
@@ -278,6 +290,8 @@ public class CraftingTreeNode {
                 }
             }
         }
+
+        AELog.craftingDebug(depth, "Exiting CraftingTreeNode#request: failure.");
 
         if (this.job.isSimulation()) {
             job.addMissing(this.what, totalRequestedItems);
