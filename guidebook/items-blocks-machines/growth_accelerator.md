@@ -18,6 +18,9 @@ The Growth Accelerator massively accelerates [the growth of](../ae2-mechanics/ce
 
 Curiously, it can *also* accelerate the growth of various plants.
 
+It does this by applying "random ticks" to the adjacent blocks, in addition to the random ticks that happen naturally.
+In theory this means  1 accelerator should make things grow ~90x faster than normal, and the effect stacks additively.
+
 <GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/growth_accelerator.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
