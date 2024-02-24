@@ -60,6 +60,9 @@ import appeng.api.parts.CableRenderMode;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.AEKeyTypesInternal;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.InitNetwork;
 import appeng.core.network.NetworkHandler;
@@ -67,6 +70,7 @@ import appeng.hooks.SkyStoneBreakSpeed;
 import appeng.hooks.WrenchHook;
 import appeng.hooks.ticking.TickHandler;
 import appeng.hotkeys.HotkeyActions;
+import appeng.init.InitAdvancementTriggers;
 import appeng.init.InitBlockEntities;
 import appeng.init.InitBlocks;
 import appeng.init.InitCapabilityProviders;
@@ -77,6 +81,7 @@ import appeng.init.InitItems;
 import appeng.init.InitMenuTypes;
 import appeng.init.InitRecipeSerializers;
 import appeng.init.InitRecipeTypes;
+import appeng.init.InitStats;
 import appeng.init.InitTiers;
 import appeng.init.InitVillager;
 import appeng.init.client.InitParticleTypes;
@@ -120,10 +125,6 @@ public abstract class AppEngBase implements AppEng {
         }
         INSTANCE = this;
 
-        // Now that item instances are available, we can initialize registries that need item instances
-        InitGridLinkables.init();
-        InitStorageCells.init();
-
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::registerRegistries);
         modEventBus.addListener(MainCreativeTab::initExternal);
@@ -145,6 +146,14 @@ public abstract class AppEngBase implements AppEng {
             }
             // Register everything in the block registration event ;)
 
+            InitStats.init();
+            InitAdvancementTriggers.init();
+
+            // Initialize items in order
+            AEItems.init();
+            AEBlocks.init();
+            AEParts.init();
+
             InitTiers.init();
             InitBlocks.init(BuiltInRegistries.BLOCK);
             InitItems.init(BuiltInRegistries.ITEM);
@@ -157,6 +166,11 @@ public abstract class AppEngBase implements AppEng {
             InitStructures.init();
             registerKeyTypes();
             InitVillager.init();
+
+            Registry.register(BuiltInRegistries.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
+                    SpatialStorageChunkGenerator.CODEC);
+
+            HotkeyActions.init();
         });
 
         modEventBus.addListener(Integrations::enqueueIMC);
@@ -180,8 +194,6 @@ public abstract class AppEngBase implements AppEng {
                 event.setUseBlock(Event.Result.ALLOW);
             }
         });
-
-        HotkeyActions.init();
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -196,7 +208,10 @@ public abstract class AppEngBase implements AppEng {
      * Runs after all mods have had time to run their registrations into registries.
      */
     public void postRegistrationInitialization() {
-        // This has to be here because it relies on caps and god knows when those are available...
+        // Now that item instances are available, we can initialize registries that need item instances
+        InitGridLinkables.init();
+        InitStorageCells.init();
+
         InitP2PAttunements.init();
 
         InitCauldronInteraction.init();
@@ -221,9 +236,6 @@ public abstract class AppEngBase implements AppEng {
     }
 
     public void registerRegistries(NewRegistryEvent e) {
-        Registry.register(BuiltInRegistries.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
-                SpatialStorageChunkGenerator.CODEC);
-
         var registry = e.create(new RegistryBuilder<>(AEKeyType.REGISTRY_KEY)
                 .sync(true)
                 .maxId(127));

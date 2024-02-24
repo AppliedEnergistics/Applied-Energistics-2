@@ -18,17 +18,10 @@
 
 package appeng.core;
 
-import net.minecraft.core.MappedRegistry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.fml.DistExecutor;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLPaths;
 
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
-import appeng.init.InitAdvancementTriggers;
-import appeng.init.InitStats;
 import appeng.init.internal.InitBlockEntityMoveStrategies;
 import appeng.init.internal.InitGridServices;
 
@@ -40,39 +33,11 @@ public class AppEngBootstrap {
     private volatile static boolean bootstrapped;
 
     public AppEngBootstrap() {
+        AEConfig.load(FMLPaths.CONFIGDIR.get());
+
+        InitGridServices.init();
+        InitBlockEntityMoveStrategies.init();
+
         DistExecutor.unsafeRunForDist(() -> AppEngClient::new, () -> AppEngServer::new);
     }
-
-    /**
-     * This is called from a Mixin whenever Minecraft itself Bootstraps.
-     */
-    public static void runEarlyStartup() {
-        if (!bootstrapped) {
-            bootstrapped = true;
-
-            AEConfig.load(FMLPaths.CONFIGDIR.get());
-
-            InitGridServices.init();
-            InitBlockEntityMoveStrategies.init();
-
-            // Forge will do this later, but we need it now.
-            BuiltInRegistries.REGISTRY.stream().forEach(r -> {
-                if (r instanceof MappedRegistry mappedRegistry) {
-                    mappedRegistry.unfreeze();
-                }
-            });
-
-            // This has to be initialized here because Forge's common setup event will not run in datagens.
-            InitStats.init();
-            InitAdvancementTriggers.init();
-
-            // Initialize items in order
-            // We have to move this here from our mod constructor because item constructors now interact with
-            // Registries in a non-thread-safe way.
-            AEItems.init();
-            AEBlocks.init();
-            AEParts.init();
-        }
-    }
-
 }
