@@ -256,7 +256,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.IOPort, !this.hasWork(), false);
+        return new TickingRequest(TickRates.IOPort, !this.hasWork());
     }
 
     @Override

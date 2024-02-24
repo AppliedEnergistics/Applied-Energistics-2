@@ -281,7 +281,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
 
     @Override
     public final TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(tickRates.getMin(), tickRates.getMax(), isSleeping(), true);
+        return new TickingRequest(tickRates.getMin(), tickRates.getMax(), isSleeping());
     }
 
     @Override

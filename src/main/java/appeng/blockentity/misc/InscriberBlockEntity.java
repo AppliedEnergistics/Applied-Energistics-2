@@ -267,7 +267,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     // @Override
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.Inscriber, !hasAutoExportWork() && !this.hasCraftWork(), false);
+        return new TickingRequest(TickRates.Inscriber, !hasAutoExportWork() && !this.hasCraftWork());
     }
 
     private boolean hasAutoExportWork() {

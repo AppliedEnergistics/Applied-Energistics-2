@@ -672,7 +672,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
         @Override
         public TickingRequest getTickingRequest(IGridNode node) {
-            return new TickingRequest(TickRates.Interface, !hasWorkToDo(), true);
+            return new TickingRequest(TickRates.Interface, !hasWorkToDo());
         }
 
         @Override

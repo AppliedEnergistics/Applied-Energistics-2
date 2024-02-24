@@ -222,7 +222,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(20, 20, false, true);
+        return new TickingRequest(20, 20, false);
     }
 
     @Override

@@ -28,35 +28,31 @@ import appeng.core.settings.TickRates;
 /**
  * Describes how your grid node ticking is executed.
  *
- * @param minTickRate  the minimum number of ticks that must pass between ticks. Valid Values are : 1+ Suggested is 5-20
- * @param maxTickRate  the maximum number of ticks that can pass between ticks, if this value is exceeded the grid node
- *                     must tick. Valid Values are 1+ Suggested is 20-40
- * @param isSleeping   Determines the current expected state of your node, if your node expects to be sleeping, then
- *                     return true.
- * @param canBeAlerted True only if you call {@link ITickManager}.alertDevice( IGridNode );
+ * @param minTickRate the minimum number of ticks that must pass between ticks. Valid Values are : 1+ Suggested is 5-20
+ * @param maxTickRate the maximum number of ticks that can pass between ticks, if this value is exceeded the grid node
+ *                    must tick. Valid Values are 1+ Suggested is 20-40
+ * @param isSleeping  Determines the current expected state of your node, if your node expects to be sleeping, then
+ *                    return true.
  */
 public record TickingRequest(
         int minTickRate,
         int maxTickRate,
         boolean isSleeping,
-        boolean canBeAlerted,
         int initialTickRate) {
 
-    public TickingRequest(int minTickRate, int maxTickRate, boolean isSleeping, boolean canBeAlerted) {
+    public TickingRequest(int minTickRate, int maxTickRate, boolean isSleeping) {
         this(
                 minTickRate,
                 maxTickRate,
                 isSleeping,
-                canBeAlerted,
                 getInitialTickDelay(minTickRate, maxTickRate));
     }
 
-    public TickingRequest(TickRates tickRates, boolean isSleeping, boolean canBeAlerted) {
+    public TickingRequest(TickRates tickRates, boolean isSleeping) {
         this(
                 tickRates.getMin(),
                 tickRates.getMax(),
-                isSleeping,
-                canBeAlerted);
+                isSleeping);
     }
 
     private static int getInitialTickDelay(int min, int max) {
