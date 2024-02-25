@@ -1,8 +1,11 @@
 package appeng.api.behaviors;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.GenericStack;
 import appeng.util.CowMap;
 
@@ -49,10 +53,13 @@ public class ContainerItemStrategies {
             return null;
         }
 
-        for (var entry : strategies.getMap().entrySet()) {
-            var content = entry.getValue().getContainedStack(stack);
-            if (content != null) {
-                return content;
+        for (var keyType : AEKeyTypes.getAll()) {
+            var strategy = strategies.getMap().get(keyType);
+            if (strategy != null) {
+                var content = strategy.getContainedStack(stack);
+                if (content != null) {
+                    return content;
+                }
             }
         }
         return null;
@@ -91,24 +98,32 @@ public class ContainerItemStrategies {
         return findCarriedContext(key == null ? null : key.getType(), player, menu);
     }
 
-    /**
-     * @param keyType Desired key type, or null if any is ok.
-     */
-    @SuppressWarnings("unchecked")
     @Nullable
-    public static ContainerItemContext findCarriedContext(@Nullable AEKeyType keyType, Player player,
-            AbstractContainerMenu menu) {
-        var candidates = keyType == null ? strategies.getMap().keySet() : List.of(keyType);
+    private static ContainerItemContext findContext(@Nullable AEKeyType keyType,
+            Function<ContainerItemStrategy<?, ?>, @Nullable Object> contextFinder) {
+        var candidates = keyType == null ? AEKeyTypes.getAll() : List.of(keyType);
+        Map<AEKeyType, ContainerItemContext.Entry<?>> entries = new LinkedHashMap<>();
         for (var type : candidates) {
             var strategy = strategies.getMap().get(type);
             if (strategy != null) {
-                var context = strategy.findCarriedContext(player, menu);
+                var context = contextFinder.apply(strategy);
                 if (context != null) {
-                    return new ContainerItemContext((ContainerItemStrategy<AEKey, Object>) strategy, context, type);
+                    // noinspection unchecked
+                    entries.put(type, new ContainerItemContext.Entry<>((ContainerItemStrategy<AEKey, Object>) strategy,
+                            context, type));
                 }
             }
         }
-        return null;
+        return entries.isEmpty() ? null : new ContainerItemContext(entries);
+    }
+
+    /**
+     * @param keyType Desired key type, or null if any is ok.
+     */
+    @Nullable
+    public static ContainerItemContext findCarriedContext(@Nullable AEKeyType keyType, Player player,
+            AbstractContainerMenu menu) {
+        return findContext(keyType, strategy -> strategy.findCarriedContext(player, menu));
     }
 
     public static Set<AEKeyType> getSupportedKeyTypes() {
@@ -121,7 +136,6 @@ public class ContainerItemStrategies {
      *
      * @param keyType Desired key type, or null if any is ok.
      */
-    @SuppressWarnings("unchecked")
     @Nullable
     public static ContainerItemContext findOwnedItemContext(@Nullable AEKeyType keyType,
             Player player,
@@ -145,18 +159,8 @@ public class ContainerItemStrategies {
             return null; // Couldn't find the stack in the player inventory
         }
 
-        var candidates = keyType == null ? strategies.getMap().keySet() : List.of(keyType);
-        for (var type : candidates) {
-            var strategy = strategies.getMap().get(type);
-            if (strategy != null) {
-                var context = strategy.findPlayerSlotContext(player, slotIdx);
-                if (context != null) {
-                    return new ContainerItemContext((ContainerItemStrategy<AEKey, Object>) strategy, context, type);
-                }
-            }
-        }
-
-        return null;
+        int slotIdxCopy = slotIdx;
+        return findContext(keyType, strategy -> strategy.findPlayerSlotContext(player, slotIdxCopy));
     }
 
 }
