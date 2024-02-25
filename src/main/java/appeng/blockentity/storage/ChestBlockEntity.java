@@ -69,6 +69,7 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageHelper;
+import appeng.api.storage.SupplierStorage;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
 import appeng.api.util.AEColor;
@@ -116,6 +117,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private boolean isCached = false;
     private ChestMonitorHandler cellHandler;
     private IFluidHandler fluidHandler;
+    private SupplierStorage supplierStorage;
     private double idlePowerUsage;
 
     public ChestBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -183,6 +185,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         if (!this.isCached) {
             this.cellHandler = null;
             this.fluidHandler = null;
+            this.supplierStorage = null;
 
             var is = this.getCell();
             if (!is.isEmpty()) {
@@ -196,6 +199,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
                     if (this.cellHandler != null) {
                         this.fluidHandler = new FluidHandler();
+                        // Return a supplier here so that if the cell is removed *between menu ticks*
+                        // items can no longer be inserted or removed. On the next normal tick
+                        // the menu will then close.
+                        this.supplierStorage = new SupplierStorage(() -> this.cellHandler);
                     }
                 }
             }
@@ -416,8 +423,8 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     public MEStorage getInventory() {
         this.updateHandler();
 
-        if (this.cellHandler != null) {
-            return this.cellHandler;
+        if (this.supplierStorage != null) {
+            return this.supplierStorage;
         }
         return null;
     }
@@ -431,6 +438,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     public void onChangeInventory(InternalInventory inv, int slot) {
         if (inv == this.cellInventory) {
             this.cellHandler = null;
+            this.supplierStorage = null;
             this.isCached = false; // recalculate the storage cell.
 
             IStorageProvider.requestUpdate(getMainNode());
@@ -499,6 +507,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     public void setPriority(int newValue) {
         this.priority = newValue;
         this.cellHandler = null;
+        this.supplierStorage = null;
         this.isCached = false; // recalculate the storage cell.
 
         IStorageProvider.requestUpdate(getMainNode());
