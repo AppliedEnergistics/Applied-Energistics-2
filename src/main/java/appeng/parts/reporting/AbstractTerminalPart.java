@@ -37,6 +37,7 @@ import appeng.api.parts.IPartItem;
 import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEStorage;
+import appeng.api.storage.SupplierStorage;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.KeyTypeSelection;
 import appeng.api.util.KeyTypeSelectionHost;
@@ -144,11 +145,13 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
 
     @Override
     public MEStorage getInventory() {
-        var grid = getMainNode().getGrid();
-        if (grid != null) {
-            return grid.getStorageService().getInventory();
-        }
-        return null;
+        return new SupplierStorage(() -> {
+            var grid = getMainNode().getGrid();
+            if (grid != null) {
+                return grid.getStorageService().getInventory();
+            }
+            return null;
+        });
     }
 
     @Override
