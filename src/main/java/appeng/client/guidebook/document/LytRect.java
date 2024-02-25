@@ -56,6 +56,17 @@ public record LytRect(int x, int y, int width, int height) {
         return new LytRect(this.x + x, this.y + y, width, height);
     }
 
+    public LytRect centerIn(LytRect other) {
+        var centerXOther = other.x + other.width / 2;
+        var centerYOther = other.y + other.height / 2;
+        return new LytRect(centerXOther - width / 2, centerYOther - height / 2, width, height);
+    }
+
+    public LytRect centerHorizontallyIn(LytRect other) {
+        var centerXOther = other.x + other.width / 2;
+        return new LytRect(centerXOther - width / 2, y, width, height);
+    }
+
     public LytRect centerVerticallyIn(LytRect other) {
         var centerYOther = other.y + other.height / 2;
         return new LytRect(x, centerYOther - height / 2, width, height);

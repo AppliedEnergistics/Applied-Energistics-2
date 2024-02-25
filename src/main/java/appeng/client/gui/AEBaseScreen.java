@@ -73,7 +73,11 @@ import appeng.client.gui.widgets.ITooltip;
 import appeng.client.gui.widgets.OpenGuideButton;
 import appeng.client.gui.widgets.VerticalButtonBar;
 import appeng.client.guidebook.PageAnchor;
+import appeng.client.guidebook.color.SymbolicColor;
+import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.indices.ItemIndex;
+import appeng.client.guidebook.style.ResolvedTextStyle;
+import appeng.client.guidebook.style.TextStyle;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -104,6 +108,13 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      * Commonly used id for text that is used to show the dialog title.
      */
     public static final String TEXT_ID_DIALOG_TITLE = "dialog_title";
+
+    protected static final ResolvedTextStyle ERROR_TEXT_STYLE = TextStyle.builder()
+            .color(SymbolicColor.ERROR_TEXT)
+            .font(Minecraft.DEFAULT_FONT)
+            .dropShadow(true)
+            .build()
+            .mergeWith(DefaultStyles.BASE_STYLE);
 
     private final VerticalButtonBar verticalToolbar;
     private final OpenGuideButton helpButton;

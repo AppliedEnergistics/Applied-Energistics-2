@@ -55,6 +55,7 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.ILinkStatus;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.Hotkeys;
@@ -74,6 +75,9 @@ import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
 import appeng.client.gui.widgets.ToolboxPanel;
 import appeng.client.gui.widgets.UpgradesPanel;
+import appeng.client.guidebook.color.ConstantColor;
+import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.render.SimpleRenderContext;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.localization.ButtonToolTips;
@@ -432,35 +436,29 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     String.valueOf(menu.activeCraftingJobs));
         }
 
+        renderLinkStatus(guiGraphics, getMenu().getLinkStatus());
+    }
+
+    private void renderLinkStatus(GuiGraphics guiGraphics, ILinkStatus linkStatus) {
         // Draw an overlay indicating the grid is disconnected
-        var linkStatus = getMenu().getLinkStatus();
         if (!linkStatus.connected()) {
+            var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics);
+
             var firstSlot = style.getSlotPos(0, 0);
             var lastSlot = style.getSlotPos(rows - 1, style.getSlotsPerRow() - 1);
 
-            guiGraphics.fill(
+            var rect = new LytRect(
                     firstSlot.getX() - 1,
                     firstSlot.getY() - 1,
-                    lastSlot.getX() + 17,
-                    lastSlot.getY() + 17,
-                    0x3f000000);
+                    lastSlot.getX() + 17 - (firstSlot.getX() - 1),
+                    lastSlot.getY() + 17 - (firstSlot.getY() - 1));
+
+            renderContext.fillRect(rect, new ConstantColor(0x3f000000));
 
             // Draw the disconnect status on top of the grid
             var statusDescription = linkStatus.statusDescription();
             if (statusDescription != null) {
-                var visualText = statusDescription.getVisualOrderText();
-                var textWidth = font.width(visualText);
-
-                var textX = (firstSlot.getX() + lastSlot.getX() + 16 - textWidth) / 2;
-                var textY = (firstSlot.getY() + lastSlot.getY() + 16 - font.lineHeight) / 2;
-
-                guiGraphics.drawString(
-                        font,
-                        visualText,
-                        textX,
-                        textY,
-                        0xffff0000,
-                        true);
+                renderContext.renderTextCenteredIn(statusDescription.getString(), ERROR_TEXT_STYLE, rect);
             }
         }
     }
