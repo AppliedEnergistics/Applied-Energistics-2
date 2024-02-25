@@ -66,6 +66,7 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageHelper;
+import appeng.api.storage.SupplierStorage;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
 import appeng.api.util.AEColor;
@@ -75,6 +76,7 @@ import appeng.api.util.KeyTypeSelectionHost;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.definitions.AEBlocks;
+import appeng.core.localization.PlayerMessages;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DelegatingMEInventory;
@@ -209,6 +211,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public ILinkStatus getLinkStatus() {
+        updateHandler();
+        if (cellHandler == null) {
+            return ILinkStatus.ofDisconnected(PlayerMessages.ChestCannotReadStorageCell.text());
+        }
         return ILinkStatus.ofManagedNode(getMainNode());
     }
 
@@ -418,12 +424,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public MEStorage getInventory() {
-        this.updateHandler();
-
-        if (this.cellHandler != null) {
+        return new SupplierStorage(() -> {
+            updateHandler();
             return this.cellHandler;
-        }
-        return null;
+        });
     }
 
     @Override

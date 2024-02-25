@@ -138,9 +138,7 @@ public class MEStorageMenu extends AEBaseMenu
     private Runnable gui;
     private IConfigManager serverCM;
 
-    // This is null on the client-side and can be null on the server too
-    @Nullable
-    protected MEStorage storage;
+    protected final MEStorage storage;
 
     @Nullable
     protected IEnergySource powerSource;
@@ -175,6 +173,7 @@ public class MEStorageMenu extends AEBaseMenu
         super(menuType, id, ip, host);
 
         this.host = host;
+        this.storage = Objects.requireNonNull(host.getInventory(), "host inventory is null");
         this.clientCM = new ConfigManager(this);
 
         this.clientCM.registerSetting(Settings.SORT_BY, SortOrder.NAME);
@@ -235,7 +234,6 @@ public class MEStorageMenu extends AEBaseMenu
         toolboxMenu.tick();
 
         if (isServerSide()) {
-            this.storage = this.host.getInventory();
             this.networkNode = null;
             this.powerSource = null;
             if (host instanceof IPortableTerminal || host instanceof IMEChest) {
@@ -267,7 +265,7 @@ public class MEStorageMenu extends AEBaseMenu
             }
 
             var craftables = getCraftablesFromGrid();
-            var availableStacks = storage == null ? new KeyCounter() : storage.getAvailableStacks();
+            var availableStacks = storage.getAvailableStacks();
 
             // This is currently not supported/backed by any network service
             var requestables = new KeyCounter();
@@ -403,7 +401,7 @@ public class MEStorageMenu extends AEBaseMenu
      * Checks that the inventory monitor is connected, a power source exists and that it is powered.
      */
     protected final boolean canInteractWithGrid() {
-        return getLinkStatus().connected() && this.storage != null && this.powerSource != null && this.isPowered();
+        return getLinkStatus().connected();
     }
 
     @Override
@@ -439,8 +437,7 @@ public class MEStorageMenu extends AEBaseMenu
 
     protected void handleNetworkInteraction(ServerPlayer player, @Nullable AEKey clickedKey, InventoryAction action) {
 
-        // Interacting with the network is not possible if there's no network.
-        if (this.storage == null) {
+        if (!canInteractWithGrid()) {
             return;
         }
 
@@ -598,8 +595,7 @@ public class MEStorageMenu extends AEBaseMenu
         if (getCarried().isEmpty() && clickedKey instanceof AEFluidKey fluidKey
                 && fluidKey.getFluid().getBucket() != Items.AIR) {
             // This costs no energy, but who cares...
-            if (storage != null
-                    && storage.extract(AEItemKey.of(Items.BUCKET), 1, Actionable.MODULATE, getActionSource()) >= 1) {
+            if (storage.extract(AEItemKey.of(Items.BUCKET), 1, Actionable.MODULATE, getActionSource()) >= 1) {
                 var bucket = Items.BUCKET.getDefaultInstance();
                 setCarried(bucket);
                 grabbedEmptyBucket = true;

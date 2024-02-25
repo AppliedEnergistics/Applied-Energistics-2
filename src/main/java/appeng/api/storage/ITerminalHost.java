@@ -30,7 +30,10 @@ import appeng.api.util.IConfigurableObject;
 import appeng.client.Hotkeys;
 
 public interface ITerminalHost extends IUpgradeableObject, IConfigurableObject, ISubMenuHost {
-    @Nullable
+    /**
+     * Please note that this will only be called <strong>once</strong> when the menu is opened. If the inventory of this
+     * terminal host can change during its lifecycle, you need to return a {@link SupplierStorage}.
+     */
     MEStorage getInventory();
 
     /**

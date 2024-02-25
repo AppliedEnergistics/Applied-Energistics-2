@@ -40,6 +40,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
+import appeng.api.storage.SupplierStorage;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.KeyTypeSelection;
 import appeng.api.util.KeyTypeSelectionHost;
@@ -51,7 +52,6 @@ import appeng.items.contents.StackDependentSupplier;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.me.helpers.PlayerSource;
 import appeng.me.storage.NullInventory;
-import appeng.me.storage.SupplierStorage;
 import appeng.menu.ISubMenu;
 import appeng.menu.locator.ItemMenuHostLocator;
 
@@ -257,12 +257,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
         }
 
         if (getLinkStatus().connected()) {
-            var inv = getInventory();
-            if (inv == null) {
-                return 0;
-            }
-
-            return StorageHelper.poweredInsert(this, inv, what, amount, new PlayerSource(player), mode);
+            return StorageHelper.poweredInsert(this, getInventory(), what, amount, new PlayerSource(player), mode);
         } else {
             var statusText = getLinkStatus().statusDescription();
             if (statusText != null && !mode.isSimulate()) {
