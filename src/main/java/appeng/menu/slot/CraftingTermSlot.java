@@ -21,7 +21,6 @@ package appeng.menu.slot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -67,9 +66,9 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             MEStorage storage, InternalInventory cMatrix, InternalInventory secondMatrix,
             IMenuCraftingPacket ccp) {
         super(player, cMatrix);
-        this.energySrc = Objects.requireNonNull(energySrc, "energySrc");
-        this.storage = Objects.requireNonNull(storage, "storage");
-        this.mySrc = Objects.requireNonNull(mySrc, "mySrc");
+        this.energySrc = energySrc;
+        this.storage = storage;
+        this.mySrc = mySrc;
         this.pattern = cMatrix;
         this.craftInv = secondMatrix;
         this.menu = ccp;
