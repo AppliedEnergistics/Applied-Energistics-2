@@ -20,6 +20,8 @@ package appeng.parts.p2p;
 
 import java.util.List;
 
+import com.mojang.logging.LogUtils;
+
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -67,12 +69,15 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
 
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            LogUtils.getLogger().debug("p2p tunnel @ {} receiving an insert of {} (simulate = {})",
+                    getBlockEntity().getBlockPos(), stack, simulate);
             int remainder = stack.getCount();
 
             final int outputTunnels = ItemP2PTunnelPart.this.getOutputs().size();
             final int amount = stack.getCount();
 
             if (outputTunnels == 0 || amount == 0) {
+                LogUtils.getLogger().debug("p2p tunnel: no output or no amount");
                 return stack;
             }
 
@@ -105,6 +110,8 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
             if (!simulate) {
                 ItemP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, amount - remainder);
             }
+
+            LogUtils.getLogger().debug("p2p tunnel: remainder is {}", remainder);
 
             if (remainder == stack.getCount()) {
                 return stack;

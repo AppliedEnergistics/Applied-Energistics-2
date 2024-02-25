@@ -38,6 +38,9 @@ public class ItemP2PTestPlots {
 
         plot.test(helper -> helper
                 .startSequence()
+                .thenExecute(() -> {
+                    LOGGER.debug("Input p2p tunnel position: " + helper.absolutePos(origin.west()));
+                })
                 .thenWaitUntil(() -> {
                     var hopper = (HopperBlockEntity) helper.getBlockEntity(origin.west().west());
                     LOGGER.debug("Hopper NBT data: " + hopper.saveWithoutMetadata());
