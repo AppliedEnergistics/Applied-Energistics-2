@@ -6,9 +6,12 @@ import static appeng.server.testplots.P2PPlotHelper.placeTunnel;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -16,8 +19,11 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.parts.AEBasePart;
 import appeng.server.testworld.PlotBuilder;
+import net.minecraft.world.level.block.entity.HopperBlockEntity;
+import org.slf4j.Logger;
 
 public class ItemP2PTestPlots {
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     @TestPlot("p2p_items")
     public static void item(PlotBuilder plot) {
@@ -32,7 +38,17 @@ public class ItemP2PTestPlots {
 
         plot.test(helper -> helper
                 .startSequence()
-                .thenWaitUntil(() -> helper.assertContainerContains(chestPos, Items.BEDROCK))
+                .thenWaitUntil(() -> {
+                    var hopper = (HopperBlockEntity) helper.getBlockEntity(origin.west().west());
+                    LOGGER.debug("Hopper NBT data: " + hopper.saveWithoutMetadata());
+                    var tunnel1 = helper.getBlockEntity(origin.west());
+                    LOGGER.debug("Tunnel1 NBT data: " + tunnel1.saveWithoutMetadata());
+                    var centerCable = helper.getBlockEntity(origin);
+                    LOGGER.debug("Center cable NBT data: " + centerCable.saveWithoutMetadata());
+                    var tunnel2 = helper.getBlockEntity(origin.east());
+                    LOGGER.debug("Tunnel2 NBT data: " + tunnel2.saveWithoutMetadata());
+                    helper.assertContainerContains(chestPos, Items.BEDROCK);
+                })
                 .thenSucceed());
     }
 
