@@ -80,7 +80,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     }
 
     @Override
-    public void onTake(Player p, ItemStack is) {
+    public void onTake(Player player, ItemStack is) {
     }
 
     public void doClick(InventoryAction action, Player who) {
@@ -197,6 +197,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             }
 
             final var r = this.findRecipe(ic, level);
+            setRecipeUsed(r);
 
             if (r == null) {
                 final var target = is.getItem();
@@ -239,7 +240,6 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
         if (this.preCraft(p, inv, set, is)) {
             this.makeItem(p, is);
-
             this.postCraft(p, inv, set, is);
         }
 
@@ -250,6 +250,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
     private boolean preCraft(Player p, MEStorage inv, ItemStack[] set,
             ItemStack result) {
+
         return true;
     }
 
