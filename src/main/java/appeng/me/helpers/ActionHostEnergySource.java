@@ -20,23 +20,23 @@ package appeng.me.helpers;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergySource;
+import appeng.api.networking.security.IActionHost;
 
-public class ChannelPowerSrc implements IEnergySource {
+public final class ActionHostEnergySource implements IEnergySource {
+    private final IActionHost actionHost;
 
-    private final IGridNode node;
-    private final IEnergySource realSrc;
-
-    public ChannelPowerSrc(IGridNode networkNode, IEnergySource src) {
-        this.node = networkNode;
-        this.realSrc = src;
+    public ActionHostEnergySource(IActionHost actionHost) {
+        this.actionHost = actionHost;
     }
 
     @Override
     public double extractAEPower(double amt, Actionable mode, PowerMultiplier usePowerMultiplier) {
-        if (this.node.isActive()) {
-            return this.realSrc.extractAEPower(amt, mode, usePowerMultiplier);
+        var node = actionHost.getActionableNode();
+
+        if (node != null && node.isActive()) {
+            var energyService = node.getGrid().getEnergyService();
+            return energyService.extractAEPower(amt, mode, usePowerMultiplier);
         }
         return 0.0;
     }

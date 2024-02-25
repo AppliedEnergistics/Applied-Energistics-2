@@ -148,7 +148,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             this.addSlot(this.craftingGridSlots[i] = slot, SlotSemantics.CRAFTING_GRID);
         }
         // Create the output slot used for crafting mode patterns
-        this.addSlot(this.craftOutputSlot = new PatternTermSlot(ip.player, this.getActionSource(), this.powerSource,
+        this.addSlot(this.craftOutputSlot = new PatternTermSlot(ip.player, this.getActionSource(), this.energySource,
                 host.getInventory(), encodedInputs, this),
                 SlotSemantics.CRAFTING_RESULT);
         this.craftOutputSlot.setIcon(null);
