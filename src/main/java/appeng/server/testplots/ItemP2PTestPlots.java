@@ -7,20 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.logging.LogUtils;
+
+import org.slf4j.Logger;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.HopperBlockEntity;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.parts.AEBasePart;
 import appeng.server.testworld.PlotBuilder;
-import net.minecraft.world.level.block.entity.HopperBlockEntity;
-import org.slf4j.Logger;
 
 public class ItemP2PTestPlots {
     private static final Logger LOGGER = LogUtils.getLogger();
