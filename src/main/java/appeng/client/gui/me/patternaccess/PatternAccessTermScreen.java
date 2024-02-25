@@ -54,6 +54,7 @@ import appeng.api.config.ShowPatternProviders;
 import appeng.api.config.TerminalStyle;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.storage.ILinkStatus;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
@@ -61,6 +62,7 @@ import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
+import appeng.client.guidebook.color.ConstantColor;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.render.SimpleRenderContext;
 import appeng.core.AEConfig;
@@ -233,36 +235,26 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
         }
 
         // Draw an overlay indicating the grid is disconnected
-        var linkStatus = getMenu().getLinkStatus();
-        if (!linkStatus.connected()) {
-            var minX = GUI_PADDING_X - 1;
-            var minY = GUI_HEADER_HEIGHT;
-            var maxX = minX + COLUMNS * 18;
-            var maxY = this.imageHeight - GUI_FOOTER_HEIGHT;
+        renderLinkStatus(guiGraphics, getMenu().getLinkStatus());
+    }
 
-            guiGraphics.fill(
-                    minX,
-                    minY,
-                    maxX,
-                    maxY,
-                    0x3f000000);
+    private void renderLinkStatus(GuiGraphics guiGraphics, ILinkStatus linkStatus) {
+        // Draw an overlay indicating the grid is disconnected
+        if (!linkStatus.connected()) {
+            var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics);
+
+            var rect = new LytRect(
+                    GUI_PADDING_X - 1,
+                    GUI_HEADER_HEIGHT,
+                    COLUMNS * 18,
+                    this.imageHeight - GUI_FOOTER_HEIGHT);
+
+            renderContext.fillRect(rect, new ConstantColor(0x3f000000));
 
             // Draw the disconnect status on top of the grid
             var statusDescription = linkStatus.statusDescription();
             if (statusDescription != null) {
-                var visualText = statusDescription.getVisualOrderText();
-                var textWidth = font.width(visualText);
-
-                var textX = (minX + maxX - textWidth) / 2;
-                var textY = (minY + maxY - font.lineHeight) / 2;
-
-                guiGraphics.drawString(
-                        font,
-                        visualText,
-                        textX,
-                        textY,
-                        0xffff0000,
-                        true);
+                renderContext.renderTextCenteredIn(statusDescription.getString(), ERROR_TEXT_STYLE, rect);
             }
         }
     }

@@ -16,9 +16,11 @@ public record TextStyle(
         @Nullable ResourceLocation font,
         @Nullable ColorValue color,
         @Nullable WhiteSpaceMode whiteSpace,
-        @Nullable TextAlignment alignment) {
+        @Nullable TextAlignment alignment,
+        @Nullable Boolean dropShadow) {
 
-    public static final TextStyle EMPTY = new TextStyle(null, null, null, null, null, null, null, null, null, null);
+    public static final TextStyle EMPTY = new TextStyle(null, null, null, null, null, null, null, null, null, null,
+            null);
 
     public ResolvedTextStyle mergeWith(ResolvedTextStyle base) {
         var fontScale = this.fontScale != null ? this.fontScale : base.fontScale();
@@ -31,6 +33,7 @@ public record TextStyle(
         var color = this.color != null ? this.color : base.color();
         var whiteSpace = this.whiteSpace != null ? this.whiteSpace : base.whiteSpace();
         var alignment = this.alignment != null ? this.alignment : base.alignment();
+        var dropShadow = this.dropShadow != null ? this.dropShadow : base.dropShadow();
         return new ResolvedTextStyle(
                 fontScale,
                 bold,
@@ -41,7 +44,8 @@ public record TextStyle(
                 font,
                 color,
                 whiteSpace,
-                alignment);
+                alignment,
+                dropShadow);
     }
 
     public Builder toBuilder() {
@@ -56,6 +60,7 @@ public record TextStyle(
         builder.color = color;
         builder.whiteSpace = whiteSpace;
         builder.alignment = alignment;
+        builder.dropShadow = dropShadow;
         return builder;
     }
 
@@ -74,6 +79,7 @@ public record TextStyle(
         private ColorValue color;
         private WhiteSpaceMode whiteSpace;
         private TextAlignment alignment;
+        private Boolean dropShadow;
 
         public Builder apply(TextStyle style) {
             if (style.fontScale() != null) {
@@ -105,6 +111,9 @@ public record TextStyle(
             }
             if (style.alignment() != null) {
                 alignment = style.alignment();
+            }
+            if (style.dropShadow != null) {
+                dropShadow = style.dropShadow();
             }
             return this;
         }
@@ -159,6 +168,11 @@ public record TextStyle(
             return this;
         }
 
+        public Builder dropShadow(Boolean dropShadow) {
+            this.dropShadow = dropShadow;
+            return this;
+        }
+
         public TextStyle build() {
             return new TextStyle(fontScale,
                     bold,
@@ -169,7 +183,8 @@ public record TextStyle(
                     font,
                     color,
                     whiteSpace,
-                    alignment);
+                    alignment,
+                    dropShadow);
         }
     }
 }

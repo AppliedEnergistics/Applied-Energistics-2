@@ -8,6 +8,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.StringSplitter;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LightTexture;
@@ -30,6 +31,7 @@ import appeng.client.guidebook.color.ColorValue;
 import appeng.client.guidebook.color.ConstantColor;
 import appeng.client.guidebook.color.LightDarkMode;
 import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.layout.MinecraftFontMetrics;
 import appeng.client.guidebook.style.ResolvedTextStyle;
 
 public interface RenderContext {
@@ -111,13 +113,33 @@ public interface RenderContext {
 
     default float getAdvance(int codePoint, ResolvedTextStyle style) {
         return font().getFontSet(style.font()).getGlyphInfo(codePoint, false)
-                .getAdvance(Boolean.TRUE.equals(style.bold()));
+                .getAdvance(style.bold());
     }
 
     default float getWidth(String text, ResolvedTextStyle style) {
         return (float) text.codePoints()
                 .mapToDouble(cp -> getAdvance(cp, style))
                 .sum();
+    }
+
+    default void renderTextCenteredIn(String text, ResolvedTextStyle style, LytRect rect) {
+        var splitter = new StringSplitter((i, ignored) -> getAdvance(i, style));
+        var fontMetrics = new MinecraftFontMetrics(font());
+
+        var splitLines = splitter.splitLines(text, (int) ((rect.width() - 10) / style.fontScale()), Style.EMPTY);
+        var lineHeight = fontMetrics.getLineHeight(style);
+        var overallHeight = splitLines.size() * lineHeight;
+        var overallWidth = (int) (splitLines.stream().mapToDouble(splitter::stringWidth).max().orElse(0f)
+                * style.fontScale());
+        var textRect = new LytRect(0, 0, overallWidth, overallHeight);
+        textRect = textRect.centerIn(rect);
+
+        var y = textRect.y();
+        for (var line : splitLines) {
+            var x = textRect.x() + (textRect.width() - splitter.stringWidth(line) * style.fontScale()) / 2;
+            renderText(line.getString(), style, x, y);
+            y += lineHeight;
+        }
     }
 
     default void renderText(String text, ResolvedTextStyle style, float x, float y) {
@@ -144,7 +166,8 @@ public interface RenderContext {
             y = 0;
         }
 
-        font().drawInBatch(Component.literal(text).withStyle(effectiveStyle), x, y, resolveColor(style.color()), false,
+        font().drawInBatch(Component.literal(text).withStyle(effectiveStyle), x, y, resolveColor(style.color()),
+                style.dropShadow(),
                 matrix, buffers, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
     }
 
