@@ -82,7 +82,6 @@ import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
-import appeng.util.Platform;
 
 public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implements IAEFacade, SimpleWaterloggedBlock {
 
@@ -335,7 +334,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
 
                 // Half the particle rate. Since we're spawning concentrated on a specific spot,
                 // our particle effect otherwise looks too strong
-                if (Platform.getRandom().nextBoolean()) {
+                if (level.getRandom().nextBoolean()) {
                     return true;
                 }
 
@@ -359,7 +358,8 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
                 CableBusRenderState renderState = cb.getRenderState();
 
                 // Spawn a particle for one of the particle textures
-                TextureAtlasSprite texture = Platform.pickRandom(cableBusModel.getParticleTextures(renderState));
+                var textures = cableBusModel.getParticleTextures(renderState);
+                var texture = textures.get(level.getRandom().nextInt(textures.size()));
                 if (texture != null) {
                     double x = target.getLocation().x;
                     double y = target.getLocation().y;
@@ -398,7 +398,8 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
                             for (int l = 0; l < 4; ++l) {
                                 // Randomly select one of the textures if the cable bus has more than just one
                                 // possibility here
-                                final TextureAtlasSprite texture = Platform.pickRandom(textures);
+                                final TextureAtlasSprite texture = textures
+                                        .get(level.getRandom().nextInt(textures.size()));
 
                                 final double x = pos.getX() + (j + 0.5D) / 4.0D;
                                 final double y = pos.getY() + (k + 0.5D) / 4.0D;
