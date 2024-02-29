@@ -11,7 +11,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AppEngClient;
 import appeng.core.network.ClientboundPacket;
-import appeng.util.Platform;
 
 /**
  * Plays a transition particle effect into the supplied direction. Used primarily by annihilation planes.
@@ -42,11 +41,11 @@ public record ItemTransitionEffectPacket(double x,
     public void handleOnClient(Player player) {
         EnergyParticleData data = new EnergyParticleData(true, this.d);
         for (int zz = 0; zz < 8; zz++) {
-            if (AppEngClient.instance().shouldAddParticles(Platform.getRandom())) {
+            if (AppEngClient.instance().shouldAddParticles(player.level().getRandom())) {
                 // Distribute the spawn point around the item's position
-                double x = this.x + Platform.getRandomFloat() * 0.5 - 0.25;
-                double y = this.y + Platform.getRandomFloat() * 0.5 - 0.25;
-                double z = this.z + Platform.getRandomFloat() * 0.5 - 0.25;
+                double x = this.x + player.level().getRandom().nextFloat() * 0.5 - 0.25;
+                double y = this.y + player.level().getRandom().nextFloat() * 0.5 - 0.25;
+                double z = this.z + player.level().getRandom().nextFloat() * 0.5 - 0.25;
                 double speedX = 0.1f * this.d.getStepX();
                 double speedY = 0.1f * this.d.getStepY();
                 double speedZ = 0.1f * this.d.getStepZ();

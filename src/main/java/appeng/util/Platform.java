@@ -20,14 +20,12 @@
 package appeng.util;
 
 import java.text.DecimalFormat;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +41,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -84,11 +81,6 @@ public class Platform {
 
     @VisibleForTesting
     public static ThreadGroup serverThreadGroup = SidedThreadGroups.SERVER;
-
-    /*
-     * random source, use it for item drop locations...
-     */
-    private static final RandomSource RANDOM_GENERATOR = RandomSource.create();
 
     private static final P2PHelper P2P_HELPER = new P2PHelper();
 
@@ -138,14 +130,6 @@ public class Platform {
 
     public static P2PHelper p2p() {
         return P2P_HELPER;
-    }
-
-    public static RandomSource getRandom() {
-        return RANDOM_GENERATOR;
-    }
-
-    public static float getRandomFloat() {
-        return RANDOM_GENERATOR.nextFloat();
     }
 
     /**
@@ -262,10 +246,6 @@ public class Platform {
         }
     }
 
-    public static int getRandomInt() {
-        return Math.abs(RANDOM_GENERATOR.nextInt());
-    }
-
     public static String formatModName(String modId) {
         return "" + ChatFormatting.BLUE + ChatFormatting.ITALIC + getModName(modId);
     }
@@ -317,21 +297,6 @@ public class Platform {
         }
 
         return FakePlayer.get(level, new GameProfile(playerUuid, "[AE2]"));
-    }
-
-    /**
-     * Returns a random element from the given collection.
-     *
-     * @return null if the collection is empty
-     */
-    @Nullable
-    public static <T> T pickRandom(Collection<T> outs) {
-        if (outs.isEmpty()) {
-            return null;
-        }
-
-        int index = RANDOM_GENERATOR.nextInt(outs.size());
-        return Iterables.get(outs, index, null);
     }
 
     public static Direction rotateAround(Direction forward, Direction axis) {
