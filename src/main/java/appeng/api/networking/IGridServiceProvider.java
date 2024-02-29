@@ -23,10 +23,13 @@
 
 package appeng.api.networking;
 
+import com.google.gson.stream.JsonWriter;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
+
+import java.io.IOException;
 
 /**
  * Allows you to create a grid-wide service. AE2 uses these for providing item, spatial, and tunnel services.
@@ -100,5 +103,11 @@ public interface IGridServiceProvider {
      * providers, so take care to use unique names for your properties!
      */
     default void saveNodeData(IGridNode gridNode, CompoundTag savedData) {
+    }
+
+    /**
+     * Write debug information about this service to the given writer.
+     */
+    default void debugDump(JsonWriter writer) throws IOException {
     }
 }

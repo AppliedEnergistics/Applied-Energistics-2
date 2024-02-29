@@ -18,24 +18,6 @@
 
 package appeng.me.service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.SetMultimap;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.nbt.CompoundTag;
-
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.storage.IStorageService;
@@ -48,8 +30,29 @@ import appeng.api.storage.MEStorage;
 import appeng.me.helpers.InterestManager;
 import appeng.me.helpers.StackWatcher;
 import appeng.me.storage.NetworkStorage;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonWriter;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.JsonOps;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class StorageService implements IStorageService, IGridServiceProvider {
+    private static final Gson GSON = new Gson();
 
     /**
      * Tracks the storage service's state for each grid node that provides storage to the network.
@@ -292,5 +295,24 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         private void unmount(MEStorage inventory) {
             storage.unmount(inventory);
         }
+    }
+
+    @Override
+    public void debugDump(JsonWriter writer) throws IOException {
+
+        writer.name("cachedAvailableStacks");
+        writer.beginArray();
+        for (var entry : cachedAvailableStacks) {
+            writer.beginObject();
+            writer.name("key");
+            var serializedKey = entry.getKey().toTagGeneric();
+            var jsonKey = Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, serializedKey);
+            GSON.toJson(jsonKey, writer);
+            writer.name("amount");
+            writer.value(entry.getLongValue());
+            writer.endObject();
+        }
+        writer.endArray();
+
     }
 }

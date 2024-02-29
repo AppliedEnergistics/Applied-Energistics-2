@@ -18,6 +18,7 @@
 
 package appeng.me;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,10 +27,19 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.energy.IEnergyService;
+import appeng.api.networking.pathing.IPathingService;
+import appeng.api.networking.spatial.ISpatialService;
+import appeng.api.networking.storage.IStorageService;
+import appeng.api.networking.ticking.ITickManager;
+import appeng.me.service.P2PService;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
 
+import com.google.gson.stream.JsonWriter;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.CrashReportCategory;
@@ -131,7 +141,7 @@ public class Grid implements IGrid {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <C extends IGridService> C getService(Class<C> iface) {
+    public <C extends IGridService > C getService(Class < C > iface) {
         var service = this.services.get(iface);
         if (service == null) {
             throw new IllegalArgumentException("Service " + iface + " is not registered");
@@ -279,5 +289,49 @@ public class Grid implements IGrid {
     @Override
     public String toString() {
         return "Grid #" + serialNumber;
+    }
+
+    private static String getServiceDebugDumpKey(Class<?> service) {
+        if (service == IEnergyService.class) {
+            return "energyService";
+        } else if (service == ISpatialService.class) {
+            return "spatialService";
+        } else if (service == IPathingService.class) {
+            return "pathingService";
+        } else if (service == IStorageService.class) {
+            return "storageService";
+        } else if (service == ITickManager.class) {
+            return "tickManager";
+        } else if (service == P2PService.class) {
+            return "p2pService";
+        } else if (service == ICraftingService.class) {
+            return "craftingService";
+        } else {
+            return service.getName();
+        }
+    }
+
+    @Override
+    public void debugDump(JsonWriter jsonWriter) throws IOException {
+        jsonWriter.beginObject();
+
+        jsonWriter.name("stats");
+        jsonWriter.beginObject();
+        jsonWriter.name("machines");
+        jsonWriter.beginObject();
+        jsonWriter.endObject();
+        jsonWriter.endObject();
+
+        jsonWriter.name("services");
+        jsonWriter.beginObject();
+        for (var entry : services.entrySet()) {
+            jsonWriter.name(getServiceDebugDumpKey(entry.getKey()));
+            jsonWriter.beginObject();
+            entry.getValue().debugDump(jsonWriter);
+            jsonWriter.endObject();
+        }
+        jsonWriter.endObject();
+
+        jsonWriter.endObject();
     }
 }
