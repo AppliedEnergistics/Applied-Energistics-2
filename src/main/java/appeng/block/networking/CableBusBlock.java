@@ -25,6 +25,7 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -359,8 +360,8 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
 
                 // Spawn a particle for one of the particle textures
                 var textures = cableBusModel.getParticleTextures(renderState);
-                var texture = textures.get(level.getRandom().nextInt(textures.size()));
-                if (texture != null) {
+                if (!textures.isEmpty()) {
+                    var texture = Util.getRandom(textures, level.getRandom());
                     double x = target.getLocation().x;
                     double y = target.getLocation().y;
                     double z = target.getLocation().z;
@@ -398,8 +399,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
                             for (int l = 0; l < 4; ++l) {
                                 // Randomly select one of the textures if the cable bus has more than just one
                                 // possibility here
-                                final TextureAtlasSprite texture = textures
-                                        .get(level.getRandom().nextInt(textures.size()));
+                                var texture = Util.getRandom(textures, level.getRandom());
 
                                 final double x = pos.getX() + (j + 0.5D) / 4.0D;
                                 final double y = pos.getY() + (k + 0.5D) / 4.0D;
