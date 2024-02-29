@@ -31,6 +31,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -44,7 +45,6 @@ import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AELog;
 import appeng.core.AppEngClient;
 import appeng.core.sync.BasePacket;
-import appeng.util.Platform;
 
 /**
  * Plays the block breaking or fluid pickup sound and a transition particle effect into the supplied direction. Used
@@ -99,21 +99,21 @@ public class BlockTransitionEffectPacket extends BasePacket {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void clientPacketData(Player player) {
-        spawnParticles();
+        spawnParticles(player.level());
 
         playBreakOrPickupSound();
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void spawnParticles() {
+    private void spawnParticles(Level level) {
 
         EnergyParticleData data = new EnergyParticleData(false, direction);
         for (int zz = 0; zz < 32; zz++) {
-            if (AppEngClient.instance().shouldAddParticles(Platform.getRandom())) {
+            if (AppEngClient.instance().shouldAddParticles(level.getRandom())) {
                 // Distribute the spawn point across the entire block's area
-                double x = pos.getX() + Platform.getRandomFloat();
-                double y = pos.getY() + Platform.getRandomFloat();
-                double z = pos.getZ() + Platform.getRandomFloat();
+                double x = pos.getX() + level.getRandom().nextFloat();
+                double y = pos.getY() + level.getRandom().nextFloat();
+                double z = pos.getZ() + level.getRandom().nextFloat();
                 double speedX = 0.1f * this.direction.getStepX();
                 double speedY = 0.1f * this.direction.getStepY();
                 double speedZ = 0.1f * this.direction.getStepZ();

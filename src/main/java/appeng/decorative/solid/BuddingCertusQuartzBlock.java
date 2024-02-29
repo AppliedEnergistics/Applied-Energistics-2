@@ -1,5 +1,6 @@
 package appeng.decorative.solid;
 
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -34,7 +35,7 @@ public class BuddingCertusQuartzBlock extends AEBaseBlock {
         }
 
         // Try to grow cluster
-        Direction direction = DIRECTIONS[randomSource.nextInt(DIRECTIONS.length)];
+        Direction direction = Util.getRandom(DIRECTIONS, randomSource);
         BlockPos targetPos = pos.relative(direction);
         BlockState targetState = level.getBlockState(targetPos);
         Block newCluster = null;

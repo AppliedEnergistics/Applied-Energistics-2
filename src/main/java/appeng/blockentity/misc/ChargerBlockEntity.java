@@ -212,7 +212,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
             } else if (this.getInternalCurrentPower() > POWER_THRESHOLD
                     && ChargerRecipes.findRecipe(level, myItem) != null) {
                 this.working = true;
-                if (Platform.getRandomFloat() > 0.8f) {
+                if (level != null && level.getRandom().nextFloat() > 0.8f) {
                     this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
                     Item charged = Objects.requireNonNull(ChargerRecipes.findRecipe(level, myItem)).result;

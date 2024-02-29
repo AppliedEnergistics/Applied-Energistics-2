@@ -345,10 +345,10 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void spawnVibrant(Level level, double x, double y, double z) {
-        if (AppEngClient.instance().shouldAddParticles(Platform.getRandom())) {
-            final double d0 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
-            final double d1 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
-            final double d2 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
+        if (AppEngClient.instance().shouldAddParticles(level.getRandom())) {
+            final double d0 = (level.getRandom().nextFloat() - 0.5F) * 0.26D;
+            final double d1 = (level.getRandom().nextFloat() - 0.5F) * 0.26D;
+            final double d2 = (level.getRandom().nextFloat() - 0.5F) * 0.26D;
 
             Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.VIBRANT, x + d0, y + d1, z + d2, 0.0D,
                     0.0D,
@@ -357,9 +357,10 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void spawnEnergy(Level level, double posX, double posY, double posZ) {
-        final float x = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
-        final float y = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
-        final float z = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
+        var random = level.getRandom();
+        final float x = (float) (Math.abs(random.nextInt()) % 100 * 0.01 - 0.5) * 0.7f;
+        final float y = (float) (Math.abs(random.nextInt()) % 100 * 0.01 - 0.5) * 0.7f;
+        final float z = (float) (Math.abs(random.nextInt()) % 100 * 0.01 - 0.5) * 0.7f;
 
         Minecraft.getInstance().particleEngine.createParticle(EnergyParticleData.FOR_BLOCK, posX + x, posY + y,
                 posZ + z,

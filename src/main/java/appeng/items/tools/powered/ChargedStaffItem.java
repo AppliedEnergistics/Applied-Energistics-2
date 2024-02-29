@@ -28,7 +28,6 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.sync.packets.LightningPacket;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
-import appeng.util.Platform;
 
 public class ChargedStaffItem extends AEBasePoweredItem {
 
@@ -43,10 +42,12 @@ public class ChargedStaffItem extends AEBasePoweredItem {
             if (!target.level().isClientSide()) {
                 for (int x = 0; x < 2; x++) {
                     final AABB entityBoundingBox = target.getBoundingBox();
-                    final float dx = (float) (Platform.getRandomFloat() * target.getBbWidth() + entityBoundingBox.minX);
-                    final float dy = (float) (Platform.getRandomFloat() * target.getBbHeight()
+                    final float dx = (float) (target.level().getRandom().nextFloat() * target.getBbWidth()
+                            + entityBoundingBox.minX);
+                    final float dy = (float) (target.level().getRandom().nextFloat() * target.getBbHeight()
                             + entityBoundingBox.minY);
-                    final float dz = (float) (Platform.getRandomFloat() * target.getBbWidth() + entityBoundingBox.minZ);
+                    final float dz = (float) (target.level().getRandom().nextFloat() * target.getBbWidth()
+                            + entityBoundingBox.minZ);
                     AppEng.instance().sendToAllNearExcept(null, dx, dy, dz, 32.0, target.level(),
                             new LightningPacket(dx, dy, dz));
                 }

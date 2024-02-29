@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -265,7 +264,7 @@ public class ItemPickupStrategy implements PickupStrategy {
             if (enchantments.containsKey(Enchantments.UNBREAKING)) {
                 // Give plane only a (100 / (level + 1))% chance to use energy.
                 // This is similar to vanilla Unbreaking behaviour for tools.
-                int randomNumber = ThreadLocalRandom.current().nextInt(enchantments.get(Enchantments.UNBREAKING) + 1);
+                int randomNumber = level.getRandom().nextInt(enchantments.get(Enchantments.UNBREAKING) + 1);
                 useEnergy = randomNumber == 0;
             }
             var levelSum = enchantments.values().stream().reduce(0, Integer::sum) - efficiencyLevel;
