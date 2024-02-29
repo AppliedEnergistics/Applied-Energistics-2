@@ -100,8 +100,8 @@ public class MeteoritePlacerItem extends AEBaseItem {
         }
 
         // See MeteoriteStructure for original code
-        float coreRadius = Platform.getRandomFloat() * 6.0f + 2;
-        boolean pureCrater = Platform.getRandomFloat() > 0.5f;
+        float coreRadius = level.getRandom().nextFloat() * 6.0f + 2;
+        boolean pureCrater = level.getRandom().nextFloat() > 0.5f;
         CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
 
         MeteoriteSpawner spawner = new MeteoriteSpawner();

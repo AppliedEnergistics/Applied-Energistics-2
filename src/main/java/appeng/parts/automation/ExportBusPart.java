@@ -52,7 +52,6 @@ import appeng.helpers.MultiCraftingTracker;
 import appeng.items.parts.PartModels;
 import appeng.menu.implementations.IOBusMenu;
 import appeng.parts.PartModel;
-import appeng.util.Platform;
 import appeng.util.prioritylist.DefaultPriorityList;
 
 /**
@@ -222,7 +221,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
 
     protected int getStartingSlot(SchedulingMode schedulingMode, int x) {
         if (schedulingMode == SchedulingMode.RANDOM) {
-            return Platform.getRandom().nextInt(this.availableSlots());
+            return getLevel().getRandom().nextInt(this.availableSlots());
         }
 
         if (schedulingMode == SchedulingMode.ROUNDROBIN) {
