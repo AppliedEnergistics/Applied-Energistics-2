@@ -135,7 +135,9 @@ class RootTokenizeContext implements TokenizeContext {
     public void defineSkip(@NotNull Point value) {
         tokenizer.columnStart.put(value.line(), value.column());
         tokenizer.accountForPotentialSkip();
-        LOGGER.trace("position: define skip: {}", now());
+        if (Micromark.ENABLE_TRACE) {
+            LOGGER.trace("position: define skip: {}", now());
+        }
     }
 
     @Override

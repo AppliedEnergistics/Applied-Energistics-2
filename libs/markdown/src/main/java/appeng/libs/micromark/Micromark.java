@@ -7,6 +7,9 @@ import appeng.libs.micromark.commonmark.Subtokenize;
 import appeng.libs.micromark.html.ParseOptions;
 
 public final class Micromark {
+
+    public static final boolean ENABLE_TRACE = false;
+
     private Micromark() {
     }
 
