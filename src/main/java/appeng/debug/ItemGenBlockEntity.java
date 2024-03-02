@@ -50,6 +50,11 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity implements InternalInv
 
     public ItemGenBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
+    }
+
+    @Override
+    public void clearRemoved() {
+        super.clearRemoved();
         if (SHARED_POSSIBLE_ITEMS.isEmpty()) {
             initGlobalPossibleItems();
         }
