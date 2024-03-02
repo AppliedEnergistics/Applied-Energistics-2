@@ -18,12 +18,15 @@
 
 package appeng.me.service;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
+import com.google.gson.stream.JsonWriter;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -39,6 +42,7 @@ import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.statistics.GridChunkEvent;
 import appeng.me.InWorldGridNode;
+import appeng.util.JsonStreamUtil;
 
 /**
  * A grid providing precomupted statistics about a network.
@@ -154,5 +158,15 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
         if (this.chunks.get(level).isEmpty()) {
             this.chunks.remove(level);
         }
+    }
+
+    @Override
+    public void debugDump(JsonWriter writer) throws IOException {
+        JsonStreamUtil.writeProperties(Map.<String, Object>of("chunks",
+                chunks.keySet().stream().collect(
+                        Collectors.toMap(
+                                la -> la,
+                                la -> chunks.get(la).stream().map(ChunkPos::toLong).toList()))),
+                writer);
     }
 }

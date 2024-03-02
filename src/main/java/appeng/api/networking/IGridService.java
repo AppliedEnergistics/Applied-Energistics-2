@@ -23,8 +23,6 @@
 
 package appeng.api.networking;
 
-import com.google.gson.stream.JsonWriter;
-
 /**
  * Allows you to create a network wise service, AE2 uses these for providing item, spatial, and tunnel services.
  */

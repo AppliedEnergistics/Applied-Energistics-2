@@ -6,8 +6,6 @@ import net.minecraft.world.item.Items;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.networking.energy.IEnergyService;
-import appeng.api.networking.storage.IStorageService;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;

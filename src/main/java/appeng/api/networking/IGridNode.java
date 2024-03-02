@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.google.gson.stream.JsonWriter;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.CrashReportCategory;

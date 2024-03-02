@@ -18,6 +18,31 @@
 
 package appeng.me.service;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
+import com.google.common.math.StatsAccumulator;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonWriter;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.JsonOps;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.storage.IStorageService;
@@ -30,26 +55,7 @@ import appeng.api.storage.MEStorage;
 import appeng.me.helpers.InterestManager;
 import appeng.me.helpers.StackWatcher;
 import appeng.me.storage.NetworkStorage;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.SetMultimap;
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonWriter;
-import com.mojang.serialization.Dynamic;
-import com.mojang.serialization.JsonOps;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import appeng.util.JsonStreamUtil;
 
 public class StorageService implements IStorageService, IGridServiceProvider {
     private static final Gson GSON = new Gson();
@@ -83,6 +89,8 @@ public class StorageService implements IStorageService, IGridServiceProvider {
      */
     private final Map<IGridNode, StackWatcher<IStorageWatcherNode>> watchers = new IdentityHashMap<>();
 
+    private final StatsAccumulator inventoryRefreshStats = new StatsAccumulator();
+
     public StorageService() {
         this.storage = new NetworkStorage();
     }
@@ -99,38 +107,44 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     }
 
     private void updateCachedStacks() {
-        cachedStacksNeedUpdate = false;
+        var time = System.nanoTime();
 
-        // Update cache
-        var previousStacks = cachedAvailableStacks;
-        var currentStacks = cachedAvailableStacksBackBuffer;
-        cachedAvailableStacks = currentStacks;
-        cachedAvailableStacksBackBuffer = previousStacks;
+        try {
+            cachedStacksNeedUpdate = false;
 
-        currentStacks.clear();
-        storage.getAvailableStacks(currentStacks);
+            // Update cache
+            var previousStacks = cachedAvailableStacks;
+            var currentStacks = cachedAvailableStacksBackBuffer;
+            cachedAvailableStacks = currentStacks;
+            cachedAvailableStacksBackBuffer = previousStacks;
 
-        // Post watcher update for currently available stacks
-        for (var entry : currentStacks) {
-            var what = entry.getKey();
-            var newAmount = entry.getLongValue();
-            if (newAmount != cachedAvailableAmounts.getLong(what)) {
-                postWatcherUpdate(what, newAmount);
+            currentStacks.clear();
+            storage.getAvailableStacks(currentStacks);
+
+            // Post watcher update for currently available stacks
+            for (var entry : currentStacks) {
+                var what = entry.getKey();
+                var newAmount = entry.getLongValue();
+                if (newAmount != cachedAvailableAmounts.getLong(what)) {
+                    postWatcherUpdate(what, newAmount);
+                }
             }
-        }
-        // Post watcher update for removed stacks
-        for (var entry : cachedAvailableAmounts.object2LongEntrySet()) {
-            var what = entry.getKey();
-            var newAmount = currentStacks.get(what);
-            if (newAmount == 0) {
-                postWatcherUpdate(what, newAmount);
+            // Post watcher update for removed stacks
+            for (var entry : cachedAvailableAmounts.object2LongEntrySet()) {
+                var what = entry.getKey();
+                var newAmount = currentStacks.get(what);
+                if (newAmount == 0) {
+                    postWatcherUpdate(what, newAmount);
+                }
             }
-        }
 
-        // Update private amounts
-        cachedAvailableAmounts.clear();
-        for (var entry : currentStacks) {
-            cachedAvailableAmounts.put(entry.getKey(), entry.getLongValue());
+            // Update private amounts
+            cachedAvailableAmounts.clear();
+            for (var entry : currentStacks) {
+                cachedAvailableAmounts.put(entry.getKey(), entry.getLongValue());
+            }
+        } finally {
+            inventoryRefreshStats.add(System.nanoTime() - time);
         }
     }
 
@@ -299,6 +313,9 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
     @Override
     public void debugDump(JsonWriter writer) throws IOException {
+
+        JsonStreamUtil.writeProperties(Map.of(
+                "inventoryRefreshTime", JsonStreamUtil.toMap(inventoryRefreshStats)), writer);
 
         writer.name("cachedAvailableStacks");
         writer.beginArray();

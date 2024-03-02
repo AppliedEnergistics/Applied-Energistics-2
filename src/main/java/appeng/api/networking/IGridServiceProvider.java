@@ -23,13 +23,14 @@
 
 package appeng.api.networking;
 
+import java.io.IOException;
+
 import com.google.gson.stream.JsonWriter;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
-
-import java.io.IOException;
 
 /**
  * Allows you to create a grid-wide service. AE2 uses these for providing item, spatial, and tunnel services.

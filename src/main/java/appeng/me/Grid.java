@@ -18,6 +18,35 @@
 
 package appeng.me;
 
+import appeng.api.networking.GridServicesInternal;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IGridService;
+import appeng.api.networking.IGridServiceProvider;
+import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.energy.IEnergyService;
+import appeng.api.networking.events.GridEvent;
+import appeng.api.networking.pathing.IPathingService;
+import appeng.api.networking.spatial.ISpatialService;
+import appeng.api.networking.storage.IStorageService;
+import appeng.api.networking.ticking.ITickManager;
+import appeng.core.AELog;
+import appeng.hooks.ticking.TickHandler;
+import appeng.me.service.P2PService;
+import appeng.util.JsonStreamUtil;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.SetMultimap;
+import com.google.gson.JsonElement;
+import com.google.gson.stream.JsonWriter;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import net.minecraft.CrashReportCategory;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,35 +55,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.networking.energy.IEnergyService;
-import appeng.api.networking.pathing.IPathingService;
-import appeng.api.networking.spatial.ISpatialService;
-import appeng.api.networking.storage.IStorageService;
-import appeng.api.networking.ticking.ITickManager;
-import appeng.me.service.P2PService;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.MultimapBuilder;
-import com.google.common.collect.SetMultimap;
-
-import com.google.gson.stream.JsonWriter;
-import org.checkerframework.checker.units.qual.C;
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.CrashReportCategory;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
-
-import appeng.api.networking.GridServicesInternal;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.IGridService;
-import appeng.api.networking.IGridServiceProvider;
-import appeng.api.networking.events.GridEvent;
-import appeng.core.AELog;
-import appeng.hooks.ticking.TickHandler;
 
 public class Grid implements IGrid {
     /**
@@ -65,6 +65,8 @@ public class Grid implements IGrid {
 
     private final SetMultimap<Class<?>, IGridNode> machines = MultimapBuilder.hashKeys().hashSetValues().build();
     private final Map<Class<?>, IGridServiceProvider> services;
+    // Becomes null after the last node has left the grid.
+    @Nullable
     private GridNode pivot;
     private int priority; // how import is this network?
     private final int serialNumber = nextSerial++; // useful to keep track of grids in toString() for debugging purposes
@@ -141,7 +143,7 @@ public class Grid implements IGrid {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <C extends IGridService > C getService(Class < C > iface) {
+    public <C extends IGridService> C getService(Class<C> iface) {
         var service = this.services.get(iface);
         if (service == null) {
             throw new IllegalArgumentException("Service " + iface + " is not registered");
@@ -315,12 +317,13 @@ public class Grid implements IGrid {
     public void debugDump(JsonWriter jsonWriter) throws IOException {
         jsonWriter.beginObject();
 
-        jsonWriter.name("stats");
-        jsonWriter.beginObject();
-        jsonWriter.name("machines");
-        jsonWriter.beginObject();
-        jsonWriter.endObject();
-        jsonWriter.endObject();
+        var properties = Map.of(
+                "id", serialNumber,
+                "disposed", pivot == null);
+        JsonStreamUtil.writeProperties(properties, jsonWriter);
+
+        jsonWriter.name("nodes");
+        debugDumpNodes(jsonWriter);
 
         jsonWriter.name("services");
         jsonWriter.beginObject();
@@ -333,5 +336,20 @@ public class Grid implements IGrid {
         jsonWriter.endObject();
 
         jsonWriter.endObject();
+    }
+
+    private void debugDumpNodes(JsonWriter jsonWriter) throws IOException {
+        // Dump nodes
+        var nodeIdMap = new Reference2IntOpenHashMap<GridNode>(machines.size());
+        for (var node : machines.values()) {
+            nodeIdMap.put((GridNode) node, nodeIdMap.size());
+        }
+
+        jsonWriter.beginArray();
+        for (var entry : nodeIdMap.reference2IntEntrySet()) {
+            var node = entry.getKey();
+            node.debugDump(jsonWriter, entry.getIntValue(), nodeIdMap);
+        }
+        jsonWriter.endArray();
     }
 }

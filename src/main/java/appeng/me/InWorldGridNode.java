@@ -18,9 +18,12 @@
 
 package appeng.me;
 
+import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Set;
 
+import com.google.gson.stream.JsonWriter;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
@@ -97,6 +100,25 @@ public class InWorldGridNode extends GridNode {
     @Override
     public String toString() {
         return super.toString() + " @ " + location.getX() + "," + location.getY() + "," + location.getZ();
+    }
+
+    @Override
+    protected void debugDumpProperties(JsonWriter jsonWriter, int id, Reference2IntOpenHashMap<GridNode> nodeIdMap) throws IOException {
+        super.debugDumpProperties(jsonWriter, id, nodeIdMap);
+
+        jsonWriter.name("location");
+        jsonWriter.beginArray();
+        jsonWriter.value(location.getX());
+        jsonWriter.value(location.getY());
+        jsonWriter.value(location.getZ());
+        jsonWriter.endArray();
+
+        jsonWriter.name("exposedSides");
+        var sidesSet = new StringBuilder();
+        for (var side : exposedOnSides) {
+            sidesSet.append(side.name().charAt(0));
+        }
+        jsonWriter.value(sidesSet.toString());
     }
 
     private void cleanupConnections() {
