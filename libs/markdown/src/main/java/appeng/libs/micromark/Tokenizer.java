@@ -95,7 +95,9 @@ public class Tokenizer {
                 throw new IllegalArgumentException("expected given code to equal expected code");
             }
 
-            LOGGER.trace("consume: `{}`", code);
+            if (Micromark.ENABLE_TRACE) {
+                LOGGER.trace("consume: `{}`", code);
+            }
 
             Assert.check(
                     !consumed,
@@ -115,7 +117,9 @@ public class Tokenizer {
                 pointColumn = 1;
                 pointOffset += code == Codes.carriageReturnLineFeed ? 2 : 1;
                 accountForPotentialSkip();
-                LOGGER.trace("position: after eol: `{}`", now());
+                if (Micromark.ENABLE_TRACE) {
+                    LOGGER.trace("position: after eol: `{}`", now());
+                }
             } else if (code != Codes.virtualSpace) {
                 pointColumn++;
                 pointOffset++;
@@ -153,7 +157,9 @@ public class Tokenizer {
             token.type = type;
             token.start = now();
 
-            LOGGER.trace("enter: '{}'", type);
+            if (Micromark.ENABLE_TRACE) {
+                LOGGER.trace("enter: '{}'", type);
+            }
 
             context.getEvents().add(new Event(EventType.ENTER, token, context));
 
@@ -180,7 +186,9 @@ public class Tokenizer {
                             token.start._bufferIndex() == token.end._bufferIndex()),
                     "expected non-empty token (`" + type + "`)");
 
-            LOGGER.trace("exit: '{}'", token.type);
+            if (Micromark.ENABLE_TRACE) {
+                LOGGER.trace("exit: '{}'", token.type);
+            }
             context.getEvents().add(Event.exit(token, context));
 
             return token;
@@ -257,7 +265,9 @@ public class Tokenizer {
             throw new IllegalStateException("expected character to be consumed");
         }
         consumed = false;
-        LOGGER.trace("main: passing `{}` to {}", code, state);
+        if (Micromark.ENABLE_TRACE) {
+            LOGGER.trace("main: passing `{}` to {}", code, state);
+        }
         expectedCode = code;
         if (state == null) {
             throw new IllegalStateException("expected state");
@@ -456,7 +466,9 @@ public class Tokenizer {
                     ListUtils.setLength(context.getEvents(), startEventsIndex);
                     stack = startStack;
                     accountForPotentialSkip();
-                    LOGGER.trace("position: restore: '{}'", now());
+                    if (Micromark.ENABLE_TRACE) {
+                        LOGGER.trace("position: restore: '{}'", now());
+                    }
                 },
                 startEventsIndex);
     }
