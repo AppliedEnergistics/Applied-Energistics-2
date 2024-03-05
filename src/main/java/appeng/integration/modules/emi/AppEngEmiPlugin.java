@@ -39,6 +39,7 @@ import appeng.core.localization.LocalizationEnum;
 import appeng.integration.abstraction.ItemListMod;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
+import appeng.menu.me.items.WirelessCraftingTermMenu;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
@@ -71,6 +72,8 @@ public class AppEngEmiPlugin implements EmiPlugin {
         registry.addRecipeHandler(PatternEncodingTermMenu.TYPE,
                 new EmiEncodePatternHandler<>(PatternEncodingTermMenu.class));
         registry.addRecipeHandler(CraftingTermMenu.TYPE, new EmiUseCraftingRecipeHandler<>(CraftingTermMenu.class));
+        registry.addRecipeHandler(WirelessCraftingTermMenu.TYPE,
+                new EmiUseCraftingRecipeHandler<>(WirelessCraftingTermMenu.class));
 
         // Inscriber
         registry.addCategory(EmiInscriberRecipe.CATEGORY);
