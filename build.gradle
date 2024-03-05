@@ -300,6 +300,7 @@ def commonRunProperties = {
     property 'forge.logging.console.level', 'debug'
     property 'fml.earlyprogresswindow', 'false'
     property 'appeng.tests', 'true'
+    property 'appeng.version', project.version
     jvmArgs "--add-opens", "java.base/sun.security.util=ALL-UNNAMED"
     jvmArgs "--add-opens", "java.base/java.util.jar=ALL-UNNAMED"
     // See https://github.com/Vazkii/Patchouli#mixin-troubleshooting
