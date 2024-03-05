@@ -36,7 +36,7 @@ import appeng.recipes.transform.TransformRecipeBuilder;
 
 public class TransformRecipes extends AE2RecipeProvider {
     public TransformRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(output, lookupProvider);
+        super(output);
     }
 
     @Override

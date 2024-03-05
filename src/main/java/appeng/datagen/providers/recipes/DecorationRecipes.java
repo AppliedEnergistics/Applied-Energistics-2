@@ -64,7 +64,7 @@ public class DecorationRecipes extends AE2RecipeProvider {
                     AEBlocks.QUARTZ_PILLAR_WALL }, };
 
     public DecorationRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(output, lookupProvider);
+        super(output);
     }
 
     @Override

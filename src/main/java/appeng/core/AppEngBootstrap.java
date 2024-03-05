@@ -18,8 +18,9 @@
 
 package appeng.core;
 
-import net.neoforged.fml.DistExecutor;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
 
 import appeng.init.internal.InitBlockEntityMoveStrategies;
@@ -30,14 +31,19 @@ import appeng.init.internal.InitGridServices;
  */
 @Mod(AppEng.MOD_ID)
 public class AppEngBootstrap {
-    private volatile static boolean bootstrapped;
-
-    public AppEngBootstrap() {
+    public AppEngBootstrap(IEventBus modEventBus) {
         AEConfig.load(FMLPaths.CONFIGDIR.get());
 
         InitGridServices.init();
         InitBlockEntityMoveStrategies.init();
 
-        DistExecutor.unsafeRunForDist(() -> AppEngClient::new, () -> AppEngServer::new);
+        switch (FMLEnvironment.dist) {
+            case CLIENT -> {
+                new AppEngClient(modEventBus);
+            }
+            case DEDICATED_SERVER -> {
+                new AppEngServer(modEventBus);
+            }
+        }
     }
 }

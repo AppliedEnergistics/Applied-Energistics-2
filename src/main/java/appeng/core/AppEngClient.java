@@ -39,7 +39,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -117,10 +116,10 @@ public class AppEngClient extends AppEngBase {
 
     private final Guide guide;
 
-    public AppEngClient() {
+    public AppEngClient(IEventBus modEventBus) {
+        super(modEventBus);
         InitBuiltInModels.init();
 
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         this.registerClientCommands();
 
         modEventBus.addListener(this::registerClientTooltipComponents);
@@ -136,7 +135,7 @@ public class AppEngClient extends AppEngBase {
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
-        guide = createGuide();
+        guide = createGuide(modEventBus);
         OpenGuideHotkey.init();
 
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, (TickEvent.ClientTickEvent e) -> {
@@ -182,14 +181,14 @@ public class AppEngClient extends AppEngBase {
         });
     }
 
-    private Guide createGuide() {
+    private Guide createGuide(IEventBus modEventBus) {
         NeoForge.EVENT_BUS.addListener((ServerStartingEvent evt) -> {
             var server = evt.getServer();
             var dispatcher = server.getCommands().getDispatcher();
             GuidebookStructureCommands.register(dispatcher);
         });
 
-        return Guide.builder(MOD_ID, "ae2guide")
+        return Guide.builder(modEventBus, MOD_ID, "ae2guide")
                 .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
                 .build();
     }
