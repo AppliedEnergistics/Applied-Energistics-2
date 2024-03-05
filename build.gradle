@@ -385,7 +385,8 @@ runs {
         systemProperties = [
                 "appeng.runGuideExportAndExit": "true",
                 "appeng.guideExportFolder"    : file("$buildDir/guide").absolutePath,
-                "guideDev.ae2guide.sources"   : file("guidebook").absolutePath
+                "guideDev.ae2guide.sources"   : file("guidebook").absolutePath,
+                "appeng.version"              : project.version
         ]
     }
     // Use to run the tests
