@@ -249,7 +249,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         this.updateBeforeRender();
         this.widgets.updateBeforeRender();
 
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         renderTooltips(guiGraphics, mouseX, mouseY);
