@@ -1,0 +1,34 @@
+{
+  "parent": "ae2:main/fluix",
+  "criteria": {
+    "certus": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:growth_accelerator"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "achievement.ae2.CrystalGrowthAccelerator.desc"
+    },
+    "icon": {
+      "item": "ae2:growth_accelerator"
+    },
+    "title": {
+      "translate": "achievement.ae2.CrystalGrowthAccelerator"
+    }
+  },
+  "requirements": [
+    [
+      "certus"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

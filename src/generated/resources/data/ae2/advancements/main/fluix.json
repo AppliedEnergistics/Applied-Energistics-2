@@ -1,0 +1,34 @@
+{
+  "parent": "ae2:main/charged_quartz",
+  "criteria": {
+    "certus": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:fluix_crystal"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "achievement.ae2.Fluix.desc"
+    },
+    "icon": {
+      "item": "ae2:fluix_crystal"
+    },
+    "title": {
+      "translate": "achievement.ae2.Fluix"
+    }
+  },
+  "requirements": [
+    [
+      "certus"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

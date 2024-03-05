@@ -1,0 +1,9 @@
+{
+  "values": [
+    "minecraft:bedrock",
+    {
+      "id": "#forge:relocation_not_supported",
+      "required": false
+    }
+  ]
+}
