@@ -62,7 +62,7 @@ public class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends Abs
 
         // Find missing ingredient
         var slotToIngredientMap = getGuiSlotToIngredientMap(recipe);
-        var missingSlots = menu.findMissingIngredients(getGuiSlotToIngredientMap(recipe));
+        var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
             // All missing, can't do much...
