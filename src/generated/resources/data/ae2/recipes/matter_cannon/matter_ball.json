@@ -1,0 +1,7 @@
+{
+  "type": "ae2:matter_cannon",
+  "ammo": {
+    "item": "ae2:matter_ball"
+  },
+  "weight": 32.0
+}

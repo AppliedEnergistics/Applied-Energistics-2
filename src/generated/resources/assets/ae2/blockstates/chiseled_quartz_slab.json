@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "ae2:block/chiseled_quartz_slab"
+    },
+    "type=double": {
+      "model": "ae2:block/chiseled_quartz_block"
+    },
+    "type=top": {
+      "model": "ae2:block/chiseled_quartz_slab_top"
+    }
+  }
+}

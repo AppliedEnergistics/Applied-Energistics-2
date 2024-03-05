@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "ae2:quartz_pillar"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "item": "ae2:certus_quartz_crystal"
+  }
+}

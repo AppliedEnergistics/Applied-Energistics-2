@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ae2:item/memory_card_pins",
+    "layer1": "ae2:item/memory_card_base"
+  }
+}

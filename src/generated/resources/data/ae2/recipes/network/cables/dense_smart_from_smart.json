@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "ae2:fluix_smart_cable"
+    },
+    {
+      "item": "ae2:fluix_smart_cable"
+    },
+    {
+      "item": "ae2:fluix_smart_cable"
+    },
+    {
+      "item": "ae2:fluix_smart_cable"
+    }
+  ],
+  "result": {
+    "item": "ae2:fluix_smart_dense_cable"
+  }
+}

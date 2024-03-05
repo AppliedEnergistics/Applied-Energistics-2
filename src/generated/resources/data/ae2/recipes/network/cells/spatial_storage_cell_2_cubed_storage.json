@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "ae2:item_cell_housing"
+    },
+    {
+      "item": "ae2:spatial_cell_component_2"
+    }
+  ],
+  "result": {
+    "item": "ae2:spatial_storage_cell_2"
+  }
+}

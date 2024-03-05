@@ -1,0 +1,15 @@
+{
+  "type": "ae2:inscriber",
+  "ingredients": {
+    "middle": {
+      "item": "minecraft:iron_block"
+    },
+    "top": {
+      "item": "ae2:silicon_press"
+    }
+  },
+  "mode": "inscribe",
+  "result": {
+    "item": "ae2:silicon_press"
+  }
+}
