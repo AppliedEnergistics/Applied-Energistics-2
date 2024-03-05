@@ -109,6 +109,18 @@ public final class Guide implements PageCollection {
         return new Builder(modEventBus, defaultNamespace, folder);
     }
 
+    /**
+     * Creates a build without listening for mod events. This disables all features that rely on being able to register
+     * mod events, such as {@linkplain Builder#registerReloadListener the reload listener},
+     * {@linkplain Builder#validateAllAtStartup validation} or the {@linkplain Builder#startupPage startup page}.
+     */
+    public static Builder builder(String defaultNamespace, String folder) {
+        return new Builder(null, defaultNamespace, folder)
+                .registerReloadListener(false)
+                .validateAllAtStartup(false)
+                .startupPage(null);
+    }
+
     private static CompletableFuture<Minecraft> afterClientStart(IEventBus modEventBus) {
         var future = new CompletableFuture<Minecraft>();
 
@@ -390,6 +402,7 @@ public final class Guide implements PageCollection {
     }
 
     public static class Builder {
+        @Nullable
         private final IEventBus modEventBus;
         private final String defaultNamespace;
         private final String folder;
@@ -406,8 +419,8 @@ public final class Guide implements PageCollection {
         private final Set<ExtensionPoint<?>> disableDefaultsForExtensionPoints = Collections
                 .newSetFromMap(new IdentityHashMap<>());
 
-        private Builder(IEventBus modEventBus, String defaultNamespace, String folder) {
-            this.modEventBus = Objects.requireNonNull(modEventBus, "modEventBus");
+        private Builder(@Nullable IEventBus modEventBus, String defaultNamespace, String folder) {
+            this.modEventBus = modEventBus;
             this.defaultNamespace = Objects.requireNonNull(defaultNamespace, "defaultNamespace");
             this.folder = Objects.requireNonNull(folder, "folder");
 
@@ -571,6 +584,10 @@ public final class Guide implements PageCollection {
                     indices, extensionCollection);
 
             if (registerReloadListener) {
+                if (this.modEventBus == null) {
+                    throw new IllegalStateException(
+                            "Cannot register the reload listener, since no mod event bus was supplied to the builder.");
+                }
                 guide.registerReloadListener(modEventBus);
             }
 
@@ -579,6 +596,10 @@ public final class Guide implements PageCollection {
             }
 
             if (validateAtStartup || startupPage != null) {
+                if (this.modEventBus == null) {
+                    throw new IllegalStateException(
+                            "Cannot enable the startup page/validation, since no mod event bus was supplied to the builder.");
+                }
                 var reloadFuture = afterClientStart(modEventBus).thenRun(Guide::runDatapackReload);
                 if (validateAtStartup) {
                     reloadFuture = reloadFuture.thenRun(guide::validateAll);
