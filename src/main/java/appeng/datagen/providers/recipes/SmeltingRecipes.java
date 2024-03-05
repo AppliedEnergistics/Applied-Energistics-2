@@ -38,7 +38,7 @@ public class SmeltingRecipes extends AE2RecipeProvider {
     private static final int DEFAULT_SMELTING_TIME = 200;
 
     public SmeltingRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(output, lookupProvider);
+        super(output);
     }
 
     @Override

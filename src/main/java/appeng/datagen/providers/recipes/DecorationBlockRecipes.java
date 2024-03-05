@@ -42,7 +42,7 @@ import appeng.datagen.providers.tags.ConventionTags;
 public class DecorationBlockRecipes extends AE2RecipeProvider {
 
     public DecorationBlockRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(output, lookupProvider);
+        super(output);
     }
 
     @Override

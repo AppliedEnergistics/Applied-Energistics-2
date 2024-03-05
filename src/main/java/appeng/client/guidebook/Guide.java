@@ -38,8 +38,8 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.validation.DirectoryValidator;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TickEvent;
@@ -105,14 +105,25 @@ public final class Guide implements PageCollection {
         return indexClass.cast(index);
     }
 
-    public static Builder builder(String defaultNamespace, String folder) {
-        return new Builder(defaultNamespace, folder);
+    public static Builder builder(IEventBus modEventBus, String defaultNamespace, String folder) {
+        return new Builder(modEventBus, defaultNamespace, folder);
     }
 
-    private static CompletableFuture<Minecraft> afterClientStart() {
+    /**
+     * Creates a build without listening for mod events. This disables all features that rely on being able to register
+     * mod events, such as {@linkplain Builder#registerReloadListener the reload listener},
+     * {@linkplain Builder#validateAllAtStartup validation} or the {@linkplain Builder#startupPage startup page}.
+     */
+    public static Builder builder(String defaultNamespace, String folder) {
+        return new Builder(null, defaultNamespace, folder)
+                .registerReloadListener(false)
+                .validateAllAtStartup(false)
+                .startupPage(null);
+    }
+
+    private static CompletableFuture<Minecraft> afterClientStart(IEventBus modEventBus) {
         var future = new CompletableFuture<Minecraft>();
 
-        var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener((FMLClientSetupEvent evt) -> {
             var client = Minecraft.getInstance();
             CompletableFuture<?> reload;
@@ -391,6 +402,8 @@ public final class Guide implements PageCollection {
     }
 
     public static class Builder {
+        @Nullable
+        private final IEventBus modEventBus;
         private final String defaultNamespace;
         private final String folder;
         private final Map<Class<?>, PageIndex> indices = new IdentityHashMap<>();
@@ -406,9 +419,10 @@ public final class Guide implements PageCollection {
         private final Set<ExtensionPoint<?>> disableDefaultsForExtensionPoints = Collections
                 .newSetFromMap(new IdentityHashMap<>());
 
-        private Builder(String defaultNamespace, String folder) {
+        private Builder(@Nullable IEventBus modEventBus, String defaultNamespace, String folder) {
+            this.modEventBus = modEventBus;
             this.defaultNamespace = Objects.requireNonNull(defaultNamespace, "defaultNamespace");
-            this.folder = Objects.requireNonNull(folder, folder);
+            this.folder = Objects.requireNonNull(folder, "folder");
 
             // Both folder and default namespace need to be valid resource paths
             if (!ResourceLocation.isValidResourceLocation(defaultNamespace + ":dummy")) {
@@ -570,7 +584,11 @@ public final class Guide implements PageCollection {
                     indices, extensionCollection);
 
             if (registerReloadListener) {
-                guide.registerReloadListener();
+                if (this.modEventBus == null) {
+                    throw new IllegalStateException(
+                            "Cannot register the reload listener, since no mod event bus was supplied to the builder.");
+                }
+                guide.registerReloadListener(modEventBus);
             }
 
             if (developmentSourceFolder != null && watchDevelopmentSources) {
@@ -578,7 +596,11 @@ public final class Guide implements PageCollection {
             }
 
             if (validateAtStartup || startupPage != null) {
-                var reloadFuture = afterClientStart().thenRun(Guide::runDatapackReload);
+                if (this.modEventBus == null) {
+                    throw new IllegalStateException(
+                            "Cannot enable the startup page/validation, since no mod event bus was supplied to the builder.");
+                }
+                var reloadFuture = afterClientStart(modEventBus).thenRun(Guide::runDatapackReload);
                 if (validateAtStartup) {
                     reloadFuture = reloadFuture.thenRun(guide::validateAll);
                 }
@@ -620,8 +642,7 @@ public final class Guide implements PageCollection {
         }
     }
 
-    private void registerReloadListener() {
-        var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+    private void registerReloadListener(IEventBus modEventBus) {
         modEventBus.addListener((RegisterClientReloadListenersEvent evt) -> {
             evt.registerReloadListener(new ReloadListener(new ResourceLocation(defaultNamespace, folder)));
         });
