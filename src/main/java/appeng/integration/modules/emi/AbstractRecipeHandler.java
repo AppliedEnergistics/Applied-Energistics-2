@@ -3,7 +3,9 @@ package appeng.integration.modules.emi;
 import static appeng.integration.modules.itemlists.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
 import static appeng.integration.modules.itemlists.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
@@ -170,7 +172,8 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
             @Override
             void render(EmiRecipe recipe, EmiCraftContext<? extends AEBaseMenu> context, List<Widget> widgets,
                     GuiGraphics guiGraphics) {
-                renderMissingAndCraftableSlotOverlays(widgets, guiGraphics, missingSlots.missingSlots(),
+                renderMissingAndCraftableSlotOverlays(getRecipeInputSlots(recipe, widgets), guiGraphics,
+                        missingSlots.missingSlots(),
                         missingSlots.craftableSlots());
             }
         }
@@ -257,7 +260,9 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
             @Override
             void render(EmiRecipe recipe, EmiCraftContext<? extends AEBaseMenu> context, List<Widget> widgets,
                     GuiGraphics guiGraphics) {
-                renderMissingAndCraftableSlotOverlays(widgets, guiGraphics, missingSlots, Set.of());
+
+                renderMissingAndCraftableSlotOverlays(getRecipeInputSlots(recipe, widgets), guiGraphics, missingSlots,
+                        Set.of());
             }
         }
 
@@ -278,23 +283,20 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
         }
     }
 
-    private static void renderMissingAndCraftableSlotOverlays(List<Widget> widgets, GuiGraphics guiGraphics,
+    private static void renderMissingAndCraftableSlotOverlays(Map<Integer, SlotWidget> inputSlots,
+            GuiGraphics guiGraphics,
             Set<Integer> missingSlots, Set<Integer> craftableSlots) {
-        int i = 0;
-        for (var widget : widgets) {
-            if (widget instanceof SlotWidget slot && isInputSlot(slot)) {
-                boolean missing = missingSlots.contains(i);
-                boolean craftable = craftableSlots.contains(i);
-                i++;
-                if (missing || craftable) {
-                    var poseStack = guiGraphics.pose();
-                    poseStack.pushPose();
-                    poseStack.translate(0, 0, 400);
-                    var innerBounds = getInnerBounds(slot);
-                    guiGraphics.fill(innerBounds.x(), innerBounds.y(), innerBounds.right(),
-                            innerBounds.bottom(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
-                    poseStack.popPose();
-                }
+        for (var entry : inputSlots.entrySet()) {
+            boolean missing = missingSlots.contains(entry.getKey());
+            boolean craftable = craftableSlots.contains(entry.getKey());
+            if (missing || craftable) {
+                var poseStack = guiGraphics.pose();
+                poseStack.pushPose();
+                poseStack.translate(0, 0, 400);
+                var innerBounds = getInnerBounds(entry.getValue());
+                guiGraphics.fill(innerBounds.x(), innerBounds.y(), innerBounds.right(),
+                        innerBounds.bottom(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
+                poseStack.popPose();
             }
         }
     }
@@ -310,5 +312,20 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
                 bounds.y() + 1,
                 bounds.width() - 2,
                 bounds.height() - 2);
+    }
+
+    private static Map<Integer, SlotWidget> getRecipeInputSlots(EmiRecipe recipe, List<Widget> widgets) {
+        // Map ingredient indices to their respective slots
+        var inputSlots = new HashMap<Integer, SlotWidget>(recipe.getInputs().size());
+        for (int i = 0; i < recipe.getInputs().size(); i++) {
+            for (var widget : widgets) {
+                if (widget instanceof SlotWidget slot && isInputSlot(slot)) {
+                    if (slot.getStack() == recipe.getInputs().get(i)) {
+                        inputSlots.put(i, slot);
+                    }
+                }
+            }
+        }
+        return inputSlots;
     }
 }
