@@ -47,13 +47,13 @@ public class FinishedJobToast implements Toast {
         var font = minecraft.font;
 
         // stretch the middle
-        guiGraphics.blit(BACKGROUND_SPRITE, 0, 0, 0, 32, this.width(), 8);
+        guiGraphics.blitSprite(BACKGROUND_SPRITE, 160, 32, 0, 0, 0, 0, this.width(), 8);
         int middleHeight = height - 16;
         for (var middleY = 0; middleY < middleHeight; middleY += 16) {
             var tileHeight = Math.min(middleHeight - middleY, 16);
-            guiGraphics.blit(BACKGROUND_SPRITE, 0, 8 + middleY, 0, 32 + 8, this.width(), tileHeight);
+            guiGraphics.blitSprite(BACKGROUND_SPRITE, 160, 32, 0, 8, 0, 8 + middleY, this.width(), tileHeight);
         }
-        guiGraphics.blit(BACKGROUND_SPRITE, 0, height - 8, 0, 32 + 32 - 8, this.width(), 8);
+        guiGraphics.blitSprite(BACKGROUND_SPRITE, 160, 32, 0, 32 - 8, 0, height - 8, this.width(), 8);
         guiGraphics.drawString(toastComponent.getMinecraft().font, GuiText.ToastCraftingJobFinishedTitle.text(), 30, 7,
                 TITLE_COLOR, false);
         var lineY = 18;
