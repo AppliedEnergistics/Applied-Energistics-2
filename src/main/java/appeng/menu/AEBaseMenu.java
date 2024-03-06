@@ -586,16 +586,15 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         }
 
         if (action == InventoryAction.MOVE_REGION) {
-            final List<Slot> from = new ArrayList<>();
-
-            for (Slot j : this.slots) {
-                if (j != null && j.getClass() == s.getClass() && !(j instanceof CraftingTermSlot)) {
-                    from.add(j);
+            var slotSemantic = getSlotSemantic(s);
+            if (slotSemantic != null) {
+                // Avoid potential concurrent modification i.e. if an upgrade is moved into the machine
+                List<Slot> slotsToMove = List.copyOf(getSlots(slotSemantic));
+                for (var slotToMove : slotsToMove) {
+                    quickMoveStack(player, slotToMove.index);
                 }
-            }
-
-            for (Slot fr : from) {
-                this.quickMoveStack(player, fr.index);
+            } else {
+                quickMoveStack(player, s.index);
             }
         }
 
