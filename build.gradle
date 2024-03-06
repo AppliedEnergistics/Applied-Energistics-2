@@ -400,6 +400,12 @@ runs {
 // Artifacts
 processResources {
     exclude '.cache'
+    // Ensure the resources get re-evaluate when the version changes
+    inputs.property("version", project.version)
+    inputs.property("minecraft_version", project.minecraft_version_range)
+    inputs.property("neoforge_version", project.neoforge_version)
+    inputs.property("top_version", project.top_version)
+    inputs.property("jade_version", project.jade_version_range)
 
     filesMatching("META-INF/mods.toml") {
         expand 'minecraft_version': project.minecraft_version_range, 'neoforge_version': project.neoforge_version_range,
