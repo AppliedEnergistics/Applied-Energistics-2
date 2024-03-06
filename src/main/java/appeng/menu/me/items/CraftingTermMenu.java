@@ -164,7 +164,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
     public void clearCraftingGrid() {
         Preconditions.checkState(isClientSide());
         CraftingMatrixSlot slot = craftingSlots[0];
-        final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.index, 0);
+        var p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.index, 0);
         NetworkHandler.instance().sendToServer(p);
     }
 
