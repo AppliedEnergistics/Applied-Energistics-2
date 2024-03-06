@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -22,7 +23,7 @@ public interface ItemMenuHostLocator extends MenuHostLocator {
         ItemStack it = locateItem(player);
 
         if (!it.isEmpty() && it.getItem() instanceof IMenuItem menuItem) {
-            var menuHost = menuItem.getMenuHost(player, this, null);
+            var menuHost = menuItem.getMenuHost(player, this, hitResult());
             if (hostInterface.isInstance(menuHost)) {
                 return hostInterface.cast(menuHost);
             } else if (menuHost != null) {
@@ -36,6 +37,12 @@ public interface ItemMenuHostLocator extends MenuHostLocator {
 
         return null;
     }
+
+    /**
+     * @return The optional location where the item was used on to open the menu.
+     */
+    @Nullable
+    BlockHitResult hitResult();
 
     /**
      * Locates the MenuItem in the Players inventory and returns it if it satisfies the expected menu host interface.
