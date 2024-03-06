@@ -39,6 +39,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -80,6 +81,7 @@ import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.render.SimpleRenderContext;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
@@ -468,11 +470,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
             if (slot instanceof RepoSlot repoSlot) {
                 var entry = repoSlot.getEntry();
                 if (entry != null && PendingCraftingJobs.hasPendingJob(entry.getWhat())) {
-                    var frames = 192 / 16;
-                    var frame = (int) ((System.currentTimeMillis() / 100) % frames);
-
-                    Blitter.texture("block/molecular_assembler_lights.png", 16, 192)
-                            .src(2, 2 + frame * 16, 12, 12)
+                    var sprite = minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                            .apply(AppEng.makeId("block/molecular_assembler_lights"));
+                    Blitter.sprite(sprite)
+                            .src(sprite.getX() + 2, sprite.getY() + 2, sprite.contents().width() - 4,
+                                    sprite.contents().height() - 4)
                             .dest(slot.x - 1, slot.y - 1, 18, 18)
                             .blit(guiGraphics);
                 }
