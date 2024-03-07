@@ -15,7 +15,7 @@ class EmiAeBaseScreenStackProvider implements EmiStackProvider<Screen> {
             if (stack != null) {
                 var emiStack = EmiStackHelper.toEmiStack(stack.stack());
                 if (emiStack != null) {
-                    return new EmiStackInteraction(emiStack);
+                    return new EmiStackInteraction(emiStack, null, false);
                 }
             }
         }
