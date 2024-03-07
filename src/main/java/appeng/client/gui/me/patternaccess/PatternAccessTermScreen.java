@@ -247,7 +247,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                     GUI_PADDING_X - 1,
                     GUI_HEADER_HEIGHT,
                     COLUMNS * 18,
-                    this.imageHeight - GUI_FOOTER_HEIGHT);
+                    visibleRows * ROW_HEIGHT);
 
             renderContext.fillRect(rect, new ConstantColor(0x3f000000));
 

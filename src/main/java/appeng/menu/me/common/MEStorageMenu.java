@@ -39,6 +39,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
 
 import appeng.api.behaviors.ContainerItemStrategies;
@@ -698,21 +699,22 @@ public class MEStorageMenu extends AEBaseMenu
     }
 
     /**
-     * Checks if the terminal has a given amount of the requested item. Used to determine for REI/JEI if a recipe is
-     * potentially craftable based on the available items.
+     * Checks if the terminal has a given reservedAmounts of the requested item. Used to determine for REI/JEI if a
+     * recipe is potentially craftable based on the available items.
      * <p/>
      * This method is <strong>slow</strong>, but it is client-only and thus doesn't scale with the player count.
      */
-    public boolean hasIngredient(Predicate<ItemStack> ingredient, int amount) {
+    public boolean hasIngredient(Predicate<ItemStack> predicate, Object2IntOpenHashMap<Object> reservedAmounts) {
         var clientRepo = getClientRepo();
 
         if (clientRepo != null) {
             for (var stack : clientRepo.getAllEntries()) {
-                if (stack.getWhat() instanceof AEItemKey itemKey && ingredient.test(itemKey.toStack())) {
-                    if (stack.getStoredAmount() >= amount) {
+                if (stack.getWhat() instanceof AEItemKey itemKey && predicate.test(itemKey.toStack())) {
+                    var reservedAmount = reservedAmounts.getOrDefault(stack.getWhat(), 0);
+                    if (stack.getStoredAmount() - reservedAmount >= 1) {
+                        reservedAmounts.merge(itemKey, 1, Integer::sum);
                         return true;
                     }
-                    amount -= stack.getStoredAmount();
                 }
             }
         }

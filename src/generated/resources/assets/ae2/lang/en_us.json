@@ -127,6 +127,7 @@
   "block.ae2.crafting_unit": "Crafting Unit",
   "block.ae2.crank": "Wooden Crank",
   "block.ae2.creative_energy_cell": "Creative Energy Cell",
+  "block.ae2.crystal_resonance_generator": "Crystal Resonance Generator",
   "block.ae2.cut_quartz_block": "Cut Certus Quartz Block",
   "block.ae2.cut_quartz_slab": "Cut Certus Quartz Slab",
   "block.ae2.cut_quartz_stairs": "Cut Certus Quartz Stairs",
@@ -1003,5 +1004,6 @@
   "waila.ae2.P2PUnlinked": "Unlinked",
   "waila.ae2.Showing": "Showing",
   "waila.ae2.Stored": "Stored: %s / %s",
+  "waila.ae2.Suppressed": "Suppressed",
   "waila.ae2.Unlocked": "Unlocked"
 }
