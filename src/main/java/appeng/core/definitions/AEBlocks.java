@@ -71,6 +71,7 @@ import appeng.block.misc.VibrationChamberBlock;
 import appeng.block.networking.CableBusBlock;
 import appeng.block.networking.ControllerBlock;
 import appeng.block.networking.CreativeEnergyCellBlock;
+import appeng.block.networking.CrystalResonanceGeneratorBlock;
 import appeng.block.networking.EnergyAcceptorBlock;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.block.networking.EnergyCellBlockItem;
@@ -175,6 +176,8 @@ public final class AEBlocks {
     public static final BlockDefinition<IOPortBlock> IO_PORT = block("ME IO Port", AEBlockIds.IO_PORT, IOPortBlock::new);
     public static final BlockDefinition<CondenserBlock> CONDENSER = block("Matter Condenser", AEBlockIds.CONDENSER, CondenserBlock::new);
     public static final BlockDefinition<EnergyAcceptorBlock> ENERGY_ACCEPTOR = block("Energy Acceptor", AEBlockIds.ENERGY_ACCEPTOR, EnergyAcceptorBlock::new);
+    public static final BlockDefinition<CrystalResonanceGeneratorBlock> CRYSTAL_RESONANCE_GENERATOR = block("Crystal Resonance Generator", AEBlockIds.CRYSTAL_RESONANCE_GENERATOR, CrystalResonanceGeneratorBlock::new);
+
     public static final BlockDefinition<VibrationChamberBlock> VIBRATION_CHAMBER = block("Vibration Chamber", AEBlockIds.VIBRATION_CHAMBER, VibrationChamberBlock::new);
     public static final BlockDefinition<GrowthAcceleratorBlock> GROWTH_ACCELERATOR = block("Growth Accelerator", AEBlockIds.GROWTH_ACCELERATOR, GrowthAcceleratorBlock::new);
     public static final BlockDefinition<EnergyCellBlock> ENERGY_CELL = block("Energy Cell", AEBlockIds.ENERGY_CELL, () -> new EnergyCellBlock(200000, 800, 200), EnergyCellBlockItem::new);
