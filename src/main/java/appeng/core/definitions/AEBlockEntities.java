@@ -54,6 +54,7 @@ import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.blockentity.networking.CreativeEnergyCellBlockEntity;
+import appeng.blockentity.networking.CrystalResonanceGeneratorBlockEntity;
 import appeng.blockentity.networking.EnergyAcceptorBlockEntity;
 import appeng.blockentity.networking.EnergyCellBlockEntity;
 import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
@@ -114,6 +115,10 @@ public final class AEBlockEntities {
             CondenserBlockEntity::new, AEBlocks.CONDENSER);
     public static final BlockEntityType<EnergyAcceptorBlockEntity> ENERGY_ACCEPTOR = create("energy_acceptor",
             EnergyAcceptorBlockEntity.class, EnergyAcceptorBlockEntity::new, AEBlocks.ENERGY_ACCEPTOR);
+    public static final BlockEntityType<CrystalResonanceGeneratorBlockEntity> CRYSTAL_RESONANCE_GENERATOR = create(
+            "crystal_resonance_generator",
+            CrystalResonanceGeneratorBlockEntity.class, CrystalResonanceGeneratorBlockEntity::new,
+            AEBlocks.CRYSTAL_RESONANCE_GENERATOR);
     public static final BlockEntityType<VibrationChamberBlockEntity> VIBRATION_CHAMBER = create("vibration_chamber",
             VibrationChamberBlockEntity.class, VibrationChamberBlockEntity::new, AEBlocks.VIBRATION_CHAMBER);
     public static final BlockEntityType<GrowthAcceleratorBlockEntity> GROWTH_ACCELERATOR = create(

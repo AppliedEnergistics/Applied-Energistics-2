@@ -63,6 +63,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                 Variant.variant().with(VariantProperties.MODEL, inscriber.getLocation()))
                         .with(createFacingSpinDispatch());
 
+        crystalResonanceGenerator();
         wirelessAccessPoint();
         craftingMonitor();
         quartzGrowthAccelerator();
@@ -172,6 +173,27 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                                         BlockOrientation.get(facing));
                             }
                         }));
+    }
+
+    private void crystalResonanceGenerator() {
+        var builder = getVariantBuilder(AEBlocks.CRYSTAL_RESONANCE_GENERATOR.block());
+
+        var modelFile = models().getExistingFile(AppEng.makeId("block/crystal_resonance_generator"));
+
+        for (var facing : Direction.values()) {
+            var rotation = BlockOrientation.get(facing, 0);
+            builder.partialState()
+                    .with(BlockStateProperties.FACING, facing)
+                    .setModels(ConfiguredModel.builder()
+                            .modelFile(modelFile)
+                            // The original is facing "up" while we generally assume models are facing north
+                            // but this looks better as an item model
+                            .rotationX(rotation.getAngleX() + 90)
+                            .rotationY(rotation.getAngleY())
+                            .build());
+        }
+
+        simpleBlockItem(AEBlocks.CRYSTAL_RESONANCE_GENERATOR.block(), modelFile);
     }
 
     private void wirelessAccessPoint() {
