@@ -169,21 +169,22 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
     }
 
     @Override
-    public boolean hasIngredient(Predicate<ItemStack> predicate, int amount) {
+    public boolean hasIngredient(Predicate<ItemStack> predicate, Object2IntOpenHashMap<Object> reservedAmounts) {
         // In addition to the base item repo, also check the crafting grid if it
         // already contains some of the needed items
         for (var slot : getSlots(SlotSemantics.CRAFTING_GRID)) {
             var stackInSlot = slot.getItem();
             if (!stackInSlot.isEmpty() && predicate.test(stackInSlot)) {
-                if (stackInSlot.getCount() >= amount) {
+                var reservedAmount = reservedAmounts.getOrDefault(slot, 0);
+                if (stackInSlot.getCount() > reservedAmount) {
+                    reservedAmounts.merge(slot, 1, Integer::sum);
                     return true;
                 }
-                amount -= stackInSlot.getCount();
             }
 
         }
 
-        return super.hasIngredient(predicate, amount);
+        return super.hasIngredient(predicate, reservedAmounts);
     }
 
     /**
@@ -229,9 +230,8 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
             // Then check the terminal screen's repository of network items
             if (!found) {
                 // We use AE stacks to get an easily comparable item type key that ignores stack size
-                int neededAmount = reservedGridAmounts.getOrDefault(ingredient, 0) + 1;
-                if (hasIngredient(ingredient, neededAmount)) {
-                    reservedGridAmounts.put(ingredient, neededAmount);
+                if (hasIngredient(ingredient, reservedGridAmounts)) {
+                    reservedGridAmounts.merge(ingredient, 1, Integer::sum);
                     found = true;
                 }
             }
