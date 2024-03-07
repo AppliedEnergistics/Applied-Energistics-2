@@ -44,6 +44,7 @@
     "ae2:io_port",
     "ae2:condenser",
     "ae2:energy_acceptor",
+    "ae2:crystal_resonance_generator",
     "ae2:vibration_chamber",
     "ae2:growth_accelerator",
     "ae2:energy_cell",

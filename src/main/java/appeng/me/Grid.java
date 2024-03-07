@@ -201,34 +201,42 @@ public class Grid implements IGrid {
     }
 
     public void onServerStartTick() {
+        if (this.pivot == null) {
+            return;
+        }
+
         for (var gc : this.services.values()) {
-            if (this.pivot != null) {
-                gc.onServerStartTick();
-            }
+            gc.onServerStartTick();
         }
     }
 
     public void onLevelStartTick(Level level) {
+        if (this.pivot == null) {
+            return;
+        }
+
         for (var gc : this.services.values()) {
-            if (this.pivot != null) {
-                gc.onLevelStartTick(level);
-            }
+            gc.onLevelStartTick(level);
         }
     }
 
     public void onLevelEndTick(Level level) {
+        if (this.pivot == null) {
+            return;
+        }
+
         for (var gc : this.services.values()) {
-            if (this.pivot != null) {
-                gc.onLevelEndTick(level);
-            }
+            gc.onLevelEndTick(level);
         }
     }
 
     public void onServerEndTick() {
+        if (this.pivot == null) {
+            return;
+        }
+
         for (var gc : this.services.values()) {
-            if (this.pivot != null) {
-                gc.onServerEndTick();
-            }
+            gc.onServerEndTick();
         }
     }
 
