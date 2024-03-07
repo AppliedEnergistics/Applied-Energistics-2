@@ -14,6 +14,7 @@ public final class TooltipIds {
     public static final ResourceLocation CRAFTING_MONITOR = AppEng.makeId("crafting_monitor");
     public static final ResourceLocation PATTERN_PROVIDER = AppEng.makeId("pattern_provider");
     public static final ResourceLocation CHARGER = AppEng.makeId("charger");
+    public static final ResourceLocation CRYSTAL_RESONANCE_GENERATOR = AppEng.makeId("crystal_resonance_generator");
 
     public static final ResourceLocation PART_NAME = AppEng.makeId("part_name");
     public static final ResourceLocation PART_ICON = AppEng.makeId("part_icon");

@@ -19,11 +19,15 @@
 package appeng.me.service;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NavigableSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.SortedSet;
 
 import com.google.common.base.Preconditions;
@@ -51,6 +55,7 @@ import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherNode;
+import appeng.api.networking.energy.IPassiveEnergyGenerator;
 import appeng.api.networking.events.GridPowerIdleChange;
 import appeng.api.networking.events.GridPowerStatusChange;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
@@ -138,6 +143,11 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
     private double lastStoredPower = -1;
 
     /**
+     * Passive generators available on this energy grid.
+     */
+    private final Set<IPassiveEnergyGenerator> passiveGenerators = Collections.newSetFromMap(new IdentityHashMap<>());
+
+    /**
      * The overlay grid containing all the energy services of grids that may be connected by parts like
      * {@linkplain appeng.parts.networking.QuartzFiberPart quartz fibers}.
      */
@@ -175,7 +185,35 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
     }
 
     @Override
+    public void onServerStartTick() {
+        // replenish the passive power generation reservoir for the overarching energy service
+        // we only allow one passive generator for the entire network
+        for (var passiveGenerator : passiveGenerators) {
+            var currentGenerator = getOverlayGrid().getCurrentPassiveGenerator();
+            if (currentGenerator == passiveGenerator) {
+                passiveGenerator.setSuppressed(false);
+            } else if (currentGenerator == null || passiveGenerator.getRate() > currentGenerator.getRate()) {
+                if (currentGenerator != null) {
+                    currentGenerator.setSuppressed(true);
+                }
+                getOverlayGrid().setCurrentPassiveGenerator(passiveGenerator);
+                passiveGenerator.setSuppressed(false);
+            } else {
+                // Strictly worse than the current generator
+                passiveGenerator.setSuppressed(true);
+            }
+        }
+    }
+
+    @Override
     public void onServerEndTick() {
+        // Inject the passive energy once per overlay grid and do it at the energy service that actually
+        // contains the passive generator.
+        var currentPassiveGenerator = getOverlayGrid().getCurrentPassiveGenerator();
+        if (currentPassiveGenerator != null && passiveGenerators.contains(currentPassiveGenerator)) {
+            injectPower(currentPassiveGenerator.getRate(), Actionable.MODULATE);
+        }
+
         if (!this.interests.isEmpty()) {
             final double oldPower = this.lastStoredPower;
             this.lastStoredPower = this.getStoredPower();
@@ -442,6 +480,17 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
         final GridNode gridNode = (GridNode) node;
         this.drainPerTick -= gridNode.getPreviousDraw();
 
+        // passive generation
+        var passiveGenerator = node.getService(IPassiveEnergyGenerator.class);
+        if (passiveGenerator != null) {
+            passiveGenerators.remove(passiveGenerator);
+
+            var overlayGrid = getOverlayGrid();
+            if (overlayGrid.getCurrentPassiveGenerator() == passiveGenerator) {
+                overlayGrid.setCurrentPassiveGenerator(null);
+            }
+        }
+
         // power storage.
         var ps = node.getService(IAEPowerStorage.class);
         if (ps != null) {
@@ -505,6 +554,12 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
         gridNode.setPreviousDraw(node.getIdlePowerUsage());
         this.drainPerTick += gridNode.getPreviousDraw();
 
+        // passive generation
+        var passiveGenerator = node.getService(IPassiveEnergyGenerator.class);
+        if (passiveGenerator != null) {
+            passiveGenerators.add(passiveGenerator);
+        }
+
         // power storage
         var ps = node.getService(IAEPowerStorage.class);
         if (ps != null) {
@@ -560,11 +615,14 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
     }
 
     private List<EnergyService> getConnectedServices() {
+        return getOverlayGrid().energyServices;
+    }
+
+    private EnergyOverlayGrid getOverlayGrid() {
         if (this.overlayGrid == null) {
             EnergyOverlayGrid.buildCache(this);
         }
-
-        return this.overlayGrid.energyServices;
+        return Objects.requireNonNull(this.overlayGrid);
     }
 
 }
