@@ -50,6 +50,7 @@ public class ItemP2PTestPlots {
                     LOGGER.debug("Center cable NBT data: " + centerCable.saveWithoutMetadata());
                     var tunnel2 = helper.getBlockEntity(origin.east());
                     LOGGER.debug("Tunnel2 NBT data: " + tunnel2.saveWithoutMetadata());
+                    LOGGER.debug("Chest NBT data:" + helper.getBlockEntity(chestPos).saveWithoutMetadata());
                     helper.assertContainerContains(chestPos, Items.BEDROCK);
                 })
                 .thenSucceed());
