@@ -211,6 +211,16 @@ public class CraftingRecipes extends AE2RecipeProvider {
         // recipes/network
         // ====================================================
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.CRYSTAL_RESONANCE_GENERATOR)
+                .pattern("cfc")
+                .pattern("cqc")
+                .pattern("iii")
+                .define('i', ConventionTags.IRON_INGOT)
+                .define('f', AEBlocks.FLUIX_BLOCK)
+                .define('c', ConventionTags.COPPER_INGOT)
+                .define('q', AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
+                .unlockedBy(getHasName(AEBlocks.FLUIX_BLOCK), has(AEBlocks.FLUIX_BLOCK))
+                .save(consumer, AppEng.makeId("network/crystal_resonance_generator"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.WIRELESS_ACCESS_POINT)
                 .pattern("a")
                 .pattern("b")
