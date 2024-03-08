@@ -5,7 +5,7 @@ navigation:
   icon: crystal_resonance_generator
   position: 110
 categories:
-- devices
+- network infrastructure
 item_ids:
 - ae2:crystal_resonance_generator
 ---
