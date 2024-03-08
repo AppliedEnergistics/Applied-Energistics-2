@@ -16,6 +16,8 @@ item_ids:
 
 This device generates energy for your ME network without the need for fuel. Because of the crystal vibrations this device generates, only one can be used in each network. These vibrations even pass through <ItemLink id="quartz_fiber" />.
 
+**Generation Rate:** <ae2:ConfigValue name="crystalResonanceGeneratorRate"/> AE/t
+
 ## Recipes
 
 <RecipeFor id="crystal_resonance_generator" />
