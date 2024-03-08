@@ -14,9 +14,10 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.google.common.collect.Sets;
-
 import com.mojang.logging.LogUtils;
+
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -78,7 +79,6 @@ import appeng.server.testworld.Plot;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.TestCraftingJob;
 import appeng.util.CraftingRecipeUtil;
-import org.slf4j.Logger;
 
 public final class TestPlots {
     private static final List<Class<?>> PLOT_CLASSES = new ArrayList<>();
