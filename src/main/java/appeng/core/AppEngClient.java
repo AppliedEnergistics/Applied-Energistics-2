@@ -64,6 +64,8 @@ import appeng.client.gui.style.StyleManager;
 import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.command.GuidebookStructureCommands;
+import appeng.client.guidebook.compiler.TagCompiler;
+import appeng.client.guidebook.extensions.ConfigValueTagExtension;
 import appeng.client.guidebook.hotkey.OpenGuideHotkey;
 import appeng.client.guidebook.scene.ImplicitAnnotationStrategy;
 import appeng.client.guidebook.scene.PartAnnotationStrategy;
@@ -175,6 +177,7 @@ public class AppEngClient extends AppEngBase {
 
         return Guide.builder(MOD_ID, "ae2guide")
                 .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
+                .extension(TagCompiler.EXTENSION_POINT, new ConfigValueTagExtension())
                 .build();
     }
 
