@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 
 import com.google.common.collect.Sets;
 
+import com.mojang.logging.LogUtils;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.Util;
@@ -77,6 +78,7 @@ import appeng.server.testworld.Plot;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.TestCraftingJob;
 import appeng.util.CraftingRecipeUtil;
+import org.slf4j.Logger;
 
 public final class TestPlots {
     private static final List<Class<?>> PLOT_CLASSES = new ArrayList<>();
@@ -608,6 +610,8 @@ public final class TestPlots {
         }));
     }
 
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     /**
      * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6582
      */
@@ -623,12 +627,21 @@ public final class TestPlots {
         // Hopper to test insertion of stuff. It should try to insert stick first.
         plot.hopper(origin.above(), Direction.DOWN, Items.STICK, Items.REDSTONE);
 
-        plot.test(helper -> helper.succeedWhen(() -> {
-            var meChest = (appeng.blockentity.storage.ChestBlockEntity) helper.getBlockEntity(origin);
-            helper.assertContains(meChest.getInventory(), AEItemKey.of(Items.REDSTONE));
-            // The stick should still be in the hopper
-            helper.assertContainerContains(origin.above(), Items.STICK);
-        }));
+        plot.test(helper -> helper
+                .startSequence()
+                .thenExecute(() -> {
+                    LOGGER.debug("Hopper position: " + helper.absolutePos(origin.above()));
+                })
+                .thenWaitUntil(() -> {
+                    var meChest = (appeng.blockentity.storage.ChestBlockEntity) helper.getBlockEntity(origin);
+                    LOGGER.debug("ME Chest data: " + meChest.saveWithoutMetadata());
+                    helper.assertContains(meChest.getInventory(), AEItemKey.of(Items.REDSTONE));
+                    // The stick should still be in the hopper
+                    var hopper = helper.getBlockEntity(origin.above());
+                    LOGGER.debug("Hopper data: " + hopper.saveWithoutMetadata());
+                    helper.assertContainerContains(origin.above(), Items.STICK);
+                })
+                .thenSucceed());
     }
 
     @TestPlot("maxchannels_adhoctest")
