@@ -8,6 +8,8 @@ on:
   pull_request:
     branches:
       - '*'
+  schedule:
+      - cron: '*/10 * * * *'
 
 # Cancel outdated builds for the same branch
 concurrency:
