@@ -2,11 +2,11 @@
   "parent": "block/block",
   "credit": "Made with Blockbench by Sea_Kerman",
   "textures": {
-    "particle": "ae2:block/rtg_top",
-    "top": "ae2:block/rtg_top",
-    "bottom": "ae2:block/rtg_bottom",
-    "side": "ae2:block/rtg_side",
-    "core": "ae2:block/rtg_emissive"
+    "particle": "ae2:block/crg_side",
+    "top": "ae2:block/crg_top",
+    "bottom": "ae2:block/crg_bottom",
+    "side": "ae2:block/crg_side",
+    "core": "ae2:block/crg_emissive"
   },
   "elements": [
     {
@@ -26,11 +26,16 @@
       "from": [4, 4, 4],
       "to": [12, 16, 12],
       "faces": {
-        "north": { "uv": [8, 0, 16, 12], "texture": "#core" },
-        "east": { "uv": [8, 0, 16, 12], "texture": "#core" },
-        "south": { "uv": [8, 0, 16, 12], "texture": "#core" },
-        "west": { "uv": [8, 0, 16, 12], "texture": "#core" },
-        "up": { "uv": [0, 0, 8, 8], "texture": "#core", "cullface": "up" }
+        "north": { "uv": [8, 0, 16, 12], "texture": "#core", "unlit": true },
+        "east": { "uv": [8, 0, 16, 12], "texture": "#core", "unlit": true },
+        "south": { "uv": [8, 0, 16, 12], "texture": "#core", "unlit": true },
+        "west": { "uv": [8, 0, 16, 12], "texture": "#core", "unlit": true },
+        "up": {
+          "uv": [0, 0, 8, 8],
+          "texture": "#core",
+          "cullface": "up",
+          "unlit": true
+        }
       }
     },
     {

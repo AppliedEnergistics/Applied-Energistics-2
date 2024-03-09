@@ -97,40 +97,40 @@ public class CrystalResonanceGeneratorBlock extends AEBaseEntityBlock<CrystalRes
 
         switch (forward) {
             case DOWN -> {
-                minZ = minX = 3.0 / 16.0;
-                maxZ = maxX = 13.0 / 16.0;
+                minZ = minX = 2.0 / 16.0;
+                maxZ = maxX = 14.0 / 16.0;
                 maxY = 1.0;
-                minY = 5.0 / 16.0;
+                minY = 1.0 / 16.0;
             }
             case EAST -> {
-                minZ = minY = 3.0 / 16.0;
-                maxZ = maxY = 13.0 / 16.0;
-                maxX = 11.0 / 16.0;
+                minZ = minY = 2.0 / 16.0;
+                maxZ = maxY = 14.0 / 16.0;
+                maxX = 15.0 / 16.0;
                 minX = 0.0;
             }
             case NORTH -> {
-                minY = minX = 3.0 / 16.0;
-                maxY = maxX = 13.0 / 16.0;
+                minY = minX = 2.0 / 16.0;
+                maxY = maxX = 14.0 / 16.0;
                 maxZ = 1.0;
-                minZ = 5.0 / 16.0;
+                minZ = 1.0 / 16.0;
             }
             case SOUTH -> {
-                minY = minX = 3.0 / 16.0;
-                maxY = maxX = 13.0 / 16.0;
-                maxZ = 11.0 / 16.0;
+                minY = minX = 2.0 / 16.0;
+                maxY = maxX = 14.0 / 16.0;
+                maxZ = 15.0 / 16.0;
                 minZ = 0.0;
             }
             case UP -> {
-                minZ = minX = 3.0 / 16.0;
-                maxZ = maxX = 13.0 / 16.0;
-                maxY = 11.0 / 16.0;
+                minZ = minX = 2.0 / 16.0;
+                maxZ = maxX = 14.0 / 16.0;
+                maxY = 15.0 / 16.0;
                 minY = 0.0;
             }
             case WEST -> {
-                minZ = minY = 3.0 / 16.0;
-                maxZ = maxY = 13.0 / 16.0;
+                minZ = minY = 2.0 / 16.0;
+                maxZ = maxY = 14.0 / 16.0;
                 maxX = 1.0;
-                minX = 5.0 / 16.0;
+                minX = 1.0 / 16.0;
             }
             default -> {
             }
