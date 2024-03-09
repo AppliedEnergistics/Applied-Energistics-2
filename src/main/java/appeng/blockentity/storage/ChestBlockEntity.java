@@ -76,6 +76,7 @@ import appeng.api.util.KeyTypeSelectionHost;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.definitions.AEBlocks;
+import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MachineSource;
@@ -215,7 +216,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         if (cellHandler == null) {
             return ILinkStatus.ofDisconnected(PlayerMessages.ChestCannotReadStorageCell.text());
         }
-        return ILinkStatus.ofManagedNode(getMainNode());
+        // The Chest GUI works independently of the grid the chest may be connected to
+        if (!isPowered()) {
+            return ILinkStatus.ofDisconnected(GuiText.OutOfPower.text());
+        }
+        return ILinkStatus.ofConnected();
     }
 
     @Override

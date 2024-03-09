@@ -57,12 +57,17 @@ public class ExternalEnergyTestPlots {
     @TestPlot("fe_chest")
     public static void testChest(PlotBuilder plot) {
         placeForgeEnergyGenerator(plot);
-        plot.block(ORIGIN, AEBlocks.CHEST);
+        plot.blockEntity(ORIGIN, AEBlocks.CHEST, chest -> {
+            chest.getInternalInventory().addItems(AEItems.ITEM_CELL_1K.stack());
+        });
         plot.test(helper -> helper.startSequence()
                 .thenWaitUntil(helper::checkAllInitialized)
                 .thenWaitUntil(() -> {
                     var chest = (ChestBlockEntity) helper.getBlockEntity(ORIGIN);
                     helper.check(chest.isPowered(), "should be powered", ORIGIN);
+                    var linkStatus = chest.getLinkStatus();
+                    helper.check(linkStatus.connected(), "link status should be connected: "
+                            + linkStatus.statusDescription(), ORIGIN);
                 })
                 // Ensure that after 1 second, the grid still has no energy
                 .thenExecuteAfter(20, () -> checkGridHasNoEnergy(helper))
