@@ -57,7 +57,8 @@ public class PartAdjacentApi<T> {
         return cache.getCapability();
     }
 
-    private static boolean isPartValid(AEBasePart part) {
-        return part.getBlockEntity() instanceof IPartHost host && host.getPart(part.getSide()) == part;
+    public static boolean isPartValid(AEBasePart part) {
+        var be = part.getBlockEntity();
+        return be instanceof IPartHost host && host.getPart(part.getSide()) == part && !be.isRemoved();
     }
 }
