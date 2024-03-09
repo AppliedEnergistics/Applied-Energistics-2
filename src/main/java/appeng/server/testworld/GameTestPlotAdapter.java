@@ -1,7 +1,8 @@
 package appeng.server.testworld;
 
-import appeng.server.testplots.TestPlots;
-import appeng.util.Platform;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,8 +23,8 @@ import net.minecraft.world.level.entity.Visibility;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
+import appeng.server.testplots.TestPlots;
+import appeng.util.Platform;
 
 public class GameTestPlotAdapter {
 
