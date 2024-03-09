@@ -274,16 +274,4 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
             return ChargerRecipes.allowExtract(chargerBlockEntity.level, extractedItem);
         }
     }
-
-    class Crankable implements ICrankable {
-        @Override
-        public boolean canTurn() {
-            return getInternalCurrentPower() < getInternalMaxPower();
-        }
-
-        @Override
-        public void applyTurn() {
-            injectExternalPower(PowerUnits.AE, CrankBlockEntity.POWER_PER_CRANK_TURN, Actionable.MODULATE);
-        }
-    }
 }
