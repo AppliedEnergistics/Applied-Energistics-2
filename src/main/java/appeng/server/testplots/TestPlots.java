@@ -86,6 +86,7 @@ public final class TestPlots {
 
     static {
         PLOT_CLASSES.addAll(List.of(
+                ExternalEnergyTestPlots.class,
                 CrystalResonanceGeneratorTestPlots.class,
                 TestPlots.class,
                 AutoCraftingTestPlots.class,
@@ -175,7 +176,7 @@ public final class TestPlots {
                 }
             }
         } catch (Exception e) {
-            AELog.warn("Failed to scan for plots: %s", e);
+            AELog.error("Failed to scan for plots: %s", e);
         }
 
         return plots;

@@ -22,6 +22,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
+import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.parts.AEBasePart;
@@ -182,12 +183,21 @@ public class PlotTestHelper extends GameTestHelper {
     }
 
     public void countContainerContentAt(BlockPos pos, KeyCounter counter) {
-        var container = ((BaseContainerBlockEntity) getBlockEntity(pos));
-        for (int i = 0; i < container.getContainerSize(); i++) {
-            var item = container.getItem(i);
-            if (!item.isEmpty()) {
+        var be = getBlockEntity(pos);
+        if (be instanceof BaseContainerBlockEntity container) {
+            for (int i = 0; i < container.getContainerSize(); i++) {
+                var item = container.getItem(i);
+                if (!item.isEmpty()) {
+                    counter.add(AEItemKey.of(item), item.getCount());
+                }
+            }
+        } else if (be instanceof AEBaseInvBlockEntity aeBe) {
+            var internalInv = aeBe.getInternalInventory();
+            for (var item : internalInv) {
                 counter.add(AEItemKey.of(item), item.getCount());
             }
+        } else {
+            throw new RuntimeException("Unsupported BE: " + be);
         }
     }
 

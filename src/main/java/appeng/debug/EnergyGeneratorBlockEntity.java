@@ -22,6 +22,8 @@ import com.google.common.math.IntMath;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -36,7 +38,7 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Ser
     /**
      * The base energy injected each tick. Adjacent energy generators will increase it to pow(base, #generators).
      */
-    private static final int BASE_ENERGY = 8;
+    private int generationRate = 8;
 
     public EnergyGeneratorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -55,7 +57,7 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Ser
             }
         }
 
-        final int energyToInsert = IntMath.pow(BASE_ENERGY, tier);
+        final int energyToInsert = IntMath.pow(generationRate, tier);
 
         for (Direction facing : Direction.values()) {
             var consumer = getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(facing),
@@ -64,6 +66,28 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Ser
                 consumer.receiveEnergy(energyToInsert, false);
             }
         }
+    }
+
+    public int getGenerationRate() {
+        return generationRate;
+    }
+
+    public void setGenerationRate(int generationRate) {
+        this.generationRate = generationRate;
+    }
+
+    @Override
+    public void loadTag(CompoundTag data) {
+        super.loadTag(data);
+        if (data.contains("generationRate", Tag.TAG_INT)) {
+            generationRate = data.getInt("generationRate");
+        }
+    }
+
+    @Override
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
+        data.putInt("generationRate", generationRate);
     }
 
     @Override
