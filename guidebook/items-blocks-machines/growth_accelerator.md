@@ -23,9 +23,12 @@ Curiously, it can *also* accelerate the growth of various plants.
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
+Power can be provided via the top or bottom, via either AE2's [cables](cables.md), or other mod power cables. It can
+accept either AE2's power (AE) or Forge Energy (FE).
+
 To power it manually, place a <ItemLink id="crank" /> on the top or bottom and right-click it.
 
-It only connects to cables on its ends where the pink fluix greebles are.
+The top and the bottom can be identified by the pink flux greebles on them.
 
 <GameScene zoom="6" background="transparent">
 <ImportStructure src="../assets/assemblies/accelerator_connections.snbt" />

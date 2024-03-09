@@ -5,6 +5,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import appeng.api.stacks.AEItemKey;
+import appeng.block.misc.GrowthAcceleratorBlock;
+import appeng.blockentity.misc.GrowthAcceleratorBlockEntity;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -57,12 +59,17 @@ public class ExternalEnergyTestPlots {
     @TestPlot("fe_chest")
     public static void testChest(PlotBuilder plot) {
         placeForgeEnergyGenerator(plot);
-        plot.block(ORIGIN, AEBlocks.CHEST);
+        plot.blockEntity(ORIGIN, AEBlocks.CHEST, chest -> {
+            chest.getInternalInventory().addItems(AEItems.ITEM_CELL_1K.stack());
+        });
         plot.test(helper -> helper.startSequence()
                 .thenWaitUntil(helper::checkAllInitialized)
                 .thenWaitUntil(() -> {
                     var chest = (ChestBlockEntity) helper.getBlockEntity(ORIGIN);
                     helper.check(chest.isPowered(), "should be powered", ORIGIN);
+                    var linkStatus = chest.getLinkStatus();
+                    helper.check(linkStatus.connected(), "link status should be connected: "
+                            + linkStatus.statusDescription(), ORIGIN);
                 })
                 // Ensure that after 1 second, the grid still has no energy
                 .thenExecuteAfter(20, () -> checkGridHasNoEnergy(helper))
@@ -94,11 +101,11 @@ public class ExternalEnergyTestPlots {
                 .setValue(BlockStateProperties.FACING, Direction.UP));
         plot.test(helper -> helper.startSequence()
                 .thenWaitUntil(helper::checkAllInitialized)
-                // NYI
-                // .thenWaitUntil(() -> {
-                // var accel = (GrowthAcceleratorBlockEntity) helper.getBlockEntity(ORIGIN);
-                // helper.check(accel.isPowered(), "should be powered", ORIGIN);
-                // })
+                .thenWaitUntil(() -> {
+                    var accel = (GrowthAcceleratorBlockEntity) helper.getBlockEntity(ORIGIN);
+                    helper.check(accel.isPowered(), "should be powered", ORIGIN);
+                })
+                .thenWaitUntil(() -> helper.assertBlockProperty(ORIGIN, GrowthAcceleratorBlock.POWERED, true))
                 // Ensure that after 1 second, the grid still has no energy
                 .thenExecuteAfter(20, () -> checkGridHasNoEnergy(helper))
                 .thenSucceed());

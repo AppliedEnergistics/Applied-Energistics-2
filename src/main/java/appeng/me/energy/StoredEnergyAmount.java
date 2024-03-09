@@ -72,7 +72,7 @@ public final class StoredEnergyAmount {
     }
 
     /**
-     * Increase the amount, and return what would have exceeded the maximum.
+     * Decrease the amount, and return how much was actually extracted.
      */
     public double extract(double amount, boolean commit) {
         if (amount < MIN_AMOUNT) {
