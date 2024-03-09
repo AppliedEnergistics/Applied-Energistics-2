@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.StructureBlockEntity;
 import net.minecraft.world.level.block.state.properties.StructureMode;
+import net.minecraft.world.level.entity.Visibility;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
@@ -26,6 +27,7 @@ import appeng.server.testplots.TestPlots;
 import appeng.util.Platform;
 
 public class GameTestPlotAdapter {
+
     @GameTestGenerator
     public List<TestFunction> gameTestAdapter() {
         var result = new ArrayList<TestFunction>();
@@ -91,7 +93,20 @@ public class GameTestPlotAdapter {
         Vec3i size = new Vec3i(plotBounds.getXSpan(), plotBounds.getYSpan(), plotBounds.getZSpan());
 
         var boundingbox = StructureUtils.getStructureBoundingBox(pos, size, Rotation.NONE);
-        boundingbox.intersectingChunks().forEach(cp -> level.setChunkForced(cp.x, cp.z, true));
+        var entityManager = level.entityManager;
+        // TODO: Re-Evaluate in 1.20.5
+        if (net.minecraft.DetectedVersion.tryDetectVersion().getId().equals("1.20.4")) {
+            boundingbox.intersectingChunks().forEach(cp -> {
+                level.setChunkForced(cp.x, cp.z, true);
+                var status = entityManager.chunkVisibility.get(cp.toLong());
+                if (!status.isAccessible()) {
+                    entityManager.updateChunkStatus(cp, Visibility.TRACKED);
+                }
+            });
+        } else {
+            System.err.println("FIX CODE IN GameTestPlotAdapter");
+            throw new RuntimeException("FIX CODE IN GameTestPlotAdapter");
+        }
 
         StructureUtils.clearSpaceForStructure(boundingbox, level);
 
