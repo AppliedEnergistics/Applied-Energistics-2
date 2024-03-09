@@ -56,6 +56,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.util.thread.SidedThreadGroups;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import appeng.api.config.AccessRestriction;
@@ -289,14 +290,16 @@ public class Platform {
         return false;
     }
 
+    private static final UUID DEFAULT_FAKE_PLAYER_UUID = UUID.fromString("60C173A5-E1E6-4B87-85B1-272CE424521D");
+
     public static Player getFakePlayer(ServerLevel level, @Nullable UUID playerUuid) {
         Objects.requireNonNull(level);
 
         if (playerUuid == null) {
-            playerUuid = FakePlayer.DEFAULT_UUID;
+            playerUuid = DEFAULT_FAKE_PLAYER_UUID;
         }
 
-        return FakePlayer.get(level, new GameProfile(playerUuid, "[AE2]"));
+        return FakePlayerFactory.get(level, new GameProfile(playerUuid, "[AE2]"));
     }
 
     public static Direction rotateAround(Direction forward, Direction axis) {
