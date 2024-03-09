@@ -32,7 +32,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.Nameable;
-import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -148,14 +147,30 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
 
         Component title = menuTitleStrategy.apply(accessInterface);
 
-        MenuProvider menu = new SimpleMenuProvider((wnd, p, pl) -> {
-            M m = factory.create(wnd, p, accessInterface);
-            // Set the original locator on the opened server-side menu for it to more
-            // easily remember how to re-open after being closed.
-            m.setLocator(locator);
-            return m;
-        }, title);
-        player.openMenu(menu, buffer -> {
+        class AppEngMenuProvider implements MenuProvider {
+            @Override
+            public Component getDisplayName() {
+                return title;
+            }
+
+            @Nullable
+            @Override
+            public AbstractContainerMenu createMenu(int wnd, Inventory p, Player pl) {
+                M m = factory.create(wnd, p, accessInterface);
+                // Set the original locator on the opened server-side menu for it to more
+                // easily remember how to re-open after being closed.
+                m.setLocator(locator);
+                return m;
+            }
+
+            @Override
+            public boolean shouldTriggerClientSideContainerClosingOnOpen() {
+                // Do not send close packets when switching between AE menus
+                return !(player.containerMenu instanceof AEBaseMenu);
+            }
+        }
+
+        player.openMenu(new AppEngMenuProvider(), buffer -> {
             MenuLocators.writeToPacket(buffer, locator);
             buffer.writeBoolean(fromSubMenu);
             if (initialDataSerializer != null) {
