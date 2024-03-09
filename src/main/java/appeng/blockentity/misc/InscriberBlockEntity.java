@@ -38,7 +38,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnits;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -607,18 +606,6 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
                 return false; // No inserting into the output slot
             }
             return !isSmash();
-        }
-    }
-
-    class Crankable implements ICrankable {
-        @Override
-        public boolean canTurn() {
-            return getInternalCurrentPower() < getInternalMaxPower();
-        }
-
-        @Override
-        public void applyTurn() {
-            injectExternalPower(PowerUnits.AE, CrankBlockEntity.POWER_PER_CRANK_TURN, Actionable.MODULATE);
         }
     }
 }

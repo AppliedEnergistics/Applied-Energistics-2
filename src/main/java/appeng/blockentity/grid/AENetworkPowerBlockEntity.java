@@ -24,11 +24,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerUnits;
+import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.util.AECableType;
+import appeng.blockentity.misc.CrankBlockEntity;
 import appeng.blockentity.powersink.AEBasePoweredBlockEntity;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
@@ -108,5 +112,17 @@ public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity
      */
     protected final void onGridConnectableSidesChanged() {
         getMainNode().setExposedOnSides(getGridConnectableSides(getOrientation()));
+    }
+
+    public final class Crankable implements ICrankable {
+        @Override
+        public boolean canTurn() {
+            return getInternalCurrentPower() < getInternalMaxPower();
+        }
+
+        @Override
+        public void applyTurn() {
+            injectExternalPower(PowerUnits.AE, CrankBlockEntity.POWER_PER_CRANK_TURN, Actionable.MODULATE);
+        }
     }
 }
