@@ -141,6 +141,7 @@ public enum GuiText implements LocalizationEnum {
     NetworkTool("Network Tool"),
     Next("Next"),
     No("No"),
+    NoChannel("Missing Channel"),
     NoCraftingCPUs("No Crafting CPUs are Available"),
     NoCraftingJobs("No Crafting Job Active"),
     NoSecondOutput("No Secondary Output"),
