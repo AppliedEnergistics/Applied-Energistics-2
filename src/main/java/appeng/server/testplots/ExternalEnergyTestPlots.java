@@ -91,7 +91,9 @@ public class ExternalEnergyTestPlots {
                 })
                 // Ensure that after 1 second, the grid still has no energy
                 .thenExecuteAfter(20, () -> checkGridHasNoEnergy(helper))
-                .thenSucceed());
+                .thenSucceed())
+                // due to the chargers randomness, this can take longer than the default time
+                .maxTicks(15 * 20);
     }
 
     @TestPlot("fe_growth_accelerator")
