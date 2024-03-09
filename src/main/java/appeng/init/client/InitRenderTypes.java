@@ -64,6 +64,7 @@ public final class InitRenderTypes {
             AEBlocks.QUARTZ_CLUSTER,
             AEBlocks.MYSTERIOUS_CUBE,
             AEBlocks.NOT_SO_MYSTERIOUS_CUBE,
+            AEBlocks.CRYSTAL_RESONANCE_GENERATOR,
     };
 
     private InitRenderTypes() {
