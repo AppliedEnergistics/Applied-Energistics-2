@@ -86,6 +86,7 @@ public final class TestPlots {
 
     static {
         PLOT_CLASSES.addAll(List.of(
+                CrystalResonanceGeneratorTestPlots.class,
                 TestPlots.class,
                 AutoCraftingTestPlots.class,
                 InscriberTestPlots.class,
