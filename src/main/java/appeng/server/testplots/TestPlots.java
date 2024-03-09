@@ -92,6 +92,7 @@ public final class TestPlots {
                 ItemP2PTestPlots.class,
                 MemoryCardTestPlots.class,
                 PatternProviderLockModePlots.class,
+                PatternProviderPlots.class,
                 SpatialTestPlots.class,
                 QnbTestPlots.class,
                 GuidebookPlot.class,
