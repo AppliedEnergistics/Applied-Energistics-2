@@ -22,6 +22,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
 
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
+import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -39,7 +42,7 @@ import appeng.core.AppEng;
  * A color applicator uses the base model, and extends it with additional layers that are colored according to the
  * selected color of the applicator.
  */
-public class ColorApplicatorModel implements BasicUnbakedModel {
+public class ColorApplicatorModel implements IUnbakedGeometry<ColorApplicatorModel> {
 
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
             "item/color_applicator_colored");
@@ -52,19 +55,12 @@ public class ColorApplicatorModel implements BasicUnbakedModel {
             new ResourceLocation(AppEng.MOD_ID, "item/color_applicator_tip_bright"));
 
     @Override
-    public Collection<ResourceLocation> getDependencies() {
-        return Collections.singleton(MODEL_BASE);
-    }
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
+        var baseModel = baker.bake(MODEL_BASE, modelState);
 
-    @Nullable
-    @Override
-    public BakedModel bake(ModelBaker bakery, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelTransform, ResourceLocation modelId) {
-        BakedModel baseModel = bakery.bake(MODEL_BASE, modelTransform);
-
-        TextureAtlasSprite texDark = spriteGetter.apply(TEXTURE_DARK);
-        TextureAtlasSprite texMedium = spriteGetter.apply(TEXTURE_MEDIUM);
-        TextureAtlasSprite texBright = spriteGetter.apply(TEXTURE_BRIGHT);
+        var texDark = spriteGetter.apply(TEXTURE_DARK);
+        var texMedium = spriteGetter.apply(TEXTURE_MEDIUM);
+        var texBright = spriteGetter.apply(TEXTURE_BRIGHT);
 
         return new ColorApplicatorBakedModel(baseModel, texDark, texMedium, texBright);
     }

@@ -22,8 +22,11 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
+import appeng.client.render.DelegateBakedModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.renderer.RenderType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -37,9 +40,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
-class ColorApplicatorBakedModel implements BakedModel {
-
-    private final BakedModel baseModel;
+class ColorApplicatorBakedModel extends DelegateBakedModel {
 
     private final EnumMap<Direction, List<BakedQuad>> quadsBySide;
 
@@ -47,7 +48,7 @@ class ColorApplicatorBakedModel implements BakedModel {
 
     ColorApplicatorBakedModel(BakedModel baseModel, TextureAtlasSprite texDark,
             TextureAtlasSprite texMedium, TextureAtlasSprite texBright) {
-        this.baseModel = baseModel;
+        super(baseModel);
 
         // Put the tint indices in... Since this is an item model, we are ignoring rand
         this.generalQuads = this.fixQuadTint(null, texDark, texMedium, texBright);
@@ -59,7 +60,7 @@ class ColorApplicatorBakedModel implements BakedModel {
 
     private List<BakedQuad> fixQuadTint(Direction facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium,
             TextureAtlasSprite texBright) {
-        List<BakedQuad> quads = this.baseModel.getQuads(null, facing, RandomSource.create(0), ModelData.EMPTY, null);
+        List<BakedQuad> quads = getBaseModel().getQuads(null, facing, RandomSource.create(0), ModelData.EMPTY, null);
         List<BakedQuad> result = new ArrayList<>(quads.size());
         for (BakedQuad quad : quads) {
             int tint;
@@ -85,51 +86,15 @@ class ColorApplicatorBakedModel implements BakedModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
-        if (side == null) {
-            return this.generalQuads;
-        }
-        return this.quadsBySide.get(side);
+        return super.getQuads(state, side, rand);
+//        if (side == null) {
+//            return this.generalQuads;
+//        }
+//        return this.quadsBySide.get(side);
     }
 
     @Override
-    public boolean useAmbientOcclusion() {
-        return this.baseModel.useAmbientOcclusion();
-    }
-
-    @Override
-    public boolean isGui3d() {
-        return this.baseModel.isGui3d();
-    }
-
-    @Override
-    public boolean usesBlockLight() {
-        return false;// TODO
-    }
-
-    @Override
-    public boolean isCustomRenderer() {
-        return this.baseModel.isCustomRenderer();
-    }
-
-    @Override
-    public TextureAtlasSprite getParticleIcon() {
-        return this.baseModel.getParticleIcon();
-    }
-
-    @Override
-    public ItemTransforms getTransforms() {
-        return this.baseModel.getTransforms();
-    }
-
-    @Override
-    public ItemOverrides getOverrides() {
-        return this.baseModel.getOverrides();
-    }
-
-    @Override
-    public BakedModel applyTransform(ItemDisplayContext transformType, PoseStack poseStack,
-            boolean applyLeftHandTransform) {
-        baseModel.applyTransform(transformType, poseStack, applyLeftHandTransform);
-        return this;
+    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand, @NotNull ModelData data, @Nullable RenderType renderType) {
+        return super.getQuads(state, side, rand, data, renderType);
     }
 }

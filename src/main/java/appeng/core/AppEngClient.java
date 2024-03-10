@@ -120,7 +120,6 @@ public class AppEngClient extends AppEngBase {
 
     public AppEngClient(IEventBus modEventBus) {
         super(modEventBus);
-        InitBuiltInModels.init();
 
         this.registerClientCommands();
 
@@ -290,6 +289,7 @@ public class AppEngClient extends AppEngBase {
     public void modelRegistryEvent(RegisterGeometryLoaders event) {
         InitBlockEntityRenderers.init();
         InitItemModelsProperties.init();
+        InitBuiltInModels.init(event);
     }
 
     private void wheelEvent(final InputEvent.MouseScrollingEvent me) {

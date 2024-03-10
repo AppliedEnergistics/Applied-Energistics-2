@@ -25,6 +25,7 @@ import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
@@ -38,42 +39,29 @@ import appeng.api.util.AEColor;
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
+import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 
 /**
  * The built-in model for the cable bus block.
  */
-public class CableBusModel implements BasicUnbakedModel {
-
+public class CableBusModel implements IUnbakedGeometry<CableBusModel> {
     public static final ResourceLocation TRANSLUCENT_FACADE_MODEL = AppEng.makeId("part/translucent_facade");
 
     @Override
-    public Collection<ResourceLocation> getDependencies() {
-        PartModelsInternal.freeze();
-        var models = new ArrayList<>(PartModelsInternal.getModels());
-        models.add(TRANSLUCENT_FACADE_MODEL);
-        return models;
-    }
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
+        var partModels = this.loadPartModels(baker, spriteGetter, modelState);
 
-    @Override
-    public void resolveParents(Function<ResourceLocation, UnbakedModel> function) {
-    }
+        var cableBuilder = new CableBuilder(spriteGetter);
 
-    @Override
-    public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelState, ResourceLocation resourceLocation) {
-        Map<ResourceLocation, BakedModel> partModels = this.loadPartModels(baker, spriteGetter, modelState);
+        var translucentFacadeModel = baker.bake(TRANSLUCENT_FACADE_MODEL, modelState, spriteGetter);
 
-        CableBuilder cableBuilder = new CableBuilder(spriteGetter);
-
-        BakedModel translucentFacadeModel = baker.bake(TRANSLUCENT_FACADE_MODEL, modelState,
-                spriteGetter);
-
-        FacadeBuilder facadeBuilder = new FacadeBuilder(baker, translucentFacadeModel);
+        var facadeBuilder = new FacadeBuilder(baker, translucentFacadeModel);
 
         // This should normally not be used, but we *have* to provide a particle texture
         // or otherwise damage models will
         // crash
-        TextureAtlasSprite particleTexture = cableBuilder.getCoreTexture(CableCoreType.GLASS, AEColor.TRANSPARENT);
+        var particleTexture = cableBuilder.getCoreTexture(CableCoreType.GLASS, AEColor.TRANSPARENT);
 
         return new CableBusBakedModel(cableBuilder, facadeBuilder, partModels, particleTexture);
     }

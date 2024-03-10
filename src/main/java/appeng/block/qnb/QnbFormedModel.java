@@ -18,41 +18,25 @@
 
 package appeng.block.qnb;
 
-import java.util.Collection;
-import java.util.function.Function;
-
-import com.google.common.collect.ImmutableSet;
-
+import appeng.core.AppEng;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
+import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 
-import appeng.client.render.BasicUnbakedModel;
-import appeng.core.AppEng;
+import java.util.function.Function;
 
-public class QnbFormedModel implements BasicUnbakedModel {
-
+public class QnbFormedModel implements IUnbakedGeometry<QnbFormedModel> {
     private static final ResourceLocation MODEL_RING = new ResourceLocation(AppEng.MOD_ID, "block/qnb/ring");
 
-    @org.jetbrains.annotations.Nullable
     @Override
-    public BakedModel bake(ModelBaker modelBaker, Function<Material, TextureAtlasSprite> textureGetter,
-            ModelState modelState, ResourceLocation resourceLocation) {
-        BakedModel ringModel = modelBaker.bake(MODEL_RING, modelState);
-        return new QnbFormedBakedModel(ringModel, textureGetter);
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
+        BakedModel ringModel = baker.bake(MODEL_RING, modelState);
+        return new QnbFormedBakedModel(ringModel, spriteGetter);
     }
-
-    @Override
-    public Collection<ResourceLocation> getDependencies() {
-        return ImmutableSet.of(MODEL_RING);
-    }
-
-    @Override
-    public void resolveParents(Function<ResourceLocation, UnbakedModel> function) {
-    }
-
 }

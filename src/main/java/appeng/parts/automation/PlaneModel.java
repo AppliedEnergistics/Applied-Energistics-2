@@ -18,8 +18,7 @@
 
 package appeng.parts.automation;
 
-import java.util.function.Function;
-
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -27,14 +26,15 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
+import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 
-import appeng.client.render.BasicUnbakedModel;
+import java.util.function.Function;
 
 /**
  * Built-in model for annihilation planes that supports connected textures.
  */
-public class PlaneModel implements BasicUnbakedModel {
-
+public class PlaneModel implements IUnbakedGeometry<PlaneModel> {
     private final Material frontTexture;
     private final Material sidesTexture;
     private final Material backTexture;
@@ -46,14 +46,11 @@ public class PlaneModel implements BasicUnbakedModel {
     }
 
     @Override
-    public BakedModel bake(ModelBaker bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-            ResourceLocation modelLocation) {
-        TextureAtlasSprite frontSprite = spriteGetter.apply(this.frontTexture);
-        TextureAtlasSprite sidesSprite = spriteGetter.apply(this.sidesTexture);
-        TextureAtlasSprite backSprite = spriteGetter.apply(this.backTexture);
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
+        var frontSprite = spriteGetter.apply(this.frontTexture);
+        var sidesSprite = spriteGetter.apply(this.sidesTexture);
+        var backSprite = spriteGetter.apply(this.backTexture);
 
         return new PlaneBakedModel(frontSprite, sidesSprite, backSprite);
     }
-
 }

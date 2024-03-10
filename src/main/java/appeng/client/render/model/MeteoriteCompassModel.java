@@ -23,6 +23,9 @@ import java.util.function.Function;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
+import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -37,26 +40,17 @@ import appeng.client.render.BasicUnbakedModel;
 /**
  * The parent model for the compass baked model. Declares the dependencies for the base and pointer submodels mostly.
  */
-public class MeteoriteCompassModel implements BasicUnbakedModel {
-
+public class MeteoriteCompassModel implements IUnbakedGeometry<MeteoriteCompassModel> {
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(
             "ae2:item/meteorite_compass_base");
 
     private static final ResourceLocation MODEL_POINTER = new ResourceLocation(
             "ae2:item/meteorite_compass_pointer");
 
-    @Nullable
     @Override
-    public BakedModel bake(ModelBaker loader, Function<Material, TextureAtlasSprite> textureGetter,
-            ModelState rotationContainer, ResourceLocation modelId) {
-        BakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
-        BakedModel pointerModel = loader.bake(MODEL_POINTER, rotationContainer);
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
+        var baseModel = baker.bake(MODEL_BASE, modelState);
+        var pointerModel = baker.bake(MODEL_POINTER, modelState);
         return new MeteoriteCompassBakedModel(baseModel, pointerModel);
     }
-
-    @Override
-    public Collection<ResourceLocation> getDependencies() {
-        return ImmutableSet.of(MODEL_BASE, MODEL_POINTER);
-    }
-
 }

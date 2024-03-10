@@ -18,29 +18,24 @@
 
 package appeng.client.render.model;
 
-import java.util.function.Function;
-
-import org.jetbrains.annotations.Nullable;
-
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
+import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 
-import appeng.client.render.BasicUnbakedModel;
+import java.util.function.Function;
 
 /**
  * Model class for the connected texture glass model.
  */
-public class GlassModel implements BasicUnbakedModel {
-
-    @Nullable
+public class GlassModel implements IUnbakedGeometry<GlassModel> {
     @Override
-    public BakedModel bake(ModelBaker loader, Function<Material, TextureAtlasSprite> textureGetter,
-            ModelState rotationContainer, ResourceLocation modelId) {
-        return new GlassBakedModel(textureGetter);
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
+        return new GlassBakedModel(spriteGetter);
     }
-
 }

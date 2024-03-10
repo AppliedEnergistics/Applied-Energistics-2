@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -33,13 +34,13 @@ import net.minecraft.resources.ResourceLocation;
 
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
+import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 
-public class SpatialPylonModel implements BasicUnbakedModel {
+public class SpatialPylonModel implements IUnbakedGeometry<SpatialPylonModel> {
 
     @Override
-    public BakedModel bake(ModelBaker bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-            ResourceLocation modelLocation) {
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
         Map<SpatialPylonTextureType, TextureAtlasSprite> textures = new EnumMap<>(SpatialPylonTextureType.class);
 
         for (SpatialPylonTextureType type : SpatialPylonTextureType.values()) {

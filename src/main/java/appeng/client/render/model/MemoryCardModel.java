@@ -22,6 +22,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
 
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
+import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -38,24 +41,15 @@ import appeng.core.AppEng;
 /**
  * Model wrapper for the memory card item model, which combines a base card layer with a "visual hash" of the part/tile.
  */
-public class MemoryCardModel implements BasicUnbakedModel {
-
+public class MemoryCardModel implements IUnbakedGeometry<MemoryCardModel> {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/memory_card_base");
     private static final Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "item/memory_card_hash"));
 
     @Override
-    public Collection<ResourceLocation> getDependencies() {
-        return Collections.singleton(MODEL_BASE);
-    }
-
-    @Nullable
-    @Override
-    public BakedModel bake(ModelBaker loader, Function<Material, TextureAtlasSprite> textureGetter,
-            ModelState rotationContainer, ResourceLocation modelId) {
-        TextureAtlasSprite texture = textureGetter.apply(TEXTURE);
-
-        BakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
+        var texture = spriteGetter.apply(TEXTURE);
+        var baseModel = baker.bake(MODEL_BASE, modelState);
 
         return new MemoryCardBakedModel(baseModel, texture);
     }

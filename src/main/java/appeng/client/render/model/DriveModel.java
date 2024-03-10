@@ -25,6 +25,9 @@ import java.util.function.Function;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
+import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -40,37 +43,26 @@ import appeng.api.client.StorageCellModels;
 import appeng.client.render.BasicUnbakedModel;
 import appeng.init.internal.InitStorageCells;
 
-public class DriveModel implements BasicUnbakedModel {
-
+public class DriveModel implements IUnbakedGeometry<DriveModel> {
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(
             "ae2:block/drive/drive_base");
     private static final ResourceLocation MODEL_CELL_EMPTY = new ResourceLocation(
             "ae2:block/drive/drive_cell_empty");
 
-    @Nullable
     @Override
-    public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelTransform, ResourceLocation modelLocation) {
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
         final Map<Item, BakedModel> cellModels = new IdentityHashMap<>();
 
         // Load the base model and the model for each cell model.
         for (var entry : StorageCellModels.models().entrySet()) {
-            var cellModel = baker.bake(entry.getValue(), modelTransform);
+            var cellModel = baker.bake(entry.getValue(), modelState);
             cellModels.put(entry.getKey(), cellModel);
         }
 
-        final BakedModel baseModel = baker.bake(MODEL_BASE, modelTransform);
-        final BakedModel defaultCell = baker.bake(StorageCellModels.getDefaultModel(), modelTransform);
-        cellModels.put(Items.AIR, baker.bake(MODEL_CELL_EMPTY, modelTransform));
+        final BakedModel baseModel = baker.bake(MODEL_BASE, modelState);
+        final BakedModel defaultCell = baker.bake(StorageCellModels.getDefaultModel(), modelState);
+        cellModels.put(Items.AIR, baker.bake(MODEL_CELL_EMPTY, modelState));
 
-        return new DriveBakedModel(modelTransform.getRotation(), baseModel, cellModels, defaultCell);
+        return new DriveBakedModel(modelState.getRotation(), baseModel, cellModels, defaultCell);
     }
-
-    @Override
-    public Collection<ResourceLocation> getDependencies() {
-        return ImmutableSet.<ResourceLocation>builder().add(StorageCellModels.getDefaultModel())
-                .addAll(InitStorageCells.getModels())
-                .addAll(StorageCellModels.models().values()).build();
-    }
-
 }
