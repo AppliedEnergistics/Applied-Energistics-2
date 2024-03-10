@@ -38,7 +38,7 @@ public class ForgeEnergyAdapter implements IEnergyStorage {
     @Override
     public final int receiveEnergy(int maxReceive, boolean simulate) {
         final double offered = maxReceive;
-        final double overflow = this.sink.injectExternalPower(PowerUnits.RF, offered,
+        final double overflow = this.sink.injectExternalPower(PowerUnits.FE, offered,
                 simulate ? Actionable.SIMULATE : Actionable.MODULATE);
 
         return (int) (maxReceive - overflow);
@@ -46,12 +46,12 @@ public class ForgeEnergyAdapter implements IEnergyStorage {
 
     @Override
     public final int getEnergyStored() {
-        return (int) Math.floor(PowerUnits.AE.convertTo(PowerUnits.RF, this.sink.getAECurrentPower()));
+        return (int) Math.floor(PowerUnits.AE.convertTo(PowerUnits.FE, this.sink.getAECurrentPower()));
     }
 
     @Override
     public final int getMaxEnergyStored() {
-        return (int) Math.floor(PowerUnits.AE.convertTo(PowerUnits.RF, this.sink.getAEMaxPower()));
+        return (int) Math.floor(PowerUnits.AE.convertTo(PowerUnits.FE, this.sink.getAEMaxPower()));
     }
 
     @Override
