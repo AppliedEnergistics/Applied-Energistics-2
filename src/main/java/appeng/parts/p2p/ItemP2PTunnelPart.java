@@ -103,7 +103,7 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
             }
 
             if (!simulate) {
-                ItemP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, amount - remainder);
+                ItemP2PTunnelPart.this.queueTunnelDrain(PowerUnits.FE, amount - remainder);
             }
 
             if (remainder == stack.getCount()) {
@@ -160,7 +160,7 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
                 ItemStack result = input.get().extractItem(slot, amount, simulate);
 
                 if (!simulate) {
-                    queueTunnelDrain(PowerUnits.RF, result.getCount());
+                    queueTunnelDrain(PowerUnits.FE, result.getCount());
                 }
 
                 return result;

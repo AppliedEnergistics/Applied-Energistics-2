@@ -27,7 +27,7 @@ import net.minecraft.network.chat.Component;
 
 public enum PowerUnits {
     AE("gui.ae2.units.appliedenergistics", "AE"), // Native Units - AE Energy
-    RF("gui.ae2.units.rf", "RF"); // RF - Redstone Flux
+    FE("gui.ae2.units.fe", "FE"); // Forge Energy
 
     /**
      * unlocalized name for the power unit.

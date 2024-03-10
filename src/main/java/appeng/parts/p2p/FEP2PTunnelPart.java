@@ -81,7 +81,7 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IE
             }
 
             if (!simulate) {
-                FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, total);
+                FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.FE, total);
             }
 
             return total;
@@ -131,7 +131,7 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IE
                 final int total = input.get().extractEnergy(maxExtract, simulate);
 
                 if (!simulate) {
-                    FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, total);
+                    FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.FE, total);
                 }
 
                 return total;
