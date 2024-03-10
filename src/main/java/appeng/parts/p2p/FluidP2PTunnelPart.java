@@ -104,7 +104,7 @@ public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPa
             }
 
             if (action == FluidAction.EXECUTE) {
-                FluidP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF,
+                FluidP2PTunnelPart.this.queueTunnelDrain(PowerUnits.FE,
                         (double) total / AEKeyType.fluids().getAmountPerOperation());
             }
 
@@ -163,7 +163,7 @@ public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPa
                 FluidStack result = input.get().drain(resource, action);
 
                 if (action.execute()) {
-                    queueTunnelDrain(PowerUnits.RF,
+                    queueTunnelDrain(PowerUnits.FE,
                             (double) result.getAmount() / AEKeyType.fluids().getAmountPerOperation());
                 }
 
@@ -177,7 +177,7 @@ public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPa
                 FluidStack result = input.get().drain(maxDrain, action);
 
                 if (action.execute()) {
-                    queueTunnelDrain(PowerUnits.RF,
+                    queueTunnelDrain(PowerUnits.FE,
                             (double) result.getAmount() / AEKeyType.fluids().getAmountPerOperation());
                 }
 

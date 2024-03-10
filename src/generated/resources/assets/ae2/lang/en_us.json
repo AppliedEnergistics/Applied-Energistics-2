@@ -525,7 +525,7 @@
   "gui.ae2.inWorldCraftingPresses": "Crafting Presses are obtained by breaking a Mysterious Cube. Mysterious Cubes are in the center of meteorites which can be found in around the world. They can be located by using a meteorite compass.",
   "gui.ae2.inWorldSingularity": "To create drop 1 Singularity and 1 Ender Dust and cause an explosion within range of the items.",
   "gui.ae2.units.appliedenergistics": "AE",
-  "gui.ae2.units.rf": "RF",
+  "gui.ae2.units.fe": "FE",
   "gui.tooltips.ae2.ActiveOnPulse": "Activate once per pulse",
   "gui.tooltips.ae2.ActiveWithSignal": "Active with signal",
   "gui.tooltips.ae2.ActiveWithoutSignal": "Active without signal",
