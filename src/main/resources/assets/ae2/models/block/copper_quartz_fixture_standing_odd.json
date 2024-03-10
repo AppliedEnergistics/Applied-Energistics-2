@@ -1,0 +1,6 @@
+{
+  "parent": "ae2:block/quartz_fixture_standing_odd",
+  "textures": {
+    "metal": "ae2:block/quartz_fixture_copper"
+  }
+}
