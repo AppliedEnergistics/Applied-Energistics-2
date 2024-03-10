@@ -61,7 +61,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
 
     @SubscribeEvent
     public void onUnload(final LevelEvent.Unload e) {
-        if (this.center.getLevel() == e.getLevel()) {
+        if (this.center != null && this.center.getLevel() == e.getLevel()) {
             this.setUpdateStatus(false);
             this.destroy();
         }
