@@ -83,7 +83,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return getAECurrentPower(oldStack) == getAECurrentPower(newStack);
+        return slotChanged || !ItemStack.isSameItem(oldStack, newStack);
     }
 
     @Override

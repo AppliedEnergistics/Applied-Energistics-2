@@ -81,11 +81,6 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
                 (p, sm) -> openFromInventory(p, locator, true));
     }
 
-    @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return slotChanged;
-    }
-
     // Override to change the default color
     @Override
     public int getColor(ItemStack stack) {
