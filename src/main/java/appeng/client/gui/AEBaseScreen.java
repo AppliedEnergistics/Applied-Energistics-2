@@ -393,7 +393,13 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             if (i == 0) {
                 formattedLines.add(lines.get(i).copy().withStyle(s -> s.withColor(ChatFormatting.WHITE)));
             } else {
-                formattedLines.add(lines.get(i));
+                formattedLines.add(lines.get(i).copy().withStyle(s -> {
+                    if (s.getColor() != null) {
+                        return s;
+                    } else {
+                        return s.withColor(ChatFormatting.GRAY);
+                    }
+                }));
             }
         }
         drawTooltip(guiGraphics, x, y, formattedLines);
