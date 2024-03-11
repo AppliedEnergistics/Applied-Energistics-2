@@ -34,6 +34,7 @@ import com.google.common.collect.HashMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.locale.Language;
@@ -52,6 +53,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import appeng.api.config.Settings;
 import appeng.api.config.ShowPatternProviders;
 import appeng.api.config.TerminalStyle;
+import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.stacks.AEItemKey;
 import appeng.client.gui.AEBaseScreen;
@@ -183,6 +185,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
         this.menu.slots.removeIf(slot -> slot instanceof PatternSlot);
 
         int textColor = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
+        var level = Minecraft.getInstance().level;
 
         final int scrollLevel = scrollbar.getCurrentScroll();
         int i = 0;
@@ -199,6 +202,17 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                                 col * SLOT_SIZE + GUI_PADDING_X,
                                 (i + 1) * SLOT_SIZE);
                         this.menu.slots.add(slot);
+
+                        // Indicate invalid patterns
+                        var pattern = container.getInventory().getStackInSlot(slotsRow.offset + col);
+                        if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level, false) == null) {
+                            guiGraphics.fill(
+                                    slot.x,
+                                    slot.y,
+                                    slot.x + 16,
+                                    slot.y + 16,
+                                    0x7fff0000);
+                        }
                     }
                 } else if (row instanceof GroupHeaderRow headerRow) {
                     var group = headerRow.group;
