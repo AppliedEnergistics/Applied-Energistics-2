@@ -20,10 +20,13 @@ package appeng.block;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -34,6 +37,7 @@ import net.minecraft.world.level.material.PushReaction;
 import appeng.api.orientation.IOrientableBlock;
 import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.OrientationStrategies;
+import appeng.hooks.WrenchHook;
 
 public abstract class AEBaseBlock extends Block implements IOrientableBlock {
 
@@ -104,5 +108,13 @@ public abstract class AEBaseBlock extends Block implements IOrientableBlock {
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         var state = this.defaultBlockState();
         return getOrientationStrategy().getStateForPlacement(state, context);
+    }
+
+    @Override
+    protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) {
+        // Suppress break particles & sound when being disassembled by a wrench
+        if (!WrenchHook.isDisassembling()) {
+            super.spawnDestroyParticles(level, player, pos, state);
+        }
     }
 }
