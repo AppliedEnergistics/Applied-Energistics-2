@@ -20,7 +20,6 @@ package appeng.datagen.providers.recipes;
 
 import static appeng.datagen.providers.recipes.RecipeCriteria.criterionName;
 
-import appeng.core.definitions.AEParts;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -33,6 +32,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
 import appeng.core.definitions.BlockDefinition;
 import appeng.core.definitions.ItemDefinition;
 import appeng.datagen.providers.tags.ConventionTags;
