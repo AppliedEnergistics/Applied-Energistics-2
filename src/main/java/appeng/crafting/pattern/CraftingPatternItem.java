@@ -8,7 +8,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -55,7 +54,6 @@ public class CraftingPatternItem extends EncodedPatternItem {
         try {
             return new AECraftingPattern(what, level);
         } catch (Exception e) {
-            AELog.warn("Could not decode an invalid crafting pattern %s: %s", what.getTag(), e);
             return null;
         }
     }
