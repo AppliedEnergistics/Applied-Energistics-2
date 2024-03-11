@@ -24,6 +24,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -36,6 +37,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.ids.AETags;
@@ -103,6 +105,13 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
         if (!host.getFacadeContainer().addFacade(facade)) {
             return false;
         }
+
+        // Play a placement sound of the underlying block
+        BlockState blockState = facade.getBlockState();
+        SoundType soundType = blockState.getSoundType();
+        level.playSound(null, blockPos, soundType.getPlaceSound(), SoundSource.BLOCKS,
+                (soundType.getVolume() + 1.0F) / 2.0F,
+                soundType.getPitch() * 0.8F);
 
         host.markForSave();
         host.markForUpdate();
