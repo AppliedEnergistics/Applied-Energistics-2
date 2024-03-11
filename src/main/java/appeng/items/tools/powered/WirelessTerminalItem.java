@@ -210,12 +210,6 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
         return MEStorageMenu.WIRELESS_TYPE;
     }
 
-    @Override
-    public boolean allowNbtUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack,
-            ItemStack newStack) {
-        return false;
-    }
-
     @Nullable
     @Override
     public ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {

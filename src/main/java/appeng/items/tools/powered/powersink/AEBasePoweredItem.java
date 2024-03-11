@@ -87,7 +87,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     @Override
     public boolean allowNbtUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack,
             ItemStack newStack) {
-        return getAECurrentPower(oldStack) == getAECurrentPower(newStack);
+        return !ItemStack.isSameItem(oldStack, newStack);
     }
 
     @Override
