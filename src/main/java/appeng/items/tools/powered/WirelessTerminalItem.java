@@ -207,11 +207,6 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
         return MEStorageMenu.WIRELESS_TYPE;
     }
 
-    @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return slotChanged;
-    }
-
     @Nullable
     @Override
     public WirelessTerminalMenuHost<?> getMenuHost(Player player, ItemMenuHostLocator locator,
