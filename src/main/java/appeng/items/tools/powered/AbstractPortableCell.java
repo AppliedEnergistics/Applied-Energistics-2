@@ -90,11 +90,6 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
                 (p, sm) -> openFromInventory(p, inventorySlot, true));
     }
 
-    @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return slotChanged;
-    }
-
     // Override to change the default color
     @Override
     public int getColor(ItemStack stack) {

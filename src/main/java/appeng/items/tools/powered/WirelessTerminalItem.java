@@ -210,11 +210,6 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
         return MEStorageMenu.WIRELESS_TYPE;
     }
 
-    @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return slotChanged;
-    }
-
     @Nullable
     @Override
     public ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
