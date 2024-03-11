@@ -59,9 +59,9 @@ public final class WrenchHook {
         var itemStack = player.getItemInHand(hand);
 
         if (InteractionUtil.isInAlternateUseMode(player) && InteractionUtil.canWrenchDisassemble(itemStack)) {
-            IS_DISASSEMBLING.set(true);
             var be = level.getBlockEntity(hitResult.getBlockPos());
             if (be instanceof AEBaseBlockEntity baseBlockEntity) {
+                IS_DISASSEMBLING.set(true);
                 try {
                     if (!Platform.hasPermissions(new DimensionalBlockPos(level, hitResult.getBlockPos()), player)) {
                         return InteractionResult.FAIL;
