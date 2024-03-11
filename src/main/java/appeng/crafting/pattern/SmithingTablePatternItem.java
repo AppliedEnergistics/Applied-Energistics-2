@@ -49,7 +49,6 @@ public class SmithingTablePatternItem extends EncodedPatternItem {
         try {
             return new AESmithingTablePattern(what, level);
         } catch (Exception e) {
-            AELog.warn("Could not decode an invalid crafting pattern %s: %s", what.getTag(), e);
             return null;
         }
     }
