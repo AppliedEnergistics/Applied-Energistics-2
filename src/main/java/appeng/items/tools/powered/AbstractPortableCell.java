@@ -90,12 +90,6 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
                 (p, sm) -> openFromInventory(p, inventorySlot, true));
     }
 
-    @Override
-    public boolean allowNbtUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack,
-            ItemStack newStack) {
-        return false;
-    }
-
     // Override to change the default color
     @Override
     public int getColor(ItemStack stack) {
