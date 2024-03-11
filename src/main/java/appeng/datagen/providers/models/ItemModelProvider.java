@@ -178,12 +178,12 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
 
         // The color applicator uses a separate model when colored
         var coloredColorApplicator = withExistingParent(AEItems.COLOR_APPLICATOR.id().getPath() + "_colored",
-                "item/generated")
+                "item/handheld")
                         .texture("layer0", makeId("item/color_applicator"))
                         .texture("layer1", makeId("item/color_applicator_tip_dark"))
                         .texture("layer2", makeId("item/color_applicator_tip_medium"))
                         .texture("layer3", makeId("item/color_applicator_tip_bright"));
-        withExistingParent(AEItems.COLOR_APPLICATOR.id().getPath(), "item/generated")
+        withExistingParent(AEItems.COLOR_APPLICATOR.id().getPath(), "item/handheld")
                 .texture("layer0", makeId("item/color_applicator"))
                 // Use different model when colored
                 .override()
