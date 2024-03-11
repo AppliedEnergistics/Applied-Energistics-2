@@ -25,7 +25,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 
 class InvalidPatternHelper {
@@ -123,7 +122,7 @@ class InvalidPatternHelper {
         }
 
         public Component getFormattedToolTip() {
-            MutableComponent result = Component.literal(this.getCount() + " ")
+            var result = Component.literal(this.getCount() + " ")
                     .append(this.getName());
 
             if (!this.isValid()) {
