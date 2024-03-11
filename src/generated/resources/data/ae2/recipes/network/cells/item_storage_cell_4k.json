@@ -13,12 +13,15 @@
     },
     "d": {
       "tag": "forge:ingots/iron"
+    },
+    "e": {
+      "tag": "forge:ingots/copper"
     }
   },
   "pattern": [
     "aba",
     "bcb",
-    "ddd"
+    "ded"
   ],
   "result": {
     "item": "ae2:item_storage_cell_4k"
