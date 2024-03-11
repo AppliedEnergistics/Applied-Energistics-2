@@ -10,12 +10,15 @@
     },
     "c": {
       "tag": "forge:ingots/iron"
+    },
+    "d": {
+      "tag": "forge:ingots/copper"
     }
   },
   "pattern": [
     "aba",
     "b b",
-    "ccc"
+    "cdc"
   ],
   "result": {
     "item": "ae2:item_cell_housing"

@@ -1,8 +1,5 @@
 package appeng.datagen.providers.recipes;
 
-import java.util.concurrent.CompletableFuture;
-
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
@@ -12,7 +9,7 @@ import appeng.core.definitions.AEItems;
 import appeng.recipes.handlers.ChargerRecipeBuilder;
 
 public class ChargerRecipes extends AE2RecipeProvider {
-    public ChargerRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+    public ChargerRecipes(PackOutput output) {
         super(output);
     }
 

@@ -20,9 +20,6 @@ package appeng.datagen.providers.recipes;
 
 import static appeng.datagen.providers.recipes.RecipeCriteria.criterionName;
 
-import java.util.concurrent.CompletableFuture;
-
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -63,7 +60,7 @@ public class DecorationRecipes extends AE2RecipeProvider {
             { AEBlocks.QUARTZ_PILLAR, AEBlocks.QUARTZ_PILLAR_SLAB, AEBlocks.QUARTZ_PILLAR_STAIRS,
                     AEBlocks.QUARTZ_PILLAR_WALL }, };
 
-    public DecorationRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+    public DecorationRecipes(PackOutput output) {
         super(output);
     }
 
