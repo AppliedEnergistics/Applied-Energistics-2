@@ -116,23 +116,23 @@ public abstract class EncodedPatternItem extends AEBaseItem {
             // TODO: needs update for new pattern logic
             stack.setHoverName(GuiText.InvalidPattern.text().copy().withStyle(ChatFormatting.RED));
 
-            InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
+            var invalid = new InvalidPatternHelper(stack);
 
             var label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Produces.text())
                     .copy().append(": ");
-            var and = Component.literal(" ").copy().append(GuiText.And.text())
-                    .copy()
+            var and = Component.literal(" ").append(GuiText.And.text().withStyle(ChatFormatting.GRAY))
                     .append(" ");
-            var with = GuiText.With.text().copy().append(": ");
+            var with = Component.empty().append(GuiText.With.text().append(": ").withStyle(ChatFormatting.GRAY));
 
             boolean first = true;
             for (var output : invalid.getOutputs()) {
-                lines.add((first ? label : and).copy().append(output.getFormattedToolTip()));
+                lines.add(Component.empty().append(first ? label : and)
+                        .append(output.getFormattedToolTip()));
                 first = false;
             }
 
             first = true;
-            for (InvalidPatternHelper.PatternIngredient input : invalid.getInputs()) {
+            for (var input : invalid.getInputs()) {
                 lines.add((first ? with : and).copy().append(input.getFormattedToolTip()));
                 first = false;
             }
@@ -158,10 +158,10 @@ public abstract class EncodedPatternItem extends AEBaseItem {
         var out = details.getOutputs();
 
         var label = (isCrafting ? GuiText.Crafts.text() : GuiText.Produces.text()).copy()
-                .append(": ");
+                .append(": ").withStyle(ChatFormatting.GRAY);
         var and = Component.literal(" ").copy().append(GuiText.And.text())
-                .append(" ");
-        var with = GuiText.With.text().copy().append(": ");
+                .append(" ").withStyle(ChatFormatting.GRAY);
+        var with = GuiText.With.text().copy().append(": ").withStyle(ChatFormatting.GRAY);
 
         boolean first = true;
         for (var anOut : out) {
@@ -169,7 +169,7 @@ public abstract class EncodedPatternItem extends AEBaseItem {
                 continue;
             }
 
-            lines.add((first ? label : and).copy().append(getStackComponent(anOut)));
+            lines.add(Component.empty().append(first ? label : and).append(getStackComponent(anOut)));
             first = false;
         }
 
@@ -182,7 +182,7 @@ public abstract class EncodedPatternItem extends AEBaseItem {
             var primaryInputTemplate = anIn.getPossibleInputs()[0];
             var primaryInput = new GenericStack(primaryInputTemplate.what(),
                     primaryInputTemplate.amount() * anIn.getMultiplier());
-            lines.add((first ? with : and).copy().append(getStackComponent(primaryInput)));
+            lines.add(Component.empty().append(first ? with : and).append(getStackComponent(primaryInput)));
             first = false;
         }
 
