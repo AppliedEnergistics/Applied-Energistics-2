@@ -707,7 +707,7 @@ public class MEStorageMenu extends AEBaseMenu
     public boolean hasIngredient(Predicate<ItemStack> predicate, Object2IntOpenHashMap<Object> reservedAmounts) {
         var clientRepo = getClientRepo();
 
-        if (clientRepo != null) {
+        if (clientRepo != null && getLinkStatus().connected()) {
             for (var stack : clientRepo.getAllEntries()) {
                 if (stack.getWhat() instanceof AEItemKey itemKey && predicate.test(itemKey.toStack())) {
                     var reservedAmount = reservedAmounts.getOrDefault(stack.getWhat(), 0);

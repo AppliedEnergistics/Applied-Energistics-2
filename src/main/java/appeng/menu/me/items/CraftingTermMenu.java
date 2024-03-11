@@ -43,12 +43,14 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.energy.IEnergySource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ITerminalHost;
 import appeng.core.network.NetworkHandler;
 import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.helpers.InventoryAction;
+import appeng.me.storage.LinkStatusRespectingInventory;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEStorageMenu;
@@ -96,13 +98,19 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
                     SlotSemantics.CRAFTING_GRID);
         }
 
+        var linkStatusInventory = new LinkStatusRespectingInventory(host.getInventory(), this::getLinkStatus);
         this.addSlot(this.outputSlot = new CraftingTermSlot(this.getPlayerInventory().player, this.getActionSource(),
-                this.energySource, host.getInventory(), craftingGridInv, craftingGridInv, this),
+                this.energySource, linkStatusInventory, craftingGridInv, craftingGridInv, this),
                 SlotSemantics.CRAFTING_RESULT);
 
         updateCurrentRecipeAndOutput(true);
 
         registerClientAction(ACTION_CLEAR_TO_PLAYER, this::clearToPlayerInventory);
+    }
+
+    @Override
+    public IEnergySource getEnergySource() {
+        return this.energySource;
     }
 
     /**
