@@ -25,7 +25,13 @@ import appeng.util.Platform;
  */
 public final class WrenchHook {
 
+    private static final ThreadLocal<Boolean> IS_DISASSEMBLING = new ThreadLocal<>();
+
     private WrenchHook() {
+    }
+
+    public static boolean isDisassembling() {
+        return Boolean.TRUE.equals(IS_DISASSEMBLING.get());
     }
 
     public static void onPlayerUseBlockEvent(PlayerInteractEvent.RightClickBlock event) {
@@ -53,22 +59,27 @@ public final class WrenchHook {
         var itemStack = player.getItemInHand(hand);
 
         if (InteractionUtil.isInAlternateUseMode(player) && InteractionUtil.canWrenchDisassemble(itemStack)) {
-
+            IS_DISASSEMBLING.set(true);
             var be = level.getBlockEntity(hitResult.getBlockPos());
             if (be instanceof AEBaseBlockEntity baseBlockEntity) {
-                if (!Platform.hasPermissions(new DimensionalBlockPos(level, hitResult.getBlockPos()), player)) {
-                    return InteractionResult.FAIL;
+                try {
+                    if (!Platform.hasPermissions(new DimensionalBlockPos(level, hitResult.getBlockPos()), player)) {
+                        return InteractionResult.FAIL;
+                    }
+
+                    var result = baseBlockEntity.disassembleWithWrench(
+                            player,
+                            level,
+                            hitResult,
+                            itemStack);
+                    if (result.consumesAction()) {
+                        SoundEvent soundType = SoundEvents.ITEM_FRAME_REMOVE_ITEM;
+                        level.playSound(player, hitResult.getBlockPos(), soundType, SoundSource.BLOCKS, 0.7F, 1.0F);
+                    }
+                    return result;
+                } finally {
+                    IS_DISASSEMBLING.remove();
                 }
-
-                // Play a popping sound
-                SoundEvent soundType = SoundEvents.ITEM_FRAME_REMOVE_ITEM;
-                level.playSound(null, hitResult.getBlockPos(), soundType, SoundSource.BLOCKS, 0.7F, 1.0F);
-
-                return baseBlockEntity.disassembleWithWrench(
-                        player,
-                        level,
-                        hitResult,
-                        itemStack);
             }
         } else if (!InteractionUtil.isInAlternateUseMode(player) && InteractionUtil.canWrenchRotate(itemStack)) {
             var pos = hitResult.getBlockPos();
