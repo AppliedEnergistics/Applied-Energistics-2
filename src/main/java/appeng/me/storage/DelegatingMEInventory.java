@@ -33,31 +33,31 @@ public class DelegatingMEInventory implements MEStorage {
 
     @Override
     public boolean isPreferredStorageFor(AEKey input, IActionSource source) {
-        return delegate.isPreferredStorageFor(input, source);
+        return getDelegate().isPreferredStorageFor(input, source);
     }
 
     @Override
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
-        return delegate.insert(what, amount, mode, source);
+        return getDelegate().insert(what, amount, mode, source);
     }
 
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
-        return delegate.extract(what, amount, mode, source);
+        return getDelegate().extract(what, amount, mode, source);
     }
 
     @Override
     public void getAvailableStacks(KeyCounter out) {
-        delegate.getAvailableStacks(out);
+        getDelegate().getAvailableStacks(out);
     }
 
     @Override
     public KeyCounter getAvailableStacks() {
-        return delegate.getAvailableStacks();
+        return getDelegate().getAvailableStacks();
     }
 
     @Override
     public Component getDescription() {
-        return delegate.getDescription();
+        return getDelegate().getDescription();
     }
 }
