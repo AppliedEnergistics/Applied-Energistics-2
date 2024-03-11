@@ -41,6 +41,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.player.Player;
@@ -136,6 +137,17 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+        var stack = player.getItemInHand(usedHand);
+
+        cycleColors(stack, getColor(stack), 1);
+        if (level.isClientSide) {
+            player.displayClientMessage(stack.getHoverName(), true);
+        }
+        return InteractionResultHolder.fail(stack);
+    }
+
+    @Override
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
@@ -205,6 +217,10 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         if (p != null && InteractionUtil.isInAlternateUseMode(p)) {
             this.cycleColors(is, paintBall, 1);
+            if (level.isClientSide) {
+                p.displayClientMessage(is.getHoverName(), true);
+            }
+            return InteractionResult.CONSUME;
         }
 
         return InteractionResult.FAIL;
