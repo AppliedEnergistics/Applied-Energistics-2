@@ -10,7 +10,6 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import appeng.core.AELog;
 
 /**
  * An item that contains an encoded {@link AEProcessingPattern}.
@@ -35,7 +34,6 @@ public class ProcessingPatternItem extends EncodedPatternItem {
         try {
             return new AEProcessingPattern(what);
         } catch (Exception e) {
-            AELog.warn("Could not decode an invalid processing pattern %s: %s", what.getTag(), e);
             return null;
         }
     }
