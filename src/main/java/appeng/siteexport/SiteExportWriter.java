@@ -15,6 +15,7 @@ import java.util.HexFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPOutputStream;
 
 import com.google.gson.Gson;
@@ -49,6 +50,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.compiler.MdAstNodeAdapter;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.extensions.ConfigValueTagExtension;
 import appeng.client.guidebook.indices.PageIndex;
 import appeng.items.tools.powered.MatterCannonItem;
 import appeng.libs.mdast.MdAstVisitor;
@@ -148,6 +150,10 @@ public class SiteExportWriter {
                 .stream()
                 .map(NavigationNodeJson::of)
                 .toList();
+        siteExport.defaultConfigValues = ConfigValueTagExtension.CONFIG_VALUES.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().get()));
     }
 
     public void addItem(String id, ItemStack stack, String iconPath) {
