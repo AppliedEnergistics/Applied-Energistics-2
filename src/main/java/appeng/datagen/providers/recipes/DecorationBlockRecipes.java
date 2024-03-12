@@ -32,6 +32,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
 import appeng.core.definitions.BlockDefinition;
 import appeng.core.definitions.ItemDefinition;
 import appeng.datagen.providers.tags.ConventionTags;
@@ -141,6 +142,13 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
                 .unlockedBy(criterionName(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED),
                         has(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED))
                 .save(consumer, AppEng.makeId("decorative/quartz_fixture"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.QUARTZ_FIXTURE, 2)
+                .pattern("ab")
+                .define('a', AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
+                .define('b', AEParts.CABLE_ANCHOR)
+                .unlockedBy(criterionName(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED),
+                        has(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED))
+                .save(consumer, AppEng.makeId("decorative/quartz_fixture_from_anchors"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.QUARTZ_GLASS, 4)
                 .pattern("aba")
