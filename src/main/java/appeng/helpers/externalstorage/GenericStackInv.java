@@ -42,6 +42,7 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.AEKeySlotFilter;
 import appeng.api.storage.MEStorage;
 import appeng.core.AELog;
 import appeng.util.ConfigMenuInventory;
@@ -54,6 +55,8 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     private final Reference2LongMap<AEKeyType> capacities = new Reference2LongArrayMap<>();
     @Nullable
     private AEKeyFilter filter;
+    @Nullable
+    private AEKeySlotFilter slotFilter;
     protected final Mode mode;
     private Component description = Component.empty();
 
@@ -80,6 +83,15 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     @Nullable
     public AEKeyFilter getFilter() {
         return filter;
+    }
+
+    protected void setSlotFilter(@Nullable AEKeySlotFilter slotFilter) {
+        this.slotFilter = slotFilter;
+    }
+
+    @Nullable
+    public AEKeySlotFilter getSlotFilter() {
+        return slotFilter;
     }
 
     @Override
@@ -139,7 +151,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         Objects.requireNonNull(what, "what");
         Preconditions.checkArgument(amount >= 0, "amount >= 0");
 
-        if (!canInsert() || !isAllowed(what)) {
+        if (!canInsert() || !isAllowedIn(slot, what)) {
             return 0;
         }
 
@@ -157,6 +169,10 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
             }
         }
         return 0;
+    }
+
+    public boolean isAllowedIn(int slot, AEKey what) {
+        return isAllowed(what) && (slotFilter == null || slotFilter.isAllowed(slot, what));
     }
 
     @Override

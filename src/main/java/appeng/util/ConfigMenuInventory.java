@@ -42,7 +42,8 @@ public class ConfigMenuInventory implements InternalInventory {
             return true; // Clearing filters is always allowed
         }
 
-        return convertToSuitableStack(stack) != null;
+        var genericStack = convertToSuitableStack(stack);
+        return genericStack != null && inv.isAllowedIn(slot, genericStack.what());
     }
 
     @Override

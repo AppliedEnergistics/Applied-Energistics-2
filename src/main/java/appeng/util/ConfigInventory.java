@@ -16,8 +16,8 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.AEKeySlotFilter;
 import appeng.helpers.externalstorage.GenericStackInv;
-import appeng.helpers.externalstorage.GenericStackInv.Mode;
 import appeng.me.helpers.BaseActionSource;
 
 /**
@@ -38,11 +38,13 @@ public class ConfigInventory extends GenericStackInv {
      */
     public static final ConfigInventory EMPTY_TYPES = ConfigInventory.configTypes(null, 0, null);
 
-    protected ConfigInventory(@Nullable AEKeyFilter filter, Mode mode, int size, @Nullable Runnable listener,
+    protected ConfigInventory(@Nullable AEKeyFilter keyFilter, @Nullable AEKeySlotFilter slotFilter, Mode mode,
+            int size, @Nullable Runnable listener,
             boolean allowOverstacking) {
         super(listener, mode, size);
         this.allowOverstacking = allowOverstacking;
-        setFilter(filter);
+        setFilter(keyFilter);
+        setSlotFilter(slotFilter);
     }
 
     /**
@@ -50,7 +52,7 @@ public class ConfigInventory extends GenericStackInv {
      * inventory.
      */
     public static ConfigInventory configTypes(int size, @Nullable Runnable changeListener) {
-        return new ConfigInventory(null, Mode.CONFIG_TYPES, size, changeListener, false);
+        return new ConfigInventory(null, null, Mode.CONFIG_TYPES, size, changeListener, false);
     }
 
     /**
@@ -59,7 +61,7 @@ public class ConfigInventory extends GenericStackInv {
      */
     public static ConfigInventory configTypes(@Nullable AEKeyFilter filter, int size,
             @Nullable Runnable changeListener) {
-        return new ConfigInventory(filter, Mode.CONFIG_TYPES, size, changeListener, false);
+        return new ConfigInventory(filter, null, Mode.CONFIG_TYPES, size, changeListener, false);
     }
 
     /**
@@ -67,14 +69,14 @@ public class ConfigInventory extends GenericStackInv {
      */
     public static ConfigInventory configStacks(@Nullable AEKeyFilter filter, int size,
             @Nullable Runnable changeListener, boolean allowOverstacking) {
-        return new ConfigInventory(filter, Mode.CONFIG_STACKS, size, changeListener, allowOverstacking);
+        return new ConfigInventory(filter, null, Mode.CONFIG_STACKS, size, changeListener, allowOverstacking);
     }
 
     /**
      * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
      */
     public static ConfigInventory storage(int size, @Nullable Runnable changeListener) {
-        return new ConfigInventory(null, Mode.STORAGE, size, changeListener, false);
+        return new ConfigInventory(null, null, Mode.STORAGE, size, changeListener, false);
     }
 
     /**
@@ -82,7 +84,15 @@ public class ConfigInventory extends GenericStackInv {
      */
     public static ConfigInventory storage(@Nullable AEKeyFilter filter, int size,
             @Nullable Runnable changeListener) {
-        return new ConfigInventory(filter, Mode.STORAGE, size, changeListener, false);
+        return new ConfigInventory(filter, null, Mode.STORAGE, size, changeListener, false);
+    }
+
+    /**
+     * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
+     */
+    public static ConfigInventory storage(@Nullable AEKeyFilter filter, @Nullable AEKeySlotFilter slotFilter, int size,
+            @Nullable Runnable changeListener) {
+        return new ConfigInventory(filter, slotFilter, Mode.STORAGE, size, changeListener, false);
     }
 
     @Nullable
