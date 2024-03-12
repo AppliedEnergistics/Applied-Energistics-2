@@ -47,6 +47,11 @@ public class MachineGroup {
     private double idlePowerUsage;
 
     /**
+     * The sum of power this group of machines can generate in AE/t.
+     */
+    private double powerGenerationCapacity;
+
+    /**
      * The number of machines in this group.
      */
     private int count;
@@ -61,6 +66,7 @@ public class MachineGroup {
     static MachineGroup read(FriendlyByteBuf data) {
         MachineGroup entry = new MachineGroup(MachineGroupKey.fromPacket(data));
         entry.idlePowerUsage = data.readDouble();
+        entry.powerGenerationCapacity = data.readDouble();
         entry.count = data.readVarInt();
         return entry;
     }
@@ -68,6 +74,7 @@ public class MachineGroup {
     void write(FriendlyByteBuf data) {
         key.write(data);
         data.writeDouble(idlePowerUsage);
+        data.writeDouble(powerGenerationCapacity);
         data.writeVarInt(count);
     }
 
@@ -87,6 +94,14 @@ public class MachineGroup {
         this.idlePowerUsage = idlePowerUsage;
     }
 
+    public double getPowerGenerationCapacity() {
+        return powerGenerationCapacity;
+    }
+
+    public void setPowerGenerationCapacity(double powerGenerationCapacity) {
+        this.powerGenerationCapacity = powerGenerationCapacity;
+    }
+
     public int getCount() {
         return count;
     }
@@ -94,4 +109,5 @@ public class MachineGroup {
     void setCount(int count) {
         this.count = count;
     }
+
 }
