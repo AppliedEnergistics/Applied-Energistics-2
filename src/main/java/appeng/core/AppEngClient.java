@@ -20,11 +20,13 @@ package appeng.core;
 
 import java.util.Objects;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -51,6 +53,7 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -98,7 +101,6 @@ import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.siteexport.SiteExporter;
 import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.spatial.SpatialStorageSkyProperties;
-import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 /**
@@ -115,6 +117,13 @@ public class AppEngClient extends AppEngBase {
      * changed.
      */
     private CableRenderMode prevCableRenderMode = CableRenderMode.STANDARD;
+
+    /**
+     * This modifier key has to be held to activate mouse wheel items.
+     */
+    private static final KeyMapping MOUSE_WHEEL_ITEM_MODIFIER = new KeyMapping(
+            "key.ae2.mouse_wheel_item_modifier", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM,
+            InputConstants.KEY_LSHIFT, "key.ae2.category");
 
     private final Guide guide;
 
@@ -217,6 +226,7 @@ public class AppEngClient extends AppEngBase {
         if (AEConfig.instance().isGuideHotkeyEnabled()) {
             e.register(OpenGuideHotkey.getHotkey());
         }
+        e.register(MOUSE_WHEEL_ITEM_MODIFIER);
         Hotkeys.finalizeRegistration(e::register);
     }
 
@@ -299,10 +309,10 @@ public class AppEngClient extends AppEngBase {
 
         final Minecraft mc = Minecraft.getInstance();
         final Player player = mc.player;
-        if (InteractionUtil.isInAlternateUseMode(player)) {
-            final boolean mainHand = player.getItemInHand(InteractionHand.MAIN_HAND)
+        if (MOUSE_WHEEL_ITEM_MODIFIER.isDown()) {
+            var mainHand = player.getItemInHand(InteractionHand.MAIN_HAND)
                     .getItem() instanceof IMouseWheelItem;
-            final boolean offHand = player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof IMouseWheelItem;
+            var offHand = player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof IMouseWheelItem;
 
             if (mainHand || offHand) {
                 NetworkHandler.instance().sendToServer(new MouseWheelPacket(me.getScrollDeltaY() > 0));

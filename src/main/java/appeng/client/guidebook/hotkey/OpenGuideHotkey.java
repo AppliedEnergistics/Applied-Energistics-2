@@ -6,7 +6,6 @@ import com.google.common.base.Strings;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +14,6 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -29,7 +27,6 @@ import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.indices.ItemIndex;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
 import appeng.core.AppEngClient;
 
 /**
@@ -37,17 +34,12 @@ import appeng.core.AppEngClient;
  */
 public final class OpenGuideHotkey {
     private static final KeyMapping OPEN_GUIDE_MAPPING = new KeyMapping(
-            "key.ae2.guide", GLFW.GLFW_KEY_G, "key.ae2.category");
-
-    static {
-        // Should only occur in tooltips (which is only in UI)
-        OPEN_GUIDE_MAPPING.setKeyConflictContext(KeyConflictContext.GUI);
-    }
+            "key.ae2.guide", KeyConflictContext.GUI, InputConstants.Type.KEYSYM, InputConstants.KEY_G,
+            "key.ae2.category");
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenGuideHotkey.class);
 
     private static final int TICKS_TO_OPEN = 10;
-    private static final ResourceLocation TOOLTIP_PHASE = AppEng.makeId("open_guide_for_item");
 
     private static boolean newTick = true;
 
