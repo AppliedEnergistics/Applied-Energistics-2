@@ -44,8 +44,11 @@ public class GenericStackFluidStorage implements IFluidHandler {
 
     @Override
     public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+        if (stack.isEmpty()) {
+            return true;
+        }
         var what = AEFluidKey.of(stack);
-        return what == null || inv.isAllowed(what);
+        return what != null && inv.isAllowedIn(tank, what);
     }
 
     @Override

@@ -24,6 +24,7 @@
 package appeng.api.stacks;
 
 import java.util.Objects;
+import java.util.Set;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -78,8 +79,7 @@ public final class AEKeyTypes {
      * <p>
      * This is mainly used as helper to let storage grids construct their internal storage for each type.
      */
-
-    public static Iterable<AEKeyType> getAll() {
-        return AEKeyTypesInternal.getRegistry();
+    public static Set<AEKeyType> getAll() {
+        return AEKeyTypesInternal.getAllTypes();
     }
 }

@@ -28,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.GenericStack;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.AECraftingPattern;
@@ -48,9 +49,9 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             AEProcessingPattern.MAX_INPUT_SLOTS);
     private static final int MAX_OUTPUT_SLOTS = AEProcessingPattern.MAX_OUTPUT_SLOTS;
 
-    private final ConfigInventory encodedInputInv = ConfigInventory.configStacks(null, MAX_INPUT_SLOTS,
+    private final ConfigInventory encodedInputInv = ConfigInventory.configStacks(AEKeyTypes.getAll(), MAX_INPUT_SLOTS,
             this::onEncodedInputChanged, true);
-    private final ConfigInventory encodedOutputInv = ConfigInventory.configStacks(null, MAX_OUTPUT_SLOTS,
+    private final ConfigInventory encodedOutputInv = ConfigInventory.configStacks(AEKeyTypes.getAll(), MAX_OUTPUT_SLOTS,
             this::onEncodedOutputChanged, true);
     private final AppEngInternalInventory blankPatternInv = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory encodedPatternInv = new AppEngInternalInventory(this, 1);

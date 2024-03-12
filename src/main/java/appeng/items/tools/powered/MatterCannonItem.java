@@ -20,6 +20,7 @@ package appeng.items.tools.powered;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -390,7 +391,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
 
     @Override
     public ConfigInventory getConfigInventory(ItemStack is) {
-        return CellConfig.create(AEItemKey.filter(), is);
+        return CellConfig.create(Set.of(AEKeyType.items()), is);
     }
 
     @Override

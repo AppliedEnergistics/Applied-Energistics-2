@@ -4,8 +4,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.google.common.collect.Iterables;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.Rect2i;
@@ -117,7 +115,7 @@ public class KeyTypeSelectionScreen<C extends AEBaseMenu & KeyTypeSelectionMenu,
                 yPos += KEY_TYPE_SPACING;
             }
 
-            int height = this.bounds.getY() + Iterables.size(AEKeyTypes.getAll()) * KEY_TYPE_SPACING + PADDING;
+            int height = this.bounds.getY() + AEKeyTypes.getAll().size() * KEY_TYPE_SPACING + PADDING;
             KeyTypeSelectionScreen.this.setHeight(height);
         }
     }

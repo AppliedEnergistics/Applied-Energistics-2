@@ -70,7 +70,10 @@ public class GenericStackItemStorage implements IItemHandler {
 
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+        if (stack.isEmpty()) {
+            return true;
+        }
         var what = AEItemKey.of(stack);
-        return what == null || inv.isAllowed(what);
+        return what != null && inv.isAllowedIn(slot, what);
     }
 }

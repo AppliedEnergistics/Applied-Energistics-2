@@ -41,7 +41,7 @@ public class ImportBusPart extends IOBusPart implements KeyTypeSelectionHost {
     private final KeyTypeSelection keyTypeSelection;
 
     public ImportBusPart(IPartItem<?> partItem) {
-        super(TickRates.ImportBus, StackWorldBehaviors.hasImportStrategyFilter(), partItem);
+        super(TickRates.ImportBus, StackWorldBehaviors.withImportStrategy(), partItem);
 
         this.keyTypeSelection = new KeyTypeSelection(() -> {
             getHost().markForSave();
