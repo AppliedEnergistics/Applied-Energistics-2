@@ -28,11 +28,11 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.SectionPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
@@ -393,19 +393,17 @@ public class AppEngClient extends AppEngBase {
         // Invalidate all sections that contain a cable bus within view distance
         // This should asynchronously update the chunk meshes and as part of that use the new facade render mode
         var viewDistance = (int) Math.ceil(mc.levelRenderer.getLastViewDistance());
-        SectionPos.aroundChunk(
-                mc.player.chunkPosition(),
-                viewDistance,
-                mc.level.getMinSection(),
-                mc.level.getMaxSection()).forEach(sectionPos -> {
-                    var chunk = mc.level.getChunkSource().getChunkNow(sectionPos.x(), sectionPos.z());
-                    if (chunk != null) {
-                        var section = chunk.getSection(chunk.getSectionIndexFromSectionY(sectionPos.y()));
-                        if (section.maybeHas(state -> state.is(AEBlocks.CABLE_BUS.block()))) {
-                            mc.levelRenderer.setSectionDirty(sectionPos.x(), sectionPos.y(), sectionPos.z());
-                        }
+        ChunkPos.rangeClosed(mc.player.chunkPosition(), viewDistance).forEach(chunkPos -> {
+            var chunk = mc.level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
+            if (chunk != null) {
+                for (var i = 0; i < chunk.getSectionsCount(); i++) {
+                    var section = chunk.getSection(i);
+                    if (section.maybeHas(state -> state.is(AEBlocks.CABLE_BUS.block()))) {
+                        mc.levelRenderer.setSectionDirty(chunkPos.x, chunk.getSectionYFromSectionIndex(i), chunkPos.z);
                     }
-                });
+                }
+            }
+        });
     }
 
     @Override
