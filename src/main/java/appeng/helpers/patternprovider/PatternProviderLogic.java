@@ -329,6 +329,12 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
             possibleTargets.add(new PushTarget(direction, adapter));
         }
 
+        // If no dedicated crafting machine could be found, and the pattern does not support
+        // generic external inventories, stop here.
+        if (!patternDetails.supportsPushInputsToExternalInventory()) {
+            return false;
+        }
+
         // Rearrange for round-robin
         rearrangeRoundRobin(possibleTargets);
 
