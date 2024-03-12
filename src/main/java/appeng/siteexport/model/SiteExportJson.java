@@ -29,4 +29,6 @@ public class SiteExportJson {
 
     public Map<String, FluidInfoJson> fluids = new HashMap<>();
 
+    public Map<String, String> defaultConfigValues = new HashMap<>();
+
 }

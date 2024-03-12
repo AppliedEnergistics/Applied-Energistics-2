@@ -14,7 +14,7 @@ import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
  * Provides access to AE2 config values in guide content.
  */
 public class ConfigValueTagExtension extends FlowTagCompiler {
-    private static final Map<String, Supplier<String>> CONFIG_VALUES = Map.of(
+    public static final Map<String, Supplier<String>> CONFIG_VALUES = Map.of(
             "crystalResonanceGeneratorRate",
             () -> String.valueOf(AEConfig.instance().getCrystalResonanceGeneratorRate()));
 
