@@ -41,12 +41,11 @@ public class ConfigInventory extends GenericStackInv {
      */
     public static final ConfigInventory EMPTY_TYPES = ConfigInventory.configTypes(null, 0, null);
 
-    protected ConfigInventory(@Nullable Set<AEKeyType> supportedKeyTypes, @Nullable AEKeySlotFilter slotFilter,
+    protected ConfigInventory(Set<AEKeyType> supportedKeyTypes, @Nullable AEKeySlotFilter slotFilter,
             Mode mode,
             int size, @Nullable Runnable listener,
             boolean allowOverstacking) {
-        super(Objects.requireNonNullElse(supportedKeyTypes, ImmutableSet.copyOf(AEKeyTypes.getAll())), listener, mode,
-                size);
+        super(supportedKeyTypes, listener, mode, size);
         this.allowOverstacking = allowOverstacking;
         setFilter(slotFilter);
     }
@@ -56,7 +55,7 @@ public class ConfigInventory extends GenericStackInv {
      * inventory.
      */
     public static ConfigInventory configTypes(int size, @Nullable Runnable changeListener) {
-        return new ConfigInventory(null, null, Mode.CONFIG_TYPES, size, changeListener, false);
+        return new ConfigInventory(AEKeyTypes.getAll(), null, Mode.CONFIG_TYPES, size, changeListener, false);
     }
 
     /**
@@ -81,7 +80,7 @@ public class ConfigInventory extends GenericStackInv {
      * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
      */
     public static ConfigInventory storage(int size, @Nullable Runnable changeListener) {
-        return new ConfigInventory(null, null, Mode.STORAGE, size, changeListener, false);
+        return new ConfigInventory(AEKeyTypes.getAll(), null, Mode.STORAGE, size, changeListener, false);
     }
 
     /**

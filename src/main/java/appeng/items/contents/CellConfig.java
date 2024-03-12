@@ -20,6 +20,7 @@ package appeng.items.contents;
 
 import java.util.Set;
 
+import appeng.api.stacks.AEKeyTypes;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.world.item.ItemStack;
@@ -49,7 +50,7 @@ public final class CellConfig {
 
     public static ConfigInventory create(ItemStack is) {
         var holder = new Holder(is);
-        holder.inv = ConfigInventory.configTypes(null, 63, holder::save);
+        holder.inv = ConfigInventory.configTypes(AEKeyTypes.getAll(), 63, holder::save);
         holder.load();
         return holder.inv;
     }

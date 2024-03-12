@@ -72,7 +72,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     }
 
     public GenericStackInv(@Nullable Runnable listener, Mode mode, int size) {
-        this(ImmutableSet.copyOf(AEKeyTypes.getAll()), listener, mode, size);
+        this(AEKeyTypes.getAll(), listener, mode, size);
     }
 
     public GenericStackInv(Set<AEKeyType> supportedKeyTypes, @Nullable Runnable listener, Mode mode, int size) {
