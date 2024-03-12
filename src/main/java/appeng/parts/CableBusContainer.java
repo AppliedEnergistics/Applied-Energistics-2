@@ -53,6 +53,7 @@ import appeng.api.config.YesNo;
 import appeng.api.implementations.parts.ICablePart;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
+import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
@@ -99,6 +100,8 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     // Cached collision shape for anything but living entities
     private VoxelShape cachedCollisionShape;
     private VoxelShape cachedShape;
+    // For which cable render mode the cached shape was created
+    private CableRenderMode cachedShapeCableRenderMode;
 
     public CableBusContainer(IPartHost host) {
         this.tcb = host;
@@ -1017,8 +1020,10 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
      * See {@link Block#getShape}
      */
     public VoxelShape getShape() {
-        if (cachedShape == null) {
+        var currentRenderMode = PartHelper.getCableRenderMode();
+        if (cachedShape == null || currentRenderMode != cachedShapeCableRenderMode) {
             cachedShape = createShape(false, false);
+            cachedShapeCableRenderMode = currentRenderMode;
         }
 
         return cachedShape;
@@ -1048,7 +1053,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     private VoxelShape createShape(boolean forCollision, boolean forItemEntity) {
         final List<AABB> boxes = new ArrayList<>();
 
-        final IFacadeContainer fc = this.getFacadeContainer();
+        var fc = this.getFacadeContainer();
         for (Direction s : Platform.DIRECTIONS_WITH_NULL) {
             final IPartCollisionHelper bch = new BusCollisionHelper(boxes, s, !forCollision);
 
@@ -1059,7 +1064,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
             if ((PartHelper.getCableRenderMode().opaqueFacades || forCollision)
                     && s != null) {
-                final IFacadePart fp = fc.getFacade(s);
+                var fp = fc.getFacade(s);
                 if (fp != null) {
                     fp.getBoxes(bch, forItemEntity);
                 }
