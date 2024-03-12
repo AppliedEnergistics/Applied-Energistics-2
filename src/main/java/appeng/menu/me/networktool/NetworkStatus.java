@@ -32,6 +32,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyService;
+import appeng.api.networking.energy.IPassiveEnergyGenerator;
+import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 
 /**
@@ -72,6 +74,17 @@ public class NetworkStatus {
 
                     group.setCount(group.getCount() + 1);
                     group.setIdlePowerUsage(group.getIdlePowerUsage() + machine.getIdlePowerUsage());
+
+                    var owner = machine.getOwner();
+                    var passiveEnergyGenerator = machine.getService(IPassiveEnergyGenerator.class);
+                    if (passiveEnergyGenerator != null && !passiveEnergyGenerator.isSuppressed()) {
+                        group.setPowerGenerationCapacity(
+                                group.getPowerGenerationCapacity() + passiveEnergyGenerator.getRate());
+                    }
+                    if (owner instanceof VibrationChamberBlockEntity vibrationChamberBlockEntity) {
+                        group.setPowerGenerationCapacity(
+                                group.getPowerGenerationCapacity() + vibrationChamberBlockEntity.getMaxEnergyRate());
+                    }
                 }
             }
         }
@@ -158,5 +171,4 @@ public class NetworkStatus {
             machine.write(data);
         }
     }
-
 }
