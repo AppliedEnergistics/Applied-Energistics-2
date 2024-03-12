@@ -22,6 +22,12 @@ public interface IMolecularAssemblerSupportedPattern extends IPatternDetails {
 
     void fillCraftingGrid(KeyCounter[] table, CraftingGridAccessor gridAccessor);
 
+    @Override
+    default boolean supportsPushInputsToExternalInventory() {
+        // Patterns crafted in a molecular assembler are usually pointless to craft in anything else
+        return false;
+    }
+
     @FunctionalInterface
     interface CraftingGridAccessor {
         void set(int slot, ItemStack stack);
