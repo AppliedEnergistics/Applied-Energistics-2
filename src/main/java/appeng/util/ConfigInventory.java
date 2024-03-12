@@ -37,7 +37,7 @@ public class ConfigInventory extends GenericStackInv {
     /**
      * An empty config-type inventory.
      */
-    public static final ConfigInventory EMPTY_TYPES = ConfigInventory.configTypes(null, 0, null);
+    public static final ConfigInventory EMPTY_TYPES = ConfigInventory.configTypes(AEKeyTypes.getAll(), 0, null);
 
     protected ConfigInventory(Set<AEKeyType> supportedKeyTypes, @Nullable AEKeySlotFilter slotFilter,
             Mode mode,

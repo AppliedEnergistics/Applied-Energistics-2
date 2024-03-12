@@ -18,6 +18,7 @@
 
 package appeng.parts.encoding;
 
+import appeng.api.stacks.AEKeyTypes;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
@@ -48,9 +49,9 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             AEProcessingPattern.MAX_INPUT_SLOTS);
     private static final int MAX_OUTPUT_SLOTS = AEProcessingPattern.MAX_OUTPUT_SLOTS;
 
-    private final ConfigInventory encodedInputInv = ConfigInventory.configStacks(null, MAX_INPUT_SLOTS,
+    private final ConfigInventory encodedInputInv = ConfigInventory.configStacks(AEKeyTypes.getAll(), MAX_INPUT_SLOTS,
             this::onEncodedInputChanged, true);
-    private final ConfigInventory encodedOutputInv = ConfigInventory.configStacks(null, MAX_OUTPUT_SLOTS,
+    private final ConfigInventory encodedOutputInv = ConfigInventory.configStacks(AEKeyTypes.getAll(), MAX_OUTPUT_SLOTS,
             this::onEncodedOutputChanged, true);
     private final AppEngInternalInventory blankPatternInv = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory encodedPatternInv = new AppEngInternalInventory(this, 1);
