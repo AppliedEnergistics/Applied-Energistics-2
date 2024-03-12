@@ -64,8 +64,8 @@ public interface GenericInternalInventory {
     }
 
     /**
-     * Return true if the key is {@link #isSupportedType(AEKey) of a supported type} and would pass a
-     * potential filter configured for the given slot.
+     * Return true if the key is {@link #isSupportedType(AEKey) of a supported type} and would pass a potential filter
+     * configured for the given slot.
      */
     boolean isAllowedIn(int slot, AEKey what);
 

@@ -18,7 +18,8 @@
 
 package appeng.parts.automation;
 
-import appeng.api.stacks.AEKeyType;
+import java.util.Set;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -43,7 +44,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.AEKeyFilter;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.ISubMenuHost;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
@@ -60,8 +61,6 @@ import appeng.parts.PartModel;
 import appeng.util.ConfigInventory;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
-
-import java.util.Set;
 
 public abstract class IOBusPart extends UpgradeablePart implements IGridTickable, IConfigInvHost, ISubMenuHost {
 

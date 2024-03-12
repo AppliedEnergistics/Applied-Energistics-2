@@ -13,6 +13,7 @@ import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridHelper;
@@ -155,6 +156,10 @@ public class PlotTestHelper extends GameTestHelper {
         for (var key : counter.keySet()) {
             storage.extract(key, Long.MAX_VALUE, Actionable.MODULATE, new BaseActionSource());
         }
+    }
+
+    public <T, C> T getCapability(BlockPos ref, BlockCapability<T, C> cap, C context) {
+        return getLevel().getCapability(cap, absolutePos(ref), context);
     }
 
     public void assertEquals(BlockPos ref, Object expected, Object actual) {

@@ -1,6 +1,5 @@
 package appeng.helpers.externalstorage;
 
-import appeng.api.stacks.AEKeyTypes;
 import com.google.common.primitives.Ints;
 
 import org.jetbrains.annotations.NotNull;
