@@ -66,6 +66,16 @@ public interface IPatternDetails {
     GenericStack[] getOutputs();
 
     /**
+     * @return True if this pattern allows its inputs to be pushed to generic external inventories that would accept
+     *         those inputs. This would usually be true for custom processing patterns, but not true for patterns that
+     *         require custom machines or molecular assemblers (since those are pushed via
+     *         {@link ICraftingMachine#pushPattern}).
+     */
+    default boolean supportsPushInputsToExternalInventory() {
+        return true;
+    }
+
+    /**
      * Gives the pattern a chance to reorder its inputs for pushing to external inventories (i.e. NOT to
      * {@link ICraftingMachine}s).
      *
