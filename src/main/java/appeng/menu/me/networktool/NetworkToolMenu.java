@@ -32,9 +32,6 @@ import appeng.menu.slot.RestrictedInputSlot;
  * @see appeng.client.gui.me.networktool.NetworkToolScreen
  */
 public class NetworkToolMenu extends AEBaseMenu {
-
-    private static final String ACTION_TOGGLE_FACADE_MODE = "toggleFacadeMode";
-
     public static final MenuType<NetworkToolMenu> TYPE = MenuTypeBuilder
             .create(NetworkToolMenu::new, NetworkToolMenuHost.class)
             .build("networktool");
@@ -51,36 +48,5 @@ public class NetworkToolMenu extends AEBaseMenu {
         }
 
         this.createPlayerInventorySlots(ip);
-
-        registerClientAction(ACTION_TOGGLE_FACADE_MODE, this::toggleFacadeMode);
-    }
-
-    public void toggleFacadeMode() {
-        if (isClientSide()) {
-            sendClientAction(ACTION_TOGGLE_FACADE_MODE);
-            return;
-        }
-
-        var data = this.itemMenuHost.getItemStack().getOrCreateTag();
-        data.putBoolean("hideFacades", !data.getBoolean("hideFacades"));
-        this.broadcastChanges();
-    }
-
-    @Override
-    public void broadcastChanges() {
-        super.broadcastChanges();
-
-        if (this.isValidMenu()) {
-            var tag = itemMenuHost.getItemStack().getOrCreateTag();
-            this.setFacadeMode(tag.getBoolean("hideFacades"));
-        }
-    }
-
-    public boolean isFacadeMode() {
-        return this.facadeMode;
-    }
-
-    private void setFacadeMode(boolean facadeMode) {
-        this.facadeMode = facadeMode;
     }
 }
