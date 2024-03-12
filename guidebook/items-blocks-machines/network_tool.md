@@ -33,6 +33,12 @@ This window shows
 This window is also helpful for figuring out if two different cables or devices are part of the same network when messing around with
 [Subnetworks](../ae2-mechanics/subnetworks.md).
 
+## Hiding Facades
+
+<a href="facades.md">Facades</a> will be hidden while holding a network tool in either hand.
+
+You can interact with blocks behind hidden facades without having to remove the facades first.
+
 ## Recipe
 
 <RecipeFor id="network_tool" />
