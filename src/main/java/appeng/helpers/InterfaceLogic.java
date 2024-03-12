@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-import appeng.api.stacks.AEKeyTypes;
 import com.google.common.collect.ImmutableSet;
 
 import org.jetbrains.annotations.Nullable;
@@ -48,6 +47,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
@@ -104,7 +104,8 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     public InterfaceLogic(IManagedGridNode gridNode, InterfaceLogicHost host, Item is, int slots) {
         this.host = host;
         this.config = ConfigInventory.configStacks(AEKeyTypes.getAll(), slots, this::onConfigRowChanged, false);
-        this.storage = ConfigInventory.storage(AEKeyTypes.getAll(), this::isAllowedInStorageSlot, slots, this::onStorageChanged);
+        this.storage = ConfigInventory.storage(AEKeyTypes.getAll(), this::isAllowedInStorageSlot, slots,
+                this::onStorageChanged);
         this.mainNode = gridNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, new Ticker());

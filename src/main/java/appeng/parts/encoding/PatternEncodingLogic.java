@@ -18,7 +18,6 @@
 
 package appeng.parts.encoding;
 
-import appeng.api.stacks.AEKeyTypes;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
@@ -29,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.GenericStack;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.AECraftingPattern;
