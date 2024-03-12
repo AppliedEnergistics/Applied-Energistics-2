@@ -87,6 +87,9 @@ public class GuideScreen extends Screen {
     @Nullable
     private String pendingScrollToAnchor;
 
+    @Nullable
+    private InteractiveElement mouseCaptureTarget;
+
     private GuideScreen(GuideScreenHistory history, Guide guide, PageAnchor anchor) {
         super(Component.literal("AE2 Guidebook"));
         this.history = history;
@@ -353,6 +356,11 @@ public class GuideScreen extends Screen {
     public void mouseMoved(double mouseX, double mouseY) {
         super.mouseMoved(mouseX, mouseY);
 
+        if (mouseCaptureTarget != null) {
+            var docPointUnclamped = getDocumentPointUnclamped(mouseX, mouseY);
+            mouseCaptureTarget.mouseMoved(this, docPointUnclamped.getX(), docPointUnclamped.getY());
+        }
+
         var docPoint = getDocumentPoint(mouseX, mouseY);
         if (docPoint != null) {
             dispatchEvent(docPoint.getX(), docPoint.getY(), el -> {
@@ -387,6 +395,15 @@ public class GuideScreen extends Screen {
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (super.mouseReleased(mouseX, mouseY, button)) {
             return true;
+        }
+
+        if (mouseCaptureTarget != null) {
+            var currentTarget = mouseCaptureTarget;
+
+            var docPointUnclamped = getDocumentPointUnclamped(mouseX, mouseY);
+            currentTarget.mouseReleased(this, docPointUnclamped.getX(), docPointUnclamped.getY(), button);
+
+            releaseMouseCapture(currentTarget);
         }
 
         var docPoint = getDocumentPoint(mouseX, mouseY);
@@ -441,6 +458,8 @@ public class GuideScreen extends Screen {
     }
 
     private void loadPage(ResourceLocation pageId) {
+        closePage();
+
         GuidePageTexture.releaseUsedTextures();
         var page = guide.getParsedPage(pageId);
 
@@ -455,6 +474,13 @@ public class GuideScreen extends Screen {
         pageTitle.clearContent();
         for (var flowContent : extractPageTitle(currentPage)) {
             pageTitle.append(flowContent);
+        }
+    }
+
+    private void closePage() {
+        // Reset previously stored interactive elements
+        if (mouseCaptureTarget != null) {
+            releaseMouseCapture(mouseCaptureTarget);
         }
     }
 
@@ -607,12 +633,17 @@ public class GuideScreen extends Screen {
 
         if (screenX >= documentRect.x() && screenX < documentRect.right()
                 && screenY >= documentRect.y() && screenY < documentRect.bottom()) {
-            var docX = (int) Math.round(screenX - documentRect.x());
-            var docY = (int) Math.round(screenY + scrollbar.getScrollAmount() - documentRect.y());
-            return new Point(docX, docY);
+            return getDocumentPointUnclamped(screenX, screenY);
         }
 
         return null; // Outside the document
+    }
+
+    private Point getDocumentPointUnclamped(double screenX, double screenY) {
+        var documentRect = getDocumentRect();
+        var docX = (int) Math.round(screenX - documentRect.x());
+        var docY = (int) Math.round(screenY + scrollbar.getScrollAmount() - documentRect.y());
+        return new Point(docX, docY);
     }
 
     /**
@@ -784,6 +815,30 @@ public class GuideScreen extends Screen {
         return guide;
     }
 
+    @Nullable
+    public InteractiveElement getMouseCaptureTarget() {
+        return mouseCaptureTarget;
+    }
+
+    public void captureMouse(InteractiveElement element) {
+        if (mouseCaptureTarget != element) {
+            if (mouseCaptureTarget != null) {
+                releaseMouseCapture(mouseCaptureTarget);
+            }
+            mouseCaptureTarget = element;
+        }
+    }
+
+    public void releaseMouseCapture(InteractiveElement element) {
+        if (mouseCaptureTarget == element) {
+            mouseCaptureTarget = null;
+            element.mouseCaptureLost();
+            if (mouseCaptureTarget != null) {
+                throw new IllegalStateException("Element " + element + " recaptured the mouse in its release event");
+            }
+        }
+    }
+
     @Override
     public void onClose() {
         if (minecraft != null && minecraft.screen == this && this.returnToOnClose != null) {
@@ -791,6 +846,7 @@ public class GuideScreen extends Screen {
             this.returnToOnClose = null;
             return;
         }
+        closePage();
         super.onClose();
     }
 }
