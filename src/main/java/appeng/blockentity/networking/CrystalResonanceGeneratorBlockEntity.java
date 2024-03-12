@@ -51,6 +51,11 @@ public class CrystalResonanceGeneratorBlockEntity extends AENetworkBlockEntity {
             }
 
             @Override
+            public boolean isSuppressed() {
+                return CrystalResonanceGeneratorBlockEntity.this.suppressed;
+            }
+
+            @Override
             public void setSuppressed(boolean suppressed) {
                 if (suppressed != CrystalResonanceGeneratorBlockEntity.this.suppressed) {
                     CrystalResonanceGeneratorBlockEntity.this.suppressed = suppressed;

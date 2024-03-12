@@ -123,6 +123,10 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
                     tooltip.add(GuiText.EnergyDrain
                             .text(Platform.formatPower(entry.getIdlePowerUsage(), true)));
                 }
+                if (entry.getPowerGenerationCapacity() > 0) {
+                    tooltip.add(GuiText.EnergyGenerationCapacity
+                            .text(Platform.formatPower(entry.getPowerGenerationCapacity(), true)));
+                }
             }
 
             if (++x >= COLUMNS) {
