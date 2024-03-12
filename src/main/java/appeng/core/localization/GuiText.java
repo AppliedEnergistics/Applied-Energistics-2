@@ -88,6 +88,7 @@ public enum GuiText implements LocalizationEnum {
     Empty("Empty"),
     Encoded("Encoded"),
     EnergyDrain("Passive Drain: %s"),
+    EnergyGenerationCapacity("Generation Capacity: %s"),
     EnergyLevelEmitter("ME Energy Level Emitter"),
     Excluded("Excluded"),
     ExportBus("ME Export Bus"),

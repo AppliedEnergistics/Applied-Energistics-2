@@ -41,4 +41,10 @@ public interface IPassiveEnergyGenerator extends IGridNodeService {
      */
     void setSuppressed(boolean suppressed);
 
+    /**
+     * @return Whether this generator is currently suppressed.
+     * @see #setSuppressed(boolean)
+     */
+    boolean isSuppressed();
+
 }

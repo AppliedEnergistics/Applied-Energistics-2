@@ -339,6 +339,7 @@
   "gui.ae2.Empty": "Empty",
   "gui.ae2.Encoded": "Encoded",
   "gui.ae2.EnergyDrain": "Passive Drain: %s",
+  "gui.ae2.EnergyGenerationCapacity": "Generation Capacity: %s",
   "gui.ae2.EnergyLevelEmitter": "ME Energy Level Emitter",
   "gui.ae2.Excluded": "Excluded",
   "gui.ae2.ExportBus": "ME Export Bus",
