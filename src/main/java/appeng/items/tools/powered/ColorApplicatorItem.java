@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -534,7 +535,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     public ConfigInventory getConfigInventory(ItemStack is) {
-        return CellConfig.create(AEItemKey.filter(), is);
+        return CellConfig.create(Set.of(AEKeyType.items()), is);
     }
 
     @Override

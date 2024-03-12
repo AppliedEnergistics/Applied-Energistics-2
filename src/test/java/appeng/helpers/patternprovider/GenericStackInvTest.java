@@ -7,8 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import appeng.api.stacks.AEKeyType;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -50,7 +52,7 @@ class GenericStackInvTest {
      */
     @Test
     void testSaveLargeAndLoadIntoSmallerInventory() {
-        var large = ConfigInventory.configStacks(AEItemKey.filter(), 2, null, false);
+        var large = ConfigInventory.configStacks(Set.of(AEKeyType.items()), 2, null, false);
         large.setStack(0, ONE_STICK);
         large.setStack(1, ONE_STICK);
 

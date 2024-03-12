@@ -82,7 +82,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
     public FormationPlanePart(IPartItem<?> partItem) {
         super(partItem);
         getMainNode().addService(IStorageProvider.class, this);
-        this.config = ConfigInventory.configTypes(StackWorldBehaviors.hasPlacementStrategy(),
+        this.config = ConfigInventory.configTypes(StackWorldBehaviors.withPlacementStrategy(),
                 63, this::updateFilter);
 
         this.getConfigManager().registerSetting(Settings.PLACE_BLOCK, YesNo.YES);

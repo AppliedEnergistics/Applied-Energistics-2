@@ -1,5 +1,6 @@
 package appeng.helpers.externalstorage;
 
+import appeng.api.stacks.AEKeyTypes;
 import com.google.common.primitives.Ints;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,8 +45,11 @@ public class GenericStackFluidStorage implements IFluidHandler {
 
     @Override
     public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+        if (stack.isEmpty()) {
+            return true;
+        }
         var what = AEFluidKey.of(stack);
-        return what == null || inv.isAllowed(what);
+        return what != null && inv.isAllowedIn(tank, what);
     }
 
     @Override

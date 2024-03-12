@@ -1,9 +1,11 @@
 package appeng.parts.automation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -80,6 +82,13 @@ public final class StackWorldBehaviors {
     }
 
     /**
+     * {@return set of key types that have an import strategy}
+     */
+    public static Set<AEKeyType> withImportStrategy() {
+        return Collections.unmodifiableSet(importStrategies.getMap().keySet());
+    }
+
+    /**
      * {@return filter matching any key for which there is an export strategy}
      */
     public static AEKeyFilter hasExportStrategyFilter() {
@@ -87,10 +96,24 @@ public final class StackWorldBehaviors {
     }
 
     /**
+     * {@return set of key types that have an export strategy}
+     */
+    public static Set<AEKeyType> withExportStrategy() {
+        return Collections.unmodifiableSet(exportStrategies.getMap().keySet());
+    }
+
+    /**
      * {@return filter matching any key for which there is an export strategy}
      */
     public static AEKeyFilter hasPlacementStrategy() {
         return what -> placementStrategies.getMap().containsKey(what.getType());
+    }
+
+    /**
+     * {@return set of key types that have a placement strategy}
+     */
+    public static Set<AEKeyType> withPlacementStrategy() {
+        return Collections.unmodifiableSet(placementStrategies.getMap().keySet());
     }
 
     public static StackImportStrategy createImportFacade(ServerLevel level, BlockPos fromPos, Direction fromSide,

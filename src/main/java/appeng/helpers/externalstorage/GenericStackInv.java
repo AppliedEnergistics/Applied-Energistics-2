@@ -18,20 +18,6 @@
 
 package appeng.helpers.externalstorage;
 
-import java.util.Objects;
-
-import com.google.common.base.Preconditions;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
-
-import it.unimi.dsi.fastutil.objects.Reference2LongArrayMap;
-import it.unimi.dsi.fastutil.objects.Reference2LongMap;
-
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.behaviors.GenericSlotCapacities;
 import appeng.api.config.Actionable;
@@ -39,13 +25,25 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.AEKeySlotFilter;
 import appeng.api.storage.MEStorage;
 import appeng.core.AELog;
 import appeng.util.ConfigMenuInventory;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+import it.unimi.dsi.fastutil.objects.Reference2LongArrayMap;
+import it.unimi.dsi.fastutil.objects.Reference2LongMap;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+import java.util.Set;
 
 public class GenericStackInv implements MEStorage, GenericInternalInventory {
     protected final GenericStack[] stacks;
@@ -53,10 +51,9 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     private boolean suppressOnChange;
     private boolean onChangeSuppressed;
     private final Reference2LongMap<AEKeyType> capacities = new Reference2LongArrayMap<>();
+    private final Set<AEKeyType> supportedKeyTypes;
     @Nullable
-    private AEKeyFilter filter;
-    @Nullable
-    private AEKeySlotFilter slotFilter;
+    private AEKeySlotFilter filter;
     protected final Mode mode;
     private Component description = Component.empty();
 
@@ -71,36 +68,28 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     }
 
     public GenericStackInv(@Nullable Runnable listener, Mode mode, int size) {
+        this(ImmutableSet.copyOf(AEKeyTypes.getAll()), listener, mode, size);
+    }
+
+    public GenericStackInv(Set<AEKeyType> supportedKeyTypes, @Nullable Runnable listener, Mode mode, int size) {
+        this.supportedKeyTypes = Set.copyOf(supportedKeyTypes);
         this.stacks = new GenericStack[size];
         this.listener = listener;
         this.mode = mode;
     }
 
-    protected void setFilter(@Nullable AEKeyFilter filter) {
+    protected void setFilter(@Nullable AEKeySlotFilter filter) {
         this.filter = filter;
     }
 
     @Nullable
-    public AEKeyFilter getFilter() {
+    public AEKeySlotFilter getFilter() {
         return filter;
     }
 
-    protected void setSlotFilter(@Nullable AEKeySlotFilter slotFilter) {
-        this.slotFilter = slotFilter;
-    }
-
-    @Nullable
-    public AEKeySlotFilter getSlotFilter() {
-        return slotFilter;
-    }
-
     @Override
-    public boolean isAllowed(AEKey what) {
-        return filter == null || filter.matches(what);
-    }
-
-    public boolean isAllowed(@Nullable GenericStack stack) {
-        return stack == null || isAllowed(stack.what());
+    public boolean isSupportedType(AEKeyType type) {
+        return supportedKeyTypes.contains(type);
     }
 
     @Override
@@ -172,7 +161,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     }
 
     public boolean isAllowedIn(int slot, AEKey what) {
-        return isAllowed(what) && (slotFilter == null || slotFilter.isAllowed(slot, what));
+        return isSupportedType(what) && (filter == null || filter.isAllowed(slot, what));
     }
 
     @Override
@@ -387,7 +376,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         Objects.requireNonNull(what, "what");
         Preconditions.checkArgument(amount >= 0, "amount >= 0");
-        if (!isAllowed(what)) {
+        if (!isSupportedType(what)) {
             return 0;
         }
 

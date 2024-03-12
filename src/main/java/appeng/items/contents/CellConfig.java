@@ -18,31 +18,31 @@
 
 package appeng.items.contents;
 
+import appeng.api.stacks.AEKeyType;
 import com.google.common.base.Preconditions;
-
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.AEKeyFilter;
 import appeng.util.ConfigInventory;
+
+import java.util.Set;
 
 public final class CellConfig {
     private CellConfig() {
     }
 
-    public static ConfigInventory create(@Nullable AEKeyFilter filter, ItemStack is, int size) {
+    public static ConfigInventory create(Set<AEKeyType> supportedTypes, ItemStack is, int size) {
         Preconditions.checkArgument(size >= 1 && size <= 63,
                 "Config inventory must have between 1 and 63 slots inclusive.");
         var holder = new Holder(is);
-        holder.inv = ConfigInventory.configTypes(filter, size, holder::save);
+        holder.inv = ConfigInventory.configTypes(supportedTypes, size, holder::save);
         holder.load();
         return holder.inv;
     }
 
-    public static ConfigInventory create(@Nullable AEKeyFilter filter, ItemStack is) {
+    public static ConfigInventory create(Set<AEKeyType> supportedTypes, ItemStack is) {
         var holder = new Holder(is);
-        holder.inv = ConfigInventory.configTypes(filter, 63, holder::save);
+        holder.inv = ConfigInventory.configTypes(supportedTypes, 63, holder::save);
         holder.load();
         return holder.inv;
     }
