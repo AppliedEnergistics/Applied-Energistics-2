@@ -4,8 +4,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.google.common.collect.Iterables;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.Rect2i;

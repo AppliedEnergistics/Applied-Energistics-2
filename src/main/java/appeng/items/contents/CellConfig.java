@@ -20,12 +20,12 @@ package appeng.items.contents;
 
 import java.util.Set;
 
-import appeng.api.stacks.AEKeyTypes;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEKeyTypes;
 import appeng.util.ConfigInventory;
 
 public final class CellConfig {

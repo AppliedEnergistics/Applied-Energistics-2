@@ -1,11 +1,9 @@
 package appeng.util;
 
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
 
 import org.jetbrains.annotations.Nullable;
 
