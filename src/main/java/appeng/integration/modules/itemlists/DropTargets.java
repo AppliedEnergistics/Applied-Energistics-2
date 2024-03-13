@@ -11,9 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AEBaseScreen;
-import appeng.core.network.NetworkHandler;
-import appeng.core.network.serverbound.InventoryActionPacket;
-import appeng.helpers.InventoryAction;
 import appeng.menu.slot.FakeSlot;
 
 public final class DropTargets {
@@ -34,8 +31,6 @@ public final class DropTargets {
     private record FakeSlotDropTarget(Rect2i area, FakeSlot slot) implements DropTarget {
         @Override
         public boolean canDrop(GenericStack stack) {
-            var wrapped = wrapFilterAsItem(stack);
-
             // Use the standard inventory function to test if the dragged stack would in theory be accepted
             return slot.canSetFilterTo(wrapFilterAsItem(stack));
         }
@@ -45,8 +40,7 @@ public final class DropTargets {
             var itemStack = wrapFilterAsItem(stack);
 
             if (slot.canSetFilterTo(itemStack)) {
-                NetworkHandler.instance().sendToServer(new InventoryActionPacket(InventoryAction.SET_FILTER,
-                        slot.index, itemStack));
+                slot.setFilterTo(itemStack);
                 return true;
             }
             return false;
