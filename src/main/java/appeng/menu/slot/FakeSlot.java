@@ -23,6 +23,9 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.inventories.InternalInventory;
+import appeng.core.network.NetworkHandler;
+import appeng.core.network.serverbound.InventoryActionPacket;
+import appeng.helpers.InventoryAction;
 import appeng.util.ConfigInventory;
 import appeng.util.ConfigMenuInventory;
 
@@ -62,6 +65,12 @@ public class FakeSlot extends AppEngSlot {
     // Used by item list mod dragging ghost items to determine if this is a valid destination
     public boolean canSetFilterTo(ItemStack stack) {
         return slot < getInventory().size() && getInventory().isItemValid(slot, stack);
+    }
+
+    // Used by the item list mod dropping ghost ingredients on this slot
+    public void setFilterTo(ItemStack itemStack) {
+        NetworkHandler.instance().sendToServer(new InventoryActionPacket(InventoryAction.SET_FILTER,
+                index, itemStack));
     }
 
     public void increase(ItemStack is) {
