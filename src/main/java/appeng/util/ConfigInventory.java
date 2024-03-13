@@ -1,9 +1,12 @@
 package appeng.util;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -46,6 +49,97 @@ public class ConfigInventory extends GenericStackInv {
         super(supportedKeyTypes, listener, mode, size);
         this.allowOverstacking = allowOverstacking;
         setFilter(slotFilter);
+    }
+
+    public final static class Builder {
+        private final Mode mode;
+        private final int size;
+        private Set<AEKeyType> supportedKeyTypes = AEKeyTypes.getAll();
+        @Nullable
+        private AEKeySlotFilter slotFilter;
+        @Nullable
+        private Runnable changeListener;
+        private boolean allowOverstacking;
+
+        private Builder(Mode mode, int size) {
+            this.mode = mode;
+            this.size = size;
+        }
+
+        public Builder supportedKeyType(AEKeyType keyType) {
+            this.supportedKeyTypes = Set.of(keyType);
+            return this;
+        }
+
+        public Builder supportedKeyTypes(AEKeyType keyType, AEKeyType... moreKeyTypes) {
+            if (moreKeyTypes.length == 0) {
+                return supportedKeyType(keyType);
+            }
+            this.supportedKeyTypes = new HashSet<>(1 + moreKeyTypes.length);
+            this.supportedKeyTypes.add(keyType);
+            Collections.addAll(this.supportedKeyTypes, moreKeyTypes);
+            return this;
+        }
+
+        /**
+         * Set a filter that limits what can be inserted to certain slots.
+         */
+        public Builder slotFilter(AEKeySlotFilter slotFilter) {
+            this.slotFilter = slotFilter;
+            return this;
+        }
+
+        /**
+         * Set a filter that applies to all slots at once.
+         */
+        public Builder slotFilter(Predicate<AEKey> filter) {
+            this.slotFilter = (slot, what) -> filter.apply(what);
+            return this;
+        }
+
+        public Builder changeListener(Runnable changeListener) {
+            this.changeListener = changeListener;
+            return this;
+        }
+
+        /**
+         * Allow slots to exceed the natural stack size limits of items.
+         */
+        public Builder allowOverstacking(boolean enable) {
+            this.allowOverstacking = enable;
+            return this;
+        }
+
+        public ConfigInventory build() {
+            return new ConfigInventory(
+                    supportedKeyTypes,
+                    slotFilter,
+                    mode,
+                    size,
+                    changeListener,
+                    allowOverstacking);
+        }
+    }
+
+    /**
+     * @param size The number of slots in this inventory.
+     */
+    public static Builder configTypes(int size) {
+        return new Builder(Mode.CONFIG_TYPES, size);
+    }
+
+    /**
+     * @param size The number of slots in this inventory.
+     */
+    public static Builder configStacks(int size) {
+        return new Builder(Mode.CONFIG_STACKS, size);
+    }
+
+    /**
+     * @param size The number of slots in this inventory.
+     */
+    public static Builder storage(int size) {
+        return new Builder(Mode.STORAGE, size);
     }
 
     /**

@@ -61,7 +61,14 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     private Component description = Component.empty();
 
     public enum Mode {
+        /**
+         * When in types mode, the config inventory will ignore all amounts and always return amount 1 for stacks in the
+         * inventory.
+         */
         CONFIG_TYPES,
+        /**
+         * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
+         */
         CONFIG_STACKS,
         STORAGE
     }

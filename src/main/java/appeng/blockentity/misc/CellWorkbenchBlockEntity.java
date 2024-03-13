@@ -158,7 +158,10 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
 
     public static void copy(GenericStackInv from, GenericStackInv to) {
         for (int i = 0; i < Math.min(from.size(), to.size()); ++i) {
-            to.setStack(i, from.getStack(i));
+            var fromStack = from.getStack(i);
+            if (fromStack == null || to.isAllowedIn(i, fromStack.what())) {
+                to.setStack(i, fromStack);
+            }
         }
         for (int i = from.size(); i < to.size(); i++) {
             to.setStack(i, null);
