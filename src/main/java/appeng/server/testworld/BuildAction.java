@@ -8,7 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
-interface BuildAction {
+public interface BuildAction {
     BoundingBox getBoundingBox();
 
     default void build(ServerLevel level, Player player, BlockPos origin) {
