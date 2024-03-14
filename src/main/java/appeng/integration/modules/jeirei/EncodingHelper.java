@@ -129,7 +129,7 @@ public final class EncodingHelper {
                 // network inventory. We'll find all network inventory entries that it matches and sort them
                 // according to their suitability for encoding a pattern
                 var bestNetworkIngredient = prioritizedNetworkInv.entrySet().stream()
-                        .filter(ni -> ni.getKey() instanceof AEItemKey itemKey && ingredient.test(itemKey.toStack()))
+                        .filter(ni -> ni.getKey() instanceof AEItemKey itemKey && itemKey.matches(ingredient))
                         .max(Comparator.comparingInt(Map.Entry::getValue))
                         .map(entry -> entry.getKey() instanceof AEItemKey itemKey ? itemKey.toStack() : null);
 

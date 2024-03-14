@@ -304,7 +304,7 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
                 // While FuzzyMode.IGNORE_ALL will retrieve all stacks of the same Item which matches
                 // standard Vanilla Ingredient matching, there are NBT-matching Ingredient subclasses on Forge,
                 // and Mods might actually have mixed into Ingredient
-                .filter(e -> ingredient.test(((AEItemKey) e.getKey()).toStack()))
+                .filter(e -> ((AEItemKey) e.getKey()).matches(ingredient))
                 // Sort in descending order of availability
                 .sorted((a, b) -> Long.compare(b.getLongValue(), a.getLongValue()))//
                 .map(e -> (AEItemKey) e.getKey())//
@@ -315,7 +315,7 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
         return Arrays.stream(ingredient.getItems())//
                 .map(AEItemKey::of)//
                 .map(s -> (AEItemKey) craftingService.getFuzzyCraftable(s,
-                        key -> ingredient.test(((AEItemKey) key).toStack())))//
+                        key -> ((AEItemKey) key).matches(ingredient)))//
                 .filter(Objects::nonNull)//
                 .findAny();//
     }

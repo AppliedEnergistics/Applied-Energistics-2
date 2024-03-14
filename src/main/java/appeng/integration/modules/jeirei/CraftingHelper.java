@@ -52,7 +52,7 @@ public final class CraftingHelper {
                 // player doesn't actually have
                 var stack = ingredientPriorities.entrySet()
                         .stream()
-                        .filter(e -> e.getKey() instanceof AEItemKey itemKey && ingredient.test(itemKey.toStack()))
+                        .filter(e -> e.getKey() instanceof AEItemKey itemKey && itemKey.matches(ingredient))
                         .max(Comparator.comparingInt(Map.Entry::getValue))
                         .map(e -> ((AEItemKey) e.getKey()).toStack())
                         .orElse(ingredient.getItems()[0]);
