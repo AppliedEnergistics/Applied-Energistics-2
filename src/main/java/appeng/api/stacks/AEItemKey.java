@@ -19,12 +19,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
-import appeng.util.Platform;
 
 public final class AEItemKey extends AEKey {
     private static final Logger LOG = LoggerFactory.getLogger(AEItemKey.class);
@@ -46,8 +46,8 @@ public final class AEItemKey extends AEKey {
     private final int hashCode;
     private final int cachedDamage;
     /**
-     * A lazily initialized itemstack used for display and ingredient testing purposes.
-     * This should never be modified and will always have amount 1.
+     * A lazily initialized itemstack used for display and ingredient testing purposes. This should never be modified
+     * and will always have amount 1.
      */
     @Nullable
     private ItemStack readOnlyStack;
@@ -135,15 +135,25 @@ public final class AEItemKey extends AEKey {
                 && Objects.equals(serializeStackCaps(stack), internedCaps.tag);
     }
 
+    public boolean matches(Ingredient ingredient) {
+        return ingredient.test(getReadOnlyStack());
+    }
+
+    /**
+     * @return The ItemStack represented by this key. <strong>NEVER MUTATE THIS</strong>
+     */
     public ItemStack getReadOnlyStack() {
         if (readOnlyStack == null) {
             readOnlyStack = new ItemStack(item, 1, internedCaps.tag);
             readOnlyStack.setTag(internedTag.tag);
         } else {
-            if  (readOnlyStack.getCount() != 1) {
-                AELog.error("");
+            if (readOnlyStack.isEmpty()) {
+                LOG.error("Something destroyed the read-only itemstack of {}", this);
+                readOnlyStack = null;
+                return getReadOnlyStack();
             }
         }
+        return readOnlyStack;
     }
 
     public ItemStack toStack() {
@@ -226,7 +236,7 @@ public final class AEItemKey extends AEKey {
      */
     @Override
     public int getFuzzySearchMaxValue() {
-        return item.getMaxDamage();
+        return getReadOnlyStack().getMaxDamage();
     }
 
     @Override
@@ -272,7 +282,7 @@ public final class AEItemKey extends AEKey {
 
     @Override
     protected Component computeDisplayName() {
-        return Platform.getItemDisplayName(item, internedTag.tag);
+        return getReadOnlyStack().getHoverName();
     }
 
     @SuppressWarnings("unchecked")
@@ -293,7 +303,7 @@ public final class AEItemKey extends AEKey {
         int ret = maxStackSize;
 
         if (ret == -1) {
-            maxStackSize = ret = toStack().getMaxStackSize();
+            maxStackSize = ret = getReadOnlyStack().getMaxStackSize();
         }
 
         return ret;

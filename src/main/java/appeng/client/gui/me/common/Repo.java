@@ -18,6 +18,30 @@
 
 package appeng.client.gui.me.common;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.crafting.Ingredient;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
+
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
@@ -30,26 +54,6 @@ import appeng.core.AELog;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IClientRepo;
 import appeng.util.prioritylist.IPartitionList;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.crafting.Ingredient;
-import org.jetbrains.annotations.Nullable;
-
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * For showing the network content of a storage channel, this class will maintain a client-side copy of the current
@@ -59,7 +63,7 @@ public class Repo implements IClientRepo {
 
     public static final Comparator<GridInventoryEntry> AMOUNT_ASC = Comparator
             .comparingDouble((GridInventoryEntry entry) -> ((double) entry.getStoredAmount())
-                                                           / ((double) entry.getWhat().getAmountPerUnit()));
+                    / ((double) entry.getWhat().getAmountPerUnit()));
 
     public static final Comparator<GridInventoryEntry> AMOUNT_DESC = AMOUNT_ASC.reversed();
 
@@ -167,7 +171,7 @@ public class Repo implements IClientRepo {
                 // First, try to find an empty/meaningless slot in the view that is visually indistinguishable
                 // and fill it
                 if (takeOverSlotOccupiedByRemovedItem(serverEntry, pinnedRowFreeSlots, pinnedRow)
-                    || takeOverSlotOccupiedByRemovedItem(serverEntry, viewFreeSlots, view)) {
+                        || takeOverSlotOccupiedByRemovedItem(serverEntry, viewFreeSlots, view)) {
                     continue;
                 }
 
@@ -243,7 +247,7 @@ public class Repo implements IClientRepo {
             for (var pinnedKey : PinnedKeys.getPinnedKeys()) {
                 var info = PinnedKeys.getPinInfo(pinnedKey);
                 if (info.reason != PinnedKeys.PinReason.CRAFTING
-                    && pinnedRow.stream().noneMatch(r -> pinnedKey.equals(r.getWhat()))) {
+                        && pinnedRow.stream().noneMatch(r -> pinnedKey.equals(r.getWhat()))) {
                     this.pinnedRow.add(new GridInventoryEntry(
                             -1, pinnedKey, 0, 0, false));
                 }
@@ -297,7 +301,7 @@ public class Repo implements IClientRepo {
     }
 
     private static boolean takeOverSlotOccupiedByRemovedItem(GridInventoryEntry serverEntry,
-                                                             Map<AEKey, IntList> freeSlots, List<GridInventoryEntry> slots) {
+            Map<AEKey, IntList> freeSlots, List<GridInventoryEntry> slots) {
         IntList freeSlotIndices = freeSlots.get(serverEntry.getWhat());
         if (freeSlotIndices == null) {
             return false;
@@ -414,7 +418,7 @@ public class Repo implements IClientRepo {
         for (int i = 0; i < ingredient.getStackingIds().size(); i++) {
             var itemId = ingredient.getStackingIds().getInt(i);
             for (var entry : getByItemId(itemId)) {
-                if (ingredient.test(((AEItemKey) entry.getWhat()).toStack())) {
+                if (((AEItemKey) entry.getWhat()).matches(ingredient)) {
                     entries.add(entry);
                 }
             }
