@@ -154,7 +154,7 @@ public final class Tooltips {
                 || what.getUnitSymbol() != null
                 // Damaged items always get their amount shown in the tooltip because
                 // the amount is sometimes hard to read superimposed on the damage bar
-                || what instanceof AEItemKey itemKey && itemKey.getItem().isBarVisible(itemKey.toStack());
+                || what instanceof AEItemKey itemKey && itemKey.getReadOnlyStack().isBarVisible();
     }
 
     public static Component getAmountTooltip(ButtonToolTips baseText, GenericStack stack) {

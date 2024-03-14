@@ -78,7 +78,7 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
 
     @Override
     public boolean canCraft(EmiRecipe recipe, EmiCraftContext<T> context) {
-        return transferRecipe(recipe, context, false).canCraft();
+        return (transferRecipe(recipe, context, false) instanceof Result.Success);
     }
 
     @Override

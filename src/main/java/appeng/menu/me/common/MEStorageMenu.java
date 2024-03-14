@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
@@ -38,6 +37,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
@@ -704,17 +704,15 @@ public class MEStorageMenu extends AEBaseMenu
      * <p/>
      * This method is <strong>slow</strong>, but it is client-only and thus doesn't scale with the player count.
      */
-    public boolean hasIngredient(Predicate<ItemStack> predicate, Object2IntOpenHashMap<Object> reservedAmounts) {
+    public boolean hasIngredient(Ingredient ingredient, Object2IntOpenHashMap<Object> reservedAmounts) {
         var clientRepo = getClientRepo();
 
         if (clientRepo != null && getLinkStatus().connected()) {
-            for (var stack : clientRepo.getAllEntries()) {
-                if (stack.getWhat() instanceof AEItemKey itemKey && predicate.test(itemKey.toStack())) {
-                    var reservedAmount = reservedAmounts.getOrDefault(stack.getWhat(), 0);
-                    if (stack.getStoredAmount() - reservedAmount >= 1) {
-                        reservedAmounts.merge(itemKey, 1, Integer::sum);
-                        return true;
-                    }
+            for (var stack : clientRepo.getByIngredient(ingredient)) {
+                var reservedAmount = reservedAmounts.getOrDefault(stack, 0);
+                if (stack.getStoredAmount() - reservedAmount >= 1) {
+                    reservedAmounts.merge(stack, 1, Integer::sum);
+                    return true;
                 }
             }
         }
