@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -25,6 +27,8 @@ import appeng.core.AELog;
 import appeng.util.Platform;
 
 public final class AEItemKey extends AEKey {
+    private static final Logger LOG = LoggerFactory.getLogger(AEItemKey.class);
+
     @Nullable
     private static CompoundTag serializeStackCaps(ItemStack stack) {
         try {
@@ -151,6 +155,21 @@ public final class AEItemKey extends AEKey {
                     .orElseThrow(() -> new IllegalArgumentException("Unknown item id."));
             var extraTag = tag.contains("tag") ? tag.getCompound("tag") : null;
             var extraCaps = tag.contains("caps") ? tag.getCompound("caps") : null;
+
+            // Sanitize caps since we'll be deserializing them over and over
+            // If there was a non backwards compatible change to a modded item (i.e. it lost its cap on an item)
+            // This will trigger continuous error logs on every call to toStack(), killing performance
+            if (extraCaps != null) {
+                var stack = new ItemStack(item, 1, extraCaps);
+                var sanitizezdCaps = stack.serializeAttachments();
+                if (!Objects.equals(extraCaps, sanitizezdCaps)) {
+                    LOG.info("Sanitized item attachments for {} from {} -> {}", item.asItem(),
+                            extraCaps, sanitizezdCaps);
+                }
+
+                extraCaps = sanitizezdCaps;
+            }
+
             return of(item, extraTag, extraCaps);
         } catch (Exception e) {
             AELog.debug("Tried to load an invalid item key from NBT: %s", tag, e);
