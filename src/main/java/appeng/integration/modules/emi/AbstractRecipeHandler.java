@@ -67,6 +67,14 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements StandardRe
         return null;
     }
 
+    @Override
+    public boolean canCraft(EmiRecipe recipe, EmiCraftContext<T> context) {
+        if (context.getType() == EmiCraftContext.Type.FILL_BUTTON) {
+            return transferRecipe(recipe, context, false).canCraft();
+        }
+        return StandardRecipeHandler.super.canCraft(recipe, context);
+    }
+
     protected abstract Result transferRecipe(T menu,
             @Nullable RecipeHolder<?> holder,
             EmiRecipe emiRecipe,
