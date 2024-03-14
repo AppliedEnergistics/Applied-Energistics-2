@@ -161,13 +161,13 @@ public final class AEItemKey extends AEKey {
             // This will trigger continuous error logs on every call to toStack(), killing performance
             if (extraCaps != null) {
                 var stack = new ItemStack(item, 1, extraCaps);
-                var sanitizezdCaps = stack.serializeAttachments();
-                if (!Objects.equals(extraCaps, sanitizezdCaps)) {
+                var sanitizedCaps = stack.serializeAttachments();
+                if (!Objects.equals(extraCaps, sanitizedCaps)) {
                     LOG.info("Sanitized item attachments for {} from {} -> {}", item.asItem(),
-                            extraCaps, sanitizezdCaps);
+                            extraCaps, sanitizedCaps);
                 }
 
-                extraCaps = sanitizezdCaps;
+                extraCaps = sanitizedCaps;
             }
 
             return of(item, extraTag, extraCaps);
