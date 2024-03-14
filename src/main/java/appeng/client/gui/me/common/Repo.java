@@ -18,6 +18,29 @@
 
 package appeng.client.gui.me.common;
 
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.client.gui.me.search.RepoSearch;
+import appeng.client.gui.widgets.IScrollSource;
+import appeng.client.gui.widgets.ISortSource;
+import appeng.core.AELog;
+import appeng.menu.me.common.GridInventoryEntry;
+import appeng.menu.me.common.IClientRepo;
+import appeng.util.prioritylist.IPartitionList;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.crafting.Ingredient;
+import org.jetbrains.annotations.Nullable;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,28 +51,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
-import org.jetbrains.annotations.Nullable;
-
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
-
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
-import appeng.api.stacks.AEKey;
-import appeng.client.gui.me.search.RepoSearch;
-import appeng.client.gui.widgets.IScrollSource;
-import appeng.client.gui.widgets.ISortSource;
-import appeng.core.AELog;
-import appeng.menu.me.common.GridInventoryEntry;
-import appeng.menu.me.common.IClientRepo;
-import appeng.util.prioritylist.IPartitionList;
-
 /**
  * For showing the network content of a storage channel, this class will maintain a client-side copy of the current
  * server-side storage, which is continuously synchronized to the client while it is open.
@@ -58,7 +59,7 @@ public class Repo implements IClientRepo {
 
     public static final Comparator<GridInventoryEntry> AMOUNT_ASC = Comparator
             .comparingDouble((GridInventoryEntry entry) -> ((double) entry.getStoredAmount())
-                    / ((double) entry.getWhat().getAmountPerUnit()));
+                                                           / ((double) entry.getWhat().getAmountPerUnit()));
 
     public static final Comparator<GridInventoryEntry> AMOUNT_DESC = AMOUNT_ASC.reversed();
 
@@ -74,6 +75,11 @@ public class Repo implements IClientRepo {
     private final BiMap<Long, GridInventoryEntry> entries = HashBiMap.create();
     private final ArrayList<GridInventoryEntry> view = new ArrayList<>();
     private final ArrayList<GridInventoryEntry> pinnedRow = new ArrayList<>();
+    /**
+     * Entries by item ID to speed up ingredient matching.
+     */
+    private final Int2ObjectOpenHashMap<List<GridInventoryEntry>> entriesByItemId = new Int2ObjectOpenHashMap<>();
+    private boolean entriesByItemIdNeedsUpdate = true;
     private final RepoSearch search = new RepoSearch();
     private IPartitionList partitionList;
     private Runnable updateViewListener;
@@ -108,6 +114,7 @@ public class Repo implements IClientRepo {
     }
 
     private void handleUpdate(GridInventoryEntry serverEntry) {
+        entriesByItemIdNeedsUpdate = true;
 
         var localEntry = entries.get(serverEntry.getSerial());
         if (localEntry == null) {
@@ -160,7 +167,7 @@ public class Repo implements IClientRepo {
                 // First, try to find an empty/meaningless slot in the view that is visually indistinguishable
                 // and fill it
                 if (takeOverSlotOccupiedByRemovedItem(serverEntry, pinnedRowFreeSlots, pinnedRow)
-                        || takeOverSlotOccupiedByRemovedItem(serverEntry, viewFreeSlots, view)) {
+                    || takeOverSlotOccupiedByRemovedItem(serverEntry, viewFreeSlots, view)) {
                     continue;
                 }
 
@@ -236,7 +243,7 @@ public class Repo implements IClientRepo {
             for (var pinnedKey : PinnedKeys.getPinnedKeys()) {
                 var info = PinnedKeys.getPinInfo(pinnedKey);
                 if (info.reason != PinnedKeys.PinReason.CRAFTING
-                        && pinnedRow.stream().noneMatch(r -> pinnedKey.equals(r.getWhat()))) {
+                    && pinnedRow.stream().noneMatch(r -> pinnedKey.equals(r.getWhat()))) {
                     this.pinnedRow.add(new GridInventoryEntry(
                             -1, pinnedKey, 0, 0, false));
                 }
@@ -290,7 +297,7 @@ public class Repo implements IClientRepo {
     }
 
     private static boolean takeOverSlotOccupiedByRemovedItem(GridInventoryEntry serverEntry,
-            Map<AEKey, IntList> freeSlots, List<GridInventoryEntry> slots) {
+                                                             Map<AEKey, IntList> freeSlots, List<GridInventoryEntry> slots) {
         IntList freeSlotIndices = freeSlots.get(serverEntry.getWhat());
         if (freeSlotIndices == null) {
             return false;
@@ -346,6 +353,8 @@ public class Repo implements IClientRepo {
         this.entries.clear();
         this.view.clear();
         this.pinnedRow.clear();
+        this.entriesByItemId.clear();
+        this.entriesByItemIdNeedsUpdate = true;
     }
 
     public final boolean hasPinnedRow() {
@@ -397,6 +406,52 @@ public class Repo implements IClientRepo {
     @Override
     public Set<GridInventoryEntry> getAllEntries() {
         return entries.values();
+    }
+
+    @Override
+    public List<GridInventoryEntry> getByIngredient(Ingredient ingredient) {
+        var entries = new ArrayList<GridInventoryEntry>();
+        for (int i = 0; i < ingredient.getStackingIds().size(); i++) {
+            var itemId = ingredient.getStackingIds().getInt(i);
+            for (var entry : getByItemId(itemId)) {
+                if (ingredient.test(((AEItemKey) entry.getWhat()).toStack())) {
+                    entries.add(entry);
+                }
+            }
+        }
+        return entries;
+    }
+
+    private Collection<GridInventoryEntry> getByItemId(int itemId) {
+        // Build the itemid->entry map if needed
+        if (entriesByItemIdNeedsUpdate) {
+            rebuildItemIdToEntries();
+            entriesByItemIdNeedsUpdate = false;
+        }
+        return entriesByItemId.getOrDefault(itemId, List.of());
+    }
+
+    private void rebuildItemIdToEntries() {
+        entriesByItemId.clear();
+        for (var entry : getAllEntries()) {
+            if (entry.getWhat() instanceof AEItemKey itemKey) {
+                var itemId = BuiltInRegistries.ITEM.getId(itemKey.getItem());
+                var currentList = entriesByItemId.get(itemId);
+                if (currentList == null) {
+                    // For many items without NBT, this list will only ever have one entry
+                    entriesByItemId.put(itemId, List.of(entry));
+                } else if (currentList.size() == 1) {
+                    // Convert the list from an immutable single-entry list to a mutable normal arraylist
+                    var mutableList = new ArrayList<GridInventoryEntry>(10);
+                    mutableList.addAll(currentList);
+                    mutableList.add(entry);
+                    entriesByItemId.put(itemId, mutableList);
+                } else {
+                    // If it had more than 1 item, it must have been mutable already
+                    currentList.add(entry);
+                }
+            }
+        }
     }
 
     public final void setUpdateViewListener(Runnable updateViewListener) {

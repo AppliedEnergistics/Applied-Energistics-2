@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
 
@@ -177,12 +176,12 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
     }
 
     @Override
-    public boolean hasIngredient(Predicate<ItemStack> predicate, Object2IntOpenHashMap<Object> reservedAmounts) {
+    public boolean hasIngredient(Ingredient ingredient, Object2IntOpenHashMap<Object> reservedAmounts) {
         // In addition to the base item repo, also check the crafting grid if it
         // already contains some of the needed items
         for (var slot : getSlots(SlotSemantics.CRAFTING_GRID)) {
             var stackInSlot = slot.getItem();
-            if (!stackInSlot.isEmpty() && predicate.test(stackInSlot)) {
+            if (!stackInSlot.isEmpty() && ingredient.test(stackInSlot)) {
                 var reservedAmount = reservedAmounts.getOrDefault(slot, 0);
                 if (stackInSlot.getCount() > reservedAmount) {
                     reservedAmounts.merge(slot, 1, Integer::sum);
@@ -192,7 +191,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
 
         }
 
-        return super.hasIngredient(predicate, reservedAmounts);
+        return super.hasIngredient(ingredient, reservedAmounts);
     }
 
     /**

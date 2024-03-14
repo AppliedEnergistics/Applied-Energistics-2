@@ -32,7 +32,6 @@ public final class AEItemKey extends AEKey {
     @Nullable
     private static CompoundTag serializeStackCaps(ItemStack stack) {
         try {
-
             var caps = stack.serializeAttachments();
             // Ensure stacks with no serializable cap providers are treated the same as stacks with no caps!
             return caps == null || caps.isEmpty() ? null : caps;
@@ -46,6 +45,12 @@ public final class AEItemKey extends AEKey {
     private final InternedTag internedCaps;
     private final int hashCode;
     private final int cachedDamage;
+    /**
+     * A lazily initialized itemstack used for display and ingredient testing purposes.
+     * This should never be modified and will always have amount 1.
+     */
+    @Nullable
+    private ItemStack readOnlyStack;
 
     /**
      * Max stack size cache, or {@code -1} if not initialized.
@@ -128,6 +133,17 @@ public final class AEItemKey extends AEKey {
         // TODO: remove or optimize cap check if it becomes too slow >:-(
         return !stack.isEmpty() && stack.is(item) && Objects.equals(stack.getTag(), internedTag.tag)
                 && Objects.equals(serializeStackCaps(stack), internedCaps.tag);
+    }
+
+    public ItemStack getReadOnlyStack() {
+        if (readOnlyStack == null) {
+            readOnlyStack = new ItemStack(item, 1, internedCaps.tag);
+            readOnlyStack.setTag(internedTag.tag);
+        } else {
+            if  (readOnlyStack.getCount() != 1) {
+                AELog.error("");
+            }
+        }
     }
 
     public ItemStack toStack() {
