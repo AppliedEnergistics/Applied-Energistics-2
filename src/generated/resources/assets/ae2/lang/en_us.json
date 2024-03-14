@@ -365,6 +365,7 @@
   "gui.ae2.ImportBusFluids": "ME Fluid Import Bus",
   "gui.ae2.InWorldCrafting": "AE2 In World Crafting",
   "gui.ae2.Included": "Included",
+  "gui.ae2.IncompatibleWithCell": "Incompatible with cell",
   "gui.ae2.IncreasedEnergyUseFromEnchants": "Enchants increase energy use",
   "gui.ae2.Inscriber": "Inscriber",
   "gui.ae2.Installed": "Installed: %s",

@@ -113,6 +113,7 @@ public enum GuiText implements LocalizationEnum {
     IOPort("ME IO Port"),
     ImportBus("ME Import Bus"),
     ImportBusFluids("ME Fluid Import Bus"),
+    IncompatibleWithCell("Incompatible with cell"),
     InWorldCrafting("AE2 In World Crafting"),
     Included("Included"),
     IncreasedEnergyUseFromEnchants("Enchants increase energy use"),
