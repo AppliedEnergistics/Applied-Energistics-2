@@ -3,6 +3,7 @@ package appeng.integration.modules.emi;
 import static appeng.integration.modules.itemlists.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
 import static appeng.integration.modules.itemlists.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,18 +13,17 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
-import dev.emi.emi.api.recipe.EmiPlayerInventory;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.recipe.handler.EmiCraftContext;
-import dev.emi.emi.api.recipe.handler.EmiRecipeHandler;
+import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.SlotWidget;
@@ -33,9 +33,10 @@ import appeng.api.stacks.AEKey;
 import appeng.integration.modules.itemlists.EncodingHelper;
 import appeng.integration.modules.itemlists.TransferHelper;
 import appeng.menu.AEBaseMenu;
+import appeng.menu.SlotSemantics;
 import appeng.menu.me.items.CraftingTermMenu;
 
-abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeHandler<T> {
+abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements StandardRecipeHandler<T> {
     protected static final int CRAFTING_GRID_WIDTH = 3;
     protected static final int CRAFTING_GRID_HEIGHT = 3;
 
@@ -46,8 +47,24 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
     }
 
     @Override
-    public EmiPlayerInventory getInventory(AbstractContainerScreen<T> screen) {
-        return new EmiPlayerInventory(List.of());
+    public List<Slot> getInputSources(T menu) {
+        var slots = new ArrayList<Slot>();
+        slots.addAll(menu.getSlots(SlotSemantics.PLAYER_INVENTORY));
+        slots.addAll(menu.getSlots(SlotSemantics.PLAYER_HOTBAR));
+        return slots;
+    }
+
+    @Override
+    public List<Slot> getCraftingSlots(T menu) {
+        return menu.getSlots(SlotSemantics.CRAFTING_GRID);
+    }
+
+    @Override
+    public @Nullable Slot getOutputSlot(T menu) {
+        for (var slot : menu.getSlots(SlotSemantics.CRAFTING_RESULT)) {
+            return slot;
+        }
+        return null;
     }
 
     protected abstract Result transferRecipe(T menu,
@@ -77,11 +94,6 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
     }
 
     @Override
-    public boolean canCraft(EmiRecipe recipe, EmiCraftContext<T> context) {
-        return (transferRecipe(recipe, context, false) instanceof Result.Success);
-    }
-
-    @Override
     public boolean craft(EmiRecipe recipe, EmiCraftContext<T> context) {
         return transferRecipe(recipe, context, true).canCraft();
     }
@@ -95,7 +107,7 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
                     .map(ClientTooltipComponent::create)
                     .toList();
         } else {
-            return EmiRecipeHandler.super.getTooltip(recipe, context);
+            return StandardRecipeHandler.super.getTooltip(recipe, context);
         }
     }
 
@@ -106,6 +118,9 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements EmiRecipeH
 
     @Nullable
     private RecipeHolder<?> getRecipeHolder(Level level, EmiRecipe recipe) {
+        if (recipe.getBackingRecipe() != null) {
+            return recipe.getBackingRecipe();
+        }
         if (recipe.getId() != null) {
             // TODO: This can produce false positives...
             return level.getRecipeManager().byKey(recipe.getId()).orElse(null);

@@ -18,14 +18,10 @@
 
 package appeng.integration.modules.rei;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -57,7 +53,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.CondenserOutput;
 import appeng.api.features.P2PTunnelAttunementInternal;
 import appeng.api.integrations.rei.IngredientConverters;
-import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.core.AEConfig;
@@ -71,6 +66,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
 import appeng.integration.abstraction.ItemListMod;
 import appeng.integration.modules.itemlists.CompatLayerHelper;
+import appeng.integration.modules.itemlists.ItemPredicates;
 import appeng.integration.modules.rei.transfer.EncodePatternTransferHandler;
 import appeng.integration.modules.rei.transfer.UseCraftingRecipeTransfer;
 import appeng.items.parts.FacadeItem;
@@ -85,11 +81,6 @@ import appeng.recipes.transform.TransformRecipe;
 @REIPluginClient
 public class ReiPlugin implements REIClientPlugin {
     static final ResourceLocation TEXTURE = AppEng.makeId("textures/guis/jei.png");
-
-    // Will be hidden if developer items are disabled in the config
-    private List<Predicate<ItemStack>> developerItems;
-    // Will be hidden if colored cables are hidden
-    private List<Predicate<ItemStack>> coloredCables;
 
     public ReiPlugin() {
         if (CompatLayerHelper.IS_LOADED) {
@@ -125,7 +116,7 @@ public class ReiPlugin implements REIClientPlugin {
 
     @Override
     public void registerDisplays(DisplayRegistry registry) {
-        if (AEConfig.instance().isEnableFacadeRecipesInJEI()) {
+        if (AEConfig.instance().isEnableFacadeRecipesInRecipeViewer()) {
             registry.registerGlobalDisplayGenerator(new FacadeRegistryGenerator());
         }
 
@@ -185,36 +176,9 @@ public class ReiPlugin implements REIClientPlugin {
 
     @Override
     public void registerEntries(EntryRegistry registry) {
-        // Will be hidden if developer items are disabled in the config
-        developerItems = ImmutableList.of(
-                AEBlocks.DEBUG_CUBE_GEN::isSameAs,
-                AEBlocks.DEBUG_ENERGY_GEN::isSameAs,
-                AEBlocks.DEBUG_ITEM_GEN::isSameAs,
-                AEBlocks.DEBUG_PHANTOM_NODE::isSameAs,
-
-                AEItems.DEBUG_CARD::isSameAs,
-                AEItems.DEBUG_ERASER::isSameAs,
-                AEItems.DEBUG_METEORITE_PLACER::isSameAs,
-                AEItems.DEBUG_REPLICATOR_CARD::isSameAs);
-
-        // Will be hidden if colored cables are hidden
-        List<Predicate<ItemStack>> predicates = new ArrayList<>();
-
-        for (AEColor color : AEColor.values()) {
-            if (color == AEColor.TRANSPARENT) {
-                continue; // Keep the Fluix variant
-            }
-            predicates.add(stack -> stack.getItem() == AEParts.COVERED_CABLE.item(color));
-            predicates.add(stack -> stack.getItem() == AEParts.COVERED_DENSE_CABLE.item(color));
-            predicates.add(stack -> stack.getItem() == AEParts.GLASS_CABLE.item(color));
-            predicates.add(stack -> stack.getItem() == AEParts.SMART_CABLE.item(color));
-            predicates.add(stack -> stack.getItem() == AEParts.SMART_DENSE_CABLE.item(color));
-        }
-        coloredCables = ImmutableList.copyOf(predicates);
-
         registry.removeEntryIf(this::shouldEntryBeHidden);
 
-        if (AEConfig.instance().isEnableFacadesInJEI()) {
+        if (AEConfig.instance().isEnableFacadesInRecipeViewer()) {
             registry.addEntries(
                     EntryIngredients.ofItemStacks(FacadeCreativeTab.getDisplayItems()));
         }
@@ -222,7 +186,7 @@ public class ReiPlugin implements REIClientPlugin {
 
     @Override
     public void registerCollapsibleEntries(CollapsibleEntryRegistry registry) {
-        if (AEConfig.instance().isEnableFacadesInJEI()) {
+        if (AEConfig.instance().isEnableFacadesInRecipeViewer()) {
             FacadeItem facadeItem = AEItems.FACADE.asItem();
             registry.group(AppEng.makeId("facades"), Component.translatable("itemGroup.ae2.facades"),
                     stack -> stack.getType() == VanillaEntryTypes.ITEM && stack.<ItemStack>castValue().is(facadeItem));
@@ -328,33 +292,7 @@ public class ReiPlugin implements REIClientPlugin {
         if (entryStack.getType() != VanillaEntryTypes.ITEM) {
             return false;
         }
-        ItemStack stack = entryStack.castValue();
-
-        if (AEItems.WRAPPED_GENERIC_STACK.isSameAs(stack)
-                || AEItems.FACADE.isSameAs(stack) // REI will add a broken facade with no NBT
-                || AEBlocks.CABLE_BUS.isSameAs(stack)
-                || AEBlocks.MATRIX_FRAME.isSameAs(stack)
-                || AEBlocks.PAINT.isSameAs(stack)) {
-            return true;
-        }
-
-        if (!AEConfig.instance().isDebugToolsEnabled()) {
-            for (var developerItem : developerItems) {
-                if (developerItem.test(stack)) {
-                    return true;
-                }
-            }
-        }
-
-        if (AEConfig.instance().isDisableColoredCableRecipesInJEI()) {
-            for (var predicate : coloredCables) {
-                if (predicate.test(stack)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return ItemPredicates.shouldBeHidden(entryStack.castValue());
     }
 
 }
