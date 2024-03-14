@@ -107,7 +107,8 @@ public class StorageBusPart extends UpgradeablePart
             new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_has_channel"));
 
     protected final IActionSource source;
-    private final ConfigInventory config = ConfigInventory.configTypes(63, this::onConfigurationChanged);
+    private final ConfigInventory config = ConfigInventory.configTypes(63).changeListener(this::onConfigurationChanged)
+            .build();
     /**
      * This is the virtual inventory this storage bus exposes to the network it belongs to. To avoid continuous
      * cell-change notifications, we instead use a handler that will exist as long as this storage bus exists, while

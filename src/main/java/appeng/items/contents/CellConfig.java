@@ -25,7 +25,6 @@ import com.google.common.base.Preconditions;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.stacks.AEKeyType;
-import appeng.api.stacks.AEKeyTypes;
 import appeng.util.ConfigInventory;
 
 public final class CellConfig {
@@ -36,21 +35,23 @@ public final class CellConfig {
         Preconditions.checkArgument(size >= 1 && size <= 63,
                 "Config inventory must have between 1 and 63 slots inclusive.");
         var holder = new Holder(is);
-        holder.inv = ConfigInventory.configTypes(supportedTypes, size, holder::save);
+        holder.inv = ConfigInventory.configTypes(size).supportedTypes(supportedTypes).changeListener(holder::save)
+                .build();
         holder.load();
         return holder.inv;
     }
 
     public static ConfigInventory create(Set<AEKeyType> supportedTypes, ItemStack is) {
         var holder = new Holder(is);
-        holder.inv = ConfigInventory.configTypes(supportedTypes, 63, holder::save);
+        holder.inv = ConfigInventory.configTypes(63).supportedTypes(supportedTypes).changeListener(holder::save)
+                .build();
         holder.load();
         return holder.inv;
     }
 
     public static ConfigInventory create(ItemStack is) {
         var holder = new Holder(is);
-        holder.inv = ConfigInventory.configTypes(AEKeyTypes.getAll(), 63, holder::save);
+        holder.inv = ConfigInventory.configTypes(63).changeListener(holder::save).build();
         holder.load();
         return holder.inv;
     }

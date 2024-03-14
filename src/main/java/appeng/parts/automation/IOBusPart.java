@@ -92,7 +92,8 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
         super(partItem);
         this.tickRates = tickRates;
         this.source = new MachineSource(this);
-        this.config = ConfigInventory.configTypes(supportedKeyTypes, 63, this::updateState);
+        this.config = ConfigInventory.configTypes(63).supportedTypes(supportedKeyTypes)
+                .changeListener(this::updateState).build();
         getMainNode().addService(IGridTickable.class, this);
 
         this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);

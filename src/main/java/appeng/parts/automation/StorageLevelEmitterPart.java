@@ -80,7 +80,8 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
     public static final PartModel MODEL_ON_ON = new PartModel(MODEL_BASE_ON, MODEL_STATUS_ON);
     public static final PartModel MODEL_ON_HAS_CHANNEL = new PartModel(MODEL_BASE_ON, MODEL_STATUS_HAS_CHANNEL);
 
-    private final ConfigInventory config = ConfigInventory.configTypes(1, this::configureWatchers);
+    private final ConfigInventory config = ConfigInventory.configTypes(1).changeListener(this::configureWatchers)
+            .build();
     private IStackWatcher storageWatcher;
     private IStackWatcher craftingWatcher;
     private long lastUpdateTick = -1;

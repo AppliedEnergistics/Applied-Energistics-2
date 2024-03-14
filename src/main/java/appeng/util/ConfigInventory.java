@@ -1,5 +1,6 @@
 package appeng.util;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -39,14 +40,24 @@ public class ConfigInventory extends GenericStackInv {
 
     /**
      * An empty config-type inventory.
+     * 
+     * @deprecated use #empty()
      */
-    public static final ConfigInventory EMPTY_TYPES = ConfigInventory.configTypes(AEKeyTypes.getAll(), 0, null);
+    @Deprecated(since = "1.20.4")
+    public static final ConfigInventory EMPTY_TYPES = ConfigInventory.configTypes(0).build();
 
-    protected ConfigInventory(Set<AEKeyType> supportedKeyTypes, @Nullable AEKeySlotFilter slotFilter,
+    /**
+     * @return A read-only, empty inventory that is in types mode.
+     */
+    public static ConfigInventory emptyTypes() {
+        return EMPTY_TYPES;
+    }
+
+    protected ConfigInventory(Set<AEKeyType> supportedTypes, @Nullable AEKeySlotFilter slotFilter,
             Mode mode,
             int size, @Nullable Runnable listener,
             boolean allowOverstacking) {
-        super(supportedKeyTypes, listener, mode, size);
+        super(supportedTypes, listener, mode, size);
         this.allowOverstacking = allowOverstacking;
         setFilter(slotFilter);
     }
@@ -54,7 +65,7 @@ public class ConfigInventory extends GenericStackInv {
     public final static class Builder {
         private final Mode mode;
         private final int size;
-        private Set<AEKeyType> supportedKeyTypes = AEKeyTypes.getAll();
+        private Set<AEKeyType> supportedTypes = AEKeyTypes.getAll();
         @Nullable
         private AEKeySlotFilter slotFilter;
         @Nullable
@@ -66,18 +77,26 @@ public class ConfigInventory extends GenericStackInv {
             this.size = size;
         }
 
-        public Builder supportedKeyType(AEKeyType keyType) {
-            this.supportedKeyTypes = Set.of(keyType);
+        public Builder supportedType(AEKeyType type) {
+            this.supportedTypes = Set.of(type);
             return this;
         }
 
-        public Builder supportedKeyTypes(AEKeyType keyType, AEKeyType... moreKeyTypes) {
-            if (moreKeyTypes.length == 0) {
-                return supportedKeyType(keyType);
+        public Builder supportedTypes(AEKeyType type, AEKeyType... moreTypes) {
+            if (moreTypes.length == 0) {
+                return supportedType(type);
             }
-            this.supportedKeyTypes = new HashSet<>(1 + moreKeyTypes.length);
-            this.supportedKeyTypes.add(keyType);
-            Collections.addAll(this.supportedKeyTypes, moreKeyTypes);
+            this.supportedTypes = new HashSet<>(1 + moreTypes.length);
+            this.supportedTypes.add(type);
+            Collections.addAll(this.supportedTypes, moreTypes);
+            return this;
+        }
+
+        public Builder supportedTypes(Collection<AEKeyType> types) {
+            if (types.isEmpty()) {
+                throw new IllegalArgumentException("Configuration inventories must support at least one key type");
+            }
+            this.supportedTypes = Set.copyOf(types);
             return this;
         }
 
@@ -103,7 +122,7 @@ public class ConfigInventory extends GenericStackInv {
         }
 
         /**
-         * Allow slots to exceed the natural stack size limits of items.
+         * Allow slots to exceed the natural stack size limits of items. This is false by default.
          */
         public Builder allowOverstacking(boolean enable) {
             this.allowOverstacking = enable;
@@ -112,7 +131,7 @@ public class ConfigInventory extends GenericStackInv {
 
         public ConfigInventory build() {
             return new ConfigInventory(
-                    supportedKeyTypes,
+                    supportedTypes,
                     slotFilter,
                     mode,
                     size,
@@ -145,51 +164,96 @@ public class ConfigInventory extends GenericStackInv {
     /**
      * When in types mode, the config inventory will ignore all amounts and always return amount 1 for stacks in the
      * inventory.
+     * 
+     * @deprecated Use the builder {@link #configTypes(int))
      */
+    @Deprecated(since = "1.20.4")
     public static ConfigInventory configTypes(int size, @Nullable Runnable changeListener) {
-        return new ConfigInventory(AEKeyTypes.getAll(), null, Mode.CONFIG_TYPES, size, changeListener, false);
+        var builder = configTypes(size);
+        if (changeListener != null) {
+            builder.changeListener(changeListener);
+        }
+        return builder.build();
     }
 
     /**
      * When in types mode, the config inventory will ignore all amounts and always return amount 1 for stacks in the
      * inventory.
+     *
+     * @deprecated Use the builder {@link #configTypes(int))
      */
-    public static ConfigInventory configTypes(Set<AEKeyType> supportedKeyTypes, int size,
+    @Deprecated(since = "1.20.4")
+    public static ConfigInventory configTypes(Set<AEKeyType> supportedTypes, int size,
             @Nullable Runnable changeListener) {
-        return new ConfigInventory(supportedKeyTypes, null, Mode.CONFIG_TYPES, size, changeListener, false);
+        var builder = configTypes(size).supportedTypes(supportedTypes);
+        if (changeListener != null) {
+            builder.changeListener(changeListener);
+        }
+        return builder.build();
     }
 
     /**
      * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
+     *
+     * @deprecated Use the builder {@link #configTypes(int))
      */
-    public static ConfigInventory configStacks(Set<AEKeyType> supportedKeyTypes, int size,
+    @Deprecated(since = "1.20.4")
+    public static ConfigInventory configStacks(Set<AEKeyType> supportedTypes, int size,
             @Nullable Runnable changeListener, boolean allowOverstacking) {
-        return new ConfigInventory(supportedKeyTypes, null, Mode.CONFIG_STACKS, size, changeListener,
-                allowOverstacking);
+        var builder = configStacks(size).supportedTypes(supportedTypes);
+        if (changeListener != null) {
+            builder.changeListener(changeListener);
+        }
+        builder.allowOverstacking(allowOverstacking);
+        return builder.build();
     }
 
     /**
      * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
+     *
+     * @deprecated Use the builder {@link #configTypes(int))
      */
+    @Deprecated(since = "1.20.4")
     public static ConfigInventory storage(int size, @Nullable Runnable changeListener) {
-        return new ConfigInventory(AEKeyTypes.getAll(), null, Mode.STORAGE, size, changeListener, false);
+        var builder = storage(size);
+        if (changeListener != null) {
+            builder.changeListener(changeListener);
+        }
+        return builder.build();
     }
 
     /**
      * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
+     *
+     * @deprecated Use the builder {@link #configTypes(int))
      */
-    public static ConfigInventory storage(Set<AEKeyType> supportedKeyTypes, int size,
+    @Deprecated(since = "1.20.4")
+    public static ConfigInventory storage(Set<AEKeyType> supportedTypes, int size,
             @Nullable Runnable changeListener) {
-        return new ConfigInventory(supportedKeyTypes, null, Mode.STORAGE, size, changeListener, false);
+        var builder = storage(size).supportedTypes(supportedTypes);
+        if (changeListener != null) {
+            builder.changeListener(changeListener);
+        }
+        return builder.build();
     }
 
     /**
      * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
+     *
+     * @deprecated Use the builder {@link #configTypes(int))
      */
-    public static ConfigInventory storage(Set<AEKeyType> supportedKeyTypes, @Nullable AEKeySlotFilter slotFilter,
+    @Deprecated(since = "1.20.4")
+    public static ConfigInventory storage(Set<AEKeyType> supportedTypes, @Nullable AEKeySlotFilter slotFilter,
             int size,
             @Nullable Runnable changeListener) {
-        return new ConfigInventory(supportedKeyTypes, slotFilter, Mode.STORAGE, size, changeListener, false);
+        var builder = storage(size).supportedTypes(supportedTypes);
+        if (slotFilter != null) {
+            builder.slotFilter(slotFilter);
+        }
+        if (changeListener != null) {
+            builder.changeListener(changeListener);
+        }
+        return builder.build();
     }
 
     @Nullable
