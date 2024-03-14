@@ -17,44 +17,44 @@ import appeng.items.parts.FacadeItem;
  * This plugin will dynamically add facade recipes for any item that can be turned into a facade.
  */
 class EmiFacadeGenerator {
-    private final ItemStack cableAnchor;
+    private final EmiStack cableAnchor;
 
     EmiFacadeGenerator() {
-        this.cableAnchor = AEParts.CABLE_ANCHOR.stack();
+        this.cableAnchor = EmiStack.of(AEParts.CABLE_ANCHOR.stack());
     }
 
-    public Optional<EmiRecipe> getRecipeFor(EmiStack emiStack) {
-        var itemStack = emiStack.getItemStack();
-        if (itemStack.isEmpty()) {
+    public Optional<EmiRecipe> getRecipeFor(ItemStack potentialFacade) {
+        if (potentialFacade.isEmpty()) {
             return Optional.empty(); // We only have items
         }
 
-        // Looking up how a certain facade is crafted
-        if (itemStack.getItem() instanceof FacadeItem facadeItem) {
-            ItemStack textureItem = facadeItem.getTextureItem(itemStack);
-            return Optional.of(make(textureItem, this.cableAnchor, itemStack.copy()));
+        if (potentialFacade.getItem() instanceof FacadeItem facadeItem) {
+            ItemStack textureItem = facadeItem.getTextureItem(potentialFacade);
+            return Optional.of(make(textureItem, potentialFacade.copy()));
         }
 
         return Optional.empty();
     }
 
-    private EmiRecipe make(ItemStack textureItem, ItemStack cableAnchor, ItemStack result) {
+    private EmiRecipe make(ItemStack textureItem, ItemStack result) {
+        var textureStack = EmiStack.of(textureItem);
+        var resultStack = EmiStack.of(result, 4);
+
         var input = List.<EmiIngredient>of(
                 EmiStack.EMPTY,
-                EmiStack.of(cableAnchor),
+                cableAnchor,
                 EmiStack.EMPTY,
-                EmiStack.of(cableAnchor),
-                EmiStack.of(textureItem),
-                EmiStack.of(cableAnchor),
+                cableAnchor,
+                textureStack,
+                cableAnchor,
                 EmiStack.EMPTY,
-                EmiStack.of(cableAnchor),
+                cableAnchor,
                 EmiStack.EMPTY);
 
         return new EmiCraftingRecipe(
                 input,
-                EmiStack.of(result, 4),
+                resultStack,
                 null,
                 false);
     }
-
 }

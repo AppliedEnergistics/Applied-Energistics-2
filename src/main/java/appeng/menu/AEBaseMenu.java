@@ -549,7 +549,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             return;
         }
 
-        if (s instanceof FakeSlot) {
+        if (s instanceof FakeSlot fakeSlot && fakeSlot.canSetFilterTo(item)) {
             s.set(item);
         }
     }

@@ -50,6 +50,10 @@ public class FakeSlot extends AppEngSlot {
 
     @Override
     public void set(ItemStack is) {
+        if (!canSetFilterTo(is)) {
+            return;
+        }
+
         if (!is.isEmpty()) {
             is = is.copy();
         }
