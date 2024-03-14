@@ -37,6 +37,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
 import appeng.core.localization.LocalizationEnum;
 import appeng.integration.abstraction.ItemListMod;
+import appeng.integration.modules.itemlists.ItemPredicates;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.menu.me.items.WirelessCraftingTermMenu;
@@ -106,14 +107,15 @@ public class AppEngEmiPlugin implements EmiPlugin {
         adaptRecipeType(registry, TransformRecipe.TYPE, EmiTransformRecipe::new);
 
         // Facades
-        if (AEConfig.instance().isEnableFacadeRecipesInJEI()) {
+        if (AEConfig.instance().isEnableFacadeRecipesInRecipeViewer()) {
             registry.addDeferredRecipes(this::registerFacades);
         }
 
         // Remove items
-        if (!AEConfig.instance().isEnableFacadesInJEI()) {
-            registry.removeEmiStacks(stack -> AEItems.FACADE.isSameAs(stack.getItemStack()));
-        }
+        registry.removeEmiStacks(emiStack -> {
+            var stack = emiStack.getItemStack();
+            return !stack.isEmpty() && ItemPredicates.shouldBeHidden(stack);
+        });
     }
 
     private void registerWorkstations(EmiRegistry registry) {
