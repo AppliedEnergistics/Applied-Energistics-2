@@ -46,12 +46,11 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.core.localization.PlayerMessages;
 import appeng.hooks.AEToolItem;
-import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
 
-public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AEToolItem {
+public class BasicStorageCell extends StorageCellItem implements IBasicCellItem, AEToolItem {
     /**
      * This can be retrieved when disassembling the storage cell.
      */
@@ -150,9 +149,11 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        this.disassembleDrive(player.getItemInHand(hand), level, player);
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                player.getItemInHand(hand));
+        if (this.disassembleDrive(player.getItemInHand(hand), level, player)) {
+            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
+                    player.getItemInHand(hand));
+        }
+        return super.use(level, player, hand);
     }
 
     private boolean disassembleDrive(ItemStack stack, Level level, Player player) {

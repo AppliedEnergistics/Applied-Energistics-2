@@ -42,12 +42,11 @@ import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
-import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.me.cells.CreativeCellHandler;
 import appeng.util.ConfigInventory;
 
-public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
+public class CreativeCellItem extends StorageCellItem implements ICellWorkbenchItem {
     public CreativeCellItem(Properties props) {
         super(props);
     }

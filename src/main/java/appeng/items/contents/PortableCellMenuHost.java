@@ -20,7 +20,6 @@ package appeng.items.contents;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
 
@@ -40,7 +39,6 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.MEStorage;
-import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.SupplierStorage;
 import appeng.api.storage.cells.IBasicCellItem;
@@ -66,7 +64,7 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
         super(item, player, locator);
         Preconditions.checkArgument(getItemStack().is(item), "Stack doesn't match item");
         this.returnMainMenu = returnMainMenu;
-        this.cellStorage = new SupplierStorage(new CellStorageSupplier());
+        this.cellStorage = new SupplierStorage(new CellStorageSupplier(this::getItemStack));
         Objects.requireNonNull(cellStorage, "Portable cell doesn't expose a cell inventory.");
         this.item = item;
         this.updateLinkStatus();
@@ -160,20 +158,5 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
         }
 
         return null; // We don't know
-    }
-
-    private class CellStorageSupplier implements Supplier<MEStorage> {
-        private MEStorage currentStorage;
-        private ItemStack currentStack;
-
-        @Override
-        public MEStorage get() {
-            var stack = getItemStack();
-            if (stack != currentStack) {
-                currentStorage = StorageCells.getCellInventory(stack, null);
-                currentStack = stack;
-            }
-            return currentStorage;
-        }
     }
 }
