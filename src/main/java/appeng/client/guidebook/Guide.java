@@ -17,6 +17,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.LoadingOverlay;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.commands.Commands;
 import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.resources.ResourceLocation;
@@ -41,6 +43,7 @@ import net.minecraft.world.level.validation.DirectoryValidator;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TickEvent;
 
@@ -600,20 +603,18 @@ public final class Guide implements PageCollection {
                     throw new IllegalStateException(
                             "Cannot enable the startup page/validation, since no mod event bus was supplied to the builder.");
                 }
-                var reloadFuture = afterClientStart(modEventBus).thenRun(Guide::runDatapackReload);
-                if (validateAtStartup) {
-                    reloadFuture = reloadFuture.thenRun(guide::validateAll);
-                }
-                if (startupPage != null) {
-                    reloadFuture = reloadFuture.thenRun(() -> {
-                        var client = Minecraft.getInstance();
-                        client.setScreen(GuideScreen.openNew(guide, PageAnchor.page(startupPage),
-                                GlobalInMemoryHistory.INSTANCE));
-                    });
-                }
-                reloadFuture.whenComplete((unused, throwable) -> {
-                    if (throwable != null) {
-                        LOGGER.error("Failed Guide startup.", throwable);
+                var guideOpenedOnce = new MutableBoolean(false);
+                NeoForge.EVENT_BUS.addListener((ScreenEvent.Opening e) -> {
+                    if (e.getNewScreen() instanceof TitleScreen && !guideOpenedOnce.booleanValue()) {
+                        guideOpenedOnce.setTrue();
+                        runDatapackReload();
+                        if (validateAtStartup) {
+                            guide.validateAll();
+                        }
+                        if (startupPage != null) {
+                            e.setNewScreen(GuideScreen.openNew(guide, PageAnchor.page(startupPage),
+                                    GlobalInMemoryHistory.INSTANCE));
+                        }
                     }
                 });
             }
