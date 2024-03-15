@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.crafting.pattern;
+package appeng.api.crafting;
 
 import java.util.List;
 import java.util.Map;
@@ -39,13 +39,13 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.stacks.GenericStack;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
+import appeng.crafting.pattern.AECraftingPattern;
 import appeng.items.AEBaseItem;
 import appeng.items.misc.WrappedGenericStack;
 import appeng.util.InteractionUtil;
@@ -59,7 +59,7 @@ public abstract class EncodedPatternItem extends AEBaseItem {
     }
 
     @Override
-    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+    public final void addToMainCreativeTab(CreativeModeTab.Output output) {
         // Don't show in creative mode, since it's not useful without NBT
     }
 

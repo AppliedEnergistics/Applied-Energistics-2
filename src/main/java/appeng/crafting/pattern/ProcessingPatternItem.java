@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import appeng.api.crafting.EncodedPatternItem;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 

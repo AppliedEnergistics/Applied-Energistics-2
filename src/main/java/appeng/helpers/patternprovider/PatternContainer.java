@@ -2,13 +2,14 @@ package appeng.helpers.patternprovider;
 
 import org.jetbrains.annotations.Nullable;
 
+import appeng.api.crafting.EncodedPatternItem;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGrid;
 
 /**
- * Interface implemented by machines connected to the network if they support storing
- * {@link appeng.crafting.pattern.EncodedPatternItem}, such as the pattern provider.
+ * Interface implemented by machines connected to the network if they support storing {@link EncodedPatternItem}, such
+ * as the pattern provider.
  */
 public interface PatternContainer {
     /**

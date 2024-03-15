@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
+import appeng.api.crafting.EncodedPatternItem;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.features.GridLinkables;
 import appeng.api.features.IGridLinkableHandler;
@@ -40,7 +41,6 @@ import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;
-import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.util.Platform;
 
 /**

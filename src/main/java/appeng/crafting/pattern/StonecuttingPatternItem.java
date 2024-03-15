@@ -11,6 +11,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
 
+import appeng.api.crafting.EncodedPatternItem;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.AELog;
 

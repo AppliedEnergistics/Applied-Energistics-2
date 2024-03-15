@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.crafting.pattern;
+package appeng.api.crafting;
 
 import java.util.ArrayList;
 import java.util.List;

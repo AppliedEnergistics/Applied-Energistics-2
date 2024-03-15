@@ -27,10 +27,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import appeng.api.client.AEKeyRendering;
+import appeng.api.crafting.EncodedPatternItem;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.me.common.StackSizeRenderer;
-import appeng.crafting.pattern.EncodedPatternItem;
 
 public final class GuiGraphicsHooks {
     // Prevents recursion in the hook below
