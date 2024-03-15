@@ -89,7 +89,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
     }
 
     public Stream<T> getOutputStream() {
-        if (this.getMainNode().isActive()) {
+        if (this.getMainNode().isOnline()) {
             var grid = getMainNode().getGrid();
             if (grid != null) {
                 return P2PService.get(grid).getOutputs(this.getFrequency(), this.getClass());
