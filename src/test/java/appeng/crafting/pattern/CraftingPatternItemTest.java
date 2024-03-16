@@ -1,6 +1,7 @@
 package appeng.crafting.pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -119,7 +120,11 @@ class CraftingPatternItemTest {
         when(level.getRecipeManager()).thenReturn(recipeManager);
         when(recipeManager.byType(RecipeType.CRAFTING)).thenReturn(Map.of(TEST_RECIPE_ID, TEST_RECIPE));
 
-        return new AECraftingPattern(AEItemKey.of(AEItems.CRAFTING_PATTERN, tag), level);
+        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(AEItems.CRAFTING_PATTERN, tag), level);
+        if (details == null) {
+            return null;
+        }
+        return assertInstanceOf(AECraftingPattern.class, details);
     }
 
     private static class TestRecipe implements CraftingRecipe {

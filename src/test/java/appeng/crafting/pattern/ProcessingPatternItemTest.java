@@ -1,6 +1,7 @@
 package appeng.crafting.pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
@@ -93,6 +94,11 @@ class ProcessingPatternItemTest {
     }
 
     private AEProcessingPattern decode(CompoundTag tag) {
-        return new AEProcessingPattern(AEItemKey.of(AEItems.PROCESSING_PATTERN, tag));
+        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(AEItems.PROCESSING_PATTERN, tag), null);
+        if (details == null) {
+            return null;
+        }
+        return assertInstanceOf(AEProcessingPattern.class, details);
+
     }
 }
