@@ -22,10 +22,15 @@ import java.util.Objects;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmithingRecipe;
+import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEItemKey;
+import appeng.core.AELog;
 
 /**
  * Helper functions to work with patterns, mostly related to (de)serialization.
@@ -80,5 +85,43 @@ class SmithingTablePatternEncoding {
         tag.put(NBT_OUTPUT, output.toTag());
         tag.putBoolean(NBT_SUBSITUTE, allowSubstitution);
         tag.putString(NBT_RECIPE_ID, recipe.id().toString());
+    }
+
+    public static boolean recover(CompoundTag tag, Level level) {
+        RecipeManager recipeManager = level.getRecipeManager();
+
+        var template = SmithingTablePatternEncoding.getTemplate(tag);
+        var base = SmithingTablePatternEncoding.getBase(tag);
+        var addition = SmithingTablePatternEncoding.getAddition(tag);
+        var output = SmithingTablePatternEncoding.getOutput(tag);
+        if (template == null || base == null || addition == null || output == null) {
+            return false; // Either input or output item was removed
+        }
+
+        var recipeId = SmithingTablePatternEncoding.getRecipeId(tag);
+
+        // Fill a crafting inventory with the ingredients to find suitable recipes
+        var testInventory = new SimpleContainer(2);
+        testInventory.setItem(0, base.toStack());
+        testInventory.setItem(1, addition.toStack());
+
+        // Multiple recipes can match for stonecutting
+        var recipe = recipeManager.getRecipeFor(RecipeType.SMITHING, testInventory, level).orElse(null);
+        if (recipe == null) {
+            AELog.info("Failed to recover encoded smithing pattern for recipe %s (no recipe for inputs)", recipeId);
+            return false;
+        }
+
+        // Try to find the output in the potential recipe list
+        if (!AEItemKey.matches(output, recipe.value().getResultItem(level.registryAccess()))) {
+            AELog.info("Failed to recover encoded smithing pattern for recipe %s (output mismatch)", recipeId);
+            return false;
+        }
+
+        // Yay we found a match, reencode the pattern
+        AELog.debug("Re-Encoding pattern from %s -> %s", recipeId, recipe.id());
+        SmithingTablePatternEncoding.encode(tag, recipe, template, base, addition, output,
+                SmithingTablePatternEncoding.canSubstitute(tag));
+        return true;
     }
 }

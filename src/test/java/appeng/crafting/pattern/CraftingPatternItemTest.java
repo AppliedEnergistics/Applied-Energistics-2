@@ -119,8 +119,7 @@ class CraftingPatternItemTest {
         when(level.getRecipeManager()).thenReturn(recipeManager);
         when(recipeManager.byType(RecipeType.CRAFTING)).thenReturn(Map.of(TEST_RECIPE_ID, TEST_RECIPE));
 
-        return AEItems.CRAFTING_PATTERN.asItem().decode(
-                AEItemKey.of(AEItems.CRAFTING_PATTERN, tag), level);
+        return new AECraftingPattern(AEItemKey.of(AEItems.CRAFTING_PATTERN, tag), level);
     }
 
     private static class TestRecipe implements CraftingRecipe {

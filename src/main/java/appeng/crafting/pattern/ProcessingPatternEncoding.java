@@ -18,6 +18,7 @@
 
 package appeng.crafting.pattern;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import com.google.common.base.Preconditions;
@@ -31,9 +32,12 @@ import appeng.api.stacks.GenericStack;
 /**
  * Helper functions to work with patterns, mostly related to (de)serialization.
  */
-class ProcessingPatternEncoding {
+final class ProcessingPatternEncoding {
     private static final String NBT_INPUTS = "in";
     private static final String NBT_OUTPUTS = "out";
+
+    private ProcessingPatternEncoding() {
+    }
 
     public static GenericStack[] getProcessingInputs(CompoundTag nbt) {
         return getMixedList(nbt, NBT_INPUTS, AEProcessingPattern.MAX_INPUT_SLOTS);
@@ -66,6 +70,12 @@ class ProcessingPatternEncoding {
 
     public static void encodeProcessingPattern(CompoundTag tag, GenericStack[] sparseInputs,
             GenericStack[] sparseOutputs) {
+        if (Arrays.stream(sparseInputs).noneMatch(Objects::nonNull)) {
+            throw new IllegalArgumentException("At least one input must be non-null.");
+        }
+        Objects.requireNonNull(sparseOutputs[0],
+                "The first (primary) output must be non-null.");
+
         tag.put(NBT_INPUTS, encodeStackList(sparseInputs));
         tag.put(NBT_OUTPUTS, encodeStackList(sparseOutputs));
     }

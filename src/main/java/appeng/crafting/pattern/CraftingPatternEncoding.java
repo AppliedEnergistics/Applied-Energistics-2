@@ -18,6 +18,7 @@
 
 package appeng.crafting.pattern;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import com.google.common.base.Preconditions;
@@ -26,11 +27,19 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
+import appeng.core.AELog;
+import appeng.menu.AutoCraftingMenu;
 
 /**
  * Helper functions to work with patterns, mostly related to (de)serialization.
@@ -83,7 +92,7 @@ class CraftingPatternEncoding {
         return ItemStack.of(nbt.getCompound(NBT_OUTPUTS));
     }
 
-    public static void encodeCraftingPattern(CompoundTag tag, RecipeHolder<CraftingRecipe> recipe,
+    public static void encode(CompoundTag tag, RecipeHolder<CraftingRecipe> recipe,
             ItemStack[] sparseInputs,
             ItemStack output, boolean allowSubstitution, boolean allowFluidSubstitution) {
         tag.put(NBT_INPUTS, encodeItemStackList(sparseInputs));
@@ -106,5 +115,45 @@ class CraftingPatternEncoding {
         }
         Preconditions.checkArgument(foundStack, "List passed to pattern must contain at least one stack.");
         return tag;
+    }
+
+    public static boolean recover(CompoundTag tag, Level level) {
+        RecipeManager recipeManager = level.getRecipeManager();
+
+        var ingredients = getCraftingInputs(tag);
+        var product = getCraftingResult(tag);
+        if (product.isEmpty()) {
+            return false;
+        }
+
+        ResourceLocation currentRecipeId = getRecipeId(tag);
+
+        // Fill a crafting inventory with the ingredients to find a suitable recipe
+        CraftingContainer testInventory = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
+        for (int x = 0; x < 9; x++) {
+            var ais = x < ingredients.length ? ingredients[x] : null;
+            if (ais != null && ais.what() instanceof AEItemKey itemKey) {
+                testInventory.setItem(x, itemKey.toStack());
+            }
+        }
+
+        var potentialRecipe = recipeManager.getRecipeFor(RecipeType.CRAFTING, testInventory, level)
+                .orElse(null);
+
+        // Check that it matches the expected output
+        if (potentialRecipe != null && ItemStack.isSameItemSameTags(product,
+                potentialRecipe.value().assemble(testInventory, level.registryAccess()))) {
+            // Yay we found a match, reencode the pattern
+            AELog.debug("Re-Encoding pattern from %s -> %s", currentRecipeId, potentialRecipe.id());
+            ItemStack[] in = Arrays.stream(ingredients)
+                    .map(stack -> stack.what() instanceof AEItemKey itemKey ? itemKey.toStack() : ItemStack.EMPTY)
+                    .toArray(ItemStack[]::new);
+            encode(tag, potentialRecipe, in, product,
+                    canSubstitute(tag), canSubstituteFluids(tag));
+            return true;
+        }
+
+        AELog.debug("Failed to recover encoded crafting pattern for recipe %s", currentRecipeId);
+        return false;
     }
 }

@@ -93,6 +93,6 @@ class ProcessingPatternItemTest {
     }
 
     private AEProcessingPattern decode(CompoundTag tag) {
-        return AEItems.PROCESSING_PATTERN.asItem().decode(AEItemKey.of(AEItems.PROCESSING_PATTERN, tag), null);
+        return new AEProcessingPattern(AEItemKey.of(AEItems.PROCESSING_PATTERN, tag));
     }
 }

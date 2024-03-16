@@ -25,6 +25,7 @@ import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
@@ -35,6 +36,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MilkBucketItem;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
@@ -475,6 +477,20 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         }
 
         return item;
+    }
+
+    public static void encode(CompoundTag tag, RecipeHolder<CraftingRecipe> recipe, ItemStack[] in,
+            ItemStack out, boolean allowSubstitutes, boolean allowFluidSubstitutes) {
+        Objects.requireNonNull(tag, "tag");
+        Objects.requireNonNull(recipe, "recipe");
+        Objects.requireNonNull(in, "in");
+        Objects.requireNonNull(out, "out");
+
+        CraftingPatternEncoding.encode(tag, recipe, in, out, allowSubstitutes, allowFluidSubstitutes);
+    }
+
+    public static boolean recover(CompoundTag tag, Level level, @Nullable Exception cause) {
+        return CraftingPatternEncoding.recover(tag, level);
     }
 
     private class Input implements IInput {

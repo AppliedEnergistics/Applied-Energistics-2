@@ -22,9 +22,12 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import com.google.common.base.Preconditions;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -32,6 +35,8 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
@@ -42,6 +47,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
+import appeng.core.AELog;
 
 /**
  * Encodes patterns for the {@link net.minecraft.world.level.block.StonecutterBlock}.
@@ -226,6 +232,48 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
 
     public AEItemKey getInput() {
         return input;
+    }
+
+    public static void encode(CompoundTag tag, RecipeHolder<StonecutterRecipe> recipe, AEItemKey in,
+            AEItemKey out,
+            boolean allowSubstitutes) {
+        Preconditions.checkNotNull(recipe, "recipe");
+        Preconditions.checkNotNull(in, "in");
+        Preconditions.checkNotNull(out, "out");
+
+        StonecuttingPatternEncoding.encode(tag, recipe, in, out, allowSubstitutes);
+    }
+
+    public static boolean recover(CompoundTag tag, Level level, @Nullable Exception cause) {
+        RecipeManager recipeManager = level.getRecipeManager();
+
+        var input = StonecuttingPatternEncoding.getInput(tag);
+        var output = StonecuttingPatternEncoding.getOutput(tag);
+        if (input == null || output == null) {
+            return false; // Either input or output item was removed
+        }
+
+        var recipeId = StonecuttingPatternEncoding.getRecipeId(tag);
+
+        // Fill a crafting inventory with the ingredients to find suitable recipes
+        var testInventory = new SimpleContainer(1);
+        testInventory.setItem(0, input.toStack());
+
+        // Multiple recipes can match for stonecutting
+        var potentialRecipes = recipeManager.getRecipesFor(RecipeType.STONECUTTING, testInventory, level);
+
+        // Try to find the output in the potential recipe list
+        for (var potentialRecipe : potentialRecipes) {
+            if (AEItemKey.matches(output, potentialRecipe.value().getResultItem(level.registryAccess()))) {
+                // Yay we found a match, reencode the pattern
+                AELog.debug("Re-Encoding pattern from %s -> %s", recipeId, potentialRecipe.id());
+                StonecuttingPatternEncoding.encode(tag, potentialRecipe, input, output,
+                        StonecuttingPatternEncoding.canSubstitute(tag));
+            }
+        }
+
+        AELog.info("Failed to recover encoded stonecutting pattern for recipe %s", recipeId);
+        return false;
     }
 
     private class Input implements IInput {

@@ -22,10 +22,10 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.crafting.IPatternDetails.IInput;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -54,6 +54,10 @@ public class AEProcessingPattern implements IPatternDetails {
 
         // Ordering is preserved by condenseStacks
         this.condensedOutputs = AEPatternHelper.condenseStacks(sparseOutputs);
+    }
+
+    public static void encode(CompoundTag tag, GenericStack[] sparseInputs, GenericStack[] sparseOutputs) {
+        ProcessingPatternEncoding.encodeProcessingPattern(tag, sparseInputs, sparseOutputs);
     }
 
     @Override

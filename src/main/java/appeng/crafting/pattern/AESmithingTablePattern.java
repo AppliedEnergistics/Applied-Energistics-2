@@ -20,15 +20,19 @@ package appeng.crafting.pattern;
 
 import java.util.Objects;
 
+import com.google.common.base.Preconditions;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
@@ -248,6 +252,23 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
     public NonNullList<ItemStack> getRemainingItems(CraftingContainer container) {
         // Smithing table does not support remainders
         return NonNullList.withSize(container.getContainerSize(), ItemStack.EMPTY);
+    }
+
+    public static void encode(CompoundTag tag, RecipeHolder<SmithingRecipe> recipe, AEItemKey template, AEItemKey base,
+            AEItemKey addition,
+            AEItemKey out, boolean allowSubstitutes) {
+        Preconditions.checkNotNull(recipe, "recipe");
+        Preconditions.checkNotNull(recipe, "template");
+        Preconditions.checkNotNull(base, "base");
+        Preconditions.checkNotNull(addition, "addition");
+        Preconditions.checkNotNull(out, "out");
+
+        SmithingTablePatternEncoding.encode(tag, recipe, template, base, addition, out,
+                allowSubstitutes);
+    }
+
+    public static boolean recover(CompoundTag tag, Level level, @Nullable Exception cause) {
+        return SmithingTablePatternEncoding.recover(tag, level);
     }
 
     private class Input implements IInput {

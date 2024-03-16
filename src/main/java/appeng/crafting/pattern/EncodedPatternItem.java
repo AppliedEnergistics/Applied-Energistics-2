@@ -20,6 +20,7 @@ package appeng.crafting.pattern;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 
 import org.jetbrains.annotations.Nullable;
@@ -39,6 +40,8 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+import appeng.api.crafting.EncodedPatternDecoder;
+import appeng.api.crafting.EncodedPatternRecovery;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AmountFormat;
@@ -50,12 +53,26 @@ import appeng.items.AEBaseItem;
 import appeng.items.misc.WrappedGenericStack;
 import appeng.util.InteractionUtil;
 
-public abstract class EncodedPatternItem extends AEBaseItem {
+/**
+ * Reusable item class for encoded patterns.
+ *
+ * @param <T>
+ */
+public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
     // rather simple client side caching.
     private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
 
-    public EncodedPatternItem(Properties properties) {
+    private final EncodedPatternDecoder<T> decoder;
+
+    @Nullable
+    private final EncodedPatternRecovery recovery;
+
+    public EncodedPatternItem(Properties properties,
+            EncodedPatternDecoder<T> decoder,
+            @Nullable EncodedPatternRecovery recovery) {
         super(properties);
+        this.decoder = decoder;
+        this.recovery = recovery;
     }
 
     @Override
@@ -233,8 +250,36 @@ public abstract class EncodedPatternItem extends AEBaseItem {
     }
 
     @Nullable
-    public abstract IPatternDetails decode(ItemStack stack, Level level, boolean tryRecovery);
+    public IPatternDetails decode(ItemStack stack, Level level, boolean tryRecovery) {
+        if (stack.getItem() != this || !stack.hasTag() || level == null) {
+            return null;
+        }
+
+        var what = AEItemKey.of(stack);
+        try {
+            return Objects.requireNonNull(decoder.decode(what, level), "decoder returned null");
+        } catch (Exception e) {
+            if (tryRecovery) {
+                var tag = stack.getOrCreateTag();
+                if (recovery != null && recovery.attemptRecovery(tag, level, e)) {
+                    return decode(stack, level, false);
+                }
+            }
+        }
+
+        return null;
+    }
 
     @Nullable
-    public abstract IPatternDetails decode(AEItemKey what, Level level);
+    public IPatternDetails decode(AEItemKey what, Level level) {
+        if (what == null || !what.hasTag()) {
+            return null;
+        }
+
+        try {
+            return decoder.decode(what, level);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
