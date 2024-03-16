@@ -447,8 +447,7 @@ public final class Guide implements PageCollection {
 
             // Development sources folder
             var devSourcesFolderProperty = String.format(Locale.ROOT, "guideDev.%s.sources", folder);
-            var devSourcesNamespaceProperty = String.format(Locale.ROOT, "guideDev.%s.sourcesNamespace",
-                    defaultNamespace);
+            var devSourcesNamespaceProperty = String.format(Locale.ROOT, "guideDev.%s.sourcesNamespace", folder);
             var sourceFolder = System.getProperty(devSourcesFolderProperty);
             if (sourceFolder != null) {
                 developmentSourceFolder = Paths.get(sourceFolder);
