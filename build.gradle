@@ -324,7 +324,6 @@ dependencies {
  */
 def commonSystemProperties = [
         'forge.logging.console.level': 'debug',
-        'fml.earlyprogresswindow'    : 'false',
         'appeng.tests'               : 'true',
 ]
 
