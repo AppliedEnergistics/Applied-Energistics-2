@@ -28,31 +28,39 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.crafting.PatternDetailsTooltip;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
-import appeng.core.AELog;
+import appeng.core.localization.GuiText;
 
 /**
  * Encodes patterns for the {@link net.minecraft.world.level.block.StonecutterBlock}.
  */
 public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssemblerSupportedPattern {
+    private static final String NBT_INPUT = "in";
+    // Only used to attempt to recover the recipe in case it's ID has changed
+    private static final String NBT_OUTPUT = "out";
+    private static final String NBT_SUBSITUTE = "substitute";
+    private static final String NBT_RECIPE_ID = "recipe";
+
     // The slot index in the 3x3 crafting grid that we insert our item into (in the MAC)
     private static final int CRAFTING_GRID_SLOT = 4;
 
@@ -75,11 +83,11 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         this.definition = definition;
         var tag = Objects.requireNonNull(definition.getTag());
 
-        this.input = StonecuttingPatternEncoding.getInput(tag);
-        this.canSubstitute = StonecuttingPatternEncoding.canSubstitute(tag);
+        this.input = PatternNbtUtils.getRequiredItemKey(tag, NBT_INPUT);
+        this.canSubstitute = PatternNbtUtils.getBoolean(tag, NBT_SUBSITUTE, false);
 
         // Find recipe
-        this.recipeId = StonecuttingPatternEncoding.getRecipeId(tag);
+        this.recipeId = getRecipeId(tag);
         this.recipe = level.getRecipeManager().byType(RecipeType.STONECUTTING).get(recipeId).value();
 
         // Build frame and find output
@@ -131,6 +139,32 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     @Override
     public GenericStack[] getOutputs() {
         return outputs;
+    }
+
+    @Override
+    public PatternDetailsTooltip getTooltip(Level level, TooltipFlag flags) {
+        var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_CRAFTS);
+        tooltip.addInputsAndOutputs(this);
+        if (flags.isAdvanced()) {
+            tooltip.addProperty(Component.literal("Recipe"), Component.literal(recipeId.toString()));
+        }
+        return tooltip;
+    }
+
+    public static PatternDetailsTooltip getInvalidTooltip(CompoundTag tag, Level level, @Nullable Exception cause,
+            TooltipFlag flags) {
+        var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_CRAFTS);
+        PatternNbtUtils.readKeyFaultTolerant(tag, NBT_INPUT).ifPresent(tooltip::addInput);
+        PatternNbtUtils.readKeyFaultTolerant(tag, NBT_OUTPUT).ifPresent(tooltip::addOutput);
+        if (PatternNbtUtils.getBoolean(tag, NBT_SUBSITUTE, false)) {
+            tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
+        }
+        if (flags.isAdvanced()) {
+            PatternNbtUtils.tryGetString(tag, NBT_RECIPE_ID).ifPresent(recipeId -> {
+                tooltip.addProperty(Component.literal("Recipe"), Component.literal(recipeId));
+            });
+        }
+        return tooltip;
     }
 
     /**
@@ -234,46 +268,17 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         return input;
     }
 
-    public static void encode(CompoundTag tag, RecipeHolder<StonecutterRecipe> recipe, AEItemKey in,
-            AEItemKey out,
-            boolean allowSubstitutes) {
+    public static void encode(CompoundTag tag, RecipeHolder<StonecutterRecipe> recipe, AEItemKey input,
+            AEItemKey output,
+            boolean allowSubstitution) {
         Preconditions.checkNotNull(recipe, "recipe");
-        Preconditions.checkNotNull(in, "in");
-        Preconditions.checkNotNull(out, "out");
+        Preconditions.checkNotNull(input, "input");
+        Preconditions.checkNotNull(output, "output");
 
-        StonecuttingPatternEncoding.encode(tag, recipe, in, out, allowSubstitutes);
-    }
-
-    public static boolean recover(CompoundTag tag, Level level, @Nullable Exception cause) {
-        RecipeManager recipeManager = level.getRecipeManager();
-
-        var input = StonecuttingPatternEncoding.getInput(tag);
-        var output = StonecuttingPatternEncoding.getOutput(tag);
-        if (input == null || output == null) {
-            return false; // Either input or output item was removed
-        }
-
-        var recipeId = StonecuttingPatternEncoding.getRecipeId(tag);
-
-        // Fill a crafting inventory with the ingredients to find suitable recipes
-        var testInventory = new SimpleContainer(1);
-        testInventory.setItem(0, input.toStack());
-
-        // Multiple recipes can match for stonecutting
-        var potentialRecipes = recipeManager.getRecipesFor(RecipeType.STONECUTTING, testInventory, level);
-
-        // Try to find the output in the potential recipe list
-        for (var potentialRecipe : potentialRecipes) {
-            if (AEItemKey.matches(output, potentialRecipe.value().getResultItem(level.registryAccess()))) {
-                // Yay we found a match, reencode the pattern
-                AELog.debug("Re-Encoding pattern from %s -> %s", recipeId, potentialRecipe.id());
-                StonecuttingPatternEncoding.encode(tag, potentialRecipe, input, output,
-                        StonecuttingPatternEncoding.canSubstitute(tag));
-            }
-        }
-
-        AELog.info("Failed to recover encoded stonecutting pattern for recipe %s", recipeId);
-        return false;
+        tag.put(NBT_INPUT, input.toTag());
+        tag.put(NBT_OUTPUT, output.toTag());
+        tag.putBoolean(NBT_SUBSITUTE, allowSubstitution);
+        tag.putString(NBT_RECIPE_ID, recipe.id().toString());
     }
 
     private class Input implements IInput {
@@ -319,5 +324,11 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         public AEKey getRemainingKey(AEKey template) {
             return null;
         }
+    }
+
+    public static ResourceLocation getRecipeId(CompoundTag nbt) {
+        Objects.requireNonNull(nbt, "Pattern must have a tag.");
+
+        return new ResourceLocation(nbt.getString(NBT_RECIPE_ID));
     }
 }
