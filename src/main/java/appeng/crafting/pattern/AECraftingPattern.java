@@ -22,9 +22,15 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import com.google.common.base.Preconditions;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
@@ -33,14 +39,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MilkBucketItem;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.crafting.PatternDetailsTooltip;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -48,15 +57,22 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
+import appeng.core.localization.GuiText;
 import appeng.menu.AutoCraftingMenu;
 
 public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSupportedPattern {
+    private static final String NBT_INPUTS = "in";
+    private static final String NBT_OUTPUTS = "out";
+    private static final String NBT_SUBSTITUTE = "substitute";
+    private static final String NBT_SUBSTITUTE_FLUIDS = "substituteFluids";
+    private static final String NBT_RECIPE_ID = "recipe";
     public static final int CRAFTING_GRID_DIMENSION = 3;
     public static final int CRAFTING_GRID_SLOTS = CRAFTING_GRID_DIMENSION * CRAFTING_GRID_DIMENSION;
 
     private final AEItemKey definition;
     public final boolean canSubstitute;
     public final boolean canSubstituteFluids;
+    private final RecipeHolder<CraftingRecipe> recipeHolder;
     private final CraftingRecipe recipe;
     private final CraftingContainer testFrame;
     private final CraftingContainer specialRecipeTestFrame;
@@ -73,15 +89,19 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
 
     public AECraftingPattern(AEItemKey definition, Level level) {
         this.definition = definition;
-        var tag = Objects.requireNonNull(definition.getTag());
+        var tag = Objects.requireNonNull(definition.getTag(), "pattern requires a tag");
 
-        this.canSubstitute = CraftingPatternEncoding.canSubstitute(tag);
-        this.canSubstituteFluids = CraftingPatternEncoding.canSubstituteFluids(tag);
-        this.sparseInputs = CraftingPatternEncoding.getCraftingInputs(tag);
+        this.canSubstitute = PatternNbtUtils.getBoolean(tag, NBT_SUBSTITUTE, false);
+        this.canSubstituteFluids = PatternNbtUtils.getBoolean(tag, NBT_SUBSTITUTE_FLUIDS, false);
+        this.sparseInputs = getCraftingInputs(tag);
 
         // Find recipe
-        var recipeId = CraftingPatternEncoding.getRecipeId(tag);
-        this.recipe = level.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId).value();
+        var recipeId = PatternNbtUtils.getRequiredResourceLocation(tag, NBT_RECIPE_ID);
+        this.recipeHolder = level.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId);
+        if (recipeHolder == null) {
+            throw new IllegalArgumentException("Pattern references unknown recipe " + recipeId);
+        }
+        this.recipe = recipeHolder.value();
 
         // Build frame and find output
         this.testFrame = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
@@ -477,6 +497,64 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         return item;
     }
 
+    public static void encode(CompoundTag tag, RecipeHolder<CraftingRecipe> recipe, ItemStack[] sparseInputs,
+            ItemStack output, boolean allowSubstitutes, boolean allowFluidSubstitutes) {
+        Objects.requireNonNull(tag, "tag");
+        Objects.requireNonNull(recipe, "recipe");
+        Objects.requireNonNull(sparseInputs, "sparseInputs");
+        Objects.requireNonNull(output, "output");
+
+        tag.put(NBT_INPUTS, PatternNbtUtils.encodeItemStackList(sparseInputs));
+        tag.putBoolean(NBT_SUBSTITUTE, allowSubstitutes);
+        tag.putBoolean(NBT_SUBSTITUTE_FLUIDS, allowFluidSubstitutes);
+        tag.put(NBT_OUTPUTS, output.save(new CompoundTag()));
+        tag.putString(NBT_RECIPE_ID, recipe.id().toString());
+    }
+
+    @Override
+    public PatternDetailsTooltip getTooltip(Level level, TooltipFlag flags) {
+        var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_CRAFTS);
+        tooltip.addInputsAndOutputs(this);
+
+        if (canSubstitute) {
+            tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
+        }
+
+        if (canSubstituteFluids) {
+            tooltip.addProperty(GuiText.PatternTooltipFluidSubstitutions.text());
+        }
+
+        if (flags.isAdvanced()) {
+            tooltip.addProperty(Component.literal("Recipe"), Component.literal(recipeHolder.id().toString()));
+        }
+
+        return tooltip;
+    }
+
+    public static PatternDetailsTooltip getInvalidPatternTooltip(CompoundTag tag, Level level,
+            @Nullable Exception cause, TooltipFlag flags) {
+        var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_CRAFTS);
+
+        PatternNbtUtils.readItemStackListFaultTolerant(tag, NBT_INPUTS, tooltip::addInput);
+        PatternNbtUtils.readItemStackFaultTolerant(tag, NBT_OUTPUTS).ifPresent(tooltip::addOutput);
+
+        if (PatternNbtUtils.getBoolean(tag, NBT_SUBSTITUTE, false)) {
+            tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
+        }
+
+        if (PatternNbtUtils.getBoolean(tag, NBT_SUBSTITUTE_FLUIDS, false)) {
+            tooltip.addProperty(GuiText.PatternTooltipFluidSubstitutions.text());
+        }
+
+        if (flags.isAdvanced()) {
+            PatternNbtUtils.tryGetString(tag, NBT_RECIPE_ID).ifPresent(recipeId -> {
+                tooltip.addProperty(Component.literal("Recipe"), Component.literal(recipeId));
+            });
+        }
+
+        return tooltip;
+    }
+
     private class Input implements IInput {
         private final int slot;
         private final GenericStack[] possibleInputs;
@@ -531,4 +609,22 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             return null;
         }
     }
+
+    public static GenericStack[] getCraftingInputs(CompoundTag nbt) {
+        Objects.requireNonNull(nbt, "Pattern must have a tag.");
+
+        ListTag tag = nbt.getList(NBT_INPUTS, Tag.TAG_COMPOUND);
+        Preconditions.checkArgument(tag.size() <= 9, "Cannot use more than 9 ingredients");
+
+        var result = new GenericStack[tag.size()];
+        for (int x = 0; x < tag.size(); ++x) {
+            var ingredientTag = tag.getCompound(x);
+            if (!ingredientTag.isEmpty()) {
+                result[x] = GenericStack.fromItemStack(ItemStack.of(ingredientTag));
+            }
+        }
+        return result;
+
+    }
+
 }

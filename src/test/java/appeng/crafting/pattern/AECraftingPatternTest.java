@@ -1,10 +1,14 @@
 package appeng.crafting.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -16,23 +20,20 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
@@ -43,9 +44,11 @@ import appeng.api.stacks.AEItemKey;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.util.BootstrapMinecraft;
+import appeng.util.LoadTranslations;
 
 @BootstrapMinecraft
-class CraftingPatternItemTest {
+@LoadTranslations
+class AECraftingPatternTest {
     private static final ResourceLocation TEST_RECIPE_ID = AppEng.makeId("test_recipe");
 
     private final RecipeHolder<CraftingRecipe> TEST_RECIPE = buildRecipe(
@@ -84,14 +87,26 @@ class CraftingPatternItemTest {
     @Test
     void testDecodeWithRemovedIngredientItemIds() {
         var encoded = createTestPattern();
-        var encodedTag = encoded.getTag();
+        var encodedTag = encoded.getOrCreateTag();
 
-        var inputTag = encodedTag.getList("in", Tag.TAG_COMPOUND).getCompound(0);
-        assertEquals("minecraft:torch", inputTag.getString("id"));
-        inputTag.putString("id", "minecraft:unknown_item_id");
+        // Replace the diamond ID string with an unknown ID string
+        assertEquals(1, RecursiveTagReplace.replace(encodedTag, "minecraft:diamond", "minecraft:does_not_exist"));
 
-        var decoded = decode(encodedTag);
-        assertNull(decoded);
+        assertNull(decode(encodedTag));
+        assertThat(getExtraTooltip(encoded)).containsExactly(
+                "Invalid Pattern",
+                "Crafts: 1 x Stick",
+                "with: 1 x Torch",
+                " and 1 x minecraft:does_not_exist",
+                "Substitutes alternate items",
+                "Uses fluids directly",
+                "Recipe: ae2:test_recipe");
+    }
+
+    private List<String> getExtraTooltip(ItemStack stack) {
+        var lines = new ArrayList<Component>();
+        stack.getItem().appendHoverText(stack, null, lines, TooltipFlag.ADVANCED);
+        return lines.stream().map(Component::getString).toList();
     }
 
     private ItemStack createTestPattern() {
@@ -119,52 +134,10 @@ class CraftingPatternItemTest {
         when(level.getRecipeManager()).thenReturn(recipeManager);
         when(recipeManager.byType(RecipeType.CRAFTING)).thenReturn(Map.of(TEST_RECIPE_ID, TEST_RECIPE));
 
-        return AEItems.CRAFTING_PATTERN.asItem().decode(
-                AEItemKey.of(AEItems.CRAFTING_PATTERN, tag), level);
-    }
-
-    private static class TestRecipe implements CraftingRecipe {
-        public boolean acceptAssemble = true;
-
-        @Override
-        public RecipeType<?> getType() {
-            return RecipeType.CRAFTING;
+        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(AEItems.CRAFTING_PATTERN, tag), level);
+        if (details == null) {
+            return null;
         }
-
-        @Override
-        public CraftingBookCategory category() {
-            return CraftingBookCategory.MISC;
-        }
-
-        @Override
-        public boolean matches(CraftingContainer container, Level level) {
-            for (int i = 2; i < container.getContainerSize(); i++) {
-                if (!container.getItem(i).isEmpty()) {
-                    return false;
-                }
-            }
-            return container.getItem(0).getItem() == Items.TORCH
-                    && container.getItem(1).getItem() == Items.DIAMOND;
-        }
-
-        @Override
-        public ItemStack assemble(CraftingContainer container, RegistryAccess registryAccess) {
-            return getResultItem(registryAccess);
-        }
-
-        @Override
-        public boolean canCraftInDimensions(int width, int height) {
-            return width >= 3 && height >= 3;
-        }
-
-        @Override
-        public ItemStack getResultItem(RegistryAccess registryAccess) {
-            return new ItemStack(Items.STICK);
-        }
-
-        @Override
-        public RecipeSerializer<?> getSerializer() {
-            throw new UnsupportedOperationException();
-        }
+        return assertInstanceOf(AECraftingPattern.class, details);
     }
 }

@@ -87,6 +87,7 @@ public final class TestPlots {
                 ExternalEnergyTestPlots.class,
                 CrystalResonanceGeneratorTestPlots.class,
                 TestPlots.class,
+                InvalidPatternTestPlot.class,
                 InterfaceTestPlots.class,
                 AutoCraftingTestPlots.class,
                 InscriberTestPlots.class,
