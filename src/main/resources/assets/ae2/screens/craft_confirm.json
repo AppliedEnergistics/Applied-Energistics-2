@@ -22,9 +22,10 @@
   },
   "widgets": {
     "scrollbar": {
-      "left": 218,
-      "top": 19,
-      "height": 114
+      "left": 217,
+      "top": 18,
+      "width": 14,
+      "height": 116
     },
     "selectCpu": {
       "left": 19,

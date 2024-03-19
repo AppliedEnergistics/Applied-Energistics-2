@@ -46,7 +46,7 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
 
     public StonecuttingEncodingPanel(PatternEncodingTermScreen<?> screen, WidgetContainer widgets) {
         super(screen, widgets);
-        this.scrollbar = widgets.addScrollBar("stonecuttingPatternModeScrollbar", Scrollbar.SMALL);
+        this.scrollbar = widgets.addScrollBar("stonecuttingPatternModeScrollbar");
         this.scrollbar.setRange(0, 0, COLS);
         this.scrollbar.setCaptureMouseWheel(false);
     }
