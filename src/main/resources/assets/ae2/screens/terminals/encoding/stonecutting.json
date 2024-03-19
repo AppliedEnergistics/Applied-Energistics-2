@@ -9,9 +9,10 @@
   },
   "widgets": {
     "stonecuttingPatternModeScrollbar": {
-      "left": 119,
-      "bottom": 157,
-      "height": 54
+      "left": 118,
+      "bottom": 158,
+      "width": 9,
+      "height": 56
     }
   }
 }

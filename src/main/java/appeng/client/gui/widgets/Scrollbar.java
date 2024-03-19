@@ -24,13 +24,14 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
-import appeng.client.gui.style.Blitter;
 import appeng.core.AppEng;
 
 /**
@@ -38,29 +39,26 @@ import appeng.core.AppEng;
  * <p>
  * It is expected that the background of the UI contains a pre-baked scrollbar track border, and that the exact
  * rectangle of that track is set on this object via {@link #displayX}, {@link #displayY} and {@link #setHeight(int)}.
- * While the width of the track can also be set, the drawn handle will use vanilla's sprite width (see
- * {@link Style#handleWidth()}.
  */
 public class Scrollbar implements IScrollSource, ICompositeWidget {
 
     private boolean visible = true;
 
     /**
-     * The screen x-coordinate of the scrollbar's inner track.
+     * The screen x-coordinate of the scrollbar.
      */
     private int displayX = 0;
 
     /**
-     * The screen y-coordinate of the scrollbar's inner track.
+     * The screen y-coordinate of the scrollbar.
      */
     private int displayY = 0;
 
     private final Style style;
 
-    /**
-     * The inner height of the scrollbar track.
-     */
-    private int height = 16;
+    private int width = 14;
+    private int height = 18;
+
     private int pageSize = 1;
 
     private int maxScroll = 0;
@@ -94,7 +92,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
 
     @Override
     public Rect2i getBounds() {
-        return new Rect2i(displayX, displayY, style.handleWidth(), height);
+        return new Rect2i(displayX, displayY, width, height);
     }
 
     /**
@@ -108,17 +106,27 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
         // guiGraphics.fill( displayX, displayY, this.displayX + width, this.displayY +
         // height, 0xffff0000);
 
+        guiGraphics.blitSprite(style.trackSprite(), displayX, displayY, width, height);
+
+        // Blit the handle
+        var innerTrack = getInnerTrackRect();
+
         int yOffset;
-        Blitter image;
+        ResourceLocation image;
         if (this.getRange() == 0) {
             yOffset = 0;
-            image = Blitter.guiSprite(style.disabledSprite());
+            image = style.disabledSprite();
         } else {
             yOffset = getHandleYOffset();
-            image = Blitter.guiSprite(style.enabledSprite());
+            image = style.enabledSprite();
         }
 
-        image.dest(this.displayX, this.displayY + yOffset).blit(guiGraphics);
+        guiGraphics.blitSprite(
+                image,
+                displayX + innerTrack.left(),
+                displayY + innerTrack.top() + yOffset,
+                innerTrack.width(),
+                style.handleHeight());
     }
 
     /**
@@ -128,7 +136,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
         if (getRange() == 0) {
             return 0;
         }
-        int availableHeight = this.height - style.handleHeight();
+        int availableHeight = getInnerTrackRect().height() - style.handleHeight();
         return (this.currentScroll - this.minScroll) * availableHeight / this.getRange();
     }
 
@@ -151,6 +159,9 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
     public void setSize(int width, int height) {
         if (height != 0) {
             this.height = height;
+        }
+        if (width != 0) {
+            this.width = width;
         }
     }
 
@@ -241,7 +252,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
         // the upper edge of it) within the scrollable area of the track (minus the
         // handle height).
         double handleUpperEdgeY = mousePos.getY() - this.displayY - this.dragYOffset;
-        double availableHeight = this.height - style.handleHeight();
+        double availableHeight = getInnerTrackRect().height() - style.handleHeight();
         double position = Mth.clamp(handleUpperEdgeY / availableHeight, 0.0, 1.0);
 
         this.currentScroll = this.minScroll + (int) Math.round(position * this.getRange());
@@ -285,6 +296,21 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
         this.eventRepeater.tick();
     }
 
+    private ScreenRectangle getInnerTrackRect() {
+        var minecraft = Minecraft.getInstance();
+        var resolvedTrackSprite = minecraft.getGuiSprites().getSprite(style.trackSprite());
+        var scaling = minecraft.getGuiSprites().getSpriteScaling(resolvedTrackSprite);
+        if (scaling instanceof GuiSpriteScaling.NineSlice nineSlice) {
+            return new ScreenRectangle(
+                    nineSlice.border().left(),
+                    nineSlice.border().top(),
+                    width - nineSlice.border().left() - nineSlice.border().right(),
+                    height - nineSlice.border().top() - nineSlice.border().bottom());
+        } else {
+            return new ScreenRectangle(0, 0, width, height);
+        }
+    }
+
     private void pageUp() {
         this.currentScroll -= this.pageSize;
         this.applyRange();
@@ -296,30 +322,22 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
     }
 
     public static final Style DEFAULT = Style.create(
-            new ResourceLocation("minecraft", "container/creative_inventory/scroller"),
-            new ResourceLocation("minecraft", "container/creative_inventory/scroller_disabled"));
-
-    public static final Style SMALL = Style.create(
-            AppEng.makeId("small_scroller"),
-            AppEng.makeId("small_scroller_disabled"));
+            AppEng.makeId("sunken_panel_dark"),
+            AppEng.makeId("scroll_handle"),
+            AppEng.makeId("scroll_handle_disabled"),
+            15);
 
     public record Style(
+            ResourceLocation trackSprite,
             ResourceLocation enabledSprite,
-            ResourceLocation disabledSprite) {
+            ResourceLocation disabledSprite,
+            int handleHeight) {
         public static Style create(
+                ResourceLocation trackSprite,
                 ResourceLocation enabledSprite,
-                ResourceLocation disabledSprite) {
-            return new Style(enabledSprite, disabledSprite);
-        }
-
-        public int handleWidth() {
-            var minecraft = Minecraft.getInstance();
-            return minecraft.getGuiSprites().getSprite(enabledSprite).contents().width();
-        }
-
-        public int handleHeight() {
-            var minecraft = Minecraft.getInstance();
-            return minecraft.getGuiSprites().getSprite(enabledSprite).contents().height();
+                ResourceLocation disabledSprite,
+                int handleHeight) {
+            return new Style(trackSprite, enabledSprite, disabledSprite, handleHeight);
         }
     }
 
