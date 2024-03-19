@@ -6,7 +6,7 @@
       "tag": "ae2:all_nether_quartz"
     },
     "b": {
-      "item": "minecraft:iron_ingot"
+      "item": "ae2:cable_anchor"
     }
   },
   "pattern": [
