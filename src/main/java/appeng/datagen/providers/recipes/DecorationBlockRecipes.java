@@ -132,7 +132,7 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.LIGHT_DETECTOR)
                 .pattern("ab")
                 .define('a', ConventionTags.ALL_NETHER_QUARTZ)
-                .define('b', Items.IRON_INGOT)
+                .define('b', AEParts.CABLE_ANCHOR)
                 .unlockedBy("has_nether_quartz", has(ConventionTags.ALL_NETHER_QUARTZ))
                 .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
                 .save(consumer, AppEng.makeId("decorative/light_detector"));
