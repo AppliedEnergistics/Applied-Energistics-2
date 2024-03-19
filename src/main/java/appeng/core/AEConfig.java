@@ -802,7 +802,7 @@ public final class AEConfig {
             powerUsageMultiplier = PowerRatios.addDouble("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
             gridEnergyStoragePerNode = PowerRatios.addDouble("GridEnergyStoragePerNode", 25, 1, 1000000,
                     "How much energy can the internal grid buffer storage per node attached to the grid.");
-            crystalResonanceGeneratorRate = PowerRatios.addDouble("CrystalResonanceGeneratorRate", 5, 0, 1000000,
+            crystalResonanceGeneratorRate = PowerRatios.addDouble("CrystalResonanceGeneratorRate", 20, 0, 1000000,
                     "How much energy a crystal resonance generator generates per tick.");
 
             ConfigSection Condenser = root.subsection("Condenser");
