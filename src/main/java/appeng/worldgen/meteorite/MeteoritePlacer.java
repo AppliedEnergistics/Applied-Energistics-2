@@ -367,8 +367,7 @@ public final class MeteoritePlacer {
                                 level.scheduleTick(blockPos, Fluids.WATER, 0);
                             }
                         }
-                    }
-                    else if (maxY + (maxY - currentY) * 2 + 2 > h + distanceFrom * 0.02) {
+                    } else if (maxY + (maxY - currentY) * 2 + 2 > h + distanceFrom * 0.02) {
                         pillarDownSlopeBlocks(currentChunk, blockPos);
                     }
                 }
@@ -392,16 +391,14 @@ public final class MeteoritePlacer {
         BlockState currentState = currentChunk.getBlockState(enclosingBlockPos);
         if (currentState.getBlock() == Blocks.AIR ||
                 (currentState.getFluidState().isEmpty() &&
-                    (currentState.canBeReplaced() || currentState.is(BlockTags.REPLACEABLE)))) {
+                        (currentState.canBeReplaced() || currentState.is(BlockTags.REPLACEABLE)))) {
 
             if (level.getRandom().nextFloat() < 0.075f) {
                 this.putter.put(level, enclosingBlockPos, Blocks.MAGMA_BLOCK.defaultBlockState());
-            }
-            else {
+            } else {
                 this.type.getRandomFall(level, enclosingBlockPos);
             }
-        }
-        else {
+        } else {
             return true;
         }
         return false;
