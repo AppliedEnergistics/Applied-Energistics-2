@@ -20,10 +20,11 @@ package appeng.menu.slot;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.config.Actionable;
 import appeng.api.inventories.InternalInventory;
-import appeng.core.network.NetworkHandler;
+import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.util.ConfigInventory;
@@ -73,8 +74,9 @@ public class FakeSlot extends AppEngSlot {
 
     // Used by the item list mod dropping ghost ingredients on this slot
     public void setFilterTo(ItemStack itemStack) {
-        NetworkHandler.instance().sendToServer(new InventoryActionPacket(InventoryAction.SET_FILTER,
-                index, itemStack));
+        ServerboundPacket message = new InventoryActionPacket(InventoryAction.SET_FILTER,
+                index, itemStack);
+        PacketDistributor.sendToServer(message);
     }
 
     public void increase(ItemStack is) {
@@ -113,7 +115,7 @@ public class FakeSlot extends AppEngSlot {
             current = current.copy();
             current.shrink(1);
             set(current);
-        } else if (ItemStack.isSameItemSameTags(current, is)) {
+        } else if (ItemStack.isSameItemSameComponents(current, is)) {
             // Increase when holding same item
             current = current.copy();
             current.grow(1);

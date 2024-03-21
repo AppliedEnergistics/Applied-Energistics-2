@@ -6,7 +6,8 @@ import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
@@ -137,9 +138,9 @@ public class BasicInventoryTest {
     private static AEItemKey[] generateDifferentKeys(int count) {
         var out = new AEItemKey[count];
         for (int i = 0; i < count; ++i) {
-            var tag = new CompoundTag();
-            tag.putInt("number", i);
-            out[i] = AEItemKey.of(Items.DIAMOND, tag);
+            var itemStack = new ItemStack(Items.DIAMOND);
+            itemStack.set(DataComponents.CUSTOM_NAME, Component.literal("number" + i));
+            out[i] = AEItemKey.of(itemStack);
         }
         return out;
     }

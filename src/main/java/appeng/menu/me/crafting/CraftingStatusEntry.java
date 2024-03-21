@@ -19,10 +19,13 @@
 package appeng.menu.me.crafting;
 
 import java.util.Comparator;
+import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 import appeng.api.stacks.AEKey;
 
@@ -31,6 +34,14 @@ import appeng.api.stacks.AEKey;
  * scheduled to be crafted.
  */
 public class CraftingStatusEntry implements Comparable<CraftingStatusEntry> {
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, CraftingStatusEntry> STREAM_CODEC = StreamCodec.of(
+            CraftingStatusEntry::write,
+            CraftingStatusEntry::read);
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, List<CraftingStatusEntry>> LIST_STREAM_CODEC = STREAM_CODEC
+            .apply(ByteBufCodecs.list());
+
     private static final Comparator<CraftingStatusEntry> COMPARATOR = Comparator
             .comparing((CraftingStatusEntry e) -> e.getActiveAmount() + e.getPendingAmount())
             .thenComparing(CraftingStatusEntry::getStoredAmount)
@@ -72,7 +83,7 @@ public class CraftingStatusEntry implements Comparable<CraftingStatusEntry> {
         return what;
     }
 
-    public static void write(FriendlyByteBuf buffer, CraftingStatusEntry entry) {
+    public static void write(RegistryFriendlyByteBuf buffer, CraftingStatusEntry entry) {
         buffer.writeVarLong(entry.serial);
         buffer.writeVarLong(entry.activeAmount);
         buffer.writeVarLong(entry.storedAmount);
@@ -80,7 +91,7 @@ public class CraftingStatusEntry implements Comparable<CraftingStatusEntry> {
         AEKey.writeOptionalKey(buffer, entry.what);
     }
 
-    public static CraftingStatusEntry read(FriendlyByteBuf buffer) {
+    public static CraftingStatusEntry read(RegistryFriendlyByteBuf buffer) {
         long serial = buffer.readVarLong();
         long missingAmount = buffer.readVarLong();
         long storedAmount = buffer.readVarLong();

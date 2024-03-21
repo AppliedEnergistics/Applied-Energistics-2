@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/lanthanum"
+        "tag": "c:nuggets/lanthanum"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/lanthanum"
+    "tag": "c:nuggets/lanthanum"
   },
   "weight": 138.9055
 }

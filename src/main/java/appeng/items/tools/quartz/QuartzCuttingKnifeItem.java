@@ -18,6 +18,7 @@
 
 package appeng.items.tools.quartz;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.RandomSource;
@@ -68,12 +69,9 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
 
     @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
-        ItemStack damagedStack = itemStack.copy();
-        if (damagedStack.hurt(1, random, null)) {
-            return ItemStack.EMPTY;
-        } else {
-            return damagedStack;
-        }
+        var broken = new MutableBoolean(false);
+        itemStack.hurtAndBreak(1, random, null, broken::setTrue);
+        return broken.getValue() ? ItemStack.EMPTY : itemStack;
     }
 
     @Override

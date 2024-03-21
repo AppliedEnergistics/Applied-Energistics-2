@@ -2,7 +2,7 @@
   "type": "ae2:inscriber",
   "ingredients": {
     "middle": {
-      "tag": "forge:gems/diamond"
+      "tag": "c:gems/diamond"
     },
     "top": {
       "item": "ae2:engineering_processor_press"
@@ -10,6 +10,7 @@
   },
   "mode": "inscribe",
   "result": {
-    "item": "ae2:printed_engineering_processor"
+    "count": 1,
+    "id": "ae2:printed_engineering_processor"
   }
 }

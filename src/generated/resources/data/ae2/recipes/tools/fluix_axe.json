@@ -7,7 +7,8 @@
     "tag": "ae2:quartz_axe"
   },
   "result": {
-    "item": "ae2:fluix_axe"
+    "count": 1,
+    "id": "ae2:fluix_axe"
   },
   "template": {
     "item": "ae2:fluix_upgrade_smithing_template"

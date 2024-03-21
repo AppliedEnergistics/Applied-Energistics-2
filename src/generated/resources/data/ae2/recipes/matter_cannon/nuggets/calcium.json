@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/calcium"
+        "tag": "c:nuggets/calcium"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/calcium"
+    "tag": "c:nuggets/calcium"
   },
   "weight": 40.078
 }

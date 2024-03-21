@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/meat"
+        "tag": "c:nuggets/meat"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/meat"
+    "tag": "c:nuggets/meat"
   },
   "weight": 32.0
 }

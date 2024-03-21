@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -72,7 +73,7 @@ final class CompassRegion extends AESavedData {
                 getRegionSaveName(regionX, regionZ));
     }
 
-    public static CompassRegion load(CompoundTag nbt) {
+    public static CompassRegion load(CompoundTag nbt, HolderLookup.Provider registries) {
         var result = new CompassRegion();
         for (String key : nbt.getAllKeys()) {
             if (key.startsWith("section")) {
@@ -90,7 +91,7 @@ final class CompassRegion extends AESavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
+    public CompoundTag save(CompoundTag compound, HolderLookup.Provider registries) {
         for (var entry : sections.entrySet()) {
             var key = "section" + entry.getKey();
             if (entry.getValue().isEmpty()) {

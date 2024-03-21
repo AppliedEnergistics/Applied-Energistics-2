@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:smooth_sky_stone_block"
-            ]
+            "items": "ae2:smooth_sky_stone_block"
           }
         ]
       },

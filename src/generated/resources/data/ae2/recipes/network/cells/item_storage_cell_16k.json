@@ -6,16 +6,16 @@
       "item": "ae2:quartz_glass"
     },
     "b": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     },
     "c": {
       "item": "ae2:cell_component_16k"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "e": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     }
   },
   "pattern": [
@@ -24,6 +24,7 @@
     "ded"
   ],
   "result": {
-    "item": "ae2:item_storage_cell_16k"
+    "count": 1,
+    "id": "ae2:item_storage_cell_16k"
   }
 }

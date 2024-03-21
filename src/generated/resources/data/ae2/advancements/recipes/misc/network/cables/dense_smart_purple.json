@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:dyes/purple"
+            "items": "#c:dyes/purple"
           }
         ]
       },
@@ -15,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:fluix_smart_dense_cable"
-            ]
+            "items": "ae2:fluix_smart_dense_cable"
           }
         ]
       },

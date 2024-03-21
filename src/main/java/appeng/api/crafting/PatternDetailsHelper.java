@@ -90,11 +90,6 @@ public final class PatternDetailsHelper {
     }
 
     @Nullable
-    public static IPatternDetails decodePattern(ItemStack stack, Level level) {
-        return decodePattern(stack, level, false);
-    }
-
-    @Nullable
     public static IPatternDetails decodePattern(AEItemKey what, Level level) {
         for (var decoder : DECODERS) {
             var decoded = decoder.decodePattern(what, level);
@@ -106,9 +101,9 @@ public final class PatternDetailsHelper {
     }
 
     @Nullable
-    public static IPatternDetails decodePattern(ItemStack stack, Level level, boolean autoRecovery) {
+    public static IPatternDetails decodePattern(ItemStack stack, Level level) {
         for (var decoder : DECODERS) {
-            var decoded = decoder.decodePattern(stack, level, autoRecovery);
+            var decoded = decoder.decodePattern(stack, level);
             if (decoded != null) {
                 return decoded;
             }
@@ -124,9 +119,9 @@ public final class PatternDetailsHelper {
      * @return A new encoded pattern.
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks, or no primary output
      */
-    public static ItemStack encodeProcessingPattern(GenericStack[] sparseInputs, GenericStack[] sparseOutputs) {
+    public static ItemStack encodeProcessingPattern(List<GenericStack> sparseInputs, List<GenericStack> sparseOutputs) {
         var stack = AEItems.PROCESSING_PATTERN.stack();
-        AEProcessingPattern.encode(stack.getOrCreateTag(), sparseInputs, sparseOutputs);
+        AEProcessingPattern.encode(stack, sparseInputs, sparseOutputs);
         return stack;
     }
 
@@ -145,7 +140,7 @@ public final class PatternDetailsHelper {
     public static ItemStack encodeCraftingPattern(RecipeHolder<CraftingRecipe> recipe, ItemStack[] in,
             ItemStack out, boolean allowSubstitutes, boolean allowFluidSubstitutes) {
         var stack = AEItems.CRAFTING_PATTERN.stack();
-        AECraftingPattern.encode(stack.getOrCreateTag(), recipe, in, out, allowSubstitutes,
+        AECraftingPattern.encode(stack, recipe, in, out, allowSubstitutes,
                 allowFluidSubstitutes);
         return stack;
     }
@@ -165,7 +160,7 @@ public final class PatternDetailsHelper {
             AEItemKey out,
             boolean allowSubstitutes) {
         var stack = AEItems.STONECUTTING_PATTERN.stack();
-        AEStonecuttingPattern.encode(stack.getOrCreateTag(), recipe, in, out, allowSubstitutes);
+        AEStonecuttingPattern.encode(stack, recipe, in, out, allowSubstitutes);
         return stack;
     }
 
@@ -190,7 +185,7 @@ public final class PatternDetailsHelper {
             AEItemKey out,
             boolean allowSubstitutes) {
         var stack = AEItems.SMITHING_TABLE_PATTERN.stack();
-        AESmithingTablePattern.encode(stack.getOrCreateTag(), recipe, template, base, addition, out, allowSubstitutes);
+        AESmithingTablePattern.encode(stack, recipe, template, base, addition, out, allowSubstitutes);
         return stack;
     }
 }

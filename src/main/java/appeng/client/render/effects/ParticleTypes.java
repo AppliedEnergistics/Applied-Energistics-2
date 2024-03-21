@@ -18,10 +18,12 @@
 
 package appeng.client.render.effects;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 public final class ParticleTypes {
 
@@ -29,18 +31,26 @@ public final class ParticleTypes {
     }
 
     public static final SimpleParticleType CRAFTING = new SimpleParticleType(false);
-    public static final ParticleType<EnergyParticleData> ENERGY = new ParticleType<EnergyParticleData>(false,
-            EnergyParticleData.DESERIALIZER) {
+    public static final ParticleType<EnergyParticleData> ENERGY = new ParticleType<>(false) {
         @Override
-        public Codec<EnergyParticleData> codec() {
-            return null;
+        public MapCodec<EnergyParticleData> codec() {
+            return EnergyParticleData.CODEC;
+        }
+
+        @Override
+        public StreamCodec<? super RegistryFriendlyByteBuf, EnergyParticleData> streamCodec() {
+            return EnergyParticleData.STREAM_CODEC;
         }
     };
-    public static final ParticleType<LightningArcParticleData> LIGHTNING_ARC = new ParticleType<LightningArcParticleData>(
-            false, LightningArcParticleData.DESERIALIZER) {
+    public static final ParticleType<LightningArcParticleData> LIGHTNING_ARC = new ParticleType<>(false) {
         @Override
-        public Codec<LightningArcParticleData> codec() {
-            return null;
+        public MapCodec<LightningArcParticleData> codec() {
+            return LightningArcParticleData.CODEC;
+        }
+
+        @Override
+        public StreamCodec<? super RegistryFriendlyByteBuf, LightningArcParticleData> streamCodec() {
+            return LightningArcParticleData.STREAM_CODEC;
         }
     };
     public static final SimpleParticleType LIGHTNING = new SimpleParticleType(false);

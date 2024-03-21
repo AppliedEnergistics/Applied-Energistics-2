@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/krypton"
+        "tag": "c:nuggets/krypton"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/krypton"
+    "tag": "c:nuggets/krypton"
   },
   "weight": 83.8
 }

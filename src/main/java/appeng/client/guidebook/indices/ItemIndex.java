@@ -37,7 +37,7 @@ public class ItemIndex extends UniqueIndex<ResourceLocation, PageAnchor> {
             return List.of();
         }
 
-        if (!(itemIdsNode instanceof List<?>itemIdList)) {
+        if (!(itemIdsNode instanceof List<?> itemIdList)) {
             LOGGER.warn("Page {} contains malformed item_ids frontmatter", page.getId());
             return List.of();
         }

@@ -24,8 +24,9 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -65,7 +66,6 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
-import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
@@ -76,7 +76,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     private static final int NUMBER_OF_CELL_SLOTS = 6;
     private static final int NUMBER_OF_UPGRADE_SLOTS = 3;
 
-    private final ConfigManager manager;
+    private final IConfigManager manager;
 
     private final AppEngInternalInventory inputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
     private final AppEngInternalInventory outputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
@@ -99,10 +99,11 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, this);
-        this.manager = new ConfigManager(this::updateTask);
-        this.manager.registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
-        this.manager.registerSetting(Settings.FULLNESS_MODE, FullnessMode.EMPTY);
-        this.manager.registerSetting(Settings.OPERATION_MODE, OperationMode.EMPTY);
+        this.manager = IConfigManager.builder(this::updateTask)
+                .registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE)
+                .registerSetting(Settings.FULLNESS_MODE, FullnessMode.EMPTY)
+                .registerSetting(Settings.OPERATION_MODE, OperationMode.EMPTY)
+                .build();
         this.mySrc = new MachineSource(this);
         this.lastRedstoneState = YesNo.UNDECIDED;
 
@@ -110,31 +111,31 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void saveAdditional(CompoundTag data) {
-        super.saveAdditional(data);
-        this.manager.writeToNBT(data);
-        this.upgrades.writeToNBT(data, "upgrades");
+    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
+        super.saveAdditional(data, registries);
+        this.manager.writeToNBT(data, registries);
+        this.upgrades.writeToNBT(data, "upgrades", registries);
         data.putInt("lastRedstoneState", this.lastRedstoneState.ordinal());
     }
 
     @Override
-    public void loadTag(CompoundTag data) {
-        super.loadTag(data);
-        this.manager.readFromNBT(data);
-        this.upgrades.readFromNBT(data, "upgrades");
+    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
+        super.loadTag(data, registries);
+        this.manager.readFromNBT(data, registries);
+        this.upgrades.readFromNBT(data, "upgrades", registries);
         if (data.contains("lastRedstoneState")) {
             this.lastRedstoneState = YesNo.values()[data.getInt("lastRedstoneState")];
         }
     }
 
     @Override
-    protected void writeToStream(FriendlyByteBuf data) {
+    protected void writeToStream(RegistryFriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(this.isActive());
     }
 
     @Override
-    protected boolean readFromStream(FriendlyByteBuf data) {
+    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
         boolean ret = super.readFromStream(data);
 
         final boolean isActive = data.readBoolean();

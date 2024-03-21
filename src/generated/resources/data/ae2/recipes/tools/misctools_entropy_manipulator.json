@@ -12,7 +12,7 @@
       "item": "ae2:engineering_processor"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     }
   },
   "pattern": [
@@ -21,6 +21,7 @@
     "  d"
   ],
   "result": {
-    "item": "ae2:entropy_manipulator"
+    "count": 1,
+    "id": "ae2:entropy_manipulator"
   }
 }

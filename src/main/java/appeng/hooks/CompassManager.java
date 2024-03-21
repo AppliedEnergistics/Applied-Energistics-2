@@ -21,7 +21,9 @@ package appeng.hooks;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import appeng.core.network.NetworkHandler;
+import net.neoforged.neoforge.network.PacketDistributor;
+
+import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.CompassRequestPacket;
 
 public class CompassManager {
@@ -62,7 +64,8 @@ public class CompassManager {
     }
 
     private void requestUpdate(CompassRequest r) {
-        NetworkHandler.instance().sendToServer(new CompassRequestPacket(r.attunement, r.cx, r.cz, r.cdy));
+        ServerboundPacket message = new CompassRequestPacket(r.attunement, r.cx, r.cz, r.cdy);
+        PacketDistributor.sendToServer(message);
     }
 
     private static class CompassRequest {

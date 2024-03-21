@@ -26,12 +26,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.networking.crafting.CalculationStrategy;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ISubMenuHost;
-import appeng.core.network.NetworkHandler;
+import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.ConfirmAutoCraftPacket;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
@@ -108,7 +109,8 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
      */
     public void confirm(int amount, boolean craftMissingAmount, boolean autoStart) {
         if (!isServerSide()) {
-            NetworkHandler.instance().sendToServer(new ConfirmAutoCraftPacket(amount, craftMissingAmount, autoStart));
+            ServerboundPacket message = new ConfirmAutoCraftPacket(amount, craftMissingAmount, autoStart);
+            PacketDistributor.sendToServer(message);
             return;
         }
 

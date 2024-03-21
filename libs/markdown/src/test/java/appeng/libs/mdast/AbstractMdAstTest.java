@@ -116,7 +116,7 @@ public class AbstractMdAstTest {
 
     protected static MdAstNode removePosition(MdAstNode node) {
         node.position = null;
-        if (node instanceof MdAstParent<?>parent) {
+        if (node instanceof MdAstParent<?> parent) {
             for (var child : parent.children()) {
                 if (child instanceof MdAstNode childNode) {
                     removePosition(childNode);

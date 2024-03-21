@@ -23,6 +23,8 @@
 
 package appeng.api.crafting;
 
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.TooltipFlag;
@@ -58,13 +60,13 @@ public interface IPatternDetails {
      * just byproducts.
      */
     default GenericStack getPrimaryOutput() {
-        return getOutputs()[0];
+        return getOutputs().get(0);
     }
 
     /**
-     * The outputs of this pattern. <b>The return array or any of its stacks must never be edited</b>.
+     * The outputs of this pattern.
      */
-    GenericStack[] getOutputs();
+    List<GenericStack> getOutputs();
 
     /**
      * @return True if this pattern allows its inputs to be pushed to generic external inventories that would accept

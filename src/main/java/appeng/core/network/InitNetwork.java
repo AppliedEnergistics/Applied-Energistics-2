@@ -1,8 +1,10 @@
 package appeng.core.network;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 import appeng.core.AppEng;
 import appeng.core.network.bidirectional.ConfigValuePacket;
@@ -39,66 +41,69 @@ import appeng.core.network.serverbound.SwapSlotsPacket;
 import appeng.core.network.serverbound.SwitchGuisPacket;
 
 public class InitNetwork {
-    public static void init(RegisterPayloadHandlerEvent event) {
+    public static void init(RegisterPayloadHandlersEvent event) {
         var registrar = event.registrar(AppEng.MOD_ID);
 
         // Clientbound
-        clientbound(registrar, AssemblerAnimationPacket.class, AssemblerAnimationPacket::decode);
-        clientbound(registrar, BlockTransitionEffectPacket.class, BlockTransitionEffectPacket::decode);
-        clientbound(registrar, ClearPatternAccessTerminalPacket.class, ClearPatternAccessTerminalPacket::decode);
-        clientbound(registrar, CompassResponsePacket.class, CompassResponsePacket::decode);
-        clientbound(registrar, CraftConfirmPlanPacket.class, CraftConfirmPlanPacket::decode);
-        clientbound(registrar, CraftingJobStatusPacket.class, CraftingJobStatusPacket::decode);
-        clientbound(registrar, CraftingStatusPacket.class, CraftingStatusPacket::decode);
-        clientbound(registrar, GuiDataSyncPacket.class, GuiDataSyncPacket::decode);
-        clientbound(registrar, ItemTransitionEffectPacket.class, ItemTransitionEffectPacket::decode);
-        clientbound(registrar, LightningPacket.class, LightningPacket::decode);
-        clientbound(registrar, MatterCannonPacket.class, MatterCannonPacket::decode);
-        clientbound(registrar, MEInventoryUpdatePacket.class, MEInventoryUpdatePacket::decode);
-        clientbound(registrar, MockExplosionPacket.class, MockExplosionPacket::decode);
-        clientbound(registrar, NetworkStatusPacket.class, NetworkStatusPacket::decode);
-        clientbound(registrar, PatternAccessTerminalPacket.class, PatternAccessTerminalPacket::decode);
-        clientbound(registrar, SetLinkStatusPacket.class, SetLinkStatusPacket::decode);
-        clientbound(registrar, ExportedGridContent.class, ExportedGridContent::decode);
+        clientbound(registrar, AssemblerAnimationPacket.TYPE, AssemblerAnimationPacket.STREAM_CODEC);
+        clientbound(registrar, BlockTransitionEffectPacket.TYPE, BlockTransitionEffectPacket.STREAM_CODEC);
+        clientbound(registrar, ClearPatternAccessTerminalPacket.TYPE, ClearPatternAccessTerminalPacket.STREAM_CODEC);
+        clientbound(registrar, CompassResponsePacket.TYPE, CompassResponsePacket.STREAM_CODEC);
+        clientbound(registrar, CraftConfirmPlanPacket.TYPE, CraftConfirmPlanPacket.STREAM_CODEC);
+        clientbound(registrar, CraftingJobStatusPacket.TYPE, CraftingJobStatusPacket.STREAM_CODEC);
+        clientbound(registrar, CraftingStatusPacket.TYPE, CraftingStatusPacket.STREAM_CODEC);
+        clientbound(registrar, GuiDataSyncPacket.TYPE, GuiDataSyncPacket.STREAM_CODEC);
+        clientbound(registrar, ItemTransitionEffectPacket.TYPE, ItemTransitionEffectPacket.STREAM_CODEC);
+        clientbound(registrar, LightningPacket.TYPE, LightningPacket.STREAM_CODEC);
+        clientbound(registrar, MatterCannonPacket.TYPE, MatterCannonPacket.STREAM_CODEC);
+        clientbound(registrar, MEInventoryUpdatePacket.TYPE, MEInventoryUpdatePacket.STREAM_CODEC);
+        clientbound(registrar, MockExplosionPacket.TYPE, MockExplosionPacket.STREAM_CODEC);
+        clientbound(registrar, NetworkStatusPacket.TYPE, NetworkStatusPacket.STREAM_CODEC);
+        clientbound(registrar, PatternAccessTerminalPacket.TYPE, PatternAccessTerminalPacket.STREAM_CODEC);
+        clientbound(registrar, SetLinkStatusPacket.TYPE, SetLinkStatusPacket.STREAM_CODEC);
+        clientbound(registrar, ExportedGridContent.TYPE, ExportedGridContent.STREAM_CODEC);
 
         // Serverbound
-        serverbound(registrar, ColorApplicatorSelectColorPacket.class, ColorApplicatorSelectColorPacket::decode);
-        serverbound(registrar, CompassRequestPacket.class, CompassRequestPacket::decode);
-        serverbound(registrar, ConfigButtonPacket.class, ConfigButtonPacket::decode);
-        serverbound(registrar, ConfirmAutoCraftPacket.class, ConfirmAutoCraftPacket::decode);
-        serverbound(registrar, FillCraftingGridFromRecipePacket.class, FillCraftingGridFromRecipePacket::decode);
-        serverbound(registrar, GuiActionPacket.class, GuiActionPacket::decode);
-        serverbound(registrar, HotkeyPacket.class, HotkeyPacket::decode);
-        serverbound(registrar, InventoryActionPacket.class, InventoryActionPacket::decode);
-        serverbound(registrar, MEInteractionPacket.class, MEInteractionPacket::decode);
-        serverbound(registrar, MouseWheelPacket.class, MouseWheelPacket::decode);
-        serverbound(registrar, PartLeftClickPacket.class, PartLeftClickPacket::decode);
-        serverbound(registrar, SelectKeyTypePacket.class, SelectKeyTypePacket::decode);
-        serverbound(registrar, SwapSlotsPacket.class, SwapSlotsPacket::decode);
-        serverbound(registrar, SwitchGuisPacket.class, SwitchGuisPacket::decode);
+        serverbound(registrar, ColorApplicatorSelectColorPacket.TYPE, ColorApplicatorSelectColorPacket.STREAM_CODEC);
+        serverbound(registrar, CompassRequestPacket.TYPE, CompassRequestPacket.STREAM_CODEC);
+        serverbound(registrar, ConfigButtonPacket.TYPE, ConfigButtonPacket.STREAM_CODEC);
+        serverbound(registrar, ConfirmAutoCraftPacket.TYPE, ConfirmAutoCraftPacket.STREAM_CODEC);
+        serverbound(registrar, FillCraftingGridFromRecipePacket.TYPE, FillCraftingGridFromRecipePacket.STREAM_CODEC);
+        serverbound(registrar, GuiActionPacket.TYPE, GuiActionPacket.STREAM_CODEC);
+        serverbound(registrar, HotkeyPacket.TYPE, HotkeyPacket.STREAM_CODEC);
+        serverbound(registrar, InventoryActionPacket.TYPE, InventoryActionPacket.STREAM_CODEC);
+        serverbound(registrar, MEInteractionPacket.TYPE, MEInteractionPacket.STREAM_CODEC);
+        serverbound(registrar, MouseWheelPacket.TYPE, MouseWheelPacket.STREAM_CODEC);
+        serverbound(registrar, PartLeftClickPacket.TYPE, PartLeftClickPacket.STREAM_CODEC);
+        serverbound(registrar, SelectKeyTypePacket.TYPE, SelectKeyTypePacket.STREAM_CODEC);
+        serverbound(registrar, SwapSlotsPacket.TYPE, SwapSlotsPacket.STREAM_CODEC);
+        serverbound(registrar, SwitchGuisPacket.TYPE, SwitchGuisPacket.STREAM_CODEC);
 
         // Bidirectional
-        bidirectional(registrar, ConfigValuePacket.class, ConfigValuePacket::decode);
+        bidirectional(registrar, ConfigValuePacket.TYPE, ConfigValuePacket.STREAM_CODEC);
     }
 
-    private static <T extends ClientboundPacket> void clientbound(IPayloadRegistrar registrar, Class<T> packetClass,
-            FriendlyByteBuf.Reader<T> reader) {
-        var id = CustomAppEngPayload.makeId(packetClass);
-        registrar.play(id, reader, builder -> builder.client(ClientboundPacket::handleOnClient));
+    private static <T extends ClientboundPacket> void clientbound(PayloadRegistrar registrar,
+            CustomPacketPayload.Type<T> type,
+            StreamCodec<RegistryFriendlyByteBuf, T> codec) {
+        registrar.playToClient(type, codec, ClientboundPacket::handleOnClient);
     }
 
-    private static <T extends ServerboundPacket> void serverbound(IPayloadRegistrar registrar, Class<T> packetClass,
-            FriendlyByteBuf.Reader<T> reader) {
-        var id = CustomAppEngPayload.makeId(packetClass);
-        registrar.play(id, reader, builder -> builder.server(ServerboundPacket::handleOnServer));
+    private static <T extends ServerboundPacket> void serverbound(PayloadRegistrar registrar,
+            CustomPacketPayload.Type<T> type,
+            StreamCodec<RegistryFriendlyByteBuf, T> codec) {
+        registrar.playToServer(type, codec, ServerboundPacket::handleOnServer);
     }
 
-    private static <T extends ServerboundPacket & ClientboundPacket> void bidirectional(IPayloadRegistrar registrar,
-            Class<T> packetClass, FriendlyByteBuf.Reader<T> reader) {
-        var id = CustomAppEngPayload.makeId(packetClass);
-        registrar.play(id, reader, builder -> {
-            builder.client(ClientboundPacket::handleOnClient);
-            builder.server(ServerboundPacket::handleOnServer);
+    private static <T extends ServerboundPacket & ClientboundPacket> void bidirectional(PayloadRegistrar registrar,
+            CustomPacketPayload.Type<T> type,
+            StreamCodec<RegistryFriendlyByteBuf, T> codec) {
+        registrar.playBidirectional(type, codec, (payload, context) -> {
+            if (context.flow().isClientbound()) {
+                payload.handleOnClient(context);
+            } else if (context.flow().isServerbound()) {
+                payload.handleOnServer(context);
+            }
         });
     }
 }

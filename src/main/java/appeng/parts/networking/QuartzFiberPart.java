@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -93,14 +94,14 @@ public class QuartzFiberPart extends AEBasePart {
     }
 
     @Override
-    public void readFromNBT(CompoundTag extra) {
-        super.readFromNBT(extra);
+    public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
+        super.readFromNBT(extra, registries);
         this.outerNode.loadFromNBT(extra);
     }
 
     @Override
-    public void writeToNBT(CompoundTag extra) {
-        super.writeToNBT(extra);
+    public void writeToNBT(CompoundTag extra, HolderLookup.Provider registries) {
+        super.writeToNBT(extra, registries);
         this.outerNode.saveToNBT(extra);
     }
 

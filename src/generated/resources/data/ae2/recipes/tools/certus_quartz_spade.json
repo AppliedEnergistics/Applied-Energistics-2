@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:gems/certus_quartz"
+      "tag": "c:gems/certus_quartz"
     },
     "b": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:rods/wooden"
     }
   },
   "pattern": [
@@ -15,6 +15,7 @@
     "b"
   ],
   "result": {
-    "item": "ae2:certus_quartz_shovel"
+    "count": 1,
+    "id": "ae2:certus_quartz_shovel"
   }
 }

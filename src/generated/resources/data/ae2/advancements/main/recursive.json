@@ -10,7 +10,8 @@
       "translate": "achievement.ae2.Recursive.desc"
     },
     "icon": {
-      "item": "ae2:interface"
+      "count": 1,
+      "id": "ae2:interface"
     },
     "title": {
       "translate": "achievement.ae2.Recursive"

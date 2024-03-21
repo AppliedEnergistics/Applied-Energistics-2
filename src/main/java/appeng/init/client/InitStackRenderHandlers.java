@@ -33,6 +33,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -77,7 +78,7 @@ public class InitStackRenderHandlers {
             // The Z-scaling by 0.001 causes the model to be visually "flattened"
             // This cannot replace a proper projection, but it's cheap and gives the desired effect.
             // We don't scale the normal matrix to avoid lighting issues.
-            poseStack.mulPoseMatrix(new Matrix4f().scale(scale, scale, 0.001f));
+            poseStack.mulPose(new Matrix4f().scale(scale, scale, 0.001f));
             // Rotate the normal matrix a little for nicer lighting.
             poseStack.last().normal().rotateX(Mth.DEG_TO_RAD * -45f);
 
@@ -94,7 +95,9 @@ public class InitStackRenderHandlers {
 
         @Override
         public List<Component> getTooltip(AEItemKey stack) {
-            return stack.getReadOnlyStack().getTooltipLines(Minecraft.getInstance().player,
+            return stack.getReadOnlyStack().getTooltipLines(
+                    Item.TooltipContext.of(Minecraft.getInstance().level),
+                    Minecraft.getInstance().player,
                     Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED
                             : TooltipFlag.Default.NORMAL);
         }
@@ -175,11 +178,11 @@ public class InitStackRenderHandlers {
         @Override
         public List<Component> getTooltip(AEFluidKey stack) {
             var tooltip = new ArrayList<Component>();
-            tooltip.add(stack.toStack(1).getDisplayName());
+            tooltip.add(stack.toStack(1).getHoverName());
 
             // Heuristic: If the last line doesn't include the modname, add it ourselves
             var modName = Platform.formatModName(stack.getModId());
-            if (tooltip.isEmpty() || !tooltip.get(tooltip.size() - 1).getString().equals(modName)) {
+            if (!tooltip.getLast().getString().equals(modName)) {
                 tooltip.add(Component.literal(modName));
             }
 

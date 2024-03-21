@@ -122,7 +122,7 @@ public class PartModelsHelper {
             locations.add((ResourceLocation) value);
         } else if (value instanceof IPartModel) {
             locations.addAll(((IPartModel) value).getModels());
-        } else if (value instanceof Collection<?>values) {
+        } else if (value instanceof Collection<?> values) {
             // Check that each object is an IPartModel
             for (Object candidate : values) {
                 if (!(candidate instanceof IPartModel)) {

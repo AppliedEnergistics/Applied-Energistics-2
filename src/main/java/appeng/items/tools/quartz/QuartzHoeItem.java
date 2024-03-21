@@ -22,6 +22,6 @@ import net.minecraft.world.item.HoeItem;
 
 public class QuartzHoeItem extends HoeItem {
     public QuartzHoeItem(Properties props, QuartzToolType type) {
-        super(type.getToolTier(), -2, -1.0F, props);
+        super(type.getToolTier(), props.attributes(createAttributes(type.getToolTier(), -2, -1.0F)));
     }
 }

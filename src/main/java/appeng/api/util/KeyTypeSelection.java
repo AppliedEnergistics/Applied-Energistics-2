@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypes;
 
@@ -36,9 +38,12 @@ public class KeyTypeSelection {
 
     public static KeyTypeSelection forStack(ItemStack stack, Predicate<AEKeyType> allowKeyType) {
         var out = new KeyTypeSelection(selection -> {
-            selection.writeToNBT(stack.getOrCreateTag());
+            stack.set(AEComponents.ENABLED_KEY_TYPES, selection.enabledSet());
         }, allowKeyType);
-        out.readFromNBT(stack.getOrCreateTag());
+        var selected = stack.get(AEComponents.ENABLED_KEY_TYPES);
+        if (selected != null) {
+            out.setEnabledSet(selected);
+        }
         return out;
     }
 
@@ -72,6 +77,12 @@ public class KeyTypeSelection {
         return keyTypes.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).toList();
     }
 
+    public void setEnabledSet(List<AEKeyType> selected) {
+        for (var entry : keyTypes.entrySet()) {
+            entry.setValue(selected.contains(entry.getKey()));
+        }
+    }
+
     public Predicate<AEKeyType> enabledPredicate() {
         return keyType -> keyTypes.getOrDefault(keyType, Boolean.FALSE);
     }
@@ -86,7 +97,7 @@ public class KeyTypeSelection {
         tag.put("enabledKeyTypes", enabledKeyTypesTag);
     }
 
-    public void readFromNBT(CompoundTag tag) {
+    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
         for (var entry : keyTypes.entrySet()) {
             entry.setValue(false);
         }

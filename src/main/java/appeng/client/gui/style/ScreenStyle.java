@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,8 +36,8 @@ import com.mojang.serialization.JsonOps;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.Util;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 
@@ -47,7 +48,8 @@ public class ScreenStyle {
 
     public static final Gson GSON = new GsonBuilder()
             .disableHtmlEscaping()
-            .registerTypeHierarchyAdapter(Component.class, new Component.SerializerAdapter())
+            .registerTypeHierarchyAdapter(Component.class,
+                    new Component.SerializerAdapter(HolderLookup.Provider.create(Stream.of())))
             .registerTypeAdapter(Style.class, new StyleSerializer())
             .registerTypeAdapter(Blitter.class, BlitterDeserializer.INSTANCE)
             .registerTypeAdapter(Rect2i.class, Rectangle2dDeserializer.INSTANCE)
@@ -167,12 +169,12 @@ public class ScreenStyle {
         @Override
         public Style deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
-            return Util.getOrThrow(Style.Serializer.CODEC.parse(JsonOps.INSTANCE, json), JsonParseException::new);
+            return Style.Serializer.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(JsonParseException::new);
         }
 
         @Override
         public JsonElement serialize(Style src, Type typeOfSrc, JsonSerializationContext context) {
-            return Util.getOrThrow(Style.Serializer.CODEC.encodeStart(JsonOps.INSTANCE, src), JsonParseException::new);
+            return Style.Serializer.CODEC.encodeStart(JsonOps.INSTANCE, src).getOrThrow(JsonParseException::new);
         }
     }
 }

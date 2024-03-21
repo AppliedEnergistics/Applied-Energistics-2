@@ -34,7 +34,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 
@@ -54,7 +54,6 @@ import appeng.core.definitions.AEParts;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.tools.powered.ColorApplicatorItem;
 import appeng.parts.AEBasePart;
-import appeng.parts.AEBasePart.NodeListener;
 
 public abstract class CablePart extends AEBasePart implements ICablePart {
 
@@ -92,7 +91,7 @@ public abstract class CablePart extends AEBasePart implements ICablePart {
 
     @Override
     public AEColor getCableColor() {
-        if (getPartItem() instanceof ColoredPartItem<?>coloredPartItem) {
+        if (getPartItem() instanceof ColoredPartItem<?> coloredPartItem) {
             return coloredPartItem.getColor();
         }
         return AEColor.TRANSPARENT;
@@ -242,7 +241,7 @@ public abstract class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public void writeToStream(FriendlyByteBuf data) {
+    public void writeToStream(RegistryFriendlyByteBuf data) {
         super.writeToStream(data);
 
         boolean[] writeChannels = new boolean[Direction.values().length];
@@ -316,7 +315,7 @@ public abstract class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public boolean readFromStream(FriendlyByteBuf data) {
+    public boolean readFromStream(RegistryFriendlyByteBuf data) {
         var changed = super.readFromStream(data);
 
         int connectedSidesPacked = data.readByte();
@@ -358,7 +357,7 @@ public abstract class CablePart extends AEBasePart implements ICablePart {
         // Hacky hacky hacky, but it works. Refreshes the client-side state even if we're on the server
         if (!isClientSide()) {
             updateConnections();
-            var packet = new FriendlyByteBuf(Unpooled.buffer());
+            var packet = new RegistryFriendlyByteBuf(Unpooled.buffer(), getLevel().registryAccess());
             writeToStream(packet);
             readFromStream(packet);
         }

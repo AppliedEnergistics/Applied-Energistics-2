@@ -20,6 +20,7 @@ package appeng.api.upgrades;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -88,8 +89,8 @@ abstract class UpgradeInventory extends AppEngInternalInventory implements Inter
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, String name) {
-        super.readFromNBT(data, name);
+    public void readFromNBT(CompoundTag data, String name, HolderLookup.Provider registries) {
+        super.readFromNBT(data, name, registries);
         this.updateUpgradeInfo();
     }
 

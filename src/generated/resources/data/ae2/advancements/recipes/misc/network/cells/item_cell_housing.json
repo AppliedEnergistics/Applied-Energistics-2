@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:dusts/redstone"
+            "items": "#c:dusts/redstone"
           }
         ]
       },

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:fluix_pearl"
-            ]
+            "items": "ae2:fluix_pearl"
           }
         ]
       },

@@ -130,7 +130,7 @@ public final class MenuLocators {
         throw new IllegalArgumentException("Could not find item held in hand " + hand + " in player inventory");
     }
 
-    private record Registration<T extends MenuHostLocator> (
+    private record Registration<T extends MenuHostLocator>(
             Class<T> locatorClass,
             BiConsumer<T, FriendlyByteBuf> writeToPacket,
             Function<FriendlyByteBuf, T> readFromPacket) {

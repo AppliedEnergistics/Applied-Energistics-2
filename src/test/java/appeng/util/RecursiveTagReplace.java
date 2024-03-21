@@ -1,11 +1,22 @@
-package appeng.crafting.pattern;
+package appeng.util;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 
-final class RecursiveTagReplace {
+public final class RecursiveTagReplace {
     private RecursiveTagReplace() {
+    }
+
+    public static int replace(Tag tag, String from, String to) {
+        if (tag instanceof CompoundTag compoundTag) {
+            return replace(compoundTag, from, to);
+        } else if (tag instanceof ListTag listTag) {
+            return replace(listTag, from, to);
+        } else {
+            return 0;
+        }
     }
 
     public static int replace(CompoundTag compoundTag, String from, String to) {

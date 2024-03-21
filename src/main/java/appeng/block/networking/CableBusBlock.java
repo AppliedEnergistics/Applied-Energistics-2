@@ -20,7 +20,6 @@ package appeng.block.networking;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
@@ -34,9 +33,11 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -103,7 +104,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public boolean isPathfindable(BlockState state, BlockGetter reader, BlockPos pos, PathComputationType type) {
+    protected boolean isPathfindable(BlockState state, PathComputationType type) {
         return false;
     }
 
@@ -223,13 +224,23 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
-            InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
+            Player player, InteractionHand hand, BlockHitResult hit) {
         // Transform from world into block space
         Vec3 hitVec = hit.getLocation();
         Vec3 hitInBlock = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
-        return this.cb(level, pos).activate(player, hand, hitInBlock)
+        return this.cb(level, pos).useItemOn(heldItem, player, hand, hitInBlock)
+                ? ItemInteractionResult.sidedSuccess(level.isClientSide())
+                : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
+            BlockHitResult hitResult) {
+        // Transform from world into block space
+        Vec3 hitVec = hitResult.getLocation();
+        Vec3 hitInBlock = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
+        return this.cb(level, pos).useWithoutItem(player, hitInBlock)
                 ? InteractionResult.sidedSuccess(level.isClientSide())
                 : InteractionResult.PASS;
     }
@@ -439,13 +450,12 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     public BlockState getAppearance(BlockState state, BlockAndTintGetter renderView, BlockPos pos, Direction side,
             @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         ModelData modelData;
-        var modelDataManager = renderView.getModelDataManager();
-        if (modelDataManager == null) {
+        if (renderView instanceof ServerLevel serverLevel) {
             // We're on the server, use BE directly
             BlockEntity be = renderView.getBlockEntity(pos);
             modelData = be != null ? be.getModelData() : ModelData.EMPTY;
         } else {
-            modelData = Objects.requireNonNullElse(modelDataManager.getAt(pos), ModelData.EMPTY);
+            modelData = renderView.getModelData(pos);
         }
 
         CableBusRenderState cableBusRenderState = modelData.get(CableBusRenderState.PROPERTY);

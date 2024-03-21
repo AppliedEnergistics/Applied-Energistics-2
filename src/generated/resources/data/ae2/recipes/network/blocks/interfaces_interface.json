@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "b": {
-      "tag": "forge:glass"
+      "tag": "c:glass_blocks"
     },
     "c": {
       "item": "ae2:annihilation_core"
@@ -21,6 +21,7 @@
     "aba"
   ],
   "result": {
-    "item": "ae2:interface"
+    "count": 1,
+    "id": "ae2:interface"
   }
 }

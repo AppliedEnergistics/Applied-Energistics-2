@@ -26,6 +26,7 @@ package appeng.api.parts;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -64,9 +65,10 @@ public interface IFacadeContainer {
     /**
      * write nbt data
      *
-     * @param data to be written data
+     * @param data       to be written data
+     * @param registries
      */
-    void writeToNBT(CompoundTag data);
+    void writeToNBT(CompoundTag data, HolderLookup.Provider registries);
 
     /**
      * read from stream
@@ -80,9 +82,10 @@ public interface IFacadeContainer {
     /**
      * read from NBT
      *
-     * @param data to be read data
+     * @param data       to be read data
+     * @param registries
      */
-    void readFromNBT(CompoundTag data);
+    void readFromNBT(CompoundTag data, HolderLookup.Provider registries);
 
     /**
      * write to stream

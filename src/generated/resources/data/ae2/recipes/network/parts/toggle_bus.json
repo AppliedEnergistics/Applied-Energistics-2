@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     },
     "b": {
       "item": "ae2:fluix_glass_cable"
@@ -18,6 +18,7 @@
     " a "
   ],
   "result": {
-    "item": "ae2:toggle_bus"
+    "count": 1,
+    "id": "ae2:toggle_bus"
   }
 }

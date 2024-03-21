@@ -27,7 +27,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -50,9 +49,9 @@ public class UpgradeCardItem extends AEBaseItem {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
             TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, level, lines, advancedTooltips);
+        super.appendHoverText(stack, context, lines, advancedTooltips);
 
         var supportedBy = Upgrades.getTooltipLinesForCard(this);
         if (!supportedBy.isEmpty()) {

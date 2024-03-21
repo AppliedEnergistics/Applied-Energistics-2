@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "b": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     }
   },
   "pattern": [
@@ -15,6 +15,7 @@
     "aba"
   ],
   "result": {
-    "item": "ae2:charger"
+    "count": 1,
+    "id": "ae2:charger"
   }
 }

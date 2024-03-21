@@ -23,9 +23,9 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
@@ -42,6 +42,7 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
+import appeng.api.util.IConfigManagerBuilder;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.IConfigInvHost;
@@ -132,9 +133,13 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
         getMainNode().addService(IStorageWatcherNode.class, stackWatcherNode);
         getMainNode().addService(ICraftingWatcherNode.class, craftingWatcherNode);
         getMainNode().addService(ICraftingProvider.class, this);
+    }
 
-        getConfigManager().registerSetting(Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
-        getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+    @Override
+    protected void registerSettings(IConfigManagerBuilder builder) {
+        super.registerSettings(builder);
+        builder.registerSetting(Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
+        builder.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
     }
 
     @Nullable
@@ -273,19 +278,19 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
     }
 
     @Override
-    public void readFromNBT(CompoundTag data) {
-        super.readFromNBT(data);
-        config.readFromChildTag(data, "config");
+    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
+        super.readFromNBT(data, registries);
+        config.readFromChildTag(data, "config", registries);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data) {
-        super.writeToNBT(data);
-        config.writeToChildTag(data, "config");
+    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
+        super.writeToNBT(data, registries);
+        config.writeToChildTag(data, "config", registries);
     }
 
     @Override
-    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
+    public boolean onUseWithoutItem(Player player, Vec3 pos) {
         if (!isClientSide()) {
             MenuOpener.open(StorageLevelEmitterMenu.TYPE, player, MenuLocators.forPart(this));
         }

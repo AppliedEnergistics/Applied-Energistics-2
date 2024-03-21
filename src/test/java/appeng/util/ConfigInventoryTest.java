@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 
@@ -18,6 +20,8 @@ import appeng.helpers.externalstorage.GenericStackInv;
 
 @BootstrapMinecraft
 public class ConfigInventoryTest {
+    private final RegistryAccess registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+
     public static final AEItemKey STICK_KEY = AEItemKey.of(Items.STICK);
     public static final GenericStack ONE_STICK = new GenericStack(STICK_KEY, 1);
     public static final GenericStack ZERO_STICK = new GenericStack(STICK_KEY, 0);
@@ -35,7 +39,7 @@ public class ConfigInventoryTest {
             var mixedInv = new GenericStackInv(null, 2);
             mixedInv.setStack(0, ONE_STICK);
             mixedInv.setStack(1, new GenericStack(AEFluidKey.of(Fluids.WATER), 1));
-            inv.readFromTag(mixedInv.writeToTag());
+            inv.readFromTag(mixedInv.writeToTag(registryAccess), registryAccess);
         }
 
         @Test

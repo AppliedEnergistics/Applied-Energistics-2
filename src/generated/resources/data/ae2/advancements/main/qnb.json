@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:quantum_link"
-            ]
+            "items": "ae2:quantum_link"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "achievement.ae2.QNB.desc"
     },
     "icon": {
-      "item": "ae2:quantum_link"
+      "count": 1,
+      "id": "ae2:quantum_link"
     },
     "title": {
       "translate": "achievement.ae2.QNB"

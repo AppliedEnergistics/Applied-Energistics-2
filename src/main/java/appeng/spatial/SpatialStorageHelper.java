@@ -32,7 +32,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.entity.Visibility;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.AABB;
@@ -261,8 +261,7 @@ public class SpatialStorageHelper {
         @Override
         public void visit(BlockPos pos) {
             final BlockState state = this.dst.getBlockState(pos);
-            final Block blk = state.getBlock();
-            blk.neighborChanged(state, this.dst, pos, blk, pos, false);
+            state.handleNeighborChanged(this.dst, pos, state.getBlock(), pos, false);
         }
     }
 

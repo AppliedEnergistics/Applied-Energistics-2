@@ -22,9 +22,9 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -106,15 +106,15 @@ public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
     }
 
     @Override
-    public void readFromNBT(CompoundTag data) {
-        super.readFromNBT(data);
-        this.logic.readFromNBT(data);
+    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
+        super.readFromNBT(data, registries);
+        this.logic.readFromNBT(data, registries);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data) {
-        super.writeToNBT(data);
-        this.logic.writeToNBT(data);
+    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
+        super.writeToNBT(data, registries);
+        this.logic.writeToNBT(data, registries);
     }
 
     @Override
@@ -140,7 +140,7 @@ public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
     }
 
     @Override
-    public boolean onPartActivate(Player p, InteractionHand hand, Vec3 pos) {
+    public boolean onUseWithoutItem(Player p, Vec3 pos) {
         if (!p.getCommandSenderWorld().isClientSide()) {
             openMenu(p, MenuLocators.forPart(this));
         }

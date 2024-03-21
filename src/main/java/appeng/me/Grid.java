@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MultimapBuilder;
@@ -35,6 +36,7 @@ import com.google.gson.stream.JsonWriter;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.CrashReportCategory;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
@@ -320,8 +322,9 @@ public class Grid implements IGrid {
 
     @Override
     public void export(JsonWriter jsonWriter) throws IOException {
-        jsonWriter.beginObject();
+        var registries = pivot != null ? pivot.getLevel().registryAccess() : HolderLookup.Provider.create(Stream.of());
 
+        jsonWriter.beginObject();
         var properties = Map.of(
                 "id", serialNumber,
                 "disposed", pivot == null);
@@ -344,17 +347,17 @@ public class Grid implements IGrid {
         }
 
         jsonWriter.name("machines");
-        exportMachines(jsonWriter, machineIdMap, nodeIdMap);
+        exportMachines(jsonWriter, registries, machineIdMap, nodeIdMap);
 
         jsonWriter.name("nodes");
-        exportNodes(jsonWriter, machineIdMap, nodeIdMap);
+        exportNodes(jsonWriter, registries, machineIdMap, nodeIdMap);
 
         jsonWriter.name("services");
         jsonWriter.beginObject();
         for (var entry : services.entrySet()) {
             jsonWriter.name(getServiceExportKey(entry.getKey()));
             jsonWriter.beginObject();
-            entry.getValue().debugDump(jsonWriter);
+            entry.getValue().debugDump(jsonWriter, registries);
             jsonWriter.endObject();
         }
         jsonWriter.endObject();
@@ -362,7 +365,8 @@ public class Grid implements IGrid {
         jsonWriter.endObject();
     }
 
-    private void exportMachines(JsonWriter jsonWriter, Reference2IntMap<Object> machineIds,
+    private void exportMachines(JsonWriter jsonWriter, HolderLookup.Provider registries,
+            Reference2IntMap<Object> machineIds,
             Reference2IntMap<IGridNode> nodeIds) throws IOException {
         jsonWriter.beginArray();
         for (var entry : machineIds.reference2IntEntrySet()) {
@@ -370,20 +374,21 @@ public class Grid implements IGrid {
             JsonStreamUtil.writeProperties(Map.of(
                     "id", entry.getIntValue()), jsonWriter);
             if (entry.getKey() instanceof IDebugExportable exportable) {
-                exportable.debugExport(jsonWriter, machineIds, nodeIds);
+                exportable.debugExport(jsonWriter, registries, machineIds, nodeIds);
             }
             jsonWriter.endObject();
         }
         jsonWriter.endArray();
     }
 
-    private void exportNodes(JsonWriter jsonWriter, Reference2IntMap<Object> machineIds,
+    private void exportNodes(JsonWriter jsonWriter, HolderLookup.Provider registries,
+            Reference2IntMap<Object> machineIds,
             Reference2IntMap<IGridNode> nodeIds) throws IOException {
         // Dump nodes
         jsonWriter.beginArray();
         for (var entry : nodeIds.reference2IntEntrySet()) {
             var node = entry.getKey();
-            ((GridNode) node).debugExport(jsonWriter, machineIds, nodeIds);
+            ((GridNode) node).debugExport(jsonWriter, registries, machineIds, nodeIds);
         }
         jsonWriter.endArray();
     }

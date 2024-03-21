@@ -6,7 +6,7 @@
       "tag": "ae2:illuminated_panel"
     },
     {
-      "tag": "forge:chests/wooden"
+      "tag": "c:chests/wooden"
     },
     {
       "tag": "ae2:quartz_wrench"
@@ -16,6 +16,7 @@
     }
   ],
   "result": {
-    "item": "ae2:network_tool"
+    "count": 1,
+    "id": "ae2:network_tool"
   }
 }

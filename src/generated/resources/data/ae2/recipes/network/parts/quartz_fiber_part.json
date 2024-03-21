@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:glass"
+      "tag": "c:glass_blocks"
     },
     "b": {
       "tag": "ae2:all_quartz_dust"
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 3,
-    "item": "ae2:quartz_fiber"
+    "id": "ae2:quartz_fiber"
   }
 }

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:fluix_block"
-            ]
+            "items": "ae2:fluix_block"
           }
         ]
       },
@@ -17,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:fluix_glass_cable"
-            ]
+            "items": "ae2:fluix_glass_cable"
           }
         ]
       },
@@ -29,9 +25,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:quartz_glass"
-            ]
+            "items": "ae2:quartz_glass"
           }
         ]
       },

@@ -4,29 +4,54 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import appeng.core.definitions.AEItems;
+import appeng.core.AppEng;
 import appeng.util.BootstrapMinecraft;
 import appeng.util.LoadTranslations;
+import appeng.util.RecursiveTagReplace;
 
 @BootstrapMinecraft
 @LoadTranslations
+@MockitoSettings(strictness = Strictness.LENIENT)
 class AEProcessingPatternTest {
+    private final RegistryAccess registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+
+    @Mock
+    MockedStatic<AppEng> appEngMock;
+
+    @BeforeEach
+    void setUp() {
+        var appEngInstance = mock(AppEng.class);
+        var clientLevel = mock(Level.class);
+        when(appEngInstance.getClientLevel()).thenReturn(clientLevel);
+        appEngMock.when(AppEng::instance).thenReturn(appEngInstance);
+    }
+
     @Test
     void testDecodeWithEmptyTag() {
         assertNull(decode(new CompoundTag()));
@@ -39,18 +64,14 @@ class AEProcessingPatternTest {
     @Test
     void testDecodeWithRemovedIngredientItemIds() {
         var encoded = PatternDetailsHelper.encodeProcessingPattern(
-                new GenericStack[] {
+                List.of(
                         GenericStack.fromItemStack(new ItemStack(Items.TORCH)),
-                        GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))
-                },
-                new GenericStack[] {
-                        GenericStack.fromItemStack(new ItemStack(Items.STICK))
-                });
-        var encodedTag = encoded.getTag();
+                        GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))),
+                List.of(
+                        GenericStack.fromItemStack(new ItemStack(Items.STICK))));
+        var encodedTag = (CompoundTag) encoded.save(registryAccess);
 
-        var inputTag = encodedTag.getList("in", Tag.TAG_COMPOUND).getCompound(0);
-        assertEquals("minecraft:torch", inputTag.getString("id"));
-        inputTag.putString("id", "minecraft:unknown_item_id");
+        assertEquals(1, RecursiveTagReplace.replace(encodedTag, "minecraft:torch", "minecraft:unknown_item_id"));
 
         var reDecoded = decode(encodedTag);
         assertNull(reDecoded);
@@ -63,20 +84,18 @@ class AEProcessingPatternTest {
     @Test
     void testDecodeWithRemovedResultItemIds() {
         var encoded = PatternDetailsHelper.encodeProcessingPattern(
-                new GenericStack[] {
+                List.of(
                         GenericStack.fromItemStack(new ItemStack(Items.TORCH)),
-                        GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))
-                },
-                new GenericStack[] {
-                        GenericStack.fromItemStack(new ItemStack(Items.STICK))
-                });
-        var encodedTag = encoded.getTag();
+                        GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))),
+                List.of(
+                        GenericStack.fromItemStack(new ItemStack(Items.STICK))));
+        var encodedTag = (CompoundTag) encoded.save(registryAccess);
 
         // Replace the diamond ID string with an unknown ID string
         assertEquals(1, RecursiveTagReplace.replace(encodedTag, "minecraft:stick", "minecraft:does_not_exist"));
 
         assertNull(decode(encodedTag));
-        assertThat(getExtraTooltip(encoded)).containsExactly(
+        assertThat(getExtraTooltip(encodedTag)).containsExactly(
                 "Invalid Pattern",
                 "Produces: 1 x minecraft:does_not_exist",
                 "with: 1 x Torch",
@@ -89,34 +108,36 @@ class AEProcessingPatternTest {
     @Test
     void testDecodeWithRemovedStorageChannels() {
         var encoded = PatternDetailsHelper.encodeProcessingPattern(
-                new GenericStack[] {
+                List.of(
                         GenericStack.fromItemStack(new ItemStack(Items.TORCH)),
-                        GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))
-                },
-                new GenericStack[] {
-                        GenericStack.fromItemStack(new ItemStack(Items.STICK))
-                });
-        var encodedTag = encoded.getTag();
+                        GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))),
+                List.of(
+                        GenericStack.fromItemStack(new ItemStack(Items.STICK))));
+        var encodedTag = (CompoundTag) encoded.save(registryAccess);
 
         // Replace the channel of all items
         assertEquals(3, RecursiveTagReplace.replace(encodedTag, "ae2:i", "some_mod:missing_chan"));
 
         assertNull(decode(encodedTag));
-        assertThat(getExtraTooltip(encoded)).containsExactly(
+        assertThat(getExtraTooltip(encodedTag)).containsExactly(
                 "Invalid Pattern",
                 "Produces: 1 x minecraft:stick (some_mod:missing_chan)",
                 "with: 1 x minecraft:torch (some_mod:missing_chan)",
                 " and 1 x minecraft:diamond (some_mod:missing_chan)");
     }
 
-    private List<String> getExtraTooltip(ItemStack stack) {
+    private List<String> getExtraTooltip(CompoundTag tag) {
+        var stack = ItemStack.parseOptional(registryAccess, tag);
+
         var lines = new ArrayList<Component>();
-        stack.getItem().appendHoverText(stack, null, lines, TooltipFlag.ADVANCED);
+        stack.getItem().appendHoverText(stack, Item.TooltipContext.EMPTY, lines, TooltipFlag.ADVANCED);
         return lines.stream().map(Component::getString).toList();
     }
 
     private AEProcessingPattern decode(CompoundTag tag) {
-        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(AEItems.PROCESSING_PATTERN, tag), null);
+        var stack = ItemStack.parseOptional(registryAccess, tag);
+
+        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(stack), mock(Level.class));
         if (details == null) {
             return null;
         }

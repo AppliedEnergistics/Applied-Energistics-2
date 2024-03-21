@@ -10,6 +10,7 @@
   },
   "mode": "inscribe",
   "result": {
-    "item": "ae2:silicon_press"
+    "count": 1,
+    "id": "ae2:silicon_press"
   }
 }

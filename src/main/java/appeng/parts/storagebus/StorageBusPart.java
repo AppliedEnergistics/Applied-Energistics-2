@@ -25,11 +25,12 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -47,6 +48,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.YesNo;
 import appeng.api.features.IPlayerRegistry;
+import appeng.api.ids.AEComponents;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
@@ -63,6 +65,7 @@ import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigManagerBuilder;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
@@ -140,14 +143,19 @@ public class StorageBusPart extends UpgradeablePart
     public StorageBusPart(IPartItem<?> partItem) {
         super(partItem);
         this.adjacentStorageAccessor = new PartAdjacentApi<>(this, AECapabilities.ME_STORAGE);
-        this.getConfigManager().registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
-        this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
-        this.getConfigManager().registerSetting(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
-        this.getConfigManager().registerSetting(Settings.FILTER_ON_EXTRACT, YesNo.YES);
         this.source = new MachineSource(this);
         getMainNode()
                 .addService(IStorageProvider.class, this)
                 .addService(IGridTickable.class, this);
+    }
+
+    @Override
+    protected void registerSettings(IConfigManagerBuilder builder) {
+        super.registerSettings(builder);
+        builder.registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
+        builder.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+        builder.registerSetting(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
+        builder.registerSetting(Settings.FILTER_ON_EXTRACT, YesNo.YES);
     }
 
     @Override
@@ -200,21 +208,21 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public void readFromNBT(CompoundTag data) {
-        super.readFromNBT(data);
+    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
+        super.readFromNBT(data, registries);
         this.priority = data.getInt("priority");
-        config.readFromChildTag(data, "config");
+        config.readFromChildTag(data, "config", registries);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data) {
-        super.writeToNBT(data);
+    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
+        super.writeToNBT(data, registries);
         data.putInt("priority", this.priority);
-        config.writeToChildTag(data, "config");
+        config.writeToChildTag(data, "config", registries);
     }
 
     @Override
-    public final boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
+    public final boolean onUseWithoutItem(Player player, Vec3 pos) {
         if (!isClientSide()) {
             openConfigMenu(player);
         }
@@ -511,17 +519,20 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
         super.importSettings(mode, input, player);
-        config.readFromChildTag(input, "config");
+        var configInv = input.get(AEComponents.EXPORTED_CONFIG_INV);
+        if (configInv != null) {
+            config.readFromList(configInv);
+        }
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, CompoundTag output) {
-        super.exportSettings(mode, output);
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder) {
+        super.exportSettings(mode, builder);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
-            config.writeToChildTag(output, "config");
+            builder.set(AEComponents.EXPORTED_CONFIG_INV, config.toList());
         }
     }
 

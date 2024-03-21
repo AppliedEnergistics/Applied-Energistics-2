@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/vanadium"
+        "tag": "c:nuggets/vanadium"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/vanadium"
+    "tag": "c:nuggets/vanadium"
   },
   "weight": 50.9415
 }

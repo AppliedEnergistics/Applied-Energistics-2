@@ -9,10 +9,10 @@
       "item": "ae2:calculation_processor"
     },
     "c": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "d": {
-      "tag": "forge:chests/wooden"
+      "tag": "c:chests/wooden"
     }
   },
   "pattern": [
@@ -21,6 +21,7 @@
     "ccc"
   ],
   "result": {
-    "item": "ae2:cell_workbench"
+    "count": 1,
+    "id": "ae2:cell_workbench"
   }
 }

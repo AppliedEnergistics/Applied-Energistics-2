@@ -37,6 +37,7 @@ import com.mojang.serialization.JsonOps;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 
@@ -312,7 +313,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     }
 
     @Override
-    public void debugDump(JsonWriter writer) throws IOException {
+    public void debugDump(JsonWriter writer, HolderLookup.Provider registries) throws IOException {
 
         JsonStreamUtil.writeProperties(Map.of(
                 "inventoryRefreshTime", JsonStreamUtil.toMap(inventoryRefreshStats)), writer);
@@ -322,7 +323,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         for (var entry : cachedAvailableStacks) {
             writer.beginObject();
             writer.name("key");
-            var serializedKey = entry.getKey().toTagGeneric();
+            var serializedKey = entry.getKey().toTagGeneric(registries);
             var jsonKey = Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, serializedKey);
             GSON.toJson(jsonKey, writer);
             writer.name("amount");

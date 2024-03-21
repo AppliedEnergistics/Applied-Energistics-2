@@ -27,9 +27,9 @@ public final class CraftingRecipeUtil {
 
         // shaped recipes can be smaller than 3x3, expand to 3x3 to match the crafting
         // matrix
-        if (recipe instanceof IShapedRecipe<?>shapedRecipe) {
-            var width = shapedRecipe.getRecipeWidth();
-            var height = shapedRecipe.getRecipeHeight();
+        if (recipe instanceof IShapedRecipe<?> shapedRecipe) {
+            var width = shapedRecipe.getWidth();
+            var height = shapedRecipe.getHeight();
             Preconditions.checkArgument(width <= 3 && height <= 3);
 
             for (var h = 0; h < height; h++) {

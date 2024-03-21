@@ -6,13 +6,13 @@
       "item": "ae2:calculation_processor"
     },
     "b": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "c": {
-      "tag": "forge:ingots/gold"
+      "tag": "c:ingots/gold"
     },
     "d": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     }
   },
   "pattern": [
@@ -20,6 +20,7 @@
     "cdc"
   ],
   "result": {
-    "item": "ae2:memory_card"
+    "count": 1,
+    "id": "ae2:memory_card"
   }
 }

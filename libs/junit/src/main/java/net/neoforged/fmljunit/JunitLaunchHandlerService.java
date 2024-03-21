@@ -30,22 +30,10 @@ public class JunitLaunchHandlerService extends ForgeUserdevLaunchHandler {
                     .getMethod("bootStrap")
                     .invoke(null);
 
-            var fmlCoreLoader = gameLayer.findLoader("fml_loader");
+            var neoforge = gameLayer.findLoader("neoforge");
 
-            var modLoaderClass = fmlCoreLoader.loadClass("net.neoforged.fml.ModLoader");
-            var syncExecutor = fmlCoreLoader.loadClass("net.neoforged.fml.ModWorkManager")
-                    .getMethod("syncExecutor").invoke(null);
-            var parallelExecutor = fmlCoreLoader.loadClass("net.neoforged.fml.ModWorkManager")
-                    .getMethod("parallelExecutor").invoke(null);
-
-
-            var modLoader = modLoaderClass.getMethod("get").invoke(null);
-
-            Runnable periodicTasks = () -> {
-            };
-            callMethod(modLoaderClass, "gatherAndInitializeMods", modLoader, syncExecutor, parallelExecutor, periodicTasks);
-            callMethod(modLoaderClass, "loadMods", modLoader, syncExecutor, parallelExecutor, periodicTasks);
-            callMethod(modLoaderClass, "finishMods", modLoader, syncExecutor, parallelExecutor, periodicTasks);
+            var modLoaderClass = neoforge.loadClass("net.neoforged.neoforge.server.loading.ServerModLoader");
+            callMethod(modLoaderClass, "load", null);
 
             Consumer<Dist> extension = Launcher.INSTANCE.environment().findLaunchPlugin("runtimedistcleaner")
                     .get()
@@ -58,7 +46,7 @@ public class JunitLaunchHandlerService extends ForgeUserdevLaunchHandler {
     }
 
     private void callMethod(Class<?> clazz, String name, Object instance, Object... args) {
-        for (Method method : clazz.getMethods()) {
+        for (Method method : clazz.getDeclaredMethods()) {
             if (!method.getName().equals(name)) {
                 continue;
             }
@@ -78,6 +66,7 @@ public class JunitLaunchHandlerService extends ForgeUserdevLaunchHandler {
 
             if (compatible) {
                 try {
+                    method.setAccessible(true);
                     method.invoke(instance, args);
                 } catch (Exception e) {
                     throw new RuntimeException(e);

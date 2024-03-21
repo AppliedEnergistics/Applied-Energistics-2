@@ -10,7 +10,8 @@
       "translate": "achievement.ae2.Networking2.desc"
     },
     "icon": {
-      "item": "ae2:fluix_smart_cable"
+      "count": 1,
+      "id": "ae2:fluix_smart_cable"
     },
     "title": {
       "translate": "achievement.ae2.Networking2"

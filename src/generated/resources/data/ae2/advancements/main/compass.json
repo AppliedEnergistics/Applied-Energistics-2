@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:meteorite_compass"
-            ]
+            "items": "ae2:meteorite_compass"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "achievement.ae2.Compass.desc"
     },
     "icon": {
-      "item": "ae2:meteorite_compass"
+      "count": 1,
+      "id": "ae2:meteorite_compass"
     },
     "title": {
       "translate": "achievement.ae2.Compass"

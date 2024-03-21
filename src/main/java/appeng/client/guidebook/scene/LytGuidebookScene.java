@@ -348,13 +348,13 @@ public class LytGuidebookScene extends LytBox {
             RenderSystem.setProjectionMatrix(scene.getCameraSettings().getProjectionMatrix(),
                     VertexSorting.ORTHOGRAPHIC_Z);
             var modelViewStack = RenderSystem.getModelViewStack();
-            modelViewStack.pushPose();
-            modelViewStack.setIdentity();
-            modelViewStack.mulPoseMatrix(scene.getCameraSettings().getViewMatrix());
+            modelViewStack.pushMatrix();
+            modelViewStack.identity();
+            modelViewStack.mul(scene.getCameraSettings().getViewMatrix());
             RenderSystem.applyModelViewMatrix();
 
             RenderSystem.renderCrosshair(2);
-            modelViewStack.popPose();
+            modelViewStack.popMatrix();
             RenderSystem.applyModelViewMatrix();
             RenderSystem.restoreProjectionMatrix();
         }

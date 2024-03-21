@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/plutonium"
+        "tag": "c:nuggets/plutonium"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/plutonium"
+    "tag": "c:nuggets/plutonium"
   },
   "weight": 244.0
 }

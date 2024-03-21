@@ -3,7 +3,6 @@ package appeng.client.guidebook.scene;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -100,15 +99,16 @@ public class LiquidVertexConsumer implements VertexConsumer {
     }
 
     @Override
-    public void putBulkData(PoseStack.Pose poseEntry, BakedQuad quad, float red, float green, float blue,
+    public void putBulkData(PoseStack.Pose poseEntry, BakedQuad quad, float red, float green, float blue, float alpha,
             int combinedLight, int combinedOverlay) {
-        delegate.putBulkData(poseEntry, quad, red, green, blue, combinedLight, combinedOverlay);
+        delegate.putBulkData(poseEntry, quad, red, green, blue, alpha, combinedLight, combinedOverlay);
     }
 
     @Override
     public void putBulkData(PoseStack.Pose poseEntry, BakedQuad quad, float[] colorMuls, float red, float green,
-            float blue, int[] combinedLights, int combinedOverlay, boolean mulColor) {
-        delegate.putBulkData(poseEntry, quad, colorMuls, red, green, blue, combinedLights, combinedOverlay, mulColor);
+            float blue, float alpha, int[] combinedLights, int combinedOverlay, boolean mulColor) {
+        delegate.putBulkData(poseEntry, quad, colorMuls, red, green, blue, alpha, combinedLights, combinedOverlay,
+                mulColor);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class LiquidVertexConsumer implements VertexConsumer {
     }
 
     @Override
-    public VertexConsumer normal(Matrix3f matrix3f, float f, float g, float h) {
-        return delegate.normal(matrix3f, f, g, h);
+    public VertexConsumer normal(PoseStack.Pose pose, float x, float y, float z) {
+        return delegate.normal(pose, x, y, z);
     }
 }

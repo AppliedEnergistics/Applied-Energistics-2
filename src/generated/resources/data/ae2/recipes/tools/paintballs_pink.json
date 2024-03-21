@@ -6,7 +6,7 @@
       "item": "ae2:matter_ball"
     },
     "b": {
-      "tag": "forge:dyes/pink"
+      "tag": "c:dyes/pink"
     }
   },
   "pattern": [
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "ae2:pink_paint_ball"
+    "id": "ae2:pink_paint_ball"
   }
 }

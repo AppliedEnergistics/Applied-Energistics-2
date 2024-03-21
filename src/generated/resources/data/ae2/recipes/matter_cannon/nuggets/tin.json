@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/tin"
+        "tag": "c:nuggets/tin"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/tin"
+    "tag": "c:nuggets/tin"
   },
   "weight": 118.71
 }

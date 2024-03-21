@@ -12,7 +12,7 @@ import appeng.client.gui.AEBaseScreen;
 class EmiAeBaseScreenExclusionZones implements EmiExclusionArea<Screen> {
     @Override
     public void addExclusionArea(Screen screen, Consumer<Bounds> consumer) {
-        if (!(screen instanceof AEBaseScreen<?>aeScreen)) {
+        if (!(screen instanceof AEBaseScreen<?> aeScreen)) {
             return;
         }
 

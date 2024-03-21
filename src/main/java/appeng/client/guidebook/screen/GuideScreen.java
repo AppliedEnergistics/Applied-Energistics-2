@@ -361,7 +361,7 @@ public class GuideScreen extends Screen {
             dispatchInteraction(
                     hoveredElement,
                     el -> el.getTooltip(docPos.getX(), docPos.getY()))
-                            .ifPresent(tooltip -> renderTooltip(guiGraphics, tooltip, x, y));
+                    .ifPresent(tooltip -> renderTooltip(guiGraphics, tooltip, x, y));
         }
     }
 

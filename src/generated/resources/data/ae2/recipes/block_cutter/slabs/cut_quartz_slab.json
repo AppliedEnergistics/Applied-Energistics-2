@@ -1,8 +1,10 @@
 {
   "type": "minecraft:stonecutting",
-  "count": 2,
   "ingredient": {
     "item": "ae2:cut_quartz_block"
   },
-  "result": "ae2:cut_quartz_slab"
+  "result": {
+    "count": 2,
+    "id": "ae2:cut_quartz_slab"
+  }
 }

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:crafting_terminal"
-            ]
+            "items": "ae2:crafting_terminal"
           }
         ]
       },

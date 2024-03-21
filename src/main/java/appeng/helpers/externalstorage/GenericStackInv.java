@@ -18,6 +18,8 @@
 
 package appeng.helpers.externalstorage;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -25,6 +27,7 @@ import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -257,11 +260,11 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         }
     }
 
-    public ListTag writeToTag() {
+    public ListTag writeToTag(HolderLookup.Provider registries) {
         ListTag tag = new ListTag();
 
         for (var stack : stacks) {
-            tag.add(GenericStack.writeTag(stack));
+            tag.add(GenericStack.writeTag(registries, stack));
         }
 
         // Strip out trailing nulls
@@ -276,7 +279,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         return tag;
     }
 
-    public void writeToChildTag(CompoundTag tag, String name) {
+    public void writeToChildTag(CompoundTag tag, String name, HolderLookup.Provider registries) {
         boolean isEmpty = true;
         for (var stack : stacks) {
             if (stack != null) {
@@ -286,16 +289,16 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         }
 
         if (!isEmpty) {
-            tag.put(name, writeToTag());
+            tag.put(name, writeToTag(registries));
         } else {
             tag.remove(name);
         }
     }
 
-    public void readFromTag(ListTag tag) {
+    public void readFromTag(ListTag tag, HolderLookup.Provider registries) {
         boolean changed = false;
         for (int i = 0; i < Math.min(size(), tag.size()); ++i) {
-            var stack = GenericStack.readTag(tag.getCompound(i));
+            var stack = GenericStack.readTag(registries, tag.getCompound(i));
             if (!Objects.equals(stack, stacks[i])) {
                 stacks[i] = stack;
                 changed = true;
@@ -329,12 +332,30 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         }
     }
 
-    public void readFromChildTag(CompoundTag tag, String name) {
+    public void readFromChildTag(CompoundTag tag, String name, HolderLookup.Provider registries) {
         if (tag.contains(name, Tag.TAG_LIST)) {
-            readFromTag(tag.getList(name, Tag.TAG_COMPOUND));
+            readFromTag(tag.getList(name, Tag.TAG_COMPOUND), registries);
         } else {
             clear();
         }
+    }
+
+    public void readFromList(List<@Nullable GenericStack> stacks) {
+        for (var i = 0; i < size(); i++) {
+            if (i < stacks.size()) {
+                setStack(i, stacks.get(i));
+            } else {
+                setStack(i, null);
+            }
+        }
+    }
+
+    public List<@Nullable GenericStack> toList() {
+        var result = new ArrayList<GenericStack>(size());
+        for (int i = 0; i < size(); i++) {
+            result.add(getStack(i));
+        }
+        return result;
     }
 
     /**

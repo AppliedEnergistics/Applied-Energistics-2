@@ -6,7 +6,7 @@
       "item": "ae2:annihilation_core"
     },
     "b": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "c": {
       "item": "minecraft:sticky_piston"
@@ -17,6 +17,7 @@
     "bcb"
   ],
   "result": {
-    "item": "ae2:import_bus"
+    "count": 1,
+    "id": "ae2:import_bus"
   }
 }

@@ -34,14 +34,7 @@ import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructurePiece extends StructurePiece {
 
-    public static final StructurePieceType TYPE = StructurePieceType.setPieceId(MeteoriteStructurePiece::new,
-            "ae2mtrt");
-
-    public static void register() {
-        // THIS MUST BE CALLED otherwise the static initializer above will not run,
-        // unless level generation is actually invoked, which means that chunks may
-        // be loaded without this being registered as a structure piece!
-    }
+    public static final StructurePieceType.ContextlessType TYPE = MeteoriteStructurePiece::new;
 
     private final PlacedMeteoriteSettings settings;
 

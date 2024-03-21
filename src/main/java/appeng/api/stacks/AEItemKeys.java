@@ -21,9 +21,12 @@ package appeng.api.stacks;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import com.mojang.serialization.MapCodec;
+
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 
@@ -40,15 +43,20 @@ final class AEItemKeys extends AEKeyType {
     }
 
     @Override
-    public AEItemKey readFromPacket(FriendlyByteBuf input) {
+    public MapCodec<? extends AEKey> codec() {
+        return AEItemKey.MAP_CODEC;
+    }
+
+    @Override
+    public AEItemKey readFromPacket(RegistryFriendlyByteBuf input) {
         Objects.requireNonNull(input);
 
         return AEItemKey.fromPacket(input);
     }
 
     @Override
-    public AEItemKey loadKeyFromTag(CompoundTag tag) {
-        return AEItemKey.fromTag(tag);
+    public AEItemKey loadKeyFromTag(HolderLookup.Provider registries, CompoundTag tag) {
+        return AEItemKey.fromTag(registries, tag);
     }
 
     @Override

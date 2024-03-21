@@ -19,7 +19,6 @@
 package appeng.parts.automation;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
@@ -30,6 +29,7 @@ import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherNode;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.api.util.IConfigManagerBuilder;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuOpener;
@@ -82,7 +82,12 @@ public class EnergyLevelEmitterPart extends AbstractLevelEmitterPart {
         super(partItem);
 
         getMainNode().addService(IEnergyWatcherNode.class, energyWatcherNode);
-        this.getConfigManager().registerSetting(Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL);
+    }
+
+    @Override
+    protected void registerSettings(IConfigManagerBuilder builder) {
+        super.registerSettings(builder);
+        builder.registerSetting(Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL);
     }
 
     @Override
@@ -118,7 +123,7 @@ public class EnergyLevelEmitterPart extends AbstractLevelEmitterPart {
     }
 
     @Override
-    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
+    public boolean onUseWithoutItem(Player player, Vec3 pos) {
         if (!isClientSide()) {
             MenuOpener.open(EnergyLevelEmitterMenu.TYPE, player, MenuLocators.forPart(this));
         }

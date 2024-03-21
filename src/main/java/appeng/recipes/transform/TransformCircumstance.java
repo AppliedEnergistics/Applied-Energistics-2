@@ -6,6 +6,7 @@ import java.util.Objects;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import io.netty.handler.codec.DecoderException;
@@ -14,6 +15,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
@@ -23,16 +26,21 @@ public class TransformCircumstance {
 
     public static final TransformCircumstance EXPLOSION = new TransformCircumstance("explosion");
 
-    private static final Codec<TransformCircumstance> EXPLOSION_CODEC = Codec.unit(EXPLOSION);
+    private static final MapCodec<TransformCircumstance> EXPLOSION_CODEC = MapCodec.unit(EXPLOSION);
 
-    private static final Codec<FluidType> FLUID_CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            TagKey.codec(Registries.FLUID).fieldOf("tag").forGetter(f -> f.fluidTag)).apply(builder, FluidType::new));
+    private static final MapCodec<FluidType> FLUID_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
+            TagKey.codec(Registries.FLUID).fieldOf("tag").forGetter(FluidType::getFluidTag))
+            .apply(builder, FluidType::new));
 
     public static final Codec<TransformCircumstance> CODEC = Codec.STRING.dispatch(t -> t.type, type -> switch (type) {
         case "explosion" -> EXPLOSION_CODEC;
         case "fluid" -> FLUID_CODEC;
         default -> throw new IllegalStateException("Invalid type: " + type);
     });
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, TransformCircumstance> STREAM_CODEC = StreamCodec.ofMember(
+            TransformCircumstance::toNetwork,
+            TransformCircumstance::fromNetwork);
 
     private final String type;
 
@@ -118,6 +126,10 @@ public class TransformCircumstance {
         public FluidType(TagKey<Fluid> fluidTag) {
             super("fluid");
             this.fluidTag = fluidTag;
+        }
+
+        public TagKey<Fluid> getFluidTag() {
+            return fluidTag;
         }
 
         @Override

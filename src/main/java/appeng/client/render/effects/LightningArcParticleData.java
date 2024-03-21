@@ -18,66 +18,34 @@
 
 package appeng.client.render.effects;
 
-import java.util.Locale;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import org.joml.Vector3f;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleOptions.Deserializer;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 
 /**
  * Contains the target point of the lightning arc (the source point is inferred from the particle starting position).
  */
-public class LightningArcParticleData implements ParticleOptions {
+public record LightningArcParticleData(Vector3f target) implements ParticleOptions {
+    public static final MapCodec<LightningArcParticleData> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
+            ExtraCodecs.VECTOR3F.fieldOf("target").forGetter(LightningArcParticleData::target))
+            .apply(builder, LightningArcParticleData::new));
 
-    public final Vec3 target;
-
-    public LightningArcParticleData(Vec3 target) {
-        this.target = target;
-    }
-
-    public static final Deserializer<LightningArcParticleData> DESERIALIZER = new Deserializer<LightningArcParticleData>() {
-        @Override
-        public LightningArcParticleData fromCommand(ParticleType<LightningArcParticleData> particleTypeIn,
-                StringReader reader) throws CommandSyntaxException {
-            reader.expect(' ');
-            float x = reader.readFloat();
-            reader.expect(' ');
-            float y = reader.readFloat();
-            reader.expect(' ');
-            float z = reader.readFloat();
-            return new LightningArcParticleData(new Vec3(x, y, z));
-        }
-
-        @Override
-        public LightningArcParticleData fromNetwork(ParticleType<LightningArcParticleData> particleTypeIn,
-                FriendlyByteBuf buffer) {
-            float x = buffer.readFloat();
-            float y = buffer.readFloat();
-            float z = buffer.readFloat();
-            return new LightningArcParticleData(new Vec3(x, y, z));
-        }
-    };
+    public static final StreamCodec<ByteBuf, LightningArcParticleData> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VECTOR3F,
+            d -> d.target,
+            LightningArcParticleData::new);
 
     @Override
     public ParticleType<?> getType() {
         return ParticleTypes.LIGHTNING_ARC;
     }
-
-    @Override
-    public void writeToNetwork(FriendlyByteBuf buffer) {
-        buffer.writeFloat((float) target.x);
-        buffer.writeFloat((float) target.y);
-        buffer.writeFloat((float) target.z);
-    }
-
-    @Override
-    public String writeToString() {
-        return String.format(Locale.ROOT, "%.2f %.2f %.2f", target.x, target.y, target.z);
-    }
-
 }

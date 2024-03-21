@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "b": {
       "item": "minecraft:furnace"
@@ -12,10 +12,10 @@
       "item": "ae2:energy_acceptor"
     },
     "d": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     },
     "e": {
-      "tag": "forge:gems/fluix"
+      "tag": "c:gems/fluix"
     }
   },
   "pattern": [
@@ -24,6 +24,7 @@
     "aca"
   ],
   "result": {
-    "item": "ae2:vibration_chamber"
+    "count": 1,
+    "id": "ae2:vibration_chamber"
   }
 }

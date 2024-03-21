@@ -1,8 +1,10 @@
 {
   "type": "minecraft:stonecutting",
-  "count": 1,
   "ingredient": {
     "item": "ae2:smooth_sky_stone_block"
   },
-  "result": "ae2:sky_stone_small_brick"
+  "result": {
+    "count": 1,
+    "id": "ae2:sky_stone_small_brick"
+  }
 }

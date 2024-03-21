@@ -20,8 +20,10 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
+
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -39,13 +41,13 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.SupplierStorage;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigManagerBuilder;
 import appeng.api.util.KeyTypeSelection;
 import appeng.api.util.KeyTypeSelectionHost;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.common.MEStorageMenu;
-import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 
@@ -63,16 +65,23 @@ import appeng.util.inv.InternalInventoryHost;
 public abstract class AbstractTerminalPart extends AbstractDisplayPart
         implements ITerminalHost, IViewCellStorage, InternalInventoryHost, KeyTypeSelectionHost {
 
-    private final IConfigManager cm = new ConfigManager(this::saveChanges);
+    private final IConfigManager cm;
     private final KeyTypeSelection keyTypeSelection = new KeyTypeSelection(this::saveChanges, keyType -> true);
     private final AppEngInternalInventory viewCell = new AppEngInternalInventory(this, 5);
 
     public AbstractTerminalPart(IPartItem<?> partItem) {
         super(partItem, true);
 
-        this.cm.registerSetting(Settings.SORT_BY, SortOrder.NAME);
-        this.cm.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        this.cm.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
+        var builder = IConfigManager.builder(this::saveChanges);
+        registerSettings(builder);
+        this.cm = builder.build();
+    }
+
+    @MustBeInvokedByOverriders
+    protected void registerSettings(IConfigManagerBuilder builder) {
+        builder.registerSetting(Settings.SORT_BY, SortOrder.NAME);
+        builder.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+        builder.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
     }
 
     @Override
@@ -106,24 +115,24 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public void readFromNBT(CompoundTag data) {
-        super.readFromNBT(data);
-        this.cm.readFromNBT(data);
-        this.keyTypeSelection.readFromNBT(data);
-        this.viewCell.readFromNBT(data, "viewCell");
+    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
+        super.readFromNBT(data, registries);
+        this.cm.readFromNBT(data, registries);
+        this.keyTypeSelection.readFromNBT(data, registries);
+        this.viewCell.readFromNBT(data, "viewCell", registries);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data) {
-        super.writeToNBT(data);
-        this.cm.writeToNBT(data);
+    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
+        super.writeToNBT(data, registries);
+        this.cm.writeToNBT(data, registries);
         this.keyTypeSelection.writeToNBT(data);
-        this.viewCell.writeToNBT(data, "viewCell");
+        this.viewCell.writeToNBT(data, "viewCell", registries);
     }
 
     @Override
-    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
-        if (!super.onPartActivate(player, hand, pos) && !player.level().isClientSide) {
+    public boolean onUseWithoutItem(Player player, Vec3 pos) {
+        if (!super.onUseWithoutItem(player, pos) && !player.level().isClientSide) {
             MenuOpener.open(getMenuType(player), player, MenuLocators.forPart(this));
         }
         return true;

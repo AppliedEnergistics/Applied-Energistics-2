@@ -1,25 +1,18 @@
 package appeng.parts.automation;
 
 import java.util.List;
-import java.util.Map;
 
-import org.jetbrains.annotations.Nullable;
-
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
 import appeng.items.parts.PartItem;
-import appeng.util.EnchantmentUtil;
 
 /**
  * Special part item for {@link AnnihilationPlanePart} to handle enchants and extended tooltips.
@@ -47,25 +40,21 @@ public class AnnihilationPlanePartItem extends PartItem<AnnihilationPlanePart> {
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment.category == EnchantmentCategory.DIGGER;
-    }
-
-    @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
         return true;
     }
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return CALLING_DAMAGEABLE_FROM_ANVIL.get() != null ? 1 : super.getMaxDamage();
+        return CALLING_DAMAGEABLE_FROM_ANVIL.get() != null ? 1 : super.getMaxDamage(stack);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, lines, isAdvanced);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
+            TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, context, lines, isAdvanced);
 
-        var enchantments = EnchantmentHelper.getEnchantments(stack);
+        var enchantments = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
         if (enchantments.isEmpty()) {
             lines.add(Tooltips.of(GuiText.CanBeEnchanted));
         } else {
@@ -77,8 +66,11 @@ public class AnnihilationPlanePartItem extends PartItem<AnnihilationPlanePart> {
     public void addToMainCreativeTab(CreativeModeTab.Output output) {
         super.addToMainCreativeTab(output);
 
+        var enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enchantments.set(Enchantments.SILK_TOUCH, 1);
+
         var silkTouch = new ItemStack(this);
-        EnchantmentUtil.setEnchantments(silkTouch.getOrCreateTag(), Map.of(Enchantments.SILK_TOUCH, 1));
+        silkTouch.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
         output.accept(silkTouch);
     }
 }

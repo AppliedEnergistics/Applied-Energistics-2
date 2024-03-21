@@ -22,24 +22,32 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
+import appeng.core.AppEng;
 import appeng.worldgen.meteorite.MeteoriteStructure;
 import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 
 public final class InitStructures {
+    public static final DeferredRegister<StructureType<?>> STRUCTURE_TYPES = DeferredRegister
+            .create(Registries.STRUCTURE_TYPE, AppEng.MOD_ID);
+    public static final DeferredRegister<StructurePieceType> STRUCTURE_PIECES = DeferredRegister
+            .create(Registries.STRUCTURE_PIECE, AppEng.MOD_ID);
 
     private InitStructures() {
     }
 
-    public static void initDatagenStructures(BootstapContext<Structure> context) {
+    public static void initDatagenStructures(BootstrapContext<Structure> context) {
         var biomes = context.lookup(Registries.BIOME);
 
         context.register(
@@ -53,7 +61,7 @@ public final class InitStructures {
 
     }
 
-    public static void initDatagenStructureSets(BootstapContext<StructureSet> context) {
+    public static void initDatagenStructureSets(BootstrapContext<StructureSet> context) {
         var structures = context.lookup(Registries.STRUCTURE);
         var meteorite = structures.getOrThrow(MeteoriteStructure.KEY);
 
@@ -64,8 +72,11 @@ public final class InitStructures {
         context.register(MeteoriteStructure.STRUCTURE_SET_KEY, structureSet);
     }
 
-    public static void init() {
-        MeteoriteStructurePiece.register();
-        MeteoriteStructure.TYPE = StructureType.register("ae2mtrt", MeteoriteStructure.CODEC);
+    public static void register(IEventBus eventBus) {
+        STRUCTURE_PIECES.register("ae2mtrt", () -> MeteoriteStructurePiece.TYPE);
+        STRUCTURE_TYPES.register("ae2mtrt", () -> MeteoriteStructure.TYPE);
+
+        STRUCTURE_PIECES.register(eventBus);
+        STRUCTURE_TYPES.register(eventBus);
     }
 }

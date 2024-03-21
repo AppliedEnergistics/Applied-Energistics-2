@@ -35,7 +35,8 @@ import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -45,6 +46,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
@@ -61,7 +63,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.core.AELog;
 import appeng.core.network.ClientboundPacket;
-import appeng.core.network.NetworkHandler;
+import appeng.core.network.ServerboundPacket;
 import appeng.core.network.clientbound.GuiDataSyncPacket;
 import appeng.core.network.serverbound.GuiActionPacket;
 import appeng.helpers.InventoryAction;
@@ -99,7 +101,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     // Slots that are only present on the client-side
     private final Set<Slot> clientSideSlot = new HashSet<>();
     /**
-     * Indicates that the menu was created after returning from a {@link ISubMenu}. Previous screen state stored on the
+     * Indicates that the menu was created after returning from a {@link ISubMenu}. Previous screen state amount on the
      * client should be restored.
      */
     private boolean returnedFromSubScreen;
@@ -152,6 +154,10 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
     public Player getPlayer() {
         return getPlayerInventory().player;
+    }
+
+    protected final RegistryAccess registryAccess() {
+        return getPlayer().level().registryAccess();
     }
 
     public IActionSource getActionSource() {
@@ -308,7 +314,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             }
 
             if (dataSync.hasChanges()) {
-                sendPacketToClient(new GuiDataSyncPacket(containerId, dataSync::writeUpdate));
+                sendPacketToClient(new GuiDataSyncPacket(containerId, dataSync::writeUpdate, registryAccess()));
             }
         }
 
@@ -415,7 +421,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             for (Slot cs : this.slots) {
                 if (cs instanceof FakeSlot && !isPlayerSideSlot(cs)) {
                     var destination = cs.getItem();
-                    if (ItemStack.isSameItemSameTags(destination, stackToMove)) {
+                    if (ItemStack.isSameItemSameComponents(destination, stackToMove)) {
                         break; // Item is already in the filter
                     } else if (destination.isEmpty()) {
                         cs.set(stackToMove.copy());
@@ -820,7 +826,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
     protected final void sendPacketToClient(ClientboundPacket packet) {
         if (getPlayer() instanceof ServerPlayer serverPlayer) {
-            NetworkHandler.instance().sendTo(packet, serverPlayer);
+            serverPlayer.connection.send(packet);
         }
     }
 
@@ -829,14 +835,14 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         super.sendAllDataToRemote();
 
         if (dataSync.hasFields()) {
-            sendPacketToClient(new GuiDataSyncPacket(containerId, dataSync::writeFull));
+            sendPacketToClient(new GuiDataSyncPacket(containerId, dataSync::writeFull, registryAccess()));
         }
     }
 
     /**
      * Receives data from the server for synchronizing fields of this class.
      */
-    public final void receiveServerSyncData(FriendlyByteBuf data) {
+    public final void receiveServerSyncData(RegistryFriendlyByteBuf data) {
         ShortSet updatedFields = new ShortOpenHashSet();
         this.dataSync.readUpdate(data, updatedFields);
         this.onServerDataSync(updatedFields);
@@ -913,7 +919,8 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                             + MAX_STRING_LENGTH + " (" + jsonPayload.length() + ")");
         }
 
-        NetworkHandler.instance().sendToServer(new GuiActionPacket(containerId, clientAction.name, jsonPayload));
+        ServerboundPacket message = new GuiActionPacket(containerId, clientAction.name, jsonPayload);
+        PacketDistributor.sendToServer(message);
     }
 
     /**

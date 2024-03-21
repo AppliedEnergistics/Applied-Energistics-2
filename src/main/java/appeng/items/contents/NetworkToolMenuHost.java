@@ -23,7 +23,6 @@ import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -31,13 +30,9 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
-import appeng.api.upgrades.Upgrades;
 import appeng.items.tools.NetworkToolItem;
 import appeng.menu.locator.ItemMenuHostLocator;
-import appeng.util.inv.AppEngInternalInventory;
-import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.SupplierInternalInventory;
-import appeng.util.inv.filter.IAEItemFilter;
 
 public class NetworkToolMenuHost<T extends NetworkToolItem> extends ItemMenuHost<T> {
     @Nullable
@@ -50,40 +45,7 @@ public class NetworkToolMenuHost<T extends NetworkToolItem> extends ItemMenuHost
         super(item, player, locator);
         this.host = host;
         this.supplierInv = new SupplierInternalInventory<>(
-                new StackDependentSupplier<>(this::getItemStack, this::createToolboxInventory));
-    }
-
-    private InternalInventory createToolboxInventory(ItemStack stack) {
-        var inv = new AppEngInternalInventory(new InternalInventoryHost() {
-            @Override
-            public void saveChangedInventory(AppEngInternalInventory inv) {
-                inv.writeToNBT(stack.getOrCreateTag(), "inv");
-            }
-
-            @Override
-            public boolean isClientSide() {
-                return getPlayer().level().isClientSide();
-            }
-        }, 9);
-        inv.setEnableClientEvents(true); // Also write to NBT on the client to prevent desyncs
-        inv.setFilter(new NetworkToolInventoryFilter());
-        if (stack.hasTag()) // prevent crash when opening network status screen.
-        {
-            inv.readFromNBT(stack.getOrCreateTag(), "inv");
-        }
-        return inv;
-    }
-
-    private static class NetworkToolInventoryFilter implements IAEItemFilter {
-        @Override
-        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
-            return true;
-        }
-
-        @Override
-        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
-            return Upgrades.isUpgradeCardItem(stack.getItem());
-        }
+                new StackDependentSupplier<>(this::getItemStack, NetworkToolItem::getInventory));
     }
 
     @Override

@@ -85,7 +85,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     public boolean hurtEnemy(ItemStack item, LivingEntity target, LivingEntity hitter) {
         if (this.getAECurrentPower(item) > ENERGY_PER_USE) {
             this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
-            target.setSecondsOnFire(8);
+            target.igniteForSeconds(8);
         }
 
         return false;
@@ -283,7 +283,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     @Nullable
     private static EntropyRecipe findRecipe(Level level, EntropyMode mode, BlockState blockState,
             FluidState fluidState) {
-        for (var holder : level.getRecipeManager().byType(EntropyRecipe.TYPE).values()) {
+        for (var holder : level.getRecipeManager().byType(EntropyRecipe.TYPE)) {
             var recipe = holder.value();
             if (recipe.matches(mode, blockState, fluidState)) {
                 return recipe;

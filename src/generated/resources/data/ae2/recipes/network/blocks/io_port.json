@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:glass"
+      "tag": "c:glass_blocks"
     },
     "b": {
       "item": "ae2:drive"
@@ -12,7 +12,7 @@
       "item": "ae2:fluix_glass_cable"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "e": {
       "item": "ae2:logic_processor"
@@ -24,6 +24,7 @@
     "ded"
   ],
   "result": {
-    "item": "ae2:io_port"
+    "count": 1,
+    "id": "ae2:io_port"
   }
 }

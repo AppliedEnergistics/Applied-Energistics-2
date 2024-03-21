@@ -18,16 +18,16 @@
 
 package appeng.crafting.pattern;
 
+import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -38,12 +38,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsTooltip;
+import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -55,12 +55,6 @@ import appeng.core.localization.GuiText;
  * Encodes patterns for the {@link net.minecraft.world.level.block.StonecutterBlock}.
  */
 public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssemblerSupportedPattern {
-    private static final String NBT_INPUT = "in";
-    // Only used to attempt to recover the recipe in case it's ID has changed
-    private static final String NBT_OUTPUT = "out";
-    private static final String NBT_SUBSITUTE = "substitute";
-    private static final String NBT_RECIPE_ID = "recipe";
-
     // The slot index in the 3x3 crafting grid that we insert our item into (in the MAC)
     private static final int CRAFTING_GRID_SLOT = 4;
 
@@ -72,7 +66,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     private final AEItemKey input;
     private final ItemStack output;
     private final IInput[] inputs;
-    private final GenericStack[] outputs;
+    private final List<GenericStack> outputs;
 
     /**
      * We cache results of isValid(...) calls for stacks that don't have NBT.
@@ -81,14 +75,24 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
 
     public AEStonecuttingPattern(AEItemKey definition, Level level) {
         this.definition = definition;
-        var tag = Objects.requireNonNull(definition.getTag());
 
-        this.input = PatternNbtUtils.getRequiredItemKey(tag, NBT_INPUT);
-        this.canSubstitute = PatternNbtUtils.getBoolean(tag, NBT_SUBSITUTE, false);
+        var encodedPattern = definition.get(AEComponents.ENCODED_STONECUTTING_PATTERN);
+        if (encodedPattern == null) {
+            throw new IllegalArgumentException("Given item does not encode a stonecutting pattern: " + definition);
+        } else if (encodedPattern.containsMissingContent()) {
+            throw new IllegalArgumentException("Pattern references missing content");
+        }
+
+        this.input = AEItemKey.of(encodedPattern.input());
+        this.canSubstitute = encodedPattern.canSubstitute();
 
         // Find recipe
-        this.recipeId = getRecipeId(tag);
-        this.recipe = level.getRecipeManager().byType(RecipeType.STONECUTTING).get(recipeId).value();
+        this.recipeId = encodedPattern.recipeId();
+        this.recipe = level.getRecipeManager().byKey(recipeId).map(holder -> (StonecutterRecipe) holder.value())
+                .orElse(null);
+        if (recipe == null) {
+            throw new IllegalStateException("Stonecutting pattern references unknown recipe " + recipeId);
+        }
 
         // Build frame and find output
         this.testFrame = new SimpleContainer(1);
@@ -106,9 +110,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         this.inputs = new IInput[] {
                 new Input()
         };
-        this.outputs = new GenericStack[] {
-                GenericStack.fromItemStack(this.output)
-        };
+        this.outputs = Collections.singletonList(GenericStack.fromItemStack(this.output));
     }
 
     public ResourceLocation getRecipeId() {
@@ -137,7 +139,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     }
 
     @Override
-    public GenericStack[] getOutputs() {
+    public List<GenericStack> getOutputs() {
         return outputs;
     }
 
@@ -151,18 +153,19 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         return tooltip;
     }
 
-    public static PatternDetailsTooltip getInvalidTooltip(CompoundTag tag, Level level, @Nullable Exception cause,
+    public static PatternDetailsTooltip getInvalidTooltip(ItemStack stack, Level level, @Nullable Exception cause,
             TooltipFlag flags) {
+
         var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_CRAFTS);
-        PatternNbtUtils.readKeyFaultTolerant(tag, NBT_INPUT).ifPresent(tooltip::addInput);
-        PatternNbtUtils.readKeyFaultTolerant(tag, NBT_OUTPUT).ifPresent(tooltip::addOutput);
-        if (PatternNbtUtils.getBoolean(tag, NBT_SUBSITUTE, false)) {
-            tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
-        }
-        if (flags.isAdvanced()) {
-            PatternNbtUtils.tryGetString(tag, NBT_RECIPE_ID).ifPresent(recipeId -> {
-                tooltip.addProperty(Component.literal("Recipe"), Component.literal(recipeId));
-            });
+        var encodedPattern = stack.get(AEComponents.ENCODED_STONECUTTING_PATTERN);
+        if (encodedPattern != null) {
+            if (encodedPattern.canSubstitute()) {
+                tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
+            }
+            if (flags.isAdvanced()) {
+                tooltip.addProperty(Component.literal("Recipe"),
+                        Component.literal(encodedPattern.recipeId().toString()));
+            }
         }
         return tooltip;
     }
@@ -210,7 +213,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
      */
     @Nullable
     private Boolean getTestResult(AEItemKey what) {
-        if (what == null || what.hasTag()) {
+        if (what == null || what.hasComponents()) {
             return null;
         }
 
@@ -218,7 +221,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     }
 
     private void setTestResult(AEItemKey what, boolean result) {
-        if (what != null && !what.hasTag()) {
+        if (what != null && !what.hasComponents()) {
             isValidCache.put(what.getItem(), result);
         }
     }
@@ -268,17 +271,18 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         return input;
     }
 
-    public static void encode(CompoundTag tag, RecipeHolder<StonecutterRecipe> recipe, AEItemKey input,
+    public static void encode(ItemStack stack, RecipeHolder<StonecutterRecipe> recipe, AEItemKey input,
             AEItemKey output,
             boolean allowSubstitution) {
         Preconditions.checkNotNull(recipe, "recipe");
         Preconditions.checkNotNull(input, "input");
         Preconditions.checkNotNull(output, "output");
 
-        tag.put(NBT_INPUT, input.toTag());
-        tag.put(NBT_OUTPUT, output.toTag());
-        tag.putBoolean(NBT_SUBSITUTE, allowSubstitution);
-        tag.putString(NBT_RECIPE_ID, recipe.id().toString());
+        stack.set(AEComponents.ENCODED_STONECUTTING_PATTERN, new EncodedStonecuttingPattern(
+                input.toStack(),
+                output.toStack(),
+                allowSubstitution,
+                recipe.id()));
     }
 
     private class Input implements IInput {
@@ -324,11 +328,5 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         public AEKey getRemainingKey(AEKey template) {
             return null;
         }
-    }
-
-    public static ResourceLocation getRecipeId(CompoundTag nbt) {
-        Objects.requireNonNull(nbt, "Pattern must have a tag.");
-
-        return new ResourceLocation(nbt.getString(NBT_RECIPE_ID));
     }
 }

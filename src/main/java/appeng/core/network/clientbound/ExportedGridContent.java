@@ -14,36 +14,40 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 
 /**
  * Contains data produced by {@link appeng.server.subcommands.GridsCommand}
  */
 public record ExportedGridContent(int serialNumber,
-        Type type,
+        ContentType contentType,
         byte[] compressedData) implements ClientboundPacket {
+
+    public static final Type<ExportedGridContent> TYPE = CustomAppEngPayload.createType("exported_grid_content");
+
+    @Override
+    public Type<ExportedGridContent> type() {
+        return TYPE;
+    }
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, ExportedGridContent> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT, ExportedGridContent::serialNumber,
+            ContentType.STREAM_CODEC, ExportedGridContent::contentType,
+            ByteBufCodecs.BYTE_ARRAY, ExportedGridContent::compressedData,
+            ExportedGridContent::new);
 
     private static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd_HHmm");
 
     private static final Logger LOG = LoggerFactory.getLogger(ExportedGridContent.class);
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeInt(serialNumber);
-        buffer.writeEnum(type);
-        buffer.writeByteArray(compressedData);
-    }
-
-    public static ExportedGridContent decode(FriendlyByteBuf buffer) {
-        var serialNumber = buffer.readInt();
-        var type = buffer.readEnum(Type.class);
-        var data = buffer.readByteArray();
-        return new ExportedGridContent(serialNumber, type, data);
-    }
 
     @Override
     public void handleOnClient(Player player) {
@@ -66,7 +70,7 @@ public record ExportedGridContent(int serialNumber,
         filename += serialNumber + "_" + TIMESTAMP_FORMATTER.format(LocalDateTime.now()) + ".zip";
 
         OpenOption[] openOptions = new OpenOption[0];
-        if (type != Type.FIRST_CHUNK) {
+        if (contentType != ContentType.FIRST_CHUNK) {
             openOptions = new OpenOption[] { StandardOpenOption.APPEND };
         }
 
@@ -82,7 +86,7 @@ public record ExportedGridContent(int serialNumber,
             return;
         }
 
-        if (type == Type.LAST_CHUNK) {
+        if (contentType == ContentType.LAST_CHUNK) {
             try {
                 Files.move(tempPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
@@ -99,9 +103,12 @@ public record ExportedGridContent(int serialNumber,
         }
     }
 
-    public enum Type {
+    public enum ContentType {
         FIRST_CHUNK,
         CHUNK,
-        LAST_CHUNK
+        LAST_CHUNK;
+
+        public static final StreamCodec<FriendlyByteBuf, ContentType> STREAM_CODEC = NeoForgeStreamCodecs
+                .enumCodec(ContentType.class);
     }
 }

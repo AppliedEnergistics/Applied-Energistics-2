@@ -58,6 +58,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
+import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
@@ -106,9 +107,9 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
             TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, level, lines, advancedTooltips);
+        super.appendHoverText(stack, context, lines, advancedTooltips);
         addCellInformationToTooltip(stack, lines);
     }
 
@@ -395,17 +396,12 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
 
     @Override
     public FuzzyMode getFuzzyMode(ItemStack is) {
-        final String fz = is.getOrCreateTag().getString("FuzzyMode");
-        try {
-            return FuzzyMode.valueOf(fz);
-        } catch (Throwable t) {
-            return FuzzyMode.IGNORE_ALL;
-        }
+        return is.getOrDefault(AEComponents.STORAGE_CELL_FUZZY_MODE, FuzzyMode.IGNORE_ALL);
     }
 
     @Override
     public void setFuzzyMode(ItemStack is, FuzzyMode fzMode) {
-        is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
+        is.set(AEComponents.STORAGE_CELL_FUZZY_MODE, fzMode);
     }
 
     @Override
@@ -447,7 +443,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         }
 
         var recipes = server.getRecipeManager().byType(MatterCannonAmmo.TYPE);
-        for (var holder : recipes.values()) {
+        for (var holder : recipes) {
             var ammoRecipe = holder.value();
             if (what.matches(ammoRecipe.getAmmo())) {
                 return ammoRecipe.getWeight();

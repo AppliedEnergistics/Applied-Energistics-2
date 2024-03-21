@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -45,6 +46,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
+import appeng.api.util.IConfigManagerBuilder;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
@@ -83,21 +85,25 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
         super(TickRates.ExportBus, StackWorldBehaviors.withExportStrategy(), partItem);
         this.craftingTracker = new MultiCraftingTracker(this, getConfig().size());
         getMainNode().addService(ICraftingRequester.class, this);
-
-        this.getConfigManager().registerSetting(Settings.CRAFT_ONLY, YesNo.NO);
-        this.getConfigManager().registerSetting(Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT);
     }
 
     @Override
-    public void readFromNBT(CompoundTag extra) {
-        super.readFromNBT(extra);
+    protected void registerSettings(IConfigManagerBuilder builder) {
+        super.registerSettings(builder);
+        builder.registerSetting(Settings.CRAFT_ONLY, YesNo.NO);
+        builder.registerSetting(Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT);
+    }
+
+    @Override
+    public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
+        super.readFromNBT(extra, registries);
         this.craftingTracker.readFromNBT(extra);
         this.nextSlot = extra.getInt("nextSlot");
     }
 
     @Override
-    public void writeToNBT(CompoundTag extra) {
-        super.writeToNBT(extra);
+    public void writeToNBT(CompoundTag extra, HolderLookup.Provider registries) {
+        super.writeToNBT(extra, registries);
         this.craftingTracker.writeToNBT(extra);
         extra.putInt("nextSlot", this.nextSlot);
     }

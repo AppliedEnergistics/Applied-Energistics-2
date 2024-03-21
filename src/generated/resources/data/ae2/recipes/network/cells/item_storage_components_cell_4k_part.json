@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     },
     "b": {
       "item": "ae2:calculation_processor"
@@ -21,6 +21,7 @@
     "aca"
   ],
   "result": {
-    "item": "ae2:cell_component_4k"
+    "count": 1,
+    "id": "ae2:cell_component_4k"
   }
 }

@@ -24,7 +24,7 @@ public class RegisterPartCapabilitiesEvent extends Event implements IModBusEvent
 
     final Map<BlockCapability<?, ?>, BlockCapabilityRegistration<?, ?>> capabilityRegistrations = new HashMap<>();
 
-    record BlockCapabilityRegistration<T, C> (
+    record BlockCapabilityRegistration<T, C>(
             BlockCapability<T, C> capability,
             Function<C, Direction> contextToSide,
             Map<Class<? extends IPart>, ICapabilityProvider<?, C, T>> parts) {

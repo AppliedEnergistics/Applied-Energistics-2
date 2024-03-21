@@ -37,6 +37,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
@@ -45,7 +46,6 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ITerminalHost;
-import appeng.core.network.NetworkHandler;
 import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.helpers.InventoryAction;
@@ -125,7 +125,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
         boolean hasChanged = forceUpdate;
         for (int x = 0; x < 9; x++) {
             var stack = this.craftingSlots[x].getItem();
-            if (!ItemStack.isSameItemSameTags(stack, recipeTestContainer.getItem(x))) {
+            if (!ItemStack.isSameItemSameComponents(stack, recipeTestContainer.getItem(x))) {
                 hasChanged = true;
                 recipeTestContainer.setItem(x, stack.copy());
             }
@@ -172,7 +172,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
         Preconditions.checkState(isClientSide());
         CraftingMatrixSlot slot = craftingSlots[0];
         var p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.index, 0);
-        NetworkHandler.instance().sendToServer(p);
+        PacketDistributor.sendToServer(p);
     }
 
     @Override

@@ -3,7 +3,8 @@ package appeng.core.network.clientbound;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -11,6 +12,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AppEngClient;
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 
 /**
  * Plays a transition particle effect into the supplied direction. Used primarily by annihilation planes.
@@ -20,7 +22,20 @@ public record ItemTransitionEffectPacket(double x,
         double z,
         Direction d) implements ClientboundPacket {
 
-    public static ItemTransitionEffectPacket decode(FriendlyByteBuf stream) {
+    public static final StreamCodec<RegistryFriendlyByteBuf, ItemTransitionEffectPacket> STREAM_CODEC = StreamCodec
+            .ofMember(
+                    ItemTransitionEffectPacket::write,
+                    ItemTransitionEffectPacket::decode);
+
+    public static final Type<ItemTransitionEffectPacket> TYPE = CustomAppEngPayload
+            .createType("item_transition_effect");
+
+    @Override
+    public Type<ItemTransitionEffectPacket> type() {
+        return TYPE;
+    }
+
+    public static ItemTransitionEffectPacket decode(RegistryFriendlyByteBuf stream) {
         var x = stream.readFloat();
         var y = stream.readFloat();
         var z = stream.readFloat();
@@ -28,8 +43,7 @@ public record ItemTransitionEffectPacket(double x,
         return new ItemTransitionEffectPacket(x, y, z, d);
     }
 
-    @Override
-    public void write(FriendlyByteBuf data) {
+    public void write(RegistryFriendlyByteBuf data) {
         data.writeFloat((float) x);
         data.writeFloat((float) y);
         data.writeFloat((float) z);

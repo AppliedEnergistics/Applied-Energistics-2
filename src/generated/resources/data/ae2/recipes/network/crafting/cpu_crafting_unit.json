@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "b": {
       "item": "ae2:calculation_processor"
@@ -21,6 +21,7 @@
     "aba"
   ],
   "result": {
-    "item": "ae2:crafting_unit"
+    "count": 1,
+    "id": "ae2:crafting_unit"
   }
 }

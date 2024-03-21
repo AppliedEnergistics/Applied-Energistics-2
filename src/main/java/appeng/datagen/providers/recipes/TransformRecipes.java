@@ -18,6 +18,9 @@
 
 package appeng.datagen.providers.recipes;
 
+import java.util.concurrent.CompletableFuture;
+
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
@@ -32,8 +35,8 @@ import appeng.recipes.transform.TransformCircumstance;
 import appeng.recipes.transform.TransformRecipeBuilder;
 
 public class TransformRecipes extends AE2RecipeProvider {
-    public TransformRecipes(PackOutput output) {
-        super(output);
+    public TransformRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+        super(output, registries);
     }
 
     @Override

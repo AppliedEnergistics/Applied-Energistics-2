@@ -6,7 +6,7 @@
       "item": "ae2:fluix_glass_cable"
     },
     "b": {
-      "tag": "forge:dyes/gray"
+      "tag": "c:dyes/gray"
     }
   },
   "pattern": [
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "ae2:gray_glass_cable"
+    "id": "ae2:gray_glass_cable"
   }
 }

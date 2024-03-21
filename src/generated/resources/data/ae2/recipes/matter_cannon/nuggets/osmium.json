@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/osmium"
+        "tag": "c:nuggets/osmium"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/osmium"
+    "tag": "c:nuggets/osmium"
   },
   "weight": 190.23
 }

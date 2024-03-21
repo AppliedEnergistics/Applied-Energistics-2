@@ -3,16 +3,16 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:dusts/fluix"
+      "tag": "c:dusts/fluix"
     },
     "b": {
       "tag": "ae2:all_certus_quartz"
     },
     "c": {
-      "tag": "forge:dusts/ender_pearl"
+      "tag": "c:dusts/ender_pearl"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     }
   },
   "pattern": [
@@ -21,6 +21,6 @@
   ],
   "result": {
     "count": 2,
-    "item": "ae2:wireless_booster"
+    "id": "ae2:wireless_booster"
   }
 }

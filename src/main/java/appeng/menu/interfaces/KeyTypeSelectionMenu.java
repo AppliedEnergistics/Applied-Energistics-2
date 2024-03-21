@@ -7,10 +7,12 @@ import java.util.Map;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.stacks.AEKeyType;
 import appeng.api.util.KeyTypeSelection;
-import appeng.core.network.NetworkHandler;
+import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.SelectKeyTypePacket;
 import appeng.menu.guisync.PacketWritable;
 
@@ -34,7 +36,8 @@ public interface KeyTypeSelectionMenu {
     @ApiStatus.NonExtendable
     default void selectKeyType(AEKeyType keyType, boolean enabled) {
         // Send to server
-        NetworkHandler.instance().sendToServer(new SelectKeyTypePacket(keyType, enabled));
+        ServerboundPacket message = new SelectKeyTypePacket(keyType, enabled);
+        PacketDistributor.sendToServer(message);
         // Update client
         getClientKeyTypeSelection().keyTypes().put(keyType, enabled);
     }
@@ -44,13 +47,13 @@ public interface KeyTypeSelectionMenu {
             this(new LinkedHashMap<>());
         }
 
-        public SyncedKeyTypes(FriendlyByteBuf buf) {
+        public SyncedKeyTypes(RegistryFriendlyByteBuf buf) {
             this(buf.<AEKeyType, Boolean, Map<AEKeyType, Boolean>>readMap(LinkedHashMap::new,
                     b -> AEKeyType.fromRawId(b.readVarInt()), FriendlyByteBuf::readBoolean));
         }
 
         @Override
-        public void writeToPacket(FriendlyByteBuf buf) {
+        public void writeToPacket(RegistryFriendlyByteBuf buf) {
             buf.writeMap(
                     keyTypes,
                     (b, keyType) -> b.writeVarInt(keyType.getRawId()),

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:facade"
-            ]
+            "items": "ae2:facade"
           }
         ]
       },
@@ -19,8 +17,11 @@
       "translate": "achievement.ae2.Facade.desc"
     },
     "icon": {
-      "item": "ae2:facade",
-      "nbt": "{item:\"minecraft:stone\"}"
+      "components": {
+        "ae2:facade_item": "minecraft:stone"
+      },
+      "count": 1,
+      "id": "ae2:facade"
     },
     "title": {
       "translate": "achievement.ae2.Facade"

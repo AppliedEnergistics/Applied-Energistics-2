@@ -9,10 +9,11 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.core.AELog;
-import appeng.core.network.NetworkHandler;
+import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.FillCraftingGridFromRecipePacket;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.MEStorageMenu;
@@ -39,8 +40,8 @@ public final class CraftingHelper {
             recipeId = null;
         }
 
-        NetworkHandler.instance()
-                .sendToServer(new FillCraftingGridFromRecipePacket(recipeId, templateItems, craftMissing));
+        ServerboundPacket message = new FillCraftingGridFromRecipePacket(recipeId, templateItems, craftMissing);
+        PacketDistributor.sendToServer(message);
     }
 
     private static NonNullList<ItemStack> findGoodTemplateItems(Recipe<?> recipe, MEStorageMenu menu) {

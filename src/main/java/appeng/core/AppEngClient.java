@@ -58,6 +58,7 @@ import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.client.EffectType;
@@ -77,11 +78,17 @@ import appeng.client.guidebook.scene.PartAnnotationStrategy;
 import appeng.client.guidebook.screen.GlobalInMemoryHistory;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.client.render.StorageCellClientTooltipComponent;
+import appeng.client.render.effects.CraftingFx;
+import appeng.client.render.effects.EnergyFx;
 import appeng.client.render.effects.EnergyParticleData;
+import appeng.client.render.effects.LightningArcFX;
+import appeng.client.render.effects.LightningFX;
+import appeng.client.render.effects.MatterCannonFX;
 import appeng.client.render.effects.ParticleTypes;
+import appeng.client.render.effects.VibrantFX;
 import appeng.client.render.overlay.OverlayManager;
 import appeng.core.definitions.AEBlocks;
-import appeng.core.network.NetworkHandler;
+import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.MouseWheelPacket;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.BlockAttackHook;
@@ -94,7 +101,6 @@ import appeng.init.client.InitEntityLayerDefinitions;
 import appeng.init.client.InitEntityRendering;
 import appeng.init.client.InitItemColors;
 import appeng.init.client.InitItemModelsProperties;
-import appeng.init.client.InitParticleFactories;
 import appeng.init.client.InitRenderTypes;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
@@ -236,7 +242,12 @@ public class AppEngClient extends AppEngBase {
     }
 
     public void registerParticleFactories(RegisterParticleProvidersEvent event) {
-        InitParticleFactories.init();
+        event.registerSpriteSet(ParticleTypes.CRAFTING, CraftingFx.Factory::new);
+        event.registerSpriteSet(ParticleTypes.ENERGY, EnergyFx.Factory::new);
+        event.registerSpriteSet(ParticleTypes.LIGHTNING_ARC, LightningArcFX.Factory::new);
+        event.registerSpriteSet(ParticleTypes.LIGHTNING, LightningFX.Factory::new);
+        event.registerSpriteSet(ParticleTypes.MATTER_CANNON, MatterCannonFX.Factory::new);
+        event.registerSpriteSet(ParticleTypes.VIBRANT, VibrantFX.Factory::new);
     }
 
     public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
@@ -244,7 +255,7 @@ public class AppEngClient extends AppEngBase {
     }
 
     public void registerItemColors(RegisterColorHandlersEvent.Item event) {
-        InitItemColors.init(event.getItemColors());
+        InitItemColors.init(event);
     }
 
     private void registerClientTooltipComponents(RegisterClientTooltipComponentFactoriesEvent event) {
@@ -316,7 +327,8 @@ public class AppEngClient extends AppEngBase {
             var offHand = player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof IMouseWheelItem;
 
             if (mainHand || offHand) {
-                NetworkHandler.instance().sendToServer(new MouseWheelPacket(me.getScrollDeltaY() > 0));
+                ServerboundPacket message = new MouseWheelPacket(me.getScrollDeltaY() > 0);
+                PacketDistributor.sendToServer(message);
                 me.setCanceled(true);
             }
         }

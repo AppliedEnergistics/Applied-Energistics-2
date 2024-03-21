@@ -237,7 +237,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
         vb.uv(sprite.getU(texU), sprite.getV(texV));
         vb.overlayCoords(overlayUV);
         vb.uv2(lightmapUV);
-        vb.normal(ms.last().normal(), front.getStepX(), front.getStepY(), front.getStepZ());
+        vb.normal(ms.last(), front.getStepX(), front.getStepY(), front.getStepZ());
         vb.endVertex();
     }
 

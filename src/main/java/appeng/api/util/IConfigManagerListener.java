@@ -16,10 +16,9 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.util;
+package appeng.api.util;
 
 import appeng.api.config.Setting;
-import appeng.api.util.IConfigManager;
 
 @FunctionalInterface
 public interface IConfigManagerListener {

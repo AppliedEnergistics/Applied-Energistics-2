@@ -22,9 +22,9 @@ import java.util.List;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -40,15 +40,15 @@ public class AEBaseBlockItem extends BlockItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public final void appendHoverText(ItemStack itemStack, Level level, List<Component> toolTip,
+    public final void appendHoverText(ItemStack itemStack, Item.TooltipContext context, List<Component> toolTip,
             TooltipFlag advancedTooltips) {
-        this.addCheckedInformation(itemStack, level, toolTip, advancedTooltips);
+        this.addCheckedInformation(itemStack, context, toolTip, advancedTooltips);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void addCheckedInformation(ItemStack itemStack, Level level, List<Component> toolTip,
+    public void addCheckedInformation(ItemStack itemStack, TooltipContext context, List<Component> toolTip,
             TooltipFlag advancedTooltips) {
-        this.blockType.appendHoverText(itemStack, level, toolTip, advancedTooltips);
+        this.blockType.appendHoverText(itemStack, context, toolTip, advancedTooltips);
     }
 
     @Override

@@ -6,7 +6,7 @@
       "item": "ae2:fluix_smart_dense_cable"
     },
     "b": {
-      "tag": "forge:dyes/brown"
+      "tag": "c:dyes/brown"
     }
   },
   "pattern": [
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "ae2:brown_smart_dense_cable"
+    "id": "ae2:brown_smart_dense_cable"
   }
 }

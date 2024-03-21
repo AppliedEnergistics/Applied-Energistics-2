@@ -10,7 +10,7 @@ import appeng.client.gui.AEBaseScreen;
 class EmiAeBaseScreenStackProvider implements EmiStackProvider<Screen> {
     @Override
     public EmiStackInteraction getStackAt(Screen screen, int x, int y) {
-        if (screen instanceof AEBaseScreen<?>aeScreen) {
+        if (screen instanceof AEBaseScreen<?> aeScreen) {
             var stack = aeScreen.getStackUnderMouse(x, y);
             if (stack != null) {
                 var emiStack = EmiStackHelper.toEmiStack(stack.stack());

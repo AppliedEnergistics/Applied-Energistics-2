@@ -10,10 +10,12 @@ import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
 
-public sealed interface PropertyValueMatcher permits PropertyValueMatcher.SingleValue,PropertyValueMatcher.MultiValue,PropertyValueMatcher.Range {
+public sealed interface PropertyValueMatcher
+        permits PropertyValueMatcher.SingleValue, PropertyValueMatcher.MultiValue, PropertyValueMatcher.Range {
     Codec<PropertyValueMatcher> CODEC = new Codec<>() {
         @Override
         public <T> DataResult<Pair<PropertyValueMatcher, T>> decode(DynamicOps<T> ops, T input) {
@@ -57,21 +59,25 @@ public sealed interface PropertyValueMatcher permits PropertyValueMatcher.Single
         }
     };
 
+    StreamCodec<FriendlyByteBuf, PropertyValueMatcher> STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public PropertyValueMatcher decode(FriendlyByteBuf buffer) {
+            var type = buffer.readByte();
+            return switch (type) {
+                case 0 -> new SingleValue(buffer.readUtf());
+                case 1 -> new MultiValue(buffer.readList(FriendlyByteBuf::readUtf));
+                case 2 -> new Range(buffer.readUtf(), buffer.readUtf());
+                default -> throw new IllegalStateException("Invalid property value matcher type: " + type);
+            };
+        }
+
+        @Override
+        public void encode(FriendlyByteBuf buffer, PropertyValueMatcher matcher) {
+            matcher.toNetwork(buffer);
+        }
+    };
+
     Codec<Map<String, PropertyValueMatcher>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC);
-
-    static PropertyValueMatcher fromNetwork(FriendlyByteBuf buffer) {
-        var type = buffer.readByte();
-        return switch (type) {
-            case 0 -> new SingleValue(buffer.readUtf());
-            case 1 -> new MultiValue(buffer.readList(FriendlyByteBuf::readUtf));
-            case 2 -> new Range(buffer.readUtf(), buffer.readUtf());
-            default -> throw new IllegalStateException("Invalid property value matcher type: " + type);
-        };
-    }
-
-    static void toNetwork(FriendlyByteBuf buffer, PropertyValueMatcher matcher) {
-        matcher.toNetwork(buffer);
-    }
 
     void toNetwork(FriendlyByteBuf buffer);
 

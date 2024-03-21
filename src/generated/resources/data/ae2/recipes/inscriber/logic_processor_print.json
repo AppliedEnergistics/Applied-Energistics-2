@@ -2,7 +2,7 @@
   "type": "ae2:inscriber",
   "ingredients": {
     "middle": {
-      "tag": "forge:ingots/gold"
+      "tag": "c:ingots/gold"
     },
     "top": {
       "item": "ae2:logic_processor_press"
@@ -10,6 +10,7 @@
   },
   "mode": "inscribe",
   "result": {
-    "item": "ae2:printed_logic_processor"
+    "count": 1,
+    "id": "ae2:printed_logic_processor"
   }
 }

@@ -47,7 +47,7 @@ public final class InitCapabilityProviders {
         var partEvent = new RegisterPartCapabilitiesEvent();
         partEvent.addHostType(AEBlockEntities.CABLE_BUS);
         registerPartCapabilities(partEvent);
-        ModLoader.get().postEvent(partEvent);
+        ModLoader.postEvent(partEvent);
         RegisterPartCapabilitiesEventInternal.register(partEvent, event);
 
         initInterface(event);

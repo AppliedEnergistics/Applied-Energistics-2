@@ -23,10 +23,11 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.widgets.TabButton;
-import appeng.core.network.NetworkHandler;
+import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.SwitchGuisPacket;
 import appeng.menu.ISubMenu;
 
@@ -56,7 +57,8 @@ public final class AESubScreen {
     }
 
     public static void goBack() {
-        NetworkHandler.instance().sendToServer(SwitchGuisPacket.returnToParentMenu());
+        ServerboundPacket message = SwitchGuisPacket.returnToParentMenu();
+        PacketDistributor.sendToServer(message);
     }
 
 }

@@ -2,7 +2,7 @@
   "values": [
     "minecraft:bedrock",
     {
-      "id": "#forge:relocation_not_supported",
+      "id": "#c:relocation_not_supported",
       "required": false
     }
   ]

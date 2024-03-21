@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:basic_card"
-            ]
+            "items": "ae2:basic_card"
           }
         ]
       },

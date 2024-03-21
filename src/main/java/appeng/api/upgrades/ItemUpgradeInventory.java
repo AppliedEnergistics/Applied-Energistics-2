@@ -21,7 +21,9 @@ package appeng.api.upgrades;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 
+import appeng.api.ids.AEComponents;
 import appeng.util.inv.AppEngInternalInventory;
 
 /**
@@ -29,8 +31,6 @@ import appeng.util.inv.AppEngInternalInventory;
  * are compatible from the item of that stack.
  */
 final class ItemUpgradeInventory extends UpgradeInventory {
-    private static final String TAG_UPGRADES = "upgrades";
-
     private final ItemStack stack;
 
     @Nullable
@@ -40,12 +40,13 @@ final class ItemUpgradeInventory extends UpgradeInventory {
         super(stack.getItem(), upgrades);
         this.stack = stack;
         this.changeCallback = changeCallback;
-        this.readFromNBT(stack.getOrCreateTag(), TAG_UPGRADES);
+
+        fromItemContainerContents(stack.getOrDefault(AEComponents.UPGRADES, ItemContainerContents.EMPTY));
     }
 
     @Override
     public void saveChangedInventory(AppEngInternalInventory inv) {
-        this.writeToNBT(this.stack.getOrCreateTag(), TAG_UPGRADES);
+        stack.set(AEComponents.UPGRADES, toItemContainerContents());
 
         super.saveChangedInventory(inv);
     }

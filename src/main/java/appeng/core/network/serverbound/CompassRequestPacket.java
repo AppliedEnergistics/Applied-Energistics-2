@@ -1,11 +1,12 @@
 
 package appeng.core.network.serverbound;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
 
-import appeng.core.network.NetworkHandler;
+import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
 import appeng.core.network.clientbound.CompassResponsePacket;
 import appeng.hooks.CompassResult;
@@ -16,7 +17,18 @@ public record CompassRequestPacket(long attunement,
         int cz,
         int cdy) implements ServerboundPacket {
 
-    public static CompassRequestPacket decode(FriendlyByteBuf stream) {
+    public static final StreamCodec<RegistryFriendlyByteBuf, CompassRequestPacket> STREAM_CODEC = StreamCodec.ofMember(
+            CompassRequestPacket::write,
+            CompassRequestPacket::decode);
+
+    public static final Type<CompassRequestPacket> TYPE = CustomAppEngPayload.createType("compass_request");
+
+    @Override
+    public Type<CompassRequestPacket> type() {
+        return TYPE;
+    }
+
+    public static CompassRequestPacket decode(RegistryFriendlyByteBuf stream) {
         var attunement = stream.readLong();
         var cx = stream.readInt();
         var cz = stream.readInt();
@@ -24,8 +36,7 @@ public record CompassRequestPacket(long attunement,
         return new CompassRequestPacket(attunement, cx, cz, cdy);
     }
 
-    @Override
-    public void write(FriendlyByteBuf data) {
+    public void write(RegistryFriendlyByteBuf data) {
         data.writeLong(this.attunement);
         data.writeInt(this.cx);
         data.writeInt(this.cz);
@@ -39,6 +50,6 @@ public record CompassRequestPacket(long attunement,
 
         var responsePacket = new CompassResponsePacket(attunement, cx, cz, cdy, new CompassResult(
                 result.hasResult(), result.spin(), result.radians()));
-        NetworkHandler.instance().sendTo(responsePacket, player);
+        player.connection.send(responsePacket);
     }
 }

@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:glass"
+      "tag": "c:glass_blocks"
     },
     "b": {
       "item": "ae2:terminal"
@@ -12,10 +12,10 @@
       "item": "ae2:fluix_glass_cable"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "e": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     }
   },
   "pattern": [
@@ -24,6 +24,7 @@
     "ded"
   ],
   "result": {
-    "item": "ae2:chest"
+    "count": 1,
+    "id": "ae2:chest"
   }
 }

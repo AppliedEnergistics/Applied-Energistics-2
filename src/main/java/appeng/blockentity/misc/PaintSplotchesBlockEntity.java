@@ -27,8 +27,10 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -54,8 +56,8 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     }
 
     @Override
-    public void saveAdditional(CompoundTag data) {
-        super.saveAdditional(data);
+    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
+        super.saveAdditional(data, registries);
         final FriendlyByteBuf myDat = new FriendlyByteBuf(Unpooled.buffer());
         this.writeBuffer(myDat);
         if (myDat.hasArray()) {
@@ -77,8 +79,8 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     }
 
     @Override
-    public void loadTag(CompoundTag data) {
-        super.loadTag(data);
+    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
+        super.loadTag(data, registries);
         if (data.contains("dots")) {
             this.readBuffer(new FriendlyByteBuf(Unpooled.copiedBuffer(data.getByteArray("dots"))));
         }
@@ -99,13 +101,13 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     }
 
     @Override
-    protected void writeToStream(FriendlyByteBuf data) {
+    protected void writeToStream(RegistryFriendlyByteBuf data) {
         super.writeToStream(data);
         this.writeBuffer(data);
     }
 
     @Override
-    protected boolean readFromStream(FriendlyByteBuf data) {
+    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
         super.readFromStream(data);
         this.readBuffer(data);
         return true;

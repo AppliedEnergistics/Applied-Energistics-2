@@ -31,15 +31,20 @@ import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -63,6 +68,7 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 
+import appeng.api.ids.AEComponents;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
@@ -76,7 +82,6 @@ import appeng.core.AELog;
 import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.tools.MemoryCardItem;
-import appeng.util.CustomNameUtil;
 import appeng.util.IDebugExportable;
 import appeng.util.JsonStreamUtil;
 import appeng.util.SettingsFrom;
@@ -84,6 +89,7 @@ import appeng.util.helpers.ItemComparisonHelper;
 
 public class AEBaseBlockEntity extends BlockEntity
         implements Nameable, ISegmentedInventory, Clearable, IDebugExportable {
+    private static final Logger LOG = LoggerFactory.getLogger(AEBaseBlockEntity.class);
 
     private static final Map<BlockEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
     @Nullable
@@ -132,12 +138,21 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     @Override
-    public final void load(CompoundTag tag) {
+    public final void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         // On the client, this can either be data received as part of an initial chunk update,
         // or as part of a sole block entity data update.
+        RegistryAccess registryAccess = null;
+        if (registries instanceof RegistryAccess) {
+            registryAccess = (RegistryAccess) registries;
+        } else if (level != null) {
+            registryAccess = level.registryAccess();
+        }
         if (tag.contains("#upd", Tag.TAG_BYTE_ARRAY) && tag.size() == 1) {
             var updateData = tag.getByteArray("#upd");
-            if (readUpdateData(new FriendlyByteBuf(Unpooled.wrappedBuffer(updateData)))) {
+            if (registryAccess == null) {
+                LOG.warn("Ignoring  update packet for {} since no registry is available.", this);
+            } else if (readUpdateData(
+                    new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(updateData), registryAccess))) {
                 // Triggers a chunk re-render if the level is already loaded
                 if (level != null) {
                     requestModelDataUpdate();
@@ -152,11 +167,11 @@ public class AEBaseBlockEntity extends BlockEntity
             loadVisualState(tag.getCompound("visual"));
         }
 
-        super.load(tag);
-        loadTag(tag);
+        super.loadAdditional(tag, registries);
+        loadTag(tag, registries);
     }
 
-    public void loadTag(CompoundTag data) {
+    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         if (data.contains("customName")) {
             this.customName = Component.literal(data.getString("customName"));
         } else {
@@ -175,7 +190,7 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     @Override
-    public void saveAdditional(CompoundTag data) {
+    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
         // Save visual state first, so that it can never overwrite normal state
         if (VisualStateSaving.isEnabled(level)) {
             var visualTag = new CompoundTag();
@@ -183,7 +198,7 @@ public class AEBaseBlockEntity extends BlockEntity
             data.put("visual", visualTag);
         }
 
-        super.saveAdditional(data);
+        super.saveAdditional(data, registries);
 
         if (this.customName != null) {
             data.putString("customName", this.customName.getString());
@@ -218,10 +233,10 @@ public class AEBaseBlockEntity extends BlockEntity
      * doesn't need update syncs, it returns null.
      */
     @Override
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         var data = new CompoundTag();
 
-        var stream = new FriendlyByteBuf(Unpooled.buffer());
+        var stream = new RegistryFriendlyByteBuf(Unpooled.buffer(), level.registryAccess());
         this.writeToStream(stream);
 
         stream.capacity(stream.readableBytes());
@@ -229,7 +244,7 @@ public class AEBaseBlockEntity extends BlockEntity
         return data;
     }
 
-    private boolean readUpdateData(FriendlyByteBuf stream) {
+    private boolean readUpdateData(RegistryFriendlyByteBuf stream) {
         boolean output = false;
 
         try {
@@ -246,18 +261,19 @@ public class AEBaseBlockEntity extends BlockEntity
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    protected boolean readFromStream(FriendlyByteBuf data) {
+    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
         return false;
     }
 
-    protected void writeToStream(FriendlyByteBuf data) {
+    protected void writeToStream(RegistryFriendlyByteBuf data) {
     }
 
     /**
      * Used to store the state that is synchronized to clients for the visual appearance of this part as NBT. This is
      * only used to store this state for tools such as Create Ponders in Structure NBT. Actual synchronization uses
-     * {@link #writeToStream(FriendlyByteBuf)} and {@link #readFromStream(FriendlyByteBuf)}. Any data that is saved to
-     * the NBT tag in {@link #saveAdditional(CompoundTag)} does not need to be saved here again.
+     * {@link #writeToStream(RegistryFriendlyByteBuf)} and {@link #readFromStream(RegistryFriendlyByteBuf)}. Any data
+     * that is saved to the NBT tag in {@link #saveAdditional(CompoundTag, HolderLookup.Provider)} does not need to be
+     * saved here again.
      * <p>
      * The data saved should be equivalent to the data sent to the client in {@link #writeToStream}.
      */
@@ -282,7 +298,7 @@ public class AEBaseBlockEntity extends BlockEntity
             boolean alreadyUpdated = false;
             // Let the block update its own state with our internal state changes
             BlockState currentState = getBlockState();
-            if (currentState.getBlock() instanceof AEBaseEntityBlock<?>block) {
+            if (currentState.getBlock() instanceof AEBaseEntityBlock<?> block) {
                 BlockState newState = block.getBlockEntityBlockState(currentState, this);
                 if (currentState != newState) {
                     AELog.blockUpdate(this.worldPosition, currentState, newState, this);
@@ -317,18 +333,23 @@ public class AEBaseBlockEntity extends BlockEntity
         invalidateCapabilities();
     }
 
+    public final DataComponentMap exportSettings(SettingsFrom mode, @Nullable Player player) {
+        var builder = DataComponentMap.builder();
+        exportSettings(mode, builder, player);
+        return builder.build();
+    }
+
     /**
-     * null means nothing to store...
-     *
-     * @param mode   source of settings
-     * @param player The (optional) player, who is exporting the settings
+     * @param mode    source of settings
+     * @param builder
+     * @param player  The (optional) player, who is exporting the settings
      */
     @MustBeInvokedByOverriders
-    public void exportSettings(SettingsFrom mode, CompoundTag output, @Nullable Player player) {
-        CustomNameUtil.setCustomName(output, customName);
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder, @Nullable Player player) {
+        builder.set(AEComponents.EXPORTED_CUSTOM_NAME, customName);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
-            MemoryCardItem.exportGenericSettings(this, output);
+            MemoryCardItem.exportGenericSettings(this, builder);
         }
     }
 
@@ -339,13 +360,8 @@ public class AEBaseBlockEntity extends BlockEntity
      * @param player The (optional) player, who is importing the settings
      */
     @MustBeInvokedByOverriders
-    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
-        var customName = CustomNameUtil.getCustomName(input);
-        if (customName != null) {
-            this.customName = Component.literal(customName.getString());
-        } else {
-            this.customName = null;
-        }
+    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
+        this.customName = input.get(AEComponents.EXPORTED_CUSTOM_NAME);
 
         MemoryCardItem.importGenericSettings(this, input, player);
     }
@@ -448,11 +464,8 @@ public class AEBaseBlockEntity extends BlockEntity
             var op = new ItemStack(state.getBlock());
             for (var ol : drops) {
                 if (ItemComparisonHelper.isEqualItemType(ol, op)) {
-                    var tag = new CompoundTag();
-                    exportSettings(SettingsFrom.DISMANTLE_ITEM, tag, player);
-                    if (!tag.isEmpty()) {
-                        ol.setTag(tag);
-                    }
+                    var settings = exportSettings(SettingsFrom.DISMANTLE_ITEM, player);
+                    ol.applyComponents(settings);
                     break;
                 }
             }
@@ -497,17 +510,16 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     @Override
-    public void debugExport(JsonWriter writer, Reference2IntMap<Object> machineIds, Reference2IntMap<IGridNode> nodeIds)
+    public void debugExport(JsonWriter writer, HolderLookup.Provider registries, Reference2IntMap<Object> machineIds,
+            Reference2IntMap<IGridNode> nodeIds)
             throws IOException {
         var data = new CompoundTag();
-        saveAdditional(data);
+        saveAdditional(data, registries);
 
         JsonStreamUtil.writeProperties(Map.of(
-                "blockState", BlockState.CODEC.encodeStart(JsonOps.INSTANCE, getBlockState()).getOrThrow(false, err -> {
-                }),
+                "blockState", BlockState.CODEC.encodeStart(JsonOps.INSTANCE, getBlockState()).getOrThrow(),
                 "level", level.dimension().location().toString(),
                 "pos", getBlockPos(),
-                "data", CompoundTag.CODEC.encodeStart(JsonOps.INSTANCE, data).getOrThrow(false, err -> {
-                })), writer);
+                "data", CompoundTag.CODEC.encodeStart(JsonOps.INSTANCE, data).getOrThrow()), writer);
     }
 }

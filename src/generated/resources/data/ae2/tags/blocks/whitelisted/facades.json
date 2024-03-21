@@ -3,7 +3,7 @@
     "ae2:quartz_glass",
     "ae2:quartz_vibrant_glass",
     {
-      "id": "#forge:glass",
+      "id": "#c:glass_blocks",
       "required": false
     }
   ]

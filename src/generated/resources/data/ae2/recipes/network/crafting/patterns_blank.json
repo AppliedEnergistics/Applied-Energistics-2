@@ -6,16 +6,16 @@
       "item": "ae2:quartz_glass"
     },
     "b": {
-      "tag": "forge:dusts/glowstone"
+      "tag": "c:dusts/glowstone"
     },
     "c": {
       "tag": "ae2:all_certus_quartz"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "e": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     }
   },
   "pattern": [
@@ -25,6 +25,6 @@
   ],
   "result": {
     "count": 2,
-    "item": "ae2:blank_pattern"
+    "id": "ae2:blank_pattern"
   }
 }
