@@ -12,7 +12,8 @@ public enum GuidebookText implements LocalizationEnum {
     ZoomIn("Zoom In"),
     ZoomOut("Zoom Out"),
     ResetView("Reset View"),
-    Search("Search");
+    Search("Search"),
+    ContentFrom("Content from");
 
     private final String englishText;
 
