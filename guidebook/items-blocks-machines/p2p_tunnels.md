@@ -50,6 +50,13 @@ There are also other variants like Redstone P2P.
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
+And ME P2P, which moves channels.
+
+<GameScene zoom="4" background="transparent">
+  <ImportStructure src="../assets/assemblies/p2p_channels.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
+
 ## Types Of P2P Tunnel And Attunement
 
 <GameScene zoom="6" background="transparent">
@@ -86,6 +93,10 @@ against a controller, a [dense smart cable](../items-blocks-machines/cables.md#s
 
   <BoxAnnotation color="#dddddd" min="1.3 1.3 6.3" max="2 2.7 6.7">
         Quartz Fiber shares energy between main network and p2p subnetwork.
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#dddddd" min="4.1 0 5.7" max="5 2.3 6.4">
+        You can either put the tunnel input directly on a controller, or cable into it.
   </BoxAnnotation>
 
   <IsometricCamera yaw="225" pitch="30" />
