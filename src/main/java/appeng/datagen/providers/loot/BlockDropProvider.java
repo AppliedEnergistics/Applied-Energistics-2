@@ -152,7 +152,10 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
 
     private static LootTable.Builder mysteriousCube(Block block) {
         return createSilkTouchDispatchTable(block, TagEntry.tagContents(ConventionTags.INSCRIBER_PRESSES)
-                .when(ExplosionCondition.survivesExplosion()));
+                .when(ExplosionCondition.survivesExplosion()))
+                        .withPool(
+                                LootPool.lootPool().when(HAS_NO_SILK_TOUCH).setRolls(ConstantValue.exactly(1.0F))
+                                        .add(LootItem.lootTableItem(AEItems.TABLET)));
     }
 
     private Path getPath(Path root, ResourceLocation id) {
