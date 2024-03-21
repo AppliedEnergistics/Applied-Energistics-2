@@ -77,10 +77,9 @@
   },
   "widgets": {
     "processingPatternModeScrollbar": {
-      "left": 16,
-      "bottom": 157,
-      "height": 54,
-      "width": 9
+      "left": 17,
+      "bottom": 156,
+      "height": 52
     },
     "processingCycleOutput": {
       "left": 127,

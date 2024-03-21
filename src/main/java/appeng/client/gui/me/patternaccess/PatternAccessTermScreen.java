@@ -534,7 +534,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
      */
     private void resetScrollbar() {
         // Needs to take the border into account, so offset for 1 px on the top and bottom.
-        scrollbar.setHeight(this.visibleRows * ROW_HEIGHT);
+        scrollbar.setHeight(this.visibleRows * ROW_HEIGHT - 2);
         scrollbar.setRange(0, this.rows.size() - this.visibleRows, 2);
     }
 

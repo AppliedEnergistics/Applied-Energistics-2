@@ -45,10 +45,9 @@
   },
   "widgets": {
     "scrollbar": {
-      "left": 174,
-      "top": 38,
-      "width": 14,
-      "height": 80
+      "left": 175,
+      "top": 39,
+      "height": 78
     }
   }
 }

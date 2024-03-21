@@ -301,7 +301,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     private void updateScrollbar() {
-        scrollbar.setHeight(this.rows * style.getRow().getSrcHeight());
+        scrollbar.setHeight(this.rows * style.getRow().getSrcHeight() - 2);
         int totalRows = (this.repo.size() + getSlotsPerRow() - 1) / getSlotsPerRow();
         if (repo.hasPinnedRow()) {
             totalRows++;

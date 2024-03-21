@@ -36,7 +36,7 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
         this.cycleOutputBtn.setHalfSize(true);
         widgets.add("processingCycleOutput", this.cycleOutputBtn);
 
-        this.scrollbar = widgets.addScrollBar("processingPatternModeScrollbar");
+        this.scrollbar = widgets.addScrollBar("processingPatternModeScrollbar", Scrollbar.SMALL);
         // The scrollbar ranges from 0 to the number of rows not visible
         this.scrollbar.setRange(0, menu.getProcessingInputSlots().length / 3 - 3, 3);
         this.scrollbar.setCaptureMouseWheel(false);

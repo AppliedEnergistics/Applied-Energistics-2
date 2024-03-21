@@ -37,9 +37,8 @@
   },
   "widgets": {
     "scrollbar": {
-      "left": 174,
-      "top": 17,
-      "width": 14
+      "left": 175,
+      "top": 18
     },
     "craftingStatus": {
       "left": 170,
