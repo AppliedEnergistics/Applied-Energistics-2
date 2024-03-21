@@ -24,19 +24,30 @@ public final class LinkParser {
             return;
         }
 
+        ResourceLocation pageId;
+
         // External link
         if (uri.isAbsolute()) {
-            visitor.handleExternal(uri);
-            return;
-        }
-
-        // Determine the page id, account for relative paths
-        ResourceLocation pageId;
-        try {
-            pageId = IdUtils.resolveLink(uri.getPath(), compiler.getPageId());
-        } catch (ResourceLocationException ignored) {
-            visitor.handleError("Invalid link");
-            return;
+            if (uri.getScheme().equals("http") || uri.getScheme().equalsIgnoreCase("https")) {
+                visitor.handleExternal(uri);
+                return;
+            } else {
+                // Fully namespaced, absolute page id
+                try {
+                    pageId = new ResourceLocation(href);
+                } catch (ResourceLocationException ignored) {
+                    visitor.handleError("Invalid resource location");
+                    return;
+                }
+            }
+        } else {
+            // Determine the page id, account for relative paths
+            try {
+                pageId = IdUtils.resolveLink(uri.getPath(), compiler.getPageId());
+            } catch (ResourceLocationException ignored) {
+                visitor.handleError("Invalid link");
+                return;
+            }
         }
 
         if (!compiler.getPageCollection().pageExists(pageId)) {
