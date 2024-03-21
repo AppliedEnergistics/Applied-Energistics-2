@@ -385,13 +385,9 @@ public final class MeteoritePlacer {
         MutableBlockPos enclosingBlockPos = new MutableBlockPos();
         enclosingBlockPos.set(blockPos);
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 10; i++) {
             enclosingBlockPos.move(Direction.DOWN);
-            BlockState currentState = currentChunk.getBlockState(enclosingBlockPos);
-            if (currentState.getBlock() == Blocks.AIR || currentState.canBeReplaced() || currentState.is(BlockTags.REPLACEABLE)) {
-                this.type.getRandomFall(level, enclosingBlockPos);
-            }
-            else {
+            if (placeEnclosingBlock(currentChunk, enclosingBlockPos)) {
                 break;
             }
         }
@@ -409,18 +405,30 @@ public final class MeteoritePlacer {
 
             // Find locations outside the meteor's carve area
             if (currentY <= h + distanceFrom2 * 0.02) {
-                for (int i = 0; i < 2; i++) {
-                    BlockState currentState = currentChunk.getBlockState(enclosingBlockPos);
-                    if (currentState.getBlock() == Blocks.AIR || currentState.canBeReplaced() || currentState.is(BlockTags.REPLACEABLE)) {
-                        this.type.getRandomFall(level, enclosingBlockPos);
-                    }
-                    else {
+                for (int i = 0; i < 6; i++) {
+                    if (placeEnclosingBlock(currentChunk, enclosingBlockPos)) {
                         break;
                     }
                     enclosingBlockPos.move(Direction.DOWN);
                 }
             }
         }
+    }
+
+    private boolean placeEnclosingBlock(ChunkAccess currentChunk, MutableBlockPos enclosingBlockPos) {
+        BlockState currentState = currentChunk.getBlockState(enclosingBlockPos);
+        if (currentState.getBlock() == Blocks.AIR || currentState.canBeReplaced() || currentState.is(BlockTags.REPLACEABLE)) {
+            if (level.getRandom().nextFloat() < 0.05f) {
+                this.putter.put(level, enclosingBlockPos, Blocks.MAGMA_BLOCK.defaultBlockState());
+            }
+            else {
+                this.type.getRandomFall(level, enclosingBlockPos);
+            }
+        }
+        else {
+            return true;
+        }
+        return false;
     }
 
     private Fallout getFallout(LevelAccessor level, BlockPos pos, FalloutMode mode) {
