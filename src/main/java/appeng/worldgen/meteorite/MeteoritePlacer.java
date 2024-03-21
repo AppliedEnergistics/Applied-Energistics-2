@@ -390,7 +390,10 @@ public final class MeteoritePlacer {
 
     private boolean placeEnclosingBlock(ChunkAccess currentChunk, MutableBlockPos enclosingBlockPos) {
         BlockState currentState = currentChunk.getBlockState(enclosingBlockPos);
-        if (currentState.getBlock() == Blocks.AIR || currentState.canBeReplaced() || currentState.is(BlockTags.REPLACEABLE)) {
+        if (currentState.getBlock() == Blocks.AIR ||
+                (currentState.getFluidState().isEmpty() &&
+                    (currentState.canBeReplaced() || currentState.is(BlockTags.REPLACEABLE)))) {
+
             if (level.getRandom().nextFloat() < 0.075f) {
                 this.putter.put(level, enclosingBlockPos, Blocks.MAGMA_BLOCK.defaultBlockState());
             }
