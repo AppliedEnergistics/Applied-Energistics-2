@@ -28,10 +28,10 @@ import io.methvin.watcher.DirectoryChangeListener;
 import io.methvin.watcher.DirectoryWatcher;
 
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.fml.ModList;
 
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
-import appeng.core.AppEng;
 
 class GuideSourceWatcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuideSourceWatcher.class);
@@ -40,6 +40,10 @@ class GuideSourceWatcher {
      * The {@link ResourceLocation} namespace to use for files in the watched folder.
      */
     private final String namespace;
+    /**
+     * The ID of the resource pack to use as the source pack.
+     */
+    private final String sourcePackId;
 
     private final Path sourceFolder;
 
@@ -55,6 +59,10 @@ class GuideSourceWatcher {
 
     public GuideSourceWatcher(String namespace, Path sourceFolder) {
         this.namespace = namespace;
+        // The namespace does not necessarily *need* to be a mod id, but if it is, the source pack needs to
+        // follow the specific mod-id format. Otherwise we assume it's a resource pack where namespace == pack id,
+        // which is also not 100% correct.
+        this.sourcePackId = ModList.get().isLoaded(namespace) ? "mod:" + namespace : namespace;
         this.sourceFolder = sourceFolder;
         if (!Files.isDirectory(sourceFolder)) {
             throw new RuntimeException("Cannot find the specified folder for the AE2 guidebook sources: "
@@ -133,7 +141,7 @@ class GuideSourceWatcher {
                 .map(entry -> {
                     var path = entry.getValue();
                     try (var in = Files.newInputStream(path)) {
-                        return PageCompiler.parse(AppEng.MOD_ID, entry.getKey(), in);
+                        return PageCompiler.parse(sourcePackId, entry.getKey(), in);
 
                     } catch (Exception e) {
                         LOGGER.error("Failed to reload guidebook page {}", path, e);
@@ -217,7 +225,7 @@ class GuideSourceWatcher {
         deletedPages.remove(pageId);
 
         try (var in = Files.newInputStream(path)) {
-            var page = PageCompiler.parse(AppEng.MOD_ID, pageId, in);
+            var page = PageCompiler.parse(sourcePackId, pageId, in);
             changedPages.put(pageId, page);
         } catch (Exception e) {
             LOGGER.error("Failed to reload guidebook page {}", path, e);
