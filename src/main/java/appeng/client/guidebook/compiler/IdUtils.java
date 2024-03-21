@@ -27,7 +27,10 @@ public final class IdUtils {
      */
     public static ResourceLocation resolveLink(String idText, ResourceLocation anchor)
             throws ResourceLocationException {
-        if (!idText.contains(":")) {
+        if (idText.startsWith("/")) {
+            // Absolute path, but relative to namespace
+            return new ResourceLocation(anchor.getNamespace(), idText.substring(1));
+        } else if (!idText.contains(":")) {
             URI uri = URI.create(anchor.getPath());
             uri = uri.resolve(idText);
 
