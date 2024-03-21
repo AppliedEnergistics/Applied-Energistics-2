@@ -341,7 +341,6 @@ public final class MeteoritePlacer {
         final int maxY = level.getSeaLevel() - 1;
         MutableBlockPos blockPos = new MutableBlockPos();
         ChunkAccess currentChunk;
-        boolean isAtBottom;
 
         for (int currentX = boundingBox.minX(); currentX <= boundingBox.maxX(); currentX++) {
             blockPos.setX(currentX);
@@ -349,7 +348,6 @@ public final class MeteoritePlacer {
             for (int currentZ = boundingBox.minZ(); currentZ <= boundingBox.maxZ(); currentZ++) {
                 blockPos.setZ(currentZ);
                 currentChunk = level.getChunk(blockPos);
-                isAtBottom = true;
 
                 for (int currentY = y - 5; currentY <= maxY; currentY++) {
                     blockPos.setY(currentY);
@@ -365,60 +363,35 @@ public final class MeteoritePlacer {
                         if (currentBlock.getBlock() == Blocks.AIR) {
                             this.putter.put(level, blockPos, Blocks.WATER.defaultBlockState());
 
-                            if (isAtBottom) {
-                                encloseWaterBottom(currentChunk, blockPos);
-                                isAtBottom = false;
-                            }
-
                             if (currentY == maxY) {
                                 level.scheduleTick(blockPos, Fluids.WATER, 0);
-                                encloseWaterSides(blockPos, currentY, h, currentChunk);
                             }
                         }
                     }
+                    else if (maxY + (maxY - currentY) * 2 + 2 > h + distanceFrom * 0.02) {
+                        pillarDownSlopeBlocks(currentChunk, blockPos);
+                    }
                 }
             }
         }
     }
 
-    private void encloseWaterBottom(ChunkAccess currentChunk, MutableBlockPos blockPos) {
+    private void pillarDownSlopeBlocks(ChunkAccess currentChunk, MutableBlockPos blockPos) {
         MutableBlockPos enclosingBlockPos = new MutableBlockPos();
         enclosingBlockPos.set(blockPos);
 
-        for (int i = 0; i < 10; i++) {
-            enclosingBlockPos.move(Direction.DOWN);
+        for (int i = 0; i < 20; i++) {
             if (placeEnclosingBlock(currentChunk, enclosingBlockPos)) {
                 break;
             }
-        }
-    }
-
-    private void encloseWaterSides(MutableBlockPos blockPos, int currentY, double h, ChunkAccess currentChunk) {
-        MutableBlockPos enclosingBlockPos = new MutableBlockPos();
-        for (Direction direction : Direction.Plane.HORIZONTAL) {
-            enclosingBlockPos.set(blockPos);
-            enclosingBlockPos.move(direction);
-
-            final double dx = enclosingBlockPos.getX() - x;
-            final double dz = enclosingBlockPos.getZ() - z;
-            final double distanceFrom2 = dx * dx + dz * dz;
-
-            // Find locations outside the meteor's carve area
-            if (currentY <= h + distanceFrom2 * 0.02) {
-                for (int i = 0; i < 6; i++) {
-                    if (placeEnclosingBlock(currentChunk, enclosingBlockPos)) {
-                        break;
-                    }
-                    enclosingBlockPos.move(Direction.DOWN);
-                }
-            }
+            enclosingBlockPos.move(Direction.DOWN);
         }
     }
 
     private boolean placeEnclosingBlock(ChunkAccess currentChunk, MutableBlockPos enclosingBlockPos) {
         BlockState currentState = currentChunk.getBlockState(enclosingBlockPos);
         if (currentState.getBlock() == Blocks.AIR || currentState.canBeReplaced() || currentState.is(BlockTags.REPLACEABLE)) {
-            if (level.getRandom().nextFloat() < 0.05f) {
+            if (level.getRandom().nextFloat() < 0.075f) {
                 this.putter.put(level, enclosingBlockPos, Blocks.MAGMA_BLOCK.defaultBlockState());
             }
             else {
