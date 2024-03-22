@@ -77,7 +77,7 @@ public class InitStackRenderHandlers {
             // The Z-scaling by 0.001 causes the model to be visually "flattened"
             // This cannot replace a proper projection, but it's cheap and gives the desired effect.
             // We don't scale the normal matrix to avoid lighting issues.
-            poseStack.mulPoseMatrix(new Matrix4f().scale(scale, scale, 0.001f));
+            poseStack.mulPose(new Matrix4f().scale(scale, scale, 0.001f));
             // Rotate the normal matrix a little for nicer lighting.
             poseStack.last().normal().rotateX(Mth.DEG_TO_RAD * -45f);
 

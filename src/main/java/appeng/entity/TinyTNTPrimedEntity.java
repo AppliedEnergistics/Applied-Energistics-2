@@ -129,7 +129,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithC
     // override :P
     @Override
     protected void explode() {
-        this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
+        this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE.value(),
                 SoundSource.BLOCKS, 4.0F,
                 (1.0F + (this.level().random.nextFloat() - this.level().random.nextFloat()) * 0.2F) * 32.9F);
 

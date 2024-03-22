@@ -84,7 +84,6 @@ public class LytTransformRecipe extends LytRecipeBox {
             }
             context.renderFluid(
                     fluid,
-                    null,
                     bounds.x() + paddingLeft,
                     bounds.y() + 4,
                     0,

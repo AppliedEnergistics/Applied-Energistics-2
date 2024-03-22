@@ -18,18 +18,14 @@
 
 package appeng.client.render;
 
-import java.util.List;
-import java.util.Objects;
-
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.ItemStack;
-
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-
 import appeng.client.render.cablebus.FacadeBuilder;
 import appeng.items.parts.FacadeItem;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.util.ItemStackMap;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * This baked model class is used as a dispatcher to redirect the renderer to the *real* model that should be used based
@@ -37,7 +33,7 @@ import appeng.items.parts.FacadeItem;
  */
 public class FacadeDispatcherBakedModel extends DelegateBakedModel {
     private final FacadeBuilder facadeBuilder;
-    private final Int2ObjectMap<FacadeBakedItemModel> cache = new Int2ObjectArrayMap<>();
+    private final Map<ItemStack, FacadeBakedItemModel> cache = ItemStackMap.createTypeAndTagMap();
 
     public FacadeDispatcherBakedModel(BakedModel baseModel, FacadeBuilder facadeBuilder) {
         super(baseModel);
@@ -45,18 +41,16 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel {
     }
 
     @Override
-    public List<BakedModel> getRenderPasses(ItemStack stack, boolean fabulous) {
+    public synchronized List<BakedModel> getRenderPasses(ItemStack stack, boolean fabulous) {
         if (!(stack.getItem() instanceof FacadeItem itemFacade)) {
             return List.of(this);
         }
 
-        ItemStack textureItem = itemFacade.getTextureItem(stack);
-
-        int hash = Objects.hash(BuiltInRegistries.ITEM.getKey(textureItem.getItem()), textureItem.getTag());
-        FacadeBakedItemModel model = cache.get(hash);
+        var textureItem = itemFacade.getTextureItem(stack);
+        var model = cache.get(textureItem);
         if (model == null) {
             model = new FacadeBakedItemModel(getBaseModel(), textureItem, facadeBuilder);
-            cache.put(hash, model);
+            cache.put(textureItem, model);
         }
 
         return List.of(model);

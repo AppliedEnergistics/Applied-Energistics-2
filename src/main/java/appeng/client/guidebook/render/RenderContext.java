@@ -208,6 +208,12 @@ public interface RenderContext {
         renderItem(stack, x, y, 0, width, height);
     }
 
+    default void renderFluid(Fluid fluid, int x, int y, int z, int width, int height) {
+        FluidBlitter.create(AEFluidKey.of(fluid))
+                .dest(x, y, width, height)
+                .blit(guiGraphics());
+    }
+
     default void renderFluid(FluidStack stack, int x, int y, int z, int width, int height) {
         FluidBlitter.create(stack)
                 .dest(x, y, width, height)

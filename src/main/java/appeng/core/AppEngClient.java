@@ -20,6 +20,12 @@ package appeng.core;
 
 import java.util.Objects;
 
+import appeng.client.render.effects.CraftingFx;
+import appeng.client.render.effects.EnergyFx;
+import appeng.client.render.effects.LightningArcFX;
+import appeng.client.render.effects.LightningFX;
+import appeng.client.render.effects.MatterCannonFX;
+import appeng.client.render.effects.VibrantFX;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
@@ -94,7 +100,6 @@ import appeng.init.client.InitEntityLayerDefinitions;
 import appeng.init.client.InitEntityRendering;
 import appeng.init.client.InitItemColors;
 import appeng.init.client.InitItemModelsProperties;
-import appeng.init.client.InitParticleFactories;
 import appeng.init.client.InitRenderTypes;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
@@ -144,7 +149,6 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerEntityLayerDefinitions);
         modEventBus.addListener(this::registerHotkeys);
         modEventBus.addListener(this::registerDimensionSpecialEffects);
-        modEventBus.addListener(InitParticleFactories::init);
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
@@ -237,7 +241,12 @@ public class AppEngClient extends AppEngBase {
     }
 
     public void registerParticleFactories(RegisterParticleProvidersEvent event) {
-        InitParticleFactories.init();
+        event.registerSpriteSet(ParticleTypes.CRAFTING, CraftingFx.Factory::new);
+        event.registerSpriteSet(ParticleTypes.ENERGY, EnergyFx.Factory::new);
+        event.registerSpriteSet(ParticleTypes.LIGHTNING_ARC, LightningArcFX.Factory::new);
+        event.registerSpriteSet(ParticleTypes.LIGHTNING, LightningFX.Factory::new);
+        event.registerSpriteSet(ParticleTypes.MATTER_CANNON, MatterCannonFX.Factory::new);
+        event.registerSpriteSet(ParticleTypes.VIBRANT, VibrantFX.Factory::new);
     }
 
     public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
