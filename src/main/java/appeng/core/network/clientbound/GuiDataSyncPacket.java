@@ -1,6 +1,7 @@
 
 package appeng.core.network.clientbound;
 
+import java.rmi.registry.Registry;
 import java.util.Locale;
 import java.util.function.Consumer;
 
@@ -8,6 +9,7 @@ import appeng.core.AppEng;
 import appeng.core.network.CustomAppEngPayload;
 import io.netty.buffer.Unpooled;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -38,12 +40,12 @@ public record GuiDataSyncPacket(int containerId, byte[] syncData) implements Cli
         return TYPE;
     }
 
-    public GuiDataSyncPacket(int containerId, Consumer<FriendlyByteBuf> writer) {
-        this(containerId, createSyncData(writer));
+    public GuiDataSyncPacket(int containerId, Consumer<RegistryFriendlyByteBuf> writer, RegistryAccess registryAccess) {
+        this(containerId, createSyncData(writer, registryAccess));
     }
 
-    private static byte[] createSyncData(Consumer<FriendlyByteBuf> writer) {
-        var buffer = new FriendlyByteBuf(Unpooled.buffer());
+    private static byte[] createSyncData(Consumer<RegistryFriendlyByteBuf> writer, RegistryAccess registryAccess) {
+        var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), registryAccess);
         writer.accept(buffer);
         var result = new byte[buffer.readableBytes()];
         buffer.readBytes(result);
@@ -66,7 +68,7 @@ public record GuiDataSyncPacket(int containerId, byte[] syncData) implements Cli
     public void handleOnClient(Player player) {
         AbstractContainerMenu c = player.containerMenu;
         if (c instanceof AEBaseMenu baseMenu && c.containerId == this.containerId) {
-            baseMenu.receiveServerSyncData(new FriendlyByteBuf(Unpooled.wrappedBuffer(this.syncData)));
+            baseMenu.receiveServerSyncData(new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(this.syncData), player.level().registryAccess()));
         }
     }
 

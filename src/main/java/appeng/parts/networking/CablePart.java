@@ -24,6 +24,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,7 +55,6 @@ import appeng.core.definitions.AEParts;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.tools.powered.ColorApplicatorItem;
 import appeng.parts.AEBasePart;
-import appeng.parts.AEBasePart.NodeListener;
 
 public abstract class CablePart extends AEBasePart implements ICablePart {
 
@@ -242,7 +242,7 @@ public abstract class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public void writeToStream(FriendlyByteBuf data) {
+    public void writeToStream(RegistryFriendlyByteBuf data) {
         super.writeToStream(data);
 
         boolean[] writeChannels = new boolean[Direction.values().length];
@@ -316,7 +316,7 @@ public abstract class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public boolean readFromStream(FriendlyByteBuf data) {
+    public boolean readFromStream(RegistryFriendlyByteBuf data) {
         var changed = super.readFromStream(data);
 
         int connectedSidesPacked = data.readByte();
@@ -358,7 +358,7 @@ public abstract class CablePart extends AEBasePart implements ICablePart {
         // Hacky hacky hacky, but it works. Refreshes the client-side state even if we're on the server
         if (!isClientSide()) {
             updateConnections();
-            var packet = new FriendlyByteBuf(Unpooled.buffer());
+            var packet = new RegistryFriendlyByteBuf(Unpooled.buffer(), getLevel().registryAccess());
             writeToStream(packet);
             readFromStream(packet);
         }

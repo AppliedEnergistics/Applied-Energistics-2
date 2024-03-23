@@ -28,10 +28,10 @@ import appeng.items.tools.MemoryCardItem;
 import appeng.util.InteractionUtil;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -122,7 +122,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
     }
 
     @Override
-    public boolean readFromStream(FriendlyByteBuf data) {
+    public boolean readFromStream(RegistryFriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final short oldf = this.freq;
         this.freq = data.readShort();
@@ -130,7 +130,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
     }
 
     @Override
-    public void writeToStream(FriendlyByteBuf data) {
+    public void writeToStream(RegistryFriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeShort(this.getFrequency());
     }

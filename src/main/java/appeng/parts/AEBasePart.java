@@ -24,6 +24,7 @@ import java.util.Objects;
 import appeng.api.ids.AEComponents;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +32,6 @@ import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -206,7 +206,7 @@ public abstract class AEBasePart
 
     @MustBeInvokedByOverriders
     @Override
-    public void writeToStream(FriendlyByteBuf data) {
+    public void writeToStream(RegistryFriendlyByteBuf data) {
         this.clientSidePowered = this.isPowered();
         this.clientSideMissingChannel = this.isMissingChannel();
 
@@ -222,7 +222,7 @@ public abstract class AEBasePart
 
     @MustBeInvokedByOverriders
     @Override
-    public boolean readFromStream(FriendlyByteBuf data) {
+    public boolean readFromStream(RegistryFriendlyByteBuf data) {
         var flags = data.readByte();
 
         var wasPowered = this.clientSidePowered;
@@ -238,7 +238,7 @@ public abstract class AEBasePart
     /**
      * Used to store the state that is synchronized to clients for the visual appearance of this part as NBT. This is
      * only used to store this state for tools such as Create Ponders in Structure NBT. Actual synchronization uses
-     * {@link #writeToStream(FriendlyByteBuf)} and {@link #readFromStream(FriendlyByteBuf)}. Any data that is saved to
+     * {@link IPart#writeToStream(RegistryFriendlyByteBuf)} and {@link IPart#readFromStream(RegistryFriendlyByteBuf)}. Any data that is saved to
      * the NBT tag in {@link IPart#writeToNBT(CompoundTag, HolderLookup.Provider)} already does not need to be saved here again.
      */
     @MustBeInvokedByOverriders

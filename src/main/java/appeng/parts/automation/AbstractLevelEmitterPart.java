@@ -21,13 +21,13 @@ package appeng.parts.automation;
 import appeng.api.ids.AEComponents;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -75,13 +75,13 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     }
 
     @Override
-    public void writeToStream(FriendlyByteBuf data) {
+    public void writeToStream(RegistryFriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(prevState);
     }
 
     @Override
-    public boolean readFromStream(FriendlyByteBuf data) {
+    public boolean readFromStream(RegistryFriendlyByteBuf data) {
         var changed = super.readFromStream(data);
         var wasOn = this.clientSideOn;
         this.clientSideOn = data.readBoolean();

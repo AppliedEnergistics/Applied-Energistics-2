@@ -24,6 +24,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -77,7 +78,6 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.FacadeItem;
 import appeng.me.InWorldGridNode;
 import appeng.parts.networking.CablePart;
-import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer {
@@ -714,7 +714,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return light;
     }
 
-    public void writeToStream(FriendlyByteBuf data) {
+    public void writeToStream(RegistryFriendlyByteBuf data) {
         int sides = 0;
         for (int x = 0; x < Platform.DIRECTIONS_WITH_NULL.length; x++) {
             var p = this.getPart(Platform.DIRECTIONS_WITH_NULL[x]);
@@ -737,7 +737,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         this.getFacadeContainer().writeToStream(data);
     }
 
-    public boolean readFromStream(FriendlyByteBuf data) {
+    public boolean readFromStream(RegistryFriendlyByteBuf data) {
         final byte sides = data.readByte();
 
         boolean updateBlock = false;

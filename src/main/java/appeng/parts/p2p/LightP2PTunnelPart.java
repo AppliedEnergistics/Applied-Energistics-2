@@ -23,7 +23,7 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -70,13 +70,13 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void writeToStream(FriendlyByteBuf data) {
+    public void writeToStream(RegistryFriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeInt(this.isOutput() ? this.lastValue : 0);
     }
 
     @Override
-    public boolean readFromStream(FriendlyByteBuf data) {
+    public boolean readFromStream(RegistryFriendlyByteBuf data) {
         boolean changed = super.readFromStream(data);
         final int oldValue = this.lastValue;
 

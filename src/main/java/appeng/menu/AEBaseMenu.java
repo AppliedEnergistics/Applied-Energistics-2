@@ -31,6 +31,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
@@ -98,7 +100,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     // Slots that are only present on the client-side
     private final Set<Slot> clientSideSlot = new HashSet<>();
     /**
-     * Indicates that the menu was created after returning from a {@link ISubMenu}. Previous screen state stored on the
+     * Indicates that the menu was created after returning from a {@link ISubMenu}. Previous screen state amount on the
      * client should be restored.
      */
     private boolean returnedFromSubScreen;
@@ -151,6 +153,10 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
     public Player getPlayer() {
         return getPlayerInventory().player;
+    }
+
+    protected final RegistryAccess registryAccess() {
+        return getPlayer().level().registryAccess();
     }
 
     public IActionSource getActionSource() {
@@ -307,7 +313,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             }
 
             if (dataSync.hasChanges()) {
-                sendPacketToClient(new GuiDataSyncPacket(containerId, dataSync::writeUpdate));
+                sendPacketToClient(new GuiDataSyncPacket(containerId, dataSync::writeUpdate, registryAccess()));
             }
         }
 
@@ -858,14 +864,14 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         super.sendAllDataToRemote();
 
         if (dataSync.hasFields()) {
-            sendPacketToClient(new GuiDataSyncPacket(containerId, dataSync::writeFull));
+            sendPacketToClient(new GuiDataSyncPacket(containerId, dataSync::writeFull, registryAccess()));
         }
     }
 
     /**
      * Receives data from the server for synchronizing fields of this class.
      */
-    public final void receiveServerSyncData(FriendlyByteBuf data) {
+    public final void receiveServerSyncData(RegistryFriendlyByteBuf data) {
         ShortSet updatedFields = new ShortOpenHashSet();
         this.dataSync.readUpdate(data, updatedFields);
         this.onServerDataSync(updatedFields);
