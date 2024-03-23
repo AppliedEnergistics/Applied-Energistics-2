@@ -18,7 +18,10 @@
 
 package appeng.menu.implementations;
 
+import appeng.api.ids.AEComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -93,10 +96,9 @@ public class QuartzKnifeMenu extends AEBaseMenu {
                 return ItemStack.EMPTY;
             }
 
-            if (RestrictedInputSlot.isMetalIngot(input) && QuartzKnifeMenu.this.currentName.length() > 0) {
+            if (RestrictedInputSlot.isMetalIngot(input) && !currentName.isBlank()) {
                 ItemStack namePressStack = AEItems.NAME_PRESS.stack();
-                final CompoundTag compound = namePressStack.getOrCreateTag();
-                compound.putString(NamePressItem.TAG_INSCRIBE_NAME, QuartzKnifeMenu.this.currentName);
+                namePressStack.set(AEComponents.NAME_PRESS_NAME, Component.literal(currentName));
 
                 return namePressStack;
             }
@@ -128,8 +130,11 @@ public class QuartzKnifeMenu extends AEBaseMenu {
                 final ItemStack item = itemMenuHost.getItemStack();
                 final ItemStack before = item.copy();
                 Inventory playerInv = QuartzKnifeMenu.this.getPlayerInventory();
-                item.hurtAndBreak(1, playerInv.player, p -> {
-                    playerInv.setItem(playerInv.selected, ItemStack.EMPTY);
+                var player = getPlayer();
+                item.hurtAndBreak(1, player.level().getRandom(), player, () -> {
+                    if (itemMenuHost.getPlayerInventorySlot() != null) {
+                        playerInv.setItem(itemMenuHost.getPlayerInventorySlot(), ItemStack.EMPTY);
+                    }
                     NeoForge.EVENT_BUS.post(new PlayerDestroyItemEvent(playerInv.player, before, null));
                 });
 
