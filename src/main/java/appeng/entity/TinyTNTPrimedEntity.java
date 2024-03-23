@@ -60,7 +60,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithC
     }
 
     public TinyTNTPrimedEntity(Level level, double x, double y, double z,
-            LivingEntity igniter) {
+           @Nullable LivingEntity igniter) {
         super(AEEntities.TINY_TNT_PRIMED, level);
         this.setPos(x, y, z);
         double d0 = level.random.nextDouble() * ((float) Math.PI * 2F);
