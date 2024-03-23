@@ -201,7 +201,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
             if (r == null) {
                 final var target = is.getItem();
-                if (target.canBeDepleted() && target.isValidRepairItem(is, is)) {
+                if (is.isDamageableItem() && target.isValidRepairItem(is, is)) {
                     var isBad = false;
                     for (var x = 0; x < ic.getContainerSize(); x++) {
                         final var pis = ic.getItem(x);

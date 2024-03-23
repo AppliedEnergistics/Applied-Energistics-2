@@ -41,15 +41,6 @@ public interface IPatternDetailsDecoder {
     IPatternDetails decodePattern(AEItemKey what, Level level);
 
     /**
-     * Automated recovery is no longer supported, so implementing it is no longer required
-     */
-    @Nullable
-    @Deprecated(forRemoval = true, since = "1.20.4")
-    default IPatternDetails decodePattern(ItemStack what, Level level, boolean tryRecovery) {
-        return decodePattern(what, level);
-    }
-
-    /**
      * Convenience alternative to {@link #decodePattern(AEItemKey, Level)} that takes an ItemStack.
      */
     @Nullable

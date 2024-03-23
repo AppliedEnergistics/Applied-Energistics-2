@@ -1,5 +1,6 @@
 package appeng.api.crafting;
 
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
@@ -16,8 +17,8 @@ import net.minecraft.world.level.Level;
 @FunctionalInterface
 public interface InvalidPatternTooltipStrategy {
     /**
-     * @param tag   The NBT tag of the encoded pattern.
+     * @param stack The encoded pattern.
      * @param cause The error thrown by the decoder - if any.
      */
-    PatternDetailsTooltip getTooltip(CompoundTag tag, Level level, @Nullable Exception cause, TooltipFlag flags);
+    PatternDetailsTooltip getTooltip(ItemStack stack, Level level, @Nullable Exception cause, TooltipFlag flags);
 }

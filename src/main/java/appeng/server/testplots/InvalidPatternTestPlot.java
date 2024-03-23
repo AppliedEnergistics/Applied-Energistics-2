@@ -27,7 +27,7 @@ public class InvalidPatternTestPlot {
             var pattern = chest.getInternalInventory().getStackInSlot(0);
             helper.check(!pattern.isEmpty(), "pattern should be present");
 
-            var details = PatternDetailsHelper.decodePattern(pattern, helper.getLevel(), false);
+            var details = PatternDetailsHelper.decodePattern(pattern, helper.getLevel());
             helper.check(details == null, "pattern should fail decoding");
             helper.succeed();
         });

@@ -120,7 +120,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag flags) {
         var what = AEItemKey.of(stack);
-        if (what == null || what.getTag() == null) {
+        if (what == null) {
             // This can be called very early to index tooltips for search. In those cases,
             // there is no encoded pattern present.
             return;
@@ -133,7 +133,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
         } catch (Exception e) {
             lines.add(GuiText.InvalidPattern.text().copy().withStyle(ChatFormatting.RED));
             if (invalidPatternTooltip != null) {
-                tooltip = invalidPatternTooltip.getTooltip(stack.getTag(), level, e, flags);
+                tooltip = invalidPatternTooltip.getTooltip(stack, level, e, flags);
             } else {
                 tooltip = null;
             }
@@ -225,7 +225,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
 
     @Nullable
     public IPatternDetails decode(ItemStack stack, Level level) {
-        if (stack.getItem() != this || !stack.hasTag() || level == null) {
+        if (stack.getItem() != this || level == null) {
             return null;
         }
 
@@ -239,7 +239,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
 
     @Nullable
     public IPatternDetails decode(AEItemKey what, Level level) {
-        if (what == null || !what.hasTag()) {
+        if (what == null) {
             return null;
         }
 

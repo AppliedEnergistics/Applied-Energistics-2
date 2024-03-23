@@ -75,6 +75,10 @@ public class PatternDetailsTooltip {
         inputs.add(new ValidEntry(what, amount));
     }
 
+    public void addInput(GenericStack stack) {
+        inputs.add(new ValidEntry(stack.what(), stack.amount()));
+    }
+
     public void addInvalidInput(Component description) {
         inputs.add(new InvalidEntry(description, null, 0));
     }
@@ -93,6 +97,10 @@ public class PatternDetailsTooltip {
 
     public void addOutput(AEKey what, long amount) {
         outputs.add(new ValidEntry(what, amount));
+    }
+
+    public void addOutput(GenericStack stack) {
+        outputs.add(new ValidEntry(stack.what(), stack.amount()));
     }
 
     public void addOutput(Entry entry) {

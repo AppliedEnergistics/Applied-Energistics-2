@@ -1,6 +1,7 @@
 package appeng.crafting.pattern;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -16,7 +17,7 @@ final class AEPatternHelper {
      * Given an array of potentially null stacks, which can include multiples of the same type, produce an array that
      * has no null elements and only contains every input type once, while preserving order.
      */
-    public static GenericStack[] condenseStacks(GenericStack[] sparseInput) {
+    public static GenericStack[] condenseStacks(List<GenericStack> sparseInput) {
         // Use a linked map to preserve ordering.
         var map = new LinkedHashMap<AEKey, Long>();
 

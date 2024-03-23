@@ -52,6 +52,7 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,11 +60,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSupportedPattern {
-    private static final String NBT_INPUTS = "in";
-    private static final String NBT_OUTPUTS = "out";
-    private static final String NBT_SUBSTITUTE = "substitute";
-    private static final String NBT_SUBSTITUTE_FLUIDS = "substituteFluids";
-    private static final String NBT_RECIPE_ID = "recipe";
     public static final int CRAFTING_GRID_DIMENSION = 3;
     public static final int CRAFTING_GRID_SLOTS = CRAFTING_GRID_DIMENSION * CRAFTING_GRID_DIMENSION;
 
@@ -123,7 +119,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         this.outputsArray = new GenericStack[]{Objects.requireNonNull(GenericStack.fromItemStack(this.output))};
 
         // Compress inputs
-        var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
+        var condensedInputs = AEPatternHelper.condenseStacks(Arrays.asList(sparseInputs));
         this.inputs = new Input[condensedInputs.length];
         for (int i = 0; i < 9; ++i) {
             sparseToCompressed[i] = -1;
@@ -535,25 +531,30 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         return tooltip;
     }
 
-    public static PatternDetailsTooltip getInvalidPatternTooltip(CompoundTag tag, Level level,
+    public static PatternDetailsTooltip getInvalidPatternTooltip(ItemStack stack, Level level,
                                                                  @Nullable Exception cause, TooltipFlag flags) {
         var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_CRAFTS);
 
-        PatternNbtUtils.readItemStackListFaultTolerant(tag, NBT_INPUTS, tooltip::addInput, level.registryAccess());
-        PatternNbtUtils.readItemStackFaultTolerant(tag, NBT_OUTPUTS, level.registryAccess()).ifPresent(tooltip::addOutput);
+        var encodedPattern = stack.get(AEComponents.ENCODED_CRAFTING_PATTERN);
+        if (encodedPattern != null) {
+            for (var input : encodedPattern.inputs()) {
+                if (!input.isEmpty()) {
+                    tooltip.addInput(AEItemKey.of(input), input.getCount());
+                }
+            }
+            tooltip.addOutput(AEItemKey.of(encodedPattern.result()), encodedPattern.result().getCount());
 
-        if (PatternNbtUtils.getBoolean(tag, NBT_SUBSTITUTE, false)) {
-            tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
-        }
+            if (encodedPattern.canSubstitute()) {
+                tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
+            }
 
-        if (PatternNbtUtils.getBoolean(tag, NBT_SUBSTITUTE_FLUIDS, false)) {
-            tooltip.addProperty(GuiText.PatternTooltipFluidSubstitutions.text());
-        }
+            if (encodedPattern.canSubstituteFluids()) {
+                tooltip.addProperty(GuiText.PatternTooltipFluidSubstitutions.text());
+            }
 
-        if (flags.isAdvanced()) {
-            PatternNbtUtils.tryGetString(tag, NBT_RECIPE_ID).ifPresent(recipeId -> {
-                tooltip.addProperty(Component.literal("Recipe"), Component.literal(recipeId));
-            });
+            if (flags.isAdvanced()) {
+                tooltip.addProperty(Component.literal("Recipe"), Component.literal(encodedPattern.recipeId().toString()));
+            }
         }
 
         return tooltip;

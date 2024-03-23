@@ -18,12 +18,14 @@
 
 package appeng.crafting.pattern;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
+import appeng.api.ids.AEComponents;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
@@ -39,25 +41,21 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 
 public class AEProcessingPattern implements IPatternDetails {
-    private static final String NBT_INPUTS = "in";
-    private static final String NBT_OUTPUTS = "out";
-
-    public static final int MAX_INPUT_SLOTS = 9 * 9;
-    public static final int MAX_OUTPUT_SLOTS = 3 * 9;
-
     private final AEItemKey definition;
-    private final GenericStack[] sparseInputs, sparseOutputs;
+    private final List<GenericStack> sparseInputs, sparseOutputs;
     private final Input[] inputs;
     private final GenericStack[] condensedOutputs;
 
     public AEProcessingPattern(AEItemKey definition) {
         this.definition = definition;
-        var tag = Objects.requireNonNull(definition.getTag());
 
-        this.sparseInputs = PatternNbtUtils.getRequiredGenericStackList(tag, NBT_INPUTS,
-                AEProcessingPattern.MAX_INPUT_SLOTS);
-        this.sparseOutputs = PatternNbtUtils.getRequiredGenericStackList(tag, NBT_OUTPUTS,
-                AEProcessingPattern.MAX_OUTPUT_SLOTS);
+        var encodedPattern = definition.get(AEComponents.ENCODED_PROCESSING_PATTERN);
+        if (encodedPattern == null) {
+            throw new IllegalArgumentException("Given item does not encode a processing pattern: " + definition);
+        }
+
+        this.sparseInputs = encodedPattern.sparseInputs();
+        this.sparseOutputs = encodedPattern.sparseOutputs();
         var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
         this.inputs = new Input[condensedInputs.length];
         for (int i = 0; i < inputs.length; ++i) {
@@ -68,15 +66,16 @@ public class AEProcessingPattern implements IPatternDetails {
         this.condensedOutputs = AEPatternHelper.condenseStacks(sparseOutputs);
     }
 
-    public static void encode(CompoundTag tag, GenericStack[] sparseInputs, GenericStack[] sparseOutputs) {
-        if (Arrays.stream(sparseInputs).noneMatch(Objects::nonNull)) {
+    public static void encode(ItemStack stack, List<GenericStack> sparseInputs, List<GenericStack> sparseOutputs) {
+        if (sparseInputs.stream().noneMatch(Objects::nonNull)) {
             throw new IllegalArgumentException("At least one input must be non-null.");
         }
-        Objects.requireNonNull(sparseOutputs[0],
+        Objects.requireNonNull(sparseOutputs.get(0),
                 "The first (primary) output must be non-null.");
 
-        tag.put(NBT_INPUTS, encodeStackList(sparseInputs));
-        tag.put(NBT_OUTPUTS, encodeStackList(sparseOutputs));
+        stack.set(AEComponents.ENCODED_PROCESSING_PATTERN, new EncodedProcessingPattern(
+                sparseInputs, sparseOutputs
+        ));
     }
 
     @Override
@@ -104,17 +103,17 @@ public class AEProcessingPattern implements IPatternDetails {
         return condensedOutputs;
     }
 
-    public GenericStack[] getSparseInputs() {
+    public List<GenericStack> getSparseInputs() {
         return sparseInputs;
     }
 
-    public GenericStack[] getSparseOutputs() {
+    public List<GenericStack> getSparseOutputs() {
         return sparseOutputs;
     }
 
     @Override
     public void pushInputsToExternalInventory(KeyCounter[] inputHolder, PatternInputSink inputSink) {
-        if (sparseInputs.length == inputs.length) {
+        if (sparseInputs.size() == inputs.length) {
             // No compression -> no need to reorder
             IPatternDetails.super.pushInputsToExternalInventory(inputHolder, inputSink);
             return;
@@ -145,12 +144,15 @@ public class AEProcessingPattern implements IPatternDetails {
         }
     }
 
-    public static PatternDetailsTooltip getInvalidPatternTooltip(CompoundTag tag, Level level,
+    public static PatternDetailsTooltip getInvalidPatternTooltip(ItemStack stack, Level level,
             @Nullable Exception cause, TooltipFlag flags) {
         var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_PRODUCES);
 
-        PatternNbtUtils.getGenericStackListFaultTolerant(tag, NBT_INPUTS, tooltip::addInput, level.registryAccess());
-        PatternNbtUtils.getGenericStackListFaultTolerant(tag, NBT_OUTPUTS, tooltip::addOutput, level.registryAccess());
+        var encodedPattern = stack.get(AEComponents.ENCODED_PROCESSING_PATTERN);
+        if (encodedPattern != null) {
+            encodedPattern.sparseInputs().stream().filter(Objects::nonNull).forEach(tooltip::addInput);
+            encodedPattern.sparseOutputs().stream().filter(Objects::nonNull).forEach(tooltip::addOutput);
+        }
 
         return tooltip;
     }

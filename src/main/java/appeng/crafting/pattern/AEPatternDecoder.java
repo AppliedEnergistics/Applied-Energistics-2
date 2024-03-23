@@ -44,14 +44,4 @@ public class AEPatternDecoder implements IPatternDetailsDecoder {
 
         return encodedPatternItem.decode(what, level);
     }
-
-    @Nullable
-    @Override
-    public IPatternDetails decodePattern(ItemStack what, Level level, boolean tryRecovery) {
-        if (level == null || !(what.getItem() instanceof EncodedPatternItem encodedPatternItem)) {
-            return null;
-        }
-
-        return encodedPatternItem.decode(what, level);
-    }
 }

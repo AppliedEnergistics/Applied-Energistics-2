@@ -33,6 +33,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 /**
  * A crafting plan intended to be sent to the client.
@@ -69,7 +70,7 @@ public class CraftingPlanSummary {
         return entries;
     }
 
-    public void write(FriendlyByteBuf buffer) {
+    public void write(RegistryFriendlyByteBuf buffer) {
         buffer.writeVarLong(usedBytes);
         buffer.writeBoolean(simulation);
         buffer.writeVarInt(entries.size());
@@ -78,7 +79,7 @@ public class CraftingPlanSummary {
         }
     }
 
-    public static CraftingPlanSummary read(FriendlyByteBuf buffer) {
+    public static CraftingPlanSummary read(RegistryFriendlyByteBuf buffer) {
 
         long bytesUsed = buffer.readVarLong();
         boolean simulation = buffer.readBoolean();

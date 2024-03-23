@@ -18,12 +18,15 @@
 
 package appeng.menu.me.crafting;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.stacks.AEKey;
 
@@ -32,6 +35,14 @@ import appeng.api.stacks.AEKey;
  * scheduled to be crafted.
  */
 public class CraftingStatusEntry implements Comparable<CraftingStatusEntry> {
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, CraftingStatusEntry> STREAM_CODEC = StreamCodec.of(
+            CraftingStatusEntry::write,
+            CraftingStatusEntry::read
+    );
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, List<CraftingStatusEntry>> LIST_STREAM_CODEC = STREAM_CODEC.apply(ByteBufCodecs.list());
+
     private static final Comparator<CraftingStatusEntry> COMPARATOR = Comparator
             .comparing((CraftingStatusEntry e) -> e.getActiveAmount() + e.getPendingAmount())
             .thenComparing(CraftingStatusEntry::getStoredAmount)

@@ -276,8 +276,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             // didn't have a chance to decode it yet
             if (getLevel() != null && myPlan == null) {
                 if (!myPattern.isEmpty()) {
-                    if (PatternDetailsHelper.decodePattern(myPattern, getLevel(),
-                            false) instanceof IMolecularAssemblerSupportedPattern supportedPlan) {
+                    if (PatternDetailsHelper.decodePattern(myPattern, getLevel()) instanceof IMolecularAssemblerSupportedPattern supportedPlan) {
                         this.myPlan = supportedPlan;
                     }
                 }

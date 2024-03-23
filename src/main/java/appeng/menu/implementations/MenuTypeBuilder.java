@@ -114,7 +114,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
      * Opens a menu that is based around a single block entity. The block entity's position is encoded in the packet
      * buffer.
      */
-    private M fromNetwork(int containerId, Inventory inv, FriendlyByteBuf packetBuf) {
+    private M fromNetwork(int containerId, Inventory inv, RegistryFriendlyByteBuf packetBuf) {
         var locator = MenuLocators.readFromPacket(packetBuf);
         I host = locator.locate(inv.player, hostInterface);
         if (host == null) {

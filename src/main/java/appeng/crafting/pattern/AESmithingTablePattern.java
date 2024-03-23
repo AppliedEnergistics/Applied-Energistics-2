@@ -20,6 +20,8 @@ package appeng.crafting.pattern;
 
 import java.util.Objects;
 
+import appeng.api.ids.AEComponents;
+import appeng.client.gui.widgets.IResizableWidget;
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
@@ -81,15 +83,19 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
 
     public AESmithingTablePattern(AEItemKey definition, Level level) {
         this.definition = definition;
-        var tag = Objects.requireNonNull(definition.getTag());
 
-        this.template = PatternNbtUtils.getRequiredItemKey(tag, NBT_TEMPLATE);
-        this.base = PatternNbtUtils.getRequiredItemKey(tag, NBT_BASE);
-        this.addition = PatternNbtUtils.getRequiredItemKey(tag, NBT_ADDITION);
-        this.canSubstitute = PatternNbtUtils.getBoolean(tag, NBT_SUBSITUTE, false);
+        var encodedPattern = definition.get(AEComponents.ENCODED_SMITHING_TABLE_PATTERN);
+        if (encodedPattern == null) {
+            throw new IllegalArgumentException("Given item does not encode a smithing table pattern: " + definition);
+        }
+
+        this.template = AEItemKey.of(encodedPattern.template());
+        this.base = AEItemKey.of(encodedPattern.base());
+        this.addition = AEItemKey.of(encodedPattern.addition());
+        this.canSubstitute = encodedPattern.canSubstitute();
 
         // Find recipe
-        this.recipeId = PatternNbtUtils.getRequiredResourceLocation(tag, NBT_RECIPE_ID);
+        this.recipeId = encodedPattern.recipeId();
         this.recipe = level.getRecipeManager().byType(RecipeType.SMITHING).get(recipeId).value();
 
         // Build frame and find output
@@ -266,7 +272,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         return NonNullList.withSize(container.getContainerSize(), ItemStack.EMPTY);
     }
 
-    public static void encode(CompoundTag tag, RecipeHolder<SmithingRecipe> recipe, AEItemKey template, AEItemKey base,
+    public static void encode(ItemStack stack, RecipeHolder<SmithingRecipe> recipe, AEItemKey template, AEItemKey base,
             AEItemKey addition,
             AEItemKey output, boolean allowSubstitutes) {
         Preconditions.checkNotNull(recipe, "recipe");
@@ -275,12 +281,14 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         Preconditions.checkNotNull(addition, "addition");
         Preconditions.checkNotNull(output, "output");
 
-        tag.put(NBT_TEMPLATE, template.toTag());
-        tag.put(NBT_BASE, base.toTag());
-        tag.put(NBT_ADDITION, addition.toTag());
-        tag.put(NBT_OUTPUT, output.toTag());
-        tag.putBoolean(NBT_SUBSITUTE, allowSubstitutes);
-        tag.putString(NBT_RECIPE_ID, recipe.id().toString());
+        stack.set(AEComponents.ENCODED_SMITHING_TABLE_PATTERN, new EncodedSmithingTablePattern(
+                template.toStack(),
+                base.toStack(),
+                addition.toStack(),
+                output.toStack(),
+                allowSubstitutes,
+                recipe.id()
+        ));
     }
 
     @Override
@@ -293,21 +301,22 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         return tooltip;
     }
 
-    public static PatternDetailsTooltip getInvalidTooltip(CompoundTag tag, Level level, @Nullable Exception cause,
+    public static PatternDetailsTooltip getInvalidTooltip(ItemStack stack, Level level, @Nullable Exception cause,
             TooltipFlag flags) {
         var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_CRAFTS);
 
-        PatternNbtUtils.readKeyFaultTolerant(tag, NBT_TEMPLATE, level.registryAccess()).ifPresent(tooltip::addInput);
-        PatternNbtUtils.readKeyFaultTolerant(tag, NBT_BASE, level.registryAccess()).ifPresent(tooltip::addInput);
-        PatternNbtUtils.readKeyFaultTolerant(tag, NBT_ADDITION, level.registryAccess()).ifPresent(tooltip::addInput);
-        PatternNbtUtils.readKeyFaultTolerant(tag, NBT_OUTPUT, level.registryAccess()).ifPresent(tooltip::addOutput);
-        if (PatternNbtUtils.getBoolean(tag, NBT_SUBSITUTE, false)) {
-            tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
-        }
-        if (flags.isAdvanced()) {
-            PatternNbtUtils.tryGetString(tag, NBT_RECIPE_ID).ifPresent(recipeId -> {
-                tooltip.addProperty(Component.literal("Recipe"), Component.literal(recipeId));
-            });
+        var encodedPattern = stack.get(AEComponents.ENCODED_SMITHING_TABLE_PATTERN);
+        if (encodedPattern != null) {
+            tooltip.addInput(GenericStack.fromItemStack(encodedPattern.template()));
+            tooltip.addInput(GenericStack.fromItemStack(encodedPattern.base()));
+            tooltip.addInput(GenericStack.fromItemStack(encodedPattern.addition()));
+            tooltip.addOutput(GenericStack.fromItemStack(encodedPattern.resultItem()));
+            if (encodedPattern.canSubstitute()) {
+                tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
+            }
+            if (flags.isAdvanced()) {
+                tooltip.addProperty(Component.literal("Recipe"), Component.literal(encodedPattern.recipeId().toString()));
+            }
         }
         return tooltip;
     }

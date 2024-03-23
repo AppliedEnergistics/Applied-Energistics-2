@@ -4,7 +4,11 @@ import appeng.api.implementations.items.MemoryCardColors;
 import appeng.api.stacks.GenericStack;
 import appeng.block.crafting.PushDirection;
 import appeng.core.AppEngBase;
+import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.EncodedCraftingPattern;
+import appeng.crafting.pattern.EncodedProcessingPattern;
+import appeng.crafting.pattern.EncodedSmithingTablePattern;
+import appeng.crafting.pattern.EncodedStonecuttingPattern;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentMap;
@@ -228,9 +232,34 @@ public final class AEComponents {
 
     /**
      * An encoded crafting pattern.
+     * @see AEItems#CRAFTING_PATTERN
      */
     public static final DataComponentType<EncodedCraftingPattern> ENCODED_CRAFTING_PATTERN = register("encoded_crafting_pattern",
             builder -> builder.persistent(EncodedCraftingPattern.CODEC).networkSynchronized(EncodedCraftingPattern.STREAM_CODEC)
+    );
+
+    /**
+     * An encoded processing pattern.
+     * @see AEItems#PROCESSING_PATTERN
+     */
+    public static final DataComponentType<EncodedProcessingPattern> ENCODED_PROCESSING_PATTERN = register("encoded_processing_pattern",
+            builder -> builder.persistent(EncodedProcessingPattern.CODEC).networkSynchronized(EncodedProcessingPattern.STREAM_CODEC)
+    );
+
+    /**
+     * An encoded stonecutting pattern.
+     * @see AEItems#STONECUTTING_PATTERN
+     */
+    public static final DataComponentType<EncodedStonecuttingPattern> ENCODED_STONECUTTING_PATTERN = register("encoded_stonecutting_pattern",
+            builder -> builder.persistent(EncodedStonecuttingPattern.CODEC).networkSynchronized(EncodedStonecuttingPattern.STREAM_CODEC)
+    );
+
+    /**
+     * An encoded smithing table pattern.
+     * @see AEItems#SMITHING_TABLE_PATTERN
+     */
+    public static final DataComponentType<EncodedSmithingTablePattern> ENCODED_SMITHING_TABLE_PATTERN = register("encoded_smithing_table_pattern",
+            builder -> builder.persistent(EncodedSmithingTablePattern.CODEC).networkSynchronized(EncodedSmithingTablePattern.STREAM_CODEC)
     );
 
     private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {
