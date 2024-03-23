@@ -188,6 +188,21 @@ public final class AEComponents {
             builder -> builder.persistent(ComponentSerialization.CODEC).networkSynchronized(ComponentSerialization.TRUSTED_STREAM_CODEC)
     );
 
+    /**
+     * An upgrade inventory.
+     */
+    public static final DataComponentType<ItemContainerContents> UPGRADES = register("upgrades",
+            builder -> builder.persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC)
+    );
+
+
+    /**
+     * The unique ID of a pair of {@link appeng.core.definitions.AEItems#QUANTUM_ENTANGLED_SINGULARITY}.
+     */
+    public static final DataComponentType<Long> ENTANGLED_SINGULARITY_ID = register("entangled_singularity_id",
+            builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG)
+    );
+
     private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {
         var builder = DataComponentType.<T>builder();
         customizer.accept(builder);

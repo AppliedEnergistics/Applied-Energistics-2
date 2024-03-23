@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.Set;
 
+import appeng.api.ids.AEComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.Tag;
@@ -56,8 +57,6 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     public static final ModelProperty<QnbFormedState> FORMED_STATE = new ModelProperty<>();
 
     private static int singularitySeed = 0;
-
-    public static final String TAG_FREQUENCY = "freq";
 
     private final byte corner = 16;
     private final AppEngInternalInventory internalInventory = new AppEngInternalInventory(this, 1, 1);
@@ -243,12 +242,9 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     public long getQEFrequency() {
-        final ItemStack is = this.internalInventory.getStackInSlot(0);
+        var is = this.internalInventory.getStackInSlot(0);
         if (!is.isEmpty()) {
-            var c = is.getTag();
-            if (c != null) {
-                return c.getLong(TAG_FREQUENCY);
-            }
+            return is.getOrDefault(AEComponents.ENTANGLED_SINGULARITY_ID, 0L);
         }
         return 0;
     }
@@ -319,13 +315,11 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     public static boolean isValidEntangledSingularity(ItemStack stack) {
-        return AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(stack)
-                && stack.getTag() != null
-                && stack.getTag().contains(TAG_FREQUENCY, Tag.TAG_LONG);
+        return stack.has(AEComponents.ENTANGLED_SINGULARITY_ID);
     }
 
     public static void assignFrequency(ItemStack stack) {
         var frequency = new Date().getTime() * 100 + singularitySeed++ % 100;
-        stack.getOrCreateTag().putLong(TAG_FREQUENCY, frequency);
+        stack.set(AEComponents.ENTANGLED_SINGULARITY_ID, frequency);
     }
 }
