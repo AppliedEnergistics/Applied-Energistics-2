@@ -2,6 +2,8 @@ package appeng.api.stacks;
 
 import java.util.List;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
@@ -36,6 +38,10 @@ import appeng.core.AELog;
  * </ul>
  */
 public abstract class AEKey {
+
+    public static final MapCodec<AEKey> MAP_CODEC = AEKeyType.CODEC.dispatchMap("#c", AEKey::getType, AEKeyType::codec);
+
+    public static final Codec<AEKey> CODEC = MAP_CODEC.codec();
 
     public static final StreamCodec<RegistryFriendlyByteBuf, AEKey> STREAM_CODEC = StreamCodec.of(
             AEKey::writeKey,

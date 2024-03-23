@@ -19,9 +19,14 @@
 package appeng.parts.p2p;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
+import appeng.api.ids.AEComponents;
+import appeng.api.implementations.items.MemoryCardColors;
+import appeng.items.tools.MemoryCardItem;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
@@ -53,9 +58,6 @@ import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePart {
-    private static final String CONFIG_NBT_TYPE = "p2pType";
-    private static final String CONFIG_NBT_FREQ = "p2pFreq";
-
     private boolean output;
     private short freq;
 
@@ -158,18 +160,16 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
 
         // Prefer restoring from memory card
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard mc) {
-            var configData = mc.getData(is);
-
             // Change the actual tunnel type and import settings when the encoded type is a P2P
-            var partItem = IPartItem.byId(new ResourceLocation(configData.getString(CONFIG_NBT_TYPE)));
-            if (partItem != null && P2PTunnelPart.class.isAssignableFrom(partItem.getPartClass())) {
+            var p2pTunnelItem = is.get(AEComponents.EXPORTED_P2P_TYPE);
+            if (p2pTunnelItem instanceof IPartItem<?> partItem && P2PTunnelPart.class.isAssignableFrom(partItem.getPartClass())) {
                 IPart newBus = this;
                 if (newBus.getPartItem() != partItem) {
                     newBus = this.getHost().replacePart(partItem, this.getSide(), player, hand);
                 }
 
                 if (newBus instanceof P2PTunnelPart<?>newTunnel) {
-                    newTunnel.importSettings(SettingsFrom.MEMORY_CARD, configData, player);
+                    newTunnel.importSettings(SettingsFrom.MEMORY_CARD, is.getComponents(), player);
                 }
 
                 mc.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
@@ -212,14 +212,13 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
                 return true;
             }
 
-            final CompoundTag data = mc.getData(is);
-            final short storedFrequency = data.getShort("freq");
+            var storedFrequency = is.get(AEComponents.EXPORTED_P2P_FREQUENCY);
 
             short newFreq = this.getFrequency();
             final boolean wasOutput = this.isOutput();
             this.setOutput(false);
 
-            final boolean needsNewFrequency = wasOutput || this.getFrequency() == 0 || storedFrequency == newFreq;
+            final boolean needsNewFrequency = wasOutput || this.getFrequency() == 0 || Objects.equals(storedFrequency, newFreq);
 
             var grid = getMainNode().getGrid();
             if (grid != null) {
@@ -233,11 +232,10 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
 
             this.onTunnelConfigChange();
 
-            var type = getPartItem().asItem().getDescriptionId();
+            MemoryCardItem.clearCard(is);
+            is.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getPartItem().asItem().getDescription());
+            is.applyComponents(exportSettings(SettingsFrom.MEMORY_CARD));
 
-            exportSettings(SettingsFrom.MEMORY_CARD, data);
-
-            mc.setMemoryCardContents(is, type, data);
             if (needsNewFrequency) {
                 mc.notifyUser(player, MemoryCardMessages.SETTINGS_RESET);
             } else {
@@ -249,21 +247,20 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
         super.importSettings(mode, input, player);
 
-        if (input.contains(CONFIG_NBT_FREQ, Tag.TAG_SHORT)) {
-            var freq = input.getShort(CONFIG_NBT_FREQ);
-
+        var frequency = input.get(AEComponents.EXPORTED_P2P_FREQUENCY);
+        if (frequency != null) {
             // Only make this an output, if it's not already on the frequency.
             // Otherwise, the tunnel input may be made unusable by accidentally loading it with its own settings
-            if (freq != this.freq) {
+            if (frequency != this.freq) {
                 setOutput(true);
                 var grid = getMainNode().getGrid();
                 if (grid != null) {
-                    P2PService.get(grid).updateFreq(this, freq);
+                    P2PService.get(grid).updateFreq(this, frequency);
                 } else {
-                    setFrequency(freq); // Remember it for when we actually join the grid
+                    setFrequency(frequency); // Remember it for when we actually join the grid
                     onTunnelNetworkChange();
                 }
 
@@ -272,21 +269,22 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, CompoundTag output) {
-        super.exportSettings(mode, output);
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder) {
+        super.exportSettings(mode, builder);
 
         // Save the tunnel type
         if (mode == SettingsFrom.MEMORY_CARD) {
-            output.putString(CONFIG_NBT_TYPE, IPartItem.getId(getPartItem()).toString());
+            builder.set(AEComponents.EXPORTED_P2P_TYPE, getPartItem().asItem());
 
             if (freq != 0) {
-                output.putShort(CONFIG_NBT_FREQ, freq);
+                builder.set(AEComponents.EXPORTED_P2P_FREQUENCY, freq);
 
                 var colors = Platform.p2p().toColors(freq);
-                var colorCode = new int[] { colors[0].ordinal(), colors[0].ordinal(), colors[1].ordinal(),
-                        colors[1].ordinal(), colors[2].ordinal(), colors[2].ordinal(), colors[3].ordinal(),
-                        colors[3].ordinal(), };
-                output.putIntArray(IMemoryCard.NBT_COLOR_CODE, colorCode);
+                // the P2P freq only has 4 colors, so we stretch em out a bit
+                builder.set(AEComponents.MEMORY_CARD_COLORS, new MemoryCardColors(
+                        colors[0], colors[0], colors[1], colors[1],
+                        colors[2], colors[2], colors[3],  colors[3]
+                ));
             }
         }
     }

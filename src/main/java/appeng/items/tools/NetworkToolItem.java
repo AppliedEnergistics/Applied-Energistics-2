@@ -29,6 +29,8 @@ import appeng.api.upgrades.Upgrades;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.IAEItemFilter;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.ItemContainerContents;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -190,8 +192,7 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem {
         var inv = new AppEngInternalInventory(new InternalInventoryHost() {
             @Override
             public void saveChangedInventory(AppEngInternalInventory inv) {
-
-                inv.writeAsContainer(stack);
+                stack.set(DataComponents.CONTAINER, inv.toItemContainerContents());
             }
 
             @Override
@@ -201,7 +202,7 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem {
         }, 9);
         inv.setEnableClientEvents(true); // Also write to NBT on the client to prevent desyncs
         inv.setFilter(new NetworkToolInventoryFilter());
-        inv.readFromContainer(stack);
+        inv.fromItemContainerContents(stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY));
         return inv;
     }
 

@@ -24,6 +24,8 @@ import java.util.Collections;
 import appeng.api.ids.AEComponents;
 import com.mojang.brigadier.CommandDispatcher;
 
+import net.minecraft.core.component.DataComponentType;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.commands.CommandSourceStack;
@@ -116,13 +118,15 @@ public abstract class AppEngBase implements AppEng {
 
     static AppEngBase INSTANCE;
 
+    public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, AppEng.MOD_ID);
+
     public AppEngBase(IEventBus modEventBus) {
         if (INSTANCE != null) {
             throw new IllegalStateException();
         }
         INSTANCE = this;
 
-        AEComponents.finalizeRegistration(modEventBus);
+        DATA_COMPONENTS.register(modEventBus);
         modEventBus.addListener(this::registerRegistries);
         modEventBus.addListener(MainCreativeTab::initExternal);
         modEventBus.addListener(InitNetwork::init);

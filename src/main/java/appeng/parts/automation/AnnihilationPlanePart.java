@@ -22,6 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -58,8 +62,12 @@ import appeng.me.helpers.MachineSource;
 import appeng.parts.AEBasePart;
 import appeng.util.EnchantmentUtil;
 import appeng.util.SettingsFrom;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AnnihilationPlanePart.class);
 
     private static final PlaneModels MODELS = new PlaneModels("part/annihilation_plane",
             "part/annihilation_plane_on");
@@ -80,8 +88,7 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
      * Enchantments found on the plane when it was placed will be used to enchant the fake tool used for picking up
      * blocks.
      */
-    @Nullable
-    private Map<Enchantment, Integer> enchantments;
+    private ItemEnchantments enchantments = ItemEnchantments.EMPTY;
 
     // Allows annihilation planes to stop pickup and instead go into a continuous generation mode
     private ContinuousGeneration continuousGeneration;
@@ -104,7 +111,7 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
         continuousGeneration = null;
         // When placed at max build height facing up, continuously generate 1 sky stone dust / 10 seconds
         if (AEConfig.instance().isAnnihilationPlaneSkyDustGenerationEnabled()
-                && host.getBlockPos().getY() + 1 >= buildHeight && getSide() == Direction.UP) {
+            && host.getBlockPos().getY() + 1 >= buildHeight && getSide() == Direction.UP) {
             continuousGeneration = new ContinuousGeneration(
                     AEItemKey.of(AEItems.SKY_DUST),
                     1,
@@ -115,46 +122,39 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
     @Override
     public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.readFromNBT(data, registries);
-        readEnchantments(data);
+
+        ItemEnchantments.CODEC.encode(enchantments, NbtOps.INSTANCE, data);
     }
 
     @Override
     public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.writeToNBT(data, registries);
-        writeEnchantments(data);
+
+        this.enchantments = ItemEnchantments.CODEC.decode(NbtOps.INSTANCE, data)
+                .getOrThrow(false, err -> LOG.warn("Failed to load enchantments for part {}: {}", this, err))
+                .getFirst();
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag data, @Nullable Player player) {
+    public void importSettings(SettingsFrom mode, DataComponentMap data, @Nullable Player player) {
         super.importSettings(mode, data, player);
         // Import enchants only when the plan is placed, not from memory cards
         if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            readEnchantments(data);
+            this.enchantments = data.get(DataComponents.ENCHANTMENTS);
         }
         pickupStrategies = null;
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, CompoundTag data) {
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder data) {
         super.exportSettings(mode, data);
         // Save enchants only when the actual plane is dismantled
         if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            writeEnchantments(data);
+            data.set(DataComponents.ENCHANTMENTS, enchantments);
         }
     }
 
-    private void readEnchantments(CompoundTag data) {
-        enchantments = EnchantmentUtil.getEnchantments(data);
-    }
-
-    private void writeEnchantments(CompoundTag data) {
-        if (enchantments != null) {
-            EnchantmentUtil.setEnchantments(data, enchantments);
-        }
-    }
-
-    @Nullable
-    public Map<Enchantment, Integer> getEnchantments() {
+    public ItemEnchantments getEnchantments() {
         return enchantments;
     }
 

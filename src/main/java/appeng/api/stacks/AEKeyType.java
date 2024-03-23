@@ -23,31 +23,31 @@
 
 package appeng.api.stacks;
 
-import java.text.NumberFormat;
-import java.util.stream.Stream;
-
+import appeng.api.storage.AEKeyFilter;
+import appeng.core.AppEng;
+import appeng.util.ReadableNumberConverter;
 import com.google.common.base.Preconditions;
-
+import com.mojang.serialization.Codec;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.api.storage.AEKeyFilter;
-import appeng.core.AppEng;
-import appeng.util.ReadableNumberConverter;
+import java.text.NumberFormat;
+import java.util.stream.Stream;
 
 /**
  * Defines the properties of a specific subclass of {@link AEKey}. I.e. for {@link AEItemKey}, there is
  * {@link AEItemKeys}.
  */
 public abstract class AEKeyType {
+    public static final Codec<AEKeyType> CODEC = AEKeyTypesInternal.getRegistry().byNameCodec();
+
     public static final ResourceKey<Registry<AEKeyType>> REGISTRY_KEY = ResourceKey
             .createRegistryKey(AppEng.makeId("keytypes"));
 
@@ -63,6 +63,8 @@ public abstract class AEKeyType {
         this.filter = what -> what.getType() == this;
         this.description = description;
     }
+
+    public abstract Codec<? extends AEKey> codec();
 
     /**
      * @return AE2's key space for {@link AEItemKey}.

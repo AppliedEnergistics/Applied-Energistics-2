@@ -22,6 +22,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -136,16 +137,16 @@ public class PatternProviderPart extends AEBasePart implements PatternProviderLo
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, CompoundTag output) {
-        super.exportSettings(mode, output);
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder) {
+        super.exportSettings(mode, builder);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
-            logic.exportSettings(output);
+            logic.exportSettings(builder);
         }
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
         super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.MEMORY_CARD) {

@@ -21,6 +21,8 @@ package appeng.api.stacks;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -38,6 +40,11 @@ final class AEFluidKeys extends AEKeyType {
 
     private AEFluidKeys() {
         super(ID, AEFluidKey.class, GuiText.Fluids.text());
+    }
+
+    @Override
+    public Codec<AEFluidKey> codec() {
+        return AEFluidKey.CODEC;
     }
 
     @Override

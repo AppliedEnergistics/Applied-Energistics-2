@@ -18,6 +18,7 @@
 
 package appeng.blockentity;
 
+import appeng.api.ids.AEComponents;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
@@ -30,7 +31,6 @@ import appeng.core.AELog;
 import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.tools.MemoryCardItem;
-import appeng.util.CustomNameUtil;
 import appeng.util.SettingsFrom;
 import appeng.util.helpers.ItemComparisonHelper;
 import io.netty.buffer.Unpooled;
@@ -39,6 +39,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -318,18 +319,23 @@ public class AEBaseBlockEntity extends BlockEntity
         invalidateCapabilities();
     }
 
+    public final DataComponentMap exportSettings(SettingsFrom mode, @Nullable Player player) {
+        var builder = DataComponentMap.builder();
+        exportSettings(mode, builder, player);
+        return builder.build();
+    }
+
     /**
-     * null means nothing to store...
-     *
-     * @param mode   source of settings
-     * @param player The (optional) player, who is exporting the settings
+     * @param mode    source of settings
+     * @param builder
+     * @param player  The (optional) player, who is exporting the settings
      */
     @MustBeInvokedByOverriders
-    public void exportSettings(SettingsFrom mode, CompoundTag output, @Nullable Player player) {
-        CustomNameUtil.setCustomName(output, customName);
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder, @Nullable Player player) {
+        builder.set(AEComponents.EXPORTED_CUSTOM_NAME, customName);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
-            MemoryCardItem.exportGenericSettings(this, output);
+            MemoryCardItem.exportGenericSettings(this, builder);
         }
     }
 
@@ -340,13 +346,8 @@ public class AEBaseBlockEntity extends BlockEntity
      * @param player The (optional) player, who is importing the settings
      */
     @MustBeInvokedByOverriders
-    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
-        var customName = CustomNameUtil.getCustomName(input);
-        if (customName != null) {
-            this.customName = Component.literal(customName.getString());
-        } else {
-            this.customName = null;
-        }
+    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
+        this.customName = input.get(AEComponents.EXPORTED_CUSTOM_NAME);
 
         MemoryCardItem.importGenericSettings(this, input, player);
     }
@@ -449,11 +450,8 @@ public class AEBaseBlockEntity extends BlockEntity
             var op = new ItemStack(state.getBlock());
             for (var ol : drops) {
                 if (ItemComparisonHelper.isEqualItemType(ol, op)) {
-                    var tag = new CompoundTag();
-                    exportSettings(SettingsFrom.DISMANTLE_ITEM, tag, player);
-                    if (!tag.isEmpty()) {
-                        ol.setTag(tag);
-                    }
+                    var settings = exportSettings(SettingsFrom.DISMANTLE_ITEM, player);
+                    ol.applyComponents(settings);
                     break;
                 }
             }

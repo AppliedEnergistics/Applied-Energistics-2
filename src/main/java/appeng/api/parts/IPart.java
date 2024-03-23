@@ -29,6 +29,7 @@ import java.util.Set;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
@@ -124,11 +125,11 @@ public interface IPart extends ICustomCableConnection, Clearable {
 
     /**
      * Exports settings for attaching it to a memory card or item stack.
-     * 
-     * @param mode   The purpose to export settings for.
-     * @param output The tag to write the settings to.
+     *
+     * @param mode    The purpose to export settings for.
+     * @param builder The map to write the settings to. Written settings must be part of the exported settings tag.
      */
-    default void exportSettings(SettingsFrom mode, CompoundTag output) {
+    default void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder) {
     }
 
     /**
@@ -137,7 +138,7 @@ public interface IPart extends ICustomCableConnection, Clearable {
      * @param input  source of settings
      * @param player the (optional) player who is importing the settings
      */
-    default void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+    default void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
     }
 
     /**
@@ -349,11 +350,9 @@ public interface IPart extends ICustomCableConnection, Clearable {
      */
     default void addPartDrop(List<ItemStack> drops, boolean wrenched) {
         var stack = new ItemStack(getPartItem());
-        var tag = new CompoundTag();
-        exportSettings(SettingsFrom.DISMANTLE_ITEM, tag);
-        if (!tag.isEmpty()) {
-            stack.setTag(tag);
-        }
+        var builder = DataComponentMap.builder();
+        exportSettings(SettingsFrom.DISMANTLE_ITEM, builder);
+        stack.applyComponents(builder.build());
         drops.add(stack);
     }
 

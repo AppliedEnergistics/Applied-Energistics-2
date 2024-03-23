@@ -153,13 +153,12 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         return true;
     }
 
-    public void writeAsContainer(ItemStack stack) {
-        stack.set(DataComponents.CONTAINER, ItemContainerContents.copyOf(stacks));
+    public ItemContainerContents toItemContainerContents() {
+        return ItemContainerContents.copyOf(stacks);
     }
 
-    public void readFromContainer(ItemStack stack) {
-        var content = stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
-        content.copyInto(stacks);
+    public void fromItemContainerContents(ItemContainerContents contents) {
+        contents.copyInto(stacks);
     }
 
     public void writeToNBT(CompoundTag data, String name, HolderLookup.Provider registries) {

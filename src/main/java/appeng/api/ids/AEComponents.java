@@ -1,22 +1,191 @@
 package appeng.api.ids;
 
-import appeng.core.AppEng;
+import appeng.api.implementations.items.MemoryCardColors;
+import appeng.api.stacks.GenericStack;
+import appeng.core.AppEngBase;
+import com.google.common.collect.Maps;
+import com.google.common.primitives.ImmutableIntArray;
+import com.mojang.serialization.Codec;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.TypedDataComponent;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.component.BundleContents;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.IModBusEvent;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import org.jetbrains.annotations.ApiStatus;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public final class AEComponents {
+    // TODO 1.20.5 -> Write a better codec! (without unchecked casts and the intermediate map)
+    private static final Codec<DataComponentMap> DATA_COMPONENT_MAP_CODEC = ExtraCodecs.unboundedDispatchMap(
+            DataComponentType.CODEC,
+            type -> (Codec<Object>) type.codecOrThrow()
+    ).xmap(
+            dataComponentTypeMap -> new DataComponentMap() {
+                @Nullable
+                @Override
+                public <T> T get(DataComponentType<? extends T> type) {
+                    return (T) dataComponentTypeMap.get(type);
+                }
+
+                @Override
+                public Set<DataComponentType<?>> keySet() {
+                    return dataComponentTypeMap.keySet();
+                }
+            },
+            map -> map.stream().collect(Collectors.toMap(
+                    TypedDataComponent::type,
+                    TypedDataComponent::value
+            )));
+
+    private static final StreamCodec<RegistryFriendlyByteBuf, DataComponentMap> DATA_COMPONENT_MAP_STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public DataComponentMap decode(RegistryFriendlyByteBuf data) {
+            var count = data.readVarInt();
+            var builder = DataComponentMap.builder();
+            for (int i = 0; i < count; i++) {
+                var typedComponent = TypedDataComponent.STREAM_CODEC.decode(data);
+                set(builder, typedComponent);
+            }
+            return builder.build();
+        }
+
+        private static <T> void set(DataComponentMap.Builder builder, TypedDataComponent<T> component) {
+            builder.set(component.type(), component.value());
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf data, DataComponentMap map) {
+            data.writeVarInt(map.size());
+            for (TypedDataComponent<?> component : map) {
+                TypedDataComponent.STREAM_CODEC.encode(data, component);
+            }
+        }
+    };
+
     private AEComponents() {
     }
 
-    private static DeferredRegister<DataComponentType<?>> DR = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, AppEng.MOD_ID);
+    /**
+     * The name of the machine type the settings were exported from.
+     *
+     * @see appeng.items.tools.MemoryCardItem
+     */
+    public static final DataComponentType<Component> EXPORTED_SETTINGS_SOURCE = register("exported_settings_source",
+            builder -> builder.persistent(ComponentSerialization.CODEC).networkSynchronized(ComponentSerialization.STREAM_CODEC)
+    );
 
-    @ApiStatus.Internal
-    public static void finalizeRegistration(IEventBus bus) {
-        DR.register(bus);
+    /**
+     * An export custom machine name.
+     *
+     * @see appeng.items.tools.MemoryCardItem
+     */
+    public static final DataComponentType<Component> EXPORTED_CUSTOM_NAME = register("exported_custom_name",
+            builder -> builder.persistent(ComponentSerialization.CODEC).networkSynchronized(ComponentSerialization.STREAM_CODEC)
+    );
+
+    /**
+     * Exported machine upgrades.
+     *
+     * @see appeng.items.tools.MemoryCardItem
+     */
+    public static final DataComponentType<List<ItemStack>> EXPORTED_UPGRADES = register("exported_upgrades",
+            builder -> builder.persistent(ItemStack.CODEC.listOf()).networkSynchronized(ItemStack.LIST_STREAM_CODEC)
+    );
+
+    /**
+     * Exported machine configuration.
+     *
+     * @see appeng.items.tools.MemoryCardItem
+     */
+    public static final DataComponentType<Map<String, String>> EXPORTED_SETTINGS = register("exported_settings",
+            builder -> builder.persistent(Codec.unboundedMap(Codec.STRING, Codec.STRING)).networkSynchronized(ByteBufCodecs.map(
+                    Maps::newHashMapWithExpectedSize,
+                    ByteBufCodecs.STRING_UTF8,
+                    ByteBufCodecs.STRING_UTF8
+            ))
+    );
+
+    /**
+     * Exported machine priority.
+     *
+     * @see appeng.items.tools.MemoryCardItem
+     */
+    public static final DataComponentType<Integer> EXPORTED_PRIORITY = register("exported_priority",
+            builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT)
+    );
+
+    /**
+     * Exported subtype of a {@link appeng.parts.p2p.P2PTunnelPart}.
+     *
+     * @see appeng.items.tools.MemoryCardItem
+     */
+    public static final DataComponentType<Item> EXPORTED_P2P_TYPE = register("exported_p2p_type",
+            builder -> builder.persistent(BuiltInRegistries.ITEM.byNameCodec()).networkSynchronized(ByteBufCodecs.registry(Registries.ITEM))
+    );
+
+    /**
+     * Exported {@link appeng.parts.p2p.P2PTunnelPart} frequency.
+     *
+     * @see appeng.items.tools.MemoryCardItem
+     */
+    public static final DataComponentType<Short> EXPORTED_P2P_FREQUENCY = register("exported_p2p_frequency",
+            builder -> builder.persistent(Codec.SHORT).networkSynchronized(ByteBufCodecs.SHORT)
+    );
+
+    /**
+     * Specifies a color code consisting of 8 colors to display on the memory card item.
+     *
+     * @see appeng.items.tools.MemoryCardItem
+     */
+    public static final DataComponentType<MemoryCardColors> MEMORY_CARD_COLORS = register("memory_card_colors",
+            builder -> builder.persistent(MemoryCardColors.CODEC).networkSynchronized(MemoryCardColors.STREAM_CODEC)
+    );
+
+    /**
+     * Exported configuration inventory.
+     *
+     * @see appeng.items.tools.MemoryCardItem
+     */
+    public static final DataComponentType<List<GenericStack>> EXPORTED_CONFIG_INV = register("exported_config_inv",
+            builder -> builder.persistent(GenericStack.CODEC.listOf()).networkSynchronized(GenericStack.STREAM_CODEC.apply(ByteBufCodecs.list()))
+    );
+
+    /**
+     * Exported reporting value for level emitters.
+     */
+    public static final DataComponentType<Long> EXPORTED_LEVEL_EMITTER_VALUE = register("exported_level_emitter_value",
+            builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG)
+    );
+
+    /**
+     * Exported patterns
+     *
+     * @see appeng.items.tools.MemoryCardItem
+     * @see appeng.helpers.patternprovider.PatternProviderLogic
+     */
+    public static final DataComponentType<ItemContainerContents> EXPORTED_PATTERNS = register("exported_patterns",
+            builder -> builder.persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC)
+    );
+
+    private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {
+        var builder = DataComponentType.<T>builder();
+        customizer.accept(builder);
+        var componentType = builder.build();
+        AppEngBase.DATA_COMPONENTS.register(name, () -> componentType);
+        return componentType;
     }
 }

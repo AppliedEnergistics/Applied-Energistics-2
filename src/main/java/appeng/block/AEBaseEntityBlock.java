@@ -21,6 +21,8 @@ package appeng.block;
 import java.util.ArrayList;
 import java.util.List;
 
+import appeng.api.ids.AEComponents;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.ItemInteractionResult;
 import org.jetbrains.annotations.Nullable;
 
@@ -182,52 +184,44 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
             blockEntity.setName(text.text());
         }
 
-        if (is.hasTag()) {
-            Player player = null;
-            if (placer instanceof Player) {
-                player = (Player) placer;
-            }
-            blockEntity.importSettings(SettingsFrom.DISMANTLE_ITEM, is.getTag(), player);
+        Player player = null;
+        if (placer instanceof Player) {
+            player = (Player) placer;
         }
+        blockEntity.importSettings(SettingsFrom.DISMANTLE_ITEM, is.getComponents(), player);
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
-            InteractionHand hand, BlockHitResult hit) {
-        ItemStack heldItem;
-        if (player != null && !player.getItemInHand(hand).isEmpty()) {
-            heldItem = player.getItemInHand(hand);
+    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player,
+                                              InteractionHand hand, BlockHitResult hit) {
+        if (heldItem.getItem() instanceof IMemoryCard memoryCard && !(this instanceof CableBusBlock)) {
+            final AEBaseBlockEntity blockEntity = this.getBlockEntity(level, pos);
 
-            if (heldItem.getItem() instanceof IMemoryCard memoryCard && !(this instanceof CableBusBlock)) {
-                final AEBaseBlockEntity blockEntity = this.getBlockEntity(level, pos);
-
-                if (blockEntity == null) {
-                    return InteractionResult.FAIL;
-                }
-
-                final String name = this.getDescriptionId();
-
-                if (InteractionUtil.isInAlternateUseMode(player)) {
-                    var data = new CompoundTag();
-                    blockEntity.exportSettings(SettingsFrom.MEMORY_CARD, data, player);
-                    if (!data.isEmpty()) {
-                        memoryCard.setMemoryCardContents(heldItem, name, data);
-                        memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
-                    }
-                } else {
-                    final String savedName = memoryCard.getSettingsName(heldItem);
-                    final CompoundTag data = memoryCard.getData(heldItem);
-
-                    if (this.getDescriptionId().equals(savedName)) {
-                        blockEntity.importSettings(SettingsFrom.MEMORY_CARD, data, player);
-                        memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
-                    } else {
-                        MemoryCardItem.importGenericSettingsAndNotify(blockEntity, data, player);
-                    }
-                }
-
-                return InteractionResult.sidedSuccess(level.isClientSide());
+            if (blockEntity == null) {
+                return ItemInteractionResult.FAIL;
             }
+
+            if (InteractionUtil.isInAlternateUseMode(player)) {
+                var builder = DataComponentMap.builder();
+                blockEntity.exportSettings(SettingsFrom.MEMORY_CARD, builder, player);
+                var settings = builder.build();
+                if (!settings.isEmpty()) {
+                    MemoryCardItem.clearCard(heldItem);
+                    heldItem.applyComponents(settings);
+                    memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
+                }
+            } else {
+                var savedName = heldItem.get(AEComponents.EXPORTED_SETTINGS_SOURCE);
+
+                if (this.getName().equals(savedName)) {
+                    blockEntity.importSettings(SettingsFrom.MEMORY_CARD, heldItem.getComponents(), player);
+                    memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
+                } else {
+                    MemoryCardItem.importGenericSettingsAndNotify(blockEntity, heldItem.getComponents(), player);
+                }
+            }
+
+            return ItemInteractionResult.sidedSuccess(level.isClientSide());
         }
 
         return this.onActivated(level, pos, player, hand, player.getItemInHand(hand), hit);
@@ -281,15 +275,8 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
                         player = (Player) looter;
                     }
 
-                    if (drop.hasTag()) {
-                        aeBaseBlockEntity.exportSettings(SettingsFrom.DISMANTLE_ITEM, drop.getTag(), player);
-                    } else {
-                        var tag = new CompoundTag();
-                        aeBaseBlockEntity.exportSettings(SettingsFrom.DISMANTLE_ITEM, tag, player);
-                        if (!tag.isEmpty()) {
-                            drop.setTag(tag);
-                        }
-                    }
+                    var settings = aeBaseBlockEntity.exportSettings(SettingsFrom.DISMANTLE_ITEM, player);
+                    drop.applyComponents(settings);
                 }
                 // Export settings at most for one item
                 break;

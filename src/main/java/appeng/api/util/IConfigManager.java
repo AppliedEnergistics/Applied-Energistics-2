@@ -23,6 +23,7 @@
 
 package appeng.api.util;
 
+import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.core.HolderLookup;
@@ -93,4 +94,16 @@ public interface IConfigManager {
      * @return true if any configuration was loaded from src
      */
     boolean readFromNBT(CompoundTag src, HolderLookup.Provider registries);
+
+    /**
+     * Import settings that were previously exported from {@link #exportSettings()}.
+     * Unparsable or unknown settings are ignored.
+     * @return true if any of the settings were successfully imported
+     */
+    boolean importSettings(Map<String, String> settings);
+
+    /**
+     * Exports all settings.
+     */
+    Map<String, String> exportSettings();
 }

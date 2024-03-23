@@ -3,6 +3,7 @@ package appeng.parts.automation;
 import java.util.Map;
 import java.util.UUID;
 
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -38,7 +39,7 @@ public class FluidPickupStrategy implements PickupStrategy {
     private long lastEffect;
 
     public FluidPickupStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host,
-            Map<?, ?> enchantments, @Nullable UUID owningPlayerId) {
+                               ItemEnchantments enchantments, @Nullable UUID owningPlayerId) {
         this.level = level;
         this.pos = pos;
         this.side = side;

@@ -21,6 +21,7 @@ package appeng.api.stacks;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -39,6 +40,11 @@ final class AEItemKeys extends AEKeyType {
 
     private AEItemKeys() {
         super(ID, AEItemKey.class, GuiText.Items.text());
+    }
+
+    @Override
+    public Codec<? extends AEKey> codec() {
+        return null;
     }
 
     @Override

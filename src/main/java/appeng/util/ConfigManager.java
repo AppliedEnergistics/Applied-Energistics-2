@@ -18,6 +18,7 @@
 
 package appeng.util;
 
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -115,5 +116,34 @@ public final class ConfigManager implements IConfigManager {
             }
         }
         return anythingRead;
+    }
+
+    @Override
+    public boolean importSettings(Map<String, String> settings) {
+        boolean anythingRead = false;
+        for (var setting : this.settings.keySet()) {
+            String value = settings.get(setting.getName());
+            if (value != null) {
+                try {
+                    setting.setFromString(this, value);
+                    anythingRead = true;
+                } catch (IllegalArgumentException e) {
+                    LOG.warn("Failed to load setting {} from value '{}': {}", setting, value, e.getMessage());
+                }
+            }
+        }
+        return anythingRead;
+    }
+
+    @Override
+    public Map<String, String> exportSettings() {
+        Map<String, String> result = null;
+        for (var entry : this.settings.entrySet()) {
+            if (result == null) {
+                result = new HashMap<>();
+            }
+            result.put(entry.getKey().getName(), this.settings.get(entry.getKey()).toString());
+        }
+        return result == null ? Map.of() : Map.copyOf(result);
     }
 }

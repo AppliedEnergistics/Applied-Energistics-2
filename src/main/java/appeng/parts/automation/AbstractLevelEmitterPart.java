@@ -18,7 +18,9 @@
 
 package appeng.parts.automation;
 
+import appeng.api.ids.AEComponents;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -209,17 +211,21 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
         super.importSettings(mode, input, player);
-        setReportingValue(input.getLong("reportingValue"));
+
+        var reportingValue = input.get(AEComponents.EXPORTED_LEVEL_EMITTER_VALUE);
+        if (reportingValue != null) {
+            setReportingValue(reportingValue);
+        }
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, CompoundTag output) {
-        super.exportSettings(mode, output);
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder) {
+        super.exportSettings(mode, builder);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
-            output.putLong("reportingValue", reportingValue);
+            builder.set(AEComponents.EXPORTED_LEVEL_EMITTER_VALUE, reportingValue);
         }
     }
 

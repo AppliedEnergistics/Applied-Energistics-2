@@ -22,7 +22,9 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import appeng.api.ids.AEComponents;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -512,17 +514,20 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
         super.importSettings(mode, input, player);
-        config.readFromChildTag(input, "config");
+        var configInv = input.get(AEComponents.EXPORTED_CONFIG_INV);
+        if (configInv != null) {
+            config.readFromList(configInv);
+        }
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, CompoundTag output) {
-        super.exportSettings(mode, output);
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder) {
+        super.exportSettings(mode, builder);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
-            config.writeToChildTag(output, "config");
+            builder.set(AEComponents.EXPORTED_CONFIG_INV, config.toList());
         }
     }
 

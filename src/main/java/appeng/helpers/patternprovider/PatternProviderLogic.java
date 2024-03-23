@@ -24,7 +24,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import appeng.api.ids.AEComponents;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.world.item.component.ItemContainerContents;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -571,16 +574,18 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         return this.returnInv;
     }
 
-    public void exportSettings(CompoundTag output) {
-        patternInventory.writeToNBT(output, NBT_MEMORY_CARD_PATTERNS);
+    public void exportSettings(DataComponentMap.Builder builder) {
+        builder.set(AEComponents.EXPORTED_PATTERNS, patternInventory.toItemContainerContents());
     }
 
-    public void importSettings(CompoundTag input, @Nullable Player player) {
-        if (player != null && input.contains(NBT_MEMORY_CARD_PATTERNS) && !player.level().isClientSide) {
+    public void importSettings(DataComponentMap input, @Nullable Player player) {
+        var patterns = input.getOrDefault(AEComponents.EXPORTED_PATTERNS, ItemContainerContents.EMPTY);
+
+        if (player != null && !player.level().isClientSide) {
             clearPatternInventory(player);
 
             var desiredPatterns = new AppEngInternalInventory(patternInventory.size());
-            desiredPatterns.readFromNBT(input, NBT_MEMORY_CARD_PATTERNS);
+            desiredPatterns.fromItemContainerContents(patterns);
 
             // Restore from blank patterns in the player inv
             var playerInv = player.getInventory();
@@ -588,6 +593,10 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                     : playerInv.countItem(AEItems.BLANK_PATTERN.asItem());
             var blankPatternsUsed = 0;
             for (int i = 0; i < desiredPatterns.size(); i++) {
+                if (desiredPatterns.getStackInSlot(i).isEmpty()) {
+                    continue;
+                }
+
                 // Don't restore junk
                 var pattern = PatternDetailsHelper.decodePattern(desiredPatterns.getStackInSlot(i),
                         host.getBlockEntity().getLevel(), true);

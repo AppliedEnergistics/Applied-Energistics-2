@@ -24,6 +24,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -159,21 +160,21 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, CompoundTag output,
-            @Nullable Player player) {
-        super.exportSettings(mode, output, player);
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder,
+                               @Nullable Player player) {
+        super.exportSettings(mode, builder, player);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
-            logic.exportSettings(output);
+            logic.exportSettings(builder);
 
             var pushDirection = getPushDirection();
-            output.putByte("push_direction", (byte) pushDirection.ordinal());
+            builder.putByte("push_direction", (byte) pushDirection.ordinal());
         }
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag input,
-            @Nullable Player player) {
+    public void importSettings(SettingsFrom mode, DataComponentMap input,
+                               @Nullable Player player) {
         super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.MEMORY_CARD) {

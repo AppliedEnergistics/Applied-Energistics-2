@@ -19,6 +19,7 @@
 package appeng.blockentity.networking;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -156,7 +157,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
         super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.DISMANTLE_ITEM) {
@@ -165,7 +166,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     @Override
-    public void exportSettings(SettingsFrom from, CompoundTag data, @Nullable Player player) {
+    public void exportSettings(SettingsFrom from, DataComponentMap.Builder data, @Nullable Player player) {
         super.exportSettings(from, data, player);
 
         if (from == SettingsFrom.DISMANTLE_ITEM && this.stored.getAmount() > 0) {

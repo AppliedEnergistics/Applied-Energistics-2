@@ -26,7 +26,9 @@ package appeng.api.util;
 import java.util.Arrays;
 import java.util.List;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
 
 /**
@@ -34,7 +36,7 @@ import net.minecraft.world.item.DyeColor;
  *
  * Should be the same order as Dyes, excluding Transparent.
  */
-public enum AEColor {
+public enum AEColor implements StringRepresentable {
 
     WHITE("White", "gui.ae2.White", "white", DyeColor.WHITE, 0xBEBEBE, 0xDBDBDB, 0xFAFAFA, 0x000000),
     ORANGE("Orange", "gui.ae2.Orange", "orange", DyeColor.ORANGE, 0xF99739, 0xFAAE44, 0xF4DEC3, 0x000000),
@@ -55,6 +57,8 @@ public enum AEColor {
     RED("Red", "gui.ae2.Red", "red", DyeColor.RED, 0xA50029, 0xFF003C, 0xFFE6ED, 0x000000),
     BLACK("Black", "gui.ae2.Black", "black", DyeColor.BLACK, 0x2B2B2B, 0x565656, 0x848484, 0xFFFFFF),
     TRANSPARENT("Fluix", "gui.ae2.Fluix", "fluix", null, 0x1B2344, 0x895CA8, 0xD7BBEC, 0x000000);
+
+    public static final Codec<AEColor> COLOR = StringRepresentable.fromEnum(AEColor::values);
 
     public static final List<AEColor> VALID_COLORS = Arrays.asList(WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME,
             PINK, GRAY, LIGHT_GRAY, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK);
@@ -184,4 +188,8 @@ public enum AEColor {
         return this.translationKey;
     }
 
+    @Override
+    public String getSerializedName() {
+        return registryPrefix;
+    }
 }

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Objects;
 
 import com.google.common.base.Preconditions;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +27,11 @@ import appeng.core.AELog;
 import appeng.util.Platform;
 
 public final class AEFluidKey extends AEKey {
+    public static final Codec<AEFluidKey> CODEC = FluidStack.CODEC.xmap(
+            AEFluidKey::new,
+            key -> key.stack
+    );
+
     public static final int AMOUNT_BUCKET = 1000;
     public static final int AMOUNT_BLOCK = 1000;
 

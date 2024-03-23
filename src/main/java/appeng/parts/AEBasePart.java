@@ -21,7 +21,9 @@ package appeng.parts;
 import java.util.EnumSet;
 import java.util.Objects;
 
+import appeng.api.ids.AEComponents;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,7 +63,6 @@ import appeng.api.util.AEColor;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.items.tools.MemoryCardItem;
-import appeng.util.CustomNameUtil;
 import appeng.util.InteractionUtil;
 import appeng.util.SettingsFrom;
 
@@ -184,7 +185,7 @@ public abstract class AEBasePart
 
         if (data.contains("customName")) {
             try {
-                this.customName = Component.Serializer.fromJson(data.getString("customName"));
+                this.customName = Component.Serializer.fromJson(data.getString("customName"), registries);
             } catch (Exception ignored) {
             }
         }
@@ -199,7 +200,7 @@ public abstract class AEBasePart
         this.mainNode.saveToNBT(data);
 
         if (this.customName != null) {
-            data.putString("customName", Component.Serializer.toJson(this.customName));
+            data.putString("customName", Component.Serializer.toJson(this.customName, registries));
         }
     }
 
@@ -293,20 +294,26 @@ public abstract class AEBasePart
      */
     @Override
     @MustBeInvokedByOverriders
-    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
-        this.customName = CustomNameUtil.getCustomName(input);
+    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
+        this.customName = input.get(AEComponents.EXPORTED_CUSTOM_NAME);
 
         MemoryCardItem.importGenericSettings(this, input, player);
     }
 
     @Override
     @MustBeInvokedByOverriders
-    public void exportSettings(SettingsFrom mode, CompoundTag output) {
-        CustomNameUtil.setCustomName(output, this.customName);
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder) {
+        builder.set(AEComponents.EXPORTED_CUSTOM_NAME, this.customName);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
-            MemoryCardItem.exportGenericSettings(this, output);
+            MemoryCardItem.exportGenericSettings(this, builder);
         }
+    }
+
+    public final DataComponentMap exportSettings(SettingsFrom mode) {
+        var builder = DataComponentMap.builder();
+        exportSettings(mode, builder);
+        return builder.build();
     }
 
     public boolean useStandardMemoryCard() {
@@ -328,23 +335,22 @@ public abstract class AEBasePart
                 partItem = AEBlocks.PATTERN_PROVIDER.asItem();
             }
 
-            var name = partItem.getDescriptionId();
+            var name = partItem.getDescription();
 
             if (InteractionUtil.isInAlternateUseMode(player)) {
-                var data = new CompoundTag();
-                exportSettings(SettingsFrom.MEMORY_CARD, data);
-                if (!data.isEmpty()) {
-                    memoryCard.setMemoryCardContents(memCardIS, name, data);
+                var settings = exportSettings(SettingsFrom.MEMORY_CARD);
+                if (!settings.isEmpty()) {
+                    MemoryCardItem.clearCard(memCardIS);
+                    memCardIS.applyComponents(settings);
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
                 }
             } else {
-                var storedName = memoryCard.getSettingsName(memCardIS);
-                var data = memoryCard.getData(memCardIS);
+                var storedName = memCardIS.get(AEComponents.EXPORTED_SETTINGS_SOURCE);
                 if (name.equals(storedName)) {
-                    importSettings(SettingsFrom.MEMORY_CARD, data, player);
+                    importSettings(SettingsFrom.MEMORY_CARD, memCardIS.getComponents(), player);
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
                 } else {
-                    MemoryCardItem.importGenericSettingsAndNotify(this, data, player);
+                    MemoryCardItem.importGenericSettingsAndNotify(this, memCardIS.getComponents(), player);
                 }
             }
             return true;
