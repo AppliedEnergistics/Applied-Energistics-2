@@ -18,6 +18,7 @@
 
 package appeng.datagen.providers.recipes;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -29,9 +30,11 @@ import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.tags.ConventionTags;
 import appeng.recipes.mattercannon.MatterCannonAmmo;
 
+import java.util.concurrent.CompletableFuture;
+
 public class MatterCannonAmmoProvider extends AE2RecipeProvider {
-    public MatterCannonAmmoProvider(PackOutput output) {
-        super(output);
+    public MatterCannonAmmoProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+        super(output, registries);
     }
 
     @Override
