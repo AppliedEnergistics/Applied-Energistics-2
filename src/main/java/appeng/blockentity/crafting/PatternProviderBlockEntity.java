@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import appeng.api.ids.AEComponents;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import org.jetbrains.annotations.Nullable;
@@ -168,7 +169,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
             logic.exportSettings(builder);
 
             var pushDirection = getPushDirection();
-            builder.putByte("push_direction", (byte) pushDirection.ordinal());
+            builder.set(AEComponents.EXPORTED_PUSH_DIRECTION, pushDirection);
         }
     }
 
@@ -181,15 +182,13 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
             logic.importSettings(input, player);
 
             // Restore push direction blockstate
-            if (input.contains(PatternProviderBlock.PUSH_DIRECTION.getName(), Tag.TAG_BYTE)) {
-                var pushDirection = input.getByte(PatternProviderBlock.PUSH_DIRECTION.getName());
-                if (pushDirection >= 0 && pushDirection < PushDirection.values().length) {
-                    var level = getLevel();
-                    if (level != null) {
-                        level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(
-                                PatternProviderBlock.PUSH_DIRECTION,
-                                PushDirection.values()[pushDirection]));
-                    }
+            var pushDirection = input.get(AEComponents.EXPORTED_PUSH_DIRECTION);
+            if (pushDirection != null) {
+                var level = getLevel();
+                if (level != null) {
+                    level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(
+                            PatternProviderBlock.PUSH_DIRECTION,
+                            pushDirection));
                 }
             }
         }

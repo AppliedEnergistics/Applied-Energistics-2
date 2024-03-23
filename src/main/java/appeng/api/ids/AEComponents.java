@@ -2,9 +2,9 @@ package appeng.api.ids;
 
 import appeng.api.implementations.items.MemoryCardColors;
 import appeng.api.stacks.GenericStack;
+import appeng.block.crafting.PushDirection;
 import appeng.core.AppEngBase;
 import com.google.common.collect.Maps;
-import com.google.common.primitives.ImmutableIntArray;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
@@ -179,6 +179,13 @@ public final class AEComponents {
      */
     public static final DataComponentType<ItemContainerContents> EXPORTED_PATTERNS = register("exported_patterns",
             builder -> builder.persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC)
+    );
+
+    /**
+     * Exported push direction of pattern providers or similar machines.
+     */
+    public static final DataComponentType<PushDirection> EXPORTED_PUSH_DIRECTION = register("exported_push_direction",
+            builder -> builder.persistent(PushDirection.CODEC).networkSynchronized(PushDirection.STREAM_CODEC)
     );
 
     /**
