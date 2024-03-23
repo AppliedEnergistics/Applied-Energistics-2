@@ -181,6 +181,13 @@ public final class AEComponents {
             builder -> builder.persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC)
     );
 
+    /**
+     * The name inscribed by a {@link appeng.items.materials.NamePressItem}
+     */
+    public static final DataComponentType<Component> NAME_PRESS_NAME = register("name_press_name",
+            builder -> builder.persistent(ComponentSerialization.CODEC).networkSynchronized(ComponentSerialization.TRUSTED_STREAM_CODEC)
+    );
+
     private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {
         var builder = DataComponentType.<T>builder();
         customizer.accept(builder);

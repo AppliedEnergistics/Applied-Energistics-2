@@ -31,11 +31,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import appeng.items.AEBaseItem;
 
 public class NamePressItem extends AEBaseItem {
-    /**
-     * NBT property used by the name press to store the name to be inscribed.
-     */
-    public static final String TAG_INSCRIBE_NAME = "InscribeName";
-
     public NamePressItem(Properties properties) {
         super(properties);
     }
