@@ -264,21 +264,16 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
                                 TooltipFlag advancedTooltips) {
 
-        String firstLineKey = this.getFirstValidTranslationKey(this.getSettingsName(stack) + ".name",
-                this.getSettingsName(stack));
-        lines.add(Tooltips.of(Component.translatable(firstLineKey)));
-
-        final CompoundTag data = this.getData(stack);
-        if (data.contains("tooltip")) {
-            String tooltipKey = getFirstValidTranslationKey(data.getString("tooltip") + ".name",
-                    data.getString("tooltip"));
-            lines.add(Tooltips.of(Component.translatable(tooltipKey)));
+        var settingsSource = stack.get(AEComponents.EXPORTED_SETTINGS_SOURCE);
+        if (settingsSource != null) {
+            lines.add(Tooltips.of(settingsSource));
+        } else {
+            lines.add(Tooltips.of(GuiText.Blank.text()));
         }
 
-        if (data.contains("freq")) {
-            final short freq = data.getShort("freq");
-            final String freqTooltip = ChatFormatting.BOLD + Platform.p2p().toHexString(freq);
-
+        var p2pFreq = stack.get(AEComponents.EXPORTED_P2P_FREQUENCY);
+        if (p2pFreq != null) {
+            final String freqTooltip = ChatFormatting.BOLD + Platform.p2p().toHexString(p2pFreq);
             lines.add(Tooltips.of(Component.translatable("gui.tooltips.ae2.P2PFrequency", freqTooltip)));
         }
     }
@@ -301,13 +296,6 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
         }
 
         return "";
-    }
-
-    @Override
-    public String getSettingsName(ItemStack is) {
-        final CompoundTag c = is.getOrCreateTag();
-        final String name = c.getString("Config");
-        return name.isEmpty() ? GuiText.Blank.getTranslationKey() : name;
     }
 
     @Override
