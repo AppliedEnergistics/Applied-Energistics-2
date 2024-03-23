@@ -202,12 +202,27 @@ public final class AEComponents {
             builder -> builder.persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC)
     );
 
-
     /**
      * The unique ID of a pair of {@link appeng.core.definitions.AEItems#QUANTUM_ENTANGLED_SINGULARITY}.
      */
     public static final DataComponentType<Long> ENTANGLED_SINGULARITY_ID = register("entangled_singularity_id",
             builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG)
+    );
+
+    /**
+     * Currently stored energy in AE in this item.
+     * Usually the capacity will be set by the item, but some items allow it to be overridden by
+     * {@link AEComponents#ENERGY_CAPACITY}.
+     */
+    public static final DataComponentType<Double> STORED_ENERGY = register("stored_energy",
+            builder -> builder.persistent(Codec.DOUBLE).networkSynchronized(ByteBufCodecs.DOUBLE)
+    );
+
+    /**
+     * The maximum amount of energy that can be stored in this item.
+     */
+    public static final DataComponentType<Double> ENERGY_CAPACITY = register("energy_capacity",
+            builder -> builder.persistent(Codec.DOUBLE).networkSynchronized(ByteBufCodecs.DOUBLE)
     );
 
     private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {

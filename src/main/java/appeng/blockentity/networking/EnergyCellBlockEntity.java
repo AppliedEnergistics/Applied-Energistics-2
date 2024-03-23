@@ -18,6 +18,7 @@
 
 package appeng.blockentity.networking;
 
+import appeng.api.ids.AEComponents;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import org.jetbrains.annotations.Nullable;
@@ -161,7 +162,10 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
         super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            this.stored.setStored(input.getDouble("internalCurrentPower"));
+            var storedEnergy = input.get(AEComponents.STORED_ENERGY);
+            if (storedEnergy != null) {
+                this.stored.setStored(storedEnergy);
+            }
         }
     }
 
@@ -169,9 +173,8 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     public void exportSettings(SettingsFrom from, DataComponentMap.Builder data, @Nullable Player player) {
         super.exportSettings(from, data, player);
 
-        if (from == SettingsFrom.DISMANTLE_ITEM && this.stored.getAmount() > 0) {
-            data.putDouble("internalCurrentPower", this.stored.getAmount());
-            data.putDouble("internalMaxPower", this.stored.getMaximum()); // used for tool tip.
+        if (from == SettingsFrom.DISMANTLE_ITEM && stored.getAmount() > 0) {
+            data.set(AEComponents.STORED_ENERGY, stored.getAmount());
         }
     }
 
