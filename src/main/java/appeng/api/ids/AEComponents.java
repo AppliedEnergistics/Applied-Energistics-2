@@ -4,6 +4,7 @@ import appeng.api.implementations.items.MemoryCardColors;
 import appeng.api.stacks.GenericStack;
 import appeng.block.crafting.PushDirection;
 import appeng.core.AppEngBase;
+import appeng.crafting.pattern.EncodedCraftingPattern;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentMap;
@@ -223,6 +224,13 @@ public final class AEComponents {
      */
     public static final DataComponentType<Double> ENERGY_CAPACITY = register("energy_capacity",
             builder -> builder.persistent(Codec.DOUBLE).networkSynchronized(ByteBufCodecs.DOUBLE)
+    );
+
+    /**
+     * An encoded crafting pattern.
+     */
+    public static final DataComponentType<EncodedCraftingPattern> ENCODED_CRAFTING_PATTERN = register("encoded_crafting_pattern",
+            builder -> builder.persistent(EncodedCraftingPattern.CODEC).networkSynchronized(EncodedCraftingPattern.STREAM_CODEC)
     );
 
     private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {

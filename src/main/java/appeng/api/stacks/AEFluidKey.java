@@ -7,6 +7,7 @@ import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
@@ -139,6 +140,16 @@ public final class AEFluidKey extends AEKey {
     public boolean isTagged(TagKey<?> tag) {
         // This will just return false for incorrectly cast tags
         return stack.is((TagKey<Fluid>) tag);
+    }
+
+    @Override
+    public <T> @Nullable T get(DataComponentType<T> type) {
+        return stack.get(type);
+    }
+
+    @Override
+    public boolean hasComponents() {
+        return stack.getComponents().isEmpty();
     }
 
     public FluidStack toStack(int amount) {

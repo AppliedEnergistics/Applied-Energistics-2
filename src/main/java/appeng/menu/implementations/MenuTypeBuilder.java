@@ -22,6 +22,7 @@ import java.util.function.Function;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -211,7 +212,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
      */
     @FunctionalInterface
     public interface InitialDataSerializer<I> {
-        void serializeInitialData(I host, FriendlyByteBuf buffer);
+        void serializeInitialData(I host, RegistryFriendlyByteBuf buffer);
     }
 
     /**
@@ -220,7 +221,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
      */
     @FunctionalInterface
     public interface InitialDataDeserializer<C, I> {
-        void deserializeInitialData(I host, C menu, FriendlyByteBuf buffer);
+        void deserializeInitialData(I host, C menu, RegistryFriendlyByteBuf buffer);
     }
 
     private Component getDefaultMenuTitle(I accessInterface) {

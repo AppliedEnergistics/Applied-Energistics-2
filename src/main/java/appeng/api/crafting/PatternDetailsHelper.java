@@ -145,7 +145,7 @@ public final class PatternDetailsHelper {
     public static ItemStack encodeCraftingPattern(RecipeHolder<CraftingRecipe> recipe, ItemStack[] in,
             ItemStack out, boolean allowSubstitutes, boolean allowFluidSubstitutes) {
         var stack = AEItems.CRAFTING_PATTERN.stack();
-        AECraftingPattern.encode(stack.getOrCreateTag(), recipe, in, out, allowSubstitutes,
+        AECraftingPattern.encode(stack, recipe, in, out, allowSubstitutes,
                 allowFluidSubstitutes);
         return stack;
     }

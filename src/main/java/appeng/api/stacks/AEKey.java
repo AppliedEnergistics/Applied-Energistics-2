@@ -2,10 +2,12 @@ package appeng.api.stacks;
 
 import java.util.List;
 
+import appeng.crafting.pattern.EncodedCraftingPattern;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -301,4 +303,17 @@ public abstract class AEKey {
     public boolean isTagged(TagKey<?> tag) {
         return false;
     }
+
+    /**
+     * Get a data component attached to this key. It might be null.
+     */
+    @Nullable
+    public <T> T get(DataComponentType<T> type) {
+        return null;
+    }
+
+    /**
+     * @return true if this key has *any* components attached.
+     */
+    public abstract boolean hasComponents();
 }

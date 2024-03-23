@@ -18,18 +18,22 @@
 
 package appeng.crafting.pattern;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Objects;
-
+import appeng.api.behaviors.ContainerItemStrategies;
+import appeng.api.crafting.IPatternDetails;
+import appeng.api.crafting.PatternDetailsTooltip;
+import appeng.api.ids.AEComponents;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.KeyCounter;
+import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
+import appeng.core.localization.GuiText;
+import appeng.menu.AutoCraftingMenu;
 import com.google.common.base.Preconditions;
-
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -46,19 +50,13 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.api.behaviors.ContainerItemStrategies;
-import appeng.api.crafting.IPatternDetails;
-import appeng.api.crafting.PatternDetailsTooltip;
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.AEKeyType;
-import appeng.api.stacks.GenericStack;
-import appeng.api.stacks.KeyCounter;
-import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
-import appeng.core.localization.GuiText;
-import appeng.menu.AutoCraftingMenu;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSupportedPattern {
     private static final String NBT_INPUTS = "in";
@@ -89,17 +87,19 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
 
     public AECraftingPattern(AEItemKey definition, Level level) {
         this.definition = definition;
-        var tag = Objects.requireNonNull(definition.getTag(), "pattern requires a tag");
+        var encodedPattern = definition.get(AEComponents.ENCODED_CRAFTING_PATTERN);
+        if (encodedPattern == null) {
+            throw new IllegalArgumentException("Given item does not encode a crafting pattern: " + definition);
+        }
 
-        this.canSubstitute = PatternNbtUtils.getBoolean(tag, NBT_SUBSTITUTE, false);
-        this.canSubstituteFluids = PatternNbtUtils.getBoolean(tag, NBT_SUBSTITUTE_FLUIDS, false);
-        this.sparseInputs = getCraftingInputs(tag);
+        this.canSubstitute = encodedPattern.canSubstitute();
+        this.canSubstituteFluids = encodedPattern.canSubstituteFluids();
+        this.sparseInputs = getCraftingInputs(encodedPattern.inputs());
 
         // Find recipe
-        var recipeId = PatternNbtUtils.getRequiredResourceLocation(tag, NBT_RECIPE_ID);
-        this.recipeHolder = level.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId);
+        this.recipeHolder = level.getRecipeManager().byType(RecipeType.CRAFTING).get(encodedPattern.recipeId());
         if (recipeHolder == null) {
-            throw new IllegalArgumentException("Pattern references unknown recipe " + recipeId);
+            throw new IllegalArgumentException("Pattern references unknown recipe " + encodedPattern.recipeId());
         }
         this.recipe = recipeHolder.value();
 
@@ -118,9 +118,9 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
 
         this.output = this.recipe.assemble(testFrame, level.registryAccess());
         if (this.output.isEmpty()) {
-            throw new IllegalStateException("The recipe " + recipeId + " produced an empty item stack result.");
+            throw new IllegalStateException("The recipe " + encodedPattern.recipeId() + " produced an empty item stack result.");
         }
-        this.outputsArray = new GenericStack[] { Objects.requireNonNull(GenericStack.fromItemStack(this.output)) };
+        this.outputsArray = new GenericStack[]{Objects.requireNonNull(GenericStack.fromItemStack(this.output))};
 
         // Compress inputs
         var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
@@ -259,7 +259,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     public boolean isItemValid(int slot, AEItemKey key, Level level) {
         if (!canSubstitute) {
             return sparseInputs[slot] == null && key == null
-                    || sparseInputs[slot] != null && sparseInputs[slot].what().equals(key);
+                   || sparseInputs[slot] != null && sparseInputs[slot].what().equals(key);
         }
 
         if (key == null) {
@@ -276,7 +276,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         testFrame.setItem(slot, key.toStack());
 
         var newResult = recipe.matches(testFrame, level)
-                && ItemStack.matches(output, recipe.assemble(testFrame, level.registryAccess()));
+                        && ItemStack.matches(output, recipe.assemble(testFrame, level.registryAccess()));
 
         setTestResult(slot, key, newResult);
 
@@ -313,7 +313,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
      */
     @Nullable
     private Boolean getTestResult(int slot, AEItemKey what) {
-        if (what == null || what.hasTag()) {
+        if (what == null || what.hasComponents()) {
             return null;
         }
         var cache = isValidCache[slot];
@@ -325,7 +325,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     }
 
     private void setTestResult(int slot, AEItemKey what, boolean result) {
-        if (what != null && !what.hasTag()) {
+        if (what != null && !what.hasComponents()) {
             var cache = isValidCache[slot];
             if (cache == null) {
                 cache = isValidCache[slot] = new IdentityHashMap<>();
@@ -497,18 +497,22 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         return item;
     }
 
-    public static void encode(CompoundTag tag, RecipeHolder<CraftingRecipe> recipe, ItemStack[] sparseInputs,
-            ItemStack output, boolean allowSubstitutes, boolean allowFluidSubstitutes) {
-        Objects.requireNonNull(tag, "tag");
+    public static void encode(ItemStack result, RecipeHolder<CraftingRecipe> recipe, ItemStack[] sparseInputs,
+                              ItemStack output, boolean allowSubstitutes, boolean allowFluidSubstitutes) {
         Objects.requireNonNull(recipe, "recipe");
         Objects.requireNonNull(sparseInputs, "sparseInputs");
         Objects.requireNonNull(output, "output");
 
-        tag.put(NBT_INPUTS, PatternNbtUtils.encodeItemStackList(sparseInputs ));
-        tag.putBoolean(NBT_SUBSTITUTE, allowSubstitutes);
-        tag.putBoolean(NBT_SUBSTITUTE_FLUIDS, allowFluidSubstitutes);
-        tag.put(NBT_OUTPUTS, output.save(new CompoundTag()));
-        tag.putString(NBT_RECIPE_ID, recipe.id().toString());
+        result.set(
+                AEComponents.ENCODED_CRAFTING_PATTERN,
+                new EncodedCraftingPattern(
+                        Stream.of(sparseInputs).map(ItemStack::copy).toList(),
+                        output.copy(),
+                        recipe.id(),
+                        allowSubstitutes,
+                        allowFluidSubstitutes
+                )
+        );
     }
 
     @Override
@@ -532,7 +536,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     }
 
     public static PatternDetailsTooltip getInvalidPatternTooltip(CompoundTag tag, Level level,
-            @Nullable Exception cause, TooltipFlag flags) {
+                                                                 @Nullable Exception cause, TooltipFlag flags) {
         var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_CRAFTS);
 
         PatternNbtUtils.readItemStackListFaultTolerant(tag, NBT_INPUTS, tooltip::addInput, level.registryAccess());
@@ -567,7 +571,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             var itemOrFluidInput = getItemOrFluidInput(slot, sparseInputs[slot]);
 
             if (!canSubstitute) {
-                this.possibleInputs = new GenericStack[] { itemOrFluidInput };
+                this.possibleInputs = new GenericStack[]{itemOrFluidInput};
             } else {
                 ItemStack[] matchingStacks = getRecipeIngredient(slot).getItems();
                 this.possibleInputs = new GenericStack[matchingStacks.length + 1];
@@ -610,21 +614,16 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         }
     }
 
-    public static GenericStack[] getCraftingInputs(CompoundTag nbt) {
-        Objects.requireNonNull(nbt, "Pattern must have a tag.");
+    public static GenericStack[] getCraftingInputs(List<ItemStack> stacks) {
+        Preconditions.checkArgument(stacks.size() <= 9, "Cannot use more than 9 ingredients");
 
-        ListTag tag = nbt.getList(NBT_INPUTS, Tag.TAG_COMPOUND);
-        Preconditions.checkArgument(tag.size() <= 9, "Cannot use more than 9 ingredients");
-
-        var result = new GenericStack[tag.size()];
-        for (int x = 0; x < tag.size(); ++x) {
-            var ingredientTag = tag.getCompound(x);
-            if (!ingredientTag.isEmpty()) {
-                result[x] = GenericStack.fromItemStack(ItemStack.of(ingredientTag));
+        var result = new GenericStack[stacks.size()];
+        for (int x = 0; x < stacks.size(); ++x) {
+            if (!stacks.get(x).isEmpty()) {
+                result[x] = GenericStack.fromItemStack(stacks.get(x));
             }
         }
         return result;
-
     }
 
 }

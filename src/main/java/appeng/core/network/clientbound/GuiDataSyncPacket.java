@@ -68,7 +68,7 @@ public record GuiDataSyncPacket(int containerId, byte[] syncData) implements Cli
     public void handleOnClient(Player player) {
         AbstractContainerMenu c = player.containerMenu;
         if (c instanceof AEBaseMenu baseMenu && c.containerId == this.containerId) {
-            baseMenu.receiveServerSyncData(new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(this.syncData), player.level().registryAccess()));
+            baseMenu.receiveServerSyncData(new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(this.syncData), player.registryAccess()));
         }
     }
 

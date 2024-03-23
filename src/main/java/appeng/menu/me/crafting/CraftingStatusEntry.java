@@ -20,6 +20,7 @@ package appeng.menu.me.crafting;
 
 import java.util.Comparator;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -72,7 +73,7 @@ public class CraftingStatusEntry implements Comparable<CraftingStatusEntry> {
         return what;
     }
 
-    public static void write(FriendlyByteBuf buffer, CraftingStatusEntry entry) {
+    public static void write(RegistryFriendlyByteBuf buffer, CraftingStatusEntry entry) {
         buffer.writeVarLong(entry.serial);
         buffer.writeVarLong(entry.activeAmount);
         buffer.writeVarLong(entry.storedAmount);
@@ -80,7 +81,7 @@ public class CraftingStatusEntry implements Comparable<CraftingStatusEntry> {
         AEKey.writeOptionalKey(buffer, entry.what);
     }
 
-    public static CraftingStatusEntry read(FriendlyByteBuf buffer) {
+    public static CraftingStatusEntry read(RegistryFriendlyByteBuf buffer) {
         long serial = buffer.readVarLong();
         long missingAmount = buffer.readVarLong();
         long storedAmount = buffer.readVarLong();

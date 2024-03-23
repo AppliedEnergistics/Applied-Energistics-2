@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.chars.CharDoubleMutablePair;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -205,6 +206,16 @@ public final class AEItemKey extends AEKey {
     public boolean isTagged(TagKey<?> tag) {
         // This will just return false for incorrectly cast tags
         return stack.is((TagKey<Item>) tag);
+    }
+
+    @Override
+    public <T> @Nullable T get(DataComponentType<T> type) {
+        return stack.get(type);
+    }
+
+    @Override
+    public boolean hasComponents() {
+        return stack.getComponents().isEmpty();
     }
 
     /**

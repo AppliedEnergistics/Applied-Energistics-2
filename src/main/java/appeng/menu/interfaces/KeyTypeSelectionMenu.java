@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -50,7 +51,7 @@ public interface KeyTypeSelectionMenu {
         }
 
         @Override
-        public void writeToPacket(FriendlyByteBuf buf) {
+        public void writeToPacket(RegistryFriendlyByteBuf buf) {
             buf.writeMap(
                     keyTypes,
                     (b, keyType) -> b.writeVarInt(keyType.getRawId()),
