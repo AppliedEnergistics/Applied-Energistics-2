@@ -18,6 +18,7 @@
 
 package appeng.debug;
 
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -33,18 +34,14 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.core.AEConfig;
 
 public class PhantomNodeBlock extends AEBaseEntityBlock<PhantomNodeBlockEntity> {
-
     public PhantomNodeBlock() {
         super(metalProps());
     }
 
     @Override
-    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
-            InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
-        final PhantomNodeBlockEntity tpn = this.getBlockEntity(level, pos);
-        tpn.triggerCrashMode();
-        return InteractionResult.sidedSuccess(level.isClientSide());
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        getBlockEntity(level, pos).triggerCrashMode();
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override

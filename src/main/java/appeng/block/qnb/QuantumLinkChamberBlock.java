@@ -72,22 +72,15 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     }
 
     @Override
-    public InteractionResult onActivated(Level level, BlockPos pos, Player p,
-            InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
-        if (InteractionUtil.isInAlternateUseMode(p)) {
-            return InteractionResult.PASS;
-        }
-
-        final QuantumBridgeBlockEntity tg = this.getBlockEntity(level, pos);
-        if (tg != null) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (level.getBlockEntity(pos) instanceof QuantumBridgeBlockEntity be) {
             if (!level.isClientSide()) {
-                MenuOpener.open(QNBMenu.TYPE, p, MenuLocators.forBlockEntity(tg));
+                MenuOpener.open(QNBMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return InteractionResult.PASS;
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override

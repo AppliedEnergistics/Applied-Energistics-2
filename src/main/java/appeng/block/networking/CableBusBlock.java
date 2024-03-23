@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import net.minecraft.world.ItemInteractionResult;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.Util;
@@ -103,7 +104,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public boolean isPathfindable(BlockState state, BlockGetter reader, BlockPos pos, PathComputationType type) {
+    protected boolean isPathfindable(BlockState state, PathComputationType type) {
         return false;
     }
 
@@ -223,13 +224,21 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
-            InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         // Transform from world into block space
         Vec3 hitVec = hit.getLocation();
         Vec3 hitInBlock = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
-        return this.cb(level, pos).activate(player, hand, hitInBlock)
+        return this.cb(level, pos).useItemOn(heldItem, player, hand, hitInBlock)
+                ? ItemInteractionResult.sidedSuccess(level.isClientSide())
+                : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        // Transform from world into block space
+        Vec3 hitVec = hitResult.getLocation();
+        Vec3 hitInBlock = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
+        return this.cb(level, pos).useWithoutItem(player, hitInBlock)
                 ? InteractionResult.sidedSuccess(level.isClientSide())
                 : InteractionResult.PASS;
     }

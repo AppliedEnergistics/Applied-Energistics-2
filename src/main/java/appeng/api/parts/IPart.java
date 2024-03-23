@@ -298,26 +298,26 @@ public interface IPart extends ICustomCableConnection, Clearable {
     void setPartHostInfo(@Nullable Direction side, IPartHost host, BlockEntity blockEntity);
 
     /**
-     * Called when you right click the part, very similar to Block.onActivateBlock
+     * Called when a player right-clicks the part without an item in hand.
      *
+     * @param player right clicking player
+     * @param pos    position of block
+     * @return if your activate method performed something.
+     */
+    default boolean onUseWithoutItem(Player player, Vec3 pos) {
+        return false;
+    }
+
+    /**
+     * Called when a player right-clicks the part with an item in hand.
+     *
+     * @param heldItem item triggering the interaction
      * @param player right clicking player
      * @param hand   hand used
      * @param pos    position of block
      * @return if your activate method performed something.
      */
-    default boolean onActivate(Player player, InteractionHand hand, Vec3 pos) {
-        return false;
-    }
-
-    /**
-     * Called when you right click the part, very similar to Block.onActivateBlock
-     *
-     * @param player shift right clicking player
-     * @param hand   hand used
-     * @param pos    position of block
-     * @return if your activate method performed something, you should use false unless you really need it.
-     */
-    default boolean onShiftActivate(Player player, InteractionHand hand, Vec3 pos) {
+    default boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos) {
         return false;
     }
 

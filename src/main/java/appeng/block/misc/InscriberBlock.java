@@ -65,22 +65,15 @@ public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> impl
     }
 
     @Override
-    public InteractionResult onActivated(Level level, BlockPos pos, Player p,
-            InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
-        if (!InteractionUtil.isInAlternateUseMode(p)) {
-            final InscriberBlockEntity tg = this.getBlockEntity(level, pos);
-            if (tg != null) {
-                if (!level.isClientSide()) {
-                    hit.getDirection();
-                    MenuOpener.open(InscriberMenu.TYPE, p,
-                            MenuLocators.forBlockEntity(tg));
-                }
-                return InteractionResult.sidedSuccess(level.isClientSide());
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (level.getBlockEntity(pos) instanceof InscriberBlockEntity be) {
+            if (!level.isClientSide()) {
+                MenuOpener.open(InscriberMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
-        return InteractionResult.PASS;
 
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override

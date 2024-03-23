@@ -25,14 +25,13 @@ import java.util.stream.Stream;
 import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.MemoryCardColors;
 import appeng.items.tools.MemoryCardItem;
+import appeng.util.InteractionUtil;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -147,40 +146,67 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
     }
 
     @Override
-    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
-        if (isClientSide()) {
-            return true;
-        }
-
-        if (hand == InteractionHand.OFF_HAND) {
+    public boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos) {
+        if (isClientSide() || hand == InteractionHand.OFF_HAND) {
             return false;
         }
 
-        var is = player.getItemInHand(hand);
-
         // Prefer restoring from memory card
-        if (!is.isEmpty() && is.getItem() instanceof IMemoryCard mc) {
-            // Change the actual tunnel type and import settings when the encoded type is a P2P
-            var p2pTunnelItem = is.get(AEComponents.EXPORTED_P2P_TYPE);
-            if (p2pTunnelItem instanceof IPartItem<?> partItem && P2PTunnelPart.class.isAssignableFrom(partItem.getPartClass())) {
-                IPart newBus = this;
-                if (newBus.getPartItem() != partItem) {
-                    newBus = this.getHost().replacePart(partItem, this.getSide(), player, hand);
+        if (heldItem.getItem() instanceof IMemoryCard mc) {
+            if (InteractionUtil.isInAlternateUseMode(player)) {
+                var storedFrequency = heldItem.get(AEComponents.EXPORTED_P2P_FREQUENCY);
+
+                short newFreq = this.getFrequency();
+                final boolean wasOutput = this.isOutput();
+                this.setOutput(false);
+
+                final boolean needsNewFrequency = wasOutput || this.getFrequency() == 0 || Objects.equals(storedFrequency, newFreq);
+
+                var grid = getMainNode().getGrid();
+                if (grid != null) {
+                    var p2p = P2PService.get(grid);
+                    if (needsNewFrequency) {
+                        newFreq = p2p.newFrequency();
+                    }
+
+                    p2p.updateFreq(this, newFreq);
                 }
 
-                if (newBus instanceof P2PTunnelPart<?>newTunnel) {
-                    newTunnel.importSettings(SettingsFrom.MEMORY_CARD, is.getComponents(), player);
-                }
+                this.onTunnelConfigChange();
 
-                mc.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
+                MemoryCardItem.clearCard(heldItem);
+                heldItem.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getPartItem().asItem().getDescription());
+                heldItem.applyComponents(exportSettings(SettingsFrom.MEMORY_CARD));
+
+                if (needsNewFrequency) {
+                    mc.notifyUser(player, MemoryCardMessages.SETTINGS_RESET);
+                } else {
+                    mc.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
+                }
                 return true;
+            } else {
+                // Change the actual tunnel type and import settings when the encoded type is a P2P
+                var p2pTunnelItem = heldItem.get(AEComponents.EXPORTED_P2P_TYPE);
+                if (p2pTunnelItem instanceof IPartItem<?> partItem && P2PTunnelPart.class.isAssignableFrom(partItem.getPartClass())) {
+                    IPart newBus = this;
+                    if (newBus.getPartItem() != partItem) {
+                        newBus = this.getHost().replacePart(partItem, this.getSide(), player, hand);
+                    }
+
+                    if (newBus instanceof P2PTunnelPart<?> newTunnel) {
+                        newTunnel.importSettings(SettingsFrom.MEMORY_CARD, heldItem.getComponents(), player);
+                    }
+
+                    mc.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
+                    return true;
+                }
+                mc.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
             }
-            mc.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
             return false;
         }
 
         // Attunement via held item replaces the tunnel part with the desired target part type
-        var newType = P2PTunnelAttunement.getTunnelPartByTriggerItem(is);
+        var newType = P2PTunnelAttunement.getTunnelPartByTriggerItem(heldItem);
         if (!newType.isEmpty() && newType.getItem() != getPartItem()
                 && newType.getItem() instanceof IPartItem<?>partItem) {
             var oldOutput = isOutput();
@@ -201,48 +227,6 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
             return true;
         }
 
-        return false;
-    }
-
-    @Override
-    public boolean onPartShiftActivate(Player player, InteractionHand hand, Vec3 pos) {
-        final ItemStack is = player.getInventory().getSelected();
-        if (!is.isEmpty() && is.getItem() instanceof IMemoryCard mc) {
-            if (isClientSide()) {
-                return true;
-            }
-
-            var storedFrequency = is.get(AEComponents.EXPORTED_P2P_FREQUENCY);
-
-            short newFreq = this.getFrequency();
-            final boolean wasOutput = this.isOutput();
-            this.setOutput(false);
-
-            final boolean needsNewFrequency = wasOutput || this.getFrequency() == 0 || Objects.equals(storedFrequency, newFreq);
-
-            var grid = getMainNode().getGrid();
-            if (grid != null) {
-                var p2p = P2PService.get(grid);
-                if (needsNewFrequency) {
-                    newFreq = p2p.newFrequency();
-                }
-
-                p2p.updateFreq(this, newFreq);
-            }
-
-            this.onTunnelConfigChange();
-
-            MemoryCardItem.clearCard(is);
-            is.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getPartItem().asItem().getDescription());
-            is.applyComponents(exportSettings(SettingsFrom.MEMORY_CARD));
-
-            if (needsNewFrequency) {
-                mc.notifyUser(player, MemoryCardMessages.SETTINGS_RESET);
-            } else {
-                mc.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
-            }
-            return true;
-        }
         return false;
     }
 

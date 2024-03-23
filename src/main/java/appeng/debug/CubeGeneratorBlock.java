@@ -18,6 +18,7 @@
 
 package appeng.debug;
 
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -39,15 +40,13 @@ public class CubeGeneratorBlock extends AEBaseEntityBlock<CubeGeneratorBlockEnti
     }
 
     @Override
-    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
-            InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
-        final CubeGeneratorBlockEntity tcg = this.getBlockEntity(level, pos);
-        if (tcg != null) {
-            tcg.click(player);
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (level.getBlockEntity(pos) instanceof CubeGeneratorBlockEntity be) {
+            be.click(player);
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override

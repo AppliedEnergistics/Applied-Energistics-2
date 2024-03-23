@@ -18,6 +18,10 @@
 
 package appeng.block.storage;
 
+import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.VibrationChamberMenu;
+import appeng.menu.locator.MenuLocators;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -49,21 +53,15 @@ public class DriveBlock extends AEBaseEntityBlock<DriveBlockEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(Level level, BlockPos pos, Player p,
-            InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
-        if (InteractionUtil.isInAlternateUseMode(p)) {
-            return InteractionResult.PASS;
-        }
-
-        var be = this.getBlockEntity(level, pos);
-        if (be != null) {
-            if (!level.isClientSide()) {
-                be.openMenu(p);
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (level.getBlockEntity(pos) instanceof DriveBlockEntity be) {
+            if (!level.isClientSide) {
+                be.openMenu(player);
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
-        return InteractionResult.PASS;
+
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override

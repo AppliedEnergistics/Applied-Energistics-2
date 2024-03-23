@@ -18,6 +18,7 @@
 
 package appeng.block.misc;
 
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -44,21 +45,16 @@ public class CellWorkbenchBlock extends AEBaseEntityBlock<CellWorkbenchBlockEnti
     }
 
     @Override
-    public InteractionResult onActivated(Level level, BlockPos pos, Player p,
-            InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
-        if (InteractionUtil.isInAlternateUseMode(p)) {
-            return InteractionResult.PASS;
-        }
-
-        final CellWorkbenchBlockEntity tg = this.getBlockEntity(level, pos);
-        if (tg != null) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        var be = this.getBlockEntity(level, pos);
+        if (be != null) {
             if (!level.isClientSide()) {
-                MenuOpener.open(CellWorkbenchMenu.TYPE, p, MenuLocators.forBlockEntity(tg));
+                MenuOpener.open(CellWorkbenchMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
-        return InteractionResult.PASS;
+
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override

@@ -21,6 +21,8 @@ package appeng.block.storage;
 import java.util.EnumMap;
 import java.util.Map;
 
+import appeng.blockentity.storage.IOPortBlockEntity;
+import appeng.menu.implementations.IOPortMenu;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -113,18 +115,15 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
     }
 
     @Override
-    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
-            InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
-        if (!level.isClientSide()) {
-            SkyChestBlockEntity blockEntity = getBlockEntity(level, pos);
-            if (blockEntity != null) {
-                MenuOpener.open(SkyChestMenu.TYPE, player,
-                        MenuLocators.forBlockEntity(blockEntity));
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (level.getBlockEntity(pos) instanceof SkyChestBlockEntity be) {
+            if (!level.isClientSide()) {
+                MenuOpener.open(SkyChestMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override

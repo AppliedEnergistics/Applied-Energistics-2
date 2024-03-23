@@ -24,7 +24,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -119,7 +118,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
+    public boolean onUseWithoutItem(Player player, Vec3 pos) {
         if (InteractionUtil.canWrenchRotate(player.getInventory().getSelected())) {
             if (!isClientSide()) {
                 this.spin = (byte) ((this.spin + 1) % 4);
@@ -128,7 +127,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
             }
             return true;
         } else {
-            return super.onPartActivate(player, hand, pos);
+            return super.onUseWithoutItem(player, pos);
         }
     }
 

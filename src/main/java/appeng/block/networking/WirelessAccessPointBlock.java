@@ -20,6 +20,7 @@ package appeng.block.networking;
 
 import java.util.Locale;
 
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -101,20 +102,17 @@ public class WirelessAccessPointBlock extends AEBaseEntityBlock<WirelessAccessPo
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
-            BlockHitResult hit) {
-        final WirelessAccessPointBlockEntity tg = this.getBlockEntity(level, pos);
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        var be = this.getBlockEntity(level, pos);
 
-        if (tg != null && !InteractionUtil.isInAlternateUseMode(player)) {
+        if (be != null) {
             if (!level.isClientSide()) {
-                hit.getDirection();
-                MenuOpener.open(WirelessAccessPointMenu.TYPE, player,
-                        MenuLocators.forBlockEntity(tg));
+                MenuOpener.open(WirelessAccessPointMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return super.use(state, level, pos, player, hand, hit);
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override

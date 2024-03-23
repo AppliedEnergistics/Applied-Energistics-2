@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -276,7 +275,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     }
 
     @Override
-    public final boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
+    public final boolean onUseWithoutItem(Player player, Vec3 pos) {
         if (!isClientSide()) {
             MenuOpener.open(getMenuType(), player, MenuLocators.forPart(this));
         }

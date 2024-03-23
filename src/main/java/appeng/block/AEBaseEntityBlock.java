@@ -224,13 +224,12 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
             return ItemInteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return this.onActivated(level, pos, player, hand, player.getItemInHand(hand), hit);
+        return super.useItemOn(heldItem, state, level, pos, player, hand, hit);
     }
 
-    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
-            InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
-        return InteractionResult.PASS;
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     /**

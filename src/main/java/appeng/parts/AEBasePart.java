@@ -320,68 +320,47 @@ public abstract class AEBasePart
         return true;
     }
 
-    private boolean useMemoryCard(Player player) {
-        final ItemStack memCardIS = player.getInventory().getSelected();
+    private boolean useMemoryCard(ItemStack memCardIS, Player player) {
+        if (!this.useStandardMemoryCard() || !(memCardIS.getItem() instanceof IMemoryCard memoryCard)) {
+            return false;
+        }
 
-        if (!memCardIS.isEmpty() && this.useStandardMemoryCard()
-                && memCardIS.getItem() instanceof IMemoryCard memoryCard) {
+        Item partItem = getPartItem().asItem();
 
-            Item partItem = getPartItem().asItem();
+        // Blocks and parts share the same soul!
+        if (AEParts.INTERFACE.asItem() == partItem) {
+            partItem = AEBlocks.INTERFACE.asItem();
+        } else if (AEParts.PATTERN_PROVIDER.asItem() == partItem) {
+            partItem = AEBlocks.PATTERN_PROVIDER.asItem();
+        }
 
-            // Blocks and parts share the same soul!
-            if (AEParts.INTERFACE.asItem() == partItem) {
-                partItem = AEBlocks.INTERFACE.asItem();
-            } else if (AEParts.PATTERN_PROVIDER.asItem() == partItem) {
-                partItem = AEBlocks.PATTERN_PROVIDER.asItem();
+        var name = partItem.getDescription();
+
+        if (InteractionUtil.isInAlternateUseMode(player)) {
+            var settings = exportSettings(SettingsFrom.MEMORY_CARD);
+            if (!settings.isEmpty()) {
+                MemoryCardItem.clearCard(memCardIS);
+                memCardIS.applyComponents(settings);
+                memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
             }
-
-            var name = partItem.getDescription();
-
-            if (InteractionUtil.isInAlternateUseMode(player)) {
-                var settings = exportSettings(SettingsFrom.MEMORY_CARD);
-                if (!settings.isEmpty()) {
-                    MemoryCardItem.clearCard(memCardIS);
-                    memCardIS.applyComponents(settings);
-                    memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
-                }
+        } else {
+            var storedName = memCardIS.get(AEComponents.EXPORTED_SETTINGS_SOURCE);
+            if (name.equals(storedName)) {
+                importSettings(SettingsFrom.MEMORY_CARD, memCardIS.getComponents(), player);
+                memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
             } else {
-                var storedName = memCardIS.get(AEComponents.EXPORTED_SETTINGS_SOURCE);
-                if (name.equals(storedName)) {
-                    importSettings(SettingsFrom.MEMORY_CARD, memCardIS.getComponents(), player);
-                    memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
-                } else {
-                    MemoryCardItem.importGenericSettingsAndNotify(this, memCardIS.getComponents(), player);
-                }
+                MemoryCardItem.importGenericSettingsAndNotify(this, memCardIS.getComponents(), player);
             }
-            return true;
         }
-        return false;
+        return true;
     }
 
     @Override
-    public final boolean onActivate(Player player, InteractionHand hand, Vec3 pos) {
-        if (this.useMemoryCard(player)) {
+    public boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos) {
+        if (useMemoryCard(heldItem, player)) {
             return true;
         }
-
-        return this.onPartActivate(player, hand, pos);
-    }
-
-    @Override
-    public final boolean onShiftActivate(Player player, InteractionHand hand, Vec3 pos) {
-        if (this.useMemoryCard(player)) {
-            return true;
-        }
-
-        return this.onPartShiftActivate(player, hand, pos);
-    }
-
-    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
-        return false;
-    }
-
-    public boolean onPartShiftActivate(Player player, InteractionHand hand, Vec3 pos) {
-        return false;
+        return IPart.super.onUseItemOn(heldItem, player, hand, pos);
     }
 
     @Override

@@ -60,18 +60,14 @@ public class MolecularAssemblerBlock extends AEBaseEntityBlock<MolecularAssemble
     }
 
     @Override
-    public InteractionResult onActivated(Level level, BlockPos pos, Player player, InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         var be = this.getBlockEntity(level, pos);
         if (be != null) {
-
-            if (!InteractionUtil.isInAlternateUseMode(player)) {
-                if (!level.isClientSide()) {
-                    MenuOpener.open(MolecularAssemblerMenu.TYPE, player,
-                            MenuLocators.forBlockEntity(be));
-                }
-                return InteractionResult.sidedSuccess(level.isClientSide());
+            if (!level.isClientSide()) {
+                MenuOpener.open(MolecularAssemblerMenu.TYPE, player,
+                        MenuLocators.forBlockEntity(be));
             }
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
         return InteractionResult.PASS;

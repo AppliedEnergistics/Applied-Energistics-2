@@ -71,23 +71,15 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
     }
 
     @Override
-    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
-            InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
-        if (InteractionUtil.isInAlternateUseMode(player)) {
-            return InteractionResult.PASS;
-        }
-
-        if (!level.isClientSide()) {
-            final VibrationChamberBlockEntity tc = this.getBlockEntity(level, pos);
-            if (tc != null) {
-                hit.getDirection();
-                MenuOpener.open(VibrationChamberMenu.TYPE, player,
-                        MenuLocators.forBlockEntity(tc));
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (level.getBlockEntity(pos) instanceof VibrationChamberBlockEntity be) {
+            if (!level.isClientSide) {
+                MenuOpener.open(VibrationChamberMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override

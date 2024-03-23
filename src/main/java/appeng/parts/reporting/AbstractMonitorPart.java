@@ -18,9 +18,11 @@
 
 package appeng.parts.reporting;
 
+import appeng.util.InteractionUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -192,63 +194,54 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
-        if (isClientSide()) {
-            return true;
-        }
-
-        if (!this.getMainNode().isActive()) {
-            return false;
-        }
-
-        if (!Platform.hasPermissions(this.getHost().getLocation(), player)) {
-            return false;
-        }
-
-        if (!this.isLocked) {
-            var eq = player.getItemInHand(hand);
-            if (AEItemKey.matches(this.configuredItem, eq)) {
-                // Already matches: try to swap to key contained in the item.
-                var containedStack = ContainerItemStrategies.getContainedStack(eq);
-                if (containedStack != null) {
-                    this.configuredItem = containedStack.what();
-                }
-            } else {
-                this.configuredItem = AEItemKey.of(eq);
+    public boolean onUseWithoutItem(Player player, Vec3 pos) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
+            if (isClientSide()) {
+                return true;
             }
-            this.configureWatchers();
-            this.getHost().markForSave();
-            this.getHost().markForUpdate();
-        } else {
-            return super.onPartActivate(player, hand, pos);
-        }
 
-        return true;
-    }
+            if (!this.getMainNode().isActive()) {
+                return false;
+            }
 
-    @Override
-    public boolean onPartShiftActivate(Player player, InteractionHand hand, Vec3 pos) {
-        if (isClientSide()) {
-            return true;
-        }
-
-        if (!this.getMainNode().isActive()) {
-            return false;
-        }
-
-        if (!Platform.hasPermissions(this.getHost().getLocation(), player)) {
-            return false;
-        }
-
-        if (player.getItemInHand(hand).isEmpty()) {
             this.isLocked = !this.isLocked;
             player.displayClientMessage(
                     (this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).text(), true);
             this.getHost().markForSave();
             this.getHost().markForUpdate();
+            return true;
         }
 
-        return true;
+        return super.onUseWithoutItem(player, pos);
+    }
+
+    @Override
+    public boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos) {
+        if (!this.isLocked) {
+            if (isClientSide()) {
+                return true;
+            }
+
+            if (!this.getMainNode().isActive()) {
+                return false;
+            }
+
+            if (AEItemKey.matches(this.configuredItem, heldItem)) {
+                // Already matches: try to swap to key contained in the item.
+                var containedStack = ContainerItemStrategies.getContainedStack(heldItem);
+                if (containedStack != null) {
+                    this.configuredItem = containedStack.what();
+                }
+            } else {
+                this.configuredItem = AEItemKey.of(heldItem);
+            }
+            this.configureWatchers();
+            this.getHost().markForSave();
+            this.getHost().markForUpdate();
+            return true;
+        }
+
+        return super.onUseWithoutItem(player, pos);
     }
 
     // update the system...

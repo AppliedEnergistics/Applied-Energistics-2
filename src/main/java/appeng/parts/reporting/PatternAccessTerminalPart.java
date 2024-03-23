@@ -21,7 +21,6 @@ package appeng.parts.reporting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
@@ -63,8 +62,8 @@ public class PatternAccessTerminalPart extends AbstractDisplayPart implements IP
     }
 
     @Override
-    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
-        if (!super.onPartActivate(player, hand, pos) && !isClientSide()) {
+    public boolean onUseWithoutItem(Player player, Vec3 pos) {
+        if (!super.onUseWithoutItem(player, pos) && !isClientSide()) {
             MenuOpener.open(PatternAccessTermMenu.TYPE, player, MenuLocators.forPart(this));
         }
         return true;

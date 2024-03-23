@@ -18,6 +18,8 @@
 
 package appeng.block.spatial;
 
+import appeng.blockentity.misc.VibrationChamberBlockEntity;
+import appeng.menu.implementations.VibrationChamberMenu;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -77,22 +79,14 @@ public class SpatialIOPortBlock extends AEBaseEntityBlock<SpatialIOPortBlockEnti
     }
 
     @Override
-    public InteractionResult onActivated(Level level, BlockPos pos, Player p,
-            InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
-        if (InteractionUtil.isInAlternateUseMode(p)) {
-            return InteractionResult.PASS;
-        }
-
-        final SpatialIOPortBlockEntity tg = this.getBlockEntity(level, pos);
-        if (tg != null) {
-            if (!level.isClientSide()) {
-                hit.getDirection();
-                MenuOpener.open(SpatialIOPortMenu.TYPE, p,
-                        MenuLocators.forBlockEntity(tg));
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (level.getBlockEntity(pos) instanceof SpatialIOPortBlockEntity be) {
+            if (!level.isClientSide) {
+                MenuOpener.open(VibrationChamberMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
-        return InteractionResult.PASS;
+
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 }

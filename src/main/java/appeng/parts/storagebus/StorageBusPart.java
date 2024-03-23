@@ -32,7 +32,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -217,7 +216,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public final boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
+    public final boolean onUseWithoutItem(Player player, Vec3 pos) {
         if (!isClientSide()) {
             openConfigMenu(player);
         }

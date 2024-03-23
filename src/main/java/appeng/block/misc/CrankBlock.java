@@ -58,9 +58,8 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(Level level, BlockPos pos, Player player, InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
-        if (player instanceof FakePlayer || player == null) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (player instanceof FakePlayer) {
             this.dropCrank(level, pos);
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
@@ -71,7 +70,7 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return InteractionResult.PASS;
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     private void dropCrank(Level level, BlockPos pos) {

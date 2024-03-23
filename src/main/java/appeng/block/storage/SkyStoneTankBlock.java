@@ -3,6 +3,7 @@ package appeng.block.storage;
 import java.util.List;
 
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.ItemInteractionResult;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -28,19 +29,15 @@ public class SkyStoneTankBlock extends AEBaseEntityBlock<SkyStoneTankBlockEntity
         super(props);
     }
 
-
-
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
-            InteractionHand hand, BlockHitResult hit) {
-        if (super.use(state, level, pos, player, hand, hit) == InteractionResult.PASS) {
-            SkyStoneTankBlockEntity be = (SkyStoneTankBlockEntity) level.getBlockEntity(pos);
-            if (be != null && be.onPlayerUse(player, hand)) {
-                return InteractionResult.sidedSuccess(level.isClientSide());
+    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (super.useItemOn(heldItem, state, level, pos, player, hand, hit).result() == InteractionResult.PASS) {
+            if (level.getBlockEntity(pos) instanceof SkyStoneTankBlockEntity tank && tank.onPlayerUse(player, hand)) {
+                return ItemInteractionResult.sidedSuccess(level.isClientSide());
             }
 
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

@@ -149,15 +149,14 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(Level level, BlockPos pos, Player player, InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
-        var controller = getBlockEntity(level, pos);
-        if (controller != null) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (level.getBlockEntity(pos) instanceof ControllerBlockEntity be) {
             if (!level.isClientSide) {
-                MenuOpener.open(NetworkStatusMenu.CONTROLLER_TYPE, player, MenuLocators.forBlockEntity(controller));
+                MenuOpener.open(NetworkStatusMenu.CONTROLLER_TYPE, player, MenuLocators.forBlockEntity(be));
             }
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
-        return InteractionResult.FAIL;
+
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 }

@@ -3,6 +3,7 @@ package appeng.parts;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.core.component.DataComponentMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -47,7 +48,7 @@ public class PartPlacement {
         }
 
         // Then try to place it
-        var part = placePart(player, level, partItem, partStack.getTag(), placement.pos(), placement.side());
+        var part = placePart(player, level, partItem, partStack.getComponents(), placement.pos(), placement.side());
         if (part == null) {
             // Resend the host to the client. Failure to connect for security reasons is only possible to know
             // server-side, and this will cause ghost parts on the client.
@@ -74,7 +75,7 @@ public class PartPlacement {
     public static <T extends IPart> T placePart(@Nullable Player player,
             Level level,
             IPartItem<T> partItem,
-            @Nullable CompoundTag configTag,
+            @Nullable DataComponentMap configData,
             BlockPos pos,
             Direction side) {
 
@@ -105,15 +106,16 @@ public class PartPlacement {
         }
 
         // Import settings from the item if possible
-        if (configTag != null) {
+        if (configData != null) {
             try {
-                addedPart.importSettings(SettingsFrom.DISMANTLE_ITEM, configTag, player);
+                addedPart.importSettings(SettingsFrom.DISMANTLE_ITEM, configData, player);
             } catch (Exception e) {
                 AELog.warn(e, "Failed to import part settings during placement.");
             }
         }
 
-        var ss = AEBlocks.CABLE_BUS.block().getSoundType(AEBlocks.CABLE_BUS.block().defaultBlockState());
+        var state = level.getBlockState(pos);
+        var ss = state.getSoundType(level, pos, player);
         level.playSound(null, pos, ss.getPlaceSound(), SoundSource.BLOCKS, (ss.getVolume() + 1.0F) / 2.0F,
                 ss.getPitch() * 0.8F);
         return addedPart;

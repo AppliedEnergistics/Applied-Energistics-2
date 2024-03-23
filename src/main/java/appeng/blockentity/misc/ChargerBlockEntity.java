@@ -131,26 +131,6 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
         this.markForUpdate();
     }
 
-    public void activate(Player player) {
-        if (!Platform.hasPermissions(new DimensionalBlockPos(this), player)) {
-            return;
-        }
-
-        var myItem = this.inv.getStackInSlot(0);
-        if (myItem.isEmpty()) {
-            ItemStack held = player.getInventory().getSelected();
-
-            if (ChargerRecipes.findRecipe(level, held) != null || Platform.isChargeable(held)) {
-                held = player.getInventory().removeItem(player.getInventory().selected, 1);
-                this.inv.setItemDirect(0, held);
-            }
-        } else {
-            var drops = List.of(myItem);
-            this.inv.setItemDirect(0, ItemStack.EMPTY);
-            Platform.spawnDrops(player.level(), this.worldPosition.relative(this.getFront()), drops);
-        }
-    }
-
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
         return new TickingRequest(TickRates.Charger, false);
@@ -212,8 +192,8 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
                 if (level != null && level.getRandom().nextFloat() > 0.8f) {
                     this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-                    Item charged = Objects.requireNonNull(ChargerRecipes.findRecipe(level, myItem)).result;
-                    this.inv.setItemDirect(0, new ItemStack(charged));
+                    var charged = Objects.requireNonNull(ChargerRecipes.findRecipe(level, myItem)).result;
+                    this.inv.setItemDirect(0, charged.copy());
 
                     changed = true;
                 }

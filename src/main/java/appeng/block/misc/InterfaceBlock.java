@@ -18,6 +18,7 @@
 
 package appeng.block.misc;
 
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -39,21 +40,13 @@ public class InterfaceBlock extends AEBaseEntityBlock<InterfaceBlockEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(Level level, BlockPos pos, Player p,
-            InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
-        if (InteractionUtil.isInAlternateUseMode(p)) {
-            return InteractionResult.PASS;
-        }
-
-        var be = this.getBlockEntity(level, pos);
-        if (be != null) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (level.getBlockEntity(pos) instanceof InterfaceBlockEntity be) {
             if (!level.isClientSide()) {
-                hit.getDirection();
-                be.openMenu(p, MenuLocators.forBlockEntity(be));
+                be.openMenu(player, MenuLocators.forBlockEntity(be));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
-        return InteractionResult.PASS;
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 }

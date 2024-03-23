@@ -18,6 +18,7 @@
 
 package appeng.block.misc;
 
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -42,19 +43,11 @@ public class CondenserBlock extends AEBaseEntityBlock<CondenserBlockEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
-            InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
-        if (InteractionUtil.isInAlternateUseMode(player)) {
-            return InteractionResult.PASS;
-        }
-
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide()) {
             final CondenserBlockEntity tc = this.getBlockEntity(level, pos);
             if (tc != null && !InteractionUtil.isInAlternateUseMode(player)) {
-                hit.getDirection();
-                MenuOpener.open(CondenserMenu.TYPE, player,
-                        MenuLocators.forBlockEntity(tc));
+                MenuOpener.open(CondenserMenu.TYPE, player, MenuLocators.forBlockEntity(tc));
             }
         }
 

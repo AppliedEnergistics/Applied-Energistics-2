@@ -92,6 +92,11 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     }
 
     @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        return super.useWithoutItem(state, level, pos, player, hitResult);
+    }
+
+    @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player p, InteractionHand hand,
             BlockHitResult hit) {
         final CraftingBlockEntity tg = this.getBlockEntity(level, pos);

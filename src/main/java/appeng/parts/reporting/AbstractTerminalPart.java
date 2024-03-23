@@ -22,7 +22,6 @@ import java.util.List;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -123,8 +122,8 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
-        if (!super.onPartActivate(player, hand, pos) && !player.level().isClientSide) {
+    public boolean onUseWithoutItem(Player player, Vec3 pos) {
+        if (!super.onUseWithoutItem(player, pos) && !player.level().isClientSide) {
             MenuOpener.open(getMenuType(player), player, MenuLocators.forPart(this));
         }
         return true;

@@ -636,15 +636,19 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public boolean activate(Player player, InteractionHand hand, Vec3 pos) {
-        final SelectedPart p = this.selectPartLocal(pos);
+    public boolean useItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 localPos) {
+        final SelectedPart p = this.selectPartLocal(localPos);
         if (p != null && p.part != null) {
-            // forge sends activate even when sneaking in some cases (eg emtpy hand)
-            // if sneaking try shift activate first.
-            if (InteractionUtil.isInAlternateUseMode(player) && p.part.onShiftActivate(player, hand, pos)) {
-                return true;
-            }
-            return p.part.onActivate(player, hand, pos);
+            return p.part.onUseItemOn(heldItem, player, hand, localPos);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean useWithoutItem(Player player, Vec3 localPos) {
+        final SelectedPart p = this.selectPartLocal(localPos);
+        if (p != null && p.part != null) {
+            return p.part.onUseWithoutItem(player, localPos);
         }
         return false;
     }
