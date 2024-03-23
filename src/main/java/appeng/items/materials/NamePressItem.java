@@ -20,6 +20,7 @@ package appeng.items.materials;
 
 import java.util.List;
 
+import appeng.api.ids.AEComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -41,9 +42,9 @@ public class NamePressItem extends AEBaseItem {
             TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
 
-        final CompoundTag c = stack.getOrCreateTag();
-        if (c.contains(TAG_INSCRIBE_NAME)) {
-            lines.add(Component.literal(c.getString(TAG_INSCRIBE_NAME)));
+        var inscribedName = stack.get(AEComponents.NAME_PRESS_NAME);
+        if (inscribedName != null) {
+            lines.add(inscribedName);
         }
     }
 }
