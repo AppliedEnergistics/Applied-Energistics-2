@@ -1,5 +1,6 @@
 package appeng.integration.modules.itemlists;
 
+import appeng.api.ids.AEComponents;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.util.AEColor;
@@ -42,7 +43,7 @@ public final class ItemPredicates {
     }
 
     private static boolean isBrokenFacade(ItemStack stack) {
-        return stack.getItem() instanceof FacadeItem && !stack.hasTag();
+        return stack.getItem() instanceof FacadeItem && !stack.has(AEComponents.FACADE_ITEM);
     }
 
     private static boolean isFacade(ItemStack stack) {

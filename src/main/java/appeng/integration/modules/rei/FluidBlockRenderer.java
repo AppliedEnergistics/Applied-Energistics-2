@@ -1,5 +1,6 @@
 package appeng.integration.modules.rei;
 
+import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -26,7 +27,7 @@ public class FluidBlockRenderer implements EntryRenderer<FluidStack> {
 
     @Override
     public @Nullable Tooltip getTooltip(EntryStack<FluidStack> entry, TooltipContext context) {
-        var key = AEFluidKey.of(entry.getValue().getFluid(), entry.getValue().getTag());
+        var key = AEFluidKey.of(FluidStackHooksForge.toForge(entry.getValue()));
         return Tooltip.create(context.getPoint(), AEKeyRendering.getTooltip(key));
     }
 }
