@@ -170,7 +170,7 @@ public class SiteExportWriter {
         var fluidInfo = new FluidInfoJson();
         fluidInfo.id = id;
         fluidInfo.icon = iconPath;
-        fluidInfo.displayName = fluid.getDisplayName().getString();
+        fluidInfo.displayName = fluid.getHoverName().getString();
         siteExport.fluids.put(fluidInfo.id, fluidInfo);
     }
 

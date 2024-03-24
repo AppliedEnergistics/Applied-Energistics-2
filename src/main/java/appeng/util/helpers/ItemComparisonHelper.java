@@ -89,7 +89,7 @@ public final class ItemComparisonHelper {
         }
 
         // test damageable items..
-        if (a.getItem() == b.getItem() && a.getItem().canBeDepleted()) {
+        if (a.getItem() == b.getItem() && a.isDamageableItem()) {
             if (mode == FuzzyMode.IGNORE_ALL) {
                 return true;
             } else if (mode == FuzzyMode.PERCENT_99) {

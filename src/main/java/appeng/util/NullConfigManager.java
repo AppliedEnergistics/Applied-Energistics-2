@@ -1,6 +1,7 @@
 package appeng.util;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.core.HolderLookup;
@@ -39,5 +40,15 @@ public final class NullConfigManager implements IConfigManager {
     @Override
     public boolean readFromNBT(CompoundTag src, HolderLookup.Provider registries) {
         return false;
+    }
+
+    @Override
+    public boolean importSettings(Map<String, String> settings) {
+        return false;
+    }
+
+    @Override
+    public Map<String, String> exportSettings() {
+        return Map.of();
     }
 }
