@@ -63,7 +63,7 @@ public class SpatialStorageSkyProperties {
 
         @Override
         public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
-            SpatialSkyRender.getInstance().render(poseStack, projectionMatrix);
+            SpatialSkyRender.getInstance().render(modelViewMatrix, projectionMatrix);
             return true;
         }
 

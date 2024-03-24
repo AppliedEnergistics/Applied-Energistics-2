@@ -13,6 +13,7 @@ import appeng.crafting.pattern.EncodedCraftingPattern;
 import appeng.crafting.pattern.EncodedProcessingPattern;
 import appeng.crafting.pattern.EncodedSmithingTablePattern;
 import appeng.crafting.pattern.EncodedStonecuttingPattern;
+import appeng.items.storage.SpatialPlotInfo;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.GlobalPos;
@@ -314,6 +315,10 @@ public final class AEComponents {
      */
     public static final DataComponentType<ItemContainerContents> CRAFTING_INV = register("crafting_inv",
             builder -> builder.persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC)
+    );
+
+    public static final DataComponentType<SpatialPlotInfo> SPATIAL_PLOT_INFO = register("spatial_plot_info",
+            builder -> builder.persistent(SpatialPlotInfo.CODEC).networkSynchronized(SpatialPlotInfo.STREAM_CODEC)
     );
 
     private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {
