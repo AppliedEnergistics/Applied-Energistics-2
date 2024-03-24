@@ -90,10 +90,6 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
         getMainNode().addService(ICraftingRequester.class, this);
     }
 
-    public ExportBusPart(TickRates tickRates, Set<AEKeyType> supportedKeyTypes, IPartItem<?> partItem) {
-        super(tickRates, supportedKeyTypes, partItem);
-    }
-
     @Override
     protected void registerSettings(IConfigManagerBuilder builder) {
         super.registerSettings(builder);
