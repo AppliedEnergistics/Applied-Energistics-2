@@ -2,6 +2,8 @@ package appeng.helpers;
 
 import java.util.function.BiConsumer;
 
+import appeng.api.ids.AEComponents;
+import net.minecraft.world.item.component.ItemContainerContents;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.ResourceLocation;
@@ -46,7 +48,7 @@ public class WirelessCraftingTerminalMenuHost<T extends WirelessCraftingTerminal
         var craftingGrid = new AppEngInternalInventory(new InternalInventoryHost() {
             @Override
             public void saveChangedInventory(AppEngInternalInventory inv) {
-                inv.writeToNBT(stack.getOrCreateTag(), "craftingGrid");
+                stack.set(AEComponents.CRAFTING_INV, inv.toItemContainerContents());
             }
 
             @Override
@@ -54,9 +56,7 @@ public class WirelessCraftingTerminalMenuHost<T extends WirelessCraftingTerminal
                 return player.level().isClientSide();
             }
         }, 9);
-        if (stack.getTag() != null) {
-            craftingGrid.readFromNBT(stack.getTag(), "craftingGrid");
-        }
+        craftingGrid.fromItemContainerContents(stack.getOrDefault(AEComponents.CRAFTING_INV, ItemContainerContents.EMPTY));
         return craftingGrid;
     }
 }

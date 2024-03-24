@@ -309,6 +309,13 @@ public final class AEComponents {
             builder -> builder.persistent(GenericStack.CODEC).networkSynchronized(GenericStack.STREAM_CODEC)
     );
 
+    /**
+     * A crafting inventory.
+     */
+    public static final DataComponentType<ItemContainerContents> CRAFTING_INV = register("crafting_inv",
+            builder -> builder.persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC)
+    );
+
     private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {
         var builder = DataComponentType.<T>builder();
         customizer.accept(builder);
