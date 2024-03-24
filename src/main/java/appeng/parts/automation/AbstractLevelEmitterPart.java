@@ -19,6 +19,7 @@
 package appeng.parts.automation;
 
 import appeng.api.ids.AEComponents;
+import appeng.api.util.IConfigManagerBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -55,8 +56,12 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
 
         // Level emitters do not require a channel to function
         getMainNode().setFlags();
+    }
 
-        this.getConfigManager().registerSetting(Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL);
+    @Override
+    protected void registerSettings(IConfigManagerBuilder builder) {
+        super.registerSettings(builder);
+        builder.registerSetting(Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL);
     }
 
     protected abstract void configureWatchers();

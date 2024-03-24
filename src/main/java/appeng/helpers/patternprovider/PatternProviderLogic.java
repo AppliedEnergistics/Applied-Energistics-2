@@ -97,7 +97,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     private final PatternProviderLogicHost host;
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
-    private final ConfigManager configManager = new ConfigManager(this::configChanged);
+    private final IConfigManager configManager;
 
     private int priority;
 
@@ -139,9 +139,11 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                 .addService(ICraftingProvider.class, this);
         this.actionSource = new MachineSource(mainNode::getNode);
 
-        this.configManager.registerSetting(Settings.BLOCKING_MODE, YesNo.NO);
-        this.configManager.registerSetting(Settings.PATTERN_ACCESS_TERMINAL, YesNo.YES);
-        this.configManager.registerSetting(Settings.LOCK_CRAFTING_MODE, LockCraftingMode.NONE);
+        configManager = IConfigManager.builder(this::configChanged)
+                .registerSetting(Settings.BLOCKING_MODE, YesNo.NO)
+                .registerSetting(Settings.PATTERN_ACCESS_TERMINAL, YesNo.YES)
+                .registerSetting(Settings.LOCK_CRAFTING_MODE, LockCraftingMode.NONE)
+                .build();
 
         this.returnInv = new PatternProviderReturnInventory(() -> {
             this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));

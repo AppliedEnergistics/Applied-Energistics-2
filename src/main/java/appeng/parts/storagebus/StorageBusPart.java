@@ -23,6 +23,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import appeng.api.ids.AEComponents;
+import appeng.api.util.IConfigManagerBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import org.jetbrains.annotations.Nullable;
@@ -142,14 +143,19 @@ public class StorageBusPart extends UpgradeablePart
     public StorageBusPart(IPartItem<?> partItem) {
         super(partItem);
         this.adjacentStorageAccessor = new PartAdjacentApi<>(this, AppEngCapabilities.ME_STORAGE);
-        this.getConfigManager().registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
-        this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
-        this.getConfigManager().registerSetting(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
-        this.getConfigManager().registerSetting(Settings.FILTER_ON_EXTRACT, YesNo.YES);
         this.source = new MachineSource(this);
         getMainNode()
                 .addService(IStorageProvider.class, this)
                 .addService(IGridTickable.class, this);
+    }
+
+    @Override
+    protected void registerSettings(IConfigManagerBuilder builder) {
+        super.registerSettings(builder);
+        builder.registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
+        builder.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+        builder.registerSetting(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
+        builder.registerSetting(Settings.FILTER_ON_EXTRACT, YesNo.YES);
     }
 
     @Override

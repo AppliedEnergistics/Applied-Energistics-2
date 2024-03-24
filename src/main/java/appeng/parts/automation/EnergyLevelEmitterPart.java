@@ -18,6 +18,7 @@
 
 package appeng.parts.automation;
 
+import appeng.api.util.IConfigManagerBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -81,7 +82,12 @@ public class EnergyLevelEmitterPart extends AbstractLevelEmitterPart {
         super(partItem);
 
         getMainNode().addService(IEnergyWatcherNode.class, energyWatcherNode);
-        this.getConfigManager().registerSetting(Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL);
+    }
+
+    @Override
+    protected void registerSettings(IConfigManagerBuilder builder) {
+        super.registerSettings(builder);
+        builder.registerSetting(Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL);
     }
 
     @Override

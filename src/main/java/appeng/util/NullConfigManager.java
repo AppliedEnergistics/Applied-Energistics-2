@@ -19,11 +19,6 @@ public final class NullConfigManager implements IConfigManager {
     }
 
     @Override
-    public <T extends Enum<T>> void registerSetting(Setting<T> setting, T defaultValue) {
-        throw new UnsupportedOperationException("Cannot register settings with " + getClass().getSimpleName());
-    }
-
-    @Override
     public <T extends Enum<T>> T getSetting(Setting<T> setting) {
         throw new IllegalStateException("Trying to get unsupported setting " + setting.getName());
     }

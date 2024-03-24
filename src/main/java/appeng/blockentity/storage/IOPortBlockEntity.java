@@ -77,7 +77,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     private static final int NUMBER_OF_CELL_SLOTS = 6;
     private static final int NUMBER_OF_UPGRADE_SLOTS = 3;
 
-    private final ConfigManager manager;
+    private final IConfigManager manager;
 
     private final AppEngInternalInventory inputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
     private final AppEngInternalInventory outputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
@@ -100,10 +100,11 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, this);
-        this.manager = new ConfigManager(this::updateTask);
-        this.manager.registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
-        this.manager.registerSetting(Settings.FULLNESS_MODE, FullnessMode.EMPTY);
-        this.manager.registerSetting(Settings.OPERATION_MODE, OperationMode.EMPTY);
+        this.manager = IConfigManager.builder(this::updateTask)
+                .registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE)
+                .registerSetting(Settings.FULLNESS_MODE, FullnessMode.EMPTY)
+                .registerSetting(Settings.OPERATION_MODE, OperationMode.EMPTY)
+                .build();
         this.mySrc = new MachineSource(this);
         this.lastRedstoneState = YesNo.UNDECIDED;
 

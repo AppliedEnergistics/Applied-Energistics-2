@@ -21,6 +21,7 @@ package appeng.parts.automation;
 import java.util.List;
 import java.util.Set;
 
+import appeng.api.util.IConfigManagerBuilder;
 import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.Nullable;
 
@@ -132,9 +133,13 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
         getMainNode().addService(IStorageWatcherNode.class, stackWatcherNode);
         getMainNode().addService(ICraftingWatcherNode.class, craftingWatcherNode);
         getMainNode().addService(ICraftingProvider.class, this);
+    }
 
-        getConfigManager().registerSetting(Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
-        getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+    @Override
+    protected void registerSettings(IConfigManagerBuilder builder) {
+        super.registerSettings(builder);
+        builder.registerSetting(Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
+        builder.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
     }
 
     @Nullable

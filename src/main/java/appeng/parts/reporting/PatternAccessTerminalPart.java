@@ -52,13 +52,14 @@ public class PatternAccessTerminalPart extends AbstractDisplayPart implements IP
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
 
-    private final ConfigManager configManager = new ConfigManager(() -> {
+    private final IConfigManager configManager = IConfigManager.builder(() -> {
         this.getHost().markForSave();
-    });
+    })
+            .registerSetting(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS, ShowPatternProviders.VISIBLE)
+            .build();
 
     public PatternAccessTerminalPart(IPartItem<?> partItem) {
         super(partItem, true);
-        this.configManager.registerSetting(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS, ShowPatternProviders.VISIBLE);
     }
 
     @Override

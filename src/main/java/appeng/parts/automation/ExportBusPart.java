@@ -18,6 +18,8 @@
 
 package appeng.parts.automation;
 
+import appeng.api.stacks.AEKeyType;
+import appeng.api.util.IConfigManagerBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -55,6 +57,8 @@ import appeng.menu.implementations.IOBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.prioritylist.DefaultPriorityList;
 
+import java.util.Set;
+
 /**
  * Generalized base class for export buses that move stacks from network storage to an adjacent block using a non-AE
  * API.
@@ -84,9 +88,17 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
         super(TickRates.ExportBus, StackWorldBehaviors.withExportStrategy(), partItem);
         this.craftingTracker = new MultiCraftingTracker(this, getConfig().size());
         getMainNode().addService(ICraftingRequester.class, this);
+    }
 
-        this.getConfigManager().registerSetting(Settings.CRAFT_ONLY, YesNo.NO);
-        this.getConfigManager().registerSetting(Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT);
+    public ExportBusPart(TickRates tickRates, Set<AEKeyType> supportedKeyTypes, IPartItem<?> partItem) {
+        super(tickRates, supportedKeyTypes, partItem);
+    }
+
+    @Override
+    protected void registerSettings(IConfigManagerBuilder builder) {
+        super.registerSettings(builder);
+        builder.registerSetting(Settings.CRAFT_ONLY, YesNo.NO);
+        builder.registerSetting(Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT);
     }
 
     @Override

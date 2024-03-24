@@ -19,7 +19,6 @@
 package appeng.parts.automation;
 
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
@@ -34,7 +33,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.BlockGetter;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
@@ -60,7 +58,6 @@ import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.AEBasePart;
-import appeng.util.EnchantmentUtil;
 import appeng.util.SettingsFrom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

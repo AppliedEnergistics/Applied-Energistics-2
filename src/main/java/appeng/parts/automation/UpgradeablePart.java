@@ -20,7 +20,9 @@ package appeng.parts.automation;
 
 import java.util.List;
 
+import appeng.api.util.IConfigManagerBuilder;
 import net.minecraft.core.HolderLookup;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
@@ -49,11 +51,18 @@ public abstract class UpgradeablePart extends AEBasePart implements IConfigurabl
         super(partItem);
         this.upgrades = UpgradeInventories.forMachine(partItem.asItem(), this.getUpgradeSlots(),
                 this::onUpgradesChanged);
-        this.config = new ConfigManager((manager, setting) -> {
+        var configBuilder = IConfigManager.builder((manager, setting) -> {
             onSettingChanged(manager, setting);
             getHost().markForSave();
         });
+        registerSettings(configBuilder);
+        this.config = configBuilder.build();
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
+    }
+
+    @MustBeInvokedByOverriders
+    protected void registerSettings(IConfigManagerBuilder builder) {
+
     }
 
     private void onUpgradesChanged() {

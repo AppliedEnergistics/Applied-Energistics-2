@@ -63,7 +63,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     // INSTANCE sate
     private final List<CraftingBlockEntity> blockEntities = new ArrayList<>();
     private final List<CraftingMonitorBlockEntity> status = new ArrayList<>();
-    private final ConfigManager configManager = new ConfigManager(this::markDirty);
+    private final IConfigManager configManager;
     private Component myName = null;
     private boolean isDestroyed = false;
     private long storage = 0;
@@ -78,7 +78,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         this.boundsMin = boundsMin.immutable();
         this.boundsMax = boundsMax.immutable();
 
-        this.configManager.registerSetting(Settings.CPU_SELECTION_MODE, CpuSelectionMode.ANY);
+        this.configManager = IConfigManager.builder(this::markDirty)
+                .registerSetting(Settings.CPU_SELECTION_MODE, CpuSelectionMode.ANY)
+                .build();
     }
 
     @Override

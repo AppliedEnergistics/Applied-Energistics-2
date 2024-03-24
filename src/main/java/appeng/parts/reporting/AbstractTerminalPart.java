@@ -20,6 +20,7 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
+import appeng.api.util.IConfigManagerBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -48,6 +49,7 @@ import appeng.menu.me.common.MEStorageMenu;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 /**
  * Anything resembling an network terminal with view cells can reuse this.
@@ -63,17 +65,25 @@ import appeng.util.inv.InternalInventoryHost;
 public abstract class AbstractTerminalPart extends AbstractDisplayPart
         implements ITerminalHost, IViewCellStorage, InternalInventoryHost, KeyTypeSelectionHost {
 
-    private final IConfigManager cm = new ConfigManager(this::saveChanges);
+    private final IConfigManager cm;
     private final KeyTypeSelection keyTypeSelection = new KeyTypeSelection(this::saveChanges, keyType -> true);
     private final AppEngInternalInventory viewCell = new AppEngInternalInventory(this, 5);
 
     public AbstractTerminalPart(IPartItem<?> partItem) {
         super(partItem, true);
 
-        this.cm.registerSetting(Settings.SORT_BY, SortOrder.NAME);
-        this.cm.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        this.cm.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
+        var builder = IConfigManager.builder(this::saveChanges);
+        registerSettings(builder);
+        this.cm = builder.build();
     }
+
+    @MustBeInvokedByOverriders
+    protected void registerSettings(IConfigManagerBuilder builder) {
+        builder.registerSetting(Settings.SORT_BY, SortOrder.NAME);
+        builder.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+        builder.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
+    }
+
 
     @Override
     public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {

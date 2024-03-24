@@ -80,7 +80,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     protected final IActionSource interfaceRequestSource;
     private final MultiCraftingTracker craftingTracker;
     private final IUpgradeInventory upgrades;
-    private final ConfigManager cm = new ConfigManager(this::onConfigChanged);
+    private final IConfigManager cm;
     /**
      * Work planned by {@link #updatePlan()} to be performed by {@link #usePlan}. Positive amounts mean restocking from
      * the network is required while negative amounts mean moving to the network is required.
@@ -116,7 +116,9 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         gridNode.addService(ICraftingRequester.class, this);
         this.upgrades = UpgradeInventories.forMachine(is, 1, this::onUpgradesChanged);
         this.craftingTracker = new MultiCraftingTracker(this, slots);
-        this.cm.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+        cm = IConfigManager.builder(this::onConfigChanged)
+                .registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL)
+                .build();
         this.plannedWork = new GenericStack[slots];
 
         getConfig().useRegisteredCapacities();

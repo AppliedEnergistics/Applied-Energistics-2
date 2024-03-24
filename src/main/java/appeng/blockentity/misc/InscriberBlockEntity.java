@@ -82,7 +82,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     private static final int MAX_PROCESSING_STEPS = 200;
 
     private final IUpgradeInventory upgrades;
-    private final ConfigManager configManager;
+    private final IConfigManager configManager;
     private int processingTime = 0;
     // cycles from 0 - 16, at 8 it preforms the action, at 16 it re-enables the
     // normal routine.
@@ -126,10 +126,11 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
         this.setInternalMaxPower(1600);
 
         this.upgrades = UpgradeInventories.forMachine(AEBlocks.INSCRIBER, 4, this::saveChanges);
-        this.configManager = new ConfigManager(this::onConfigChanged);
-        this.configManager.registerSetting(Settings.INSCRIBER_SEPARATE_SIDES, YesNo.NO);
-        this.configManager.registerSetting(Settings.AUTO_EXPORT, YesNo.NO);
-        this.configManager.registerSetting(Settings.INSCRIBER_BUFFER_SIZE, YesNo.YES);
+        this.configManager = IConfigManager.builder(this::onConfigChanged)
+                .registerSetting(Settings.INSCRIBER_SEPARATE_SIDES, YesNo.NO)
+                .registerSetting(Settings.AUTO_EXPORT, YesNo.NO)
+                .registerSetting(Settings.INSCRIBER_BUFFER_SIZE, YesNo.YES)
+                .build();
 
         var automationFilter = new AutomationFilter();
         this.topItemHandlerExtern = new FilteredInternalInventory(this.topItemHandler, automationFilter);
@@ -444,7 +445,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public ConfigManager getConfigManager() {
+    public IConfigManager getConfigManager() {
         return configManager;
     }
 

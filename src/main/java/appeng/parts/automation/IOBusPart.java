@@ -20,6 +20,7 @@ package appeng.parts.automation;
 
 import java.util.Set;
 
+import appeng.api.util.IConfigManagerBuilder;
 import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.Nullable;
 
@@ -95,9 +96,13 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
         this.config = ConfigInventory.configTypes(63).supportedTypes(supportedKeyTypes)
                 .changeListener(this::updateState).build();
         getMainNode().addService(IGridTickable.class, this);
+    }
 
-        this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
-        this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+    @Override
+    protected void registerSettings(IConfigManagerBuilder builder) {
+        super.registerSettings(builder);
+        builder.registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
+        builder.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
     }
 
     @Override

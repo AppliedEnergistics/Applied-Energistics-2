@@ -49,10 +49,12 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     public static final int BYTE_MULTIPLIER = 8;
 
-    private final ConfigManager cm = new ConfigManager(() -> {
-        saveChanges();
-        addPower(0);
-    });
+    private final IConfigManager cm = IConfigManager.builder(() -> {
+                saveChanges();
+                addPower(0);
+            })
+            .registerSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH)
+            .build();
 
     private final AppEngInternalInventory outputSlot = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory storageSlot = new AppEngInternalInventory(this, 1);
@@ -75,7 +77,6 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     public CondenserBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
-        this.cm.registerSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH);
     }
 
     @Override

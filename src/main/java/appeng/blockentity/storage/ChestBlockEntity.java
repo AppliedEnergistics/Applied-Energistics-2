@@ -103,7 +103,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             this.cellInventory);
 
     private final IActionSource mySrc = new MachineSource(this);
-    private final IConfigManager config = new ConfigManager(this::saveChanges);
+    private final IConfigManager config = IConfigManager.builder(this::saveChanges)
+            .registerSetting(Settings.SORT_BY, SortOrder.NAME)
+            .registerSetting(Settings.VIEW_MODE, ViewItems.ALL)
+            .registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING)
+            .build();
     private final KeyTypeSelection keyTypeSelection = new KeyTypeSelection(this::saveChanges, keyType -> true);
     private int priority = 0;
     // Client-side cell state or last cell-state sent to client (for update-checking)
@@ -126,9 +130,6 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         this.getMainNode()
                 .addService(IStorageProvider.class, this)
                 .setFlags(GridFlags.REQUIRE_CHANNEL);
-        this.config.registerSetting(Settings.SORT_BY, SortOrder.NAME);
-        this.config.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        this.config.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
         this.setInternalPublicPowerStorage(true);
         this.setInternalPowerFlow(AccessRestriction.WRITE);

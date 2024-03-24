@@ -20,6 +20,7 @@ package appeng.parts.automation;
 
 import java.util.List;
 
+import appeng.api.util.IConfigManagerBuilder;
 import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.Nullable;
 
@@ -86,9 +87,13 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
                 .supportedTypes(StackWorldBehaviors.withPlacementStrategy())
                 .changeListener(this::updateFilter)
                 .build();
+    }
 
-        this.getConfigManager().registerSetting(Settings.PLACE_BLOCK, YesNo.YES);
-        this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+    @Override
+    protected void registerSettings(IConfigManagerBuilder builder) {
+        super.registerSettings(builder);
+        builder.registerSetting(Settings.PLACE_BLOCK, YesNo.YES);
+        builder.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
     }
 
     protected final PlacementStrategy getPlacementStrategies() {

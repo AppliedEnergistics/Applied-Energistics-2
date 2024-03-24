@@ -23,6 +23,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import appeng.api.util.IConfigManagerListener;
 import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -55,7 +56,6 @@ public final class ConfigManager implements IConfigManager {
         return this.settings.keySet();
     }
 
-    @Override
     public <T extends Enum<T>> void registerSetting(Setting<T> setting, T defaultValue) {
         this.settings.put(setting, defaultValue);
     }

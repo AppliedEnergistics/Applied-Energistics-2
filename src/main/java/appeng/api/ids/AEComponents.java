@@ -12,6 +12,7 @@ import appeng.crafting.pattern.EncodedSmithingTablePattern;
 import appeng.crafting.pattern.EncodedStonecuttingPattern;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.TypedDataComponent;
@@ -269,6 +270,13 @@ public final class AEComponents {
      */
     public static final DataComponentType<List<AEKeyType>> ENABLED_KEY_TYPES = register("enabled_key_types",
             builder -> builder.persistent(AEKeyType.CODEC.listOf()).networkSynchronized(AEKeyType.STREAM_CODEC.apply(ByteBufCodecs.list()))
+    );
+
+    /**
+     * Encodes the link between a wireless item and a wireless access point.
+     */
+    public static final DataComponentType<GlobalPos> WIRELESS_LINK_TARGET = register("wireless_link_target",
+            builder -> builder.persistent(GlobalPos.CODEC).networkSynchronized(GlobalPos.STREAM_CODEC)
     );
 
     private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {
