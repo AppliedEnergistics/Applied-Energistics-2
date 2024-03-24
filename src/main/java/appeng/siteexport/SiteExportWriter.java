@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPOutputStream;
 
+import appeng.util.Platform;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
@@ -25,6 +26,7 @@ import com.google.gson.internal.bind.JsonTreeWriter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+import net.minecraft.nbt.CompoundTag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -343,9 +345,12 @@ public class SiteExportWriter {
 
     public String addItem(ItemStack stack) {
         var itemId = stack.getItem().builtInRegistryHolder().key().location().toString().replace(':', '-');
-        if (stack.getTag() == null) {
+        if (stack.getComponentsPatch().isEmpty()) {
             return itemId;
         }
+
+        var serializedTag = new CompoundTag();
+        stack.save(Platform.getClientRegistryAccess(), serializedTag);
 
         MessageDigest digest;
         try {
@@ -354,7 +359,7 @@ public class SiteExportWriter {
             throw new RuntimeException(e);
         }
         try (var out = new DataOutputStream(new DigestOutputStream(OutputStream.nullOutputStream(), digest))) {
-            NbtIo.write(stack.getTag(), out);
+            NbtIo.write(serializedTag, out);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

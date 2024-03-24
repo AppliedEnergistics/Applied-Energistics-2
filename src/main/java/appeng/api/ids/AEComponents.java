@@ -295,6 +295,13 @@ public final class AEComponents {
             builder -> builder.persistent(FuzzyMode.CODEC).networkSynchronized(FuzzyMode.STREAM_CODEC)
     );
 
+    /**
+     * The item a facade is masquerading as.
+     */
+    public static final DataComponentType<Item> FACADE_ITEM = register("facade_item",
+            builder -> builder.persistent(BuiltInRegistries.ITEM.byNameCodec()).networkSynchronized(ByteBufCodecs.registry(Registries.ITEM))
+    );
+
     private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {
         var builder = DataComponentType.<T>builder();
         customizer.accept(builder);

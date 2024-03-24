@@ -93,11 +93,9 @@ public class FacadeContainer implements IFacadeContainer {
 
             var tag = c.get(NBT_KEY_NAMES[side.ordinal()]);
             if (tag instanceof CompoundTag facadeTag) {
-                var is = ItemStack.of(facadeTag);
-                if (!is.isEmpty()) {
-                    if (is.getItem() instanceof IFacadeItem facadeItem) {
-                        this.storage.setFacade(side, facadeItem.createPartFromItemStack(is, side));
-                    }
+                var is = ItemStack.parseOptional(registries, facadeTag);
+                if (!is.isEmpty() && is.getItem() instanceof IFacadeItem facadeItem) {
+                    this.storage.setFacade(side, facadeItem.createPartFromItemStack(is, side));
                 }
             }
         }
@@ -108,7 +106,7 @@ public class FacadeContainer implements IFacadeContainer {
         for (var side : Direction.values()) {
             if (this.storage.getFacade(side) != null) {
                 var data = new CompoundTag();
-                this.storage.getFacade(side).getItemStack().save(data);
+                this.storage.getFacade(side).getItemStack().save(registries, data);
                 c.put(NBT_KEY_NAMES[side.ordinal()], data);
             }
         }
