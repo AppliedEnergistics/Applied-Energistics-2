@@ -88,7 +88,15 @@ public abstract class EncodingFormat {
     private static final int GEOMETRY_SHIFT = NORMALS_SHIFT + NORMALS_COUNT;
     private static final int GEOMETRY_MASK = (1 << GeometryHelper.FLAG_BIT_COUNT) - 1;
     private static final int GEOMETRY_INVERSE_MASK = ~(GEOMETRY_MASK << GEOMETRY_SHIFT);
-    private static final int MATERIAL_SHIFT = GEOMETRY_SHIFT + GeometryHelper.FLAG_BIT_COUNT;
+    private static final int SHADE_SHIFT = GEOMETRY_SHIFT + GeometryHelper.FLAG_BIT_COUNT;
+    private static final int SHADE_MASK = Mth.smallestEncompassingPowerOfTwo(2) - 1;
+    private static final int SHADE_BIT_COUNT = Integer.bitCount(SHADE_MASK);
+    private static final int SHADE_INVERSE_MASK = ~(SHADE_MASK << SHADE_SHIFT);
+    private static final int AO_SHIFT = SHADE_SHIFT + SHADE_BIT_COUNT;
+    private static final int AO_MASK = Mth.smallestEncompassingPowerOfTwo(2) - 1;
+    private static final int AO_BIT_COUNT = Integer.bitCount(AO_MASK);
+    private static final int AO_INVERSE_MASK = ~(AO_MASK << AO_SHIFT);
+    private static final int MATERIAL_SHIFT = AO_SHIFT + AO_BIT_COUNT;
     private static final int MATERIAL_MASK = Mth.smallestEncompassingPowerOfTwo(1) - 1;
     private static final int MATERIAL_BIT_COUNT = Integer.bitCount(MATERIAL_MASK);
     private static final int MATERIAL_INVERSE_MASK = ~(MATERIAL_MASK << MATERIAL_SHIFT);
@@ -129,5 +137,23 @@ public abstract class EncodingFormat {
 
     static int geometryFlags(int bits, int geometryFlags) {
         return (bits & GEOMETRY_INVERSE_MASK) | ((geometryFlags & GEOMETRY_MASK) << GEOMETRY_SHIFT);
+    }
+
+    static boolean shade(int bits) {
+        return ((bits >> SHADE_SHIFT) & SHADE_MASK) != 0;
+    }
+
+    static int shade(int bits, boolean shade) {
+        int value = shade ? 1 : 0;
+        return (bits & SHADE_INVERSE_MASK) | (value << SHADE_SHIFT);
+    }
+
+    static boolean ambientOcclusion(int bits) {
+        return ((bits >> AO_SHIFT) & AO_MASK) != 0;
+    }
+
+    static int ambientOcclusion(int bits, boolean ambientOcclusion) {
+        int value = ambientOcclusion ? 1 : 0;
+        return (bits & AO_INVERSE_MASK) | (value << AO_SHIFT);
     }
 }

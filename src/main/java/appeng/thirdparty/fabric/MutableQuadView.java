@@ -142,6 +142,16 @@ public interface MutableQuadView extends QuadView {
     }
 
     /**
+     * Set whether this quad should be rendered with diffuse lighting
+     */
+    MutableQuadView shade(boolean shade);
+
+    /**
+     * Set whether this quad should be rendered with ambient occlusion
+     */
+    MutableQuadView ambientOcclusion(boolean ao);
+
+    /**
      * Assigns sprite atlas u,v coordinates to this quad for the given sprite. Can handle UV locking, rotation,
      * interpolation, etc. Control this behavior by passing additive combinations of the BAKE_ flags defined in this
      * interface.
