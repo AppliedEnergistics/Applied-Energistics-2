@@ -29,6 +29,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import appeng.api.ids.AEComponents;
+import appeng.api.stacks.GenericStack;
+import appeng.server.testplots.CraftingPatternHelper;
 import com.google.common.collect.HashMultimap;
 
 import org.slf4j.Logger;
@@ -543,26 +546,16 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             return false;
         }
 
-        final CompoundTag encodedValue = itemStack.getTag();
-
-        if (encodedValue == null) {
-            return false;
-        }
-
-        // Potential later use to filter by input
-        // ListNBT inTag = encodedValue.getTagList( "in", 10 );
-        final ListTag outTag = encodedValue.getList("out", 10);
-
-        for (int i = 0; i < outTag.size(); i++) {
-
-            var parsedItemStack = ItemStack.of(outTag.getCompound(i));
-            var itemKey = AEItemKey.of(parsedItemStack);
-            if (itemKey != null) {
-                var displayName = itemKey.getDisplayName().getString().toLowerCase();
+        // TODO 1.20.5 this needs an api for custom patterns that is based on the itemstack components
+        try {
+            var details = PatternDetailsHelper.decodePattern(itemStack, menu.getPlayer().level());
+            for (var output : details.getOutputs()) {
+                var displayName = output.what().getDisplayName().getString().toLowerCase(Locale.ROOT);
                 if (displayName.contains(searchTerm)) {
                     return true;
                 }
             }
+        } catch (Exception ignored) {
         }
         return false;
     }
