@@ -7,6 +7,7 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.api.util.AEColor;
 import appeng.block.crafting.PushDirection;
+import appeng.core.AppEng;
 import appeng.core.AppEngBase;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.EncodedCraftingPattern;
@@ -32,6 +33,8 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -41,6 +44,9 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public final class AEComponents {
+    @ApiStatus.Internal
+    public static final DeferredRegister<DataComponentType<?>> DR = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, AppEng.MOD_ID);
+
     // TODO 1.20.5 -> Write a better codec! (without unchecked casts and the intermediate map)
     private static final Codec<DataComponentMap> DATA_COMPONENT_MAP_CODEC = ExtraCodecs.unboundedDispatchMap(
             DataComponentType.CODEC,
@@ -340,7 +346,7 @@ public final class AEComponents {
         var builder = DataComponentType.<T>builder();
         customizer.accept(builder);
         var componentType = builder.build();
-        AppEngBase.DATA_COMPONENTS.register(name, () -> componentType);
+        DR.register(name, () -> componentType);
         return componentType;
     }
 }

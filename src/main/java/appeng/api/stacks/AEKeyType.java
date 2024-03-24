@@ -38,6 +38,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
@@ -48,12 +49,11 @@ import java.util.stream.Stream;
  * {@link AEItemKeys}.
  */
 public abstract class AEKeyType {
-    public static final Codec<AEKeyType> CODEC = AEKeyTypesInternal.getRegistry().byNameCodec();
+    public static final ResourceKey<Registry<AEKeyType>> REGISTRY_KEY = ResourceKey.createRegistryKey(AppEng.makeId("keytypes"));
+
+    public static final Codec<AEKeyType> CODEC = ExtraCodecs.lazyInitializedCodec(() -> AEKeyTypesInternal.getRegistry().byNameCodec());
 
     public static final StreamCodec<RegistryFriendlyByteBuf, AEKeyType> STREAM_CODEC = ByteBufCodecs.registry(AEKeyType.REGISTRY_KEY);
-
-    public static final ResourceKey<Registry<AEKeyType>> REGISTRY_KEY = ResourceKey
-            .createRegistryKey(AppEng.makeId("keytypes"));
 
     private final ResourceLocation id;
     private final Class<? extends AEKey> keyClass;

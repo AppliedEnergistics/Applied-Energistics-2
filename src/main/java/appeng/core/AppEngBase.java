@@ -118,15 +118,13 @@ public abstract class AppEngBase implements AppEng {
 
     static AppEngBase INSTANCE;
 
-    public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, AppEng.MOD_ID);
-
     public AppEngBase(IEventBus modEventBus) {
         if (INSTANCE != null) {
             throw new IllegalStateException();
         }
         INSTANCE = this;
 
-        DATA_COMPONENTS.register(modEventBus);
+        AEComponents.DR.register(modEventBus);
         modEventBus.addListener(this::registerRegistries);
         modEventBus.addListener(MainCreativeTab::initExternal);
         modEventBus.addListener(InitNetwork::init);

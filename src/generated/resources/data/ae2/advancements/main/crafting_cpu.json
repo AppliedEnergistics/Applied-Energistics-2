@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:crafting_unit"
-            ]
+            "items": "ae2:crafting_unit"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "achievement.ae2.CraftingCPU.desc"
     },
     "icon": {
-      "item": "ae2:64k_crafting_storage"
+      "count": 1,
+      "id": "ae2:64k_crafting_storage"
     },
     "show_toast": false,
     "title": {
