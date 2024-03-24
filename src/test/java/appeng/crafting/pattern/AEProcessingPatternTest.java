@@ -8,6 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import appeng.api.implementations.items.IAEItemPowerStorage;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.nbt.CompoundTag;
@@ -27,6 +30,8 @@ import appeng.util.LoadTranslations;
 @BootstrapMinecraft
 @LoadTranslations
 class AEProcessingPatternTest {
+    private final RegistryAccess registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+
     @Test
     void testDecodeWithEmptyTag() {
         assertNull(decode(new CompoundTag()));
@@ -39,14 +44,15 @@ class AEProcessingPatternTest {
     @Test
     void testDecodeWithRemovedIngredientItemIds() {
         var encoded = PatternDetailsHelper.encodeProcessingPattern(
-                new GenericStack[] {
+                List.of(
                         GenericStack.fromItemStack(new ItemStack(Items.TORCH)),
                         GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))
-                },
-                new GenericStack[] {
+                ),
+                List.of(
                         GenericStack.fromItemStack(new ItemStack(Items.STICK))
-                });
-        var encodedTag = encoded.getTag();
+                ));
+        var encodedTag = new CompoundTag();
+        encoded.save(registryAccess, encodedTag);
 
         var inputTag = encodedTag.getList("in", Tag.TAG_COMPOUND).getCompound(0);
         assertEquals("minecraft:torch", inputTag.getString("id"));
@@ -63,14 +69,15 @@ class AEProcessingPatternTest {
     @Test
     void testDecodeWithRemovedResultItemIds() {
         var encoded = PatternDetailsHelper.encodeProcessingPattern(
-                new GenericStack[] {
+                List.of(
                         GenericStack.fromItemStack(new ItemStack(Items.TORCH)),
                         GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))
-                },
-                new GenericStack[] {
+                ),
+            List.of(
                         GenericStack.fromItemStack(new ItemStack(Items.STICK))
-                });
-        var encodedTag = encoded.getTag();
+                ));
+        var encodedTag = new CompoundTag();
+        encoded.save(registryAccess, encodedTag);
 
         // Replace the diamond ID string with an unknown ID string
         assertEquals(1, RecursiveTagReplace.replace(encodedTag, "minecraft:stick", "minecraft:does_not_exist"));
@@ -89,14 +96,15 @@ class AEProcessingPatternTest {
     @Test
     void testDecodeWithRemovedStorageChannels() {
         var encoded = PatternDetailsHelper.encodeProcessingPattern(
-                new GenericStack[] {
+                List.of(
                         GenericStack.fromItemStack(new ItemStack(Items.TORCH)),
                         GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))
-                },
-                new GenericStack[] {
+                ),
+                List.of(
                         GenericStack.fromItemStack(new ItemStack(Items.STICK))
-                });
-        var encodedTag = encoded.getTag();
+                ));
+        var encodedTag = new CompoundTag();
+        encoded.save(registryAccess, encodedTag);
 
         // Replace the channel of all items
         assertEquals(3, RecursiveTagReplace.replace(encodedTag, "ae2:i", "some_mod:missing_chan"));
@@ -116,7 +124,9 @@ class AEProcessingPatternTest {
     }
 
     private AEProcessingPattern decode(CompoundTag tag) {
-        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(AEItems.PROCESSING_PATTERN, tag), null);
+        var stack = ItemStack.parseOptional(registryAccess, tag);
+
+        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(stack), null);
         if (details == null) {
             return null;
         }

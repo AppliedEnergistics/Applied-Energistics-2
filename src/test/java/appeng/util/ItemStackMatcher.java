@@ -35,8 +35,8 @@ public class ItemStackMatcher implements ArgumentMatcher<ItemStack> {
             result.append(stack.getCount()).append(' ');
         }
         result.append(stack.getItem());
-        if (stack.hasTag()) {
-            result.append(" [has NBT]");
+        if (!stack.getComponentsPatch().isEmpty()) {
+            result.append(" [has components]");
         }
         return result.toString();
     }

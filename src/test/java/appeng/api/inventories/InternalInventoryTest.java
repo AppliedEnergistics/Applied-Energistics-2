@@ -14,6 +14,8 @@ import java.util.List;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.testing.IteratorTester;
 
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -299,7 +301,7 @@ class InternalInventoryTest {
         // Create an item that is not stackable with something in this inventory
         final ItemStack nonStackableItem(int count) {
             var item = new ItemStack(Items.ENDER_PEARL, count);
-            item.getOrCreateTag().putInt("xyz", 123);
+            item.set(DataComponents.CUSTOM_NAME, Component.literal("custom"));
             return item;
         }
 
@@ -449,7 +451,7 @@ class InternalInventoryTest {
             item1 = new ItemStack(Items.STICK);
             // Same item, but with NBT to check that removeItem honors NBT differences
             item2 = new ItemStack(Items.STICK);
-            item2.getOrCreateTag().putInt("x", 1);
+            item2.set(DataComponents.CUSTOM_NAME, Component.literal("custom"));
             item3 = new ItemStack(Items.DIAMOND_SWORD);
             item4 = new ItemStack(Items.DIAMOND_SWORD);
             item4.setDamageValue(1);
@@ -647,8 +649,8 @@ class InternalInventoryTest {
     }
 
     private static String describeStack(ItemStack stack) {
-        if (stack.hasTag()) {
-            return stack + " [has NBT]";
+        if (!stack.getComponentsPatch().isEmpty()) {
+            return stack + " [has components]";
         } else {
             return stack.toString();
         }
