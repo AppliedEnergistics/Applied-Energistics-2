@@ -14,6 +14,7 @@ import appeng.crafting.pattern.EncodedProcessingPattern;
 import appeng.crafting.pattern.EncodedSmithingTablePattern;
 import appeng.crafting.pattern.EncodedStonecuttingPattern;
 import appeng.items.storage.SpatialPlotInfo;
+import appeng.util.ConfigInventory;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.GlobalPos;
@@ -294,6 +295,20 @@ public final class AEComponents {
      */
     public static final DataComponentType<FuzzyMode> STORAGE_CELL_FUZZY_MODE = register("storage_cell_fuzzy_mode",
             builder -> builder.persistent(FuzzyMode.CODEC).networkSynchronized(FuzzyMode.STREAM_CODEC)
+    );
+
+    /**
+     * Content of a storage cell.
+     */
+    public static final DataComponentType<List<GenericStack>> STORAGE_CELL_INV = register("storage_cell_inv",
+            builder -> builder.persistent(GenericStack.CODEC.listOf()).networkSynchronized(GenericStack.STREAM_CODEC.apply(ByteBufCodecs.list()))
+    );
+
+    /**
+     * Defines partitioning for a storage cell.
+     */
+    public static final DataComponentType<List<GenericStack>> STORAGE_CELL_CONFIG_INV = register("storage_cell_config_inv",
+            builder -> builder.persistent(GenericStack.CODEC.listOf()).networkSynchronized(GenericStack.STREAM_CODEC.apply(ByteBufCodecs.list()))
     );
 
     /**

@@ -18,8 +18,11 @@
 
 package appeng.items.contents;
 
+import java.util.List;
 import java.util.Set;
 
+import appeng.api.ids.AEComponents;
+import appeng.api.util.AEColor;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.world.item.ItemStack;
@@ -65,13 +68,11 @@ public final class CellConfig {
         }
 
         public void load() {
-            if (stack.hasTag()) {
-                inv.readFromChildTag(stack.getOrCreateTag(), "list");
-            }
+            inv.readFromList(stack.getOrDefault(AEComponents.STORAGE_CELL_CONFIG_INV, List.of()));
         }
 
         public void save() {
-            inv.writeToChildTag(stack.getOrCreateTag(), "list");
+            stack.set(AEComponents.STORAGE_CELL_CONFIG_INV, inv.toList());
         }
     }
 }
