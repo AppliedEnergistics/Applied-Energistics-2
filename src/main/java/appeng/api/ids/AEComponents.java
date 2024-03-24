@@ -1,6 +1,7 @@
 package appeng.api.ids;
 
 import appeng.api.implementations.items.MemoryCardColors;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.block.crafting.PushDirection;
 import appeng.core.AppEngBase;
@@ -21,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -260,6 +262,13 @@ public final class AEComponents {
      */
     public static final DataComponentType<EncodedSmithingTablePattern> ENCODED_SMITHING_TABLE_PATTERN = register("encoded_smithing_table_pattern",
             builder -> builder.persistent(EncodedSmithingTablePattern.CODEC).networkSynchronized(EncodedSmithingTablePattern.STREAM_CODEC)
+    );
+
+    /**
+     * List of AE key types enabled in a terminal
+     */
+    public static final DataComponentType<List<AEKeyType>> ENABLED_KEY_TYPES = register("enabled_key_types",
+            builder -> builder.persistent(AEKeyType.CODEC.listOf()).networkSynchronized(AEKeyType.STREAM_CODEC.apply(ByteBufCodecs.list()))
     );
 
     private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {

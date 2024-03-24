@@ -79,7 +79,7 @@ public class AE2DataGenerators {
                 createDatapackEntriesBuilder(), Set.of(AppEng.MOD_ID)));
 
         // Loot
-        pack.addProvider(BlockDropProvider::new);
+        pack.addProvider(bindRegistries(BlockDropProvider::new, registries));
 
         // Tags
         var blockTagsProvider = pack

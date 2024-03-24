@@ -28,6 +28,9 @@ import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
+import com.google.gson.JsonElement;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -61,6 +64,7 @@ import appeng.datagen.providers.tags.ConventionTags;
 
 public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataProvider {
     private final Map<Block, Function<Block, LootTable.Builder>> overrides = createOverrides();
+    private final CompletableFuture<HolderLookup.Provider> registries;
 
     @NotNull
     private ImmutableMap<Block, Function<Block, LootTable.Builder>> createOverrides() {
@@ -84,9 +88,10 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
 
     private final Path outputFolder;
 
-    public BlockDropProvider(PackOutput output) {
+    public BlockDropProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(Set.of(), FeatureFlagSet.of());
         this.outputFolder = output.getOutputFolder();
+        this.registries = registries;
     }
 
     @Override
@@ -94,12 +99,11 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
     }
 
     @Override
-    public void generate(BiConsumer<ResourceLocation, LootTable.Builder> biConsumer) {
-        super.generate(biConsumer);
+    public CompletableFuture<?> run(CachedOutput cache) {
+        return this.registries.thenCompose(registries -> run(cache, registries));
     }
 
-    @Override
-    public CompletableFuture<?> run(CachedOutput cache) {
+    public CompletableFuture<?> run(CachedOutput cache, HolderLookup.Provider registries) {
         var futures = new ArrayList<CompletableFuture<?>>();
 
         for (var entry : BuiltInRegistries.BLOCK.entrySet()) {
@@ -107,7 +111,7 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
             if (entry.getKey().location().getNamespace().equals(AppEng.MOD_ID)) {
                 builder = overrides.getOrDefault(entry.getValue(), this::defaultBuilder).apply(entry.getValue());
 
-                futures.add(DataProvider.saveStable(cache, LootTable.CODEC, finishBuilding(builder),
+                futures.add(DataProvider.saveStable(cache, registries, LootTable.CODEC, finishBuilding(builder),
                         getPath(outputFolder, entry.getKey().location())));
             }
         }
@@ -116,7 +120,7 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
                 .withPool(LootPool.lootPool()
                         .setRolls(UniformGenerator.between(1, 3))
                         .add(LootItem.lootTableItem(AEBlocks.SKY_STONE_BLOCK)));
-        futures.add(DataProvider.saveStable(cache, LootTable.CODEC, finishBuilding(table),
+        futures.add(DataProvider.saveStable(cache, registries, LootTable.CODEC, finishBuilding(table),
                 getPath(outputFolder, AppEng.makeId("chests/meteorite"))));
 
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
@@ -162,8 +166,8 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
         return root.resolve("data/" + id.getNamespace() + "/loot_tables/blocks/" + id.getPath() + ".json");
     }
 
-    public LootTable finishBuilding(LootTable.Builder builder) {
-        return builder.setParamSet(LootContextParamSets.BLOCK).build();
+    public Holder<LootTable> finishBuilding(LootTable.Builder builder) {
+        return Holder.direct(builder.setParamSet(LootContextParamSets.BLOCK).build());
     }
 
     @Override

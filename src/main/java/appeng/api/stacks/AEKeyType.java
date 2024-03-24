@@ -33,6 +33,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -47,6 +49,8 @@ import java.util.stream.Stream;
  */
 public abstract class AEKeyType {
     public static final Codec<AEKeyType> CODEC = AEKeyTypesInternal.getRegistry().byNameCodec();
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, AEKeyType> STREAM_CODEC = ByteBufCodecs.registry(AEKeyType.REGISTRY_KEY);
 
     public static final ResourceKey<Registry<AEKeyType>> REGISTRY_KEY = ResourceKey
             .createRegistryKey(AppEng.makeId("keytypes"));
