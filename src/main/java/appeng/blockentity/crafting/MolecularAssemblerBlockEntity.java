@@ -301,8 +301,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         if (!is.isEmpty()) {
             if (ItemStack.isSameItemSameComponents(is, this.myPattern)) {
                 reset = false;
-            } else if (PatternDetailsHelper.decodePattern(is, getLevel(),
-                    false) instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
+            } else if (PatternDetailsHelper.decodePattern(is, getLevel()) instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
                 reset = false;
                 this.progress = 0;
                 this.myPattern = is;

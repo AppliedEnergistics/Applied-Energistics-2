@@ -18,6 +18,8 @@
 
 package appeng.crafting.pattern;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import appeng.api.ids.AEComponents;
@@ -79,7 +81,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
     private final AEItemKey base;
     private final AEItemKey addition;
     private final IInput[] inputs;
-    private final GenericStack[] outputs;
+    private final List<GenericStack> outputs;
 
     public AESmithingTablePattern(AEItemKey definition, Level level) {
         this.definition = definition;
@@ -133,9 +135,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
                 new Input(base, baseIngredient, BASE_CRAFTING_GRID_SLOT),
                 new Input(addition, additionIngredient, ADDITION_CRAFTING_GRID_SLOT)
         };
-        this.outputs = new GenericStack[] {
-                GenericStack.fromItemStack(this.output)
-        };
+        this.outputs = Collections.singletonList(GenericStack.fromItemStack(this.output));
     }
 
     public ResourceLocation getRecipeId() {
@@ -176,7 +176,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
     }
 
     @Override
-    public GenericStack[] getOutputs() {
+    public List<GenericStack> getOutputs() {
         return outputs;
     }
 

@@ -28,6 +28,8 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.annotations.VisibleForTesting;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -256,18 +258,9 @@ public class Platform {
                 .orElse(modId);
     }
 
-    public static String getDescriptionId(Fluid fluid) {
-        return fluid.defaultFluidState().createLegacyBlock().getBlock().getDescriptionId();
-    }
-
-    public static String getDescriptionId(FluidStack fluid) {
-        return fluid.getDisplayName().getString();
-    }
-
-    public static Component getFluidDisplayName(Fluid fluid, @Nullable CompoundTag tag) {
+    public static Component getFluidDisplayName(Fluid fluid) {
         var fluidStack = new FluidStack(fluid, 1);
-        fluidStack.setTag(tag);
-        return fluidStack.getDisplayName();
+        return fluidStack.getHoverName();
     }
 
     public static boolean isChargeable(ItemStack i) {
@@ -346,7 +339,7 @@ public class Platform {
                 }
             }
 
-            var checkFuzzy = providedTemplate.hasTag() || providedTemplate.isDamageableItem();
+            var checkFuzzy = !providedTemplate.getComponents().isEmpty() || providedTemplate.isDamageableItem();
 
             if (items != null && checkFuzzy) {
                 for (var x : items) {

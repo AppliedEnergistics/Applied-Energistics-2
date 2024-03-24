@@ -41,10 +41,13 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 
 public class AEProcessingPattern implements IPatternDetails {
+    public static final int MAX_INPUT_SLOTS = 9 * 9;
+    public static final int MAX_OUTPUT_SLOTS = 3 * 9;
+
     private final AEItemKey definition;
     private final List<GenericStack> sparseInputs, sparseOutputs;
     private final Input[] inputs;
-    private final GenericStack[] condensedOutputs;
+    private final List<GenericStack> condensedOutputs;
 
     public AEProcessingPattern(AEItemKey definition) {
         this.definition = definition;
@@ -57,9 +60,9 @@ public class AEProcessingPattern implements IPatternDetails {
         this.sparseInputs = encodedPattern.sparseInputs();
         this.sparseOutputs = encodedPattern.sparseOutputs();
         var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
-        this.inputs = new Input[condensedInputs.length];
+        this.inputs = new Input[condensedInputs.size()];
         for (int i = 0; i < inputs.length; ++i) {
-            inputs[i] = new Input(condensedInputs[i]);
+            inputs[i] = new Input(condensedInputs.get(i));
         }
 
         // Ordering is preserved by condenseStacks
@@ -99,7 +102,7 @@ public class AEProcessingPattern implements IPatternDetails {
     }
 
     @Override
-    public GenericStack[] getOutputs() {
+    public List<GenericStack> getOutputs() {
         return condensedOutputs;
     }
 

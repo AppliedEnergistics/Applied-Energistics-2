@@ -233,7 +233,8 @@ public class CraftingTreeNode {
                     }
                 } else {
                     var pattern = pro.details.getDefinition();
-                    String outputs = Stream.of(pro.details.getOutputs())
+                    String outputs = pro.details.getOutputs()
+                            .stream()
                             .map(GenericStack::toString)
                             .collect(Collectors.joining(", "));
                     String errorMessage = """
@@ -241,10 +242,9 @@ public class CraftingTreeNode {
                             This is an AE2 bug, please report it, with the following important information:
 
                             - Found none of %s. Remaining request: %d of %d*%d.
-                            - Tried crafting %d times the pattern %s with tag %s.
+                            - Tried crafting %d times the pattern %s.
                             - Pattern outputs: %s.
-                            """.formatted(what, totalRequestedItems, requestedAmount, amount, times, pattern,
-                            pattern.getTag(), outputs);
+                            """.formatted(what, totalRequestedItems, requestedAmount, amount, times, pattern, outputs);
                     throw new UnsupportedOperationException(errorMessage);
                 }
             }

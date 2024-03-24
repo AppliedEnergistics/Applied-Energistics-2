@@ -90,7 +90,7 @@ public class LytTransformRecipe extends LytRecipeBox {
                     8,
                     8);
             context.renderText(
-                    "Throw in " + Platform.getFluidDisplayName(fluid, null).getString(),
+                    "Throw in " + Platform.getFluidDisplayName(fluid).getString(),
                     DefaultStyles.CRAFTING_RECIPE_TYPE.mergeWith(DefaultStyles.BASE_STYLE),
                     bounds.x() + paddingLeft + 10,
                     bounds.y() + 4);

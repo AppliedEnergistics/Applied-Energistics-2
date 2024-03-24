@@ -53,6 +53,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,11 +71,11 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     private final CraftingRecipe recipe;
     private final CraftingContainer testFrame;
     private final CraftingContainer specialRecipeTestFrame;
-    private final GenericStack[] sparseInputs;
+    private final List<GenericStack> sparseInputs;
     private final int[] sparseToCompressed = new int[9];
     private final Input[] inputs;
     private final ItemStack output;
-    private final GenericStack[] outputsArray;
+    private final List<GenericStack> outputsArray;
     /**
      * We cache results of isValid(...) calls for stacks that don't have NBT.
      */
@@ -103,8 +104,8 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         this.testFrame = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
         this.specialRecipeTestFrame = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
         for (int i = 0; i < 9; ++i) {
-            if (sparseInputs[i] != null) {
-                var itemKey = (AEItemKey) sparseInputs[i].what();
+            if (sparseInputs.get(i) != null) {
+                var itemKey = (AEItemKey) sparseInputs.get(i).what();
                 testFrame.setItem(i, itemKey.toStack());
             }
         }
@@ -116,19 +117,19 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         if (this.output.isEmpty()) {
             throw new IllegalStateException("The recipe " + encodedPattern.recipeId() + " produced an empty item stack result.");
         }
-        this.outputsArray = new GenericStack[]{Objects.requireNonNull(GenericStack.fromItemStack(this.output))};
+        this.outputsArray = Collections.singletonList(Objects.requireNonNull(GenericStack.fromItemStack(this.output)));
 
         // Compress inputs
-        var condensedInputs = AEPatternHelper.condenseStacks(Arrays.asList(sparseInputs));
-        this.inputs = new Input[condensedInputs.length];
+        var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
+        this.inputs = new Input[condensedInputs.size()];
         for (int i = 0; i < 9; ++i) {
             sparseToCompressed[i] = -1;
         }
-        for (int j = 0; j < condensedInputs.length; ++j) {
-            var condensedInput = condensedInputs[j];
+        for (int j = 0; j < condensedInputs.size(); ++j) {
+            var condensedInput = condensedInputs.get(j);
 
             for (int i = 0; i < 9; ++i) {
-                if (sparseInputs[i] != null && sparseInputs[i].what().equals(condensedInput.what())) {
+                if (sparseInputs.get(i) != null && sparseInputs.get(i).what().equals(condensedInput.what())) {
                     if (inputs[j] == null) {
                         inputs[j] = new Input(i, condensedInput);
                     }
@@ -159,7 +160,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     }
 
     @Override
-    public GenericStack[] getOutputs() {
+    public List<GenericStack> getOutputs() {
         return outputsArray;
     }
 
@@ -184,16 +185,16 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         // Compute the offset of the user's input vs. crafting grid origin
         // Which is >0 if they have empty rows above or to the left of their input
         int topOffset = 0;
-        if (sparseInputs[0] == null && sparseInputs[1] == null && sparseInputs[2] == null) {
+        if (sparseInputs.get(0) == null && sparseInputs.get(1) == null && sparseInputs.get(2) == null) {
             topOffset++; // First row is fully empty
-            if (sparseInputs[3] == null && sparseInputs[4] == null && sparseInputs[5] == null) {
+            if (sparseInputs.get(3) == null && sparseInputs.get(4) == null && sparseInputs.get(5) == null) {
                 topOffset++; // Second row is fully empty
             }
         }
         int leftOffset = 0;
-        if (sparseInputs[0] == null && sparseInputs[3] == null && sparseInputs[6] == null) {
+        if (sparseInputs.get(0) == null && sparseInputs.get(3) == null && sparseInputs.get(6) == null) {
             leftOffset++; // First column is fully empty
-            if (sparseInputs[1] == null && sparseInputs[4] == null && sparseInputs[7] == null) {
+            if (sparseInputs.get(1) == null && sparseInputs.get(4) == null && sparseInputs.get(7) == null) {
                 leftOffset++; // Second column is fully empty
             }
         }
@@ -220,7 +221,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         // since both lists have the same length, the mapping is at least stable.
         int ingredientIndex = 0;
         for (int i = 0; i < slot; i++) {
-            if (sparseInputs[i] != null) {
+            if (sparseInputs.get(i) != null) {
                 ingredientIndex++;
             }
         }
@@ -254,12 +255,12 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     @Override
     public boolean isItemValid(int slot, AEItemKey key, Level level) {
         if (!canSubstitute) {
-            return sparseInputs[slot] == null && key == null
-                   || sparseInputs[slot] != null && sparseInputs[slot].what().equals(key);
+            return sparseInputs.get(slot) == null && key == null
+                   || sparseInputs.get(slot) != null && sparseInputs.get(slot).what().equals(key);
         }
 
         if (key == null) {
-            return sparseInputs[slot] == null;
+            return sparseInputs.get(slot) == null;
         }
 
         var result = getTestResult(slot, key);
@@ -284,7 +285,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
 
     @Override
     public boolean isSlotEnabled(int slot) {
-        return sparseInputs[slot] != null;
+        return sparseInputs.get(slot) != null;
     }
 
     private ItemStack getRecipeRemainder(int slot, AEItemKey key) {
@@ -330,11 +331,11 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         }
     }
 
-    public GenericStack[] getSparseInputs() {
+    public List<GenericStack> getSparseInputs() {
         return sparseInputs;
     }
 
-    public GenericStack[] getSparseOutputs() {
+    public List<GenericStack> getSparseOutputs() {
         return outputsArray;
     }
 
@@ -398,7 +399,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
                     // If it matches the allowable input
                     var validFluid = getValidFluid(x);
                     if (validFluid != null && validFluid.equals(stack)) {
-                        specialRecipeTestFrame.setItem(x, ((AEItemKey) sparseInputs[x].what()).toStack());
+                        specialRecipeTestFrame.setItem(x, ((AEItemKey) sparseInputs.get(x).what()).toStack());
                         continue;
                     }
                 }
@@ -441,7 +442,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
                     var item = container.getItem(x);
                     var stack = GenericStack.unwrapItemStack(item);
                     if (validFluid.equals(stack)) {
-                        container.setItem(x, ((AEItemKey) sparseInputs[x].what()).toStack());
+                        container.setItem(x, ((AEItemKey) sparseInputs.get(x).what()).toStack());
                         slotsToClear[x] = true;
                     }
                 }
@@ -569,7 +570,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             this.slot = slot;
             this.multiplier = condensedInput.amount();
 
-            var itemOrFluidInput = getItemOrFluidInput(slot, sparseInputs[slot]);
+            var itemOrFluidInput = getItemOrFluidInput(slot, sparseInputs.get(slot));
 
             if (!canSubstitute) {
                 this.possibleInputs = new GenericStack[]{itemOrFluidInput};
@@ -615,7 +616,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         }
     }
 
-    public static GenericStack[] getCraftingInputs(List<ItemStack> stacks) {
+    public static List<GenericStack> getCraftingInputs(List<ItemStack> stacks) {
         Preconditions.checkArgument(stacks.size() <= 9, "Cannot use more than 9 ingredients");
 
         var result = new GenericStack[stacks.size()];
@@ -624,7 +625,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
                 result[x] = GenericStack.fromItemStack(stacks.get(x));
             }
         }
-        return result;
+        return Arrays.asList(result);
     }
 
 }

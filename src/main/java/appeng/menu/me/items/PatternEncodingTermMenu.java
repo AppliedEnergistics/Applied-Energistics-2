@@ -255,7 +255,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             var decodedPattern = PatternDetailsHelper.decodePattern(encodedPattern,
                     this.getPlayerInventory().player.level());
             if (decodedPattern instanceof AECraftingPattern craftingPattern) {
-                for (int i = 0; i < craftingPattern.getSparseInputs().length; i++) {
+                for (int i = 0; i < craftingPattern.getSparseInputs().size(); i++) {
                     if (craftingPattern.getValidFluid(i) != null) {
                         slotsSupportingFluidSubstitution.add(i);
                     }
@@ -370,7 +370,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             return null;
         }
 
-        return PatternDetailsHelper.encodeProcessingPattern(inputs, outputs);
+        return PatternDetailsHelper.encodeProcessingPattern(Arrays.asList(inputs), Arrays.asList(outputs));
     }
 
     @Nullable

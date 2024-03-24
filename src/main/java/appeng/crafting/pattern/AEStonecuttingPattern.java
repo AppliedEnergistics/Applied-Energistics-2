@@ -18,7 +18,9 @@
 
 package appeng.crafting.pattern;
 
+import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -67,7 +69,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     private final AEItemKey input;
     private final ItemStack output;
     private final IInput[] inputs;
-    private final GenericStack[] outputs;
+    private final List<GenericStack> outputs;
 
     /**
      * We cache results of isValid(...) calls for stacks that don't have NBT.
@@ -105,9 +107,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         this.inputs = new IInput[] {
                 new Input()
         };
-        this.outputs = new GenericStack[] {
-                GenericStack.fromItemStack(this.output)
-        };
+        this.outputs = Collections.singletonList(GenericStack.fromItemStack(this.output));
     }
 
     public ResourceLocation getRecipeId() {
@@ -136,7 +136,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     }
 
     @Override
-    public GenericStack[] getOutputs() {
+    public List<GenericStack> getOutputs() {
         return outputs;
     }
 

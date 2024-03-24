@@ -13,9 +13,6 @@ public record EncodedProcessingPattern(
         List<GenericStack> sparseInputs,
         List<GenericStack> sparseOutputs
 ) {
-    public static final int MAX_INPUT_SLOTS = 9 * 9;
-    public static final int MAX_OUTPUT_SLOTS = 3 * 9;
-
     public EncodedProcessingPattern {
         sparseInputs = List.copyOf(sparseInputs);
         sparseOutputs = List.copyOf(sparseOutputs);

@@ -41,6 +41,8 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.AEItemDefinitionFilter;
 
+import java.util.List;
+
 public class PatternEncodingLogic implements InternalInventoryHost {
 
     private final IPatternTerminalLogicHost host;
@@ -163,11 +165,11 @@ public class PatternEncodingLogic implements InternalInventoryHost {
         encodedOutputInv.clear();
     }
 
-    private static void fillInventoryFromSparseStacks(ConfigInventory inv, GenericStack[] stacks) {
+    private static void fillInventoryFromSparseStacks(ConfigInventory inv, List<GenericStack> stacks) {
         inv.beginBatch();
         try {
             for (int i = 0; i < inv.size(); i++) {
-                inv.setStack(i, i < stacks.length ? stacks[i] : null);
+                inv.setStack(i, i < stacks.size() ? stacks.get(i) : null);
             }
         } finally {
             inv.endBatch();
