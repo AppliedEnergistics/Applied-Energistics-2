@@ -1,8 +1,11 @@
 package appeng.api.ids;
 
+import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.MemoryCardColors;
+import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
+import appeng.api.util.AEColor;
 import appeng.block.crafting.PushDirection;
 import appeng.core.AppEngBase;
 import appeng.core.definitions.AEItems;
@@ -23,7 +26,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -277,6 +279,20 @@ public final class AEComponents {
      */
     public static final DataComponentType<GlobalPos> WIRELESS_LINK_TARGET = register("wireless_link_target",
             builder -> builder.persistent(GlobalPos.CODEC).networkSynchronized(GlobalPos.STREAM_CODEC)
+    );
+
+    /**
+     * Which paint item is currently selected in a color applicator.
+     */
+    public static final DataComponentType<AEColor> SELECTED_COLOR = register("selected_color",
+            builder -> builder.persistent(AEColor.CODEC).networkSynchronized(AEColor.STREAM_CODEC)
+    );
+
+    /**
+     * Defines the fuzzy mode for a storage cell.
+     */
+    public static final DataComponentType<FuzzyMode> STORAGE_CELL_FUZZY_MODE = register("storage_cell_fuzzy_mode",
+            builder -> builder.persistent(FuzzyMode.CODEC).networkSynchronized(FuzzyMode.STREAM_CODEC)
     );
 
     private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {

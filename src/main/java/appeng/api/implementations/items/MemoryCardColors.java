@@ -21,7 +21,7 @@ import java.util.List;
  */
 public record MemoryCardColors(AEColor top1, AEColor top2, AEColor top3, AEColor top4,
                                AEColor bottom1, AEColor bottom2, AEColor bottom3, AEColor bottom4) {
-    public static final Codec<MemoryCardColors> CODEC = AEColor.COLOR.listOf().xmap(
+    public static final Codec<MemoryCardColors> CODEC = AEColor.CODEC.listOf().xmap(
             aeColors -> new MemoryCardColors(
                     0 < aeColors.size() ? aeColors.get(0) : AEColor.TRANSPARENT,
                     1 < aeColors.size() ? aeColors.get(1) : AEColor.TRANSPARENT,

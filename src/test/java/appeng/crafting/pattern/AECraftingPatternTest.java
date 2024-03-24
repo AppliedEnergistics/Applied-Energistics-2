@@ -12,7 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
@@ -87,7 +90,8 @@ class AECraftingPatternTest {
     @Test
     void testDecodeWithRemovedIngredientItemIds() {
         var encoded = createTestPattern();
-        var encodedTag = encoded.getOrCreateTag();
+        var encodedTag = new CompoundTag();
+        encoded.save(RegistryAccess.EMPTY, encodedTag);
 
         // Replace the diamond ID string with an unknown ID string
         assertEquals(1, RecursiveTagReplace.replace(encodedTag, "minecraft:diamond", "minecraft:does_not_exist"));
@@ -134,7 +138,8 @@ class AECraftingPatternTest {
         when(level.getRecipeManager()).thenReturn(recipeManager);
         when(recipeManager.byType(RecipeType.CRAFTING)).thenReturn(Map.of(TEST_RECIPE_ID, TEST_RECIPE));
 
-        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(AEItems.CRAFTING_PATTERN, tag), level);
+        var pattern = ItemStack.parseOptional(RegistryAccess.EMPTY, tag);
+        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(pattern), level);
         if (details == null) {
             return null;
         }

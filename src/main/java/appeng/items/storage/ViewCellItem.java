@@ -20,6 +20,7 @@ package appeng.items.storage;
 
 import java.util.Collection;
 
+import appeng.api.ids.AEComponents;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 
@@ -106,16 +107,11 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
     @Override
     public FuzzyMode getFuzzyMode(ItemStack is) {
-        final String fz = is.getOrCreateTag().getString("FuzzyMode");
-        try {
-            return FuzzyMode.valueOf(fz);
-        } catch (Throwable t) {
-            return FuzzyMode.IGNORE_ALL;
-        }
+        return is.getOrDefault(AEComponents.STORAGE_CELL_FUZZY_MODE, FuzzyMode.IGNORE_ALL);
     }
 
     @Override
     public void setFuzzyMode(ItemStack is, FuzzyMode fzMode) {
-        is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
+        is.set(AEComponents.STORAGE_CELL_FUZZY_MODE, fzMode);
     }
 }

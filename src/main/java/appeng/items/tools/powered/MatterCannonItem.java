@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import appeng.api.ids.AEComponents;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -395,17 +396,12 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
 
     @Override
     public FuzzyMode getFuzzyMode(ItemStack is) {
-        final String fz = is.getOrCreateTag().getString("FuzzyMode");
-        try {
-            return FuzzyMode.valueOf(fz);
-        } catch (Throwable t) {
-            return FuzzyMode.IGNORE_ALL;
-        }
+        return is.getOrDefault(AEComponents.STORAGE_CELL_FUZZY_MODE, FuzzyMode.IGNORE_ALL);
     }
 
     @Override
     public void setFuzzyMode(ItemStack is, FuzzyMode fzMode) {
-        is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
+        is.set(AEComponents.STORAGE_CELL_FUZZY_MODE, fzMode);
     }
 
     @Override

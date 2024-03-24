@@ -28,8 +28,12 @@ import java.util.List;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 /**
  * List of all colors supported by AE, their names, and various colors for display.
@@ -58,7 +62,9 @@ public enum AEColor implements StringRepresentable {
     BLACK("Black", "gui.ae2.Black", "black", DyeColor.BLACK, 0x2B2B2B, 0x565656, 0x848484, 0xFFFFFF),
     TRANSPARENT("Fluix", "gui.ae2.Fluix", "fluix", null, 0x1B2344, 0x895CA8, 0xD7BBEC, 0x000000);
 
-    public static final Codec<AEColor> COLOR = StringRepresentable.fromEnum(AEColor::values);
+    public static final Codec<AEColor> CODEC = StringRepresentable.fromEnum(AEColor::values);
+
+    public static final StreamCodec<FriendlyByteBuf, AEColor> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(AEColor.class);
 
     public static final List<AEColor> VALID_COLORS = Arrays.asList(WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME,
             PINK, GRAY, LIGHT_GRAY, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK);
