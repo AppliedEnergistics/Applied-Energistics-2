@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
@@ -57,9 +58,9 @@ public final class P2PPlotHelper {
         p2p.updateFreq(inputTunnel, inputTunnel.getFrequency());
 
         // Link to output
-        var settings = new CompoundTag();
+        var settings = DataComponentMap.builder();
         inputTunnel.exportSettings(SettingsFrom.MEMORY_CARD, settings);
-        outputTunnel.importSettings(SettingsFrom.MEMORY_CARD, settings, null);
+        outputTunnel.importSettings(SettingsFrom.MEMORY_CARD, settings.build(), null);
 
         return inputTunnel.getFrequency();
     }
@@ -76,12 +77,12 @@ public final class P2PPlotHelper {
         p2p.updateFreq(inputTunnel, inputTunnel.getFrequency());
 
         // Link to output
-        var settings = new CompoundTag();
+        var settings = DataComponentMap.builder();
         inputTunnel.exportSettings(SettingsFrom.MEMORY_CARD, settings);
 
         for (var outputPos : outputPositions) {
             var outputTunnel = getTunnelAt(level, outputPos);
-            outputTunnel.importSettings(SettingsFrom.MEMORY_CARD, settings, null);
+            outputTunnel.importSettings(SettingsFrom.MEMORY_CARD, settings.build(), null);
         }
 
         return inputTunnel.getFrequency();
