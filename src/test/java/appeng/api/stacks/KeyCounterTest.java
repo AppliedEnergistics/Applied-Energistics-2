@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.core.component.DataComponents;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
@@ -328,7 +329,7 @@ public class KeyCounterTest {
     private AEItemKey diamondSword(int durabilityPercent, String customName) {
         var is = new ItemStack(Items.DIAMOND_SWORD);
         if (customName != null) {
-            is.setHoverName(Component.literal(customName));
+            is.set(DataComponents.CUSTOM_NAME, Component.literal(customName));
         }
         var damage = (int) ((100 - durabilityPercent) / 100.0f * is.getMaxDamage());
         is.setDamageValue(damage);
@@ -343,7 +344,7 @@ public class KeyCounterTest {
     private AEItemKey nameTag(String customName) {
         var is = new ItemStack(Items.NAME_TAG);
         if (customName != null) {
-            is.setHoverName(Component.literal(customName));
+            is.set(DataComponents.CUSTOM_NAME, Component.literal(customName));
         }
         return AEItemKey.of(is);
     }

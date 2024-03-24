@@ -46,8 +46,10 @@ public class GameTestPlotAdapter {
                     test.maxTicks,
                     test.setupTicks,
                     true,
+                    false,
                     1,
                     1,
+                    false,
                     gameTestHelper -> {
                         test.getTestFunction().accept(new PlotTestHelper(
                                 getPlotTranslation(plot.getBounds()),

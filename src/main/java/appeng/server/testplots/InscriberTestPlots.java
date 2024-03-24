@@ -2,6 +2,8 @@ package appeng.server.testplots;
 
 import appeng.api.ids.AEComponents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +27,7 @@ public final class InscriberTestPlots {
         namePlate.set(AEComponents.NAME_PRESS_NAME, Component.literal("HELLO WORLD"));
         var ironIngots = new ItemStack(Items.IRON_INGOT, 2);
         var namedIngots = ironIngots.copy();
-        namedIngots.setHoverName(Component.literal("HELLO WORLD"));
+        namedIngots.set(DataComponents.CUSTOM_NAME, Component.literal("HELLO WORLD"));
 
         addTest(
                 "nameplate", tests,
