@@ -117,8 +117,8 @@ public class NavigationTree {
 
             if (navigationEntry.iconNbt() != null) {
                 var patch = DataComponentPatch.CODEC.parse(NbtOps.INSTANCE, navigationEntry.iconNbt())
-                        .getOrThrow(false, err -> LOGGER.error("Failed to deserialize component patch {} for icon {}: {}", navigationEntry.iconNbt(), navigationEntry.iconItemId(), err));
-                icon = new ItemStack(iconItem, 1, patch);
+                        .resultOrPartial(err -> LOGGER.error("Failed to deserialize component patch {} for icon {}: {}", navigationEntry.iconNbt(), navigationEntry.iconItemId(), err));
+                icon = new ItemStack(iconItem, 1, patch.orElse(DataComponentPatch.EMPTY));
             } else {
                 icon = new ItemStack(iconItem);
             }

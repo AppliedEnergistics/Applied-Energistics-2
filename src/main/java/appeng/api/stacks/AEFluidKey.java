@@ -54,7 +54,7 @@ public final class AEFluidKey extends AEKey {
         if (fluidVariant.isEmpty()) {
             return null;
         }
-        return of(fluidVariant.copyWithAmount(1));
+        return new AEFluidKey(fluidVariant.copyWithAmount(1));
     }
 
     public static boolean matches(AEKey what, FluidStack fluid) {

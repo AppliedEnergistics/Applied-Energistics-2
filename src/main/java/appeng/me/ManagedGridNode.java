@@ -286,7 +286,7 @@ public class ManagedGridNode implements IManagedGridNode {
     @Override
     public ManagedGridNode setVisualRepresentation(@Nullable AEItemKey visualRepresentation) {
         if (node == null) {
-            getInitData().visualRepresentation = Objects.requireNonNull(visualRepresentation);
+            getInitData().visualRepresentation = visualRepresentation;
         } else {
             node.setVisualRepresentation(visualRepresentation);
         }
