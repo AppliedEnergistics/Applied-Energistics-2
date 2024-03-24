@@ -302,6 +302,13 @@ public final class AEComponents {
             builder -> builder.persistent(BuiltInRegistries.ITEM.byNameCodec()).networkSynchronized(ByteBufCodecs.registry(Registries.ITEM))
     );
 
+    /**
+     * The generic stack wrapped in a {@link AEItems#WRAPPED_GENERIC_STACK}
+     */
+    public static final DataComponentType<GenericStack> WRAPPED_STACK = register("wrapped_stack",
+            builder -> builder.persistent(GenericStack.CODEC).networkSynchronized(GenericStack.STREAM_CODEC)
+    );
+
     private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {
         var builder = DataComponentType.<T>builder();
         customizer.accept(builder);
