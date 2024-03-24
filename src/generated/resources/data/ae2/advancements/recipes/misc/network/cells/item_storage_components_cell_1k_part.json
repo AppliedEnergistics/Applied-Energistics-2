@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:logic_processor"
-            ]
+            "items": "ae2:logic_processor"
           }
         ]
       },

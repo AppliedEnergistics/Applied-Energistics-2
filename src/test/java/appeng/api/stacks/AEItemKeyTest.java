@@ -9,6 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,15 +29,21 @@ import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
 class AEItemKeyTest {
+    private RegistryAccess registryAccess = RegistryAccess.EMPTY;
+
+    private static int getMaxDamage(ItemLike item) {
+        return item.asItem().getMaxDamage(item.asItem().getDefaultInstance());
+    }
+
     @Test
     void testFuzzySearchValues() {
         var undamaged = AEItemKey.of(Items.DIAMOND_PICKAXE);
         var damagedStack = undamaged.toStack();
-        damagedStack.setDamageValue(undamaged.getItem().getMaxDamage());
+        damagedStack.setDamageValue(getMaxDamage(undamaged.getItem()));
         var damaged = AEItemKey.of(damagedStack);
 
-        assertEquals(damaged.getFuzzySearchMaxValue(), Items.DIAMOND_PICKAXE.getMaxDamage());
-        assertEquals(damaged.getFuzzySearchValue(), Items.DIAMOND_PICKAXE.getMaxDamage());
+        assertEquals(damaged.getFuzzySearchMaxValue(), getMaxDamage(Items.DIAMOND_PICKAXE));
+        assertEquals(damaged.getFuzzySearchValue(), getMaxDamage(Items.DIAMOND_PICKAXE));
         assertEquals(undamaged.getFuzzySearchValue(), 0);
     }
 
@@ -81,7 +90,7 @@ class AEItemKeyTest {
     @EnumSource(value = FuzzyMode.class, mode = EnumSource.Mode.EXCLUDE, names = "IGNORE_ALL")
     void testConsistencyWithFuzzySearch(FuzzyMode mode) {
         var keys = new KeyCounter();
-        for (var i = 0; i <= Items.IRON_PICKAXE.getMaxDamage(); i++) {
+        for (var i = 0; i <= getMaxDamage(Items.IRON_PICKAXE); i++) {
             var stack = new ItemStack(Items.IRON_PICKAXE);
             stack.setDamageValue(i);
             keys.set(AEItemKey.of(stack), 1);
@@ -131,7 +140,7 @@ class AEItemKeyTest {
         var pick1 = new ItemStack(Items.DIAMOND_PICKAXE);
         var pick2 = new ItemStack(Items.DIAMOND_PICKAXE);
         pick2.enchant(Enchantments.FORTUNE, 2);
-        assertNotEquals(pick1.getTag(), pick2.getTag());
+        assertNotEquals(pick1.getComponents(), pick2.getComponents());
 
         assertTrue(AEItemKey.of(pick1).fuzzyEquals(AEItemKey.of(pick2), FuzzyMode.IGNORE_ALL));
     }
@@ -140,7 +149,7 @@ class AEItemKeyTest {
     class GenericTagSerialization {
         @Test
         void deserializeFromTagWithoutChannel() {
-            assertNull(AEKey.fromTagGeneric(, new CompoundTag()));
+            assertNull(AEKey.fromTagGeneric(registryAccess, new CompoundTag()));
         }
 
         @Test
@@ -148,7 +157,7 @@ class AEItemKeyTest {
             var tag = new CompoundTag();
             tag.putString("#c", "modid:doesnt_exist");
 
-            assertNull(AEKey.fromTagGeneric(, tag));
+            assertNull(AEKey.fromTagGeneric(registryAccess, tag));
         }
 
         @Test
@@ -156,7 +165,7 @@ class AEItemKeyTest {
             var tag = new CompoundTag();
             tag.putString("#c", "modid!!!!!doesnt_exist");
 
-            assertNull(AEKey.fromTagGeneric(, tag));
+            assertNull(AEKey.fromTagGeneric(registryAccess, tag));
         }
     }
 

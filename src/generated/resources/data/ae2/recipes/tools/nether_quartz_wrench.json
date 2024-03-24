@@ -12,6 +12,7 @@
     "a a"
   ],
   "result": {
-    "item": "ae2:nether_quartz_wrench"
+    "count": 1,
+    "id": "ae2:nether_quartz_wrench"
   }
 }

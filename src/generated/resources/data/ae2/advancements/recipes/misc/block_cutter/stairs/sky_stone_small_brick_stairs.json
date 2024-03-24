@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:sky_stone_small_brick"
-            ]
+            "items": "ae2:sky_stone_small_brick"
           }
         ]
       },

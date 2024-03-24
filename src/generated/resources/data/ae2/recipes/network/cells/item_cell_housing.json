@@ -21,6 +21,7 @@
     "cdc"
   ],
   "result": {
-    "item": "ae2:item_cell_housing"
+    "count": 1,
+    "id": "ae2:item_cell_housing"
   }
 }

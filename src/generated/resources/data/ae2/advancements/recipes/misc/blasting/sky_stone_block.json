@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:sky_dust"
-            ]
+            "items": "ae2:sky_dust"
           }
         ]
       },

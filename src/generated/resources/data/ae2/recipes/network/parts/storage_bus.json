@@ -13,6 +13,7 @@
     }
   ],
   "result": {
-    "item": "ae2:storage_bus"
+    "count": 1,
+    "id": "ae2:storage_bus"
   }
 }

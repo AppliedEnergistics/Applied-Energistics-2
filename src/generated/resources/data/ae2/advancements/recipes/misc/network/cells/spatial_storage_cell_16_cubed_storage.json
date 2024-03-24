@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:spatial_cell_component_16"
-            ]
+            "items": "ae2:spatial_cell_component_16"
           }
         ]
       },

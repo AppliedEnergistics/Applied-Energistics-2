@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:storage_bus"
-            ]
+            "items": "ae2:storage_bus"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "achievement.ae2.StorageBus.desc"
     },
     "icon": {
-      "item": "ae2:storage_bus"
+      "count": 1,
+      "id": "ae2:storage_bus"
     },
     "title": {
       "translate": "achievement.ae2.StorageBus"

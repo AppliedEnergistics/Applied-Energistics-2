@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:dusts/certus_quartz"
+            "items": "#forge:dusts/certus_quartz"
           }
         ]
       },

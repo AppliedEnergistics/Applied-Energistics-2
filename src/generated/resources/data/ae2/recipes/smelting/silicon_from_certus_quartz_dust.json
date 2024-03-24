@@ -6,5 +6,7 @@
   "ingredient": {
     "tag": "forge:dusts/certus_quartz"
   },
-  "result": "ae2:silicon"
+  "result": {
+    "id": "ae2:silicon"
+  }
 }

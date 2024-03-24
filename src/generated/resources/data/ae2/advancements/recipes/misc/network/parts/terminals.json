@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:annihilation_core"
-            ]
+            "items": "ae2:annihilation_core"
           }
         ]
       },
@@ -17,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:formation_core"
-            ]
+            "items": "ae2:formation_core"
           }
         ]
       },
@@ -29,7 +25,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "ae2:illuminated_panel"
+            "items": "#ae2:illuminated_panel"
           }
         ]
       },
@@ -39,9 +35,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:logic_processor"
-            ]
+            "items": "ae2:logic_processor"
           }
         ]
       },

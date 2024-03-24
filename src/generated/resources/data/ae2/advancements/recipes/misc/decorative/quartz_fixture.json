@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:charged_certus_quartz_crystal"
-            ]
+            "items": "ae2:charged_certus_quartz_crystal"
           }
         ]
       },

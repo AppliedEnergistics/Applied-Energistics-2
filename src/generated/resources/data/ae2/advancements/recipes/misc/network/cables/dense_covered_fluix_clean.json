@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "ae2:covered_dense_cable"
+            "items": "#ae2:covered_dense_cable"
           }
         ]
       },

@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:toggle_bus"
-            ]
+            "items": "ae2:toggle_bus"
           }
         ]
       },

@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "ae2:knife"
+            "items": "#ae2:knife"
           }
         ]
       },

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:quartz_glass"
-            ]
+            "items": "ae2:quartz_glass"
           }
         ]
       },

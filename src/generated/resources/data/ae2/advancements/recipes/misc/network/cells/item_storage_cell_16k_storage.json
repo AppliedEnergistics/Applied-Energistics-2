@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:cell_component_16k"
-            ]
+            "items": "ae2:cell_component_16k"
           }
         ]
       },

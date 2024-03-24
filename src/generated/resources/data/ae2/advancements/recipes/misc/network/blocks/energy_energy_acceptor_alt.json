@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:cable_energy_acceptor"
-            ]
+            "items": "ae2:cable_energy_acceptor"
           }
         ]
       },
