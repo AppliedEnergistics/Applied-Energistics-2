@@ -20,14 +20,12 @@
 package appeng.util;
 
 import java.text.DecimalFormat;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 
 import org.jetbrains.annotations.Nullable;
@@ -43,11 +41,9 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -59,6 +55,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.util.thread.SidedThreadGroups;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import appeng.api.config.AccessRestriction;
@@ -84,11 +81,6 @@ public class Platform {
 
     @VisibleForTesting
     public static ThreadGroup serverThreadGroup = SidedThreadGroups.SERVER;
-
-    /*
-     * random source, use it for item drop locations...
-     */
-    private static final RandomSource RANDOM_GENERATOR = RandomSource.create();
 
     private static final P2PHelper P2P_HELPER = new P2PHelper();
 
@@ -138,14 +130,6 @@ public class Platform {
 
     public static P2PHelper p2p() {
         return P2P_HELPER;
-    }
-
-    public static RandomSource getRandom() {
-        return RANDOM_GENERATOR;
-    }
-
-    public static float getRandomFloat() {
-        return RANDOM_GENERATOR.nextFloat();
     }
 
     /**
@@ -262,10 +246,6 @@ public class Platform {
         }
     }
 
-    public static int getRandomInt() {
-        return Math.abs(RANDOM_GENERATOR.nextInt());
-    }
-
     public static String formatModName(String modId) {
         return "" + ChatFormatting.BLUE + ChatFormatting.ITALIC + getModName(modId);
     }
@@ -290,14 +270,6 @@ public class Platform {
         return fluidStack.getDisplayName();
     }
 
-    // tag copy is not necessary, as the tag is not modified.
-    // and this itemStack is not reachable
-    public static Component getItemDisplayName(Item item, @Nullable CompoundTag tag) {
-        var itemStack = new ItemStack(item);
-        itemStack.setTag(tag);
-        return itemStack.getHoverName();
-    }
-
     public static boolean isChargeable(ItemStack i) {
         if (i.isEmpty()) {
             return false;
@@ -309,29 +281,16 @@ public class Platform {
         return false;
     }
 
+    private static final UUID DEFAULT_FAKE_PLAYER_UUID = UUID.fromString("60C173A5-E1E6-4B87-85B1-272CE424521D");
+
     public static Player getFakePlayer(ServerLevel level, @Nullable UUID playerUuid) {
         Objects.requireNonNull(level);
 
         if (playerUuid == null) {
-            playerUuid = FakePlayer.DEFAULT_UUID;
+            playerUuid = DEFAULT_FAKE_PLAYER_UUID;
         }
 
-        return FakePlayer.get(level, new GameProfile(playerUuid, "[AE2]"));
-    }
-
-    /**
-     * Returns a random element from the given collection.
-     *
-     * @return null if the collection is empty
-     */
-    @Nullable
-    public static <T> T pickRandom(Collection<T> outs) {
-        if (outs.isEmpty()) {
-            return null;
-        }
-
-        int index = RANDOM_GENERATOR.nextInt(outs.size());
-        return Iterables.get(outs, index, null);
+        return FakePlayerFactory.get(level, new GameProfile(playerUuid, "[AE2]"));
     }
 
     public static Direction rotateAround(Direction forward, Direction axis) {

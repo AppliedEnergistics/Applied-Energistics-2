@@ -49,6 +49,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.StorageHelper;
 import appeng.api.util.AECableType;
+import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
@@ -101,7 +102,8 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
         continuousGenerationTicks = 0;
         continuousGeneration = null;
         // When placed at max build height facing up, continuously generate 1 sky stone dust / 10 seconds
-        if (host.getBlockPos().getY() + 1 >= buildHeight && getSide() == Direction.UP) {
+        if (AEConfig.instance().isAnnihilationPlaneSkyDustGenerationEnabled()
+                && host.getBlockPos().getY() + 1 >= buildHeight && getSide() == Direction.UP) {
             continuousGeneration = new ContinuousGeneration(
                     AEItemKey.of(AEItems.SKY_DUST),
                     1,
@@ -288,8 +290,7 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.AnnihilationPlane, false,
-                true);
+        return new TickingRequest(TickRates.AnnihilationPlane, false);
     }
 
     @Override

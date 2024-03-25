@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
+import appeng.api.networking.energy.IPassiveEnergyGenerator;
 import appeng.core.AELog;
 
 /**
@@ -24,14 +27,30 @@ class EnergyOverlayGrid {
 
     final List<EnergyService> energyServices;
 
+    /**
+     * Which passive energy generator is currently active.
+     */
+    @Nullable
+    private IPassiveEnergyGenerator currentPassiveGenerator;
+
     private EnergyOverlayGrid(List<EnergyService> energyServices) {
         this.energyServices = energyServices;
     }
 
     void invalidate() {
+        currentPassiveGenerator = null;
         for (var service : energyServices) {
             service.overlayGrid = null;
         }
+    }
+
+    @Nullable
+    public IPassiveEnergyGenerator getCurrentPassiveGenerator() {
+        return currentPassiveGenerator;
+    }
+
+    public void setCurrentPassiveGenerator(@Nullable IPassiveEnergyGenerator currentPassiveGenerator) {
+        this.currentPassiveGenerator = currentPassiveGenerator;
     }
 
     /**

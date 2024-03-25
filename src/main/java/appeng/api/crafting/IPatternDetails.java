@@ -25,6 +25,7 @@ package appeng.api.crafting;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 
@@ -66,6 +67,16 @@ public interface IPatternDetails {
     GenericStack[] getOutputs();
 
     /**
+     * @return True if this pattern allows its inputs to be pushed to generic external inventories that would accept
+     *         those inputs. This would usually be true for custom processing patterns, but not true for patterns that
+     *         require custom machines or molecular assemblers (since those are pushed via
+     *         {@link ICraftingMachine#pushPattern}).
+     */
+    default boolean supportsPushInputsToExternalInventory() {
+        return true;
+    }
+
+    /**
      * Gives the pattern a chance to reorder its inputs for pushing to external inventories (i.e. NOT to
      * {@link ICraftingMachine}s).
      *
@@ -79,6 +90,15 @@ public interface IPatternDetails {
                 inputSink.pushInput(input.getKey(), input.getLongValue());
             }
         }
+    }
+
+    /**
+     * Gets a tooltip describing the details of this crafting pattern.
+     */
+    default PatternDetailsTooltip getTooltip(Level level, TooltipFlag flags) {
+        var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_PRODUCES);
+        tooltip.addInputsAndOutputs(this);
+        return tooltip;
     }
 
     interface IInput {

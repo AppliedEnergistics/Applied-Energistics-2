@@ -18,8 +18,11 @@
 
 package appeng.menu.me.common;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
+import net.minecraft.world.item.crafting.Ingredient;
 
 /**
  * Represents a client-side only repository of {@link GridInventoryEntry} entries that represent the network content
@@ -40,4 +43,8 @@ public interface IClientRepo {
      */
     Set<GridInventoryEntry> getAllEntries();
 
+    /**
+     * Find all entries that match the given ingredient.
+     */
+    Collection<GridInventoryEntry> getByIngredient(Ingredient ingredient);
 }

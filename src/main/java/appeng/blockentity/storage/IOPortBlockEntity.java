@@ -239,7 +239,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         if (this.inputCells == inv) {
             this.updateTask();
         }
@@ -256,7 +256,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.IOPort, !this.hasWork(), false);
+        return new TickingRequest(TickRates.IOPort, !this.hasWork());
     }
 
     @Override

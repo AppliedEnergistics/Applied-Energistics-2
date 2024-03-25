@@ -32,6 +32,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 
+import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.ids.AECreativeTabIds;
 import appeng.api.ids.AEItemIds;
 import appeng.api.stacks.AEKeyType;
@@ -40,10 +41,10 @@ import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.MainCreativeTab;
-import appeng.crafting.pattern.CraftingPatternItem;
-import appeng.crafting.pattern.ProcessingPatternItem;
-import appeng.crafting.pattern.SmithingTablePatternItem;
-import appeng.crafting.pattern.StonecuttingPatternItem;
+import appeng.crafting.pattern.AECraftingPattern;
+import appeng.crafting.pattern.AEProcessingPattern;
+import appeng.crafting.pattern.AESmithingTablePattern;
+import appeng.crafting.pattern.AEStonecuttingPattern;
 import appeng.debug.DebugCardItem;
 import appeng.debug.EraserItem;
 import appeng.debug.MeteoritePlacerItem;
@@ -176,10 +177,10 @@ public final class AEItems {
 
     public static final ItemDefinition<FacadeItem> FACADE = item("Cable Facade", AEItemIds.FACADE, FacadeItem::new);
     public static final ItemDefinition<MaterialItem> BLANK_PATTERN = item("Blank Pattern", AEItemIds.BLANK_PATTERN, MaterialItem::new);
-    public static final ItemDefinition<CraftingPatternItem> CRAFTING_PATTERN = item("Crafting Pattern", AEItemIds.CRAFTING_PATTERN, p -> new CraftingPatternItem(p.stacksTo(1)));
-    public static final ItemDefinition<ProcessingPatternItem> PROCESSING_PATTERN = item("Processing Pattern", AEItemIds.PROCESSING_PATTERN, p -> new ProcessingPatternItem(p.stacksTo(1)));
-    public static final ItemDefinition<SmithingTablePatternItem> SMITHING_TABLE_PATTERN = item("Smithing Table Pattern", AEItemIds.SMITHING_TABLE_PATTERN, p -> new SmithingTablePatternItem(p.stacksTo(1)));
-    public static final ItemDefinition<StonecuttingPatternItem> STONECUTTING_PATTERN = item("Stonecutting Pattern", AEItemIds.STONECUTTING_PATTERN, p -> new StonecuttingPatternItem(p.stacksTo(1)));
+    public static final ItemDefinition<Item> CRAFTING_PATTERN = item("Crafting Pattern", AEItemIds.CRAFTING_PATTERN, p -> PatternDetailsHelper.encodedPatternItemBuilder(AECraftingPattern::new).invalidPatternTooltip(AECraftingPattern::getInvalidPatternTooltip).build());
+    public static final ItemDefinition<Item> PROCESSING_PATTERN = item("Processing Pattern", AEItemIds.PROCESSING_PATTERN, p -> PatternDetailsHelper.encodedPatternItemBuilder(AEProcessingPattern::new).invalidPatternTooltip(AEProcessingPattern::getInvalidPatternTooltip).build());
+    public static final ItemDefinition<Item> SMITHING_TABLE_PATTERN = item("Smithing Table Pattern", AEItemIds.SMITHING_TABLE_PATTERN, p -> PatternDetailsHelper.encodedPatternItemBuilder(AESmithingTablePattern::new).invalidPatternTooltip(AESmithingTablePattern::getInvalidTooltip).build());
+    public static final ItemDefinition<Item> STONECUTTING_PATTERN = item("Stonecutting Pattern", AEItemIds.STONECUTTING_PATTERN, p -> PatternDetailsHelper.encodedPatternItemBuilder(AEStonecuttingPattern::new).invalidPatternTooltip(AEStonecuttingPattern::getInvalidTooltip).build());
 
     public static final ColoredItemDefinition<PaintBallItem> COLORED_PAINT_BALL = createColoredItems("Paint Ball", AEItemIds.COLORED_PAINT_BALL, (p, color) -> new PaintBallItem(p, color, false));
     public static final ColoredItemDefinition<PaintBallItem> COLORED_LUMEN_PAINT_BALL = createColoredItems("Lumen Paint Ball", AEItemIds.COLORED_LUMEN_PAINT_BALL, (p, color) -> new PaintBallItem(p, color, true));
@@ -244,8 +245,7 @@ public final class AEItems {
     /// CELLS
     ///
 
-    public static final ItemDefinition<CreativeCellItem> ITEM_CELL_CREATIVE = item("Creative ME Item Cell", AEItemIds.ITEM_CELL_CREATIVE, p -> new CreativeCellItem(p.stacksTo(1).rarity(Rarity.EPIC)));
-    public static final ItemDefinition<CreativeCellItem> FLUID_CELL_CREATIVE = item("Creative ME Fluid Cell", AEItemIds.FLUID_CELL_CREATIVE, p -> new CreativeCellItem(p.stacksTo(1).rarity(Rarity.EPIC)));
+    public static final ItemDefinition<CreativeCellItem> CREATIVE_CELL = item("Creative ME Storage Cell", AEItemIds.CREATIVE_CELL, p -> new CreativeCellItem(p.stacksTo(1).rarity(Rarity.EPIC)));
     public static final ItemDefinition<ViewCellItem> VIEW_CELL = item("View Cell", AEItemIds.VIEW_CELL, p -> new ViewCellItem(p.stacksTo(1)));
 
     public static final ItemDefinition<BasicStorageCell> ITEM_CELL_1K = item("1k ME Item Storage Cell", AEItemIds.ITEM_CELL_1K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_1K, ITEM_CELL_HOUSING, 0.5f, 1, 8, 63, AEKeyType.items()));

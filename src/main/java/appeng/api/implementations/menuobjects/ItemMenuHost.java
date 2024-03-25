@@ -20,41 +20,45 @@ package appeng.api.implementations.menuobjects;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergySource;
+import appeng.api.stacks.AEKey;
 import appeng.api.upgrades.IUpgradeInventory;
-import appeng.api.upgrades.IUpgradeableItem;
 import appeng.api.upgrades.IUpgradeableObject;
-import appeng.api.upgrades.UpgradeInventories;
+import appeng.menu.locator.ItemMenuHostLocator;
 
 /**
  * Base interface for an adapter that connects an item stack in a player inventory with a menu that is opened by it.
  */
-public class ItemMenuHost implements IUpgradeableObject {
+public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
 
+    /**
+     * To avoid changing the item stack once every tick, we consume idle power for more than just one tick at a time.
+     * The default is to consume power twice per second.
+     */
+    private static final int BUFFER_ENERGY_TICKS = 10;
+
+    private final T item;
     private final Player player;
-    @Nullable
-    private final Integer slot;
-    private final ItemStack itemStack;
+    private final ItemMenuHostLocator locator;
     private final IUpgradeInventory upgrades;
-    private int powerTicks = 0;
-    private double powerDrainPerTick = 0.5;
+    private int remainingEnergyTicks = 0;
 
-    public ItemMenuHost(Player player, @Nullable Integer slot, ItemStack itemStack) {
+    public ItemMenuHost(T item, Player player, ItemMenuHostLocator locator) {
         this.player = player;
-        this.slot = slot;
-        this.itemStack = itemStack;
-        if (itemStack.getItem() instanceof IUpgradeableItem upgradeableItem) {
-            this.upgrades = upgradeableItem.getUpgrades(itemStack);
-        } else {
-            this.upgrades = UpgradeInventories.empty();
+        this.locator = locator;
+        this.item = item;
+        var currentStack = getItemStack();
+        if (!currentStack.is(item)) {
+            throw new IllegalArgumentException("The current item in-slot is " + currentStack.getItem() + " but " +
+                    "this menu requires " + item);
         }
+        this.upgrades = new DelegateItemUpgradeInventory(this::getItemStack);
     }
 
     /**
@@ -69,15 +73,24 @@ public class ItemMenuHost implements IUpgradeableObject {
      *         not directly accessible via the inventory.
      */
     @Nullable
-    public Integer getSlot() {
-        return slot;
+    public Integer getPlayerInventorySlot() {
+        return locator.getPlayerInventorySlot();
+    }
+
+    @Nullable
+    public ItemMenuHostLocator getLocator() {
+        return locator;
+    }
+
+    public T getItem() {
+        return item;
     }
 
     /**
-     * @return The item stack hosting the menu.
+     * @return The item stack hosting the menu. This can change.
      */
     public ItemStack getItemStack() {
-        return itemStack;
+        return locator.locateItem(player);
     }
 
     /**
@@ -89,71 +102,71 @@ public class ItemMenuHost implements IUpgradeableObject {
 
     /**
      * Gives the item hosting the GUI a chance to do periodic actions when the menu is being ticked.
-     *
-     * @return False to close the menu.
      */
-    public boolean onBroadcastChanges(AbstractContainerMenu menu) {
-        return true;
+    public void tick() {
     }
 
     /**
-     * Ensures that the item stack hosting the menu is still in the expected player inventory slot. If necessary,
-     * referential equality is restored by overwriting the item in the player inventory if it is equal to the expected
-     * item.
-     *
-     * @return True if {@link #getItemStack()} is still in the expected slot.
+     * Checks if the item underlying this host is still in place.
      */
-    protected boolean ensureItemStillInSlot() {
-        if (slot == null) {
-            return true;
-        }
-
-        ItemStack expectedItem = getItemStack();
-
-        Inventory inventory = getPlayer().getInventory();
-        ItemStack currentItem = inventory.getItem(slot);
-        if (!currentItem.isEmpty() && !expectedItem.isEmpty()) {
-            if (currentItem == expectedItem) {
-                return true;
-            } else if (ItemStack.isSameItem(expectedItem, currentItem)) {
-                // If the items are still equivalent, we just restore referential equality so that modifications
-                // to the GUI item are reflected in the slot
-                inventory.setItem(slot, expectedItem);
-                return true;
-            }
-        }
-        return false;
+    public boolean isValid() {
+        var currentItem = getItemStack();
+        return !currentItem.isEmpty() && currentItem.is(item);
     }
 
     /**
-     * Can only be used with a host that implements {@link IEnergySource} only call once per broadcastChanges()
+     * Can only be used with a host that implements {@link IEnergySource}.
      */
-    public boolean drainPower() {
+    public boolean consumeIdlePower(Actionable action) {
         // Do not drain power for creative players
         if (player.isCreative()) {
             return true;
         }
 
-        if (this instanceof IEnergySource energySource) {
-            this.powerTicks++;
-            if (this.powerTicks > 10) {
-                var amt = this.powerTicks * this.powerDrainPerTick;
-                this.powerTicks = 0;
-                return energySource.extractAEPower(amt, Actionable.MODULATE, PowerMultiplier.CONFIG) > 0;
+        // Remaining charge
+        if (remainingEnergyTicks > 0) {
+            if (action == Actionable.MODULATE) {
+                remainingEnergyTicks--;
             }
+            return true;
         }
+
+        var powerDrainPerTick = getPowerDrainPerTick();
+        if (powerDrainPerTick > 0 && this instanceof IEnergySource energySource) {
+            var amt = BUFFER_ENERGY_TICKS * powerDrainPerTick;
+            var actualExtracted = energySource.extractAEPower(amt, action, PowerMultiplier.CONFIG);
+            var remainingEnergyTicks = (int) Math.ceil(actualExtracted / powerDrainPerTick);
+            if (action == Actionable.MODULATE) {
+                this.remainingEnergyTicks = remainingEnergyTicks;
+            }
+
+            // Return true if we drained enough energy to last one tick
+            return remainingEnergyTicks > 0;
+        }
+
+        // If no power is being drained, we're never out of power
         return true;
     }
 
     /**
-     * Sets how much AE is drained per tick.
+     * Get power drain per tick.
      */
-    protected void setPowerDrainPerTick(double powerDrainPerTick) {
-        this.powerDrainPerTick = powerDrainPerTick;
+    protected double getPowerDrainPerTick() {
+        return 0.5;
     }
 
     @Override
     public final IUpgradeInventory getUpgrades() {
         return upgrades;
+    }
+
+    /**
+     * Insert something into the host of this menu (i.e. by dropping onto the hosting item in the player inventory or by
+     * similar mechanisms).
+     *
+     * @return The amount that was inserted.
+     */
+    public long insert(Player player, AEKey what, long amount, Actionable mode) {
+        return 0;
     }
 }

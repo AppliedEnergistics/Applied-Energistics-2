@@ -115,11 +115,6 @@ public class WirelessAccessPointBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
-        // :P
-    }
-
-    @Override
     public void onReady() {
         this.updatePower();
         super.onReady();

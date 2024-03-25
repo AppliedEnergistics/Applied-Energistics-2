@@ -127,7 +127,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         if (this.host != null && this.eventsEnabled() && !this.notifyingChanges) {
             this.notifyingChanges = true;
             this.host.onChangeInventory(this, slot);
-            this.host.saveChanges();
+            this.host.saveChangedInventory(this);
             this.notifyingChanges = false;
         }
     }

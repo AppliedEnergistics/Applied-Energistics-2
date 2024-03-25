@@ -120,7 +120,7 @@ public class WidgetContainer {
     }
 
     public AECheckbox addCheckbox(String id, Component text, Runnable changeListener) {
-        var checkbox = new AECheckbox(0, 0, 0, 14, style, text);
+        var checkbox = new AECheckbox(0, 0, 0, AECheckbox.SIZE, style, text);
         add(id, checkbox);
         checkbox.setChangeListener(changeListener);
         return checkbox;

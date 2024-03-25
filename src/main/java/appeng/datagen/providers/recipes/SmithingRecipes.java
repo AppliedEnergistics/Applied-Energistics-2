@@ -1,8 +1,5 @@
 package appeng.datagen.providers.recipes;
 
-import java.util.concurrent.CompletableFuture;
-
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -18,8 +15,8 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.datagen.providers.tags.ConventionTags;
 
 public class SmithingRecipes extends AE2RecipeProvider {
-    public SmithingRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(output, lookupProvider);
+    public SmithingRecipes(PackOutput output) {
+        super(output);
     }
 
     @Override

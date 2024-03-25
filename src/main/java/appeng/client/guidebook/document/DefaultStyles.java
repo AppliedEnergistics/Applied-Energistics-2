@@ -24,7 +24,8 @@ public final class DefaultStyles {
             Minecraft.UNIFORM_FONT,
             (ColorValue) SymbolicColor.BODY_TEXT,
             WhiteSpaceMode.NORMAL,
-            TextAlignment.LEFT);
+            TextAlignment.LEFT,
+            false);
 
     public static final TextStyle BODY_TEXT = TextStyle.builder()
             .font(Minecraft.UNIFORM_FONT)

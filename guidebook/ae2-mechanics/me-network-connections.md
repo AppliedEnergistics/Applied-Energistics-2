@@ -38,7 +38,7 @@ For example, this is 2 separate networks.
         Network 1
   </BoxAnnotation>
 
-<BoxAnnotation color="#915dcd" min="2 0 0" max="3 2 2">
+<BoxAnnotation color="#5CA7CD" min="2 0 0" max="3 2 2">
         Network 2
   </BoxAnnotation>
 
@@ -55,7 +55,7 @@ without providing a network connection.
         Network 1
   </BoxAnnotation>
 
-  <BoxAnnotation color="#915dcd" min="1.3 0 0" max="3 2 2">
+  <BoxAnnotation color="#5CA7CD" min="1.3 0 0" max="3 2 2">
         Network 2
   </BoxAnnotation>
 
@@ -88,6 +88,62 @@ connecting to each other. All colors connect to fluix (or "uncolored") cables.
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
+## Connections In The Context of Subnets
+
+[Subnetworks](../ae2-mechanics/subnetworks.md) take advantage of network connections (and specifically **NOT** being connected)
+to restrict what [devices](../ae2-mechanics/devices.md) have access to what other devices.
+
+All a subnet is, really, is a separate network.
+
+For example, take the [Automatic Ore Fortuner](../example-setups/ore-fortuner.md). There are 3 separate networks here,
+all of which serve a specific purpose in the setup.
+
+<GameScene zoom="6" interactive={true}>
+  <ImportStructure src="../assets/assemblies/ore_fortuner.snbt" />
+
+  <BoxAnnotation color="#915dcd" min="0 0 2" max="3 1 3">
+        Network 1, acts like a pipe subnet, restricts what the import bus has access to so it "stores" the ore blocks through the
+        formation planes.
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#5CA7CD" min="0 0 0" max="3 1 1">
+        Network 2, Acts like another pipe subnet, restricts what the annihilation planes have access to so they store
+        the fortuned ore chunks in the barrel and not in your main network. Also means they don't use up any channels on the
+        main network.
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#82CD5C" min="2 0 1" max="4 1 2">
+        Network 3, The main network with all your storage and crafting on it. Just here to supply power, really, and specifically
+        *not* connected to the 2 subnets.
+  </BoxAnnotation>
+
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
+
+## Connections In The Context of P2P
+
+One variant of [P2P Tunnel](../items-blocks-machines/p2p_tunnels.md) moves [Channels](channels.md) instead of items or fluids
+or redstone signal, and this confuses people for some reason. The network the tunnel is mounted to has nothing to do with the
+network the tunnel is carrying. they *can* be the same network, but they don't have to be, and usually aren't.
+
+<GameScene zoom="6" background="transparent">
+  <ImportStructure src="../assets/assemblies/p2p_channels_network_connection.snbt" />
+
+  <BoxAnnotation color="#915dcd" min="0 0 0" max="1.98 2 1">
+        Network 1, the network being carried (usually your main network)
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#5CA7CD" min="2.02 0 0" max="3.98 1 1">
+        Network 2, The network running the ME P2P tunnels (usually *not* your main network)
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#915dcd" min="4.02 0 0" max="6 1 1">
+        Network 1, the network being carried (usually your main network)
+  </BoxAnnotation>
+
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
+
 ## Less Intuitive Connections
 
 In this case, this is just 1 network, because the <ItemLink id="pattern_provider" />, being a fullblock device, acts like
@@ -112,11 +168,11 @@ not pass channels through one side.
 <GameScene zoom="6" background="transparent">
   <ImportStructure src="../assets/assemblies/pattern_provider_network_connection_2.snbt" />
 
-  <BoxAnnotation color="#915dcd" min="0 0 0" max="2 2 2">
+  <BoxAnnotation color="#915dcd" min="0 0 0" max="1.98 2 2">
         Network 1
   </BoxAnnotation>
 
-  <BoxAnnotation color="#915dcd" min="2 0 0" max="4 2 2">
+  <BoxAnnotation color="#5CA7CD" min="2.02 0 0" max="4 2 2">
         Network 2
   </BoxAnnotation>
 

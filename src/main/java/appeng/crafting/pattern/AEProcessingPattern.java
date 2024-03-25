@@ -18,20 +18,29 @@
 
 package appeng.crafting.pattern;
 
+import java.util.Arrays;
 import java.util.Objects;
+
+import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.crafting.IPatternDetails.IInput;
+import appeng.api.crafting.PatternDetailsTooltip;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 
 public class AEProcessingPattern implements IPatternDetails {
+    private static final String NBT_INPUTS = "in";
+    private static final String NBT_OUTPUTS = "out";
+
     public static final int MAX_INPUT_SLOTS = 9 * 9;
     public static final int MAX_OUTPUT_SLOTS = 3 * 9;
 
@@ -44,8 +53,10 @@ public class AEProcessingPattern implements IPatternDetails {
         this.definition = definition;
         var tag = Objects.requireNonNull(definition.getTag());
 
-        this.sparseInputs = ProcessingPatternEncoding.getProcessingInputs(tag);
-        this.sparseOutputs = ProcessingPatternEncoding.getProcessingOutputs(tag);
+        this.sparseInputs = PatternNbtUtils.getRequiredGenericStackList(tag, NBT_INPUTS,
+                AEProcessingPattern.MAX_INPUT_SLOTS);
+        this.sparseOutputs = PatternNbtUtils.getRequiredGenericStackList(tag, NBT_OUTPUTS,
+                AEProcessingPattern.MAX_OUTPUT_SLOTS);
         var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
         this.inputs = new Input[condensedInputs.length];
         for (int i = 0; i < inputs.length; ++i) {
@@ -54,6 +65,17 @@ public class AEProcessingPattern implements IPatternDetails {
 
         // Ordering is preserved by condenseStacks
         this.condensedOutputs = AEPatternHelper.condenseStacks(sparseOutputs);
+    }
+
+    public static void encode(CompoundTag tag, GenericStack[] sparseInputs, GenericStack[] sparseOutputs) {
+        if (Arrays.stream(sparseInputs).noneMatch(Objects::nonNull)) {
+            throw new IllegalArgumentException("At least one input must be non-null.");
+        }
+        Objects.requireNonNull(sparseOutputs[0],
+                "The first (primary) output must be non-null.");
+
+        tag.put(NBT_INPUTS, encodeStackList(sparseInputs));
+        tag.put(NBT_OUTPUTS, encodeStackList(sparseOutputs));
     }
 
     @Override
@@ -122,6 +144,16 @@ public class AEProcessingPattern implements IPatternDetails {
         }
     }
 
+    public static PatternDetailsTooltip getInvalidPatternTooltip(CompoundTag tag, Level level,
+            @Nullable Exception cause, TooltipFlag flags) {
+        var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_PRODUCES);
+
+        PatternNbtUtils.getGenericStackListFaultTolerant(tag, NBT_INPUTS, tooltip::addInput);
+        PatternNbtUtils.getGenericStackListFaultTolerant(tag, NBT_OUTPUTS, tooltip::addOutput);
+
+        return tooltip;
+    }
+
     private static class Input implements IInput {
         private final GenericStack[] template;
         private final long multiplier;
@@ -151,5 +183,18 @@ public class AEProcessingPattern implements IPatternDetails {
         public AEKey getRemainingKey(AEKey template) {
             return null;
         }
+    }
+
+    private static ListTag encodeStackList(GenericStack[] stacks) {
+        ListTag tag = new ListTag();
+        boolean foundStack = false;
+        for (var stack : stacks) {
+            tag.add(GenericStack.writeTag(stack));
+            if (stack != null && stack.amount() > 0) {
+                foundStack = true;
+            }
+        }
+        Preconditions.checkArgument(foundStack, "List passed to pattern must contain at least one stack.");
+        return tag;
     }
 }

@@ -18,20 +18,28 @@
 
 package appeng.menu.me.networktool;
 
+import java.util.Comparator;
+
 import net.minecraft.network.FriendlyByteBuf;
 
+import appeng.api.networking.IGridNode;
 import appeng.api.stacks.AEItemKey;
 
 /**
- * Represents the status of machines grouped by their {@link IGridBlock#getMachineRepresentation() item representation}.
+ * Represents the status of machines grouped by their {@linkplain IGridNode#getVisualRepresentation() item
+ * representation}.
  */
 public class MachineGroup {
+    public static final Comparator<MachineGroup> COMPARATOR = Comparator.comparing(MachineGroup::isMissingChannel)
+            .thenComparingInt(MachineGroup::getCount)
+            .reversed();
+
     /**
-     * The item stack used for grouping machines together, which is also used for showing the group in the UI.
+     * The key used for grouping machines together, which is also used for showing the group in the UI.
      *
-     * @see IGridBlock#getMachineRepresentation()
+     * @see IGridNode#getVisualRepresentation()
      */
-    private final AEItemKey display;
+    private final MachineGroupKey key;
 
     /**
      * Summed up idle power usage of this machine group in AE/t.
@@ -39,32 +47,43 @@ public class MachineGroup {
     private double idlePowerUsage;
 
     /**
+     * The sum of power this group of machines can generate in AE/t.
+     */
+    private double powerGenerationCapacity;
+
+    /**
      * The number of machines in this group.
      */
     private int count;
 
-    MachineGroup(AEItemKey display) {
-        this.display = display;
+    MachineGroup(MachineGroupKey key) {
+        this.key = key;
     }
 
     /**
      * Reads back a machine group previously {@link #write(FriendlyByteBuf) written}.
      */
     static MachineGroup read(FriendlyByteBuf data) {
-        MachineGroup entry = new MachineGroup(AEItemKey.fromPacket(data));
+        MachineGroup entry = new MachineGroup(MachineGroupKey.fromPacket(data));
         entry.idlePowerUsage = data.readDouble();
+        entry.powerGenerationCapacity = data.readDouble();
         entry.count = data.readVarInt();
         return entry;
     }
 
     void write(FriendlyByteBuf data) {
-        display.writeToPacket(data);
+        key.write(data);
         data.writeDouble(idlePowerUsage);
+        data.writeDouble(powerGenerationCapacity);
         data.writeVarInt(count);
     }
 
     public AEItemKey getDisplay() {
-        return display;
+        return key.display();
+    }
+
+    public boolean isMissingChannel() {
+        return key.missingChannel();
     }
 
     public double getIdlePowerUsage() {
@@ -75,6 +94,14 @@ public class MachineGroup {
         this.idlePowerUsage = idlePowerUsage;
     }
 
+    public double getPowerGenerationCapacity() {
+        return powerGenerationCapacity;
+    }
+
+    public void setPowerGenerationCapacity(double powerGenerationCapacity) {
+        this.powerGenerationCapacity = powerGenerationCapacity;
+    }
+
     public int getCount() {
         return count;
     }
@@ -82,4 +109,5 @@ public class MachineGroup {
     void setCount(int count) {
         this.count = count;
     }
+
 }

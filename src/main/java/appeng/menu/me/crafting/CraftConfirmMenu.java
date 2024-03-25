@@ -57,7 +57,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.guisync.PacketWritable;
 import appeng.menu.implementations.MenuTypeBuilder;
-import appeng.menu.locator.MenuLocator;
+import appeng.menu.locator.MenuHostLocator;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftConfirmScreen
@@ -133,7 +133,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
      * Open with a list of items to craft, i.e. via REI ctrl+click.
      */
     public static void openWithCraftingList(@Nullable IActionHost terminal, ServerPlayer player,
-            @Nullable MenuLocator locator, List<IMenuCraftingPacket.AutoCraftEntry> stacksToCraft) {
+            @Nullable MenuHostLocator locator, List<IMenuCraftingPacket.AutoCraftEntry> stacksToCraft) {
         if (terminal == null || locator == null || stacksToCraft.isEmpty()) {
             return;
         }
@@ -231,7 +231,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
                 sendPacketToClient(new CraftConfirmPlanPacket(plan));
             } catch (Throwable e) {
                 this.getPlayerInventory().player.sendSystemMessage(Component.literal("Error: " + e));
-                AELog.debug(e);
+                AELog.warn("Failed to start crafting job.", e);
                 this.setValidMenu(false);
                 this.result = null;
             }

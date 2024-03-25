@@ -38,7 +38,7 @@ import appeng.helpers.IPriorityHost;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.PatternProviderMenu;
-import appeng.menu.locator.MenuLocator;
+import appeng.menu.locator.MenuHostLocator;
 
 /**
  * Interface to be implemented by blocks or parts wanting to host a pattern provider.
@@ -70,7 +70,7 @@ public interface PatternProviderLogicHost extends IConfigurableObject, IPriority
         getLogic().setPriority(newValue);
     }
 
-    default void openMenu(Player player, MenuLocator locator) {
+    default void openMenu(Player player, MenuHostLocator locator) {
         MenuOpener.open(PatternProviderMenu.TYPE, player, locator);
     }
 

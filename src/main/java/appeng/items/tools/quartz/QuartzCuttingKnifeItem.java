@@ -20,7 +20,6 @@ package appeng.items.tools.quartz;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -29,12 +28,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.items.AEBaseItem;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.QuartzKnifeMenu;
+import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
@@ -82,7 +83,8 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
 
     @Nullable
     @Override
-    public ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
-        return new ItemMenuHost(player, inventorySlot, stack);
+    public ItemMenuHost<?> getMenuHost(Player player, ItemMenuHostLocator locator,
+            @Nullable BlockHitResult hitResult) {
+        return new ItemMenuHost<>(this, player, locator);
     }
 }

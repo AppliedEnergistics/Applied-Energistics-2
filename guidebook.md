@@ -303,8 +303,8 @@ own [build.gradle](./build.gradle).
 For the standard client run-configuration you should include:
 
 ```groovy
-property "appeng.guide-dev.sources", file("guidebook").absolutePath
-property "appeng.guide-dev.sources.namespace", "your-mod-id"
+property "guideDev.ae2guide.sources", file("guidebook").absolutePath
+property "guideDev.ae2guide.sourcesNamespace", "your-mod-id"
 ```
 
 This will load the `guidebook` folder as if it was included in the resource-pack of your mod under the `ae2guide`

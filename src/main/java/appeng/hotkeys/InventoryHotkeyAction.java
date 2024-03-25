@@ -7,16 +7,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.features.HotkeyAction;
+import appeng.menu.locator.ItemMenuHostLocator;
+import appeng.menu.locator.MenuLocators;
 
-public class InventoryHotkeyAction implements HotkeyAction {
-
-    private final Predicate<ItemStack> locatable;
-    private final Opener opener;
-
-    public InventoryHotkeyAction(Predicate<ItemStack> locatable, Opener opener) {
-        this.locatable = locatable;
-        this.opener = opener;
-    }
+public record InventoryHotkeyAction(Predicate<ItemStack> locatable, Opener opener) implements HotkeyAction {
 
     public InventoryHotkeyAction(Item item, Opener opener) {
         this((stack) -> stack.getItem() == item, opener);
@@ -27,7 +21,7 @@ public class InventoryHotkeyAction implements HotkeyAction {
         var items = player.getInventory().items;
         for (int i = 0; i < items.size(); i++) {
             if (locatable.test(items.get(i))) {
-                if (opener.open(player, i)) {
+                if (opener.open(player, MenuLocators.forInventorySlot(i))) {
                     return true;
                 }
             }
@@ -37,6 +31,6 @@ public class InventoryHotkeyAction implements HotkeyAction {
 
     @FunctionalInterface
     public interface Opener {
-        boolean open(Player player, int inventorySlot);
+        boolean open(Player player, ItemMenuHostLocator locator);
     }
 }

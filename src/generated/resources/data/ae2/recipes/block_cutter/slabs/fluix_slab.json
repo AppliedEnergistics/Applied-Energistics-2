@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 2,
+  "ingredient": {
+    "item": "ae2:fluix_block"
+  },
+  "result": "ae2:fluix_slab"
+}

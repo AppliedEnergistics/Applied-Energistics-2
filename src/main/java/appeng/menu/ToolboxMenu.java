@@ -1,9 +1,6 @@
 package appeng.menu;
 
-import java.util.Objects;
-
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.tools.NetworkToolItem;
@@ -14,30 +11,26 @@ import appeng.menu.slot.RestrictedInputSlot;
  */
 public class ToolboxMenu {
     private final AEBaseMenu menu;
-    private final int slot;
-    private final NetworkToolMenuHost inv;
+    private final NetworkToolMenuHost<?> inv;
 
     public ToolboxMenu(AEBaseMenu menu) {
         this.menu = menu;
 
         this.inv = NetworkToolItem.findNetworkToolInv(menu.getPlayer());
         if (inv != null) {
-            this.slot = Objects.requireNonNullElse(inv.getSlot(), 0);
-            menu.lockPlayerInventorySlot(this.slot);
-        } else {
-            this.slot = 0;
-        }
+            var playerSlot = inv.getPlayerInventorySlot();
+            if (playerSlot != null) {
+                menu.lockPlayerInventorySlot(playerSlot);
+            }
 
-        // Add quick access slots for the upgrade cards stored in the toolbox
-        if (isPresent()) {
-            for (int i = 0; i < 9; i++) {
-                var slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES,
-                        this.inv.getInternalInventory(), i);
+            // Add quick access slots for the upgrade cards stored in the toolbox
+            var upgradeCardInv = this.inv.getInventory();
+            for (int i = 0; i < upgradeCardInv.size(); i++) {
+                var slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgradeCardInv, i);
                 // The toolbox is in the network tool that is part of the player inventory
                 menu.addSlot(slot, SlotSemantics.TOOLBOX);
             }
         }
-
     }
 
     public boolean isPresent() {
@@ -45,20 +38,12 @@ public class ToolboxMenu {
     }
 
     public void tick() {
-        if (isPresent()) {
-            var currentItem = menu.getPlayerInventory().getItem(slot);
-
-            if (currentItem != inv.getItemStack()) {
-                if (!currentItem.isEmpty()) {
-                    if (ItemStack.isSameItem(inv.getItemStack(), currentItem)) {
-                        menu.getPlayerInventory().setItem(slot, inv.getItemStack());
-                    } else {
-                        menu.setValidMenu(false);
-                    }
-                } else {
-                    menu.setValidMenu(false);
-                }
+        if (inv != null) {
+            if (!inv.isValid()) {
+                menu.setValidMenu(false);
+                return;
             }
+            inv.tick();
         }
     }
 

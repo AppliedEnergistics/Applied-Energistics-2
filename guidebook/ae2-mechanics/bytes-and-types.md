@@ -2,7 +2,7 @@
 navigation:
   parent: ae2-mechanics/ae2-mechanics-index.md
   title: Bytes and Types
-  icon: creative_item_cell
+  icon: creative_storage_cell
 ---
 
 # Bytes and Types

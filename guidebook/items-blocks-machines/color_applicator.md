@@ -22,7 +22,7 @@ Its energy can be recharged in a <ItemLink id="charger" />.
 Color applicators act like [storage cells](storage_cells.md), and their paint storage can most easily be filled by sticking
 the applicator in the storage cell slot in a <ItemLink id="chest" />
 
-To use a color applicator, right click to apply, and shift-scroll to cycle through the stored paintballs and dyes.
+Right-click a target to apply the selected color. To change colors, use your scroll wheel while hold shift, or right-click without a target.
 
 ## Upgrades
 

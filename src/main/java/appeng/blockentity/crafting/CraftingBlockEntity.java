@@ -25,6 +25,7 @@ import java.util.Set;
 
 import com.google.common.collect.Iterators;
 
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -220,7 +221,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
     public void breakCluster() {
         if (this.cluster != null) {
-            this.cluster.cancel();
+            this.cluster.cancelJob();
             var inv = this.cluster.craftingLogic.getInventory();
 
             // Drop stacks
@@ -246,7 +247,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
             }
 
             for (var entry : inv.list) {
-                var position = places.get(Platform.getRandomInt() % places.size());
+                var position = Util.getRandom(places, level.getRandom());
                 var stacks = new ArrayList<ItemStack>();
                 entry.getKey().addDrops(entry.getLongValue(), stacks, this.level, position);
                 Platform.spawnDrops(this.level, position, stacks);

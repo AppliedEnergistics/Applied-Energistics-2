@@ -25,12 +25,15 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyService;
-import appeng.api.stacks.AEItemKey;
+import appeng.api.networking.energy.IPassiveEnergyGenerator;
+import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 
 /**
@@ -62,24 +65,42 @@ public class NetworkStatus {
         status.channelsUsed = grid.getPathingService().getUsedChannels();
 
         // This is essentially a groupBy machineRepresentation + count, sum(idlePowerUsage)
-        Map<AEItemKey, MachineGroup> groupedMachines = new HashMap<>();
+        Map<MachineGroupKey, MachineGroup> groupedMachines = new HashMap<>();
         for (var machineClass : grid.getMachineClasses()) {
             for (IGridNode machine : grid.getMachineNodes(machineClass)) {
-                var ais = machine.getVisualRepresentation();
-                if (ais != null) {
-                    MachineGroup group = groupedMachines.get(ais);
-                    if (group == null) {
-                        groupedMachines.put(ais, group = new MachineGroup(ais));
-                    }
+                var key = getKey(machine);
+                if (key != null) {
+                    var group = groupedMachines.computeIfAbsent(key, MachineGroup::new);
 
                     group.setCount(group.getCount() + 1);
                     group.setIdlePowerUsage(group.getIdlePowerUsage() + machine.getIdlePowerUsage());
+
+                    var owner = machine.getOwner();
+                    var passiveEnergyGenerator = machine.getService(IPassiveEnergyGenerator.class);
+                    if (passiveEnergyGenerator != null && !passiveEnergyGenerator.isSuppressed()) {
+                        group.setPowerGenerationCapacity(
+                                group.getPowerGenerationCapacity() + passiveEnergyGenerator.getRate());
+                    }
+                    if (owner instanceof VibrationChamberBlockEntity vibrationChamberBlockEntity) {
+                        group.setPowerGenerationCapacity(
+                                group.getPowerGenerationCapacity() + vibrationChamberBlockEntity.getMaxEnergyRate());
+                    }
                 }
             }
         }
         status.groupedMachines = ImmutableList.copyOf(groupedMachines.values());
 
         return status;
+    }
+
+    @Nullable
+    private static MachineGroupKey getKey(IGridNode machine) {
+        var visualRepresentation = machine.getVisualRepresentation();
+        if (visualRepresentation == null) {
+            return null;
+        }
+
+        return new MachineGroupKey(visualRepresentation, !machine.meetsChannelRequirements());
     }
 
     public double getAveragePowerInjection() {
@@ -150,5 +171,4 @@ public class NetworkStatus {
             machine.write(data);
         }
     }
-
 }

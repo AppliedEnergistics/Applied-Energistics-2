@@ -34,7 +34,6 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -62,7 +61,7 @@ public class InitStackRenderHandlers {
             var poseStack = guiGraphics.pose();
             poseStack.pushPose();
 
-            ItemStack displayStack = stack.toStack();
+            var displayStack = stack.getReadOnlyStack();
             guiGraphics.renderItem(displayStack, x, y);
             guiGraphics.renderItemDecorations(minecraft.font, displayStack, x, y, "");
 
@@ -82,7 +81,7 @@ public class InitStackRenderHandlers {
             // Rotate the normal matrix a little for nicer lighting.
             poseStack.last().normal().rotateX(Mth.DEG_TO_RAD * -45f);
 
-            Minecraft.getInstance().getItemRenderer().renderStatic(what.toStack(), ItemDisplayContext.GUI,
+            Minecraft.getInstance().getItemRenderer().renderStatic(what.getReadOnlyStack(), ItemDisplayContext.GUI,
                     combinedLight, OverlayTexture.NO_OVERLAY, poseStack, buffers, level, 0);
 
             poseStack.popPose();
@@ -90,12 +89,12 @@ public class InitStackRenderHandlers {
 
         @Override
         public Component getDisplayName(AEItemKey stack) {
-            return stack.toStack().getHoverName();
+            return stack.getDisplayName();
         }
 
         @Override
         public List<Component> getTooltip(AEItemKey stack) {
-            return stack.toStack().getTooltipLines(Minecraft.getInstance().player,
+            return stack.getReadOnlyStack().getTooltipLines(Minecraft.getInstance().player,
                     Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED
                             : TooltipFlag.Default.NORMAL);
         }

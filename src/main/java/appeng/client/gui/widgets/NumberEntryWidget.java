@@ -63,6 +63,7 @@ public class NumberEntryWidget implements ICompositeWidget {
     private static final long[] STEPS = new long[] { 1, 10, 100, 1000 };
     private static final Component PLUS = Component.literal("+");
     private static final Component MINUS = Component.literal("-");
+    private static final int UNIT_PADDING = 3;
     private final int errorTextColor;
     private final int normalTextColor;
 
@@ -85,6 +86,7 @@ public class NumberEntryWidget implements ICompositeWidget {
     private Rect2i bounds = new Rect2i(0, 0, 0, 0);
 
     private Rect2i textFieldBounds = Rects.ZERO;
+    private Point currentScreenOrigin = Point.ZERO;
 
     public NumberEntryWidget(ScreenStyle style, NumberEntryType type) {
         this.errorTextColor = style.getColor(PaletteColor.TEXTFIELD_ERROR).toARGB();
@@ -136,8 +138,12 @@ public class NumberEntryWidget implements ICompositeWidget {
      */
     public void setTextFieldBounds(Rect2i bounds) {
         this.textFieldBounds = bounds;
-        this.textField.move(Point.fromTopLeft(bounds));
-        this.textField.resize(bounds.getWidth(), bounds.getHeight());
+        this.textField.move(currentScreenOrigin.move(bounds.getX(), bounds.getY()));
+        int unitWidth = 0;
+        if (this.type.unit() != null) {
+            unitWidth = Minecraft.getInstance().font.width(this.type.unit()) + UNIT_PADDING;
+        }
+        this.textField.resize(bounds.getWidth() - unitWidth, bounds.getHeight());
     }
 
     public void setTextFieldStyle(WidgetStyle style) {
@@ -201,9 +207,8 @@ public class NumberEntryWidget implements ICompositeWidget {
         buttons.forEach(addWidget);
 
         // Placing this here will give a sensible tab order
-        var textFieldBounds = Rects.move(this.textFieldBounds, bounds.getX(), bounds.getY());
-        this.textField.move(Point.fromTopLeft(textFieldBounds));
-        this.textField.resize(textFieldBounds.getWidth(), textFieldBounds.getHeight());
+        this.currentScreenOrigin = Point.fromTopLeft(bounds);
+        setTextFieldBounds(this.textFieldBounds);
         screen.setInitialFocus(this.textField);
         addWidget.accept(this.textField);
 
@@ -266,6 +271,11 @@ public class NumberEntryWidget implements ICompositeWidget {
     public OptionalLong getLongValue() {
         var internalValue = getValueInternal();
         if (internalValue.isEmpty()) {
+            return OptionalLong.empty();
+        }
+
+        // Reject decimal values if the unit is integral
+        if (type.amountPerUnit() == 1 && internalValue.get().scale() > 0) {
             return OptionalLong.empty();
         }
 
@@ -383,6 +393,7 @@ public class NumberEntryWidget implements ICompositeWidget {
             return;
         }
         this.type = type;
+        setTextFieldBounds(this.textFieldBounds);
         // Update the external with the now changed scaling
         if (onChange != null) {
             onChange.run();
@@ -407,7 +418,8 @@ public class NumberEntryWidget implements ICompositeWidget {
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
         if (type.unit() != null) {
             var font = Minecraft.getInstance().font;
-            var x = bounds.getX() + textFieldBounds.getX() + textFieldBounds.getWidth() + 3;
+            var x = bounds.getX() + textFieldBounds.getX() + textFieldBounds.getWidth()
+                    - font.width(type.unit());
             var y = (int) (bounds.getY() + textFieldBounds.getY() + (textFieldBounds.getHeight() - font.lineHeight) / 2f
                     + 1);
             guiGraphics.drawString(font, type.unit(), x, y, ChatFormatting.DARK_GRAY.getColor(), false);

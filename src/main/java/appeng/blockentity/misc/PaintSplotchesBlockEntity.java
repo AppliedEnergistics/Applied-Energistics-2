@@ -170,15 +170,14 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     }
 
     public void addBlot(ItemStack type, Direction side, Vec3 hitVec) {
-        final BlockPos p = this.worldPosition.relative(side);
+        PaintBallItem paintBallItem = (PaintBallItem) type.getItem();
+        addBlot(paintBallItem.getColor(), paintBallItem.isLumen(), side, hitVec);
+    }
 
-        final BlockState blk = this.level.getBlockState(p);
+    public void addBlot(AEColor color, boolean lit, Direction side, Vec3 hitVec) {
+        var p = this.worldPosition.relative(side);
+        var blk = this.level.getBlockState(p);
         if (blk.isFaceSturdy(this.level, p, side.getOpposite())) {
-            final PaintBallItem ipb = (PaintBallItem) type.getItem();
-
-            final AEColor col = ipb.getColor();
-            final boolean lit = ipb.isLumen();
-
             if (this.dots == null) {
                 this.dots = new ArrayList<>();
             }
@@ -187,7 +186,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
                 this.dots.remove(0);
             }
 
-            this.dots.add(new Splotch(col, lit, side, hitVec));
+            this.dots.add(new Splotch(color, lit, side, hitVec));
 
             updateData();
             this.markForUpdate();

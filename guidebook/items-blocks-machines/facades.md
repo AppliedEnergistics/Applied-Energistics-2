@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Facades
   icon: facade
+  icon_nbt: '{item: "minecraft:stone"}'
   position: 110
 categories:
 - network infrastructure
@@ -34,6 +35,12 @@ Be clever with them to improve your base aesthetic or make blocks with different
   <ImportStructure src="../assets/assemblies/facades_3.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
+
+## Hiding Facades
+
+Facades will be hidden while holding a <a href="network_tool.md">network tool</a> in either hand.
+
+You can interact with blocks behind hidden facades without having to remove the facades first.
 
 ## Recipe
 

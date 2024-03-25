@@ -21,6 +21,7 @@ package appeng.client.gui.me.networktool;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -87,7 +88,10 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
         final int viewEnd = viewStart + COLUMNS * ROWS;
 
         List<Component> tooltip = null;
-        List<MachineGroup> machines = status.getGroupedMachines();
+        List<MachineGroup> machines = new ArrayList<>(status.getGroupedMachines());
+        // Sort anything with a classifier to the front
+        machines.sort(MachineGroup.COMPARATOR);
+
         for (int i = viewStart; i < Math.min(viewEnd, machines.size()); i++) {
             MachineGroup entry = machines.get(i);
 
@@ -98,6 +102,10 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
             int itemX = cellX + CELL_WIDTH - 17;
             int itemY = cellY + 1;
 
+            if (entry.isMissingChannel()) {
+                guiGraphics.fill(cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, 0xffff5555);
+            }
+
             drawMachineCount(guiGraphics, itemX, cellY, entry.getCount());
 
             AEKeyRendering.drawInGui(Minecraft.getInstance(), guiGraphics, itemX, itemY, entry.getDisplay());
@@ -106,11 +114,18 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
             if (isHovering(cellX, cellY, CELL_WIDTH, CELL_HEIGHT, mouseX, mouseY)) {
                 tooltip = new ArrayList<>();
                 tooltip.add(entry.getDisplay().getDisplayName());
+                if (entry.isMissingChannel()) {
+                    tooltip.add(GuiText.NoChannel.text().withStyle(ChatFormatting.RED));
+                }
 
                 tooltip.add(GuiText.Installed.text(entry.getCount()));
                 if (entry.getIdlePowerUsage() > 0) {
                     tooltip.add(GuiText.EnergyDrain
                             .text(Platform.formatPower(entry.getIdlePowerUsage(), true)));
+                }
+                if (entry.getPowerGenerationCapacity() > 0) {
+                    tooltip.add(GuiText.EnergyGenerationCapacity
+                            .text(Platform.formatPower(entry.getPowerGenerationCapacity(), true)));
                 }
             }
 

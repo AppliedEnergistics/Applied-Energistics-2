@@ -35,6 +35,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.ICapabilityInvalidationListener;
 
 import appeng.api.behaviors.ExternalStorageStrategy;
 import appeng.api.config.AccessRestriction;
@@ -106,7 +107,8 @@ public class StorageBusPart extends UpgradeablePart
             new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_has_channel"));
 
     protected final IActionSource source;
-    private final ConfigInventory config = ConfigInventory.configTypes(63, this::onConfigurationChanged);
+    private final ConfigInventory config = ConfigInventory.configTypes(63).changeListener(this::onConfigurationChanged)
+            .build();
     /**
      * This is the virtual inventory this storage bus exposes to the network it belongs to. To avoid continuous
      * cell-change notifications, we instead use a handler that will exist as long as this storage bus exists, while
@@ -124,6 +126,17 @@ public class StorageBusPart extends UpgradeablePart
     private PendingUpdateStatus updateStatus = PendingUpdateStatus.FAST_UPDATE;
     private ITickingMonitor monitor = null;
 
+    // Capability listener.
+    // Stored as a field because it will be stored in a WeakReference by the capability invalidation system.
+    private final ICapabilityInvalidationListener capabilityListener = () -> {
+        if (!PartAdjacentApi.isPartValid(this)) {
+            return false;
+        }
+
+        this.onCapabilityInvalidation();
+        return true;
+    };
+
     public StorageBusPart(IPartItem<?> partItem) {
         super(partItem);
         this.adjacentStorageAccessor = new PartAdjacentApi<>(this, AppEngCapabilities.ME_STORAGE);
@@ -135,6 +148,15 @@ public class StorageBusPart extends UpgradeablePart
         getMainNode()
                 .addService(IStorageProvider.class, this)
                 .addService(IGridTickable.class, this);
+    }
+
+    @Override
+    public void addToWorld() {
+        super.addToWorld();
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            var targetPos = getBlockEntity().getBlockPos().relative(getSide());
+            serverLevel.registerCapabilityListener(targetPos, this.capabilityListener);
+        }
     }
 
     @Override
@@ -237,20 +259,18 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public final void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         if (pos.relative(getSide()).equals(neighbor)) {
-            var te = level.getBlockEntity(neighbor);
-
-            if (te == null) {
-                // In case the TE was destroyed, we have to update the target handler immediately.
-                this.updateTarget(false);
-            } else {
-                this.scheduleUpdate();
+            // Tick again to update the monitor.
+            if (!isClientSide()) {
+                getMainNode().ifPresent((grid, node) -> {
+                    grid.getTickManager().alertDevice(node);
+                });
             }
         }
     }
 
     @Override
     public final TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.StorageBus, false, true);
+        return new TickingRequest(TickRates.StorageBus, false);
     }
 
     @Override
@@ -286,6 +306,14 @@ public class StorageBusPart extends UpgradeablePart
         if (getMainNode().isReady()) {
             updateTarget(true);
         }
+    }
+
+    private void onCapabilityInvalidation() {
+        // Immediately replace the inventory by a null inventory to avoid any further operations on the old inventory.
+        this.handler.setDelegate(NullInventory.of());
+        // TODO: potentially set handlerDescription to null?
+        // Enqueue update.
+        this.scheduleUpdate();
     }
 
     private void updateTarget(boolean forceFullUpdate) {

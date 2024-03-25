@@ -48,10 +48,11 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             AEProcessingPattern.MAX_INPUT_SLOTS);
     private static final int MAX_OUTPUT_SLOTS = AEProcessingPattern.MAX_OUTPUT_SLOTS;
 
-    private final ConfigInventory encodedInputInv = ConfigInventory.configStacks(null, MAX_INPUT_SLOTS,
-            this::onEncodedInputChanged, true);
-    private final ConfigInventory encodedOutputInv = ConfigInventory.configStacks(null, MAX_OUTPUT_SLOTS,
-            this::onEncodedOutputChanged, true);
+    private final ConfigInventory encodedInputInv = ConfigInventory.configStacks(MAX_INPUT_SLOTS)
+            .changeListener(this::onEncodedInputChanged).allowOverstacking(true).build();
+    private final ConfigInventory encodedOutputInv = ConfigInventory.configStacks(MAX_OUTPUT_SLOTS)
+            .changeListener(this::onEncodedOutputChanged).allowOverstacking(true).build();
+
     private final AppEngInternalInventory blankPatternInv = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory encodedPatternInv = new AppEngInternalInventory(this, 1);
 
@@ -68,7 +69,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         // Load the encoded inputs and outputs of a pattern if it changes
         if (inv == this.encodedPatternInv) {
             loadEncodedPattern(encodedPatternInv.getStackInSlot(0));
@@ -77,12 +78,16 @@ public class PatternEncodingLogic implements InternalInventoryHost {
         saveChanges();
     }
 
-    @Override
     public void saveChanges() {
         // Do not re-save while we're loading since it could overwrite the NBT with incomplete data
         if (!isLoading) {
             host.markForSave();
         }
+    }
+
+    @Override
+    public void saveChangedInventory(AppEngInternalInventory inv) {
+        saveChanges();
     }
 
     @Override

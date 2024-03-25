@@ -21,6 +21,7 @@ import appeng.core.network.clientbound.MatterCannonPacket;
 import appeng.core.network.clientbound.MockExplosionPacket;
 import appeng.core.network.clientbound.NetworkStatusPacket;
 import appeng.core.network.clientbound.PatternAccessTerminalPacket;
+import appeng.core.network.clientbound.SetLinkStatusPacket;
 import appeng.core.network.serverbound.ColorApplicatorSelectColorPacket;
 import appeng.core.network.serverbound.CompassRequestPacket;
 import appeng.core.network.serverbound.ConfigButtonPacket;
@@ -32,6 +33,7 @@ import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.core.network.serverbound.MEInteractionPacket;
 import appeng.core.network.serverbound.MouseWheelPacket;
 import appeng.core.network.serverbound.PartLeftClickPacket;
+import appeng.core.network.serverbound.SelectKeyTypePacket;
 import appeng.core.network.serverbound.SwapSlotsPacket;
 import appeng.core.network.serverbound.SwitchGuisPacket;
 
@@ -55,6 +57,7 @@ public class InitNetwork {
         clientbound(registrar, MockExplosionPacket.class, MockExplosionPacket::decode);
         clientbound(registrar, NetworkStatusPacket.class, NetworkStatusPacket::decode);
         clientbound(registrar, PatternAccessTerminalPacket.class, PatternAccessTerminalPacket::decode);
+        clientbound(registrar, SetLinkStatusPacket.class, SetLinkStatusPacket::decode);
 
         // Serverbound
         serverbound(registrar, ColorApplicatorSelectColorPacket.class, ColorApplicatorSelectColorPacket::decode);
@@ -68,6 +71,7 @@ public class InitNetwork {
         serverbound(registrar, MEInteractionPacket.class, MEInteractionPacket::decode);
         serverbound(registrar, MouseWheelPacket.class, MouseWheelPacket::decode);
         serverbound(registrar, PartLeftClickPacket.class, PartLeftClickPacket::decode);
+        serverbound(registrar, SelectKeyTypePacket.class, SelectKeyTypePacket::decode);
         serverbound(registrar, SwapSlotsPacket.class, SwapSlotsPacket::decode);
         serverbound(registrar, SwitchGuisPacket.class, SwitchGuisPacket::decode);
 

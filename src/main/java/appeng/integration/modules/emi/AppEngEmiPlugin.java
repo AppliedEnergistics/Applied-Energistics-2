@@ -2,7 +2,6 @@ package appeng.integration.modules.emi;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -29,6 +28,7 @@ import appeng.api.features.P2PTunnelAttunementInternal;
 import appeng.api.integrations.emi.EmiStackConverters;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
+import appeng.core.FacadeCreativeTab;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -37,8 +37,10 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
 import appeng.core.localization.LocalizationEnum;
 import appeng.integration.abstraction.ItemListMod;
+import appeng.integration.modules.itemlists.ItemPredicates;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
+import appeng.menu.me.items.WirelessCraftingTermMenu;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
@@ -71,6 +73,8 @@ public class AppEngEmiPlugin implements EmiPlugin {
         registry.addRecipeHandler(PatternEncodingTermMenu.TYPE,
                 new EmiEncodePatternHandler<>(PatternEncodingTermMenu.class));
         registry.addRecipeHandler(CraftingTermMenu.TYPE, new EmiUseCraftingRecipeHandler<>(CraftingTermMenu.class));
+        registry.addRecipeHandler(WirelessCraftingTermMenu.TYPE,
+                new EmiUseCraftingRecipeHandler<>(WirelessCraftingTermMenu.class));
 
         // Inscriber
         registry.addCategory(EmiInscriberRecipe.CATEGORY);
@@ -103,7 +107,15 @@ public class AppEngEmiPlugin implements EmiPlugin {
         adaptRecipeType(registry, TransformRecipe.TYPE, EmiTransformRecipe::new);
 
         // Facades
-        registry.addDeferredRecipes(this::registerFacades);
+        if (AEConfig.instance().isEnableFacadeRecipesInRecipeViewer()) {
+            registry.addDeferredRecipes(this::registerFacades);
+        }
+
+        // Remove items
+        registry.removeEmiStacks(emiStack -> {
+            var stack = emiStack.getItemStack();
+            return !stack.isEmpty() && ItemPredicates.shouldBeHidden(stack);
+        });
     }
 
     private void registerWorkstations(EmiRegistry registry) {
@@ -181,10 +193,8 @@ public class AppEngEmiPlugin implements EmiPlugin {
 
     private void registerFacades(Consumer<EmiRecipe> recipeConsumer) {
         var generator = new EmiFacadeGenerator();
-        EmiApi.getIndexStacks().stream()
-                .map(generator::getRecipeFor)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .forEach(recipeConsumer);
+        for (var facade : FacadeCreativeTab.getDisplayItems()) {
+            generator.getRecipeFor(facade).ifPresent(recipeConsumer);
+        }
     }
 }

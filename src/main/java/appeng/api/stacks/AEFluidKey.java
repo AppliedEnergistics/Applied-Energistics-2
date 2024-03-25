@@ -173,12 +173,12 @@ public final class AEFluidKey extends AEKey {
 
     @Override
     public void writeToPacket(FriendlyByteBuf data) {
-        data.writeVarInt(BuiltInRegistries.FLUID.getId(fluid));
+        data.writeId(BuiltInRegistries.FLUID, fluid);
         data.writeNbt(tag);
     }
 
     public static AEFluidKey fromPacket(FriendlyByteBuf data) {
-        var fluid = BuiltInRegistries.FLUID.byId(data.readVarInt());
+        var fluid = data.readById(BuiltInRegistries.FLUID);
         var tag = data.readNbt();
         return new AEFluidKey(fluid, tag);
     }

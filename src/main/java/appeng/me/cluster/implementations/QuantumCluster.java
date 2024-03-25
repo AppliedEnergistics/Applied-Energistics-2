@@ -61,7 +61,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
 
     @SubscribeEvent
     public void onUnload(final LevelEvent.Unload e) {
-        if (this.center.getLevel() == e.getLevel()) {
+        if (this.center != null && this.center.getLevel() == e.getLevel()) {
             this.setUpdateStatus(false);
             this.destroy();
         }
@@ -162,11 +162,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
     }
 
     private boolean isActive() {
-        if (this.isDestroyed || !this.registered) {
-            return false;
-        }
-
-        return this.hasQES();
+        return !this.isDestroyed && this.registered && hasQES() && getNode() != null;
     }
 
     private IGridNode getNode() {

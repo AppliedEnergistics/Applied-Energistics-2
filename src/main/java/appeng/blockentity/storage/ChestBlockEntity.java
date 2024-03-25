@@ -47,7 +47,6 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.config.TypeFilter;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.implementations.blockentities.IMEChest;
@@ -60,19 +59,25 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
+import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageHelper;
+import appeng.api.storage.SupplierStorage;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.KeyTypeSelection;
+import appeng.api.util.KeyTypeSelectionHost;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.definitions.AEBlocks;
+import appeng.core.localization.GuiText;
+import appeng.core.localization.PlayerMessages;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DelegatingMEInventory;
@@ -81,14 +86,13 @@ import appeng.menu.MenuOpener;
 import appeng.menu.implementations.ChestMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.ConfigManager;
-import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class ChestBlockEntity extends AENetworkPowerBlockEntity
         implements IMEChest, ITerminalHost, IPriorityHost, IColorableBlockEntity,
-        ServerTickingBlockEntity, IStorageProvider {
+        ServerTickingBlockEntity, IStorageProvider, KeyTypeSelectionHost {
 
     private static final Logger LOG = LoggerFactory.getLogger(ChestBlockEntity.class);
 
@@ -99,6 +103,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     private final IActionSource mySrc = new MachineSource(this);
     private final IConfigManager config = new ConfigManager(this::saveChanges);
+    private final KeyTypeSelection keyTypeSelection = new KeyTypeSelection(this::saveChanges, keyType -> true);
     private int priority = 0;
     // Client-side cell state or last cell-state sent to client (for update-checking)
     private CellState clientCellState = CellState.ABSENT;
@@ -122,7 +127,6 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                 .setFlags(GridFlags.REQUIRE_CHANNEL);
         this.config.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.config.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        this.config.registerSetting(Settings.TYPE_FILTER, TypeFilter.ALL);
         this.config.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
         this.setInternalPublicPowerStorage(true);
@@ -204,6 +208,19 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
 
         return new ChestMonitorHandler(cellInventory);
+    }
+
+    @Override
+    public ILinkStatus getLinkStatus() {
+        updateHandler();
+        if (cellHandler == null) {
+            return ILinkStatus.ofDisconnected(PlayerMessages.ChestCannotReadStorageCell.text());
+        }
+        // The Chest GUI works independently of the grid the chest may be connected to
+        if (!isPowered()) {
+            return ILinkStatus.ofDisconnected(GuiText.OutOfPower.text());
+        }
+        return ILinkStatus.ofConnected();
     }
 
     @Override
@@ -384,6 +401,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.config.readFromNBT(data);
+        this.keyTypeSelection.readFromNBT(data);
         this.priority = data.getInt("priority");
         if (data.contains("paintedColor")) {
             this.paintedColor = AEColor.values()[data.getByte("paintedColor")];
@@ -394,6 +412,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
         this.config.writeToNBT(data);
+        this.keyTypeSelection.writeToNBT(data);
         data.putInt("priority", this.priority);
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
     }
@@ -410,12 +429,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public MEStorage getInventory() {
-        this.updateHandler();
-
-        if (this.cellHandler != null) {
+        return new SupplierStorage(() -> {
+            updateHandler();
             return this.cellHandler;
-        }
-        return null;
+        });
     }
 
     @Override
@@ -424,7 +441,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         if (inv == this.cellInventory) {
             this.cellHandler = null;
             this.isCached = false; // recalculate the storage cell.
@@ -433,7 +450,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
             // update the neighbors
             if (this.level != null) {
-                Platform.notifyBlocksOfNeighbors(this.level, this.worldPosition);
+                invalidateCapabilities();
                 this.markForUpdate();
             }
         }
@@ -507,6 +524,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     @Override
     public IConfigManager getConfigManager() {
         return this.config;
+    }
+
+    @Override
+    public KeyTypeSelection getKeyTypeSelection() {
+        return this.keyTypeSelection;
     }
 
     public boolean openGui(Player p) {

@@ -373,7 +373,7 @@ public final class SiteExporter implements ResourceExporter {
     }
 
     private void writeSummary(String guideDataFilename) throws IOException {
-        var modVersion = ModVersion.get();
+        var modVersion = System.getProperty("appeng.version", "unknown");
         var generated = Instant.now().toEpochMilli();
         var gameVersion = DetectedVersion.tryDetectVersion().getName();
 

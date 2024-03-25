@@ -33,6 +33,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.GenericStack;
+import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 
 public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements InternalInventoryHost {
@@ -98,17 +99,25 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public abstract void onChangeInventory(InternalInventory inv, int slot);
+    public void saveChangedInventory(AppEngInternalInventory inv) {
+        this.saveChanges();
+    }
 
     protected InternalInventory getExposedInventoryForSide(Direction side) {
         return this.getInternalInventory();
     }
 
+    @Nullable
     public IItemHandler getExposedItemHandler(@Nullable Direction side) {
         if (side == null) {
             return getInternalInventory().toItemHandler();
         } else {
-            return getExposedInventoryForSide(side).toItemHandler();
+            var exposed = getExposedInventoryForSide(side);
+            // If the inventory has 0 slots, it's probably a dummy.
+            // Return null to avoid pipe connections to it.
+            // isEmpty checks for stacks, use size to only check the slot count.
+            // noinspection SizeReplaceableByIsEmpty
+            return exposed.size() == 0 ? null : exposed.toItemHandler();
         }
     }
 

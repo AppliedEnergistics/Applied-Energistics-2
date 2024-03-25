@@ -18,15 +18,14 @@
 
 package appeng.util.inv;
 
-import appeng.api.inventories.InternalInventory;
-
 /**
  * Interface that allows listening to events of {@link AppEngInternalInventory}
  */
 public interface InternalInventoryHost {
-    void saveChanges();
+    void saveChangedInventory(AppEngInternalInventory inv);
 
-    void onChangeInventory(InternalInventory inv, int slot);
+    default void onChangeInventory(AppEngInternalInventory inv, int slot) {
+    }
 
     boolean isClientSide();
 }

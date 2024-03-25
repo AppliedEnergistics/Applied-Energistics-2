@@ -348,7 +348,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         if (inv == this.gridInv || inv == this.patternInv) {
             this.recalculatePlan();
         }
@@ -377,7 +377,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     public TickingRequest getTickingRequest(IGridNode node) {
         this.recalculatePlan();
         this.updateSleepiness();
-        return new TickingRequest(1, 1, !this.isAwake, false);
+        return new TickingRequest(1, 1, !this.isAwake);
     }
 
     @Override

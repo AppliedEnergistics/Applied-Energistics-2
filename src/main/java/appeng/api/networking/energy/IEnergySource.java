@@ -29,11 +29,17 @@ import appeng.api.config.PowerMultiplier;
 public interface IEnergySource {
 
     /**
+     * @return An energy source that never provides energy.
+     */
+    static IEnergySource empty() {
+        return EmptyEnergySource.INSTANCE;
+    }
+
+    /**
      * Extract power from the network.
      *
      * @param amt  extracted power
      * @param mode should the action be simulated or performed?
-     *
      * @return returns extracted power.
      */
     double extractAEPower(double amt, Actionable mode,

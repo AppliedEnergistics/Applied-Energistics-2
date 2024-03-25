@@ -25,13 +25,16 @@ import it.unimi.dsi.fastutil.ints.IntList;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.core.AELog;
 import appeng.core.network.ServerboundPacket;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.storage.ViewCellItem;
+import appeng.me.storage.NullInventory;
 import appeng.util.CraftingRecipeUtil;
 import appeng.util.prioritylist.IPartitionList;
 
@@ -56,8 +59,7 @@ public record FillCraftingGridFromRecipePacket(
             NonNullList<ItemStack> ingredientTemplates,
             boolean craftMissing) {
         this.recipeId = recipeId;
-        this.ingredientTemplates = NonNullList.copyOf(ingredientTemplates);
-        this.ingredientTemplates.replaceAll(ItemStack::copy);
+        this.ingredientTemplates = NonNullList.copyOf(ingredientTemplates.stream().map(ItemStack::copy).toList());
         this.craftMissing = craftMissing;
     }
 
@@ -108,27 +110,36 @@ public record FillCraftingGridFromRecipePacket(
             return;
         }
 
-        // We can only fill the crafting grid if the menu is actually online
+        var energy = cct.getEnergySource();
+        @Nullable
+        ICraftingService craftingService;
+        @Nullable
+        IStorageService storageService;
+        MEStorage networkStorage;
+        KeyCounter cachedStorage;
+
+        @Nullable
         var node = cct.getNetworkNode();
-        if (node == null) {
-            return;
+        if (node != null && cct.getLinkStatus().connected()) {
+            craftingService = node.getGrid().getCraftingService();
+            storageService = node.getGrid().getStorageService();
+            networkStorage = storageService.getInventory();
+            cachedStorage = storageService.getCachedInventory();
+        } else {
+            craftingService = null;
+            storageService = null;
+            networkStorage = NullInventory.of();
+            cachedStorage = new KeyCounter();
         }
 
-        var grid = node.getGrid();
-
-        var storageService = grid.getStorageService();
-        var energy = grid.getEnergyService();
         var craftMatrix = cct.getCraftingMatrix();
 
         // We'll try to use the best possible ingredients based on what's available in the network
 
-        var storage = storageService.getInventory();
-        var cachedStorage = storageService.getCachedInventory();
         var filter = ViewCellItem.createItemFilter(cct.getViewCells());
         var ingredients = getDesiredIngredients(player);
 
         // Prepare to autocraft some stuff
-        var craftingService = grid.getCraftingService();
         var toAutoCraft = new LinkedHashMap<AEItemKey, IntList>();
         boolean touchedGridStorage = false;
 
@@ -145,7 +156,7 @@ public record FillCraftingGridFromRecipePacket(
                     continue;
                 } else {
                     var in = AEItemKey.of(currentItem);
-                    var inserted = StorageHelper.poweredInsert(energy, storage, in, currentItem.getCount(),
+                    var inserted = StorageHelper.poweredInsert(energy, networkStorage, in, currentItem.getCount(),
                             cct.getActionSource());
                     if (inserted > 0) {
                         touchedGridStorage = true;
@@ -173,7 +184,8 @@ public record FillCraftingGridFromRecipePacket(
             if (currentItem.isEmpty()) {
                 var request = findBestMatchingItemStack(ingredient, filter, cachedStorage);
                 for (var what : request) {
-                    var extracted = StorageHelper.poweredExtraction(energy, storage, what, 1, cct.getActionSource());
+                    var extracted = StorageHelper.poweredExtraction(energy, networkStorage, what, 1,
+                            cct.getActionSource());
                     if (extracted > 0) {
                         touchedGridStorage = true;
                         currentItem = what.toStack(Ints.saturatedCast(extracted));
@@ -190,7 +202,7 @@ public record FillCraftingGridFromRecipePacket(
             craftMatrix.setItemDirect(x, currentItem);
 
             // If we couldn't find the item, schedule its autocrafting
-            if (currentItem.isEmpty() && craftMissing) {
+            if (currentItem.isEmpty() && craftMissing && craftingService != null) {
                 int slot = x;
                 findCraftableKey(ingredient, craftingService).ifPresent(key -> {
                     toAutoCraft.computeIfAbsent(key, k -> new IntArrayList()).add(slot);
@@ -281,7 +293,7 @@ public record FillCraftingGridFromRecipePacket(
                 // While FuzzyMode.IGNORE_ALL will retrieve all stacks of the same Item which matches
                 // standard Vanilla Ingredient matching, there are NBT-matching Ingredient subclasses on Forge,
                 // and Mods might actually have mixed into Ingredient
-                .filter(e -> ingredient.test(((AEItemKey) e.getKey()).toStack()))
+                .filter(e -> ((AEItemKey) e.getKey()).matches(ingredient))
                 // Sort in descending order of availability
                 .sorted((a, b) -> Long.compare(b.getLongValue(), a.getLongValue()))//
                 .map(e -> (AEItemKey) e.getKey())//
@@ -292,7 +304,7 @@ public record FillCraftingGridFromRecipePacket(
         return Arrays.stream(ingredient.getItems())//
                 .map(AEItemKey::of)//
                 .map(s -> (AEItemKey) craftingService.getFuzzyCraftable(s,
-                        key -> ingredient.test(((AEItemKey) key).toStack())))//
+                        key -> ((AEItemKey) key).matches(ingredient)))//
                 .filter(Objects::nonNull)//
                 .findAny();//
     }

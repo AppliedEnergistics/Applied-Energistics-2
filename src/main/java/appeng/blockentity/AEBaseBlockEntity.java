@@ -305,6 +305,7 @@ public class AEBaseBlockEntity extends BlockEntity
      */
     @ApiStatus.OverrideOnly
     protected void onOrientationChanged(BlockOrientation orientation) {
+        invalidateCapabilities();
     }
 
     /**

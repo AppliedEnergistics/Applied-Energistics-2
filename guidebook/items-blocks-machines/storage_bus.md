@@ -27,6 +27,9 @@ necessarily *have* to use a storage bus for *storage*. By using [subnetworks](..
 to make a storage bus (or handful of storage busses) the *only* storage on a network, you can use it as a source or destination
 for item transfer. (see ["pipe subnet"](../example-setups/pipe-subnet.md))
 
+IMPORTANT NOTE: Big optimized inventories like drawers are fine, but big *un*optimized inventories with many slots, like
+colossal chests, are terrible for performance when used with storage busses.
+
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
 ## Filtering

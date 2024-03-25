@@ -19,6 +19,7 @@
 package appeng.core;
 
 import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.IEventBus;
 
 import appeng.client.EffectType;
 
@@ -26,8 +27,8 @@ import appeng.client.EffectType;
  * Contains mod functionality specific to a dedicated server.
  */
 public class AppEngServer extends AppEngBase {
-    public AppEngServer() {
-        super();
+    public AppEngServer(IEventBus modEventBus) {
+        super(modEventBus);
     }
 
     @Override

@@ -123,7 +123,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         getMainNode().ifPresent((grid, node) -> {
             grid.getTickManager().wakeDevice(node);
         });
@@ -153,7 +153,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.Charger, false, true);
+        return new TickingRequest(TickRates.Charger, false);
     }
 
     @Override
@@ -209,7 +209,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
             } else if (this.getInternalCurrentPower() > POWER_THRESHOLD
                     && ChargerRecipes.findRecipe(level, myItem) != null) {
                 this.working = true;
-                if (Platform.getRandomFloat() > 0.8f) {
+                if (level != null && level.getRandom().nextFloat() > 0.8f) {
                     this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
                     Item charged = Objects.requireNonNull(ChargerRecipes.findRecipe(level, myItem)).result;
@@ -272,18 +272,6 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
             }
 
             return ChargerRecipes.allowExtract(chargerBlockEntity.level, extractedItem);
-        }
-    }
-
-    class Crankable implements ICrankable {
-        @Override
-        public boolean canTurn() {
-            return getInternalCurrentPower() < getInternalMaxPower();
-        }
-
-        @Override
-        public void applyTurn() {
-            injectExternalPower(PowerUnits.AE, CrankBlockEntity.POWER_PER_CRANK_TURN, Actionable.MODULATE);
         }
     }
 }

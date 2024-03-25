@@ -29,20 +29,17 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -60,6 +57,9 @@ import appeng.api.parts.CableRenderMode;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.AEKeyTypesInternal;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.InitNetwork;
 import appeng.core.network.NetworkHandler;
@@ -67,6 +67,7 @@ import appeng.hooks.SkyStoneBreakSpeed;
 import appeng.hooks.WrenchHook;
 import appeng.hooks.ticking.TickHandler;
 import appeng.hotkeys.HotkeyActions;
+import appeng.init.InitAdvancementTriggers;
 import appeng.init.InitBlockEntities;
 import appeng.init.InitBlocks;
 import appeng.init.InitCapabilityProviders;
@@ -77,6 +78,7 @@ import appeng.init.InitItems;
 import appeng.init.InitMenuTypes;
 import appeng.init.InitRecipeSerializers;
 import appeng.init.InitRecipeTypes;
+import appeng.init.InitStats;
 import appeng.init.InitTiers;
 import appeng.init.InitVillager;
 import appeng.init.client.InitParticleTypes;
@@ -87,7 +89,6 @@ import appeng.init.internal.InitUpgrades;
 import appeng.init.worldgen.InitStructures;
 import appeng.integration.Integrations;
 import appeng.items.tools.MemoryCardItem;
-import appeng.items.tools.NetworkToolItem;
 import appeng.server.AECommand;
 import appeng.server.services.ChunkLoadingService;
 import appeng.server.testworld.GameTestPlotAdapter;
@@ -114,17 +115,12 @@ public abstract class AppEngBase implements AppEng {
 
     static AppEngBase INSTANCE;
 
-    public AppEngBase() {
+    public AppEngBase(IEventBus modEventBus) {
         if (INSTANCE != null) {
             throw new IllegalStateException();
         }
         INSTANCE = this;
 
-        // Now that item instances are available, we can initialize registries that need item instances
-        InitGridLinkables.init();
-        InitStorageCells.init();
-
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::registerRegistries);
         modEventBus.addListener(MainCreativeTab::initExternal);
         modEventBus.addListener(InitNetwork::init);
@@ -145,6 +141,14 @@ public abstract class AppEngBase implements AppEng {
             }
             // Register everything in the block registration event ;)
 
+            InitStats.init();
+            InitAdvancementTriggers.init();
+
+            // Initialize items in order
+            AEItems.init();
+            AEBlocks.init();
+            AEParts.init();
+
             InitTiers.init();
             InitBlocks.init(BuiltInRegistries.BLOCK);
             InitItems.init(BuiltInRegistries.ITEM);
@@ -157,6 +161,11 @@ public abstract class AppEngBase implements AppEng {
             InitStructures.init();
             registerKeyTypes();
             InitVillager.init();
+
+            Registry.register(BuiltInRegistries.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
+                    SpatialStorageChunkGenerator.CODEC);
+
+            HotkeyActions.init();
         });
 
         modEventBus.addListener(Integrations::enqueueIMC);
@@ -180,8 +189,6 @@ public abstract class AppEngBase implements AppEng {
                 event.setUseBlock(Event.Result.ALLOW);
             }
         });
-
-        HotkeyActions.init();
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -196,7 +203,10 @@ public abstract class AppEngBase implements AppEng {
      * Runs after all mods have had time to run their registrations into registries.
      */
     public void postRegistrationInitialization() {
-        // This has to be here because it relies on caps and god knows when those are available...
+        // Now that item instances are available, we can initialize registries that need item instances
+        InitGridLinkables.init();
+        InitStorageCells.init();
+
         InitP2PAttunements.init();
 
         InitCauldronInteraction.init();
@@ -221,9 +231,6 @@ public abstract class AppEngBase implements AppEng {
     }
 
     public void registerRegistries(NewRegistryEvent e) {
-        Registry.register(BuiltInRegistries.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
-                SpatialStorageChunkGenerator.CODEC);
-
         var registry = e.create(new RegistryBuilder<>(AEKeyType.REGISTRY_KEY)
                 .sync(true)
                 .maxId(127));
@@ -290,15 +297,9 @@ public abstract class AppEngBase implements AppEng {
 
     protected final CableRenderMode getCableRenderModeForPlayer(@Nullable Player player) {
         if (player != null) {
-            for (int x = 0; x < Inventory.getSelectionSize(); x++) {
-                final ItemStack is = player.getInventory().getItem(x);
-
-                if (!is.isEmpty() && is.getItem() instanceof NetworkToolItem) {
-                    final CompoundTag c = is.getTag();
-                    if (c != null && c.getBoolean("hideFacades")) {
-                        return CableRenderMode.CABLE_VIEW;
-                    }
-                }
+            if (AEItems.NETWORK_TOOL.isSameAs(player.getItemInHand(InteractionHand.MAIN_HAND))
+                    || AEItems.NETWORK_TOOL.isSameAs(player.getItemInHand(InteractionHand.OFF_HAND))) {
+                return CableRenderMode.CABLE_VIEW;
             }
         }
 

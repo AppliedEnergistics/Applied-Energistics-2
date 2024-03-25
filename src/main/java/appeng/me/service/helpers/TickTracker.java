@@ -82,7 +82,10 @@ public class TickTracker implements Comparable<TickTracker> {
     }
 
     public void setTickOnNextTick() {
-        this.currentRate = 0;
+        // Set the currentRate to 1.
+        // If we already ticked, then will tick again on the next tick.
+        // If we didn't tick, then getNextTick() will be <= TickManagerService.currentTick, and therefore we'll tick.
+        this.currentRate = 1;
     }
 
     public long getNextTick() {

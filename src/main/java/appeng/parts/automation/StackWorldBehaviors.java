@@ -1,10 +1,13 @@
 package appeng.parts.automation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -74,11 +77,29 @@ public final class StackWorldBehaviors {
         return what -> importStrategies.getMap().containsKey(what.getType());
     }
 
+    public static Predicate<AEKeyType> hasImportStrategyTypeFilter() {
+        return type -> importStrategies.getMap().containsKey(type);
+    }
+
+    /**
+     * {@return set of key types that have an import strategy}
+     */
+    public static Set<AEKeyType> withImportStrategy() {
+        return Collections.unmodifiableSet(importStrategies.getMap().keySet());
+    }
+
     /**
      * {@return filter matching any key for which there is an export strategy}
      */
     public static AEKeyFilter hasExportStrategyFilter() {
         return what -> exportStrategies.getMap().containsKey(what.getType());
+    }
+
+    /**
+     * {@return set of key types that have an export strategy}
+     */
+    public static Set<AEKeyType> withExportStrategy() {
+        return Collections.unmodifiableSet(exportStrategies.getMap().keySet());
     }
 
     /**
@@ -88,10 +109,20 @@ public final class StackWorldBehaviors {
         return what -> placementStrategies.getMap().containsKey(what.getType());
     }
 
-    public static StackImportStrategy createImportFacade(ServerLevel level, BlockPos fromPos, Direction fromSide) {
+    /**
+     * {@return set of key types that have a placement strategy}
+     */
+    public static Set<AEKeyType> withPlacementStrategy() {
+        return Collections.unmodifiableSet(placementStrategies.getMap().keySet());
+    }
+
+    public static StackImportStrategy createImportFacade(ServerLevel level, BlockPos fromPos, Direction fromSide,
+            Predicate<AEKeyType> forTypes) {
         var strategies = new ArrayList<StackImportStrategy>(importStrategies.getMap().size());
-        for (var supplier : importStrategies.getMap().values()) {
-            strategies.add(supplier.create(level, fromPos, fromSide));
+        for (var entry : importStrategies.getMap().entrySet()) {
+            if (forTypes.test(entry.getKey())) {
+                strategies.add(entry.getValue().create(level, fromPos, fromSide));
+            }
         }
         return new StackImportFacade(strategies);
     }

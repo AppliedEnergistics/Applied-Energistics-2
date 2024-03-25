@@ -19,6 +19,7 @@
 package appeng.helpers.externalstorage;
 
 import java.util.Objects;
+import java.util.Set;
 
 import com.google.common.base.Preconditions;
 
@@ -39,9 +40,10 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.AEKeySlotFilter;
 import appeng.api.storage.MEStorage;
 import appeng.core.AELog;
 import appeng.util.ConfigMenuInventory;
@@ -52,13 +54,21 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     private boolean suppressOnChange;
     private boolean onChangeSuppressed;
     private final Reference2LongMap<AEKeyType> capacities = new Reference2LongArrayMap<>();
+    private final Set<AEKeyType> supportedKeyTypes;
     @Nullable
-    private AEKeyFilter filter;
+    private AEKeySlotFilter filter;
     protected final Mode mode;
     private Component description = Component.empty();
 
     public enum Mode {
+        /**
+         * When in types mode, the config inventory will ignore all amounts and always return amount 1 for stacks in the
+         * inventory.
+         */
         CONFIG_TYPES,
+        /**
+         * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
+         */
         CONFIG_STACKS,
         STORAGE
     }
@@ -68,27 +78,28 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     }
 
     public GenericStackInv(@Nullable Runnable listener, Mode mode, int size) {
+        this(AEKeyTypes.getAll(), listener, mode, size);
+    }
+
+    public GenericStackInv(Set<AEKeyType> supportedKeyTypes, @Nullable Runnable listener, Mode mode, int size) {
+        this.supportedKeyTypes = Set.copyOf(Objects.requireNonNull(supportedKeyTypes, "supportedKeyTypes"));
         this.stacks = new GenericStack[size];
         this.listener = listener;
         this.mode = mode;
     }
 
-    protected void setFilter(@Nullable AEKeyFilter filter) {
+    protected void setFilter(@Nullable AEKeySlotFilter filter) {
         this.filter = filter;
     }
 
     @Nullable
-    public AEKeyFilter getFilter() {
+    public AEKeySlotFilter getFilter() {
         return filter;
     }
 
     @Override
-    public boolean isAllowed(AEKey what) {
-        return filter == null || filter.matches(what);
-    }
-
-    public boolean isAllowed(@Nullable GenericStack stack) {
-        return stack == null || isAllowed(stack.what());
+    public boolean isSupportedType(AEKeyType type) {
+        return supportedKeyTypes.contains(type);
     }
 
     @Override
@@ -139,7 +150,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         Objects.requireNonNull(what, "what");
         Preconditions.checkArgument(amount >= 0, "amount >= 0");
 
-        if (!canInsert() || !isAllowed(what)) {
+        if (!canInsert() || !isAllowedIn(slot, what)) {
             return 0;
         }
 
@@ -157,6 +168,10 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
             }
         }
         return 0;
+    }
+
+    public boolean isAllowedIn(int slot, AEKey what) {
+        return isSupportedType(what) && (filter == null || filter.isAllowed(slot, what));
     }
 
     @Override
@@ -222,7 +237,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     @Override
     public long getMaxAmount(AEKey key) {
         if (key instanceof AEItemKey itemKey) {
-            return Math.min(itemKey.getItem().getMaxStackSize(), getCapacity(key.getType()));
+            return Math.min(itemKey.getMaxStackSize(), getCapacity(key.getType()));
         }
         return getCapacity(key.getType());
     }
@@ -371,7 +386,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         Objects.requireNonNull(what, "what");
         Preconditions.checkArgument(amount >= 0, "amount >= 0");
-        if (!isAllowed(what)) {
+        if (!isSupportedType(what)) {
             return 0;
         }
 

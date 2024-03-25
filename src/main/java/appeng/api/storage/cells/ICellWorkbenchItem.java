@@ -49,7 +49,7 @@ public interface ICellWorkbenchItem extends IUpgradeableItem {
      * onInventoryChange will be called when saving is needed.
      */
     default ConfigInventory getConfigInventory(ItemStack is) {
-        return ConfigInventory.EMPTY_TYPES;
+        return ConfigInventory.emptyTypes();
     }
 
     /**

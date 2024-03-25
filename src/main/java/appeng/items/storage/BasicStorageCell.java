@@ -20,6 +20,7 @@ package appeng.items.storage;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -126,7 +127,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
 
     @Override
     public ConfigInventory getConfigInventory(ItemStack is) {
-        return CellConfig.create(keyType.filter(), is);
+        return CellConfig.create(Set.of(keyType), is);
     }
 
     @Override

@@ -63,6 +63,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                 Variant.variant().with(VariantProperties.MODEL, inscriber.getLocation()))
                         .with(createFacingSpinDispatch());
 
+        crystalResonanceGenerator();
         wirelessAccessPoint();
         craftingMonitor();
         quartzGrowthAccelerator();
@@ -103,7 +104,6 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         simpleBlockAndItem(AEBlocks.INTERFACE);
 
         simpleBlockAndItem(AEBlocks.DEBUG_ITEM_GEN, "block/debug/item_gen");
-        simpleBlockAndItem(AEBlocks.DEBUG_CHUNK_LOADER, "block/debug/chunk_loader");
         simpleBlockAndItem(AEBlocks.DEBUG_PHANTOM_NODE, "block/debug/phantom_node");
         simpleBlockAndItem(AEBlocks.DEBUG_CUBE_GEN, "block/debug/cube_gen");
         simpleBlockAndItem(AEBlocks.DEBUG_ENERGY_GEN, "block/debug/energy_gen");
@@ -172,6 +172,27 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                                         BlockOrientation.get(facing));
                             }
                         }));
+    }
+
+    private void crystalResonanceGenerator() {
+        var builder = getVariantBuilder(AEBlocks.CRYSTAL_RESONANCE_GENERATOR.block());
+
+        var modelFile = models().getExistingFile(AppEng.makeId("block/crystal_resonance_generator"));
+
+        for (var facing : Direction.values()) {
+            var rotation = BlockOrientation.get(facing, 0);
+            builder.partialState()
+                    .with(BlockStateProperties.FACING, facing)
+                    .setModels(ConfiguredModel.builder()
+                            .modelFile(modelFile)
+                            // The original is facing "up" while we generally assume models are facing north
+                            // but this looks better as an item model
+                            .rotationX(rotation.getAngleX() + 90)
+                            .rotationY(rotation.getAngleY())
+                            .build());
+        }
+
+        simpleBlockItem(AEBlocks.CRYSTAL_RESONANCE_GENERATOR.block(), modelFile);
     }
 
     private void wirelessAccessPoint() {

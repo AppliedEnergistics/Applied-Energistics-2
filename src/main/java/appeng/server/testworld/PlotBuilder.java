@@ -348,6 +348,15 @@ public interface PlotBuilder {
         });
     }
 
+    default void entity(BlockPos pos, EntityType<?> entity) {
+        entity(pos, entity, e -> {
+        });
+    }
+
+    default void entity(BlockPos pos, EntityType<?> entity, Consumer<Entity> postProcessor) {
+        addBuildAction(new SpawnEntityAction(bb(posToBb(pos)), entity, postProcessor));
+    }
+
     default void fencedEntity(BlockPos pos, EntityType<?> entity, Consumer<Entity> postProcessor) {
         var subPlot = offset(pos.getX(), pos.getY(), pos.getZ());
         subPlot.block("[-1,1] -1 [-1,1]", Blocks.STONE);

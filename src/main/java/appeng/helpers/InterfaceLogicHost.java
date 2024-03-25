@@ -29,7 +29,7 @@ import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.InterfaceMenu;
-import appeng.menu.locator.MenuLocator;
+import appeng.menu.locator.MenuHostLocator;
 
 /**
  * Interface that must be implemented by machines hosting {@link InterfaceLogic}.
@@ -73,7 +73,7 @@ public interface InterfaceLogicHost extends IConfigurableObject, IUpgradeableObj
         return getInterfaceLogic().getStorage();
     }
 
-    default void openMenu(Player player, MenuLocator locator) {
+    default void openMenu(Player player, MenuHostLocator locator) {
         MenuOpener.open(InterfaceMenu.TYPE, player, locator);
     }
 

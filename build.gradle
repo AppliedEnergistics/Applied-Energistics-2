@@ -80,7 +80,19 @@ repositories {
     maven { // for TOP
         url "https://maven.k-4u.nl/"
         content {
-            includeGroup "mcjty"
+            includeGroup "mcjty.theoneprobe"
+        }
+    }
+    maven {
+        url = "https://maven.theillusivec4.top/"
+        content {
+            includeGroup "top.theillusivec4.curios"
+        }
+    }
+    maven {
+        url = "https://maven.blamejared.com/"
+        content {
+            includeGroup "mezz.jei"
         }
     }
     mavenCentral()
@@ -137,11 +149,14 @@ dependencies {
         compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
     }
 
-    def topDependency = "curse.maven:the-one-probe-245211:4159743"
     if (project.runtime_tooltip_mod == "top") {
-        implementation(topDependency)
+        implementation("mcjty.theoneprobe:theoneprobe:${project.top_version}")
     } else {
-        compileOnly topDependency
+        compileOnly("mcjty.theoneprobe:theoneprobe:${project.top_version}")
+    }
+
+    if (project.runtime_curio) {
+        runtimeOnly("top.theillusivec4.curios:curios-neoforge:${project.curios_version}")
     }
 
     // unit test dependencies
@@ -154,7 +169,6 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.19.0")
     testImplementation("com.google.guava:guava-testlib:21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
-//    testImplementation("cpw.mods:securejarhandler:2.1.20")
 
     compileOnly 'org.apache.commons:commons-configuration2:2.9.0'
 
@@ -310,7 +324,6 @@ dependencies {
  */
 def commonSystemProperties = [
         'forge.logging.console.level': 'debug',
-        'fml.earlyprogresswindow'    : 'false',
         'appeng.tests'               : 'true',
 ]
 
@@ -371,7 +384,8 @@ runs {
         systemProperties = [
                 "appeng.runGuideExportAndExit": "true",
                 "appeng.guideExportFolder"    : file("$buildDir/guide").absolutePath,
-                "guideDev.ae2guide.sources"   : file("guidebook").absolutePath
+                "guideDev.ae2guide.sources"   : file("guidebook").absolutePath,
+                "appeng.version"              : project.version
         ]
     }
     // Use to run the tests
@@ -385,6 +399,12 @@ runs {
 // Artifacts
 processResources {
     exclude '.cache'
+    // Ensure the resources get re-evaluate when the version changes
+    inputs.property("version", project.version)
+    inputs.property("minecraft_version", project.minecraft_version_range)
+    inputs.property("neoforge_version", project.neoforge_version)
+    inputs.property("top_version", project.top_version)
+    inputs.property("jade_version", project.jade_version_range)
 
     filesMatching("META-INF/mods.toml") {
         expand 'minecraft_version': project.minecraft_version_range, 'neoforge_version': project.neoforge_version_range,

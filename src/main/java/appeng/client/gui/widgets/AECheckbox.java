@@ -12,7 +12,7 @@ import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 
 public class AECheckbox extends AbstractButton {
-    private static final int SIZE = 14;
+    public static final int SIZE = 14;
 
     private static final Blitter BLITTER = Blitter.texture("guis/checkbox.png", 64, 64);
 

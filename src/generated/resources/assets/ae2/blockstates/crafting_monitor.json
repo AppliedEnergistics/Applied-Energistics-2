@@ -1,0 +1,46 @@
+{
+  "variants": {
+    "facing=down,formed=false": {
+      "model": "ae2:block/crafting/monitor",
+      "x": 90
+    },
+    "facing=down,formed=true": {
+      "model": "ae2:block/crafting/monitor_formed"
+    },
+    "facing=east,formed=false": {
+      "model": "ae2:block/crafting/monitor",
+      "y": 90
+    },
+    "facing=east,formed=true": {
+      "model": "ae2:block/crafting/monitor_formed"
+    },
+    "facing=north,formed=false": {
+      "model": "ae2:block/crafting/monitor"
+    },
+    "facing=north,formed=true": {
+      "model": "ae2:block/crafting/monitor_formed"
+    },
+    "facing=south,formed=false": {
+      "model": "ae2:block/crafting/monitor",
+      "y": 180
+    },
+    "facing=south,formed=true": {
+      "model": "ae2:block/crafting/monitor_formed"
+    },
+    "facing=up,formed=false": {
+      "ae2:z": 180,
+      "model": "ae2:block/crafting/monitor",
+      "x": 270
+    },
+    "facing=up,formed=true": {
+      "model": "ae2:block/crafting/monitor_formed"
+    },
+    "facing=west,formed=false": {
+      "model": "ae2:block/crafting/monitor",
+      "y": 270
+    },
+    "facing=west,formed=true": {
+      "model": "ae2:block/crafting/monitor_formed"
+    }
+  }
+}

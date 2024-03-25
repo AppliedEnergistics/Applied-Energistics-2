@@ -127,6 +127,8 @@ them or dragged from JEI/REI, a wrench appears that lets you set the quantity.
 
 Right-click with a fluid container (like a bucket or fluid tank) to set that fluid as a filter instead of the bucket or tank item.
 
+When you set a slot to stocking mode, it will also prevent external machines from inserting anything else into that slot.
+
 ## Upgrades
 
 The interface supports the following [upgrades](upgrade_cards.md):

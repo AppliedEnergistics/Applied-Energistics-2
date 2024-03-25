@@ -22,32 +22,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.ToggleButton;
-import appeng.core.localization.GuiText;
 import appeng.menu.me.networktool.NetworkToolMenu;
 
 public class NetworkToolScreen extends AEBaseScreen<NetworkToolMenu> {
-
-    private final ToggleButton transparentFacadesButton;
-
     public NetworkToolScreen(NetworkToolMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
         super(menu, playerInventory, title, style);
-
-        this.transparentFacadesButton = new ToggleButton(Icon.TRANSPARENT_FACADES_OFF, Icon.TRANSPARENT_FACADES_ON,
-                GuiText.TransparentFacades.text(), GuiText.TransparentFacadesHint.text(),
-                btn -> menu.toggleFacadeMode());
-
-        addToLeftToolbar(this.transparentFacadesButton);
     }
-
-    @Override
-    protected void updateBeforeRender() {
-        super.updateBeforeRender();
-
-        this.transparentFacadesButton.setState(menu.isFacadeMode());
-    }
-
 }

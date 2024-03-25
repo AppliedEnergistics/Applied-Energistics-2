@@ -71,6 +71,7 @@ import appeng.block.misc.VibrationChamberBlock;
 import appeng.block.networking.CableBusBlock;
 import appeng.block.networking.ControllerBlock;
 import appeng.block.networking.CreativeEnergyCellBlock;
+import appeng.block.networking.CrystalResonanceGeneratorBlock;
 import appeng.block.networking.EnergyAcceptorBlock;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.block.networking.EnergyCellBlockItem;
@@ -89,7 +90,6 @@ import appeng.block.storage.SkyChestBlock;
 import appeng.block.storage.SkyStoneTankBlock;
 import appeng.core.AppEng;
 import appeng.core.MainCreativeTab;
-import appeng.debug.ChunkLoaderBlock;
 import appeng.debug.CubeGeneratorBlock;
 import appeng.debug.EnergyGeneratorBlock;
 import appeng.debug.ItemGenBlock;
@@ -175,6 +175,8 @@ public final class AEBlocks {
     public static final BlockDefinition<IOPortBlock> IO_PORT = block("ME IO Port", AEBlockIds.IO_PORT, IOPortBlock::new);
     public static final BlockDefinition<CondenserBlock> CONDENSER = block("Matter Condenser", AEBlockIds.CONDENSER, CondenserBlock::new);
     public static final BlockDefinition<EnergyAcceptorBlock> ENERGY_ACCEPTOR = block("Energy Acceptor", AEBlockIds.ENERGY_ACCEPTOR, EnergyAcceptorBlock::new);
+    public static final BlockDefinition<CrystalResonanceGeneratorBlock> CRYSTAL_RESONANCE_GENERATOR = block("Crystal Resonance Generator", AEBlockIds.CRYSTAL_RESONANCE_GENERATOR, CrystalResonanceGeneratorBlock::new);
+
     public static final BlockDefinition<VibrationChamberBlock> VIBRATION_CHAMBER = block("Vibration Chamber", AEBlockIds.VIBRATION_CHAMBER, VibrationChamberBlock::new);
     public static final BlockDefinition<GrowthAcceleratorBlock> GROWTH_ACCELERATOR = block("Growth Accelerator", AEBlockIds.GROWTH_ACCELERATOR, GrowthAcceleratorBlock::new);
     public static final BlockDefinition<EnergyCellBlock> ENERGY_CELL = block("Energy Cell", AEBlockIds.ENERGY_CELL, () -> new EnergyCellBlock(200000, 800, 200), EnergyCellBlockItem::new);
@@ -245,7 +247,6 @@ public final class AEBlocks {
     /// DEBUG BLOCKS
     ///
     public static final BlockDefinition<ItemGenBlock> DEBUG_ITEM_GEN = block("Dev.ItemGen", AppEng.makeId("debug_item_gen"), ItemGenBlock::new);
-    public static final BlockDefinition<ChunkLoaderBlock> DEBUG_CHUNK_LOADER = block("Dev.ChunkLoader", AppEng.makeId("debug_chunk_loader"), ChunkLoaderBlock::new);
     public static final BlockDefinition<PhantomNodeBlock> DEBUG_PHANTOM_NODE = block("Dev.PhantomNode", AppEng.makeId("debug_phantom_node"), PhantomNodeBlock::new);
     public static final BlockDefinition<CubeGeneratorBlock> DEBUG_CUBE_GEN = block("Dev.CubeGen", AppEng.makeId("debug_cube_gen"), CubeGeneratorBlock::new);
     public static final BlockDefinition<EnergyGeneratorBlock> DEBUG_ENERGY_GEN = block("Dev.EnergyGen", AppEng.makeId("debug_energy_gen"), EnergyGeneratorBlock::new);

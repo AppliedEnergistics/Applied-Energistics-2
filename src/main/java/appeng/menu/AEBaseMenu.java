@@ -45,6 +45,9 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
+import it.unimi.dsi.fastutil.shorts.ShortSet;
+
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -63,7 +66,7 @@ import appeng.helpers.InventoryAction;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.guisync.DataSynchronization;
-import appeng.menu.locator.MenuLocator;
+import appeng.menu.locator.MenuHostLocator;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
@@ -83,7 +86,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     @Nullable
     private final IPart part;
     @Nullable
-    protected final ItemMenuHost itemMenuHost;
+    protected final ItemMenuHost<?> itemMenuHost;
     private final DataSynchronization dataSync = new DataSynchronization(this);
     private final Inventory playerInventory;
     private final Set<Integer> lockedPlayerInventorySlots = new HashSet<>();
@@ -91,7 +94,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private final ArrayListMultimap<SlotSemantic, Slot> slotsBySemantic = ArrayListMultimap.create();
     private final Map<String, ClientAction<?>> clientActions = new HashMap<>();
     private boolean menuValid = true;
-    private MenuLocator locator;
+    private MenuHostLocator locator;
     // Slots that are only present on the client-side
     private final Set<Slot> clientSideSlot = new HashSet<>();
     /**
@@ -106,14 +109,14 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         this.playerInventory = playerInventory;
         this.blockEntity = host instanceof BlockEntity ? (BlockEntity) host : null;
         this.part = host instanceof IPart ? (IPart) host : null;
-        this.itemMenuHost = host instanceof ItemMenuHost ? (ItemMenuHost) host : null;
+        this.itemMenuHost = host instanceof ItemMenuHost<?> ? (ItemMenuHost<?>) host : null;
 
         if (host != null && this.blockEntity == null && this.part == null && this.itemMenuHost == null) {
             throw new IllegalArgumentException("Must have a valid host, instead " + host + " in " + playerInventory);
         }
 
-        if (itemMenuHost != null && itemMenuHost.getSlot() != null) {
-            lockPlayerInventorySlot(itemMenuHost.getSlot());
+        if (itemMenuHost != null && itemMenuHost.getPlayerInventorySlot() != null) {
+            lockPlayerInventorySlot(itemMenuHost.getPlayerInventorySlot());
         }
 
         this.mySrc = new PlayerSource(getPlayer(), this.getActionHost());
@@ -289,9 +292,12 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             return;
         }
 
-        if (itemMenuHost != null && !itemMenuHost.onBroadcastChanges(this)) {
-            setValidMenu(false);
-            return;
+        if (itemMenuHost != null) {
+            if (!itemMenuHost.isValid()) {
+                setValidMenu(false);
+                return;
+            }
+            itemMenuHost.tick();
         }
 
         if (isServerSide()) {
@@ -543,7 +549,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             return;
         }
 
-        if (s instanceof FakeSlot) {
+        if (s instanceof FakeSlot fakeSlot && fakeSlot.canSetFilterTo(item)) {
             s.set(item);
         }
     }
@@ -587,16 +593,15 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         }
 
         if (action == InventoryAction.MOVE_REGION) {
-            final List<Slot> from = new ArrayList<>();
-
-            for (Slot j : this.slots) {
-                if (j != null && j.getClass() == s.getClass() && !(j instanceof CraftingTermSlot)) {
-                    from.add(j);
+            var slotSemantic = getSlotSemantic(s);
+            if (slotSemantic != null) {
+                // Avoid potential concurrent modification i.e. if an upgrade is moved into the machine
+                List<Slot> slotsToMove = List.copyOf(getSlots(slotSemantic));
+                for (var slotToMove : slotsToMove) {
+                    quickMoveStack(player, slotToMove.index);
                 }
-            }
-
-            for (Slot fr : from) {
-                this.quickMoveStack(player, fr.index);
+            } else {
+                quickMoveStack(player, s.index);
             }
         }
 
@@ -801,7 +806,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
      * Can be overridden in subclasses to be notified of GUI data updates sent by the server.
      */
     @MustBeInvokedByOverriders
-    public void onServerDataSync() {
+    public void onServerDataSync(ShortSet updatedFields) {
     }
 
     public void onSlotChange(Slot s) {
@@ -820,11 +825,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         this.menuValid = isContainerValid;
     }
 
-    public MenuLocator getLocator() {
+    public MenuHostLocator getLocator() {
         return this.locator;
     }
 
-    public void setLocator(MenuLocator locator) {
+    public void setLocator(MenuHostLocator locator) {
         this.locator = locator;
     }
 
@@ -861,8 +866,9 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
      * Receives data from the server for synchronizing fields of this class.
      */
     public final void receiveServerSyncData(FriendlyByteBuf data) {
-        this.dataSync.readUpdate(data);
-        this.onServerDataSync();
+        ShortSet updatedFields = new ShortOpenHashSet();
+        this.dataSync.readUpdate(data, updatedFields);
+        this.onServerDataSync(updatedFields);
     }
 
     /**

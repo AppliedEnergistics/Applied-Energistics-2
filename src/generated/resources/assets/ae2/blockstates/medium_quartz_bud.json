@@ -1,0 +1,56 @@
+{
+  "variants": {
+    "facing=down,waterlogged=false": {
+      "model": "ae2:block/medium_quartz_bud",
+      "x": 180
+    },
+    "facing=down,waterlogged=true": {
+      "model": "ae2:block/medium_quartz_bud",
+      "x": 180
+    },
+    "facing=east,waterlogged=false": {
+      "model": "ae2:block/medium_quartz_bud",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,waterlogged=true": {
+      "model": "ae2:block/medium_quartz_bud",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north,waterlogged=false": {
+      "model": "ae2:block/medium_quartz_bud",
+      "x": 90
+    },
+    "facing=north,waterlogged=true": {
+      "model": "ae2:block/medium_quartz_bud",
+      "x": 90
+    },
+    "facing=south,waterlogged=false": {
+      "model": "ae2:block/medium_quartz_bud",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,waterlogged=true": {
+      "model": "ae2:block/medium_quartz_bud",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up,waterlogged=false": {
+      "model": "ae2:block/medium_quartz_bud"
+    },
+    "facing=up,waterlogged=true": {
+      "model": "ae2:block/medium_quartz_bud"
+    },
+    "facing=west,waterlogged=false": {
+      "model": "ae2:block/medium_quartz_bud",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,waterlogged=true": {
+      "model": "ae2:block/medium_quartz_bud",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

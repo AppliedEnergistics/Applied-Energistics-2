@@ -8,7 +8,6 @@
     "chunkloading.ChunkMapMixin",
     "spatial.MinecraftServerMixin",
     "AnvilMenuMixin",
-    "EarlyStartupMixin",
     "EnchantmentHelperMixin",
     "ItemEntityMixin",
     "tests.StructureUtilsMixin",
@@ -17,8 +16,6 @@
     "UnbreakingMixin"
   ],
   "client": [
-    "spatial.SkyRenderMixin",
-    "spatial.SkyPropertiesMixin",
     "unlitquad.ModelManagerMixin",
     "unlitquad.BlockModelMixin",
     "unlitquad.BlockPartFaceDeserializerMixin",

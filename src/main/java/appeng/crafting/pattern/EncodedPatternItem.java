@@ -20,6 +20,7 @@ package appeng.crafting.pattern;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 
 import org.jetbrains.annotations.Nullable;
@@ -36,13 +37,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
+import appeng.api.crafting.EncodedPatternDecoder;
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.crafting.InvalidPatternTooltipStrategy;
+import appeng.api.crafting.PatternDetailsTooltip;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AmountFormat;
-import appeng.api.stacks.GenericStack;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
@@ -50,12 +52,26 @@ import appeng.items.AEBaseItem;
 import appeng.items.misc.WrappedGenericStack;
 import appeng.util.InteractionUtil;
 
-public abstract class EncodedPatternItem extends AEBaseItem {
+/**
+ * Reusable item class for encoded patterns.
+ *
+ * @param <T>
+ */
+public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
     // rather simple client side caching.
     private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
 
-    public EncodedPatternItem(Properties properties) {
+    private final EncodedPatternDecoder<T> decoder;
+
+    @Nullable
+    private final InvalidPatternTooltipStrategy invalidPatternTooltip;
+
+    public EncodedPatternItem(Properties properties,
+            EncodedPatternDecoder<T> decoder,
+            @Nullable InvalidPatternTooltipStrategy invalidPatternTooltip) {
         super(properties);
+        this.decoder = decoder;
+        this.invalidPatternTooltip = invalidPatternTooltip;
     }
 
     @Override
@@ -101,102 +117,77 @@ public abstract class EncodedPatternItem extends AEBaseItem {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
-            TooltipFlag advancedTooltips) {
-        if (!stack.hasTag()) {
+            TooltipFlag flags) {
+        var what = AEItemKey.of(stack);
+        if (what == null || what.getTag() == null) {
             // This can be called very early to index tooltips for search. In those cases,
             // there is no encoded pattern present.
             return;
         }
 
-        var details = decode(stack, level, false);
-        if (details == null) {
-            // TODO: needs update for new pattern logic
-            stack.setHoverName(GuiText.InvalidPattern.text().copy().withStyle(ChatFormatting.RED));
+        PatternDetailsTooltip tooltip;
+        try {
+            var details = Objects.requireNonNull(decoder.decode(what, level), "decoder returned null");
+            tooltip = details.getTooltip(level, flags);
+        } catch (Exception e) {
+            lines.add(GuiText.InvalidPattern.text().copy().withStyle(ChatFormatting.RED));
+            if (invalidPatternTooltip != null) {
+                tooltip = invalidPatternTooltip.getTooltip(stack.getTag(), level, e, flags);
+            } else {
+                tooltip = null;
+            }
+        }
 
-            InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
-
-            var label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Produces.text())
-                    .copy().append(": ");
-            var and = Component.literal(" ").copy().append(GuiText.And.text())
-                    .copy()
-                    .append(" ");
-            var with = GuiText.With.text().copy().append(": ");
+        if (tooltip != null) {
+            var label = Component.empty().append(tooltip.getOutputMethod())
+                    .append(": ").withStyle(ChatFormatting.GRAY);
+            var and = Component.literal(" ").append(GuiText.And.text())
+                    .append(" ").withStyle(ChatFormatting.GRAY);
+            var with = GuiText.With.text().copy().append(": ").withStyle(ChatFormatting.GRAY);
 
             boolean first = true;
-            for (var output : invalid.getOutputs()) {
-                lines.add((first ? label : and).copy().append(output.getFormattedToolTip()));
+            for (var output : tooltip.getOutputs()) {
+                lines.add(Component.empty().append(first ? label : and).append(getEntryLine(output)));
                 first = false;
             }
 
             first = true;
-            for (InvalidPatternHelper.PatternIngredient input : invalid.getInputs()) {
-                lines.add((first ? with : and).copy().append(input.getFormattedToolTip()));
+            for (var input : tooltip.getInputs()) {
+                lines.add(Component.empty().append(first ? with : and).append(getEntryLine(input)));
                 first = false;
             }
 
-            if (invalid.isCraftable()) {
-                var substitutionLabel = GuiText.Substitute.text().copy().append(" ");
-                var canSubstitute = invalid.canSubstitute() ? GuiText.Yes.text() : GuiText.No.text();
-
-                lines.add(substitutionLabel.copy().append(canSubstitute));
+            for (var property : tooltip.getProperties()) {
+                if (property.value() != null) {
+                    lines.add(Component.empty().append(property.name())
+                            .append(Component.literal(": ").withStyle(ChatFormatting.GRAY))
+                            .append(property.value()));
+                } else {
+                    lines.add(Component.empty().withStyle(ChatFormatting.GRAY).append(property.name()));
+                }
             }
-
-            return;
-        }
-
-        if (stack.hasCustomHoverName()) {
-            stack.resetHoverName();
-        }
-
-        var isCrafting = details instanceof AECraftingPattern;
-        var substitute = isCrafting && ((AECraftingPattern) details).canSubstitute;
-
-        var in = details.getInputs();
-        var out = details.getOutputs();
-
-        var label = (isCrafting ? GuiText.Crafts.text() : GuiText.Produces.text()).copy()
-                .append(": ");
-        var and = Component.literal(" ").copy().append(GuiText.And.text())
-                .append(" ");
-        var with = GuiText.With.text().copy().append(": ");
-
-        boolean first = true;
-        for (var anOut : out) {
-            if (anOut == null) {
-                continue;
-            }
-
-            lines.add((first ? label : and).copy().append(getStackComponent(anOut)));
-            first = false;
-        }
-
-        first = true;
-        for (var anIn : in) {
-            if (anIn == null) {
-                continue;
-            }
-
-            var primaryInputTemplate = anIn.getPossibleInputs()[0];
-            var primaryInput = new GenericStack(primaryInputTemplate.what(),
-                    primaryInputTemplate.amount() * anIn.getMultiplier());
-            lines.add((first ? with : and).copy().append(getStackComponent(primaryInput)));
-            first = false;
-        }
-
-        if (isCrafting) {
-            var substitutionLabel = GuiText.Substitute.text().copy().append(" ");
-            var canSubstitute = substitute ? GuiText.Yes.text() : GuiText.No.text();
-
-            lines.add(substitutionLabel.copy().append(canSubstitute));
         }
     }
 
-    protected static Component getStackComponent(GenericStack stack) {
-        var amountInfo = stack.what().formatAmount(stack.amount(), AmountFormat.FULL);
-        var displayName = stack.what().getDisplayName();
-        return Component.literal(amountInfo + " x ").append(displayName);
+    protected static Component getEntryLine(PatternDetailsTooltip.Entry entry) {
+        if (entry instanceof PatternDetailsTooltip.ValidEntry validEntry) {
+            return getEntryLine(validEntry.what().getDisplayName(), validEntry.what().getType(), validEntry.amount());
+        } else if (entry instanceof PatternDetailsTooltip.InvalidEntry invalidEntry) {
+            return getEntryLine(invalidEntry.name(), invalidEntry.type(), invalidEntry.amount());
+        } else {
+            throw new IncompatibleClassChangeError("Unknown entry type: " + entry.getClass());
+        }
+    }
+
+    protected static Component getEntryLine(Component displayName, @Nullable AEKeyType amountType, long amount) {
+        if (amount > 0) {
+            var amountInfo = Component.literal(amountType != null ? amountType.formatAmount(amount, AmountFormat.FULL)
+                    : String.valueOf(amount));
+            return amountInfo.append(Component.literal(" x ").withStyle(ChatFormatting.GRAY)).append(displayName);
+        } else {
+            return displayName;
+        }
     }
 
     /**
@@ -214,7 +205,7 @@ public abstract class EncodedPatternItem extends AEBaseItem {
             return ItemStack.EMPTY;
         }
 
-        var details = decode(item, level, false);
+        var details = decode(item, level);
         out = ItemStack.EMPTY;
 
         if (details != null) {
@@ -233,8 +224,29 @@ public abstract class EncodedPatternItem extends AEBaseItem {
     }
 
     @Nullable
-    public abstract IPatternDetails decode(ItemStack stack, Level level, boolean tryRecovery);
+    public IPatternDetails decode(ItemStack stack, Level level) {
+        if (stack.getItem() != this || !stack.hasTag() || level == null) {
+            return null;
+        }
+
+        var what = AEItemKey.of(stack);
+        try {
+            return Objects.requireNonNull(decoder.decode(what, level), "decoder returned null");
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     @Nullable
-    public abstract IPatternDetails decode(AEItemKey what, Level level);
+    public IPatternDetails decode(AEItemKey what, Level level) {
+        if (what == null || !what.hasTag()) {
+            return null;
+        }
+
+        try {
+            return decoder.decode(what, level);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

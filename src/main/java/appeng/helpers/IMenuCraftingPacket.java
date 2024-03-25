@@ -20,18 +20,42 @@ package appeng.helpers;
 
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.storage.ILinkStatus;
 
 public interface IMenuCraftingPacket {
     /**
+     * @return The current link status of the menu, allowing for gating access to {@link #getNetworkNode()}.
+     */
+    default ILinkStatus getLinkStatus() {
+        return ILinkStatus.ofConnected();
+    }
+
+    /**
      * @return gain access to network infrastructure.
      */
+    @Nullable
     IGridNode getNetworkNode();
+
+    /**
+     * @return The energy source to use for grid operations (i.e. when transferring in / out from the network)
+     */
+    default IEnergySource getEnergySource() {
+        var node = getNetworkNode();
+        if (node == null) {
+            return IEnergySource.empty();
+        } else {
+            return node.getGrid().getEnergyService();
+        }
+    }
 
     /**
      * @return the inventory used for the crafting matrix.

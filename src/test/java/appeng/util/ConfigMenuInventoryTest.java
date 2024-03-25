@@ -56,7 +56,7 @@ class ConfigMenuInventoryTest {
 
     @Test
     void testFluidConfigReadsAsWrappedStackOfCount1() {
-        var inv = ConfigInventory.configTypes(AEFluidKey.filter(), 1, null);
+        var inv = ConfigInventory.configTypes(1).supportedType(AEKeyType.fluids()).build();
         inv.setStack(0, WATER);
         var wrappedStack = inv.createMenuWrapper().getStackInSlot(0);
         assertEquals(1, wrappedStack.getCount());
@@ -70,7 +70,7 @@ class ConfigMenuInventoryTest {
      */
     @Test
     void testItemTypeConfigReadsAsItemWithAmount1() {
-        var inv = ConfigInventory.configTypes(AEItemKey.filter(), 1, null);
+        var inv = ConfigInventory.configTypes(1).supportedType(AEKeyType.items()).build();
         inv.setStack(0, ZERO_STICK);
         var fakeStack = inv.createMenuWrapper().getStackInSlot(0);
         assertEquals(Items.STICK, fakeStack.getItem());
@@ -93,7 +93,7 @@ class ConfigMenuInventoryTest {
         return DynamicTest.dynamicTest(
                 displayName,
                 () -> {
-                    var inv = ConfigInventory.configStacks(channel.filter(), 64, null, false);
+                    var inv = ConfigInventory.configStacks(64).supportedType(channel).build();
                     if (initialStack != null) {
                         inv.setStack(0, initialStack);
                     }

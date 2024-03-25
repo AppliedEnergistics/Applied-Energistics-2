@@ -225,13 +225,11 @@ In addition to the upgrade cards all cells can receive, these also accept <ItemL
   </Row>
 </Column>
 
-# Creative Item and Fluid Cells
+# Creative Storage Cell
 
 <Row>
-  <ItemImage id="creative_item_cell" scale="2" />
-
-  <ItemImage id="creative_fluid_cell" scale="2" />
+  <ItemImage id="creative_storage_cell" scale="2" />
 </Row>
 
-Creative item and fluid cells **do not provide infinite storage**. Instead, they act as infinite sources and sinks of whatever
+Creative cells **do not provide infinite storage**. Instead, they act as infinite sources and sinks of whatever
 item or fluid you [partition](cell_workbench.md) them to.

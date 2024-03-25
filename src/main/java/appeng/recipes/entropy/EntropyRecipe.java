@@ -207,12 +207,12 @@ public class EntropyRecipe implements Recipe<Container> {
                 .apply(builder, BlockInput::new));
 
         public static void toNetwork(FriendlyByteBuf buffer, BlockInput input) {
-            buffer.writeVarInt(BuiltInRegistries.BLOCK.getId(input.block));
+            buffer.writeId(BuiltInRegistries.BLOCK, input.block);
             buffer.writeMap(input.properties, FriendlyByteBuf::writeUtf, PropertyValueMatcher::toNetwork);
         }
 
         public static BlockInput fromNetwork(FriendlyByteBuf buffer) {
-            var block = BuiltInRegistries.BLOCK.byId(buffer.readVarInt());
+            var block = buffer.readById(BuiltInRegistries.BLOCK);
             var properties = buffer.readMap(FriendlyByteBuf::readUtf, PropertyValueMatcher::fromNetwork);
             return new BlockInput(block, properties);
         }
@@ -226,12 +226,12 @@ public class EntropyRecipe implements Recipe<Container> {
                 .apply(builder, FluidInput::new));
 
         public static void toNetwork(FriendlyByteBuf buffer, FluidInput input) {
-            buffer.writeVarInt(BuiltInRegistries.FLUID.getId(input.fluid));
+            buffer.writeId(BuiltInRegistries.FLUID, input.fluid);
             buffer.writeMap(input.properties, FriendlyByteBuf::writeUtf, PropertyValueMatcher::toNetwork);
         }
 
         public static FluidInput fromNetwork(FriendlyByteBuf buffer) {
-            var fluid = BuiltInRegistries.FLUID.byId(buffer.readVarInt());
+            var fluid = buffer.readById(BuiltInRegistries.FLUID);
             var properties = buffer.readMap(FriendlyByteBuf::readUtf, PropertyValueMatcher::fromNetwork);
             return new FluidInput(fluid, properties);
         }
@@ -284,15 +284,15 @@ public class EntropyRecipe implements Recipe<Container> {
         }
 
         public static void toNetwork(FriendlyByteBuf buffer, BlockOutput output) {
-            buffer.writeVarInt(BuiltInRegistries.BLOCK.getId(output.block));
+            buffer.writeId(BuiltInRegistries.BLOCK, output.block);
             buffer.writeBoolean(output.keepProperties);
-            buffer.writeMap(output.properties, FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeUtf);
+            buffer.writeMap(output.properties, FriendlyByteBuf::writeUtf, (fbb, value) -> fbb.writeUtf(value));
         }
 
         public static BlockOutput fromNetwork(FriendlyByteBuf buffer) {
-            var block = BuiltInRegistries.BLOCK.byId(buffer.readVarInt());
+            var block = buffer.readById(BuiltInRegistries.BLOCK);
             var keepProperties = buffer.readBoolean();
-            var properties = buffer.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readUtf);
+            var properties = buffer.readMap(FriendlyByteBuf::readUtf, fbb -> fbb.readUtf());
             return new BlockOutput(block, keepProperties, properties);
         }
     }
@@ -322,15 +322,15 @@ public class EntropyRecipe implements Recipe<Container> {
         }
 
         public static void toNetwork(FriendlyByteBuf buffer, FluidOutput output) {
-            buffer.writeVarInt(BuiltInRegistries.FLUID.getId(output.fluid));
+            buffer.writeId(BuiltInRegistries.FLUID, output.fluid);
             buffer.writeBoolean(output.keepProperties);
-            buffer.writeMap(output.properties, FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeUtf);
+            buffer.writeMap(output.properties, FriendlyByteBuf::writeUtf, (fbb, value) -> fbb.writeUtf(value));
         }
 
         public static FluidOutput fromNetwork(FriendlyByteBuf buffer) {
-            var fluid = BuiltInRegistries.FLUID.byId(buffer.readVarInt());
+            var fluid = buffer.readById(BuiltInRegistries.FLUID);
             var keepProperties = buffer.readBoolean();
-            var properties = buffer.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readUtf);
+            var properties = buffer.readMap(FriendlyByteBuf::readUtf, fbb -> fbb.readUtf());
             return new FluidOutput(fluid, keepProperties, properties);
         }
     }

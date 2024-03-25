@@ -20,15 +20,21 @@ package appeng.crafting.pattern;
 
 import java.util.Objects;
 
+import com.google.common.base.Preconditions;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
@@ -36,16 +42,26 @@ import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.crafting.PatternDetailsTooltip;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
+import appeng.core.localization.GuiText;
 
 /**
  * Encodes patterns for the {@link net.minecraft.world.level.block.SmithingTableBlock}.
  */
 public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemblerSupportedPattern {
+    private static final String NBT_TEMPLATE = "template";
+    private static final String NBT_BASE = "base";
+    private static final String NBT_ADDITION = "addition";
+    // Only used to attempt to recover the recipe in case it's ID has changed
+    private static final String NBT_OUTPUT = "out";
+    private static final String NBT_SUBSITUTE = "substitute";
+    private static final String NBT_RECIPE_ID = "recipe";
+
     // The slot indices in the 3x3 crafting grid that we insert our item into (in the MAC)
     private static final int TEMPLATE_CRAFTING_GRID_SLOT = 3;
     private static final int BASE_CRAFTING_GRID_SLOT = 4;
@@ -67,13 +83,13 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         this.definition = definition;
         var tag = Objects.requireNonNull(definition.getTag());
 
-        this.template = SmithingTablePatternEncoding.getTemplate(tag);
-        this.base = SmithingTablePatternEncoding.getBase(tag);
-        this.addition = SmithingTablePatternEncoding.getAddition(tag);
-        this.canSubstitute = SmithingTablePatternEncoding.canSubstitute(tag);
+        this.template = PatternNbtUtils.getRequiredItemKey(tag, NBT_TEMPLATE);
+        this.base = PatternNbtUtils.getRequiredItemKey(tag, NBT_BASE);
+        this.addition = PatternNbtUtils.getRequiredItemKey(tag, NBT_ADDITION);
+        this.canSubstitute = PatternNbtUtils.getBoolean(tag, NBT_SUBSITUTE, false);
 
         // Find recipe
-        this.recipeId = SmithingTablePatternEncoding.getRecipeId(tag);
+        this.recipeId = PatternNbtUtils.getRequiredResourceLocation(tag, NBT_RECIPE_ID);
         this.recipe = level.getRecipeManager().byType(RecipeType.SMITHING).get(recipeId).value();
 
         // Build frame and find output
@@ -248,6 +264,52 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
     public NonNullList<ItemStack> getRemainingItems(CraftingContainer container) {
         // Smithing table does not support remainders
         return NonNullList.withSize(container.getContainerSize(), ItemStack.EMPTY);
+    }
+
+    public static void encode(CompoundTag tag, RecipeHolder<SmithingRecipe> recipe, AEItemKey template, AEItemKey base,
+            AEItemKey addition,
+            AEItemKey output, boolean allowSubstitutes) {
+        Preconditions.checkNotNull(recipe, "recipe");
+        Preconditions.checkNotNull(recipe, "template");
+        Preconditions.checkNotNull(base, "base");
+        Preconditions.checkNotNull(addition, "addition");
+        Preconditions.checkNotNull(output, "output");
+
+        tag.put(NBT_TEMPLATE, template.toTag());
+        tag.put(NBT_BASE, base.toTag());
+        tag.put(NBT_ADDITION, addition.toTag());
+        tag.put(NBT_OUTPUT, output.toTag());
+        tag.putBoolean(NBT_SUBSITUTE, allowSubstitutes);
+        tag.putString(NBT_RECIPE_ID, recipe.id().toString());
+    }
+
+    @Override
+    public PatternDetailsTooltip getTooltip(Level level, TooltipFlag flags) {
+        var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_CRAFTS);
+        tooltip.addInputsAndOutputs(this);
+        if (flags.isAdvanced()) {
+            tooltip.addProperty(Component.literal("Recipe"), Component.literal(recipeId.toString()));
+        }
+        return tooltip;
+    }
+
+    public static PatternDetailsTooltip getInvalidTooltip(CompoundTag tag, Level level, @Nullable Exception cause,
+            TooltipFlag flags) {
+        var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_CRAFTS);
+
+        PatternNbtUtils.readKeyFaultTolerant(tag, NBT_TEMPLATE).ifPresent(tooltip::addInput);
+        PatternNbtUtils.readKeyFaultTolerant(tag, NBT_BASE).ifPresent(tooltip::addInput);
+        PatternNbtUtils.readKeyFaultTolerant(tag, NBT_ADDITION).ifPresent(tooltip::addInput);
+        PatternNbtUtils.readKeyFaultTolerant(tag, NBT_OUTPUT).ifPresent(tooltip::addOutput);
+        if (PatternNbtUtils.getBoolean(tag, NBT_SUBSITUTE, false)) {
+            tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
+        }
+        if (flags.isAdvanced()) {
+            PatternNbtUtils.tryGetString(tag, NBT_RECIPE_ID).ifPresent(recipeId -> {
+                tooltip.addProperty(Component.literal("Recipe"), Component.literal(recipeId));
+            });
+        }
+        return tooltip;
     }
 
     private class Input implements IInput {

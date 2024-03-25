@@ -1,0 +1,25 @@
+{
+  "values": [
+    "minecraft:bamboo_sapling",
+    "minecraft:bamboo",
+    "minecraft:sugar_cane",
+    "minecraft:sugar_cane",
+    "minecraft:vine",
+    "minecraft:twisting_vines",
+    "minecraft:weeping_vines",
+    "minecraft:cave_vines",
+    "minecraft:sweet_berry_bush",
+    "minecraft:nether_wart",
+    "minecraft:kelp",
+    "minecraft:cocoa",
+    {
+      "id": "#minecraft:crops",
+      "required": false
+    },
+    {
+      "id": "#minecraft:saplings",
+      "required": false
+    },
+    "#forge:budding"
+  ]
+}

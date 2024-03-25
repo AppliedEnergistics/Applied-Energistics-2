@@ -12,6 +12,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.config.Actionable;
@@ -24,6 +25,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.storage.SkyChestBlockEntity;
+import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -31,6 +33,7 @@ import appeng.items.storage.CreativeCellItem;
 import appeng.me.helpers.BaseActionSource;
 import appeng.menu.AutoCraftingMenu;
 import appeng.server.testworld.PlotBuilder;
+import appeng.server.testworld.SpawnExtraGridTestToolsChest;
 import appeng.server.testworld.TestCraftingJob;
 import appeng.util.inv.AppEngInternalInventory;
 
@@ -66,6 +69,7 @@ public final class AutoCraftingTestPlots {
             drive.getInternalInventory().addItems(CreativeCellItem.ofItems(Items.REDSTONE));
             drive.getInternalInventory().addItems(CreativeCellItem.ofFluids(Fluids.LAVA));
         });
+        plot.block("7 -1 0", AEBlocks.CELL_WORKBENCH);
         plot.part("6 0 1", Direction.NORTH, AEParts.PATTERN_ENCODING_TERMINAL, term -> {
             var inv = term.getLogic().getBlankPatternInv();
             inv.addItems(AEItems.BLANK_PATTERN.stack(64));
@@ -73,6 +77,15 @@ public final class AutoCraftingTestPlots {
         plot.part("5 0 1", Direction.NORTH, AEParts.PATTERN_ACCESS_TERMINAL);
         plot.part("4 0 1", Direction.NORTH, AEParts.TERMINAL);
         plot.part("3 0 1", Direction.NORTH, AEParts.CRAFTING_TERMINAL);
+
+        // Wireless access
+        plot.blockState("6 1 1", AEBlocks.WIRELESS_ACCESS_POINT.block()
+                .defaultBlockState()
+                .setValue(BlockStateProperties.FACING, Direction.UP));
+        plot.addBuildAction(new SpawnExtraGridTestToolsChest(
+                new BlockPos(8, 0, 1),
+                new BlockPos(7, 0, 1),
+                AppEng.makeId("autocrafting_testplot")));
 
         // Subsystem to craft obsidian
         buildObsidianCrafting(plot.offset(3, 0, 5));

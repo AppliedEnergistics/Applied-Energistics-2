@@ -31,7 +31,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -64,7 +63,6 @@ import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DelegatingMEInventory;
 import appeng.util.ConfigInventory;
 import appeng.util.ConfigManager;
-import appeng.util.Platform;
 
 /**
  * Contains behavior for interface blocks and parts, which is independent of the storage channel.
@@ -104,8 +102,9 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
     public InterfaceLogic(IManagedGridNode gridNode, InterfaceLogicHost host, Item is, int slots) {
         this.host = host;
-        this.config = ConfigInventory.configStacks(null, slots, this::onConfigRowChanged, false);
-        this.storage = ConfigInventory.storage(slots, this::onStorageChanged);
+        this.config = ConfigInventory.configStacks(slots).changeListener(this::onConfigRowChanged).build();
+        this.storage = ConfigInventory.storage(slots).slotFilter(this::isAllowedInStorageSlot)
+                .changeListener(this::onStorageChanged).build();
         this.mainNode = gridNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, new Ticker());
@@ -121,6 +120,14 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
         getConfig().useRegisteredCapacities();
         getStorage().useRegisteredCapacities();
+    }
+
+    private boolean isAllowedInStorageSlot(int slot, AEKey what) {
+        if (slot < config.size()) {
+            var configured = config.getKey(slot);
+            return configured == null || configured.equals(what);
+        }
+        return true;
     }
 
     public int getPriority() {
@@ -160,8 +167,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     private class Ticker implements IGridTickable {
         @Override
         public TickingRequest getTickingRequest(IGridNode node) {
-            return new TickingRequest(TickRates.Interface, !hasWorkToDo(),
-                    true);
+            return new TickingRequest(TickRates.Interface, !hasWorkToDo());
         }
 
         @Override
@@ -207,10 +213,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
             });
         }
 
-        final BlockEntity te = this.host.getBlockEntity();
-        if (te != null && te.getLevel() != null) {
-            Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
-        }
+        this.host.getBlockEntity().invalidateCapabilities();
     }
 
     public void gridChanged() {

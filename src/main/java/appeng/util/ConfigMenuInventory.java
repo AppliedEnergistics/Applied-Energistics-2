@@ -42,7 +42,8 @@ public class ConfigMenuInventory implements InternalInventory {
             return true; // Clearing filters is always allowed
         }
 
-        return convertToSuitableStack(stack) != null;
+        var genericStack = convertToSuitableStack(stack);
+        return genericStack != null && inv.isAllowedIn(slot, genericStack.what());
     }
 
     @Override
@@ -61,7 +62,7 @@ public class ConfigMenuInventory implements InternalInventory {
             // Otherwise, only convert to the real stack if it fits in the max stack size
             if (inv.getMode() == ConfigInventory.Mode.CONFIG_TYPES) {
                 return itemKey.toStack();
-            } else if (stack.amount() > 0 && stack.amount() <= itemKey.getItem().getMaxStackSize()) {
+            } else if (stack.amount() > 0 && stack.amount() <= itemKey.getMaxStackSize()) {
                 return itemKey.toStack((int) stack.amount());
             }
         }
@@ -95,7 +96,7 @@ public class ConfigMenuInventory implements InternalInventory {
                 stack = itemKey.toStack(Math.max(1, Ints.saturatedCast(unwrapped.amount())));
             } else {
                 // In all other cases the channel must match
-                if (inv.isAllowed(unwrapped.what())) {
+                if (inv.isSupportedType(unwrapped.what())) {
                     return unwrapped;
                 } else {
                     return null;
@@ -104,9 +105,11 @@ public class ConfigMenuInventory implements InternalInventory {
         }
 
         // Try items last
-        var what = AEItemKey.of(stack);
-        if (inv.isAllowed(what)) {
-            return new GenericStack(what, stack.getCount());
+        if (inv.isSupportedType(AEKeyType.items())) {
+            var what = AEItemKey.of(stack);
+            if (what != null) {
+                return new GenericStack(what, stack.getCount());
+            }
         }
 
         return null;

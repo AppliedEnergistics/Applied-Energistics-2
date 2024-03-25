@@ -34,6 +34,7 @@ import com.google.common.collect.HashMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.locale.Language;
@@ -52,8 +53,10 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import appeng.api.config.Settings;
 import appeng.api.config.ShowPatternProviders;
 import appeng.api.config.TerminalStyle;
+import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.storage.ILinkStatus;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
@@ -61,6 +64,7 @@ import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
+import appeng.client.guidebook.color.ConstantColor;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.render.SimpleRenderContext;
 import appeng.core.AEConfig;
@@ -183,6 +187,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
         this.menu.slots.removeIf(slot -> slot instanceof PatternSlot);
 
         int textColor = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
+        var level = Minecraft.getInstance().level;
 
         final int scrollLevel = scrollbar.getCurrentScroll();
         int i = 0;
@@ -199,13 +204,24 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                                 col * SLOT_SIZE + GUI_PADDING_X,
                                 (i + 1) * SLOT_SIZE);
                         this.menu.slots.add(slot);
+
+                        // Indicate invalid patterns
+                        var pattern = container.getInventory().getStackInSlot(slotsRow.offset + col);
+                        if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level, false) == null) {
+                            guiGraphics.fill(
+                                    slot.x,
+                                    slot.y,
+                                    slot.x + 16,
+                                    slot.y + 16,
+                                    0x7fff0000);
+                        }
                     }
                 } else if (row instanceof GroupHeaderRow headerRow) {
                     var group = headerRow.group;
                     if (group.icon() != null) {
                         var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics);
                         renderContext.renderItem(
-                                group.icon().toStack(),
+                                group.icon().getReadOnlyStack(),
                                 GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X,
                                 GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT,
                                 8,
@@ -229,6 +245,30 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                     guiGraphics.drawString(font, text, GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X + 10,
                             GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, textColor, false);
                 }
+            }
+        }
+
+        // Draw an overlay indicating the grid is disconnected
+        renderLinkStatus(guiGraphics, getMenu().getLinkStatus());
+    }
+
+    private void renderLinkStatus(GuiGraphics guiGraphics, ILinkStatus linkStatus) {
+        // Draw an overlay indicating the grid is disconnected
+        if (!linkStatus.connected()) {
+            var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics);
+
+            var rect = new LytRect(
+                    GUI_PADDING_X - 1,
+                    GUI_HEADER_HEIGHT,
+                    COLUMNS * 18,
+                    visibleRows * ROW_HEIGHT);
+
+            renderContext.fillRect(rect, new ConstantColor(0x3f000000));
+
+            // Draw the disconnect status on top of the grid
+            var statusDescription = linkStatus.statusDescription();
+            if (statusDescription != null) {
+                renderContext.renderTextCenteredIn(statusDescription.getString(), ERROR_TEXT_STYLE, rect);
             }
         }
     }

@@ -14,5 +14,6 @@ public record ResolvedTextStyle(
         ResourceLocation font,
         ColorValue color,
         WhiteSpaceMode whiteSpace,
-        TextAlignment alignment) {
+        TextAlignment alignment,
+        boolean dropShadow) {
 }

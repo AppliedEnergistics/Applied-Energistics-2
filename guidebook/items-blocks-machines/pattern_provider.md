@@ -180,6 +180,30 @@ the adjacent machine:
   <IsometricCamera yaw="95" pitch="5" />
 </GameScene>
 
+## Use With Molecular Assemblers
+
+<ItemLink id="molecular_assembler" />s are basically just like any other machine. They have an inventory that can be inserted
+into, they then perform an action on the things in that inventory, and then, like many machines, they push the result to an
+adjacent inventory. Thus, they should be used with providers like any other machine, with one addition:
+
+Assemblers can take the desired pattern from a <ItemLink id="crafting_pattern" />, <ItemLink id="smithing_table_pattern" />, or <ItemLink id="stonecutting_pattern" />
+that is inserted directly into the assembler.
+This is useful in an assembly line but having to have a dedicated assembler per-crafting-recipe would be annoying.
+
+Thus, pattern providers have a special functionality with assemblers, they can send the pattern data along with the ingredients.
+This way, you can simply place an assembler next to a pattern provider, and the provider can then use the assembler for all of its
+crafting, smithing, and stonecutting patterns.
+
+It's really this simple, just put the patterns in the providers:
+
+<GameScene zoom="4" background="transparent">
+  <ImportStructure src="../assets/assemblies/assembler_tower.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
+
+*Note that this has exactly 8 providers, the maximum amount of channels that can be routed through a single assembler, provider, or
+non-dense cable.*
+
 ## Recipes
 
 <RecipeFor id="pattern_provider" />

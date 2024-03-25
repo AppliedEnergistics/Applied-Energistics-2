@@ -57,6 +57,7 @@ import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.blockentity.networking.CreativeEnergyCellBlockEntity;
+import appeng.blockentity.networking.CrystalResonanceGeneratorBlockEntity;
 import appeng.blockentity.networking.EnergyAcceptorBlockEntity;
 import appeng.blockentity.networking.EnergyCellBlockEntity;
 import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
@@ -70,7 +71,6 @@ import appeng.blockentity.storage.IOPortBlockEntity;
 import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import appeng.core.AppEng;
-import appeng.debug.ChunkLoaderBlockEntity;
 import appeng.debug.CubeGeneratorBlockEntity;
 import appeng.debug.EnergyGeneratorBlockEntity;
 import appeng.debug.ItemGenBlockEntity;
@@ -119,6 +119,10 @@ public final class AEBlockEntities {
             CondenserBlockEntity::new, AEBlocks.CONDENSER);
     public static final BlockEntityType<EnergyAcceptorBlockEntity> ENERGY_ACCEPTOR = create("energy_acceptor",
             EnergyAcceptorBlockEntity.class, EnergyAcceptorBlockEntity::new, AEBlocks.ENERGY_ACCEPTOR);
+    public static final BlockEntityType<CrystalResonanceGeneratorBlockEntity> CRYSTAL_RESONANCE_GENERATOR = create(
+            "crystal_resonance_generator",
+            CrystalResonanceGeneratorBlockEntity.class, CrystalResonanceGeneratorBlockEntity::new,
+            AEBlocks.CRYSTAL_RESONANCE_GENERATOR);
     public static final BlockEntityType<VibrationChamberBlockEntity> VIBRATION_CHAMBER = create("vibration_chamber",
             VibrationChamberBlockEntity.class, VibrationChamberBlockEntity::new, AEBlocks.VIBRATION_CHAMBER);
     public static final BlockEntityType<GrowthAcceleratorBlockEntity> GROWTH_ACCELERATOR = create(
@@ -160,8 +164,6 @@ public final class AEBlockEntities {
 
     public static final BlockEntityType<ItemGenBlockEntity> DEBUG_ITEM_GEN = create("debug_item_gen",
             ItemGenBlockEntity.class, ItemGenBlockEntity::new, AEBlocks.DEBUG_ITEM_GEN);
-    public static final BlockEntityType<ChunkLoaderBlockEntity> DEBUG_CHUNK_LOADER = create("debug_chunk_loader",
-            ChunkLoaderBlockEntity.class, ChunkLoaderBlockEntity::new, AEBlocks.DEBUG_CHUNK_LOADER);
     public static final BlockEntityType<PhantomNodeBlockEntity> DEBUG_PHANTOM_NODE = create("debug_phantom_node",
             PhantomNodeBlockEntity.class, PhantomNodeBlockEntity::new, AEBlocks.DEBUG_PHANTOM_NODE);
     public static final BlockEntityType<CubeGeneratorBlockEntity> DEBUG_CUBE_GEN = create("debug_cube_gen",

@@ -19,6 +19,7 @@ import net.minecraft.world.item.Items;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.me.helpers.BaseActionSource;
@@ -50,7 +51,7 @@ class GenericStackInvTest {
      */
     @Test
     void testSaveLargeAndLoadIntoSmallerInventory() {
-        var large = ConfigInventory.configStacks(AEItemKey.filter(), 2, null, false);
+        var large = ConfigInventory.configStacks(2).supportedType(AEKeyType.items()).build();
         large.setStack(0, ONE_STICK);
         large.setStack(1, ONE_STICK);
 

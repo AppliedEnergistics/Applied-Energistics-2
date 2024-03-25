@@ -158,6 +158,8 @@ public final class ConventionTags {
 
     public static final TagKey<Item> STORAGE_BLOCKS = Tags.Items.STORAGE_BLOCKS;
 
+    public static final TagKey<Item> CURIOS = tag("curios:curio");
+
     public static final TagKey<Item> dye(DyeColor color) {
         return DYES.get(color);
     }

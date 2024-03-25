@@ -129,9 +129,9 @@ public final class AEConfig {
     private boolean enableEffects;
     private boolean useLargeFonts;
     private boolean useColoredCraftingStatus;
-    private boolean disableColoredCableRecipesInJEI;
-    private boolean isEnableFacadesInJEI;
-    private boolean isEnableFacadeRecipesInJEI;
+    private boolean disableColoredCableRecipesInRecipeViewer;
+    private boolean enableFacadesInRecipeViewer;
+    private boolean enableFacadeRecipesInRecipeViewer;
     private int craftingCalculationTimePerTick;
     private boolean craftingSimulatedExtraction;
     private boolean spatialAnchorEnablesRandomTicks;
@@ -161,16 +161,16 @@ public final class AEConfig {
     public static final double TUNNEL_POWER_LOSS = 0.05;
 
     private void syncClientConfig() {
-        this.disableColoredCableRecipesInJEI = CLIENT.disableColoredCableRecipesInJEI.get();
-        this.isEnableFacadesInJEI = CLIENT.enableFacadesInJEI.get();
-        this.isEnableFacadeRecipesInJEI = CLIENT.enableFacadeRecipesInJEI.get();
+        this.disableColoredCableRecipesInRecipeViewer = CLIENT.disableColoredCableRecipesInRecipeViewer.get();
+        this.enableFacadesInRecipeViewer = CLIENT.enableFacadesInRecipeViewer.get();
+        this.enableFacadeRecipesInRecipeViewer = CLIENT.enableFacadeRecipesInRecipeViewer.get();
         this.enableEffects = CLIENT.enableEffects.get();
         this.useLargeFonts = CLIENT.useLargeFonts.get();
         this.useColoredCraftingStatus = CLIENT.useColoredCraftingStatus.get();
     }
 
     private void syncCommonConfig() {
-        PowerUnits.RF.conversionRatio = COMMON.powerRatioForgeEnergy.get();
+        PowerUnits.FE.conversionRatio = COMMON.powerRatioForgeEnergy.get();
         PowerMultiplier.CONFIG.multiplier = COMMON.powerUsageMultiplier.get();
 
         CondenserOutput.MATTER_BALLS.requiredPower = COMMON.condenserMatterBallsPower.get();
@@ -308,6 +308,10 @@ public final class AEConfig {
         return COMMON.gridEnergyStoragePerNode.get();
     }
 
+    public double getCrystalResonanceGeneratorRate() {
+        return COMMON.crystalResonanceGeneratorRate.get();
+    }
+
     public void save() {
     }
 
@@ -354,16 +358,31 @@ public final class AEConfig {
         return this.useColoredCraftingStatus;
     }
 
+    public boolean isDisableColoredCableRecipesInRecipeViewer() {
+        return this.disableColoredCableRecipesInRecipeViewer;
+    }
+
+    @Deprecated(since = "1.20.4")
     public boolean isDisableColoredCableRecipesInJEI() {
-        return this.disableColoredCableRecipesInJEI;
+        return isDisableColoredCableRecipesInRecipeViewer();
     }
 
+    @Deprecated(since = "1.20.4")
     public boolean isEnableFacadesInJEI() {
-        return this.isEnableFacadesInJEI;
+        return isEnableFacadesInRecipeViewer();
     }
 
+    @Deprecated(since = "1.20.4")
     public boolean isEnableFacadeRecipesInJEI() {
-        return this.isEnableFacadeRecipesInJEI;
+        return isEnableFacadeRecipesInRecipeViewer();
+    }
+
+    public boolean isEnableFacadesInRecipeViewer() {
+        return this.enableFacadesInRecipeViewer;
+    }
+
+    public boolean isEnableFacadeRecipesInRecipeViewer() {
+        return this.enableFacadeRecipesInRecipeViewer;
     }
 
     public int getCraftingCalculationTimePerTick() {
@@ -426,6 +445,10 @@ public final class AEConfig {
         return COMMON.spawnPressesInMeteorites.get();
     }
 
+    public boolean isSpawnFlawlessOnlyEnabled() {
+        return COMMON.spawnFlawlessOnly.get();
+    }
+
     public boolean isMatterCanonBlockDamageEnabled() {
         return COMMON.matterCannonBlockDamage.get();
     }
@@ -440,6 +463,10 @@ public final class AEConfig {
 
     public int getGrowthAcceleratorSpeed() {
         return COMMON.growthAcceleratorSpeed.get();
+    }
+
+    public boolean isAnnihilationPlaneSkyDustGenerationEnabled() {
+        return COMMON.annihilationPlaneSkyDustGeneration.get();
     }
 
     public boolean isBlockUpdateLogEnabled() {
@@ -544,9 +571,9 @@ public final class AEConfig {
         public final BooleanOption enableEffects;
         public final BooleanOption useLargeFonts;
         public final BooleanOption useColoredCraftingStatus;
-        public final BooleanOption disableColoredCableRecipesInJEI;
-        public final BooleanOption enableFacadesInJEI;
-        public final BooleanOption enableFacadeRecipesInJEI;
+        public final BooleanOption disableColoredCableRecipesInRecipeViewer;
+        public final BooleanOption enableFacadesInRecipeViewer;
+        public final BooleanOption enableFacadeRecipesInRecipeViewer;
         public final EnumOption<PowerUnits> selectedPowerUnit;
         public final BooleanOption debugGuiOverlays;
         public final BooleanOption showPlacementPreview;
@@ -576,11 +603,11 @@ public final class AEConfig {
 
         public ClientConfig(ConfigSection root) {
             var client = root.subsection("client");
-            this.disableColoredCableRecipesInJEI = client.addBoolean("disableColoredCableRecipesInJEI", true);
-            this.enableFacadesInJEI = client.addBoolean("enableFacadesInJEI", true,
-                    "Show facades in JEI ingredient list");
-            this.enableFacadeRecipesInJEI = client.addBoolean("enableFacadeRecipesInJEI", true,
-                    "Show facade recipes in JEI for supported blocks");
+            this.disableColoredCableRecipesInRecipeViewer = client.addBoolean("disableColoredCableRecipesInJEI", true);
+            this.enableFacadesInRecipeViewer = client.addBoolean("enableFacadesInRecipeViewer", false,
+                    "Show facades in REI/JEI/EMI item list");
+            this.enableFacadeRecipesInRecipeViewer = client.addBoolean("enableFacadeRecipesInRecipeViewer", true,
+                    "Show facade recipes in REI/JEI/EMI for supported blocks");
             this.enableEffects = client.addBoolean("enableEffects", true);
             this.useLargeFonts = client.addBoolean("useTerminalUseLargeFont", false);
             this.useColoredCraftingStatus = client.addBoolean("useColoredCraftingStatus", true);
@@ -648,6 +675,7 @@ public final class AEConfig {
 
         public final BooleanOption disassemblyCrafting;
         public final IntegerOption growthAcceleratorSpeed;
+        public final BooleanOption annihilationPlaneSkyDustGeneration;
 
         // Spatial IO/Dimension
         public final DoubleOption spatialPowerExponent;
@@ -671,6 +699,7 @@ public final class AEConfig {
 
         // Meteors
         public final BooleanOption spawnPressesInMeteorites;
+        public final BooleanOption spawnFlawlessOnly;
 
         // Wireless
         public final DoubleOption wirelessBaseCost;
@@ -688,6 +717,7 @@ public final class AEConfig {
         public final DoubleOption powerRatioForgeEnergy;
         public final DoubleOption powerUsageMultiplier;
         public final DoubleOption gridEnergyStoragePerNode;
+        public final DoubleOption crystalResonanceGeneratorRate;
 
         // Vibration Chamber
         public final DoubleOption vibrationChamberBaseEnergyPerFuelTick;
@@ -734,6 +764,8 @@ public final class AEConfig {
                     "Enable shift-clicking with the crafting units in hand to disassemble them.");
             growthAcceleratorSpeed = crafting.addInt("growthAccelerator", 10, 1, 100,
                     "Number of ticks between two crystal growth accelerator ticks");
+            annihilationPlaneSkyDustGeneration = crafting.addBoolean("annihilationPlaneSkyDustGeneration", true,
+                    "If enabled, an annihilation placed face up at the maximum world height will generate sky stone passively.");
 
             ConfigSection spatialio = root.subsection("spatialio");
             this.spatialPowerMultiplier = spatialio.addDouble("spatialPowerMultiplier", 1250.0);
@@ -761,6 +793,7 @@ public final class AEConfig {
             ConfigSection worldGen = root.subsection("worldGen");
 
             this.spawnPressesInMeteorites = worldGen.addBoolean("spawnPressesInMeteorites", true);
+            this.spawnFlawlessOnly = worldGen.addBoolean("spawnFlawlessOnly", false);
 
             ConfigSection wireless = root.subsection("wireless");
             this.wirelessBaseCost = wireless.addDouble("wirelessBaseCost", 8.0);
@@ -780,6 +813,8 @@ public final class AEConfig {
             powerUsageMultiplier = PowerRatios.addDouble("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
             gridEnergyStoragePerNode = PowerRatios.addDouble("GridEnergyStoragePerNode", 25, 1, 1000000,
                     "How much energy can the internal grid buffer storage per node attached to the grid.");
+            crystalResonanceGeneratorRate = PowerRatios.addDouble("CrystalResonanceGeneratorRate", 20, 0, 1000000,
+                    "How much energy a crystal resonance generator generates per tick.");
 
             ConfigSection Condenser = root.subsection("Condenser");
             condenserMatterBallsPower = Condenser.addInt("MatterBalls", 256);

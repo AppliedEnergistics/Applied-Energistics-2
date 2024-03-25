@@ -136,10 +136,6 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
         return InternalInventory.empty();
     }
 
-    @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
-    }
-
     /**
      * Check for a controller at this coordinates as well as is it loaded.
      *

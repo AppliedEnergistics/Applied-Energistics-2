@@ -27,8 +27,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -369,9 +367,6 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
                 player.getInventory().placeItemBackInInventory(item);
             }
         }
-
-        // Play a break sound
-        level.playSound(player, getBlockPos(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, .7f, 1f);
 
         return InteractionResult.sidedSuccess(level.isClientSide());
 

@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 
+import appeng.api.parts.IPartHost;
 import appeng.util.Platform;
 
 /**
@@ -15,11 +16,18 @@ import appeng.util.Platform;
 public class PartAdjacentApi<T> {
     private final AEBasePart part;
     private final BlockCapability<T, Direction> capability;
+    private final Runnable invalidationListener;
     private BlockCapabilityCache<T, Direction> cache;
 
     public PartAdjacentApi(AEBasePart part, BlockCapability<T, Direction> capability) {
+        this(part, capability, () -> {
+        });
+    }
+
+    public PartAdjacentApi(AEBasePart part, BlockCapability<T, Direction> capability, Runnable invalidationListener) {
         this.capability = capability;
         this.part = part;
+        this.invalidationListener = invalidationListener;
     }
 
     @Nullable
@@ -37,9 +45,20 @@ public class PartAdjacentApi<T> {
         }
 
         if (cache == null) {
-            cache = BlockCapabilityCache.create(capability, serverLevel, targetPos, attachedSide.getOpposite());
+            cache = BlockCapabilityCache.create(
+                    capability,
+                    serverLevel,
+                    targetPos,
+                    attachedSide.getOpposite(),
+                    () -> isPartValid(part),
+                    invalidationListener);
         }
 
         return cache.getCapability();
+    }
+
+    public static boolean isPartValid(AEBasePart part) {
+        var be = part.getBlockEntity();
+        return be instanceof IPartHost host && host.getPart(part.getSide()) == part && !be.isRemoved();
     }
 }

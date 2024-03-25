@@ -426,6 +426,7 @@ public class LytGuidebookScene extends LytBox {
                     initialRotY = cameraSettings.getRotationY();
                     initialTransX = cameraSettings.getOffsetX();
                     initialTransY = cameraSettings.getOffsetY();
+                    screen.captureMouse(this);
                 }
             }
             return true;
@@ -435,6 +436,11 @@ public class LytGuidebookScene extends LytBox {
         public boolean mouseReleased(GuideScreen screen, int x, int y, int button) {
             pointDown = null;
             return true;
+        }
+
+        @Override
+        public void mouseCaptureLost() {
+            pointDown = null;
         }
 
         @Override

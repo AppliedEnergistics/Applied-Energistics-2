@@ -38,7 +38,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnits;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -242,7 +241,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         if (slot == 0) {
             boolean sameItemSameTags = ItemStack.isSameItemSameTags(inv.getStackInSlot(0), lastStacks.get(inv));
             lastStacks.put(inv, inv.getStackInSlot(0).copy());
@@ -267,7 +266,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     // @Override
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.Inscriber, !hasAutoExportWork() && !this.hasCraftWork(), false);
+        return new TickingRequest(TickRates.Inscriber, !hasAutoExportWork() && !this.hasCraftWork());
     }
 
     private boolean hasAutoExportWork() {
@@ -454,9 +453,8 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
         }
 
         if (setting == Settings.INSCRIBER_SEPARATE_SIDES) {
-            // Send a block update since our exposed inventory changed...
-            // In theory this shouldn't be necessary, but we do it just in case...
-            markForUpdate();
+            // Our exposed inventory changed, invalidate caps!
+            invalidateCapabilities();
         }
 
         if (setting == Settings.INSCRIBER_BUFFER_SIZE) {
@@ -608,18 +606,6 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
                 return false; // No inserting into the output slot
             }
             return !isSmash();
-        }
-    }
-
-    class Crankable implements ICrankable {
-        @Override
-        public boolean canTurn() {
-            return getInternalCurrentPower() < getInternalMaxPower();
-        }
-
-        @Override
-        public void applyTurn() {
-            injectExternalPower(PowerUnits.AE, CrankBlockEntity.POWER_PER_CRANK_TURN, Actionable.MODULATE);
         }
     }
 }

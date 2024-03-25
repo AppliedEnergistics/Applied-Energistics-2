@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "ae2:pattern_provider"
+    }
+  ],
+  "result": {
+    "item": "ae2:cable_pattern_provider"
+  }
+}

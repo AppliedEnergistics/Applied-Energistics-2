@@ -1,0 +1,33 @@
+{
+  "variants": {
+    "push_direction=all": {
+      "model": "ae2:block/pattern_provider"
+    },
+    "push_direction=down": {
+      "model": "ae2:block/pattern_provider_oriented",
+      "x": 180
+    },
+    "push_direction=east": {
+      "model": "ae2:block/pattern_provider_oriented",
+      "x": 90,
+      "y": 90
+    },
+    "push_direction=north": {
+      "model": "ae2:block/pattern_provider_oriented",
+      "x": 90
+    },
+    "push_direction=south": {
+      "model": "ae2:block/pattern_provider_oriented",
+      "x": 90,
+      "y": 180
+    },
+    "push_direction=up": {
+      "model": "ae2:block/pattern_provider_oriented"
+    },
+    "push_direction=west": {
+      "model": "ae2:block/pattern_provider_oriented",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

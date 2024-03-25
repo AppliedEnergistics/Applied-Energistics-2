@@ -52,6 +52,6 @@ public class AEPatternDecoder implements IPatternDetailsDecoder {
             return null;
         }
 
-        return encodedPatternItem.decode(what, level, tryRecovery);
+        return encodedPatternItem.decode(what, level);
     }
 }

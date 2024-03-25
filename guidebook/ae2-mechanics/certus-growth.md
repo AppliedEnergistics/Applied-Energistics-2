@@ -17,7 +17,8 @@ Certus quartz buds will sprout from [budding certus blocks](../items-blocks-mach
 growing, it will drop one <ItemLink id="certus_quartz_dust" />, unchanged by fortune. If you break a fully grown cluster, it will drop four
 <ItemLink id="certus_quartz_crystal" />s, and fortune will increase this number.
 
-There are 4 tiers of budding certus blocks: Flawless, Flawed, Chipped, and Damaged.
+There are 4 tiers of budding certus blocks: Flawless, Flawed, Chipped, and Damaged, and you initially
+find them in [meteorites](../ae2-mechanics/meteorites.md).
 
 <GameScene zoom="4" background="transparent">
   <ImportStructure src="../assets/assemblies/budding_blocks.snbt" />

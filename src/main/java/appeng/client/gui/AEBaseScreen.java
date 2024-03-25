@@ -73,7 +73,11 @@ import appeng.client.gui.widgets.ITooltip;
 import appeng.client.gui.widgets.OpenGuideButton;
 import appeng.client.gui.widgets.VerticalButtonBar;
 import appeng.client.guidebook.PageAnchor;
+import appeng.client.guidebook.color.SymbolicColor;
+import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.indices.ItemIndex;
+import appeng.client.guidebook.style.ResolvedTextStyle;
+import appeng.client.guidebook.style.TextStyle;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -104,6 +108,13 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      * Commonly used id for text that is used to show the dialog title.
      */
     public static final String TEXT_ID_DIALOG_TITLE = "dialog_title";
+
+    protected static final ResolvedTextStyle ERROR_TEXT_STYLE = TextStyle.builder()
+            .color(SymbolicColor.ERROR_TEXT)
+            .font(Minecraft.DEFAULT_FONT)
+            .dropShadow(true)
+            .build()
+            .mergeWith(DefaultStyles.BASE_STYLE);
 
     private final VerticalButtonBar verticalToolbar;
     private final OpenGuideButton helpButton;
@@ -238,7 +249,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         this.updateBeforeRender();
         this.widgets.updateBeforeRender();
 
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         renderTooltips(guiGraphics, mouseX, mouseY);
@@ -383,7 +393,13 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             if (i == 0) {
                 formattedLines.add(lines.get(i).copy().withStyle(s -> s.withColor(ChatFormatting.WHITE)));
             } else {
-                formattedLines.add(lines.get(i));
+                formattedLines.add(lines.get(i).copy().withStyle(s -> {
+                    if (s.getColor() != null) {
+                        return s;
+                    } else {
+                        return s.withColor(ChatFormatting.GRAY);
+                    }
+                }));
             }
         }
         drawTooltip(guiGraphics, x, y, formattedLines);
@@ -951,7 +967,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         guiGraphics.fillGradient(RenderType.guiOverlay(), x, y, x + w, y + h, 0x80ffffff, 0x80ffffff, z);
     }
 
-    protected final void switchToScreen(AEBaseScreen<?> screen) {
+    public final void switchToScreen(AEBaseScreen<?> screen) {
         savedSlotInfos.clear();
         for (var slot : menu.slots) {
             savedSlotInfos.add(new SavedSlotInfo(slot));
@@ -1032,8 +1048,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             var item = part.getPartItem().asItem();
             var itemId = BuiltInRegistries.ITEM.getKey(item);
             return itemIndex.get(itemId);
-        } else if (target instanceof ItemMenuHost menuHost) {
-            var item = menuHost.getItemStack().getItem();
+        } else if (target instanceof ItemMenuHost<?>menuHost) {
+            var item = menuHost.getItem();
             var itemId = BuiltInRegistries.ITEM.getKey(item);
             return itemIndex.get(itemId);
         }

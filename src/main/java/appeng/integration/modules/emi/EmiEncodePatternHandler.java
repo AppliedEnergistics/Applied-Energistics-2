@@ -21,7 +21,7 @@ import appeng.menu.me.items.PatternEncodingTermMenu;
  * Handles encoding patterns in the {@link PatternEncodingTermMenu} by clicking the + button on recipes shown in REI (or
  * JEI).
  */
-class EmiEncodePatternHandler<T extends PatternEncodingTermMenu> extends AbstractRecipeHandler<T> {
+public class EmiEncodePatternHandler<T extends PatternEncodingTermMenu> extends AbstractRecipeHandler<T> {
 
     public EmiEncodePatternHandler(Class<T> containerClass) {
         super(containerClass);

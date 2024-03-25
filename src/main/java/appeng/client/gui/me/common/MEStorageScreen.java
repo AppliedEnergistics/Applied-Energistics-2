@@ -20,9 +20,12 @@ package appeng.client.gui.me.common;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
+import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import org.jetbrains.annotations.Nullable;
@@ -36,22 +39,24 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.client.AEKeyRendering;
 import appeng.api.config.ActionItems;
-import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.config.TypeFilter;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.ILinkStatus;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.Hotkeys;
@@ -65,13 +70,18 @@ import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ISortSource;
+import appeng.client.gui.widgets.KeyTypeSelectionButton;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
 import appeng.client.gui.widgets.ToolboxPanel;
 import appeng.client.gui.widgets.UpgradesPanel;
+import appeng.client.guidebook.color.ConstantColor;
+import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.render.SimpleRenderContext;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
@@ -86,12 +96,11 @@ import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
-import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
 public class MEStorageScreen<C extends MEStorageMenu>
-        extends AEBaseScreen<C> implements ISortSource, IConfigManagerListener {
+        extends AEBaseScreen<C> implements ISortSource {
 
     private static final Logger LOG = LoggerFactory.getLogger(MEStorageScreen.class);
 
@@ -109,7 +118,6 @@ public class MEStorageScreen<C extends MEStorageMenu>
     private final AETextField searchField;
     private int rows = 0;
     private SettingToggleButton<ViewItems> viewModeToggle;
-    private SettingToggleButton<TypeFilter> filterTypesToggle;
     private SettingToggleButton<SortOrder> sortByToggle;
     private final SettingToggleButton<SortDir> sortDirToggle;
     private int currentMouseX = 0;
@@ -141,7 +149,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.imageHeight = this.style.getScreenHeight(0);
 
         this.configSrc = ((IConfigurableObject) this.menu).getConfigManager();
-        this.menu.setGui(this);
+        this.menu.setGui(this::onMenuReceivedClientUpdate);
 
         List<Slot> viewCellSlots = menu.getSlots(SlotSemantics.VIEW_CELL);
         this.supportsViewCells = !viewCellSlots.isEmpty();
@@ -169,9 +177,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         if (this.menu.canConfigureTypeFilter()) {
-            this.filterTypesToggle = this.addToLeftToolbar(new SettingToggleButton<>(
-                    Settings.TYPE_FILTER, getTypeFilter(), this::toggleServerSetting));
-
+            this.addToLeftToolbar(
+                    KeyTypeSelectionButton.create(this, menu.getHost(), GuiText.ConfigureVisibleTypes.text()));
         }
 
         this.addToLeftToolbar(this.sortDirToggle = new SettingToggleButton<>(
@@ -241,8 +248,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         long serial = entry.getSerial();
 
-        // Move as many items of a single type as possible
         if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+            // Move everything from the same group of slots (i.e. player inventory excluding hotbar)
             menu.handleInteraction(serial, InventoryAction.MOVE_REGION);
         } else {
             InventoryAction action = null;
@@ -430,6 +437,32 @@ public class MEStorageScreen<C extends MEStorageMenu>
             StackSizeRenderer.renderSizeLabel(guiGraphics, font, x - this.leftPos, y - this.topPos,
                     String.valueOf(menu.activeCraftingJobs));
         }
+
+        renderLinkStatus(guiGraphics, getMenu().getLinkStatus());
+    }
+
+    private void renderLinkStatus(GuiGraphics guiGraphics, ILinkStatus linkStatus) {
+        // Draw an overlay indicating the grid is disconnected
+        if (!linkStatus.connected()) {
+            var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics);
+
+            var firstSlot = style.getSlotPos(0, 0);
+            var lastSlot = style.getSlotPos(rows - 1, style.getSlotsPerRow() - 1);
+
+            var rect = new LytRect(
+                    firstSlot.getX() - 1,
+                    firstSlot.getY() - 1,
+                    lastSlot.getX() + 17 - (firstSlot.getX() - 1),
+                    lastSlot.getY() + 17 - (firstSlot.getY() - 1));
+
+            renderContext.fillRect(rect, new ConstantColor(0x3f000000));
+
+            // Draw the disconnect status on top of the grid
+            var statusDescription = linkStatus.statusDescription();
+            if (statusDescription != null) {
+                renderContext.renderTextCenteredIn(statusDescription.getString(), ERROR_TEXT_STYLE, rect);
+            }
+        }
     }
 
     private void renderPinnedRowDecorations(GuiGraphics guiGraphics) {
@@ -437,11 +470,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
             if (slot instanceof RepoSlot repoSlot) {
                 var entry = repoSlot.getEntry();
                 if (entry != null && PendingCraftingJobs.hasPendingJob(entry.getWhat())) {
-                    var frames = 192 / 16;
-                    var frame = (int) ((System.currentTimeMillis() / 100) % frames);
-
-                    Blitter.texture("block/molecular_assembler_lights.png", 16, 192)
-                            .src(2, 2 + frame * 16, 12, 12)
+                    var sprite = minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                            .apply(AppEng.makeId("block/molecular_assembler_lights"));
+                    Blitter.sprite(sprite)
+                            .src(sprite.getX() + 2, sprite.getY() + 2, sprite.contents().width() - 4,
+                                    sprite.contents().height() - 4)
                             .dest(slot.x - 1, slot.y - 1, 18, 18)
                             .blit(guiGraphics);
                 }
@@ -560,9 +593,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     @Override
     public void renderSlot(GuiGraphics guiGraphics, Slot s) {
         if (s instanceof RepoSlot repoSlot) {
-            if (!this.repo.hasPower()) {
-                guiGraphics.fill(s.x, s.y, 16 + s.x, 16 + s.y, 0x66111111);
-            } else {
+            if (this.menu.getLinkStatus().connected()) {
                 GridInventoryEntry entry = repoSlot.getEntry();
                 if (entry != null) {
                     try {
@@ -667,7 +698,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         // Special case to support the Item API of visual tooltip components
         if (entry.getWhat() instanceof AEItemKey itemKey) {
-            var stack = itemKey.toStack();
+            var stack = itemKey.getReadOnlyStack();
             // By using the overload of the renderTooltip method that takes an ItemStack, we support the Forge tooltip
             // event system
             guiGraphics.renderTooltip(font, currentToolTip, stack.getTooltipImage(), stack, x, y);
@@ -712,7 +743,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     @Override
     public void containerTick() {
-        this.repo.setPower(this.menu.isPowered());
+        this.repo.setEnabled(this.menu.getLinkStatus().connected());
 
         if (this.supportsViewCells) {
             List<ItemStack> viewCells = this.menu.getViewCells();
@@ -742,12 +773,12 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public TypeFilter getTypeFilter() {
-        return this.configSrc.getSetting(Settings.TYPE_FILTER);
+    public Set<AEKeyType> getSortKeyTypes() {
+        return menu.canConfigureTypeFilter() ? new HashSet<>(menu.searchKeyTypes.enabledSet())
+                : Sets.newHashSet(AEKeyTypes.getAll());
     }
 
-    @Override
-    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
+    public void onMenuReceivedClientUpdate() {
         if (this.sortByToggle != null) {
             this.sortByToggle.set(getSortBy());
         }
@@ -758,10 +789,6 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         if (this.viewModeToggle != null) {
             this.viewModeToggle.set(getSortDisplay());
-        }
-
-        if (this.filterTypesToggle != null) {
-            this.filterTypesToggle.set(getTypeFilter());
         }
 
         this.repo.updateView();

@@ -17,6 +17,9 @@ public interface InteractiveElement {
         return false;
     }
 
+    default void mouseCaptureLost() {
+    }
+
     /**
      * @param x X position of the mouse in document coordinates.
      * @param y Y position of the mouse in document coordinates.

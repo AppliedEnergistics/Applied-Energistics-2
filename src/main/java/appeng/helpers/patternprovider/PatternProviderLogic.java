@@ -225,13 +225,17 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         return this.configManager;
     }
 
-    @Override
     public void saveChanges() {
         this.host.saveChanges();
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void saveChangedInventory(AppEngInternalInventory inv) {
+        this.host.saveChanges();
+    }
+
+    @Override
+    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
         this.saveChanges();
         this.updatePatterns();
     }
@@ -324,6 +328,12 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                 continue;
 
             possibleTargets.add(new PushTarget(direction, adapter));
+        }
+
+        // If no dedicated crafting machine could be found, and the pattern does not support
+        // generic external inventories, stop here.
+        if (!patternDetails.supportsPushInputsToExternalInventory()) {
+            return false;
         }
 
         // Rearrange for round-robin
@@ -668,7 +678,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
         @Override
         public TickingRequest getTickingRequest(IGridNode node) {
-            return new TickingRequest(TickRates.Interface, !hasWorkToDo(), true);
+            return new TickingRequest(TickRates.Interface, !hasWorkToDo());
         }
 
         @Override

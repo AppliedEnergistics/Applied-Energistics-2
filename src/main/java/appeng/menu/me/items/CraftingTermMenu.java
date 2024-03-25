@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
 
@@ -43,12 +42,14 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.energy.IEnergySource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ITerminalHost;
 import appeng.core.network.NetworkHandler;
 import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.helpers.InventoryAction;
+import appeng.me.storage.LinkStatusRespectingInventory;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEStorageMenu;
@@ -96,13 +97,19 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
                     SlotSemantics.CRAFTING_GRID);
         }
 
+        var linkStatusInventory = new LinkStatusRespectingInventory(host.getInventory(), this::getLinkStatus);
         this.addSlot(this.outputSlot = new CraftingTermSlot(this.getPlayerInventory().player, this.getActionSource(),
-                this.powerSource, host.getInventory(), craftingGridInv, craftingGridInv, this),
+                this.energySource, linkStatusInventory, craftingGridInv, craftingGridInv, this),
                 SlotSemantics.CRAFTING_RESULT);
 
         updateCurrentRecipeAndOutput(true);
 
         registerClientAction(ACTION_CLEAR_TO_PLAYER, this::clearToPlayerInventory);
+    }
+
+    @Override
+    public IEnergySource getEnergySource() {
+        return this.energySource;
     }
 
     /**
@@ -164,26 +171,27 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
     public void clearCraftingGrid() {
         Preconditions.checkState(isClientSide());
         CraftingMatrixSlot slot = craftingSlots[0];
-        final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.index, 0);
+        var p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.index, 0);
         NetworkHandler.instance().sendToServer(p);
     }
 
     @Override
-    public boolean hasIngredient(Predicate<ItemStack> predicate, int amount) {
+    public boolean hasIngredient(Ingredient ingredient, Object2IntOpenHashMap<Object> reservedAmounts) {
         // In addition to the base item repo, also check the crafting grid if it
         // already contains some of the needed items
         for (var slot : getSlots(SlotSemantics.CRAFTING_GRID)) {
             var stackInSlot = slot.getItem();
-            if (!stackInSlot.isEmpty() && predicate.test(stackInSlot)) {
-                if (stackInSlot.getCount() >= amount) {
+            if (!stackInSlot.isEmpty() && ingredient.test(stackInSlot)) {
+                var reservedAmount = reservedAmounts.getOrDefault(slot, 0);
+                if (stackInSlot.getCount() > reservedAmount) {
+                    reservedAmounts.merge(slot, 1, Integer::sum);
                     return true;
                 }
-                amount -= stackInSlot.getCount();
             }
 
         }
 
-        return super.hasIngredient(predicate, amount);
+        return super.hasIngredient(ingredient, reservedAmounts);
     }
 
     /**
@@ -229,9 +237,8 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
             // Then check the terminal screen's repository of network items
             if (!found) {
                 // We use AE stacks to get an easily comparable item type key that ignores stack size
-                int neededAmount = reservedGridAmounts.getOrDefault(ingredient, 0) + 1;
-                if (hasIngredient(ingredient, neededAmount)) {
-                    reservedGridAmounts.put(ingredient, neededAmount);
+                if (hasIngredient(ingredient, reservedGridAmounts)) {
+                    reservedGridAmounts.merge(ingredient, 1, Integer::sum);
                     found = true;
                 }
             }

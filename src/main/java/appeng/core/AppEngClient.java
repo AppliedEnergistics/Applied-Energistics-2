@@ -20,11 +20,13 @@ package appeng.core;
 
 import java.util.Objects;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -32,6 +34,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
@@ -39,7 +42,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -49,14 +51,15 @@ import net.neoforged.neoforge.client.event.ModelEvent.RegisterGeometryLoaders;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
 import appeng.api.parts.CableRenderMode;
-import appeng.api.parts.PartHelper;
 import appeng.client.EffectType;
 import appeng.client.Hotkeys;
 import appeng.client.commands.ClientCommands;
@@ -66,6 +69,8 @@ import appeng.client.gui.style.StyleManager;
 import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.command.GuidebookStructureCommands;
+import appeng.client.guidebook.compiler.TagCompiler;
+import appeng.client.guidebook.extensions.ConfigValueTagExtension;
 import appeng.client.guidebook.hotkey.OpenGuideHotkey;
 import appeng.client.guidebook.scene.ImplicitAnnotationStrategy;
 import appeng.client.guidebook.scene.PartAnnotationStrategy;
@@ -75,6 +80,7 @@ import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.client.render.overlay.OverlayManager;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.network.NetworkHandler;
 import appeng.core.network.serverbound.MouseWheelPacket;
 import appeng.helpers.IMouseWheelItem;
@@ -94,7 +100,8 @@ import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
 import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.siteexport.SiteExporter;
-import appeng.util.InteractionUtil;
+import appeng.spatial.SpatialStorageDimensionIds;
+import appeng.spatial.SpatialStorageSkyProperties;
 import appeng.util.Platform;
 
 /**
@@ -112,12 +119,19 @@ public class AppEngClient extends AppEngBase {
      */
     private CableRenderMode prevCableRenderMode = CableRenderMode.STANDARD;
 
+    /**
+     * This modifier key has to be held to activate mouse wheel items.
+     */
+    private static final KeyMapping MOUSE_WHEEL_ITEM_MODIFIER = new KeyMapping(
+            "key.ae2.mouse_wheel_item_modifier", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM,
+            InputConstants.KEY_LSHIFT, "key.ae2.category");
+
     private final Guide guide;
 
-    public AppEngClient() {
+    public AppEngClient(IEventBus modEventBus) {
+        super(modEventBus);
         InitBuiltInModels.init();
 
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         this.registerClientCommands();
 
         modEventBus.addListener(this::registerClientTooltipComponents);
@@ -129,10 +143,11 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerEntityRenderers);
         modEventBus.addListener(this::registerEntityLayerDefinitions);
         modEventBus.addListener(this::registerHotkeys);
+        modEventBus.addListener(this::registerDimensionSpecialEffects);
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
-        guide = createGuide();
+        guide = createGuide(modEventBus);
         OpenGuideHotkey.init();
 
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, (TickEvent.ClientTickEvent e) -> {
@@ -158,6 +173,12 @@ public class AppEngClient extends AppEngBase {
         });
     }
 
+    private void registerDimensionSpecialEffects(RegisterDimensionSpecialEffectsEvent event) {
+        event.register(
+                SpatialStorageDimensionIds.DIMENSION_TYPE_ID.location(),
+                SpatialStorageSkyProperties.INSTANCE);
+    }
+
     private void registerClientCommands() {
         NeoForge.EVENT_BUS.addListener((RegisterClientCommandsEvent evt) -> {
             var dispatcher = evt.getDispatcher();
@@ -172,15 +193,16 @@ public class AppEngClient extends AppEngBase {
         });
     }
 
-    private Guide createGuide() {
+    private Guide createGuide(IEventBus modEventBus) {
         NeoForge.EVENT_BUS.addListener((ServerStartingEvent evt) -> {
             var server = evt.getServer();
             var dispatcher = server.getCommands().getDispatcher();
             GuidebookStructureCommands.register(dispatcher);
         });
 
-        return Guide.builder(MOD_ID, "ae2guide")
+        return Guide.builder(modEventBus, MOD_ID, "ae2guide")
                 .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
+                .extension(TagCompiler.EXTENSION_POINT, new ConfigValueTagExtension())
                 .build();
     }
 
@@ -205,6 +227,7 @@ public class AppEngClient extends AppEngBase {
         if (AEConfig.instance().isGuideHotkeyEnabled()) {
             e.register(OpenGuideHotkey.getHotkey());
         }
+        e.register(MOUSE_WHEEL_ITEM_MODIFIER);
         Hotkeys.finalizeRegistration(e::register);
     }
 
@@ -287,10 +310,10 @@ public class AppEngClient extends AppEngBase {
 
         final Minecraft mc = Minecraft.getInstance();
         final Player player = mc.player;
-        if (InteractionUtil.isInAlternateUseMode(player)) {
-            final boolean mainHand = player.getItemInHand(InteractionHand.MAIN_HAND)
+        if (MOUSE_WHEEL_ITEM_MODIFIER.isDown()) {
+            var mainHand = player.getItemInHand(InteractionHand.MAIN_HAND)
                     .getItem() instanceof IMouseWheelItem;
-            final boolean offHand = player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof IMouseWheelItem;
+            var offHand = player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof IMouseWheelItem;
 
             if (mainHand || offHand) {
                 NetworkHandler.instance().sendToServer(new MouseWheelPacket(me.getScrollDeltaY() > 0));
@@ -334,10 +357,10 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void spawnVibrant(Level level, double x, double y, double z) {
-        if (AppEngClient.instance().shouldAddParticles(Platform.getRandom())) {
-            final double d0 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
-            final double d1 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
-            final double d2 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
+        if (AppEngClient.instance().shouldAddParticles(level.getRandom())) {
+            final double d0 = (level.getRandom().nextFloat() - 0.5F) * 0.26D;
+            final double d1 = (level.getRandom().nextFloat() - 0.5F) * 0.26D;
+            final double d2 = (level.getRandom().nextFloat() - 0.5F) * 0.26D;
 
             Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.VIBRANT, x + d0, y + d1, z + d2, 0.0D,
                     0.0D,
@@ -346,9 +369,10 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void spawnEnergy(Level level, double posX, double posY, double posZ) {
-        final float x = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
-        final float y = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
-        final float z = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
+        var random = level.getRandom();
+        final float x = (float) (Math.abs(random.nextInt()) % 100 * 0.01 - 0.5) * 0.7f;
+        final float y = (float) (Math.abs(random.nextInt()) % 100 * 0.01 - 0.5) * 0.7f;
+        final float z = (float) (Math.abs(random.nextInt()) % 100 * 0.01 - 0.5) * 0.7f;
 
         Minecraft.getInstance().particleEngine.createParticle(EnergyParticleData.FOR_BLOCK, posX + x, posY + y,
                 posZ + z,
@@ -362,7 +386,7 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void updateCableRenderMode() {
-        var currentMode = PartHelper.getCableRenderMode();
+        var currentMode = getCableRenderMode();
 
         // Handle changes to the cable-rendering mode
         if (currentMode == this.prevCableRenderMode) {
@@ -371,21 +395,25 @@ public class AppEngClient extends AppEngBase {
 
         this.prevCableRenderMode = currentMode;
 
-        final Minecraft mc = Minecraft.getInstance();
+        var mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null) {
             return;
         }
 
-        final Player player = mc.player;
-
-        final int x = (int) player.getX();
-        final int y = (int) player.getY();
-        final int z = (int) player.getZ();
-
-        final int range = 16 * 16;
-
-        mc.levelRenderer.setBlocksDirty(x - range, y - range, z - range, x + range, y + range,
-                z + range);
+        // Invalidate all sections that contain a cable bus within view distance
+        // This should asynchronously update the chunk meshes and as part of that use the new facade render mode
+        var viewDistance = (int) Math.ceil(mc.levelRenderer.getLastViewDistance());
+        ChunkPos.rangeClosed(mc.player.chunkPosition(), viewDistance).forEach(chunkPos -> {
+            var chunk = mc.level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
+            if (chunk != null) {
+                for (var i = 0; i < chunk.getSectionsCount(); i++) {
+                    var section = chunk.getSection(i);
+                    if (section.maybeHas(state -> state.is(AEBlocks.CABLE_BUS.block()))) {
+                        mc.levelRenderer.setSectionDirty(chunkPos.x, chunk.getSectionYFromSectionIndex(i), chunkPos.z);
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -394,10 +422,12 @@ public class AppEngClient extends AppEngBase {
             return super.getCableRenderMode();
         }
 
-        final Minecraft mc = Minecraft.getInstance();
-        final Player player = mc.player;
+        var mc = Minecraft.getInstance();
+        if (mc.player == null) {
+            return CableRenderMode.STANDARD;
+        }
 
-        return this.getCableRenderModeForPlayer(player);
+        return this.getCableRenderModeForPlayer(mc.player);
     }
 
     @Override

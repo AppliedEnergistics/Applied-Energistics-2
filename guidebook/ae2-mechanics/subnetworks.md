@@ -40,9 +40,9 @@ network can access
 "Subnetwork" is a rather loosely-defined term, but one might say that a subnetwork is any [network](../ae2-mechanics/me-network-connections.md) that supports your
 main network or does some small task. They are typically small enough to not require controllers. Their main 2 uses tend to be:
 
-*   To restrict what [devices](../ae2-mechanics/devices.md) have access to what storage (you don't want the import bus on a "pipe" subnet to have access to your main net
+* To restrict what [devices](../ae2-mechanics/devices.md) have access to what storage (you don't want the import bus on a "pipe" subnet to have access to your main net
     storage, or it will put the items in your storage cells instead of in the destination inventory).
-*   To save channels on your main network, like having a pattern provider output to an interface connected to several storage
+* To save channels on your main network, like having a pattern provider output to an interface connected to several storage
     busses on several machines, using 1 channel, instead of putting a pattern provider on each machine, using several channels.
 
 Very important in making a subnet is keeping track of the [network connections](../ae2-mechanics/me-network-connections.md).
@@ -51,14 +51,20 @@ all the devices are still connected to the main network through various fullbloc
 
 Cables with different colors have nothing to do with making a subnetwork other than that they won't connect to each other.
 
-They can be
+Some examples are:
 
-*   an import bus and storage bus set up to transfer items or fluids from one container to another like an item or fluid pipe
-*   an annihilation plane and storage bus, so that the only place the annihilation plane can put what it breaks is the storage bus, allowing you to filter the plane
-*   an interface and formation plane, so that whatever is inserted into the interface gets pushed to the formation plane and placed/dropped in the world
-*   a setup to automatically make certus quartz, regulated and controlled by a <ItemLink id="level_emitter" /> on the main network
-*   a specialized storage system accessible from the main network via the special storage-bus-on-interface interaction, in order to store the output of a farm without endlessly overflowing your main storage
-*   and so on
+* A setup to replace your Trash Can/Void Upgrade with an entire AE2 network that decides how to best utilize your garbage. Intelligently
+  route items to a composter array or some modded recycler depending on availability and demand.
+* Build abstractions. Manage all the details of a complex crafting operation from your subnetwork, so from the perspective
+  of your main net, the entire factory "looks like" one machine.
+* Parallelism. Replace a slow machine with 10 copies of the slow machine. From the perspective of your main net,
+  nothing's changed, and you aren't even using any more channels.
+* An import bus and storage bus set up to transfer items or fluids from one container to another like an item or fluid pipe.
+* An annihilation plane and storage bus, so that the only place the annihilation plane can put what it breaks is the storage bus, allowing you to filter the plane.
+* An interface and formation plane, so that whatever is inserted into the interface gets pushed to the formation plane and placed/dropped in the world.
+* A setup to automatically make certus quartz, regulated and controlled by a <ItemLink id="level_emitter" /> on the main network.
+* A specialized storage system accessible from the main network via the special storage-bus-on-interface interaction, in order to store the output of a farm without endlessly overflowing your main storage.
+* And so on
 
 Very useful for making subnetworks is the <ItemLink id="quartz_fiber" />. It transfers power between networks without
 connecting them, allowing you to power subnets without needing to put energy acceptors and power cables everywhere.

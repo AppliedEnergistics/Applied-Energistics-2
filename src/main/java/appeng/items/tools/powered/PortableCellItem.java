@@ -21,6 +21,7 @@ package appeng.items.tools.powered;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -108,7 +109,7 @@ public class PortableCellItem extends AbstractPortableCell implements IBasicCell
 
     @Override
     public ConfigInventory getConfigInventory(ItemStack is) {
-        return CellConfig.create(keyType.filter(), is);
+        return CellConfig.create(Set.of(keyType), is);
     }
 
     @Override
