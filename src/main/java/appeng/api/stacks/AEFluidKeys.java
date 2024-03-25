@@ -66,8 +66,8 @@ final class AEFluidKeys extends AEKeyType {
     }
 
     @Override
-    public AEFluidKey loadKeyFromTag(HolderLookup.Provider provider, CompoundTag tag) {
-        return AEFluidKey.fromTag(provider, tag);
+    public AEFluidKey loadKeyFromTag(HolderLookup.Provider registries, CompoundTag tag) {
+        return AEFluidKey.fromTag(registries, tag);
     }
 
     @Override

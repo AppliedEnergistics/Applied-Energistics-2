@@ -44,7 +44,7 @@ final class AEItemKeys extends AEKeyType {
 
     @Override
     public Codec<? extends AEKey> codec() {
-        return null;
+        return AEItemKey.CODEC;
     }
 
     @Override
@@ -55,8 +55,8 @@ final class AEItemKeys extends AEKeyType {
     }
 
     @Override
-    public AEItemKey loadKeyFromTag(HolderLookup.Provider provider, CompoundTag tag) {
-        return AEItemKey.fromTag(provider, tag);
+    public AEItemKey loadKeyFromTag(HolderLookup.Provider registries, CompoundTag tag) {
+        return AEItemKey.fromTag(registries, tag);
     }
 
     @Override

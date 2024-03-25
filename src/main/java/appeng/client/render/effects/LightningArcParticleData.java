@@ -60,7 +60,7 @@ public record LightningArcParticleData(Vector3f target) implements ParticleOptio
     }
 
     @Override
-    public String writeToString(HolderLookup.Provider provider) {
+    public String writeToString(HolderLookup.Provider registries) {
         return String.format(Locale.ROOT, "%.2f %.2f %.2f", target.x, target.y, target.z);
     }
 

@@ -120,16 +120,21 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
     public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.readFromNBT(data, registries);
 
-        ItemEnchantments.CODEC.encode(enchantments, NbtOps.INSTANCE, data);
+        var enchantmentsTag = data.getCompound("enchantments");
+        this.enchantments = ItemEnchantments.CODEC.decode(NbtOps.INSTANCE, enchantmentsTag)
+                .getOrThrow(false, err -> LOG.warn("Failed to load enchantments for part {}: {}", this, err))
+                .getFirst();
     }
 
     @Override
     public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.writeToNBT(data, registries);
 
-        this.enchantments = ItemEnchantments.CODEC.decode(NbtOps.INSTANCE, data)
-                .getOrThrow(false, err -> LOG.warn("Failed to load enchantments for part {}: {}", this, err))
-                .getFirst();
+        var enchantmentsTag = ItemEnchantments.CODEC.encodeStart(NbtOps.INSTANCE, enchantments)
+                .getOrThrow(false, err -> LOG.error("Failed to serialize enchantments: {}", err));
+        if (enchantmentsTag instanceof CompoundTag compoundTag && !compoundTag.isEmpty()) {
+            data.put("enchantments", enchantmentsTag);
+        }
     }
 
     @Override

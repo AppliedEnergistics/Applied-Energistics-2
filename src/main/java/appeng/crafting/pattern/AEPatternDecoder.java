@@ -38,7 +38,7 @@ public class AEPatternDecoder implements IPatternDetailsDecoder {
     @Nullable
     @Override
     public IPatternDetails decodePattern(AEItemKey what, Level level) {
-        if (level == null || !(what.getItem() instanceof EncodedPatternItem encodedPatternItem)) {
+        if (level == null || what == null || !(what.getItem() instanceof EncodedPatternItem<?> encodedPatternItem)) {
             return null;
         }
 

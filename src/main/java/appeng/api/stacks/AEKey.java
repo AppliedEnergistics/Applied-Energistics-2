@@ -1,30 +1,33 @@
 package appeng.api.stacks;
 
-import java.util.List;
-
-import appeng.crafting.pattern.EncodedCraftingPattern;
+import appeng.api.config.FuzzyMode;
+import appeng.core.AELog;
+import appeng.core.definitions.AEItems;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.core.HolderGetter;
+import com.mojang.serialization.MapLike;
+import com.mojang.serialization.RecordBuilder;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.ResourceLocationException;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import appeng.api.config.FuzzyMode;
-import appeng.core.AELog;
+import java.util.List;
 
 /**
  * Uniquely identifies something that "stacks" within an ME inventory.
@@ -40,8 +43,24 @@ import appeng.core.AELog;
  * </ul>
  */
 public abstract class AEKey {
+    private static final Logger LOG = LoggerFactory.getLogger(AEKey.class);
 
     public static final MapCodec<AEKey> MAP_CODEC = AEKeyType.CODEC.dispatchMap("#c", AEKey::getType, AEKeyType::codec);
+
+    /**
+     * Replaces unserializable AEKeys with instances of {@link AEItems#MISSING_CONTENT}.
+     */
+    public static final MapCodec<AEKey> FAULT_TOLERANT_MAP_CODEC = MAP_CODEC.mapResult(new MapCodec.ResultFunction<>() {
+        @Override
+        public <T> DataResult<AEKey> apply(DynamicOps<T> ops, MapLike<T> input, DataResult<AEKey> a) {
+            return a;
+        }
+
+        @Override
+        public <T> RecordBuilder<T> coApply(DynamicOps<T> ops, AEKey input, RecordBuilder<T> t) {
+            return t;
+        }
+    });
 
     public static final Codec<AEKey> CODEC = MAP_CODEC.codec();
 
@@ -100,34 +119,25 @@ public abstract class AEKey {
     private volatile Component cachedDisplayName;
 
     @Nullable
-    public static AEKey fromTagGeneric(HolderLookup.Provider provider, CompoundTag tag) {
-        // Handle malformed tags where the channel is missing
-        var channelId = tag.getString("#c");
-        if (channelId.isEmpty()) {
-            AELog.warn("Cannot deserialize generic key from %s because key '#c' is missing.", tag);
-            return null;
-        }
-
-        // Handle tags where the mod that provided the channel has been uninstalled
-        AEKeyType channel;
+    public static AEKey fromTagGeneric(HolderLookup.Provider registries, CompoundTag tag) {
         try {
-            channel = AEKeyTypes.get(new ResourceLocation(channelId));
-        } catch (IllegalArgumentException | ResourceLocationException e) {
-            AELog.warn("Cannot deserialize generic key from %s because channel '%s' is missing.", tag, channelId);
+            return Util.getOrThrow(CODEC.decode(registries.createSerializationContext(NbtOps.INSTANCE), tag), IllegalStateException::new)
+                    .getFirst();
+        } catch (Exception e) {
+            LOG.warn("Cannot deserialize generic key from {}: {}", tag, e);
             return null;
         }
-
-        return channel.loadKeyFromTag(provider, tag);
     }
 
     /**
      * Same as {@link #toTag(HolderLookup.Provider)}, but includes type information so that {@link #fromTagGeneric(HolderLookup.Provider, CompoundTag)} can restore
      * this particular type of key withot knowing the actual type beforehand.
      */
-    public final CompoundTag toTagGeneric(HolderLookup.Provider provider) {
-        var tag = toTag(provider);
-        tag.putString("#c", getType().getId().toString());
-        return tag;
+    public final CompoundTag toTagGeneric(HolderLookup.Provider registries) {
+        return (CompoundTag) Util.getOrThrow(
+                CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this),
+                IllegalStateException::new
+        );
     }
 
     /**
@@ -159,7 +169,7 @@ public abstract class AEKey {
     }
 
     /**
-     * @see AEKeyType#formatAmount(long,AmountFormat)
+     * @see AEKeyType#formatAmount(long, AmountFormat)
      */
     public String formatAmount(long amount, AmountFormat format) {
         return getType().formatAmount(amount, format);
@@ -172,7 +182,7 @@ public abstract class AEKey {
 
     /**
      * @return This object if it has no secondary component, otherwise a copy of this resource key with the secondary
-     *         component removed.
+     * component removed.
      */
     public abstract AEKey dropSecondary();
 
@@ -180,13 +190,13 @@ public abstract class AEKey {
      * Serialized keys MUST NOT contain keys that start with <code>#</code>, because this prefix can be used to add
      * additional data into the same tag as the key.
      */
-    public abstract CompoundTag toTag(HolderLookup.Provider provider);
+    public abstract CompoundTag toTag(HolderLookup.Provider registries);
 
     public abstract Object getPrimaryKey();
 
     /**
      * @return If {@link #getFuzzySearchMaxValue()} is greater than 0, this is the value in the range of
-     *         [0,getFuzzyModeMaxValue] used to index keys by. Used by fuzzy mode search with percentage ranges.
+     * [0,getFuzzyModeMaxValue] used to index keys by. Used by fuzzy mode search with percentage ranges.
      */
     public int getFuzzySearchValue() {
         return 0;
@@ -194,7 +204,7 @@ public abstract class AEKey {
 
     /**
      * @return The upper bound for values returned by {@link #getFuzzySearchValue()}. If it is equal to 0, no fuzzy
-     *         range-search is possible for this type of key.
+     * range-search is possible for this type of key.
      */
     public int getFuzzySearchMaxValue() {
         return 0;

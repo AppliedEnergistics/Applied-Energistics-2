@@ -19,8 +19,8 @@ public record EncodedProcessingPattern(
     }
 
     public static final Codec<EncodedProcessingPattern> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            GenericStack.CODEC.listOf().fieldOf("sparseInputs").forGetter(EncodedProcessingPattern::sparseInputs),
-            GenericStack.CODEC.listOf().fieldOf("sparseInputs").forGetter(EncodedProcessingPattern::sparseOutputs)
+            GenericStack.NULLABLE_LIST_CODEC.fieldOf("sparseInputs").forGetter(EncodedProcessingPattern::sparseInputs),
+            GenericStack.NULLABLE_LIST_CODEC.fieldOf("sparseOutputs").forGetter(EncodedProcessingPattern::sparseOutputs)
     ).apply(builder, EncodedProcessingPattern::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, EncodedProcessingPattern> STREAM_CODEC = StreamCodec.composite(

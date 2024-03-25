@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Stream;
 
-import net.minecraft.core.HolderLookup;
+import appeng.util.RecursiveTagReplace;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
@@ -52,6 +52,8 @@ import appeng.util.LoadTranslations;
 @BootstrapMinecraft
 @LoadTranslations
 class AECraftingPatternTest {
+    private final RegistryAccess registries = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+
     private static final ResourceLocation TEST_RECIPE_ID = AppEng.makeId("test_recipe");
 
     private final RecipeHolder<CraftingRecipe> TEST_RECIPE = buildRecipe(
@@ -79,8 +81,10 @@ class AECraftingPatternTest {
     }
 
     @Test
-    void testDecodeWithEmptyTag() {
-        assertNull(decode(new CompoundTag()));
+    void testDecodeWithoutComponent() {
+        var item = AEItems.CRAFTING_PATTERN.stack();
+        var tag = item.save(registries);
+        assertNull(decode((CompoundTag) tag));
     }
 
     /**
@@ -90,14 +94,14 @@ class AECraftingPatternTest {
     @Test
     void testDecodeWithRemovedIngredientItemIds() {
         var encoded = createTestPattern();
-        var encodedTag = new CompoundTag();
-        encoded.save(RegistryAccess.EMPTY, encodedTag);
+        var encodedTag = (CompoundTag) encoded.save(registries);
 
         // Replace the diamond ID string with an unknown ID string
-        assertEquals(1, RecursiveTagReplace.replace(encodedTag, "minecraft:diamond", "minecraft:does_not_exist"));
+        assertEquals(1, RecursiveTagReplace.replace(encodedTag, "minecraft:torch", "minecraft:does_not_exist"));
+        var brokenPatternStack = ItemStack.parseOptional(registries, encodedTag);
 
         assertNull(decode(encodedTag));
-        assertThat(getExtraTooltip(encoded)).containsExactly(
+        assertThat(getExtraTooltip(brokenPatternStack)).containsExactly(
                 "Invalid Pattern",
                 "Crafts: 1 x Stick",
                 "with: 1 x Torch",
@@ -138,7 +142,7 @@ class AECraftingPatternTest {
         when(level.getRecipeManager()).thenReturn(recipeManager);
         when(recipeManager.byType(RecipeType.CRAFTING)).thenReturn(Map.of(TEST_RECIPE_ID, TEST_RECIPE));
 
-        var pattern = ItemStack.parseOptional(RegistryAccess.EMPTY, tag);
+        var pattern = ItemStack.parseOptional(registries, tag);
         var details = PatternDetailsHelper.decodePattern(AEItemKey.of(pattern), level);
         if (details == null) {
             return null;

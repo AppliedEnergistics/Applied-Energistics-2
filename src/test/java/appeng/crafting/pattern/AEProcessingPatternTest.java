@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import appeng.api.implementations.items.IAEItemPowerStorage;
+import appeng.util.RecursiveTagReplace;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,6 @@ import net.minecraft.world.item.TooltipFlag;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import appeng.core.definitions.AEItems;
 import appeng.util.BootstrapMinecraft;
 import appeng.util.LoadTranslations;
 

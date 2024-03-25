@@ -24,13 +24,17 @@
 package appeng.api.stacks;
 
 import appeng.api.storage.AEKeyFilter;
+import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.util.ReadableNumberConverter;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -50,9 +54,7 @@ import java.util.stream.Stream;
  */
 public abstract class AEKeyType {
     public static final ResourceKey<Registry<AEKeyType>> REGISTRY_KEY = ResourceKey.createRegistryKey(AppEng.makeId("keytypes"));
-
     public static final Codec<AEKeyType> CODEC = ExtraCodecs.lazyInitializedCodec(() -> AEKeyTypesInternal.getRegistry().byNameCodec());
-
     public static final StreamCodec<RegistryFriendlyByteBuf, AEKeyType> STREAM_CODEC = ByteBufCodecs.registry(AEKeyType.REGISTRY_KEY);
 
     private final ResourceLocation id;
@@ -143,7 +145,17 @@ public abstract class AEKeyType {
      * Attempts to load a key of this type from the given tag.
      */
     @Nullable
-    public abstract AEKey loadKeyFromTag(HolderLookup.Provider provider, CompoundTag tag);
+    public AEKey loadKeyFromTag(HolderLookup.Provider registries, CompoundTag tag) {
+        try {
+            return Util.getOrThrow(
+                    codec().decode(registries.createSerializationContext(NbtOps.INSTANCE), tag),
+                    IllegalStateException::new
+            ).getFirst();
+        } catch (Exception e) {
+            AELog.debug("Tried to load an invalid item key from NBT: %s", tag, e);
+            return null;
+        }
+    }
 
     /**
      * Does this key belong to this storage channel.

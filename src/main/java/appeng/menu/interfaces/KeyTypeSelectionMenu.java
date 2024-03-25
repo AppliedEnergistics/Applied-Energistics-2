@@ -45,7 +45,7 @@ public interface KeyTypeSelectionMenu {
             this(new LinkedHashMap<>());
         }
 
-        public SyncedKeyTypes(FriendlyByteBuf buf) {
+        public SyncedKeyTypes(RegistryFriendlyByteBuf buf) {
             this(buf.<AEKeyType, Boolean, Map<AEKeyType, Boolean>>readMap(LinkedHashMap::new,
                     b -> AEKeyType.fromRawId(b.readVarInt()), FriendlyByteBuf::readBoolean));
         }

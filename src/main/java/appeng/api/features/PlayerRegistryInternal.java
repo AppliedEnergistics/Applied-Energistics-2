@@ -124,7 +124,7 @@ final class PlayerRegistryInternal extends AESavedData implements IPlayerRegistr
 
 
     @Override
-    public CompoundTag save(CompoundTag compound, HolderLookup.Provider provider) {
+    public CompoundTag save(CompoundTag compound, HolderLookup.Provider registries) {
         int index = 0;
         int[] playerIds = new int[mapping.size()];
         long[] profileIds = new long[mapping.size() * 2];

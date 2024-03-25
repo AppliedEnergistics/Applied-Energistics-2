@@ -73,7 +73,7 @@ final class CompassRegion extends AESavedData {
                 getRegionSaveName(regionX, regionZ));
     }
 
-    public static CompassRegion load(CompoundTag nbt, HolderLookup.Provider provider) {
+    public static CompassRegion load(CompoundTag nbt, HolderLookup.Provider registries) {
         var result = new CompassRegion();
         for (String key : nbt.getAllKeys()) {
             if (key.startsWith("section")) {
@@ -91,7 +91,7 @@ final class CompassRegion extends AESavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound, HolderLookup.Provider provider) {
+    public CompoundTag save(CompoundTag compound, HolderLookup.Provider registries) {
         for (var entry : sections.entrySet()) {
             var key = "section" + entry.getKey();
             if (entry.getValue().isEmpty()) {

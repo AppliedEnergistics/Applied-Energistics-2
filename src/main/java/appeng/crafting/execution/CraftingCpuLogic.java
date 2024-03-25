@@ -409,7 +409,11 @@ public class CraftingCpuLogic {
         this.inventory.readFromNBT(data.getList("inventory", 10), registries);
         if (data.contains("job")) {
             this.job = new ExecutingCraftingJob(data.getCompound("job"), registries, this::postChange, this);
-            cluster.updateOutput(new GenericStack(job.finalOutput.what(), job.remainingAmount));
+            if (this.job.finalOutput == null) {
+                finishJob(false);
+            } else {
+                cluster.updateOutput(new GenericStack(job.finalOutput.what(), job.remainingAmount));
+            }
         } else {
             cluster.updateOutput(null);
         }

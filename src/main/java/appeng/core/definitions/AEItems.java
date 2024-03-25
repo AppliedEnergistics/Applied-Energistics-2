@@ -181,6 +181,8 @@ public final class AEItems {
     public static final ItemDefinition<Item> PROCESSING_PATTERN = item("Processing Pattern", AEItemIds.PROCESSING_PATTERN, p -> PatternDetailsHelper.encodedPatternItemBuilder(AEProcessingPattern::new).invalidPatternTooltip(AEProcessingPattern::getInvalidPatternTooltip).build());
     public static final ItemDefinition<Item> SMITHING_TABLE_PATTERN = item("Smithing Table Pattern", AEItemIds.SMITHING_TABLE_PATTERN, p -> PatternDetailsHelper.encodedPatternItemBuilder(AESmithingTablePattern::new).invalidPatternTooltip(AESmithingTablePattern::getInvalidTooltip).build());
     public static final ItemDefinition<Item> STONECUTTING_PATTERN = item("Stonecutting Pattern", AEItemIds.STONECUTTING_PATTERN, p -> PatternDetailsHelper.encodedPatternItemBuilder(AEStonecuttingPattern::new).invalidPatternTooltip(AEStonecuttingPattern::getInvalidTooltip).build());
+    // Used to represent missing content if a mod got uninstalled
+    public static final ItemDefinition<Item> MISSING_CONTENT = item("Missing Content", AEItemIds.MISSING_CONTENT, Item::new);
 
     public static final ColoredItemDefinition<PaintBallItem> COLORED_PAINT_BALL = createColoredItems("Paint Ball", AEItemIds.COLORED_PAINT_BALL, (p, color) -> new PaintBallItem(p, color, false));
     public static final ColoredItemDefinition<PaintBallItem> COLORED_LUMEN_PAINT_BALL = createColoredItems("Lumen Paint Ball", AEItemIds.COLORED_LUMEN_PAINT_BALL, (p, color) -> new PaintBallItem(p, color, true));

@@ -1,43 +1,54 @@
 package appeng.api.stacks;
 
+import appeng.api.storage.AEKeyFilter;
+import appeng.core.AELog;
+import com.google.common.base.Preconditions;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
+
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Objects;
 import java.util.WeakHashMap;
 
-import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.chars.CharDoubleMutablePair;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.util.datafix.fixes.ItemStackSpawnEggFix;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NumericTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.Level;
-
-import appeng.api.storage.AEKeyFilter;
-import appeng.core.AELog;
-
 public final class AEItemKey extends AEKey {
-    private static final Logger LOG = LoggerFactory.getLogger(AEItemKey.class);
+
+    /**
+     * We currently cannot directly use {@link ItemStack#SINGLE_ITEM_CODEC} since it is wrapped up in a lazy codec,
+     * which prevents the dispatch codec from recognizing it as a MapCodec, making it unable to inline the fields.
+     */
+    public static final Codec<AEItemKey> CODEC = RecordCodecBuilder.create(
+            builder -> builder.group(
+                            ExtraCodecs.validate(
+                                    BuiltInRegistries.ITEM.holderByNameCodec(),
+                                    item -> item.is(Items.AIR.builtInRegistryHolder()) ? DataResult.error(() -> "Item must not be minecraft:air") : DataResult.success(item)
+                            ).fieldOf("id").forGetter(key -> key.stack.getItemHolder()),
+                            ExtraCodecs.strictOptionalField(DataComponentPatch.CODEC, "components", DataComponentPatch.EMPTY)
+                                    .forGetter(key -> key.stack.getComponentsPatch())
+                    )
+                    .apply(builder, (item, componentPatch) -> new AEItemKey(new ItemStack(item, 1, componentPatch)))
+    );
 
     private final ItemStack stack;
     private final int hashCode;
@@ -135,9 +146,12 @@ public final class AEItemKey extends AEKey {
     }
 
     @Nullable
-    public static AEItemKey fromTag(HolderLookup.Provider provider, CompoundTag tag) {
+    public static AEItemKey fromTag(HolderLookup.Provider registries, CompoundTag tag) {
         try {
-            return of(ItemStack.parseOptional(provider, tag));
+            return Util.getOrThrow(
+                    CODEC.decode(registries.createSerializationContext(NbtOps.INSTANCE), tag),
+                    IllegalStateException::new
+            ).getFirst();
         } catch (Exception e) {
             AELog.debug("Tried to load an invalid item key from NBT: %s", tag, e);
             return null;
@@ -145,10 +159,11 @@ public final class AEItemKey extends AEKey {
     }
 
     @Override
-    public CompoundTag toTag(HolderLookup.Provider provider) {
-        CompoundTag result = new CompoundTag();
-        stack.save(provider, result);
-        return result;
+    public CompoundTag toTag(HolderLookup.Provider registries) {
+        return (CompoundTag) Util.getOrThrow(
+                CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this),
+                IllegalStateException::new
+        );
     }
 
     @Override
@@ -245,62 +260,5 @@ public final class AEItemKey extends AEKey {
         String idString = id != BuiltInRegistries.ITEM.getDefaultKey() ? id.toString()
                 : stack.getItem().getClass().getName() + "(unregistered)";
         return stack.getComponents().isEmpty() ? idString : idString + " (+components)";
-    }
-
-    private static final class InternedTag {
-        private static final InternedTag EMPTY = new InternedTag(null);
-
-        private static final WeakHashMap<InternedTag, WeakReference<InternedTag>> INTERNED = new WeakHashMap<>();
-
-        private final CompoundTag tag;
-        private final int hashCode;
-
-        InternedTag(CompoundTag tag) {
-            this.tag = tag;
-            this.hashCode = Objects.hashCode(tag);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o)
-                return true;
-            if (o == null || getClass() != o.getClass())
-                return false;
-            InternedTag internedTag = (InternedTag) o;
-            return Objects.equals(tag, internedTag.tag);
-        }
-
-        @Override
-        public int hashCode() {
-            return hashCode;
-        }
-
-        public static InternedTag of(@Nullable CompoundTag tag, boolean giveOwnership) {
-            if (tag == null) {
-                return EMPTY;
-            }
-
-            synchronized (AEItemKey.class) {
-                var searchHolder = new InternedTag(tag);
-                var weakRef = INTERNED.get(searchHolder);
-                InternedTag ret = null;
-
-                if (weakRef != null) {
-                    ret = weakRef.get();
-                }
-
-                if (ret == null) {
-                    // Copy the tag if we don't get to have ownership of it
-                    if (giveOwnership) {
-                        ret = searchHolder;
-                    } else {
-                        ret = new InternedTag(tag.copy());
-                    }
-                    INTERNED.put(ret, new WeakReference<>(ret));
-                }
-
-                return ret;
-            }
-        }
     }
 }

@@ -63,7 +63,7 @@ public record EnergyParticleData(boolean forItem, Direction direction) implement
 
 
     @Override
-    public String writeToString(HolderLookup.Provider provider) {
+    public String writeToString(HolderLookup.Provider registries) {
         return String.format(Locale.ROOT, "%s %s", forItem ? "true" : "false",
                 direction.name().toLowerCase(Locale.ROOT));
     }

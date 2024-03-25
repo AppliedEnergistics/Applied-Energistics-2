@@ -67,7 +67,7 @@ class ChunkLoadState extends AESavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider) {
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
         var forcedChunks = new ListTag();
         for (var entry : forceLoadedChunks.long2ObjectEntrySet()) {
             var chunkPos = new ChunkPos(entry.getLongKey());

@@ -18,7 +18,7 @@ public class PoiTypeTagsProvider extends net.minecraft.data.tags.PoiTypeTagsProv
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags(HolderLookup.Provider registries) {
         tag(PoiTypeTags.ACQUIRABLE_JOB_SITE).add(InitVillager.POI_KEY);
     }
 }

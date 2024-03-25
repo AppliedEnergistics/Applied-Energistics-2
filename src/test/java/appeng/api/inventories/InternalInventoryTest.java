@@ -486,7 +486,7 @@ class InternalInventoryTest {
                 assertEquals("15 minecraft:stick", inv.removeItems(15, ItemStack.EMPTY, null).toString());
                 assertThat(reportFilledSlots(inv)).containsOnly(
                         "10 minecraft:stick [has components]",
-                        "10 minecraft:diamond_sword [has components]",
+                        "10 minecraft:diamond_sword",
                         "1 minecraft:diamond_sword [has components]",
                         "5 minecraft:stick [has components]",
                         "5 minecraft:diamond_sword [has components]",
@@ -494,7 +494,7 @@ class InternalInventoryTest {
 
                 assertEquals("15 minecraft:stick", inv.removeItems(15, ItemStack.EMPTY, null).toString());
                 assertThat(reportFilledSlots(inv)).containsOnly(
-                        "10 minecraft:diamond_sword [has components]",
+                        "10 minecraft:diamond_sword",
                         "1 minecraft:diamond_sword [has components]",
                         "5 minecraft:diamond_sword [has components]",
                         "1 minecraft:diamond_sword [has components]");
@@ -504,7 +504,7 @@ class InternalInventoryTest {
                 // it'll adhere to Vanilla stack size limits.
                 assertEquals("2 minecraft:diamond_sword", inv.removeItems(15, ItemStack.EMPTY, null).toString());
                 assertThat(reportFilledSlots(inv)).containsOnly(
-                        "9 minecraft:diamond_sword [has components]",
+                        "9 minecraft:diamond_sword",
                         "1 minecraft:diamond_sword [has components]",
                         "4 minecraft:diamond_sword [has components]",
                         "1 minecraft:diamond_sword [has components]");
@@ -531,7 +531,7 @@ class InternalInventoryTest {
                 assertEquals("14 minecraft:stick", inv.removeItems(14, ItemStack.EMPTY, null).toString());
                 assertThat(reportFilledSlots(inv)).containsOnly(
                         "10 minecraft:stick [has components]",
-                        "10 minecraft:diamond_sword [has components]",
+                        "10 minecraft:diamond_sword",
                         "1 minecraft:diamond_sword [has components]",
                         // This is the remainder of the 15 minecraft:sticks previously in the inventory
                         "1 minecraft:stick",
@@ -601,8 +601,8 @@ class InternalInventoryTest {
                         .extracting(InternalInventoryTest::describeStack)
                         .containsOnly(
                                 // It's called twice because there are two slots.
-                                "1 minecraft:diamond_sword [has components]",
-                                "1 minecraft:diamond_sword [has components]");
+                                "1 minecraft:diamond_sword",
+                                "1 minecraft:diamond_sword");
             }
 
             @Test

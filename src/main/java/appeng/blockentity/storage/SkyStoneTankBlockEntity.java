@@ -3,6 +3,7 @@ package appeng.blockentity.storage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -35,15 +36,17 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
     @Override
     public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
         super.saveAdditional(data, registries);
-        if (!tank.isEmpty()) {
-            tank.writeToNBT(registries, data);
+        var tankNbt = new CompoundTag();
+        tank.writeToNBT(registries, tankNbt);
+        if (!tankNbt.isEmpty()) {
+            data.put("content", tankNbt);
         }
     }
 
     @Override
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
-        tank.readFromNBT(registries, data);
+        tank.readFromNBT(registries, data.getCompound("tank"));
     }
 
     public boolean onPlayerUse(Player player, InteractionHand hand) {
@@ -67,7 +70,7 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
     protected void writeToStream(RegistryFriendlyByteBuf data) {
         super.writeToStream(data);
         var tag = new CompoundTag();
-        tank.writeToNBT(data.registryAccess(), tag);
+            tank.writeToNBT(data.registryAccess(), tag);
         data.writeNbt(tag);
     }
 }

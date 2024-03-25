@@ -48,7 +48,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags(HolderLookup.Provider registries) {
         copyBlockTags();
 
         // Allow the annihilation plane to be enchanted with silk touch & fortune

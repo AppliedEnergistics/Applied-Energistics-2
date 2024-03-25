@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Map;
 
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,7 @@ import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
 class AEItemKeyTest {
-    private RegistryAccess registryAccess = RegistryAccess.EMPTY;
+    private RegistryAccess registries = RegistryAccess.EMPTY;
 
     private static int getMaxDamage(ItemLike item) {
         return item.asItem().getMaxDamage(item.asItem().getDefaultInstance());
@@ -147,9 +146,10 @@ class AEItemKeyTest {
 
     @Nested
     class GenericTagSerialization {
+
         @Test
         void deserializeFromTagWithoutChannel() {
-            assertNull(AEKey.fromTagGeneric(registryAccess, new CompoundTag()));
+            assertNull(AEKey.fromTagGeneric(registries, new CompoundTag()));
         }
 
         @Test
@@ -157,7 +157,7 @@ class AEItemKeyTest {
             var tag = new CompoundTag();
             tag.putString("#c", "modid:doesnt_exist");
 
-            assertNull(AEKey.fromTagGeneric(registryAccess, tag));
+            assertNull(AEKey.fromTagGeneric(registries, tag));
         }
 
         @Test
@@ -165,7 +165,7 @@ class AEItemKeyTest {
             var tag = new CompoundTag();
             tag.putString("#c", "modid!!!!!doesnt_exist");
 
-            assertNull(AEKey.fromTagGeneric(registryAccess, tag));
+            assertNull(AEKey.fromTagGeneric(registries, tag));
         }
     }
 

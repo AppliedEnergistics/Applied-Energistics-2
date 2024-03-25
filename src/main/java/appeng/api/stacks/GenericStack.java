@@ -5,18 +5,24 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
  * Represents some amount of some generic resource that AE can store or handle in crafting.
  */
 public record GenericStack(AEKey what, long amount) {
+    private static final Logger LOG = LoggerFactory.getLogger(GenericStack.class);
+
     public static final Codec<GenericStack> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             AEKey.MAP_CODEC.forGetter(GenericStack::what),
             Codec.LONG.fieldOf("amount").forGetter(GenericStack::amount)
@@ -26,6 +32,8 @@ public record GenericStack(AEKey what, long amount) {
             GenericStack::writeBuffer,
             GenericStack::readBuffer
     );
+
+    public static final Codec<List<@Nullable GenericStack>> NULLABLE_LIST_CODEC = new GenericStackListCodec();
 
     public GenericStack {
         Objects.requireNonNull(what, "what");
@@ -57,24 +65,22 @@ public record GenericStack(AEKey what, long amount) {
     }
 
     @Nullable
-    public static GenericStack readTag(HolderLookup.Provider provider, CompoundTag tag) {
+    public static GenericStack readTag(HolderLookup.Provider registries, CompoundTag tag) {
         if (tag.isEmpty()) {
             return null;
         }
-        var key = AEKey.fromTagGeneric(provider, tag);
-        if (key == null) {
-            return null;
-        }
-        return new GenericStack(key, tag.getLong("#"));
+        return GenericStack.CODEC.decode(NbtOps.INSTANCE, tag)
+                .getOrThrow(true, err -> LOG.error("Failed to decode GenericStack from {}: {}", tag, err))
+                .getFirst();
     }
 
-    public static CompoundTag writeTag(HolderLookup.Provider provider, @Nullable GenericStack stack) {
+    public static CompoundTag writeTag(HolderLookup.Provider registries, @Nullable GenericStack stack) {
         if (stack == null) {
             return new CompoundTag();
         }
-        var tag = stack.what.toTagGeneric(provider);
-        tag.putLong("#", stack.amount);
-        return tag;
+
+        return (CompoundTag) GenericStack.CODEC.encodeStart(NbtOps.INSTANCE, stack)
+                .getOrThrow(true, err -> LOG.error("Failed to encode GenericStack {}: {}", stack, err));
     }
 
     /**
