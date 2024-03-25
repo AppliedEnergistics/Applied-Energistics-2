@@ -1,0 +1,66 @@
+package appeng.util;
+
+import appeng.api.ids.AEComponents;
+import appeng.core.definitions.AEItems;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.Lifecycle;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public final class AECodecs {
+    private static final Logger LOG = LoggerFactory.getLogger(AECodecs.class);
+
+    private AECodecs() {
+    }
+
+    private static final Codec.ResultFunction<ItemStack> MISSING_CONTENT_ITEMSTACK_RESULT = new Codec.ResultFunction<>() {
+        @Override
+        public <T> DataResult<Pair<ItemStack, T>> apply(DynamicOps<T> ops, T input, DataResult<Pair<ItemStack, T>> a) {
+            var result = a.get();
+            if (result.left().isPresent()) {
+                return a; // Return unchanged if deserialization succeeded
+            }
+
+            var missingContent = AEItems.MISSING_CONTENT.stack();
+            var convert = Dynamic.convert(ops, NbtOps.INSTANCE, input);
+            if (convert instanceof CompoundTag compoundTag) {
+                CustomData.set(AEComponents.MISSING_CONTENT_DATA, missingContent, compoundTag);
+            }
+            result.right().ifPresent(partialResult -> {
+                LOG.error("Failed to deserialize ItemStack: {}", partialResult.message());
+                missingContent.set(AEComponents.MISSING_CONTENT_ERROR, partialResult.message());
+            });
+
+            return DataResult.success(
+                    Pair.of(missingContent, input),
+                    Lifecycle.stable()
+            );
+        }
+
+        @Override
+        public <T> DataResult<T> coApply(DynamicOps<T> ops, ItemStack input, DataResult<T> t) {
+            // When the input is a MISSING_CONTENT item and has the original data attached,
+            // we write that back.
+            if (AEItems.MISSING_CONTENT.isSameAs(input)) {
+                var originalData = input.get(AEComponents.MISSING_CONTENT_DATA);
+                if (originalData != null) {
+                    return DataResult.success(Dynamic.convert(NbtOps.INSTANCE, ops, originalData.getUnsafe()), t.lifecycle());
+                }
+            }
+
+            return t;
+        }
+    };
+
+    public static final Codec<ItemStack> FAULT_TOLERANT_SIMPLE_ITEM_CODEC = ItemStack.SINGLE_ITEM_CODEC.mapResult(MISSING_CONTENT_ITEMSTACK_RESULT);
+
+    public static final Codec<ItemStack> FAULT_TOLERANT_ITEMSTACK_CODEC = ItemStack.CODEC.mapResult(MISSING_CONTENT_ITEMSTACK_RESULT);
+}

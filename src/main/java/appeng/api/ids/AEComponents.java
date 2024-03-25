@@ -2,20 +2,17 @@ package appeng.api.ids;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.MemoryCardColors;
-import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.api.util.AEColor;
 import appeng.block.crafting.PushDirection;
 import appeng.core.AppEng;
-import appeng.core.AppEngBase;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.EncodedCraftingPattern;
 import appeng.crafting.pattern.EncodedProcessingPattern;
 import appeng.crafting.pattern.EncodedSmithingTablePattern;
 import appeng.crafting.pattern.EncodedStonecuttingPattern;
 import appeng.items.storage.SpatialPlotInfo;
-import appeng.util.ConfigInventory;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.GlobalPos;
@@ -32,6 +29,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.ApiStatus;
@@ -179,7 +177,7 @@ public final class AEComponents {
      * @see appeng.items.tools.MemoryCardItem
      */
     public static final DataComponentType<List<GenericStack>> EXPORTED_CONFIG_INV = register("exported_config_inv",
-            builder -> builder.persistent(GenericStack.CODEC.listOf()).networkSynchronized(GenericStack.STREAM_CODEC.apply(ByteBufCodecs.list()))
+            builder -> builder.persistent(GenericStack.NULLABLE_LIST_CODEC).networkSynchronized(GenericStack.STREAM_CODEC.apply(ByteBufCodecs.list()))
     );
 
     /**
@@ -314,7 +312,7 @@ public final class AEComponents {
      * Defines partitioning for a storage cell.
      */
     public static final DataComponentType<List<GenericStack>> STORAGE_CELL_CONFIG_INV = register("storage_cell_config_inv",
-            builder -> builder.persistent(GenericStack.CODEC.listOf()).networkSynchronized(GenericStack.STREAM_CODEC.apply(ByteBufCodecs.list()))
+            builder -> builder.persistent(GenericStack.NULLABLE_LIST_CODEC).networkSynchronized(GenericStack.STREAM_CODEC.apply(ByteBufCodecs.list()))
     );
 
     /**
@@ -340,6 +338,14 @@ public final class AEComponents {
 
     public static final DataComponentType<SpatialPlotInfo> SPATIAL_PLOT_INFO = register("spatial_plot_info",
             builder -> builder.persistent(SpatialPlotInfo.CODEC).networkSynchronized(SpatialPlotInfo.STREAM_CODEC)
+    );
+
+    public static final DataComponentType<CustomData> MISSING_CONTENT_DATA = register("missing_content_data",
+            builder -> builder.persistent(CustomData.CODEC).networkSynchronized(CustomData.STREAM_CODEC)
+    );
+
+    public static final DataComponentType<String> MISSING_CONTENT_ERROR = register("missing_content_error",
+            builder -> builder.persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8)
     );
 
     private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {
