@@ -36,6 +36,7 @@ public final class ItemPredicates {
 
     private static boolean isInternal(ItemStack stack) {
         return AEItems.WRAPPED_GENERIC_STACK.isSameAs(stack)
+                || AEItems.MISSING_CONTENT.isSameAs(stack)
                 || isBrokenFacade(stack) // REI will add a broken facade with no NBT
                 || AEBlocks.CABLE_BUS.isSameAs(stack)
                 || AEBlocks.MATRIX_FRAME.isSameAs(stack)
