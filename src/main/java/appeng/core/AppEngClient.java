@@ -254,7 +254,7 @@ public class AppEngClient extends AppEngBase {
     }
 
     public void registerItemColors(RegisterColorHandlersEvent.Item event) {
-        InitItemColors.init(event.getItemColors());
+        InitItemColors.init(event);
     }
 
     private void registerClientTooltipComponents(RegisterClientTooltipComponentFactoriesEvent event) {
