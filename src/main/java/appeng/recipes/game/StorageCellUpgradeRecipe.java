@@ -14,19 +14,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import appeng.core.AppEng;
-import appeng.init.InitRecipeTypes;
 
 /**
  * Allows swapping out the storage component of a cell without having to empty it first.
  */
 public class StorageCellUpgradeRecipe extends CustomRecipe {
-    public static final ResourceLocation TYPE_ID = AppEng.makeId("storage_cell_upgrade");
-
-    public static final RecipeType<StorageCellUpgradeRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
+    public static final ResourceLocation SERIALIZER_ID = AppEng.makeId("storage_cell_upgrade");
     public static final RecipeSerializer<StorageCellUpgradeRecipe> SERIALIZER = new Serializer();
 
     private final Item inputCell;

@@ -51,7 +51,7 @@ public final class InitRecipeSerializers {
         register(registry, MatterCannonAmmo.TYPE_ID, MatterCannonAmmoSerializer.INSTANCE);
         register(registry, TransformRecipe.TYPE_ID, TransformRecipeSerializer.INSTANCE);
         register(registry, ChargerRecipe.TYPE_ID, ChargerRecipeSerializer.INSTANCE);
-        register(registry, StorageCellUpgradeRecipe.TYPE_ID, StorageCellUpgradeRecipe.SERIALIZER);
+        register(registry, StorageCellUpgradeRecipe.SERIALIZER_ID, StorageCellUpgradeRecipe.SERIALIZER);
     }
 
     private static void register(Registry<RecipeSerializer<?>> registry, ResourceLocation id,
