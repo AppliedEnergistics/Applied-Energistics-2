@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import appeng.core.AppEng;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -34,6 +33,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
+
+import appeng.core.AppEng;
 
 /**
  * Contains various tags:
@@ -48,7 +49,8 @@ public final class ConventionTags {
     private ConventionTags() {
     }
 
-    public static final TagKey<DataComponentType<?>> EXPORTED_SETTINGS = TagKey.create(Registries.DATA_COMPONENT_TYPE, AppEng.makeId("exported_settings"));
+    public static final TagKey<DataComponentType<?>> EXPORTED_SETTINGS = TagKey.create(Registries.DATA_COMPONENT_TYPE,
+            AppEng.makeId("exported_settings"));
 
     public static final TagKey<Item> DUSTS = Tags.Items.DUSTS;
     public static final TagKey<Item> GEMS = Tags.Items.GEMS;

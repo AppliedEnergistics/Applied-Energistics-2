@@ -1,11 +1,13 @@
 package appeng.api.implementations.items;
 
-import appeng.api.util.AEColor;
+import java.util.List;
+
 import com.mojang.serialization.Codec;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
-import java.util.List;
+import appeng.api.util.AEColor;
 
 /**
  * Describes the custom colors to show o n a memory card item.
@@ -20,7 +22,8 @@ import java.util.List;
  * @param bottom4
  */
 public record MemoryCardColors(AEColor top1, AEColor top2, AEColor top3, AEColor top4,
-                               AEColor bottom1, AEColor bottom2, AEColor bottom3, AEColor bottom4) {
+        AEColor bottom1, AEColor bottom2, AEColor bottom3, AEColor bottom4) {
+
     public static final Codec<MemoryCardColors> CODEC = AEColor.CODEC.listOf().xmap(
             aeColors -> new MemoryCardColors(
                     0 < aeColors.size() ? aeColors.get(0) : AEColor.TRANSPARENT,
@@ -30,8 +33,7 @@ public record MemoryCardColors(AEColor top1, AEColor top2, AEColor top3, AEColor
                     4 < aeColors.size() ? aeColors.get(4) : AEColor.TRANSPARENT,
                     5 < aeColors.size() ? aeColors.get(5) : AEColor.TRANSPARENT,
                     6 < aeColors.size() ? aeColors.get(6) : AEColor.TRANSPARENT,
-                    7 < aeColors.size() ? aeColors.get(7) : AEColor.TRANSPARENT
-            ),
+                    7 < aeColors.size() ? aeColors.get(7) : AEColor.TRANSPARENT),
             colors -> List.of(
                     colors.top1(),
                     colors.top2(),
@@ -40,9 +42,7 @@ public record MemoryCardColors(AEColor top1, AEColor top2, AEColor top3, AEColor
                     colors.bottom1(),
                     colors.bottom2(),
                     colors.bottom3(),
-                    colors.bottom4()
-            )
-    );
+                    colors.bottom4()));
 
     public static StreamCodec<FriendlyByteBuf, MemoryCardColors> STREAM_CODEC = new StreamCodec<FriendlyByteBuf, MemoryCardColors>() {
         @Override
@@ -55,8 +55,7 @@ public record MemoryCardColors(AEColor top1, AEColor top2, AEColor top3, AEColor
                     buffer.readEnum(AEColor.class),
                     buffer.readEnum(AEColor.class),
                     buffer.readEnum(AEColor.class),
-                    buffer.readEnum(AEColor.class)
-            );
+                    buffer.readEnum(AEColor.class));
         }
 
         @Override
@@ -72,7 +71,8 @@ public record MemoryCardColors(AEColor top1, AEColor top2, AEColor top3, AEColor
         }
     };
 
-    public static final MemoryCardColors DEFAULT = new MemoryCardColors(AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
+    public static final MemoryCardColors DEFAULT = new MemoryCardColors(AEColor.TRANSPARENT, AEColor.TRANSPARENT,
+            AEColor.TRANSPARENT, AEColor.TRANSPARENT,
             AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT);
 
     public AEColor get(int x, int y) {

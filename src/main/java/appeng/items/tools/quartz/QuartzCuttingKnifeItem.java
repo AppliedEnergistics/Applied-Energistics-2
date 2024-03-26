@@ -19,7 +19,6 @@
 package appeng.items.tools.quartz;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.RandomSource;

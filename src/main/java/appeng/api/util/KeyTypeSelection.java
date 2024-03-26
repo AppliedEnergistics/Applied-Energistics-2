@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import appeng.api.ids.AEComponents;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -13,6 +12,7 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypes;
 
@@ -41,7 +41,7 @@ public class KeyTypeSelection {
             stack.set(AEComponents.ENABLED_KEY_TYPES, selection.enabledSet());
         }, allowKeyType);
         var selected = stack.get(AEComponents.ENABLED_KEY_TYPES);
-        if (selected  != null) {
+        if (selected != null) {
             out.setEnabledSet(selected);
         }
         return out;

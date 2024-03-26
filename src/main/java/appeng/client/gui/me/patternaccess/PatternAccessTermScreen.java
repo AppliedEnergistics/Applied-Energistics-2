@@ -29,9 +29,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import appeng.api.ids.AEComponents;
-import appeng.api.stacks.GenericStack;
-import appeng.server.testplots.CraftingPatternHelper;
 import com.google.common.collect.HashMultimap;
 
 import org.slf4j.Logger;
@@ -41,8 +38,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.locale.Language;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
@@ -58,7 +53,6 @@ import appeng.api.config.ShowPatternProviders;
 import appeng.api.config.TerminalStyle;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ILinkStatus;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;

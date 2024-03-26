@@ -20,7 +20,8 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
-import appeng.api.util.IConfigManagerBuilder;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -40,16 +41,15 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.SupplierStorage;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigManagerBuilder;
 import appeng.api.util.KeyTypeSelection;
 import appeng.api.util.KeyTypeSelectionHost;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.common.MEStorageMenu;
-import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
-import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 /**
  * Anything resembling an network terminal with view cells can reuse this.
@@ -83,7 +83,6 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
         builder.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
         builder.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
     }
-
 
     @Override
     public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {

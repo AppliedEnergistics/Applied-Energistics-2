@@ -27,9 +27,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.mojang.serialization.Codec;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
@@ -64,7 +64,8 @@ public enum AEColor implements StringRepresentable {
 
     public static final Codec<AEColor> CODEC = StringRepresentable.fromEnum(AEColor::values);
 
-    public static final StreamCodec<FriendlyByteBuf, AEColor> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(AEColor.class);
+    public static final StreamCodec<FriendlyByteBuf, AEColor> STREAM_CODEC = NeoForgeStreamCodecs
+            .enumCodec(AEColor.class);
 
     public static final List<AEColor> VALID_COLORS = Arrays.asList(WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME,
             PINK, GRAY, LIGHT_GRAY, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK);

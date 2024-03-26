@@ -1,7 +1,6 @@
 
 package appeng.core.network.clientbound;
 
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
@@ -9,6 +8,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingPlanSummary;
 
@@ -16,10 +16,10 @@ import appeng.menu.me.crafting.CraftingPlanSummary;
  * Transfers a {@link CraftingPlanSummary} to the client for a {@link CraftConfirmMenu}
  */
 public record CraftConfirmPlanPacket(CraftingPlanSummary plan) implements ClientboundPacket {
-    public static final StreamCodec<RegistryFriendlyByteBuf, CraftConfirmPlanPacket> STREAM_CODEC = StreamCodec.ofMember(
-            CraftConfirmPlanPacket::write,
-            CraftConfirmPlanPacket::decode
-    );
+    public static final StreamCodec<RegistryFriendlyByteBuf, CraftConfirmPlanPacket> STREAM_CODEC = StreamCodec
+            .ofMember(
+                    CraftConfirmPlanPacket::write,
+                    CraftConfirmPlanPacket::decode);
 
     public static final Type<CraftConfirmPlanPacket> TYPE = CustomAppEngPayload.createType("craft_confirm_plan");
 

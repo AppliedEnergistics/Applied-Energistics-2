@@ -1,9 +1,12 @@
 package appeng.api.stacks;
 
-import appeng.util.BootstrapMinecraft;
-import appeng.util.CodecTestUtil;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
+
+import org.junit.jupiter.api.Test;
+
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -11,9 +14,9 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import appeng.util.BootstrapMinecraft;
+import appeng.util.CodecTestUtil;
 
 @BootstrapMinecraft
 class AEKeyTest {
@@ -29,7 +32,8 @@ class AEKeyTest {
 
     @Test
     void testItemJsonRoundtripWithPatchedComponents() {
-        var expected = GsonHelper.parse("{\"id\":\"minecraft:diamond\",\"components\":{\"minecraft:max_stack_size\":99},\"#t\":\"ae2:i\"}");
+        var expected = GsonHelper.parse(
+                "{\"id\":\"minecraft:diamond\",\"components\":{\"minecraft:max_stack_size\":99},\"#t\":\"ae2:i\"}");
 
         var stack = Items.DIAMOND.getDefaultInstance();
         stack.set(DataComponents.MAX_STACK_SIZE, 99);
@@ -47,7 +51,8 @@ class AEKeyTest {
 
     @Test
     void testFluidJsonRoundtripWithPatchedComponents() {
-        var expected = GsonHelper.parse("{\"id\":\"minecraft:lava\",\"components\":{\"minecraft:max_stack_size\":99},\"#t\":\"ae2:f\"}");
+        var expected = GsonHelper
+                .parse("{\"id\":\"minecraft:lava\",\"components\":{\"minecraft:max_stack_size\":99},\"#t\":\"ae2:f\"}");
 
         var stack = new FluidStack(Fluids.LAVA, 1);
         stack.set(DataComponents.MAX_STACK_SIZE, 99);

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -20,9 +19,9 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -58,7 +57,7 @@ public class ItemPickupStrategy implements PickupStrategy {
     private boolean isAccepting = true;
 
     public ItemPickupStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host,
-                              ItemEnchantments enchantments, @Nullable UUID owningPlayerId) {
+            ItemEnchantments enchantments, @Nullable UUID owningPlayerId) {
         this.level = level;
         this.pos = pos;
         this.side = side;
@@ -267,7 +266,8 @@ public class ItemPickupStrategy implements PickupStrategy {
                 int randomNumber = level.getRandom().nextInt(unbreakingLevel + 1);
                 useEnergy = randomNumber == 0;
             }
-            var levelSum = enchantments.entrySet().stream().map(Map.Entry::getValue).reduce(0, Integer::sum) - efficiencyLevel;
+            var levelSum = enchantments.entrySet().stream().map(Map.Entry::getValue).reduce(0, Integer::sum)
+                    - efficiencyLevel;
             requiredEnergy *= 8 * levelSum * efficiencyFactor;
         }
 

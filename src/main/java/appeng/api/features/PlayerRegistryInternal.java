@@ -25,9 +25,9 @@ import java.util.UUID;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -120,8 +120,6 @@ final class PlayerRegistryInternal extends AESavedData implements IPlayerRegistr
         result.nextPlayerId = highestPlayerId + 1;
         return result;
     }
-
-
 
     @Override
     public CompoundTag save(CompoundTag compound, HolderLookup.Provider registries) {

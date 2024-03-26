@@ -20,6 +20,8 @@ package appeng.datagen.providers.recipes;
 
 import static appeng.datagen.providers.recipes.RecipeCriteria.criterionName;
 
+import java.util.concurrent.CompletableFuture;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -37,8 +39,6 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.BlockDefinition;
 import appeng.core.definitions.ItemDefinition;
 import appeng.datagen.providers.tags.ConventionTags;
-
-import java.util.concurrent.CompletableFuture;
 
 public class DecorationBlockRecipes extends AE2RecipeProvider {
     public DecorationBlockRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {

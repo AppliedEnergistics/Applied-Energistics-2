@@ -3,32 +3,29 @@ package appeng.api.stacks;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
-import appeng.api.ids.AEComponents;
-import appeng.core.definitions.AEItems;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.level.ItemLike;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
 import appeng.api.config.FuzzyMode;
+import appeng.api.ids.AEComponents;
+import appeng.core.definitions.AEItems;
 import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
@@ -164,7 +161,8 @@ class AEItemKeyTest {
             var tag = new CompoundTag();
             tag.putString("#t", "modid:doesnt_exist");
 
-            assertMissingContent(tag, "Unknown registry key in ResourceKey[minecraft:root / ae2:keytypes]: modid:doesnt_exist");
+            assertMissingContent(tag,
+                    "Unknown registry key in ResourceKey[minecraft:root / ae2:keytypes]: modid:doesnt_exist");
         }
 
         @Test
@@ -172,7 +170,8 @@ class AEItemKeyTest {
             var tag = new CompoundTag();
             tag.putString("#t", "modid!!!!!doesnt_exist");
 
-            assertMissingContent(tag, "Not a valid resource location: modid!!!!!doesnt_exist Non [a-z0-9/._-] character in path of location: minecraft:modid!!!!!doesnt_exist");
+            assertMissingContent(tag,
+                    "Not a valid resource location: modid!!!!!doesnt_exist Non [a-z0-9/._-] character in path of location: minecraft:modid!!!!!doesnt_exist");
         }
 
         private void assertMissingContent(CompoundTag tag, String error) {

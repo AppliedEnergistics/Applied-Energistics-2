@@ -1,21 +1,16 @@
 package appeng.api.stacks;
 
-import appeng.util.BootstrapMinecraft;
-import appeng.util.CodecTestUtil;
 import com.google.gson.JsonPrimitive;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
-import io.netty.buffer.Unpooled;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.StringTag;
+
+import appeng.util.BootstrapMinecraft;
+import appeng.util.CodecTestUtil;
 
 @BootstrapMinecraft
 class AEKeyTypeTest {

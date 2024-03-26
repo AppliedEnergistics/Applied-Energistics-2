@@ -1,6 +1,5 @@
 package appeng.core.network.bidirectional;
 
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,13 +11,13 @@ import appeng.api.config.Setting;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
 
 public record ConfigValuePacket(String name, String value) implements ClientboundPacket, ServerboundPacket {
     public static final StreamCodec<RegistryFriendlyByteBuf, ConfigValuePacket> STREAM_CODEC = StreamCodec.ofMember(
             ConfigValuePacket::write,
-            ConfigValuePacket::decode
-    );
+            ConfigValuePacket::decode);
 
     public static final Type<ConfigValuePacket> TYPE = CustomAppEngPayload.createType("config_value");
 

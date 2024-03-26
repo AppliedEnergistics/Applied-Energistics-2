@@ -1,9 +1,8 @@
 package appeng.api.integrations.igtooltip;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;

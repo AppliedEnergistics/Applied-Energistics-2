@@ -1,7 +1,6 @@
 
 package appeng.core.network.clientbound;
 
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -12,13 +11,13 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.client.gui.me.crafting.CraftingCPUScreen;
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 import appeng.menu.me.crafting.CraftingStatus;
 
 public record CraftingStatusPacket(CraftingStatus status) implements ClientboundPacket {
     public static final StreamCodec<RegistryFriendlyByteBuf, CraftingStatusPacket> STREAM_CODEC = StreamCodec.ofMember(
             CraftingStatusPacket::write,
-            CraftingStatusPacket::decode
-    );
+            CraftingStatusPacket::decode);
 
     public static final Type<CraftingStatusPacket> TYPE = CustomAppEngPayload.createType("crafting_status");
 

@@ -1,12 +1,11 @@
 package appeng.integration.modules.emi;
 
-import com.google.common.primitives.Ints;
-import dev.emi.emi.api.neoforge.NeoForgeEmiStack;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
+import dev.emi.emi.api.neoforge.NeoForgeEmiStack;
 import dev.emi.emi.api.stack.EmiStack;
 
 import appeng.api.integrations.emi.EmiStackConverter;

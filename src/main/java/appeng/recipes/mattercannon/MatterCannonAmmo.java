@@ -18,11 +18,12 @@
 
 package appeng.recipes.mattercannon;
 
-import appeng.core.AppEng;
-import appeng.init.InitRecipeTypes;
+import java.util.Objects;
+
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -43,7 +44,8 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.conditions.NotCondition;
 import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 
-import java.util.Objects;
+import appeng.core.AppEng;
+import appeng.init.InitRecipeTypes;
 
 /**
  * Defines a type of ammo that can be used for the {@link appeng.items.tools.powered.MatterCannonItem}.
@@ -56,8 +58,8 @@ public class MatterCannonAmmo implements Recipe<Container> {
 
     public static final Codec<MatterCannonAmmo> CODEC = RecordCodecBuilder.create((builder) -> {
         return builder.group(
-                        Ingredient.CODEC_NONEMPTY.fieldOf("ammo").forGetter(MatterCannonAmmo::getAmmo),
-                        Codec.FLOAT.fieldOf("weight").forGetter(MatterCannonAmmo::getWeight))
+                Ingredient.CODEC_NONEMPTY.fieldOf("ammo").forGetter(MatterCannonAmmo::getAmmo),
+                Codec.FLOAT.fieldOf("weight").forGetter(MatterCannonAmmo::getWeight))
                 .apply(builder, MatterCannonAmmo::new);
     });
 
@@ -66,8 +68,7 @@ public class MatterCannonAmmo implements Recipe<Container> {
             MatterCannonAmmo::getAmmo,
             ByteBufCodecs.FLOAT,
             MatterCannonAmmo::getWeight,
-            MatterCannonAmmo::new
-    );
+            MatterCannonAmmo::new);
 
     private final Ingredient ammo;
 

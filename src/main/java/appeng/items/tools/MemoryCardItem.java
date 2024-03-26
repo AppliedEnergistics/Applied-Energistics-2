@@ -18,36 +18,19 @@
 
 package appeng.items.tools;
 
-import appeng.api.ids.AEComponents;
-import appeng.api.implementations.items.IMemoryCard;
-import appeng.api.implementations.items.MemoryCardColors;
-import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.api.inventories.InternalInventory;
-import appeng.api.upgrades.IUpgradeableObject;
-import appeng.api.util.AEColor;
-import appeng.api.util.IConfigurableObject;
-import appeng.core.localization.GuiText;
-import appeng.core.localization.PlayerMessages;
-import appeng.core.localization.Tooltips;
-import appeng.datagen.providers.tags.ConventionTags;
-import appeng.helpers.IConfigInvHost;
-import appeng.helpers.IPriorityHost;
-import appeng.items.AEBaseItem;
-import appeng.util.InteractionUtil;
-import appeng.util.Platform;
-import appeng.util.inv.PlayerInternalInventory;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
-import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -64,13 +47,27 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+
+import appeng.api.ids.AEComponents;
+import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.inventories.InternalInventory;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.util.IConfigurableObject;
+import appeng.core.localization.GuiText;
+import appeng.core.localization.PlayerMessages;
+import appeng.core.localization.Tooltips;
+import appeng.datagen.providers.tags.ConventionTags;
+import appeng.helpers.IConfigInvHost;
+import appeng.helpers.IPriorityHost;
+import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
+import appeng.util.Platform;
+import appeng.util.inv.PlayerInternalInventory;
 
 public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     private static final int DEFAULT_BASE_COLOR = 0xDDDDDD;
@@ -101,7 +98,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
      * @return Set of {@link net.minecraft.core.component.DataComponentType} ids that were imported
      */
     public static Set<ResourceLocation> importGenericSettings(Object importTo, DataComponentMap input,
-                                                              @Nullable Player player) {
+            @Nullable Player player) {
         var imported = new HashSet<ResourceLocation>();
 
         if (player != null && importTo instanceof IUpgradeableObject upgradeableObject) {
@@ -140,14 +137,16 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
         return imported;
     }
 
-    public static void importGenericSettingsAndNotify(Object importTo, DataComponentMap input, @Nullable Player player) {
+    public static void importGenericSettingsAndNotify(Object importTo, DataComponentMap input,
+            @Nullable Player player) {
         var imported = importGenericSettings(importTo, input, player);
 
         if (player != null && !player.getCommandSenderWorld().isClientSide()) {
             if (imported.isEmpty()) {
                 player.displayClientMessage(PlayerMessages.InvalidMachine.text(), true);
             } else {
-                var restored = Tooltips.conjunction(imported.stream().map(MemoryCardItem::getTranslatedSettingCategory).toList());
+                var restored = Tooltips
+                        .conjunction(imported.stream().map(MemoryCardItem::getTranslatedSettingCategory).toList());
                 player.displayClientMessage(PlayerMessages.InvalidMachinePartiallyRestored.text(restored), true);
             }
         }
@@ -172,7 +171,8 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
         return result;
     }
 
-    private static void restoreUpgrades(Player player, List<ItemStack> desiredUpgrades, IUpgradeableObject upgradeableObject) {
+    private static void restoreUpgrades(Player player, List<ItemStack> desiredUpgrades,
+            IUpgradeableObject upgradeableObject) {
         var upgrades = upgradeableObject.getUpgrades();
 
         // In creative mode, just set it exactly as the memory card says
@@ -262,7 +262,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
-                                TooltipFlag advancedTooltips) {
+            TooltipFlag advancedTooltips) {
 
         var settingsSource = stack.get(AEComponents.EXPORTED_SETTINGS_SOURCE);
         if (settingsSource != null) {

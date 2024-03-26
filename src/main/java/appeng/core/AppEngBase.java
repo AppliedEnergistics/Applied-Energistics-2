@@ -21,11 +21,8 @@ package appeng.core;
 import java.util.Collection;
 import java.util.Collections;
 
-import appeng.api.ids.AEComponents;
 import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.core.component.DataComponentType;
-import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.commands.CommandSourceStack;
@@ -56,6 +53,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
+import appeng.api.ids.AEComponents;
 import appeng.api.parts.CableRenderMode;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypes;

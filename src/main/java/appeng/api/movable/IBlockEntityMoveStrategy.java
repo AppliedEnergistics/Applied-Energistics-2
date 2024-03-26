@@ -23,10 +23,10 @@
 
 package appeng.api.movable;
 
-import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -49,14 +49,15 @@ public interface IBlockEntityMoveStrategy {
      * @param blockEntity The block entity to move.
      * @param registries
      * @return The saved representation of the block entity that can be used by this strategy to restore the block
-     * entity at the target position. Return null to prevent the block entity from being moved.
+     *         entity at the target position. Return null to prevent the block entity from being moved.
      */
     @Nullable
     CompoundTag beginMove(BlockEntity blockEntity, HolderLookup.Provider registries);
 
     /**
-     * Complete moving a block entity for which a move was initiated successfully with {@link #beginMove(BlockEntity, HolderLookup.Provider)}.
-     * The block entity has already been invalidated, and the blocks have already been fully moved.
+     * Complete moving a block entity for which a move was initiated successfully with
+     * {@link #beginMove(BlockEntity, HolderLookup.Provider)}. The block entity has already been invalidated, and the
+     * blocks have already been fully moved.
      * <p/>
      * You are responsible for adding the new block entity to the target level, i.e. using
      * {@link Level#setBlockEntity(BlockEntity)}.

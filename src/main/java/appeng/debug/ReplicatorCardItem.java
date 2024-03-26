@@ -18,7 +18,6 @@
 
 package appeng.debug;
 
-import appeng.worldgen.meteorite.CraterType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -195,7 +194,8 @@ public class ReplicatorCardItem extends AEBaseItem {
                                                     if (state.hasBlockEntity()) {
                                                         final BlockEntity ote = src_w.getBlockEntity(p);
                                                         var data = ote.saveWithId(level.registryAccess());
-                                                        var newBe = BlockEntity.loadStatic(d, state, data, level.registryAccess());
+                                                        var newBe = BlockEntity.loadStatic(d, state, data,
+                                                                level.registryAccess());
                                                         if (newBe != null) {
                                                             level.setBlockEntity(newBe);
                                                         }

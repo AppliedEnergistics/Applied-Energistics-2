@@ -1,7 +1,6 @@
 
 package appeng.core.network.clientbound;
 
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
@@ -11,6 +10,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 
 public record LightningPacket(
         double x,
@@ -19,8 +19,7 @@ public record LightningPacket(
 
     public static final StreamCodec<RegistryFriendlyByteBuf, LightningPacket> STREAM_CODEC = StreamCodec.ofMember(
             LightningPacket::write,
-            LightningPacket::decode
-    );
+            LightningPacket::decode);
 
     public static final Type<LightningPacket> TYPE = CustomAppEngPayload.createType("lightning");
 

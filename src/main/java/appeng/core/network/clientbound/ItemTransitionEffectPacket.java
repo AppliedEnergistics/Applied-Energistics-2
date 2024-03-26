@@ -1,7 +1,6 @@
 
 package appeng.core.network.clientbound;
 
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -13,6 +12,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AppEngClient;
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 
 /**
  * Plays a transition particle effect into the supplied direction. Used primarily by annihilation planes.
@@ -21,12 +21,14 @@ public record ItemTransitionEffectPacket(double x,
         double y,
         double z,
         Direction d) implements ClientboundPacket {
-    public static final StreamCodec<RegistryFriendlyByteBuf, ItemTransitionEffectPacket> STREAM_CODEC = StreamCodec.ofMember(
-            ItemTransitionEffectPacket::write,
-            ItemTransitionEffectPacket::decode
-    );
 
-    public static final Type<ItemTransitionEffectPacket> TYPE = CustomAppEngPayload.createType("item_transition_effect");
+    public static final StreamCodec<RegistryFriendlyByteBuf, ItemTransitionEffectPacket> STREAM_CODEC = StreamCodec
+            .ofMember(
+                    ItemTransitionEffectPacket::write,
+                    ItemTransitionEffectPacket::decode);
+
+    public static final Type<ItemTransitionEffectPacket> TYPE = CustomAppEngPayload
+            .createType("item_transition_effect");
 
     @Override
     public Type<ItemTransitionEffectPacket> type() {

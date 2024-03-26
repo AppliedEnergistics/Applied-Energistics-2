@@ -1,14 +1,14 @@
 package appeng.server.testplots;
 
-import appeng.api.ids.AEComponents;
-import appeng.crafting.pattern.EncodedCraftingPattern;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 
 import appeng.api.crafting.PatternDetailsHelper;
+import appeng.api.ids.AEComponents;
 import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.core.definitions.AEBlocks;
+import appeng.crafting.pattern.EncodedCraftingPattern;
 import appeng.server.testworld.PlotBuilder;
 
 public class InvalidPatternTestPlot {
@@ -27,8 +27,7 @@ public class InvalidPatternTestPlot {
                     encodedPattern.result(),
                     new ResourceLocation("invalid"),
                     encodedPattern.canSubstitute(),
-                    encodedPattern.canSubstituteFluids()
-            ));
+                    encodedPattern.canSubstituteFluids()));
             chest.getInternalInventory().addItems(pattern);
         });
 

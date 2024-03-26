@@ -18,13 +18,10 @@
 
 package appeng.items.parts;
 
-import appeng.api.ids.AEComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
@@ -41,6 +38,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import appeng.api.ids.AEComponents;
 import appeng.api.ids.AETags;
 import appeng.api.implementations.items.IFacadeItem;
 import appeng.api.parts.IFacadePart;
@@ -147,7 +145,8 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
     }
 
     public ItemStack createFacadeForItem(ItemStack itemStack, boolean returnItem) {
-        if (itemStack.isEmpty() || !itemStack.getComponentsPatch().isEmpty() || !(itemStack.getItem() instanceof BlockItem blockItem)) {
+        if (itemStack.isEmpty() || !itemStack.getComponentsPatch().isEmpty()
+                || !(itemStack.getItem() instanceof BlockItem blockItem)) {
             return ItemStack.EMPTY;
         }
 

@@ -23,13 +23,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import appeng.api.ids.AEComponents;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
@@ -38,6 +37,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import appeng.api.ids.AEComponents;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.stacks.AEItemKey;
@@ -162,7 +162,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
 
     @Override
     public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder,
-                               @Nullable Player player) {
+            @Nullable Player player) {
         super.exportSettings(mode, builder, player);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
@@ -175,7 +175,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
 
     @Override
     public void importSettings(SettingsFrom mode, DataComponentMap input,
-                               @Nullable Player player) {
+            @Nullable Player player) {
         super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.MEMORY_CARD) {

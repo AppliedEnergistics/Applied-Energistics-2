@@ -87,8 +87,6 @@ import appeng.menu.interfaces.KeyTypeSelectionMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.RestrictedInputSlot;
-import appeng.util.ConfigManager;
-import appeng.api.util.IConfigManagerListener;
 import appeng.util.Platform;
 
 /**
@@ -172,10 +170,10 @@ public class MEStorageMenu extends AEBaseMenu
         this.storage = Objects.requireNonNull(host.getInventory(), "host inventory is null");
 
         this.clientCM = IConfigManager.builder(this::onSettingChanged)
-            .registerSetting(Settings.SORT_BY, SortOrder.NAME)
-            .registerSetting(Settings.VIEW_MODE, ViewItems.ALL)
-            .registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING)
-            .build();
+                .registerSetting(Settings.SORT_BY, SortOrder.NAME)
+                .registerSetting(Settings.VIEW_MODE, ViewItems.ALL)
+                .registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING)
+                .build();
 
         if (isServerSide()) {
             this.serverCM = host.getConfigManager();

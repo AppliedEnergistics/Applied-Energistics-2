@@ -18,14 +18,13 @@
 
 package appeng.recipes.handlers;
 
-import appeng.core.AppEng;
-import appeng.init.InitRecipeTypes;
+import java.util.Objects;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.netty.buffer.ByteBuf;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -37,21 +36,21 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
-import java.util.Objects;
+import appeng.core.AppEng;
+import appeng.init.InitRecipeTypes;
 
 public class InscriberRecipe implements Recipe<Container> {
 
     private static final Codec<InscriberProcessType> MODE_CODEC = ExtraCodecs.stringResolverCodec(
             mode -> switch (mode) {
-                case INSCRIBE -> "inscribe";
-                case PRESS -> "press";
+            case INSCRIBE -> "inscribe";
+            case PRESS -> "press";
             },
             mode -> switch (mode) {
-                default -> InscriberProcessType.INSCRIBE;
-                case "press" -> InscriberProcessType.PRESS;
+            default -> InscriberProcessType.INSCRIBE;
+            case "press" -> InscriberProcessType.PRESS;
             });
 
     public static final Codec<InscriberRecipe> CODEC = RecordCodecBuilder.create(
@@ -70,8 +69,7 @@ public class InscriberRecipe implements Recipe<Container> {
             InscriberRecipe::getResultItem,
             NeoForgeStreamCodecs.enumCodec(InscriberProcessType.class),
             InscriberRecipe::getProcessType,
-            InscriberRecipe::new
-    );
+            InscriberRecipe::new);
 
     public static final ResourceLocation TYPE_ID = AppEng.makeId("inscriber");
 
@@ -88,7 +86,7 @@ public class InscriberRecipe implements Recipe<Container> {
     }
 
     public InscriberRecipe(Ingredient middleInput, ItemStack output,
-                           Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
+            Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
         this.middleInput = Objects.requireNonNull(middleInput, "middleInput");
         this.output = Objects.requireNonNull(output, "output");
         this.topOptional = Objects.requireNonNull(topOptional, "topOptional");
@@ -167,18 +165,17 @@ public class InscriberRecipe implements Recipe<Container> {
                 bottomOptional);
     }
 
-
     private record Ingredients(
             Ingredient top,
             Ingredient middle,
             Ingredient bottom) {
         public static final Codec<Ingredients> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                        ExtraCodecs.strictOptionalField(Ingredient.CODEC, "top", Ingredient.EMPTY)
-                                .forGetter(Ingredients::top),
-                        Ingredient.CODEC_NONEMPTY.fieldOf("middle")
-                                .forGetter(Ingredients::middle),
-                        ExtraCodecs.strictOptionalField(Ingredient.CODEC, "bottom", Ingredient.EMPTY)
-                                .forGetter(Ingredients::bottom))
+                ExtraCodecs.strictOptionalField(Ingredient.CODEC, "top", Ingredient.EMPTY)
+                        .forGetter(Ingredients::top),
+                Ingredient.CODEC_NONEMPTY.fieldOf("middle")
+                        .forGetter(Ingredients::middle),
+                ExtraCodecs.strictOptionalField(Ingredient.CODEC, "bottom", Ingredient.EMPTY)
+                        .forGetter(Ingredients::bottom))
                 .apply(builder, Ingredients::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, Ingredients> STREAM_CODEC = StreamCodec.composite(

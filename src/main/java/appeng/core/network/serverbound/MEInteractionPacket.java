@@ -1,11 +1,11 @@
 
 package appeng.core.network.serverbound;
 
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 
+import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.me.common.IMEInteractionHandler;
@@ -17,8 +17,7 @@ public record MEInteractionPacket(int containerId, long serial, InventoryAction 
 
     public static final StreamCodec<RegistryFriendlyByteBuf, MEInteractionPacket> STREAM_CODEC = StreamCodec.ofMember(
             MEInteractionPacket::write,
-            MEInteractionPacket::decode
-    );
+            MEInteractionPacket::decode);
 
     public static final Type<MEInteractionPacket> TYPE = CustomAppEngPayload.createType("me_interaction");
 

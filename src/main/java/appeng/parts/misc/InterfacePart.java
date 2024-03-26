@@ -20,9 +20,9 @@ package appeng.parts.misc;
 
 import java.util.List;
 
-import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;

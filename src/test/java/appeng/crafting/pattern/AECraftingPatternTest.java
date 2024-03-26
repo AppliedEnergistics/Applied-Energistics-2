@@ -13,9 +13,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
-import appeng.util.RecursiveTagReplace;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +20,8 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -48,6 +47,7 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.util.BootstrapMinecraft;
 import appeng.util.LoadTranslations;
+import appeng.util.RecursiveTagReplace;
 
 @BootstrapMinecraft
 @LoadTranslations

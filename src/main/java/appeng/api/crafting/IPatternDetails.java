@@ -23,6 +23,8 @@
 
 package appeng.api.crafting;
 
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.TooltipFlag;
@@ -34,8 +36,6 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
-
-import java.util.List;
 
 /**
  * Information about a pattern for use by the autocrafting system.

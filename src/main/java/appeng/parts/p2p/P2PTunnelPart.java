@@ -22,16 +22,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import appeng.api.ids.AEComponents;
-import appeng.api.implementations.items.MemoryCardColors;
-import appeng.items.tools.MemoryCardItem;
-import appeng.util.InteractionUtil;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +38,9 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.features.P2PTunnelAttunement;
+import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.implementations.items.MemoryCardColors;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.networking.GridFlags;
 import appeng.api.parts.IPart;
@@ -51,8 +49,10 @@ import appeng.api.parts.IPartItem;
 import appeng.api.util.AECableType;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModelData;
 import appeng.core.AEConfig;
+import appeng.items.tools.MemoryCardItem;
 import appeng.me.service.P2PService;
 import appeng.parts.AEBasePart;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
@@ -160,7 +160,8 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
                 final boolean wasOutput = this.isOutput();
                 this.setOutput(false);
 
-                final boolean needsNewFrequency = wasOutput || this.getFrequency() == 0 || Objects.equals(storedFrequency, newFreq);
+                final boolean needsNewFrequency = wasOutput || this.getFrequency() == 0
+                        || Objects.equals(storedFrequency, newFreq);
 
                 var grid = getMainNode().getGrid();
                 if (grid != null) {
@@ -187,13 +188,14 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
             } else {
                 // Change the actual tunnel type and import settings when the encoded type is a P2P
                 var p2pTunnelItem = heldItem.get(AEComponents.EXPORTED_P2P_TYPE);
-                if (p2pTunnelItem instanceof IPartItem<?> partItem && P2PTunnelPart.class.isAssignableFrom(partItem.getPartClass())) {
+                if (p2pTunnelItem instanceof IPartItem<?>partItem
+                        && P2PTunnelPart.class.isAssignableFrom(partItem.getPartClass())) {
                     IPart newBus = this;
                     if (newBus.getPartItem() != partItem) {
                         newBus = this.getHost().replacePart(partItem, this.getSide(), player, hand);
                     }
 
-                    if (newBus instanceof P2PTunnelPart<?> newTunnel) {
+                    if (newBus instanceof P2PTunnelPart<?>newTunnel) {
                         newTunnel.importSettings(SettingsFrom.MEMORY_CARD, heldItem.getComponents(), player);
                     }
 
@@ -267,8 +269,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
                 // the P2P freq only has 4 colors, so we stretch em out a bit
                 builder.set(AEComponents.MEMORY_CARD_COLORS, new MemoryCardColors(
                         colors[0], colors[0], colors[1], colors[1],
-                        colors[2], colors[2], colors[3],  colors[3]
-                ));
+                        colors[2], colors[2], colors[3], colors[3]));
             }
         }
     }

@@ -1,11 +1,16 @@
 package appeng.crafting.pattern;
 
-import appeng.api.crafting.PatternDetailsHelper;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.GenericStack;
-import appeng.util.BootstrapMinecraft;
-import appeng.util.LoadTranslations;
-import appeng.util.RecursiveTagReplace;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.mock;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -14,16 +19,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.mock;
+import appeng.api.crafting.PatternDetailsHelper;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
+import appeng.util.BootstrapMinecraft;
+import appeng.util.LoadTranslations;
+import appeng.util.RecursiveTagReplace;
 
 @BootstrapMinecraft
 @LoadTranslations
@@ -44,11 +46,9 @@ class AEProcessingPatternTest {
         var encoded = PatternDetailsHelper.encodeProcessingPattern(
                 List.of(
                         GenericStack.fromItemStack(new ItemStack(Items.TORCH)),
-                        GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))
-                ),
+                        GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))),
                 List.of(
-                        GenericStack.fromItemStack(new ItemStack(Items.STICK))
-                ));
+                        GenericStack.fromItemStack(new ItemStack(Items.STICK))));
         var encodedTag = (CompoundTag) encoded.save(registryAccess);
 
         assertEquals(1, RecursiveTagReplace.replace(encodedTag, "minecraft:torch", "minecraft:unknown_item_id"));
@@ -66,11 +66,9 @@ class AEProcessingPatternTest {
         var encoded = PatternDetailsHelper.encodeProcessingPattern(
                 List.of(
                         GenericStack.fromItemStack(new ItemStack(Items.TORCH)),
-                        GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))
-                ),
+                        GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))),
                 List.of(
-                        GenericStack.fromItemStack(new ItemStack(Items.STICK))
-                ));
+                        GenericStack.fromItemStack(new ItemStack(Items.STICK))));
         var encodedTag = (CompoundTag) encoded.save(registryAccess);
 
         // Replace the diamond ID string with an unknown ID string
@@ -92,11 +90,9 @@ class AEProcessingPatternTest {
         var encoded = PatternDetailsHelper.encodeProcessingPattern(
                 List.of(
                         GenericStack.fromItemStack(new ItemStack(Items.TORCH)),
-                        GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))
-                ),
+                        GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))),
                 List.of(
-                        GenericStack.fromItemStack(new ItemStack(Items.STICK))
-                ));
+                        GenericStack.fromItemStack(new ItemStack(Items.STICK))));
         var encodedTag = (CompoundTag) encoded.save(registryAccess);
 
         // Replace the channel of all items

@@ -1,7 +1,6 @@
 
 package appeng.core.network.clientbound;
 
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -12,13 +11,13 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 import appeng.menu.me.networktool.NetworkStatus;
 
 public record NetworkStatusPacket(NetworkStatus status) implements ClientboundPacket {
     public static final StreamCodec<RegistryFriendlyByteBuf, NetworkStatusPacket> STREAM_CODEC = StreamCodec.ofMember(
             NetworkStatusPacket::write,
-            NetworkStatusPacket::decode
-    );
+            NetworkStatusPacket::decode);
 
     public static final Type<NetworkStatusPacket> TYPE = CustomAppEngPayload.createType("network_status");
 

@@ -1,10 +1,15 @@
 package appeng.recipes.transform;
 
+import java.util.List;
+import java.util.Objects;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import io.netty.handler.codec.DecoderException;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -15,9 +20,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-
-import java.util.List;
-import java.util.Objects;
 
 public class TransformCircumstance {
 
@@ -36,8 +38,7 @@ public class TransformCircumstance {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, TransformCircumstance> STREAM_CODEC = StreamCodec.ofMember(
             TransformCircumstance::toNetwork,
-            TransformCircumstance::fromNetwork
-    );
+            TransformCircumstance::fromNetwork);
 
     private final String type;
 

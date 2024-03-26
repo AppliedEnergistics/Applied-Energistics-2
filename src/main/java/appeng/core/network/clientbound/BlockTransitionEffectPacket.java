@@ -1,7 +1,6 @@
 
 package appeng.core.network.clientbound;
 
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -28,6 +27,7 @@ import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AELog;
 import appeng.core.AppEngClient;
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 
 /**
  * Plays the block breaking or fluid pickup sound and a transition particle effect into the supplied direction. Used
@@ -37,12 +37,14 @@ public record BlockTransitionEffectPacket(BlockPos pos,
         BlockState blockState,
         Direction direction,
         SoundMode soundMode) implements ClientboundPacket {
-    public static final StreamCodec<RegistryFriendlyByteBuf, BlockTransitionEffectPacket> STREAM_CODEC = StreamCodec.ofMember(
-            BlockTransitionEffectPacket::write,
-            BlockTransitionEffectPacket::decode
-    );
 
-    public static final Type<BlockTransitionEffectPacket> TYPE = CustomAppEngPayload.createType("block_transition_effect");
+    public static final StreamCodec<RegistryFriendlyByteBuf, BlockTransitionEffectPacket> STREAM_CODEC = StreamCodec
+            .ofMember(
+                    BlockTransitionEffectPacket::write,
+                    BlockTransitionEffectPacket::decode);
+
+    public static final Type<BlockTransitionEffectPacket> TYPE = CustomAppEngPayload
+            .createType("block_transition_effect");
 
     @Override
     public Type<BlockTransitionEffectPacket> type() {

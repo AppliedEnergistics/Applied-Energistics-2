@@ -18,14 +18,15 @@
 
 package appeng.client.render;
 
-import appeng.client.render.cablebus.FacadeBuilder;
-import appeng.items.parts.FacadeItem;
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.ItemStackMap;
 
-import java.util.List;
-import java.util.Map;
+import appeng.client.render.cablebus.FacadeBuilder;
+import appeng.items.parts.FacadeItem;
 
 /**
  * This baked model class is used as a dispatcher to redirect the renderer to the *real* model that should be used based

@@ -1,24 +1,22 @@
 package appeng.util;
 
-import appeng.api.ids.AEComponents;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
-import appeng.core.definitions.AEItems;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Lifecycle;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.MapLike;
-import com.mojang.serialization.RecordBuilder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import appeng.api.ids.AEComponents;
+import appeng.core.definitions.AEItems;
 
 public final class AECodecs {
     private static final Logger LOG = LoggerFactory.getLogger(AECodecs.class);
@@ -46,8 +44,7 @@ public final class AECodecs {
 
             return DataResult.success(
                     Pair.of(missingContent, input),
-                    Lifecycle.stable()
-            );
+                    Lifecycle.stable());
         }
 
         @Override
@@ -57,7 +54,8 @@ public final class AECodecs {
             if (AEItems.MISSING_CONTENT.isSameAs(input)) {
                 var originalData = input.get(AEComponents.MISSING_CONTENT_ITEMSTACK_DATA);
                 if (originalData != null) {
-                    return DataResult.success(Dynamic.convert(NbtOps.INSTANCE, ops, originalData.getUnsafe()), t.lifecycle());
+                    return DataResult.success(Dynamic.convert(NbtOps.INSTANCE, ops, originalData.getUnsafe()),
+                            t.lifecycle());
                 }
             }
 
@@ -65,9 +63,12 @@ public final class AECodecs {
         }
     };
 
-    public static final Codec<ItemStack> FAULT_TOLERANT_SIMPLE_ITEM_CODEC = ItemStack.SINGLE_ITEM_CODEC.mapResult(MISSING_CONTENT_ITEMSTACK_RESULT);
+    public static final Codec<ItemStack> FAULT_TOLERANT_SIMPLE_ITEM_CODEC = ItemStack.SINGLE_ITEM_CODEC
+            .mapResult(MISSING_CONTENT_ITEMSTACK_RESULT);
 
-    public static final Codec<ItemStack> FAULT_TOLERANT_ITEMSTACK_CODEC = ItemStack.CODEC.mapResult(MISSING_CONTENT_ITEMSTACK_RESULT);
+    public static final Codec<ItemStack> FAULT_TOLERANT_ITEMSTACK_CODEC = ItemStack.CODEC
+            .mapResult(MISSING_CONTENT_ITEMSTACK_RESULT);
 
-    public static final Codec<ItemStack> FAULT_TOLERANT_OPTIONAL_ITEMSTACK_CODEC = ItemStack.OPTIONAL_CODEC.mapResult(MISSING_CONTENT_ITEMSTACK_RESULT);
+    public static final Codec<ItemStack> FAULT_TOLERANT_OPTIONAL_ITEMSTACK_CODEC = ItemStack.OPTIONAL_CODEC
+            .mapResult(MISSING_CONTENT_ITEMSTACK_RESULT);
 }

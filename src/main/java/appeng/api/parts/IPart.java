@@ -28,9 +28,6 @@ import java.util.Set;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +36,10 @@ import net.minecraft.CrashReportCategory;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.InteractionHand;
@@ -203,8 +203,9 @@ public interface IPart extends ICustomCableConnection, Clearable {
     /**
      * Used to store the state that is synchronized to clients for the visual appearance of this part as NBT. This is
      * only used to store this state for tools such as Create Ponders in Structure NBT. Actual synchronization uses
-     * {@link #writeToStream(RegistryFriendlyByteBuf)} and {@link #readFromStream(RegistryFriendlyByteBuf)}. Any data that is saved to
-     * the NBT tag in {@link #writeToNBT(CompoundTag, HolderLookup.Provider)} does not need to be saved here again.
+     * {@link #writeToStream(RegistryFriendlyByteBuf)} and {@link #readFromStream(RegistryFriendlyByteBuf)}. Any data
+     * that is saved to the NBT tag in {@link #writeToNBT(CompoundTag, HolderLookup.Provider)} does not need to be saved
+     * here again.
      * <p>
      * The data saved should be equivalent to the data sent to the client in {@link #writeToStream}.
      * <p>
@@ -230,8 +231,9 @@ public interface IPart extends ICustomCableConnection, Clearable {
     /**
      * Used to store the state that is synchronized to clients for the visual appearance of this part as NBT. This is
      * only used to store this state for tools such as Create Ponders in Structure NBT. Actual synchronization uses
-     * {@link #writeToStream(RegistryFriendlyByteBuf)} and {@link #readFromStream(RegistryFriendlyByteBuf)}. Any data that is saved to
-     * the NBT tag in {@link #writeToNBT(CompoundTag, HolderLookup.Provider)} already does not need to be saved here again.
+     * {@link #writeToStream(RegistryFriendlyByteBuf)} and {@link #readFromStream(RegistryFriendlyByteBuf)}. Any data
+     * that is saved to the NBT tag in {@link #writeToNBT(CompoundTag, HolderLookup.Provider)} already does not need to
+     * be saved here again.
      */
     @ApiStatus.Experimental
     default void readVisualStateFromNBT(CompoundTag data) {
@@ -312,9 +314,9 @@ public interface IPart extends ICustomCableConnection, Clearable {
      * Called when a player right-clicks the part with an item in hand.
      *
      * @param heldItem item triggering the interaction
-     * @param player right clicking player
-     * @param hand   hand used
-     * @param pos    position of block
+     * @param player   right clicking player
+     * @param hand     hand used
+     * @param pos      position of block
      * @return if your activate method performed something.
      */
     default boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos) {

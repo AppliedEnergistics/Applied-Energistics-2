@@ -131,11 +131,9 @@ public final class AutoCraftingTestPlots {
             patterns.add(PatternDetailsHelper.encodeProcessingPattern(
                     List.of(
                             new GenericStack(AEFluidKey.of(Fluids.WATER), AEFluidKey.AMOUNT_BUCKET),
-                            GenericStack.fromItemStack(new ItemStack(Items.REDSTONE))
-                    ),
+                            GenericStack.fromItemStack(new ItemStack(Items.REDSTONE))),
                     List.of(
-                            new GenericStack(AEFluidKey.of(Fluids.WATER), AEFluidKey.AMOUNT_BUCKET)
-                    )));
+                            new GenericStack(AEFluidKey.of(Fluids.WATER), AEFluidKey.AMOUNT_BUCKET))));
 
             // Add ingredients to network storage
             var networkInv = grid.getStorageService().getInventory();
@@ -188,11 +186,9 @@ public final class AutoCraftingTestPlots {
             // A pattern to create obsidian by combining lava with water
             var pattern = PatternDetailsHelper.encodeProcessingPattern(
                     List.of(
-                            new GenericStack(AEFluidKey.of(Fluids.LAVA), AEFluidKey.AMOUNT_BUCKET)
-                    ),
+                            new GenericStack(AEFluidKey.of(Fluids.LAVA), AEFluidKey.AMOUNT_BUCKET)),
                     List.of(
-                            new GenericStack(AEItemKey.of(Items.OBSIDIAN), 1)
-                    ));
+                            new GenericStack(AEItemKey.of(Items.OBSIDIAN), 1)));
             provider.getLogic().getPatternInv().addItems(pattern);
         });
         plot.cable("-1 0 0")
@@ -295,11 +291,9 @@ public final class AutoCraftingTestPlots {
         plot.blockEntity("0 0 -3", AEBlocks.PATTERN_PROVIDER, provider -> {
             var pattern = PatternDetailsHelper.encodeProcessingPattern(
                     List.of(
-                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_CRYSTAL.stack())
-                    ),
+                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_CRYSTAL.stack())),
                     List.of(
-                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_DUST.stack())
-                    ));
+                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_DUST.stack())));
             provider.getLogic().getPatternInv().addItems(pattern);
         });
         for (var pos : inscriberPos) {
@@ -350,11 +344,9 @@ public final class AutoCraftingTestPlots {
                             GenericStack.fromItemStack(new ItemStack(Items.STONE)),
                             GenericStack.fromItemStack(new ItemStack(Items.STONE)),
                             GenericStack.fromItemStack(new ItemStack(Items.DIAMOND)),
-                            GenericStack.fromItemStack(new ItemStack(Items.STONE))
-                    ),
+                            GenericStack.fromItemStack(new ItemStack(Items.STONE))),
                     List.of(
-                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_DUST.stack())
-                    ));
+                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_DUST.stack())));
             provider.getLogic().getPatternInv().addItems(pattern);
         });
         plot.blockEntity(chestPos, AEBlocks.SKY_STONE_CHEST, skyChest -> {
@@ -411,11 +403,9 @@ public final class AutoCraftingTestPlots {
         plot.blockEntity("0 0 -3", AEBlocks.PATTERN_PROVIDER, provider -> {
             var pattern = PatternDetailsHelper.encodeProcessingPattern(
                     List.of(
-                            GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))
-                    ),
+                            GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))),
                     List.of(
-                            GenericStack.fromItemStack(new ItemStack(Items.STICK))
-                    ));
+                            GenericStack.fromItemStack(new ItemStack(Items.STICK))));
             provider.getLogic().getPatternInv().addItems(pattern);
         });
         plot.cable("0 0 -4");

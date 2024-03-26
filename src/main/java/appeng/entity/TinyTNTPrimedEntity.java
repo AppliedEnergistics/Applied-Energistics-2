@@ -20,12 +20,11 @@ package appeng.entity;
 
 import java.util.List;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -61,7 +60,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithC
     }
 
     public TinyTNTPrimedEntity(Level level, double x, double y, double z,
-           @Nullable LivingEntity igniter) {
+            @Nullable LivingEntity igniter) {
         super(AEEntities.TINY_TNT_PRIMED, level);
         this.setPos(x, y, z);
         double d0 = level.random.nextDouble() * ((float) Math.PI * 2F);

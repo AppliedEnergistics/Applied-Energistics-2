@@ -23,10 +23,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
@@ -52,7 +52,6 @@ import appeng.crafting.execution.CraftingCpuLogic;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.me.helpers.MachineSource;
-import appeng.util.ConfigManager;
 
 public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 

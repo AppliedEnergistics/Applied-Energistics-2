@@ -20,19 +20,21 @@ package appeng.parts.automation;
 
 import java.util.List;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.BlockGetter;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
@@ -59,8 +61,6 @@ import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.AEBasePart;
 import appeng.util.SettingsFrom;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
 
@@ -108,7 +108,7 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
         continuousGeneration = null;
         // When placed at max build height facing up, continuously generate 1 sky stone dust / 10 seconds
         if (AEConfig.instance().isAnnihilationPlaneSkyDustGenerationEnabled()
-            && host.getBlockPos().getY() + 1 >= buildHeight && getSide() == Direction.UP) {
+                && host.getBlockPos().getY() + 1 >= buildHeight && getSide() == Direction.UP) {
             continuousGeneration = new ContinuousGeneration(
                     AEItemKey.of(AEItems.SKY_DUST),
                     1,

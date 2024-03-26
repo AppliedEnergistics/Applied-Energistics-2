@@ -1,5 +1,10 @@
 package appeng.api.stacks;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
+
 import com.mojang.datafixers.util.Pair;
 import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.Codec;
@@ -7,13 +12,9 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Lifecycle;
 import com.mojang.serialization.ListBuilder;
+
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Stream;
 
 class GenericStackListCodec implements Codec<List<@Nullable GenericStack>> {
     @Override
@@ -38,7 +39,8 @@ class GenericStackListCodec implements Codec<List<@Nullable GenericStack>> {
             var elements = new ArrayList<GenericStack>();
             final Stream.Builder<T> failed = Stream.builder();
             // TODO: AtomicReference.getPlain/setPlain in java9+
-            final MutableObject<DataResult<Unit>> result = new MutableObject<>(DataResult.success(Unit.INSTANCE, Lifecycle.stable()));
+            final MutableObject<DataResult<Unit>> result = new MutableObject<>(
+                    DataResult.success(Unit.INSTANCE, Lifecycle.stable()));
 
             stream.accept(t -> {
                 if (ops.emptyMap().equals(t)) {

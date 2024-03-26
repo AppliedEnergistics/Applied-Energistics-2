@@ -1,7 +1,5 @@
 package appeng.core.network.clientbound;
 
-import appeng.core.AppEng;
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -14,12 +12,14 @@ import appeng.api.stacks.AEKey;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 
 public record AssemblerAnimationPacket(BlockPos pos, byte rate, AEKey what) implements ClientboundPacket {
-    public static final StreamCodec<RegistryFriendlyByteBuf, AssemblerAnimationPacket> STREAM_CODEC = StreamCodec.ofMember(
-            AssemblerAnimationPacket::write,
-            AssemblerAnimationPacket::decode
-    );
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, AssemblerAnimationPacket> STREAM_CODEC = StreamCodec
+            .ofMember(
+                    AssemblerAnimationPacket::write,
+                    AssemblerAnimationPacket::decode);
 
     public static final Type<AssemblerAnimationPacket> TYPE = CustomAppEngPayload.createType("assembler_animation");
 

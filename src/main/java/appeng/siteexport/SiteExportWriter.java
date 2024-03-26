@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPOutputStream;
 
-import appeng.util.Platform;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
@@ -26,11 +25,11 @@ import com.google.gson.internal.bind.JsonTreeWriter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-import net.minecraft.nbt.CompoundTag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
@@ -70,6 +69,7 @@ import appeng.siteexport.model.ItemInfoJson;
 import appeng.siteexport.model.NavigationNodeJson;
 import appeng.siteexport.model.P2PTypeInfo;
 import appeng.siteexport.model.SiteExportJson;
+import appeng.util.Platform;
 
 public class SiteExportWriter {
     private static final Logger LOG = LoggerFactory.getLogger(SiteExportWriter.class);

@@ -1,9 +1,7 @@
 package appeng.api.stacks;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.ids.AEComponents;
-import appeng.core.AELog;
-import appeng.core.definitions.AEItems;
+import java.util.List;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
@@ -11,6 +9,12 @@ import com.mojang.serialization.Lifecycle;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
+
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -25,12 +29,11 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import appeng.api.config.FuzzyMode;
+import appeng.api.ids.AEComponents;
+import appeng.core.AELog;
+import appeng.core.definitions.AEItems;
 
 /**
  * Uniquely identifies something that "stacks" within an ME inventory.
@@ -48,7 +51,8 @@ import java.util.List;
 public abstract class AEKey {
     public static final String TYPE_FIELD = "#t";
     private static final Logger LOG = LoggerFactory.getLogger(AEKey.class);
-    public static final MapCodec<AEKey> MAP_CODEC = AEKeyType.CODEC.<AEKey>dispatchMap(TYPE_FIELD, AEKey::getType, AEKeyType::codec)
+    public static final MapCodec<AEKey> MAP_CODEC = AEKeyType.CODEC
+            .<AEKey>dispatchMap(TYPE_FIELD, AEKey::getType, AEKeyType::codec)
             .mapResult(new MapCodec.ResultFunction<>() {
                 @Override
                 public <T> DataResult<AEKey> apply(DynamicOps<T> ops, MapLike<T> input, DataResult<AEKey> a) {
@@ -69,8 +73,7 @@ public abstract class AEKey {
 
                     return DataResult.success(
                             AEItemKey.of(missingContent),
-                            Lifecycle.stable()
-                    );
+                            Lifecycle.stable());
                 }
 
                 @Override
@@ -95,13 +98,11 @@ public abstract class AEKey {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, AEKey> STREAM_CODEC = StreamCodec.of(
             AEKey::writeKey,
-            AEKey::readKey
-    );
+            AEKey::readKey);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, AEKey> OPTIONAL_STREAM_CODEC = StreamCodec.of(
             AEKey::writeOptionalKey,
-            AEKey::readOptionalKey
-    );
+            AEKey::readOptionalKey);
 
     /**
      * Writes a generic, nullable key to the given buffer.
@@ -150,7 +151,9 @@ public abstract class AEKey {
     @Nullable
     public static AEKey fromTagGeneric(HolderLookup.Provider registries, CompoundTag tag) {
         try {
-            return Util.getOrThrow(CODEC.decode(registries.createSerializationContext(NbtOps.INSTANCE), tag), IllegalStateException::new)
+            return Util
+                    .getOrThrow(CODEC.decode(registries.createSerializationContext(NbtOps.INSTANCE), tag),
+                            IllegalStateException::new)
                     .getFirst();
         } catch (Exception e) {
             LOG.warn("Cannot deserialize generic key from {}: {}", tag, e);
@@ -159,14 +162,14 @@ public abstract class AEKey {
     }
 
     /**
-     * Same as {@link #toTag(HolderLookup.Provider)}, but includes type information so that {@link #fromTagGeneric(HolderLookup.Provider, CompoundTag)} can restore
-     * this particular type of key withot knowing the actual type beforehand.
+     * Same as {@link #toTag(HolderLookup.Provider)}, but includes type information so that
+     * {@link #fromTagGeneric(HolderLookup.Provider, CompoundTag)} can restore this particular type of key withot
+     * knowing the actual type beforehand.
      */
     public final CompoundTag toTagGeneric(HolderLookup.Provider registries) {
         return (CompoundTag) Util.getOrThrow(
                 CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this),
-                IllegalStateException::new
-        );
+                IllegalStateException::new);
     }
 
     /**
@@ -211,7 +214,7 @@ public abstract class AEKey {
 
     /**
      * @return This object if it has no secondary component, otherwise a copy of this resource key with the secondary
-     * component removed.
+     *         component removed.
      */
     public abstract AEKey dropSecondary();
 
@@ -225,7 +228,7 @@ public abstract class AEKey {
 
     /**
      * @return If {@link #getFuzzySearchMaxValue()} is greater than 0, this is the value in the range of
-     * [0,getFuzzyModeMaxValue] used to index keys by. Used by fuzzy mode search with percentage ranges.
+     *         [0,getFuzzyModeMaxValue] used to index keys by. Used by fuzzy mode search with percentage ranges.
      */
     public int getFuzzySearchValue() {
         return 0;
@@ -233,7 +236,7 @@ public abstract class AEKey {
 
     /**
      * @return The upper bound for values returned by {@link #getFuzzySearchValue()}. If it is equal to 0, no fuzzy
-     * range-search is possible for this type of key.
+     *         range-search is possible for this type of key.
      */
     public int getFuzzySearchMaxValue() {
         return 0;

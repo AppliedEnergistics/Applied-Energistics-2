@@ -20,12 +20,6 @@ package appeng.core;
 
 import java.util.Objects;
 
-import appeng.client.render.effects.CraftingFx;
-import appeng.client.render.effects.EnergyFx;
-import appeng.client.render.effects.LightningArcFX;
-import appeng.client.render.effects.LightningFX;
-import appeng.client.render.effects.MatterCannonFX;
-import appeng.client.render.effects.VibrantFX;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
@@ -83,8 +77,14 @@ import appeng.client.guidebook.scene.PartAnnotationStrategy;
 import appeng.client.guidebook.screen.GlobalInMemoryHistory;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.client.render.StorageCellClientTooltipComponent;
+import appeng.client.render.effects.CraftingFx;
+import appeng.client.render.effects.EnergyFx;
 import appeng.client.render.effects.EnergyParticleData;
+import appeng.client.render.effects.LightningArcFX;
+import appeng.client.render.effects.LightningFX;
+import appeng.client.render.effects.MatterCannonFX;
 import appeng.client.render.effects.ParticleTypes;
+import appeng.client.render.effects.VibrantFX;
 import appeng.client.render.overlay.OverlayManager;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.network.NetworkHandler;

@@ -1,11 +1,14 @@
 package appeng.api.stacks;
 
-import appeng.api.storage.AEKeyFilter;
-import appeng.core.AELog;
+import java.util.List;
+
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -24,20 +27,23 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import appeng.api.storage.AEKeyFilter;
+import appeng.core.AELog;
 
 public final class AEFluidKey extends AEKey {
     public static final Codec<AEFluidKey> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                            ExtraCodecs.validate(
-                                            BuiltInRegistries.FLUID.holderByNameCodec(),
-                                            holder -> holder.is(Fluids.EMPTY.builtInRegistryHolder()) ? DataResult.error(() -> "Fluid must not be minecraft:empty") : DataResult.success(holder))
-                                    .fieldOf("id").forGetter(key -> key.stack.getFluidHolder()),
-                            ExtraCodecs.strictOptionalField(DataComponentPatch.CODEC, "components", DataComponentPatch.EMPTY)
-                                    .forGetter(key -> key.stack.getComponentsPatch()))
-                    .apply(instance, (fluidHolder, dataComponentPatch) -> new AEFluidKey(new FluidStack(fluidHolder, 1, dataComponentPatch))));
+                    ExtraCodecs.validate(
+                            BuiltInRegistries.FLUID.holderByNameCodec(),
+                            holder -> holder.is(Fluids.EMPTY.builtInRegistryHolder())
+                                    ? DataResult.error(() -> "Fluid must not be minecraft:empty")
+                                    : DataResult.success(holder))
+                            .fieldOf("id").forGetter(key -> key.stack.getFluidHolder()),
+                    ExtraCodecs.strictOptionalField(DataComponentPatch.CODEC, "components", DataComponentPatch.EMPTY)
+                            .forGetter(key -> key.stack.getComponentsPatch()))
+                    .apply(instance, (fluidHolder,
+                            dataComponentPatch) -> new AEFluidKey(new FluidStack(fluidHolder, 1, dataComponentPatch))));
 
     public static final int AMOUNT_BUCKET = 1000;
     public static final int AMOUNT_BLOCK = 1000;
@@ -109,8 +115,7 @@ public final class AEFluidKey extends AEKey {
         try {
             return Util.getOrThrow(
                     CODEC.decode(registries.createSerializationContext(NbtOps.INSTANCE), tag),
-                    IllegalStateException::new
-            ).getFirst();
+                    IllegalStateException::new).getFirst();
         } catch (Exception e) {
             AELog.debug("Tried to load an invalid fluid key from NBT: %s", tag, e);
             return null;
@@ -121,8 +126,7 @@ public final class AEFluidKey extends AEKey {
     public CompoundTag toTag(HolderLookup.Provider registries) {
         return (CompoundTag) Util.getOrThrow(
                 CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this),
-                IllegalStateException::new
-        );
+                IllegalStateException::new);
     }
 
     @Override

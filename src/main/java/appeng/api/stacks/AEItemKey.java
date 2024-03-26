@@ -1,11 +1,14 @@
 package appeng.api.stacks;
 
-import appeng.api.storage.AEKeyFilter;
-import appeng.core.AELog;
+import java.util.List;
+
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -25,9 +28,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import appeng.api.storage.AEKeyFilter;
+import appeng.core.AELog;
 
 public final class AEItemKey extends AEKey {
 
@@ -37,15 +40,15 @@ public final class AEItemKey extends AEKey {
      */
     public static final Codec<AEItemKey> CODEC = RecordCodecBuilder.create(
             builder -> builder.group(
-                            ExtraCodecs.validate(
-                                    BuiltInRegistries.ITEM.holderByNameCodec(),
-                                    item -> item.is(Items.AIR.builtInRegistryHolder()) ? DataResult.error(() -> "Item must not be minecraft:air") : DataResult.success(item)
-                            ).fieldOf("id").forGetter(key -> key.stack.getItemHolder()),
-                            ExtraCodecs.strictOptionalField(DataComponentPatch.CODEC, "components", DataComponentPatch.EMPTY)
-                                    .forGetter(key -> key.stack.getComponentsPatch())
-                    )
-                    .apply(builder, (item, componentPatch) -> new AEItemKey(new ItemStack(item, 1, componentPatch)))
-    );
+                    ExtraCodecs.validate(
+                            BuiltInRegistries.ITEM.holderByNameCodec(),
+                            item -> item.is(Items.AIR.builtInRegistryHolder())
+                                    ? DataResult.error(() -> "Item must not be minecraft:air")
+                                    : DataResult.success(item))
+                            .fieldOf("id").forGetter(key -> key.stack.getItemHolder()),
+                    ExtraCodecs.strictOptionalField(DataComponentPatch.CODEC, "components", DataComponentPatch.EMPTY)
+                            .forGetter(key -> key.stack.getComponentsPatch()))
+                    .apply(builder, (item, componentPatch) -> new AEItemKey(new ItemStack(item, 1, componentPatch))));
 
     private final ItemStack stack;
     private final int hashCode;
@@ -151,8 +154,7 @@ public final class AEItemKey extends AEKey {
         try {
             return Util.getOrThrow(
                     CODEC.decode(registries.createSerializationContext(NbtOps.INSTANCE), tag),
-                    IllegalStateException::new
-            ).getFirst();
+                    IllegalStateException::new).getFirst();
         } catch (Exception e) {
             AELog.debug("Tried to load an invalid item key from NBT: %s", tag, e);
             return null;
@@ -163,8 +165,7 @@ public final class AEItemKey extends AEKey {
     public CompoundTag toTag(HolderLookup.Provider registries) {
         return (CompoundTag) Util.getOrThrow(
                 CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this),
-                IllegalStateException::new
-        );
+                IllegalStateException::new);
     }
 
     @Override
@@ -260,6 +261,7 @@ public final class AEItemKey extends AEKey {
         var id = BuiltInRegistries.ITEM.getKey(stack.getItem());
         String idString = id != BuiltInRegistries.ITEM.getDefaultKey() ? id.toString()
                 : stack.getItem().getClass().getName() + "(unregistered)";
-        return stack.getComponents().isEmpty() ? idString : idString + " (+components)";
+        var componentCount = stack.getComponentsPatch().size();
+        return componentCount == 0 ? idString : idString + " (" + componentCount + " components)";
     }
 }

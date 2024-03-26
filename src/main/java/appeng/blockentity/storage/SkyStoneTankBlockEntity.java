@@ -3,7 +3,6 @@ package appeng.blockentity.storage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -70,7 +69,7 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
     protected void writeToStream(RegistryFriendlyByteBuf data) {
         super.writeToStream(data);
         var tag = new CompoundTag();
-            tank.writeToNBT(data.registryAccess(), tag);
+        tank.writeToNBT(data.registryAccess(), tag);
         data.writeNbt(tag);
     }
 }

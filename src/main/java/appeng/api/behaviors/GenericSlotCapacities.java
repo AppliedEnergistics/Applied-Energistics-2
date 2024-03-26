@@ -4,10 +4,9 @@ import java.util.Map;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEKeyType;

@@ -18,7 +18,8 @@ import appeng.hooks.IntrinsicEnchantItem;
 
 public class FluixHoeItem extends HoeItem implements IntrinsicEnchantItem {
     public FluixHoeItem(Properties props) {
-        super(FluixToolType.FLUIX.getToolTier(), props.attributes(createAttributes(FluixToolType.FLUIX.getToolTier(), -2, -1.0F)));
+        super(FluixToolType.FLUIX.getToolTier(),
+                props.attributes(createAttributes(FluixToolType.FLUIX.getToolTier(), -2, -1.0F)));
     }
 
     @Override

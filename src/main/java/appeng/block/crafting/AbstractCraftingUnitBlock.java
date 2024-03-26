@@ -18,11 +18,6 @@
 
 package appeng.block.crafting;
 
-import appeng.block.AEBaseEntityBlock;
-import appeng.blockentity.crafting.CraftingBlockEntity;
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocators;
-import appeng.menu.me.crafting.CraftingCPUMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -35,6 +30,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
+
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.crafting.CraftingBlockEntity;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocators;
+import appeng.menu.me.crafting.CraftingCPUMenu;
 
 public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> extends AEBaseEntityBlock<T> {
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
@@ -57,7 +58,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
 
     @Override
     public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor level,
-                                  BlockPos currentPos, BlockPos facingPos) {
+            BlockPos currentPos, BlockPos facingPos) {
         BlockEntity te = level.getBlockEntity(currentPos);
         if (te != null) {
             te.requestModelDataUpdate();
@@ -67,7 +68,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
 
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn,
-                                BlockPos fromPos, boolean isMoving) {
+            BlockPos fromPos, boolean isMoving) {
         final CraftingBlockEntity cp = this.getBlockEntity(level, pos);
         if (cp != null) {
             cp.updateMultiBlock(fromPos);
@@ -89,7 +90,8 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
+            BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof CraftingBlockEntity be && be.isFormed() && be.isActive()) {
             if (!level.isClientSide()) {
                 MenuOpener.open(CraftingCPUMenu.TYPE, player, MenuLocators.forBlockEntity(be));

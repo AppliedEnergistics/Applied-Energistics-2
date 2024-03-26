@@ -34,11 +34,11 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.mojang.serialization.JsonOps;
 
-import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.Util;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 
@@ -49,7 +49,8 @@ public class ScreenStyle {
 
     public static final Gson GSON = new GsonBuilder()
             .disableHtmlEscaping()
-            .registerTypeHierarchyAdapter(Component.class, new Component.SerializerAdapter(HolderLookup.Provider.create(Stream.of())))
+            .registerTypeHierarchyAdapter(Component.class,
+                    new Component.SerializerAdapter(HolderLookup.Provider.create(Stream.of())))
             .registerTypeAdapter(Style.class, new StyleSerializer())
             .registerTypeAdapter(Blitter.class, BlitterDeserializer.INSTANCE)
             .registerTypeAdapter(Rect2i.class, Rectangle2dDeserializer.INSTANCE)

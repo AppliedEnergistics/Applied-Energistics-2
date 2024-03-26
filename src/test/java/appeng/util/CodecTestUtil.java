@@ -1,23 +1,26 @@
 package appeng.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DynamicOps;
+
+import org.junit.jupiter.api.Assertions;
+
 import io.netty.buffer.Unpooled;
+
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import org.junit.jupiter.api.Assertions;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 public final class CodecTestUtil {
     private CodecTestUtil() {
     }
 
     public static <V> void testRoundtrip(StreamCodec<? super RegistryFriendlyByteBuf, V> streamCodec, V value) {
-        var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
+        var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(),
+                RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
         streamCodec.encode(buffer, value);
         var decoded = streamCodec.decode(buffer);
         assertEquals(value, decoded);

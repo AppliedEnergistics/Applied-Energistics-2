@@ -23,13 +23,14 @@
 
 package appeng.api.stacks;
 
-import appeng.api.storage.AEKeyFilter;
-import appeng.core.AELog;
-import appeng.core.AppEng;
-import appeng.util.ReadableNumberConverter;
+import java.text.NumberFormat;
+import java.util.stream.Stream;
+
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -43,19 +44,23 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
-import org.jetbrains.annotations.Nullable;
 
-import java.text.NumberFormat;
-import java.util.stream.Stream;
+import appeng.api.storage.AEKeyFilter;
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.util.ReadableNumberConverter;
 
 /**
  * Defines the properties of a specific subclass of {@link AEKey}. I.e. for {@link AEItemKey}, there is
  * {@link AEItemKeys}.
  */
 public abstract class AEKeyType {
-    public static final ResourceKey<Registry<AEKeyType>> REGISTRY_KEY = ResourceKey.createRegistryKey(AppEng.makeId("keytypes"));
-    public static final Codec<AEKeyType> CODEC = ExtraCodecs.lazyInitializedCodec(() -> AEKeyTypesInternal.getRegistry().byNameCodec());
-    public static final StreamCodec<RegistryFriendlyByteBuf, AEKeyType> STREAM_CODEC = ByteBufCodecs.registry(AEKeyType.REGISTRY_KEY);
+    public static final ResourceKey<Registry<AEKeyType>> REGISTRY_KEY = ResourceKey
+            .createRegistryKey(AppEng.makeId("keytypes"));
+    public static final Codec<AEKeyType> CODEC = ExtraCodecs
+            .lazyInitializedCodec(() -> AEKeyTypesInternal.getRegistry().byNameCodec());
+    public static final StreamCodec<RegistryFriendlyByteBuf, AEKeyType> STREAM_CODEC = ByteBufCodecs
+            .registry(AEKeyType.REGISTRY_KEY);
 
     private final ResourceLocation id;
     private final Class<? extends AEKey> keyClass;
@@ -149,8 +154,7 @@ public abstract class AEKeyType {
         try {
             return Util.getOrThrow(
                     codec().decode(registries.createSerializationContext(NbtOps.INSTANCE), tag),
-                    IllegalStateException::new
-            ).getFirst();
+                    IllegalStateException::new).getFirst();
         } catch (Exception e) {
             AELog.debug("Tried to load an invalid item key from NBT: %s", tag, e);
             return null;

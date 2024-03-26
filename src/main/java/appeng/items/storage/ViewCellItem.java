@@ -20,11 +20,11 @@ package appeng.items.storage;
 
 import java.util.Collection;
 
-import appeng.api.ids.AEComponents;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
+import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.AEKeyFilter;

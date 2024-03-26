@@ -3,7 +3,6 @@ package appeng.client.guidebook.scene;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -101,14 +100,15 @@ public class LiquidVertexConsumer implements VertexConsumer {
 
     @Override
     public void putBulkData(PoseStack.Pose poseEntry, BakedQuad quad, float red, float green, float blue, float alpha,
-                            int combinedLight, int combinedOverlay) {
+            int combinedLight, int combinedOverlay) {
         delegate.putBulkData(poseEntry, quad, red, green, blue, alpha, combinedLight, combinedOverlay);
     }
 
     @Override
     public void putBulkData(PoseStack.Pose poseEntry, BakedQuad quad, float[] colorMuls, float red, float green,
             float blue, float alpha, int[] combinedLights, int combinedOverlay, boolean mulColor) {
-        delegate.putBulkData(poseEntry, quad, colorMuls, red, green, blue, alpha, combinedLights, combinedOverlay, mulColor);
+        delegate.putBulkData(poseEntry, quad, colorMuls, red, green, blue, alpha, combinedLights, combinedOverlay,
+                mulColor);
     }
 
     @Override

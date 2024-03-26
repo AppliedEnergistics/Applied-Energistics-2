@@ -9,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.Items;
@@ -68,7 +68,7 @@ class GenericStackInvTest {
     @Test
     void testLoadingFromEmptyTagClearsFilledSlots() {
         inv.setStack(0, ONE_STICK);
-        inv.readFromTag(new ListTag(),registryAccess );
+        inv.readFromTag(new ListTag(), registryAccess);
         assertNull(inv.getStack(0));
     }
 

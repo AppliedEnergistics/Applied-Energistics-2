@@ -23,7 +23,6 @@ import java.util.Locale;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleOptions;
@@ -31,7 +30,6 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 public record EnergyParticleData(boolean forItem, Direction direction) implements ParticleOptions {
     public static final StreamCodec<FriendlyByteBuf, EnergyParticleData> STREAM_CODEC = StreamCodec.composite(
@@ -39,14 +37,14 @@ public record EnergyParticleData(boolean forItem, Direction direction) implement
             EnergyParticleData::forItem,
             Direction.STREAM_CODEC,
             EnergyParticleData::direction,
-            EnergyParticleData::new
-    );
+            EnergyParticleData::new);
 
     public static final EnergyParticleData FOR_BLOCK = new EnergyParticleData(false, Direction.UP);
 
     public static final Deserializer<EnergyParticleData> DESERIALIZER = new Deserializer<EnergyParticleData>() {
         @Override
-        public EnergyParticleData fromCommand(ParticleType<EnergyParticleData> particleTypeIn, StringReader reader, HolderLookup.Provider registries)
+        public EnergyParticleData fromCommand(ParticleType<EnergyParticleData> particleTypeIn, StringReader reader,
+                HolderLookup.Provider registries)
                 throws CommandSyntaxException {
             reader.expect(' ');
             boolean forItem = reader.readBoolean();
@@ -56,11 +54,11 @@ public record EnergyParticleData(boolean forItem, Direction direction) implement
         }
 
     };
+
     @Override
     public ParticleType<?> getType() {
         return ParticleTypes.ENERGY;
     }
-
 
     @Override
     public String writeToString(HolderLookup.Provider registries) {

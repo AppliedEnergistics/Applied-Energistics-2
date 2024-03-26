@@ -2,9 +2,9 @@ package appeng.decorative.solid;
 
 import java.util.List;
 
-import net.minecraft.core.RegistryAccess;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -22,7 +22,7 @@ public class NotSoMysteriousCubeBlock extends AEDecorativeBlock {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
-                                TooltipFlag flag, @Nullable RegistryAccess registryAccess) {
+            TooltipFlag flag, @Nullable RegistryAccess registryAccess) {
         tooltip.add(Tooltips.of(GuiText.NotSoMysteriousQuote, Tooltips.QUOTE_TEXT));
     }
 }

@@ -18,9 +18,11 @@
 
 package appeng.parts.encoding;
 
-import net.minecraft.core.HolderLookup;
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -40,8 +42,6 @@ import appeng.util.ConfigInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.AEItemDefinitionFilter;
-
-import java.util.List;
 
 public class PatternEncodingLogic implements InternalInventoryHost {
 

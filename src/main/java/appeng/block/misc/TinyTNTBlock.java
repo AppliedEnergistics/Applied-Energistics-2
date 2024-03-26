@@ -18,13 +18,14 @@
 
 package appeng.block.misc;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -41,14 +42,12 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.block.AEBaseBlock;
 import appeng.entity.TinyTNTPrimedEntity;
-import org.jetbrains.annotations.Nullable;
 
 public class TinyTNTBlock extends AEBaseBlock {
 
@@ -70,7 +69,8 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
+            Player player, InteractionHand hand, BlockHitResult hit) {
         if (heldItem.is(Items.FLINT_AND_STEEL) && heldItem.is(Items.FIRE_CHARGE)) {
             onCaughtFire(state, level, pos, hit.getDirection(), player);
             level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
@@ -90,13 +90,15 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public void onCaughtFire(BlockState state, Level level, BlockPos pos, @Nullable Direction direction, @Nullable LivingEntity igniter) {
+    public void onCaughtFire(BlockState state, Level level, BlockPos pos, @Nullable Direction direction,
+            @Nullable LivingEntity igniter) {
         this.startFuse(level, pos, igniter);
     }
 
     public void startFuse(Level level, BlockPos pos, LivingEntity igniter) {
         if (!level.isClientSide) {
-            var primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, igniter);
+            var primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F, pos.getY() + 0.5F,
+                    pos.getZ() + 0.5F, igniter);
             level.addFreshEntity(primedTinyTNTEntity);
             level.playSound(null, primedTinyTNTEntity.getX(), primedTinyTNTEntity.getY(),
                     primedTinyTNTEntity.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1, 1);

@@ -1,19 +1,18 @@
 
 package appeng.core.network.serverbound;
 
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 
+import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
 import appeng.menu.AEBaseMenu;
 
 public record SwapSlotsPacket(int slotA, int slotB) implements ServerboundPacket {
     public static final StreamCodec<RegistryFriendlyByteBuf, SwapSlotsPacket> STREAM_CODEC = StreamCodec.ofMember(
             SwapSlotsPacket::write,
-            SwapSlotsPacket::decode
-    );
+            SwapSlotsPacket::decode);
 
     public static final Type<SwapSlotsPacket> TYPE = CustomAppEngPayload.createType("swap_slots");
 

@@ -1,6 +1,5 @@
 package appeng.core.network.serverbound;
 
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -9,14 +8,14 @@ import net.minecraft.server.level.ServerPlayer;
 import appeng.client.Hotkey;
 import appeng.core.AELog;
 import appeng.core.localization.PlayerMessages;
+import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
 import appeng.hotkeys.HotkeyActions;
 
 public record HotkeyPacket(String hotkey) implements ServerboundPacket {
     public static final StreamCodec<RegistryFriendlyByteBuf, HotkeyPacket> STREAM_CODEC = StreamCodec.ofMember(
             HotkeyPacket::write,
-            HotkeyPacket::decode
-    );
+            HotkeyPacket::decode);
 
     public static final Type<HotkeyPacket> TYPE = CustomAppEngPayload.createType("hotkey");
 

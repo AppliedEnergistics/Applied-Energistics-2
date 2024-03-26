@@ -1,7 +1,6 @@
 
 package appeng.core.network.serverbound;
 
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
@@ -11,6 +10,7 @@ import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.AELog;
+import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
 import appeng.menu.AEBaseMenu;
 import appeng.util.EnumCycler;
@@ -19,8 +19,7 @@ public record ConfigButtonPacket(Setting<?> option, boolean rotationDirection) i
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ConfigButtonPacket> STREAM_CODEC = StreamCodec.ofMember(
             ConfigButtonPacket::write,
-            ConfigButtonPacket::decode
-    );
+            ConfigButtonPacket::decode);
 
     public static final Type<ConfigButtonPacket> TYPE = CustomAppEngPayload.createType("config_button");
 

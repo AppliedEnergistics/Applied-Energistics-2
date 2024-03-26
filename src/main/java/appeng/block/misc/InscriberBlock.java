@@ -22,10 +22,8 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -47,7 +45,6 @@ import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.InscriberMenu;
 import appeng.menu.locator.MenuLocators;
-import appeng.util.InteractionUtil;
 
 public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> implements SimpleWaterloggedBlock {
 
@@ -65,7 +62,8 @@ public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> impl
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
+            BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof InscriberBlockEntity be) {
             if (!level.isClientSide()) {
                 MenuOpener.open(InscriberMenu.TYPE, player, MenuLocators.forBlockEntity(be));

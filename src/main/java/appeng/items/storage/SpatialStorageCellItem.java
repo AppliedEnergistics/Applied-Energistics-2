@@ -18,6 +18,23 @@
 
 package appeng.items.storage;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.Locale;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
 import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.core.AELog;
@@ -28,21 +45,6 @@ import appeng.spatial.SpatialStorageHelper;
 import appeng.spatial.SpatialStoragePlot;
 import appeng.spatial.SpatialStoragePlotManager;
 import appeng.spatial.TransitionInfo;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.time.Instant;
-import java.util.List;
-import java.util.Locale;
 
 public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorageCell {
     private static final Logger LOG = LoggerFactory.getLogger(SpatialStorageCellItem.class);
@@ -57,7 +59,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
-                                TooltipFlag advancedTooltips) {
+            TooltipFlag advancedTooltips) {
         int plotId = this.getAllocatedPlotId(stack);
         if (plotId == -1) {
             lines.add(Tooltips.of(GuiText.Unformatted).withStyle(ChatFormatting.ITALIC));
@@ -105,7 +107,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     @Override
     public boolean doSpatialTransition(ItemStack is, ServerLevel level, BlockPos min,
-                                       BlockPos max, int playerId) {
+            BlockPos max, int playerId) {
         final int targetX = max.getX() - min.getX() - 1;
         final int targetY = max.getY() - min.getY() - 1;
         final int targetZ = max.getZ() - min.getZ() - 1;
@@ -160,7 +162,6 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     public void setStoredDimension(ItemStack is, int plotId, BlockPos size) {
         is.set(AEComponents.SPATIAL_PLOT_INFO, new SpatialPlotInfo(
-                plotId, size.immutable()
-        ));
+                plotId, size.immutable()));
     }
 }

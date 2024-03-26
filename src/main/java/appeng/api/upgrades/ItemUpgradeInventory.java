@@ -18,12 +18,12 @@
 
 package appeng.api.upgrades;
 
-import appeng.api.ids.AEComponents;
-import net.minecraft.world.item.component.ItemContainerContents;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 
+import appeng.api.ids.AEComponents;
 import appeng.util.inv.AppEngInternalInventory;
 
 /**

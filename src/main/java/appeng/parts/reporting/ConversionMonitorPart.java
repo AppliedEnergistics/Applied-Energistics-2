@@ -18,6 +18,13 @@
 
 package appeng.parts.reporting;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
@@ -33,12 +40,6 @@ import appeng.parts.PartModel;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.inv.PlayerInternalInventory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
 
 public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMenuHost {
 
@@ -79,7 +80,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMe
 
         if (this.isLocked()) {
             if (InteractionUtil.canWrenchRotate(heldItem)
-                && (this.getDisplayed() == null || !AEItemKey.matches(getDisplayed(), heldItem))) {
+                    && (this.getDisplayed() == null || !AEItemKey.matches(getDisplayed(), heldItem))) {
                 // wrench it
                 return super.onUseWithoutItem(player, pos);
             } else {

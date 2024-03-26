@@ -8,9 +8,9 @@ import java.nio.file.StandardCopyOption;
 
 import com.mojang.logging.LogUtils;
 
-import net.minecraft.core.HolderLookup;
 import org.slf4j.Logger;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtUtils;

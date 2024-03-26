@@ -18,13 +18,9 @@
 
 package appeng.block.crafting;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,7 +33,6 @@ import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.MolecularAssemblerMenu;
 import appeng.menu.locator.MenuLocators;
-import appeng.util.InteractionUtil;
 
 public class MolecularAssemblerBlock extends AEBaseEntityBlock<MolecularAssemblerBlockEntity> {
 
@@ -60,7 +55,8 @@ public class MolecularAssemblerBlock extends AEBaseEntityBlock<MolecularAssemble
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
+            BlockHitResult hitResult) {
         var be = this.getBlockEntity(level, pos);
         if (be != null) {
             if (!level.isClientSide()) {

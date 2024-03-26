@@ -2,10 +2,10 @@ package appeng.block.misc;
 
 import java.util.List;
 
-import net.minecraft.core.RegistryAccess;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -50,7 +50,7 @@ public class MysteriousCubeBlock extends AEBaseBlock {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
-                                TooltipFlag flag, @Nullable RegistryAccess registryAccess) {
+            TooltipFlag flag, @Nullable RegistryAccess registryAccess) {
         tooltip.add(Tooltips.of(GuiText.MysteriousQuote, Tooltips.QUOTE_TEXT));
     }
 }

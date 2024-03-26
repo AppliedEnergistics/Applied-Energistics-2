@@ -20,16 +20,12 @@ package appeng.crafting.pattern;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
-import appeng.api.ids.AEComponents;
-import appeng.client.gui.widgets.IResizableWidget;
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -47,6 +43,7 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsTooltip;
+import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -289,8 +286,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
                 addition.toStack(),
                 output.toStack(),
                 allowSubstitutes,
-                recipe.id()
-        ));
+                recipe.id()));
     }
 
     @Override
@@ -317,7 +313,8 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
                 tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
             }
             if (flags.isAdvanced()) {
-                tooltip.addProperty(Component.literal("Recipe"), Component.literal(encodedPattern.recipeId().toString()));
+                tooltip.addProperty(Component.literal("Recipe"),
+                        Component.literal(encodedPattern.recipeId().toString()));
             }
         }
         return tooltip;

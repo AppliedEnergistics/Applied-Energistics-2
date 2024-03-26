@@ -1,7 +1,6 @@
 
 package appeng.core.network.clientbound;
 
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -11,6 +10,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 
 public record MatterCannonPacket(double x,
         double y,
@@ -22,8 +22,7 @@ public record MatterCannonPacket(double x,
 
     public static final StreamCodec<RegistryFriendlyByteBuf, MatterCannonPacket> STREAM_CODEC = StreamCodec.ofMember(
             MatterCannonPacket::write,
-            MatterCannonPacket::decode
-    );
+            MatterCannonPacket::decode);
 
     public static final Type<MatterCannonPacket> TYPE = CustomAppEngPayload.createType("matter_cannon");
 

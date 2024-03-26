@@ -60,8 +60,6 @@ import appeng.client.render.overlay.IOverlayDataSource;
 import appeng.client.render.overlay.OverlayManager;
 import appeng.me.service.StatisticsService;
 import appeng.server.services.ChunkLoadingService;
-import appeng.util.ConfigManager;
-import appeng.api.util.IConfigManagerListener;
 
 public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
         implements IGridTickable, IConfigurableObject, IOverlayDataSource {
@@ -92,9 +90,9 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
         getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, this);
 
-         this.manager = IConfigManager.builder(this::onSettingChanged)
-                 .registerSetting(Settings.OVERLAY_MODE, YesNo.NO)
-                 .build();
+        this.manager = IConfigManager.builder(this::onSettingChanged)
+                .registerSetting(Settings.OVERLAY_MODE, YesNo.NO)
+                .build();
     }
 
     @Override

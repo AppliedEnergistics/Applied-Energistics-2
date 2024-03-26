@@ -18,6 +18,8 @@
 
 package appeng.datagen.providers.recipes;
 
+import java.util.concurrent.CompletableFuture;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -31,8 +33,6 @@ import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.tags.ConventionTags;
 import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipeBuilder;
-
-import java.util.concurrent.CompletableFuture;
 
 public class InscriberRecipes extends AE2RecipeProvider {
     public InscriberRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {

@@ -6,10 +6,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 
 import appeng.core.AppEng;
 import appeng.datagen.providers.tags.ConventionTags;
-import net.minecraft.world.level.block.Block;
 
 public enum FluixToolType {
     FLUIX("fluix", () -> Ingredient.of(ConventionTags.FLUIX_CRYSTAL)),

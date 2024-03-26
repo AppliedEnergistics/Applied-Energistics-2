@@ -7,15 +7,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import appeng.core.network.CustomAppEngPayload;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import io.netty.buffer.Unpooled;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -25,6 +24,7 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IncrementalUpdateHelper;
 import appeng.menu.me.common.MEStorageMenu;
@@ -38,10 +38,10 @@ public record MEInventoryUpdatePacket(
 
 ) implements ClientboundPacket {
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, MEInventoryUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(
-            MEInventoryUpdatePacket::write,
-            MEInventoryUpdatePacket::decode
-    );
+    public static final StreamCodec<RegistryFriendlyByteBuf, MEInventoryUpdatePacket> STREAM_CODEC = StreamCodec
+            .ofMember(
+                    MEInventoryUpdatePacket::write,
+                    MEInventoryUpdatePacket::decode);
 
     public static final Type<MEInventoryUpdatePacket> TYPE = CustomAppEngPayload.createType("me_inventory_update");
 

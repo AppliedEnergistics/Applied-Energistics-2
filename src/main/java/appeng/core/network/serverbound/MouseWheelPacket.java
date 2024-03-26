@@ -1,19 +1,18 @@
 package appeng.core.network.serverbound;
 
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 
+import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
 import appeng.helpers.IMouseWheelItem;
 
 public record MouseWheelPacket(boolean wheelUp) implements ServerboundPacket {
     public static final StreamCodec<RegistryFriendlyByteBuf, MouseWheelPacket> STREAM_CODEC = StreamCodec.ofMember(
             MouseWheelPacket::write,
-            MouseWheelPacket::decode
-    );
+            MouseWheelPacket::decode);
 
     public static final Type<MouseWheelPacket> TYPE = CustomAppEngPayload.createType("mouse_wheel");
 

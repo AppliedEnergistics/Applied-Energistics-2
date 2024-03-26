@@ -18,18 +18,10 @@
 
 package appeng.block.misc;
 
-import appeng.api.orientation.BlockOrientation;
-import appeng.api.orientation.IOrientationStrategy;
-import appeng.api.orientation.OrientationStrategies;
-import appeng.api.orientation.RelativeSide;
-import appeng.api.util.AEAxisAlignedBB;
-import appeng.block.AEBaseEntityBlock;
-import appeng.blockentity.misc.ChargerBlockEntity;
-import appeng.blockentity.misc.ChargerRecipes;
-import appeng.client.render.effects.LightningArcParticleData;
-import appeng.core.AEConfig;
-import appeng.core.AppEngClient;
-import appeng.util.Platform;
+import java.util.List;
+
+import org.joml.Vector3f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -49,9 +41,19 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.joml.Vector3f;
 
-import java.util.List;
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.OrientationStrategies;
+import appeng.api.orientation.RelativeSide;
+import appeng.api.util.AEAxisAlignedBB;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.ChargerBlockEntity;
+import appeng.blockentity.misc.ChargerRecipes;
+import appeng.client.render.effects.LightningArcParticleData;
+import appeng.core.AEConfig;
+import appeng.core.AppEngClient;
+import appeng.util.Platform;
 
 public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
 
@@ -70,7 +72,8 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
+            Player player, InteractionHand hand, BlockHitResult hit) {
         if (level.getBlockEntity(pos) instanceof ChargerBlockEntity charger) {
             var inv = charger.getInternalInventory();
             var chargingItem = inv.extractItem(0, Integer.MAX_VALUE, false);
@@ -87,12 +90,14 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
+            BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof ChargerBlockEntity charger) {
             var inv = charger.getInternalInventory();
             var chargingItem = inv.extractItem(0, Integer.MAX_VALUE, false);
             if (!chargingItem.isEmpty()) {
-                Platform.spawnDrops(player.level(), charger.getBlockPos().relative(charger.getFront()), List.of(chargingItem));
+                Platform.spawnDrops(player.level(), charger.getBlockPos().relative(charger.getFront()),
+                        List.of(chargingItem));
                 return InteractionResult.sidedSuccess(level.isClientSide);
             }
         }
@@ -188,7 +193,7 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos,
-                                        CollisionContext context) {
+            CollisionContext context) {
         return Shapes.create(new AABB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
     }
 

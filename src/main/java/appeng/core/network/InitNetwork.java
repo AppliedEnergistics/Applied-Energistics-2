@@ -1,5 +1,11 @@
 package appeng.core.network;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+
 import appeng.core.AppEng;
 import appeng.core.network.bidirectional.ConfigValuePacket;
 import appeng.core.network.clientbound.AssemblerAnimationPacket;
@@ -32,11 +38,6 @@ import appeng.core.network.serverbound.PartLeftClickPacket;
 import appeng.core.network.serverbound.SelectKeyTypePacket;
 import appeng.core.network.serverbound.SwapSlotsPacket;
 import appeng.core.network.serverbound.SwitchGuisPacket;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
 
 public class InitNetwork {
     public static void init(RegisterPayloadHandlerEvent event) {
@@ -80,19 +81,21 @@ public class InitNetwork {
         bidirectional(registrar, ConfigValuePacket.TYPE, ConfigValuePacket.STREAM_CODEC);
     }
 
-    private static <T extends ClientboundPacket> void clientbound(IPayloadRegistrar registrar, CustomPacketPayload.Type<T> type,
-                                                                  StreamCodec<RegistryFriendlyByteBuf, T> codec) {
+    private static <T extends ClientboundPacket> void clientbound(IPayloadRegistrar registrar,
+            CustomPacketPayload.Type<T> type,
+            StreamCodec<RegistryFriendlyByteBuf, T> codec) {
         registrar.play(type, codec, builder -> builder.client(ClientboundPacket::handleOnClient));
     }
 
-    private static <T extends ServerboundPacket> void serverbound(IPayloadRegistrar registrar, CustomPacketPayload.Type<T> type,
-                                                                  StreamCodec<RegistryFriendlyByteBuf, T> codec) {
+    private static <T extends ServerboundPacket> void serverbound(IPayloadRegistrar registrar,
+            CustomPacketPayload.Type<T> type,
+            StreamCodec<RegistryFriendlyByteBuf, T> codec) {
         registrar.play(type, codec, builder -> builder.server(ServerboundPacket::handleOnServer));
     }
 
     private static <T extends ServerboundPacket & ClientboundPacket> void bidirectional(IPayloadRegistrar registrar,
-                                                                                        CustomPacketPayload.Type<T> type,
-                                                                                        StreamCodec<RegistryFriendlyByteBuf, T> codec) {
+            CustomPacketPayload.Type<T> type,
+            StreamCodec<RegistryFriendlyByteBuf, T> codec) {
         registrar.play(type, codec, builder -> {
             builder.client(ClientboundPacket::handleOnClient);
             builder.server(ServerboundPacket::handleOnServer);

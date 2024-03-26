@@ -8,7 +8,6 @@ import net.minecraft.world.item.Items;
 import dev.emi.emi.api.stack.EmiStack;
 
 import appeng.api.integrations.emi.EmiStackConverter;
-import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 

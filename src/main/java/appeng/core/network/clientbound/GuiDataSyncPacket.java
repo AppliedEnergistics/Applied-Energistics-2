@@ -1,27 +1,20 @@
 
 package appeng.core.network.clientbound;
 
-import java.rmi.registry.Registry;
-import java.util.Locale;
 import java.util.function.Consumer;
 
-import appeng.core.AppEng;
-import appeng.core.network.CustomAppEngPayload;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 import appeng.menu.AEBaseMenu;
 
 /**
@@ -30,8 +23,7 @@ import appeng.menu.AEBaseMenu;
 public record GuiDataSyncPacket(int containerId, byte[] syncData) implements ClientboundPacket {
     public static final StreamCodec<RegistryFriendlyByteBuf, GuiDataSyncPacket> STREAM_CODEC = StreamCodec.ofMember(
             GuiDataSyncPacket::write,
-            GuiDataSyncPacket::decode
-    );
+            GuiDataSyncPacket::decode);
 
     public static final Type<GuiDataSyncPacket> TYPE = CustomAppEngPayload.createType("");
 
@@ -68,7 +60,8 @@ public record GuiDataSyncPacket(int containerId, byte[] syncData) implements Cli
     public void handleOnClient(Player player) {
         AbstractContainerMenu c = player.containerMenu;
         if (c instanceof AEBaseMenu baseMenu && c.containerId == this.containerId) {
-            baseMenu.receiveServerSyncData(new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(this.syncData), player.registryAccess()));
+            baseMenu.receiveServerSyncData(
+                    new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(this.syncData), player.registryAccess()));
         }
     }
 

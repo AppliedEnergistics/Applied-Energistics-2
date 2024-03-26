@@ -20,8 +20,6 @@ package appeng.block.networking;
 
 import java.util.List;
 
-import appeng.api.ids.AEComponents;
-import appeng.capabilities.AppEngCapabilities;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -32,6 +30,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
+import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.block.AEBaseBlockItem;
 import appeng.core.localization.Tooltips;

@@ -21,20 +21,19 @@ package appeng.crafting.pattern;
 import java.util.List;
 import java.util.Objects;
 
-import appeng.api.ids.AEComponents;
 import com.google.common.base.Preconditions;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsTooltip;
+import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -79,8 +78,7 @@ public class AEProcessingPattern implements IPatternDetails {
                 "The first (primary) output must be non-null.");
 
         stack.set(AEComponents.ENCODED_PROCESSING_PATTERN, new EncodedProcessingPattern(
-                sparseInputs, sparseOutputs
-        ));
+                sparseInputs, sparseOutputs));
     }
 
     @Override

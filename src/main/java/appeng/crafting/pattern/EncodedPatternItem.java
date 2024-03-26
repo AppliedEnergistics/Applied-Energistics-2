@@ -18,6 +18,26 @@
 
 package appeng.crafting.pattern;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.WeakHashMap;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+
 import appeng.api.crafting.EncodedPatternDecoder;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.InvalidPatternTooltipStrategy;
@@ -33,24 +53,6 @@ import appeng.items.AEBaseItem;
 import appeng.items.misc.MissingContentItem;
 import appeng.items.misc.WrappedGenericStack;
 import appeng.util.InteractionUtil;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.WeakHashMap;
 
 /**
  * Reusable item class for encoded patterns.
@@ -67,8 +69,8 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
     private final InvalidPatternTooltipStrategy invalidPatternTooltip;
 
     public EncodedPatternItem(Properties properties,
-                              EncodedPatternDecoder<T> decoder,
-                              @Nullable InvalidPatternTooltipStrategy invalidPatternTooltip) {
+            EncodedPatternDecoder<T> decoder,
+            @Nullable InvalidPatternTooltipStrategy invalidPatternTooltip) {
         super(properties);
         this.decoder = decoder;
         this.invalidPatternTooltip = invalidPatternTooltip;
@@ -118,7 +120,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
 
     @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
-                                TooltipFlag flags) {
+            TooltipFlag flags) {
         var what = AEItemKey.of(stack);
         if (what == null) {
             // This can be called very early to index tooltips for search. In those cases,
@@ -171,10 +173,12 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
     }
 
     protected static Component getTooltipEntryLine(GenericStack stack) {
-        if (stack.what() instanceof AEItemKey itemKey && itemKey.getReadOnlyStack().getItem() instanceof MissingContentItem missingContentItem) {
+        if (stack.what() instanceof AEItemKey itemKey
+                && itemKey.getReadOnlyStack().getItem() instanceof MissingContentItem missingContentItem) {
             var brokenStackInfo = missingContentItem.getBrokenStackInfo(itemKey.getReadOnlyStack());
             if (brokenStackInfo != null) {
-                return getTooltipEntryLine(brokenStackInfo.displayName().copy().withStyle(ChatFormatting.RED), brokenStackInfo.keyType(), brokenStackInfo.amount());
+                return getTooltipEntryLine(brokenStackInfo.displayName().copy().withStyle(ChatFormatting.RED),
+                        brokenStackInfo.keyType(), brokenStackInfo.amount());
             }
         }
 

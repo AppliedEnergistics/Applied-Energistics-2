@@ -24,8 +24,6 @@ import java.util.concurrent.ExecutionException;
 
 import javax.annotation.Nullable;
 
-import appeng.api.ids.AEComponents;
-import appeng.api.implementations.items.MemoryCardColors;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
@@ -45,7 +43,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
+import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.implementations.items.MemoryCardColors;
 import appeng.api.util.AEColor;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AELog;

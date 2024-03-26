@@ -21,7 +21,6 @@ package appeng.menu.guisync;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 

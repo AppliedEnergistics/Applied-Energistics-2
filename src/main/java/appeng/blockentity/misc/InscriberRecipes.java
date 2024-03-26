@@ -18,17 +18,19 @@
 
 package appeng.blockentity.misc;
 
-import appeng.api.ids.AEComponents;
-import appeng.core.definitions.AEItems;
-import appeng.recipes.handlers.InscriberProcessType;
-import appeng.recipes.handlers.InscriberRecipe;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
+
+import appeng.api.ids.AEComponents;
+import appeng.core.definitions.AEItems;
+import appeng.recipes.handlers.InscriberProcessType;
+import appeng.recipes.handlers.InscriberRecipe;
 
 /**
  * This class indexes all inscriber recipes to find valid inputs for the top and bottom optional slots. This speeds up
@@ -48,7 +50,7 @@ public final class InscriberRecipes {
 
     @Nullable
     public static InscriberRecipe findRecipe(Level level, ItemStack input, ItemStack plateA, ItemStack plateB,
-                                             boolean supportNamePress) {
+            boolean supportNamePress) {
         if (supportNamePress) {
             boolean isNameA = AEItems.NAME_PRESS.isSameAs(plateA);
             boolean isNameB = AEItems.NAME_PRESS.isSameAs(plateB);
@@ -119,7 +121,7 @@ public final class InscriberRecipes {
         for (var holder : getRecipes(level)) {
             var recipe = holder.value();
             if (recipe.getTopOptional().test(pressA) && recipe.getBottomOptional().test(pressB)
-                || recipe.getTopOptional().test(pressB) && recipe.getBottomOptional().test(pressA)) {
+                    || recipe.getTopOptional().test(pressB) && recipe.getBottomOptional().test(pressA)) {
                 return true;
             }
         }

@@ -746,8 +746,8 @@ public final class TestPlots {
                 .part(Direction.EAST, AEParts.PATTERN_PROVIDER, pp -> {
                     pp.getLogic().getPatternInv().addItems(
                             PatternDetailsHelper.encodeProcessingPattern(
-                                    List.of( input ),
-                                    List.of( output )));
+                                    List.of(input),
+                                    List.of(output)));
                     pp.getLogic().getConfigManager().putSetting(Settings.BLOCKING_MODE, YesNo.YES);
                 });
         plot.drive(new BlockPos(2, 0, -1))

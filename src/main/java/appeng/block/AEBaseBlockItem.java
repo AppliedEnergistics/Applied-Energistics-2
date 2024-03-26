@@ -20,6 +20,8 @@ package appeng.block;
 
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +30,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
 
 public class AEBaseBlockItem extends BlockItem {
 
@@ -42,14 +43,15 @@ public class AEBaseBlockItem extends BlockItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public final void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> toolTip,
-                                      TooltipFlag advancedTooltips) {
+            TooltipFlag advancedTooltips) {
         this.addCheckedInformation(itemStack, level, toolTip, advancedTooltips);
     }
 
     @OnlyIn(Dist.CLIENT)
     public void addCheckedInformation(ItemStack itemStack, @Nullable Level level, List<Component> toolTip,
             TooltipFlag advancedTooltips) {
-        this.blockType.appendHoverText(itemStack, level, toolTip, advancedTooltips, level != null ? level.registryAccess() : null);
+        this.blockType.appendHoverText(itemStack, level, toolTip, advancedTooltips,
+                level != null ? level.registryAccess() : null);
     }
 
     @Override

@@ -7,7 +7,6 @@ import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -148,8 +147,8 @@ public final class MemoryCardTestPlots {
 
             // Create arbitrary processing+crafting patterns
             var processingPattern = PatternDetailsHelper.encodeProcessingPattern(
-                    List.of( new GenericStack(AEFluidKey.of(Fluids.WATER), 1) ),
-                    List.of( new GenericStack(AEFluidKey.of(Fluids.LAVA), 1) ));
+                    List.of(new GenericStack(AEFluidKey.of(Fluids.WATER), 1)),
+                    List.of(new GenericStack(AEFluidKey.of(Fluids.LAVA), 1)));
             var craftingPattern = CraftingPatternHelper.encodeShapelessCraftingRecipe(
                     helper.getLevel(), Items.OAK_LOG.getDefaultInstance());
             var differentCraftingPattern = CraftingPatternHelper.encodeShapelessCraftingRecipe(

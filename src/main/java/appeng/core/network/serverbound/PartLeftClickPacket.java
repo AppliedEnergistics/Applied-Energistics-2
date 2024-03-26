@@ -1,7 +1,6 @@
 
 package appeng.core.network.serverbound;
 
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
@@ -9,9 +8,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 import appeng.api.parts.IPartHost;
+import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
 
 /**
@@ -21,8 +20,7 @@ import appeng.core.network.ServerboundPacket;
 public record PartLeftClickPacket(BlockHitResult hitResult, boolean alternateUseMode) implements ServerboundPacket {
     public static final StreamCodec<RegistryFriendlyByteBuf, PartLeftClickPacket> STREAM_CODEC = StreamCodec.ofMember(
             PartLeftClickPacket::write,
-            PartLeftClickPacket::decode
-    );
+            PartLeftClickPacket::decode);
 
     public static final Type<PartLeftClickPacket> TYPE = CustomAppEngPayload.createType("part_left_click");
 
@@ -45,7 +43,8 @@ public record PartLeftClickPacket(BlockHitResult hitResult, boolean alternateUse
     @Override
     public void handleOnServer(ServerPlayer player) {
         // Fire event on the server to give protection mods a chance to cancel the interaction
-        var evt = CommonHooks.onLeftClickBlock(player, hitResult.getBlockPos(), hitResult.getDirection(), ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK);
+        var evt = CommonHooks.onLeftClickBlock(player, hitResult.getBlockPos(), hitResult.getDirection(),
+                ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK);
         NeoForge.EVENT_BUS.post(evt);
         if (evt.isCanceled() || evt.getResult() == net.neoforged.bus.api.Event.Result.DENY) {
             return;

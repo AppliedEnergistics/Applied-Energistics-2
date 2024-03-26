@@ -19,7 +19,6 @@
 package appeng.api.util;
 
 import appeng.api.config.Setting;
-import appeng.api.util.IConfigManager;
 
 @FunctionalInterface
 public interface IConfigManagerListener {

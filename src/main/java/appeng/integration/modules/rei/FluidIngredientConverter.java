@@ -1,11 +1,9 @@
 package appeng.integration.modules.rei;
 
-import com.google.common.primitives.Ints;
-import dev.architectury.hooks.fluid.FluidStackHooks;
-import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
 import org.jetbrains.annotations.Nullable;
 
 import dev.architectury.fluid.FluidStack;
+import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.EntryType;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
@@ -24,7 +22,8 @@ public class FluidIngredientConverter implements IngredientConverter<FluidStack>
     @Override
     public EntryStack<FluidStack> getIngredientFromStack(GenericStack stack) {
         if (stack.what() instanceof AEFluidKey fluidKey) {
-            return EntryStack.of(getIngredientType(), FluidStackHooksForge.fromForge(fluidKey.toStack(1)).copyWithAmount(Math.max(1, stack.amount())));
+            return EntryStack.of(getIngredientType(),
+                    FluidStackHooksForge.fromForge(fluidKey.toStack(1)).copyWithAmount(Math.max(1, stack.amount())));
         } else {
             return null;
         }

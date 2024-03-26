@@ -26,14 +26,13 @@ import java.util.Objects;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 
 /**
  * A crafting plan intended to be sent to the client.

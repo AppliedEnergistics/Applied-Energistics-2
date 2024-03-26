@@ -21,9 +21,9 @@ package appeng.crafting.execution;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -87,7 +87,8 @@ public class ExecutingCraftingJob {
         this.playerId = playerId;
     }
 
-    ExecutingCraftingJob(CompoundTag data, HolderLookup.Provider registries, CraftingDifferenceListener postCraftingDifference, CraftingCpuLogic cpu) {
+    ExecutingCraftingJob(CompoundTag data, HolderLookup.Provider registries,
+            CraftingDifferenceListener postCraftingDifference, CraftingCpuLogic cpu) {
         this.link = new CraftingLink(data.getCompound(NBT_LINK), cpu.cluster);
         IGrid grid = cpu.cluster.getGrid();
         if (grid != null) {

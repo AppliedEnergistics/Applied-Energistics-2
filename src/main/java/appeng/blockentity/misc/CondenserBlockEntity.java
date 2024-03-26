@@ -39,7 +39,6 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.core.definitions.AEItems;
-import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
@@ -50,9 +49,9 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     public static final int BYTE_MULTIPLIER = 8;
 
     private final IConfigManager cm = IConfigManager.builder(() -> {
-                saveChanges();
-                addPower(0);
-            })
+        saveChanges();
+        addPower(0);
+    })
             .registerSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH)
             .build();
 

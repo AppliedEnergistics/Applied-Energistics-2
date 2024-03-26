@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import appeng.api.ids.AEComponents;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.EnumHashBiMap;
 
@@ -35,11 +34,11 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -66,7 +65,9 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
+import appeng.api.ids.AEComponents;
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
+import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
@@ -264,16 +265,10 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         }
 
         var availableItems = inv.getAvailableStacks();
-        AEItemKey paintItem = null;
         for (var what : availableItems.keySet()) {
-            if (what instanceof AEItemKey itemKey && getColorFromItem(itemKey.getItem()) == color) {
-                paintItem = itemKey;
-                break;
+            if (getColorFrom(what) == color) {
+                return consumeItem(applicator, what, simulate);
             }
-        }
-
-        if (paintItem != null) {
-            return consumeItem(applicator, paintItem, simulate);
         }
 
         return false;
@@ -301,43 +296,35 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         return success;
     }
 
-    private AEColor getColorFromItem(ItemStack paintBall) {
-        if (paintBall.isEmpty()) {
-            return null;
-        }
-
-        return getColorFromItem(paintBall.getItem());
-    }
-
     @Nullable
     private AEColor getColorFrom(AEKey key) {
         if (key instanceof AEItemKey itemKey) {
-            return getColorFromItem(itemKey.getItem());
-        }
-        return null;
-    }
+            var item = itemKey.getItem();
 
-    private AEColor getColorFromItem(Item paintBall) {
-        if (paintBall instanceof SnowballItem) {
-            return AEColor.TRANSPARENT;
-        }
+            if (item instanceof SnowballItem) {
+                return AEColor.TRANSPARENT;
+            }
 
-        if (paintBall instanceof PaintBallItem ipb) {
-            return ipb.getColor();
-        }
+            if (item instanceof PaintBallItem ipb) {
+                return ipb.getColor();
+            }
 
-        // Especially during startup when Vanilla builds it's search index, we don't have tags loaded yet
-        var vanillaDye = VANILLA_DYES.inverse().get(paintBall);
-        if (vanillaDye != null) {
-            return AEColor.fromDye(vanillaDye);
-        }
+            // Especially during startup when Vanilla builds it's search index, we don't have tags loaded yet
+            var vanillaDye = VANILLA_DYES.inverse().get(item);
+            if (vanillaDye != null) {
+                return AEColor.fromDye(vanillaDye);
+            }
 
-        for (var entry : TAG_TO_COLOR.entrySet()) {
-            if (paintBall.builtInRegistryHolder().is(entry.getKey())) {
-                return entry.getValue();
+            for (var entry : TAG_TO_COLOR.entrySet()) {
+                if (item.builtInRegistryHolder().is(entry.getKey())) {
+                    return entry.getValue();
+                }
+            }
+        } else if (key instanceof AEFluidKey fluidKey) {
+            if (fluidKey.isTagged(FluidTags.WATER)) {
+                return AEColor.TRANSPARENT;
             }
         }
-
         return null;
     }
 
@@ -486,10 +473,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     public boolean isBlackListed(ItemStack cellItem, AEKey requestedAddition) {
-        if (requestedAddition instanceof AEItemKey itemKey) {
-            return getColorFromItem(itemKey.getItem()) == null;
-        }
-        return true;
+        return getColorFrom(requestedAddition) == null;
     }
 
     @Override

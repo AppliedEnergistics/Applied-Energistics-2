@@ -1,16 +1,5 @@
 package appeng.client.guidebook.navigation;
 
-import appeng.client.guidebook.compiler.ParsedGuidePage;
-import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -18,6 +7,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+
+import appeng.client.guidebook.compiler.ParsedGuidePage;
 
 public class NavigationTree {
 
@@ -95,10 +97,10 @@ public class NavigationTree {
     }
 
     private static NavigationNode createNode(HashMap<ResourceLocation, NavigationNode> nodeIndex,
-                                             ArrayList<NavigationNode> rootNodes,
-                                             Map<ResourceLocation, Pair<ParsedGuidePage, List<ParsedGuidePage>>> pagesWithChildren,
-                                             ResourceLocation pageId,
-                                             Pair<ParsedGuidePage, List<ParsedGuidePage>> entry) {
+            ArrayList<NavigationNode> rootNodes,
+            Map<ResourceLocation, Pair<ParsedGuidePage, List<ParsedGuidePage>>> pagesWithChildren,
+            ResourceLocation pageId,
+            Pair<ParsedGuidePage, List<ParsedGuidePage>> entry) {
         var page = entry.getKey();
         var children = entry.getRight();
 
@@ -117,7 +119,8 @@ public class NavigationTree {
 
             if (navigationEntry.iconNbt() != null) {
                 var patch = DataComponentPatch.CODEC.parse(NbtOps.INSTANCE, navigationEntry.iconNbt())
-                        .resultOrPartial(err -> LOGGER.error("Failed to deserialize component patch {} for icon {}: {}", navigationEntry.iconNbt(), navigationEntry.iconItemId(), err));
+                        .resultOrPartial(err -> LOGGER.error("Failed to deserialize component patch {} for icon {}: {}",
+                                navigationEntry.iconNbt(), navigationEntry.iconItemId(), err));
                 icon = new ItemStack(iconItem, 1, patch.orElse(DataComponentPatch.EMPTY));
             } else {
                 icon = new ItemStack(iconItem);

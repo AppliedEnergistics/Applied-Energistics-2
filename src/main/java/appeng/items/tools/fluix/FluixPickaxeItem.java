@@ -18,7 +18,8 @@ import appeng.hooks.IntrinsicEnchantItem;
 
 public class FluixPickaxeItem extends PickaxeItem implements IntrinsicEnchantItem {
     public FluixPickaxeItem(Properties props) {
-        super(FluixToolType.FLUIX.getToolTier(), props.attributes(createAttributes(FluixToolType.FLUIX.getToolTier(), 1, -2.8F)));
+        super(FluixToolType.FLUIX.getToolTier(),
+                props.attributes(createAttributes(FluixToolType.FLUIX.getToolTier(), 1, -2.8F)));
     }
 
     @Override

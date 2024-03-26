@@ -23,17 +23,17 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import appeng.api.util.IConfigManagerListener;
-import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
 import appeng.api.config.Setting;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigManagerListener;
 import appeng.api.util.UnsupportedSettingException;
 
 public final class ConfigManager implements IConfigManager {

@@ -20,8 +20,6 @@ package appeng.items.materials;
 
 import java.util.List;
 
-import appeng.api.ids.AEComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -29,6 +27,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+import appeng.api.ids.AEComponents;
 import appeng.items.AEBaseItem;
 
 public class NamePressItem extends AEBaseItem {

@@ -46,8 +46,7 @@ public class SavedBlockEntity {
                 helper.absolutePos(BlockPos.ZERO),
                 blockState,
                 data,
-                helper.getLevel().registryAccess()
-                );
+                helper.getLevel().registryAccess());
         if (be == null) {
             helper.fail("Blockentity could not be restored", pos);
             return null;

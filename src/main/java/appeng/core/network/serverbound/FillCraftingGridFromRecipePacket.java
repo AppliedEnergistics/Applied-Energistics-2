@@ -7,15 +7,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import appeng.core.network.CustomAppEngPayload;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 
-import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -33,6 +32,7 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.core.AELog;
+import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.storage.ViewCellItem;
@@ -58,12 +58,13 @@ public record FillCraftingGridFromRecipePacket(
         NonNullList<ItemStack> ingredientTemplates,
         boolean craftMissing) implements ServerboundPacket {
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, FillCraftingGridFromRecipePacket> STREAM_CODEC = StreamCodec.ofMember(
-            FillCraftingGridFromRecipePacket::write,
-            FillCraftingGridFromRecipePacket::decode
-    );
+    public static final StreamCodec<RegistryFriendlyByteBuf, FillCraftingGridFromRecipePacket> STREAM_CODEC = StreamCodec
+            .ofMember(
+                    FillCraftingGridFromRecipePacket::write,
+                    FillCraftingGridFromRecipePacket::decode);
 
-    public static final Type<FillCraftingGridFromRecipePacket> TYPE = CustomAppEngPayload.createType("fill_crafting_grid_from_recipe");
+    public static final Type<FillCraftingGridFromRecipePacket> TYPE = CustomAppEngPayload
+            .createType("fill_crafting_grid_from_recipe");
 
     @Override
     public Type<FillCraftingGridFromRecipePacket> type() {

@@ -18,7 +18,8 @@ import appeng.hooks.IntrinsicEnchantItem;
 
 public class FluixSwordItem extends SwordItem implements IntrinsicEnchantItem {
     public FluixSwordItem(Properties props) {
-        super(FluixToolType.FLUIX.getToolTier(), props.attributes(createAttributes(FluixToolType.FLUIX.getToolTier(), 3, -2.4f)));
+        super(FluixToolType.FLUIX.getToolTier(),
+                props.attributes(createAttributes(FluixToolType.FLUIX.getToolTier(), 3, -2.4f)));
     }
 
     @Override

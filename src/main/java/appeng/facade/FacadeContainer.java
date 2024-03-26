@@ -21,10 +21,10 @@ package appeng.facade;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-import net.minecraft.core.HolderLookup;
 import org.apache.commons.lang3.StringUtils;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;

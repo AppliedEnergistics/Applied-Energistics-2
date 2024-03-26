@@ -1,7 +1,6 @@
 
 package appeng.core.network.clientbound;
 
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -11,12 +10,13 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 
 public record MockExplosionPacket(double x, double y, double z) implements ClientboundPacket {
+
     public static final StreamCodec<RegistryFriendlyByteBuf, MockExplosionPacket> STREAM_CODEC = StreamCodec.ofMember(
             MockExplosionPacket::write,
-            MockExplosionPacket::decode
-    );
+            MockExplosionPacket::decode);
 
     public static final Type<MockExplosionPacket> TYPE = CustomAppEngPayload.createType("mock_explosion");
 

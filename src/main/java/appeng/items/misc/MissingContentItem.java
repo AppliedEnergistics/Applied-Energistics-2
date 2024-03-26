@@ -1,10 +1,9 @@
 package appeng.items.misc;
 
-import appeng.api.ids.AEComponents;
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.AEKeyType;
-import appeng.api.stacks.AEKeyTypesInternal;
-import appeng.api.stacks.GenericStack;
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -12,9 +11,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import appeng.api.ids.AEComponents;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEKeyTypesInternal;
+import appeng.api.stacks.GenericStack;
 
 public class MissingContentItem extends Item {
     public MissingContentItem(Properties properties) {
@@ -75,8 +77,7 @@ public class MissingContentItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag
-            advanced) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag advanced) {
         super.appendHoverText(stack, level, lines, advanced);
 
     }

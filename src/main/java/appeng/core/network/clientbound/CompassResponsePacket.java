@@ -1,7 +1,6 @@
 
 package appeng.core.network.clientbound;
 
-import appeng.core.network.CustomAppEngPayload;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
@@ -9,6 +8,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
 
@@ -17,10 +17,10 @@ public record CompassResponsePacket(long attunement,
         int cz,
         int cdy,
         CompassResult cr) implements ClientboundPacket {
+
     public static final StreamCodec<RegistryFriendlyByteBuf, CompassResponsePacket> STREAM_CODEC = StreamCodec.ofMember(
             CompassResponsePacket::write,
-            CompassResponsePacket::decode
-    );
+            CompassResponsePacket::decode);
 
     public static final Type<CompassResponsePacket> TYPE = CustomAppEngPayload.createType("compass_response");
 

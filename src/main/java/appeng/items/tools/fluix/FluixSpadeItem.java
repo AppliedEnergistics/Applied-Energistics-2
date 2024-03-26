@@ -18,7 +18,8 @@ import appeng.hooks.IntrinsicEnchantItem;
 
 public class FluixSpadeItem extends ShovelItem implements IntrinsicEnchantItem {
     public FluixSpadeItem(Properties props) {
-        super(FluixToolType.FLUIX.getToolTier(), props.attributes(createAttributes(FluixToolType.FLUIX.getToolTier(), 1.5F, -3.0F)));
+        super(FluixToolType.FLUIX.getToolTier(),
+                props.attributes(createAttributes(FluixToolType.FLUIX.getToolTier(), 1.5F, -3.0F)));
     }
 
     @Override

@@ -20,19 +20,16 @@ package appeng.client.render.effects;
 
 import java.util.Locale;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import org.joml.Vector3f;
 
 import io.netty.buffer.ByteBuf;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleOptions.Deserializer;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 /**
  * Contains the target point of the lightning arc (the source point is inferred from the particle starting position).
@@ -41,8 +38,7 @@ public record LightningArcParticleData(Vector3f target) implements ParticleOptio
     public static final StreamCodec<ByteBuf, LightningArcParticleData> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VECTOR3F,
             d -> d.target,
-            LightningArcParticleData::new
-    );
+            LightningArcParticleData::new);
 
     public static final Deserializer<LightningArcParticleData> DESERIALIZER = (particleTypeIn, reader, provider) -> {
         reader.expect(' ');

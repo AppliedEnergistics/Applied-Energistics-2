@@ -23,16 +23,14 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
-import com.google.gson.JsonElement;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;

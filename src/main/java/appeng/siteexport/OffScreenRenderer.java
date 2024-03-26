@@ -12,7 +12,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexSorting;
 
 import org.joml.Matrix4f;
@@ -174,7 +173,7 @@ public class OffScreenRenderer implements AutoCloseable {
         FogRenderer.setupNoFog();
 
         poseStack.scale(1, -1, -1);
-        poseStack.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -180)) ;
+        poseStack.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -180));
 
         Quaternionf flip = new Quaternionf().rotationZ(Mth.DEG_TO_RAD * 180);
         flip.mul(new Quaternionf().rotationX(Mth.DEG_TO_RAD * angle));

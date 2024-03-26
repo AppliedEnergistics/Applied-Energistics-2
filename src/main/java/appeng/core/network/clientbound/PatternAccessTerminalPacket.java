@@ -1,8 +1,6 @@
 
 package appeng.core.network.clientbound;
 
-import appeng.core.network.CustomAppEngPayload;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -12,12 +10,13 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 
 /**
  * Sends the content for a single {@link appeng.helpers.patternprovider.PatternContainer} shown in the pattern access
@@ -31,16 +30,18 @@ public record PatternAccessTerminalPacket(
         PatternContainerGroup group, // Only valid if fullUpdate
         Int2ObjectMap<ItemStack> slots) implements ClientboundPacket {
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, PatternAccessTerminalPacket> STREAM_CODEC = StreamCodec.ofMember(
-            PatternAccessTerminalPacket::write,
-            PatternAccessTerminalPacket::decode
-    );
+    public static final StreamCodec<RegistryFriendlyByteBuf, PatternAccessTerminalPacket> STREAM_CODEC = StreamCodec
+            .ofMember(
+                    PatternAccessTerminalPacket::write,
+                    PatternAccessTerminalPacket::decode);
 
-    private static final StreamCodec<RegistryFriendlyByteBuf, Int2ObjectMap<ItemStack>> SLOTS_STREAM_CODEC = ByteBufCodecs.map(
-            Int2ObjectOpenHashMap::new, ByteBufCodecs.SHORT.map(Short::intValue, Integer::shortValue), ItemStack.OPTIONAL_STREAM_CODEC, 128
-    );
+    private static final StreamCodec<RegistryFriendlyByteBuf, Int2ObjectMap<ItemStack>> SLOTS_STREAM_CODEC = ByteBufCodecs
+            .map(
+                    Int2ObjectOpenHashMap::new, ByteBufCodecs.SHORT.map(Short::intValue, Integer::shortValue),
+                    ItemStack.OPTIONAL_STREAM_CODEC, 128);
 
-    public static final Type<PatternAccessTerminalPacket> TYPE = CustomAppEngPayload.createType("pattern_access_terminal");
+    public static final Type<PatternAccessTerminalPacket> TYPE = CustomAppEngPayload
+            .createType("pattern_access_terminal");
 
     @Override
     public Type<PatternAccessTerminalPacket> type() {

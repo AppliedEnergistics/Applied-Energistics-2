@@ -1,6 +1,8 @@
 
 package appeng.datagen.providers.recipes;
 
+import java.util.concurrent.CompletableFuture;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -25,8 +27,6 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.datagen.providers.tags.ConventionTags;
 import appeng.items.tools.powered.PortableCellItem;
-
-import java.util.concurrent.CompletableFuture;
 
 public class CraftingRecipes extends AE2RecipeProvider {
     public CraftingRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {

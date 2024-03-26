@@ -23,18 +23,11 @@ import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-import appeng.api.ids.AEComponents;
-import com.mojang.datafixers.util.Pair;
-
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.Util;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -55,6 +48,7 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.features.IGridLinkableHandler;
+import appeng.api.ids.AEComponents;
 import appeng.api.implementations.blockentities.IWirelessAccessPoint;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.networking.IGrid;
@@ -71,7 +65,6 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.common.MEStorageMenu;
-import appeng.util.ConfigManager;
 import appeng.util.Platform;
 
 public class WirelessTerminalItem extends PoweredContainerItem implements IMenuItem, IUpgradeableItem {
@@ -243,10 +236,10 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      */
     public IConfigManager getConfigManager(Supplier<ItemStack> target) {
         return IConfigManager.builder(target)
-            .registerSetting(Settings.SORT_BY, SortOrder.NAME)
-            .registerSetting(Settings.VIEW_MODE, ViewItems.ALL)
-            .registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING)
-            .build();
+                .registerSetting(Settings.SORT_BY, SortOrder.NAME)
+                .registerSetting(Settings.VIEW_MODE, ViewItems.ALL)
+                .registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING)
+                .build();
     }
 
     @Override

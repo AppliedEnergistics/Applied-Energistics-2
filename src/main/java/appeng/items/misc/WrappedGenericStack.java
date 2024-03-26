@@ -20,7 +20,6 @@ package appeng.items.misc;
 
 import java.util.Objects;
 
-import appeng.api.ids.AEComponents;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.SlotAccess;
@@ -33,6 +32,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
+import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.core.definitions.AEItems;
@@ -68,7 +68,7 @@ public class WrappedGenericStack extends AEBaseItem {
             return null;
         }
 
-        var wrapped  = stack.get(AEComponents.WRAPPED_STACK);
+        var wrapped = stack.get(AEComponents.WRAPPED_STACK);
 
         if (wrapped == null) {
             return null;
@@ -82,7 +82,7 @@ public class WrappedGenericStack extends AEBaseItem {
             return 0;
         }
 
-        var wrapped  = stack.get(AEComponents.WRAPPED_STACK);
+        var wrapped = stack.get(AEComponents.WRAPPED_STACK);
 
         if (wrapped == null) {
             return 0;

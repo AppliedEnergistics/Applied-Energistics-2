@@ -20,14 +20,12 @@ package appeng.block.networking;
 
 import java.util.Locale;
 
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -57,7 +55,6 @@ import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.WirelessAccessPointMenu;
 import appeng.menu.locator.MenuLocators;
-import appeng.util.InteractionUtil;
 
 public class WirelessAccessPointBlock extends AEBaseEntityBlock<WirelessAccessPointBlockEntity>
         implements SimpleWaterloggedBlock {
@@ -102,7 +99,8 @@ public class WirelessAccessPointBlock extends AEBaseEntityBlock<WirelessAccessPo
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
+            BlockHitResult hitResult) {
         var be = this.getBlockEntity(level, pos);
 
         if (be != null) {

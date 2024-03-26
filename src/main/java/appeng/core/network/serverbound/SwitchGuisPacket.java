@@ -1,15 +1,15 @@
 
 package appeng.core.network.serverbound;
 
-import appeng.core.network.CustomAppEngPayload;
-import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.MenuType;
 
+import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
@@ -19,8 +19,7 @@ public record SwitchGuisPacket(
         @Nullable MenuType<? extends ISubMenu> newGui) implements ServerboundPacket {
     public static final StreamCodec<RegistryFriendlyByteBuf, SwitchGuisPacket> STREAM_CODEC = StreamCodec.ofMember(
             SwitchGuisPacket::write,
-            SwitchGuisPacket::decode
-    );
+            SwitchGuisPacket::decode);
 
     public static final Type<SwitchGuisPacket> TYPE = CustomAppEngPayload.createType("switch_guis");
 

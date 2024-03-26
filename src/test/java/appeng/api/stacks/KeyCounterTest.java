@@ -32,12 +32,12 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.core.component.DataComponents;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;

@@ -1,9 +1,10 @@
 package appeng.init;
 
+import net.minecraft.core.cauldron.CauldronInteraction;
+
 import appeng.core.definitions.AEItems;
 import appeng.items.tools.MemoryCardItem;
 import appeng.items.tools.powered.AbstractPortableCell;
-import net.minecraft.core.cauldron.CauldronInteraction;
 
 public class InitCauldronInteraction {
     public static void init() {

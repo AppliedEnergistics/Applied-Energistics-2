@@ -37,7 +37,6 @@ import appeng.menu.MenuOpener;
 import appeng.menu.implementations.PatternAccessTermMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartModel;
-import appeng.util.ConfigManager;
 
 public class PatternAccessTerminalPart extends AbstractDisplayPart implements IPatternAccessTermMenuHost {
 
