@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.world.item.Item;
 
-import appeng.core.definitions.AEParts;
+import appeng.hooks.EnchantmentHooks;
 
 /**
  * Adds the ME Annihilation Plane to the items to check for when applying
@@ -17,7 +17,7 @@ import appeng.core.definitions.AEParts;
 public class AnnihilationPlaneEnchantmentMixin {
     @Inject(method = "canEnchant", at = @At("RETURN"), cancellable = true)
     public void enchantPlane(Item item, CallbackInfoReturnable<Boolean> cir) {
-        if (item == AEParts.ANNIHILATION_PLANE.asItem()) {
+        if (EnchantmentHooks.isDiggerEnchantable(item)) {
             cir.setReturnValue(true);
         }
     }
