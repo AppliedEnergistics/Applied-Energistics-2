@@ -38,8 +38,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.locale.Language;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
@@ -55,7 +53,6 @@ import appeng.api.config.ShowPatternProviders;
 import appeng.api.config.TerminalStyle;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ILinkStatus;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
@@ -207,7 +204,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
                         // Indicate invalid patterns
                         var pattern = container.getInventory().getStackInSlot(slotsRow.offset + col);
-                        if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level, false) == null) {
+                        if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level) == null) {
                             guiGraphics.fill(
                                     slot.x,
                                     slot.y,
@@ -543,26 +540,16 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             return false;
         }
 
-        final CompoundTag encodedValue = itemStack.getTag();
-
-        if (encodedValue == null) {
-            return false;
-        }
-
-        // Potential later use to filter by input
-        // ListNBT inTag = encodedValue.getTagList( "in", 10 );
-        final ListTag outTag = encodedValue.getList("out", 10);
-
-        for (int i = 0; i < outTag.size(); i++) {
-
-            var parsedItemStack = ItemStack.of(outTag.getCompound(i));
-            var itemKey = AEItemKey.of(parsedItemStack);
-            if (itemKey != null) {
-                var displayName = itemKey.getDisplayName().getString().toLowerCase();
+        // TODO 1.20.5 this needs an api for custom patterns that is based on the itemstack components
+        try {
+            var details = PatternDetailsHelper.decodePattern(itemStack, menu.getPlayer().level());
+            for (var output : details.getOutputs()) {
+                var displayName = output.what().getDisplayName().getString().toLowerCase(Locale.ROOT);
                 if (displayName.contains(searchTerm)) {
                     return true;
                 }
             }
+        } catch (Exception ignored) {
         }
         return false;
     }

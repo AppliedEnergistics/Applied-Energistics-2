@@ -26,6 +26,7 @@ import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -404,20 +405,24 @@ public class CraftingCpuLogic {
         }
     }
 
-    public void readFromNBT(CompoundTag data) {
-        this.inventory.readFromNBT(data.getList("inventory", 10));
+    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
+        this.inventory.readFromNBT(data.getList("inventory", 10), registries);
         if (data.contains("job")) {
-            this.job = new ExecutingCraftingJob(data.getCompound("job"), this::postChange, this);
-            cluster.updateOutput(new GenericStack(job.finalOutput.what(), job.remainingAmount));
+            this.job = new ExecutingCraftingJob(data.getCompound("job"), registries, this::postChange, this);
+            if (this.job.finalOutput == null) {
+                finishJob(false);
+            } else {
+                cluster.updateOutput(new GenericStack(job.finalOutput.what(), job.remainingAmount));
+            }
         } else {
             cluster.updateOutput(null);
         }
     }
 
-    public void writeToNBT(CompoundTag data) {
-        data.put("inventory", this.inventory.writeToNBT());
+    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
+        data.put("inventory", this.inventory.writeToNBT(registries));
         if (this.job != null) {
-            data.put("job", this.job.writeToNBT());
+            data.put("job", this.job.writeToNBT(registries));
         }
     }
 

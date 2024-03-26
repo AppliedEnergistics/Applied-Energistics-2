@@ -4,6 +4,7 @@
     "item": "minecraft:compass"
   },
   "result": {
-    "item": "ae2:meteorite_compass"
+    "count": 1,
+    "id": "ae2:meteorite_compass"
   }
 }

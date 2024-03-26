@@ -21,6 +21,7 @@
     "aba"
   ],
   "result": {
-    "item": "ae2:crafting_unit"
+    "count": 1,
+    "id": "ae2:crafting_unit"
   }
 }

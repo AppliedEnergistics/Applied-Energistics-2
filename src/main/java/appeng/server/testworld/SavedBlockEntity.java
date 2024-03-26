@@ -27,7 +27,7 @@ public class SavedBlockEntity {
             helper.fail("No BlockEntity", pos);
             return;
         }
-        data = be.saveWithId();
+        data = be.saveWithId(helper.getLevel().registryAccess());
     }
 
     public void saveAndRemove(BlockPos pos) {
@@ -45,7 +45,8 @@ public class SavedBlockEntity {
         var be = BlockEntity.loadStatic(
                 helper.absolutePos(BlockPos.ZERO),
                 blockState,
-                data);
+                data,
+                helper.getLevel().registryAccess());
         if (be == null) {
             helper.fail("Blockentity could not be restored", pos);
             return null;

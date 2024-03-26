@@ -87,15 +87,13 @@ import appeng.menu.interfaces.KeyTypeSelectionMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.RestrictedInputSlot;
-import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 
 /**
  * @see MEStorageScreen
  */
 public class MEStorageMenu extends AEBaseMenu
-        implements IConfigManagerListener, IConfigurableObject, IMEInteractionHandler, LinkStatusAwareMenu,
+        implements IConfigurableObject, IMEInteractionHandler, LinkStatusAwareMenu,
         KeyTypeSelectionMenu {
 
     public static final MenuType<MEStorageMenu> TYPE = MenuTypeBuilder
@@ -170,11 +168,12 @@ public class MEStorageMenu extends AEBaseMenu
             this.energySource = IEnergySource.empty();
         }
         this.storage = Objects.requireNonNull(host.getInventory(), "host inventory is null");
-        this.clientCM = new ConfigManager(this);
 
-        this.clientCM.registerSetting(Settings.SORT_BY, SortOrder.NAME);
-        this.clientCM.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        this.clientCM.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
+        this.clientCM = IConfigManager.builder(this::onSettingChanged)
+                .registerSetting(Settings.SORT_BY, SortOrder.NAME)
+                .registerSetting(Settings.VIEW_MODE, ViewItems.ALL)
+                .registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING)
+                .build();
 
         if (isServerSide()) {
             this.serverCM = host.getConfigManager();
@@ -271,7 +270,7 @@ public class MEStorageMenu extends AEBaseMenu
 
                 if (updateHelper.hasChanges()) {
                     var builder = MEInventoryUpdatePacket
-                            .builder(containerId, updateHelper.isFullUpdate());
+                            .builder(containerId, updateHelper.isFullUpdate(), getPlayer().registryAccess());
                     builder.setFilter(this::isKeyVisible);
                     builder.addChanges(updateHelper, availableStacks, craftables, requestables);
                     builder.buildAndSend(this::sendPacketToClient);
@@ -344,8 +343,7 @@ public class MEStorageMenu extends AEBaseMenu
         this.activeCraftingJobs = activeJobs;
     }
 
-    @Override
-    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
+    private void onSettingChanged(IConfigManager manager, Setting<?> setting) {
         if (this.getGui() != null) {
             this.getGui().run();
         }

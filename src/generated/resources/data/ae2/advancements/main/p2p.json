@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:me_p2p_tunnel"
-            ]
+            "items": "ae2:me_p2p_tunnel"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "achievement.ae2.P2P.desc"
     },
     "icon": {
-      "item": "ae2:me_p2p_tunnel"
+      "count": 1,
+      "id": "ae2:me_p2p_tunnel"
     },
     "title": {
       "translate": "achievement.ae2.P2P"

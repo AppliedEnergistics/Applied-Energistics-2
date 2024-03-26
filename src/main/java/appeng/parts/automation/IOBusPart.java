@@ -23,9 +23,9 @@ import java.util.Set;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -48,6 +48,7 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.ISubMenuHost;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigManagerBuilder;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
@@ -95,9 +96,13 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
         this.config = ConfigInventory.configTypes(63).supportedTypes(supportedKeyTypes)
                 .changeListener(this::updateState).build();
         getMainNode().addService(IGridTickable.class, this);
+    }
 
-        this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
-        this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+    @Override
+    protected void registerSettings(IConfigManagerBuilder builder) {
+        super.registerSettings(builder);
+        builder.registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
+        builder.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
     }
 
     @Override
@@ -130,18 +135,18 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     }
 
     @Override
-    public void readFromNBT(CompoundTag extra) {
-        super.readFromNBT(extra);
-        config.readFromChildTag(extra, "config");
+    public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
+        super.readFromNBT(extra, registries);
+        config.readFromChildTag(extra, "config", registries);
         // Ensure the filter is rebuilt
         filter = null;
         pendingPulse = isInPulseMode() && extra.getBoolean("pendingPulse");
     }
 
     @Override
-    public void writeToNBT(CompoundTag extra) {
-        super.writeToNBT(extra);
-        config.writeToChildTag(extra, "config");
+    public void writeToNBT(CompoundTag extra, HolderLookup.Provider registries) {
+        super.writeToNBT(extra, registries);
+        config.writeToChildTag(extra, "config", registries);
         if (isInPulseMode() && pendingPulse) {
             extra.putBoolean("pendingPulse", true);
         }
@@ -275,7 +280,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     }
 
     @Override
-    public final boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
+    public final boolean onUseWithoutItem(Player player, Vec3 pos) {
         if (!isClientSide()) {
             MenuOpener.open(getMenuType(), player, MenuLocators.forPart(this));
         }

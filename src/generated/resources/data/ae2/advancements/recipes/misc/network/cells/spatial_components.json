@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:engineering_processor"
-            ]
+            "items": "ae2:engineering_processor"
           }
         ]
       },
@@ -17,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:fluix_pearl"
-            ]
+            "items": "ae2:fluix_pearl"
           }
         ]
       },

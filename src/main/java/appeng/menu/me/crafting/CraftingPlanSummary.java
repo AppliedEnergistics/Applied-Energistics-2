@@ -26,7 +26,7 @@ import java.util.Objects;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
@@ -69,7 +69,7 @@ public class CraftingPlanSummary {
         return entries;
     }
 
-    public void write(FriendlyByteBuf buffer) {
+    public void write(RegistryFriendlyByteBuf buffer) {
         buffer.writeVarLong(usedBytes);
         buffer.writeBoolean(simulation);
         buffer.writeVarInt(entries.size());
@@ -78,7 +78,7 @@ public class CraftingPlanSummary {
         }
     }
 
-    public static CraftingPlanSummary read(FriendlyByteBuf buffer) {
+    public static CraftingPlanSummary read(RegistryFriendlyByteBuf buffer) {
 
         long bytesUsed = buffer.readVarLong();
         boolean simulation = buffer.readBoolean();

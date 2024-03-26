@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.behaviors.ExternalStorageStrategy;
@@ -43,8 +43,10 @@ public final class StackWorldBehaviors {
         registerExternalStorageStrategy(AEKeyType.fluids(), ForgeExternalStorageStrategy::createFluid);
         registerPlacementStrategy(AEKeyType.fluids(), FluidPlacementStrategy::new);
         registerPlacementStrategy(AEKeyType.items(), ItemPlacementStrategy::new);
-        registerPickupStrategy(AEKeyType.fluids(), FluidPickupStrategy::new);
-        registerPickupStrategy(AEKeyType.items(), ItemPickupStrategy::new);
+        registerPickupStrategy(AEKeyType.fluids(), (level, pos, side, host, enchantments,
+                owningPlayerId) -> new FluidPickupStrategy(level, pos, side, host, enchantments, owningPlayerId));
+        registerPickupStrategy(AEKeyType.items(), (level, pos, side, host, enchantments,
+                owningPlayerId) -> new ItemPickupStrategy(level, pos, side, host, enchantments, owningPlayerId));
     }
 
     private StackWorldBehaviors() {
@@ -155,7 +157,7 @@ public final class StackWorldBehaviors {
     }
 
     public static List<PickupStrategy> createPickupStrategies(ServerLevel level, BlockPos fromPos, Direction fromSide,
-            BlockEntity host, Map<Enchantment, Integer> enchantments, @Nullable UUID owningPlayerId) {
+            BlockEntity host, ItemEnchantments enchantments, @Nullable UUID owningPlayerId) {
         return pickupStrategies.getMap().values()
                 .stream()
                 .map(f -> f.create(level, fromPos, fromSide, host, enchantments, owningPlayerId))

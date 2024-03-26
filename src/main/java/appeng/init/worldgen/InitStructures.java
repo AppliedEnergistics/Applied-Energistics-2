@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
@@ -39,7 +39,7 @@ public final class InitStructures {
     private InitStructures() {
     }
 
-    public static void initDatagenStructures(BootstapContext<Structure> context) {
+    public static void initDatagenStructures(BootstrapContext<Structure> context) {
         var biomes = context.lookup(Registries.BIOME);
 
         context.register(
@@ -53,7 +53,7 @@ public final class InitStructures {
 
     }
 
-    public static void initDatagenStructureSets(BootstapContext<StructureSet> context) {
+    public static void initDatagenStructureSets(BootstrapContext<StructureSet> context) {
         var structures = context.lookup(Registries.STRUCTURE);
         var meteorite = structures.getOrThrow(MeteoriteStructure.KEY);
 

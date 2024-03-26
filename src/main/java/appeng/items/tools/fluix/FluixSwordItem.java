@@ -18,18 +18,19 @@ import appeng.hooks.IntrinsicEnchantItem;
 
 public class FluixSwordItem extends SwordItem implements IntrinsicEnchantItem {
     public FluixSwordItem(Properties props) {
-        super(FluixToolType.FLUIX.getToolTier(), 3, -2.4F, props);
+        super(FluixToolType.FLUIX.getToolTier(),
+                props.attributes(createAttributes(FluixToolType.FLUIX.getToolTier(), 3, -2.4f)));
     }
 
     @Override
     public int getIntrinsicEnchantLevel(ItemStack stack, Enchantment enchantment) {
-        return enchantment == Enchantments.MOB_LOOTING ? 1 : 0;
+        return enchantment == Enchantments.LOOTING ? 1 : 0;
     }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
             TooltipFlag isAdvanced) {
-        tooltipComponents.add(GuiText.IntrinsicEnchant.text(Enchantments.MOB_LOOTING.getFullname(1)));
+        tooltipComponents.add(GuiText.IntrinsicEnchant.text(Enchantments.LOOTING.getFullname(1)));
     }
 
     @Override

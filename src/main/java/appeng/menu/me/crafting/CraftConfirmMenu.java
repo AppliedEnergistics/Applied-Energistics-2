@@ -24,7 +24,7 @@ import java.util.concurrent.Future;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -406,7 +406,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
     // Helper to sync the crafting result error
     public record SyncableSubmitResult(@Nullable ICraftingSubmitResult result) implements PacketWritable {
-        public SyncableSubmitResult(FriendlyByteBuf data) {
+        public SyncableSubmitResult(RegistryFriendlyByteBuf data) {
             this(readFromPacket(data));
         }
 
@@ -417,7 +417,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
             return this == obj;
         }
 
-        private static ICraftingSubmitResult readFromPacket(FriendlyByteBuf data) {
+        private static ICraftingSubmitResult readFromPacket(RegistryFriendlyByteBuf data) {
             if (!data.readBoolean()) {
                 return null;
             }
@@ -445,7 +445,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
         }
 
         @Override
-        public void writeToPacket(FriendlyByteBuf data) {
+        public void writeToPacket(RegistryFriendlyByteBuf data) {
             if (result == null) {
                 data.writeBoolean(false);
                 return;

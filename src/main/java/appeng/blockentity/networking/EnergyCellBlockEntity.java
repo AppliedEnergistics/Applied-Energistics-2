@@ -22,18 +22,21 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.ids.AEComponents;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
@@ -141,35 +144,37 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     @Override
-    public void saveAdditional(CompoundTag data) {
-        super.saveAdditional(data);
+    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
+        super.saveAdditional(data, registries);
         data.putDouble("internalCurrentPower", this.stored.getAmount());
         data.putBoolean("neighborChangePending", this.neighborChangePending);
     }
 
     @Override
-    public void loadTag(CompoundTag data) {
-        super.loadTag(data);
+    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
+        super.loadTag(data, registries);
         this.stored.setStored(data.getDouble("internalCurrentPower"));
         this.neighborChangePending = data.getBoolean("neighborChangePending");
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
         super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            this.stored.setStored(input.getDouble("internalCurrentPower"));
+            var storedEnergy = input.get(AEComponents.STORED_ENERGY);
+            if (storedEnergy != null) {
+                this.stored.setStored(storedEnergy);
+            }
         }
     }
 
     @Override
-    public void exportSettings(SettingsFrom from, CompoundTag data, @Nullable Player player) {
+    public void exportSettings(SettingsFrom from, DataComponentMap.Builder data, @Nullable Player player) {
         super.exportSettings(from, data, player);
 
-        if (from == SettingsFrom.DISMANTLE_ITEM && this.stored.getAmount() > 0) {
-            data.putDouble("internalCurrentPower", this.stored.getAmount());
-            data.putDouble("internalMaxPower", this.stored.getMaximum()); // used for tool tip.
+        if (from == SettingsFrom.DISMANTLE_ITEM && stored.getAmount() > 0) {
+            data.set(AEComponents.STORED_ENERGY, stored.getAmount());
         }
     }
 

@@ -125,7 +125,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
         boolean hasChanged = forceUpdate;
         for (int x = 0; x < 9; x++) {
             var stack = this.craftingSlots[x].getItem();
-            if (!ItemStack.isSameItemSameTags(stack, recipeTestContainer.getItem(x))) {
+            if (!ItemStack.isSameItemSameComponents(stack, recipeTestContainer.getItem(x))) {
                 hasChanged = true;
                 recipeTestContainer.setItem(x, stack.copy());
             }

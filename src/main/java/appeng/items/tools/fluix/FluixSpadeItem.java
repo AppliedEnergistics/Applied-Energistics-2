@@ -18,18 +18,19 @@ import appeng.hooks.IntrinsicEnchantItem;
 
 public class FluixSpadeItem extends ShovelItem implements IntrinsicEnchantItem {
     public FluixSpadeItem(Properties props) {
-        super(FluixToolType.FLUIX.getToolTier(), 1.5F, -3.0F, props);
+        super(FluixToolType.FLUIX.getToolTier(),
+                props.attributes(createAttributes(FluixToolType.FLUIX.getToolTier(), 1.5F, -3.0F)));
     }
 
     @Override
     public int getIntrinsicEnchantLevel(ItemStack stack, Enchantment enchantment) {
-        return enchantment == Enchantments.BLOCK_FORTUNE ? 1 : 0;
+        return enchantment == Enchantments.FORTUNE ? 1 : 0;
     }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
             TooltipFlag isAdvanced) {
-        tooltipComponents.add(GuiText.IntrinsicEnchant.text(Enchantments.BLOCK_FORTUNE.getFullname(1)));
+        tooltipComponents.add(GuiText.IntrinsicEnchant.text(Enchantments.FORTUNE.getFullname(1)));
     }
 
     @Override

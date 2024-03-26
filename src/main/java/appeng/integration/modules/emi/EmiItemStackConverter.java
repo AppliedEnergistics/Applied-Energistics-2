@@ -8,7 +8,6 @@ import net.minecraft.world.item.Items;
 import dev.emi.emi.api.stack.EmiStack;
 
 import appeng.api.integrations.emi.EmiStackConverter;
-import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 
@@ -20,8 +19,8 @@ class EmiItemStackConverter implements EmiStackConverter {
 
     @Override
     public @Nullable EmiStack toEmiStack(GenericStack stack) {
-        if (stack.what() instanceof AEFluidKey fluidKey) {
-            return EmiStack.of(fluidKey.getFluid(), fluidKey.copyTag(), stack.amount());
+        if (stack.what() instanceof AEItemKey itemKey) {
+            return EmiStack.of(itemKey.getReadOnlyStack()).setAmount(stack.amount());
         }
         return null;
     }
@@ -30,7 +29,7 @@ class EmiItemStackConverter implements EmiStackConverter {
     public @Nullable GenericStack toGenericStack(EmiStack stack) {
         var item = stack.getKeyOfType(Item.class);
         if (item != null && item != Items.AIR) {
-            var itemKey = AEItemKey.of(item, stack.getNbt());
+            var itemKey = AEItemKey.of(stack.getItemStack());
             return new GenericStack(itemKey, stack.getAmount());
         }
         return null;

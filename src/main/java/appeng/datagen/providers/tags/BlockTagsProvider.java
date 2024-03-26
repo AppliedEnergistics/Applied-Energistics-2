@@ -49,7 +49,7 @@ public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implem
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags(HolderLookup.Provider registries) {
         // Black- and whitelist tags
         tag(AETags.SPATIAL_BLACKLIST)
                 .add(Blocks.BEDROCK)

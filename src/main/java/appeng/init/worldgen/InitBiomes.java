@@ -19,7 +19,7 @@
 package appeng.init.worldgen;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
@@ -32,7 +32,7 @@ public final class InitBiomes {
     private InitBiomes() {
     }
 
-    public static void init(BootstapContext<Biome> context) {
+    public static void init(BootstrapContext<Biome> context) {
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         var configuredCarvers = context.lookup(Registries.CONFIGURED_CARVER);
 

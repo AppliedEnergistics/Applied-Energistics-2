@@ -45,10 +45,12 @@ import appeng.api.crafting.PatternDetailsTooltip;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AmountFormat;
+import appeng.api.stacks.GenericStack;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
+import appeng.items.misc.MissingContentItem;
 import appeng.items.misc.WrappedGenericStack;
 import appeng.util.InteractionUtil;
 
@@ -120,7 +122,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag flags) {
         var what = AEItemKey.of(stack);
-        if (what == null || what.getTag() == null) {
+        if (what == null) {
             // This can be called very early to index tooltips for search. In those cases,
             // there is no encoded pattern present.
             return;
@@ -133,7 +135,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
         } catch (Exception e) {
             lines.add(GuiText.InvalidPattern.text().copy().withStyle(ChatFormatting.RED));
             if (invalidPatternTooltip != null) {
-                tooltip = invalidPatternTooltip.getTooltip(stack.getTag(), level, e, flags);
+                tooltip = invalidPatternTooltip.getTooltip(stack, level, e, flags);
             } else {
                 tooltip = null;
             }
@@ -148,13 +150,13 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
 
             boolean first = true;
             for (var output : tooltip.getOutputs()) {
-                lines.add(Component.empty().append(first ? label : and).append(getEntryLine(output)));
+                lines.add(Component.empty().append(first ? label : and).append(getTooltipEntryLine(output)));
                 first = false;
             }
 
             first = true;
             for (var input : tooltip.getInputs()) {
-                lines.add(Component.empty().append(first ? with : and).append(getEntryLine(input)));
+                lines.add(Component.empty().append(first ? with : and).append(getTooltipEntryLine(input)));
                 first = false;
             }
 
@@ -170,17 +172,20 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
         }
     }
 
-    protected static Component getEntryLine(PatternDetailsTooltip.Entry entry) {
-        if (entry instanceof PatternDetailsTooltip.ValidEntry validEntry) {
-            return getEntryLine(validEntry.what().getDisplayName(), validEntry.what().getType(), validEntry.amount());
-        } else if (entry instanceof PatternDetailsTooltip.InvalidEntry invalidEntry) {
-            return getEntryLine(invalidEntry.name(), invalidEntry.type(), invalidEntry.amount());
-        } else {
-            throw new IncompatibleClassChangeError("Unknown entry type: " + entry.getClass());
+    protected static Component getTooltipEntryLine(GenericStack stack) {
+        if (stack.what() instanceof AEItemKey itemKey
+                && itemKey.getReadOnlyStack().getItem() instanceof MissingContentItem missingContentItem) {
+            var brokenStackInfo = missingContentItem.getBrokenStackInfo(itemKey.getReadOnlyStack());
+            if (brokenStackInfo != null) {
+                return getTooltipEntryLine(brokenStackInfo.displayName().copy().withStyle(ChatFormatting.RED),
+                        brokenStackInfo.keyType(), brokenStackInfo.amount());
+            }
         }
+
+        return getTooltipEntryLine(stack.what().getDisplayName(), stack.what().getType(), stack.amount());
     }
 
-    protected static Component getEntryLine(Component displayName, @Nullable AEKeyType amountType, long amount) {
+    protected static Component getTooltipEntryLine(Component displayName, @Nullable AEKeyType amountType, long amount) {
         if (amount > 0) {
             var amountInfo = Component.literal(amountType != null ? amountType.formatAmount(amount, AmountFormat.FULL)
                     : String.valueOf(amount));
@@ -225,7 +230,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
 
     @Nullable
     public IPatternDetails decode(ItemStack stack, Level level) {
-        if (stack.getItem() != this || !stack.hasTag() || level == null) {
+        if (stack.getItem() != this || level == null) {
             return null;
         }
 
@@ -239,7 +244,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
 
     @Nullable
     public IPatternDetails decode(AEItemKey what, Level level) {
-        if (what == null || !what.hasTag()) {
+        if (what == null) {
             return null;
         }
 

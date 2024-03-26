@@ -20,7 +20,6 @@ package appeng.block.crafting;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -37,7 +36,6 @@ import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.crafting.CraftingCPUMenu;
-import appeng.util.InteractionUtil;
 
 public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> extends AEBaseEntityBlock<T> {
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
@@ -92,20 +90,16 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player p, InteractionHand hand,
-            BlockHitResult hit) {
-        final CraftingBlockEntity tg = this.getBlockEntity(level, pos);
-
-        if (tg != null && !InteractionUtil.isInAlternateUseMode(p) && tg.isFormed() && tg.isActive()) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
+            BlockHitResult hitResult) {
+        if (level.getBlockEntity(pos) instanceof CraftingBlockEntity be && be.isFormed() && be.isActive()) {
             if (!level.isClientSide()) {
-                hit.getDirection();
-                MenuOpener.open(CraftingCPUMenu.TYPE, p,
-                        MenuLocators.forBlockEntity(tg));
+                MenuOpener.open(CraftingCPUMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
 
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return super.use(state, level, pos, p, hand, hit);
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 }

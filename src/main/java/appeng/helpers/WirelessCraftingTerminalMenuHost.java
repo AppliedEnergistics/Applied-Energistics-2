@@ -7,7 +7,9 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 
+import appeng.api.ids.AEComponents;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.items.contents.StackDependentSupplier;
@@ -46,7 +48,7 @@ public class WirelessCraftingTerminalMenuHost<T extends WirelessCraftingTerminal
         var craftingGrid = new AppEngInternalInventory(new InternalInventoryHost() {
             @Override
             public void saveChangedInventory(AppEngInternalInventory inv) {
-                inv.writeToNBT(stack.getOrCreateTag(), "craftingGrid");
+                stack.set(AEComponents.CRAFTING_INV, inv.toItemContainerContents());
             }
 
             @Override
@@ -54,9 +56,8 @@ public class WirelessCraftingTerminalMenuHost<T extends WirelessCraftingTerminal
                 return player.level().isClientSide();
             }
         }, 9);
-        if (stack.getTag() != null) {
-            craftingGrid.readFromNBT(stack.getTag(), "craftingGrid");
-        }
+        craftingGrid
+                .fromItemContainerContents(stack.getOrDefault(AEComponents.CRAFTING_INV, ItemContainerContents.EMPTY));
         return craftingGrid;
     }
 }

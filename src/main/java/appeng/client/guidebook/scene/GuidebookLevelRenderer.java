@@ -80,9 +80,9 @@ public class GuidebookLevelRenderer {
         RenderSystem.setShaderFogShape(FogShape.SPHERE);
 
         var modelViewStack = RenderSystem.getModelViewStack();
-        modelViewStack.pushPose();
-        modelViewStack.setIdentity();
-        modelViewStack.mulPoseMatrix(viewMatrix);
+        modelViewStack.pushMatrix();
+        modelViewStack.identity();
+        modelViewStack.mul(viewMatrix);
         RenderSystem.applyModelViewMatrix();
         RenderSystem.backupProjectionMatrix();
         RenderSystem.setProjectionMatrix(projectionMatrix, VertexSorting.ORTHOGRAPHIC_Z);
@@ -99,7 +99,7 @@ public class GuidebookLevelRenderer {
 
         InWorldAnnotationRenderer.render(buffers, annotations);
 
-        modelViewStack.popPose();
+        modelViewStack.popMatrix();
         RenderSystem.applyModelViewMatrix();
         RenderSystem.restoreProjectionMatrix();
 

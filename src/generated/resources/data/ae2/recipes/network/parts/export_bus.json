@@ -17,6 +17,7 @@
     " c "
   ],
   "result": {
-    "item": "ae2:export_bus"
+    "count": 1,
+    "id": "ae2:export_bus"
   }
 }

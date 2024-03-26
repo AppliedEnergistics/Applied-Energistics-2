@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:calculation_processor_press"
-            ]
+            "items": "ae2:calculation_processor_press"
           }
         ]
       },
@@ -17,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:engineering_processor_press"
-            ]
+            "items": "ae2:engineering_processor_press"
           }
         ]
       },
@@ -29,9 +25,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:logic_processor_press"
-            ]
+            "items": "ae2:logic_processor_press"
           }
         ]
       },
@@ -41,9 +35,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:silicon_press"
-            ]
+            "items": "ae2:silicon_press"
           }
         ]
       },
@@ -55,7 +47,8 @@
       "translate": "achievement.ae2.Presses.desc"
     },
     "icon": {
-      "item": "ae2:logic_processor_press"
+      "count": 1,
+      "id": "ae2:logic_processor_press"
     },
     "title": {
       "translate": "achievement.ae2.Presses"

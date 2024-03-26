@@ -48,6 +48,7 @@ configurations {
 }
 
 repositories {
+    mavenLocal()
     maven {
         url "https://maven.shedaniel.me/"
         content {
@@ -155,7 +156,7 @@ dependencies {
         compileOnly("mcjty.theoneprobe:theoneprobe:${project.top_version}")
     }
 
-    if (project.runtime_curio) {
+    if (project.runtime_curio == "true") {
         runtimeOnly("top.theillusivec4.curios:curios-neoforge:${project.curios_version}")
     }
 
@@ -403,6 +404,7 @@ processResources {
     inputs.property("version", project.version)
     inputs.property("minecraft_version", project.minecraft_version_range)
     inputs.property("neoforge_version", project.neoforge_version)
+    inputs.property("neoforge_version_range", project.neoforge_version_range)
     inputs.property("top_version", project.top_version)
     inputs.property("jade_version", project.jade_version_range)
 

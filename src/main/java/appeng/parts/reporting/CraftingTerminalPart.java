@@ -20,6 +20,7 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -74,15 +75,15 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public void readFromNBT(CompoundTag data) {
-        super.readFromNBT(data);
-        this.craftingGrid.readFromNBT(data, "craftingGrid");
+    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
+        super.readFromNBT(data, registries);
+        this.craftingGrid.readFromNBT(data, "craftingGrid", registries);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data) {
-        super.writeToNBT(data);
-        this.craftingGrid.writeToNBT(data, "craftingGrid");
+    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
+        super.writeToNBT(data, registries);
+        this.craftingGrid.writeToNBT(data, "craftingGrid", registries);
     }
 
     @Override

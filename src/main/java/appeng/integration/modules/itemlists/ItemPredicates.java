@@ -2,6 +2,7 @@ package appeng.integration.modules.itemlists;
 
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.ids.AEComponents;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
@@ -35,6 +36,7 @@ public final class ItemPredicates {
 
     private static boolean isInternal(ItemStack stack) {
         return AEItems.WRAPPED_GENERIC_STACK.isSameAs(stack)
+                || AEItems.MISSING_CONTENT.isSameAs(stack)
                 || isBrokenFacade(stack) // REI will add a broken facade with no NBT
                 || AEBlocks.CABLE_BUS.isSameAs(stack)
                 || AEBlocks.MATRIX_FRAME.isSameAs(stack)
@@ -42,7 +44,7 @@ public final class ItemPredicates {
     }
 
     private static boolean isBrokenFacade(ItemStack stack) {
-        return stack.getItem() instanceof FacadeItem && !stack.hasTag();
+        return stack.getItem() instanceof FacadeItem && !stack.has(AEComponents.FACADE_ITEM);
     }
 
     private static boolean isFacade(ItemStack stack) {

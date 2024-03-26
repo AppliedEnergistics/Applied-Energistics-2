@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "ae2:all_fluix"
+            "items": "#ae2:all_fluix"
           }
         ]
       },
@@ -15,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:fluix_glass_cable"
-            ]
+            "items": "ae2:fluix_glass_cable"
           }
         ]
       },
@@ -27,9 +25,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:terminal"
-            ]
+            "items": "ae2:terminal"
           }
         ]
       },

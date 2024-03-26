@@ -14,6 +14,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
@@ -33,6 +35,10 @@ public class TransformCircumstance {
         case "fluid" -> FLUID_CODEC;
         default -> throw new IllegalStateException("Invalid type: " + type);
     });
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, TransformCircumstance> STREAM_CODEC = StreamCodec.ofMember(
+            TransformCircumstance::toNetwork,
+            TransformCircumstance::fromNetwork);
 
     private final String type;
 

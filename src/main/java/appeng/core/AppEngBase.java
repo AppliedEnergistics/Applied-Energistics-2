@@ -53,6 +53,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
+import appeng.api.ids.AEComponents;
 import appeng.api.parts.CableRenderMode;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypes;
@@ -121,6 +122,7 @@ public abstract class AppEngBase implements AppEng {
         }
         INSTANCE = this;
 
+        AEComponents.DR.register(modEventBus);
         modEventBus.addListener(this::registerRegistries);
         modEventBus.addListener(MainCreativeTab::initExternal);
         modEventBus.addListener(InitNetwork::init);

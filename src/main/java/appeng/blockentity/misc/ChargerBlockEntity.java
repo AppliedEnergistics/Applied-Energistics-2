@@ -19,7 +19,6 @@
 package appeng.blockentity.misc;
 
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -27,9 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -48,7 +45,6 @@ import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.RelativeSide;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.settings.TickRates;
@@ -84,7 +80,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     }
 
     @Override
-    protected boolean readFromStream(FriendlyByteBuf data) {
+    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
         var changed = super.readFromStream(data);
 
         this.working = data.readBoolean();
@@ -100,7 +96,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     }
 
     @Override
-    protected void writeToStream(FriendlyByteBuf data) {
+    protected void writeToStream(RegistryFriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(working);
         var is = AEItemKey.of(this.inv.getStackInSlot(0));
@@ -129,26 +125,6 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
         });
 
         this.markForUpdate();
-    }
-
-    public void activate(Player player) {
-        if (!Platform.hasPermissions(new DimensionalBlockPos(this), player)) {
-            return;
-        }
-
-        var myItem = this.inv.getStackInSlot(0);
-        if (myItem.isEmpty()) {
-            ItemStack held = player.getInventory().getSelected();
-
-            if (ChargerRecipes.findRecipe(level, held) != null || Platform.isChargeable(held)) {
-                held = player.getInventory().removeItem(player.getInventory().selected, 1);
-                this.inv.setItemDirect(0, held);
-            }
-        } else {
-            var drops = List.of(myItem);
-            this.inv.setItemDirect(0, ItemStack.EMPTY);
-            Platform.spawnDrops(player.level(), this.worldPosition.relative(this.getFront()), drops);
-        }
     }
 
     @Override
@@ -212,8 +188,8 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
                 if (level != null && level.getRandom().nextFloat() > 0.8f) {
                     this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-                    Item charged = Objects.requireNonNull(ChargerRecipes.findRecipe(level, myItem)).result;
-                    this.inv.setItemDirect(0, new ItemStack(charged));
+                    var charged = Objects.requireNonNull(ChargerRecipes.findRecipe(level, myItem)).result;
+                    this.inv.setItemDirect(0, charged.copy());
 
                     changed = true;
                 }

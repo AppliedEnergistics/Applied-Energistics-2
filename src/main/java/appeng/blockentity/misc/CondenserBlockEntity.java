@@ -19,6 +19,7 @@
 package appeng.blockentity.misc;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -38,7 +39,6 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.core.definitions.AEItems;
-import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
@@ -48,10 +48,12 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     public static final int BYTE_MULTIPLIER = 8;
 
-    private final ConfigManager cm = new ConfigManager(() -> {
+    private final IConfigManager cm = IConfigManager.builder(() -> {
         saveChanges();
         addPower(0);
-    });
+    })
+            .registerSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH)
+            .build();
 
     private final AppEngInternalInventory outputSlot = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory storageSlot = new AppEngInternalInventory(this, 1);
@@ -74,20 +76,19 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     public CondenserBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
-        this.cm.registerSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH);
     }
 
     @Override
-    public void saveAdditional(CompoundTag data) {
-        super.saveAdditional(data);
-        this.cm.writeToNBT(data);
+    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
+        super.saveAdditional(data, registries);
+        this.cm.writeToNBT(data, registries);
         data.putDouble("storedPower", this.getStoredPower());
     }
 
     @Override
-    public void loadTag(CompoundTag data) {
-        super.loadTag(data);
-        this.cm.readFromNBT(data);
+    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
+        super.loadTag(data, registries);
+        this.cm.readFromNBT(data, registries);
         this.setStoredPower(data.getDouble("storedPower"));
     }
 

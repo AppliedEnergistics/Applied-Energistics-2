@@ -84,14 +84,13 @@ public class LytTransformRecipe extends LytRecipeBox {
             }
             context.renderFluid(
                     fluid,
-                    null,
                     bounds.x() + paddingLeft,
                     bounds.y() + 4,
                     0,
                     8,
                     8);
             context.renderText(
-                    "Throw in " + Platform.getFluidDisplayName(fluid, null).getString(),
+                    "Throw in " + Platform.getFluidDisplayName(fluid).getString(),
                     DefaultStyles.CRAFTING_RECIPE_TYPE.mergeWith(DefaultStyles.BASE_STYLE),
                     bounds.x() + paddingLeft + 10,
                     bounds.y() + 4);

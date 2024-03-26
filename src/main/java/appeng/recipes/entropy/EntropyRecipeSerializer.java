@@ -20,7 +20,8 @@ package appeng.recipes.entropy;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> {
@@ -36,18 +37,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
     }
 
     @Override
-    public EntropyRecipe fromNetwork(FriendlyByteBuf buffer) {
-        var mode = buffer.readEnum(EntropyMode.class);
-        var input = EntropyRecipe.Input.fromNetwork(buffer);
-        var output = EntropyRecipe.Output.fromNetwork(buffer);
-        return new EntropyRecipe(mode, input, output);
+    public StreamCodec<RegistryFriendlyByteBuf, EntropyRecipe> streamCodec() {
+        return EntropyRecipe.STREAM_CODEC;
     }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer, EntropyRecipe recipe) {
-        buffer.writeEnum(recipe.getMode());
-        EntropyRecipe.Input.toNetwork(buffer, recipe.getInput());
-        EntropyRecipe.Output.toNetwork(buffer, recipe.getOutput());
-    }
-
 }

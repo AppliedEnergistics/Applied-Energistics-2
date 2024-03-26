@@ -22,6 +22,7 @@ import com.google.common.math.IntMath;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
@@ -77,16 +78,16 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Ser
     }
 
     @Override
-    public void loadTag(CompoundTag data) {
-        super.loadTag(data);
+    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
+        super.loadTag(data, registries);
         if (data.contains("generationRate", Tag.TAG_INT)) {
             generationRate = data.getInt("generationRate");
         }
     }
 
     @Override
-    public void saveAdditional(CompoundTag data) {
-        super.saveAdditional(data);
+    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
+        super.saveAdditional(data, registries);
         data.putInt("generationRate", generationRate);
     }
 

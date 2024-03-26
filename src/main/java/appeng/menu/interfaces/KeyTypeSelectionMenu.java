@@ -7,6 +7,7 @@ import java.util.Map;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 import appeng.api.stacks.AEKeyType;
 import appeng.api.util.KeyTypeSelection;
@@ -44,13 +45,13 @@ public interface KeyTypeSelectionMenu {
             this(new LinkedHashMap<>());
         }
 
-        public SyncedKeyTypes(FriendlyByteBuf buf) {
+        public SyncedKeyTypes(RegistryFriendlyByteBuf buf) {
             this(buf.<AEKeyType, Boolean, Map<AEKeyType, Boolean>>readMap(LinkedHashMap::new,
                     b -> AEKeyType.fromRawId(b.readVarInt()), FriendlyByteBuf::readBoolean));
         }
 
         @Override
-        public void writeToPacket(FriendlyByteBuf buf) {
+        public void writeToPacket(RegistryFriendlyByteBuf buf) {
             buf.writeMap(
                     keyTypes,
                     (b, keyType) -> b.writeVarInt(keyType.getRawId()),

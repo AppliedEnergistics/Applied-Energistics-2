@@ -22,6 +22,7 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -102,14 +103,14 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     }
 
     @Override
-    public void readFromNBT(CompoundTag tag) {
-        super.readFromNBT(tag);
+    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
+        super.readFromNBT(tag, registries);
         this.power = tag.getInt("power");
     }
 
     @Override
-    public void writeToNBT(CompoundTag tag) {
-        super.writeToNBT(tag);
+    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries) {
+        super.writeToNBT(tag, registries);
         tag.putInt("power", this.power);
     }
 
@@ -131,9 +132,9 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
                     srcSide = Direction.UP;
                 }
 
-                this.power = b.getSignal(state, this.getBlockEntity().getLevel(), target, srcSide);
+                this.power = state.getSignal(this.getBlockEntity().getLevel(), target, srcSide);
                 this.power = Math.max(this.power,
-                        b.getSignal(state, this.getBlockEntity().getLevel(), target, srcSide));
+                        state.getSignal(this.getBlockEntity().getLevel(), target, srcSide));
                 this.sendToOutput(this.power);
             } else {
                 this.sendToOutput(0);

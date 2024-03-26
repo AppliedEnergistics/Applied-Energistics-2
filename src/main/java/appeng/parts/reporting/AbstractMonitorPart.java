@@ -23,11 +23,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -47,7 +49,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.client.render.BlockEntityRenderHelper;
 import appeng.core.localization.PlayerMessages;
-import appeng.util.Platform;
+import appeng.util.InteractionUtil;
 
 /**
  * A basic subclass for any item monitor like display with an item icon and an amount.
@@ -117,31 +119,31 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public void readFromNBT(CompoundTag data) {
-        super.readFromNBT(data);
+    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
+        super.readFromNBT(data, registries);
 
         this.isLocked = data.getBoolean("isLocked");
 
         if (data.contains("configuredItem", Tag.TAG_COMPOUND)) {
-            this.configuredItem = AEKey.fromTagGeneric(data.getCompound("configuredItem"));
+            this.configuredItem = AEKey.fromTagGeneric(registries, data.getCompound("configuredItem"));
         } else {
             this.configuredItem = null;
         }
     }
 
     @Override
-    public void writeToNBT(CompoundTag data) {
-        super.writeToNBT(data);
+    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
+        super.writeToNBT(data, registries);
 
         data.putBoolean("isLocked", this.isLocked);
 
         if (this.configuredItem != null) {
-            data.put("configuredItem", this.configuredItem.toTagGeneric());
+            data.put("configuredItem", this.configuredItem.toTagGeneric(registries));
         }
     }
 
     @Override
-    public void writeToStream(FriendlyByteBuf data) {
+    public void writeToStream(RegistryFriendlyByteBuf data) {
         super.writeToStream(data);
 
         data.writeBoolean(this.isLocked);
@@ -154,7 +156,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean readFromStream(FriendlyByteBuf data) {
+    public boolean readFromStream(RegistryFriendlyByteBuf data) {
         boolean needRedraw = super.readFromStream(data);
 
         var isLocked = data.readBoolean();
@@ -191,63 +193,54 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
-        if (isClientSide()) {
-            return true;
-        }
-
-        if (!this.getMainNode().isActive()) {
-            return false;
-        }
-
-        if (!Platform.hasPermissions(this.getHost().getLocation(), player)) {
-            return false;
-        }
-
-        if (!this.isLocked) {
-            var eq = player.getItemInHand(hand);
-            if (AEItemKey.matches(this.configuredItem, eq)) {
-                // Already matches: try to swap to key contained in the item.
-                var containedStack = ContainerItemStrategies.getContainedStack(eq);
-                if (containedStack != null) {
-                    this.configuredItem = containedStack.what();
-                }
-            } else {
-                this.configuredItem = AEItemKey.of(eq);
+    public boolean onUseWithoutItem(Player player, Vec3 pos) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
+            if (isClientSide()) {
+                return true;
             }
-            this.configureWatchers();
-            this.getHost().markForSave();
-            this.getHost().markForUpdate();
-        } else {
-            return super.onPartActivate(player, hand, pos);
-        }
 
-        return true;
-    }
+            if (!this.getMainNode().isActive()) {
+                return false;
+            }
 
-    @Override
-    public boolean onPartShiftActivate(Player player, InteractionHand hand, Vec3 pos) {
-        if (isClientSide()) {
-            return true;
-        }
-
-        if (!this.getMainNode().isActive()) {
-            return false;
-        }
-
-        if (!Platform.hasPermissions(this.getHost().getLocation(), player)) {
-            return false;
-        }
-
-        if (player.getItemInHand(hand).isEmpty()) {
             this.isLocked = !this.isLocked;
             player.displayClientMessage(
                     (this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).text(), true);
             this.getHost().markForSave();
             this.getHost().markForUpdate();
+            return true;
         }
 
-        return true;
+        return super.onUseWithoutItem(player, pos);
+    }
+
+    @Override
+    public boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos) {
+        if (!this.isLocked) {
+            if (isClientSide()) {
+                return true;
+            }
+
+            if (!this.getMainNode().isActive()) {
+                return false;
+            }
+
+            if (AEItemKey.matches(this.configuredItem, heldItem)) {
+                // Already matches: try to swap to key contained in the item.
+                var containedStack = ContainerItemStrategies.getContainedStack(heldItem);
+                if (containedStack != null) {
+                    this.configuredItem = containedStack.what();
+                }
+            } else {
+                this.configuredItem = AEItemKey.of(heldItem);
+            }
+            this.configureWatchers();
+            this.getHost().markForSave();
+            this.getHost().markForUpdate();
+            return true;
+        }
+
+        return super.onUseWithoutItem(player, pos);
     }
 
     // update the system...

@@ -18,8 +18,11 @@
 
 package appeng.parts.encoding;
 
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -162,11 +165,11 @@ public class PatternEncodingLogic implements InternalInventoryHost {
         encodedOutputInv.clear();
     }
 
-    private static void fillInventoryFromSparseStacks(ConfigInventory inv, GenericStack[] stacks) {
+    private static void fillInventoryFromSparseStacks(ConfigInventory inv, List<GenericStack> stacks) {
         inv.beginBatch();
         try {
             for (int i = 0; i < inv.size(); i++) {
-                inv.setStack(i, i < stacks.length ? stacks[i] : null);
+                inv.setStack(i, i < stacks.size() ? stacks.get(i) : null);
             }
         } finally {
             inv.endBatch();
@@ -243,7 +246,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
         return encodedPatternInv;
     }
 
-    public void readFromNBT(CompoundTag data) {
+    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
         isLoading = true;
         try {
             try {
@@ -260,27 +263,27 @@ public class PatternEncodingLogic implements InternalInventoryHost {
                 this.stonecuttingRecipeId = null;
             }
 
-            blankPatternInv.readFromNBT(data, "blankPattern");
-            encodedPatternInv.readFromNBT(data, "encodedPattern");
+            blankPatternInv.readFromNBT(data, "blankPattern", registries);
+            encodedPatternInv.readFromNBT(data, "encodedPattern", registries);
 
-            encodedInputInv.readFromChildTag(data, "encodedInputs");
-            encodedOutputInv.readFromChildTag(data, "encodedOutputs");
+            encodedInputInv.readFromChildTag(data, "encodedInputs", registries);
+            encodedOutputInv.readFromChildTag(data, "encodedOutputs", registries);
         } finally {
             isLoading = false;
         }
     }
 
-    public void writeToNBT(CompoundTag data) {
+    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
         data.putString("mode", this.mode.name());
         data.putBoolean("substitute", this.substitute);
         data.putBoolean("substituteFluids", this.substituteFluids);
         if (this.stonecuttingRecipeId != null) {
             data.putString("stonecuttingRecipeId", this.stonecuttingRecipeId.toString());
         }
-        blankPatternInv.writeToNBT(data, "blankPattern");
-        encodedPatternInv.writeToNBT(data, "encodedPattern");
-        encodedInputInv.writeToChildTag(data, "encodedInputs");
-        encodedOutputInv.writeToChildTag(data, "encodedOutputs");
+        blankPatternInv.writeToNBT(data, "blankPattern", registries);
+        encodedPatternInv.writeToNBT(data, "encodedPattern", registries);
+        encodedInputInv.writeToChildTag(data, "encodedInputs", registries);
+        encodedOutputInv.writeToChildTag(data, "encodedOutputs", registries);
     }
 
     private void fixCraftingRecipes() {

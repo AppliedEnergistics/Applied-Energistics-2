@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "ae2:paint_balls"
+            "items": "#ae2:paint_balls"
           }
         ]
       },

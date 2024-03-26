@@ -174,7 +174,7 @@ public final class Guide implements PageCollection {
 
             var stuff = ReloadableServerResources.loadResources(
                     resourceManager,
-                    layeredAccess.getAccessForLoading(RegistryLayer.RELOADABLE),
+                    layeredAccess,
                     FeatureFlagSet.of(),
                     Commands.CommandSelection.ALL,
                     0,
@@ -187,7 +187,7 @@ public final class Guide implements PageCollection {
                             throw e;
                         }
                     }).get();
-            stuff.updateRegistryTags(layeredAccess.compositeAccess());
+            stuff.updateRegistryTags();
             Platform.fallbackClientRecipeManager = stuff.getRecipeManager();
             Platform.fallbackClientRegistryAccess = layeredAccess.compositeAccess();
         } catch (Exception e) {

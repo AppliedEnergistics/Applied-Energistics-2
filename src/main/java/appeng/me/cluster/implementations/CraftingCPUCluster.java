@@ -26,6 +26,7 @@ import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
@@ -51,7 +52,6 @@ import appeng.crafting.execution.CraftingCpuLogic;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.me.helpers.MachineSource;
-import appeng.util.ConfigManager;
 
 public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
@@ -62,7 +62,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     // INSTANCE sate
     private final List<CraftingBlockEntity> blockEntities = new ArrayList<>();
     private final List<CraftingMonitorBlockEntity> status = new ArrayList<>();
-    private final ConfigManager configManager = new ConfigManager(this::markDirty);
+    private final IConfigManager configManager;
     private Component myName = null;
     private boolean isDestroyed = false;
     private long storage = 0;
@@ -77,7 +77,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         this.boundsMin = boundsMin.immutable();
         this.boundsMax = boundsMax.immutable();
 
-        this.configManager.registerSetting(Settings.CPU_SELECTION_MODE, CpuSelectionMode.ANY);
+        this.configManager = IConfigManager.builder(this::markDirty)
+                .registerSetting(Settings.CPU_SELECTION_MODE, CpuSelectionMode.ANY)
+                .build();
     }
 
     @Override
@@ -258,9 +260,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         return node != null && node.isActive();
     }
 
-    public void writeToNBT(CompoundTag data) {
-        this.craftingLogic.writeToNBT(data);
-        this.configManager.writeToNBT(data);
+    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
+        this.craftingLogic.writeToNBT(data, registries);
+        this.configManager.writeToNBT(data, registries);
     }
 
     void done() {
@@ -269,16 +271,16 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         core.setCoreBlock(true);
 
         if (core.getPreviousState() != null) {
-            this.readFromNBT(core.getPreviousState());
+            this.readFromNBT(core.getPreviousState(), core.getLevel().registryAccess());
             core.setPreviousState(null);
         }
 
         this.updateName();
     }
 
-    public void readFromNBT(CompoundTag data) {
-        this.craftingLogic.readFromNBT(data);
-        this.configManager.readFromNBT(data);
+    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
+        this.craftingLogic.readFromNBT(data, registries);
+        this.configManager.readFromNBT(data, registries);
     }
 
     public void updateName() {

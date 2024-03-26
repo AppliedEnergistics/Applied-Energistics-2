@@ -18,18 +18,19 @@ import appeng.hooks.IntrinsicEnchantItem;
 
 public class FluixAxeItem extends AxeItem implements IntrinsicEnchantItem {
     public FluixAxeItem(Properties props) {
-        super(FluixToolType.FLUIX.getToolTier(), 6.0F, -3.1F, props);
+        super(FluixToolType.FLUIX.getToolTier(),
+                props.attributes(createAttributes(FluixToolType.FLUIX.getToolTier(), 6.0F, -3.1F)));
     }
 
     @Override
     public int getIntrinsicEnchantLevel(ItemStack stack, Enchantment enchantment) {
-        return enchantment == Enchantments.BLOCK_FORTUNE ? 1 : 0;
+        return enchantment == Enchantments.FORTUNE ? 1 : 0;
     }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
             TooltipFlag isAdvanced) {
-        tooltipComponents.add(GuiText.IntrinsicEnchant.text(Enchantments.BLOCK_FORTUNE.getFullname(1)));
+        tooltipComponents.add(GuiText.IntrinsicEnchant.text(Enchantments.FORTUNE.getFullname(1)));
     }
 
     @Override

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:fluix_glass_cable"
-            ]
+            "items": "ae2:fluix_glass_cable"
           }
         ]
       },

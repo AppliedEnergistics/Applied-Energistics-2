@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -43,14 +44,14 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public void loadTag(CompoundTag data) {
-        super.loadTag(data);
+    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
+        super.loadTag(data, registries);
         var inv = this.getInternalInventory();
         if (inv != InternalInventory.empty()) {
             var opt = data.getCompound("inv");
             for (int x = 0; x < inv.size(); x++) {
                 var item = opt.getCompound("item" + x);
-                inv.setItemDirect(x, ItemStack.of(item));
+                inv.setItemDirect(x, ItemStack.parseOptional(registries, item));
             }
         }
     }
@@ -58,18 +59,14 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     public abstract InternalInventory getInternalInventory();
 
     @Override
-    public void saveAdditional(CompoundTag data) {
-        super.saveAdditional(data);
+    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
+        super.saveAdditional(data, registries);
         var inv = this.getInternalInventory();
         if (inv != InternalInventory.empty()) {
             final CompoundTag opt = new CompoundTag();
             for (int x = 0; x < inv.size(); x++) {
-                final CompoundTag item = new CompoundTag();
-                final ItemStack is = inv.getStackInSlot(x);
-                if (!is.isEmpty()) {
-                    is.save(item);
-                }
-                opt.put("item" + x, item);
+                var is = inv.getStackInSlot(x);
+                opt.put("item" + x, is.saveOptional(registries));
             }
             data.put("inv", opt);
         }

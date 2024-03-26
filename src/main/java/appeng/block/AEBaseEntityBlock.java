@@ -24,10 +24,11 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -44,6 +45,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 
+import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.block.networking.CableBusBlock;
@@ -181,61 +183,54 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
             blockEntity.setName(text.text());
         }
 
-        if (is.hasTag()) {
-            Player player = null;
-            if (placer instanceof Player) {
-                player = (Player) placer;
-            }
-            blockEntity.importSettings(SettingsFrom.DISMANTLE_ITEM, is.getTag(), player);
+        Player player = null;
+        if (placer instanceof Player) {
+            player = (Player) placer;
         }
+        blockEntity.importSettings(SettingsFrom.DISMANTLE_ITEM, is.getComponents(), player);
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
+    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
+            Player player,
             InteractionHand hand, BlockHitResult hit) {
-        ItemStack heldItem;
-        if (player != null && !player.getItemInHand(hand).isEmpty()) {
-            heldItem = player.getItemInHand(hand);
+        if (heldItem.getItem() instanceof IMemoryCard memoryCard && !(this instanceof CableBusBlock)) {
+            final AEBaseBlockEntity blockEntity = this.getBlockEntity(level, pos);
 
-            if (heldItem.getItem() instanceof IMemoryCard memoryCard && !(this instanceof CableBusBlock)) {
-                final AEBaseBlockEntity blockEntity = this.getBlockEntity(level, pos);
-
-                if (blockEntity == null) {
-                    return InteractionResult.FAIL;
-                }
-
-                final String name = this.getDescriptionId();
-
-                if (InteractionUtil.isInAlternateUseMode(player)) {
-                    var data = new CompoundTag();
-                    blockEntity.exportSettings(SettingsFrom.MEMORY_CARD, data, player);
-                    if (!data.isEmpty()) {
-                        memoryCard.setMemoryCardContents(heldItem, name, data);
-                        memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
-                    }
-                } else {
-                    final String savedName = memoryCard.getSettingsName(heldItem);
-                    final CompoundTag data = memoryCard.getData(heldItem);
-
-                    if (this.getDescriptionId().equals(savedName)) {
-                        blockEntity.importSettings(SettingsFrom.MEMORY_CARD, data, player);
-                        memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
-                    } else {
-                        MemoryCardItem.importGenericSettingsAndNotify(blockEntity, data, player);
-                    }
-                }
-
-                return InteractionResult.sidedSuccess(level.isClientSide());
+            if (blockEntity == null) {
+                return ItemInteractionResult.FAIL;
             }
+
+            if (InteractionUtil.isInAlternateUseMode(player)) {
+                var builder = DataComponentMap.builder();
+                blockEntity.exportSettings(SettingsFrom.MEMORY_CARD, builder, player);
+                var settings = builder.build();
+                if (!settings.isEmpty()) {
+                    MemoryCardItem.clearCard(heldItem);
+                    heldItem.applyComponents(settings);
+                    memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
+                }
+            } else {
+                var savedName = heldItem.get(AEComponents.EXPORTED_SETTINGS_SOURCE);
+
+                if (this.getName().equals(savedName)) {
+                    blockEntity.importSettings(SettingsFrom.MEMORY_CARD, heldItem.getComponents(), player);
+                    memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
+                } else {
+                    MemoryCardItem.importGenericSettingsAndNotify(blockEntity, heldItem.getComponents(), player);
+                }
+            }
+
+            return ItemInteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return this.onActivated(level, pos, player, hand, player.getItemInHand(hand), hit);
+        return super.useItemOn(heldItem, state, level, pos, player, hand, hit);
     }
 
-    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
-            InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
-        return InteractionResult.PASS;
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
+            BlockHitResult hitResult) {
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     /**
@@ -280,15 +275,8 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
                         player = (Player) looter;
                     }
 
-                    if (drop.hasTag()) {
-                        aeBaseBlockEntity.exportSettings(SettingsFrom.DISMANTLE_ITEM, drop.getTag(), player);
-                    } else {
-                        var tag = new CompoundTag();
-                        aeBaseBlockEntity.exportSettings(SettingsFrom.DISMANTLE_ITEM, tag, player);
-                        if (!tag.isEmpty()) {
-                            drop.setTag(tag);
-                        }
-                    }
+                    var settings = aeBaseBlockEntity.exportSettings(SettingsFrom.DISMANTLE_ITEM, player);
+                    drop.applyComponents(settings);
                 }
                 // Export settings at most for one item
                 break;

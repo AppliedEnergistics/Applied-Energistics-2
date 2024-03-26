@@ -27,6 +27,8 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
     protected void registerModels() {
         registerPaintballs();
 
+        flatSingleLayer(AEItems.MISSING_CONTENT, "minecraft:item/barrier");
+
         flatSingleLayer(MemoryCardModel.MODEL_BASE, "item/memory_card_pins")
                 .texture("layer1", "item/memory_card_base");
         builtInItemModel("memory_card");
@@ -243,5 +245,9 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
     private ItemModelBuilder builtInItemModel(String name) {
         var model = getBuilder("item/" + name);
         return model;
+    }
+
+    private static ResourceLocation makeId(String id) {
+        return id.contains(":") ? new ResourceLocation(id) : AppEng.makeId(id);
     }
 }

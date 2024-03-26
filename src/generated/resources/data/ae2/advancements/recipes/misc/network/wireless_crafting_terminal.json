@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:dense_energy_cell"
-            ]
+            "items": "ae2:dense_energy_cell"
           }
         ]
       },
@@ -17,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:crafting_terminal"
-            ]
+            "items": "ae2:crafting_terminal"
           }
         ]
       },
@@ -35,9 +31,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:wireless_receiver"
-            ]
+            "items": "ae2:wireless_receiver"
           }
         ]
       },

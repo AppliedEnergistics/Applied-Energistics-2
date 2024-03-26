@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:charger"
-            ]
+            "items": "ae2:charger"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "achievement.ae2.Charger.desc"
     },
     "icon": {
-      "item": "ae2:charger"
+      "count": 1,
+      "id": "ae2:charger"
     },
     "title": {
       "translate": "achievement.ae2.Charger"

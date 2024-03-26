@@ -7,7 +7,8 @@
     "tag": "ae2:quartz_hoe"
   },
   "result": {
-    "item": "ae2:fluix_hoe"
+    "count": 1,
+    "id": "ae2:fluix_hoe"
   },
   "template": {
     "item": "ae2:fluix_upgrade_smithing_template"

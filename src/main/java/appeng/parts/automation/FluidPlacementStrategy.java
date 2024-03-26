@@ -76,8 +76,8 @@ public class FluidPlacementStrategy implements PlacementStrategy {
             return 0;
         }
 
-        // We do not support placing fluids with NBT for now
-        if (fluidKey.hasTag()) {
+        // We do not support placing fluids with patched components for now
+        if (!fluidKey.toStack(1).getComponentsPatch().isEmpty()) {
             return 0;
         }
 

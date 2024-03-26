@@ -36,8 +36,10 @@ import net.minecraft.CrashReportCategory;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.InteractionHand;
@@ -106,26 +108,28 @@ public interface IPart extends ICustomCableConnection, Clearable {
      * Write the part information for saving. This information will be saved alongside the {@link #getPartItem()} to
      * save settings, inventory or other values to the world.
      *
-     * @param data to be written nbt data
+     * @param data       to be written nbt data
+     * @param registries
      */
-    default void writeToNBT(CompoundTag data) {
+    default void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
     }
 
     /**
      * Read the previously written NBT Data. this is the mirror for {@link #writeToNBT}.
      *
-     * @param data to be read nbt data
+     * @param data       to be read nbt data
+     * @param registries
      */
-    default void readFromNBT(CompoundTag data) {
+    default void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
     }
 
     /**
      * Exports settings for attaching it to a memory card or item stack.
-     * 
-     * @param mode   The purpose to export settings for.
-     * @param output The tag to write the settings to.
+     *
+     * @param mode    The purpose to export settings for.
+     * @param builder The map to write the settings to. Written settings must be part of the exported settings tag.
      */
-    default void exportSettings(SettingsFrom mode, CompoundTag output) {
+    default void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder) {
     }
 
     /**
@@ -134,7 +138,7 @@ public interface IPart extends ICustomCableConnection, Clearable {
      * @param input  source of settings
      * @param player the (optional) player who is importing the settings
      */
-    default void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+    default void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
     }
 
     /**
@@ -193,14 +197,15 @@ public interface IPart extends ICustomCableConnection, Clearable {
      *
      * @param data to be written data
      */
-    default void writeToStream(FriendlyByteBuf data) {
+    default void writeToStream(RegistryFriendlyByteBuf data) {
     }
 
     /**
      * Used to store the state that is synchronized to clients for the visual appearance of this part as NBT. This is
      * only used to store this state for tools such as Create Ponders in Structure NBT. Actual synchronization uses
-     * {@link #writeToStream(FriendlyByteBuf)} and {@link #readFromStream(FriendlyByteBuf)}. Any data that is saved to
-     * the NBT tag in {@link #writeToNBT(CompoundTag)} does not need to be saved here again.
+     * {@link #writeToStream(RegistryFriendlyByteBuf)} and {@link #readFromStream(RegistryFriendlyByteBuf)}. Any data
+     * that is saved to the NBT tag in {@link #writeToNBT(CompoundTag, HolderLookup.Provider)} does not need to be saved
+     * here again.
      * <p>
      * The data saved should be equivalent to the data sent to the client in {@link #writeToStream}.
      * <p>
@@ -219,15 +224,16 @@ public interface IPart extends ICustomCableConnection, Clearable {
      * @param data to be read data
      * @return true will re-draw the part.
      */
-    default boolean readFromStream(FriendlyByteBuf data) {
+    default boolean readFromStream(RegistryFriendlyByteBuf data) {
         return false;
     }
 
     /**
      * Used to store the state that is synchronized to clients for the visual appearance of this part as NBT. This is
      * only used to store this state for tools such as Create Ponders in Structure NBT. Actual synchronization uses
-     * {@link #writeToStream(FriendlyByteBuf)} and {@link #readFromStream(FriendlyByteBuf)}. Any data that is saved to
-     * the NBT tag in {@link #writeToNBT(CompoundTag)} already does not need to be saved here again.
+     * {@link #writeToStream(RegistryFriendlyByteBuf)} and {@link #readFromStream(RegistryFriendlyByteBuf)}. Any data
+     * that is saved to the NBT tag in {@link #writeToNBT(CompoundTag, HolderLookup.Provider)} already does not need to
+     * be saved here again.
      */
     @ApiStatus.Experimental
     default void readVisualStateFromNBT(CompoundTag data) {
@@ -294,26 +300,26 @@ public interface IPart extends ICustomCableConnection, Clearable {
     void setPartHostInfo(@Nullable Direction side, IPartHost host, BlockEntity blockEntity);
 
     /**
-     * Called when you right click the part, very similar to Block.onActivateBlock
+     * Called when a player right-clicks the part without an item in hand.
      *
      * @param player right clicking player
-     * @param hand   hand used
      * @param pos    position of block
      * @return if your activate method performed something.
      */
-    default boolean onActivate(Player player, InteractionHand hand, Vec3 pos) {
+    default boolean onUseWithoutItem(Player player, Vec3 pos) {
         return false;
     }
 
     /**
-     * Called when you right click the part, very similar to Block.onActivateBlock
+     * Called when a player right-clicks the part with an item in hand.
      *
-     * @param player shift right clicking player
-     * @param hand   hand used
-     * @param pos    position of block
-     * @return if your activate method performed something, you should use false unless you really need it.
+     * @param heldItem item triggering the interaction
+     * @param player   right clicking player
+     * @param hand     hand used
+     * @param pos      position of block
+     * @return if your activate method performed something.
      */
-    default boolean onShiftActivate(Player player, InteractionHand hand, Vec3 pos) {
+    default boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos) {
         return false;
     }
 
@@ -346,11 +352,9 @@ public interface IPart extends ICustomCableConnection, Clearable {
      */
     default void addPartDrop(List<ItemStack> drops, boolean wrenched) {
         var stack = new ItemStack(getPartItem());
-        var tag = new CompoundTag();
-        exportSettings(SettingsFrom.DISMANTLE_ITEM, tag);
-        if (!tag.isEmpty()) {
-            stack.setTag(tag);
-        }
+        var builder = DataComponentMap.builder();
+        exportSettings(SettingsFrom.DISMANTLE_ITEM, builder);
+        stack.applyComponents(builder.build());
         drops.add(stack);
     }
 

@@ -113,7 +113,7 @@ public class FakeSlot extends AppEngSlot {
             current = current.copy();
             current.shrink(1);
             set(current);
-        } else if (ItemStack.isSameItemSameTags(current, is)) {
+        } else if (ItemStack.isSameItemSameComponents(current, is)) {
             // Increase when holding same item
             current = current.copy();
             current.grow(1);

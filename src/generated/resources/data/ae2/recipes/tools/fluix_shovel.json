@@ -7,7 +7,8 @@
     "tag": "ae2:quartz_shovel"
   },
   "result": {
-    "item": "ae2:fluix_shovel"
+    "count": 1,
+    "id": "ae2:fluix_shovel"
   },
   "template": {
     "item": "ae2:fluix_upgrade_smithing_template"

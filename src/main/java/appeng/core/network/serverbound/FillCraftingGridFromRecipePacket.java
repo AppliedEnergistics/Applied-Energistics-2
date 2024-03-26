@@ -13,7 +13,8 @@ import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -31,6 +32,7 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.core.AELog;
+import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.storage.ViewCellItem;
@@ -55,6 +57,20 @@ public record FillCraftingGridFromRecipePacket(
         @Nullable ResourceLocation recipeId,
         NonNullList<ItemStack> ingredientTemplates,
         boolean craftMissing) implements ServerboundPacket {
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, FillCraftingGridFromRecipePacket> STREAM_CODEC = StreamCodec
+            .ofMember(
+                    FillCraftingGridFromRecipePacket::write,
+                    FillCraftingGridFromRecipePacket::decode);
+
+    public static final Type<FillCraftingGridFromRecipePacket> TYPE = CustomAppEngPayload
+            .createType("fill_crafting_grid_from_recipe");
+
+    @Override
+    public Type<FillCraftingGridFromRecipePacket> type() {
+        return TYPE;
+    }
+
     public FillCraftingGridFromRecipePacket(@Nullable ResourceLocation recipeId,
             NonNullList<ItemStack> ingredientTemplates,
             boolean craftMissing) {
@@ -63,7 +79,7 @@ public record FillCraftingGridFromRecipePacket(
         this.craftMissing = craftMissing;
     }
 
-    public static FillCraftingGridFromRecipePacket decode(FriendlyByteBuf stream) {
+    public static FillCraftingGridFromRecipePacket decode(RegistryFriendlyByteBuf stream) {
         ResourceLocation recipeId = null;
         if (stream.readBoolean()) {
             recipeId = stream.readResourceLocation();
@@ -71,15 +87,14 @@ public record FillCraftingGridFromRecipePacket(
 
         var ingredientTemplates = NonNullList.withSize(stream.readInt(), ItemStack.EMPTY);
         for (int i = 0; i < ingredientTemplates.size(); i++) {
-            ingredientTemplates.set(i, stream.readItem());
+            ingredientTemplates.set(i, ItemStack.OPTIONAL_STREAM_CODEC.decode(stream));
         }
         var craftMissing = stream.readBoolean();
 
         return new FillCraftingGridFromRecipePacket(recipeId, ingredientTemplates, craftMissing);
     }
 
-    @Override
-    public void write(FriendlyByteBuf data) {
+    public void write(RegistryFriendlyByteBuf data) {
         if (recipeId != null) {
             data.writeBoolean(true);
             data.writeResourceLocation(recipeId);
@@ -88,7 +103,7 @@ public record FillCraftingGridFromRecipePacket(
         }
         data.writeInt(ingredientTemplates.size());
         for (var stack : ingredientTemplates) {
-            data.writeItem(stack);
+            ItemStack.OPTIONAL_STREAM_CODEC.encode(data, stack);
         }
         data.writeBoolean(craftMissing);
     }

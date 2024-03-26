@@ -2,9 +2,11 @@ package appeng.items.tools.fluix;
 
 import java.util.function.Supplier;
 
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 
 import appeng.core.AppEng;
 import appeng.datagen.providers.tags.ConventionTags;
@@ -35,8 +37,8 @@ public enum FluixToolType {
             }
 
             @Override
-            public int getLevel() {
-                return Tiers.IRON.getLevel();
+            public TagKey<Block> getIncorrectBlocksForDrops() {
+                return Tiers.IRON.getIncorrectBlocksForDrops();
             }
 
             @Override

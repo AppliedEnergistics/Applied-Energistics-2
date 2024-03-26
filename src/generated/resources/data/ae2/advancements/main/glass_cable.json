@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "ae2:glass_cable"
+            "items": "#ae2:glass_cable"
           }
         ]
       },
@@ -17,7 +17,8 @@
       "translate": "achievement.ae2.GlassCable.desc"
     },
     "icon": {
-      "item": "ae2:fluix_glass_cable"
+      "count": 1,
+      "id": "ae2:fluix_glass_cable"
     },
     "title": {
       "translate": "achievement.ae2.GlassCable"

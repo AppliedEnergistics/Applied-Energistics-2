@@ -12,6 +12,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.Items;
@@ -28,6 +30,7 @@ import appeng.util.ConfigInventory;
 
 @BootstrapMinecraft
 class GenericStackInvTest {
+    private final RegistryAccess registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
     public static final AEItemKey STICK_KEY = AEItemKey.of(Items.STICK);
     public static final GenericStack ONE_STICK = new GenericStack(STICK_KEY, 1);
     public static final IActionSource SRC = new BaseActionSource();
@@ -55,7 +58,7 @@ class GenericStackInvTest {
         large.setStack(0, ONE_STICK);
         large.setStack(1, ONE_STICK);
 
-        inv.readFromTag(large.writeToTag());
+        inv.readFromTag(large.writeToTag(registryAccess), registryAccess);
 
         assertEquals(ONE_STICK, inv.getStack(0));
         // Size didnt change...
@@ -65,13 +68,13 @@ class GenericStackInvTest {
     @Test
     void testLoadingFromEmptyTagClearsFilledSlots() {
         inv.setStack(0, ONE_STICK);
-        inv.readFromTag(new ListTag());
+        inv.readFromTag(new ListTag(), registryAccess);
         assertNull(inv.getStack(0));
     }
 
     @Test
     void testWritingAnEmptyInventoryProducesAnEmptyTag() {
-        assertEquals(0, inv.writeToTag().size());
+        assertEquals(0, inv.writeToTag(registryAccess).size());
     }
 
     /**
@@ -80,7 +83,7 @@ class GenericStackInvTest {
     @Test
     void testWritingAnEmptyInventoryProducesNoChildTag() {
         var tag = new CompoundTag();
-        inv.writeToChildTag(tag, "child");
+        inv.writeToChildTag(tag, "child", registryAccess);
         assertEquals(new CompoundTag(), tag);
     }
 
@@ -91,7 +94,7 @@ class GenericStackInvTest {
     void testWritingToChildTag() {
         var tag = new CompoundTag();
         inv.setStack(0, ONE_STICK);
-        inv.writeToChildTag(tag, "child");
+        inv.writeToChildTag(tag, "child", registryAccess);
         assertThat(tag.getAllKeys()).containsOnly("child");
     }
 
@@ -102,10 +105,10 @@ class GenericStackInvTest {
     void testReadingFromChildTag() {
         var tag = new CompoundTag();
         inv.setStack(0, ONE_STICK);
-        inv.writeToChildTag(tag, "child");
+        inv.writeToChildTag(tag, "child", registryAccess);
         inv.clear();
         changeNotifications.set(0);
-        inv.readFromChildTag(tag, "child");
+        inv.readFromChildTag(tag, "child", registryAccess);
 
         assertEquals(ONE_STICK, inv.getStack(0));
         assertEquals(1, changeNotifications.get());
@@ -120,15 +123,15 @@ class GenericStackInvTest {
         otherInv.setStack(0, ONE_STICK);
 
         // Read once
-        inv.readFromTag(otherInv.writeToTag());
+        inv.readFromTag(otherInv.writeToTag(registryAccess), registryAccess);
         assertEquals(1, changeNotifications.get());
 
         // Read again
-        inv.readFromTag(otherInv.writeToTag());
+        inv.readFromTag(otherInv.writeToTag(registryAccess), registryAccess);
         assertEquals(1, changeNotifications.get());
 
         // Notification on clear
-        inv.readFromTag(new ListTag());
+        inv.readFromTag(new ListTag(), registryAccess);
         assertEquals(2, changeNotifications.get());
     }
 
@@ -156,7 +159,7 @@ class GenericStackInvTest {
     @Test
     void testReadingFromMissingChildTag() {
         inv.setStack(0, ONE_STICK);
-        inv.readFromChildTag(new CompoundTag(), "child");
+        inv.readFromChildTag(new CompoundTag(), "child", registryAccess);
         assertNull(inv.getStack(0));
     }
 
@@ -190,7 +193,7 @@ class GenericStackInvTest {
             inv.setStack(0, ONE_STICK);
             inv.setStack(0, null);
             inv.setStack(0, ONE_STICK);
-            inv.readFromTag(new ListTag());
+            inv.readFromTag(new ListTag(), registryAccess);
             assertEquals(0, changeNotifications.get());
             inv.endBatch();
             assertEquals(1, changeNotifications.get());

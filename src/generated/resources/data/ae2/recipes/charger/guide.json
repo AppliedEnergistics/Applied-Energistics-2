@@ -4,6 +4,7 @@
     "item": "minecraft:book"
   },
   "result": {
-    "item": "ae2:guide"
+    "count": 1,
+    "id": "ae2:guide"
   }
 }

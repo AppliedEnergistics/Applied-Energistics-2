@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:cell_component_1k"
-            ]
+            "items": "ae2:cell_component_1k"
           }
         ]
       },
@@ -17,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:item_cell_housing"
-            ]
+            "items": "ae2:item_cell_housing"
           }
         ]
       },

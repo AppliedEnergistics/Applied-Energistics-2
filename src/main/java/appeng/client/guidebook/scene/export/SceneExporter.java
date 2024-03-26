@@ -89,15 +89,15 @@ public class SceneExporter {
 
         // To avoid baking in the projection and camera, we need to reset these here
         var modelViewStack = RenderSystem.getModelViewStack();
-        modelViewStack.pushPose();
-        modelViewStack.setIdentity();
+        modelViewStack.pushMatrix();
+        modelViewStack.identity();
         RenderSystem.applyModelViewMatrix();
         RenderSystem.backupProjectionMatrix();
         RenderSystem.setProjectionMatrix(new Matrix4f(), VertexSorting.ORTHOGRAPHIC_Z);
 
         GuidebookLevelRenderer.getInstance().renderContent(level, bufferSource);
 
-        modelViewStack.popPose();
+        modelViewStack.popMatrix();
         RenderSystem.applyModelViewMatrix();
         RenderSystem.restoreProjectionMatrix();
 

@@ -177,7 +177,7 @@ public final class SiteExporter implements ResourceExporter {
     public void referenceItem(ItemStack stack) {
         if (!stack.isEmpty()) {
             items.add(stack.getItem());
-            if (stack.hasTag()) {
+            if (!stack.getComponentsPatch().isEmpty()) {
                 LOGGER.error("Couldn't handle stack with NBT tag: {}", stack);
             }
         }

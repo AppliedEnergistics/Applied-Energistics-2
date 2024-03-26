@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "ae2:pattern_provider"
+            "items": "#ae2:pattern_provider"
           }
         ]
       },

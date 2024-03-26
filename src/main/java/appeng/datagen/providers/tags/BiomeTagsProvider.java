@@ -36,7 +36,7 @@ public class BiomeTagsProvider extends net.minecraft.data.tags.BiomeTagsProvider
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags(HolderLookup.Provider registries) {
         tag(MeteoriteStructure.BIOME_TAG_KEY).addOptionalTag(BiomeTags.IS_OVERWORLD.location());
     }
 }

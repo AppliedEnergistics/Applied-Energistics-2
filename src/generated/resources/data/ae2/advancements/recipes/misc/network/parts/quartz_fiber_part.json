@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "ae2:all_quartz_dust"
+            "items": "#ae2:all_quartz_dust"
           }
         ]
       },

@@ -29,8 +29,9 @@ import java.util.function.Function;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.stacks.GenericStack;
@@ -71,13 +72,13 @@ public abstract class SynchronizedField<T> {
         return !Objects.equals(getCurrentValue(), this.clientVersion);
     }
 
-    public final void write(FriendlyByteBuf data) {
+    public final void write(RegistryFriendlyByteBuf data) {
         T currentValue = getCurrentValue();
         this.clientVersion = currentValue;
         this.writeValue(data, currentValue);
     }
 
-    public final void read(FriendlyByteBuf data) {
+    public final void read(RegistryFriendlyByteBuf data) {
         T value = readValue(data);
         try {
             setter.invoke(source, value);
@@ -86,9 +87,9 @@ public abstract class SynchronizedField<T> {
         }
     }
 
-    protected abstract void writeValue(FriendlyByteBuf data, T value);
+    protected abstract void writeValue(RegistryFriendlyByteBuf data, T value);
 
-    protected abstract T readValue(FriendlyByteBuf data);
+    protected abstract T readValue(RegistryFriendlyByteBuf data);
 
     public static SynchronizedField<?> create(Object source, Field field) {
         Class<?> fieldType = field.getType();
@@ -128,12 +129,12 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected void writeValue(FriendlyByteBuf data, String value) {
+        protected void writeValue(RegistryFriendlyByteBuf data, String value) {
             data.writeUtf(value);
         }
 
         @Override
-        protected String readValue(FriendlyByteBuf data) {
+        protected String readValue(RegistryFriendlyByteBuf data) {
             return data.readUtf();
         }
     }
@@ -144,12 +145,12 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected void writeValue(FriendlyByteBuf data, Integer value) {
+        protected void writeValue(RegistryFriendlyByteBuf data, Integer value) {
             data.writeInt(value);
         }
 
         @Override
-        protected Integer readValue(FriendlyByteBuf data) {
+        protected Integer readValue(RegistryFriendlyByteBuf data) {
             return data.readInt();
         }
     }
@@ -160,12 +161,12 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected void writeValue(FriendlyByteBuf data, Long value) {
+        protected void writeValue(RegistryFriendlyByteBuf data, Long value) {
             data.writeLong(value);
         }
 
         @Override
-        protected Long readValue(FriendlyByteBuf data) {
+        protected Long readValue(RegistryFriendlyByteBuf data) {
             return data.readLong();
         }
     }
@@ -176,12 +177,12 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected void writeValue(FriendlyByteBuf data, Double value) {
+        protected void writeValue(RegistryFriendlyByteBuf data, Double value) {
             data.writeDouble(value);
         }
 
         @Override
-        protected Double readValue(FriendlyByteBuf data) {
+        protected Double readValue(RegistryFriendlyByteBuf data) {
             return data.readDouble();
         }
     }
@@ -192,12 +193,12 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected void writeValue(FriendlyByteBuf data, Boolean value) {
+        protected void writeValue(RegistryFriendlyByteBuf data, Boolean value) {
             data.writeBoolean(value);
         }
 
         @Override
-        protected Boolean readValue(FriendlyByteBuf data) {
+        protected Boolean readValue(RegistryFriendlyByteBuf data) {
             return data.readBoolean();
         }
     }
@@ -211,7 +212,7 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected void writeValue(FriendlyByteBuf data, T value) {
+        protected void writeValue(RegistryFriendlyByteBuf data, T value) {
             if (value == null) {
                 data.writeShort(-1);
             } else {
@@ -220,7 +221,7 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected T readValue(FriendlyByteBuf data) {
+        protected T readValue(RegistryFriendlyByteBuf data) {
             int ordinal = data.readShort();
             if (ordinal == -1) {
                 return null;
@@ -236,19 +237,19 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected void writeValue(FriendlyByteBuf data, Component value) {
+        protected void writeValue(RegistryFriendlyByteBuf data, Component value) {
             if (value == null) {
                 data.writeBoolean(false);
             } else {
                 data.writeBoolean(true);
-                data.writeComponent(value);
+                ComponentSerialization.TRUSTED_STREAM_CODEC.encode(data, value);
             }
         }
 
         @Override
-        protected Component readValue(FriendlyByteBuf data) {
+        protected Component readValue(RegistryFriendlyByteBuf data) {
             if (data.readBoolean()) {
-                return data.readComponent();
+                return ComponentSerialization.TRUSTED_STREAM_CODEC.decode(data);
             } else {
                 return null;
             }
@@ -261,12 +262,12 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected void writeValue(FriendlyByteBuf data, GenericStack value) {
+        protected void writeValue(RegistryFriendlyByteBuf data, GenericStack value) {
             GenericStack.writeBuffer(value, data);
         }
 
         @Override
-        protected GenericStack readValue(FriendlyByteBuf data) {
+        protected GenericStack readValue(RegistryFriendlyByteBuf data) {
             return GenericStack.readBuffer(data);
         }
     }
@@ -277,7 +278,7 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected void writeValue(FriendlyByteBuf data, ResourceLocation value) {
+        protected void writeValue(RegistryFriendlyByteBuf data, ResourceLocation value) {
             if (value == null) {
                 data.writeBoolean(false);
             } else {
@@ -287,7 +288,7 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected ResourceLocation readValue(FriendlyByteBuf data) {
+        protected ResourceLocation readValue(RegistryFriendlyByteBuf data) {
             if (data.readBoolean()) {
                 return data.readResourceLocation();
             } else {
@@ -297,7 +298,7 @@ public abstract class SynchronizedField<T> {
     }
 
     private static class CustomField extends SynchronizedField<Object> {
-        private static final Map<Class<?>, Function<FriendlyByteBuf, Object>> factories = new HashMap<>();
+        private static final Map<Class<?>, Function<RegistryFriendlyByteBuf, Object>> factories = new HashMap<>();
         private final Class<?> fieldType;
 
         private CustomField(Object source, Field field) {
@@ -311,19 +312,19 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected void writeValue(FriendlyByteBuf data, Object value) {
+        protected void writeValue(RegistryFriendlyByteBuf data, Object value) {
             ((PacketWritable) value).writeToPacket(data);
         }
 
         @Override
-        protected Object readValue(FriendlyByteBuf data) {
+        protected Object readValue(RegistryFriendlyByteBuf data) {
             var factory = factories.computeIfAbsent(fieldType, CustomField::getFactory);
             return factory.apply(data);
         }
 
-        private static Function<FriendlyByteBuf, Object> getFactory(Class<?> clazz) {
+        private static Function<RegistryFriendlyByteBuf, Object> getFactory(Class<?> clazz) {
             try {
-                var constructor = clazz.getConstructor(FriendlyByteBuf.class);
+                var constructor = clazz.getConstructor(RegistryFriendlyByteBuf.class);
                 return buffer -> {
                     try {
                         return constructor.newInstance(buffer);
@@ -332,7 +333,7 @@ public abstract class SynchronizedField<T> {
                     }
                 };
             } catch (NoSuchMethodException e) {
-                throw new RuntimeException("No constructor taking FriendlyByteBuf on " + clazz);
+                throw new RuntimeException("No constructor taking RegistryFriendlyByteBuf on " + clazz);
             }
         }
     }

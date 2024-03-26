@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -60,7 +60,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithC
     }
 
     public TinyTNTPrimedEntity(Level level, double x, double y, double z,
-            LivingEntity igniter) {
+            @Nullable LivingEntity igniter) {
         super(AEEntities.TINY_TNT_PRIMED, level);
         this.setPos(x, y, z);
         double d0 = level.random.nextDouble() * ((float) Math.PI * 2F);
@@ -129,7 +129,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithC
     // override :P
     @Override
     protected void explode() {
-        this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
+        this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE.value(),
                 SoundSource.BLOCKS, 4.0F,
                 (1.0F + (this.level().random.nextFloat() - this.level().random.nextFloat()) * 0.2F) * 32.9F);
 
@@ -192,12 +192,12 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithC
     }
 
     @Override
-    public void writeSpawnData(FriendlyByteBuf buffer) {
+    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
         buffer.writeByte(this.getFuse());
     }
 
     @Override
-    public void readSpawnData(FriendlyByteBuf additionalData) {
+    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
         this.setFuse(additionalData.readByte());
     }
 }

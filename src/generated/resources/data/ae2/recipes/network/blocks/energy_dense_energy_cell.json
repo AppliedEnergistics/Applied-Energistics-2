@@ -15,6 +15,7 @@
     "aaa"
   ],
   "result": {
-    "item": "ae2:dense_energy_cell"
+    "count": 1,
+    "id": "ae2:dense_energy_cell"
   }
 }
