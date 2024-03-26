@@ -1,6 +1,7 @@
 package appeng.crafting.pattern;
 
 import appeng.api.stacks.GenericStack;
+import appeng.core.definitions.AEItems;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -8,6 +9,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public record EncodedProcessingPattern(
         List<GenericStack> sparseInputs,
@@ -30,4 +32,9 @@ public record EncodedProcessingPattern(
             EncodedProcessingPattern::sparseOutputs,
             EncodedProcessingPattern::new
     );
+
+    public boolean containsMissingContent() {
+        return Stream.concat(sparseInputs.stream(), sparseOutputs.stream())
+                .anyMatch(stack -> stack != null && AEItems.MISSING_CONTENT.isSameAs(stack.what()));
+    }
 }

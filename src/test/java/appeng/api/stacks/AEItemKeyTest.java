@@ -3,13 +3,18 @@ package appeng.api.stacks;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
+import appeng.api.ids.AEComponents;
+import appeng.core.definitions.AEItems;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.ItemLike;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -149,23 +154,34 @@ class AEItemKeyTest {
 
         @Test
         void deserializeFromTagWithoutChannel() {
-            assertNull(AEKey.fromTagGeneric(registries, new CompoundTag()));
+            var tag = new CompoundTag();
+
+            assertMissingContent(tag, "Input does not contain a key [#t]: MapLike[{}]");
         }
 
         @Test
         void deserializeFromTagWithUnknownChannelId() {
             var tag = new CompoundTag();
-            tag.putString("#c", "modid:doesnt_exist");
+            tag.putString("#t", "modid:doesnt_exist");
 
-            assertNull(AEKey.fromTagGeneric(registries, tag));
+            assertMissingContent(tag, "Unknown registry key in ResourceKey[minecraft:root / ae2:keytypes]: modid:doesnt_exist");
         }
 
         @Test
         void deserializeFromTagWithMalformedChannelId() {
             var tag = new CompoundTag();
-            tag.putString("#c", "modid!!!!!doesnt_exist");
+            tag.putString("#t", "modid!!!!!doesnt_exist");
 
-            assertNull(AEKey.fromTagGeneric(registries, tag));
+            assertMissingContent(tag, "Not a valid resource location: modid!!!!!doesnt_exist Non [a-z0-9/._-] character in path of location: minecraft:modid!!!!!doesnt_exist");
+        }
+
+        private void assertMissingContent(CompoundTag tag, String error) {
+            var decodedKey = AEKey.fromTagGeneric(registries, tag);
+            assertNotNull(decodedKey);
+            assertEquals(decodedKey.dropSecondary(), AEItemKey.of(AEItems.MISSING_CONTENT));
+            assertEquals(error, decodedKey.get(AEComponents.MISSING_CONTENT_ERROR));
+            assertNotNull(decodedKey.get(AEComponents.MISSING_CONTENT_AEKEY_DATA));
+            assertEquals(tag, decodedKey.get(AEComponents.MISSING_CONTENT_AEKEY_DATA).copyTag());
         }
     }
 

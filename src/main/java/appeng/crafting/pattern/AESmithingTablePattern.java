@@ -89,6 +89,8 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         var encodedPattern = definition.get(AEComponents.ENCODED_SMITHING_TABLE_PATTERN);
         if (encodedPattern == null) {
             throw new IllegalArgumentException("Given item does not encode a smithing table pattern: " + definition);
+        } else if (encodedPattern.containsMissingContent()) {
+            throw new IllegalArgumentException("Pattern references missing content");
         }
 
         this.template = AEItemKey.of(encodedPattern.template());

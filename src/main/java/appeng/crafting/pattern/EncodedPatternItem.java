@@ -18,13 +18,21 @@
 
 package appeng.crafting.pattern;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.WeakHashMap;
-
-import org.jetbrains.annotations.Nullable;
-
+import appeng.api.crafting.EncodedPatternDecoder;
+import appeng.api.crafting.IPatternDetails;
+import appeng.api.crafting.InvalidPatternTooltipStrategy;
+import appeng.api.crafting.PatternDetailsTooltip;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AmountFormat;
+import appeng.api.stacks.GenericStack;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEItems;
+import appeng.core.localization.GuiText;
+import appeng.items.AEBaseItem;
+import appeng.items.misc.MissingContentItem;
+import appeng.items.misc.WrappedGenericStack;
+import appeng.util.InteractionUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -37,20 +45,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.api.crafting.EncodedPatternDecoder;
-import appeng.api.crafting.IPatternDetails;
-import appeng.api.crafting.InvalidPatternTooltipStrategy;
-import appeng.api.crafting.PatternDetailsTooltip;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKeyType;
-import appeng.api.stacks.AmountFormat;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEItems;
-import appeng.core.localization.GuiText;
-import appeng.items.AEBaseItem;
-import appeng.items.misc.WrappedGenericStack;
-import appeng.util.InteractionUtil;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.WeakHashMap;
 
 /**
  * Reusable item class for encoded patterns.
@@ -67,8 +67,8 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
     private final InvalidPatternTooltipStrategy invalidPatternTooltip;
 
     public EncodedPatternItem(Properties properties,
-            EncodedPatternDecoder<T> decoder,
-            @Nullable InvalidPatternTooltipStrategy invalidPatternTooltip) {
+                              EncodedPatternDecoder<T> decoder,
+                              @Nullable InvalidPatternTooltipStrategy invalidPatternTooltip) {
         super(properties);
         this.decoder = decoder;
         this.invalidPatternTooltip = invalidPatternTooltip;
@@ -118,7 +118,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
 
     @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
-            TooltipFlag flags) {
+                                TooltipFlag flags) {
         var what = AEItemKey.of(stack);
         if (what == null) {
             // This can be called very early to index tooltips for search. In those cases,
@@ -148,13 +148,13 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
 
             boolean first = true;
             for (var output : tooltip.getOutputs()) {
-                lines.add(Component.empty().append(first ? label : and).append(getEntryLine(output)));
+                lines.add(Component.empty().append(first ? label : and).append(getTooltipEntryLine(output)));
                 first = false;
             }
 
             first = true;
             for (var input : tooltip.getInputs()) {
-                lines.add(Component.empty().append(first ? with : and).append(getEntryLine(input)));
+                lines.add(Component.empty().append(first ? with : and).append(getTooltipEntryLine(input)));
                 first = false;
             }
 
@@ -170,17 +170,18 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
         }
     }
 
-    protected static Component getEntryLine(PatternDetailsTooltip.Entry entry) {
-        if (entry instanceof PatternDetailsTooltip.ValidEntry validEntry) {
-            return getEntryLine(validEntry.what().getDisplayName(), validEntry.what().getType(), validEntry.amount());
-        } else if (entry instanceof PatternDetailsTooltip.InvalidEntry invalidEntry) {
-            return getEntryLine(invalidEntry.name(), invalidEntry.type(), invalidEntry.amount());
-        } else {
-            throw new IncompatibleClassChangeError("Unknown entry type: " + entry.getClass());
+    protected static Component getTooltipEntryLine(GenericStack stack) {
+        if (stack.what() instanceof AEItemKey itemKey && itemKey.getReadOnlyStack().getItem() instanceof MissingContentItem missingContentItem) {
+            var brokenStackInfo = missingContentItem.getBrokenStackInfo(itemKey.getReadOnlyStack());
+            if (brokenStackInfo != null) {
+                return getTooltipEntryLine(brokenStackInfo.displayName().copy().withStyle(ChatFormatting.RED), brokenStackInfo.keyType(), brokenStackInfo.amount());
+            }
         }
+
+        return getTooltipEntryLine(stack.what().getDisplayName(), stack.what().getType(), stack.amount());
     }
 
-    protected static Component getEntryLine(Component displayName, @Nullable AEKeyType amountType, long amount) {
+    protected static Component getTooltipEntryLine(Component displayName, @Nullable AEKeyType amountType, long amount) {
         if (amount > 0) {
             var amountInfo = Component.literal(amountType != null ? amountType.formatAmount(amount, AmountFormat.FULL)
                     : String.valueOf(amount));

@@ -27,10 +27,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.Objects;
-import java.util.WeakHashMap;
 
 public final class AEItemKey extends AEKey {
 
@@ -112,6 +109,10 @@ public final class AEItemKey extends AEKey {
 
     public static AEItemKey of(ItemLike item) {
         return of(item.asItem().getDefaultInstance());
+    }
+
+    public boolean is(ItemLike item) {
+        return stack.is(item.asItem());
     }
 
     public boolean matches(ItemStack stack) {

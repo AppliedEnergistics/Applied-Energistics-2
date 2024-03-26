@@ -1,5 +1,6 @@
 package appeng.crafting.pattern;
 
+import appeng.core.definitions.AEItems;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -7,8 +8,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.List;
 
 public record EncodedSmithingTablePattern(
         ItemStack template,
@@ -44,4 +43,10 @@ public record EncodedSmithingTablePattern(
             EncodedSmithingTablePattern::new
     );
 
+    public boolean containsMissingContent() {
+        return AEItems.MISSING_CONTENT.isSameAs(template)
+               || AEItems.MISSING_CONTENT.isSameAs(base)
+               || AEItems.MISSING_CONTENT.isSameAs(addition)
+               || AEItems.MISSING_CONTENT.isSameAs(resultItem);
+    }
 }

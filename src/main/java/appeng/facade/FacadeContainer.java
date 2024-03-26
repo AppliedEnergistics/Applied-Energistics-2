@@ -105,8 +105,7 @@ public class FacadeContainer implements IFacadeContainer {
     public void writeToNBT(CompoundTag c, HolderLookup.Provider registries) {
         for (var side : Direction.values()) {
             if (this.storage.getFacade(side) != null) {
-                var data = new CompoundTag();
-                this.storage.getFacade(side).getItemStack().save(registries, data);
+                var data = this.storage.getFacade(side).getItemStack().save(registries);
                 c.put(NBT_KEY_NAMES[side.ordinal()], data);
             }
         }

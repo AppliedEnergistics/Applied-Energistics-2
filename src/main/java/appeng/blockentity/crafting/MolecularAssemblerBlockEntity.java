@@ -235,9 +235,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             // If the plan is null it means the pattern previously loaded from NBT hasn't been decoded yet
             var pattern = myPlan != null ? myPlan.getDefinition().toStack() : myPattern;
             if (!pattern.isEmpty()) {
-                var compound = new CompoundTag();
-                pattern.save(registries, compound);
-                data.put("myPlan", compound);
+                data.put("myPlan", pattern.save(registries));
                 data.putInt("pushDirection", this.pushDirection.ordinal());
             }
         }

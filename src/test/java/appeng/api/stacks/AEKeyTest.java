@@ -21,7 +21,7 @@ class AEKeyTest {
 
     @Test
     void testItemJsonRoundtrip() {
-        var expected = GsonHelper.parse("{\"id\":\"minecraft:diamond\",\"#c\":\"ae2:i\"}");
+        var expected = GsonHelper.parse("{\"id\":\"minecraft:diamond\",\"#t\":\"ae2:i\"}");
 
         var ik = AEItemKey.of(Items.DIAMOND);
         testKeyTypeRoundtrip(ik, JsonOps.INSTANCE, expected);
@@ -29,7 +29,7 @@ class AEKeyTest {
 
     @Test
     void testItemJsonRoundtripWithPatchedComponents() {
-        var expected = GsonHelper.parse("{\"id\":\"minecraft:diamond\",\"components\":{\"minecraft:max_stack_size\":99},\"#c\":\"ae2:i\"}");
+        var expected = GsonHelper.parse("{\"id\":\"minecraft:diamond\",\"components\":{\"minecraft:max_stack_size\":99},\"#t\":\"ae2:i\"}");
 
         var stack = Items.DIAMOND.getDefaultInstance();
         stack.set(DataComponents.MAX_STACK_SIZE, 99);
@@ -39,7 +39,7 @@ class AEKeyTest {
 
     @Test
     void testFluidJsonRoundtrip() {
-        var expected = GsonHelper.parse("{\"id\":\"minecraft:lava\",\"#c\":\"ae2:f\"}");
+        var expected = GsonHelper.parse("{\"id\":\"minecraft:lava\",\"#t\":\"ae2:f\"}");
 
         var fk = AEFluidKey.of(Fluids.LAVA);
         testKeyTypeRoundtrip(fk, JsonOps.INSTANCE, expected);
@@ -47,7 +47,7 @@ class AEKeyTest {
 
     @Test
     void testFluidJsonRoundtripWithPatchedComponents() {
-        var expected = GsonHelper.parse("{\"id\":\"minecraft:lava\",\"components\":{\"minecraft:max_stack_size\":99},\"#c\":\"ae2:f\"}");
+        var expected = GsonHelper.parse("{\"id\":\"minecraft:lava\",\"components\":{\"minecraft:max_stack_size\":99},\"#t\":\"ae2:f\"}");
 
         var stack = new FluidStack(Fluids.LAVA, 1);
         stack.set(DataComponents.MAX_STACK_SIZE, 99);
@@ -58,7 +58,7 @@ class AEKeyTest {
     @Test
     void testToGenericTagItemKey() {
         var expected = new CompoundTag();
-        expected.putString("#c", "ae2:i");
+        expected.putString("#t", "ae2:i");
         expected.putString("id", "minecraft:diamond");
 
         var key = AEItemKey.of(Items.DIAMOND);
@@ -71,7 +71,7 @@ class AEKeyTest {
     @Test
     void testToGenericTagFluidKey() {
         var expected = new CompoundTag();
-        expected.putString("#c", "ae2:f");
+        expected.putString("#t", "ae2:f");
         expected.putString("id", "minecraft:water");
 
         var key = AEFluidKey.of(Fluids.WATER);

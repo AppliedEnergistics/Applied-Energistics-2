@@ -1,6 +1,7 @@
 package appeng.api.stacks;
 
 import appeng.items.misc.WrappedGenericStack;
+import appeng.util.AECodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
@@ -10,6 +11,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +23,14 @@ import java.util.Objects;
  * Represents some amount of some generic resource that AE can store or handle in crafting.
  */
 public record GenericStack(AEKey what, long amount) {
+    @ApiStatus.Internal
+    public static final String AMOUNT_FIELD = "#";
+
     private static final Logger LOG = LoggerFactory.getLogger(GenericStack.class);
 
     public static final Codec<GenericStack> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             AEKey.MAP_CODEC.forGetter(GenericStack::what),
-            Codec.LONG.fieldOf("amount").forGetter(GenericStack::amount)
+            Codec.LONG.fieldOf(AMOUNT_FIELD).forGetter(GenericStack::amount)
     ).apply(builder, GenericStack::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, GenericStack> STREAM_CODEC = StreamCodec.ofMember(

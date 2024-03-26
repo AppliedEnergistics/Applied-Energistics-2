@@ -87,6 +87,8 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         var encodedPattern = definition.get(AEComponents.ENCODED_CRAFTING_PATTERN);
         if (encodedPattern == null) {
             throw new IllegalArgumentException("Given item does not encode a crafting pattern: " + definition);
+        } else if (encodedPattern.containsMissingContent()) {
+            throw new IllegalArgumentException("Pattern references missing content");
         }
 
         this.canSubstitute = encodedPattern.canSubstitute();

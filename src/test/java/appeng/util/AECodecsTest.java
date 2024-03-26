@@ -45,7 +45,7 @@ class AECodecsTest {
                 .getFirst();
         assertEquals(AEItems.MISSING_CONTENT.asItem(), decodedMissingContent.getItem());
         assertTrue(decodedMissingContent.has(AEComponents.MISSING_CONTENT_ERROR));
-        assertTrue(decodedMissingContent.has(AEComponents.MISSING_CONTENT_DATA));
+        assertTrue(decodedMissingContent.has(AEComponents.MISSING_CONTENT_ITEMSTACK_DATA));
 
         // When we re-serialize the missing content, it should result in the same broken NBT as it was before
         var reEncodedMissingContent = Util.getOrThrow(AECodecs.FAULT_TOLERANT_SIMPLE_ITEM_CODEC.encodeStart(NbtOps.INSTANCE, decodedMissingContent), IllegalStateException::new);
@@ -109,7 +109,7 @@ class AECodecsTest {
             var brokenItemTag = (CompoundTag) encodedWithBrokenItem.get(1);
             var errorMessage = ItemStack.CODEC.decode(NbtOps.INSTANCE, brokenItemTag).error().map(DataResult.PartialResult::message).get();
             var expectedMissingContent = AEItems.MISSING_CONTENT.stack();
-            expectedMissingContent.set(AEComponents.MISSING_CONTENT_DATA, CustomData.of(brokenItemTag));
+            expectedMissingContent.set(AEComponents.MISSING_CONTENT_ITEMSTACK_DATA, CustomData.of(brokenItemTag));
             expectedMissingContent.set(AEComponents.MISSING_CONTENT_ERROR, errorMessage);
 
             // Using the fault-tolerant codec will give us the full list, but with diamond replaced

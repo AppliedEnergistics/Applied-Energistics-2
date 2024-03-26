@@ -349,8 +349,7 @@ public class SiteExportWriter {
             return itemId;
         }
 
-        var serializedTag = new CompoundTag();
-        stack.save(Platform.getClientRegistryAccess(), serializedTag);
+        var serializedTag = (CompoundTag) stack.save(Platform.getClientRegistryAccess());
 
         MessageDigest digest;
         try {

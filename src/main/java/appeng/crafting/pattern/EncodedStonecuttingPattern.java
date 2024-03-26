@@ -1,5 +1,6 @@
 package appeng.crafting.pattern;
 
+import appeng.core.definitions.AEItems;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -34,4 +35,7 @@ public record EncodedStonecuttingPattern(
             EncodedStonecuttingPattern::new
     );
 
+    public boolean containsMissingContent() {
+        return AEItems.MISSING_CONTENT.isSameAs(input) || AEItems.MISSING_CONTENT.isSameAs(output);
+    }
 }

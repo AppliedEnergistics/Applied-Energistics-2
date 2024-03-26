@@ -489,14 +489,14 @@ class InternalInventoryTest {
                         "10 minecraft:diamond_sword",
                         "1 minecraft:diamond_sword [has components]",
                         "5 minecraft:stick [has components]",
-                        "5 minecraft:diamond_sword [has components]",
+                        "5 minecraft:diamond_sword",
                         "1 minecraft:diamond_sword [has components]");
 
                 assertEquals("15 minecraft:stick", inv.removeItems(15, ItemStack.EMPTY, null).toString());
                 assertThat(reportFilledSlots(inv)).containsOnly(
                         "10 minecraft:diamond_sword",
                         "1 minecraft:diamond_sword [has components]",
-                        "5 minecraft:diamond_sword [has components]",
+                        "5 minecraft:diamond_sword",
                         "1 minecraft:diamond_sword [has components]");
 
                 // Note how it'll extract only 1 sword of each slot per-iteration because
@@ -506,7 +506,7 @@ class InternalInventoryTest {
                 assertThat(reportFilledSlots(inv)).containsOnly(
                         "9 minecraft:diamond_sword",
                         "1 minecraft:diamond_sword [has components]",
-                        "4 minecraft:diamond_sword [has components]",
+                        "4 minecraft:diamond_sword",
                         "1 minecraft:diamond_sword [has components]");
                 // Extract the rest of it
                 for (var i = 0; i < 4; i++) {
@@ -536,7 +536,7 @@ class InternalInventoryTest {
                         // This is the remainder of the 15 minecraft:sticks previously in the inventory
                         "1 minecraft:stick",
                         "5 minecraft:stick [has components]",
-                        "5 minecraft:diamond_sword [has components]",
+                        "5 minecraft:diamond_sword",
                         "1 minecraft:diamond_sword [has components]");
             }
 

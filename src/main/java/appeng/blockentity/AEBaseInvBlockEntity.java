@@ -21,6 +21,7 @@ package appeng.blockentity;
 import java.util.List;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -65,12 +66,8 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
         if (inv != InternalInventory.empty()) {
             final CompoundTag opt = new CompoundTag();
             for (int x = 0; x < inv.size(); x++) {
-                final CompoundTag item = new CompoundTag();
-                final ItemStack is = inv.getStackInSlot(x);
-                if (!is.isEmpty()) {
-                    is.save(registries, item);
-                }
-                opt.put("item" + x, item);
+                var is = inv.getStackInSlot(x);
+                opt.put("item" + x, is.saveOptional(registries));
             }
             data.put("inv", opt);
         }

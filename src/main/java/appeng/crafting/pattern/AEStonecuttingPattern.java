@@ -82,6 +82,8 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         var encodedPattern = definition.get(AEComponents.ENCODED_STONECUTTING_PATTERN);
         if (encodedPattern == null) {
             throw new IllegalArgumentException("Given item does not encode a stonecutting pattern: " + definition);
+        } else if (encodedPattern.containsMissingContent()) {
+            throw new IllegalArgumentException("Pattern references missing content");
         }
 
         this.input = AEItemKey.of(encodedPattern.input());

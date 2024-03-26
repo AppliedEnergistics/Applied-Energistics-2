@@ -340,7 +340,11 @@ public final class AEComponents {
             builder -> builder.persistent(SpatialPlotInfo.CODEC).networkSynchronized(SpatialPlotInfo.STREAM_CODEC)
     );
 
-    public static final DataComponentType<CustomData> MISSING_CONTENT_DATA = register("missing_content_data",
+    public static final DataComponentType<CustomData> MISSING_CONTENT_ITEMSTACK_DATA = register("missing_content_itemstack_data",
+            builder -> builder.persistent(CustomData.CODEC).networkSynchronized(CustomData.STREAM_CODEC)
+    );
+
+    public static final DataComponentType<CustomData> MISSING_CONTENT_AEKEY_DATA = register("missing_content_aekey_data",
             builder -> builder.persistent(CustomData.CODEC).networkSynchronized(CustomData.STREAM_CODEC)
     );
 

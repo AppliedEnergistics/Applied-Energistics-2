@@ -1,5 +1,8 @@
 package appeng.crafting.pattern;
 
+import appeng.core.definitions.AEItems;
+import appeng.util.AECodecs;
+import com.google.common.collect.Streams;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -19,8 +22,8 @@ public record EncodedCraftingPattern(
 ) {
 
     public static final Codec<EncodedCraftingPattern> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            ItemStack.OPTIONAL_CODEC.listOf().fieldOf("inputs").forGetter(EncodedCraftingPattern::inputs),
-            ItemStack.CODEC.fieldOf("result").forGetter(EncodedCraftingPattern::result),
+            AECodecs.FAULT_TOLERANT_OPTIONAL_ITEMSTACK_CODEC.listOf().fieldOf("inputs").forGetter(EncodedCraftingPattern::inputs),
+            AECodecs.FAULT_TOLERANT_ITEMSTACK_CODEC.fieldOf("result").forGetter(EncodedCraftingPattern::result),
             ResourceLocation.CODEC.fieldOf("recipeId").forGetter(EncodedCraftingPattern::recipeId),
             Codec.BOOL.fieldOf("canSubstitute").forGetter(EncodedCraftingPattern::canSubstitute),
             Codec.BOOL.fieldOf("canSubstituteFluids").forGetter(EncodedCraftingPattern::canSubstituteFluids)
@@ -40,4 +43,7 @@ public record EncodedCraftingPattern(
             EncodedCraftingPattern::new
     );
 
+    public boolean containsMissingContent() {
+        return AEItems.MISSING_CONTENT.isSameAs(result) || inputs.stream().anyMatch(AEItems.MISSING_CONTENT::isSameAs);
+    }
 }

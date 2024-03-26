@@ -1,11 +1,13 @@
 package appeng.api.stacks;
 
 import appeng.api.config.FuzzyMode;
+import appeng.api.ids.AEComponents;
 import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.Lifecycle;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
@@ -21,6 +23,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
@@ -43,24 +46,50 @@ import java.util.List;
  * </ul>
  */
 public abstract class AEKey {
+    public static final String TYPE_FIELD = "#t";
     private static final Logger LOG = LoggerFactory.getLogger(AEKey.class);
+    public static final MapCodec<AEKey> MAP_CODEC = AEKeyType.CODEC.<AEKey>dispatchMap(TYPE_FIELD, AEKey::getType, AEKeyType::codec)
+            .mapResult(new MapCodec.ResultFunction<>() {
+                @Override
+                public <T> DataResult<AEKey> apply(DynamicOps<T> ops, MapLike<T> input, DataResult<AEKey> a) {
+                    var result = a.get();
+                    if (result.left().isPresent()) {
+                        return a; // Return unchanged if deserialization succeeded
+                    }
 
-    public static final MapCodec<AEKey> MAP_CODEC = AEKeyType.CODEC.dispatchMap("#c", AEKey::getType, AEKeyType::codec);
+                    var missingContent = AEItems.MISSING_CONTENT.stack();
+                    var convert = ops.convertMap(NbtOps.INSTANCE, ops.createMap(input.entries()));
+                    if (convert instanceof CompoundTag compoundTag) {
+                        missingContent.set(AEComponents.MISSING_CONTENT_AEKEY_DATA, CustomData.of(compoundTag));
+                    }
+                    result.right().ifPresent(partialResult -> {
+                        LOG.error("Failed to deserialize AE key: {}", partialResult.message());
+                        missingContent.set(AEComponents.MISSING_CONTENT_ERROR, partialResult.message());
+                    });
 
-    /**
-     * Replaces unserializable AEKeys with instances of {@link AEItems#MISSING_CONTENT}.
-     */
-    public static final MapCodec<AEKey> FAULT_TOLERANT_MAP_CODEC = MAP_CODEC.mapResult(new MapCodec.ResultFunction<>() {
-        @Override
-        public <T> DataResult<AEKey> apply(DynamicOps<T> ops, MapLike<T> input, DataResult<AEKey> a) {
-            return a;
-        }
+                    return DataResult.success(
+                            AEItemKey.of(missingContent),
+                            Lifecycle.stable()
+                    );
+                }
 
-        @Override
-        public <T> RecordBuilder<T> coApply(DynamicOps<T> ops, AEKey input, RecordBuilder<T> t) {
-            return t;
-        }
-    });
+                @Override
+                public <T> RecordBuilder<T> coApply(DynamicOps<T> ops, AEKey input, RecordBuilder<T> t) {
+                    // When the input is a MISSING_CONTENT item and has the original data attached,
+                    // we write that back.
+                    if (AEItems.MISSING_CONTENT.isSameAs(input)) {
+                        var originalData = input.get(AEComponents.MISSING_CONTENT_AEKEY_DATA);
+                        if (originalData != null) {
+                            var originalDataMap = originalData.getUnsafe();
+                            for (var key : originalDataMap.getAllKeys()) {
+                                t.add(key, NbtOps.INSTANCE.convertTo(ops, originalDataMap.get(key)));
+                            }
+                        }
+                    }
+
+                    return t;
+                }
+            });
 
     public static final Codec<AEKey> CODEC = MAP_CODEC.codec();
 

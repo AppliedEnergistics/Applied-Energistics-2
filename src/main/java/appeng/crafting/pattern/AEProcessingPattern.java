@@ -55,6 +55,8 @@ public class AEProcessingPattern implements IPatternDetails {
         var encodedPattern = definition.get(AEComponents.ENCODED_PROCESSING_PATTERN);
         if (encodedPattern == null) {
             throw new IllegalArgumentException("Given item does not encode a processing pattern: " + definition);
+        } else if (encodedPattern.containsMissingContent()) {
+            throw new IllegalArgumentException("Pattern references missing content");
         }
 
         this.sparseInputs = encodedPattern.sparseInputs();

@@ -3,10 +3,14 @@ package appeng.crafting.execution;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
+import appeng.core.definitions.AEItems;
 import appeng.items.misc.WrappedGenericStack;
 import appeng.util.BootstrapMinecraft;
 import appeng.util.CodecTestUtil;
+import appeng.util.RecursiveTagReplace;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -19,12 +23,13 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 @BootstrapMinecraft
 class GenericStackTest {
     @Test
     void testItemJsonRoundtrip() {
-        var expected = GsonHelper.parse("{\"id\":\"minecraft:diamond\",\"#c\":\"ae2:i\",\"amount\":9223372036854775807}");
+        var expected = GsonHelper.parse("{\"id\":\"minecraft:diamond\",\"#t\":\"ae2:i\",\"#\":9223372036854775807}");
 
         var ik = AEItemKey.of(Items.DIAMOND);
         var gs = new GenericStack(ik, Long.MAX_VALUE);
@@ -33,12 +38,42 @@ class GenericStackTest {
 
     @Test
     void testNullableListRoundtrip() {
-        var expected = GsonHelper.parseArray("[{},{\"id\":\"minecraft:diamond\",\"#c\":\"ae2:i\",\"amount\":1000}]");
+        var expected = GsonHelper.parseArray("[{},{\"id\":\"minecraft:diamond\",\"#t\":\"ae2:i\",\"#\":1000}]");
 
         var list = new ArrayList<GenericStack>();
         list.add(null);
         list.add(new GenericStack(AEItemKey.of(Items.DIAMOND), 1000));
         CodecTestUtil.testRoundtrip(GenericStack.NULLABLE_LIST_CODEC, list, JsonOps.INSTANCE, expected);
+    }
+
+    @Nested
+    class MissingContent {
+        GenericStack baseStack = new GenericStack(AEItemKey.of(Items.STICK), 1000);
+
+        CompoundTag serialized = (CompoundTag) GenericStack.CODEC.encodeStart(NbtOps.INSTANCE, baseStack).getOrThrow(false, err -> {
+        });
+
+        @Test
+        void testMissingContentForUnknownChannel() {
+            assertEquals(1, RecursiveTagReplace.replace(serialized, "ae2:i", "invalid_channel_id"));
+            var stack = deserialize();
+            assertSame(AEItems.MISSING_CONTENT.asItem(), assertInstanceOf(AEItemKey.class, stack.what()).getItem());
+            assertEquals(baseStack.amount(), stack.amount()); // don't lose the amount
+        }
+
+        @Test
+        void testMissingContentForUnknownId() {
+            assertEquals(1, RecursiveTagReplace.replace(serialized, "minecraft:stick", "invalid_item_id"));
+            var stack = deserialize();
+            assertSame(AEItems.MISSING_CONTENT.asItem(), assertInstanceOf(AEItemKey.class, stack.what()).getItem());
+            assertEquals(baseStack.amount(), stack.amount()); // don't lose the amount
+        }
+
+        private GenericStack deserialize() {
+            return GenericStack.CODEC.decode(NbtOps.INSTANCE, serialized).getOrThrow(false, err -> {
+            }).getFirst();
+        }
+
     }
 
     @Nested
