@@ -61,6 +61,8 @@ See [Bytes and Types](../ae2-mechanics/bytes-and-types.md) for an explanation of
 
 Storage components can be removed from the housing if the cell is empty by shift-right clicking with the cell in your hand.
 
+You can upgrade storage cells to higher tiers by combining them with higher-tier crafting components in a crafting grid. Their content will be retained.
+
 ## Storage Capacity with Varying Type Count
 
 The [upfront cost of types](../ae2-mechanics/bytes-and-types.md) is such that a cell holding 1 type can hold 2x as much as a cell with all 63 types in use.

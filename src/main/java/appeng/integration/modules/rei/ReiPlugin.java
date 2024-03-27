@@ -28,6 +28,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 
 import dev.architectury.event.CompoundEventResult;
 import me.shedaniel.math.Rectangle;
@@ -40,6 +42,7 @@ import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
+import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
@@ -48,6 +51,7 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.forge.REIPluginClient;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import me.shedaniel.rei.plugin.common.displays.DefaultInformationDisplay;
+import me.shedaniel.rei.plugin.common.displays.crafting.DefaultCustomShapelessDisplay;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.CondenserOutput;
@@ -74,6 +78,7 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.recipes.entropy.EntropyRecipe;
+import appeng.recipes.game.StorageCellUpgradeRecipe;
 import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.transform.TransformRecipe;
@@ -128,11 +133,22 @@ public class ReiPlugin implements REIClientPlugin {
         registry.registerRecipeFiller(ChargerRecipe.class, ChargerRecipe.TYPE, ChargerDisplay::new);
         registry.registerRecipeFiller(TransformRecipe.class, TransformRecipe.TYPE, TransformRecipeWrapper::new);
         registry.registerRecipeFiller(EntropyRecipe.class, EntropyRecipe.TYPE, EntropyRecipeDisplay::new);
+        registry.registerRecipeFiller(StorageCellUpgradeRecipe.class, RecipeType.CRAFTING,
+                this::convertStorageCellUpgradeRecipe);
 
         registry.add(new CondenserOutputDisplay(CondenserOutput.MATTER_BALLS));
         registry.add(new CondenserOutputDisplay(CondenserOutput.SINGULARITY));
 
         registerDescriptions(registry);
+    }
+
+    private Display convertStorageCellUpgradeRecipe(RecipeHolder<StorageCellUpgradeRecipe> holder) {
+        var recipe = holder.value();
+
+        return new DefaultCustomShapelessDisplay(
+                holder,
+                List.of(EntryIngredients.of(recipe.getInputCell()), EntryIngredients.of(recipe.getInputComponent())),
+                List.of(EntryIngredients.of(recipe.getResultCell()), EntryIngredients.of(recipe.getResultComponent())));
     }
 
     @Override

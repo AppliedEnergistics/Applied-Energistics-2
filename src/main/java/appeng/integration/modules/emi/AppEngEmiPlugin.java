@@ -17,6 +17,7 @@ import dev.emi.emi.api.EmiApi;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
+import dev.emi.emi.api.recipe.EmiCraftingRecipe;
 import dev.emi.emi.api.recipe.EmiInfoRecipe;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
@@ -42,6 +43,7 @@ import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.menu.me.items.WirelessCraftingTermMenu;
 import appeng.recipes.entropy.EntropyRecipe;
+import appeng.recipes.game.StorageCellUpgradeRecipe;
 import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.transform.TransformRecipe;
@@ -87,6 +89,9 @@ public class AppEngEmiPlugin implements EmiPlugin {
         registry.addWorkstation(EmiChargerRecipe.CATEGORY, EmiStack.of(AEBlocks.CRANK));
         adaptRecipeType(registry, ChargerRecipe.TYPE, EmiChargerRecipe::new);
 
+        // Special upgrade recipes
+        adaptSpecialRecipes(registry, StorageCellUpgradeRecipe.class, this::convertStorageCellUpgradeRecipe);
+
         // P2P attunement
         registry.addCategory(EmiP2PAttunementRecipe.CATEGORY);
         registry.addDeferredRecipes(this::registerP2PAttunements);
@@ -116,6 +121,22 @@ public class AppEngEmiPlugin implements EmiPlugin {
             var stack = emiStack.getItemStack();
             return !stack.isEmpty() && ItemPredicates.shouldBeHidden(stack);
         });
+    }
+
+    private EmiRecipe convertStorageCellUpgradeRecipe(RecipeHolder<StorageCellUpgradeRecipe> holder) {
+        var recipe = holder.value();
+        var cellStack = EmiStack.of(recipe.getInputCell());
+        cellStack.setRemainder(EmiStack.of(recipe.getResultComponent()));
+        return new EmiCraftingRecipe(
+                List.of(cellStack, EmiStack.of(recipe.getInputComponent())),
+                EmiStack.of(recipe.getResultCell()),
+                holder.id(),
+                true) {
+            @Override
+            public boolean supportsRecipeTree() {
+                return false; // Since this is an upgrade recipe, do not show on tree
+            }
+        };
     }
 
     private void registerWorkstations(EmiRegistry registry) {
@@ -159,6 +180,16 @@ public class AppEngEmiPlugin implements EmiPlugin {
         registry.getRecipeManager().getAllRecipesFor(recipeType)
                 .stream()
                 .map(adapter)
+                .forEach(registry::addRecipe);
+    }
+
+    private static <T extends Recipe<?>> void adaptSpecialRecipes(EmiRegistry registry,
+            Class<T> recipeClass,
+            Function<RecipeHolder<T>, ? extends EmiRecipe> adapter) {
+        registry.getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING)
+                .stream()
+                .filter(r -> recipeClass.isInstance(r.value()))
+                .map(r -> adapter.apply(new RecipeHolder<>(r.id(), recipeClass.cast(r.value()))))
                 .forEach(registry::addRecipe);
     }
 
