@@ -11,6 +11,7 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
+import appeng.api.AECapabilities;
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.networking.IInWorldGridNodeHost;
@@ -22,7 +23,6 @@ import appeng.blockentity.misc.GrowthAcceleratorBlockEntity;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.powersink.AEBasePoweredBlockEntity;
 import appeng.blockentity.storage.ChestBlockEntity;
-import appeng.capabilities.AppEngCapabilities;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
@@ -67,7 +67,7 @@ public final class InitCapabilityProviders {
                     AEBasePoweredBlockEntity::getEnergyStorage);
         }
         for (var type : AEBlockEntities.getImplementorsOf(IInWorldGridNodeHost.class)) {
-            event.registerBlockEntity(AppEngCapabilities.IN_WORLD_GRID_NODE_HOST, type,
+            event.registerBlockEntity(AECapabilities.IN_WORLD_GRID_NODE_HOST, type,
                     (object, context) -> (IInWorldGridNodeHost) object);
         }
     }
@@ -78,7 +78,7 @@ public final class InitCapabilityProviders {
     public static void registerGenericAdapters(RegisterCapabilitiesEvent event) {
 
         for (var block : BuiltInRegistries.BLOCK) {
-            if (event.isBlockRegistered(AppEngCapabilities.GENERIC_INTERNAL_INV, block)) {
+            if (event.isBlockRegistered(AECapabilities.GENERIC_INTERNAL_INV, block)) {
                 registerGenericInvAdapter(event, block, Capabilities.ItemHandler.BLOCK, GenericStackItemStorage::new);
                 registerGenericInvAdapter(event, block, Capabilities.FluidHandler.BLOCK, GenericStackFluidStorage::new);
             }
@@ -93,7 +93,7 @@ public final class InitCapabilityProviders {
         event.registerBlock(
                 capability,
                 (level, pos, state, blockEntity, context) -> {
-                    var genericInv = level.getCapability(AppEngCapabilities.GENERIC_INTERNAL_INV, pos, state,
+                    var genericInv = level.getCapability(AECapabilities.GENERIC_INTERNAL_INV, pos, state,
                             blockEntity, context);
                     if (genericInv != null) {
                         return adapter.apply(genericInv);
@@ -105,12 +105,12 @@ public final class InitCapabilityProviders {
 
     private static void initInterface(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(
-                AppEngCapabilities.GENERIC_INTERNAL_INV,
+                AECapabilities.GENERIC_INTERNAL_INV,
                 AEBlockEntities.INTERFACE,
                 (be, context) -> be.getInterfaceLogic().getStorage());
 
         event.registerBlockEntity(
-                AppEngCapabilities.ME_STORAGE,
+                AECapabilities.ME_STORAGE,
                 AEBlockEntities.INTERFACE,
                 (blockEntity, context) -> {
                     return blockEntity.getInterfaceLogic().getInventory();
@@ -119,7 +119,7 @@ public final class InitCapabilityProviders {
 
     private static void initPatternProvider(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(
-                AppEngCapabilities.GENERIC_INTERNAL_INV,
+                AECapabilities.GENERIC_INTERNAL_INV,
                 AEBlockEntities.PATTERN_PROVIDER,
                 (blockEntity, context) -> blockEntity.getLogic().getReturnInv());
     }
@@ -134,7 +134,7 @@ public final class InitCapabilityProviders {
                 ((blockEntity, context) -> {
                     return blockEntity.getFluidHandler();
                 }));
-        event.registerBlockEntity(AppEngCapabilities.ME_STORAGE, AEBlockEntities.CONDENSER, (blockEntity, context) -> {
+        event.registerBlockEntity(AECapabilities.ME_STORAGE, AEBlockEntities.CONDENSER, (blockEntity, context) -> {
             return blockEntity.getMEStorage();
         });
     }
@@ -142,12 +142,12 @@ public final class InitCapabilityProviders {
     private static void initMEChest(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, AEBlockEntities.CHEST,
                 ChestBlockEntity::getFluidHandler);
-        event.registerBlockEntity(AppEngCapabilities.ME_STORAGE, AEBlockEntities.CHEST, ChestBlockEntity::getMEStorage);
+        event.registerBlockEntity(AECapabilities.ME_STORAGE, AEBlockEntities.CHEST, ChestBlockEntity::getMEStorage);
     }
 
     private static void initMisc(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(
-                AppEngCapabilities.CRAFTING_MACHINE,
+                AECapabilities.CRAFTING_MACHINE,
                 AEBlockEntities.MOLECULAR_ASSEMBLER,
                 (object, context) -> object);
         event.registerBlockEntity(
@@ -194,11 +194,11 @@ public final class InitCapabilityProviders {
     }
 
     private static void initCrankable(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(AppEngCapabilities.CRANKABLE, AEBlockEntities.CHARGER,
+        event.registerBlockEntity(AECapabilities.CRANKABLE, AEBlockEntities.CHARGER,
                 ChargerBlockEntity::getCrankable);
-        event.registerBlockEntity(AppEngCapabilities.CRANKABLE, AEBlockEntities.INSCRIBER,
+        event.registerBlockEntity(AECapabilities.CRANKABLE, AEBlockEntities.INSCRIBER,
                 InscriberBlockEntity::getCrankable);
-        event.registerBlockEntity(AppEngCapabilities.CRANKABLE, AEBlockEntities.GROWTH_ACCELERATOR,
+        event.registerBlockEntity(AECapabilities.CRANKABLE, AEBlockEntities.GROWTH_ACCELERATOR,
                 GrowthAcceleratorBlockEntity::getCrankable);
     }
 
@@ -206,12 +206,12 @@ public final class InitCapabilityProviders {
         event.register(Capabilities.ItemHandler.BLOCK,
                 (part, direction) -> part.getLogic().getBlankPatternInv().toItemHandler(),
                 PatternEncodingTerminalPart.class);
-        event.register(AppEngCapabilities.GENERIC_INTERNAL_INV, (part, context) -> part.getLogic().getReturnInv(),
+        event.register(AECapabilities.GENERIC_INTERNAL_INV, (part, context) -> part.getLogic().getReturnInv(),
                 PatternProviderPart.class);
-        event.register(AppEngCapabilities.GENERIC_INTERNAL_INV,
+        event.register(AECapabilities.GENERIC_INTERNAL_INV,
                 (part, context) -> part.getInterfaceLogic().getStorage(),
                 InterfacePart.class);
-        event.register(AppEngCapabilities.ME_STORAGE,
+        event.register(AECapabilities.ME_STORAGE,
                 (part, context) -> part.getInterfaceLogic().getInventory(), InterfacePart.class);
 
         event.register(Capabilities.ItemHandler.BLOCK, (part, context) -> part.getExposedApi(),
