@@ -1,0 +1,7 @@
+{
+  "type": "ae2:storage_cell_upgrade",
+  "input_cell": "ae2:fluid_storage_cell_1k",
+  "input_component": "ae2:cell_component_64k",
+  "result_cell": "ae2:fluid_storage_cell_64k",
+  "result_component": "ae2:cell_component_1k"
+}

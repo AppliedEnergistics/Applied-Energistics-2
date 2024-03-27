@@ -31,7 +31,7 @@ public class BoxTagCompiler extends BlockTagCompiler {
                 hbox.setGap(gap);
                 yield hbox;
             }
-            default -> {
+            case COLUMN -> {
                 var vbox = new LytVBox();
                 vbox.setGap(gap);
                 yield vbox;

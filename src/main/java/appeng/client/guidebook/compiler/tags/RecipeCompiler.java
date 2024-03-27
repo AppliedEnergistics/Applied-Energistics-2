@@ -1,5 +1,6 @@
 package appeng.client.guidebook.compiler.tags;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -108,7 +109,25 @@ public class RecipeCompiler extends BlockTagCompiler {
             Function<RecipeHolder<T>, LytBlock> factory) {
         @Nullable
         LytBlock tryCreate(RecipeManager recipeManager, Item resultItem) {
+            // We try to find non-special recipes first then fall back to special
+            List<RecipeHolder<T>> fallbackCandidates = new ArrayList<>();
             for (var recipe : recipeManager.byType(recipeType).values()) {
+                if (recipe.value().isSpecial()) {
+                    fallbackCandidates.add(recipe);
+                    continue;
+                }
+
+                try {
+                    if (recipe.value().getResultItem(null).getItem() == resultItem) {
+                        return factory.apply(recipe);
+                    }
+                } catch (Exception ignored) {
+                    // :-P
+                    // Happens if the recipe doesn't accept a null RegistryAccess
+                }
+            }
+
+            for (var recipe : fallbackCandidates) {
                 try {
                     if (recipe.value().getResultItem(null).getItem() == resultItem) {
                         return factory.apply(recipe);

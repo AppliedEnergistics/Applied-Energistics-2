@@ -70,8 +70,8 @@ public final class FacadeRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean canCraftInDimensions(int i, int i1) {
-        return false;
+    public boolean canCraftInDimensions(int width, int height) {
+        return width >= 3 && height >= 3;
     }
 
     @Override
