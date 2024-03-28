@@ -393,7 +393,7 @@ public final class MeteoritePlacer {
                 (currentState.getFluidState().isEmpty() &&
                         (currentState.canBeReplaced() || currentState.is(BlockTags.REPLACEABLE)))) {
 
-            if (level.getRandom().nextFloat() < 0.075f) {
+            if (craterType == CraterType.LAVA && level.getRandom().nextFloat() < 0.075f) {
                 this.putter.put(level, enclosingBlockPos, Blocks.MAGMA_BLOCK.defaultBlockState());
             } else {
                 this.type.getRandomFall(level, enclosingBlockPos);
