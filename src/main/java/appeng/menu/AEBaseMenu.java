@@ -72,7 +72,6 @@ import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import appeng.menu.slot.DisabledSlot;
 import appeng.menu.slot.FakeSlot;
-import appeng.menu.slot.InaccessibleSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigMenuInventory;
 
@@ -328,6 +327,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 || slotSemantic == SlotSemantics.PLAYER_HOTBAR
                 || slotSemantic == SlotSemantics.TOOLBOX
                 // The crafting grid in the crafting terminal also shift-clicks into the network
+                // We specifically block moving from network into this slot type though
                 || slotSemantic == SlotSemantics.CRAFTING_GRID;
     }
 
@@ -366,159 +366,108 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             return ItemStack.EMPTY;
         }
 
-        final Slot clickSlot = this.slots.get(idx);
-        boolean playerSide = isPlayerSideSlot(clickSlot);
+        var clickSlot = this.slots.get(idx);
 
-        if (clickSlot instanceof DisabledSlot || clickSlot instanceof InaccessibleSlot) {
+        // Vanilla will check this before calling this method, but we do use it in other contexts as well (move region)
+        if (!clickSlot.mayPickup(player)) {
             return ItemStack.EMPTY;
         }
-        if (clickSlot.hasItem()) {
-            ItemStack tis = clickSlot.getItem();
 
-            if (tis.isEmpty()) {
-                return ItemStack.EMPTY;
-            }
-
-            final List<Slot> selectedSlots = new ArrayList<>();
-
-            // Gather a list of valid destinations.
-            if (playerSide) {
-                tis = this.transferStackToMenu(tis);
-
-                if (!tis.isEmpty()) {
-                    // target slots in the menu...
-                    for (Slot cs : this.slots) {
-                        if (!isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)
-                                && cs.mayPlace(tis)) {
-                            selectedSlots.add(cs);
-                        }
-                    }
-                }
-            } else {
-                tis = tis.copy();
-
-                // target slots in the menu...
-                for (Slot cs : this.slots) {
-                    if (isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)
-                            && cs.mayPlace(tis)) {
-                        selectedSlots.add(cs);
-                    }
-                }
-            }
-
-            // Handle Fake Slot Shift clicking.
-            if (selectedSlots.isEmpty() && playerSide && !tis.isEmpty()) {
-                // target slots in the menu...
-                for (Slot cs : this.slots) {
-                    if (cs instanceof FakeSlot && !isPlayerSideSlot(cs)) {
-                        var destination = cs.getItem();
-                        if (ItemStack.isSameItemSameTags(destination, tis)) {
-                            break; // Item is already in the filter
-                        } else if (destination.isEmpty()) {
-                            cs.set(tis.copy());
-                            // ???
-                            this.broadcastChanges();
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (!tis.isEmpty()) {
-                // find slots to stack the item into
-                for (Slot d : selectedSlots) {
-                    if (d.mayPlace(tis) && d.hasItem() && x(clickSlot, tis, d)) {
-                        return ItemStack.EMPTY;
-                    }
-                }
-
-                // FIXME figure out whats the difference between this and the one above ?!
-                // any match..
-                for (Slot d : selectedSlots) {
-                    if (d.mayPlace(tis)) {
-                        if (d.hasItem()) {
-                            if (x(clickSlot, tis, d)) {
-                                return ItemStack.EMPTY;
-                            }
-                        } else {
-                            int maxSize = tis.getMaxStackSize();
-                            if (maxSize > d.getMaxStackSize()) {
-                                maxSize = d.getMaxStackSize();
-                            }
-
-                            final ItemStack tmp = tis.copy();
-                            if (tmp.getCount() > maxSize) {
-                                tmp.setCount(maxSize);
-                            }
-
-                            tis.setCount(tis.getCount() - tmp.getCount());
-                            d.set(tmp);
-
-                            if (tis.getCount() <= 0) {
-                                clickSlot.set(ItemStack.EMPTY);
-                                d.setChanged();
-
-                                this.broadcastChanges();
-                                return ItemStack.EMPTY;
-                            } else {
-                                this.broadcastChanges();
-                            }
-                        }
-                    }
-                }
-            }
-
-            clickSlot.set(!tis.isEmpty() ? tis : ItemStack.EMPTY);
+        var stackToMove = clickSlot.getItem();
+        if (stackToMove.isEmpty()) {
+            return ItemStack.EMPTY;
         }
 
-        // ???
-        this.broadcastChanges();
+        // Gather a list of valid destinations.
+        var destinationSlots = new ArrayList<Slot>();
+        var fromPlayerSide = isPlayerSideSlot(clickSlot);
+        if (fromPlayerSide) {
+            stackToMove = this.transferStackToMenu(stackToMove);
+
+            if (!stackToMove.isEmpty()) {
+                // target slots in the menu...
+                for (Slot candidateSLot : this.slots) {
+                    if (!isPlayerSideSlot(candidateSLot)
+                            && !(candidateSLot instanceof FakeSlot)
+                            && !(candidateSLot instanceof CraftingMatrixSlot)
+                            && candidateSLot.mayPlace(stackToMove)) {
+                        destinationSlots.add(candidateSLot);
+                    }
+                }
+            }
+        } else {
+            stackToMove = stackToMove.copy();
+
+            // Slot semantics to target on the player-side based on priority
+            // This prevents items from being moved into the hotbar first
+            for (var semantic : getPlayerSideSlotSemanticsByPriority()) {
+                for (var candidateSlot : getSlots(semantic)) {
+                    if (isPlayerSideSlot(candidateSlot)
+                            && !(candidateSlot instanceof FakeSlot)
+                            && !(candidateSlot instanceof CraftingMatrixSlot)
+                            && candidateSlot.mayPlace(stackToMove)) {
+                        destinationSlots.add(candidateSlot);
+                    }
+                }
+            }
+        }
+
+        // Handle Fake Slot Shift clicking.
+        if (destinationSlots.isEmpty() && fromPlayerSide && !stackToMove.isEmpty()) {
+            for (Slot cs : this.slots) {
+                if (cs instanceof FakeSlot && !isPlayerSideSlot(cs)) {
+                    var destination = cs.getItem();
+                    if (ItemStack.isSameItemSameTags(destination, stackToMove)) {
+                        break; // Item is already in the filter
+                    } else if (destination.isEmpty()) {
+                        cs.set(stackToMove.copy());
+                        // ???
+                        this.broadcastChanges();
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Prefer stacking into slots that already have the same in them
+        if (!stackToMove.isEmpty()) {
+            for (var dest : destinationSlots) {
+                if (dest.hasItem() && (stackToMove = dest.safeInsert(stackToMove)).isEmpty()) {
+                    break;
+                }
+            }
+        }
+
+        // Now try placing it in empty slots, if it's not already fully consumed
+        if (!stackToMove.isEmpty()) {
+            for (var dest : destinationSlots) {
+                if (!dest.hasItem() && (stackToMove = dest.safeInsert(stackToMove)).isEmpty()) {
+                    break;
+                }
+            }
+        }
+
+        // While we did modify stackToMove in-place, this causes the container to be notified of the change
+        clickSlot.setByPlayer(stackToMove.isEmpty() ? ItemStack.EMPTY : stackToMove);
+
         return ItemStack.EMPTY;
     }
 
-    private boolean x(Slot clickSlot, ItemStack tis, Slot d) {
-        final ItemStack t = d.getItem().copy();
-
-        if (ItemStack.isSameItemSameTags(t, tis)) {
-            int maxSize = t.getMaxStackSize();
-            if (maxSize > d.getMaxStackSize()) {
-                maxSize = d.getMaxStackSize();
-            }
-
-            int placeable = maxSize - t.getCount();
-            if (placeable > 0) {
-                if (tis.getCount() < placeable) {
-                    placeable = tis.getCount();
-                }
-
-                t.setCount(t.getCount() + placeable);
-                tis.setCount(tis.getCount() - placeable);
-
-                d.set(t);
-
-                if (tis.getCount() <= 0) {
-                    clickSlot.set(ItemStack.EMPTY);
-                    d.setChanged();
-
-                    // ???
-                    this.broadcastChanges();
-                    // ???
-                    this.broadcastChanges();
-                    return true;
-                } else {
-                    // ???
-                    this.broadcastChanges();
-                }
-            }
-        }
-        return false;
+    /**
+     * @return A list of the slot semantics that are considered to be on the player side for the purposes of moving
+     *         stacks between the player and menu (and vice-versa). Should be in the order of priority for moving back
+     *         to the player.
+     */
+    protected List<SlotSemantic> getPlayerSideSlotSemanticsByPriority() {
+        return List.of(SlotSemantics.TOOLBOX, SlotSemantics.PLAYER_INVENTORY,
+                SlotSemantics.PLAYER_HOTBAR);
     }
 
     @Override
-    public boolean stillValid(Player PlayerEntity) {
+    public boolean stillValid(Player player) {
         if (this.isValidMenu()) {
             if (this.blockEntity instanceof Container) {
-                return ((Container) this.blockEntity).stillValid(PlayerEntity);
+                return ((Container) this.blockEntity).stillValid(player);
             }
             return true;
         }
