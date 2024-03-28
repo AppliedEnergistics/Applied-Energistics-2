@@ -387,7 +387,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
         var originalStackToMove = stackToMove.copy();
 
-        performQuickMoveStack(clickSlot, stackToMove);
+        performQuickMoveStack(stackToMove, isPlayerSideSlot(clickSlot));
 
         // While we did modify stackToMove in-place, this causes the container to be notified of the change
         if (!ItemStack.matches(originalStackToMove, stackToMove)) {
@@ -397,10 +397,9 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         return ItemStack.EMPTY;
     }
 
-    protected void performQuickMoveStack(Slot clickSlot, ItemStack stackToMove) {
+    protected void performQuickMoveStack(ItemStack stackToMove, boolean fromPlayerSide) {
         // Gather a list of valid destinations.
         var destinationSlots = new ArrayList<Slot>();
-        var fromPlayerSide = isPlayerSideSlot(clickSlot);
 
         // Allow moving items from player-side slots into some "remote" inventory that is not slot-based
         // This is used to move items into the network inventory
@@ -413,7 +412,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
         // Find potential destination slots
         for (var candidateSlot : this.slots) {
-            if (canQuickMoveTo(candidateSlot, stackToMove, fromPlayerSide)) {
+            if (isValidQuickMoveDestination(candidateSlot, stackToMove, fromPlayerSide)) {
                 destinationSlots.add(candidateSlot);
             }
         }
@@ -454,7 +453,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         }
     }
 
-    private boolean canQuickMoveTo(Slot candidateSlot, ItemStack stackToMove, boolean fromPlayerSide) {
+    /**
+     * Check if a given candidate slot is a valid destination for {@link #quickMoveStack}.
+     */
+    protected boolean isValidQuickMoveDestination(Slot candidateSlot, ItemStack stackToMove,
+            boolean fromPlayerSide) {
         return isPlayerSideSlot(candidateSlot) != fromPlayerSide
                 && !(candidateSlot instanceof FakeSlot)
                 && !(candidateSlot instanceof CraftingMatrixSlot)
