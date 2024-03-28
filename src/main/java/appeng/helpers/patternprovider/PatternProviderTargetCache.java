@@ -11,13 +11,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 
+import appeng.api.AECapabilities;
 import appeng.api.behaviors.ExternalStorageStrategy;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.MEStorage;
-import appeng.capabilities.AppEngCapabilities;
 import appeng.me.storage.CompositeStorage;
 import appeng.parts.automation.StackWorldBehaviors;
 
@@ -27,7 +27,7 @@ class PatternProviderTargetCache {
     private final Map<AEKeyType, ExternalStorageStrategy> strategies;
 
     PatternProviderTargetCache(ServerLevel l, BlockPos pos, Direction direction, IActionSource src) {
-        this.cache = BlockCapabilityCache.create(AppEngCapabilities.ME_STORAGE, l, pos, direction);
+        this.cache = BlockCapabilityCache.create(AECapabilities.ME_STORAGE, l, pos, direction);
         this.src = src;
         this.strategies = StackWorldBehaviors.createExternalStorageStrategies(l, pos, direction);
     }

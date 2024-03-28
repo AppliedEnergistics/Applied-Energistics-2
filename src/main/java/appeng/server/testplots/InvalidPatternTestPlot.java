@@ -33,19 +33,4 @@ public class InvalidPatternTestPlot {
         });
     }
 
-    @TestPlot("pattern_ingredients_changed")
-    public static void patternIngredientsChanged(PlotBuilder builder) {
-
-    }
-
-    @TestPlot("pattern_invalid_input_id")
-    public static void patternInvalidInputId(PlotBuilder builder) {
-
-    }
-
-    @TestPlot("pattern_invalid_output_id")
-    public static void patternInvalidOutputId(PlotBuilder builder) {
-
-    }
-
 }

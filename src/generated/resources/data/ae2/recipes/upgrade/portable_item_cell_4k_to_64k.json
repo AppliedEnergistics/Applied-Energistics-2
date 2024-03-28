@@ -1,0 +1,7 @@
+{
+  "type": "ae2:storage_cell_upgrade",
+  "input_cell": "ae2:portable_item_cell_4k",
+  "input_component": "ae2:cell_component_64k",
+  "result_cell": "ae2:portable_item_cell_64k",
+  "result_component": "ae2:cell_component_4k"
+}

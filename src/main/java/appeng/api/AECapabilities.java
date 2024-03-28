@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.capabilities;
+package appeng.api;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -31,10 +31,10 @@ import appeng.api.storage.MEStorage;
 import appeng.core.AppEng;
 
 /**
- * Utility class that holds various capabilities, both by AE2 and other Mods.
+ * Utility class that holds the capabilities provided by AE2.
  */
-public final class AppEngCapabilities {
-    private AppEngCapabilities() {
+public final class AECapabilities {
+    private AECapabilities() {
     }
 
     public static BlockCapability<MEStorage, @Nullable Direction> ME_STORAGE = BlockCapability
@@ -46,6 +46,9 @@ public final class AppEngCapabilities {
     public static BlockCapability<GenericInternalInventory, @Nullable Direction> GENERIC_INTERNAL_INV = BlockCapability
             .createSided(AppEng.makeId("generic_internal_inv"), GenericInternalInventory.class);
 
+    /**
+     * The {@link Direction} context is always {@code null}. TODO 1.20.5: Replace @Nullable Direction by Void context.
+     */
     public static BlockCapability<IInWorldGridNodeHost, @Nullable Direction> IN_WORLD_GRID_NODE_HOST = BlockCapability
             .createSided(AppEng.makeId("inworld_gridnode_host"), IInWorldGridNodeHost.class);
 

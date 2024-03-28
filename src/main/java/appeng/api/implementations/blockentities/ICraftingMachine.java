@@ -30,9 +30,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import appeng.api.AECapabilities;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.KeyCounter;
-import appeng.capabilities.AppEngCapabilities;
 
 /**
  * Provides crafting services to adjacent pattern providers for automatic crafting. Can be provided via capability on
@@ -47,13 +47,13 @@ public interface ICraftingMachine {
         }
 
         return blockEntity.getLevel().getCapability(
-                AppEngCapabilities.CRAFTING_MACHINE, blockEntity.getBlockPos(), blockEntity.getBlockState(),
+                AECapabilities.CRAFTING_MACHINE, blockEntity.getBlockPos(), blockEntity.getBlockState(),
                 blockEntity, side);
     }
 
     @Nullable
     static ICraftingMachine of(Level level, BlockPos pos, Direction side) {
-        return level.getCapability(AppEngCapabilities.CRAFTING_MACHINE, pos, side);
+        return level.getCapability(AECapabilities.CRAFTING_MACHINE, pos, side);
     }
 
     /**
