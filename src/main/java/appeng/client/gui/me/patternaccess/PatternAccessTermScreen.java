@@ -38,8 +38,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.locale.Language;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
@@ -55,7 +53,6 @@ import appeng.api.config.ShowPatternProviders;
 import appeng.api.config.TerminalStyle;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ILinkStatus;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
@@ -138,6 +135,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     private final Map<String, Set<Object>> cachedSearches = new WeakHashMap<>();
     private final Scrollbar scrollbar;
     private final AETextField searchField;
+    private final Map<ItemStack, String> patternSearchText = new WeakHashMap<>();
 
     private int visibleRows = 0;
 
@@ -154,7 +152,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
         this.addToLeftToolbar(
                 new SettingToggleButton<>(Settings.TERMINAL_STYLE, terminalStyle, this::toggleTerminalStyle));
 
-        showPatternProviders = new ServerSettingToggleButton(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS,
+        showPatternProviders = new ServerSettingToggleButton<>(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS,
                 ShowPatternProviders.VISIBLE);
 
         this.addToLeftToolbar(showPatternProviders);
@@ -543,28 +541,25 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             return false;
         }
 
-        final CompoundTag encodedValue = itemStack.getTag();
-
-        if (encodedValue == null) {
-            return false;
-        }
-
         // Potential later use to filter by input
-        // ListNBT inTag = encodedValue.getTagList( "in", 10 );
-        final ListTag outTag = encodedValue.getList("out", 10);
+        return patternSearchText.computeIfAbsent(itemStack, this::getPatternSearchText).contains(searchTerm);
+    }
 
-        for (int i = 0; i < outTag.size(); i++) {
-
-            var parsedItemStack = ItemStack.of(outTag.getCompound(i));
-            var itemKey = AEItemKey.of(parsedItemStack);
-            if (itemKey != null) {
-                var displayName = itemKey.getDisplayName().getString().toLowerCase();
-                if (displayName.contains(searchTerm)) {
-                    return true;
-                }
+    private String getPatternSearchText(ItemStack stack) {
+        var level = menu.getPlayer().level();
+        var text = new StringBuilder();
+        var pattern = PatternDetailsHelper.decodePattern(stack, level);
+        if (pattern != null) {
+            for (var output : pattern.getOutputs()) {
+                output.what().getDisplayName().visit(content -> {
+                    text.append(content.toLowerCase());
+                    return Optional.empty();
+                });
+                text.append('\n');
             }
         }
-        return false;
+
+        return text.toString();
     }
 
     /**
