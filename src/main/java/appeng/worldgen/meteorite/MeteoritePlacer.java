@@ -25,6 +25,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.LevelAccessor;
@@ -32,7 +33,9 @@ import net.minecraft.world.level.block.AmethystClusterBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 
 import appeng.core.AEConfig;
@@ -337,31 +340,68 @@ public final class MeteoritePlacer {
     private void placeCraterLake() {
         final int maxY = level.getSeaLevel() - 1;
         MutableBlockPos blockPos = new MutableBlockPos();
+        ChunkAccess currentChunk;
 
-        for (int j = y - 5; j <= maxY; j++) {
-            blockPos.setY(j);
+        for (int currentX = boundingBox.minX(); currentX <= boundingBox.maxX(); currentX++) {
+            blockPos.setX(currentX);
 
-            for (int i = boundingBox.minX(); i <= boundingBox.maxX(); i++) {
-                blockPos.setX(i);
+            for (int currentZ = boundingBox.minZ(); currentZ <= boundingBox.maxZ(); currentZ++) {
+                blockPos.setZ(currentZ);
+                currentChunk = level.getChunk(blockPos);
 
-                for (int k = boundingBox.minZ(); k <= boundingBox.maxZ(); k++) {
-                    blockPos.setZ(k);
-                    final double dx = i - x;
-                    final double dz = k - z;
+                for (int currentY = y - 5; currentY <= maxY; currentY++) {
+                    blockPos.setY(currentY);
+
+                    final double dx = currentX - x;
+                    final double dz = currentZ - z;
                     final double h = y - this.meteoriteSize + 1 + this.type.adjustCrater();
 
                     final double distanceFrom = dx * dx + dz * dz;
 
-                    if (j > h + distanceFrom * 0.02) {
-                        BlockState currentBlock = level.getBlockState(blockPos);
+                    if (currentY > h + distanceFrom * 0.02) {
+                        BlockState currentBlock = currentChunk.getBlockState(blockPos);
                         if (currentBlock.getBlock() == Blocks.AIR) {
                             this.putter.put(level, blockPos, Blocks.WATER.defaultBlockState());
-                        }
 
+                            if (currentY == maxY) {
+                                level.scheduleTick(blockPos, Fluids.WATER, 0);
+                            }
+                        }
+                    } else if (maxY + (maxY - currentY) * 2 + 2 > h + distanceFrom * 0.02) {
+                        pillarDownSlopeBlocks(currentChunk, blockPos);
                     }
                 }
             }
         }
+    }
+
+    private void pillarDownSlopeBlocks(ChunkAccess currentChunk, MutableBlockPos blockPos) {
+        MutableBlockPos enclosingBlockPos = new MutableBlockPos();
+        enclosingBlockPos.set(blockPos);
+
+        for (int i = 0; i < 20; i++) {
+            if (placeEnclosingBlock(currentChunk, enclosingBlockPos)) {
+                break;
+            }
+            enclosingBlockPos.move(Direction.DOWN);
+        }
+    }
+
+    private boolean placeEnclosingBlock(ChunkAccess currentChunk, MutableBlockPos enclosingBlockPos) {
+        BlockState currentState = currentChunk.getBlockState(enclosingBlockPos);
+        if (currentState.getBlock() == Blocks.AIR ||
+                (currentState.getFluidState().isEmpty() &&
+                        (currentState.canBeReplaced() || currentState.is(BlockTags.REPLACEABLE)))) {
+
+            if (craterType == CraterType.LAVA && level.getRandom().nextFloat() < 0.075f) {
+                this.putter.put(level, enclosingBlockPos, Blocks.MAGMA_BLOCK.defaultBlockState());
+            } else {
+                this.type.getRandomFall(level, enclosingBlockPos);
+            }
+        } else {
+            return true;
+        }
+        return false;
     }
 
     private Fallout getFallout(LevelAccessor level, BlockPos pos, FalloutMode mode) {
