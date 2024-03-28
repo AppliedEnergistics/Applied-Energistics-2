@@ -64,6 +64,8 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
         tag(0);
         colorIndex(-1);
         cullFace(null);
+        shade(true);
+        ambientOcclusion(true);
     }
 
     @Override
@@ -87,6 +89,18 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
         final int i = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_U;
         data[i] = Float.floatToRawIntBits(u);
         data[i + 1] = Float.floatToRawIntBits(v);
+        return this;
+    }
+
+    @Override
+    public MutableQuadViewImpl shade(boolean shade) {
+        data[baseIndex + HEADER_BITS] = EncodingFormat.shade(data[baseIndex + HEADER_BITS], shade);
+        return this;
+    }
+
+    @Override
+    public MutableQuadViewImpl ambientOcclusion(boolean ao) {
+        data[baseIndex + HEADER_BITS] = EncodingFormat.ambientOcclusion(data[baseIndex + HEADER_BITS], ao);
         return this;
     }
 
@@ -179,6 +193,8 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
         data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(0, cullFace);
         nominalFace(quad.getDirection());
         colorIndex(quad.getTintIndex());
+        shade(quad.isShade());
+        ambientOcclusion(quad.hasAmbientOcclusion());
 
         tag(0);
         return this;

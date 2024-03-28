@@ -110,6 +110,8 @@ public class FacadeBuilder {
                     emitter.fromVanilla(quad.getVertices(), 0);
                     emitter.cullFace(null);
                     emitter.nominalFace(quad.getDirection());
+                    emitter.shade(quad.isShade());
+                    emitter.ambientOcclusion(quad.hasAmbientOcclusion());
                     if (!rotator.transform(emitter)) {
                         continue;
                     }
@@ -155,6 +157,8 @@ public class FacadeBuilder {
                         emitter.fromVanilla(quad.getVertices(), 0);
                         emitter.cullFace(cullFace);
                         emitter.nominalFace(quad.getDirection());
+                        emitter.shade(quad.isShade());
+                        emitter.ambientOcclusion(quad.hasAmbientOcclusion());
                         if (!rotator.transform(emitter)) {
                             continue;
                         }
@@ -301,6 +305,8 @@ public class FacadeBuilder {
                         // side the facade is attached to, but clear it for anything that faces inwards
                         emitter.cullFace(cullFace == side ? side : null);
                         emitter.nominalFace(quad.getDirection());
+                        emitter.shade(quad.isShade());
+                        emitter.ambientOcclusion(quad.hasAmbientOcclusion());
                         interpolator.setInputQuad(emitter);
 
                         QuadClamper clamper = new QuadClamper(box);
@@ -368,6 +374,8 @@ public class FacadeBuilder {
                 emitter.fromVanilla(quad.getVertices(), 0);
                 emitter.cullFace(cullFace);
                 emitter.nominalFace(quad.getDirection());
+                emitter.shade(quad.isShade());
+                emitter.ambientOcclusion(quad.hasAmbientOcclusion());
                 interpolator.setInputQuad(emitter);
 
                 if (!clamper.transform(emitter)) {

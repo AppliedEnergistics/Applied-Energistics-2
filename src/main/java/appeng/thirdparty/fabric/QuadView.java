@@ -83,6 +83,16 @@ public interface QuadView {
     float v(int vertexIndex);
 
     /**
+     * Whether this quad should be rendered with diffuse lighting
+     */
+    boolean hasShade();
+
+    /**
+     * Whether this quad should be rendered with ambient occlusion
+     */
+    boolean hasAmbientOcclusion();
+
+    /**
      * Pass a non-null target to avoid allocation - will be returned with values. Otherwise returns a new instance.
      */
     default Vector2f copyUv(int vertexIndex, @Nullable Vector2f target) {
@@ -196,9 +206,8 @@ public interface QuadView {
     default BakedQuad toBakedQuad(TextureAtlasSprite sprite) {
         int[] vertexData = new int[VANILLA_QUAD_STRIDE];
         toVanilla(vertexData, 0);
-        // TODO material inspection: set shade as !disableDiffuse
         // TODO material inspection: set color index to -1 if the material disables it
-        return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite, true);
+        return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite, hasShade(), hasAmbientOcclusion());
     }
 
     default BakedQuad toBlockBakedQuad() {
