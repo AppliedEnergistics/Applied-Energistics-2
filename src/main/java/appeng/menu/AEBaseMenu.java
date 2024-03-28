@@ -387,7 +387,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
         var originalStackToMove = stackToMove.copy();
 
-        performQuickMoveStack(stackToMove, isPlayerSideSlot(clickSlot));
+        stackToMove = performQuickMoveStack(stackToMove, isPlayerSideSlot(clickSlot));
 
         // While we did modify stackToMove in-place, this causes the container to be notified of the change
         if (!ItemStack.matches(originalStackToMove, stackToMove)) {
@@ -397,7 +397,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         return ItemStack.EMPTY;
     }
 
-    protected void performQuickMoveStack(ItemStack stackToMove, boolean fromPlayerSide) {
+    protected ItemStack performQuickMoveStack(ItemStack stackToMove, boolean fromPlayerSide) {
         // Gather a list of valid destinations.
         var destinationSlots = new ArrayList<Slot>();
 
@@ -406,7 +406,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         if (fromPlayerSide) {
             stackToMove = this.transferStackToMenu(stackToMove);
             if (stackToMove.isEmpty()) {
-                return;
+                return stackToMove;
             }
         }
 
@@ -432,7 +432,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                     }
                 }
             }
-            return; // Since destinationSlots was empty, nothing else to do
+            return stackToMove; // Since destinationSlots was empty, nothing else to do
         }
 
         // Order slots by the priority of their semantic
@@ -441,16 +441,18 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         // Try stacking the item into filled slots first
         for (var dest : destinationSlots) {
             if (dest.hasItem() && (stackToMove = dest.safeInsert(stackToMove)).isEmpty()) {
-                return;
+                return stackToMove;
             }
         }
 
         // Now try placing it in empty slots, if it's not already fully consumed
         for (var dest : destinationSlots) {
             if (!dest.hasItem() && (stackToMove = dest.safeInsert(stackToMove)).isEmpty()) {
-                return;
+                return stackToMove;
             }
         }
+
+        return stackToMove;
     }
 
     /**
