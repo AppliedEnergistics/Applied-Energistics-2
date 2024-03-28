@@ -621,6 +621,11 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             return;
         }
 
+        // Prevent cloning of wrapped itemstacks
+        if (clickType == ClickType.CLONE && slot != null && GenericStack.isWrapped(slot.getItem())) {
+            return;
+        }
+
         if (this.drag_click.size() <= 1
                 && mouseButton == InputConstants.MOUSE_BUTTON_RIGHT
                 && getEmptyingAction(slot, menu.getCarried()) != null) {
