@@ -59,9 +59,9 @@ import appeng.api.parts.CableRenderMode;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.AEKeyTypesInternal;
-import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
+import appeng.core.definitions.RegistrationInternal;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.InitNetwork;
 import appeng.hooks.SkyStoneBreakSpeed;
@@ -69,13 +69,10 @@ import appeng.hooks.WrenchHook;
 import appeng.hooks.ticking.TickHandler;
 import appeng.hotkeys.HotkeyActions;
 import appeng.init.InitAdvancementTriggers;
-import appeng.init.InitBlockEntities;
-import appeng.init.InitBlocks;
 import appeng.init.InitCapabilityProviders;
 import appeng.init.InitCauldronInteraction;
 import appeng.init.InitDispenserBehavior;
 import appeng.init.InitEntityTypes;
-import appeng.init.InitItems;
 import appeng.init.InitMenuTypes;
 import appeng.init.InitRecipeSerializers;
 import appeng.init.InitRecipeTypes;
@@ -121,8 +118,11 @@ public abstract class AppEngBase implements AppEng {
         }
         INSTANCE = this;
 
+        AEParts.init();
+        RegistrationInternal.subscribe(modEventBus);
         AEComponents.DR.register(modEventBus);
         InitStructures.register(modEventBus);
+
         modEventBus.addListener(this::registerRegistries);
         modEventBus.addListener(MainCreativeTab::initExternal);
         modEventBus.addListener(InitNetwork::init);
@@ -146,16 +146,8 @@ public abstract class AppEngBase implements AppEng {
             InitStats.init();
             InitAdvancementTriggers.init();
 
-            // Initialize items in order
-            AEItems.init();
-            AEBlocks.init();
-            AEParts.init();
-
-            InitBlocks.init(BuiltInRegistries.BLOCK);
-            InitItems.init(BuiltInRegistries.ITEM);
             InitEntityTypes.init(BuiltInRegistries.ENTITY_TYPE);
             InitParticleTypes.init(BuiltInRegistries.PARTICLE_TYPE);
-            InitBlockEntities.init(BuiltInRegistries.BLOCK_ENTITY_TYPE);
             InitMenuTypes.init(BuiltInRegistries.MENU);
             InitRecipeTypes.init(BuiltInRegistries.RECIPE_TYPE);
             InitRecipeSerializers.init(BuiltInRegistries.RECIPE_SERIALIZER);

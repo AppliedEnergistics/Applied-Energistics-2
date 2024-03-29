@@ -26,6 +26,8 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.google.common.base.Preconditions;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.ResourceKey;
@@ -34,6 +36,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.ids.AECreativeTabIds;
@@ -95,8 +98,8 @@ import appeng.menu.me.common.MEStorageMenu;
 /**
  * Internal implementation for the API items
  */
-@SuppressWarnings("unused")
 public final class AEItems {
+    static final DeferredRegister.Items DR = DeferredRegister.createItems(AppEng.MOD_ID);
 
     // spotless:off
     private static final List<ItemDefinition<?>> ITEMS = new ArrayList<>();
@@ -316,9 +319,8 @@ public final class AEItems {
 
         Item.Properties p = new Item.Properties();
 
-        T item = factory.apply(p);
-
-        ItemDefinition<T> definition = new ItemDefinition<>(name, id, item);
+        Preconditions.checkArgument(id.getNamespace().equals(AppEng.MOD_ID), "Can only register for AE2");
+        var definition = new ItemDefinition<>(name, DR.registerItem(id.getPath(), factory));
 
         if (Objects.equals(group, AECreativeTabIds.MAIN)) {
             MainCreativeTab.add(definition);
@@ -330,9 +332,4 @@ public final class AEItems {
 
         return definition;
     }
-
-    // Used to control in which order static constructors are called
-    public static void init() {
-    }
-
 }

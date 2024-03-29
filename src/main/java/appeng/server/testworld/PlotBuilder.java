@@ -85,7 +85,7 @@ public interface PlotBuilder {
     }
 
     default void part(String bb, Direction side, ItemDefinition<? extends PartItem<?>> part) {
-        addBuildAction(new PlacePart(bb(bb), part.asItem(), side));
+        addBuildAction(new PlacePart(bb(bb), part.get(), side));
     }
 
     default void part(BlockPos pos, Direction side, ItemDefinition<? extends PartItem<?>> part) {
@@ -103,7 +103,7 @@ public interface PlotBuilder {
             Direction side,
             ItemDefinition<? extends PartItem<T>> part,
             Consumer<T> partCustomizer) {
-        addBuildAction(new PlacePart(bb(bb), part.asItem(), side));
+        addBuildAction(new PlacePart(bb(bb), part.get(), side));
         addBuildAction(new PartCustomizer<>(bb(bb), side, part, partCustomizer));
     }
 

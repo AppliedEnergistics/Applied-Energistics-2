@@ -25,10 +25,10 @@ public class HotkeyActions {
 
     public static void init() {
         register(AEItems.WIRELESS_TERMINAL.asItem(),
-                (player, locator) -> AEItems.WIRELESS_TERMINAL.asItem().openFromInventory(player, locator),
+                (player, locator) -> AEItems.WIRELESS_TERMINAL.get().openFromInventory(player, locator),
                 WIRELESS_TERMINAL);
         register(AEItems.WIRELESS_CRAFTING_TERMINAL.asItem(),
-                (player, locator) -> AEItems.WIRELESS_CRAFTING_TERMINAL.asItem().openFromInventory(player, locator),
+                (player, locator) -> AEItems.WIRELESS_CRAFTING_TERMINAL.get().openFromInventory(player, locator),
                 WIRELESS_TERMINAL);
 
         registerPortableCell(AEItems.PORTABLE_ITEM_CELL1K, PORTABLE_ITEM_CELL);
@@ -48,7 +48,7 @@ public class HotkeyActions {
      * a convenience helper for registering hotkeys for portable cells
      */
     public static void registerPortableCell(ItemDefinition<? extends AbstractPortableCell> cell, String id) {
-        register(cell.asItem(), cell.asItem()::openFromInventory, id);
+        register(cell.asItem(), cell.get()::openFromInventory, id);
     }
 
     /**

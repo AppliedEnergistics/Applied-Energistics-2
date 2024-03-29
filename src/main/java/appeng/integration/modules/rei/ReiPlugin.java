@@ -203,7 +203,7 @@ public class ReiPlugin implements REIClientPlugin {
     @Override
     public void registerCollapsibleEntries(CollapsibleEntryRegistry registry) {
         if (AEConfig.instance().isEnableFacadesInRecipeViewer()) {
-            FacadeItem facadeItem = AEItems.FACADE.asItem();
+            FacadeItem facadeItem = AEItems.FACADE.get();
             registry.group(AppEng.makeId("facades"), Component.translatable("itemGroup.ae2.facades"),
                     stack -> stack.getType() == VanillaEntryTypes.ITEM && stack.<ItemStack>castValue().is(facadeItem));
         }

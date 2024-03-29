@@ -31,7 +31,7 @@ public class DriveBuilder {
 
     public CreativeCellBuilder addCreativeCell() {
         var cell = AEItems.CREATIVE_CELL.stack();
-        var configInv = AEItems.CREATIVE_CELL.asItem().getConfigInventory(cell);
+        var configInv = AEItems.CREATIVE_CELL.get().getConfigInventory(cell);
         cells.add(cell);
         return new CreativeCellBuilder(configInv);
     }

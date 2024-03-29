@@ -535,7 +535,7 @@ public final class TestPlots {
                     .thenExecuteAfter(1, () -> {
                         var pos = helper.absolutePos(BlockPos.ZERO);
                         var importBus = PartHelper.setPart(helper.getLevel(), pos, Direction.NORTH,
-                                null, AEParts.IMPORT_BUS.asItem());
+                                null, AEParts.IMPORT_BUS.get());
                         importBus.getUpgrades().addItems(AEItems.REDSTONE_CARD.stack());
                         importBus.getConfigManager().putSetting(Settings.REDSTONE_CONTROLLED,
                                 RedstoneMode.SIGNAL_PULSE);
@@ -627,7 +627,7 @@ public final class TestPlots {
         plot.creativeEnergyCell(origin.below());
         plot.blockEntity(origin, AEBlocks.ME_CHEST, chest -> {
             var cell = AEItems.ITEM_CELL_1K.stack();
-            AEItems.ITEM_CELL_1K.asItem().getConfigInventory(cell).addFilter(Items.REDSTONE);
+            AEItems.ITEM_CELL_1K.get().getConfigInventory(cell).addFilter(Items.REDSTONE);
             chest.setCell(cell);
         });
         // Hopper to test insertion of stuff. It should try to insert stick first.
@@ -721,7 +721,7 @@ public final class TestPlots {
                 var cellInv = drive.getInternalInventory();
                 for (int i = 0; i < cellInv.size(); i++) {
                     var creativeCell = AEItems.CREATIVE_CELL.stack();
-                    var configInv = AEItems.CREATIVE_CELL.asItem().getConfigInventory(creativeCell);
+                    var configInv = AEItems.CREATIVE_CELL.get().getConfigInventory(creativeCell);
 
                     for (int j = 0; j < configInv.size(); j++) {
                         if (!keysToAdd.hasNext()) {

@@ -25,7 +25,7 @@ import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
 class CondenserMEStorageTest {
-    CondenserBlockEntity be = new CondenserBlockEntity(AEBlockEntities.CONDENSER, BlockPos.ZERO,
+    CondenserBlockEntity be = new CondenserBlockEntity(AEBlockEntities.CONDENSER.get(), BlockPos.ZERO,
             AEBlocks.CONDENSER.block().defaultBlockState());
     MEStorage inv = be.getMEStorage();
 

@@ -125,8 +125,10 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        level.getBlockEntity(pos, AEBlockEntities.SKY_CHEST).ifPresent(SkyChestBlockEntity::recheckOpen);
-
+        var chest = AEBlockEntities.SKY_CHEST.getBlockEntity(level, pos);
+        if (chest != null) {
+            chest.recheckOpen();
+        }
     }
 
     @Override

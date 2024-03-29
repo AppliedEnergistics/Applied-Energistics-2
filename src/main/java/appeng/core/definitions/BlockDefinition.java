@@ -22,21 +22,22 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 public class BlockDefinition<T extends Block> extends ItemDefinition<BlockItem> {
-    private final T block;
+    private final DeferredBlock<T> block;
 
-    public BlockDefinition(String englishName, ResourceLocation id, T block, BlockItem item) {
-        super(englishName, id, item);
+    public BlockDefinition(String englishName, DeferredBlock<T> block, DeferredItem<BlockItem> item) {
+        super(englishName, item);
         this.block = Objects.requireNonNull(block, "block");
     }
 
     public final T block() {
-        return this.block;
+        return this.block.get();
     }
 
     @Override

@@ -18,26 +18,36 @@
 
 package appeng.core.definitions;
 
-import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
+import com.mojang.datafixers.util.Either;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderOwner;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.registries.DeferredItem;
+import net.neoforged.neoforge.registries.datamaps.DataMapType;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.util.helpers.ItemComparisonHelper;
 
-public class ItemDefinition<T extends Item> implements ItemLike {
-    private final ResourceLocation id;
+public class ItemDefinition<T extends Item> implements ItemLike, Holder<Item>, Supplier<T> {
     private final String englishName;
-    private final T item;
+    private final DeferredItem<T> item;
 
-    public ItemDefinition(String englishName, ResourceLocation id, T item) {
-        Objects.requireNonNull(id, "id");
-        this.id = id;
+    public ItemDefinition(String englishName, DeferredItem<T> item) {
         this.englishName = englishName;
         this.item = item;
     }
@@ -46,8 +56,16 @@ public class ItemDefinition<T extends Item> implements ItemLike {
         return englishName;
     }
 
+    /**
+     * Use {@link #getId()} in preperation for moving to DeferredItem
+     */
+    @Deprecated(since = "1.20.4", forRemoval = true)
     public ResourceLocation id() {
-        return this.id;
+        return this.item.getId();
+    }
+
+    public ResourceLocation getId() {
+        return this.item.getId();
     }
 
     public ItemStack stack() {
@@ -55,7 +73,7 @@ public class ItemDefinition<T extends Item> implements ItemLike {
     }
 
     public ItemStack stack(int stackSize) {
-        return new ItemStack(item, stackSize);
+        return new ItemStack((ItemLike) item, stackSize);
     }
 
     public GenericStack genericStack(long stackSize) {
@@ -66,7 +84,6 @@ public class ItemDefinition<T extends Item> implements ItemLike {
      * Compare {@link ItemStack} with this
      *
      * @param comparableStack compared item
-     *
      * @return true if the item stack is a matching item.
      */
     public final boolean isSameAs(ItemStack comparableStack) {
@@ -78,13 +95,83 @@ public class ItemDefinition<T extends Item> implements ItemLike {
      */
     public final boolean isSameAs(AEKey key) {
         if (key instanceof AEItemKey itemKey) {
-            return item == itemKey.getItem();
+            return asItem() == itemKey.getItem();
         }
         return false;
     }
 
     @Override
+    public Item value() {
+        return item.value();
+    }
+
+    @Override
+    public boolean isBound() {
+        return item.isBound();
+    }
+
+    @Override
+    public boolean is(ResourceLocation pLocation) {
+        return item.is(pLocation);
+    }
+
+    @Override
+    public boolean is(ResourceKey<Item> pResourceKey) {
+        return item.is(pResourceKey);
+    }
+
+    @Override
+    public boolean is(Predicate<ResourceKey<Item>> pPredicate) {
+        return item.is(pPredicate);
+    }
+
+    @Override
+    public boolean is(TagKey<Item> pTagKey) {
+        return item.is(pTagKey);
+    }
+
+    @Override
+    public Stream<TagKey<Item>> tags() {
+        return item.tags();
+    }
+
+    @Override
+    public Either<ResourceKey<Item>, Item> unwrap() {
+        return item.unwrap();
+    }
+
+    @Override
+    public Optional<ResourceKey<Item>> unwrapKey() {
+        return item.unwrapKey();
+    }
+
+    @Override
+    public Kind kind() {
+        return item.kind();
+    }
+
+    @Override
+    public boolean canSerializeIn(HolderOwner<Item> pOwner) {
+        return item.canSerializeIn(pOwner);
+    }
+
+    public static <T> Holder<T> direct(T pValue) {
+        return Holder.direct(pValue);
+    }
+
+    @Override
+    public <T> @Nullable T getData(DataMapType<Item, T> type) {
+        return item.getData(type);
+    }
+
+    @Override
+    public T get() {
+        return item.get();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
     public T asItem() {
-        return item;
+        return (T) item.asItem();
     }
 }

@@ -938,7 +938,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
         for (int i = 0; i < tiers.size(); i++) {
             var fromTier = tiers.get(i);
             var inputCell = fromTier.cell().asItem();
-            var inputId = fromTier.cell().id();
+            var inputId = fromTier.cell().getId();
             var resultComponent = fromTier.component().asItem();
 
             // Allow a direct upgrade to any higher tier
@@ -961,23 +961,23 @@ public class CraftingRecipes extends AE2RecipeProvider {
 
     private void portableCell(RecipeOutput consumer, ItemDefinition<PortableCellItem> cell) {
         ItemDefinition<?> housing;
-        if (cell.asItem().getKeyType() == AEKeyType.items()) {
+        if (cell.get().getKeyType() == AEKeyType.items()) {
             housing = AEItems.ITEM_CELL_HOUSING;
-        } else if (cell.asItem().getKeyType() == AEKeyType.fluids()) {
+        } else if (cell.get().getKeyType() == AEKeyType.fluids()) {
             housing = AEItems.FLUID_CELL_HOUSING;
         } else {
-            throw new RuntimeException("No housing known for " + cell.asItem().getKeyType());
+            throw new RuntimeException("No housing known for " + cell.get().getKeyType());
         }
 
-        var component = cell.asItem().getTier().componentSupplier().get();
+        var component = cell.get().getTier().componentSupplier().get();
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, cell)
                 .requires(AEBlocks.ME_CHEST)
                 .requires(component)
                 .requires(AEBlocks.ENERGY_CELL)
                 .requires(housing)
-                .unlockedBy("has_" + housing.id().getPath(), has(housing))
+                .unlockedBy("has_" + housing.getId().getPath(), has(housing))
                 .unlockedBy("has_energy_cell", has(AEBlocks.ENERGY_CELL))
-                .save(consumer, cell.asItem().getRecipeId());
+                .save(consumer, cell.get().getRecipeId());
     }
 
     private void addSpatialCells(RecipeOutput consumer) {
