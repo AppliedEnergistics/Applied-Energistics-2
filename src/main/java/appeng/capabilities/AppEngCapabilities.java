@@ -14,6 +14,8 @@ import appeng.api.storage.MEStorage;
 
 /**
  * Utility class that holds the capabilities provided by AE2.
+ * 
+ * @deprecated Use {@link AECapabilities} instead
  */
 @Deprecated(forRemoval = true, since = "1.20.4")
 public final class AppEngCapabilities {
