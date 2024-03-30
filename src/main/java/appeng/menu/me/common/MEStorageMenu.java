@@ -613,38 +613,35 @@ public class MEStorageMenu extends AEBaseMenu
         setCarried(Platform.getInsertionRemainder(heldStack, inserted));
     }
 
-    private boolean moveOneStackToPlayer(AEItemKey stack) {
-        ItemStack myItem = stack.toStack();
+    private boolean moveOneStackToPlayer(AEItemKey what) {
+        var potentialAmount = storage.extract(what, what.getMaxStackSize(), Actionable.SIMULATE, getActionSource());
+        if (potentialAmount <= 0) {
+            return false; // No item available
+        }
 
-        var playerInv = getPlayerInventory();
-        var slot = playerInv.getSlotWithRemainingSpace(myItem);
-        int toExtract;
-        if (slot != -1) {
-            // Try to fill up existing slot with item
-            toExtract = myItem.getMaxStackSize() - playerInv.getItem(slot).getCount();
-        } else {
-            slot = playerInv.getFreeSlot();
-            if (slot == -1) {
-                return false; // No more free space
+        var destinationSlots = getQuickMoveDestinationSlots(what.toStack(), false);
+
+        for (var destinationSlot : destinationSlots) {
+            var amount = getPlaceableAmount(destinationSlot, what);
+            if (amount <= 0) {
+                continue;
             }
-            toExtract = myItem.getMaxStackSize();
-        }
-        if (toExtract <= 0) {
-            return false;
+
+            var extracted = StorageHelper.poweredExtraction(energySource, storage, what, amount, getActionSource());
+            if (extracted == 0) {
+                return false; // No items available
+            }
+
+            var currentItem = destinationSlot.getItem();
+            if (!currentItem.isEmpty()) {
+                destinationSlot.setByPlayer(currentItem.copyWithCount(currentItem.getCount() + (int) extracted));
+            } else {
+                destinationSlot.setByPlayer(what.toStack((int) extracted));
+            }
+            return true;
         }
 
-        var extracted = StorageHelper.poweredExtraction(energySource, storage, stack, toExtract, getActionSource());
-        if (extracted == 0) {
-            return false; // No items available
-        }
-
-        var itemInSlot = playerInv.getItem(slot);
-        if (itemInSlot.isEmpty()) {
-            playerInv.setItem(slot, stack.toStack((int) extracted));
-        } else {
-            itemInSlot.grow((int) extracted);
-        }
-        return true;
+        return false;
     }
 
     @Nullable

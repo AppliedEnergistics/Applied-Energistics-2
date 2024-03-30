@@ -55,6 +55,7 @@ import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPart;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.upgrades.IUpgradeInventory;
@@ -398,9 +399,6 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     protected ItemStack performQuickMoveStack(ItemStack stackToMove, boolean fromPlayerSide) {
-        // Gather a list of valid destinations.
-        var destinationSlots = new ArrayList<Slot>();
-
         // Allow moving items from player-side slots into some "remote" inventory that is not slot-based
         // This is used to move items into the network inventory
         if (fromPlayerSide) {
@@ -410,14 +408,9 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             }
         }
 
-        // Find potential destination slots
-        for (var candidateSlot : this.slots) {
-            if (isValidQuickMoveDestination(candidateSlot, stackToMove, fromPlayerSide)) {
-                destinationSlots.add(candidateSlot);
-            }
-        }
+        var destinationSlots = getQuickMoveDestinationSlots(stackToMove, fromPlayerSide);
 
-        // If no actual targets are available, allow moving into filter slots too
+        // If no actual targets were available, allow moving into filter slots too
         if (destinationSlots.isEmpty() && fromPlayerSide) {
             for (Slot cs : this.slots) {
                 if (cs instanceof FakeSlot && !isPlayerSideSlot(cs)) {
@@ -434,9 +427,6 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             }
             return stackToMove; // Since destinationSlots was empty, nothing else to do
         }
-
-        // Order slots by the priority of their semantic
-        destinationSlots.sort(Comparator.comparingInt(this::getQuickMovePriority).reversed());
 
         // Try stacking the item into filled slots first
         for (var dest : destinationSlots) {
@@ -455,6 +445,20 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         return stackToMove;
     }
 
+    protected List<Slot> getQuickMoveDestinationSlots(ItemStack stackToMove, boolean fromPlayerSide) {
+        // Find potential destination slots
+        var destinationSlots = new ArrayList<Slot>();
+        for (var candidateSlot : this.slots) {
+            if (isValidQuickMoveDestination(candidateSlot, stackToMove, fromPlayerSide)) {
+                destinationSlots.add(candidateSlot);
+            }
+        }
+
+        // Order slots by the priority of their semantic
+        destinationSlots.sort(Comparator.comparingInt(this::getQuickMovePriority).reversed());
+        return destinationSlots;
+    }
+
     /**
      * Check if a given candidate slot is a valid destination for {@link #quickMoveStack}.
      */
@@ -464,6 +468,21 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 && !(candidateSlot instanceof FakeSlot)
                 && !(candidateSlot instanceof CraftingMatrixSlot)
                 && candidateSlot.mayPlace(stackToMove);
+    }
+
+    protected int getPlaceableAmount(Slot s, AEItemKey what) {
+        if (!s.mayPlace(what.toStack())) {
+            return 0;
+        }
+
+        var currentItem = s.getItem();
+        if (currentItem.isEmpty()) {
+            return s.getMaxStackSize(what.getReadOnlyStack());
+        } else if (what.matches(currentItem)) {
+            return Math.max(0, s.getMaxStackSize(currentItem) - currentItem.getCount());
+        } else {
+            return 0;
+        }
     }
 
     @Override
