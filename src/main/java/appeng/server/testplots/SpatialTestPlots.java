@@ -18,6 +18,7 @@ import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
 import appeng.spatial.SpatialStoragePlotManager;
 
+@TestPlotClass
 public final class SpatialTestPlots {
     private SpatialTestPlots() {
     }

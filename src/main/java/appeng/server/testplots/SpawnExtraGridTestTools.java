@@ -9,6 +9,7 @@ import appeng.api.networking.IGrid;
 /**
  * Triggered to spawn additional testing tools into a container placed next to a spawned AE2 grid.
  */
+@TestPlotClass
 public class SpawnExtraGridTestTools extends Event {
     private final ResourceLocation plotId;
     private final InternalInventory inventory;

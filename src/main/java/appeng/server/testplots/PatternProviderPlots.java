@@ -11,6 +11,7 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.server.testworld.PlotBuilder;
 
+@TestPlotClass
 public final class PatternProviderPlots {
     private PatternProviderPlots() {
     }

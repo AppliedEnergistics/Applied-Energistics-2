@@ -8,6 +8,7 @@ import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.server.testworld.PlotBuilder;
 
+@TestPlotClass
 public class InvalidPatternTestPlot {
 
     /**

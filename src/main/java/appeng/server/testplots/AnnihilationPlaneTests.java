@@ -13,6 +13,7 @@ import appeng.core.definitions.AEParts;
 import appeng.server.testworld.PlotBuilder;
 import appeng.util.Platform;
 
+@TestPlotClass
 public class AnnihilationPlaneTests {
 
     @TestPlot("annihilation_plane_seed_farm")

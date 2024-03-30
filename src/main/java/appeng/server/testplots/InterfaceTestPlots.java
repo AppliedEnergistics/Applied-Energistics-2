@@ -24,6 +24,7 @@ import appeng.me.helpers.BaseActionSource;
 import appeng.parts.misc.InterfacePart;
 import appeng.server.testworld.PlotBuilder;
 
+@TestPlotClass
 public class InterfaceTestPlots {
 
     /**

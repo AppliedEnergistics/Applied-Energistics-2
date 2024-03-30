@@ -27,6 +27,7 @@ import appeng.server.testworld.SavedBlockEntity;
  * All plots are essentially the same: PP on Chest, powered by Creative Energy Cell. Use of the PP is via API, not
  * in-game tools.
  */
+@TestPlotClass
 public final class PatternProviderLockModePlots {
     private static final BlockPos LEVER_POS = BlockPos.ZERO.east();
     private static final BlockPos BUTTON_POS = BlockPos.ZERO.west();

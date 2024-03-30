@@ -14,6 +14,7 @@ import appeng.core.definitions.AEParts;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
 
+@TestPlotClass
 public class CrystalResonanceGeneratorTestPlots {
     @TestPlot("crg_charges_cell")
     public static void chargesCell(PlotBuilder plot) {
