@@ -19,6 +19,7 @@
 package appeng.menu;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -54,6 +55,7 @@ import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPart;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.upgrades.IUpgradeInventory;
@@ -314,21 +316,27 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     /**
+     * Get a slots priority for quick moving items (higher priority slots are tried first)
+     */
+    protected int getQuickMovePriority(Slot slot) {
+        var semantic = getSlotSemantic(slot);
+        if (semantic == null) {
+            return 0;
+        }
+        return semantic.quickMovePriority();
+    }
+
+    /**
      * Check if a given slot is considered to be "on the player side" for the purposes of shift-clicking items back and
      * forth between the opened menu and the player's inventory.
      */
-    private boolean isPlayerSideSlot(Slot slot) {
+    protected boolean isPlayerSideSlot(Slot slot) {
         if (slot.container == playerInventory) {
             return true;
         }
 
-        SlotSemantic slotSemantic = semanticBySlot.get(slot);
-        return slotSemantic == SlotSemantics.PLAYER_INVENTORY
-                || slotSemantic == SlotSemantics.PLAYER_HOTBAR
-                || slotSemantic == SlotSemantics.TOOLBOX
-                // The crafting grid in the crafting terminal also shift-clicks into the network
-                // We specifically block moving from network into this slot type though
-                || slotSemantic == SlotSemantics.CRAFTING_GRID;
+        var slotSemantic = semanticBySlot.get(slot);
+        return slotSemantic != null && slotSemantic.playerSide();
     }
 
     @Nullable
@@ -378,42 +386,32 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             return ItemStack.EMPTY;
         }
 
-        // Gather a list of valid destinations.
-        var destinationSlots = new ArrayList<Slot>();
-        var fromPlayerSide = isPlayerSideSlot(clickSlot);
+        var originalStackToMove = stackToMove.copy();
+
+        stackToMove = performQuickMoveStack(stackToMove, isPlayerSideSlot(clickSlot));
+
+        // While we did modify stackToMove in-place, this causes the container to be notified of the change
+        if (!ItemStack.matches(originalStackToMove, stackToMove)) {
+            clickSlot.setByPlayer(stackToMove.isEmpty() ? ItemStack.EMPTY : stackToMove);
+        }
+
+        return ItemStack.EMPTY;
+    }
+
+    protected ItemStack performQuickMoveStack(ItemStack stackToMove, boolean fromPlayerSide) {
+        // Allow moving items from player-side slots into some "remote" inventory that is not slot-based
+        // This is used to move items into the network inventory
         if (fromPlayerSide) {
             stackToMove = this.transferStackToMenu(stackToMove);
-
-            if (!stackToMove.isEmpty()) {
-                // target slots in the menu...
-                for (Slot candidateSLot : this.slots) {
-                    if (!isPlayerSideSlot(candidateSLot)
-                            && !(candidateSLot instanceof FakeSlot)
-                            && !(candidateSLot instanceof CraftingMatrixSlot)
-                            && candidateSLot.mayPlace(stackToMove)) {
-                        destinationSlots.add(candidateSLot);
-                    }
-                }
-            }
-        } else {
-            stackToMove = stackToMove.copy();
-
-            // Slot semantics to target on the player-side based on priority
-            // This prevents items from being moved into the hotbar first
-            for (var semantic : getPlayerSideSlotSemanticsByPriority()) {
-                for (var candidateSlot : getSlots(semantic)) {
-                    if (isPlayerSideSlot(candidateSlot)
-                            && !(candidateSlot instanceof FakeSlot)
-                            && !(candidateSlot instanceof CraftingMatrixSlot)
-                            && candidateSlot.mayPlace(stackToMove)) {
-                        destinationSlots.add(candidateSlot);
-                    }
-                }
+            if (stackToMove.isEmpty()) {
+                return stackToMove;
             }
         }
 
-        // Handle Fake Slot Shift clicking.
-        if (destinationSlots.isEmpty() && fromPlayerSide && !stackToMove.isEmpty()) {
+        var destinationSlots = getQuickMoveDestinationSlots(stackToMove, fromPlayerSide);
+
+        // If no actual targets were available, allow moving into filter slots too
+        if (destinationSlots.isEmpty() && fromPlayerSide) {
             for (Slot cs : this.slots) {
                 if (cs instanceof FakeSlot && !isPlayerSideSlot(cs)) {
                     var destination = cs.getItem();
@@ -427,40 +425,64 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                     }
                 }
             }
+            return stackToMove; // Since destinationSlots was empty, nothing else to do
         }
 
-        // Prefer stacking into slots that already have the same in them
-        if (!stackToMove.isEmpty()) {
-            for (var dest : destinationSlots) {
-                if (dest.hasItem() && (stackToMove = dest.safeInsert(stackToMove)).isEmpty()) {
-                    break;
-                }
+        // Try stacking the item into filled slots first
+        for (var dest : destinationSlots) {
+            if (dest.hasItem() && (stackToMove = dest.safeInsert(stackToMove)).isEmpty()) {
+                return stackToMove;
             }
         }
 
         // Now try placing it in empty slots, if it's not already fully consumed
-        if (!stackToMove.isEmpty()) {
-            for (var dest : destinationSlots) {
-                if (!dest.hasItem() && (stackToMove = dest.safeInsert(stackToMove)).isEmpty()) {
-                    break;
-                }
+        for (var dest : destinationSlots) {
+            if (!dest.hasItem() && (stackToMove = dest.safeInsert(stackToMove)).isEmpty()) {
+                return stackToMove;
             }
         }
 
-        // While we did modify stackToMove in-place, this causes the container to be notified of the change
-        clickSlot.setByPlayer(stackToMove.isEmpty() ? ItemStack.EMPTY : stackToMove);
+        return stackToMove;
+    }
 
-        return ItemStack.EMPTY;
+    protected List<Slot> getQuickMoveDestinationSlots(ItemStack stackToMove, boolean fromPlayerSide) {
+        // Find potential destination slots
+        var destinationSlots = new ArrayList<Slot>();
+        for (var candidateSlot : this.slots) {
+            if (isValidQuickMoveDestination(candidateSlot, stackToMove, fromPlayerSide)) {
+                destinationSlots.add(candidateSlot);
+            }
+        }
+
+        // Order slots by the priority of their semantic
+        destinationSlots.sort(Comparator.comparingInt(this::getQuickMovePriority).reversed());
+        return destinationSlots;
     }
 
     /**
-     * @return A list of the slot semantics that are considered to be on the player side for the purposes of moving
-     *         stacks between the player and menu (and vice-versa). Should be in the order of priority for moving back
-     *         to the player.
+     * Check if a given candidate slot is a valid destination for {@link #quickMoveStack}.
      */
-    protected List<SlotSemantic> getPlayerSideSlotSemanticsByPriority() {
-        return List.of(SlotSemantics.TOOLBOX, SlotSemantics.PLAYER_INVENTORY,
-                SlotSemantics.PLAYER_HOTBAR);
+    protected boolean isValidQuickMoveDestination(Slot candidateSlot, ItemStack stackToMove,
+            boolean fromPlayerSide) {
+        return isPlayerSideSlot(candidateSlot) != fromPlayerSide
+                && !(candidateSlot instanceof FakeSlot)
+                && !(candidateSlot instanceof CraftingMatrixSlot)
+                && candidateSlot.mayPlace(stackToMove);
+    }
+
+    protected int getPlaceableAmount(Slot s, AEItemKey what) {
+        if (!s.mayPlace(what.toStack())) {
+            return 0;
+        }
+
+        var currentItem = s.getItem();
+        if (currentItem.isEmpty()) {
+            return s.getMaxStackSize(what.getReadOnlyStack());
+        } else if (what.matches(currentItem)) {
+            return Math.max(0, s.getMaxStackSize(currentItem) - currentItem.getCount());
+        } else {
+            return 0;
+        }
     }
 
     @Override

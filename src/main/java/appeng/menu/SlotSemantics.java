@@ -38,7 +38,17 @@ public final class SlotSemantics {
      * NOTE: If you use this in an addon, use an Addon-Specific Prefix for your semantic id (i.e. your mod id).
      */
     public static SlotSemantic register(String id, boolean playerSide) {
-        var semantic = new SlotSemantic(id, playerSide);
+        return register(id, playerSide, 0);
+    }
+
+    /**
+     * NOTE: If you use this in an addon, use an Addon-Specific Prefix for your semantic id (i.e. your mod id).
+     * 
+     * @param quickMovePriority When stacks are being quick-moved, a higher priority means slots with this semantic will
+     *                          be tried first. 0 is the default priority.
+     */
+    public static SlotSemantic register(String id, boolean playerSide, int quickMovePriority) {
+        var semantic = new SlotSemantic(id, playerSide, quickMovePriority);
         var existing = REGISTRY.putIfAbsent(semantic.id(), semantic);
         if (existing != null) {
             throw new IllegalArgumentException("Semantic with id " + semantic.id() + "was already registered");
@@ -62,9 +72,9 @@ public final class SlotSemantics {
 
     public static final SlotSemantic STORAGE = register("STORAGE", false);
 
-    public static final SlotSemantic PLAYER_INVENTORY = register("PLAYER_INVENTORY", true);
-    public static final SlotSemantic PLAYER_HOTBAR = register("PLAYER_HOTBAR", true);
-    public static final SlotSemantic TOOLBOX = register("TOOLBOX", true);
+    public static final SlotSemantic PLAYER_INVENTORY = register("PLAYER_INVENTORY", true, 2000);
+    public static final SlotSemantic PLAYER_HOTBAR = register("PLAYER_HOTBAR", true, 1000);
+    public static final SlotSemantic TOOLBOX = register("TOOLBOX", true, 3000);
     /**
      * Used for configuration slots that configure a filter, such as on planes, import/export busses, etc.
      */
@@ -94,7 +104,7 @@ public final class SlotSemantics {
 
     public static final SlotSemantic VIEW_CELL = register("VIEW_CELL", false);
 
-    public static final SlotSemantic CRAFTING_GRID = register("CRAFTING_GRID", false);
+    public static final SlotSemantic CRAFTING_GRID = register("CRAFTING_GRID", true);
 
     public static final SlotSemantic PROCESSING_INPUTS = register("PROCESSING_INPUTS", false);
 
