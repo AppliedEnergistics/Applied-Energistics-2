@@ -1,5 +1,6 @@
 package appeng.server.testplots;
 
+import java.lang.annotation.ElementType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ import java.util.function.Consumer;
 import com.google.common.collect.Sets;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -40,6 +43,7 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.fml.ModList;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -76,32 +80,15 @@ import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.TestCraftingJob;
 import appeng.util.CraftingRecipeUtil;
 
+@TestPlotClass
 public final class TestPlots {
+    private static final Logger LOG = LoggerFactory.getLogger(TestPlots.class);
+
+    @Deprecated(forRemoval = true, since = "1.20.4")
     private static final List<Class<?>> PLOT_CLASSES = new ArrayList<>();
 
     @Nullable
     private static Map<ResourceLocation, Consumer<PlotBuilder>> plots;
-
-    static {
-        PLOT_CLASSES.addAll(List.of(
-                ExternalEnergyTestPlots.class,
-                CrystalResonanceGeneratorTestPlots.class,
-                TestPlots.class,
-                InvalidPatternTestPlot.class,
-                InterfaceTestPlots.class,
-                AutoCraftingTestPlots.class,
-                InscriberTestPlots.class,
-                P2PTestPlots.class,
-                ItemP2PTestPlots.class,
-                MemoryCardTestPlots.class,
-                PatternProviderLockModePlots.class,
-                PatternProviderPlots.class,
-                SpatialTestPlots.class,
-                QnbTestPlots.class,
-                GuidebookPlot.class,
-                SubnetPlots.class,
-                AnnihilationPlaneTests.class));
-    }
 
     private TestPlots() {
     }
@@ -117,7 +104,7 @@ public final class TestPlots {
         var plots = new HashMap<ResourceLocation, Consumer<PlotBuilder>>();
 
         try {
-            for (var clazz : PLOT_CLASSES) {
+            for (var clazz : findAllTestPlotClasses()) {
                 AELog.info("Scanning %s for plots", clazz);
 
                 for (var method : clazz.getMethods()) {
@@ -182,6 +169,29 @@ public final class TestPlots {
         return plots;
     }
 
+    private static List<Class<?>> findAllTestPlotClasses() {
+        var result = new ArrayList<>(PLOT_CLASSES);
+
+        for (var data : ModList.get().getAllScanData()) {
+            for (var annotation : data.getAnnotations()) {
+                if (annotation.targetType() == ElementType.TYPE
+                        && annotation.annotationType().getClassName().equals(TestPlotClass.class.getName())) {
+                    try {
+                        result.add(Class.forName(annotation.memberName()));
+                    } catch (Throwable e) {
+                        LOG.error("Failed to load class {} annotated with @TestPlotClass", annotation.memberName(), e);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Annotate with @TestPlotClass
+     */
+    @Deprecated(forRemoval = true, since = "1.20.4")
     public static synchronized void addPlotClass(Class<?> clazz) {
         PLOT_CLASSES.add(clazz);
         plots = null;// reset the plots, in case they are already initialized

@@ -17,6 +17,7 @@ import appeng.core.definitions.AEParts;
 import appeng.parts.AEBasePart;
 import appeng.server.testworld.PlotBuilder;
 
+@TestPlotClass
 public class ItemP2PTestPlots {
 
     @TestPlot("p2p_items")

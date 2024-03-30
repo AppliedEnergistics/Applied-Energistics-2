@@ -17,6 +17,7 @@ import appeng.server.testworld.PlotBuilder;
 /**
  * Test plot that sets up a working area for working on Guidebook structures.
  */
+@TestPlotClass
 public final class SubnetPlots {
 
     private static final AEItemKey STICK = AEItemKey.of(Items.STICK);

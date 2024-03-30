@@ -37,6 +37,7 @@ import appeng.server.testworld.SpawnExtraGridTestToolsChest;
 import appeng.server.testworld.TestCraftingJob;
 import appeng.util.inv.AppEngInternalInventory;
 
+@TestPlotClass
 public final class AutoCraftingTestPlots {
     private AutoCraftingTestPlots() {
     }

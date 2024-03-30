@@ -36,6 +36,7 @@ import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
 import appeng.util.SettingsFrom;
 
+@TestPlotClass
 public final class MemoryCardTestPlots {
     private MemoryCardTestPlots() {
     }

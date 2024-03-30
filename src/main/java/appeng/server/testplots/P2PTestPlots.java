@@ -26,6 +26,7 @@ import appeng.parts.reporting.AbstractPanelPart;
 import appeng.parts.reporting.PanelPart;
 import appeng.server.testworld.PlotBuilder;
 
+@TestPlotClass
 public class P2PTestPlots {
     @TestPlot("p2p_me")
     public static void me(PlotBuilder plot) {

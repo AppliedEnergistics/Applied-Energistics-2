@@ -13,6 +13,7 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.items.materials.NamePressItem;
 
+@TestPlotClass
 public final class InscriberTestPlots {
     private InscriberTestPlots() {
     }

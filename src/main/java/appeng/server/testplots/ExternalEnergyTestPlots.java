@@ -14,6 +14,7 @@ import appeng.core.definitions.AEParts;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
 
+@TestPlotClass
 public class ExternalEnergyTestPlots {
     private static final BlockPos ORIGIN = BlockPos.ZERO;
 
