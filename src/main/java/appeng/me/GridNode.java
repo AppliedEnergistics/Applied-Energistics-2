@@ -683,14 +683,14 @@ public class GridNode implements IGridNode, IPathItem {
         }
     }
 
-    public final void debugDump(JsonWriter jsonWriter, int id, Reference2IntOpenHashMap<GridNode> nodeIdMap)
+    public final void export(JsonWriter jsonWriter, int id, Reference2IntOpenHashMap<GridNode> nodeIdMap)
             throws IOException {
         jsonWriter.beginObject();
-        debugDumpProperties(jsonWriter, id, nodeIdMap);
+        exportProperties(jsonWriter, id, nodeIdMap);
         jsonWriter.endObject();
     }
 
-    protected void debugDumpProperties(JsonWriter jsonWriter, int id, Reference2IntOpenHashMap<GridNode> nodeIdMap)
+    protected void exportProperties(JsonWriter jsonWriter, int id, Reference2IntOpenHashMap<GridNode> nodeIdMap)
             throws IOException {
         JsonStreamUtil.writeProperties(Map.of(
                 "id", id), jsonWriter);

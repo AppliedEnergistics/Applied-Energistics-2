@@ -20,13 +20,16 @@ import net.minecraft.world.entity.player.Player;
 
 import appeng.core.network.ClientboundPacket;
 
-public record DumpedGridContent(int serialNumber,
+/**
+ * Contains data produced by {@link appeng.server.subcommands.GridsCommand}
+ */
+public record ExportedGridContent(int serialNumber,
         Type type,
         byte[] compressedData) implements ClientboundPacket {
 
     private static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd_HHmm");
 
-    private static final Logger LOG = LoggerFactory.getLogger(DumpedGridContent.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ExportedGridContent.class);
 
     @Override
     public void write(FriendlyByteBuf buffer) {
@@ -35,11 +38,11 @@ public record DumpedGridContent(int serialNumber,
         buffer.writeByteArray(compressedData);
     }
 
-    public static DumpedGridContent decode(FriendlyByteBuf buffer) {
+    public static ExportedGridContent decode(FriendlyByteBuf buffer) {
         var serialNumber = buffer.readInt();
         var type = buffer.readEnum(Type.class);
         var data = buffer.readByteArray();
-        return new DumpedGridContent(serialNumber, type, data);
+        return new ExportedGridContent(serialNumber, type, data);
     }
 
     @Override
@@ -54,7 +57,7 @@ public record DumpedGridContent(int serialNumber,
         } else if (connection != null) {
             filename = "ae2_grid_from_server_";
         } else {
-            LOG.error("Ignoring grid dump without a connection to a server.");
+            LOG.error("Ignoring grid export without a connection to a server.");
             return;
         }
 
@@ -73,8 +76,9 @@ public record DumpedGridContent(int serialNumber,
             out.write(compressedData);
         } catch (IOException e) {
             player.sendSystemMessage(
-                    Component.literal("Failed to write dumped grid data to " + tempPath).withStyle(ChatFormatting.RED));
-            LOG.error("Failed to write dumped grid data to {}", tempPath, e);
+                    Component.literal("Failed to write exported grid data to " + tempPath)
+                            .withStyle(ChatFormatting.RED));
+            LOG.error("Failed to write exported grid data to {}", tempPath, e);
             return;
         }
 
@@ -82,7 +86,7 @@ public record DumpedGridContent(int serialNumber,
             try {
                 Files.move(tempPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
-                LOG.error("Failed to move grid dump {} into place", finalPath, e);
+                LOG.error("Failed to move grid export {} into place", finalPath, e);
             }
 
             player.sendSystemMessage(Component.literal("Saved grid data for grid #" + serialNumber + " from server to ")

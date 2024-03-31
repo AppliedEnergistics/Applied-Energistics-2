@@ -184,5 +184,5 @@ public interface IGrid {
     /**
      * Dump debug information about this grid to the given JSON writer.
      */
-    void debugDump(JsonWriter jsonWriter) throws IOException;
+    void export(JsonWriter jsonWriter) throws IOException;
 }

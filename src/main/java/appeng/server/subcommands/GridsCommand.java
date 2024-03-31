@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -23,6 +25,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 
+import org.apache.commons.io.output.CloseShieldOutputStream;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,17 +33,23 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.storage.ChunkSerializer;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.networking.GridHelper;
-import appeng.core.network.clientbound.DumpedGridContent;
+import appeng.core.network.clientbound.ExportedGridContent;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.Grid;
+import appeng.me.service.StatisticsService;
 import appeng.parts.AEBasePart;
 import appeng.parts.p2p.MEP2PTunnelPart;
 import appeng.server.ISubCommand;
@@ -49,14 +58,14 @@ import appeng.util.Platform;
 public class GridsCommand implements ISubCommand {
     private static final Logger LOG = LoggerFactory.getLogger(GridsCommand.class);
 
-    public static String buildDumpCommand(int gridSerial) {
-        return "/ae2 grids dump " + gridSerial;
+    public static String buildExportCommand(int gridSerial) {
+        return "/ae2 grids export " + gridSerial;
     }
 
     @Override
     public void addArguments(LiteralArgumentBuilder<CommandSourceStack> builder) {
-        builder.then(Commands.literal("dump").executes(ctx -> {
-            dumpGrids(ctx.getSource());
+        builder.then(Commands.literal("export").executes(ctx -> {
+            exportGrids(ctx.getSource());
             return 1;
         }).then(Commands.argument("gridSerial", IntegerArgumentType.integer()).executes(context -> {
             var gridSerial = context.getArgument("gridSerial", Integer.class);
@@ -64,7 +73,7 @@ public class GridsCommand implements ISubCommand {
             // Find the starting grid
             for (var grid : TickHandler.instance().getGridList()) {
                 if (grid.getSerialNumber() == gridSerial) {
-                    dumpGrid(grid, context.getSource());
+                    exportGrid(grid, context.getSource());
                     return 1;
                 }
             }
@@ -73,17 +82,17 @@ public class GridsCommand implements ISubCommand {
         })));
     }
 
-    private void dumpGrids(CommandSourceStack source) throws CommandSyntaxException {
+    private void exportGrids(CommandSourceStack source) throws CommandSyntaxException {
 
         var grids = TickHandler.instance().getGridList();
 
-        source.sendSystemMessage(Component.literal("Dumping " + grids.size() + " grids"));
+        source.sendSystemMessage(Component.literal("Exporting " + grids.size() + " grids"));
 
-        dumpGrids(0, grids, source);
+        exportGrids(0, grids, source);
 
     }
 
-    private void dumpGrid(Grid startGrid, CommandSourceStack source) throws CommandSyntaxException {
+    private void exportGrid(Grid startGrid, CommandSourceStack source) throws CommandSyntaxException {
 
         // Collect all reachable grids
         var reachableGrids = Collections.newSetFromMap(new IdentityHashMap<Grid, Boolean>());
@@ -115,7 +124,7 @@ public class GridsCommand implements ISubCommand {
             }
         }
 
-        dumpGrids(startGrid.getSerialNumber(), reachableGrids, source);
+        exportGrids(startGrid.getSerialNumber(), reachableGrids, source);
     }
 
     private static void visitGridInFrontOfPart(AEBasePart part, Set<Grid> reachableGrids, Set<Grid> openSet) {
@@ -149,52 +158,75 @@ public class GridsCommand implements ISubCommand {
             CommandSourceStack sender) {
     }
 
-    private void dumpGrids(int baseSerialNumber, Collection<Grid> grids, CommandSourceStack source)
+    private void exportGrids(int baseSerialNumber, Collection<Grid> grids, CommandSourceStack source)
             throws CommandSyntaxException {
-        source.sendSystemMessage(Component.literal("Dumping " + grids.size() + " grids"));
-        LOG.info("Dumping {} grids for {}", grids.size(), source);
+        source.sendSystemMessage(Component.literal("Exporting " + grids.size() + " grids"));
+        LOG.info("Exporting {} grids for {}", grids.size(), source);
 
         if (source.isPlayer()) {
             var player = source.getPlayerOrException();
             PacketDistributor.PLAYER.with(source.getPlayerOrException())
-                    .send(new DumpedGridContent(baseSerialNumber, DumpedGridContent.Type.FIRST_CHUNK, new byte[0]));
+                    .send(new ExportedGridContent(baseSerialNumber, ExportedGridContent.Type.FIRST_CHUNK, new byte[0]));
 
             try (var out = new SendToPlayerStream(player, baseSerialNumber)) {
-                dumpGrids(grids, out);
+                exportGrids(grids, out);
             }
         } else {
             var targetPath = Paths.get("grids.zip");
             try (var out = Files.newOutputStream(targetPath)) {
-                dumpGrids(grids, out);
+                exportGrids(grids, out);
             } catch (IOException e) {
-                LOG.error("Failed to dump grids.", e);
+                LOG.error("Failed to export grids.", e);
                 source.sendFailure(Component.literal("Failed to export grids: " + e));
             }
         }
 
     }
 
-    private void dumpGrids(Iterable<Grid> grids, OutputStream out) {
+    private void exportGrids(Iterable<Grid> grids, OutputStream out) {
         try (var zipOut = new ZipOutputStream(out)) {
+            // Collect all chunks that grids live in and dump them all later
+            var chunksByLevel = new HashMap<ServerLevel, Set<ChunkPos>>();
 
             for (var grid : grids) {
+                var statisticsService = grid.getService(StatisticsService.class);
+                for (var entry : statisticsService.getChunks().entrySet()) {
+                    chunksByLevel.computeIfAbsent(entry.getKey(), level -> new HashSet<>())
+                            .addAll(entry.getValue().elementSet());
+                }
+
                 var entry = new ZipEntry("grid_" + grid.getSerialNumber() + ".json");
                 zipOut.putNextEntry(entry);
 
-                try (var writer = new JsonWriter(new OutputStreamWriter(zipOut, StandardCharsets.UTF_8) {
-                    @Override
-                    public void close() throws IOException {
-                        flush();
-                    }
-                })) {
+                try (var writer = new JsonWriter(
+                        new OutputStreamWriter(CloseShieldOutputStream.wrap(zipOut), StandardCharsets.UTF_8))) {
                     writer.setIndent(" ");
-                    grid.debugDump(writer);
+                    grid.export(writer);
+                }
+            }
+
+            zipOut.putNextEntry(new ZipEntry("chunks/"));
+            for (var entry : chunksByLevel.entrySet()) {
+                var level = entry.getKey();
+                var chunks = entry.getValue();
+                var baseName = sanitizeName(level.dimension().location().toString());
+                for (var chunk : chunks) {
+                    var serializedChunk = ChunkSerializer.write(level, level.getChunk(chunk.x, chunk.z));
+                    zipOut.putNextEntry(new ZipEntry("chunks/" + baseName + "_" + chunk.x + "_" + chunk.z + ".nbt"));
+                    NbtIo.writeCompressed(serializedChunk, CloseShieldOutputStream.wrap(zipOut));
+
+                    zipOut.putNextEntry(new ZipEntry("chunks/" + baseName + "_" + chunk.x + "_" + chunk.z + ".snbt"));
+                    zipOut.write(NbtUtils.structureToSnbt(serializedChunk).getBytes(StandardCharsets.UTF_8));
                 }
             }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String sanitizeName(String string) {
+        return string.replaceAll("[^A-Za-z0-9-,]", "_");
     }
 
     private static class SendToPlayerStream extends OutputStream {
@@ -216,7 +248,7 @@ public class GridsCommand implements ISubCommand {
             bout.write(b);
             if (bout.size() > FLUSH_AFTER) {
                 PacketDistributor.PLAYER.with(player)
-                        .send(new DumpedGridContent(baseSerialNumber, DumpedGridContent.Type.CHUNK,
+                        .send(new ExportedGridContent(baseSerialNumber, ExportedGridContent.Type.CHUNK,
                                 bout.toByteArray()));
                 bout.reset();
             }
@@ -228,7 +260,7 @@ public class GridsCommand implements ISubCommand {
             bout.write(b, off, len);
             if (bout.size() > FLUSH_AFTER) {
                 PacketDistributor.PLAYER.with(player)
-                        .send(new DumpedGridContent(baseSerialNumber, DumpedGridContent.Type.CHUNK,
+                        .send(new ExportedGridContent(baseSerialNumber, ExportedGridContent.Type.CHUNK,
                                 bout.toByteArray()));
                 bout.reset();
             }
@@ -239,7 +271,7 @@ public class GridsCommand implements ISubCommand {
             if (!closed) {
                 closed = true;
                 PacketDistributor.PLAYER.with(player)
-                        .send(new DumpedGridContent(baseSerialNumber, DumpedGridContent.Type.LAST_CHUNK,
+                        .send(new ExportedGridContent(baseSerialNumber, ExportedGridContent.Type.LAST_CHUNK,
                                 bout.toByteArray()));
                 bout.reset();
             }

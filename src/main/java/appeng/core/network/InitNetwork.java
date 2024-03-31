@@ -13,7 +13,7 @@ import appeng.core.network.clientbound.CompassResponsePacket;
 import appeng.core.network.clientbound.CraftConfirmPlanPacket;
 import appeng.core.network.clientbound.CraftingJobStatusPacket;
 import appeng.core.network.clientbound.CraftingStatusPacket;
-import appeng.core.network.clientbound.DumpedGridContent;
+import appeng.core.network.clientbound.ExportedGridContent;
 import appeng.core.network.clientbound.GuiDataSyncPacket;
 import appeng.core.network.clientbound.ItemTransitionEffectPacket;
 import appeng.core.network.clientbound.LightningPacket;
@@ -59,7 +59,7 @@ public class InitNetwork {
         clientbound(registrar, NetworkStatusPacket.class, NetworkStatusPacket::decode);
         clientbound(registrar, PatternAccessTerminalPacket.class, PatternAccessTerminalPacket::decode);
         clientbound(registrar, SetLinkStatusPacket.class, SetLinkStatusPacket::decode);
-        clientbound(registrar, DumpedGridContent.class, DumpedGridContent::decode);
+        clientbound(registrar, ExportedGridContent.class, ExportedGridContent::decode);
 
         // Serverbound
         serverbound(registrar, ColorApplicatorSelectColorPacket.class, ColorApplicatorSelectColorPacket::decode);

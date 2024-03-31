@@ -295,7 +295,7 @@ public class Grid implements IGrid {
         return "Grid #" + serialNumber;
     }
 
-    private static String getServiceDebugDumpKey(Class<?> service) {
+    private static String getServiceExportKey(Class<?> service) {
         if (service == IEnergyService.class) {
             return "energyService";
         } else if (service == ISpatialService.class) {
@@ -316,7 +316,7 @@ public class Grid implements IGrid {
     }
 
     @Override
-    public void debugDump(JsonWriter jsonWriter) throws IOException {
+    public void export(JsonWriter jsonWriter) throws IOException {
         jsonWriter.beginObject();
 
         var properties = Map.of(
@@ -325,12 +325,12 @@ public class Grid implements IGrid {
         JsonStreamUtil.writeProperties(properties, jsonWriter);
 
         jsonWriter.name("nodes");
-        debugDumpNodes(jsonWriter);
+        exportNodes(jsonWriter);
 
         jsonWriter.name("services");
         jsonWriter.beginObject();
         for (var entry : services.entrySet()) {
-            jsonWriter.name(getServiceDebugDumpKey(entry.getKey()));
+            jsonWriter.name(getServiceExportKey(entry.getKey()));
             jsonWriter.beginObject();
             entry.getValue().debugDump(jsonWriter);
             jsonWriter.endObject();
@@ -340,7 +340,7 @@ public class Grid implements IGrid {
         jsonWriter.endObject();
     }
 
-    private void debugDumpNodes(JsonWriter jsonWriter) throws IOException {
+    private void exportNodes(JsonWriter jsonWriter) throws IOException {
         // Dump nodes
         var nodeIdMap = new Reference2IntOpenHashMap<GridNode>(machines.size());
         for (var node : machines.values()) {
@@ -350,7 +350,7 @@ public class Grid implements IGrid {
         jsonWriter.beginArray();
         for (var entry : nodeIdMap.reference2IntEntrySet()) {
             var node = entry.getKey();
-            node.debugDump(jsonWriter, entry.getIntValue(), nodeIdMap);
+            node.export(jsonWriter, entry.getIntValue(), nodeIdMap);
         }
         jsonWriter.endArray();
     }

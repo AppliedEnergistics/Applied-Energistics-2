@@ -105,9 +105,9 @@ public class InWorldGridNode extends GridNode {
     }
 
     @Override
-    protected void debugDumpProperties(JsonWriter jsonWriter, int id, Reference2IntOpenHashMap<GridNode> nodeIdMap)
+    protected void exportProperties(JsonWriter jsonWriter, int id, Reference2IntOpenHashMap<GridNode> nodeIdMap)
             throws IOException {
-        super.debugDumpProperties(jsonWriter, id, nodeIdMap);
+        super.exportProperties(jsonWriter, id, nodeIdMap);
 
         jsonWriter.name("location");
         jsonWriter.beginArray();

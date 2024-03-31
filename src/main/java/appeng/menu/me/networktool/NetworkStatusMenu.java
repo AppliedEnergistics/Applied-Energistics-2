@@ -41,7 +41,7 @@ import appeng.server.subcommands.GridsCommand;
  */
 public class NetworkStatusMenu extends AEBaseMenu {
 
-    private static final String ACTION_DUMP_GRID = "dump_grid";
+    private static final String ACTION_EXPORT_GRID = "export_grid";
 
     public static final MenuType<NetworkStatusMenu> NETWORK_TOOL_TYPE = MenuTypeBuilder
             .create(NetworkStatusMenu::new, NetworkToolMenuHost.class)
@@ -77,7 +77,7 @@ public class NetworkStatusMenu extends AEBaseMenu {
             this.setValidMenu(false);
         }
 
-        registerClientAction(ACTION_DUMP_GRID, this::dumpGrid);
+        registerClientAction(ACTION_EXPORT_GRID, this::exportGrid);
     }
 
     private void findNode(IInWorldGridNodeHost host, Direction d) {
@@ -105,9 +105,9 @@ public class NetworkStatusMenu extends AEBaseMenu {
     /**
      * We run this as a command to allow the standard permission mods to control access to this.
      */
-    public void dumpGrid() {
+    public void exportGrid() {
         if (isClientSide()) {
-            sendClientAction(ACTION_DUMP_GRID);
+            sendClientAction(ACTION_EXPORT_GRID);
             return;
         }
 
@@ -118,17 +118,17 @@ public class NetworkStatusMenu extends AEBaseMenu {
 
         var commandSource = serverPlayer.createCommandSourceStack();
         server.getCommands().performPrefixedCommand(commandSource,
-                GridsCommand.buildDumpCommand(grid.getSerialNumber()));
+                GridsCommand.buildExportCommand(grid.getSerialNumber()));
         setValidMenu(false); // Close the menu
     }
 
-    public boolean canDumpGrid() {
+    public boolean canExportGrid() {
         var connection = Minecraft.getInstance().getConnection();
         if (connection == null) {
             return false;
         }
         var commands = connection.getCommands();
-        var command = GridsCommand.buildDumpCommand(1);
+        var command = GridsCommand.buildExportCommand(1);
         var parseResult = commands.parse(command.substring(1), connection.getSuggestionsProvider());
         // See JavaDoc for explanation as to why this is checking for a valid parse result
         return !parseResult.getReader().canRead();
