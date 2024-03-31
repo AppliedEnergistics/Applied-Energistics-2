@@ -18,7 +18,9 @@
 
 package appeng.menu.me.networktool;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
@@ -29,13 +31,17 @@ import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.core.network.clientbound.NetworkStatusPacket;
 import appeng.items.contents.NetworkToolMenuHost;
+import appeng.me.Grid;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.server.subcommands.GridsCommand;
 
 /**
  * @see NetworkStatusScreen
  */
 public class NetworkStatusMenu extends AEBaseMenu {
+
+    private static final String ACTION_EXPORT_GRID = "export_grid";
 
     public static final MenuType<NetworkStatusMenu> NETWORK_TOOL_TYPE = MenuTypeBuilder
             .create(NetworkStatusMenu::new, NetworkToolMenuHost.class)
@@ -70,6 +76,8 @@ public class NetworkStatusMenu extends AEBaseMenu {
         if (this.grid == null && isServerSide()) {
             this.setValidMenu(false);
         }
+
+        registerClientAction(ACTION_EXPORT_GRID, this::exportGrid);
     }
 
     private void findNode(IInWorldGridNodeHost host, Direction d) {
@@ -94,4 +102,35 @@ public class NetworkStatusMenu extends AEBaseMenu {
         super.broadcastChanges();
     }
 
+    /**
+     * We run this as a command to allow the standard permission mods to control access to this.
+     */
+    public void exportGrid() {
+        if (isClientSide()) {
+            sendClientAction(ACTION_EXPORT_GRID);
+            return;
+        }
+
+        var serverPlayer = (ServerPlayer) getPlayer();
+        var server = serverPlayer.getServer();
+
+        var grid = (Grid) this.grid;
+
+        var commandSource = serverPlayer.createCommandSourceStack();
+        server.getCommands().performPrefixedCommand(commandSource,
+                GridsCommand.buildExportCommand(grid.getSerialNumber()));
+        setValidMenu(false); // Close the menu
+    }
+
+    public boolean canExportGrid() {
+        var connection = Minecraft.getInstance().getConnection();
+        if (connection == null) {
+            return false;
+        }
+        var commands = connection.getCommands();
+        var command = GridsCommand.buildExportCommand(1);
+        var parseResult = commands.parse(command.substring(1), connection.getSuggestionsProvider());
+        // See JavaDoc for explanation as to why this is checking for a valid parse result
+        return !parseResult.getReader().canRead();
+    }
 }

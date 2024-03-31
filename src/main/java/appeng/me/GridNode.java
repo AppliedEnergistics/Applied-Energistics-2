@@ -18,6 +18,7 @@
 
 package appeng.me;
 
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -33,6 +34,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.MutableClassToInstanceMap;
+import com.google.gson.stream.JsonWriter;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -44,6 +46,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.GridFlags;
@@ -61,8 +65,10 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AEColor;
 import appeng.core.AELog;
 import appeng.me.pathfinding.IPathItem;
+import appeng.util.IDebugExportable;
+import appeng.util.JsonStreamUtil;
 
-public class GridNode implements IGridNode, IPathItem {
+public class GridNode implements IGridNode, IPathItem, IDebugExportable {
     private final ServerLevel level;
     /**
      * This is the logical host of the node, which could be any object. In many cases this will be a block entity or
@@ -676,5 +682,25 @@ public class GridNode implements IGridNode, IPathItem {
                 category.setDetail("Level", level.dimension());
             }
         }
+    }
+
+    @Override
+    public final void debugExport(JsonWriter writer, Reference2IntMap<Object> machineIds,
+            Reference2IntMap<IGridNode> nodeIds) throws IOException {
+        writer.beginObject();
+        exportProperties(writer, machineIds, nodeIds);
+        writer.endObject();
+    }
+
+    protected void exportProperties(JsonWriter writer, Reference2IntMap<Object> machineIds,
+            Reference2IntMap<IGridNode> nodeIds)
+            throws IOException {
+        var id = nodeIds.getInt(this);
+        var machineId = machineIds.getInt(owner);
+        JsonStreamUtil.writeProperties(Map.of(
+                "id", id, "owner", machineId), writer);
+
+        writer.name("level");
+        writer.value(level.dimensionTypeId().location().toString());
     }
 }

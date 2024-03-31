@@ -23,7 +23,10 @@
 
 package appeng.api.networking;
 
+import java.io.IOException;
 import java.util.Set;
+
+import com.google.gson.stream.JsonWriter;
 
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyService;
@@ -177,4 +180,9 @@ public interface IGrid {
     default ISpatialService getSpatialService() {
         return getService(ISpatialService.class);
     }
+
+    /**
+     * Dump debug information about this grid to the given JSON writer.
+     */
+    void export(JsonWriter jsonWriter) throws IOException;
 }

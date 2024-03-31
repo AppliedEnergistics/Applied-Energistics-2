@@ -18,6 +18,7 @@
 
 package appeng.me;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
+import com.google.gson.stream.JsonWriter;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -36,15 +38,28 @@ import net.minecraft.CrashReportCategory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+
 import appeng.api.networking.GridServicesInternal;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridServiceProvider;
+import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridEvent;
+import appeng.api.networking.pathing.IPathingService;
+import appeng.api.networking.spatial.ISpatialService;
+import appeng.api.networking.storage.IStorageService;
+import appeng.api.networking.ticking.ITickManager;
 import appeng.core.AELog;
 import appeng.hooks.ticking.TickHandler;
+import appeng.me.service.P2PService;
+import appeng.parts.AEBasePart;
+import appeng.util.IDebugExportable;
+import appeng.util.JsonStreamUtil;
 
 public class Grid implements IGrid {
     /**
@@ -55,6 +70,8 @@ public class Grid implements IGrid {
 
     private final SetMultimap<Class<?>, IGridNode> machines = MultimapBuilder.hashKeys().hashSetValues().build();
     private final Map<Class<?>, IGridServiceProvider> services;
+    // Becomes null after the last node has left the grid.
+    @Nullable
     private GridNode pivot;
     private int priority; // how import is this network?
     private final int serialNumber = nextSerial++; // useful to keep track of grids in toString() for debugging purposes
@@ -279,5 +296,99 @@ public class Grid implements IGrid {
     @Override
     public String toString() {
         return "Grid #" + serialNumber;
+    }
+
+    private static String getServiceExportKey(Class<?> service) {
+        if (service == IEnergyService.class) {
+            return "energyService";
+        } else if (service == ISpatialService.class) {
+            return "spatialService";
+        } else if (service == IPathingService.class) {
+            return "pathingService";
+        } else if (service == IStorageService.class) {
+            return "storageService";
+        } else if (service == ITickManager.class) {
+            return "tickManager";
+        } else if (service == P2PService.class) {
+            return "p2pService";
+        } else if (service == ICraftingService.class) {
+            return "craftingService";
+        } else {
+            return service.getName();
+        }
+    }
+
+    @Override
+    public void export(JsonWriter jsonWriter) throws IOException {
+        jsonWriter.beginObject();
+
+        var properties = Map.of(
+                "id", serialNumber,
+                "disposed", pivot == null);
+        JsonStreamUtil.writeProperties(properties, jsonWriter);
+
+        // Assign unique IDs to all owners
+        var machineIdMap = new Reference2IntOpenHashMap<>(machines.size());
+        for (var node : machines.values()) {
+            machineIdMap.put(node.getOwner(), machineIdMap.size());
+            // Also assign unique IDs to part hosts
+            if (node.getOwner() instanceof AEBasePart part) {
+                machineIdMap.put(part.getBlockEntity(), machineIdMap.size());
+            }
+        }
+
+        // Assign unique IDs to all involved machines and nodes
+        var nodeIdMap = new Reference2IntOpenHashMap<IGridNode>(machines.size());
+        for (var node : machines.values()) {
+            nodeIdMap.put(node, nodeIdMap.size());
+        }
+
+        jsonWriter.name("machines");
+        exportMachines(jsonWriter, machineIdMap, nodeIdMap);
+
+        jsonWriter.name("nodes");
+        exportNodes(jsonWriter, machineIdMap, nodeIdMap);
+
+        jsonWriter.name("services");
+        jsonWriter.beginObject();
+        for (var entry : services.entrySet()) {
+            jsonWriter.name(getServiceExportKey(entry.getKey()));
+            jsonWriter.beginObject();
+            entry.getValue().debugDump(jsonWriter);
+            jsonWriter.endObject();
+        }
+        jsonWriter.endObject();
+
+        jsonWriter.endObject();
+    }
+
+    private void exportMachines(JsonWriter jsonWriter, Reference2IntMap<Object> machineIds,
+            Reference2IntMap<IGridNode> nodeIds) throws IOException {
+        jsonWriter.beginArray();
+        for (var entry : machineIds.reference2IntEntrySet()) {
+            jsonWriter.beginObject();
+            JsonStreamUtil.writeProperties(Map.of(
+                    "id", entry.getIntValue()), jsonWriter);
+            if (entry.getKey() instanceof IDebugExportable exportable) {
+                exportable.debugExport(jsonWriter, machineIds, nodeIds);
+            }
+            jsonWriter.endObject();
+        }
+        jsonWriter.endArray();
+    }
+
+    private void exportNodes(JsonWriter jsonWriter, Reference2IntMap<Object> machineIds,
+            Reference2IntMap<IGridNode> nodeIds) throws IOException {
+        // Dump nodes
+        jsonWriter.beginArray();
+        for (var entry : nodeIds.reference2IntEntrySet()) {
+            var node = entry.getKey();
+            ((GridNode) node).debugExport(jsonWriter, machineIds, nodeIds);
+        }
+        jsonWriter.endArray();
+    }
+
+    public int getSerialNumber() {
+        return serialNumber;
     }
 }

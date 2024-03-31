@@ -18,7 +18,9 @@
 
 package appeng.hooks.ticking;
 
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -86,8 +88,8 @@ class ServerGridRepo {
     /**
      * Get all registered {@link Grid}s
      */
-    public Iterable<Grid> getNetworks() {
-        return networks;
+    public Set<Grid> getNetworks() {
+        return Collections.unmodifiableSet(networks);
     }
 
 }

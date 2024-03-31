@@ -18,14 +18,19 @@
 
 package appeng.parts;
 
+import java.io.IOException;
 import java.util.EnumSet;
+import java.util.Map;
 import java.util.Objects;
+
+import com.google.gson.stream.JsonWriter;
 
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -39,6 +44,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.items.IMemoryCard;
@@ -61,11 +68,13 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.items.tools.MemoryCardItem;
 import appeng.util.CustomNameUtil;
+import appeng.util.IDebugExportable;
 import appeng.util.InteractionUtil;
+import appeng.util.JsonStreamUtil;
 import appeng.util.SettingsFrom;
 
 public abstract class AEBasePart
-        implements IPart, IActionHost, ISegmentedInventory, IPowerChannelState, Nameable {
+        implements IPart, IActionHost, ISegmentedInventory, IPowerChannelState, Nameable, IDebugExportable {
 
     private final IManagedGridNode mainNode;
     private IPartItem<?> partItem;
@@ -475,5 +484,15 @@ public abstract class AEBasePart
      */
     protected boolean shouldSendMissingChannelStateToClient() {
         return true;
+    }
+
+    @Override
+    public void debugExport(JsonWriter writer, Reference2IntMap<Object> machineIds, Reference2IntMap<IGridNode> nodeIds)
+            throws IOException {
+        var myId = machineIds.getOrDefault(this, -1);
+        JsonStreamUtil.writeProperties(Map.of(
+                "id", myId,
+                "item", BuiltInRegistries.ITEM.getKey(getPartItem().asItem()).toString(),
+                "mainNodeId", nodeIds.getOrDefault(mainNode.getNode(), -1)), writer);
     }
 }

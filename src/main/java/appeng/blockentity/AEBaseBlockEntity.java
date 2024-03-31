@@ -18,11 +18,15 @@
 
 package appeng.blockentity;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+
+import com.google.gson.stream.JsonWriter;
+import com.mojang.serialization.JsonOps;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
@@ -57,9 +61,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
+import appeng.api.networking.IGridNode;
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.RelativeSide;
@@ -70,11 +77,13 @@ import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.tools.MemoryCardItem;
 import appeng.util.CustomNameUtil;
+import appeng.util.IDebugExportable;
+import appeng.util.JsonStreamUtil;
 import appeng.util.SettingsFrom;
 import appeng.util.helpers.ItemComparisonHelper;
 
 public class AEBaseBlockEntity extends BlockEntity
-        implements Nameable, ISegmentedInventory, Clearable {
+        implements Nameable, ISegmentedInventory, Clearable, IDebugExportable {
 
     private static final Map<BlockEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
     @Nullable
@@ -485,5 +494,20 @@ public class AEBaseBlockEntity extends BlockEntity
         if (previousOrientation != newOrientation) {
             onOrientationChanged(newOrientation);
         }
+    }
+
+    @Override
+    public void debugExport(JsonWriter writer, Reference2IntMap<Object> machineIds, Reference2IntMap<IGridNode> nodeIds)
+            throws IOException {
+        var data = new CompoundTag();
+        saveAdditional(data);
+
+        JsonStreamUtil.writeProperties(Map.of(
+                "blockState", BlockState.CODEC.encodeStart(JsonOps.INSTANCE, getBlockState()).getOrThrow(false, err -> {
+                }),
+                "level", level.dimension().location().toString(),
+                "pos", getBlockPos(),
+                "data", CompoundTag.CODEC.encodeStart(JsonOps.INSTANCE, data).getOrThrow(false, err -> {
+                })), writer);
     }
 }

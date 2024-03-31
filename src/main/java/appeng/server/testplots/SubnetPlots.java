@@ -6,8 +6,6 @@ import net.minecraft.world.item.Items;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.networking.energy.IEnergyService;
-import appeng.api.networking.storage.IStorageService;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
@@ -48,7 +46,7 @@ public final class SubnetPlots {
                     .thenWaitUntil(() -> helper.getGrid(mainNetPos))
                     .thenExecute(() -> {
                         var mainGrid = helper.getGrid(mainNetPos);
-                        var storageService = mainGrid.getService(IStorageService.class);
+                        var storageService = mainGrid.getStorageService();
                         var inserted = storageService.getInventory().insert(
                                 STICK,
                                 1,
@@ -64,7 +62,7 @@ public final class SubnetPlots {
                     .thenExecute(() -> {
                         // Check again if it's retrievable
                         var mainGrid = helper.getGrid(mainNetPos);
-                        var storageService = mainGrid.getService(IStorageService.class);
+                        var storageService = mainGrid.getStorageService();
                         var inventory = storageService.getInventory().getAvailableStacks();
                         helper.check(inventory.get(STICK) == 1, "stick not present in tick #10", mainNetPos);
 
@@ -98,9 +96,9 @@ public final class SubnetPlots {
                         var cellGrid = helper.getGrid(origin.west());
                         var noCellGrid = helper.getGrid(origin.west().west());
 
-                        var denseCellService = (EnergyService) denseCellGrid.getService(IEnergyService.class);
-                        var cellService = (EnergyService) cellGrid.getService(IEnergyService.class);
-                        var noCellService = (EnergyService) noCellGrid.getService(IEnergyService.class);
+                        var denseCellService = (EnergyService) denseCellGrid.getEnergyService();
+                        var cellService = (EnergyService) cellGrid.getEnergyService();
+                        var noCellService = (EnergyService) noCellGrid.getEnergyService();
 
                         // Inject power into each of the three grids. It should always end up in the dense
                         // cell grid, due to prioritizing grids with high storage.

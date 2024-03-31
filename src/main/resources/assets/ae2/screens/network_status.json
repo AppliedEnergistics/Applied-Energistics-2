@@ -44,6 +44,12 @@
     }
   },
   "widgets": {
+    "export_grid": {
+      "bottom": 0,
+      "left": 0,
+      "width": 100,
+      "height": 20
+    },
     "scrollbar": {
       "left": 175,
       "top": 39,

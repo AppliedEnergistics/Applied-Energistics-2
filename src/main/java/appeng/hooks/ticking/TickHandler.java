@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -174,7 +175,7 @@ public class TickHandler {
         this.grids.removeNetwork(grid);
     }
 
-    public Iterable<Grid> getGridList() {
+    public Set<Grid> getGridList() {
         Platform.assertServerThread();
         return this.grids.getNetworks();
     }
