@@ -18,8 +18,11 @@
 
 package appeng.blockentity.networking;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.stream.JsonWriter;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -41,6 +44,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IPart;
@@ -54,6 +59,7 @@ import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.core.AppEng;
 import appeng.helpers.AEMultiBlockEntity;
 import appeng.parts.CableBusContainer;
+import appeng.util.IDebugExportable;
 import appeng.util.Platform;
 
 public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlockEntity {
@@ -375,5 +381,26 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     @Override
     public VoxelShape getCollisionShape(CollisionContext context) {
         return cb.getCollisionShape(context);
+    }
+
+    @Override
+    public void debugExport(JsonWriter writer, Reference2IntMap<Object> machineIds, Reference2IntMap<IGridNode> nodeIds)
+            throws IOException {
+        super.debugExport(writer, machineIds, nodeIds);
+
+        writer.name("parts");
+        writer.beginObject();
+        for (var side : Platform.DIRECTIONS_WITH_NULL) {
+            var part = getPart(side);
+            if (part != null) {
+                writer.name(side == null ? "center" : side.getSerializedName());
+                writer.beginObject();
+                if (part instanceof IDebugExportable exportable) {
+                    exportable.debugExport(writer, machineIds, nodeIds);
+                }
+                writer.endObject();
+            }
+        }
+        writer.endObject();
     }
 }

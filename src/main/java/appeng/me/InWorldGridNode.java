@@ -29,7 +29,7 @@ import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
-import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
@@ -105,23 +105,24 @@ public class InWorldGridNode extends GridNode {
     }
 
     @Override
-    protected void exportProperties(JsonWriter jsonWriter, int id, Reference2IntOpenHashMap<GridNode> nodeIdMap)
+    protected void exportProperties(JsonWriter writer, Reference2IntMap<Object> machineIds,
+            Reference2IntMap<IGridNode> nodeIds)
             throws IOException {
-        super.exportProperties(jsonWriter, id, nodeIdMap);
+        super.exportProperties(writer, machineIds, nodeIds);
 
-        jsonWriter.name("location");
-        jsonWriter.beginArray();
-        jsonWriter.value(location.getX());
-        jsonWriter.value(location.getY());
-        jsonWriter.value(location.getZ());
-        jsonWriter.endArray();
+        writer.name("location");
+        writer.beginArray();
+        writer.value(location.getX());
+        writer.value(location.getY());
+        writer.value(location.getZ());
+        writer.endArray();
 
-        jsonWriter.name("exposedSides");
+        writer.name("exposedSides");
         var sidesSet = new StringBuilder();
         for (var side : exposedOnSides) {
             sidesSet.append(side.name().charAt(0));
         }
-        jsonWriter.value(sidesSet.toString());
+        writer.value(sidesSet.toString());
     }
 
     private void cleanupConnections() {

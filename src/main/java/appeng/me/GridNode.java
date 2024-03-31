@@ -47,7 +47,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.GridFlags;
@@ -65,9 +65,10 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AEColor;
 import appeng.core.AELog;
 import appeng.me.pathfinding.IPathItem;
+import appeng.util.IDebugExportable;
 import appeng.util.JsonStreamUtil;
 
-public class GridNode implements IGridNode, IPathItem {
+public class GridNode implements IGridNode, IPathItem, IDebugExportable {
     private final ServerLevel level;
     /**
      * This is the logical host of the node, which could be any object. In many cases this will be a block entity or
@@ -683,19 +684,23 @@ public class GridNode implements IGridNode, IPathItem {
         }
     }
 
-    public final void export(JsonWriter jsonWriter, int id, Reference2IntOpenHashMap<GridNode> nodeIdMap)
-            throws IOException {
-        jsonWriter.beginObject();
-        exportProperties(jsonWriter, id, nodeIdMap);
-        jsonWriter.endObject();
+    @Override
+    public final void debugExport(JsonWriter writer, Reference2IntMap<Object> machineIds,
+            Reference2IntMap<IGridNode> nodeIds) throws IOException {
+        writer.beginObject();
+        exportProperties(writer, machineIds, nodeIds);
+        writer.endObject();
     }
 
-    protected void exportProperties(JsonWriter jsonWriter, int id, Reference2IntOpenHashMap<GridNode> nodeIdMap)
+    protected void exportProperties(JsonWriter writer, Reference2IntMap<Object> machineIds,
+            Reference2IntMap<IGridNode> nodeIds)
             throws IOException {
+        var id = nodeIds.getInt(this);
+        var machineId = machineIds.getInt(owner);
         JsonStreamUtil.writeProperties(Map.of(
-                "id", id), jsonWriter);
+                "id", id, "owner", machineId), writer);
 
-        jsonWriter.name("level");
-        jsonWriter.value(level.dimensionTypeId().location().toString());
+        writer.name("level");
+        writer.value(level.dimensionTypeId().location().toString());
     }
 }

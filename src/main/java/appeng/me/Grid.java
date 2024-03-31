@@ -38,6 +38,7 @@ import net.minecraft.CrashReportCategory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 
 import appeng.api.networking.GridServicesInternal;
@@ -56,6 +57,8 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.core.AELog;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.service.P2PService;
+import appeng.parts.AEBasePart;
+import appeng.util.IDebugExportable;
 import appeng.util.JsonStreamUtil;
 
 public class Grid implements IGrid {
@@ -324,8 +327,27 @@ public class Grid implements IGrid {
                 "disposed", pivot == null);
         JsonStreamUtil.writeProperties(properties, jsonWriter);
 
+        // Assign unique IDs to all owners
+        var machineIdMap = new Reference2IntOpenHashMap<>(machines.size());
+        for (var node : machines.values()) {
+            machineIdMap.put(node.getOwner(), machineIdMap.size());
+            // Also assign unique IDs to part hosts
+            if (node.getOwner() instanceof AEBasePart part) {
+                machineIdMap.put(part.getBlockEntity(), machineIdMap.size());
+            }
+        }
+
+        // Assign unique IDs to all involved machines and nodes
+        var nodeIdMap = new Reference2IntOpenHashMap<IGridNode>(machines.size());
+        for (var node : machines.values()) {
+            nodeIdMap.put(node, nodeIdMap.size());
+        }
+
+        jsonWriter.name("machines");
+        exportMachines(jsonWriter, machineIdMap, nodeIdMap);
+
         jsonWriter.name("nodes");
-        exportNodes(jsonWriter);
+        exportNodes(jsonWriter, machineIdMap, nodeIdMap);
 
         jsonWriter.name("services");
         jsonWriter.beginObject();
@@ -340,17 +362,28 @@ public class Grid implements IGrid {
         jsonWriter.endObject();
     }
 
-    private void exportNodes(JsonWriter jsonWriter) throws IOException {
-        // Dump nodes
-        var nodeIdMap = new Reference2IntOpenHashMap<GridNode>(machines.size());
-        for (var node : machines.values()) {
-            nodeIdMap.put((GridNode) node, nodeIdMap.size());
-        }
-
+    private void exportMachines(JsonWriter jsonWriter, Reference2IntMap<Object> machineIds,
+            Reference2IntMap<IGridNode> nodeIds) throws IOException {
         jsonWriter.beginArray();
-        for (var entry : nodeIdMap.reference2IntEntrySet()) {
+        for (var entry : machineIds.reference2IntEntrySet()) {
+            jsonWriter.beginObject();
+            JsonStreamUtil.writeProperties(Map.of(
+                    "id", entry.getIntValue()), jsonWriter);
+            if (entry.getKey() instanceof IDebugExportable exportable) {
+                exportable.debugExport(jsonWriter, machineIds, nodeIds);
+            }
+            jsonWriter.endObject();
+        }
+        jsonWriter.endArray();
+    }
+
+    private void exportNodes(JsonWriter jsonWriter, Reference2IntMap<Object> machineIds,
+            Reference2IntMap<IGridNode> nodeIds) throws IOException {
+        // Dump nodes
+        jsonWriter.beginArray();
+        for (var entry : nodeIds.reference2IntEntrySet()) {
             var node = entry.getKey();
-            node.export(jsonWriter, entry.getIntValue(), nodeIdMap);
+            ((GridNode) node).debugExport(jsonWriter, machineIds, nodeIds);
         }
         jsonWriter.endArray();
     }
