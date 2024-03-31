@@ -18,6 +18,28 @@
 
 package appeng.me;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.SetMultimap;
+import com.google.gson.stream.JsonWriter;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.CrashReportCategory;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+
 import appeng.api.networking.GridServicesInternal;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -35,26 +57,6 @@ import appeng.core.AELog;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.service.P2PService;
 import appeng.util.JsonStreamUtil;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.MultimapBuilder;
-import com.google.common.collect.SetMultimap;
-import com.google.gson.JsonElement;
-import com.google.gson.stream.JsonWriter;
-import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
-import net.minecraft.CrashReportCategory;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Grid implements IGrid {
     /**
@@ -351,5 +353,9 @@ public class Grid implements IGrid {
             node.debugDump(jsonWriter, entry.getIntValue(), nodeIdMap);
         }
         jsonWriter.endArray();
+    }
+
+    public int getSerialNumber() {
+        return serialNumber;
     }
 }

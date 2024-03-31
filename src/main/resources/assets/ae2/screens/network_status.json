@@ -44,6 +44,12 @@
     }
   },
   "widgets": {
+    "dump_grid": {
+      "bottom": 0,
+      "left": 0,
+      "width": 50,
+      "height": 25
+    },
     "scrollbar": {
       "left": 175,
       "top": 39,

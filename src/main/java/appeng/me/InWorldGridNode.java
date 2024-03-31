@@ -23,11 +23,13 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import com.google.gson.stream.JsonWriter;
-import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
@@ -103,7 +105,8 @@ public class InWorldGridNode extends GridNode {
     }
 
     @Override
-    protected void debugDumpProperties(JsonWriter jsonWriter, int id, Reference2IntOpenHashMap<GridNode> nodeIdMap) throws IOException {
+    protected void debugDumpProperties(JsonWriter jsonWriter, int id, Reference2IntOpenHashMap<GridNode> nodeIdMap)
+            throws IOException {
         super.debugDumpProperties(jsonWriter, id, nodeIdMap);
 
         jsonWriter.name("location");

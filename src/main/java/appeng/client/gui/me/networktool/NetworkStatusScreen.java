@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -51,6 +52,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
     // Dimensions of each table cell
     private static final int CELL_WIDTH = 30;
     private static final int CELL_HEIGHT = 18;
+    private final Button dumpGridButton;
 
     private NetworkStatus status = new NetworkStatus();
 
@@ -62,11 +64,16 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
         this.scrollbar = widgets.addScrollBar("scrollbar");
 
         this.addToLeftToolbar(CommonButtons.togglePowerUnit());
+
+        dumpGridButton = widgets.addButton("dump_grid", Component.literal("Dump"), menu::dumpGrid);
     }
 
     @Override
     protected void updateBeforeRender() {
         super.updateBeforeRender();
+
+        // Make the dump button only visible if the dump command can actually be run
+        dumpGridButton.visible = menu.canDumpGrid();
 
         setTextContent("dialog_title", GuiText.NetworkDetails.text(status.getChannelsUsed()));
         setTextContent("stored_power", GuiText.StoredPower.text(Platform.formatPower(status.getStoredPower(), false)));

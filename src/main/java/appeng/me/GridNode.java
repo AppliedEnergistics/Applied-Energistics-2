@@ -18,6 +18,37 @@
 
 package appeng.me;
 
+import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.MutableClassToInstanceMap;
+import com.google.gson.stream.JsonWriter;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.CrashReportCategory;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
@@ -35,33 +66,6 @@ import appeng.api.util.AEColor;
 import appeng.core.AELog;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.JsonStreamUtil;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.MutableClassToInstanceMap;
-import com.google.gson.stream.JsonWriter;
-import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
-import net.minecraft.CrashReportCategory;
-import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
 
 public class GridNode implements IGridNode, IPathItem {
     private final ServerLevel level;
@@ -103,9 +107,9 @@ public class GridNode implements IGridNode, IPathItem {
     private CompoundTag savedData;
 
     public <T> GridNode(ServerLevel level,
-                        T owner,
-                        IGridNodeListener<T> listener,
-                        Set<GridFlags> flags) {
+            T owner,
+            IGridNodeListener<T> listener,
+            Set<GridFlags> flags) {
         this.level = level;
         this.owner = owner;
         this.listener = listener;
@@ -511,7 +515,7 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     private void visitorConnection(Object tracker, IGridVisitor g, Deque<GridNode> nextRun,
-                                   Deque<IGridConnection> nextConnections) {
+            Deque<IGridConnection> nextConnections) {
         if (g.visitNode(this)) {
             for (IGridConnection gc : this.getConnections()) {
                 final GridNode gn = (GridNode) gc.getOtherSide(this);
@@ -679,16 +683,17 @@ public class GridNode implements IGridNode, IPathItem {
         }
     }
 
-    public final void debugDump(JsonWriter jsonWriter, int id, Reference2IntOpenHashMap<GridNode> nodeIdMap) throws IOException {
+    public final void debugDump(JsonWriter jsonWriter, int id, Reference2IntOpenHashMap<GridNode> nodeIdMap)
+            throws IOException {
         jsonWriter.beginObject();
         debugDumpProperties(jsonWriter, id, nodeIdMap);
         jsonWriter.endObject();
     }
 
-    protected void debugDumpProperties(JsonWriter jsonWriter, int id, Reference2IntOpenHashMap<GridNode> nodeIdMap) throws IOException {
+    protected void debugDumpProperties(JsonWriter jsonWriter, int id, Reference2IntOpenHashMap<GridNode> nodeIdMap)
+            throws IOException {
         JsonStreamUtil.writeProperties(Map.of(
-                "id", id
-        ), jsonWriter);
+                "id", id), jsonWriter);
 
         jsonWriter.name("level");
         jsonWriter.value(level.dimensionTypeId().location().toString());
