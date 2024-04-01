@@ -311,30 +311,35 @@ loom {
         client {
             programArgs "--username", "AE2Dev"
             property "appeng.tests", "true"
+            property 'appeng.version', project.version
             property "guideDev.ae2guide.sources", file("guidebook").absolutePath
         }
         gametestWorld {
             client()
             programArgs "--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld"
             property "appeng.tests", "true"
+            property 'appeng.version', project.version
             property "guideDev.ae2guide.sources", file("guidebook").absolutePath
         }
         guide {
             client()
             programArgs "--username", "AE2Dev"
             property "appeng.tests", "true"
+            property 'appeng.version', project.version
             property "guideDev.ae2guide.sources", file("guidebook").absolutePath
             property "guideDev.ae2guide.startupPage", "ae2:index.md"
         }
         datagen {
             client()
             property "fabric-api.datagen"
+            property 'appeng.version', project.version
             property "fabric-api.datagen.output-dir", file("src/generated/resources").absolutePath
             property "appeng.datagen.existingData", file("src/main/resources").absolutePath
         }
         guideexport {
             client()
             property "appeng.runGuideExportAndExit", "true"
+            property 'appeng.version', project.version
             property "appeng.guideExportFolder", file("$buildDir/guide").absolutePath
             property "guideDev.ae2guide.sources", file("guidebook").absolutePath
         }
