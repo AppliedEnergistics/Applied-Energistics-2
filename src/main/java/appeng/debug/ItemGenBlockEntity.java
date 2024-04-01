@@ -56,6 +56,12 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity implements InternalInv
         if (SHARED_POSSIBLE_ITEMS.isEmpty()) {
             initGlobalPossibleItems();
         }
+        scheduleInit();
+    }
+
+    @Override
+    public void onReady() {
+        super.onReady();
         refillInv();
     }
 
