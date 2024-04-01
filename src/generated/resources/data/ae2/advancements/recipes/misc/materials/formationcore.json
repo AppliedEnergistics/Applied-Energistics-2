@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_logic_processor"
+      "has_logic_processor",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:materials/formationcore"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

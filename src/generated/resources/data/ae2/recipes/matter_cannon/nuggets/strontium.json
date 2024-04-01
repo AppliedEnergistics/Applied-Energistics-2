@@ -1,16 +1,16 @@
 {
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/strontium"
-      }
-    }
-  ],
   "type": "ae2:matter_cannon",
   "ammo": {
     "tag": "forge:nuggets/strontium"
   },
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:tag_empty",
+        "tag": "forge:nuggets/strontium"
+      }
+    }
+  ],
   "weight": 87.62
 }

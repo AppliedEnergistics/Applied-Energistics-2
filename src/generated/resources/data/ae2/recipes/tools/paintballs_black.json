@@ -17,5 +17,6 @@
   "result": {
     "count": 8,
     "item": "ae2:black_paint_ball"
-  }
+  },
+  "show_notification": true
 }

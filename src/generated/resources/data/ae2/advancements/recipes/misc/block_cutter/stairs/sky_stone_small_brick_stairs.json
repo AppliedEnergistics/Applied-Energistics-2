@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_sky_stone_small_brick"
+      "has_sky_stone_small_brick",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:block_cutter/stairs/sky_stone_small_brick_stairs"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

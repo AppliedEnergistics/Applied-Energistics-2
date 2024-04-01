@@ -46,15 +46,16 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_fluix_block",
       "has_glass_cable",
-      "has_quartz_glass"
+      "has_quartz_glass",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/crystal_processing_growth_accelerator"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

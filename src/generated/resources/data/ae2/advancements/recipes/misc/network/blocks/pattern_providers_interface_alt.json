@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_cable_pattern_provider"
+      "has_cable_pattern_provider",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/pattern_providers_interface_alt"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

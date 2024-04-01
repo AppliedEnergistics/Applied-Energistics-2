@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:controller"
-  }
+  },
+  "show_notification": true
 }

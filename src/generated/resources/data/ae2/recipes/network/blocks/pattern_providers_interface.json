@@ -22,5 +22,6 @@
   ],
   "result": {
     "item": "ae2:pattern_provider"
-  }
+  },
+  "show_notification": true
 }

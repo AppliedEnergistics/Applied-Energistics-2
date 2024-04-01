@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "ae2:crank"
-  }
+  },
+  "show_notification": true
 }

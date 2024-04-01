@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_basic_card"
+      "has_basic_card",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:materials/cardcrafting"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

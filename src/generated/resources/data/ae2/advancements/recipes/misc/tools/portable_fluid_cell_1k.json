@@ -34,14 +34,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_fluid_cell_housing",
-      "has_energy_cell"
+      "has_energy_cell",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:tools/portable_fluid_cell_1k"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

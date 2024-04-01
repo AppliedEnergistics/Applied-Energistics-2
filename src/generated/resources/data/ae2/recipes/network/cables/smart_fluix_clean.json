@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "type": "neoforge:difference",
+      "type": "forge:difference",
       "base": {
         "tag": "ae2:smart_cable"
       },

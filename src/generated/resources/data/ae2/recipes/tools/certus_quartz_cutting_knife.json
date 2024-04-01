@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:certus_quartz_cutting_knife"
-  }
+  },
+  "show_notification": true
 }

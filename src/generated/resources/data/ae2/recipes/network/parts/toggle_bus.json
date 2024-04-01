@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:toggle_bus"
-  }
+  },
+  "show_notification": true
 }

@@ -17,5 +17,6 @@
   "result": {
     "count": 8,
     "item": "ae2:cyan_smart_cable"
-  }
+  },
+  "show_notification": true
 }

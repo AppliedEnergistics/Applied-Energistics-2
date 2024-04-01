@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:spatial_cell_component_2"
-  }
+  },
+  "show_notification": true
 }

@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:fluid_cell_housing"
-  }
+  },
+  "show_notification": true
 }

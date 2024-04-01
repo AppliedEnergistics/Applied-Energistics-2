@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:annihilation_plane"
-  }
+  },
+  "show_notification": true
 }

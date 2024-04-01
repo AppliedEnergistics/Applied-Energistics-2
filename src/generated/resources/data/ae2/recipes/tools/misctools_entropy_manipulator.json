@@ -22,5 +22,6 @@
   ],
   "result": {
     "item": "ae2:entropy_manipulator"
-  }
+  },
+  "show_notification": true
 }

@@ -10,6 +10,8 @@
     "description": {
       "translate": "achievement.ae2.SpatialIOExplorer.desc"
     },
+    "frame": "task",
+    "hidden": false,
     "icon": {
       "item": "ae2:spatial_cell_component_128"
     },

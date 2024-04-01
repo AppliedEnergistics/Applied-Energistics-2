@@ -3,10 +3,10 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "ae2:crafting_unit"
+      "item": "ae2:storage_monitor"
     },
     {
-      "item": "ae2:storage_monitor"
+      "item": "ae2:crafting_unit"
     }
   ],
   "result": {

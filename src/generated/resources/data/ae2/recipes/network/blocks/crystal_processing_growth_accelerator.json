@@ -22,5 +22,6 @@
   ],
   "result": {
     "item": "ae2:growth_accelerator"
-  }
+  },
+  "show_notification": true
 }

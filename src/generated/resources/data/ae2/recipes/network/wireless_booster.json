@@ -22,5 +22,6 @@
   "result": {
     "count": 2,
     "item": "ae2:wireless_booster"
-  }
+  },
+  "show_notification": true
 }

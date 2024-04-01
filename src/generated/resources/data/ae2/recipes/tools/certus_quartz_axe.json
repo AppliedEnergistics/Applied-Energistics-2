@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "ae2:certus_quartz_axe"
-  }
+  },
+  "show_notification": true
 }

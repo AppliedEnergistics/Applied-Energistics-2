@@ -34,14 +34,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_io_port",
-      "has_engineering_processor"
+      "has_engineering_processor",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/spatial_io_port"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

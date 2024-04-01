@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "ae2:charger"
-  }
+  },
+  "show_notification": true
 }

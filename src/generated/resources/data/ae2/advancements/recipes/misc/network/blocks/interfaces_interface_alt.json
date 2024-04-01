@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_cable_interface"
+      "has_cable_interface",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/interfaces_interface_alt"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

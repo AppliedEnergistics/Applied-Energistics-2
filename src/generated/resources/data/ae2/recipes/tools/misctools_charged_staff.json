@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "ae2:charged_staff"
-  }
+  },
+  "show_notification": true
 }

@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:cell_component_1k"
-  }
+  },
+  "show_notification": true
 }

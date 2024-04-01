@@ -34,14 +34,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_formation_core",
-      "has_energy_cell"
+      "has_energy_cell",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:tools/network_color_applicator"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

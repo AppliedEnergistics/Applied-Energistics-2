@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_matter_ball"
+      "has_matter_ball",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:tools/paintballs_purple"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

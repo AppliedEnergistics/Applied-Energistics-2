@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_semi_dark_monitor"
+      "has_semi_dark_monitor",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/parts/panels_monitor"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

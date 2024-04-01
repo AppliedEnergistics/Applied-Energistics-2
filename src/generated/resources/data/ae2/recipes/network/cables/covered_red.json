@@ -17,5 +17,6 @@
   "result": {
     "count": 8,
     "item": "ae2:red_covered_cable"
-  }
+  },
+  "show_notification": true
 }

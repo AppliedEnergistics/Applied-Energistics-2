@@ -34,14 +34,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_formation_core",
-      "has_annihilation_core"
+      "has_annihilation_core",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/crafting/molecular_assembler"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

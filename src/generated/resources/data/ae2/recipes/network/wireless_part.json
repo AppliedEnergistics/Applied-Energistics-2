@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:wireless_receiver"
-  }
+  },
+  "show_notification": true
 }

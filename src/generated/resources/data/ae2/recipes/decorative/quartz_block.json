@@ -12,5 +12,6 @@
   ],
   "result": {
     "item": "ae2:quartz_block"
-  }
+  },
+  "show_notification": true
 }

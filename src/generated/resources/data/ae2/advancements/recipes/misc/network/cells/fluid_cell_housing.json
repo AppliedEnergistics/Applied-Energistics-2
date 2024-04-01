@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_dusts/redstone"
+      "has_dusts/redstone",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/cells/fluid_cell_housing"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

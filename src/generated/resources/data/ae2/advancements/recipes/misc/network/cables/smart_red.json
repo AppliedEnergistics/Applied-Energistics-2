@@ -32,14 +32,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_dyes/black",
-      "has_fluix_smart_cable"
+      "has_fluix_smart_cable",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/cables/smart_red"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

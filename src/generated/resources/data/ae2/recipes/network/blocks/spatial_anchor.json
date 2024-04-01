@@ -25,5 +25,6 @@
   ],
   "result": {
     "item": "ae2:spatial_anchor"
-  }
+  },
+  "show_notification": true
 }

@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_interface"
+      "has_interface",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/parts/storage_bus"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

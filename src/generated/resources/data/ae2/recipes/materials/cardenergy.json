@@ -14,5 +14,6 @@
   ],
   "result": {
     "item": "ae2:energy_card"
-  }
+  },
+  "show_notification": true
 }

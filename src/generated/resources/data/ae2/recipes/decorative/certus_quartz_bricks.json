@@ -13,5 +13,6 @@
   "result": {
     "count": 4,
     "item": "ae2:quartz_bricks"
-  }
+  },
+  "show_notification": true
 }

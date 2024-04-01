@@ -3,5 +3,6 @@
   "ammo": {
     "item": "ae2:matter_ball"
   },
+  "conditions": [],
   "weight": 32.0
 }

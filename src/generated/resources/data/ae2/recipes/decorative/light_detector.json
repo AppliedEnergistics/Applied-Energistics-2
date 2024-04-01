@@ -14,5 +14,6 @@
   ],
   "result": {
     "item": "ae2:light_detector"
-  }
+  },
+  "show_notification": true
 }

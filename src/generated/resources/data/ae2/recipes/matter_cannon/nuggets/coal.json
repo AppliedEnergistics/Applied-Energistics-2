@@ -1,16 +1,16 @@
 {
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/coal"
-      }
-    }
-  ],
   "type": "ae2:matter_cannon",
   "ammo": {
     "tag": "forge:nuggets/coal"
   },
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:tag_empty",
+        "tag": "forge:nuggets/coal"
+      }
+    }
+  ],
   "weight": 12.0107
 }

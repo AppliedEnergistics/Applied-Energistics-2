@@ -32,14 +32,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_gunpowder",
-      "has_dusts/quartz"
+      "has_dusts/quartz",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:misc/tiny_tnt"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

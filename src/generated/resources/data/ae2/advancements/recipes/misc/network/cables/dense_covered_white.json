@@ -32,14 +32,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_fluix_covered_dense_cable",
-      "has_dyes/black"
+      "has_dyes/black",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/cables/dense_covered_white"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }
