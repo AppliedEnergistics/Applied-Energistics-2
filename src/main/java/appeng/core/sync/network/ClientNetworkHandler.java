@@ -18,17 +18,20 @@
 
 package appeng.core.sync.network;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
 
-import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
 
 public class ClientNetworkHandler extends ServerNetworkHandler {
+    private static final Logger LOG = LoggerFactory.getLogger(ClientNetworkHandler.class);
 
     public ClientNetworkHandler() {
         ClientPlayNetworking.registerGlobalReceiver(BasePacket.CHANNEL, this::handlePacketFromServer);
@@ -49,7 +52,7 @@ public class ClientNetworkHandler extends ServerNetworkHandler {
             try {
                 packet.clientPacketData(client.player);
             } catch (IllegalArgumentException e) {
-                AELog.debug(e);
+                LOG.error("Failed handling packet", e);
             }
         });
     }
