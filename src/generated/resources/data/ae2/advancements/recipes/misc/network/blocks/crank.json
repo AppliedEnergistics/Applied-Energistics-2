@@ -30,14 +30,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_stick",
-      "has_copper_ingot"
+      "has_copper_ingot",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/crank"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

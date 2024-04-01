@@ -18,5 +18,6 @@
   "result": {
     "count": 2,
     "item": "ae2:annihilation_core"
-  }
+  },
+  "show_notification": true
 }

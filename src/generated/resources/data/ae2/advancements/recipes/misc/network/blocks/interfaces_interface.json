@@ -34,14 +34,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_annihilation_core",
-      "has_formation_core"
+      "has_formation_core",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/interfaces_interface"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

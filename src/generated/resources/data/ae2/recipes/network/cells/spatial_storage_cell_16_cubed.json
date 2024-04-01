@@ -22,5 +22,6 @@
   ],
   "result": {
     "item": "ae2:spatial_storage_cell_16"
-  }
+  },
+  "show_notification": true
 }

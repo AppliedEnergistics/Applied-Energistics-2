@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_fluix_covered_cable"
+      "has_fluix_covered_cable",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/cables/covered_white"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

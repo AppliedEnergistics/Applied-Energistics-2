@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_quartz_bricks"
+      "has_quartz_bricks",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:misc/deconstruction_certus_quartz_bricks"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

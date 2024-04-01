@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_fluix_block"
+      "has_fluix_block",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:block_cutter/stairs/fluix_stairs"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

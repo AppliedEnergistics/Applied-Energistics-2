@@ -13,5 +13,6 @@
   ],
   "result": {
     "item": "ae2:nether_quartz_wrench"
-  }
+  },
+  "show_notification": true
 }

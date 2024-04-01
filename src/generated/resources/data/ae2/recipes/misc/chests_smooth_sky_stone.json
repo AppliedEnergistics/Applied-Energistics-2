@@ -13,5 +13,6 @@
   ],
   "result": {
     "item": "ae2:smooth_sky_stone_chest"
-  }
+  },
+  "show_notification": true
 }

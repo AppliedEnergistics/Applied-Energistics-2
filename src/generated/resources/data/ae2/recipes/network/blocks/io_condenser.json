@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:condenser"
-  }
+  },
+  "show_notification": true
 }

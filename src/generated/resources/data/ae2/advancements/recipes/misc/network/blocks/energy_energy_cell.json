@@ -42,15 +42,16 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_quartz_glass",
       "has_dusts/fluix",
-      "has_crystals/certus"
+      "has_crystals/certus",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/energy_energy_cell"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

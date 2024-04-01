@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_wireless_receiver"
+      "has_wireless_receiver",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/wireless_access_point"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

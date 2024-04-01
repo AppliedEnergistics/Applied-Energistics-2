@@ -22,5 +22,6 @@
   ],
   "result": {
     "item": "ae2:view_cell"
-  }
+  },
+  "show_notification": true
 }

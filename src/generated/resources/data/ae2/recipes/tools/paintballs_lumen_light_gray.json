@@ -17,5 +17,6 @@
   "result": {
     "count": 8,
     "item": "ae2:light_gray_lumen_paint_ball"
-  }
+  },
+  "show_notification": true
 }

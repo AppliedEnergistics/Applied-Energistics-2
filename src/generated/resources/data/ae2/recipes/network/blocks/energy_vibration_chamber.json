@@ -25,5 +25,6 @@
   ],
   "result": {
     "item": "ae2:vibration_chamber"
-  }
+  },
+  "show_notification": true
 }

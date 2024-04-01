@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:formation_plane"
-  }
+  },
+  "show_notification": true
 }

@@ -42,15 +42,16 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_dusts/redstone",
       "has_dusts/glowstone",
-      "has_fluix_covered_cable"
+      "has_fluix_covered_cable",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/cables/smart_fluix"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

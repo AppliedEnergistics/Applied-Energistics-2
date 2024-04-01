@@ -22,5 +22,6 @@
   ],
   "result": {
     "item": "ae2:interface"
-  }
+  },
+  "show_notification": true
 }

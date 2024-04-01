@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "ae2:dense_energy_cell"
-  }
+  },
+  "show_notification": true
 }

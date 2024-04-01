@@ -34,14 +34,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_item_cell_housing",
-      "has_energy_cell"
+      "has_energy_cell",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:tools/portable_item_cell_4k"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

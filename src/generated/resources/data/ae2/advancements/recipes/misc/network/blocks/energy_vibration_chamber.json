@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_energy_acceptor"
+      "has_energy_acceptor",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/energy_vibration_chamber"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

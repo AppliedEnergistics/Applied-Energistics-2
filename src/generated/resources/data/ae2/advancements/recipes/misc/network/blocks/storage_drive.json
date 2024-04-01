@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_engineering_processor"
+      "has_engineering_processor",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/storage_drive"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

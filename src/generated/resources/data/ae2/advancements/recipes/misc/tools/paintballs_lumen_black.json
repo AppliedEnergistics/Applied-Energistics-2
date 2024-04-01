@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_paint_ball"
+      "has_paint_ball",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:tools/paintballs_lumen_black"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

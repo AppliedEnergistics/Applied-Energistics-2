@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_drive"
+      "has_drive",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/io_port"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

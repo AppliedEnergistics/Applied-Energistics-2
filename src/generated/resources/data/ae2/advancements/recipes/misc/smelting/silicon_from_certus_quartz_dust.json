@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_certus_quartz_dust"
+      "has_certus_quartz_dust",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:smelting/silicon_from_certus_quartz_dust"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

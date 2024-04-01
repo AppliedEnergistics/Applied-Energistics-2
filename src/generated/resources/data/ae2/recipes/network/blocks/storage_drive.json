@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:drive"
-  }
+  },
+  "show_notification": true
 }

@@ -23,5 +23,6 @@
   "result": {
     "count": 2,
     "item": "ae2:basic_card"
-  }
+  },
+  "show_notification": true
 }

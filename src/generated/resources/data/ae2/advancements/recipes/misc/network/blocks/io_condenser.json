@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_dusts/fluix"
+      "has_dusts/fluix",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/io_condenser"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

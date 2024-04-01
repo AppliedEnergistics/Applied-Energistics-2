@@ -25,5 +25,6 @@
   ],
   "result": {
     "item": "ae2:chest"
-  }
+  },
+  "show_notification": true
 }

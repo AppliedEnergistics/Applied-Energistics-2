@@ -1,16 +1,16 @@
 {
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/tellurium"
-      }
-    }
-  ],
   "type": "ae2:matter_cannon",
   "ammo": {
     "tag": "forge:nuggets/tellurium"
   },
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:tag_empty",
+        "tag": "forge:nuggets/tellurium"
+      }
+    }
+  ],
   "weight": 127.6
 }

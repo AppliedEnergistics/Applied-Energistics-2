@@ -21,8 +21,10 @@ package appeng.core;
 import java.util.Collection;
 import java.util.Collections;
 
+import appeng.core.definitions.AEItems;
 import com.mojang.brigadier.CommandDispatcher;
 
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.commands.CommandSourceStack;
@@ -292,7 +294,7 @@ public abstract class AppEngBase implements AppEng {
     protected final CableRenderMode getCableRenderModeForPlayer(@Nullable Player player) {
         if (player != null) {
             if (AEItems.NETWORK_TOOL.isSameAs(player.getItemInHand(InteractionHand.MAIN_HAND))
-                    || AEItems.NETWORK_TOOL.isSameAs(player.getItemInHand(InteractionHand.OFF_HAND))) {
+                || AEItems.NETWORK_TOOL.isSameAs(player.getItemInHand(InteractionHand.OFF_HAND))) {
                 return CableRenderMode.CABLE_VIEW;
             }
         }

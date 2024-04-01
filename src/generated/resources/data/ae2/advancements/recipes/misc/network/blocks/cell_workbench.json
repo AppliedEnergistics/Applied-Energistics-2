@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_calculation_processor"
+      "has_calculation_processor",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/cell_workbench"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -32,14 +32,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_illuminated_panel",
-      "has_level_emitter"
+      "has_level_emitter",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/parts/monitors_storage"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

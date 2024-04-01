@@ -34,14 +34,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_128_cubed_spatial_cell_component",
-      "has_spatial_pylon"
+      "has_spatial_pylon",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/spatial_anchor"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

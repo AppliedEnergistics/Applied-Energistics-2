@@ -15,12 +15,16 @@
     }
   },
   "display": {
+    "announce_to_chat": true,
     "description": {
       "translate": "achievement.ae2.NetworkTool.desc"
     },
+    "frame": "task",
+    "hidden": false,
     "icon": {
       "item": "ae2:network_tool"
     },
+    "show_toast": true,
     "title": {
       "translate": "achievement.ae2.NetworkTool"
     }

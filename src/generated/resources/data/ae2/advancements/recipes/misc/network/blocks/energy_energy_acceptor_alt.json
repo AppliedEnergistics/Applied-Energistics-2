@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_cable_energy_acceptor"
+      "has_cable_energy_acceptor",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/energy_energy_acceptor_alt"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }
