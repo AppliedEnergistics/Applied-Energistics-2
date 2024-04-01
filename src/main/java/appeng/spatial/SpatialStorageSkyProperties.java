@@ -33,6 +33,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.SpatialSkyRender;
 
+import appeng.client.render.SpatialSkyRender;
+
 /**
  * Defines properties for how the sky in the spatial storage level is rendered.
  */
