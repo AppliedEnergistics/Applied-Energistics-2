@@ -118,7 +118,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMe
         }
 
         if (this.getDisplayed() instanceof AEItemKey itemKey) {
-            this.extractItem(player, itemKey.getItem().getMaxStackSize());
+            this.extractItem(player, itemKey.getMaxStackSize());
         }
 
         return true;
