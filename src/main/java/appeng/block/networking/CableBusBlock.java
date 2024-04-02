@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -86,7 +87,6 @@ import appeng.hooks.INeighborChangeSensitive;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
-import appeng.util.Platform;
 
 public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implements IAEFacade, SimpleWaterloggedBlock,
         ICustomBlockHitEffect, ICustomBlockDestroyEffect, INeighborChangeSensitive, IDynamicLadder, ICustomPickBlock {
@@ -337,7 +337,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
 
         // Half the particle rate. Since we're spawning concentrated on a specific spot,
         // our particle effect otherwise looks too strong
-        if (Platform.getRandom().nextBoolean()) {
+        if (level.getRandom().nextBoolean()) {
             return true;
         }
 
@@ -360,8 +360,9 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         CableBusRenderState renderState = cb.getRenderState();
 
         // Spawn a particle for one of the particle textures
-        TextureAtlasSprite texture = Platform.pickRandom(cableBusModel.getParticleTextures(renderState));
-        if (texture != null) {
+        var textures = cableBusModel.getParticleTextures(renderState);
+        if (!textures.isEmpty()) {
+            var texture = Util.getRandom(textures, level.getRandom());
             double x = target.getLocation().x;
             double y = target.getLocation().y;
             double z = target.getLocation().z;
@@ -400,7 +401,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
                     for (int l = 0; l < 4; ++l) {
                         // Randomly select one of the textures if the cable bus has more than just one
                         // possibility here
-                        final TextureAtlasSprite texture = Platform.pickRandom(textures);
+                        var texture = Util.getRandom(textures, level.getRandom());
 
                         final double x = pos.getX() + (j + 0.5D) / 4.0D;
                         final double y = pos.getY() + (k + 0.5D) / 4.0D;
