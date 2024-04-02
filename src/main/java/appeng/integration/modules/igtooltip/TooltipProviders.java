@@ -23,7 +23,6 @@ import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.blockentity.networking.CrystalResonanceGeneratorBlockEntity;
-import appeng.core.AppEng;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.integration.modules.igtooltip.blocks.ChargerDataProvider;
 import appeng.integration.modules.igtooltip.blocks.CraftingMonitorDataProvider;
