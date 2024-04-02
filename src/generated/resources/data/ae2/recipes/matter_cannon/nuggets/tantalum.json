@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/tantalum"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:tantalum_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/tantalum"
+    "tag": "c:tantalum_nuggets"
   },
   "weight": 180.9479
 }

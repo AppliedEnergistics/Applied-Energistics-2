@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/sodium"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:sodium_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/sodium"
+    "tag": "c:sodium_nuggets"
   },
   "weight": 22.9897
 }

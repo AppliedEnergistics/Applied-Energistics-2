@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "b": {
       "item": "ae2:engineering_processor"
@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:me_p2p_tunnel"
-  }
+  },
+  "show_notification": true
 }

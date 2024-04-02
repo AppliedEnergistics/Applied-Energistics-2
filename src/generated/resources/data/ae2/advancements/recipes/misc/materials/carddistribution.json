@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_advanced_card"
+      "has_advanced_card",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:materials/carddistribution"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

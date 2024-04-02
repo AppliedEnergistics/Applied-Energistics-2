@@ -15,12 +15,16 @@
     }
   },
   "display": {
+    "announce_to_chat": true,
     "description": {
       "translate": "achievement.ae2.P2P.desc"
     },
+    "frame": "task",
+    "hidden": false,
     "icon": {
       "item": "ae2:me_p2p_tunnel"
     },
+    "show_toast": true,
     "title": {
       "translate": "achievement.ae2.P2P"
     }

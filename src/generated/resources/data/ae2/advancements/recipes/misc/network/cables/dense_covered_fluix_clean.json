@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_covered_dense_cable"
+      "has_covered_dense_cable",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/cables/dense_covered_fluix_clean"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

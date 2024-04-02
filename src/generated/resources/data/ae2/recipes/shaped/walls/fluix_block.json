@@ -13,5 +13,6 @@
   "result": {
     "count": 6,
     "item": "ae2:fluix_wall"
-  }
+  },
+  "show_notification": true
 }

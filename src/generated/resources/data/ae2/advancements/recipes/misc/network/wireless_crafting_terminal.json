@@ -46,15 +46,16 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_terminal",
       "has_dense_energy_cell",
-      "has_wireless_receiver"
+      "has_wireless_receiver",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/wireless_crafting_terminal"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

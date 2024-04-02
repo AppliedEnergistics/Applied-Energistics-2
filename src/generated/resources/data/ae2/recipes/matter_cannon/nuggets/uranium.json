@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/uranium"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:uranium_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/uranium"
+    "tag": "c:uranium_nuggets"
   },
   "weight": 238.0289
 }

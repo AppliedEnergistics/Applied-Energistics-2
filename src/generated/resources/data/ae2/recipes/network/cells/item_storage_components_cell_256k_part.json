@@ -22,5 +22,6 @@
   ],
   "result": {
     "item": "ae2:cell_component_256k"
-  }
+  },
+  "show_notification": true
 }

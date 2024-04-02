@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/magnesium"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:magnesium_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/magnesium"
+    "tag": "c:magnesium_nuggets"
   },
   "weight": 24.305
 }

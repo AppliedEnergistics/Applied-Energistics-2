@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:wireless_access_point"
-  }
+  },
+  "show_notification": true
 }

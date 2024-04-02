@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_cell_component_16k"
+      "has_cell_component_16k",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/cells/fluid_storage_cell_16k_storage"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

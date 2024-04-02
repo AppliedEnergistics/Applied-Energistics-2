@@ -9,7 +9,7 @@
       "item": "ae2:fluix_glass_cable"
     },
     "c": {
-      "tag": "forge:dusts/fluix"
+      "tag": "c:fluix_dusts"
     },
     "d": {
       "tag": "ae2:all_fluix"
@@ -22,5 +22,6 @@
   ],
   "result": {
     "item": "ae2:spatial_pylon"
-  }
+  },
+  "show_notification": true
 }

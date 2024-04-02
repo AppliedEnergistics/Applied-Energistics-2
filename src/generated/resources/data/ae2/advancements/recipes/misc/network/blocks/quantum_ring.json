@@ -56,16 +56,17 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_fluix_smart_dense_cable",
       "has_energy_cell",
       "has_logic_processor",
-      "has_engineering_processor"
+      "has_engineering_processor",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/quantum_ring"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

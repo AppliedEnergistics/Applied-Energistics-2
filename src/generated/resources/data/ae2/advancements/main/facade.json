@@ -15,13 +15,17 @@
     }
   },
   "display": {
+    "announce_to_chat": true,
     "description": {
       "translate": "achievement.ae2.Facade.desc"
     },
+    "frame": "task",
+    "hidden": false,
     "icon": {
       "item": "ae2:facade",
       "nbt": "{item:\"minecraft:stone\"}"
     },
+    "show_toast": true,
     "title": {
       "translate": "achievement.ae2.Facade"
     }

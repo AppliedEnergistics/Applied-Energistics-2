@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_quartz_glass"
+      "has_quartz_glass",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/parts/panels_semi_dark_monitor"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

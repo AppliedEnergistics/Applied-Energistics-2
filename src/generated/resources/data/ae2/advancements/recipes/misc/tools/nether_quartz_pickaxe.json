@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:gems/quartz"
+            "tag": "c:quartz"
           }
         ]
       },
@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_nether_quartz"
+      "has_nether_quartz",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:tools/nether_quartz_pickaxe"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

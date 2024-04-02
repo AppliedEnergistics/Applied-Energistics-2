@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/bromine"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:bromine_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/bromine"
+    "tag": "c:bromine_nuggets"
   },
   "weight": 79.904
 }

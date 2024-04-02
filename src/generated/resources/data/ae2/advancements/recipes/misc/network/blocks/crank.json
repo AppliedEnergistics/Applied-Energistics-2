@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:ingots/copper"
+            "tag": "c:copper_ingots"
           }
         ]
       },
@@ -15,7 +15,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:rods/wooden"
+            "tag": "c:wooden_rods"
           }
         ]
       },
@@ -30,14 +30,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_stick",
-      "has_copper_ingot"
+      "has_copper_ingot",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/crank"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

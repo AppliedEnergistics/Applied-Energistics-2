@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_smooth_quartz_block"
+      "has_smooth_quartz_block",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:block_cutter/stairs/smooth_quartz_stairs"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

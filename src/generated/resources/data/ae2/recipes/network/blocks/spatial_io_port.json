@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:glass"
+      "tag": "c:glass_blocks"
     },
     "b": {
       "item": "ae2:fluix_glass_cable"
@@ -12,7 +12,7 @@
       "item": "ae2:io_port"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "e": {
       "item": "ae2:engineering_processor"
@@ -25,5 +25,6 @@
   ],
   "result": {
     "item": "ae2:spatial_io_port"
-  }
+  },
+  "show_notification": true
 }

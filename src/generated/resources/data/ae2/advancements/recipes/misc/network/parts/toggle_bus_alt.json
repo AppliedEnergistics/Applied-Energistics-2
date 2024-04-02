@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_inverted_toggle_bus"
+      "has_inverted_toggle_bus",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/parts/toggle_bus_alt"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

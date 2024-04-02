@@ -29,5 +29,6 @@
   "result": {
     "count": 4,
     "item": "ae2:not_so_mysterious_cube"
-  }
+  },
+  "show_notification": true
 }

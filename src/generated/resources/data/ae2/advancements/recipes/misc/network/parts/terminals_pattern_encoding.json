@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_crafting_terminal"
+      "has_crafting_terminal",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/parts/terminals_pattern_encoding"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

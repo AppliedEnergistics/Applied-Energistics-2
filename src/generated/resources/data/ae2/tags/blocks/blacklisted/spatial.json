@@ -1,8 +1,9 @@
 {
+  "replace": false,
   "values": [
     "minecraft:bedrock",
     {
-      "id": "#forge:relocation_not_supported",
+      "id": "#c:movement_restricted",
       "required": false
     }
   ]

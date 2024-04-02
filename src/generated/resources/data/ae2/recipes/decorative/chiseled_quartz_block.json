@@ -12,5 +12,6 @@
   ],
   "result": {
     "item": "ae2:chiseled_quartz_block"
-  }
+  },
+  "show_notification": true
 }

@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_cut_quartz_block"
+      "has_cut_quartz_block",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:shaped/stairs/cut_quartz_block"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

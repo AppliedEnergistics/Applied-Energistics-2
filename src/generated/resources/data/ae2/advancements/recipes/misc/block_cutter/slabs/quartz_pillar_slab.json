@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_quartz_pillar"
+      "has_quartz_pillar",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:block_cutter/slabs/quartz_pillar_slab"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

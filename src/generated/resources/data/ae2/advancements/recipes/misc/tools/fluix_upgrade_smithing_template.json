@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:gems/fluix"
+            "tag": "c:fluix"
           }
         ]
       },
@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_fluix_crystal"
+      "has_fluix_crystal",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:tools/fluix_upgrade_smithing_template"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

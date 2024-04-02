@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/carbon"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:carbon_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/carbon"
+    "tag": "c:carbon_nuggets"
   },
   "weight": 12.0107
 }

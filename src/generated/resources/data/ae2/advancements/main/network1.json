@@ -6,12 +6,16 @@
     }
   },
   "display": {
+    "announce_to_chat": true,
     "description": {
       "translate": "achievement.ae2.Networking1.desc"
     },
+    "frame": "task",
+    "hidden": false,
     "icon": {
       "item": "ae2:fluix_covered_cable"
     },
+    "show_toast": true,
     "title": {
       "translate": "achievement.ae2.Networking1"
     }

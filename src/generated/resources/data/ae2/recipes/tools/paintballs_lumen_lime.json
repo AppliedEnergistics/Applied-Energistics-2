@@ -6,7 +6,7 @@
       "item": "ae2:lime_paint_ball"
     },
     "b": {
-      "tag": "forge:dusts/glowstone"
+      "tag": "c:glowstone_dusts"
     }
   },
   "pattern": [
@@ -17,5 +17,6 @@
   "result": {
     "count": 8,
     "item": "ae2:lime_lumen_paint_ball"
-  }
+  },
+  "show_notification": true
 }

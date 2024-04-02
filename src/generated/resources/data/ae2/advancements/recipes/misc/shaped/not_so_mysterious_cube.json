@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "press"
+      "press",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:shaped/not_so_mysterious_cube"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

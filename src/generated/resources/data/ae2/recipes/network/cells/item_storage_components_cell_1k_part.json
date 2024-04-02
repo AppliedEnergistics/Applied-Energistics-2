@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:redstone_dusts"
     },
     "b": {
       "tag": "ae2:all_certus_quartz"
@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:cell_component_1k"
-  }
+  },
+  "show_notification": true
 }

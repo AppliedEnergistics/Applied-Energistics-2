@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/niobium"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:niobium_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/niobium"
+    "tag": "c:niobium_nuggets"
   },
   "weight": 92.9064
 }

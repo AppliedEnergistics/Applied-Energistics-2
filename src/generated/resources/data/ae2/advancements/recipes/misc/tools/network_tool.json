@@ -32,14 +32,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_quartz_wrench",
-      "has_calculation_processor"
+      "has_calculation_processor",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:tools/network_tool"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

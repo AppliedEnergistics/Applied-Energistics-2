@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "minecraft:water_bucket",
     "minecraft:snowball"

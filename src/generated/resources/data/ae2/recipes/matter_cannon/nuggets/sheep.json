@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/sheep"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:sheep_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/sheep"
+    "tag": "c:sheep_nuggets"
   },
   "weight": 32.0
 }

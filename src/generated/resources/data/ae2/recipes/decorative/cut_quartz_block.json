@@ -13,5 +13,6 @@
   "result": {
     "count": 4,
     "item": "ae2:cut_quartz_block"
-  }
+  },
+  "show_notification": true
 }

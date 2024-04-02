@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/gold"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:gold_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/gold"
+    "tag": "c:gold_nuggets"
   },
   "weight": 196.96655
 }

@@ -34,14 +34,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_engineering_processor",
-      "has_fluix_pearl"
+      "has_fluix_pearl",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/cells/spatial_components"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -2,7 +2,7 @@
   "type": "ae2:inscriber",
   "ingredients": {
     "middle": {
-      "tag": "forge:gems/fluix"
+      "tag": "c:fluix"
     }
   },
   "mode": "inscribe",

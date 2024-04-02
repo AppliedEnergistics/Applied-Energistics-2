@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_calculation_processor"
+      "has_calculation_processor",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/crafting/cpu_crafting_unit"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

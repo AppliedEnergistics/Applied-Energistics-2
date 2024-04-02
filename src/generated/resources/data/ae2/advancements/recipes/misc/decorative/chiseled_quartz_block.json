@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_cut_quartz_slab"
+      "has_cut_quartz_slab",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:decorative/chiseled_quartz_block"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }
