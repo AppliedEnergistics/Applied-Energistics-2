@@ -175,7 +175,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
 
                             if (strength > 0.01 && !state.isAir()) {
                                 if (block.dropFromExplosion(ex)) {
-                                    Block.dropResources(state, this.level(), point);
+                                    Block.dropResources(state, this.level(), point, this.level().getBlockEntity(point));
                                 }
 
                                 level().setBlock(point, Blocks.AIR.defaultBlockState(), 3);
