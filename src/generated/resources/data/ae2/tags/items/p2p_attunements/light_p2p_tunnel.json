@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "minecraft:torch",
     "minecraft:glowstone"

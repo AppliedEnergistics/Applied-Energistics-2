@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:gems/certus_quartz"
+            "tag": "c:certus_quartz"
           }
         ]
       },
@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_certus_quartz"
+      "has_certus_quartz",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:tools/certus_quartz_wrench"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

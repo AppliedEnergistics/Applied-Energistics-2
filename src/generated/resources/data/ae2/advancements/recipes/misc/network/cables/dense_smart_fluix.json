@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:dusts/glowstone"
+            "tag": "c:glowstone_dusts"
           }
         ]
       },
@@ -15,7 +15,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:dusts/redstone"
+            "tag": "c:redstone_dusts"
           }
         ]
       },
@@ -42,15 +42,16 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_fluix_covered_dense_cable",
       "has_dusts/glowstone",
-      "has_dusts/redstone"
+      "has_dusts/redstone",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/cables/dense_smart_fluix"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

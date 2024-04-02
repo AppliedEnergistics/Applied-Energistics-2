@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_annihilation_core"
+      "has_annihilation_core",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/parts/annihilation_plane_alt2"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

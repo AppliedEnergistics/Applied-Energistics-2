@@ -1,7 +1,8 @@
 {
+  "replace": false,
   "values": [
     {
-      "id": "#minecraft:is_overworld",
+      "id": "#c:in_overworld",
       "required": false
     }
   ]

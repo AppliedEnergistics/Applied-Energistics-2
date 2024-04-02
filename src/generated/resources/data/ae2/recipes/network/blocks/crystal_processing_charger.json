@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "b": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:copper_ingots"
     }
   },
   "pattern": [
@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "ae2:charger"
-  }
+  },
+  "show_notification": true
 }

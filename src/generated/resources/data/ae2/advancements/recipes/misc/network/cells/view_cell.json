@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_terminal"
+      "has_terminal",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/cells/view_cell"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

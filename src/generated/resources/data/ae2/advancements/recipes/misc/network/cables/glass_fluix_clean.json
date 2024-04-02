@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_glass_cable"
+      "has_glass_cable",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/cables/glass_fluix_clean"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

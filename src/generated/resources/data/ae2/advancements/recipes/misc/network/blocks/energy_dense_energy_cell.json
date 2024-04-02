@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_energy_cell"
+      "has_energy_cell",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/energy_dense_energy_cell"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

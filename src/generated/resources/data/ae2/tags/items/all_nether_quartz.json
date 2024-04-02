@@ -1,5 +1,6 @@
 {
+  "replace": false,
   "values": [
-    "#forge:gems/quartz"
+    "#c:quartz"
   ]
 }

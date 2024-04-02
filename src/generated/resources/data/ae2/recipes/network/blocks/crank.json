@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:wooden_rods"
     },
     "b": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:copper_ingots"
     }
   },
   "pattern": [
@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "ae2:crank"
-  }
+  },
+  "show_notification": true
 }

@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_energy_acceptor"
+      "has_energy_acceptor",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/parts/energy_acceptor"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

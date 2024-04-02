@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/meat"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:meat_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/meat"
+    "tag": "c:meat_nuggets"
   },
   "weight": 32.0
 }

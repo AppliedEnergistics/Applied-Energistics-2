@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/potassium"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:potassium_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/potassium"
+    "tag": "c:potassium_nuggets"
   },
   "weight": 39.0983
 }

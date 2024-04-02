@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:wooden_rods"
     },
     "b": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "c": {
-      "tag": "forge:gems/quartz"
+      "tag": "c:quartz"
     }
   },
   "pattern": [
@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:nether_quartz_cutting_knife"
-  }
+  },
+  "show_notification": true
 }

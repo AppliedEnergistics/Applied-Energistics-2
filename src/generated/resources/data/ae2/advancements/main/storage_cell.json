@@ -67,6 +67,8 @@
     "description": {
       "translate": "achievement.ae2.StorageCell.desc"
     },
+    "frame": "task",
+    "hidden": false,
     "icon": {
       "item": "ae2:item_storage_cell_64k"
     },

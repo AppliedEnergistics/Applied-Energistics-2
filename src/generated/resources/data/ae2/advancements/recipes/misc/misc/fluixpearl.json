@@ -15,7 +15,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:dusts/fluix"
+            "tag": "c:fluix_dusts"
           }
         ]
       },
@@ -30,14 +30,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_dusts/fluix",
-      "has_crystals/fluix"
+      "has_crystals/fluix",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:misc/fluixpearl"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

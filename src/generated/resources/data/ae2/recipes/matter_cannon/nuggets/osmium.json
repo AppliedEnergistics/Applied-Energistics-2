@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/osmium"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:osmium_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/osmium"
+    "tag": "c:osmium_nuggets"
   },
   "weight": 190.23
 }

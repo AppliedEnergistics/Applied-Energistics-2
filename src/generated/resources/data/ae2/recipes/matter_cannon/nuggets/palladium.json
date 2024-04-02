@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/palladium"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:palladium_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/palladium"
+    "tag": "c:palladium_nuggets"
   },
   "weight": 106.42
 }

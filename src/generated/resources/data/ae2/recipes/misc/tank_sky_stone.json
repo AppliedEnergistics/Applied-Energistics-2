@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "ae2:sky_stone_tank"
-  }
+  },
+  "show_notification": true
 }

@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:dyes/red"
+            "tag": "c:red_dyes"
           }
         ]
       },
@@ -32,14 +32,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_fluix_covered_dense_cable",
-      "has_dyes/black"
+      "has_dyes/black",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/cables/dense_covered_red"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

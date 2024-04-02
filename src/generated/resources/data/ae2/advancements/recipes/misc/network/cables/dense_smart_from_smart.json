@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_fluix_smart_cable"
+      "has_fluix_smart_cable",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/cables/dense_smart_from_smart"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

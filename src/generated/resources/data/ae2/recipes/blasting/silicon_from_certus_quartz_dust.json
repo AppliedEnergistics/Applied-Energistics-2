@@ -4,7 +4,7 @@
   "cookingtime": 100,
   "experience": 0.35,
   "ingredient": {
-    "tag": "forge:dusts/certus_quartz"
+    "tag": "c:certus_quartz_dusts"
   },
   "result": "ae2:silicon"
 }

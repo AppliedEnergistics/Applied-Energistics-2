@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_sky_stone_dust"
+      "has_sky_stone_dust",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:blasting/sky_stone_block"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

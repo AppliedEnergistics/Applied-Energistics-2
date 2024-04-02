@@ -1,5 +1,6 @@
 {
+  "replace": false,
   "values": [
-    "#forge:dusts/certus_quartz"
+    "#c:certus_quartz_dusts"
   ]
 }

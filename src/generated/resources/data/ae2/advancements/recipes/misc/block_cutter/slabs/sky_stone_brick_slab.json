@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_sky_stone_brick"
+      "has_sky_stone_brick",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:block_cutter/slabs/sky_stone_brick_slab"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "b": {
       "item": "ae2:quartz_glass"
@@ -25,5 +25,6 @@
   ],
   "result": {
     "item": "ae2:molecular_assembler"
-  }
+  },
+  "show_notification": true
 }

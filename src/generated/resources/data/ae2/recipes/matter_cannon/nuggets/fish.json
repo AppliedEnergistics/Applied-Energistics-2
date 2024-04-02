@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/fish"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:fish_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/fish"
+    "tag": "c:fish_nuggets"
   },
   "weight": 32.0
 }

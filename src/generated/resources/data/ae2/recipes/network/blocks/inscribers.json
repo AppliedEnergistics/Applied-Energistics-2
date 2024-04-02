@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "b": {
       "item": "minecraft:sticky_piston"
     },
     "c": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:copper_ingots"
     }
   },
   "pattern": [
@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:inscriber"
-  }
+  },
+  "show_notification": true
 }

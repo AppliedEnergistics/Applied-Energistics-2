@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/tungsten"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:tungsten_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/tungsten"
+    "tag": "c:tungsten_nuggets"
   },
   "weight": 183.84
 }

@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:wireless_terminal"
-  }
+  },
+  "show_notification": true
 }

@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_crafting_unit"
+      "has_crafting_unit",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/crafting/4k_cpu_crafting_storage"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

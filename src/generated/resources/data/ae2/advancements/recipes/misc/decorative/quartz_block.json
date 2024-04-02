@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_certus_quartz_crystal"
+      "has_certus_quartz_crystal",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:decorative/quartz_block"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

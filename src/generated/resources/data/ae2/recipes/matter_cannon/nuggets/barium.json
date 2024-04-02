@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/barium"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:barium_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/barium"
+    "tag": "c:barium_nuggets"
   },
   "weight": 137.327
 }

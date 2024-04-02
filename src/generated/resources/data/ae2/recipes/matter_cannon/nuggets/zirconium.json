@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/zirconium"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:zirconium_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/zirconium"
+    "tag": "c:zirconium_nuggets"
   },
   "weight": 91.224
 }

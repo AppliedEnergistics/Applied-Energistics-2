@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "ae2:dense_energy_cell",
     "ae2:energy_acceptor",

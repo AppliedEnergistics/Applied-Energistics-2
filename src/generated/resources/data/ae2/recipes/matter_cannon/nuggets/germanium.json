@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/germanium"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:germanium_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/germanium"
+    "tag": "c:germanium_nuggets"
   },
   "weight": 72.64
 }

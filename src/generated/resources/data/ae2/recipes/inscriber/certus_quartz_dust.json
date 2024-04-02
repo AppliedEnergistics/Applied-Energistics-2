@@ -2,7 +2,7 @@
   "type": "ae2:inscriber",
   "ingredients": {
     "middle": {
-      "tag": "forge:gems/certus_quartz"
+      "tag": "c:certus_quartz"
     }
   },
   "mode": "inscribe",

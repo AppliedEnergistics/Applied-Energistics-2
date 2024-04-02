@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_quartz_bricks"
+      "has_quartz_bricks",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:shaped/stairs/quartz_bricks"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

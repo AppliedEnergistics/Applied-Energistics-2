@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/lanthanum"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:lanthanum_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/lanthanum"
+    "tag": "c:lanthanum_nuggets"
   },
   "weight": 138.9055
 }

@@ -12,7 +12,7 @@
       "item": "ae2:spatial_cell_component_128"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "e": {
       "item": "ae2:engineering_processor"
@@ -25,5 +25,6 @@
   ],
   "result": {
     "item": "ae2:spatial_anchor"
-  }
+  },
+  "show_notification": true
 }

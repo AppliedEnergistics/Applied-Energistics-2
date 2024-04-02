@@ -6,7 +6,7 @@
       "item": "ae2:fluix_smart_dense_cable"
     },
     "b": {
-      "tag": "forge:dyes/red"
+      "tag": "c:red_dyes"
     }
   },
   "pattern": [
@@ -17,5 +17,6 @@
   "result": {
     "count": 8,
     "item": "ae2:red_smart_dense_cable"
-  }
+  },
+  "show_notification": true
 }

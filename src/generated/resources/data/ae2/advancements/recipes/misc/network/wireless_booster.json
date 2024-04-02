@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:dusts/ender_pearl"
+            "tag": "c:ender_pearl_dusts"
           }
         ]
       },
@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_dusts/ender"
+      "has_dusts/ender",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/wireless_booster"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -6,10 +6,10 @@
       "item": "ae2:quartz_glass"
     },
     "b": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:redstone_dusts"
     },
     "c": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     }
   },
   "pattern": [
@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:item_cell_housing"
-  }
+  },
+  "show_notification": true
 }

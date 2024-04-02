@@ -34,14 +34,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_purified_fluix_crystal",
-      "has_engineering_processor"
+      "has_engineering_processor",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/controller"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

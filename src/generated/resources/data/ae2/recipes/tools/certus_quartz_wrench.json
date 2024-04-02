@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:gems/certus_quartz"
+      "tag": "c:certus_quartz"
     }
   },
   "pattern": [
@@ -13,5 +13,6 @@
   ],
   "result": {
     "item": "ae2:certus_quartz_wrench"
-  }
+  },
+  "show_notification": true
 }

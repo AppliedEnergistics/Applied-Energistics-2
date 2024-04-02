@@ -12,5 +12,6 @@
   "result": {
     "count": 6,
     "item": "ae2:fluix_slab"
-  }
+  },
+  "show_notification": true
 }

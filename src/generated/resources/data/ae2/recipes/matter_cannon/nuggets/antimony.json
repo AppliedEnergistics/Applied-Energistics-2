@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/antimony"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:antimony_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/antimony"
+    "tag": "c:antimony_nuggets"
   },
   "weight": 121.76
 }

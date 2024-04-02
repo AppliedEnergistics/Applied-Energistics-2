@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "minecraft:bucket",
     "minecraft:milk_bucket",

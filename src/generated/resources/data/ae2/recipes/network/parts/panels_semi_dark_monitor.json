@@ -3,16 +3,16 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:dusts/glowstone"
+      "tag": "c:glowstone_dusts"
     },
     "b": {
       "item": "ae2:quartz_glass"
     },
     "c": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "d": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:redstone_dusts"
     }
   },
   "pattern": [
@@ -23,5 +23,6 @@
   "result": {
     "count": 3,
     "item": "ae2:semi_dark_monitor"
-  }
+  },
+  "show_notification": true
 }

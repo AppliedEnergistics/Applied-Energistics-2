@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:gems/quartz"
+      "tag": "c:quartz"
     },
     "b": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:wooden_rods"
     }
   },
   "pattern": [
@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "ae2:nether_quartz_hoe"
-  }
+  },
+  "show_notification": true
 }

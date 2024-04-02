@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "ae2:quantum_link"
-  }
+  },
+  "show_notification": true
 }

@@ -15,5 +15,6 @@
   ],
   "result": {
     "item": "ae2:tiny_tnt"
-  }
+  },
+  "show_notification": true
 }

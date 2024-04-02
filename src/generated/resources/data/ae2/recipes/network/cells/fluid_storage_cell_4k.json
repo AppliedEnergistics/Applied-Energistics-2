@@ -6,13 +6,13 @@
       "item": "ae2:quartz_glass"
     },
     "b": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:redstone_dusts"
     },
     "c": {
       "item": "ae2:cell_component_4k"
     },
     "d": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:copper_ingots"
     }
   },
   "pattern": [
@@ -22,5 +22,6 @@
   ],
   "result": {
     "item": "ae2:fluid_storage_cell_4k"
-  }
+  },
+  "show_notification": true
 }

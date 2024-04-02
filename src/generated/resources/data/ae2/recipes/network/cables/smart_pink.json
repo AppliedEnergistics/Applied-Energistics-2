@@ -6,7 +6,7 @@
       "item": "ae2:fluix_smart_cable"
     },
     "b": {
-      "tag": "forge:dyes/pink"
+      "tag": "c:pink_dyes"
     }
   },
   "pattern": [
@@ -17,5 +17,6 @@
   "result": {
     "count": 8,
     "item": "ae2:pink_smart_cable"
-  }
+  },
+  "show_notification": true
 }

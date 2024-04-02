@@ -1,16 +1,15 @@
 {
-  "neoforge:conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/lithium"
-      }
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:lithium_nuggets"
+      ]
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/lithium"
+    "tag": "c:lithium_nuggets"
   },
   "weight": 6.941
 }

@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:dusts/glowstone"
+      "tag": "c:glowstone_dusts"
     },
     "b": {
       "item": "ae2:fluix_pearl"
@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:spatial_cell_component_2"
-  }
+  },
+  "show_notification": true
 }

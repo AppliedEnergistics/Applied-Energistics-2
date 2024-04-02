@@ -22,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_storage_monitor"
+      "has_storage_monitor",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/parts/monitors_conversion"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -32,14 +32,15 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_crystals/fluix",
-      "has_glass_cable"
+      "has_glass_cable",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "ae2:network/blocks/spatial_io_pylon"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

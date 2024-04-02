@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "b": {
-      "tag": "forge:glass"
+      "tag": "c:glass_blocks"
     },
     "c": {
-      "tag": "forge:dusts/fluix"
+      "tag": "c:fluix_dusts"
     }
   },
   "pattern": [
@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "ae2:condenser"
-  }
+  },
+  "show_notification": true
 }

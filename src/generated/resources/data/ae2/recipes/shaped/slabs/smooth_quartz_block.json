@@ -12,5 +12,6 @@
   "result": {
     "count": 6,
     "item": "ae2:smooth_quartz_slab"
-  }
+  },
+  "show_notification": true
 }
