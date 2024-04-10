@@ -171,6 +171,7 @@ public final class AEConfig {
 
     private void syncCommonConfig() {
         PowerUnits.FE.conversionRatio = COMMON.powerRatioForgeEnergy.get();
+        PowerUnits.RF.conversionRatio = COMMON.powerRatioForgeEnergy.get();
         PowerMultiplier.CONFIG.multiplier = COMMON.powerUsageMultiplier.get();
 
         CondenserOutput.MATTER_BALLS.requiredPower = COMMON.condenserMatterBallsPower.get();
