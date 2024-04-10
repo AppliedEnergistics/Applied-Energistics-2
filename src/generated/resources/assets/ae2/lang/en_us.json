@@ -521,6 +521,7 @@
   "gui.ae2.inWorldSingularity": "To create drop 1 Singularity and 1 Ender Dust and cause an explosion within range of the items.",
   "gui.ae2.units.appliedenergistics": "AE",
   "gui.ae2.units.fe": "FE",
+  "gui.ae2.units.rf": "RF",
   "gui.tooltips.ae2.ActiveOnPulse": "Activate once per pulse",
   "gui.tooltips.ae2.ActiveWithSignal": "Active with signal",
   "gui.tooltips.ae2.ActiveWithoutSignal": "Active without signal",
