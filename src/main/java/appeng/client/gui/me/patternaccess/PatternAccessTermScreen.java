@@ -171,9 +171,6 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
         super.init();
 
-        // Auto focus search field
-        this.setInitialFocus(this.searchField);
-
         // numLines may have changed, recalculate scroll bar.
         this.resetScrollbar();
     }
