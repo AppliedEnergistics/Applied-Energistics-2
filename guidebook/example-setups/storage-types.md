@@ -13,7 +13,7 @@ you can set up several tiers of storage for various kinds of things.
 The kinds of storage tend to be:
 * General storage, for all the random stuff you have a few to a few thousand of. This uses small [cells](../items-blocks-machines/storage_cells.md),
 like 4k or 16k.
-* Bulk storage, for all the stuff you have more than a few thousand of, like cobble or iron. Thi uses big cells like 256k
+* Bulk storage, for all the stuff you have more than a few thousand of, like cobble or iron. This uses big cells like 256k
 or the cells from the MEGA addon.
 * Local storage at farms, as described in [Specialized Local Storage](specialized-local-storage.md) and the 
 [various](simple-certus-farm.md) [certus](semiauto-certus-farm.md) [farms](advanced-certus-farm.md).
