@@ -420,12 +420,17 @@ public class MEStorageMenu extends AEBaseMenu
         }
 
         if (action == InventoryAction.FILL_ITEM) {
-            tryFillContainerItem(clickedKey, false);
+            tryFillContainerItem(clickedKey, false, false);
+        } else if (action == InventoryAction.FILL_ALL_ITEM) {
+            tryFillContainerItem(clickedKey, false, true);
         } else if (action == InventoryAction.SHIFT_CLICK) {
-            tryFillContainerItem(clickedKey, true);
+            tryFillContainerItem(clickedKey, true, false);
         } else if (action == InventoryAction.EMPTY_ITEM) {
             handleEmptyHeldItem((what, amount, mode) -> StorageHelper.poweredInsert(energySource, storage, what, amount,
-                    getActionSource(), mode));
+                    getActionSource(), mode), false);
+        } else if (action == InventoryAction.EMPTY_ALL_ITEM) {
+            handleEmptyHeldItem((what, amount, mode) -> StorageHelper.poweredInsert(energySource, storage, what, amount,
+                    getActionSource(), mode), true);
         } else if (action == InventoryAction.AUTO_CRAFT) {
             var locator = getLocator();
             if (locator != null && clickedKey != null) {
@@ -556,7 +561,7 @@ public class MEStorageMenu extends AEBaseMenu
         }
     }
 
-    private void tryFillContainerItem(@Nullable AEKey clickedKey, boolean moveToPlayer) {
+    private void tryFillContainerItem(@Nullable AEKey clickedKey, boolean moveToPlayer, boolean fillAll) {
         // Special handling for fluids to facilitate filling water/lava buckets which are often
         // needed for crafting and placement in-world.
         boolean grabbedEmptyBucket = false;
@@ -575,7 +580,7 @@ public class MEStorageMenu extends AEBaseMenu
         handleFillingHeldItem(
                 (amount, mode) -> StorageHelper.poweredExtraction(energySource, storage, clickedKey, amount,
                         getActionSource(), mode),
-                clickedKey);
+                clickedKey, fillAll);
 
         // If we grabbed an empty bucket, and after trying to fill it, it's still empty, put it back!
         if (grabbedEmptyBucket && getCarried().is(Items.BUCKET)) {

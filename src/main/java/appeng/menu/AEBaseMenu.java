@@ -46,6 +46,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
@@ -559,13 +560,14 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             var realInv = configInv.getDelegate();
             var realInvSlot = appEngSlot.slot;
 
-            if (action == InventoryAction.FILL_ITEM) {
+            if (action == InventoryAction.FILL_ITEM || action == InventoryAction.FILL_ALL_ITEM) {
                 var what = realInv.getKey(realInvSlot);
                 handleFillingHeldItem(
                         (amount, mode) -> realInv.extract(realInvSlot, what, amount, mode),
-                        what);
-            } else if (action == InventoryAction.EMPTY_ITEM) {
-                handleEmptyHeldItem((what, amount, mode) -> realInv.insert(realInvSlot, what, amount, mode));
+                        what, action == InventoryAction.FILL_ALL_ITEM);
+            } else if (action == InventoryAction.EMPTY_ITEM || action == InventoryAction.EMPTY_ALL_ITEM) {
+                handleEmptyHeldItem((what, amount, mode) -> realInv.insert(realInvSlot, what, amount, mode),
+                        action == InventoryAction.EMPTY_ALL_ITEM);
             }
         }
 
@@ -588,46 +590,57 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         long extract(long amount, Actionable mode);
     }
 
-    protected final void handleFillingHeldItem(FillingSource source, AEKey what) {
+    protected final void handleFillingHeldItem(FillingSource source, AEKey what, boolean fillAll) {
         var ctx = ContainerItemStrategies.findCarriedContextForKey(what, getPlayer(), this);
         if (ctx == null) {
             return;
         }
 
-        // Check if we can pull out of the system
-        var canPull = source.extract(Long.MAX_VALUE, Actionable.SIMULATE);
-        if (canPull <= 0) {
-            return;
-        }
+        int maxIterations = 10_000;
+        long amount = fillAll ? Long.MAX_VALUE : FluidType.BUCKET_VOLUME;
+        boolean filled = false;
 
-        // Check how much we can store in the item
-        long amountAllowed = ctx.insert(what, canPull, Actionable.SIMULATE);
-        if (amountAllowed == 0) {
-            return; // Nothing.
-        }
+        do {
+            // Check if we can pull out of the system
+            var canPull = source.extract(amount, Actionable.SIMULATE);
+            if (canPull <= 0) {
+                break;
+            }
 
-        // Now actually pull out of the system
-        var extracted = source.extract(amountAllowed, Actionable.MODULATE);
-        if (extracted <= 0) {
-            // Something went wrong
-            AELog.error("Unable to pull fluid out of the ME system even though the simulation said yes ");
-            return;
-        }
+            // Check how much we can store in the item
+            long amountAllowed = ctx.insert(what, canPull, Actionable.SIMULATE);
+            if (amountAllowed == 0) {
+                break; // Nothing.
+            }
 
-        // How much could fit into the carried container
-        long inserted = ctx.insert(what, extracted, Actionable.MODULATE);
-        if (inserted == 0) {
-            return;
-        }
+            // Now actually pull out of the system
+            var extracted = source.extract(amountAllowed, Actionable.MODULATE);
+            if (extracted <= 0) {
+                // Something went wrong
+                AELog.error("Unable to pull fluid out of the ME system even though the simulation said yes ");
+                break;
+            }
 
-        ctx.playFillSound(getPlayer(), what);
+            // Actually store possible amount in the held item
+            long inserted = ctx.insert(what, extracted, Actionable.MODULATE);
+            if (inserted == 0) {
+                break;
+            }
+
+            filled = true;
+            maxIterations--;
+        } while (fillAll && maxIterations > 0);
+
+        if (filled) {
+            ctx.playFillSound(getPlayer(), what);
+        }
     }
 
     protected interface EmptyingSink {
         long insert(AEKey what, long amount, Actionable mode);
     }
 
-    protected final void handleEmptyHeldItem(EmptyingSink sink) {
+    protected final void handleEmptyHeldItem(EmptyingSink sink, boolean emptyAll) {
         var ctx = ContainerItemStrategies.findCarriedContext(null, getPlayer(), this);
         if (ctx == null) {
             return;
@@ -635,34 +648,50 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
         // See how much we can drain from the item
         var content = ctx.getExtractableContent();
-        if (content == null) {
+        if (content == null || content.amount() == 0) {
             return;
         }
 
         var what = content.what();
-        var amount = content.amount();
+        long amount = emptyAll ? Long.MAX_VALUE : FluidType.BUCKET_VOLUME;
+        int maxIterations = 10_000;
+        boolean emptied = false;
 
-        // Check if we can push into the system
-        var canInsert = sink.insert(what, amount, Actionable.SIMULATE);
-        if (canInsert <= 0) {
-            return;
+        do {
+            // Check if we can pull out of the container
+            var canExtract = ctx.extract(what, amount, Actionable.SIMULATE);
+            if (canExtract <= 0) {
+                break;
+            }
+
+            // Check if we can push into the system
+            var amountAllowed = sink.insert(what, canExtract, Actionable.SIMULATE);
+            if (amountAllowed <= 0) {
+                break;
+            }
+
+            // Actually drain
+            var extracted = ctx.extract(what, amountAllowed, Actionable.MODULATE);
+            if (extracted != amountAllowed) {
+                AELog.error(
+                        "Fluid item [%s] reported a different possible amount to drain than it actually provided.",
+                        getCarried());
+                break;
+            }
+
+            // Actually push into the system
+            if (sink.insert(what, extracted, Actionable.MODULATE) != extracted) {
+                AELog.error("Failed to insert previously simulated %s into ME system", what);
+                break;
+            }
+
+            emptied = true;
+            maxIterations--;
+        } while (emptyAll && maxIterations > 0);
+
+        if (emptied) {
+            ctx.playEmptySound(getPlayer(), what);
         }
-
-        // Actually drain
-        var extracted = ctx.extract(what, canInsert, Actionable.MODULATE);
-        if (extracted != canInsert) {
-            AELog.error(
-                    "Fluid item [%s] reported a different possible amount to drain than it actually provided.",
-                    getCarried());
-            return;
-        }
-
-        if (sink.insert(what, extracted, Actionable.MODULATE) != extracted) {
-            AELog.error("Failed to insert previously simulated %s into ME system", what);
-            return;
-        }
-
-        ctx.playEmptySound(getPlayer(), what);
     }
 
     private void handleFakeSlotAction(FakeSlot fakeSlot, InventoryAction action) {

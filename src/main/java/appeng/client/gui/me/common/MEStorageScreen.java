@@ -228,12 +228,21 @@ public class MEStorageScreen<C extends MEStorageMenu>
             AELog.debug("Clicked on grid inventory entry serial=%s, key=%s", entry.getSerial(), entry.getWhat());
         }
 
-        // Is there an emptying action? If so, send it to the server
-        if (mouseButton == 1 && clickType == ClickType.PICKUP && !menu.getCarried().isEmpty()) {
-            var emptyingAction = ContainerItemStrategies.getEmptyingAction(menu.getCarried());
-            if (emptyingAction != null && menu.isKeyVisible(emptyingAction.what())) {
-                menu.handleInteraction(-1, InventoryAction.EMPTY_ITEM);
+        // Check for emptying and filling actions and send them to the server
+        if (!menu.getCarried().isEmpty()) {
+            if (mouseButton == 0 && entry != null && ContainerItemStrategies.isKeySupported(entry.getWhat())) {
+                menu.handleInteraction(entry.getSerial(),
+                        clickType == ClickType.QUICK_MOVE ? InventoryAction.FILL_ALL_ITEM : InventoryAction.FILL_ITEM);
                 return;
+            }
+
+            if (mouseButton == 1) {
+                var emptyingAction = ContainerItemStrategies.getEmptyingAction(menu.getCarried());
+                if (emptyingAction != null && menu.isKeyVisible(emptyingAction.what())) {
+                    menu.handleInteraction(-1, clickType == ClickType.QUICK_MOVE ? InventoryAction.EMPTY_ALL_ITEM
+                            : InventoryAction.EMPTY_ITEM);
+                    return;
+                }
             }
         }
 
