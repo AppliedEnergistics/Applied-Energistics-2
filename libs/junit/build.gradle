@@ -5,12 +5,6 @@ plugins {
 
 archivesBaseName = "fmljunit"
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
 dependencies {
     implementation(platform("org.junit:junit-bom:${project.junit_version}"))
     implementation("org.junit.jupiter:junit-jupiter-api")
