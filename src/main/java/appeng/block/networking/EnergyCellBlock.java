@@ -19,7 +19,6 @@
 package appeng.block.networking;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -29,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
+import appeng.api.ids.AEComponents;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.networking.EnergyCellBlockEntity;
 
@@ -53,10 +53,8 @@ public class EnergyCellBlock extends AEBaseEntityBlock<EnergyCellBlockEntity> {
     public void addToMainCreativeTab(CreativeModeTab.Output output) {
         super.addToMainCreativeTab(output);
 
-        final ItemStack charged = new ItemStack(this, 1);
-        final CompoundTag tag = charged.getOrCreateTag();
-        tag.putDouble("internalCurrentPower", this.getMaxPower());
-        tag.putDouble("internalMaxPower", this.getMaxPower());
+        var charged = new ItemStack(this, 1);
+        charged.set(AEComponents.STORED_ENERGY, getMaxPower());
 
         output.accept(charged);
     }

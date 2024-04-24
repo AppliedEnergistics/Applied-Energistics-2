@@ -40,10 +40,7 @@ public class AnnihilationPlaneDataProvider
         if (enchantments != null && !enchantments.isEmpty()) {
             var enchantmentsTag = new CompoundTag();
             for (var entry : enchantments.entrySet()) {
-                var id = BuiltInRegistries.ENCHANTMENT.getKey(entry.getKey());
-                if (id != null) {
-                    enchantmentsTag.putInt(id.toString(), entry.getValue());
-                }
+                enchantmentsTag.putInt(entry.getKey().getRegisteredName(), entry.getIntValue());
             }
             serverData.put(TAG_ENCHANTMENTS, enchantmentsTag);
         }

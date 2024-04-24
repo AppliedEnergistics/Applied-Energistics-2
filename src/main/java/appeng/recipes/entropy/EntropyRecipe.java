@@ -22,15 +22,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -45,6 +51,7 @@ import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 import appeng.core.AppEng;
 import appeng.init.InitRecipeTypes;
@@ -55,10 +62,19 @@ import appeng.items.tools.powered.EntropyManipulatorItem;
  */
 public class EntropyRecipe implements Recipe<Container> {
 
-    public static final Codec<EntropyRecipe> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+    public static final MapCodec<EntropyRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             EntropyMode.CODEC.fieldOf("mode").forGetter(EntropyRecipe::getMode),
             Input.CODEC.fieldOf("input").forGetter(EntropyRecipe::getInput),
             Output.CODEC.fieldOf("output").forGetter(EntropyRecipe::getOutput)).apply(builder, EntropyRecipe::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, EntropyRecipe> STREAM_CODEC = StreamCodec.composite(
+            NeoForgeStreamCodecs.enumCodec(EntropyMode.class),
+            EntropyRecipe::getMode,
+            Input.STREAM_CODEC,
+            EntropyRecipe::getInput,
+            Output.STREAM_CODEC,
+            EntropyRecipe::getOutput,
+            EntropyRecipe::new);
 
     public static final ResourceLocation TYPE_ID = AppEng.makeId("entropy");
 
@@ -80,7 +96,7 @@ public class EntropyRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack assemble(Container inv, RegistryAccess registryAccess) {
+    public ItemStack assemble(Container inv, HolderLookup.Provider registries) {
         return ItemStack.EMPTY;
     }
 
@@ -90,7 +106,7 @@ public class EntropyRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
         return ItemStack.EMPTY;
     }
 
@@ -160,6 +176,13 @@ public class EntropyRecipe implements Recipe<Container> {
                 BlockInput.CODEC.optionalFieldOf("block").forGetter(Input::block),
                 FluidInput.CODEC.optionalFieldOf("fluid").forGetter(Input::fluid)).apply(builder, Input::new));
 
+        public static StreamCodec<RegistryFriendlyByteBuf, Input> STREAM_CODEC = StreamCodec.composite(
+                BlockInput.STREAM_CODEC.apply(ByteBufCodecs::optional),
+                Input::block,
+                FluidInput.STREAM_CODEC.apply(ByteBufCodecs::optional),
+                Input::fluid,
+                Input::new);
+
         public boolean matches(BlockState blockState, FluidState fluidState) {
             if (block.isPresent()) {
                 var inputBlock = block.get().block();
@@ -186,17 +209,6 @@ public class EntropyRecipe implements Recipe<Container> {
 
             return true;
         }
-
-        public static void toNetwork(FriendlyByteBuf buffer, Input input) {
-            buffer.writeOptional(input.block, BlockInput::toNetwork);
-            buffer.writeOptional(input.fluid, FluidInput::toNetwork);
-        }
-
-        public static Input fromNetwork(FriendlyByteBuf buffer) {
-            var block = buffer.readOptional(BlockInput::fromNetwork);
-            var fluid = buffer.readOptional(FluidInput::fromNetwork);
-            return new Input(block, fluid);
-        }
     }
 
     public record BlockInput(Block block, Map<String, PropertyValueMatcher> properties) {
@@ -206,16 +218,13 @@ public class EntropyRecipe implements Recipe<Container> {
                         .forGetter(BlockInput::properties))
                 .apply(builder, BlockInput::new));
 
-        public static void toNetwork(FriendlyByteBuf buffer, BlockInput input) {
-            buffer.writeId(BuiltInRegistries.BLOCK, input.block);
-            buffer.writeMap(input.properties, FriendlyByteBuf::writeUtf, PropertyValueMatcher::toNetwork);
-        }
-
-        public static BlockInput fromNetwork(FriendlyByteBuf buffer) {
-            var block = buffer.readById(BuiltInRegistries.BLOCK);
-            var properties = buffer.readMap(FriendlyByteBuf::readUtf, PropertyValueMatcher::fromNetwork);
-            return new BlockInput(block, properties);
-        }
+        public static StreamCodec<RegistryFriendlyByteBuf, BlockInput> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.registry(Registries.BLOCK),
+                BlockInput::block,
+                ByteBufCodecs.map(Maps::newHashMapWithExpectedSize, ByteBufCodecs.STRING_UTF8,
+                        PropertyValueMatcher.STREAM_CODEC),
+                BlockInput::properties,
+                BlockInput::new);
     }
 
     public record FluidInput(Fluid fluid, Map<String, PropertyValueMatcher> properties) {
@@ -225,16 +234,13 @@ public class EntropyRecipe implements Recipe<Container> {
                         .forGetter(FluidInput::properties))
                 .apply(builder, FluidInput::new));
 
-        public static void toNetwork(FriendlyByteBuf buffer, FluidInput input) {
-            buffer.writeId(BuiltInRegistries.FLUID, input.fluid);
-            buffer.writeMap(input.properties, FriendlyByteBuf::writeUtf, PropertyValueMatcher::toNetwork);
-        }
-
-        public static FluidInput fromNetwork(FriendlyByteBuf buffer) {
-            var fluid = buffer.readById(BuiltInRegistries.FLUID);
-            var properties = buffer.readMap(FriendlyByteBuf::readUtf, PropertyValueMatcher::fromNetwork);
-            return new FluidInput(fluid, properties);
-        }
+        public static StreamCodec<RegistryFriendlyByteBuf, FluidInput> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.registry(Registries.FLUID),
+                FluidInput::fluid,
+                ByteBufCodecs.map(Maps::newHashMapWithExpectedSize, ByteBufCodecs.STRING_UTF8,
+                        PropertyValueMatcher.STREAM_CODEC),
+                FluidInput::properties,
+                FluidInput::new);
     }
 
     public record Output(Optional<BlockOutput> block, Optional<FluidOutput> fluid, List<ItemStack> drops) {
@@ -242,21 +248,17 @@ public class EntropyRecipe implements Recipe<Container> {
         public static Codec<Output> CODEC = RecordCodecBuilder.create(builder -> builder.group(
                 BlockOutput.CODEC.optionalFieldOf("block").forGetter(Output::block),
                 FluidOutput.CODEC.optionalFieldOf("fluid").forGetter(Output::fluid),
-                ItemStack.ITEM_WITH_COUNT_CODEC.listOf().optionalFieldOf("drops", List.of()).forGetter(Output::drops))
+                ItemStack.CODEC.listOf().optionalFieldOf("drops", List.of()).forGetter(Output::drops))
                 .apply(builder, Output::new));
 
-        public static void toNetwork(FriendlyByteBuf buffer, Output output) {
-            buffer.writeOptional(output.block, BlockOutput::toNetwork);
-            buffer.writeOptional(output.fluid, FluidOutput::toNetwork);
-            buffer.writeCollection(output.drops, FriendlyByteBuf::writeItem);
-        }
-
-        public static Output fromNetwork(FriendlyByteBuf buffer) {
-            var block = buffer.readOptional(BlockOutput::fromNetwork);
-            var fluid = buffer.readOptional(FluidOutput::fromNetwork);
-            var drops = buffer.readList(FriendlyByteBuf::readItem);
-            return new Output(block, fluid, drops);
-        }
+        public static StreamCodec<RegistryFriendlyByteBuf, Output> STREAM_CODEC = StreamCodec.composite(
+                BlockOutput.STREAM_CODEC.apply(ByteBufCodecs::optional),
+                Output::block,
+                FluidOutput.STREAM_CODEC.apply(ByteBufCodecs::optional),
+                Output::fluid,
+                ItemStack.LIST_STREAM_CODEC,
+                Output::drops,
+                Output::new);
     }
 
     public record BlockOutput(Block block, boolean keepProperties, Map<String, String> properties) {
@@ -267,6 +269,16 @@ public class EntropyRecipe implements Recipe<Container> {
                 Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("properties", Map.of())
                         .forGetter(BlockOutput::properties))
                 .apply(builder, BlockOutput::new));
+
+        public static StreamCodec<RegistryFriendlyByteBuf, BlockOutput> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.registry(Registries.BLOCK),
+                BlockOutput::block,
+                ByteBufCodecs.BOOL,
+                BlockOutput::keepProperties,
+                ByteBufCodecs.map(Maps::newHashMapWithExpectedSize, ByteBufCodecs.STRING_UTF8,
+                        ByteBufCodecs.STRING_UTF8),
+                BlockOutput::properties,
+                BlockOutput::new);
 
         public BlockState apply(BlockState originalBlockState) {
             BlockState state = block.defaultBlockState();
@@ -282,19 +294,6 @@ public class EntropyRecipe implements Recipe<Container> {
 
             return state;
         }
-
-        public static void toNetwork(FriendlyByteBuf buffer, BlockOutput output) {
-            buffer.writeId(BuiltInRegistries.BLOCK, output.block);
-            buffer.writeBoolean(output.keepProperties);
-            buffer.writeMap(output.properties, FriendlyByteBuf::writeUtf, (fbb, value) -> fbb.writeUtf(value));
-        }
-
-        public static BlockOutput fromNetwork(FriendlyByteBuf buffer) {
-            var block = buffer.readById(BuiltInRegistries.BLOCK);
-            var keepProperties = buffer.readBoolean();
-            var properties = buffer.readMap(FriendlyByteBuf::readUtf, fbb -> fbb.readUtf());
-            return new BlockOutput(block, keepProperties, properties);
-        }
     }
 
     public record FluidOutput(Fluid fluid, boolean keepProperties, Map<String, String> properties) {
@@ -305,6 +304,16 @@ public class EntropyRecipe implements Recipe<Container> {
                 Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("properties", Map.of())
                         .forGetter(FluidOutput::properties))
                 .apply(builder, FluidOutput::new));
+
+        public static StreamCodec<RegistryFriendlyByteBuf, FluidOutput> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.registry(Registries.FLUID),
+                FluidOutput::fluid,
+                ByteBufCodecs.BOOL,
+                FluidOutput::keepProperties,
+                ByteBufCodecs.map(Maps::newHashMapWithExpectedSize, ByteBufCodecs.STRING_UTF8,
+                        ByteBufCodecs.STRING_UTF8),
+                FluidOutput::properties,
+                FluidOutput::new);
 
         public FluidState apply(FluidState originalFluidState) {
             FluidState state = fluid.defaultFluidState();
@@ -322,13 +331,13 @@ public class EntropyRecipe implements Recipe<Container> {
         }
 
         public static void toNetwork(FriendlyByteBuf buffer, FluidOutput output) {
-            buffer.writeId(BuiltInRegistries.FLUID, output.fluid);
+            buffer.writeById(BuiltInRegistries.FLUID::getId, output.fluid);
             buffer.writeBoolean(output.keepProperties);
             buffer.writeMap(output.properties, FriendlyByteBuf::writeUtf, (fbb, value) -> fbb.writeUtf(value));
         }
 
         public static FluidOutput fromNetwork(FriendlyByteBuf buffer) {
-            var fluid = buffer.readById(BuiltInRegistries.FLUID);
+            var fluid = buffer.readById(BuiltInRegistries.FLUID::byId);
             var keepProperties = buffer.readBoolean();
             var properties = buffer.readMap(FriendlyByteBuf::readUtf, fbb -> fbb.readUtf());
             return new FluidOutput(fluid, keepProperties, properties);

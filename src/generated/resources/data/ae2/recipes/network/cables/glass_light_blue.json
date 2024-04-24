@@ -6,7 +6,7 @@
       "item": "ae2:fluix_glass_cable"
     },
     "b": {
-      "tag": "forge:dyes/light_blue"
+      "tag": "c:dyes/light_blue"
     }
   },
   "pattern": [
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "ae2:light_blue_glass_cable"
+    "id": "ae2:light_blue_glass_cable"
   }
 }

@@ -165,8 +165,9 @@ public class GridsCommand implements ISubCommand {
 
         if (source.isPlayer()) {
             var player = source.getPlayerOrException();
-            PacketDistributor.PLAYER.with(source.getPlayerOrException())
-                    .send(new ExportedGridContent(baseSerialNumber, ExportedGridContent.Type.FIRST_CHUNK, new byte[0]));
+            PacketDistributor.sendToPlayer(player,
+                    new ExportedGridContent(baseSerialNumber, ExportedGridContent.ContentType.FIRST_CHUNK,
+                            new byte[0]));
 
             try (var out = new SendToPlayerStream(player, baseSerialNumber)) {
                 exportGrids(grids, out);
@@ -247,8 +248,8 @@ public class GridsCommand implements ISubCommand {
             Preconditions.checkState(!closed, "stream already closed");
             bout.write(b);
             if (bout.size() > FLUSH_AFTER) {
-                PacketDistributor.PLAYER.with(player)
-                        .send(new ExportedGridContent(baseSerialNumber, ExportedGridContent.Type.CHUNK,
+                PacketDistributor.sendToPlayer(player,
+                        new ExportedGridContent(baseSerialNumber, ExportedGridContent.ContentType.CHUNK,
                                 bout.toByteArray()));
                 bout.reset();
             }
@@ -259,8 +260,8 @@ public class GridsCommand implements ISubCommand {
             Preconditions.checkState(!closed, "stream already closed");
             bout.write(b, off, len);
             if (bout.size() > FLUSH_AFTER) {
-                PacketDistributor.PLAYER.with(player)
-                        .send(new ExportedGridContent(baseSerialNumber, ExportedGridContent.Type.CHUNK,
+                PacketDistributor.sendToPlayer(player,
+                        new ExportedGridContent(baseSerialNumber, ExportedGridContent.ContentType.CHUNK,
                                 bout.toByteArray()));
                 bout.reset();
             }
@@ -270,8 +271,8 @@ public class GridsCommand implements ISubCommand {
         public void close() {
             if (!closed) {
                 closed = true;
-                PacketDistributor.PLAYER.with(player)
-                        .send(new ExportedGridContent(baseSerialNumber, ExportedGridContent.Type.LAST_CHUNK,
+                PacketDistributor.sendToPlayer(player,
+                        new ExportedGridContent(baseSerialNumber, ExportedGridContent.ContentType.LAST_CHUNK,
                                 bout.toByteArray()));
                 bout.reset();
             }

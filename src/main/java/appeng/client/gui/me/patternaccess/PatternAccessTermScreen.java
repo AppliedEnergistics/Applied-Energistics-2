@@ -45,6 +45,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
@@ -67,7 +68,6 @@ import appeng.client.guidebook.render.SimpleRenderContext;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
-import appeng.core.network.NetworkHandler;
 import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.implementations.PatternAccessTermMenu;
@@ -205,7 +205,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
                         // Indicate invalid patterns
                         var pattern = container.getInventory().getStackInSlot(slotsRow.offset + col);
-                        if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level, false) == null) {
+                        if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level) == null) {
                             guiGraphics.fill(
                                     slot.x,
                                     slot.y,
@@ -343,7 +343,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                 PatternSlot machineSlot = (PatternSlot) slot;
                 final InventoryActionPacket p = new InventoryActionPacket(action, machineSlot.slot,
                         machineSlot.getMachineInv().getServerId());
-                NetworkHandler.instance().sendToServer(p);
+                PacketDistributor.sendToServer(p);
             }
 
             return;
@@ -549,6 +549,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
         var level = menu.getPlayer().level();
         var text = new StringBuilder();
         var pattern = PatternDetailsHelper.decodePattern(stack, level);
+
         if (pattern != null) {
             for (var output : pattern.getOutputs()) {
                 output.what().getDisplayName().visit(content -> {

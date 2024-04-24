@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:wireless_receiver"
-            ]
+            "items": "ae2:wireless_receiver"
           }
         ]
       },

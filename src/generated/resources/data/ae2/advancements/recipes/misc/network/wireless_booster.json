@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:dusts/ender_pearl"
+            "items": "#c:dusts/ender_pearl"
           }
         ]
       },

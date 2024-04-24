@@ -127,7 +127,7 @@ public class CachedPlane {
                         }
 
                         var strategy = BlockEntityMoveStrategies.get(blockEntity);
-                        var savedData = strategy.beginMove(blockEntity);
+                        var savedData = strategy.beginMove(blockEntity, level.registryAccess());
                         var section = c.getSection(c.getSectionIndex(entry.getKey().getY()));
 
                         // Coordinate within the section
@@ -305,7 +305,7 @@ public class CachedPlane {
 
         // attempt recovery, but do not reuse the same TE instance since we did destroy it
         var blockState = moveRecord.blockEntity().getBlockState();
-        var recoveredEntity = BlockEntity.loadStatic(pos, blockState, moveRecord.savedData());
+        var recoveredEntity = BlockEntity.loadStatic(pos, blockState, moveRecord.savedData(), level.registryAccess());
         if (recoveredEntity != null) {
             // We need to restore the block state too before re-setting the entity
             this.level.setBlock(pos, blockState, 3);

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:spatial_io_port"
-            ]
+            "items": "ae2:spatial_io_port"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "achievement.ae2.SpatialIO.desc"
     },
     "icon": {
-      "item": "ae2:spatial_io_port"
+      "count": 1,
+      "id": "ae2:spatial_io_port"
     },
     "title": {
       "translate": "achievement.ae2.SpatialIO"

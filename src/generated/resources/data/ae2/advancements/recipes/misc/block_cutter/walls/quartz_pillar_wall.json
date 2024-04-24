@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:quartz_pillar"
-            ]
+            "items": "ae2:quartz_pillar"
           }
         ]
       },

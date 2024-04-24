@@ -21,12 +21,14 @@ package appeng.recipes.handlers;
 import java.util.Objects;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -34,30 +36,40 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 import appeng.core.AppEng;
 import appeng.init.InitRecipeTypes;
 
 public class InscriberRecipe implements Recipe<Container> {
 
-    private static final Codec<InscriberProcessType> MODE_CODEC = ExtraCodecs.stringResolverCodec(
+    private static final Codec<InscriberProcessType> MODE_CODEC = Codec.stringResolver(
             mode -> switch (mode) {
-            case INSCRIBE -> "inscribe";
-            case PRESS -> "press";
+                case INSCRIBE -> "inscribe";
+                case PRESS -> "press";
             },
             mode -> switch (mode) {
-            default -> InscriberProcessType.INSCRIBE;
-            case "press" -> InscriberProcessType.PRESS;
+                default -> InscriberProcessType.INSCRIBE;
+                case "press" -> InscriberProcessType.PRESS;
             });
 
-    public static final Codec<InscriberRecipe> CODEC = RecordCodecBuilder.create(
+    public static final MapCodec<InscriberRecipe> CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder
                     .group(
                             Ingredients.CODEC.fieldOf("ingredients")
                                     .forGetter(InscriberRecipe::getSerializedIngredients),
-                            ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(ir -> ir.output),
+                            ItemStack.CODEC.fieldOf("result").forGetter(ir -> ir.output),
                             MODE_CODEC.fieldOf("mode").forGetter(ir -> ir.processType))
                     .apply(builder, InscriberRecipe::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, InscriberRecipe> STREAM_CODEC = StreamCodec.composite(
+            Ingredients.STREAM_CODEC,
+            InscriberRecipe::getSerializedIngredients,
+            ItemStack.STREAM_CODEC,
+            InscriberRecipe::getResultItem,
+            NeoForgeStreamCodecs.enumCodec(InscriberProcessType.class),
+            InscriberRecipe::getProcessType,
+            InscriberRecipe::new);
 
     public static final ResourceLocation TYPE_ID = AppEng.makeId("inscriber");
 
@@ -88,8 +100,8 @@ public class InscriberRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack assemble(Container inv, RegistryAccess registryAccess) {
-        return getResultItem(registryAccess).copy();
+    public ItemStack assemble(Container inv, HolderLookup.Provider registries) {
+        return getResultItem(registries).copy();
     }
 
     @Override
@@ -98,7 +110,7 @@ public class InscriberRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
         return getResultItem();
     }
 
@@ -158,13 +170,22 @@ public class InscriberRecipe implements Recipe<Container> {
             Ingredient middle,
             Ingredient bottom) {
         public static final Codec<Ingredients> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                ExtraCodecs.strictOptionalField(Ingredient.CODEC, "top", Ingredient.EMPTY)
+                Ingredient.CODEC.optionalFieldOf("top", Ingredient.EMPTY)
                         .forGetter(Ingredients::top),
                 Ingredient.CODEC_NONEMPTY.fieldOf("middle")
                         .forGetter(Ingredients::middle),
-                ExtraCodecs.strictOptionalField(Ingredient.CODEC, "bottom", Ingredient.EMPTY)
+                Ingredient.CODEC.optionalFieldOf("bottom", Ingredient.EMPTY)
                         .forGetter(Ingredients::bottom))
                 .apply(builder, Ingredients::new));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, Ingredients> STREAM_CODEC = StreamCodec.composite(
+                Ingredient.CONTENTS_STREAM_CODEC,
+                Ingredients::top,
+                Ingredient.CONTENTS_STREAM_CODEC,
+                Ingredients::middle,
+                Ingredient.CONTENTS_STREAM_CODEC,
+                Ingredients::bottom,
+                Ingredients::new);
     }
 
 }

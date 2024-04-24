@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:item_storage_cell_16k"
-            ]
+            "items": "ae2:item_storage_cell_16k"
           }
         ]
       },
@@ -17,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:item_storage_cell_1k"
-            ]
+            "items": "ae2:item_storage_cell_1k"
           }
         ]
       },
@@ -29,9 +25,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:item_storage_cell_256k"
-            ]
+            "items": "ae2:item_storage_cell_256k"
           }
         ]
       },
@@ -41,9 +35,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:item_storage_cell_4k"
-            ]
+            "items": "ae2:item_storage_cell_4k"
           }
         ]
       },
@@ -53,9 +45,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:item_storage_cell_64k"
-            ]
+            "items": "ae2:item_storage_cell_64k"
           }
         ]
       },
@@ -68,7 +58,8 @@
       "translate": "achievement.ae2.StorageCell.desc"
     },
     "icon": {
-      "item": "ae2:item_storage_cell_64k"
+      "count": 1,
+      "id": "ae2:item_storage_cell_64k"
     },
     "show_toast": false,
     "title": {

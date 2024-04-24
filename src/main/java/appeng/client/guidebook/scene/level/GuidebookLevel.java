@@ -27,6 +27,7 @@ import net.minecraft.world.TickRateManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -44,6 +45,7 @@ import net.minecraft.world.level.entity.LevelEntityGetter;
 import net.minecraft.world.level.entity.TransientEntitySectionManager;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Scoreboard;
@@ -234,17 +236,17 @@ public class GuidebookLevel extends Level {
 
     @Nullable
     @Override
-    public MapItemSavedData getMapData(String mapName) {
+    public MapItemSavedData getMapData(MapId mapId) {
         return null;
     }
 
     @Override
-    public void setMapData(String mapId, MapItemSavedData data) {
+    public void setMapData(MapId mapId, MapItemSavedData data) {
     }
 
     @Override
-    public int getFreeMapId() {
-        return 0;
+    public MapId getFreeMapId() {
+        return new MapId(1);
     }
 
     @Override
@@ -281,7 +283,7 @@ public class GuidebookLevel extends Level {
     }
 
     @Override
-    public void gameEvent(GameEvent gameEvent, Vec3 vec3, GameEvent.Context context) {
+    public void gameEvent(Holder<GameEvent> gameEvent, Vec3 vec3, GameEvent.Context context) {
     }
 
     @Override
@@ -311,6 +313,11 @@ public class GuidebookLevel extends Level {
     @Override
     public RegistryAccess registryAccess() {
         return registryAccess;
+    }
+
+    @Override
+    public PotionBrewing potionBrewing() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

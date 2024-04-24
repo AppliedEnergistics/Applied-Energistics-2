@@ -6,13 +6,13 @@
       "item": "ae2:quartz_glass"
     },
     "b": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     },
     "c": {
       "tag": "ae2:all_certus_quartz"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     }
   },
   "pattern": [
@@ -21,6 +21,7 @@
     "ddd"
   ],
   "result": {
-    "item": "ae2:view_cell"
+    "count": 1,
+    "id": "ae2:view_cell"
   }
 }

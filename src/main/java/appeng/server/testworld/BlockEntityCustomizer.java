@@ -13,7 +13,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
  * Calls a customization function on each placed block entity of the given type in the bounding box. Blocks that do not
  * contain such a block entity are skipped.
  */
-public record BlockEntityCustomizer<T extends BlockEntity> (BoundingBox bb,
+public record BlockEntityCustomizer<T extends BlockEntity>(BoundingBox bb,
         BlockEntityType<T> type,
         Consumer<T> consumer) implements BlockPlacingBuildAction {
     @Override

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:io_port"
-            ]
+            "items": "ae2:io_port"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "achievement.ae2.IOPort.desc"
     },
     "icon": {
-      "item": "ae2:io_port"
+      "count": 1,
+      "id": "ae2:io_port"
     },
     "title": {
       "translate": "achievement.ae2.IOPort"

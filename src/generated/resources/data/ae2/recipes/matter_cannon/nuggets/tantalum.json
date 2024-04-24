@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/tantalum"
+        "tag": "c:nuggets/tantalum"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/tantalum"
+    "tag": "c:nuggets/tantalum"
   },
   "weight": 180.9479
 }

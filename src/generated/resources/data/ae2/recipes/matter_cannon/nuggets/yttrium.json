@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/yttrium"
+        "tag": "c:nuggets/yttrium"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/yttrium"
+    "tag": "c:nuggets/yttrium"
   },
   "weight": 88.9059
 }

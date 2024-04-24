@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:matter_ball"
-            ]
+            "items": "ae2:matter_ball"
           }
         ]
       },

@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "ae2:smart_cable"
+            "items": "#ae2:smart_cable"
           }
         ]
       },

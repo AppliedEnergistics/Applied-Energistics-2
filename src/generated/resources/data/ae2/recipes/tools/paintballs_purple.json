@@ -6,7 +6,7 @@
       "item": "ae2:matter_ball"
     },
     "b": {
-      "tag": "forge:dyes/purple"
+      "tag": "c:dyes/purple"
     }
   },
   "pattern": [
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "ae2:purple_paint_ball"
+    "id": "ae2:purple_paint_ball"
   }
 }

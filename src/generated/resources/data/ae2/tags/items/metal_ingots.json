@@ -1,31 +1,31 @@
 {
   "values": [
     {
-      "id": "#forge:ingots/copper",
+      "id": "#c:ingots/copper",
       "required": false
     },
     {
-      "id": "#forge:ingots/tin",
+      "id": "#c:ingots/tin",
       "required": false
     },
     {
-      "id": "#forge:ingots/iron",
+      "id": "#c:ingots/iron",
       "required": false
     },
     {
-      "id": "#forge:ingots/gold",
+      "id": "#c:ingots/gold",
       "required": false
     },
     {
-      "id": "#forge:ingots/brass",
+      "id": "#c:ingots/brass",
       "required": false
     },
     {
-      "id": "#forge:ingots/nickel",
+      "id": "#c:ingots/nickel",
       "required": false
     },
     {
-      "id": "#forge:ingots/aluminium",
+      "id": "#c:ingots/aluminium",
       "required": false
     }
   ]

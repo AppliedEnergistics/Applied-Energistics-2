@@ -4,7 +4,7 @@ import java.util.OptionalLong;
 
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -16,7 +16,7 @@ public final class InitDimensionTypes {
     private InitDimensionTypes() {
     }
 
-    public static void init(BootstapContext<DimensionType> context) {
+    public static void init(BootstrapContext<DimensionType> context) {
         DimensionType dimensionType = createSpatialDimensionType();
 
         context.register(SpatialStorageDimensionIds.DIMENSION_TYPE_ID,

@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "ae2:illuminated_panel"
+            "items": "#ae2:illuminated_panel"
           }
         ]
       },
@@ -15,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:level_emitter"
-            ]
+            "items": "ae2:level_emitter"
           }
         ]
       },

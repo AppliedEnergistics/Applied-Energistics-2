@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:controller"
-            ]
+            "items": "ae2:controller"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "achievement.ae2.Controller.desc"
     },
     "icon": {
-      "item": "ae2:controller"
+      "count": 1,
+      "id": "ae2:controller"
     },
     "title": {
       "translate": "achievement.ae2.Controller"

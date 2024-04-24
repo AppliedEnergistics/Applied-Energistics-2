@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:formation_core"
-            ]
+            "items": "ae2:formation_core"
           }
         ]
       },

@@ -21,13 +21,17 @@ package appeng.client.gui;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.mockito.Mockito;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.PathPackResources;
-import net.minecraft.server.packs.VanillaPackResourcesBuilder;
+import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.server.packs.repository.ServerPacksSource;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.util.Unit;
 
@@ -42,7 +46,7 @@ public final class MockResourceManager {
 
     public static ReloadableResourceManager create() {
 
-        var testResourceBasePath = AppEng.class.getResource("/META-INF/mods.toml");
+        var testResourceBasePath = AppEng.class.getResource("/META-INF/neoforge.mods.toml");
         if (testResourceBasePath == null) {
             throw new IllegalStateException("Couldn't find root of assets");
         }
@@ -55,15 +59,14 @@ public final class MockResourceManager {
                     "Failed to convert asset root to a path on disk. (" + testResourceBasePath + ")");
         }
 
-        var packResources = new PathPackResources("ae2", assetRootPath, true);
+        var packResources = new PathPackResources(
+                new PackLocationInfo("ae2", Component.literal("AE2"), PackSource.BUILT_IN, Optional.empty()),
+                assetRootPath);
 
         ReloadableResourceManager resourceManager = new ReloadableResourceManager(PackType.CLIENT_RESOURCES);
         resourceManager.createReload(Runnable::run, Runnable::run, CompletableFuture.supplyAsync(() -> Unit.INSTANCE),
                 List.of(
-                        new VanillaPackResourcesBuilder()
-                                .exposeNamespace("minecraft")
-                                .pushJarResources()
-                                .build(),
+                        ServerPacksSource.createVanillaPackSource(),
                         packResources));
         return Mockito.spy(resourceManager);
     }

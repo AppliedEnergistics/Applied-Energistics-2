@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/cadmium"
+        "tag": "c:nuggets/cadmium"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/cadmium"
+    "tag": "c:nuggets/cadmium"
   },
   "weight": 112.411
 }

@@ -1,9 +1,11 @@
 package appeng.core.network.serverbound;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.AEBaseMenu;
@@ -13,6 +15,17 @@ public record InventoryActionPacket(InventoryAction action,
         int slot,
         long extraId,
         ItemStack slotItem) implements ServerboundPacket {
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, InventoryActionPacket> STREAM_CODEC = StreamCodec.ofMember(
+            InventoryActionPacket::write,
+            InventoryActionPacket::decode);
+
+    public static final Type<InventoryActionPacket> TYPE = CustomAppEngPayload.createType("inventory_action");
+
+    @Override
+    public Type<InventoryActionPacket> type() {
+        return TYPE;
+    }
 
     // api
     public InventoryActionPacket(InventoryAction action, int slot, long id) {
@@ -27,20 +40,19 @@ public record InventoryActionPacket(InventoryAction action,
         }
     }
 
-    public static InventoryActionPacket decode(FriendlyByteBuf stream) {
+    public static InventoryActionPacket decode(RegistryFriendlyByteBuf stream) {
         var action = stream.readEnum(InventoryAction.class);
         var slot = stream.readInt();
         var extraId = stream.readLong();
-        var slotItem = stream.readItem();
+        var slotItem = ItemStack.OPTIONAL_STREAM_CODEC.decode(stream);
         return new InventoryActionPacket(action, slot, extraId, slotItem);
     }
 
-    @Override
-    public void write(FriendlyByteBuf data) {
+    public void write(RegistryFriendlyByteBuf data) {
         data.writeEnum(action);
         data.writeInt(slot);
         data.writeLong(extraId);
-        data.writeItem(slotItem);
+        ItemStack.OPTIONAL_STREAM_CODEC.encode(data, slotItem);
     }
 
     @Override

@@ -26,9 +26,10 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -85,7 +86,6 @@ import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.ChestMenu;
 import appeng.menu.locator.MenuLocators;
-import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -102,7 +102,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             this.cellInventory);
 
     private final IActionSource mySrc = new MachineSource(this);
-    private final IConfigManager config = new ConfigManager(this::saveChanges);
+    private final IConfigManager config = IConfigManager.builder(this::saveChanges)
+            .registerSetting(Settings.SORT_BY, SortOrder.NAME)
+            .registerSetting(Settings.VIEW_MODE, ViewItems.ALL)
+            .registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING)
+            .build();
     private final KeyTypeSelection keyTypeSelection = new KeyTypeSelection(this::saveChanges, keyType -> true);
     private int priority = 0;
     // Client-side cell state or last cell-state sent to client (for update-checking)
@@ -125,9 +129,6 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         this.getMainNode()
                 .addService(IStorageProvider.class, this)
                 .setFlags(GridFlags.REQUIRE_CHANNEL);
-        this.config.registerSetting(Settings.SORT_BY, SortOrder.NAME);
-        this.config.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        this.config.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
         this.setInternalPublicPowerStorage(true);
         this.setInternalPowerFlow(AccessRestriction.WRITE);
@@ -323,7 +324,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    protected void writeToStream(FriendlyByteBuf data) {
+    protected void writeToStream(RegistryFriendlyByteBuf data) {
         super.writeToStream(data);
 
         data.writeEnum(clientCellState = getCellStatus(0));
@@ -338,7 +339,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(FriendlyByteBuf data) {
+    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
 
         var oldCellState = clientCellState;
@@ -398,10 +399,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public void loadTag(CompoundTag data) {
-        super.loadTag(data);
-        this.config.readFromNBT(data);
-        this.keyTypeSelection.readFromNBT(data);
+    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
+        super.loadTag(data, registries);
+        this.config.readFromNBT(data, registries);
+        this.keyTypeSelection.readFromNBT(data, registries);
         this.priority = data.getInt("priority");
         if (data.contains("paintedColor")) {
             this.paintedColor = AEColor.values()[data.getByte("paintedColor")];
@@ -409,9 +410,9 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public void saveAdditional(CompoundTag data) {
-        super.saveAdditional(data);
-        this.config.writeToNBT(data);
+    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
+        super.saveAdditional(data, registries);
+        this.config.writeToNBT(data, registries);
         this.keyTypeSelection.writeToNBT(data);
         data.putInt("priority", this.priority);
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());

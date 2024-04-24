@@ -31,6 +31,7 @@ import com.google.gson.stream.JsonWriter;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -145,7 +146,7 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
     }
 
     @Override
-    public void debugDump(JsonWriter writer) throws IOException {
+    public void debugDump(JsonWriter writer, HolderLookup.Provider registries) throws IOException {
         JsonStreamUtil.writeProperties(Map.<String, Object>of("chunks",
                 chunks.keySet().stream().collect(
                         Collectors.toMap(

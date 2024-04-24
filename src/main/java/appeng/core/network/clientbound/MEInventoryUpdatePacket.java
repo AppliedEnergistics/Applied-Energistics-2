@@ -12,7 +12,9 @@ import org.jetbrains.annotations.Nullable;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -22,6 +24,7 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IncrementalUpdateHelper;
 import appeng.menu.me.common.MEStorageMenu;
@@ -31,9 +34,21 @@ public record MEInventoryUpdatePacket(
         int containerId,
         @Nullable List<GridInventoryEntry> entries,
         int encodedEntryCount,
-        @Nullable FriendlyByteBuf encodedEntries
+        @Nullable RegistryFriendlyByteBuf encodedEntries
 
 ) implements ClientboundPacket {
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, MEInventoryUpdatePacket> STREAM_CODEC = StreamCodec
+            .ofMember(
+                    MEInventoryUpdatePacket::write,
+                    MEInventoryUpdatePacket::decode);
+
+    public static final Type<MEInventoryUpdatePacket> TYPE = CustomAppEngPayload.createType("me_inventory_update");
+
+    @Override
+    public Type<MEInventoryUpdatePacket> type() {
+        return TYPE;
+    }
 
     /**
      * Maximum size of a single packet before it will be flushed forcibly.
@@ -45,7 +60,7 @@ public record MEInventoryUpdatePacket(
      */
     private static final int INITIAL_BUFFER_CAPACITY = 2 * 1024;
 
-    public static MEInventoryUpdatePacket decode(FriendlyByteBuf data) {
+    public static MEInventoryUpdatePacket decode(RegistryFriendlyByteBuf data) {
         var containerId = data.readVarInt();
         var fullUpdate = data.readBoolean();
         var encodedEntryCount = data.readVarInt();
@@ -53,8 +68,7 @@ public record MEInventoryUpdatePacket(
         return new MEInventoryUpdatePacket(fullUpdate, containerId, entries, 0, null);
     }
 
-    @Override
-    public void write(FriendlyByteBuf data) {
+    public void write(RegistryFriendlyByteBuf data) {
         data.writeVarInt(containerId);
         data.writeBoolean(fullUpdate);
         data.writeVarInt(encodedEntryCount);
@@ -72,18 +86,20 @@ public record MEInventoryUpdatePacket(
 
         private final int containerId;
         private boolean fullUpdate;
+        private final RegistryAccess registryAccess;
 
         @Nullable
-        private FriendlyByteBuf encodedEntries;
+        private RegistryFriendlyByteBuf encodedEntries;
 
         private int entryCount;
 
         @Nullable
         private AEKeyFilter filter;
 
-        public Builder(int containerId, boolean fullUpdate) {
+        public Builder(int containerId, boolean fullUpdate, RegistryAccess registryAccess) {
             this.containerId = containerId;
             this.fullUpdate = fullUpdate;
+            this.registryAccess = registryAccess;
         }
 
         public void setFilter(@Nullable AEKeyFilter filter) {
@@ -154,7 +170,7 @@ public record MEInventoryUpdatePacket(
         }
 
         public void add(GridInventoryEntry entry) {
-            FriendlyByteBuf data = ensureData();
+            RegistryFriendlyByteBuf data = ensureData();
 
             // This should only error out if the entire packet exceeds about 2 megabytes of memory,
             // if any item writes that much junk to a share tag, it's acceptable to crash.
@@ -181,9 +197,9 @@ public record MEInventoryUpdatePacket(
             }
         }
 
-        private FriendlyByteBuf ensureData() {
+        private RegistryFriendlyByteBuf ensureData() {
             if (encodedEntries == null) {
-                encodedEntries = new FriendlyByteBuf(Unpooled.buffer(INITIAL_BUFFER_CAPACITY));
+                encodedEntries = new RegistryFriendlyByteBuf(Unpooled.buffer(INITIAL_BUFFER_CAPACITY), registryAccess);
             }
             return encodedEntries;
         }
@@ -201,14 +217,14 @@ public record MEInventoryUpdatePacket(
 
     }
 
-    public static Builder builder(int containerId, boolean fullUpdate) {
-        return new Builder(containerId, fullUpdate);
+    public static Builder builder(int containerId, boolean fullUpdate, RegistryAccess registryAccess) {
+        return new Builder(containerId, fullUpdate, registryAccess);
     }
 
     /**
      * Writes this entry to a packet buffer for shipping it to the client.
      */
-    private static void writeEntry(FriendlyByteBuf buffer, GridInventoryEntry entry) {
+    private static void writeEntry(RegistryFriendlyByteBuf buffer, GridInventoryEntry entry) {
         buffer.writeVarLong(entry.getSerial());
         AEKey.writeOptionalKey(buffer, entry.getWhat());
         buffer.writeVarLong(entry.getStoredAmount());
@@ -219,7 +235,7 @@ public record MEInventoryUpdatePacket(
     /**
      * Reads an inventory entry from a packet.
      */
-    public static GridInventoryEntry readEntry(FriendlyByteBuf buffer) {
+    public static GridInventoryEntry readEntry(RegistryFriendlyByteBuf buffer) {
         long serial = buffer.readVarLong();
         AEKey what = AEKey.readOptionalKey(buffer);
         long storedAmount = buffer.readVarLong();
@@ -253,7 +269,7 @@ public record MEInventoryUpdatePacket(
     }
 
     @NotNull
-    private static ArrayList<GridInventoryEntry> decodeEntriesPayload(int entryCount, FriendlyByteBuf data) {
+    private static ArrayList<GridInventoryEntry> decodeEntriesPayload(int entryCount, RegistryFriendlyByteBuf data) {
         // We need to access the current screen to know which storage channel was used to serialize this data
         var entries = new ArrayList<GridInventoryEntry>(entryCount);
         for (int i = 0; i < entryCount; i++) {

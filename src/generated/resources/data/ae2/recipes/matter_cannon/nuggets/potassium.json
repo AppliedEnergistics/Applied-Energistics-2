@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/potassium"
+        "tag": "c:nuggets/potassium"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/potassium"
+    "tag": "c:nuggets/potassium"
   },
   "weight": 39.0983
 }

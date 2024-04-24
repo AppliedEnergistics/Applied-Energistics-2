@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:energy_cell"
-            ]
+            "items": "ae2:energy_cell"
           }
         ]
       },
@@ -17,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:engineering_processor"
-            ]
+            "items": "ae2:engineering_processor"
           }
         ]
       },
@@ -29,7 +25,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "ae2:smart_dense_cable"
+            "items": "#ae2:smart_dense_cable"
           }
         ]
       },
@@ -39,9 +35,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:logic_processor"
-            ]
+            "items": "ae2:logic_processor"
           }
         ]
       },

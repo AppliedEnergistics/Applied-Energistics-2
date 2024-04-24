@@ -20,8 +20,10 @@ package appeng.parts.automation;
 
 import java.util.List;
 
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -35,10 +37,10 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigManagerBuilder;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.definitions.AEItems;
 import appeng.parts.AEBasePart;
-import appeng.util.ConfigManager;
 
 public abstract class UpgradeablePart extends AEBasePart implements IConfigurableObject, IUpgradeableObject {
     private final IConfigManager config;
@@ -48,11 +50,18 @@ public abstract class UpgradeablePart extends AEBasePart implements IConfigurabl
         super(partItem);
         this.upgrades = UpgradeInventories.forMachine(partItem.asItem(), this.getUpgradeSlots(),
                 this::onUpgradesChanged);
-        this.config = new ConfigManager((manager, setting) -> {
+        var configBuilder = IConfigManager.builder((manager, setting) -> {
             onSettingChanged(manager, setting);
             getHost().markForSave();
         });
+        registerSettings(configBuilder);
+        this.config = configBuilder.build();
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
+    }
+
+    @MustBeInvokedByOverriders
+    protected void registerSettings(IConfigManagerBuilder builder) {
+
     }
 
     private void onUpgradesChanged() {
@@ -87,17 +96,17 @@ public abstract class UpgradeablePart extends AEBasePart implements IConfigurabl
     }
 
     @Override
-    public void readFromNBT(CompoundTag extra) {
-        super.readFromNBT(extra);
-        this.config.readFromNBT(extra);
-        this.upgrades.readFromNBT(extra, "upgrades");
+    public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
+        super.readFromNBT(extra, registries);
+        this.config.readFromNBT(extra, registries);
+        this.upgrades.readFromNBT(extra, "upgrades", registries);
     }
 
     @Override
-    public void writeToNBT(CompoundTag extra) {
-        super.writeToNBT(extra);
-        this.config.writeToNBT(extra);
-        this.upgrades.writeToNBT(extra, "upgrades");
+    public void writeToNBT(CompoundTag extra, HolderLookup.Provider registries) {
+        super.writeToNBT(extra, registries);
+        this.config.writeToNBT(extra, registries);
+        this.upgrades.writeToNBT(extra, "upgrades", registries);
     }
 
     @Override

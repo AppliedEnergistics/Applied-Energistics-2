@@ -19,17 +19,22 @@
 package appeng.parts.automation;
 
 import java.util.List;
-import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.BlockGetter;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
@@ -55,10 +60,11 @@ import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.AEBasePart;
-import appeng.util.EnchantmentUtil;
 import appeng.util.SettingsFrom;
 
 public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AnnihilationPlanePart.class);
 
     private static final PlaneModels MODELS = new PlaneModels("part/annihilation_plane",
             "part/annihilation_plane_on");
@@ -79,8 +85,7 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
      * Enchantments found on the plane when it was placed will be used to enchant the fake tool used for picking up
      * blocks.
      */
-    @Nullable
-    private Map<Enchantment, Integer> enchantments;
+    private ItemEnchantments enchantments = ItemEnchantments.EMPTY;
 
     // Allows annihilation planes to stop pickup and instead go into a continuous generation mode
     private ContinuousGeneration continuousGeneration;
@@ -112,48 +117,46 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
     }
 
     @Override
-    public void readFromNBT(CompoundTag data) {
-        super.readFromNBT(data);
-        readEnchantments(data);
+    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
+        super.readFromNBT(data, registries);
+
+        var enchantmentsTag = data.getCompound("enchantments");
+        this.enchantments = ItemEnchantments.CODEC.decode(NbtOps.INSTANCE, enchantmentsTag)
+                .ifError(err -> LOG.warn("Failed to load enchantments for part {}: {}", this, err.message()))
+                .getOrThrow()
+                .getFirst();
     }
 
     @Override
-    public void writeToNBT(CompoundTag data) {
-        super.writeToNBT(data);
-        writeEnchantments(data);
+    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
+        super.writeToNBT(data, registries);
+
+        var enchantmentsTag = ItemEnchantments.CODEC.encodeStart(NbtOps.INSTANCE, enchantments).getOrThrow();
+        if (enchantmentsTag instanceof CompoundTag compoundTag && !compoundTag.isEmpty()) {
+            data.put("enchantments", enchantmentsTag);
+        }
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag data, @Nullable Player player) {
+    public void importSettings(SettingsFrom mode, DataComponentMap data, @Nullable Player player) {
         super.importSettings(mode, data, player);
         // Import enchants only when the plan is placed, not from memory cards
         if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            readEnchantments(data);
+            this.enchantments = data.get(DataComponents.ENCHANTMENTS);
         }
         pickupStrategies = null;
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, CompoundTag data) {
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder data) {
         super.exportSettings(mode, data);
         // Save enchants only when the actual plane is dismantled
         if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            writeEnchantments(data);
+            data.set(DataComponents.ENCHANTMENTS, enchantments);
         }
     }
 
-    private void readEnchantments(CompoundTag data) {
-        enchantments = EnchantmentUtil.getEnchantments(data);
-    }
-
-    private void writeEnchantments(CompoundTag data) {
-        if (enchantments != null) {
-            EnchantmentUtil.setEnchantments(data, enchantments);
-        }
-    }
-
-    @Nullable
-    public Map<Enchantment, Integer> getEnchantments() {
+    public ItemEnchantments getEnchantments() {
         return enchantments;
     }
 

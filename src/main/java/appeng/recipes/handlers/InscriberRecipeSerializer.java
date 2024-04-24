@@ -18,13 +18,10 @@
 
 package appeng.recipes.handlers;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class InscriberRecipeSerializer implements RecipeSerializer<InscriberRecipe> {
@@ -35,29 +32,12 @@ public class InscriberRecipeSerializer implements RecipeSerializer<InscriberReci
     }
 
     @Override
-    public Codec<InscriberRecipe> codec() {
+    public MapCodec<InscriberRecipe> codec() {
         return InscriberRecipe.CODEC;
     }
 
-    @Nullable
     @Override
-    public InscriberRecipe fromNetwork(FriendlyByteBuf buffer) {
-        Ingredient middle = Ingredient.fromNetwork(buffer);
-        ItemStack result = buffer.readItem();
-        Ingredient top = Ingredient.fromNetwork(buffer);
-        Ingredient bottom = Ingredient.fromNetwork(buffer);
-        InscriberProcessType mode = buffer.readEnum(InscriberProcessType.class);
-
-        return new InscriberRecipe(middle, result, top, bottom, mode);
+    public StreamCodec<RegistryFriendlyByteBuf, InscriberRecipe> streamCodec() {
+        return InscriberRecipe.STREAM_CODEC;
     }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer, InscriberRecipe recipe) {
-        recipe.getMiddleInput().toNetwork(buffer);
-        buffer.writeItem(recipe.getResultItem());
-        recipe.getTopOptional().toNetwork(buffer);
-        recipe.getBottomOptional().toNetwork(buffer);
-        buffer.writeEnum(recipe.getProcessType());
-    }
-
 }

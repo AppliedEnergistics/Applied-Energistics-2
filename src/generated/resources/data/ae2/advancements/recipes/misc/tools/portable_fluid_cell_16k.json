@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:energy_cell"
-            ]
+            "items": "ae2:energy_cell"
           }
         ]
       },
@@ -17,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:fluid_cell_housing"
-            ]
+            "items": "ae2:fluid_cell_housing"
           }
         ]
       },

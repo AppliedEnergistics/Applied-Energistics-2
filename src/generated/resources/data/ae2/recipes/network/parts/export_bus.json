@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "b": {
       "item": "ae2:formation_core"
@@ -17,6 +17,7 @@
     " c "
   ],
   "result": {
-    "item": "ae2:export_bus"
+    "count": 1,
+    "id": "ae2:export_bus"
   }
 }

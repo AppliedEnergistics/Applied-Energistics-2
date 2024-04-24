@@ -3,6 +3,7 @@ package appeng.integration.modules.rei;
 import org.jetbrains.annotations.Nullable;
 
 import dev.architectury.fluid.FluidStack;
+import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.EntryType;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
@@ -21,10 +22,8 @@ public class FluidIngredientConverter implements IngredientConverter<FluidStack>
     @Override
     public EntryStack<FluidStack> getIngredientFromStack(GenericStack stack) {
         if (stack.what() instanceof AEFluidKey fluidKey) {
-            return EntryStack.of(getIngredientType(), FluidStack.create(
-                    fluidKey.getFluid(),
-                    Math.max(1, stack.amount()),
-                    fluidKey.copyTag()));
+            return EntryStack.of(getIngredientType(),
+                    FluidStackHooksForge.fromForge(fluidKey.toStack(1)).copyWithAmount(Math.max(1, stack.amount())));
         } else {
             return null;
         }
@@ -36,7 +35,7 @@ public class FluidIngredientConverter implements IngredientConverter<FluidStack>
         if (ingredient.getType() == getIngredientType()) {
             FluidStack fluidStack = ingredient.castValue();
             return new GenericStack(
-                    AEFluidKey.of(fluidStack.getFluid(), fluidStack.getTag()),
+                    AEFluidKey.of(FluidStackHooksForge.toForge(fluidStack)),
                     fluidStack.getAmount());
         }
         return null;

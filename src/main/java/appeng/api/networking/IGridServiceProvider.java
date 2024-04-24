@@ -29,6 +29,7 @@ import com.google.gson.stream.JsonWriter;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
@@ -109,6 +110,6 @@ public interface IGridServiceProvider {
     /**
      * Write debug information about this service to the given writer.
      */
-    default void debugDump(JsonWriter writer) throws IOException {
+    default void debugDump(JsonWriter writer, HolderLookup.Provider registries) throws IOException {
     }
 }

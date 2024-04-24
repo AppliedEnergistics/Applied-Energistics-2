@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/rhodium"
+        "tag": "c:nuggets/rhodium"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/rhodium"
+    "tag": "c:nuggets/rhodium"
   },
   "weight": 102.9055
 }

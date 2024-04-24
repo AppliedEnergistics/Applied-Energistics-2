@@ -7,8 +7,9 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -43,25 +44,25 @@ public record PatternContainerGroup(
         return NOTHING;
     }
 
-    public void writeToPacket(FriendlyByteBuf buffer) {
+    public void writeToPacket(RegistryFriendlyByteBuf buffer) {
         buffer.writeBoolean(icon != null);
         if (icon != null) {
             icon.writeToPacket(buffer);
         }
-        buffer.writeComponent(name);
+        ComponentSerialization.TRUSTED_STREAM_CODEC.encode(buffer, name);
         buffer.writeVarInt(tooltip.size());
         for (var component : tooltip) {
-            buffer.writeComponent(component);
+            ComponentSerialization.TRUSTED_STREAM_CODEC.encode(buffer, component);
         }
     }
 
-    public static PatternContainerGroup readFromPacket(FriendlyByteBuf buffer) {
+    public static PatternContainerGroup readFromPacket(RegistryFriendlyByteBuf buffer) {
         var icon = buffer.readBoolean() ? AEItemKey.fromPacket(buffer) : null;
-        var name = buffer.readComponent();
+        var name = ComponentSerialization.TRUSTED_STREAM_CODEC.decode(buffer);
         var lineCount = buffer.readVarInt();
         var lines = new ArrayList<Component>(lineCount);
         for (int i = 0; i < lineCount; i++) {
-            lines.add(buffer.readComponent());
+            lines.add(ComponentSerialization.TRUSTED_STREAM_CODEC.decode(buffer));
         }
         return new PatternContainerGroup(icon, name, lines);
     }

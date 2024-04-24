@@ -18,71 +18,27 @@
 
 package appeng.recipes.transform;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mojang.serialization.MapCodec;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class TransformRecipeSerializer implements RecipeSerializer<TransformRecipe> {
 
     public static final TransformRecipeSerializer INSTANCE = new TransformRecipeSerializer();
 
-    private static final Codec<TransformRecipe> CODEC = RecordCodecBuilder.create(builder -> {
-        return builder.group(
-                Ingredient.CODEC_NONEMPTY
-                        .listOf()
-                        .fieldOf("ingredients")
-                        .flatXmap(ingredients -> {
-                            return DataResult
-                                    .success(NonNullList.of(Ingredient.EMPTY, ingredients.toArray(Ingredient[]::new)));
-                        }, DataResult::success)
-                        .forGetter(r -> r.ingredients),
-                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(r -> r.output),
-                ExtraCodecs
-                        .strictOptionalField(TransformCircumstance.CODEC, "circumstance",
-                                TransformCircumstance.fluid(FluidTags.WATER))
-                        .forGetter(t -> t.circumstance))
-                .apply(builder, TransformRecipe::new);
-    });
-
     private TransformRecipeSerializer() {
     }
 
     @Override
-    public Codec<TransformRecipe> codec() {
-        return CODEC;
-    }
-
-    @Nullable
-    @Override
-    public TransformRecipe fromNetwork(FriendlyByteBuf buffer) {
-        ItemStack output = buffer.readItem();
-
-        int size = buffer.readByte();
-        NonNullList<Ingredient> ingredients = NonNullList.create();
-        for (int i = 0; i < size; i++) {
-            ingredients.add(Ingredient.fromNetwork(buffer));
-        }
-        TransformCircumstance circumstance = TransformCircumstance.fromNetwork(buffer);
-
-        return new TransformRecipe(ingredients, output, circumstance);
+    public MapCodec<TransformRecipe> codec() {
+        return TransformRecipe.CODEC;
     }
 
     @Override
-    public void toNetwork(FriendlyByteBuf buffer, TransformRecipe recipe) {
-        buffer.writeItem(recipe.output);
-        buffer.writeByte(recipe.ingredients.size());
-        recipe.ingredients.forEach(ingredient -> ingredient.toNetwork(buffer));
-        recipe.circumstance.toNetwork(buffer);
+    public StreamCodec<RegistryFriendlyByteBuf, TransformRecipe> streamCodec() {
+        return TransformRecipe.STREAM_CODEC;
     }
 
 }

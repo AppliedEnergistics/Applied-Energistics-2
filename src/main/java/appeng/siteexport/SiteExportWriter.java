@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
@@ -68,6 +69,7 @@ import appeng.siteexport.model.ItemInfoJson;
 import appeng.siteexport.model.NavigationNodeJson;
 import appeng.siteexport.model.P2PTypeInfo;
 import appeng.siteexport.model.SiteExportJson;
+import appeng.util.Platform;
 
 public class SiteExportWriter {
     private static final Logger LOG = LoggerFactory.getLogger(SiteExportWriter.class);
@@ -170,7 +172,7 @@ public class SiteExportWriter {
         var fluidInfo = new FluidInfoJson();
         fluidInfo.id = id;
         fluidInfo.icon = iconPath;
-        fluidInfo.displayName = fluid.getDisplayName().getString();
+        fluidInfo.displayName = fluid.getHoverName().getString();
         siteExport.fluids.put(fluidInfo.id, fluidInfo);
     }
 
@@ -343,9 +345,11 @@ public class SiteExportWriter {
 
     public String addItem(ItemStack stack) {
         var itemId = stack.getItem().builtInRegistryHolder().key().location().toString().replace(':', '-');
-        if (stack.getTag() == null) {
+        if (stack.getComponentsPatch().isEmpty()) {
             return itemId;
         }
+
+        var serializedTag = (CompoundTag) stack.save(Platform.getClientRegistryAccess());
 
         MessageDigest digest;
         try {
@@ -354,7 +358,7 @@ public class SiteExportWriter {
             throw new RuntimeException(e);
         }
         try (var out = new DataOutputStream(new DigestOutputStream(OutputStream.nullOutputStream(), digest))) {
-            NbtIo.write(stack.getTag(), out);
+            NbtIo.write(serializedTag, out);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

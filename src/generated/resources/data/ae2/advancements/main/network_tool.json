@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:network_tool"
-            ]
+            "items": "ae2:network_tool"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "achievement.ae2.NetworkTool.desc"
     },
     "icon": {
-      "item": "ae2:network_tool"
+      "count": 1,
+      "id": "ae2:network_tool"
     },
     "title": {
       "translate": "achievement.ae2.NetworkTool"

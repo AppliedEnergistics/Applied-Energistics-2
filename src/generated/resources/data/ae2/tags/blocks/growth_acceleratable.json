@@ -20,6 +20,6 @@
       "id": "#minecraft:saplings",
       "required": false
     },
-    "#forge:budding"
+    "#c:budding"
   ]
 }

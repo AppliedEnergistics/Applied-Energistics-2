@@ -22,6 +22,6 @@ import net.minecraft.world.item.ShovelItem;
 
 public class QuartzSpadeItem extends ShovelItem {
     public QuartzSpadeItem(Properties props, QuartzToolType type) {
-        super(type.getToolTier(), 1.5F, -3.0F, props);
+        super(type.getToolTier(), props.attributes(createAttributes(type.getToolTier(), 1.5F, -3.0F)));
     }
 }

@@ -6,7 +6,7 @@
       "tag": "ae2:all_certus_quartz"
     },
     "b": {
-      "tag": "forge:dusts/fluix"
+      "tag": "c:dusts/fluix"
     },
     "c": {
       "item": "ae2:logic_processor"
@@ -17,6 +17,6 @@
   ],
   "result": {
     "count": 2,
-    "item": "ae2:formation_core"
+    "id": "ae2:formation_core"
   }
 }

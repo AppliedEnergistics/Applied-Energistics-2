@@ -260,7 +260,7 @@ public final class AEBlockEntities {
         T create(BlockEntityType<T> type, BlockPos pos, BlockState state);
     }
 
-    private record BlockEntityTypeWithClass<T extends BlockEntity> (BlockEntityType<T> type, Class<T> implementation) {
+    private record BlockEntityTypeWithClass<T extends BlockEntity>(BlockEntityType<T> type, Class<T> implementation) {
     }
 
 }

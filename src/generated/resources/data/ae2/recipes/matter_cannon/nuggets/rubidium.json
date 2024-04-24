@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/rubidium"
+        "tag": "c:nuggets/rubidium"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/rubidium"
+    "tag": "c:nuggets/rubidium"
   },
   "weight": 85.4678
 }

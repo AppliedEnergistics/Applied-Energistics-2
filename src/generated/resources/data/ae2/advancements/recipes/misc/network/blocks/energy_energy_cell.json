@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "ae2:all_certus_quartz"
+            "items": "#ae2:all_certus_quartz"
           }
         ]
       },
@@ -15,7 +15,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:dusts/fluix"
+            "items": "#c:dusts/fluix"
           }
         ]
       },
@@ -25,9 +25,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:quartz_glass"
-            ]
+            "items": "ae2:quartz_glass"
           }
         ]
       },

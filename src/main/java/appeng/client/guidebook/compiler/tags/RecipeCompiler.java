@@ -104,14 +104,14 @@ public class RecipeCompiler extends BlockTagCompiler {
     /**
      * Maps a recipe type to a factory that can create a layout block to display it.
      */
-    private record RecipeTypeMapping<T extends Recipe<C>, C extends Container> (
+    private record RecipeTypeMapping<T extends Recipe<C>, C extends Container>(
             RecipeType<T> recipeType,
             Function<RecipeHolder<T>, LytBlock> factory) {
         @Nullable
         LytBlock tryCreate(RecipeManager recipeManager, Item resultItem) {
             // We try to find non-special recipes first then fall back to special
             List<RecipeHolder<T>> fallbackCandidates = new ArrayList<>();
-            for (var recipe : recipeManager.byType(recipeType).values()) {
+            for (var recipe : recipeManager.byType(recipeType)) {
                 if (recipe.value().isSpecial()) {
                     fallbackCandidates.add(recipe);
                     continue;

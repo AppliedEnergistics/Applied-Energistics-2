@@ -15,11 +15,11 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 
 public class ProcessingPatternBuilder {
-    private final GenericStack[] outputs;
+    private final List<GenericStack> outputs;
     private final List<IPatternDetails.IInput> inputs = new ArrayList<>();
 
     public ProcessingPatternBuilder(GenericStack... outputs) {
-        this.outputs = outputs;
+        this.outputs = List.of(outputs);
     }
 
     public ProcessingPatternBuilder addPreciseInput(long multiplier, GenericStack... possibleInputs) {
@@ -113,7 +113,7 @@ public class ProcessingPatternBuilder {
             }
 
             @Override
-            public GenericStack[] getOutputs() {
+            public List<GenericStack> getOutputs() {
                 return outputs;
             }
         };

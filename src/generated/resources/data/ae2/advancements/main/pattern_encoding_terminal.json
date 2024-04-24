@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:pattern_encoding_terminal"
-            ]
+            "items": "ae2:pattern_encoding_terminal"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "achievement.ae2.PatternTerminal.desc"
     },
     "icon": {
-      "item": "ae2:pattern_encoding_terminal"
+      "count": 1,
+      "id": "ae2:pattern_encoding_terminal"
     },
     "title": {
       "translate": "achievement.ae2.PatternTerminal"

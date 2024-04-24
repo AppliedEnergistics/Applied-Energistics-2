@@ -38,7 +38,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
  * A class to hold data related to ticking block entities.
  */
 class ServerBlockEntityRepo {
-    record FirstTickInfo<T extends BlockEntity> (T blockEntity, Consumer<? super T> initFunction) {
+    record FirstTickInfo<T extends BlockEntity>(T blockEntity, Consumer<? super T> initFunction) {
         void callInit() {
             initFunction.accept(blockEntity);
         }

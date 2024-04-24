@@ -30,6 +30,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
@@ -53,6 +54,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
+import appeng.api.ids.AEComponents;
 import appeng.api.parts.CableRenderMode;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypes;
@@ -62,7 +64,6 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.InitNetwork;
-import appeng.core.network.NetworkHandler;
 import appeng.hooks.SkyStoneBreakSpeed;
 import appeng.hooks.WrenchHook;
 import appeng.hooks.ticking.TickHandler;
@@ -79,7 +80,6 @@ import appeng.init.InitMenuTypes;
 import appeng.init.InitRecipeSerializers;
 import appeng.init.InitRecipeTypes;
 import appeng.init.InitStats;
-import appeng.init.InitTiers;
 import appeng.init.InitVillager;
 import appeng.init.client.InitParticleTypes;
 import appeng.init.internal.InitGridLinkables;
@@ -121,6 +121,8 @@ public abstract class AppEngBase implements AppEng {
         }
         INSTANCE = this;
 
+        AEComponents.DR.register(modEventBus);
+        InitStructures.register(modEventBus);
         modEventBus.addListener(this::registerRegistries);
         modEventBus.addListener(MainCreativeTab::initExternal);
         modEventBus.addListener(InitNetwork::init);
@@ -149,7 +151,6 @@ public abstract class AppEngBase implements AppEng {
             AEBlocks.init();
             AEParts.init();
 
-            InitTiers.init();
             InitBlocks.init(BuiltInRegistries.BLOCK);
             InitItems.init(BuiltInRegistries.ITEM);
             InitEntityTypes.init(BuiltInRegistries.ENTITY_TYPE);
@@ -158,7 +159,6 @@ public abstract class AppEngBase implements AppEng {
             InitMenuTypes.init(BuiltInRegistries.MENU);
             InitRecipeTypes.init(BuiltInRegistries.RECIPE_TYPE);
             InitRecipeSerializers.init(BuiltInRegistries.RECIPE_SERIALIZER);
-            InitStructures.init();
             registerKeyTypes();
             InitVillager.init();
 
@@ -268,15 +268,13 @@ public abstract class AppEngBase implements AppEng {
     @Override
     public void sendToAllNearExcept(Player p, double x, double y, double z,
             double dist, Level level, ClientboundPacket packet) {
-        if (level.isClientSide()) {
-            return;
+        if (level instanceof ServerLevel serverLevel) {
+            ServerPlayer except = null;
+            if (p instanceof ServerPlayer) {
+                except = (ServerPlayer) p;
+            }
+            PacketDistributor.sendToPlayersNear(serverLevel, except, x, y, z, dist, packet);
         }
-        ServerPlayer except = null;
-        if (p instanceof ServerPlayer) {
-            except = (ServerPlayer) p;
-        }
-        NetworkHandler.instance().sendToAllAround(packet, new PacketDistributor.TargetPoint(
-                except, x, y, z, dist * dist, level.dimension()));
     }
 
     @Override

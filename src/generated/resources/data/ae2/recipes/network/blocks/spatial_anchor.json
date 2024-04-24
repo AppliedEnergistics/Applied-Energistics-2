@@ -12,7 +12,7 @@
       "item": "ae2:spatial_cell_component_128"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "e": {
       "item": "ae2:engineering_processor"
@@ -24,6 +24,7 @@
     "ded"
   ],
   "result": {
-    "item": "ae2:spatial_anchor"
+    "count": 1,
+    "id": "ae2:spatial_anchor"
   }
 }

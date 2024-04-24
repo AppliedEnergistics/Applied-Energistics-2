@@ -24,7 +24,7 @@ public abstract class ResizableSlotHighlightMixin {
         }
 
         var screen = minecraft.screen;
-        if (screen instanceof AEBaseScreen<?>self) {
+        if (screen instanceof AEBaseScreen<?> self) {
             self.renderCustomSlotHighlight(guiGraphics, x, y, z);
             ci.cancel();
         }

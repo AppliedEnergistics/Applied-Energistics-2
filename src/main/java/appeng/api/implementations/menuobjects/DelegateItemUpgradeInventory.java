@@ -2,6 +2,7 @@ package appeng.api.implementations.menuobjects;
 
 import java.util.function.Supplier;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -34,13 +35,13 @@ public final class DelegateItemUpgradeInventory extends SupplierInternalInventor
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, String subtag) {
-        getDelegate().readFromNBT(data, subtag);
+    public void readFromNBT(CompoundTag data, String subtag, HolderLookup.Provider registries) {
+        getDelegate().readFromNBT(data, subtag, registries);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, String subtag) {
-        getDelegate().writeToNBT(data, subtag);
+    public void writeToNBT(CompoundTag data, String subtag, HolderLookup.Provider registries) {
+        getDelegate().writeToNBT(data, subtag, registries);
     }
 
     private static IUpgradeInventory inventoryFromStack(ItemStack stack) {

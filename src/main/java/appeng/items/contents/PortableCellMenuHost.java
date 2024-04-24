@@ -50,7 +50,6 @@ import appeng.items.tools.powered.AbstractPortableCell;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.ISubMenu;
 import appeng.menu.locator.ItemMenuHostLocator;
-import appeng.util.ConfigManager;
 
 /**
  * Hosts the terminal interface for a {@link AbstractPortableCell}.
@@ -59,6 +58,7 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
     private final BiConsumer<Player, ISubMenu> returnMainMenu;
     private final MEStorage cellStorage;
     private final AbstractPortableCell item;
+    private final IConfigManager configManager;
     private ILinkStatus linkStatus = ILinkStatus.ofDisconnected();
 
     public PortableCellMenuHost(T item, Player player, ItemMenuHostLocator locator,
@@ -70,6 +70,11 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
         Objects.requireNonNull(cellStorage, "Portable cell doesn't expose a cell inventory.");
         this.item = item;
         this.updateLinkStatus();
+        this.configManager = IConfigManager.builder(this::getItemStack)
+                .registerSetting(Settings.SORT_BY, SortOrder.NAME)
+                .registerSetting(Settings.VIEW_MODE, ViewItems.ALL)
+                .registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING)
+                .build();
     }
 
     @Override
@@ -128,16 +133,7 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
 
     @Override
     public IConfigManager getConfigManager() {
-        var out = new ConfigManager((manager, settingName) -> {
-            manager.writeToNBT(getItemStack().getOrCreateTag());
-        });
-
-        out.registerSetting(Settings.SORT_BY, SortOrder.NAME);
-        out.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        out.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
-
-        out.readFromNBT(getItemStack().getOrCreateTag().copy());
-        return out;
+        return configManager;
     }
 
     @Override

@@ -55,6 +55,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.behaviors.EmptyingAction;
@@ -84,7 +85,7 @@ import appeng.core.AppEng;
 import appeng.core.AppEngClient;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.Tooltips;
-import appeng.core.network.NetworkHandler;
+import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.core.network.serverbound.SwapSlotsPacket;
 import appeng.helpers.InventoryAction;
@@ -598,7 +599,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                     var p = new InventoryActionPacket(
                             mouseButton == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE,
                             dr.index, 0);
-                    NetworkHandler.instance().sendToServer(p);
+                    PacketDistributor.sendToServer(p);
                 }
             }
 
@@ -630,7 +631,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 && mouseButton == InputConstants.MOUSE_BUTTON_RIGHT
                 && getEmptyingAction(slot, menu.getCarried()) != null) {
             var p = new InventoryActionPacket(InventoryAction.EMPTY_ITEM, slotIdx, 0);
-            NetworkHandler.instance().sendToServer(p);
+            PacketDistributor.sendToServer(p);
             return;
         }
 
@@ -642,7 +643,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             var action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
                     : InventoryAction.PICKUP_OR_SET_DOWN;
             var p = new InventoryActionPacket(action, slotIdx, 0);
-            NetworkHandler.instance().sendToServer(p);
+            PacketDistributor.sendToServer(p);
             return;
         }
 
@@ -656,7 +657,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             }
 
             final InventoryActionPacket p = new InventoryActionPacket(action, slotIdx, 0);
-            NetworkHandler.instance().sendToServer(p);
+            PacketDistributor.sendToServer(p);
 
             return;
         }
@@ -665,7 +666,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
             int slotNum = slot.index;
             final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slotNum, 0);
-            NetworkHandler.instance().sendToServer(p);
+            PacketDistributor.sendToServer(p);
             return;
         }
 
@@ -742,8 +743,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                         for (Slot s : slots) {
                             if (s.slot == j
                                     && s.container == this.menu.getPlayerInventory()) {
-                                NetworkHandler.instance()
-                                        .sendToServer(new SwapSlotsPacket(s.index, theSlot.index));
+                                ServerboundPacket message = new SwapSlotsPacket(s.index, theSlot.index);
+                                PacketDistributor.sendToServer(message);
                                 return true;
                             }
                         }
@@ -1053,7 +1054,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             var item = part.getPartItem().asItem();
             var itemId = BuiltInRegistries.ITEM.getKey(item);
             return itemIndex.get(itemId);
-        } else if (target instanceof ItemMenuHost<?>menuHost) {
+        } else if (target instanceof ItemMenuHost<?> menuHost) {
             var item = menuHost.getItem();
             var itemId = BuiltInRegistries.ITEM.getKey(item);
             return itemIndex.get(itemId);

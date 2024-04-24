@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "c": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     },
     "f": {
       "item": "ae2:fluix_block"
     },
     "i": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "q": {
       "item": "ae2:charged_certus_quartz_crystal"
@@ -21,6 +21,7 @@
     "iii"
   ],
   "result": {
-    "item": "ae2:crystal_resonance_generator"
+    "count": 1,
+    "id": "ae2:crystal_resonance_generator"
   }
 }

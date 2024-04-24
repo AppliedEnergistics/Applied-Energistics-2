@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:crafting_terminal"
-            ]
+            "items": "ae2:crafting_terminal"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "achievement.ae2.CraftingTerminal.desc"
     },
     "icon": {
-      "item": "ae2:crafting_terminal"
+      "count": 1,
+      "id": "ae2:crafting_terminal"
     },
     "title": {
       "translate": "achievement.ae2.CraftingTerminal"

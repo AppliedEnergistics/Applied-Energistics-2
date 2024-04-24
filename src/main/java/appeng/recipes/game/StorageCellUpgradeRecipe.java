@@ -1,12 +1,15 @@
 package appeng.recipes.game;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
@@ -24,7 +27,6 @@ import appeng.core.AppEng;
  */
 public class StorageCellUpgradeRecipe extends CustomRecipe {
     public static final ResourceLocation SERIALIZER_ID = AppEng.makeId("storage_cell_upgrade");
-    public static final RecipeSerializer<StorageCellUpgradeRecipe> SERIALIZER = new Serializer();
 
     private final Item inputCell;
     private final Item inputComponent;
@@ -39,7 +41,7 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
         this.resultComponent = resultComponent;
     }
 
-    private static final Codec<StorageCellUpgradeRecipe> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+    public static final MapCodec<StorageCellUpgradeRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             BuiltInRegistries.ITEM.byNameCodec().fieldOf("input_cell")
                     .forGetter(StorageCellUpgradeRecipe::getInputCell),
             BuiltInRegistries.ITEM.byNameCodec().fieldOf("input_component")
@@ -49,6 +51,14 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
             BuiltInRegistries.ITEM.byNameCodec().fieldOf("result_component")
                     .forGetter(StorageCellUpgradeRecipe::getResultComponent))
             .apply(builder, StorageCellUpgradeRecipe::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, StorageCellUpgradeRecipe> STREAM_CODEC = StreamCodec
+            .composite(
+                    ByteBufCodecs.registry(Registries.ITEM), StorageCellUpgradeRecipe::getInputCell,
+                    ByteBufCodecs.registry(Registries.ITEM), StorageCellUpgradeRecipe::getInputComponent,
+                    ByteBufCodecs.registry(Registries.ITEM), StorageCellUpgradeRecipe::getResultCell,
+                    ByteBufCodecs.registry(Registries.ITEM), StorageCellUpgradeRecipe::getResultComponent,
+                    StorageCellUpgradeRecipe::new);
 
     public Item getInputCell() {
         return inputCell;
@@ -98,12 +108,12 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registries) {
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
         return new ItemStack(resultCell);
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer container, RegistryAccess registries) {
+    public ItemStack assemble(CraftingContainer container, HolderLookup.Provider registries) {
         ItemStack foundCell = ItemStack.EMPTY;
         var componentsFound = 0;
 
@@ -128,12 +138,7 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
         if (foundCell.isEmpty() || componentsFound == 0) {
             return ItemStack.EMPTY;
         } else {
-            var result = new ItemStack(resultCell, 1, foundCell.serializeAttachments());
-            var oldTag = foundCell.getTag();
-            if (oldTag != null) {
-                result.setTag(oldTag.copy());
-            }
-            return result;
+            return foundCell.transmuteCopy(resultCell, 1);
         }
     }
 
@@ -160,35 +165,7 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return SERIALIZER;
+        return StorageCellUpgradeRecipeSerializer.INSTANCE;
     }
 
-    private static class Serializer implements RecipeSerializer<StorageCellUpgradeRecipe> {
-        @Override
-        public Codec<StorageCellUpgradeRecipe> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public StorageCellUpgradeRecipe fromNetwork(FriendlyByteBuf buffer) {
-            var inputCell = buffer.readById(BuiltInRegistries.ITEM);
-            var inputComponent = buffer.readById(BuiltInRegistries.ITEM);
-            var resultCell = buffer.readById(BuiltInRegistries.ITEM);
-            var resultComponent = buffer.readById(BuiltInRegistries.ITEM);
-
-            return new StorageCellUpgradeRecipe(
-                    inputCell,
-                    inputComponent,
-                    resultCell,
-                    resultComponent);
-        }
-
-        @Override
-        public void toNetwork(FriendlyByteBuf buffer, StorageCellUpgradeRecipe recipe) {
-            buffer.writeId(BuiltInRegistries.ITEM, recipe.inputCell);
-            buffer.writeId(BuiltInRegistries.ITEM, recipe.inputComponent);
-            buffer.writeId(BuiltInRegistries.ITEM, recipe.resultCell);
-            buffer.writeId(BuiltInRegistries.ITEM, recipe.resultComponent);
-        }
-    }
 }

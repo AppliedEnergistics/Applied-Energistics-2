@@ -18,64 +18,34 @@
 
 package appeng.client.render.effects;
 
-import java.util.Locale;
-
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleOptions.Deserializer;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
-public class EnergyParticleData implements ParticleOptions {
+public record EnergyParticleData(boolean forItem, Direction direction) implements ParticleOptions {
+    public static final MapCodec<EnergyParticleData> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
+            Codec.BOOL.fieldOf("forItem").forGetter(EnergyParticleData::forItem),
+            Direction.CODEC.fieldOf("direction").forGetter(EnergyParticleData::direction))
+            .apply(builder, EnergyParticleData::new));
 
-    public static final EnergyParticleData FOR_BLOCK = new EnergyParticleData(false, null);
+    public static final StreamCodec<FriendlyByteBuf, EnergyParticleData> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.BOOL,
+            EnergyParticleData::forItem,
+            Direction.STREAM_CODEC,
+            EnergyParticleData::direction,
+            EnergyParticleData::new);
 
-    public final boolean forItem;
-
-    public final Direction direction;
-
-    public EnergyParticleData(boolean forItem, Direction direction) {
-        this.forItem = forItem;
-        this.direction = direction;
-    }
-
-    public static final Deserializer<EnergyParticleData> DESERIALIZER = new Deserializer<EnergyParticleData>() {
-        @Override
-        public EnergyParticleData fromCommand(ParticleType<EnergyParticleData> particleTypeIn, StringReader reader)
-                throws CommandSyntaxException {
-            reader.expect(' ');
-            boolean forItem = reader.readBoolean();
-            reader.expect(' ');
-            Direction direction = Direction.valueOf(reader.readString().toUpperCase(Locale.ROOT));
-            return new EnergyParticleData(forItem, direction);
-        }
-
-        @Override
-        public EnergyParticleData fromNetwork(ParticleType<EnergyParticleData> particleTypeIn, FriendlyByteBuf buffer) {
-            boolean forItem = buffer.readBoolean();
-            Direction direction = Direction.values()[buffer.readByte()];
-            return new EnergyParticleData(forItem, direction);
-        }
-    };
+    public static final EnergyParticleData FOR_BLOCK = new EnergyParticleData(false, Direction.UP);
 
     @Override
     public ParticleType<?> getType() {
         return ParticleTypes.ENERGY;
     }
-
-    @Override
-    public void writeToNetwork(FriendlyByteBuf buffer) {
-        buffer.writeBoolean(forItem);
-        buffer.writeByte((byte) direction.ordinal());
-    }
-
-    @Override
-    public String writeToString() {
-        return String.format(Locale.ROOT, "%s %s", forItem ? "true" : "false",
-                direction.name().toLowerCase(Locale.ROOT));
-    }
-
 }

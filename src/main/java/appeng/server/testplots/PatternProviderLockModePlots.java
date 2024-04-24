@@ -1,5 +1,7 @@
 package appeng.server.testplots;
 
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -458,8 +460,8 @@ public final class PatternProviderLockModePlots {
 
     private static ItemStack createPattern() {
         return PatternDetailsHelper.encodeProcessingPattern(
-                new GenericStack[] { new GenericStack(AEItemKey.of(Blocks.OAK_LOG), 1) },
-                new GenericStack[] { TWO_PLANK });
+                List.of(new GenericStack(AEItemKey.of(Blocks.OAK_LOG), 1)),
+                List.of(TWO_PLANK));
     }
 
     private static IPatternDetails createPatternDetails(PatternProviderLogicHost host) {

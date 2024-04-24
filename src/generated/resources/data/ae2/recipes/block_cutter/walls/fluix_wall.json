@@ -1,8 +1,10 @@
 {
   "type": "minecraft:stonecutting",
-  "count": 1,
   "ingredient": {
     "item": "ae2:fluix_block"
   },
-  "result": "ae2:fluix_wall"
+  "result": {
+    "count": 1,
+    "id": "ae2:fluix_wall"
+  }
 }

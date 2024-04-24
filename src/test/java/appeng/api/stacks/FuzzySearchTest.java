@@ -27,8 +27,10 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.Unbreakable;
 
 import appeng.api.config.FuzzyMode;
 import appeng.util.BootstrapMinecraft;
@@ -46,7 +48,7 @@ public class FuzzySearchTest {
         ItemStack unbreakableSword = new ItemStack(
                 Items.DIAMOND_SWORD);
         unbreakableSword.setDamageValue(unbreakableSword.getMaxDamage() / 2);
-        unbreakableSword.getOrCreateTag().putBoolean("Unbreakable", true);
+        unbreakableSword.set(DataComponents.UNBREAKABLE, new Unbreakable(true));
         assertFalse(unbreakableSword.isDamageableItem());
         AEItemKey unbreakableStack = AEItemKey.of(unbreakableSword);
 
@@ -77,7 +79,7 @@ public class FuzzySearchTest {
         @Test
         void testIgnoreAll() {
             DamageBounds bounds = new DamageBounds(stack, FuzzyMode.IGNORE_ALL);
-            assertEquals(stack.getItem().getMaxDamage(), bounds.lower.itemDamage());
+            assertEquals(stack.toStack().getMaxDamage(), bounds.lower.itemDamage());
             assertEquals(-1, bounds.upper.itemDamage());
         }
 
@@ -87,11 +89,11 @@ public class FuzzySearchTest {
         @Test
         void test99PercentDurabilityWithUnbreakable() {
             ItemStack unbreakableStack = damagedStack.toStack();
-            unbreakableStack.getOrCreateTag().putBoolean("Unbreakable", true);
+            unbreakableStack.set(DataComponents.UNBREAKABLE, new Unbreakable(true));
             assertFalse(unbreakableStack.isDamageableItem());
 
             DamageBounds bounds = new DamageBounds(AEItemKey.of(unbreakableStack), FuzzyMode.PERCENT_99);
-            assertEquals(stack.getItem().getMaxDamage(), bounds.lower.itemDamage());
+            assertEquals(stack.toStack().getMaxDamage(), bounds.lower.itemDamage());
             assertEquals(0, bounds.upper.itemDamage());
         }
 
@@ -113,7 +115,7 @@ public class FuzzySearchTest {
         @Test
         void test99PercentDurabilityWithDamagedItem() {
             DamageBounds bounds = new DamageBounds(damagedStack, FuzzyMode.PERCENT_99);
-            assertEquals(stack.getItem().getMaxDamage(), bounds.lower.itemDamage());
+            assertEquals(stack.toStack().getMaxDamage(), bounds.lower.itemDamage());
             assertEquals(0, bounds.upper.itemDamage());
         }
 
@@ -124,7 +126,7 @@ public class FuzzySearchTest {
         @Test
         void test75PercentWithUndamagedItem() {
             DamageBounds bounds = new DamageBounds(stack, FuzzyMode.PERCENT_75);
-            assertEquals((int) (0.25 * stack.getItem().getMaxDamage()), bounds.lower.itemDamage());
+            assertEquals((int) (0.25 * stack.toStack().getMaxDamage()), bounds.lower.itemDamage());
             assertEquals(-1, bounds.upper.itemDamage());
         }
 
@@ -135,8 +137,8 @@ public class FuzzySearchTest {
         @Test
         void test75PercentWithDamagedItem() {
             DamageBounds bounds = new DamageBounds(damagedStack, FuzzyMode.PERCENT_75);
-            assertEquals(stack.getItem().getMaxDamage(), bounds.lower.itemDamage());
-            assertEquals((int) (0.25 * stack.getItem().getMaxDamage()), bounds.upper.itemDamage());
+            assertEquals(stack.toStack().getMaxDamage(), bounds.lower.itemDamage());
+            assertEquals((int) (0.25 * stack.toStack().getMaxDamage()), bounds.upper.itemDamage());
         }
 
         /**
@@ -146,7 +148,7 @@ public class FuzzySearchTest {
         @Test
         void test50PercentWithUndamagedItem() {
             DamageBounds bounds = new DamageBounds(stack, FuzzyMode.PERCENT_50);
-            assertEquals((int) (0.50 * stack.getItem().getMaxDamage()), bounds.lower.itemDamage());
+            assertEquals((int) (0.50 * stack.toStack().getMaxDamage()), bounds.lower.itemDamage());
             assertEquals(-1, bounds.upper.itemDamage());
         }
 
@@ -157,8 +159,8 @@ public class FuzzySearchTest {
         @Test
         void test50PercentWithDamagedItem() {
             DamageBounds bounds = new DamageBounds(damagedStack, FuzzyMode.PERCENT_50);
-            assertEquals(stack.getItem().getMaxDamage(), bounds.lower.itemDamage());
-            assertEquals((int) (0.50 * stack.getItem().getMaxDamage()), bounds.upper.itemDamage());
+            assertEquals(stack.toStack().getMaxDamage(), bounds.lower.itemDamage());
+            assertEquals((int) (0.50 * stack.toStack().getMaxDamage()), bounds.upper.itemDamage());
         }
 
         /**
@@ -168,7 +170,7 @@ public class FuzzySearchTest {
         @Test
         void test25PercentWithUndamagedItem() {
             DamageBounds bounds = new DamageBounds(stack, FuzzyMode.PERCENT_25);
-            assertEquals((int) (0.75 * stack.getItem().getMaxDamage()), bounds.lower.itemDamage());
+            assertEquals((int) (0.75 * stack.toStack().getMaxDamage()), bounds.lower.itemDamage());
             assertEquals(-1, bounds.upper.itemDamage());
         }
 
@@ -179,8 +181,8 @@ public class FuzzySearchTest {
         @Test
         void test25PercentWithDamagedItem() {
             DamageBounds bounds = new DamageBounds(damagedStack, FuzzyMode.PERCENT_25);
-            assertEquals(stack.getItem().getMaxDamage(), bounds.lower.itemDamage());
-            assertEquals((int) (0.75 * stack.getItem().getMaxDamage()), bounds.upper.itemDamage());
+            assertEquals(stack.toStack().getMaxDamage(), bounds.lower.itemDamage());
+            assertEquals((int) (0.75 * stack.toStack().getMaxDamage()), bounds.upper.itemDamage());
         }
 
     }

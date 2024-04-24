@@ -61,15 +61,15 @@ public class SpatialStorageSkyProperties {
         }
 
         @Override
-        public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera,
-                Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
-            SpatialSkyRender.getInstance().render(poseStack, projectionMatrix);
+        public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix,
+                Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
+            SpatialSkyRender.getInstance().render(modelViewMatrix, projectionMatrix);
             return true;
         }
 
         @Override
         public boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX,
-                double camY, double camZ, Matrix4f projectionMatrix) {
+                double camY, double camZ, Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {
             return true; // Disables clouds
         }
     };

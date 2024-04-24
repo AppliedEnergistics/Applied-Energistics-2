@@ -61,7 +61,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         var inscriber = models().getExistingFile(AppEng.makeId("inscriber"));
         multiVariantGenerator(AEBlocks.INSCRIBER,
                 Variant.variant().with(VariantProperties.MODEL, inscriber.getLocation()))
-                        .with(createFacingSpinDispatch());
+                .with(createFacingSpinDispatch());
 
         crystalResonanceGenerator();
         wirelessAccessPoint();

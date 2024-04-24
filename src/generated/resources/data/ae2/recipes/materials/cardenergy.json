@@ -13,6 +13,7 @@
     "ab"
   ],
   "result": {
-    "item": "ae2:energy_card"
+    "count": 1,
+    "id": "ae2:energy_card"
   }
 }

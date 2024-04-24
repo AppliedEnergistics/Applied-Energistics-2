@@ -1,6 +1,7 @@
 package appeng.core.network.bidirectional;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
@@ -10,17 +11,28 @@ import appeng.api.config.Setting;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
 
 public record ConfigValuePacket(String name, String value) implements ClientboundPacket, ServerboundPacket {
-    public static ConfigValuePacket decode(FriendlyByteBuf stream) {
+    public static final StreamCodec<RegistryFriendlyByteBuf, ConfigValuePacket> STREAM_CODEC = StreamCodec.ofMember(
+            ConfigValuePacket::write,
+            ConfigValuePacket::decode);
+
+    public static final Type<ConfigValuePacket> TYPE = CustomAppEngPayload.createType("config_value");
+
+    @Override
+    public Type<ConfigValuePacket> type() {
+        return TYPE;
+    }
+
+    public static ConfigValuePacket decode(RegistryFriendlyByteBuf stream) {
         var name = stream.readUtf();
         var value = stream.readUtf();
         return new ConfigValuePacket(name, value);
     }
 
-    @Override
-    public void write(FriendlyByteBuf data) {
+    public void write(RegistryFriendlyByteBuf data) {
         data.writeUtf(name);
         data.writeUtf(value);
     }

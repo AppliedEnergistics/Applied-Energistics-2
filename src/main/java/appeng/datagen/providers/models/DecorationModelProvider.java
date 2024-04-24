@@ -76,7 +76,7 @@ public class DecorationModelProvider extends AE2BlockStateProvider {
                 makeId("block/quartz_pillar_side"), makeId("block/quartz_pillar_top"));
         multiVariantGenerator(AEBlocks.QUARTZ_PILLAR,
                 Variant.variant().with(VariantProperties.MODEL, quartzPillar.getLocation()))
-                        .with(BlockModelGenerators.createRotatedPillar());
+                .with(BlockModelGenerators.createRotatedPillar());
         simpleBlockItem(AEBlocks.QUARTZ_PILLAR.block(), quartzPillar);
 
         stairsBlock(AEBlocks.QUARTZ_PILLAR_STAIRS, "block/quartz_pillar_top", "block/quartz_pillar_side",

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:drive"
-            ]
+            "items": "ae2:drive"
           }
         ]
       },

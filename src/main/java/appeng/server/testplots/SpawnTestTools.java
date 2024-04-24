@@ -4,14 +4,14 @@ import java.util.List;
 
 import net.minecraft.core.GlobalPos;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 
 import appeng.api.config.Actionable;
 import appeng.api.features.GridLinkables;
 import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
 import appeng.core.definitions.AEItems;
 
-@Mod.EventBusSubscriber
+@EventBusSubscriber
 public final class SpawnTestTools {
 
     @SubscribeEvent

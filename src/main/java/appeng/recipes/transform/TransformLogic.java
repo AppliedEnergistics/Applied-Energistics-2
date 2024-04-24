@@ -46,7 +46,7 @@ public final class TransformLogic {
         List<ItemEntity> itemEntities = level.getEntities(null, region).stream()
                 .filter(e -> e instanceof ItemEntity && !e.isRemoved()).map(e -> (ItemEntity) e).toList();
 
-        for (var holder : level.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
+        for (var holder : level.getRecipeManager().byType(TransformRecipe.TYPE)) {
             var recipe = holder.value();
             if (!circumstancePredicate.test(recipe.circumstance))
                 continue;

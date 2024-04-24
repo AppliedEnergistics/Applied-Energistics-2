@@ -29,7 +29,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -63,7 +63,7 @@ import appeng.init.worldgen.InitBiomes;
 import appeng.init.worldgen.InitDimensionTypes;
 import appeng.init.worldgen.InitStructures;
 
-@Mod.EventBusSubscriber(modid = AppEng.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = AppEng.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class AE2DataGenerators {
 
     @SubscribeEvent
@@ -79,7 +79,7 @@ public class AE2DataGenerators {
                 createDatapackEntriesBuilder(), Set.of(AppEng.MOD_ID)));
 
         // Loot
-        pack.addProvider(BlockDropProvider::new);
+        pack.addProvider(bindRegistries(BlockDropProvider::new, registries));
 
         // Tags
         var blockTagsProvider = pack
@@ -103,16 +103,16 @@ public class AE2DataGenerators {
                 new AdvancementGenerator(localization))));
 
         // Recipes
-        pack.addProvider(DecorationRecipes::new);
-        pack.addProvider(DecorationBlockRecipes::new);
-        pack.addProvider(MatterCannonAmmoProvider::new);
-        pack.addProvider(EntropyRecipes::new);
-        pack.addProvider(InscriberRecipes::new);
-        pack.addProvider(SmeltingRecipes::new);
-        pack.addProvider(CraftingRecipes::new);
-        pack.addProvider(SmithingRecipes::new);
-        pack.addProvider(TransformRecipes::new);
-        pack.addProvider(ChargerRecipes::new);
+        pack.addProvider(bindRegistries(DecorationRecipes::new, registries));
+        pack.addProvider(bindRegistries(DecorationBlockRecipes::new, registries));
+        pack.addProvider(bindRegistries(MatterCannonAmmoProvider::new, registries));
+        pack.addProvider(bindRegistries(EntropyRecipes::new, registries));
+        pack.addProvider(bindRegistries(InscriberRecipes::new, registries));
+        pack.addProvider(bindRegistries(SmeltingRecipes::new, registries));
+        pack.addProvider(bindRegistries(CraftingRecipes::new, registries));
+        pack.addProvider(bindRegistries(SmithingRecipes::new, registries));
+        pack.addProvider(bindRegistries(TransformRecipes::new, registries));
+        pack.addProvider(bindRegistries(ChargerRecipes::new, registries));
 
         // Must run last
         pack.addProvider(packOutput -> localization);

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:cable_interface"
-            ]
+            "items": "ae2:cable_interface"
           }
         ]
       },

@@ -18,11 +18,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import appeng.core.network.NetworkHandler;
+import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.me.common.GridInventoryEntry;
@@ -80,8 +81,9 @@ public final class EncodingHelper {
             var slot = slots[i];
             var stack = (i < encodedInputs.size()) ? GenericStack.wrapInItemStack(encodedInputs.get(i))
                     : ItemStack.EMPTY;
-            NetworkHandler.instance().sendToServer(new InventoryActionPacket(
-                    InventoryAction.SET_FILTER, slot.index, stack));
+            ServerboundPacket message = new InventoryActionPacket(
+                    InventoryAction.SET_FILTER, slot.index, stack);
+            PacketDistributor.sendToServer(message);
         }
     }
 
@@ -167,14 +169,16 @@ public final class EncodingHelper {
 
         for (int i = 0; i < encodedInputs.size(); i++) {
             ItemStack encodedInput = encodedInputs.get(i);
-            NetworkHandler.instance().sendToServer(new InventoryActionPacket(
-                    InventoryAction.SET_FILTER, menu.getCraftingGridSlots()[i].index, encodedInput));
+            ServerboundPacket message = new InventoryActionPacket(
+                    InventoryAction.SET_FILTER, menu.getCraftingGridSlots()[i].index, encodedInput);
+            PacketDistributor.sendToServer(message);
         }
 
         // Clear out the processing outputs
         for (var outputSlot : menu.getProcessingOutputSlots()) {
-            NetworkHandler.instance().sendToServer(new InventoryActionPacket(
-                    InventoryAction.SET_FILTER, outputSlot.index, ItemStack.EMPTY));
+            ServerboundPacket message = new InventoryActionPacket(
+                    InventoryAction.SET_FILTER, outputSlot.index, ItemStack.EMPTY);
+            PacketDistributor.sendToServer(message);
         }
 
     }

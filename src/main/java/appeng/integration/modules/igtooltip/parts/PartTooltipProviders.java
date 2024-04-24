@@ -124,10 +124,10 @@ public final class PartTooltipProviders {
                 compatibleNameProviders);
     }
 
-    private record Registration<T> (Class<?> baseClass, T provider, int priority) {
+    private record Registration<T>(Class<?> baseClass, T provider, int priority) {
     }
 
-    record CachedProviders<U> (List<ServerDataProvider<? super U>> serverDataProviders,
+    record CachedProviders<U>(List<ServerDataProvider<? super U>> serverDataProviders,
             List<BodyProvider<? super U>> bodyProviders,
             List<IconProvider<? super U>> iconProviders,
             List<NameProvider<? super U>> nameProviders) {

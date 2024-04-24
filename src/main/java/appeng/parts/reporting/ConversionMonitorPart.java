@@ -69,7 +69,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMe
     }
 
     @Override
-    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
+    public boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos) {
         if (isClientSide()) {
             return true;
         }
@@ -78,29 +78,37 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMe
             return false;
         }
 
-        if (!Platform.hasPermissions(this.getHost().getLocation(), player)) {
-            return false;
-        }
-
-        final ItemStack eq = player.getItemInHand(hand);
-
         if (this.isLocked()) {
-            if (eq.isEmpty()) {
-                this.insertItem(player, hand, true);
-            } else if (InteractionUtil.canWrenchRotate(eq)
-                    && (this.getDisplayed() == null || !AEItemKey.matches(getDisplayed(), eq))) {
+            if (InteractionUtil.canWrenchRotate(heldItem)
+                    && (this.getDisplayed() == null || !AEItemKey.matches(getDisplayed(), heldItem))) {
                 // wrench it
-                return super.onPartActivate(player, hand, pos);
+                return super.onUseWithoutItem(player, pos);
             } else {
-                this.insertItem(player, hand, false);
+                this.insertItem(player, heldItem);
             }
-        } else if (this.getDisplayed() != null && AEItemKey.matches(getDisplayed(), eq)) {
-            this.insertItem(player, hand, false);
-        } else {
-            return super.onPartActivate(player, hand, pos);
+            return true;
+        } else if (this.getDisplayed() != null && AEItemKey.matches(getDisplayed(), heldItem)) {
+            this.insertItem(player, heldItem);
+            return true;
         }
 
-        return true;
+        return super.onUseItemOn(heldItem, player, hand, pos);
+    }
+
+    @Override
+    public boolean onUseWithoutItem(Player player, Vec3 pos) {
+        if (this.isLocked()) {
+            if (isClientSide()) {
+                return true;
+            }
+            if (!this.getMainNode().isActive()) {
+                return false;
+            }
+            this.insertAllItem(player);
+            return true;
+        }
+
+        return super.onUseWithoutItem(player, pos);
     }
 
     @Override
@@ -145,35 +153,37 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMe
         return true;
     }
 
-    private void insertItem(Player player, InteractionHand hand, boolean allItems) {
+    private void insertAllItem(Player player) {
         getMainNode().ifPresent(grid -> {
             var energy = grid.getEnergyService();
             var cell = grid.getStorageService().getInventory();
 
-            if (allItems) {
-                if (getDisplayed() instanceof AEItemKey itemKey) {
-                    var inv = new PlayerInternalInventory(player.getInventory());
+            if (getDisplayed() instanceof AEItemKey itemKey) {
+                var inv = new PlayerInternalInventory(player.getInventory());
 
-                    for (int x = 0; x < inv.size(); x++) {
-                        var targetStack = inv.getStackInSlot(x);
-                        if (itemKey.matches(targetStack)) {
-                            var canExtract = inv.extractItem(x, targetStack.getCount(), true);
-                            if (!canExtract.isEmpty()) {
-                                var inserted = StorageHelper.poweredInsert(energy, cell, itemKey, canExtract.getCount(),
-                                        new PlayerSource(player, this));
-                                inv.extractItem(x, (int) inserted, false);
-                            }
+                for (int x = 0; x < inv.size(); x++) {
+                    var targetStack = inv.getStackInSlot(x);
+                    if (itemKey.matches(targetStack)) {
+                        var canExtract = inv.extractItem(x, targetStack.getCount(), true);
+                        if (!canExtract.isEmpty()) {
+                            var inserted = StorageHelper.poweredInsert(energy, cell, itemKey, canExtract.getCount(),
+                                    new PlayerSource(player, this));
+                            inv.extractItem(x, (int) inserted, false);
                         }
                     }
                 }
-            } else {
-                var input = player.getItemInHand(hand);
-                if (!input.isEmpty()) {
-                    var inserted = StorageHelper.poweredInsert(energy, cell, AEItemKey.of(input), input.getCount(),
-                            new PlayerSource(player, this));
-                    input.shrink((int) inserted);
-                }
             }
+        });
+    }
+
+    private void insertItem(Player player, ItemStack heldItem) {
+        getMainNode().ifPresent(grid -> {
+            var energy = grid.getEnergyService();
+            var cell = grid.getStorageService().getInventory();
+
+            var inserted = StorageHelper.poweredInsert(energy, cell, AEItemKey.of(heldItem), heldItem.getCount(),
+                    new PlayerSource(player, this));
+            heldItem.shrink((int) inserted);
         });
     }
 

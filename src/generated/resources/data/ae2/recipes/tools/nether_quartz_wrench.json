@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:gems/quartz"
+      "tag": "c:gems/quartz"
     }
   },
   "pattern": [
@@ -12,6 +12,7 @@
     "a a"
   ],
   "result": {
-    "item": "ae2:nether_quartz_wrench"
+    "count": 1,
+    "id": "ae2:nether_quartz_wrench"
   }
 }

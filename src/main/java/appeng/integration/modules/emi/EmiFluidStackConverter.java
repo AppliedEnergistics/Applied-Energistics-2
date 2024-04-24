@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
+import dev.emi.emi.api.neoforge.NeoForgeEmiStack;
 import dev.emi.emi.api.stack.EmiStack;
 
 import appeng.api.integrations.emi.EmiStackConverter;
@@ -20,7 +21,7 @@ class EmiFluidStackConverter implements EmiStackConverter {
     @Override
     public @Nullable EmiStack toEmiStack(GenericStack stack) {
         if (stack.what() instanceof AEFluidKey fluidKey) {
-            return EmiStack.of(fluidKey.getFluid(), fluidKey.copyTag(), stack.amount());
+            return NeoForgeEmiStack.of(fluidKey.toStack(1)).setAmount(stack.amount());
         }
         return null;
     }
@@ -29,8 +30,10 @@ class EmiFluidStackConverter implements EmiStackConverter {
     public @Nullable GenericStack toGenericStack(EmiStack stack) {
         var fluid = stack.getKeyOfType(Fluid.class);
         if (fluid != null && fluid != Fluids.EMPTY) {
-            var fluidKey = AEFluidKey.of(fluid, stack.getNbt());
-            return new GenericStack(fluidKey, stack.getAmount());
+            // TODO 1.20.5
+            throw new UnsupportedOperationException();
+//            var fluidKey = AEFluidKey.of(fluid, stack.getNbt());
+//            return new GenericStack(fluidKey, stack.getAmount());
         }
         return null;
     }

@@ -6,7 +6,7 @@
       "item": "ae2:charged_certus_quartz_crystal"
     },
     "b": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     }
   },
   "pattern": [
@@ -15,6 +15,7 @@
     "  b"
   ],
   "result": {
-    "item": "ae2:charged_staff"
+    "count": 1,
+    "id": "ae2:charged_staff"
   }
 }

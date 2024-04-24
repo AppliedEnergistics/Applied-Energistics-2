@@ -6,7 +6,7 @@
       "item": "ae2:formation_core"
     },
     "b": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "c": {
       "item": "ae2:cell_component_4k"
@@ -21,6 +21,7 @@
     "  d"
   ],
   "result": {
-    "item": "ae2:color_applicator"
+    "count": 1,
+    "id": "ae2:color_applicator"
   }
 }

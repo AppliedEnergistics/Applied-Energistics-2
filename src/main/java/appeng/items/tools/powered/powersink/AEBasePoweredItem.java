@@ -21,19 +21,17 @@ package appeng.items.tools.powered.powersink;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
+import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.localization.Tooltips;
 import appeng.items.AEBaseItem;
@@ -41,8 +39,6 @@ import appeng.items.AEBaseItem;
 public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPowerStorage {
     // Any energy capacity below this threshold will be clamped to zero
     private static final double MIN_POWER = 0.0001;
-    private static final String CURRENT_POWER_NBT_KEY = "internalCurrentPower";
-    private static final String MAX_POWER_NBT_KEY = "internalMaxPower";
     private final DoubleSupplier powerCapacity;
 
     public AEBasePoweredItem(DoubleSupplier powerCapacity, Properties props) {
@@ -52,19 +48,11 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
             TooltipFlag advancedTooltips) {
-        final CompoundTag tag = stack.getTag();
-        double internalCurrentPower = 0;
-        final double internalMaxPower = this.getAEMaxPower(stack);
-
-        if (tag != null) {
-            internalCurrentPower = tag.getDouble(CURRENT_POWER_NBT_KEY);
-        }
-
-        lines.add(
-                Tooltips.energyStorageComponent(internalCurrentPower, internalMaxPower));
-
+        var storedEnergy = getAECurrentPower(stack);
+        var energyCapacity = getAEMaxPower(stack);
+        lines.add(Tooltips.energyStorageComponent(storedEnergy, energyCapacity));
     }
 
     @Override
@@ -128,12 +116,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     @Override
     public double getAEMaxPower(ItemStack stack) {
         // Allow per-item-stack overrides of the maximum power storage
-        var tag = stack.getTag();
-        if (tag != null && tag.contains(MAX_POWER_NBT_KEY, Tag.TAG_DOUBLE)) {
-            return tag.getDouble(MAX_POWER_NBT_KEY);
-        }
-
-        return this.powerCapacity.getAsDouble();
+        return stack.getOrDefault(AEComponents.ENERGY_CAPACITY, powerCapacity.getAsDouble());
     }
 
     /**
@@ -143,10 +126,9 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     protected final void setAEMaxPower(ItemStack stack, double maxPower) {
         var defaultCapacity = powerCapacity.getAsDouble();
         if (Math.abs(maxPower - defaultCapacity) < MIN_POWER) {
-            stack.removeTagKey(MAX_POWER_NBT_KEY);
-            maxPower = defaultCapacity;
+            stack.remove(AEComponents.ENERGY_CAPACITY);
         } else {
-            stack.getOrCreateTag().putDouble(MAX_POWER_NBT_KEY, maxPower);
+            stack.set(AEComponents.ENERGY_CAPACITY, maxPower);
         }
 
         // Clamp current power to be within bounds
@@ -174,19 +156,14 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
     @Override
     public double getAECurrentPower(ItemStack is) {
-        var tag = is.getTag();
-        if (tag != null) {
-            return tag.getDouble(CURRENT_POWER_NBT_KEY);
-        } else {
-            return 0;
-        }
+        return is.getOrDefault(AEComponents.STORED_ENERGY, 0.0);
     }
 
     protected final void setAECurrentPower(ItemStack stack, double power) {
         if (power < MIN_POWER) {
-            stack.removeTagKey(CURRENT_POWER_NBT_KEY);
+            stack.remove(AEComponents.STORED_ENERGY);
         } else {
-            stack.getOrCreateTag().putDouble(CURRENT_POWER_NBT_KEY, power);
+            stack.set(AEComponents.STORED_ENERGY, power);
         }
     }
 

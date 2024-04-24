@@ -13,6 +13,7 @@
     "ab"
   ],
   "result": {
-    "item": "ae2:light_detector"
+    "count": 1,
+    "id": "ae2:light_detector"
   }
 }

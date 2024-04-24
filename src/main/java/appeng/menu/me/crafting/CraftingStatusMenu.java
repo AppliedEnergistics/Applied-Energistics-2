@@ -28,8 +28,9 @@ import com.google.common.collect.ImmutableSet;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
@@ -196,11 +197,11 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
     }
 
     public record CraftingCpuList(List<CraftingCpuListEntry> cpus) implements PacketWritable {
-        public CraftingCpuList(FriendlyByteBuf data) {
+        public CraftingCpuList(RegistryFriendlyByteBuf data) {
             this(readFromPacket(data));
         }
 
-        private static List<CraftingCpuListEntry> readFromPacket(FriendlyByteBuf data) {
+        private static List<CraftingCpuListEntry> readFromPacket(RegistryFriendlyByteBuf data) {
             var count = data.readInt();
             var result = new ArrayList<CraftingCpuListEntry>(count);
             for (int i = 0; i < count; i++) {
@@ -210,7 +211,7 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
         }
 
         @Override
-        public void writeToPacket(FriendlyByteBuf data) {
+        public void writeToPacket(RegistryFriendlyByteBuf data) {
             data.writeInt(cpus.size());
             for (var entry : cpus) {
                 entry.writeToPacket(data);
@@ -228,12 +229,12 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
             long totalItems,
             long progress,
             long elapsedTimeNanos) {
-        public static CraftingCpuListEntry readFromPacket(FriendlyByteBuf data) {
+        public static CraftingCpuListEntry readFromPacket(RegistryFriendlyByteBuf data) {
             return new CraftingCpuListEntry(
                     data.readInt(),
                     data.readLong(),
                     data.readInt(),
-                    data.readBoolean() ? data.readComponent() : null,
+                    data.readBoolean() ? ComponentSerialization.TRUSTED_STREAM_CODEC.decode(data) : null,
                     data.readEnum(CpuSelectionMode.class),
                     GenericStack.readBuffer(data),
                     data.readVarLong(),
@@ -241,13 +242,13 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
                     data.readVarLong());
         }
 
-        public void writeToPacket(FriendlyByteBuf data) {
+        public void writeToPacket(RegistryFriendlyByteBuf data) {
             data.writeInt(serial);
             data.writeLong(storage);
             data.writeInt(coProcessors);
             data.writeBoolean(name != null);
             if (name != null) {
-                data.writeComponent(name);
+                ComponentSerialization.TRUSTED_STREAM_CODEC.encode(data, name);
             }
             data.writeEnum(mode);
             GenericStack.writeBuffer(currentJob, data);

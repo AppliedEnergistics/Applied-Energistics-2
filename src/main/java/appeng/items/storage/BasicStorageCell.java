@@ -34,10 +34,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.config.FuzzyMode;
+import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.CellState;
@@ -50,6 +49,7 @@ import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
+import appeng.util.Platform;
 
 public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AEToolItem {
     /**
@@ -81,13 +81,14 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
         this.keyType = keyType;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack,
-            Level level,
+            TooltipContext context,
             List<Component> lines,
             TooltipFlag advancedTooltips) {
-        addCellInformationToTooltip(stack, lines);
+        if (Platform.isClient()) {
+            addCellInformationToTooltip(stack, lines);
+        }
     }
 
     @Override
@@ -132,20 +133,12 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
 
     @Override
     public FuzzyMode getFuzzyMode(ItemStack is) {
-        final String fz = is.getOrCreateTag().getString("FuzzyMode");
-        if (fz.isEmpty()) {
-            return FuzzyMode.IGNORE_ALL;
-        }
-        try {
-            return FuzzyMode.valueOf(fz);
-        } catch (Throwable t) {
-            return FuzzyMode.IGNORE_ALL;
-        }
+        return is.getOrDefault(AEComponents.STORAGE_CELL_FUZZY_MODE, FuzzyMode.IGNORE_ALL);
     }
 
     @Override
     public void setFuzzyMode(ItemStack is, FuzzyMode fzMode) {
-        is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
+        is.set(AEComponents.STORAGE_CELL_FUZZY_MODE, fzMode);
     }
 
     @Override

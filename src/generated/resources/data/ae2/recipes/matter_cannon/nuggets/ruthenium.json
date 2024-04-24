@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/ruthenium"
+        "tag": "c:nuggets/ruthenium"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/ruthenium"
+    "tag": "c:nuggets/ruthenium"
   },
   "weight": 101.07
 }

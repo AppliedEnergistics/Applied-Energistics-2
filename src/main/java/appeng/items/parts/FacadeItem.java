@@ -21,9 +21,7 @@ package appeng.items.parts;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
@@ -40,6 +38,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import appeng.api.ids.AEComponents;
 import appeng.api.ids.AETags;
 import appeng.api.implementations.items.IFacadeItem;
 import appeng.api.parts.IFacadePart;
@@ -146,7 +145,8 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
     }
 
     public ItemStack createFacadeForItem(ItemStack itemStack, boolean returnItem) {
-        if (itemStack.isEmpty() || itemStack.hasTag() || !(itemStack.getItem() instanceof BlockItem blockItem)) {
+        if (itemStack.isEmpty() || !itemStack.getComponentsPatch().isEmpty()
+                || !(itemStack.getItem() instanceof BlockItem blockItem)) {
             return ItemStack.EMPTY;
         }
 
@@ -180,10 +180,8 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
     }
 
     public ItemStack createFacadeForItemUnchecked(ItemStack itemStack) {
-        final ItemStack is = new ItemStack(this);
-        final CompoundTag data = new CompoundTag();
-        data.putString(NBT_ITEM_ID, BuiltInRegistries.ITEM.getKey(itemStack.getItem()).toString());
-        is.setTag(data);
+        var is = new ItemStack(this);
+        is.set(AEComponents.FACADE_ITEM, itemStack.getItemHolder());
         return is;
     }
 
@@ -198,14 +196,11 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
 
     @Override
     public ItemStack getTextureItem(ItemStack is) {
-        CompoundTag nbt = is.getTag();
+        var baseItem = is.get(AEComponents.FACADE_ITEM);
 
-        if (nbt == null) {
+        if (baseItem == null) {
             return ItemStack.EMPTY;
         }
-
-        ResourceLocation itemId = new ResourceLocation(nbt.getString(NBT_ITEM_ID));
-        Item baseItem = BuiltInRegistries.ITEM.get(itemId);
 
         return new ItemStack(baseItem, 1);
     }
@@ -229,18 +224,14 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
     }
 
     public ItemStack createFromID(int id) {
-        ItemStack facadeStack = AEItems.FACADE.stack();
-
         // Convert back to a registry name...
         Item item = BuiltInRegistries.ITEM.byId(id);
         if (item == Items.AIR) {
             return ItemStack.EMPTY;
         }
 
-        final CompoundTag facadeTag = new CompoundTag();
-        facadeTag.putString(NBT_ITEM_ID, BuiltInRegistries.ITEM.getKey(item).toString());
-        facadeStack.setTag(facadeTag);
-
+        var facadeStack = AEItems.FACADE.stack();
+        facadeStack.set(AEComponents.FACADE_ITEM, item.getDefaultInstance().getItemHolder());
         return facadeStack;
     }
 }

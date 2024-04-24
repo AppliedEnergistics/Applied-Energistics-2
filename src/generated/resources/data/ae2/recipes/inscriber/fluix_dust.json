@@ -2,11 +2,12 @@
   "type": "ae2:inscriber",
   "ingredients": {
     "middle": {
-      "tag": "forge:gems/fluix"
+      "tag": "c:gems/fluix"
     }
   },
   "mode": "inscribe",
   "result": {
-    "item": "ae2:fluix_dust"
+    "count": 1,
+    "id": "ae2:fluix_dust"
   }
 }

@@ -35,7 +35,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
@@ -256,18 +255,9 @@ public class Platform {
                 .orElse(modId);
     }
 
-    public static String getDescriptionId(Fluid fluid) {
-        return fluid.defaultFluidState().createLegacyBlock().getBlock().getDescriptionId();
-    }
-
-    public static String getDescriptionId(FluidStack fluid) {
-        return fluid.getDisplayName().getString();
-    }
-
-    public static Component getFluidDisplayName(Fluid fluid, @Nullable CompoundTag tag) {
+    public static Component getFluidDisplayName(Fluid fluid) {
         var fluidStack = new FluidStack(fluid, 1);
-        fluidStack.setTag(tag);
-        return fluidStack.getDisplayName();
+        return fluidStack.getHoverName();
     }
 
     public static boolean isChargeable(ItemStack i) {
@@ -346,7 +336,7 @@ public class Platform {
                 }
             }
 
-            var checkFuzzy = providedTemplate.hasTag() || providedTemplate.isDamageableItem();
+            var checkFuzzy = !providedTemplate.getComponents().isEmpty() || providedTemplate.isDamageableItem();
 
             if (items != null && checkFuzzy) {
                 for (var x : items) {

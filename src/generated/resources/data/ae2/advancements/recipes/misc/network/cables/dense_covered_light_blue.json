@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:dyes/light_blue"
+            "items": "#c:dyes/light_blue"
           }
         ]
       },
@@ -15,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:fluix_covered_dense_cable"
-            ]
+            "items": "ae2:fluix_covered_dense_cable"
           }
         ]
       },

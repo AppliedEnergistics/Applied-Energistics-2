@@ -40,6 +40,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -685,7 +686,8 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
     }
 
     @Override
-    public final void debugExport(JsonWriter writer, Reference2IntMap<Object> machineIds,
+    public final void debugExport(JsonWriter writer, HolderLookup.Provider registries,
+            Reference2IntMap<Object> machineIds,
             Reference2IntMap<IGridNode> nodeIds) throws IOException {
         writer.beginObject();
         exportProperties(writer, machineIds, nodeIds);
@@ -701,6 +703,6 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
                 "id", id, "owner", machineId), writer);
 
         writer.name("level");
-        writer.value(level.dimensionTypeId().location().toString());
+        writer.value(level.dimension().location().toString());
     }
 }

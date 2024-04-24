@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "b": {
       "item": "ae2:formation_core"
@@ -21,6 +21,7 @@
     "a  "
   ],
   "result": {
-    "item": "ae2:matter_cannon"
+    "count": 1,
+    "id": "ae2:matter_cannon"
   }
 }

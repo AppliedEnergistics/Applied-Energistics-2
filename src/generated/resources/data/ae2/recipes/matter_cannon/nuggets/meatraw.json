@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/meatraw"
+        "tag": "c:nuggets/meatraw"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/meatraw"
+    "tag": "c:nuggets/meatraw"
   },
   "weight": 32.0
 }

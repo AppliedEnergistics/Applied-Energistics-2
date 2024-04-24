@@ -1,13 +1,14 @@
 package appeng.recipes.handlers;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -25,18 +26,23 @@ public class ChargerRecipe implements Recipe<Container> {
 
     public final Ingredient ingredient;
     public final NonNullList<Ingredient> ingredients;
-    public final Item result;
+    public final ItemStack result;
 
-    public static final Codec<ChargerRecipe> CODEC = RecordCodecBuilder.create(
+    public static final MapCodec<ChargerRecipe> CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder
                     .group(
                             Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(ChargerRecipe::getIngredient),
-                            // We only support items for now
-                            ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result")
-                                    .xmap(ItemStack::getItem, ItemStack::new).forGetter(cr -> cr.result))
+                            ItemStack.CODEC.fieldOf("result").forGetter(cr -> cr.result))
                     .apply(builder, ChargerRecipe::new));
 
-    public ChargerRecipe(Ingredient ingredient, Item result) {
+    public static final StreamCodec<RegistryFriendlyByteBuf, ChargerRecipe> STREAM_CODEC = StreamCodec.composite(
+            Ingredient.CONTENTS_STREAM_CODEC,
+            ChargerRecipe::getIngredient,
+            ItemStack.STREAM_CODEC,
+            ChargerRecipe::getResultItem,
+            ChargerRecipe::new);
+
+    public ChargerRecipe(Ingredient ingredient, ItemStack result) {
         this.ingredient = ingredient;
         this.result = result;
         this.ingredients = NonNullList.of(Ingredient.EMPTY, ingredient);
@@ -48,7 +54,7 @@ public class ChargerRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack assemble(Container container, RegistryAccess registryAccess) {
+    public ItemStack assemble(Container container, HolderLookup.Provider registries) {
         return null;
     }
 
@@ -58,12 +64,12 @@ public class ChargerRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
         return getResultItem();
     }
 
     public ItemStack getResultItem() {
-        return new ItemStack(result);
+        return result;
     }
 
     @Override

@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 import org.apache.commons.lang3.StringUtils;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
@@ -86,28 +87,25 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void readFromNBT(CompoundTag c) {
+    public void readFromNBT(CompoundTag c, HolderLookup.Provider registries) {
         for (var side : Direction.values()) {
             this.storage.removeFacade(side);
 
             var tag = c.get(NBT_KEY_NAMES[side.ordinal()]);
             if (tag instanceof CompoundTag facadeTag) {
-                var is = ItemStack.of(facadeTag);
-                if (!is.isEmpty()) {
-                    if (is.getItem() instanceof IFacadeItem facadeItem) {
-                        this.storage.setFacade(side, facadeItem.createPartFromItemStack(is, side));
-                    }
+                var is = ItemStack.parseOptional(registries, facadeTag);
+                if (!is.isEmpty() && is.getItem() instanceof IFacadeItem facadeItem) {
+                    this.storage.setFacade(side, facadeItem.createPartFromItemStack(is, side));
                 }
             }
         }
     }
 
     @Override
-    public void writeToNBT(CompoundTag c) {
+    public void writeToNBT(CompoundTag c, HolderLookup.Provider registries) {
         for (var side : Direction.values()) {
             if (this.storage.getFacade(side) != null) {
-                var data = new CompoundTag();
-                this.storage.getFacade(side).getItemStack().save(data);
+                var data = this.storage.getFacade(side).getItemStack().save(registries);
                 c.put(NBT_KEY_NAMES[side.ordinal()], data);
             }
         }

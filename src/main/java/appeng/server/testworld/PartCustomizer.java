@@ -13,7 +13,7 @@ import appeng.api.parts.PartHelper;
 import appeng.core.definitions.ItemDefinition;
 import appeng.items.parts.PartItem;
 
-public record PartCustomizer<T extends IPart> (BoundingBox bb,
+public record PartCustomizer<T extends IPart>(BoundingBox bb,
         Direction side,
         ItemDefinition<? extends PartItem<T>> part,
         Consumer<T> partCustomizer) implements BlockPlacingBuildAction {

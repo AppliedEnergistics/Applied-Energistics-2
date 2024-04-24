@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:dark_monitor"
-            ]
+            "items": "ae2:dark_monitor"
           }
         ]
       },

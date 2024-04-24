@@ -6,13 +6,13 @@
       "item": "ae2:quartz_glass"
     },
     "b": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     },
     "c": {
       "item": "ae2:spatial_cell_component_2"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     }
   },
   "pattern": [
@@ -21,6 +21,7 @@
     "ddd"
   ],
   "result": {
-    "item": "ae2:spatial_storage_cell_2"
+    "count": 1,
+    "id": "ae2:spatial_storage_cell_2"
   }
 }

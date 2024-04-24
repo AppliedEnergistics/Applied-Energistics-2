@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/sodium"
+        "tag": "c:nuggets/sodium"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/sodium"
+    "tag": "c:nuggets/sodium"
   },
   "weight": 22.9897
 }

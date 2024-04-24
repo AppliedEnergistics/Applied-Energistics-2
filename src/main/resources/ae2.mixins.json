@@ -12,8 +12,7 @@
     "ItemEntityMixin",
     "tests.StructureUtilsMixin",
     "tests.TestCommandMixin",
-    "StructureTemplateMixin",
-    "UnbreakingMixin"
+    "StructureTemplateMixin"
   ],
   "client": [
     "unlitquad.ModelManagerMixin",

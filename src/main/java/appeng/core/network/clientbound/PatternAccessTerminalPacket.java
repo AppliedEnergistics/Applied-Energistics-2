@@ -2,18 +2,21 @@
 package appeng.core.network.clientbound;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.core.network.ClientboundPacket;
+import appeng.core.network.CustomAppEngPayload;
 
 /**
  * Sends the content for a single {@link appeng.helpers.patternprovider.PatternContainer} shown in the pattern access
@@ -27,7 +30,25 @@ public record PatternAccessTerminalPacket(
         PatternContainerGroup group, // Only valid if fullUpdate
         Int2ObjectMap<ItemStack> slots) implements ClientboundPacket {
 
-    public static PatternAccessTerminalPacket decode(FriendlyByteBuf stream) {
+    public static final StreamCodec<RegistryFriendlyByteBuf, PatternAccessTerminalPacket> STREAM_CODEC = StreamCodec
+            .ofMember(
+                    PatternAccessTerminalPacket::write,
+                    PatternAccessTerminalPacket::decode);
+
+    private static final StreamCodec<RegistryFriendlyByteBuf, Int2ObjectMap<ItemStack>> SLOTS_STREAM_CODEC = ByteBufCodecs
+            .map(
+                    Int2ObjectOpenHashMap::new, ByteBufCodecs.SHORT.map(Short::intValue, Integer::shortValue),
+                    ItemStack.OPTIONAL_STREAM_CODEC, 128);
+
+    public static final Type<PatternAccessTerminalPacket> TYPE = CustomAppEngPayload
+            .createType("pattern_access_terminal");
+
+    @Override
+    public Type<PatternAccessTerminalPacket> type() {
+        return TYPE;
+    }
+
+    public static PatternAccessTerminalPacket decode(RegistryFriendlyByteBuf stream) {
         var inventoryId = stream.readVarLong();
         var fullUpdate = stream.readBoolean();
         int inventorySize = 0;
@@ -39,18 +60,11 @@ public record PatternAccessTerminalPacket(
             group = PatternContainerGroup.readFromPacket(stream);
         }
 
-        var slotsCount = stream.readVarInt();
-        var slots = new Int2ObjectArrayMap<ItemStack>(slotsCount);
-        for (int i = 0; i < slotsCount; i++) {
-            var slot = stream.readVarInt();
-            var item = stream.readItem();
-            slots.put(slot, item);
-        }
+        var slots = SLOTS_STREAM_CODEC.decode(stream);
         return new PatternAccessTerminalPacket(fullUpdate, inventoryId, inventorySize, sortBy, group, slots);
     }
 
-    @Override
-    public void write(FriendlyByteBuf data) {
+    public void write(RegistryFriendlyByteBuf data) {
         data.writeVarLong(inventoryId);
         data.writeBoolean(fullUpdate);
         if (fullUpdate) {
@@ -58,11 +72,7 @@ public record PatternAccessTerminalPacket(
             data.writeVarLong(sortBy);
             group.writeToPacket(data);
         }
-        data.writeVarInt(slots.size());
-        for (var entry : slots.int2ObjectEntrySet()) {
-            data.writeVarInt(entry.getIntKey());
-            data.writeItem(entry.getValue());
-        }
+        SLOTS_STREAM_CODEC.encode(data, slots);
     }
 
     public static PatternAccessTerminalPacket fullUpdate(long inventoryId,
@@ -93,7 +103,7 @@ public record PatternAccessTerminalPacket(
     @Override
     @OnlyIn(Dist.CLIENT)
     public void handleOnClient(Player player) {
-        if (Minecraft.getInstance().screen instanceof PatternAccessTermScreen<?>patternAccessTerminal) {
+        if (Minecraft.getInstance().screen instanceof PatternAccessTermScreen<?> patternAccessTerminal) {
             if (fullUpdate) {
                 patternAccessTerminal.postFullUpdate(this.inventoryId, sortBy, group, inventorySize, slots);
             } else {

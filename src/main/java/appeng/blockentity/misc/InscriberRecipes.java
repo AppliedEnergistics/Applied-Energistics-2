@@ -20,15 +20,15 @@ package appeng.blockentity.misc;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
+import appeng.api.ids.AEComponents;
 import appeng.core.definitions.AEItems;
-import appeng.items.materials.NamePressItem;
 import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipe;
 
@@ -45,7 +45,7 @@ public final class InscriberRecipes {
      * Returns an unmodifiable view of all registered inscriber recipes.
      */
     public static Iterable<RecipeHolder<InscriberRecipe>> getRecipes(Level level) {
-        return level.getRecipeManager().byType(InscriberRecipe.TYPE).values();
+        return level.getRecipeManager().byType(InscriberRecipe.TYPE);
     }
 
     @Nullable
@@ -77,25 +77,33 @@ public final class InscriberRecipes {
     }
 
     private static InscriberRecipe makeNamePressRecipe(ItemStack input, ItemStack plateA, ItemStack plateB) {
-        String name = "";
+        Component name = null;
 
         if (!plateA.isEmpty()) {
-            final CompoundTag tag = plateA.getOrCreateTag();
-            name += tag.getString(NamePressItem.TAG_INSCRIBE_NAME);
+            var plateAName = plateA.get(AEComponents.NAME_PRESS_NAME);
+            if (plateAName != null) {
+                name = plateAName;
+            }
         }
 
         if (!plateB.isEmpty()) {
-            final CompoundTag tag = plateB.getOrCreateTag();
-            name += " " + tag.getString(NamePressItem.TAG_INSCRIBE_NAME);
+            var plateBName = plateB.get(AEComponents.NAME_PRESS_NAME);
+            if (plateBName != null) {
+                if (name == null) {
+                    name = plateBName;
+                } else {
+                    name = name.copy().append(" ").append(plateBName);
+                }
+            }
         }
 
-        final Ingredient startingItem = Ingredient.of(input.copy());
-        final ItemStack renamedItem = input.copyWithCount(1);
+        var startingItem = Ingredient.of(input.copy());
+        var renamedItem = input.copyWithCount(1);
 
-        if (!name.isEmpty()) {
-            renamedItem.setHoverName(Component.literal(name));
+        if (name != null) {
+            renamedItem.set(DataComponents.CUSTOM_NAME, name);
         } else {
-            renamedItem.setHoverName(null);
+            renamedItem.remove(DataComponents.CUSTOM_NAME);
         }
 
         final InscriberProcessType type = InscriberProcessType.INSCRIBE;

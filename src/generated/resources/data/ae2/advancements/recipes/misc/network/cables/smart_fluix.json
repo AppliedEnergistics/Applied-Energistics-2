@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:dusts/glowstone"
+            "items": "#c:dusts/glowstone"
           }
         ]
       },
@@ -15,7 +15,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:dusts/redstone"
+            "items": "#c:dusts/redstone"
           }
         ]
       },
@@ -25,9 +25,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:fluix_covered_cable"
-            ]
+            "items": "ae2:fluix_covered_cable"
           }
         ]
       },

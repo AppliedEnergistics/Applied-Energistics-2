@@ -2,11 +2,12 @@
   "type": "ae2:inscriber",
   "ingredients": {
     "middle": {
-      "tag": "forge:gems/certus_quartz"
+      "tag": "c:gems/certus_quartz"
     }
   },
   "mode": "inscribe",
   "result": {
-    "item": "ae2:certus_quartz_dust"
+    "count": 1,
+    "id": "ae2:certus_quartz_dust"
   }
 }

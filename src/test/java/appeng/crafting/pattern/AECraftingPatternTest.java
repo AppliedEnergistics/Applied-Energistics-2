@@ -9,17 +9,23 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -27,6 +33,7 @@ import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
@@ -45,11 +52,26 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.util.BootstrapMinecraft;
 import appeng.util.LoadTranslations;
+import appeng.util.RecursiveTagReplace;
 
 @BootstrapMinecraft
 @LoadTranslations
+@MockitoSettings(strictness = Strictness.LENIENT)
 class AECraftingPatternTest {
+    private final RegistryAccess registries = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+
     private static final ResourceLocation TEST_RECIPE_ID = AppEng.makeId("test_recipe");
+
+    @Mock
+    MockedStatic<AppEng> appEngMock;
+
+    @BeforeEach
+    void setUp() {
+        var appEngInstance = mock(AppEng.class);
+        var clientLevel = mock(Level.class);
+        when(appEngInstance.getClientLevel()).thenReturn(clientLevel);
+        appEngMock.when(AppEng::instance).thenReturn(appEngInstance);
+    }
 
     private final RecipeHolder<CraftingRecipe> TEST_RECIPE = buildRecipe(
             ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Items.STICK)
@@ -76,8 +98,10 @@ class AECraftingPatternTest {
     }
 
     @Test
-    void testDecodeWithEmptyTag() {
-        assertNull(decode(new CompoundTag()));
+    void testDecodeWithoutComponent() {
+        var item = AEItems.CRAFTING_PATTERN.stack();
+        var tag = item.save(registries);
+        assertNull(decode((CompoundTag) tag));
     }
 
     /**
@@ -87,17 +111,18 @@ class AECraftingPatternTest {
     @Test
     void testDecodeWithRemovedIngredientItemIds() {
         var encoded = createTestPattern();
-        var encodedTag = encoded.getOrCreateTag();
+        var encodedTag = (CompoundTag) encoded.save(registries);
 
         // Replace the diamond ID string with an unknown ID string
-        assertEquals(1, RecursiveTagReplace.replace(encodedTag, "minecraft:diamond", "minecraft:does_not_exist"));
+        assertEquals(1, RecursiveTagReplace.replace(encodedTag, "minecraft:torch", "minecraft:does_not_exist"));
+        var brokenPatternStack = ItemStack.parseOptional(registries, encodedTag);
 
         assertNull(decode(encodedTag));
-        assertThat(getExtraTooltip(encoded)).containsExactly(
+        assertThat(getExtraTooltip(brokenPatternStack)).containsExactly(
                 "Invalid Pattern",
                 "Crafts: 1 x Stick",
-                "with: 1 x Torch",
-                " and 1 x minecraft:does_not_exist",
+                "with: 1 x minecraft:does_not_exist",
+                " and 1 x Diamond",
                 "Substitutes alternate items",
                 "Uses fluids directly",
                 "Recipe: ae2:test_recipe");
@@ -105,7 +130,7 @@ class AECraftingPatternTest {
 
     private List<String> getExtraTooltip(ItemStack stack) {
         var lines = new ArrayList<Component>();
-        stack.getItem().appendHoverText(stack, null, lines, TooltipFlag.ADVANCED);
+        stack.getItem().appendHoverText(stack, Item.TooltipContext.EMPTY, lines, TooltipFlag.ADVANCED);
         return lines.stream().map(Component::getString).toList();
     }
 
@@ -132,9 +157,10 @@ class AECraftingPatternTest {
         var level = mock(Level.class);
         var recipeManager = mock(RecipeManager.class);
         when(level.getRecipeManager()).thenReturn(recipeManager);
-        when(recipeManager.byType(RecipeType.CRAFTING)).thenReturn(Map.of(TEST_RECIPE_ID, TEST_RECIPE));
+        when(recipeManager.byType(RecipeType.CRAFTING)).thenReturn(List.of(TEST_RECIPE));
 
-        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(AEItems.CRAFTING_PATTERN, tag), level);
+        var pattern = ItemStack.parseOptional(registries, tag);
+        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(pattern), level);
         if (details == null) {
             return null;
         }

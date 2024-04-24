@@ -8,11 +8,11 @@
       "item": "ae2:singularity"
     },
     {
-      "tag": "forge:ender_pearls"
+      "tag": "c:ender_pearls"
     }
   ],
   "result": {
     "count": 2,
-    "item": "ae2:quantum_entangled_singularity"
+    "id": "ae2:quantum_entangled_singularity"
   }
 }

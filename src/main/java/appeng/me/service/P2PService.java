@@ -80,7 +80,7 @@ public class P2PService implements IGridService, IGridServiceProvider {
 
     @Override
     public void removeNode(IGridNode node) {
-        if (node.getOwner() instanceof P2PTunnelPart<?>tunnel) {
+        if (node.getOwner() instanceof P2PTunnelPart<?> tunnel) {
             if (tunnel instanceof MEP2PTunnelPart && !node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
                 return;
             }
@@ -97,7 +97,7 @@ public class P2PService implements IGridService, IGridServiceProvider {
 
     @Override
     public void addNode(IGridNode node, @Nullable CompoundTag savedData) {
-        if (node.getOwner() instanceof P2PTunnelPart<?>tunnel) {
+        if (node.getOwner() instanceof P2PTunnelPart<?> tunnel) {
             if (tunnel instanceof MEP2PTunnelPart && !node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
                 return;
             }

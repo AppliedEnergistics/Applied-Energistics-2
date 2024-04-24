@@ -4,9 +4,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:copper_ingot"
-            ]
+            "items": "minecraft:copper_ingot"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "achievement.ae2.Root.desc"
     },
     "icon": {
-      "item": "ae2:certus_quartz_crystal"
+      "count": 1,
+      "id": "ae2:certus_quartz_crystal"
     },
     "show_toast": false,
     "title": {

@@ -6,13 +6,14 @@
       "item": "ae2:fluix_covered_dense_cable"
     },
     {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     },
     {
-      "tag": "forge:dusts/glowstone"
+      "tag": "c:dusts/glowstone"
     }
   ],
   "result": {
-    "item": "ae2:fluix_smart_dense_cable"
+    "count": 1,
+    "id": "ae2:fluix_smart_dense_cable"
   }
 }

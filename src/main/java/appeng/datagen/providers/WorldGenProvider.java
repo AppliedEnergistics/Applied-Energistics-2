@@ -44,10 +44,10 @@ public class WorldGenProvider implements DataProvider {
         });
     }
 
-    private <T> CompletableFuture<Void> writeRegistryEntries(CachedOutput writer, HolderLookup.Provider provider,
+    private <T> CompletableFuture<Void> writeRegistryEntries(CachedOutput writer, HolderLookup.Provider registries,
             DynamicOps<JsonElement> ops, RegistryDataLoader.RegistryData<T> registryData) {
         var registryKey = registryData.key();
-        var registry = provider.lookup(registryKey).orElse(null);
+        var registry = registries.lookup(registryKey).orElse(null);
         if (registry == null) {
             return CompletableFuture.completedFuture(null);
         }

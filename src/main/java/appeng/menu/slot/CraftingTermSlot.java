@@ -127,7 +127,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
         for (var x = 0; x < maxTimesToCraft; x++) {
             // Stop if the recipe output has changed (i.e. due to fully consumed input slots)
-            if (!ItemStack.isSameItemSameTags(itemAtStart, getItem())) {
+            if (!ItemStack.isSameItemSameComponents(itemAtStart, getItem())) {
                 return;
             }
 
@@ -201,7 +201,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
             if (r == null) {
                 final var target = is.getItem();
-                if (target.canBeDepleted() && target.isValidRepairItem(is, is)) {
+                if (is.isDamageableItem() && target.isValidRepairItem(is, is)) {
                     var isBad = false;
                     for (var x = 0; x < ic.getContainerSize(); x++) {
                         final var pis = ic.getItem(x);

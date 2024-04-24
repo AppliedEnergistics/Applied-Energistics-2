@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -32,6 +33,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
+
+import appeng.core.AppEng;
 
 /**
  * Contains various tags:
@@ -46,10 +49,14 @@ public final class ConventionTags {
     private ConventionTags() {
     }
 
+    public static final TagKey<DataComponentType<?>> EXPORTED_SETTINGS = net.minecraft.tags.TagKey.create(
+            Registries.DATA_COMPONENT_TYPE,
+            AppEng.makeId("exported_settings"));
+
     public static final TagKey<Item> DUSTS = Tags.Items.DUSTS;
     public static final TagKey<Item> GEMS = Tags.Items.GEMS;
 
-    public static final TagKey<Item> SILICON = tag("forge:silicon");
+    public static final TagKey<Item> SILICON = tag("c:silicon");
 
     // Includes purified versions of certus/nether and the natural ones
     public static final TagKey<Item> ALL_QUARTZ = tag("ae2:all_quartz");
@@ -58,10 +65,10 @@ public final class ConventionTags {
 
     // Includes charged, synthetic/purified and natural certus quartz
     public static final TagKey<Item> ALL_CERTUS_QUARTZ = tag("ae2:all_certus_quartz");
-    public static final TagKey<Item> CERTUS_QUARTZ = tag("forge:gems/certus_quartz");
+    public static final TagKey<Item> CERTUS_QUARTZ = tag("c:gems/certus_quartz");
     public static final TagKey<Block> CERTUS_QUARTZ_STORAGE_BLOCK_BLOCK = blockTag(
-            "forge:storage_blocks/certus_quartz");
-    public static final TagKey<Item> CERTUS_QUARTZ_DUST = tag("forge:dusts/certus_quartz");
+            "c:storage_blocks/certus_quartz");
+    public static final TagKey<Item> CERTUS_QUARTZ_DUST = tag("c:dusts/certus_quartz");
 
     // Includes synthetic/purified
     public static final TagKey<Item> ALL_NETHER_QUARTZ = tag("ae2:all_nether_quartz");
@@ -70,10 +77,10 @@ public final class ConventionTags {
 
     // Includes synthetic/purified
     public static final TagKey<Item> ALL_FLUIX = tag("ae2:all_fluix");
-    public static final TagKey<Item> FLUIX_DUST = tag("forge:dusts/fluix");
-    public static final TagKey<Item> FLUIX_CRYSTAL = tag("forge:gems/fluix");
+    public static final TagKey<Item> FLUIX_DUST = tag("c:dusts/fluix");
+    public static final TagKey<Item> FLUIX_CRYSTAL = tag("c:gems/fluix");
 
-    public static final TagKey<Item> COPPER_INGOT = tag("forge:ingots/copper");
+    public static final TagKey<Item> COPPER_INGOT = tag("c:ingots/copper");
 
     public static final TagKey<Item> GOLD_NUGGET = Tags.Items.NUGGETS_GOLD;
     public static final TagKey<Item> GOLD_INGOT = Tags.Items.INGOTS_GOLD;
@@ -88,15 +95,15 @@ public final class ConventionTags {
     public static final TagKey<Item> GLOWSTONE = Tags.Items.DUSTS_GLOWSTONE;
 
     public static final TagKey<Item> ENDER_PEARL = Tags.Items.ENDER_PEARLS;
-    public static final TagKey<Item> ENDER_PEARL_DUST = tag("forge:dusts/ender_pearl");
+    public static final TagKey<Item> ENDER_PEARL_DUST = tag("c:dusts/ender_pearl");
 
     public static final TagKey<Item> WOOD_STICK = Tags.Items.RODS_WOODEN;
     public static final TagKey<Item> CHEST = Tags.Items.CHESTS_WOODEN;
 
-    public static final TagKey<Item> STONE = Tags.Items.STONE;
-    public static final TagKey<Item> COBBLESTONE = Tags.Items.COBBLESTONE;
-    public static final TagKey<Item> GLASS = Tags.Items.GLASS;
-    public static final TagKey<Block> GLASS_BLOCK = Tags.Blocks.GLASS;
+    public static final TagKey<Item> STONE = Tags.Items.STONES;
+    public static final TagKey<Item> COBBLESTONE = Tags.Items.COBBLESTONES;
+    public static final TagKey<Item> GLASS = Tags.Items.GLASS_BLOCKS;
+    public static final TagKey<Block> GLASS_BLOCK = Tags.Blocks.GLASS_BLOCKS;
 
     public static final TagKey<Item> GLASS_CABLE = tag("ae2:glass_cable");
     public static final TagKey<Item> SMART_CABLE = tag("ae2:smart_cable");
@@ -121,12 +128,12 @@ public final class ConventionTags {
     public static final TagKey<Item> CAN_REMOVE_COLOR = tag("ae2:can_remove_color");
 
     // Budding stuff
-    public static final TagKey<Item> BUDDING_BLOCKS = tag("forge:budding");
-    public static final TagKey<Item> BUDS = tag("forge:buds");
-    public static final TagKey<Item> CLUSTERS = tag("forge:clusters");
-    public static final TagKey<Block> BUDDING_BLOCKS_BLOCKS = blockTag("forge:budding");
-    public static final TagKey<Block> BUDS_BLOCKS = blockTag("forge:buds");
-    public static final TagKey<Block> CLUSTERS_BLOCKS = blockTag("forge:clusters");
+    public static final TagKey<Item> BUDDING_BLOCKS = tag("c:budding");
+    public static final TagKey<Item> BUDS = tag("c:buds");
+    public static final TagKey<Item> CLUSTERS = tag("c:clusters");
+    public static final TagKey<Block> BUDDING_BLOCKS_BLOCKS = blockTag("c:budding");
+    public static final TagKey<Block> BUDS_BLOCKS = blockTag("c:buds");
+    public static final TagKey<Block> CLUSTERS_BLOCKS = blockTag("c:clusters");
 
     // For Growth Accelerator
     public static final TagKey<Block> CROPS = BlockTags.CROPS;
@@ -135,41 +142,41 @@ public final class ConventionTags {
     /**
      * Platform tags for blocks that should not be moved, i.e. some pipes, chunk loaders, etc...
      */
-    public static final TagKey<Block> IMMOVABLE_BLOCKS = blockTag("forge:relocation_not_supported");
+    public static final TagKey<Block> IMMOVABLE_BLOCKS = blockTag("c:relocation_not_supported");
 
     /**
      * For Worldgen Biomes
      */
-    public static final TagKey<Biome> METEORITE_OCEAN = Tags.Biomes.IS_WATER;
+    public static final TagKey<Biome> METEORITE_OCEAN = Tags.Biomes.IS_OCEAN;
 
     /**
      * Used to identify items that act as wrenches.
      */
-    public static final TagKey<Item> WRENCH = tag("forge:tools/wrench");
+    public static final TagKey<Item> WRENCH = tag("c:tools/wrench");
 
     public static final Map<DyeColor, TagKey<Item>> DYES = Arrays.stream(DyeColor.values())
             .collect(Collectors.toMap(
                     Function.identity(),
-                    dye -> tag("forge:dyes/" + dye.getSerializedName())));
+                    dye -> tag("c:dyes/" + dye.getSerializedName())));
 
-    public static final TagKey<Block> STAINED_GLASS_BLOCK = Tags.Blocks.STAINED_GLASS;
+    public static final TagKey<Block> STAINED_GLASS_BLOCK = Tags.Blocks.GLASS_BLOCKS_TINTED;
 
-    public static final TagKey<Block> TERRACOTTA_BLOCK = blockTag("forge:terracotta");
+    public static final TagKey<Block> TERRACOTTA_BLOCK = blockTag("c:terracotta");
 
     public static final TagKey<Item> STORAGE_BLOCKS = Tags.Items.STORAGE_BLOCKS;
 
     public static final TagKey<Item> CURIOS = tag("curios:curio");
 
-    public static final TagKey<Item> dye(DyeColor color) {
+    public static TagKey<Item> dye(DyeColor color) {
         return DYES.get(color);
     }
 
     private static TagKey<Item> tag(String name) {
-        return TagKey.create(Registries.ITEM, new ResourceLocation(name));
+        return net.minecraft.tags.TagKey.create(Registries.ITEM, new ResourceLocation(name));
     }
 
     private static TagKey<Block> blockTag(String name) {
-        return TagKey.create(Registries.BLOCK, new ResourceLocation(name));
+        return net.minecraft.tags.TagKey.create(Registries.BLOCK, new ResourceLocation(name));
     }
 
 }

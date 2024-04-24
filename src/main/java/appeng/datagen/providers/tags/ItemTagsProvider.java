@@ -48,8 +48,11 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags(HolderLookup.Provider registries) {
         copyBlockTags();
+
+        // Allow the annihilation plane to be enchanted with silk touch & fortune
+        tag(ItemTags.MINING_LOOT_ENCHANTABLE).add(AEParts.ANNIHILATION_PLANE.asItem());
 
         // Forge is missing this tag right now
         tag(ConventionTags.COPPER_INGOT)
@@ -162,13 +165,13 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 AEItems.NETWORK_TOOL.asItem());
 
         tag(AETags.METAL_INGOTS)
-                .addOptionalTag(new ResourceLocation("forge:ingots/copper"))
-                .addOptionalTag(new ResourceLocation("forge:ingots/tin"))
-                .addOptionalTag(new ResourceLocation("forge:ingots/iron"))
-                .addOptionalTag(new ResourceLocation("forge:ingots/gold"))
-                .addOptionalTag(new ResourceLocation("forge:ingots/brass"))
-                .addOptionalTag(new ResourceLocation("forge:ingots/nickel"))
-                .addOptionalTag(new ResourceLocation("forge:ingots/aluminium"));
+                .addOptionalTag(new ResourceLocation("c:ingots/copper"))
+                .addOptionalTag(new ResourceLocation("c:ingots/tin"))
+                .addOptionalTag(new ResourceLocation("c:ingots/iron"))
+                .addOptionalTag(new ResourceLocation("c:ingots/gold"))
+                .addOptionalTag(new ResourceLocation("c:ingots/brass"))
+                .addOptionalTag(new ResourceLocation("c:ingots/nickel"))
+                .addOptionalTag(new ResourceLocation("c:ingots/aluminium"));
 
         tag(ConventionTags.PATTERN_PROVIDER)
                 .add(AEParts.PATTERN_PROVIDER.asItem())
@@ -237,7 +240,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
     // Assumes that items or item tags generally have the same name as the block equivalent.
     private void copyBlockTags() {
         mirrorBlockTag(Tags.Blocks.STORAGE_BLOCKS.location());
-        mirrorBlockTag(new ResourceLocation("forge:storage_blocks/certus_quartz"));
+        mirrorBlockTag(new ResourceLocation("c:storage_blocks/certus_quartz"));
     }
 
     private void mirrorBlockTag(ResourceLocation tagName) {

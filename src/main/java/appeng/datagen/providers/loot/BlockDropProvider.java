@@ -23,13 +23,14 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -61,6 +62,7 @@ import appeng.datagen.providers.tags.ConventionTags;
 
 public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataProvider {
     private final Map<Block, Function<Block, LootTable.Builder>> overrides = createOverrides();
+    private final CompletableFuture<HolderLookup.Provider> registries;
 
     @NotNull
     private ImmutableMap<Block, Function<Block, LootTable.Builder>> createOverrides() {
@@ -84,9 +86,10 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
 
     private final Path outputFolder;
 
-    public BlockDropProvider(PackOutput output) {
+    public BlockDropProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(Set.of(), FeatureFlagSet.of());
         this.outputFolder = output.getOutputFolder();
+        this.registries = registries;
     }
 
     @Override
@@ -94,12 +97,11 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
     }
 
     @Override
-    public void generate(BiConsumer<ResourceLocation, LootTable.Builder> biConsumer) {
-        super.generate(biConsumer);
+    public CompletableFuture<?> run(CachedOutput cache) {
+        return this.registries.thenCompose(registries -> run(cache, registries));
     }
 
-    @Override
-    public CompletableFuture<?> run(CachedOutput cache) {
+    public CompletableFuture<?> run(CachedOutput cache, HolderLookup.Provider registries) {
         var futures = new ArrayList<CompletableFuture<?>>();
 
         for (var entry : BuiltInRegistries.BLOCK.entrySet()) {
@@ -107,7 +109,7 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
             if (entry.getKey().location().getNamespace().equals(AppEng.MOD_ID)) {
                 builder = overrides.getOrDefault(entry.getValue(), this::defaultBuilder).apply(entry.getValue());
 
-                futures.add(DataProvider.saveStable(cache, LootTable.CODEC, finishBuilding(builder),
+                futures.add(DataProvider.saveStable(cache, registries, LootTable.CODEC, finishBuilding(builder),
                         getPath(outputFolder, entry.getKey().location())));
             }
         }
@@ -116,7 +118,7 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
                 .withPool(LootPool.lootPool()
                         .setRolls(UniformGenerator.between(1, 3))
                         .add(LootItem.lootTableItem(AEBlocks.SKY_STONE_BLOCK)));
-        futures.add(DataProvider.saveStable(cache, LootTable.CODEC, finishBuilding(table),
+        futures.add(DataProvider.saveStable(cache, registries, LootTable.CODEC, finishBuilding(table),
                 getPath(outputFolder, AppEng.makeId("chests/meteorite"))));
 
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
@@ -146,24 +148,24 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
         return createSilkTouchDispatchTable(cluster,
                 LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL)
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(4)))
-                        .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
+                        .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.FORTUNE))
                         .apply(ApplyExplosionDecay.explosionDecay()));
     }
 
     private static LootTable.Builder mysteriousCube(Block block) {
         return createSilkTouchDispatchTable(block, TagEntry.tagContents(ConventionTags.INSCRIBER_PRESSES)
                 .when(ExplosionCondition.survivesExplosion()))
-                        .withPool(
-                                LootPool.lootPool().when(HAS_NO_SILK_TOUCH).setRolls(ConstantValue.exactly(1.0F))
-                                        .add(LootItem.lootTableItem(AEItems.TABLET)));
+                .withPool(
+                        LootPool.lootPool().when(HAS_NO_SILK_TOUCH).setRolls(ConstantValue.exactly(1.0F))
+                                .add(LootItem.lootTableItem(AEItems.TABLET)));
     }
 
     private Path getPath(Path root, ResourceLocation id) {
         return root.resolve("data/" + id.getNamespace() + "/loot_tables/blocks/" + id.getPath() + ".json");
     }
 
-    public LootTable finishBuilding(LootTable.Builder builder) {
-        return builder.setParamSet(LootContextParamSets.BLOCK).build();
+    public Holder<LootTable> finishBuilding(LootTable.Builder builder) {
+        return Holder.direct(builder.setParamSet(LootContextParamSets.BLOCK).build());
     }
 
     @Override

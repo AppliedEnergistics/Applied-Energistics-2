@@ -16,7 +16,7 @@ class EmiAeBaseScreenDragDropHandler implements EmiDragDropHandler<Screen> {
 
     @Override
     public boolean dropStack(Screen screen, EmiIngredient emiIngredient, int x, int y) {
-        if (!(screen instanceof AEBaseScreen<?>aeScreen)) {
+        if (!(screen instanceof AEBaseScreen<?> aeScreen)) {
             return false;
         }
 
@@ -39,7 +39,7 @@ class EmiAeBaseScreenDragDropHandler implements EmiDragDropHandler<Screen> {
 
     @Override
     public void render(Screen screen, EmiIngredient dragged, GuiGraphics draw, int mouseX, int mouseY, float delta) {
-        if (!(screen instanceof AEBaseScreen<?>aeScreen)) {
+        if (!(screen instanceof AEBaseScreen<?> aeScreen)) {
             return;
         }
 

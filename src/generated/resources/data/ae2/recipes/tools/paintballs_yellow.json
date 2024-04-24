@@ -6,7 +6,7 @@
       "item": "ae2:matter_ball"
     },
     "b": {
-      "tag": "forge:dyes/yellow"
+      "tag": "c:dyes/yellow"
     }
   },
   "pattern": [
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "ae2:yellow_paint_ball"
+    "id": "ae2:yellow_paint_ball"
   }
 }

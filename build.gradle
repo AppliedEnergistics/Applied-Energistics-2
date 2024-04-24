@@ -16,6 +16,14 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
+buildscript {
+    dependencies {
+        // Fix for the shadow plugin using outdated ASM
+        classpath 'org.ow2.asm:asm:9.5'
+        classpath 'org.ow2.asm:asm-commons:9.5'
+    }
+}
+
 plugins {
     id "net.neoforged.gradle.userdev"
     id "maven-publish"
@@ -48,6 +56,7 @@ configurations {
 }
 
 repositories {
+    mavenLocal()
     maven {
         url "https://maven.shedaniel.me/"
         content {
@@ -155,7 +164,7 @@ dependencies {
         compileOnly("mcjty.theoneprobe:theoneprobe:${project.top_version}")
     }
 
-    if (project.runtime_curio) {
+    if (project.runtime_curio == "true") {
         runtimeOnly("top.theillusivec4.curios:curios-neoforge:${project.curios_version}")
     }
 
@@ -182,7 +191,7 @@ allprojects {
 
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(17)
+            languageVersion = JavaLanguageVersion.of(21)
         }
     }
 
@@ -245,7 +254,7 @@ test {
             }.collect(java.util.stream.Collectors.joining(File.pathSeparator))
     )
 
-    def fmlVersion = "2.0.7"
+    def fmlVersion = "3.0.18"
 
     environment("fmljunit.assetsDir", new File(gradle.gradleUserHomeDir, "caches/minecraft/assets/${minecraft_version}/").absolutePath)
     environment("fmljunit.neoForgeVersion", neoforge_version)
@@ -403,6 +412,7 @@ processResources {
     inputs.property("version", project.version)
     inputs.property("minecraft_version", project.minecraft_version_range)
     inputs.property("neoforge_version", project.neoforge_version)
+    inputs.property("neoforge_version_range", project.neoforge_version_range)
     inputs.property("top_version", project.top_version)
     inputs.property("jade_version", project.jade_version_range)
 

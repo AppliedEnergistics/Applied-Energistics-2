@@ -22,6 +22,7 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -74,18 +75,18 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity implements InternalInv
     }
 
     @Override
-    public void saveAdditional(CompoundTag data) {
-        super.saveAdditional(data);
+    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
+        super.saveAdditional(data, registries);
         data.putString("filter", BuiltInRegistries.ITEM.getKey(filter).toString());
     }
 
     @Override
-    public void loadTag(CompoundTag data) {
+    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         if (data.contains("filter")) {
             Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(data.getString("filter")));
             this.setItem(item);
         }
-        super.loadTag(data);
+        super.loadTag(data, registries);
     }
 
     public IItemHandler getItemHandler() {
@@ -109,8 +110,8 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity implements InternalInv
             return;
         }
 
-        if (item.canBeDepleted()) {
-            ItemStack sampleStack = new ItemStack(item);
+        ItemStack sampleStack = item.getDefaultInstance();
+        if (sampleStack.isDamageableItem()) {
             int maxDamage = sampleStack.getMaxDamage();
             for (int dmg = 0; dmg < maxDamage; dmg++) {
                 ItemStack is = sampleStack.copy();

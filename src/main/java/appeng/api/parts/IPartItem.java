@@ -87,7 +87,7 @@ public interface IPartItem<P extends IPart> extends ItemLike {
     @Nullable
     static IPartItem<?> byId(ResourceLocation id) {
         var item = BuiltInRegistries.ITEM.get(id);
-        if (item instanceof IPartItem<?>partItem) {
+        if (item instanceof IPartItem<?> partItem) {
             return partItem;
         }
         return null;
@@ -99,7 +99,7 @@ public interface IPartItem<P extends IPart> extends ItemLike {
     @Nullable
     static IPartItem<?> byNetworkId(int id) {
         var item = BuiltInRegistries.ITEM.byId(id);
-        if (item instanceof IPartItem<?>partItem) {
+        if (item instanceof IPartItem<?> partItem) {
             return partItem;
         }
         return null;

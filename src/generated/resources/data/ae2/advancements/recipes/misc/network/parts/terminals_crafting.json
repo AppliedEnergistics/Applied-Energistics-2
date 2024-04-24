@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:calculation_processor"
-            ]
+            "items": "ae2:calculation_processor"
           }
         ]
       },
@@ -17,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:terminal"
-            ]
+            "items": "ae2:terminal"
           }
         ]
       },

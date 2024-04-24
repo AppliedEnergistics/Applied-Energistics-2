@@ -18,9 +18,9 @@
 
 package appeng.parts.reporting;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
@@ -37,7 +37,6 @@ import appeng.menu.MenuOpener;
 import appeng.menu.implementations.PatternAccessTermMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartModel;
-import appeng.util.ConfigManager;
 
 public class PatternAccessTerminalPart extends AbstractDisplayPart implements IPatternAccessTermMenuHost {
 
@@ -52,18 +51,19 @@ public class PatternAccessTerminalPart extends AbstractDisplayPart implements IP
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
 
-    private final ConfigManager configManager = new ConfigManager(() -> {
+    private final IConfigManager configManager = IConfigManager.builder(() -> {
         this.getHost().markForSave();
-    });
+    })
+            .registerSetting(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS, ShowPatternProviders.VISIBLE)
+            .build();
 
     public PatternAccessTerminalPart(IPartItem<?> partItem) {
         super(partItem, true);
-        this.configManager.registerSetting(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS, ShowPatternProviders.VISIBLE);
     }
 
     @Override
-    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
-        if (!super.onPartActivate(player, hand, pos) && !isClientSide()) {
+    public boolean onUseWithoutItem(Player player, Vec3 pos) {
+        if (!super.onUseWithoutItem(player, pos) && !isClientSide()) {
             MenuOpener.open(PatternAccessTermMenu.TYPE, player, MenuLocators.forPart(this));
         }
         return true;
@@ -79,14 +79,14 @@ public class PatternAccessTerminalPart extends AbstractDisplayPart implements IP
         return configManager;
     }
 
-    public void writeToNBT(CompoundTag tag) {
-        super.writeToNBT(tag);
-        configManager.writeToNBT(tag);
+    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries) {
+        super.writeToNBT(tag, registries);
+        configManager.writeToNBT(tag, registries);
     }
 
-    public void readFromNBT(CompoundTag tag) {
-        super.readFromNBT(tag);
-        configManager.readFromNBT(tag);
+    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
+        super.readFromNBT(tag, registries);
+        configManager.readFromNBT(tag, registries);
     }
 
     @Override

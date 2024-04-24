@@ -6,10 +6,11 @@
       "item": "minecraft:paper"
     },
     {
-      "tag": "forge:gems/fluix"
+      "tag": "c:gems/fluix"
     }
   ],
   "result": {
-    "item": "ae2:fluix_upgrade_smithing_template"
+    "count": 1,
+    "id": "ae2:fluix_upgrade_smithing_template"
   }
 }

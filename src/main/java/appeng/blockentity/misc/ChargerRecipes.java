@@ -11,7 +11,7 @@ import appeng.recipes.handlers.ChargerRecipe;
 public class ChargerRecipes {
 
     public static Iterable<RecipeHolder<ChargerRecipe>> getRecipes(Level level) {
-        return level.getRecipeManager().byType(ChargerRecipe.TYPE).values();
+        return level.getRecipeManager().byType(ChargerRecipe.TYPE);
     }
 
     @Nullable

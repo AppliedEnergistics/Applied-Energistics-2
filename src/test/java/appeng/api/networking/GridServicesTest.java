@@ -126,8 +126,8 @@ class GridServicesTest {
     void testNoAmbiguousConstructorAllowed() {
         assertThatThrownBy(
                 () -> GridServices.register(AmbiguousConstructorClass.class, AmbiguousConstructorClass.class))
-                        .hasMessageContaining("Grid service implementation class")
-                        .hasMessageContaining("has 2 public constructors. It needs exactly 1");
+                .hasMessageContaining("Grid service implementation class")
+                .hasMessageContaining("has 2 public constructors. It needs exactly 1");
     }
 
     interface PublicInterface {

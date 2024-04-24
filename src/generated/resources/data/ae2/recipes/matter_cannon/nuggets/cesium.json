@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:nuggets/cesium"
+        "tag": "c:nuggets/cesium"
       }
     }
   ],
   "type": "ae2:matter_cannon",
   "ammo": {
-    "tag": "forge:nuggets/cesium"
+    "tag": "c:nuggets/cesium"
   },
   "weight": 132.9055
 }

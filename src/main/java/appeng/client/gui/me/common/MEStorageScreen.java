@@ -42,6 +42,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.client.AEKeyRendering;
@@ -85,7 +86,7 @@ import appeng.core.AppEng;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
-import appeng.core.network.NetworkHandler;
+import appeng.core.network.ServerboundPacket;
 import appeng.core.network.bidirectional.ConfigValuePacket;
 import appeng.core.network.serverbound.MEInteractionPacket;
 import appeng.core.network.serverbound.SwitchGuisPacket;
@@ -310,7 +311,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     private void showCraftingStatus() {
-        NetworkHandler.instance().sendToServer(SwitchGuisPacket.openSubMenu(CraftingStatusMenu.TYPE));
+        ServerboundPacket message = SwitchGuisPacket.openSubMenu(CraftingStatusMenu.TYPE);
+        PacketDistributor.sendToServer(message);
     }
 
     private int getSlotsPerRow() {
@@ -514,7 +516,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                 int times = (int) Math.abs(deltaY);
                 for (int h = 0; h < times; h++) {
                     final MEInteractionPacket p = new MEInteractionPacket(this.menu.containerId, serial, direction);
-                    NetworkHandler.instance().sendToServer(p);
+                    PacketDistributor.sendToServer(p);
                 }
 
                 return true;
@@ -803,7 +805,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     private <SE extends Enum<SE>> void toggleServerSetting(SettingToggleButton<SE> btn, boolean backwards) {
         SE next = btn.getNextValue(backwards);
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket(btn.getSetting(), next));
+        ServerboundPacket message = new ConfigValuePacket(btn.getSetting(), next);
+        PacketDistributor.sendToServer(message);
         btn.set(next);
     }
 

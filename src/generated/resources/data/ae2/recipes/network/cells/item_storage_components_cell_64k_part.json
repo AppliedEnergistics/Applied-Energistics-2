@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:dusts/glowstone"
+      "tag": "c:dusts/glowstone"
     },
     "b": {
       "item": "ae2:calculation_processor"
@@ -21,6 +21,7 @@
     "aca"
   ],
   "result": {
-    "item": "ae2:cell_component_64k"
+    "count": 1,
+    "id": "ae2:cell_component_64k"
   }
 }

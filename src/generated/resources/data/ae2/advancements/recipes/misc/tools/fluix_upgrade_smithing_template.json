@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:gems/fluix"
+            "items": "#c:gems/fluix"
           }
         ]
       },

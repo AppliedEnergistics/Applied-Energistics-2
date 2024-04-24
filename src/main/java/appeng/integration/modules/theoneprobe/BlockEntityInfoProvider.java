@@ -218,7 +218,7 @@ public final class BlockEntityInfoProvider implements IProbeInfoProvider, IBlock
                 player);
     }
 
-    record NameCustomizer<T> (Class<T> beClass, NameProvider<? super T> provider, int priority) {
+    record NameCustomizer<T>(Class<T> beClass, NameProvider<? super T> provider, int priority) {
         public Component getName(BlockEntity blockEntity, TooltipContext context) {
             if (beClass.isInstance(blockEntity)) {
                 return provider.getName(beClass.cast(blockEntity), context);
@@ -227,7 +227,7 @@ public final class BlockEntityInfoProvider implements IProbeInfoProvider, IBlock
         }
     }
 
-    record IconCustomizer<T> (Class<T> beClass, IconProvider<? super T> provider, int priority) {
+    record IconCustomizer<T>(Class<T> beClass, IconProvider<? super T> provider, int priority) {
         public ItemStack getIcon(BlockEntity blockEntity, TooltipContext context) {
             if (beClass.isInstance(blockEntity)) {
                 return provider.getIcon(beClass.cast(blockEntity), context);
@@ -236,7 +236,7 @@ public final class BlockEntityInfoProvider implements IProbeInfoProvider, IBlock
         }
     }
 
-    record ModNameCustomizer<T> (Class<T> beClass, ModNameProvider<? super T> provider, int priority) {
+    record ModNameCustomizer<T>(Class<T> beClass, ModNameProvider<? super T> provider, int priority) {
         public String getModName(BlockEntity blockEntity, TooltipContext context) {
             if (beClass.isInstance(blockEntity)) {
                 return provider.getModName(beClass.cast(blockEntity), context);
@@ -245,7 +245,7 @@ public final class BlockEntityInfoProvider implements IProbeInfoProvider, IBlock
         }
     }
 
-    record BodyCustomizer<T> (Class<T> beClass, BodyProvider<? super T> provider, int priority) {
+    record BodyCustomizer<T>(Class<T> beClass, BodyProvider<? super T> provider, int priority) {
         public void buildTooltip(BlockEntity blockEntity, TooltipContext context, TooltipBuilder tooltipBuilder) {
             if (beClass.isInstance(blockEntity)) {
                 provider.buildTooltip(beClass.cast(blockEntity), context, tooltipBuilder);

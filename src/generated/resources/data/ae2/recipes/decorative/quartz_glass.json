@@ -6,7 +6,7 @@
       "tag": "ae2:all_quartz_dust"
     },
     "b": {
-      "tag": "forge:glass"
+      "tag": "c:glass_blocks"
     }
   },
   "pattern": [
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 4,
-    "item": "ae2:quartz_glass"
+    "id": "ae2:quartz_glass"
   }
 }

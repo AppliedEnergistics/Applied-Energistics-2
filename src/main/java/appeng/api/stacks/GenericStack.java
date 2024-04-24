@@ -1,11 +1,21 @@
 package appeng.api.stacks;
 
+import java.util.List;
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -15,12 +25,28 @@ import appeng.items.misc.WrappedGenericStack;
  * Represents some amount of some generic resource that AE can store or handle in crafting.
  */
 public record GenericStack(AEKey what, long amount) {
+
+    @ApiStatus.Internal
+    public static final String AMOUNT_FIELD = "#";
+
+    private static final Logger LOG = LoggerFactory.getLogger(GenericStack.class);
+
+    public static final Codec<GenericStack> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            AEKey.MAP_CODEC.forGetter(GenericStack::what),
+            Codec.LONG.fieldOf(AMOUNT_FIELD).forGetter(GenericStack::amount)).apply(builder, GenericStack::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, GenericStack> STREAM_CODEC = StreamCodec.ofMember(
+            GenericStack::writeBuffer,
+            GenericStack::readBuffer);
+
+    public static final Codec<List<@Nullable GenericStack>> NULLABLE_LIST_CODEC = new GenericStackListCodec();
+
     public GenericStack {
         Objects.requireNonNull(what, "what");
     }
 
     @Nullable
-    public static GenericStack readBuffer(FriendlyByteBuf buffer) {
+    public static GenericStack readBuffer(RegistryFriendlyByteBuf buffer) {
         if (!buffer.readBoolean()) {
             return null;
         }
@@ -33,7 +59,7 @@ public record GenericStack(AEKey what, long amount) {
         return new GenericStack(what, buffer.readVarLong());
     }
 
-    public static void writeBuffer(@Nullable GenericStack stack, FriendlyByteBuf buffer) {
+    public static void writeBuffer(@Nullable GenericStack stack, RegistryFriendlyByteBuf buffer) {
         if (stack == null) {
             buffer.writeBoolean(false);
         } else {
@@ -45,24 +71,22 @@ public record GenericStack(AEKey what, long amount) {
     }
 
     @Nullable
-    public static GenericStack readTag(CompoundTag tag) {
+    public static GenericStack readTag(HolderLookup.Provider registries, CompoundTag tag) {
         if (tag.isEmpty()) {
             return null;
         }
-        var key = AEKey.fromTagGeneric(tag);
-        if (key == null) {
-            return null;
-        }
-        return new GenericStack(key, tag.getLong("#"));
+        return GenericStack.CODEC.decode(NbtOps.INSTANCE, tag)
+                .ifError(err -> LOG.error("Failed to decode GenericStack from {}: {}", tag, err.message()))
+                .getPartialOrThrow()
+                .getFirst();
     }
 
-    public static CompoundTag writeTag(@Nullable GenericStack stack) {
+    public static CompoundTag writeTag(HolderLookup.Provider registries, @Nullable GenericStack stack) {
         if (stack == null) {
             return new CompoundTag();
         }
-        var tag = stack.what.toTagGeneric();
-        tag.putLong("#", stack.amount);
-        return tag;
+
+        return (CompoundTag) GenericStack.CODEC.encodeStart(NbtOps.INSTANCE, stack).getOrThrow();
     }
 
     /**

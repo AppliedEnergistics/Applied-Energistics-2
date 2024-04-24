@@ -109,8 +109,7 @@ public final class SkyStoneTankBlockEntityRenderer implements BlockEntityRendere
         builder.addCube(x1, y1, z1, x2, y2, z2);
 
         for (var bakedQuad : builder.getOutput()) {
-            vc.putBulkData(ps.last(), bakedQuad, r, g, b, FULL_LIGHT,
-                    OverlayTexture.NO_OVERLAY);
+            vc.putBulkData(ps.last(), bakedQuad, r, g, b, 1.0f, FULL_LIGHT, OverlayTexture.NO_OVERLAY);
         }
 
     }

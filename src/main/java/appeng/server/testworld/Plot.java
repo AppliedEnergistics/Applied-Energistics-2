@@ -23,6 +23,10 @@ public class Plot implements PlotBuilder {
     private Test test;
 
     public BoundingBox getBounds() {
+        if (buildActions.isEmpty()) {
+            return new BoundingBox(0, 0, 0, 0, 0, 0);
+        }
+
         return BoundingBox.encapsulatingBoxes(buildActions.stream().map(BuildAction::getBoundingBox).toList())
                 .orElseThrow();
     }

@@ -24,8 +24,9 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -66,7 +67,6 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
-import appeng.core.network.NetworkHandler;
 import appeng.core.network.clientbound.AssemblerAnimationPacket;
 import appeng.crafting.CraftingEvent;
 import appeng.menu.AutoCraftingMenu;
@@ -214,7 +214,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(FriendlyByteBuf data) {
+    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final boolean oldPower = this.isPowered;
         this.isPowered = data.readBoolean();
@@ -222,31 +222,29 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected void writeToStream(FriendlyByteBuf data) {
+    protected void writeToStream(RegistryFriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(this.isPowered);
     }
 
     @Override
-    public void saveAdditional(CompoundTag data) {
-        super.saveAdditional(data);
+    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
+        super.saveAdditional(data, registries);
         if (this.forcePlan) {
             // If the plan is null it means the pattern previously loaded from NBT hasn't been decoded yet
             var pattern = myPlan != null ? myPlan.getDefinition().toStack() : myPattern;
             if (!pattern.isEmpty()) {
-                var compound = new CompoundTag();
-                pattern.save(compound);
-                data.put("myPlan", compound);
+                data.put("myPlan", pattern.save(registries));
                 data.putInt("pushDirection", this.pushDirection.ordinal());
             }
         }
 
-        this.upgrades.writeToNBT(data, "upgrades");
+        this.upgrades.writeToNBT(data, "upgrades", registries);
     }
 
     @Override
-    public void loadTag(CompoundTag data) {
-        super.loadTag(data);
+    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
+        super.loadTag(data, registries);
 
         // Reset current state back to defaults
         this.forcePlan = false;
@@ -254,7 +252,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         this.myPlan = null;
 
         if (data.contains("myPlan")) {
-            var pattern = ItemStack.of(data.getCompound("myPlan"));
+            var pattern = ItemStack.parseOptional(registries, data.getCompound("myPlan"));
             if (!pattern.isEmpty()) {
                 this.forcePlan = true;
                 this.myPattern = pattern;
@@ -262,7 +260,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             }
         }
 
-        this.upgrades.readFromNBT(data, "upgrades");
+        this.upgrades.readFromNBT(data, "upgrades", registries);
         this.recalculatePlan();
     }
 
@@ -275,8 +273,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             // didn't have a chance to decode it yet
             if (getLevel() != null && myPlan == null) {
                 if (!myPattern.isEmpty()) {
-                    if (PatternDetailsHelper.decodePattern(myPattern, getLevel(),
-                            false) instanceof IMolecularAssemblerSupportedPattern supportedPlan) {
+                    if (PatternDetailsHelper.decodePattern(myPattern,
+                            getLevel()) instanceof IMolecularAssemblerSupportedPattern supportedPlan) {
                         this.myPlan = supportedPlan;
                     }
                 }
@@ -286,7 +284,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
                 // If the plan is still null, reset back to non-forced mode
                 if (myPlan == null) {
-                    AELog.warn("Unable to restore auto-crafting pattern after load: %s", myPattern.getTag());
+                    AELog.warn("Unable to restore auto-crafting pattern after load: %s", myPattern);
                     this.forcePlan = false;
                 }
             }
@@ -299,10 +297,10 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         boolean reset = true;
 
         if (!is.isEmpty()) {
-            if (ItemStack.isSameItemSameTags(is, this.myPattern)) {
+            if (ItemStack.isSameItemSameComponents(is, this.myPattern)) {
                 reset = false;
-            } else if (PatternDetailsHelper.decodePattern(is, getLevel(),
-                    false) instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
+            } else if (PatternDetailsHelper.decodePattern(is,
+                    getLevel()) instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
                 reset = false;
                 this.progress = 0;
                 this.myPattern = is;
@@ -449,13 +447,10 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
                 var item = AEItemKey.of(output);
                 if (item != null) {
-                    final PacketDistributor.TargetPoint where = new PacketDistributor.TargetPoint(
-                            this.worldPosition.getX(), this.worldPosition.getY(),
-                            this.worldPosition.getZ(), 32,
-                            this.level.dimension());
-                    NetworkHandler.instance()
-                            .sendToAllAround(new AssemblerAnimationPacket(this.worldPosition, (byte) speed, item),
-                                    where);
+                    PacketDistributor.sendToPlayersNear(node.getLevel(), null, worldPosition.getX(),
+                            worldPosition.getY(),
+                            worldPosition.getZ(), 32,
+                            new AssemblerAnimationPacket(this.worldPosition, (byte) speed, item));
                 }
 
                 this.saveChanges();

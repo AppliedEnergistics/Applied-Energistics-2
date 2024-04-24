@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:charged_certus_quartz_crystal"
-            ]
+            "items": "ae2:charged_certus_quartz_crystal"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "achievement.ae2.ChargedQuartz.desc"
     },
     "icon": {
-      "item": "ae2:charged_certus_quartz_crystal"
+      "count": 1,
+      "id": "ae2:charged_certus_quartz_crystal"
     },
     "title": {
       "translate": "achievement.ae2.ChargedQuartz"

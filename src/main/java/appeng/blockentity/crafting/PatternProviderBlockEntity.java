@@ -27,6 +27,8 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
@@ -35,6 +37,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import appeng.api.ids.AEComponents;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.stacks.AEItemKey;
@@ -109,14 +112,14 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void saveAdditional(CompoundTag data) {
-        super.saveAdditional(data);
-        this.logic.writeToNBT(data);
+    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
+        super.saveAdditional(data, registries);
+        this.logic.writeToNBT(data, registries);
     }
 
     @Override
-    public void loadTag(CompoundTag data) {
-        super.loadTag(data);
+    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
+        super.loadTag(data, registries);
 
         // Remove in 1.20.1+: Convert legacy NBT orientation to blockstate
         if (data.getBoolean("omniDirectional")) {
@@ -129,7 +132,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
             }
         }
 
-        this.logic.readFromNBT(data);
+        this.logic.readFromNBT(data, registries);
     }
 
     @Override
@@ -158,20 +161,20 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, CompoundTag output,
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder,
             @Nullable Player player) {
-        super.exportSettings(mode, output, player);
+        super.exportSettings(mode, builder, player);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
-            logic.exportSettings(output);
+            logic.exportSettings(builder);
 
             var pushDirection = getPushDirection();
-            output.putByte("push_direction", (byte) pushDirection.ordinal());
+            builder.set(AEComponents.EXPORTED_PUSH_DIRECTION, pushDirection);
         }
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag input,
+    public void importSettings(SettingsFrom mode, DataComponentMap input,
             @Nullable Player player) {
         super.importSettings(mode, input, player);
 
@@ -179,15 +182,13 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
             logic.importSettings(input, player);
 
             // Restore push direction blockstate
-            if (input.contains(PatternProviderBlock.PUSH_DIRECTION.getName(), Tag.TAG_BYTE)) {
-                var pushDirection = input.getByte(PatternProviderBlock.PUSH_DIRECTION.getName());
-                if (pushDirection >= 0 && pushDirection < PushDirection.values().length) {
-                    var level = getLevel();
-                    if (level != null) {
-                        level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(
-                                PatternProviderBlock.PUSH_DIRECTION,
-                                PushDirection.values()[pushDirection]));
-                    }
+            var pushDirection = input.get(AEComponents.EXPORTED_PUSH_DIRECTION);
+            if (pushDirection != null) {
+                var level = getLevel();
+                if (level != null) {
+                    level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(
+                            PatternProviderBlock.PUSH_DIRECTION,
+                            pushDirection));
                 }
             }
         }

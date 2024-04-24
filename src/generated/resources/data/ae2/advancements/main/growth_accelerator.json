@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "ae2:growth_accelerator"
-            ]
+            "items": "ae2:growth_accelerator"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "achievement.ae2.CrystalGrowthAccelerator.desc"
     },
     "icon": {
-      "item": "ae2:growth_accelerator"
+      "count": 1,
+      "id": "ae2:growth_accelerator"
     },
     "title": {
       "translate": "achievement.ae2.CrystalGrowthAccelerator"

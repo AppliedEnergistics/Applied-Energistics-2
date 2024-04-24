@@ -55,7 +55,7 @@ public class SpatialSkyRender {
             new Quaternionf().rotationZ(Mth.DEG_TO_RAD * 90.0F),
             new Quaternionf().rotationZ(Mth.DEG_TO_RAD * -90.0F), };
 
-    public void render(PoseStack poseStack, Matrix4f projectionMatrix) {
+    public void render(Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {
         final long now = System.currentTimeMillis();
         if (now - this.cycle > 2000) {
             this.cycle = now;
@@ -67,6 +67,9 @@ public class SpatialSkyRender {
         RenderSystem.depthMask(false);
         final Tesselator tessellator = Tesselator.getInstance();
         var buffer = tessellator.getBuilder();
+
+        var poseStack = new PoseStack();
+        poseStack.mulPose(modelViewMatrix);
 
         // This renders a skybox around the player at a far, fixed distance from them.
         // The skybox is pitch black and untextured

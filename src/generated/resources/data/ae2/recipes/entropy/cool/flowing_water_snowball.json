@@ -9,7 +9,8 @@
   "output": {
     "drops": [
       {
-        "item": "minecraft:snowball"
+        "count": 1,
+        "id": "minecraft:snowball"
       }
     ]
   }
