@@ -416,7 +416,7 @@ processResources {
     inputs.property("top_version", project.top_version)
     inputs.property("jade_version", project.jade_version_range)
 
-    filesMatching("META-INF/mods.toml") {
+    filesMatching("META-INF/neoforge.mods.toml") {
         expand 'minecraft_version': project.minecraft_version_range, 'neoforge_version': project.neoforge_version_range,
                 'top_version': project.top_version_range,
                 'jade_version': project.jade_version_range
