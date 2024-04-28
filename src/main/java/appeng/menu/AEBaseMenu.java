@@ -597,7 +597,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         }
 
         int maxIterations = 10_000;
-        long amount = fillAll ? Long.MAX_VALUE : FluidType.BUCKET_VOLUME;
+        long amount = fillAll ? Long.MAX_VALUE : what.getAmountPerUnit();
         boolean filled = false;
 
         do {
@@ -653,7 +653,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         }
 
         var what = content.what();
-        long amount = emptyAll ? Long.MAX_VALUE : FluidType.BUCKET_VOLUME;
+        long amount = emptyAll ? Long.MAX_VALUE : what.getAmountPerUnit();
         int maxIterations = 10_000;
         boolean emptied = false;
 
