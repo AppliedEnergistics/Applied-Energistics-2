@@ -118,7 +118,7 @@ jobs:
       - name: Validate artifacts exist
         run: test -d ./build
       - name: Upload to Curseforge
-        uses: Kir-Antipov/mc-publish@4db8bd126f74d5e143822181a2b1201308e2c796
+        uses: Kir-Antipov/mc-publish@995edadc13559a8b28d0b7e6571229f067ec7659
         with:
           name: AE2 ${{ needs.build.outputs.VERSION }} [NEOFORGE]
           version: ${{ needs.build.outputs.VERSION }}
@@ -169,7 +169,7 @@ jobs:
       - name: Validate artifacts exist
         run: test -d ./build
       - name: Upload to Modrinth
-        uses: Kir-Antipov/mc-publish@4db8bd126f74d5e143822181a2b1201308e2c796
+        uses: Kir-Antipov/mc-publish@995edadc13559a8b28d0b7e6571229f067ec7659
         with:
           name: AE2 ${{ needs.build.outputs.VERSION }} [NEOFORGE]
           version: ${{ needs.build.outputs.VERSION }}
