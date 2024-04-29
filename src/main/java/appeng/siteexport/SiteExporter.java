@@ -56,9 +56,9 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import appeng.api.features.P2PTunnelAttunement;
@@ -129,22 +129,20 @@ public final class SiteExporter implements ResourceExporter {
         if (Boolean.getBoolean("appeng.runGuideExportAndExit")) {
             Path outputFolder = Paths.get(System.getProperty("appeng.guideExportFolder"));
 
-            NeoForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent evt) -> {
-                if (evt.phase == TickEvent.Phase.END) {
-                    var client = Minecraft.getInstance();
-                    if (client.getOverlay() instanceof LoadingOverlay) {
-                        return; // Do nothing while it's loading
-                    }
-
-                    var guide = AppEngClient.instance().getGuide();
-                    try {
-                        export(client, outputFolder, guide);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        System.exit(1);
-                    }
-                    System.exit(0);
+            NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post evt) -> {
+                var client = Minecraft.getInstance();
+                if (client.getOverlay() instanceof LoadingOverlay) {
+                    return; // Do nothing while it's loading
                 }
+
+                var guide = AppEngClient.instance().getGuide();
+                try {
+                    export(client, outputFolder, guide);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                System.exit(0);
             });
         }
     }

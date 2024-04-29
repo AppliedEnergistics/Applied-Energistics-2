@@ -15,7 +15,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidStack;
 
 import appeng.blockentity.networking.EnergyCellBlockEntity;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
@@ -89,7 +88,7 @@ public class P2PTestPlots {
                 var tank = (SkyStoneTankBlockEntity) helper.getBlockEntity(outputPos);
                 var storage = tank.getTank();
                 helper.check(
-                        new FluidStack(Fluids.WATER, 1).isFluidEqual(storage.getFluid()),
+                        storage.getFluid().is(Fluids.WATER),
                         "No water stored");
                 helper.check(
                         storage.getFluidAmount() > 0,

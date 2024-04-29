@@ -34,7 +34,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.CommonHooks;
 
 import appeng.api.config.Actionable;
 import appeng.api.inventories.ISegmentedInventory;
@@ -309,7 +308,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     public static int getBurnTime(ItemStack is) {
-        return CommonHooks.getBurnTime(is, null);
+        return is.getBurnTime(null);
     }
 
     public static boolean hasBurnTime(ItemStack is) {

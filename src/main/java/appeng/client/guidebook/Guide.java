@@ -42,10 +42,10 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.validation.DirectoryValidator;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
 
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
@@ -345,12 +345,10 @@ public final class Guide implements PageCollection {
     private void watchDevelopmentSources() {
         var watcher = new GuideSourceWatcher(developmentSourceNamespace, developmentSourceFolder);
 
-        NeoForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent evt) -> {
-            if (evt.phase == TickEvent.Phase.START) {
-                var changes = watcher.takeChanges();
-                if (!changes.isEmpty()) {
-                    applyChanges(changes);
-                }
+        NeoForge.EVENT_BUS.addListener((ClientTickEvent.Pre evt) -> {
+            var changes = watcher.takeChanges();
+            if (!changes.isEmpty()) {
+                applyChanges(changes);
             }
         });
         Runtime.getRuntime().addShutdownHook(new Thread(watcher::close));
