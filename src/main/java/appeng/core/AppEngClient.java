@@ -44,6 +44,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
@@ -56,7 +57,6 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -156,10 +156,8 @@ public class AppEngClient extends AppEngBase {
         guide = createGuide(modEventBus);
         OpenGuideHotkey.init();
 
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, (TickEvent.ClientTickEvent e) -> {
-            if (e.phase == TickEvent.Phase.START) {
-                updateCableRenderMode();
-            }
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, (ClientTickEvent.Pre e) -> {
+            updateCableRenderMode();
         });
 
         modEventBus.addListener(this::clientSetup);
@@ -171,11 +169,9 @@ public class AppEngClient extends AppEngBase {
             PinnedKeys.clearPinnedKeys();
         });
 
-        NeoForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent e) -> {
-            if (e.phase == TickEvent.Phase.END) {
-                tickPinnedKeys(Minecraft.getInstance());
-                Hotkeys.checkHotkeys();
-            }
+        NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post e) -> {
+            tickPinnedKeys(Minecraft.getInstance());
+            Hotkeys.checkHotkeys();
         });
     }
 
