@@ -59,6 +59,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.localization.GuiText;
+import appeng.core.localization.InGameTooltip;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.localization.Tooltips;
 import appeng.datagen.providers.tags.ConventionTags;
@@ -274,7 +275,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
         var p2pFreq = stack.get(AEComponents.EXPORTED_P2P_FREQUENCY);
         if (p2pFreq != null) {
             final String freqTooltip = ChatFormatting.BOLD + Platform.p2p().toHexString(p2pFreq);
-            lines.add(Tooltips.of(Component.translatable("gui.tooltips.ae2.P2PFrequency", freqTooltip)));
+            lines.add(Tooltips.of(Component.translatable(InGameTooltip.P2PFrequency.getTranslationKey(), freqTooltip)));
         }
     }
 
