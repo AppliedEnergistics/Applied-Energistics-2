@@ -2,15 +2,11 @@ package appeng.client.guidebook.compiler;
 
 import java.util.Map;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
 
 public record Frontmatter(
@@ -37,7 +33,7 @@ public record Frontmatter(
                 position = getInt(navigationMap, "position");
             }
             var iconIdStr = getString(navigationMap, "icon");
-            CompoundTag iconNbt = getCompound(navigationMap, "icon_nbt");
+            Map<?, ?> iconComponents = getCompound(navigationMap, "icon_components");
 
             ResourceLocation parentId = null;
             if (parentIdStr != null) {
@@ -49,7 +45,7 @@ public record Frontmatter(
                 iconId = IdUtils.resolveId(iconIdStr, pageId.getNamespace());
             }
 
-            navigation = new FrontmatterNavigation(title, parentId, position, iconId, iconNbt);
+            navigation = new FrontmatterNavigation(title, parentId, position, iconId, iconComponents);
         }
 
         return new Frontmatter(
@@ -78,18 +74,14 @@ public record Frontmatter(
     }
 
     @Nullable
-    private static CompoundTag getCompound(Map<?, ?> map, String key) {
+    private static Map<?, ?> getCompound(Map<?, ?> map, String key) {
         var value = map.get(key);
         if (value == null) {
             return null;
         }
-        if (!(value instanceof String string)) {
-            throw new IllegalArgumentException("Key " + key + " has to be a string (SNBT format)!");
+        if (!(value instanceof Map<?, ?> mapValue)) {
+            throw new IllegalArgumentException("Key " + key + " has to be a map!");
         }
-        try {
-            return TagParser.parseTag(string);
-        } catch (CommandSyntaxException e) {
-            throw new IllegalArgumentException("Key " + key + " is not a valid SNBT string: " + string, e);
-        }
+        return mapValue;
     }
 }
