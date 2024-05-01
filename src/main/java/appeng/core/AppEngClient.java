@@ -150,6 +150,7 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerEntityLayerDefinitions);
         modEventBus.addListener(this::registerHotkeys);
         modEventBus.addListener(this::registerDimensionSpecialEffects);
+        modEventBus.addListener(InitScreens::init);
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
@@ -288,7 +289,6 @@ public class AppEngClient extends AppEngBase {
      */
     private void postClientSetup(Minecraft minecraft) {
         StyleManager.initialize(minecraft.getResourceManager());
-        InitScreens.init();
         InitStackRenderHandlers.init();
         InitRenderTypes.init();
 

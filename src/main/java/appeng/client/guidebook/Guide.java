@@ -46,6 +46,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.resource.ResourcePackLoader;
 
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
@@ -157,9 +158,8 @@ public final class Guide implements PageCollection {
 
             PackRepository packRepository = new PackRepository(
                     new ServerPacksSource(new DirectoryValidator(path -> false)));
-            net.neoforged.neoforge.resource.ResourcePackLoader.loadResourcePacks(packRepository,
-                    map -> net.neoforged.neoforge.resource.ResourcePackLoader.buildPackFinder(map,
-                            PackType.SERVER_DATA));
+            // This fires AddPackFindersEvent but it's probably ok.
+            ResourcePackLoader.populatePackRepository(packRepository, PackType.SERVER_DATA);
             packRepository.reload();
             packRepository.setSelected(packRepository.getAvailableIds());
 
