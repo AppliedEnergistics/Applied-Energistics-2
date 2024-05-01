@@ -21,7 +21,7 @@ public class StorageExportStrategy<T, S> implements StackExportStrategy {
     private final BlockCapabilityCache<T, Direction> cache;
     private final HandlerStrategy<T, S> handlerStrategy;
 
-    protected StorageExportStrategy(BlockCapability<T, Direction> capability,
+    public StorageExportStrategy(BlockCapability<T, Direction> capability,
             HandlerStrategy<T, S> handlerStrategy,
             ServerLevel level,
             BlockPos fromPos,
