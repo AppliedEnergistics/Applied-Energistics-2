@@ -6,6 +6,7 @@ import java.util.function.BiFunction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.StandingSignBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -51,7 +52,8 @@ public final class GuidebookPlot {
         plot.blockState(pos, Blocks.DARK_OAK_SIGN.defaultBlockState().setValue(StandingSignBlock.ROTATION,
                 RotationSegment.convertToSegment(Direction.NORTH)));
         plot.customizeBlockEntity(pos, BlockEntityType.SIGN, sign -> {
-            sign.getFrontText().setMessage(0, Component.literal(label));
+            var text = sign.getFrontText().setMessage(0, Component.literal(label)).setColor(DyeColor.WHITE);
+            sign.setText(text, true);
         });
 
         pos = pos.north();
