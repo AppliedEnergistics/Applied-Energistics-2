@@ -292,30 +292,18 @@ public class GuideScreen extends Screen {
      */
     @Nullable
     private String getExternalSourceName() {
-        var sourcePackId = currentPage.sourcePack();
-        // If the pages came directly from a mod resource pack, we have to use the mod-list to resolve its name
-        if (sourcePackId.startsWith("mod:")) {
-            var modId = sourcePackId.substring("mod:".length());
+        var pack = Minecraft.getInstance().getResourcePackRepository().getPack(currentPage.sourcePack());
+        if (pack != null && !pack.getId().equals("mod_resources")) {
+            return pack.getDescription().getString();
+        }
 
-            // Only show the source marker for pages that are not native to the guides mod
-            if (guide.getDefaultNamespace().equals(modId)) {
-                return null;
-            }
-
-            return ModList.get().getModContainerById(modId)
+        var pageNamespace = currentPage.id().getNamespace();
+        // If the page had an ID under another mod's namespace, we have to use the mod-list to resolve its name
+        if (!guide.getDefaultNamespace().equals(pageNamespace)) {
+            return ModList.get().getModContainerById(pageNamespace)
                     .map(ModContainer::getModInfo)
                     .map(IModInfo::getDisplayName)
                     .orElse(null);
-        }
-
-        // Only show the source marker for pages that are not native to the guides mod
-        if (guide.getDefaultNamespace().equals(sourcePackId)) {
-            return null;
-        }
-
-        var pack = Minecraft.getInstance().getResourcePackRepository().getPack(sourcePackId);
-        if (pack != null) {
-            return pack.getDescription().getString();
         }
 
         return null;
