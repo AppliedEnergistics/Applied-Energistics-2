@@ -27,8 +27,8 @@ import io.methvin.watcher.DirectoryChangeEvent;
 import io.methvin.watcher.DirectoryChangeListener;
 import io.methvin.watcher.DirectoryWatcher;
 
+import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.fml.ModList;
 
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
@@ -62,7 +62,7 @@ class GuideSourceWatcher {
         // The namespace does not necessarily *need* to be a mod id, but if it is, the source pack needs to
         // follow the specific mod-id format. Otherwise we assume it's a resource pack where namespace == pack id,
         // which is also not 100% correct.
-        this.sourcePackId = ModList.get().isLoaded(namespace) ? "mod:" + namespace : namespace;
+        this.sourcePackId = FabricLoaderImpl.INSTANCE.isModLoaded(namespace) ? "mod:" + namespace : namespace;
         this.sourceFolder = sourceFolder;
         if (!Files.isDirectory(sourceFolder)) {
             throw new RuntimeException("Cannot find the specified folder for the AE2 guidebook sources: "
