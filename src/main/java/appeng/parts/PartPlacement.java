@@ -21,12 +21,12 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartHelper;
 import appeng.core.AELog;
+import appeng.core.definitions.AEAttachmentTypes;
 import appeng.parts.networking.CablePart;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 public class PartPlacement {
-
     public static InteractionResult place(UseOnContext context) {
 
         var player = context.getPlayer();
@@ -134,6 +134,10 @@ public class PartPlacement {
         var replaceCablePlacement = tryReplaceCableSegment(level, partStack, pos, clickLocation);
         if (replaceCablePlacement != null) {
             return replaceCablePlacement;
+        }
+
+        if (player != null) {
+            side = player.getData(AEAttachmentTypes.HOLDING_CTRL) ? side.getOpposite() : side;
         }
 
         if (canPlacePartOnBlock(player, level, partStack, pos, side)) {
