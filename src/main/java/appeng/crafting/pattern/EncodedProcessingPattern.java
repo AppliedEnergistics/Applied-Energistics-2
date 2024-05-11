@@ -1,5 +1,6 @@
 package appeng.crafting.pattern;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -17,8 +18,8 @@ public record EncodedProcessingPattern(
         List<GenericStack> sparseInputs,
         List<GenericStack> sparseOutputs) {
     public EncodedProcessingPattern {
-        sparseInputs = List.copyOf(sparseInputs);
-        sparseOutputs = List.copyOf(sparseOutputs);
+        sparseInputs = Collections.unmodifiableList(sparseInputs);
+        sparseOutputs = Collections.unmodifiableList(sparseOutputs);
     }
 
     public static final Codec<EncodedProcessingPattern> CODEC = RecordCodecBuilder.create(builder -> builder.group(
