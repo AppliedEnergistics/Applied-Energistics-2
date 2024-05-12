@@ -25,7 +25,7 @@ buildscript {
 }
 
 plugins {
-    id "net.neoforged.gradle.userdev"
+    id "net.neoforged.neoforgegradle.moddev"
     id "maven-publish"
     id "com.diffplug.spotless"
     id "com.github.johnrengelman.shadow"
@@ -130,8 +130,6 @@ dependencies {
     }
     // Used for the guide export
     guideExportOnly("org.bytedeco:ffmpeg-platform:${ffmpeg_version}")
-
-    implementation "net.neoforged:neoforge:${neoforge_version}"
 
     // compile against provided APIs
     compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
@@ -260,51 +258,51 @@ test {
     environment("fmljunit.neoForgeVersion", neoforge_version)
     environment("fmljunit.fmlVersion", fmlVersion)
     environment("fmljunit.mcVersion", minecraft_version)
-    environment("fmljunit.neoFormVersion", neoFormRuntime.findIn(configurations.runtimeClasspath).first().specification.neoFormVersion)
+    //environment("fmljunit.neoFormVersion", neoFormRuntime.findIn(configurations.runtimeClasspath).first().specification.neoFormVersion)
 
-    jvmArgumentProviders.add(new CommandLineArgumentProvider() {
-        @Override
-        Iterable<String> asArguments() {
-
-            // This includes the system properties
-            var runArgs = runs.getByName("client").realiseJvmArguments()
-            for (var i = 0; i < runArgs.size(); i++) {
-                var arg = runArgs.get(i);
-                if (arg.startsWith("-DlegacyClassPath.file=")) {
-                    runArgs.set(i, "-DlegacyClassPath.file=${project.rootDir.absolutePath}/build/test_classpath.txt")
-                } else if ((arg == "-p" || arg == "--module-path") && i + 1 < runArgs.size()) {
-                    runArgs.set(i + 1, test.classpath
-                            .filter {
-                                it.name.contains("bootstraplauncher")
-                                        || it.name.contains("securejarhandler")
-                                        || it.name.contains("asm")
-                                        || it.name.contains("JarJarFileSystems")
-                                        || it.name.startsWith("mockito")
-                                        || it.name.startsWith("junit-jupiter")
-                                        || it.name.startsWith("junit-platform")
-                                        || it.name.startsWith("opentest4j")
-                                        || it.name.startsWith("assertj-")
-                                        || it.name.startsWith("guava-testlib-")
-                            }
-                            .join(File.pathSeparator))
-                }
-            }
-            println(runArgs)
-
-            return runArgs
-        }
-    })
-
-    afterEvaluate {
-        dependsOn tasks.named("writeMinecraftClasspathClient")
-    }
-
-    doFirst {
-        var classPathLines = tasks.getByName("writeMinecraftClasspathClient").output.asFile.get().readLines()
-        classPathLines.addAll(test.classpath
-                .filter { it.name.startsWith("fmljunit") })
-        new File("$aeDir/build/test_classpath.txt").text = classPathLines.join("\n")
-    }
+//    jvmArgumentProviders.add(new CommandLineArgumentProvider() {
+//        @Override
+//        Iterable<String> asArguments() {
+//
+//            // This includes the system properties
+//            var runArgs = runs.getByName("client").realiseJvmArguments()
+//            for (var i = 0; i < runArgs.size(); i++) {
+//                var arg = runArgs.get(i);
+//                if (arg.startsWith("-DlegacyClassPath.file=")) {
+//                    runArgs.set(i, "-DlegacyClassPath.file=${project.rootDir.absolutePath}/build/test_classpath.txt")
+//                } else if ((arg == "-p" || arg == "--module-path") && i + 1 < runArgs.size()) {
+//                    runArgs.set(i + 1, test.classpath
+//                            .filter {
+//                                it.name.contains("bootstraplauncher")
+//                                        || it.name.contains("securejarhandler")
+//                                        || it.name.contains("asm")
+//                                        || it.name.contains("JarJarFileSystems")
+//                                        || it.name.startsWith("mockito")
+//                                        || it.name.startsWith("junit-jupiter")
+//                                        || it.name.startsWith("junit-platform")
+//                                        || it.name.startsWith("opentest4j")
+//                                        || it.name.startsWith("assertj-")
+//                                        || it.name.startsWith("guava-testlib-")
+//                            }
+//                            .join(File.pathSeparator))
+//                }
+//            }
+//            println(runArgs)
+//
+//            return runArgs
+//        }
+//    })
+//
+//    afterEvaluate {
+//        dependsOn tasks.named("writeMinecraftClasspathClient")
+//    }
+//
+//    doFirst {
+//        var classPathLines = tasks.getByName("writeMinecraftClasspathClient").output.asFile.get().readLines()
+//        classPathLines.addAll(test.classpath
+//                .filter { it.name.startsWith("fmljunit") })
+//        new File("$aeDir/build/test_classpath.txt").text = classPathLines.join("\n")
+//    }
 
 //    [
 //            "-DignoreList=junit,securejarhandler,asm,asm-commons,asm-tree,asm-util,asm-analysis,bootstraplauncher,JarJarFileSystems,events-${fmlVersion}.jar,core-${fmlVersion}.jar,language-java,language-lowcode,language-minecraft,client-extra,neoforge-,mixinextras-",
@@ -336,71 +334,75 @@ def commonSystemProperties = [
         'appeng.tests'               : 'true',
 ]
 
-////////////////////
-// Forge/Minecraft
-minecraft {
-    accessTransformers {
-        file('src/main/resources/META-INF/accesstransformer.cfg')
-    }
-}
+neoForge {
+    version = project.neoforge_version
 
-runs {
-    configureEach {
-        workingDirectory = project.file('run')
-        systemProperties = commonSystemProperties
-        // property "mixin.debug.export", "true"
-        modSources = [sourceSets.main]
-
-        dependencies {
-            runtime configurations.shaded
-            runtime configurations.guideExportOnly
+    mods {
+        ae2 {
+            sourceSet sourceSets.main
         }
     }
-    client {
-        systemProperties = [
-                *                          : commonSystemProperties,
-                "appeng.tests"             : "true",
-                "guideDev.ae2guide.sources": file("guidebook").absolutePath,
-        ]
-    }
-    gametestWorld {
-        configure("client")
-        programArguments("--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld")
-        systemProperties = [
-                "appeng.tests"             : "true",
-                "guideDev.ae2guide.sources": file("guidebook").absolutePath,
-        ]
-    }
-    guide {
-        configure("client")
-        systemProperties = [
-                "guideDev.ae2guide.sources"    : file("guidebook").absolutePath,
-                "guideDev.ae2guide.startupPage": "ae2:index.md"
-        ]
-    }
-    server {
-    }
-    data {
-        programArguments = [
-                '--mod', 'ae2',
-                '--all',
-                '--output', file('src/generated/resources/').absolutePath,
-                '--existing', file('src/main/resources').absolutePath
-        ]
-    }
-    guideexport {
-        configure("client")
-        systemProperties = [
-                "appeng.runGuideExportAndExit": "true",
-                "appeng.guideExportFolder"    : file("$buildDir/guide").absolutePath,
-                "guideDev.ae2guide.sources"   : file("guidebook").absolutePath,
-                "appeng.version"              : project.version
-        ]
-    }
-    // Use to run the tests
-    gametest {
-        configure("gameTestServer")
-        workingDirectory = project.file("build/gametest")
+
+    runs {
+        configureEach {
+            gameDirectory = project.file('run')
+            systemProperties = commonSystemProperties
+            // property "mixin.debug.export", "true"
+
+            additionalRuntimeClasspathConfiguration.extendsFrom configurations.shaded
+            additionalRuntimeClasspathConfiguration.extendsFrom configurations.guideExportOnly
+        }
+        client {
+            client()
+            systemProperties = [
+                    *                          : commonSystemProperties,
+                    "appeng.tests"             : "true",
+                    "guideDev.ae2guide.sources": file("guidebook").absolutePath,
+            ]
+        }
+        gametestWorld {
+            client()
+            programArguments = [
+                    "--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld"
+            ]
+            systemProperties = [
+                    "appeng.tests"             : "true",
+                    "guideDev.ae2guide.sources": file("guidebook").absolutePath,
+            ]
+        }
+        guide {
+            client()
+            systemProperties = [
+                    "guideDev.ae2guide.sources"    : file("guidebook").absolutePath,
+                    "guideDev.ae2guide.startupPage": "ae2:index.md"
+            ]
+        }
+        server {
+            server()
+        }
+        data {
+            data()
+            programArguments = [
+                    '--mod', 'ae2',
+                    '--all',
+                    '--output', file('src/generated/resources/').absolutePath,
+                    '--existing', file('src/main/resources').absolutePath
+            ]
+        }
+        guideexport {
+            client()
+            systemProperties = [
+                    "appeng.runGuideExportAndExit": "true",
+                    "appeng.guideExportFolder"    : file("$buildDir/guide").absolutePath,
+                    "guideDev.ae2guide.sources"   : file("guidebook").absolutePath,
+                    "appeng.version"              : project.version
+            ]
+        }
+        // Use to run the tests
+        gametest {
+            type = "gameTestServer"
+            gameDirectory = project.file("build/gametest")
+        }
     }
 }
 

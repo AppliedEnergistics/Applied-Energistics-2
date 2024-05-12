@@ -5,14 +5,10 @@ plugins {
 
 archivesBaseName = "fmljunit"
 
-dependencies {
-    implementation(platform("org.junit:junit-bom:${project.junit_version}"))
-    implementation("org.junit.jupiter:junit-jupiter-api")
-    compileOnly("org.junit.platform:junit-platform-launcher")
-
-    compileOnly "net.neoforged.fancymodloader:loader:3.0.18"
-    compileOnly "org.mockito:mockito-junit-jupiter:5.3.1"
-    compileOnly "cpw.mods:bootstraplauncher:1.1.8"
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 repositories {
@@ -27,4 +23,14 @@ repositories {
         name = 'NeoForged'
         url = 'https://maven.neoforged.net/releases'
     }
+}
+
+dependencies {
+    implementation(platform("org.junit:junit-bom:${project.junit_version}"))
+    implementation("org.junit.jupiter:junit-jupiter-api")
+    compileOnly("org.junit.platform:junit-platform-launcher")
+
+    compileOnly "net.neoforged.fancymodloader:loader:3.0.18"
+    compileOnly "org.mockito:mockito-junit-jupiter:5.3.1"
+    compileOnly "cpw.mods:bootstraplauncher:1.1.8"
 }
