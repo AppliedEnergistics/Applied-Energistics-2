@@ -48,7 +48,7 @@ public enum AEColor implements StringRepresentable {
     LIGHT_GRAY("Light Gray", "gui.ae2.LightGray", "light_gray", DyeColor.LIGHT_GRAY, 0x7e7e7e, 0xa09fa0, 0xc4c4c4, 0x000000),
     GRAY("Gray", "gui.ae2.Gray", "gray", DyeColor.GRAY, 0x4f4f4f, 0x6c6b6c, 0x949294, 0x000000),
     BLACK("Black", "gui.ae2.Black", "black", DyeColor.BLACK, 0x131313, 0x272727, 0x3b3b3b, 0xFFFFFF),
-    LIME("Lime", "gui.ae2.Lime", "lime", DyeColor.LIME, 0x70e259, 0x70e259, 0xb3f86d, 0x000000),
+    LIME("Lime", "gui.ae2.Lime", "lime", DyeColor.LIME, 0x4ec04e, 0x70e259, 0xb3f86d, 0x000000),
     YELLOW("Yellow", "gui.ae2.Yellow", "yellow", DyeColor.YELLOW, 0xffcf40, 0xffe359, 0xf4ff80, 0x000000),
     ORANGE("Orange", "gui.ae2.Orange", "orange", DyeColor.ORANGE, 0xd9782f, 0xeca23c, 0xf2ba49, 0x000000),
     BROWN("Brown", "gui.ae2.Brown", "brown", DyeColor.BROWN, 0x6e4a12, 0x7e5c16, 0x8e6e1a, 0x000000),
