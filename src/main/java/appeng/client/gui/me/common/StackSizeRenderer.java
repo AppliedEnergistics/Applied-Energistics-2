@@ -42,7 +42,6 @@ public class StackSizeRenderer {
         final float scaleFactor = largeFonts ? 0.85f : 0.666f;
         final float inverseScaleFactor = 1.0f / scaleFactor;
         final int offset = largeFonts ? 0 : -1;
-//        text = "444M";
 
         RenderSystem.disableBlend();
         final int X = (int) ((xPos + offset + 16.0f + 2.0f - fontRenderer.width(text) * scaleFactor) * inverseScaleFactor);

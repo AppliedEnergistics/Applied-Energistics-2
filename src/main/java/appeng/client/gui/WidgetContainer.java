@@ -104,7 +104,6 @@ public class WidgetContainer {
      * position/rectangle is instead sourced from the screen style.
      */
     public AE2Button addButton(String id, Component text, OnPress action) {
-//        var button = TexturedButton.builder(text, action).build();
         var button = new AE2Button(text, action);
         add(id, button);
         return button;
