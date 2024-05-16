@@ -28,16 +28,16 @@ import appeng.menu.SlotSemantics;
  * Implements the panel for encoding stonecutting recipes.
  */
 public final class StonecuttingEncodingPanel extends EncodingModePanel {
-    private static final Blitter BG = Blitter.texture("guis/pattern_modes.png").src(0, 141, 126, 68);
+    private static final Blitter BG = Blitter.texture("guis/pattern_modes.png").src(0, 140, 124, 66);
     private static final Blitter BG_SLOT = BG
             .copy()
-            .src(126, 141, 16, 18);
+            .src(124, 140, 18, 18);
     private static final Blitter BG_SLOT_SELECTED = BG
             .copy()
-            .src(126, 159, 16, 18);
+            .src(124, 158, 18, 18);
     private static final Blitter BG_SLOT_HOVER = BG
             .copy()
-            .src(126, 177, 16, 18);
+            .src(124, 176, 18, 18);
 
     private static final int COLS = 4;
     private static final int ROWS = 3;
@@ -60,10 +60,8 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
 
     @Override
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
-        BG.dest(bounds.getX() + 9, bounds.getY() + bounds.getHeight() - 164).blit(guiGraphics);
-
+        BG.dest(bounds.getX() + 8, bounds.getY() + bounds.getHeight() - 163).blit(guiGraphics);
         drawRecipes(guiGraphics, bounds, mouse);
-
     }
 
     private RegistryAccess getRegistryAccess() {
@@ -92,10 +90,10 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
 
             var renderX = bounds.getX() + slotBounds.getX();
             var renderY = bounds.getY() + slotBounds.getY();
-            blitter.dest(renderX, renderY - 1).blit(guiGraphics);
+            blitter.dest(renderX, renderY).blit(guiGraphics);
             ItemStack resultItem = recipe.value().getResultItem(getRegistryAccess());
-            guiGraphics.renderItem(resultItem, renderX, renderY);
-            guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX, renderY);
+            guiGraphics.renderItem(resultItem, renderX + 1, renderY + 1);
+            guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX + 1, renderY + 1);
         }
     }
 
@@ -145,8 +143,8 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     private Rect2i getRecipeBounds(int index) {
         var col = index % COLS;
         var row = index / COLS;
-        int slotX = x + 44 + col * BG_SLOT.getSrcWidth();
-        int slotY = y + 8 + row * BG_SLOT.getSrcHeight();
+        int slotX = x + 33 + col * BG_SLOT.getSrcWidth();
+        int slotY = y + 7 + row * BG_SLOT.getSrcHeight();
         return new Rect2i(slotX, slotY, BG_SLOT.getSrcWidth(), BG_SLOT.getSrcHeight());
     }
 

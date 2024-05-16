@@ -1,6 +1,3 @@
 {
-  "parent": "ae2:block/drive/drive_base",
-  "textures": {
-    "front": "ae2:block/drive/drive_front_flat"
-  }
+  "parent": "ae2:block/drive/drive_base"
 }

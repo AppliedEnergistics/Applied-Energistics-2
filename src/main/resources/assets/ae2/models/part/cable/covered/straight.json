@@ -1,38 +1,21 @@
 {
-  "textures": {
-    "base": "ae2:part/cable/covered/_color_"
-  },
-  "elements": [
-    {
-      "name": "Element",
-      "from": [5.0, 5.0, 0.0],
-      "to": [11.0, 11.0, 16.0],
-      "faces": {
-        "north": {
-          "texture": "#base",
-          "uv": [5.0, 5.0, 11.0, 11.0]
-        },
-        "east": {
-          "texture": "#base",
-          "uv": [0.0, 5.0, 5.0, 11.0]
-        },
-        "south": {
-          "texture": "#base",
-          "uv": [11.0, 5.0, 5.0, 11.0]
-        },
-        "west": {
-          "texture": "#base",
-          "uv": [5.0, 5.0, 0.0, 11.0]
-        },
-        "up": {
-          "texture": "#base",
-          "uv": [5.0, 0.0, 11.0, 5.0]
-        },
-        "down": {
-          "texture": "#base",
-          "uv": [5.0, 11.0, 11.0, 16.0]
-        }
-      }
-    }
-  ]
+	"credit": "Made with Blockbench",
+	"textures": {
+		"base": "ae2:part/cable/smart/lime"
+	},
+	"elements": [
+		{
+			"name": "Element",
+			"from": [5, 5, 0],
+			"to": [11, 11, 16],
+			"faces": {
+				"north": {"uv": [10, 0, 16, 6], "texture": "#base"},
+				"east": {"uv": [0, 0, 6, 16], "rotation": 90, "texture": "#base"},
+				"south": {"uv": [16, 0, 10, 6], "texture": "#base"},
+				"west": {"uv": [0, 16, 6, 0], "rotation": 90, "texture": "#base"},
+				"up": {"uv": [0, 0, 6, 16], "texture": "#base"},
+				"down": {"uv": [0, 0, 6, 16], "texture": "#base"}
+			}
+		}
+	]
 }

@@ -4,6 +4,6 @@
     "front": "ae2:part/storage_monitor",
     "front_bright": "ae2:part/storage_monitor_bright",
     "front_medium": "ae2:part/storage_monitor_medium",
-    "front_dark": "ae2:part/storage_monitor_dark"
+    "front_dark": "ae2:part/storage_monitor_dark_locked"
   }
 }

@@ -1,48 +1,45 @@
 {
-  "parent": "block/block",
-  "textures": {
-    "wood": "ae2:block/crank",
-    "particle": "ae2:block/crank"
-  },
-  "elements": [
-    {
-      "name": "Crank Shaft",
-      "from": [7.2, 0.1, 7.2],
-      "to": [8.8, 9.7, 8.8],
-      "faces": {
-        "north": { "uv": [7.2, 6.3, 8.8, 15.9], "texture": "#wood" },
-        "east": { "uv": [7.2, 6.3, 8.8, 15.9], "texture": "#wood" },
-        "south": { "uv": [7.2, 6.3, 8.8, 15.9], "texture": "#wood" },
-        "west": { "uv": [7.2, 6.3, 8.8, 15.9], "texture": "#wood" },
-        "up": { "uv": [7.2, 7.2, 8.8, 8.8], "texture": "#wood" },
-        "down": { "uv": [7.2, 7.2, 8.8, 8.8], "texture": "#wood" }
-      }
-    },
-    {
-      "name": "Crank Handle",
-      "from": [8.8, 8.1, 7.2],
-      "to": [13.6, 9.7, 8.8],
-      "faces": {
-        "north": { "uv": [2.4, 6.3, 7.2, 7.9], "texture": "#wood" },
-        "east": { "uv": [7.2, 6.3, 8.8, 7.9], "texture": "#wood" },
-        "south": { "uv": [8.8, 6.3, 13.6, 7.9], "texture": "#wood" },
-        "west": { "uv": [7.2, 6.3, 8.8, 7.9], "texture": "#wood" },
-        "up": { "uv": [8.8, 7.2, 13.6, 8.8], "texture": "#wood" },
-        "down": { "uv": [8.8, 7.2, 13.6, 8.8], "texture": "#wood" }
-      }
-    },
-    {
-      "name": "Crank Base",
-      "from": [6, 0, 6],
-      "to": [10, 3, 10],
-      "faces": {
-        "north": { "uv": [0, 0, 3, 4], "rotation": 270, "texture": "#wood" },
-        "east": { "uv": [0, 0, 3, 4], "rotation": 270, "texture": "#wood" },
-        "south": { "uv": [0, 0, 3, 4], "rotation": 270, "texture": "#wood" },
-        "west": { "uv": [0, 0, 3, 4], "rotation": 270, "texture": "#wood" },
-        "up": { "uv": [3, 0, 7, 4], "texture": "#wood" },
-        "down": { "uv": [7, 0, 11, 4], "texture": "#wood" }
-      }
-    }
-  ]
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"particle": "ae2:block/crank",
+		"wood": "ae2:block/crank"
+	},
+	"elements": [
+		{
+			"name": "Crank Base",
+			"from": [6, 0, 6],
+			"to": [10, 3, 10],
+			"faces": {
+				"north": {"uv": [0, 0, 3, 4], "rotation": 270, "texture": "#wood"},
+				"east": {"uv": [0, 4, 3, 8], "rotation": 270, "texture": "#wood"},
+				"south": {"uv": [0, 8, 3, 4], "rotation": 270, "texture": "#wood"},
+				"west": {"uv": [0, 4, 3, 0], "rotation": 270, "texture": "#wood"},
+				"up": {"uv": [3, 0, 7, 4], "texture": "#wood"},
+				"down": {"uv": [7, 0, 11, 4], "texture": "#wood", "cullface": "down"}
+			}
+		},
+		{
+			"from": [7, 3, 7],
+			"to": [9, 9, 9],
+			"faces": {
+				"north": {"uv": [2, 8, 4, 14], "texture": "#wood"},
+				"east": {"uv": [0, 8, 2, 14], "texture": "#wood"},
+				"south": {"uv": [6, 8, 8, 14], "texture": "#wood"},
+				"west": {"uv": [4, 8, 6, 14], "texture": "#wood"}
+			}
+		},
+		{
+			"from": [7, 9, 7],
+			"to": [14, 11, 9],
+			"faces": {
+				"north": {"uv": [8, 8, 15, 10], "texture": "#wood"},
+				"east": {"uv": [10, 4, 12, 6], "texture": "#wood"},
+				"south": {"uv": [3, 4, 10, 6], "texture": "#wood"},
+				"west": {"uv": [10, 6, 12, 8], "texture": "#wood"},
+				"up": {"uv": [3, 6, 10, 8], "texture": "#wood"},
+				"down": {"uv": [8, 10, 15, 12], "texture": "#wood"}
+			}
+		}
+	]
 }

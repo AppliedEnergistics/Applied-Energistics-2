@@ -47,7 +47,7 @@ import appeng.menu.slot.AppEngSlot;
 public final class UpgradesPanel implements ICompositeWidget {
 
     private static final int SLOT_SIZE = 18;
-    private static final int PADDING = 7;
+    private static final int PADDING = 5;
     private static final int MAX_ROWS = 8;
 
     private static final Blitter BACKGROUND = Blitter.texture("guis/extra_panels.png", 128, 128);

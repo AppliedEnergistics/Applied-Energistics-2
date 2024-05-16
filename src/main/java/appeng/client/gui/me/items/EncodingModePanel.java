@@ -39,7 +39,7 @@ public abstract class EncodingModePanel implements ICompositeWidget {
 
     @Override
     public Rect2i getBounds() {
-        return new Rect2i(x, y, 126, 68);
+        return new Rect2i(x, y, 124, 66);
     }
 
     @Override

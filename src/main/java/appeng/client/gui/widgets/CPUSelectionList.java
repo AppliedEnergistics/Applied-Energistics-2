@@ -80,11 +80,6 @@ public class CPUSelectionList implements ICompositeWidget {
             var tooltipLines = new ArrayList<Component>();
             tooltipLines.add(getCpuName(cpu));
 
-            // Show the amount of storage in the Crafting CPU
-            tooltipLines.add(ButtonToolTips.CpuStatusStorage.text(Tooltips.ofBytes(cpu.storage()))
-                    // Vanilla text formatting is broken and inherits the color of the 1st placeholder in the text
-                    .withStyle(ChatFormatting.GRAY));
-
             // Show the number of coprocessors if any are installed
             var coProcessors = cpu.coProcessors();
             if (coProcessors == 1) {
@@ -94,6 +89,11 @@ public class CPUSelectionList implements ICompositeWidget {
                 tooltipLines.add(ButtonToolTips.CpuStatusCoProcessors.text(Tooltips.ofNumber(coProcessors))
                         .withStyle(ChatFormatting.GRAY));
             }
+
+            // Show the amount of storage in the Crafting CPU
+            tooltipLines.add(ButtonToolTips.CpuStatusStorage.text(Tooltips.ofBytes(cpu.storage()))
+                    // Vanilla text formatting is broken and inherits the color of the 1st placeholder in the text
+                    .withStyle(ChatFormatting.GRAY));
 
             // Show if the CPU is player or automation only
             var modeText = switch (cpu.mode()) {
@@ -136,7 +136,7 @@ public class CPUSelectionList implements ICompositeWidget {
     private CraftingStatusMenu.CraftingCpuListEntry hitTestCpu(Point mousePos) {
         var relX = mousePos.getX() - bounds.getX();
         var relY = mousePos.getY() - bounds.getY();
-        relX -= 9;
+        relX -= 8;
         if (relX < 0 || relX >= buttonBg.getSrcWidth()) {
             return null;
         }
@@ -177,7 +177,7 @@ public class CPUSelectionList implements ICompositeWidget {
                 this.bounds.getHeight()).blit(guiGraphics);
 
         // Move to first button
-        x += 9;
+        x += 8;
         y += 19;
 
         var pose = guiGraphics.pose();
@@ -198,7 +198,7 @@ public class CPUSelectionList implements ICompositeWidget {
             var name = getCpuName(cpu);
             pose.pushPose();
             pose.translate(x + 3, y + 3, 0);
-            pose.scale(0.8f, 0.8f, 1);
+            pose.scale(0.666f, 0.666f, 1);
             guiGraphics.drawString(font, name, 0, 0, textColor.toARGB(), false);
             pose.popPose();
 
@@ -207,12 +207,13 @@ public class CPUSelectionList implements ICompositeWidget {
             var currentJob = cpu.currentJob();
             if (currentJob != null) {
                 // Show what was initially requested
-                infoBar.add(Icon.CRAFT_HAMMER, 0.6f);
-                infoBar.addSpace(2);
+                infoBar.add(Icon.S_CRAFT, 1f, x + 2, y + 10);
+//                infoBar.addSpace(-4);
                 var craftAmt = currentJob.what().formatAmount(currentJob.amount(), AmountFormat.SLOT);
-                infoBar.add(craftAmt, textColor.toARGB(), 0.6f);
-                infoBar.addSpace(1);
-                infoBar.add(currentJob.what(), 0.6f);
+                infoBar.add(craftAmt, textColor.toARGB(), 0.666f, x + 14, y + 14);
+//                infoBar.addSpace(2);
+//                infoBar.add(Icon.SLOT_BACKGROUND, 0.8f, x + 47, y + 2);
+                infoBar.add(currentJob.what(), 0.666f, x + 55, y + 10);
 
                 // Draw a bar at the bottom of the button to indicate job progress
                 var progress = (int) (cpu.progress() * (buttonBg.getSrcWidth() - 1) / Math.max(1, cpu.totalItems()));
@@ -224,23 +225,24 @@ public class CPUSelectionList implements ICompositeWidget {
                         menu.getSelectedCpuSerial() == cpu.serial() ? 0xFFFFFFFF : (0xFF000000 + selectedColor));
 
             } else {
-                infoBar.add(Icon.LEVEL_ITEM, 0.6f);
-                infoBar.addSpace(1);
+                infoBar.add(Icon.S_STORAGE, 1f,x + 24, y + 10);
+//                infoBar.addSpace(-4);
 
                 String storageAmount = formatStorage(cpu);
-                infoBar.add(storageAmount, textColor.toARGB(), 0.6f);
-                infoBar.addSpace(1);
+                infoBar.add(storageAmount, textColor.toARGB(), 0.666f, x + 36, y + 14);
+//                infoBar.addSpace(2);
 
                 if (cpu.coProcessors() > 0) {
-                    infoBar.add(Icon.BLOCKING_MODE_NO, 0.6f);
+                    infoBar.add(Icon.S_PROCESSOR, 1f, x + 2, y + 10);
+//                    infoBar.addSpace(-4);
                     String coProcessorCount = String.valueOf(cpu.coProcessors());
-                    infoBar.add(coProcessorCount, textColor.toARGB(), 0.6f);
-                    infoBar.addSpace(1);
+                    infoBar.add(coProcessorCount, textColor.toARGB(), 0.666f, x + 14, y + 14);
+//                    infoBar.addSpace(4);
                 }
 
                 switch (cpu.mode()) {
-                    case PLAYER_ONLY -> infoBar.add(AEParts.TERMINAL, 0.6f);
-                    case MACHINE_ONLY -> infoBar.add(AEParts.EXPORT_BUS, 0.6f);
+                    case PLAYER_ONLY -> infoBar.add(Icon.S_TERMINAL, 1f, x + 55, y + 10);
+                    case MACHINE_ONLY -> infoBar.add(Icon.S_MACHINE, 1f, x + 55, y + 10);
                 }
             }
 

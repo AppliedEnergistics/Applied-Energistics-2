@@ -18,6 +18,7 @@
 
 package appeng.client.gui.me.crafting;
 
+import appeng.client.gui.widgets.Scrollbar;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -39,7 +40,7 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusMenu> 
 
         AESubScreen.addBackButton(menu, "back", widgets);
 
-        var scrollbar = widgets.addScrollBar("selectCpuScrollbar");
+        var scrollbar = widgets.addScrollBar("selectCpuScrollbar", Scrollbar.BIG);
         widgets.add("selectCpuList", new CPUSelectionList(menu, scrollbar, style));
     }
 

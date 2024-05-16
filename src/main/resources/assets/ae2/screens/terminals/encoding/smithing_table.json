@@ -3,30 +3,30 @@
   "$schema": "../../schema.json",
   "slots": {
     "SMITHING_TABLE_TEMPLATE": {
-      "left": 21,
+      "left": 15,
       "bottom": 138
     },
     "SMITHING_TABLE_BASE": {
-      "left": 39,
+      "left": 33,
       "bottom": 138
     },
     "SMITHING_TABLE_ADDITION": {
-      "left": 57,
+      "left": 51,
       "bottom": 138
     },
     "SMITHING_TABLE_RESULT": {
-      "left": 111,
+      "left": 109,
       "bottom": 138
     }
   },
   "widgets": {
     "smithingTableSubstitutions": {
-      "left": 84,
-      "bottom": 163
+      "left": 24,
+      "bottom": 149
     },
     "smithingTableClearPattern": {
-      "left": 74,
-      "bottom": 163
+      "left": 14,
+      "bottom": 149
     }
   }
 }

@@ -3,13 +3,13 @@
   "$schema": "../../schema.json",
   "slots": {
     "STONECUTTING_INPUT": {
-      "left": 21,
-      "bottom": 139
+      "left": 15,
+      "bottom": 138
     }
   },
   "widgets": {
     "stonecuttingPatternModeScrollbar": {
-      "left": 119,
+      "left": 118,
       "bottom": 157,
       "height": 54
     }

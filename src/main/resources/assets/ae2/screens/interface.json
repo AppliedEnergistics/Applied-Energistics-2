@@ -1,6 +1,6 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json"],
+  "includes": ["common/common.json", "common/player_inventory.json", "common/toolbox.json"],
   "background": {
     "texture": "guis/interface.png",
     "srcRect": [0, 0, 176, 205]
@@ -48,10 +48,10 @@
   },
   "widgets": {
     "openPriority": {
-      "left": 154,
-      "top": 0,
-      "width": 16,
-      "height": 16
+      "left": 152,
+      "top": -5,
+      "width": 20,
+      "height": 20
     },
     "amtButton1": {
       "left": 8,

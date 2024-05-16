@@ -11,24 +11,24 @@
       "top": 47
     },
     "MACHINE_INPUT": {
-      "right": -17,
-      "top": 10
+      "right": -8,
+      "top": 21
     },
     "MACHINE_OUTPUT": {
-      "right": -17,
-      "top": 68
+      "right": -8,
+      "top": 79
     }
   },
   "images": {
     "linkPanel": {
       "texture": "guis/wireless_access_point.png",
-      "srcRect": [198, 0, 44, 98]
+      "srcRect": [198, 0, 36, 90]
     }
   },
   "widgets": {
     "linkPanel": {
-      "right": -3,
-      "top": 0
+      "right": 2,
+      "top": 15
     }
   },
   "text": {

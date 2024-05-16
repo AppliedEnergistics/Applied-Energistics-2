@@ -83,20 +83,20 @@ public abstract class IconButton extends Button implements ITooltip {
             if (isFocused()) {
                 // Draw 1px border with 4 quads, don't rely on the background as it can be disabled.
                 // top
-                guiGraphics.fill(getX() - 1, getY() - 1, getX() + width + 1, getY(), 0xFFFFFFFF);
+                guiGraphics.fill(getX() - 1, getY() - 1, getX() + width + 1, getY(), 0xFF7da9d2);
                 // left
-                guiGraphics.fill(getX() - 1, getY(), getX(), getY() + height, 0xFFFFFFFF);
+                guiGraphics.fill(getX() - 1, getY(), getX(), getY() + height, 0xFF7da9d2);
                 // right
-                guiGraphics.fill(getX() + width, getY(), getX() + width + 1, getY() + height, 0xFFFFFFFF);
+                guiGraphics.fill(getX() + width, getY(), getX() + width + 1, getY() + height, 0xFF7da9d2);
                 // bottom
-                guiGraphics.fill(getX() - 1, getY() + height, getX() + width + 1, getY() + height + 1, 0xFFFFFFFF);
+                guiGraphics.fill(getX() - 1, getY() + height, getX() + width + 1, getY() + height + 1, 0xFF7da9d2);
             }
 
             if (this.halfSize) {
                 var pose = guiGraphics.pose();
                 pose.pushPose();
                 pose.translate(getX(), getY(), 0.0F);
-                pose.scale(0.5f, 0.5f, 1.f);
+                pose.scale(1.f, 1.f, 1.f);
 
                 if (!disableBackground) {
                     Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(0, 0).blit(guiGraphics);

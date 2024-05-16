@@ -223,7 +223,7 @@ public class RestrictedInputSlot extends AppEngSlot {
         /**
          * Only accepts {@link AEItems#CRAFTING_PATTERN} and {@link AEItems#STONECUTTING_PATTERN}.
          */
-        MOLECULAR_ASSEMBLER_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
+        MOLECULAR_ASSEMBLER_PATTERN(Icon.BACKGROUND_BLANK_PATTERN),
         /**
          * An encoded pattern from any mod (AE2 or otherwise). Delegates to AE2 API to identify such items.
          */

@@ -1,13 +1,13 @@
 {
   "$schema": "../schema.json",
   "palette": {
-    "DEFAULT_TEXT_COLOR": "#404040",
-    "MUTED_TEXT_COLOR": "#7E7E7E",
-    "SELECTION_COLOR": "#00D5FF",
-    "TEXTFIELD_PLACEHOLDER": "#AEAEAE",
+    "DEFAULT_TEXT_COLOR": "#413f54",
+    "MUTED_TEXT_COLOR": "#878fa5",
+    "SELECTION_COLOR": "#9cd3ff",
+    "TEXTFIELD_PLACEHOLDER": "#dedfe3",
     "TEXTFIELD_SELECTION": "#FF0000FF",
     "TEXTFIELD_ERROR": "#FF1900",
-    "TEXTFIELD_TEXT": "#FFFFFF",
+    "TEXTFIELD_TEXT": "#f2f2f2",
     "ERROR": "#CE2401"
   }
 }

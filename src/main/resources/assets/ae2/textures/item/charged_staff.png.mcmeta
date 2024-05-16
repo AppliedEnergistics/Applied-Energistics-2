@@ -1,52 +1,10 @@
 {
   "animation": {
-  "interpolate": true,
-  	"frames": [
-  		{
-  			"index": 0,
-  			"time": 40
-  		},
-  		{
-  			"index": 1,
-  			"time": 2
-  		},
-  		{
-  			"index": 2,
-  			"time": 2
-  		},
-  		{
-  			"index": 3,
-  			"time": 2
-  		}
-  		,
-  		{
-  			"index": 4,
-  			"time": 2
-  		},
-  		{
-  			"index": 5,
-  			"time": 2
-  		},
-  		{
-  			"index": 6,
-  			"time": 2
-  		},
-  		{
-  			"index": 7,
-  			"time": 2
-  		},
-  		{
-  			"index": 8,
-  			"time": 2
-  		},
-  		{
-  			"index": 9,
-  			"time": 2
-  		},
-  		{
-  			"index": 10,
-  			"time": 2
-  		}
-  	]
-  }  
+    "interpolate": true,
+    "frametime": 1,
+    "frames": [
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+      {"index": 15, "time": 25}
+    ]
+  }
 }

@@ -20,6 +20,7 @@ package appeng.client.gui.me.crafting;
 
 import java.text.NumberFormat;
 
+import net.minecraft.ChatFormatting;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -52,7 +53,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
         super(menu, playerInventory, title, style);
         this.table = new CraftConfirmTableRenderer(this, 9, 19);
 
-        this.scrollbar = widgets.addScrollBar("scrollbar");
+        this.scrollbar = widgets.addScrollBar("scrollbar", Scrollbar.BIG);
 
         this.start = widgets.addButton("start", GuiText.Start.text(), this::start);
         this.start.active = false;

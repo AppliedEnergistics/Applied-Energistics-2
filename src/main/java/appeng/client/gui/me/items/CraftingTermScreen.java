@@ -38,13 +38,15 @@ public class CraftingTermScreen<C extends CraftingTermMenu> extends MEStorageScr
             Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
-        ActionButton clearBtn = new ActionButton(ActionItems.STASH, btn -> menu.clearCraftingGrid());
+        ActionButton clearBtn = new ActionButton(ActionItems.S_STASH, btn -> menu.clearCraftingGrid());
         clearBtn.setHalfSize(true);
+        clearBtn.setDisableBackground(true);
         widgets.add("clearCraftingGrid", clearBtn);
 
-        ActionButton clearToPlayerInvBtn = new ActionButton(ActionItems.STASH_TO_PLAYER_INV,
+        ActionButton clearToPlayerInvBtn = new ActionButton(ActionItems.S_STASH_TO_PLAYER_INV,
                 btn -> menu.clearToPlayerInventory());
         clearToPlayerInvBtn.setHalfSize(true);
+        clearToPlayerInvBtn.setDisableBackground(true);
         widgets.add("clearToPlayerInv", clearToPlayerInvBtn);
     }
 

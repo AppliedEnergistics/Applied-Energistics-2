@@ -70,7 +70,7 @@ import appeng.util.Platform;
 import appeng.util.inv.PlayerInternalInventory;
 
 public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
-    private static final int DEFAULT_BASE_COLOR = 0xDDDDDD;
+    private static final int DEFAULT_BASE_COLOR = 0x9cd3ff;
 
     public MemoryCardItem(Properties properties) {
         super(properties);

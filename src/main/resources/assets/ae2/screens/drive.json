@@ -25,8 +25,10 @@
   },
   "widgets": {
     "openPriority": {
-      "left": 154,
-      "top": 0
+      "left": 152,
+      "top": -5,
+      "width": 20,
+      "height": 20
     }
   }
 }

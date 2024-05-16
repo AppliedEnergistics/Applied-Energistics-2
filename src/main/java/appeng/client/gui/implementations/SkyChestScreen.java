@@ -32,4 +32,9 @@ public class SkyChestScreen extends AEBaseScreen<SkyChestMenu> {
         super(menu, playerInv, title, style);
     }
 
+    @Override
+    protected boolean shouldAddToolbar() {
+        return false; // Don't add the toolbar for SkyChestScreen
+    }
+
 }

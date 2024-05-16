@@ -1,0 +1,15 @@
+{
+  "variants": {
+    "": {
+      "model": "ae2:block/chiseled_quartz_block"
+    }
+  },
+  "athena:loader": "athena:limited_pillar",
+  "ctm_textures": {
+    "bottom": "ae2:block/chiseled_quartz_block_bottom",
+    "center": "ae2:block/chiseled_quartz_block_side",
+    "self": "ae2:block/chiseled_quartz_block_side",
+    "top": "ae2:block/chiseled_quartz_block_top",
+    "particle": "ae2:block/cut_quartz_block"
+  }
+}

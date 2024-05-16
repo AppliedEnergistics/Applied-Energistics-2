@@ -1,56 +1,54 @@
 {
-  "textures": {
-    "sides": "ae2:part/monitor_sides_status",
-    "back": "ae2:part/transition_plane_back",
-    "indicator": "ae2:part/monitor_sides_status_has_channel"
-  },
-  "elements": [
-    {
-      "from": [5, 5, 1],
-      "to": [11, 11, 2],
-      "faces": {
-        "east": {
-          "texture": "#sides"
-        },
-        "south": {
-          "texture": "#back"
-        },
-        "west": {
-          "texture": "#sides"
-        },
-        "up": {
-          "texture": "#sides"
-        },
-        "down": {
-          "texture": "#sides"
-        }
-      }
-    },
-    {
-      "from": [5, 5, 1],
-      "to": [11, 11, 2],
-      "faces": {
-        "down": {
-          "texture": "#indicator",
-          "tintindex": 1,
-          "unlit": true
-        },
-        "up": {
-          "texture": "#indicator",
-          "tintindex": 1,
-          "unlit": true
-        },
-        "east": {
-          "texture": "#indicator",
-          "tintindex": 1,
-          "unlit": true
-        },
-        "west": {
-          "texture": "#indicator",
-          "tintindex": 1,
-          "unlit": true
-        }
-      }
-    }
-  ]
+	"credit": "Made with Blockbench",
+	"textures": {
+		"sides": "ae2:part/monitor_sides_status",
+		"back": "ae2:part/transition_plane_back",
+		"indicator": "ae2:part/monitor_sides_status_has_channel",
+		"particle": "ae2:part/transition_plane_back"
+	},
+	"elements": [
+		{
+			"from": [5, 5, 1],
+			"to": [11, 11, 2],
+			"faces": {
+				"east": {"uv": [14, 5, 15, 11], "texture": "#sides"},
+				"south": {"uv": [5, 5, 11, 11], "texture": "#back"},
+				"west": {"uv": [1, 5, 2, 11], "texture": "#sides"},
+				"up": {"uv": [5, 1, 11, 2], "texture": "#sides"},
+				"down": {"uv": [5, 14, 11, 15], "texture": "#sides"}
+			}
+		},
+		{
+			"from": [5, 7, 1],
+			"to": [6, 9, 2],
+			"faces": {
+				"south": {"uv": [0, 7, 1, 9], "texture": "#indicator", "tintindex": 1, "unlit": true},
+				"west": {"uv": [0, 7, 1, 9], "texture": "#indicator", "tintindex": 1, "unlit": true}
+			}
+		},
+		{
+			"from": [10, 7, 1],
+			"to": [11, 9, 2],
+			"faces": {
+				"east": {"uv": [15, 7, 16, 9], "texture": "#indicator", "tintindex": 1, "unlit": true},
+				"south": {"uv": [15, 7, 16, 9], "texture": "#indicator", "tintindex": 1, "unlit": true}
+			}
+		},
+		{
+			"from": [7, 10, 1],
+			"to": [9, 11, 2],
+			"faces": {
+				"south": {"uv": [7, 0, 9, 1], "texture": "#indicator", "tintindex": 1, "unlit": true},
+				"up": {"uv": [7, 0, 9, 1], "texture": "#indicator", "tintindex": 1, "unlit": true}
+			}
+		},
+		{
+			"from": [7, 5, 1],
+			"to": [9, 6, 2],
+			"faces": {
+				"south": {"uv": [7, 15, 9, 16], "texture": "#indicator", "tintindex": 1, "unlit": true},
+				"down": {"uv": [7, 15, 9, 16], "texture": "#indicator", "tintindex": 1, "unlit": true}
+			}
+		}
+	]
 }

@@ -29,8 +29,8 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
 
         flatSingleLayer(AEItems.MISSING_CONTENT, "minecraft:item/barrier");
 
-        flatSingleLayer(MemoryCardModel.MODEL_BASE, "item/memory_card_pins")
-                .texture("layer1", "item/memory_card_base");
+        flatSingleLayer(MemoryCardModel.MODEL_BASE, "item/memory_card_base")
+                .texture("layer1", "item/memory_card_led");
         builtInItemModel("memory_card");
 
         builtInItemModel("facade");
@@ -149,9 +149,9 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
                 id,
                 mcLoc("item/generated"),
                 "layer0",
-                makeId("item/portable_cell_screen"))
+                makeId("item/portable_cell_%s_housing".formatted(housingType)))
                 .texture("layer1", "item/portable_cell_led")
-                .texture("layer2", "item/portable_cell_%s_housing".formatted(housingType))
+                .texture("layer2", "item/portable_cell_screen")
                 .texture("layer3", "item/portable_cell_side_%s".formatted(tier));
     }
 

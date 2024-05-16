@@ -37,27 +37,27 @@ public class DecorationModelProvider extends AE2BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        simpleBlockAndItem(AEBlocks.CHISELED_QUARTZ_BLOCK, models().cubeColumn(
-                AEBlocks.CHISELED_QUARTZ_BLOCK.id().getPath(),
-                makeId("block/chiseled_quartz_block_side"),
-                makeId("block/chiseled_quartz_block_top")));
+//        simpleBlockAndItem(AEBlocks.CHISELED_QUARTZ_BLOCK, models().cubeColumn(
+//                AEBlocks.CHISELED_QUARTZ_BLOCK.id().getPath(),
+//                makeId("block/chiseled_quartz_block_side"),
+//                makeId("block/chiseled_quartz_block_top")));
         stairsBlock(AEBlocks.CHISELED_QUARTZ_STAIRS, "block/chiseled_quartz_block_top",
                 "block/chiseled_quartz_block_side", "block/chiseled_quartz_block_top");
         slabBlock(AEBlocks.CHISELED_QUARTZ_SLAB, AEBlocks.CHISELED_QUARTZ_BLOCK, "block/chiseled_quartz_block_top",
                 "block/chiseled_quartz_block_side", "block/chiseled_quartz_block_top");
         wall(AEBlocks.CHISELED_QUARTZ_WALL, "block/chiseled_quartz_block_side");
 
-        simpleBlockAndItem(AEBlocks.FLUIX_BLOCK);
+//        simpleBlockAndItem(AEBlocks.FLUIX_BLOCK);
         stairsBlock(AEBlocks.FLUIX_STAIRS, AEBlocks.FLUIX_BLOCK);
         slabBlock(AEBlocks.FLUIX_SLAB, AEBlocks.FLUIX_BLOCK);
         wall(AEBlocks.FLUIX_WALL, "block/fluix_block");
 
-        simpleBlockAndItem(AEBlocks.QUARTZ_BLOCK);
+//        simpleBlockAndItem(AEBlocks.QUARTZ_BLOCK);
         stairsBlock(AEBlocks.QUARTZ_STAIRS, AEBlocks.QUARTZ_BLOCK);
         slabBlock(AEBlocks.QUARTZ_SLAB, AEBlocks.QUARTZ_BLOCK);
         wall(AEBlocks.QUARTZ_WALL, "block/quartz_block");
 
-        simpleBlockAndItem(AEBlocks.CUT_QUARTZ_BLOCK);
+//        simpleBlockAndItem(AEBlocks.CUT_QUARTZ_BLOCK);
         stairsBlock(AEBlocks.CUT_QUARTZ_STAIRS, AEBlocks.CUT_QUARTZ_BLOCK);
         slabBlock(AEBlocks.CUT_QUARTZ_SLAB, AEBlocks.CUT_QUARTZ_BLOCK);
         wall(AEBlocks.CUT_QUARTZ_WALL, "block/cut_quartz_block");
@@ -72,12 +72,12 @@ public class DecorationModelProvider extends AE2BlockStateProvider {
         slabBlock(AEBlocks.QUARTZ_BRICK_SLAB, AEBlocks.QUARTZ_BRICKS);
         wall(AEBlocks.QUARTZ_BRICK_WALL, "block/quartz_bricks");
 
-        var quartzPillar = models().cubeColumn(AEBlocks.QUARTZ_PILLAR.id().getPath(),
-                makeId("block/quartz_pillar_side"), makeId("block/quartz_pillar_top"));
-        multiVariantGenerator(AEBlocks.QUARTZ_PILLAR,
-                Variant.variant().with(VariantProperties.MODEL, quartzPillar.getLocation()))
-                .with(BlockModelGenerators.createRotatedPillar());
-        simpleBlockItem(AEBlocks.QUARTZ_PILLAR.block(), quartzPillar);
+//        var quartzPillar = models().cubeColumn(AEBlocks.QUARTZ_PILLAR.id().getPath(),
+//                makeId("block/quartz_pillar_side"), makeId("block/quartz_pillar_top"));
+//        multiVariantGenerator(AEBlocks.QUARTZ_PILLAR,
+//                Variant.variant().with(VariantProperties.MODEL, quartzPillar.getLocation()))
+//                        .with(BlockModelGenerators.createRotatedPillar());
+//        simpleBlockItem(AEBlocks.QUARTZ_PILLAR.block(), quartzPillar);
 
         stairsBlock(AEBlocks.QUARTZ_PILLAR_STAIRS, "block/quartz_pillar_top", "block/quartz_pillar_side",
                 "block/quartz_pillar_top");
@@ -100,7 +100,7 @@ public class DecorationModelProvider extends AE2BlockStateProvider {
         slabBlock(AEBlocks.SKY_STONE_BRICK_SLAB, AEBlocks.SKY_STONE_BRICK);
         wall(AEBlocks.SKY_STONE_BRICK_WALL, "block/sky_stone_brick");
 
-        simpleBlockAndItem(AEBlocks.SMOOTH_SKY_STONE_BLOCK);
+//        simpleBlockAndItem(AEBlocks.SMOOTH_SKY_STONE_BLOCK);
         stairsBlock(AEBlocks.SMOOTH_SKY_STONE_STAIRS, AEBlocks.SMOOTH_SKY_STONE_BLOCK);
         slabBlock(AEBlocks.SMOOTH_SKY_STONE_SLAB, AEBlocks.SMOOTH_SKY_STONE_BLOCK);
         wall(AEBlocks.SMOOTH_SKY_STONE_WALL, "block/smooth_sky_stone_block");

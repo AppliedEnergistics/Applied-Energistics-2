@@ -1,53 +1,24 @@
 {
   "multipart": [
     {
-      "apply": {
-        "model": "ae2:block/wireless_access_point_chassis",
-        "x": 90
-      },
-      "when": {
-        "facing": "down"
-      }
+      "apply": {"model": "ae2:block/wireless_access_point_chassis","x": 90},
+      "when": {"facing": "down"}
     },
     {
-      "apply": {
-        "model": "ae2:block/wireless_access_point_off",
-        "x": 90
-      },
-      "when": {
-        "facing": "down",
-        "state": "off"
-      }
+      "apply": {"model": "ae2:block/wireless_access_point_off","x": 90},
+      "when": {"facing": "down","state": "off"}
     },
     {
-      "apply": {
-        "model": "ae2:block/wireless_access_point_status_off",
-        "x": 90
-      },
-      "when": {
-        "facing": "down",
-        "state": "off"
-      }
+      "apply": {"model": "ae2:block/wireless_access_point_status_off","x": 90},
+      "when": {"facing": "down","state": "off"}
     },
     {
-      "apply": {
-        "model": "ae2:block/wireless_access_point_off",
-        "x": 90
-      },
-      "when": {
-        "facing": "down",
-        "state": "on"
-      }
+      "apply": {"model": "ae2:block/wireless_access_point_off","x": 90},
+      "when": {"facing": "down","state": "on"}
     },
     {
-      "apply": {
-        "model": "ae2:block/wireless_access_point_status_has_channel",
-        "x": 90
-      },
-      "when": {
-        "facing": "down",
-        "state": "on"
-      }
+      "apply": {"model": "ae2:block/wireless_access_point_status_has_channel","x": 90},
+      "when": {"facing": "down","state": "on"}
     },
     {
       "apply": {

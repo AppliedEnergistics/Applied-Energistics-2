@@ -1,70 +1,35 @@
 {
-  "parent": "ae2:item/part_base",
-  "textures": {
-    "channels": "ae2:part/cable/dense_smart/0"
-  },
-  "elements": [
-    {
-      "name": "Base",
-      "from": [4.0, 4.0, 2.0],
-      "to": [12.0, 12.0, 14.0],
-      "faces": {
-        "north": {
-          "texture": "#base",
-          "uv": [6.0, 6.0, 10.0, 10.0]
-        },
-        "east": {
-          "texture": "#base",
-          "uv": [0.0, 4.0, 4.0, 12.0]
-        },
-        "south": {
-          "texture": "#base",
-          "uv": [10.0, 6.0, 6.0, 10.0]
-        },
-        "west": {
-          "texture": "#base",
-          "uv": [4.0, 4.0, 0.0, 12.0]
-        },
-        "up": {
-          "texture": "#base",
-          "uv": [4.0, 0.0, 12.0, 5.0]
-        },
-        "down": {
-          "texture": "#base",
-          "uv": [4.0, 12.0, 12.0, 16.0]
-        }
-      }
-    },
-    {
-      "name": "Channels",
-      "from": [4.0, 4.0, 2.0],
-      "to": [12.0, 12.0, 14.0],
-      "faces": {
-        "north": {
-          "texture": "#channels",
-          "uv": [4.0, 4.0, 12.0, 12.0]
-        },
-        "east": {
-          "texture": "#channels",
-          "uv": [0.0, 4.0, 4.0, 12.0]
-        },
-        "south": {
-          "texture": "#channels",
-          "uv": [12.0, 4.0, 4.0, 12.0]
-        },
-        "west": {
-          "texture": "#channels",
-          "uv": [4.0, 4.0, 0.0, 12.0]
-        },
-        "up": {
-          "texture": "#channels",
-          "uv": [4.0, 0.0, 12.0, 4.0]
-        },
-        "down": {
-          "texture": "#channels",
-          "uv": [4.0, 12.0, 12.0, 16.0]
-        }
-      }
-    }
-  ]
+	"credit": "Made with Blockbench",
+	"parent": "ae2:item/part_base",
+	"textures": {
+		"channels": "ae2:part/cable/dense_smart/0"
+	},
+	"elements": [
+		{
+			"name": "Base",
+			"from": [4, 4, 2],
+			"to": [12, 12, 14],
+			"faces": {
+				"north": {"uv": [4, 4, 12, 12], "texture": "#base"},
+				"east": {"uv": [0, 4, 3, 12], "texture": "#base"},
+				"south": {"uv": [12, 4, 4, 12], "texture": "#base"},
+				"west": {"uv": [16, 4, 13, 12], "texture": "#base"},
+				"up": {"uv": [4, 0, 12, 3], "texture": "#base"},
+				"down": {"uv": [4, 13, 12, 16], "texture": "#base"}
+			}
+		},
+		{
+			"name": "Channels",
+			"from": [4, 4, 2],
+			"to": [12, 12, 14],
+			"faces": {
+				"north": {"uv": [4, 4, 12, 12], "texture": "#channels"},
+				"east": {"uv": [0, 4, 4, 12], "texture": "#channels"},
+				"south": {"uv": [12, 4, 4, 12], "texture": "#channels"},
+				"west": {"uv": [4, 4, 0, 12], "texture": "#channels"},
+				"up": {"uv": [4, 0, 12, 4], "texture": "#channels"},
+				"down": {"uv": [4, 12, 12, 16], "texture": "#channels"}
+			}
+		}
+	]
 }
