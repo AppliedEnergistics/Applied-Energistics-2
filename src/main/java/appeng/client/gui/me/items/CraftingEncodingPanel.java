@@ -40,9 +40,14 @@ public class CraftingEncodingPanel extends EncodingModePanel {
         this.fluidSubstitutionsBtn = createCraftingFluidSubstitutionButton(widgets);
     }
 
+//    @Override
+//    public ItemStack getTabIconItem() {
+//        return Items.CRAFTING_TABLE.getDefaultInstance();
+//    }
+
     @Override
-    public ItemStack getTabIconItem() {
-        return Items.CRAFTING_TABLE.getDefaultInstance();
+    Icon getIcon() {
+        return Icon.TAB_CRAFTING;
     }
 
     @Override

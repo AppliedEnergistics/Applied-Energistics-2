@@ -110,7 +110,7 @@ public final class UpgradesPanel implements ICompositeWidget {
 
     @Override
     public void updateBeforeRender() {
-        int slotOriginX = this.x + PADDING;
+        int slotOriginX = this.x;
         int slotOriginY = this.y + PADDING;
 
         for (Slot slot : slots) {
@@ -232,7 +232,7 @@ public final class UpgradesPanel implements ICompositeWidget {
             srcHeight += PADDING;
         }
         if (borderBottom) {
-            srcHeight += PADDING;
+            srcHeight += PADDING + 2;
         }
 
         BACKGROUND.src(srcX, srcY, srcWidth, srcHeight)

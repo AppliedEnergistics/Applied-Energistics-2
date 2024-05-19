@@ -2,6 +2,7 @@ package appeng.client.gui.me.items;
 
 import java.util.Objects;
 
+import appeng.client.gui.Icon;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -31,16 +32,16 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     private static final Blitter BG = Blitter.texture("guis/pattern_modes.png").src(0, 140, 124, 66);
     private static final Blitter BG_SLOT = BG
             .copy()
-            .src(124, 140, 18, 18);
+            .src(124, 140, 20, 22);
     private static final Blitter BG_SLOT_SELECTED = BG
             .copy()
-            .src(124, 158, 18, 18);
+            .src(124, 162, 20, 22);
     private static final Blitter BG_SLOT_HOVER = BG
             .copy()
-            .src(124, 176, 18, 18);
+            .src(124, 184, 20, 22);
 
     private static final int COLS = 4;
-    private static final int ROWS = 3;
+    private static final int ROWS = 2;
 
     private final Scrollbar scrollbar;
 
@@ -88,12 +89,17 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
                 blitter = BG_SLOT_HOVER;
             }
 
-            var renderX = bounds.getX() + slotBounds.getX();
-            var renderY = bounds.getY() + slotBounds.getY();
+            var renderX = bounds.getX() + slotBounds.getX() - 7;
+            var renderY = bounds.getY() + slotBounds.getY() + 5;
             blitter.dest(renderX, renderY).blit(guiGraphics);
             ItemStack resultItem = recipe.value().getResultItem(getRegistryAccess());
-            guiGraphics.renderItem(resultItem, renderX + 1, renderY + 1);
-            guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX + 1, renderY + 1);
+            if (selected || mouse.isIn(slotBounds)) {
+                guiGraphics.renderItem(resultItem, renderX + 2, renderY + 3);
+                guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 3);
+            } else {
+                guiGraphics.renderItem(resultItem, renderX + 2, renderY + 2);
+                guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 2);
+            }
         }
     }
 
@@ -153,9 +159,14 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
         return scrollbar.onMouseWheel(mousePos, delta);
     }
 
+//    @Override
+//    public ItemStack getTabIconItem() {
+//        return new ItemStack(Items.STONECUTTER);
+//    }
+
     @Override
-    public ItemStack getTabIconItem() {
-        return new ItemStack(Items.STONECUTTER);
+    Icon getIcon() {
+        return Icon.TAB_STONECUTTING;
     }
 
     @Override

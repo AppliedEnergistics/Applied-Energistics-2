@@ -8,7 +8,7 @@
   "slots": {
     "MACHINE_CRAFTING_GRID": {
       "left": 29,
-      "top": 30,
+      "top": 31,
       "grid": "BREAK_AFTER_3COLS"
     },
     "ENCODED_PATTERN": {

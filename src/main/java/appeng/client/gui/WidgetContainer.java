@@ -322,7 +322,6 @@ public class WidgetContainer {
      * Adds a button named "openPriority" that opens the priority GUI for the current menu host.
      */
     public void addOpenPriorityButton() {
-        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         add("openPriority", new TabButton(Icon.PRIORITY, GuiText.Priority.text(),
                 btn -> openPriorityGui()));
     }

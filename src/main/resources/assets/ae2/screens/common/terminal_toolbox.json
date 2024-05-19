@@ -4,7 +4,7 @@
     "TOOLBOX": {
       "$comment": "Only relevant if the toolbox is present (i.e. network tool)",
       "bottom": 82,
-      "right": 15,
+      "right": 20,
       "grid": "BREAK_AFTER_3COLS"
     }
   },
@@ -13,7 +13,7 @@
       "texture": "guis/extra_panels.png",
       "textureWidth": 128,
       "textureHeight": 128,
-      "srcRect": [64, 64, 64, 64]
+      "srcRect": [69, 62, 59, 66]
     }
   },
   "widgets": {
@@ -21,8 +21,8 @@
       "$comment": "The toolbox found on some screens",
       "right": 21,
       "bottom": 88,
-      "width": 64,
-      "height": 64
+      "width": 59,
+      "height": 66
     }
   }
 }

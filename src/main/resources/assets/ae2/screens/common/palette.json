@@ -3,7 +3,7 @@
   "palette": {
     "DEFAULT_TEXT_COLOR": "#413f54",
     "MUTED_TEXT_COLOR": "#878fa5",
-    "SELECTION_COLOR": "#9cd3ff",
+    "SELECTION_COLOR": "#ace9ff",
     "TEXTFIELD_PLACEHOLDER": "#dedfe3",
     "TEXTFIELD_SELECTION": "#FF0000FF",
     "TEXTFIELD_ERROR": "#FF1900",

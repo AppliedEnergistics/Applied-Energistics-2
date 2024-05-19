@@ -2,10 +2,6 @@
   "$schema": "schema.json",
   "includes": ["crafting_cpu.json"],
   "widgets": {
-    "verticalToolbar": {
-      "left": -87,
-      "top": 16
-    },
     "back": {
       "left": 214,
       "top": -5,
@@ -23,6 +19,10 @@
       "top": 19,
       "width": 12,
       "height": 137
+    },
+    "verticalToolbar": {
+      "left": -85,
+      "top": 1
     }
   },
   "text": {
@@ -48,6 +48,12 @@
       "textureWidth": 256,
       "textureHeight": 256,
       "srcRect": [100, 0, 67, 22]
+    },
+    "cpuListButtonSelected": {
+      "texture": "guis/cpu_selector.png",
+      "textureWidth": 256,
+      "textureHeight": 256,
+      "srcRect": [100, 22, 67, 22]
     }
   }
 }

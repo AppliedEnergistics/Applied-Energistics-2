@@ -37,7 +37,7 @@ import appeng.client.gui.ICompositeWidget;
  */
 public class VerticalButtonBar implements ICompositeWidget {
     // Vertical space between buttons
-    private static final int VERTICAL_SPACING = 2;
+    private static final int VERTICAL_SPACING = 6;
     // The margin between the right side of the buttons and the GUI
     private static final int MARGIN = 2;
     private final List<Button> buttons = new ArrayList<>();
@@ -122,12 +122,15 @@ public class VerticalButtonBar implements ICompositeWidget {
 
     @Override
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 200);
         guiGraphics.blitSprite(
                 AppEng.makeId("vertical_buttons_bg"),
-                bounds.getX() + this.bounds.getX() - 1,
+                bounds.getX() + this.bounds.getX() - 2,
                 bounds.getY() + this.bounds.getY() - 1,
                 this.bounds.getWidth() + 1,
-                this.bounds.getHeight() + 2
+                this.bounds.getHeight() + 4
         );
+        guiGraphics.pose().popPose();
     }
 }

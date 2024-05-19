@@ -3,13 +3,13 @@
   "includes": ["palette.json"],
   "widgets": {
     "verticalToolbar": {
-      "left": 1,
-      "top": 16
+      "left": 3,
+      "top": 1
     },
     "upgrades": {
       "$comment": "The upgrade panel found on some screens",
       "right": 2,
-      "top": 15
+      "top": 0
     }
   }
 }

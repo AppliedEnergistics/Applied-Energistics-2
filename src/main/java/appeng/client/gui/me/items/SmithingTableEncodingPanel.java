@@ -43,9 +43,14 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
         menu.addClientSideSlot(resultSlot, SlotSemantics.SMITHING_TABLE_RESULT);
     }
 
+//    @Override
+//    public ItemStack getTabIconItem() {
+//        return Items.SMITHING_TABLE.getDefaultInstance();
+//    }
+
     @Override
-    public ItemStack getTabIconItem() {
-        return Items.SMITHING_TABLE.getDefaultInstance();
+    Icon getIcon() {
+        return Icon.TAB_SMITHING;
     }
 
     @Override
