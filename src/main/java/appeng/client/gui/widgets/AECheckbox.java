@@ -88,11 +88,15 @@ public class AECheckbox extends AbstractButton {
                 icon = isSelected() ? RADIO_CHECKED : RADIO_UNCHECKED;
             }
         } else {
-            if (isMouseOver(mouseX, mouseY)) {
+            if (isMouseOver(mouseX, mouseY) && !isFocused()) {
                 icon = isSelected() ? CHECKED_FOCUS : UNCHECKED_FOCUS;
             } else {
                 icon = isSelected() ? CHECKED : UNCHECKED;
             }
+        }
+
+        if(!isMouseOver(mouseX, mouseY)) {
+            setFocused(false);
         }
 
         var minecraft = Minecraft.getInstance();
