@@ -19,6 +19,5 @@ pluginManagement {
 rootProject.name = 'ae2';
 
 include 'libs:markdown'
-include 'libs:junit'
 
 includeBuild 'C:/Neo Forged/NeoForgeGradle'

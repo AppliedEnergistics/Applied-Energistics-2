@@ -23,6 +23,7 @@ import java.util.Collections;
 
 import com.mojang.brigadier.CommandDispatcher;
 
+import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.commands.CommandSourceStack;
@@ -120,6 +121,10 @@ public abstract class AppEngBase implements AppEng {
             throw new IllegalStateException();
         }
         INSTANCE = this;
+        new RegistryBuilder<>(ResourceKey.createRegistryKey(AppEng.makeId("xxxx")))
+                .sync(true)
+                .maxId(127)
+                        .create();
 
         AEComponents.DR.register(modEventBus);
         InitStructures.register(modEventBus);
