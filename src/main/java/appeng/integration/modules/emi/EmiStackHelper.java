@@ -61,6 +61,7 @@ public final class EmiStackHelper {
                 .stream()
                 .map(EmiStackHelper::toGenericStack)
                 .filter(Objects::nonNull)
+                .map(x -> new GenericStack(x.what(), emiIngredient.getAmount()))
                 .toList();
     }
 }
