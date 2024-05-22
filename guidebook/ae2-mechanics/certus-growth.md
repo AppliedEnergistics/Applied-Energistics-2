@@ -42,6 +42,13 @@ accelerates this process when placed adjacent to the budding block. You should b
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
+Complex interactions mean each side of a budding block which is covered slows the cumulative growth rate from the budding block,
+which eventually overpowers the effect of more accelerators. Empirical testing shows thus:
+
+![Items/min for ratios](../assets/diagrams/certus_farm_speed_chart_1.png)
+
+![common setups](../assets/diagrams/certus_farm_speed_chart_2.png)
+
 If you don't have enough quartz to also make an <ItemLink id="energy_acceptor" /> or <ItemLink id="vibration_chamber" />,
 you can make a <ItemLink id="crank" /> and stick it on the end of your accelerator.
 

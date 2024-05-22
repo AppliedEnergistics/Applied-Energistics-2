@@ -21,6 +21,8 @@ To do this fully automatically, see [Advanced Certus Farm](advanced-certus-farm.
 This farm is a bit more complex than the [simple certus farm](simple-certus-farm.md), because it is actually
 3 separate setups crammmed together.
 
+See [Certus Growth](../ae2-mechanics/certus-growth.md) for estimated speeds.
+
 **THIS IS A COMPLEX BUILD WITH STUFF HIDDEN BEHIND OTHER STUFF, PAN AROUND TO VIEW IT FROM ALL ANGLES**
 
 <GameScene zoom="6" interactive={true}>
