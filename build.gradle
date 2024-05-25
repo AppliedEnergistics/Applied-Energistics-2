@@ -25,8 +25,8 @@ buildscript {
 }
 
 plugins {
-    id "net.neoforged.moddev" version "0.1.13-pr-1-pr-publish"
-    id "net.neoforged.moddev.junit" version "0.1.13-pr-1-pr-publish"
+    id "net.neoforged.moddev" version "0.1.24-pr-1-pr-publish"
+    id "net.neoforged.moddev.junit" version "0.1.24-pr-1-pr-publish"
     id "maven-publish"
     id "com.diffplug.spotless"
     id "com.github.johnrengelman.shadow"
