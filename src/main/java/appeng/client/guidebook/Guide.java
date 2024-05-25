@@ -159,7 +159,7 @@ public final class Guide implements PageCollection {
             PackRepository packRepository = new PackRepository(
                     new ServerPacksSource(new DirectoryValidator(path -> false)));
             // This fires AddPackFindersEvent but it's probably ok.
-            ResourcePackLoader.populatePackRepository(packRepository, PackType.SERVER_DATA);
+            ResourcePackLoader.populatePackRepository(packRepository, PackType.SERVER_DATA, true);
             packRepository.reload();
             packRepository.setSelected(packRepository.getAvailableIds());
 
