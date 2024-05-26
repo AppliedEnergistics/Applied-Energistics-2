@@ -12,7 +12,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import appeng.api.parts.IPartHost;
 import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
-import net.neoforged.neoforge.common.util.TriState;
 
 /**
  * Packet sent when a player left-clicks on a part attached to a cable bus. This packet contains the hit position to
