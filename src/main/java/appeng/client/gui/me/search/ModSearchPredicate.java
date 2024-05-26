@@ -18,8 +18,7 @@ final class ModSearchPredicate implements Predicate<GridInventoryEntry> {
     @Override
     public boolean test(GridInventoryEntry gridInventoryEntry) {
         AEKey entryInfo = Objects.requireNonNull(gridInventoryEntry.getWhat());
-        String modId  = entryInfo.getModId();
-
+        String modId = entryInfo.getModId();
 
         if (modId != null) {
             if (modId.contains(inputModName)) {
@@ -33,7 +32,6 @@ final class ModSearchPredicate implements Predicate<GridInventoryEntry> {
 
         return false;
     }
-
 
     private String standardify(String input) {
         return input.toLowerCase().replace(" ", "");

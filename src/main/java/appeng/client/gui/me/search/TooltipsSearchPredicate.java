@@ -1,13 +1,14 @@
 package appeng.client.gui.me.search;
 
-import appeng.api.client.AEKeyRendering;
-import appeng.api.stacks.AEKey;
-import appeng.menu.me.common.GridInventoryEntry;
-import net.minecraft.network.chat.Component;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
+
+import net.minecraft.network.chat.Component;
+
+import appeng.api.client.AEKeyRendering;
+import appeng.api.stacks.AEKey;
+import appeng.menu.me.common.GridInventoryEntry;
 
 final class TooltipsSearchPredicate implements Predicate<GridInventoryEntry> {
     private final String tooltip;
@@ -15,6 +16,7 @@ final class TooltipsSearchPredicate implements Predicate<GridInventoryEntry> {
     public TooltipsSearchPredicate(String tooltip) {
         this.tooltip = tooltip.toLowerCase();
     }
+
     @Override
     public boolean test(GridInventoryEntry gridInventoryEntry) {
         AEKey entryInfo = Objects.requireNonNull(gridInventoryEntry.getWhat());
