@@ -381,8 +381,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     config.isSearchTooltips() ? GuiText.SearchTooltipIncludingTooltips.text()
                             : GuiText.SearchTooltip.text(),
                     GuiText.SearchTooltipModId.text(),
-                    GuiText.SearchTooltipItemId.text(),
-                    GuiText.SearchTooltipTag.text()));
+                    GuiText.SearchTooltipTag.text(),
+                    GuiText.SearchTooltipToolTips.text()));
 
             // Sync the search text both ways but make the direction depend on which search has the focus
             if (config.isSyncWithExternalSearch()) {
