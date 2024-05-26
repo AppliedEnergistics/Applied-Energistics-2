@@ -46,7 +46,7 @@ public record PartLeftClickPacket(BlockHitResult hitResult, boolean alternateUse
         var evt = CommonHooks.onLeftClickBlock(player, hitResult.getBlockPos(), hitResult.getDirection(),
                 ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK);
         NeoForge.EVENT_BUS.post(evt);
-        if (evt.isCanceled() || evt.getResult() == net.neoforged.bus.api.Event.Result.DENY) {
+        if (evt.isCanceled() || evt.getUseBlock().isFalse()) {
             return;
         }
 

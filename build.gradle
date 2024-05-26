@@ -254,7 +254,7 @@ test {
             }.collect(java.util.stream.Collectors.joining(File.pathSeparator))
     )
 
-    def fmlVersion = "3.0.18"
+    def fmlVersion = project.fml_version
 
     environment("fmljunit.assetsDir", new File(gradle.gradleUserHomeDir, "caches/minecraft/assets/${minecraft_version}/").absolutePath)
     environment("fmljunit.neoForgeVersion", neoforge_version)
