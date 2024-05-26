@@ -23,7 +23,7 @@ import java.util.Collections;
 
 import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.resources.ResourceKey;
+import net.neoforged.neoforge.common.util.TriState;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.commands.CommandSourceStack;
@@ -38,7 +38,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -121,10 +120,6 @@ public abstract class AppEngBase implements AppEng {
             throw new IllegalStateException();
         }
         INSTANCE = this;
-        new RegistryBuilder<>(ResourceKey.createRegistryKey(AppEng.makeId("xxxx")))
-                .sync(true)
-                .maxId(127)
-                        .create();
 
         AEComponents.DR.register(modEventBus);
         InitStructures.register(modEventBus);
@@ -191,7 +186,7 @@ public abstract class AppEngBase implements AppEng {
         // Can be removed once it's fixed in Forge.
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, (PlayerInteractEvent.RightClickBlock event) -> {
             if (event.getItemStack().getItem() instanceof MemoryCardItem && event.getEntity().isSecondaryUseActive()) {
-                event.setUseBlock(Event.Result.ALLOW);
+                event.setUseBlock(TriState.TRUE);
             }
         });
     }

@@ -47,8 +47,6 @@ public final class BlockAttackHook {
         var result = onBlockAttackedOnClient(event.getEntity(), level);
         if (result != InteractionResult.PASS) {
             event.setCanceled(true);
-            event.setUseBlock(Event.Result.DENY);
-            event.setUseItem(Event.Result.DENY);
         }
     }
 

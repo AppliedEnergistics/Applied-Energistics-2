@@ -25,8 +25,8 @@ buildscript {
 }
 
 plugins {
-    id "net.neoforged.moddev" version "0.1.34-pr-1-pr-publish"
-    id "net.neoforged.moddev.junit" version "0.1.34-pr-1-pr-publish"
+    id "net.neoforged.moddev" version "0.1.36-pr-1-pr-publish"
+    id "net.neoforged.moddev.junit" version "0.1.36-pr-1-pr-publish"
     id "maven-publish"
     id "com.diffplug.spotless"
     id "com.github.johnrengelman.shadow"
@@ -114,15 +114,17 @@ repositories {
             includeGroup "mezz.jei"
         }
     }
-    mavenCentral()
-}
 
-configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if (details.requested.group == 'net.neoforged.fancymodloader') {
-            details.useVersion "3.0.53-pr-54-junit"
+    maven {
+        name 'Maven for PR #147' // https://github.com/neoforged/FancyModLoader/pull/147
+        url 'https://prmaven.neoforged.net/FancyModLoader/pr147'
+        content {
+            includeModule('net.neoforged.fancymodloader', 'junit-fml')
+            includeModule('net.neoforged.fancymodloader', 'earlydisplay')
+            includeModule('net.neoforged.fancymodloader', 'loader')
         }
     }
+    mavenCentral()
 }
 
 dependencies {
@@ -151,8 +153,6 @@ dependencies {
 
     // compile against provided APIs
     compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
-
-    testRuntimeOnly "net.neoforged.fancymodloader:junit-fml:3.0.53-pr-54-junit"
 
     // Always depend on the REI API to compile
     if (project.runtime_itemlist_mod == "emi") {

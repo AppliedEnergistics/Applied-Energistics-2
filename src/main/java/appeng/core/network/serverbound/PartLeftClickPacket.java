@@ -12,6 +12,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import appeng.api.parts.IPartHost;
 import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
+import net.neoforged.neoforge.common.util.TriState;
 
 /**
  * Packet sent when a player left-clicks on a part attached to a cable bus. This packet contains the hit position to
@@ -46,7 +47,7 @@ public record PartLeftClickPacket(BlockHitResult hitResult, boolean alternateUse
         var evt = CommonHooks.onLeftClickBlock(player, hitResult.getBlockPos(), hitResult.getDirection(),
                 ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK);
         NeoForge.EVENT_BUS.post(evt);
-        if (evt.isCanceled() || evt.getResult() == net.neoforged.bus.api.Event.Result.DENY) {
+        if (evt.isCanceled()) {
             return;
         }
 
