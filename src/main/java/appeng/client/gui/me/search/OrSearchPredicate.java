@@ -1,9 +1,9 @@
 package appeng.client.gui.me.search;
 
-import appeng.menu.me.common.GridInventoryEntry;
-
 import java.util.List;
 import java.util.function.Predicate;
+
+import appeng.menu.me.common.GridInventoryEntry;
 
 final class OrSearchPredicate implements Predicate<GridInventoryEntry> {
     private final List<Predicate<GridInventoryEntry>> orPartFilters;
