@@ -39,6 +39,8 @@ final class SearchPredicates {
                 predicateFilters.add(new TooltipsSearchPredicate(part.substring(1)));
             } else if (part.startsWith("$")) {
                 predicateFilters.add(new TagSearchPredicate(part.substring(1)));
+            } else if (part.startsWith("*")) {
+                predicateFilters.add(new ItemIdSearchPredicate(part.substring(1)));
             } else {
                 predicateFilters.add(new NameSearchPredicate(part));
             }
