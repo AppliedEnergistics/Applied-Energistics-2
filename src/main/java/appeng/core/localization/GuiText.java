@@ -226,6 +226,7 @@ public enum GuiText implements LocalizationEnum {
     SearchTooltipIncludingTooltips("Search in Name and Tooltip"),
     SearchTooltipModId("Use @ to search by mod (@ae2)"),
     SearchTooltipToolTips("Use # to search by tooltips (#looting)"),
+    SearchTooltipItemId("Use * to search by id (*cell)"),
     SearchTooltipTag("Use $ to search by tags ($ingot)"),
     StorageCellTooltipUpgrades("Upgrades:"),
     Stored("Stored"),
