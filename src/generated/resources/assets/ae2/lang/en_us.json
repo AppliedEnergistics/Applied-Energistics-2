@@ -466,6 +466,7 @@
   "gui.ae2.SearchSettingsUseInternalSearch": "Use AE",
   "gui.ae2.SearchTooltip": "Search in Name",
   "gui.ae2.SearchTooltipIncludingTooltips": "Search in Name and Tooltip",
+  "gui.ae2.SearchTooltipItemId": "Use * to search by id (*cell)",
   "gui.ae2.SearchTooltipModId": "Use @ to search by mod (@ae2)",
   "gui.ae2.SearchTooltipTag": "Use $ to search by tags ($ingot)",
   "gui.ae2.SearchTooltipToolTips": "Use # to search by tooltips (#looting)",
