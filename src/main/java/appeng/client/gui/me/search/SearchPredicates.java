@@ -14,7 +14,7 @@ final class SearchPredicates {
         String[] orParts = searchString.split("\\|");
 
         if (orParts.length == 1) {
-            gridPredictions = getPredicates(searchString);
+            gridPredictions = getPredicates(orParts[0]);
         } else {
             List<Predicate<GridInventoryEntry>> orPartFilters = new LinkedList<>();
 
