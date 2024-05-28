@@ -8,7 +8,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.Event;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -47,8 +46,6 @@ public final class BlockAttackHook {
         var result = onBlockAttackedOnClient(event.getEntity(), level);
         if (result != InteractionResult.PASS) {
             event.setCanceled(true);
-            event.setUseBlock(Event.Result.DENY);
-            event.setUseItem(Event.Result.DENY);
         }
     }
 

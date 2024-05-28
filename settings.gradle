@@ -7,9 +7,17 @@ pluginManagement {
         }
         gradlePluginPortal()
         mavenCentral()
+        maven {
+            name 'Maven for PR #1' // https://github.com/neoforged/ModDevGradle/pull/1
+            url 'https://prmaven.neoforged.net/ModDevGradle/pr1'
+            content {
+                includeModule('net.neoforged.moddev', 'net.neoforged.moddev.gradle.plugin')
+                includeModule('net.neoforged.moddev.junit', 'net.neoforged.moddev.junit.gradle.plugin')
+                includeModule('net.neoforged', 'moddev-gradle')
+            }
+        }
     }
     plugins {
-        id 'net.neoforged.gradle.userdev' version '7.0.115'
         id 'com.diffplug.spotless' version '6.25.0'
         id 'com.github.johnrengelman.shadow' version '8.1.1'
         id 'de.undercouch.download' version '5.4.0'
@@ -19,4 +27,3 @@ pluginManagement {
 rootProject.name = 'ae2';
 
 include 'libs:markdown'
-include 'libs:junit'

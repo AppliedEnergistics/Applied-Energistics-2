@@ -25,7 +25,7 @@ buildscript {
 }
 
 plugins {
-    id "net.neoforged.gradle.userdev"
+    id "net.neoforged.moddev" version "0.1.46-pr-1-pr-publish"
     id "maven-publish"
     id "com.diffplug.spotless"
     id "com.github.johnrengelman.shadow"
@@ -57,6 +57,15 @@ configurations {
 
 repositories {
     mavenLocal()
+    maven {
+        name 'Maven for PR #54' // https://github.com/neoforged/FancyModLoader/pull/54
+        url 'https://prmaven.neoforged.net/FancyModLoader/pr54'
+        content {
+            includeModule('net.neoforged.fancymodloader', 'earlydisplay')
+            includeModule('net.neoforged.fancymodloader', 'junit-fml')
+            includeModule('net.neoforged.fancymodloader', 'loader')
+        }
+    }
     maven {
         url "https://maven.shedaniel.me/"
         content {
@@ -104,6 +113,16 @@ repositories {
             includeGroup "mezz.jei"
         }
     }
+
+    maven {
+        name 'Maven for PR #147' // https://github.com/neoforged/FancyModLoader/pull/147
+        url 'https://prmaven.neoforged.net/FancyModLoader/pr147'
+        content {
+            includeModule('net.neoforged.fancymodloader', 'junit-fml')
+            includeModule('net.neoforged.fancymodloader', 'earlydisplay')
+            includeModule('net.neoforged.fancymodloader', 'loader')
+        }
+    }
     mavenCentral()
 }
 
@@ -130,8 +149,6 @@ dependencies {
     }
     // Used for the guide export
     guideExportOnly("org.bytedeco:ffmpeg-platform:${ffmpeg_version}")
-
-    implementation "net.neoforged:neoforge:${neoforge_version}"
 
     // compile against provided APIs
     compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
@@ -170,7 +187,6 @@ dependencies {
 
     // unit test dependencies
     testImplementation(platform("org.junit:junit-bom:${project.junit_version}"))
-    testRuntimeOnly(project(":libs:junit"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
@@ -239,88 +255,6 @@ test {
 
     // Might not need this anymore...
     systemProperty "guideDev.ae2guide.sources", file("guidebook").absolutePath
-
-    def aeDir = project.rootDir.absolutePath
-    environment(
-            "MOD_CLASSES",
-            // In Gradle 9, replace with a provider
-            List.of(
-                    "${project.buildDir}/classes/java/main",
-                    "${project.buildDir}/classes/java/test",
-                    "${project.buildDir}/resources/main",
-                    "${project.buildDir}/resources/test",
-            ).stream().map {
-                "ae2%%" + it
-            }.collect(java.util.stream.Collectors.joining(File.pathSeparator))
-    )
-
-    def fmlVersion = "3.0.18"
-
-    environment("fmljunit.assetsDir", new File(gradle.gradleUserHomeDir, "caches/minecraft/assets/${minecraft_version}/").absolutePath)
-    environment("fmljunit.neoForgeVersion", neoforge_version)
-    environment("fmljunit.fmlVersion", fmlVersion)
-    environment("fmljunit.mcVersion", minecraft_version)
-    environment("fmljunit.neoFormVersion", neoFormRuntime.findIn(configurations.runtimeClasspath).first().specification.neoFormVersion)
-
-    jvmArgumentProviders.add(new CommandLineArgumentProvider() {
-        @Override
-        Iterable<String> asArguments() {
-
-            // This includes the system properties
-            var runArgs = runs.getByName("client").realiseJvmArguments()
-            for (var i = 0; i < runArgs.size(); i++) {
-                var arg = runArgs.get(i);
-                if (arg.startsWith("-DlegacyClassPath.file=")) {
-                    runArgs.set(i, "-DlegacyClassPath.file=${project.rootDir.absolutePath}/build/test_classpath.txt")
-                } else if ((arg == "-p" || arg == "--module-path") && i + 1 < runArgs.size()) {
-                    runArgs.set(i + 1, test.classpath
-                            .filter {
-                                it.name.contains("bootstraplauncher")
-                                        || it.name.contains("securejarhandler")
-                                        || it.name.contains("asm")
-                                        || it.name.contains("JarJarFileSystems")
-                                        || it.name.startsWith("mockito")
-                                        || it.name.startsWith("junit-jupiter")
-                                        || it.name.startsWith("junit-platform")
-                                        || it.name.startsWith("opentest4j")
-                                        || it.name.startsWith("assertj-")
-                                        || it.name.startsWith("guava-testlib-")
-                            }
-                            .join(File.pathSeparator))
-                }
-            }
-            println(runArgs)
-
-            return runArgs
-        }
-    })
-
-    afterEvaluate {
-        dependsOn tasks.named("writeMinecraftClasspathClient")
-    }
-
-    doFirst {
-        var classPathLines = tasks.getByName("writeMinecraftClasspathClient").output.asFile.get().readLines()
-        classPathLines.addAll(test.classpath
-                .filter { it.name.startsWith("fmljunit") })
-        new File("$aeDir/build/test_classpath.txt").text = classPathLines.join("\n")
-    }
-
-//    [
-//            "-DignoreList=junit,securejarhandler,asm,asm-commons,asm-tree,asm-util,asm-analysis,bootstraplauncher,JarJarFileSystems,events-${fmlVersion}.jar,core-${fmlVersion}.jar,language-java,language-lowcode,language-minecraft,client-extra,neoforge-,mixinextras-",
-//            "--add-modules",
-//            "ALL-MODULE-PATH",
-//            "--add-opens", "java.base/java.util.jar=cpw.mods.securejarhandler",
-//            "--add-opens", "java.base/java.lang.invoke=cpw.mods.securejarhandler",
-//            "--add-exports", "java.base/sun.security.util=cpw.mods.securejarhandler",
-//            "--add-exports", "jdk.naming.dns/com.sun.jndi.dns=java.naming",
-//            "-DlegacyClassPath.file=$aeDir/build/test_classpath.txt",
-//            "-Dfml.gameLayerLibraries=events-${fmlVersion}.jar",
-//            "-DignoreList=securejarhandler-2.1.24.jar,asm-9.5.jar,asm-commons-9.5.jar,asm-tree-9.5.jar,asm-util-9.5.jar,asm-analysis-9.5.jar,bootstraplauncher-1.1.2.jar,JarJarFileSystems-0.4.0.jar,events-2.0.1.jar,core-2.0.1.jar,language-java-2.0.1.jar,language-lowcode-2.0.1.jar,language-minecraft-2.0.1.jar,mixinextras-neoforge-0.3.2.jar,client-extra,neoforge-",
-//            "-DmergeModules=jna-5.10.0.jar,jna-platform-5.10.0.jar",
-//            "-Djava.net.preferIPv6Addresses=system",
-//            "-Dfml.pluginLayerLibraries=core-${fmlVersion}.jar,language-java-${fmlVersion}.jar,language-lowcode-${fmlVersion}.jar,language-minecraft-${fmlVersion}.jar",
-//    ]
 }
 
 dependencies {
@@ -331,76 +265,85 @@ dependencies {
 /**
  * Configures properties common to all run configurations
  */
-def commonSystemProperties = [
+Map<String, String> commonSystemProperties = [
         'forge.logging.console.level': 'debug',
         'appeng.tests'               : 'true',
 ]
 
-////////////////////
-// Forge/Minecraft
-minecraft {
-    accessTransformers {
-        file('src/main/resources/META-INF/accesstransformer.cfg')
-    }
-}
+neoForge {
+    version = project.neoforge_version
 
-runs {
-    configureEach {
-        workingDirectory = project.file('run')
-        systemProperties = commonSystemProperties
-        // property "mixin.debug.export", "true"
-        modSources = [sourceSets.main]
-
-        dependencies {
-            runtime configurations.shaded
-            runtime configurations.guideExportOnly
+    mods {
+        ae2 {
+            sourceSet sourceSets.main
         }
     }
-    client {
-        systemProperties = [
-                *                          : commonSystemProperties,
-                "appeng.tests"             : "true",
-                "guideDev.ae2guide.sources": file("guidebook").absolutePath,
-        ]
+
+    runs {
+        configureEach {
+            gameDirectory = project.file('run')
+            systemProperties = commonSystemProperties
+            // property "mixin.debug.export", "true"
+
+            additionalRuntimeClasspathConfiguration.extendsFrom configurations.shaded
+            additionalRuntimeClasspathConfiguration.extendsFrom configurations.guideExportOnly
+        }
+        client {
+            client()
+            systemProperties = [
+                    *                          : commonSystemProperties,
+                    "appeng.tests"             : "true",
+                    "guideDev.ae2guide.sources": file("guidebook").absolutePath,
+            ]
+        }
+        gametestWorld {
+            client()
+            programArguments = [
+                    "--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld"
+            ]
+            systemProperties = [
+                    "appeng.tests"             : "true",
+                    "guideDev.ae2guide.sources": file("guidebook").absolutePath,
+            ]
+        }
+        guide {
+            client()
+            systemProperties = [
+                    "guideDev.ae2guide.sources"    : file("guidebook").absolutePath,
+                    "guideDev.ae2guide.startupPage": "ae2:index.md"
+            ]
+        }
+        server {
+            server()
+        }
+        data {
+            data()
+            programArguments = [
+                    '--mod', 'ae2',
+                    '--all',
+                    '--output', file('src/generated/resources/').absolutePath,
+                    '--existing', file('src/main/resources').absolutePath
+            ]
+        }
+        guideexport {
+            client()
+            systemProperties = [
+                    "appeng.runGuideExportAndExit": "true",
+                    "appeng.guideExportFolder"    : file("$buildDir/guide").absolutePath,
+                    "guideDev.ae2guide.sources"   : file("guidebook").absolutePath,
+                    "appeng.version"              : project.version
+            ]
+        }
+        // Use to run the tests
+        gametest {
+            type = "gameTestServer"
+            gameDirectory = project.file("build/gametest")
+        }
     }
-    gametestWorld {
-        configure("client")
-        programArguments("--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld")
-        systemProperties = [
-                "appeng.tests"             : "true",
-                "guideDev.ae2guide.sources": file("guidebook").absolutePath,
-        ]
-    }
-    guide {
-        configure("client")
-        systemProperties = [
-                "guideDev.ae2guide.sources"    : file("guidebook").absolutePath,
-                "guideDev.ae2guide.startupPage": "ae2:index.md"
-        ]
-    }
-    server {
-    }
-    data {
-        programArguments = [
-                '--mod', 'ae2',
-                '--all',
-                '--output', file('src/generated/resources/').absolutePath,
-                '--existing', file('src/main/resources').absolutePath
-        ]
-    }
-    guideexport {
-        configure("client")
-        systemProperties = [
-                "appeng.runGuideExportAndExit": "true",
-                "appeng.guideExportFolder"    : file("$buildDir/guide").absolutePath,
-                "guideDev.ae2guide.sources"   : file("guidebook").absolutePath,
-                "appeng.version"              : project.version
-        ]
-    }
-    // Use to run the tests
-    gametest {
-        configure("gameTestServer")
-        workingDirectory = project.file("build/gametest")
+
+    unitTest {
+        enable()
+        testedMod = mods.ae2
     }
 }
 
