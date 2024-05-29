@@ -27,10 +27,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import net.minecraft.world.level.Level;
+
+import appeng.me.helpers.GridServiceContainer;
 
 /**
  * A registry of grid services to extend grid functionality.
@@ -42,7 +47,6 @@ public final class GridServices {
 
     // This must not be re-sorted because of interdependencies between the registrations
     private static final List<GridCacheRegistration<?>> registry = new ArrayList<>();
-    private static final List<Class<?>> interfaceIndices = new ArrayList<>();
 
     /**
      * Register a new grid service for use during operation, must be called during the loading phase.
@@ -81,7 +85,6 @@ public final class GridServices {
         }
 
         registry.add(registration);
-        interfaceIndices.add(registration.publicInterface);
     }
 
     private static boolean isRegistered(Class<?> publicInterface) {
@@ -93,25 +96,37 @@ public final class GridServices {
      * <p/>
      * This is used by AE2 internally to initialize the services for a grid.
      */
-    static IGridServiceProvider[] createServices(IGrid g) {
-        var result = new IGridServiceProvider[registry.size()];
-        Function<Class<?>, IGridServiceProvider> gridServiceResolver = publicInterface -> result[getServiceIndex(publicInterface)];
+    static GridServiceContainer createServices(IGrid g) {
+        var services = new IdentityHashMap<Class<?>, IGridServiceProvider>(registry.size());
+        var serverStartTickServices = new ArrayList<IGridServiceProvider>(registry.size());
+        var levelStartTickServices = new ArrayList<IGridServiceProvider>(registry.size());
+        var levelEndTickServices = new ArrayList<IGridServiceProvider>(registry.size());
+        var serverEndTickServices = new ArrayList<IGridServiceProvider>(registry.size());
 
-        for (int i = 0; i < registry.size(); i++) {
-            var registration = registry.get(i);
-            result[i] = registration.construct(g, gridServiceResolver);
-        }
+        for (var registration : registry) {
+            var service = registration.construct(g, services);
+            services.put(registration.publicInterface, service);
 
-        return result;
-    }
-
-    static int getServiceIndex(Class<?> publicInterface) {
-        for (int i = 0; i < GridServices.interfaceIndices.size(); i++) {
-            if (GridServices.interfaceIndices.get(i) == publicInterface) {
-                return i;
+            if (registration.hasServerStartTick) {
+                serverStartTickServices.add(service);
+            }
+            if (registration.hasLevelStartTick) {
+                levelStartTickServices.add(service);
+            }
+            if (registration.hasLevelEndTick) {
+                levelEndTickServices.add(service);
+            }
+            if (registration.hasServerEndTick) {
+                serverEndTickServices.add(service);
             }
         }
-        throw new IllegalArgumentException("Not a registered grid service: " + publicInterface);
+
+        return new GridServiceContainer(
+                services,
+                serverStartTickServices.toArray(IGridServiceProvider[]::new),
+                levelStartTickServices.toArray(IGridServiceProvider[]::new),
+                levelEndTickServices.toArray(IGridServiceProvider[]::new),
+                serverEndTickServices.toArray(IGridServiceProvider[]::new));
     }
 
     private static class GridCacheRegistration<T extends IGridServiceProvider> {
@@ -125,6 +140,11 @@ public final class GridServices {
         private final Class<?>[] constructorParameterTypes;
 
         private final Set<Class<?>> dependencies;
+
+        private final boolean hasServerStartTick;
+        private final boolean hasLevelStartTick;
+        private final boolean hasLevelEndTick;
+        private final boolean hasServerEndTick;
 
         @SuppressWarnings("unchecked")
         public GridCacheRegistration(Class<T> implClass, Class<?> publicInterface) {
@@ -142,9 +162,22 @@ public final class GridServices {
             this.dependencies = Arrays.stream(this.constructorParameterTypes)
                     .filter(t -> !t.equals(IGrid.class))
                     .collect(Collectors.toSet());
+
+            try {
+                this.hasServerStartTick = implClass.getMethod("onServerStartTick")
+                        .getDeclaringClass() != IGridServiceProvider.class;
+                this.hasLevelStartTick = implClass.getMethod("onLevelStartTick", Level.class)
+                        .getDeclaringClass() != IGridServiceProvider.class;
+                this.hasLevelEndTick = implClass.getMethod("onLevelEndTick", Level.class)
+                        .getDeclaringClass() != IGridServiceProvider.class;
+                this.hasServerEndTick = implClass.getMethod("onServerEndTick")
+                        .getDeclaringClass() != IGridServiceProvider.class;
+            } catch (NoSuchMethodException exception) {
+                throw new RuntimeException("Failed to check which methods the grid service implements", exception);
+            }
         }
 
-        public IGridServiceProvider construct(IGrid g, Function<Class<?>, IGridServiceProvider> gridServiceResolver) {
+        public IGridServiceProvider construct(IGrid g, Map<Class<?>, IGridServiceProvider> createdServices) {
             // Fill the constructor arguments
             var ctorArgs = new Object[constructorParameterTypes.length];
             for (int i = 0; i < constructorParameterTypes.length; i++) {
@@ -152,7 +185,7 @@ public final class GridServices {
                 if (paramType.equals(IGrid.class)) {
                     ctorArgs[i] = g;
                 } else {
-                    ctorArgs[i] = gridServiceResolver.apply(paramType);
+                    ctorArgs[i] = createdServices.get(paramType);
                     if (ctorArgs[i] == null) {
                         throw new IllegalStateException("Unsatisfied constructor dependency " + paramType + " in "
                                 + constructor);

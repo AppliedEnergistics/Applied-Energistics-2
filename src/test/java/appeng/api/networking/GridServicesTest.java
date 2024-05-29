@@ -18,18 +18,21 @@
 
 package appeng.api.networking;
 
-import appeng.util.BootstrapMinecraft;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.world.level.Level;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import appeng.util.BootstrapMinecraft;
 
 @MockitoSettings
 @BootstrapMinecraft
@@ -38,41 +41,30 @@ class GridServicesTest {
     @Mock
     IGrid grid;
 
-    private List<Object> servicesBefore;
-    private List<Object> indicesBefore;
+    private List<?> servicesBefore;
 
     @BeforeEach
     void clearRegistry() throws Exception {
-        var list = getPrivateList("registry");
+        var field = GridServices.class.getDeclaredField("registry");
+        field.setAccessible(true);
+        List<?> list = (List<?>) field.get(null);
         servicesBefore = new ArrayList<>(list);
-        list.clear();
-
-        list = getPrivateList("interfaceIndices");
-        indicesBefore = new ArrayList<>(list);
         list.clear();
     }
 
     @AfterEach
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     void restoreRegistry() throws Exception {
-        var list = getPrivateList("registry");
+        var field = GridServices.class.getDeclaredField("registry");
+        field.setAccessible(true);
+        var list = (List) field.get(null);
         list.clear();
         list.addAll(servicesBefore);
-
-        list = getPrivateList("interfaceIndices");
-        list.clear();
-        list.addAll(indicesBefore);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static List<Object> getPrivateList(String name) throws Exception {
-        var field = GridServices.class.getDeclaredField(name);
-        field.setAccessible(true);
-        return (List<Object>) field.get(null);
     }
 
     @Test
     void testEmptyRegistry() {
-        var services = GridServices.createServices(grid);
+        var services = GridServices.createServices(grid).services();
         assertThat(services).isEmpty();
     }
 
@@ -80,18 +72,18 @@ class GridServicesTest {
     void testGridServiceWithDefaultConstructor() {
         GridServices.register(PublicInterface.class, GridService1.class);
 
-        var services = GridServices.createServices(grid);
-        assertThat(services).allSatisfy(service -> assertThat(service).isInstanceOf(PublicInterface.class));
-        assertThat(services[GridServicesInternal.getServiceIndex(PublicInterface.class)]).isInstanceOf(GridService1.class);
+        var services = GridServices.createServices(grid).services();
+        assertThat(services).containsOnlyKeys(PublicInterface.class);
+        assertThat(services.get(PublicInterface.class)).isInstanceOf(GridService1.class);
     }
 
     @Test
     void testGridServiceWithGridDependency() {
         GridServices.register(GridService2.class, GridService2.class);
 
-        var services = GridServices.createServices(grid);
-        assertThat(services).allSatisfy(service -> assertThat(service).isInstanceOf(GridService2.class));
-        var actual = (GridService2) services[GridServicesInternal.getServiceIndex(GridService2.class)];
+        var services = GridServices.createServices(grid).services();
+        assertThat(services).containsOnlyKeys(GridService2.class);
+        var actual = (GridService2) services.get(GridService2.class);
         assertThat(actual.grid).isSameAs(grid);
     }
 
@@ -102,12 +94,17 @@ class GridServicesTest {
         GridServices.register(GridService3.class, GridService3.class);
         GridServices.register(GridService4.class, GridService4.class);
 
-        var services = GridServices.createServices(grid);
+        var services = GridServices.createServices(grid).services();
+        assertThat(services).containsOnlyKeys(
+                PublicInterface.class,
+                GridService2.class,
+                GridService3.class,
+                GridService4.class);
 
-        var service3 = (GridService3) services[GridServicesInternal.getServiceIndex(GridService3.class)];
-        assertThat(service3.service1).isSameAs(services[GridServicesInternal.getServiceIndex(PublicInterface.class)]);
-        assertThat(service3.service2).isSameAs(services[GridServicesInternal.getServiceIndex(GridService2.class)]);
-        var service4 = (GridService4) services[GridServicesInternal.getServiceIndex(GridService4.class)];
+        var service3 = (GridService3) services.get(GridService3.class);
+        assertThat(service3.service1).isSameAs(services.get(PublicInterface.class));
+        assertThat(service3.service2).isSameAs(services.get(GridService2.class));
+        var service4 = (GridService4) services.get(GridService4.class);
         assertThat(service4.service3).isSameAs(service3);
         assertThat(service4.grid).isSameAs(grid);
     }
@@ -131,8 +128,8 @@ class GridServicesTest {
     void testNoAmbiguousConstructorAllowed() {
         assertThatThrownBy(
                 () -> GridServices.register(AmbiguousConstructorClass.class, AmbiguousConstructorClass.class))
-                .hasMessageContaining("Grid service implementation class")
-                .hasMessageContaining("has 2 public constructors. It needs exactly 1");
+                        .hasMessageContaining("Grid service implementation class")
+                        .hasMessageContaining("has 2 public constructors. It needs exactly 1");
     }
 
     interface PublicInterface {
@@ -181,4 +178,50 @@ class GridServicesTest {
         }
     }
 
+    @Test
+    void testTickingServices() {
+        GridServices.register(ServerStartTickOnly.class, ServerStartTickOnly.class);
+        GridServices.register(LevelStartTickOnly.class, LevelStartTickOnly.class);
+        GridServices.register(LevelEndTickOnly.class, LevelEndTickOnly.class);
+        GridServices.register(ServerEndTickOnly.class, ServerEndTickOnly.class);
+
+        var services = GridServicesInternal.createServices(grid);
+        var map = services.services();
+        assertThat(services.serverStartTickServices())
+                .containsExactly(map.get(ServerStartTickOnly.class));
+        assertThat(services.levelStartTickServices())
+                .containsExactly(map.get(LevelStartTickOnly.class));
+        assertThat(services.levelEndtickServices())
+                .containsExactly(map.get(LevelEndTickOnly.class));
+        assertThat(services.serverEndTickServices())
+                .containsExactly(map.get(ServerEndTickOnly.class));
+    }
+
+    public static class ServerStartTickOnly implements IGridServiceProvider {
+        @Override
+        public void onServerStartTick() {
+            IGridServiceProvider.super.onServerStartTick();
+        }
+    }
+
+    public static class LevelStartTickOnly implements IGridServiceProvider {
+        @Override
+        public void onLevelStartTick(Level level) {
+            IGridServiceProvider.super.onLevelStartTick(level);
+        }
+    }
+
+    public static class LevelEndTickOnly implements IGridServiceProvider {
+        @Override
+        public void onLevelEndTick(Level level) {
+            IGridServiceProvider.super.onLevelEndTick(level);
+        }
+    }
+
+    public static class ServerEndTickOnly implements IGridServiceProvider {
+        @Override
+        public void onServerEndTick() {
+            IGridServiceProvider.super.onServerEndTick();
+        }
+    }
 }

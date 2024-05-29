@@ -18,16 +18,15 @@
 
 package appeng.api.networking;
 
+import appeng.me.helpers.GridServiceContainer;
+
 /**
  * Allows access to non-public features of {@link GridServices}.
  */
 public class GridServicesInternal {
 
-    public static IGridServiceProvider[] createServices(IGrid g) {
+    public static GridServiceContainer createServices(IGrid g) {
         return GridServices.createServices(g);
     }
 
-    public static int getServiceIndex(Class<?> iface) {
-        return GridServices.getServiceIndex(iface);
-    }
 }
