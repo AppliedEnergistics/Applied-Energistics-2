@@ -58,6 +58,7 @@ import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.core.AELog;
 import appeng.hooks.ticking.TickHandler;
+import appeng.me.helpers.GridServiceContainer;
 import appeng.me.service.P2PService;
 import appeng.parts.AEBasePart;
 import appeng.util.IDebugExportable;
@@ -71,7 +72,7 @@ public class Grid implements IGrid {
     private static int nextSerial = 0;
 
     private final SetMultimap<Class<?>, IGridNode> machines = MultimapBuilder.hashKeys().hashSetValues().build();
-    private final Map<Class<?>, IGridServiceProvider> services;
+    private final GridServiceContainer services;
     // Becomes null after the last node has left the grid.
     @Nullable
     private GridNode pivot;
@@ -103,8 +104,8 @@ public class Grid implements IGrid {
         return this.priority;
     }
 
-    Collection<IGridServiceProvider> getProviders() {
-        return this.services.values();
+    private Collection<IGridServiceProvider> getProviders() {
+        return this.services.services().values();
     }
 
     @Override
@@ -113,7 +114,7 @@ public class Grid implements IGrid {
     }
 
     void remove(GridNode gridNode) {
-        for (var c : this.services.values()) {
+        for (var c : getProviders()) {
             c.removeNode(gridNode);
         }
 
@@ -137,13 +138,13 @@ public class Grid implements IGrid {
         // track node.
         this.machines.put(gridNode.getOwner().getClass(), gridNode);
 
-        for (var service : this.services.values()) {
+        for (var service : getProviders()) {
             service.addNode(gridNode, savedData);
         }
     }
 
     void saveNodeData(GridNode gridNode, CompoundTag savedData) {
-        for (var service : this.services.values()) {
+        for (var service : getProviders()) {
             service.saveNodeData(gridNode, savedData);
         }
     }
@@ -151,7 +152,7 @@ public class Grid implements IGrid {
     @SuppressWarnings("unchecked")
     @Override
     public <C extends IGridService> C getService(Class<C> iface) {
-        var service = this.services.get(iface);
+        var service = this.services.services().get(iface);
         if (service == null) {
             throw new IllegalArgumentException("Service " + iface + " is not registered");
         }
@@ -224,7 +225,7 @@ public class Grid implements IGrid {
             return;
         }
 
-        for (var gc : this.services.values()) {
+        for (var gc : this.services.serverStartTickServices()) {
             gc.onServerStartTick();
         }
     }
@@ -234,7 +235,7 @@ public class Grid implements IGrid {
             return;
         }
 
-        for (var gc : this.services.values()) {
+        for (var gc : this.services.levelStartTickServices()) {
             gc.onLevelStartTick(level);
         }
     }
@@ -244,7 +245,7 @@ public class Grid implements IGrid {
             return;
         }
 
-        for (var gc : this.services.values()) {
+        for (var gc : this.services.levelEndtickServices()) {
             gc.onLevelEndTick(level);
         }
     }
@@ -254,7 +255,7 @@ public class Grid implements IGrid {
             return;
         }
 
-        for (var gc : this.services.values()) {
+        for (var gc : this.services.serverEndTickServices()) {
             gc.onServerEndTick();
         }
     }
@@ -354,7 +355,7 @@ public class Grid implements IGrid {
 
         jsonWriter.name("services");
         jsonWriter.beginObject();
-        for (var entry : services.entrySet()) {
+        for (var entry : services.services().entrySet()) {
             jsonWriter.name(getServiceExportKey(entry.getKey()));
             jsonWriter.beginObject();
             entry.getValue().debugDump(jsonWriter, registries);

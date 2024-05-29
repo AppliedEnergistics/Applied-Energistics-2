@@ -71,10 +71,6 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
     }
 
     @Override
-    public void onLevelStartTick(Level level) {
-    }
-
-    @Override
     public void onLevelEndTick(Level level) {
         this.tickLevelQueue(level);
     }
