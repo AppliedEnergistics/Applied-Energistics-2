@@ -250,7 +250,7 @@ allprojects {
 
 ///////////////////
 // Version Number
-version = version_major + "." + version_minor + "." + version_patch
+version = "15.2.999"
 
 ext.pr = System.getenv('PR_NUMBER') ?: ""
 if (ext.pr) {
@@ -371,6 +371,7 @@ mixin {
 //////////////
 // Artifacts
 processResources {
+    inputs.property("version", version)
     exclude '.cache'
 
     filesMatching("META-INF/mods.toml") {

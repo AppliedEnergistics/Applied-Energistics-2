@@ -18,19 +18,18 @@
 
 package appeng.api.networking;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import appeng.util.BootstrapMinecraft;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 
-import appeng.util.BootstrapMinecraft;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @MockitoSettings
 @BootstrapMinecraft
@@ -39,25 +38,36 @@ class GridServicesTest {
     @Mock
     IGrid grid;
 
-    private List<?> servicesBefore;
+    private List<Object> servicesBefore;
+    private List<Object> indicesBefore;
 
     @BeforeEach
     void clearRegistry() throws Exception {
-        var field = GridServices.class.getDeclaredField("registry");
-        field.setAccessible(true);
-        List<?> list = (List<?>) field.get(null);
+        var list = getPrivateList("registry");
         servicesBefore = new ArrayList<>(list);
+        list.clear();
+
+        list = getPrivateList("interfaceIndices");
+        indicesBefore = new ArrayList<>(list);
         list.clear();
     }
 
     @AfterEach
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     void restoreRegistry() throws Exception {
-        var field = GridServices.class.getDeclaredField("registry");
-        field.setAccessible(true);
-        var list = (List) field.get(null);
+        var list = getPrivateList("registry");
         list.clear();
         list.addAll(servicesBefore);
+
+        list = getPrivateList("interfaceIndices");
+        list.clear();
+        list.addAll(indicesBefore);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<Object> getPrivateList(String name) throws Exception {
+        var field = GridServices.class.getDeclaredField(name);
+        field.setAccessible(true);
+        return (List<Object>) field.get(null);
     }
 
     @Test
@@ -71,8 +81,8 @@ class GridServicesTest {
         GridServices.register(PublicInterface.class, GridService1.class);
 
         var services = GridServices.createServices(grid);
-        assertThat(services).containsOnlyKeys(PublicInterface.class);
-        assertThat(services.get(PublicInterface.class)).isInstanceOf(GridService1.class);
+        assertThat(services).allSatisfy(service -> assertThat(service).isInstanceOf(PublicInterface.class));
+        assertThat(services[GridServicesInternal.getServiceIndex(PublicInterface.class)]).isInstanceOf(GridService1.class);
     }
 
     @Test
@@ -80,8 +90,8 @@ class GridServicesTest {
         GridServices.register(GridService2.class, GridService2.class);
 
         var services = GridServices.createServices(grid);
-        assertThat(services).containsOnlyKeys(GridService2.class);
-        var actual = (GridService2) services.get(GridService2.class);
+        assertThat(services).allSatisfy(service -> assertThat(service).isInstanceOf(GridService2.class));
+        var actual = (GridService2) services[GridServicesInternal.getServiceIndex(GridService2.class)];
         assertThat(actual.grid).isSameAs(grid);
     }
 
@@ -93,16 +103,11 @@ class GridServicesTest {
         GridServices.register(GridService4.class, GridService4.class);
 
         var services = GridServices.createServices(grid);
-        assertThat(services).containsOnlyKeys(
-                PublicInterface.class,
-                GridService2.class,
-                GridService3.class,
-                GridService4.class);
 
-        var service3 = (GridService3) services.get(GridService3.class);
-        assertThat(service3.service1).isSameAs(services.get(PublicInterface.class));
-        assertThat(service3.service2).isSameAs(services.get(GridService2.class));
-        var service4 = (GridService4) services.get(GridService4.class);
+        var service3 = (GridService3) services[GridServicesInternal.getServiceIndex(GridService3.class)];
+        assertThat(service3.service1).isSameAs(services[GridServicesInternal.getServiceIndex(PublicInterface.class)]);
+        assertThat(service3.service2).isSameAs(services[GridServicesInternal.getServiceIndex(GridService2.class)]);
+        var service4 = (GridService4) services[GridServicesInternal.getServiceIndex(GridService4.class)];
         assertThat(service4.service3).isSameAs(service3);
         assertThat(service4.grid).isSameAs(grid);
     }
@@ -126,8 +131,8 @@ class GridServicesTest {
     void testNoAmbiguousConstructorAllowed() {
         assertThatThrownBy(
                 () -> GridServices.register(AmbiguousConstructorClass.class, AmbiguousConstructorClass.class))
-                        .hasMessageContaining("Grid service implementation class")
-                        .hasMessageContaining("has 2 public constructors. It needs exactly 1");
+                .hasMessageContaining("Grid service implementation class")
+                .hasMessageContaining("has 2 public constructors. It needs exactly 1");
     }
 
     interface PublicInterface {

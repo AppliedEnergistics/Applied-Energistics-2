@@ -27,10 +27,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +42,7 @@ public final class GridServices {
 
     // This must not be re-sorted because of interdependencies between the registrations
     private static final List<GridCacheRegistration<?>> registry = new ArrayList<>();
+    private static final List<Class<?>> interfaceIndices = new ArrayList<>();
 
     /**
      * Register a new grid service for use during operation, must be called during the loading phase.
@@ -81,6 +81,7 @@ public final class GridServices {
         }
 
         registry.add(registration);
+        interfaceIndices.add(registration.publicInterface);
     }
 
     private static boolean isRegistered(Class<?> publicInterface) {
@@ -92,14 +93,25 @@ public final class GridServices {
      * <p/>
      * This is used by AE2 internally to initialize the services for a grid.
      */
-    static Map<Class<?>, IGridServiceProvider> createServices(IGrid g) {
-        var result = new LinkedHashMap<Class<?>, IGridServiceProvider>(registry.size());
+    static IGridServiceProvider[] createServices(IGrid g) {
+        var result = new IGridServiceProvider[registry.size()];
+        Function<Class<?>, IGridServiceProvider> gridServiceResolver = publicInterface -> result[getServiceIndex(publicInterface)];
 
-        for (var registration : registry) {
-            result.put(registration.publicInterface, registration.construct(g, result));
+        for (int i = 0; i < registry.size(); i++) {
+            var registration = registry.get(i);
+            result[i] = registration.construct(g, gridServiceResolver);
         }
 
         return result;
+    }
+
+    static int getServiceIndex(Class<?> publicInterface) {
+        for (int i = 0; i < GridServices.interfaceIndices.size(); i++) {
+            if (GridServices.interfaceIndices.get(i) == publicInterface) {
+                return i;
+            }
+        }
+        throw new IllegalArgumentException("Not a registered grid service: " + publicInterface);
     }
 
     private static class GridCacheRegistration<T extends IGridServiceProvider> {
@@ -132,7 +144,7 @@ public final class GridServices {
                     .collect(Collectors.toSet());
         }
 
-        public IGridServiceProvider construct(IGrid g, Map<Class<?>, IGridServiceProvider> createdServices) {
+        public IGridServiceProvider construct(IGrid g, Function<Class<?>, IGridServiceProvider> gridServiceResolver) {
             // Fill the constructor arguments
             var ctorArgs = new Object[constructorParameterTypes.length];
             for (int i = 0; i < constructorParameterTypes.length; i++) {
@@ -140,7 +152,7 @@ public final class GridServices {
                 if (paramType.equals(IGrid.class)) {
                     ctorArgs[i] = g;
                 } else {
-                    ctorArgs[i] = createdServices.get(paramType);
+                    ctorArgs[i] = gridServiceResolver.apply(paramType);
                     if (ctorArgs[i] == null) {
                         throw new IllegalStateException("Unsatisfied constructor dependency " + paramType + " in "
                                 + constructor);
