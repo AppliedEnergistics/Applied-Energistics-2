@@ -81,6 +81,7 @@ import appeng.util.ConfigMenuInventory;
 
 public abstract class AEBaseMenu extends AbstractContainerMenu {
     private static final int MAX_STRING_LENGTH = 32767;
+    private static final int MAX_CONTAINER_TRANSFER_ITERATIONS = 256;
     private static final String HIDE_SLOT = "HideSlot";
 
     private final IActionSource mySrc;
@@ -559,14 +560,14 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             var realInv = configInv.getDelegate();
             var realInvSlot = appEngSlot.slot;
 
-            if (action == InventoryAction.FILL_ITEM || action == InventoryAction.FILL_ALL_ITEM) {
+            if (action == InventoryAction.FILL_ITEM || action == InventoryAction.FILL_ENTIRE_ITEM) {
                 var what = realInv.getKey(realInvSlot);
                 handleFillingHeldItem(
                         (amount, mode) -> realInv.extract(realInvSlot, what, amount, mode),
-                        what, action == InventoryAction.FILL_ALL_ITEM);
-            } else if (action == InventoryAction.EMPTY_ITEM || action == InventoryAction.EMPTY_ALL_ITEM) {
+                        what, action == InventoryAction.FILL_ENTIRE_ITEM);
+            } else if (action == InventoryAction.EMPTY_ITEM || action == InventoryAction.EMPTY_ENTIRE_ITEM) {
                 handleEmptyHeldItem((what, amount, mode) -> realInv.insert(realInvSlot, what, amount, mode),
-                        action == InventoryAction.EMPTY_ALL_ITEM);
+                        action == InventoryAction.EMPTY_ENTIRE_ITEM);
             }
         }
 
@@ -595,11 +596,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             return;
         }
 
-        int maxIterations = 10_000;
         long amount = fillAll ? Long.MAX_VALUE : what.getAmountPerUnit();
         boolean filled = false;
+        int maxIterations = fillAll ? MAX_CONTAINER_TRANSFER_ITERATIONS : 1;
 
-        do {
+        while (maxIterations > 0) {
             // Check if we can pull out of the system
             var canPull = source.extract(amount, Actionable.SIMULATE);
             if (canPull <= 0) {
@@ -628,7 +629,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
             filled = true;
             maxIterations--;
-        } while (fillAll && maxIterations > 0);
+        }
 
         if (filled) {
             ctx.playFillSound(getPlayer(), what);
@@ -653,10 +654,10 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
         var what = content.what();
         long amount = emptyAll ? Long.MAX_VALUE : what.getAmountPerUnit();
-        int maxIterations = 10_000;
+        int maxIterations = emptyAll ? MAX_CONTAINER_TRANSFER_ITERATIONS : 1;
         boolean emptied = false;
 
-        do {
+        while (maxIterations > 0) {
             // Check if we can pull out of the container
             var canExtract = ctx.extract(what, amount, Actionable.SIMULATE);
             if (canExtract <= 0) {
@@ -686,7 +687,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
             emptied = true;
             maxIterations--;
-        } while (emptyAll && maxIterations > 0);
+        }
 
         if (emptied) {
             ctx.playEmptySound(getPlayer(), what);

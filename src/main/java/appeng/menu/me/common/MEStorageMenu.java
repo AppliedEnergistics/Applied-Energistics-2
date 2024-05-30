@@ -421,14 +421,14 @@ public class MEStorageMenu extends AEBaseMenu
 
         if (action == InventoryAction.FILL_ITEM) {
             tryFillContainerItem(clickedKey, false, false);
-        } else if (action == InventoryAction.FILL_ALL_ITEM) {
+        } else if (action == InventoryAction.FILL_ENTIRE_ITEM) {
             tryFillContainerItem(clickedKey, false, true);
         } else if (action == InventoryAction.SHIFT_CLICK) {
             tryFillContainerItem(clickedKey, true, false);
         } else if (action == InventoryAction.EMPTY_ITEM) {
             handleEmptyHeldItem((what, amount, mode) -> StorageHelper.poweredInsert(energySource, storage, what, amount,
                     getActionSource(), mode), false);
-        } else if (action == InventoryAction.EMPTY_ALL_ITEM) {
+        } else if (action == InventoryAction.EMPTY_ENTIRE_ITEM) {
             handleEmptyHeldItem((what, amount, mode) -> StorageHelper.poweredInsert(energySource, storage, what, amount,
                     getActionSource(), mode), true);
         } else if (action == InventoryAction.AUTO_CRAFT) {
