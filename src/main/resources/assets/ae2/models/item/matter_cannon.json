@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "ae2:item/matter_cannon_base",
-		"particle": "ae2:item/matter_cannon_base"
+		"0": "ae2:item/tool_base",
+		"particle": "ae2:item/tool_base"
 	},
 	"elements": [
 		{
@@ -102,7 +102,8 @@
 		},
 		"gui": {
 			"rotation": [30, 225, 0],
-			"translation": [0, 0.5, 0]
+			"translation": [0, 0.5, 0],
+			"scale": [0.8, 0.8, 0.8]
 		},
 		"fixed": {
 			"rotation": [0, 90, 0],
