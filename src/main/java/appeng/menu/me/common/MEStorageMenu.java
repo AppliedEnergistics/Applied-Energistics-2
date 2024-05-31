@@ -43,7 +43,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
 
-import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
@@ -409,34 +408,31 @@ public class MEStorageMenu extends AEBaseMenu
             return;
         }
 
-        if (action == InventoryAction.PICKUP_OR_SET_DOWN && ContainerItemStrategies.isKeySupported(clickedKey)) {
-            action = InventoryAction.FILL_ITEM;
-        }
-
-        if (action == InventoryAction.SPLIT_OR_PLACE_SINGLE) {
-            if (ContainerItemStrategies.getContainedStack(getCarried()) != null) {
-                action = InventoryAction.EMPTY_ITEM;
-            }
-        }
-
-        if (action == InventoryAction.FILL_ITEM) {
-            tryFillContainerItem(clickedKey, false, false);
-        } else if (action == InventoryAction.FILL_ENTIRE_ITEM) {
-            tryFillContainerItem(clickedKey, false, true);
-        } else if (action == InventoryAction.SHIFT_CLICK) {
-            tryFillContainerItem(clickedKey, true, false);
-        } else if (action == InventoryAction.EMPTY_ITEM) {
-            handleEmptyHeldItem((what, amount, mode) -> StorageHelper.poweredInsert(energySource, storage, what, amount,
-                    getActionSource(), mode), false);
-        } else if (action == InventoryAction.EMPTY_ENTIRE_ITEM) {
-            handleEmptyHeldItem((what, amount, mode) -> StorageHelper.poweredInsert(energySource, storage, what, amount,
-                    getActionSource(), mode), true);
-        } else if (action == InventoryAction.AUTO_CRAFT) {
+        // Handle auto-crafting requests
+        if (action == InventoryAction.AUTO_CRAFT) {
             var locator = getLocator();
             if (locator != null && clickedKey != null) {
                 CraftAmountMenu.open(player, locator, clickedKey, clickedKey.getAmountPerUnit());
             }
             return;
+        }
+
+        // Attempt fluid related actions first
+        switch (action) {
+            case FILL_ITEM -> tryFillContainerItem(clickedKey, false, false);
+            case FILL_ITEM_MOVE_TO_PLAYER -> tryFillContainerItem(clickedKey, true, false);
+            case FILL_ENTIRE_ITEM -> tryFillContainerItem(clickedKey, false, true);
+            case FILL_ENTIRE_ITEM_MOVE_TO_PLAYER -> tryFillContainerItem(clickedKey, true, true);
+            case EMPTY_ITEM ->
+                handleEmptyHeldItem(
+                        (what, amount, mode) -> StorageHelper.poweredInsert(energySource, storage, what, amount,
+                                getActionSource(), mode),
+                        false);
+            case EMPTY_ENTIRE_ITEM ->
+                handleEmptyHeldItem(
+                        (what, amount, mode) -> StorageHelper.poweredInsert(energySource, storage, what, amount,
+                                getActionSource(), mode),
+                        true);
         }
 
         // Handle interactions where the player wants to put something into the network
@@ -449,16 +445,14 @@ public class MEStorageMenu extends AEBaseMenu
             return;
         }
 
+        // Any of the remaining actions are for items only
         if (!(clickedKey instanceof AEItemKey clickedItem)) {
             return;
         }
 
         switch (action) {
-            case SHIFT_CLICK:
-                moveOneStackToPlayer(clickedItem);
-                break;
-
-            case ROLL_DOWN: {
+            case SHIFT_CLICK -> moveOneStackToPlayer(clickedItem);
+            case ROLL_DOWN -> {
                 // Insert 1 of the carried stack into the network (or at least try to), regardless of what we're
                 // hovering in the network inventory.
                 var carried = getCarried();
@@ -470,9 +464,7 @@ public class MEStorageMenu extends AEBaseMenu
                     }
                 }
             }
-                break;
-            case ROLL_UP:
-            case PICKUP_SINGLE: {
+            case ROLL_UP, PICKUP_SINGLE -> {
                 // Extract 1 of the hovered stack from the network (or at least try to), and add it to the carried item
                 var item = getCarried();
 
@@ -496,8 +488,7 @@ public class MEStorageMenu extends AEBaseMenu
                     }
                 }
             }
-                break;
-            case PICKUP_OR_SET_DOWN: {
+            case PICKUP_OR_SET_DOWN -> {
                 if (!getCarried().isEmpty()) {
                     putCarriedItemIntoNetwork(false);
                 } else {
@@ -514,8 +505,7 @@ public class MEStorageMenu extends AEBaseMenu
                     }
                 }
             }
-                break;
-            case SPLIT_OR_PLACE_SINGLE:
+            case SPLIT_OR_PLACE_SINGLE -> {
                 if (!getCarried().isEmpty()) {
                     putCarriedItemIntoNetwork(true);
                 } else {
@@ -538,26 +528,23 @@ public class MEStorageMenu extends AEBaseMenu
                         setCarried(ItemStack.EMPTY);
                     }
                 }
-
-                break;
-            case CREATIVE_DUPLICATE:
+            }
+            case CREATIVE_DUPLICATE -> {
                 if (player.getAbilities().instabuild) {
                     var is = clickedItem.toStack();
                     is.setCount(is.getMaxStackSize());
                     setCarried(is);
                 }
-                break;
-            case MOVE_REGION:
+            }
+            case MOVE_REGION -> {
                 final int playerInv = player.getInventory().items.size();
                 for (int slotNum = 0; slotNum < playerInv; slotNum++) {
                     if (!moveOneStackToPlayer(clickedItem)) {
                         break;
                     }
                 }
-                break;
-            default:
-                AELog.warn("Received unhandled inventory action %s from client in %s", action, getClass());
-                break;
+            }
+            default -> AELog.warn("Received unhandled inventory action %s from client in %s", action, getClass());
         }
     }
 
