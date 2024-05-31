@@ -250,7 +250,7 @@ allprojects {
 
 ///////////////////
 // Version Number
-version = "15.2.999"
+version = "0.0.0"
 
 ext.pr = System.getenv('PR_NUMBER') ?: ""
 if (ext.pr) {
