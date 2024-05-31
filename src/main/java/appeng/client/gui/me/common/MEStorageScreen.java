@@ -228,11 +228,30 @@ public class MEStorageScreen<C extends MEStorageMenu>
             AELog.debug("Clicked on grid inventory entry serial=%s, key=%s", entry.getSerial(), entry.getWhat());
         }
 
-        // Is there an emptying action? If so, send it to the server
-        if (mouseButton == 1 && clickType == ClickType.PICKUP && !menu.getCarried().isEmpty()) {
+        // Left-Clicking on an entry that is supported by a container strategy will either fill the currently
+        // held container, or it will consume a container from the grid to be filled.
+        // Holding shift tries to fill the entire container, while only transferring a single unit otherwise.
+        if (mouseButton == 0 && entry != null && ContainerItemStrategies.isKeySupported(entry.getWhat())) {
+            InventoryAction action;
+            if (clickType != ClickType.QUICK_MOVE) {
+                action = InventoryAction.FILL_ITEM; // Simple click fills item in hand or puts filled item in hand
+            } else {
+                // Shift-click on fluid with an empty hand -> move filled container to player
+                action = menu.getCarried().isEmpty() ? InventoryAction.FILL_ENTIRE_ITEM_MOVE_TO_PLAYER
+                        : InventoryAction.FILL_ENTIRE_ITEM;
+            }
+
+            menu.handleInteraction(entry.getSerial(), action);
+            return;
+        }
+
+        // Right-clicking with an item in hand tries to empty the container into the network
+        // Holding shift tries to empty the entire container, while only transferring a single unit otherwise.
+        if (mouseButton == 1 && !menu.getCarried().isEmpty()) {
             var emptyingAction = ContainerItemStrategies.getEmptyingAction(menu.getCarried());
             if (emptyingAction != null && menu.isKeyVisible(emptyingAction.what())) {
-                menu.handleInteraction(-1, InventoryAction.EMPTY_ITEM);
+                menu.handleInteraction(-1, clickType == ClickType.QUICK_MOVE ? InventoryAction.EMPTY_ENTIRE_ITEM
+                        : InventoryAction.EMPTY_ITEM);
                 return;
             }
         }
