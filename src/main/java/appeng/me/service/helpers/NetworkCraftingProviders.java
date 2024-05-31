@@ -23,6 +23,7 @@ import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.AEKeyFilter;
+import appeng.hooks.ticking.TickHandler;
 
 /**
  * Keeps track of the crafting patterns in the network, and related information.
@@ -37,6 +38,11 @@ public class NetworkCraftingProviders {
     private final KeyCounter craftableItemsList = new KeyCounter();
     private final Map<AEKey, Integer> emitableItems = new HashMap<>();
 
+    private final Set<AEKey> craftableKeys = Collections.unmodifiableSet(craftableItems.keySet());
+    private final Set<AEKey> emittableKeys = Collections.unmodifiableSet(emitableItems.keySet());
+
+    private long lastModifiedOnTick = TickHandler.instance().getCurrentTick();
+
     public void addProvider(IGridNode node) {
         var provider = node.getService(ICraftingProvider.class);
         if (provider != null) {
@@ -46,6 +52,7 @@ public class NetworkCraftingProviders {
             var state = new ProviderState(provider);
             state.mount(this);
             craftingProviders.put(node, state);
+            setLastModifiedOnTick();
         }
     }
 
@@ -55,6 +62,7 @@ public class NetworkCraftingProviders {
             var state = craftingProviders.remove(node);
             if (state != null) {
                 state.unmount(this);
+                setLastModifiedOnTick();
             }
         }
     }
@@ -76,6 +84,14 @@ public class NetworkCraftingProviders {
         }
 
         return result;
+    }
+
+    public Set<AEKey> getCraftableKeys() {
+        return craftableKeys;
+    }
+
+    public Set<AEKey> getEmittableKeys() {
+        return emittableKeys;
     }
 
     public Collection<IPatternDetails> getCraftingFor(AEKey whatToCraft) {
@@ -207,5 +223,16 @@ public class NetworkCraftingProviders {
     }
 
     private record PatternInfo(IPatternDetails pattern, ProviderState state) {
+    }
+
+    private void setLastModifiedOnTick() {
+        lastModifiedOnTick = TickHandler.instance().getCurrentTick();
+    }
+
+    /**
+     * @see TickHandler#getCurrentTick()
+     */
+    public long getLastModifiedOnTick() {
+        return lastModifiedOnTick;
     }
 }
