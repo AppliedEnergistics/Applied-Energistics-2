@@ -152,7 +152,7 @@ public final class ConventionTags {
     /**
      * Used to identify items that act as wrenches.
      */
-    public static final TagKey<Item> WRENCH = tag("c:tools/wrench");
+    public static final TagKey<Item> WRENCH = tag("c:tools/wrenches");
 
     public static final Map<DyeColor, TagKey<Item>> DYES = Arrays.stream(DyeColor.values())
             .collect(Collectors.toMap(
