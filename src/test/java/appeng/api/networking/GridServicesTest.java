@@ -30,6 +30,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 
+import net.minecraft.world.level.Level;
+
 import appeng.util.BootstrapMinecraft;
 
 @MockitoSettings
@@ -62,7 +64,7 @@ class GridServicesTest {
 
     @Test
     void testEmptyRegistry() {
-        var services = GridServices.createServices(grid);
+        var services = GridServices.createServices(grid).services();
         assertThat(services).isEmpty();
     }
 
@@ -70,7 +72,7 @@ class GridServicesTest {
     void testGridServiceWithDefaultConstructor() {
         GridServices.register(PublicInterface.class, GridService1.class);
 
-        var services = GridServices.createServices(grid);
+        var services = GridServices.createServices(grid).services();
         assertThat(services).containsOnlyKeys(PublicInterface.class);
         assertThat(services.get(PublicInterface.class)).isInstanceOf(GridService1.class);
     }
@@ -79,7 +81,7 @@ class GridServicesTest {
     void testGridServiceWithGridDependency() {
         GridServices.register(GridService2.class, GridService2.class);
 
-        var services = GridServices.createServices(grid);
+        var services = GridServices.createServices(grid).services();
         assertThat(services).containsOnlyKeys(GridService2.class);
         var actual = (GridService2) services.get(GridService2.class);
         assertThat(actual.grid).isSameAs(grid);
@@ -92,7 +94,7 @@ class GridServicesTest {
         GridServices.register(GridService3.class, GridService3.class);
         GridServices.register(GridService4.class, GridService4.class);
 
-        var services = GridServices.createServices(grid);
+        var services = GridServices.createServices(grid).services();
         assertThat(services).containsOnlyKeys(
                 PublicInterface.class,
                 GridService2.class,
@@ -176,4 +178,50 @@ class GridServicesTest {
         }
     }
 
+    @Test
+    void testTickingServices() {
+        GridServices.register(ServerStartTickOnly.class, ServerStartTickOnly.class);
+        GridServices.register(LevelStartTickOnly.class, LevelStartTickOnly.class);
+        GridServices.register(LevelEndTickOnly.class, LevelEndTickOnly.class);
+        GridServices.register(ServerEndTickOnly.class, ServerEndTickOnly.class);
+
+        var services = GridServicesInternal.createServices(grid);
+        var map = services.services();
+        assertThat(services.serverStartTickServices())
+                .containsExactly(map.get(ServerStartTickOnly.class));
+        assertThat(services.levelStartTickServices())
+                .containsExactly(map.get(LevelStartTickOnly.class));
+        assertThat(services.levelEndtickServices())
+                .containsExactly(map.get(LevelEndTickOnly.class));
+        assertThat(services.serverEndTickServices())
+                .containsExactly(map.get(ServerEndTickOnly.class));
+    }
+
+    public static class ServerStartTickOnly implements IGridServiceProvider {
+        @Override
+        public void onServerStartTick() {
+            IGridServiceProvider.super.onServerStartTick();
+        }
+    }
+
+    public static class LevelStartTickOnly implements IGridServiceProvider {
+        @Override
+        public void onLevelStartTick(Level level) {
+            IGridServiceProvider.super.onLevelStartTick(level);
+        }
+    }
+
+    public static class LevelEndTickOnly implements IGridServiceProvider {
+        @Override
+        public void onLevelEndTick(Level level) {
+            IGridServiceProvider.super.onLevelEndTick(level);
+        }
+    }
+
+    public static class ServerEndTickOnly implements IGridServiceProvider {
+        @Override
+        public void onServerEndTick() {
+            IGridServiceProvider.super.onServerEndTick();
+        }
+    }
 }

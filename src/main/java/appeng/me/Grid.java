@@ -21,7 +21,6 @@ package appeng.me;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,10 +40,10 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridService;
-import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridEvent;
 import appeng.core.AELog;
 import appeng.hooks.ticking.TickHandler;
+import appeng.me.helpers.GridServiceContainer;
 
 public class Grid implements IGrid {
     /**
@@ -54,7 +53,9 @@ public class Grid implements IGrid {
     private static int nextSerial = 0;
 
     private final SetMultimap<Class<?>, IGridNode> machines = MultimapBuilder.hashKeys().hashSetValues().build();
-    private final Map<Class<?>, IGridServiceProvider> services;
+    private final GridServiceContainer services;
+    // Becomes null after the last node has left the grid.
+    @Nullable
     private GridNode pivot;
     private int priority; // how import is this network?
     private final int serialNumber = nextSerial++; // useful to keep track of grids in toString() for debugging purposes
@@ -84,17 +85,13 @@ public class Grid implements IGrid {
         return this.priority;
     }
 
-    Collection<IGridServiceProvider> getProviders() {
-        return this.services.values();
-    }
-
     @Override
     public int size() {
         return this.machines.size();
     }
 
     void remove(GridNode gridNode) {
-        for (var c : this.services.values()) {
+        for (var c : services.services().values()) {
             c.removeNode(gridNode);
         }
 
@@ -118,13 +115,13 @@ public class Grid implements IGrid {
         // track node.
         this.machines.put(gridNode.getOwner().getClass(), gridNode);
 
-        for (var service : this.services.values()) {
+        for (var service : services.services().values()) {
             service.addNode(gridNode, savedData);
         }
     }
 
     void saveNodeData(GridNode gridNode, CompoundTag savedData) {
-        for (var service : this.services.values()) {
+        for (var service : services.services().values()) {
             service.saveNodeData(gridNode, savedData);
         }
     }
@@ -132,7 +129,7 @@ public class Grid implements IGrid {
     @SuppressWarnings("unchecked")
     @Override
     public <C extends IGridService> C getService(Class<C> iface) {
-        var service = this.services.get(iface);
+        var service = this.services.services().get(iface);
         if (service == null) {
             throw new IllegalArgumentException("Service " + iface + " is not registered");
         }
@@ -205,7 +202,7 @@ public class Grid implements IGrid {
             return;
         }
 
-        for (var gc : this.services.values()) {
+        for (var gc : this.services.serverStartTickServices()) {
             gc.onServerStartTick();
         }
     }
@@ -215,7 +212,7 @@ public class Grid implements IGrid {
             return;
         }
 
-        for (var gc : this.services.values()) {
+        for (var gc : this.services.levelStartTickServices()) {
             gc.onLevelStartTick(level);
         }
     }
@@ -225,7 +222,7 @@ public class Grid implements IGrid {
             return;
         }
 
-        for (var gc : this.services.values()) {
+        for (var gc : this.services.levelEndtickServices()) {
             gc.onLevelEndTick(level);
         }
     }
@@ -235,7 +232,7 @@ public class Grid implements IGrid {
             return;
         }
 
-        for (var gc : this.services.values()) {
+        for (var gc : this.services.serverEndTickServices()) {
             gc.onServerEndTick();
         }
     }
