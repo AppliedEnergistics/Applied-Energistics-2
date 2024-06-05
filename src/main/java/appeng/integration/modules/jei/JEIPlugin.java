@@ -50,6 +50,7 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
+import appeng.integration.abstraction.IJEI;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.integration.modules.jei.transfer.EncodePatternTransferHandler;
 import appeng.integration.modules.jei.transfer.UseCraftingRecipeTransfer;
@@ -286,6 +287,12 @@ public class JEIPlugin implements IModPlugin {
             jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK,
                     FacadeCreativeTab.getDisplayItems());
         }
+    }
+
+    @Override
+    public void onRuntimeUnavailable() {
+        // Free memory potentially held by JEI
+        JEIFacade.setInstance(new IJEI.Stub());
     }
 
     private void hideDebugTools(IJeiRuntime jeiRuntime) {
