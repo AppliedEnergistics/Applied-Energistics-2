@@ -43,7 +43,7 @@ There are several different types of pattern for different things:
 ***
 
 *   <ItemLink id="processing_pattern" />s are where a lot of flexibility in autocrafting comes from. They are the most generalized type, simply
-    saying "if a pattern provider pushes these ingredients to adjacent inventories, the ME system will recieve these items at some point in the
+    saying "if a pattern provider pushes these ingredients to adjacent inventories, the ME system will receive these items at some point in the
     near or distant future". They are how you will autocraft with almost any modded machine, or furnaces and the like. Because they are so
     general in use and do not care what happens between pushing ingredients and receiving the result, you can do some really funky stuff, like inputting
     the ingredients into an entire complex factory production chain which will sort out stuff, take in other ingredients from infinitely-producing

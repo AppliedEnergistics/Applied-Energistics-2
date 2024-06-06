@@ -55,13 +55,13 @@ is crafting some specific item through <ItemLink id="pattern_provider" />s. This
 power-hungry automation setups while they are actually being used.
 
 The second option, "emit redstone to craft item", is extremely useful for specific use cases like infinite farms and
-automation setups that only have a chance of making an output, instead of a guranteed output.
+automation setups that only have a chance of making an output, instead of a guaranteed output.
 This setting creates a virtual [pattern](patterns.md) for [autocrafting](../ae2-mechanics/autocrafting.md) to use, for whatever item
 is in the emitter's filter slot.
 (For correct functionality, an actual pattern for the same item **should not exist** in your <ItemLink id="pattern_provider" />s)
 
 This "pattern" does not define, or even care about ingredients.
-All it says is "If you emit redstone from this level emitter, the ME system will recieve this item at some point in the
+All it says is "If you emit redstone from this level emitter, the ME system will receive this item at some point in the
 near or distant future". This is usually used to activate and deactivate infinite farms which require no input ingredients,
 or to activate [a system that handles recursive recipes](../example-setups/recursive-crafting-setup.md) (which standard autocafting cannot understand)
 like, for example, "1 cobblestone = 2 cobblestone" if you have a machine that duplicates cobblestone.

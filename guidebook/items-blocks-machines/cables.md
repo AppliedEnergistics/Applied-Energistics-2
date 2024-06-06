@@ -128,7 +128,7 @@ into them, all they do is connect AE2 [devices](../ae2-mechanics/devices.md) tog
 </GameScene>
 
 <ItemLink id="fluix_glass_cable" /> is the simplest cable to make, transfers power
-and up to 8 [channels](../ae2-mechanics/channels.md). It comes in 17 diffrent colors, the default
+and up to 8 [channels](../ae2-mechanics/channels.md). It comes in 17 different colors, the default
 being Fluix, and can be dyed any color using any of the 16 dyes.
 
 To craft colored cables surround a dye of any type with 8 cables of the same

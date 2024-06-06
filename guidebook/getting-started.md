@@ -150,7 +150,7 @@ automate some processing.
 
 A great example of this is to place a <ItemLink id="export_bus" /> on the top of a furnace to
 dump in ores, and a <ItemLink id="import_bus" />
-on the bottom of the furance to extract furnaced ores.
+on the bottom of the furnace to extract furnaced ores.
 
 The <ItemLink id="export_bus" /> lets you export items from the network, into the attached
 inventory, while the <ItemLink id="import_bus" /> imports items from the attached inventory into
