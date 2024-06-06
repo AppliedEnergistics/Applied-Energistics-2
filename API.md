@@ -61,7 +61,7 @@ AE2's core systems work by building grids from grid nodes that are created and o
 entities or parts. Grids are never created directly. They form and disband automatically by creating grid nodes, and
 connecting or disconnecting them.
 
-**NOTE:** Grids are a purely a server-side concept. They do not exist on the client.
+**NOTE:** Grids are purely a server-side concept. They do not exist on the client.
 
 ### Node Owners and Listeners
 
