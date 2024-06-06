@@ -359,7 +359,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     }
 
     /**
-     * Begin a section where change notifications are supressed until {@link #endBatch()} is called. If a change after
+     * Begin a section where change notifications are suppressed until {@link #endBatch()} is called. If a change after
      * calling this method would cause a notification to occur, a <strong>single</strong> change notification will occur
      * upon calling {@link #endBatch()} instead.
      */

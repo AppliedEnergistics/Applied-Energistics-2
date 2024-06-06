@@ -80,7 +80,7 @@ There are several different types of pattern for different things:
 ***
 
 *   <ItemLink id="processing_pattern" />s are where a lot of flexibility in autocrafting comes from. They are the most generalized type, simply
-    saying "if a pattern provider pushes these ingredients to adjacent inventories, the ME system will recieve these items at some point in the
+    saying "if a pattern provider pushes these ingredients to adjacent inventories, the ME system will receive these items at some point in the
     near or distant future". They are how you will autocraft with almost any modded machine, or furnaces and the like. Because they are so
     general in use and do not care what happens between pushing ingredients and receiving the result, you can do some really funky stuff, like inputting
     the ingredients into an entire complex factory production chain which will sort out stuff, take in other ingredients from infinitely-producing
@@ -96,7 +96,7 @@ your smelting setup every operation instead of one at a time.
 
 There is actually an even more "general" form of "pattern" than a processing pattern. A <ItemLink id="level_emitter" /> with a crafting card can be set
 to emit a redstone signal in order to craft something. This "pattern" does not define, or even care about ingredients.
-All it says is "If you emit redstone from this level emitter, the ME system will recieve this item at some point in the
+All it says is "If you emit redstone from this level emitter, the ME system will receive this item at some point in the
 near or distant future". This is usually used to activate and deactivate infinite farms which require no input ingredients,
 or to activate a system that handles recursive recipes (which standard autocafting cannot understand) like, for example, "1 cobblestone = 2 cobblestone"
 if you have a machine that duplicates cobblestone.

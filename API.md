@@ -46,7 +46,7 @@ Keys can be saved to from NBT using `toTagGeneric`, which also stores a referenc
 `AEKey.fromTagGeneric` can restore the key of the correct type. The same mechanism can be used for packets with
 `AEKey.writeToPacket` and `AEKey.readKey`.
 
-Sicne Java 16, the following patter makes it easy to work with generic keys when your code only supports items:
+Since Java 16, the following pattern makes it easy to work with generic keys when your code only supports items:
 
 ```java
 if (key instanceof AEItemKey itemKey) {
@@ -61,7 +61,7 @@ AE2's core systems work by building grids from grid nodes that are created and o
 entities or parts. Grids are never created directly. They form and disband automatically by creating grid nodes, and
 connecting or disconnecting them.
 
-**NOTE:** Grids a purely a server-side concept. They do not exist on the client.
+**NOTE:** Grids are a purely a server-side concept. They do not exist on the client.
 
 ### Node Owners and Listeners
 

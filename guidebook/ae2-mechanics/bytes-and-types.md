@@ -33,7 +33,7 @@ take up more space than 64 stone.
 
 Again, each item is 1 bit, so 8 items equals 1 byte. For fluid cells, this is 8 buckets per byte.
 
-Many people complain about the limited number of types a cell can hold, but they are a ***neccessary limitation***.
+Many people complain about the limited number of types a cell can hold, but they are a ***necessary limitation***.
 Cells store their data in an NBT tag on the item itself, which makes them rather stable. However, this means putting too much
 data on a cell can cause too much data to be sent to a player, causing an effect similar to "Book Banning" in vanilla minecraft.
 Additionally, having too many different types in your system increases the load on sorting and item handling. However, this
