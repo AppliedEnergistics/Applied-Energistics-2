@@ -595,7 +595,7 @@ public final class AEConfig {
 
             // Search Settings
             var search = root.subsection("search");
-            this.searchTooltips = search.addBoolean("searchTooltips", true,
+            this.searchTooltips = search.addBoolean("searchTooltips", false,
                     "Should tooltips be searched. Performance impact");
             this.searchModNameInTooltips = search.addBoolean("searchModNameInTooltips", false,
                     "Should the mod name be included when searching in tooltips.");
