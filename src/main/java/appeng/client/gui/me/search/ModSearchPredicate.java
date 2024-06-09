@@ -33,6 +33,9 @@ final class ModSearchPredicate implements Predicate<GridInventoryEntry> {
         return false;
     }
 
+    /**
+     * util function to standardify the mod string
+     */
     private String standardify(String input) {
         return input.toLowerCase().replace(" ", "");
     }
