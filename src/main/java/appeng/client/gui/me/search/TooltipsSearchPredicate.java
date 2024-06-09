@@ -76,6 +76,9 @@ final class TooltipsSearchPredicate implements Predicate<GridInventoryEntry> {
         });
     }
 
+    /**
+    * util function to standardify the tool tips string
+    */
     private String standardify(String input) {
         return input.toLowerCase().replace(" ", "");
     }
