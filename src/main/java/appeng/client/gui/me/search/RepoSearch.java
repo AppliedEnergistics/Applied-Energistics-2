@@ -1,10 +1,13 @@
 package appeng.client.gui.me.search;
 
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.function.Predicate;
 
 import it.unimi.dsi.fastutil.longs.Long2BooleanMap;
 import it.unimi.dsi.fastutil.longs.Long2BooleanOpenHashMap;
 
+import appeng.api.stacks.AEKey;
 import appeng.menu.me.common.GridInventoryEntry;
 
 public class RepoSearch {
@@ -14,6 +17,7 @@ public class RepoSearch {
     // Cached information
     private final Long2BooleanMap cache = new Long2BooleanOpenHashMap();
     private Predicate<GridInventoryEntry> search = (e) -> true;
+    public final Map<AEKey, String> tooltipCache = new WeakHashMap<>();
 
     public RepoSearch() {
     }
@@ -24,7 +28,7 @@ public class RepoSearch {
 
     public void setSearchString(String searchString) {
         if (!searchString.equals(this.searchString)) {
-            this.search = SearchPredicates.fromString(searchString);
+            this.search = SearchPredicates.fromString(searchString, this);
             this.searchString = searchString;
             this.cache.clear();
         }
