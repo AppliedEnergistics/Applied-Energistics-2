@@ -3,7 +3,7 @@
   "includes": ["common/common.json", "common/player_inventory.json"],
   "background": {
     "texture": "guis/pattern_provider.png",
-    "srcRect": [0, 0, 176, 213]
+    "srcRect": [0, 0, 176, 215]
   },
   "slots": {
     "ENCODED_PATTERN": {

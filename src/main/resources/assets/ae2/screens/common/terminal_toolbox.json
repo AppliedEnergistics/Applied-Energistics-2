@@ -3,7 +3,7 @@
   "slots": {
     "TOOLBOX": {
       "$comment": "Only relevant if the toolbox is present (i.e. network tool)",
-      "bottom": 82,
+      "bottom": 84,
       "right": 20,
       "grid": "BREAK_AFTER_3COLS"
     }
@@ -20,7 +20,7 @@
     "toolbox": {
       "$comment": "The toolbox found on some screens",
       "right": 21,
-      "bottom": 88,
+      "bottom": 90,
       "width": 59,
       "height": 66
     }

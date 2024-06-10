@@ -105,7 +105,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case MOLECULAR_ASSEMBLER_PATTERN:
                 return PatternDetailsHelper.decodePattern(stack,
                         getLevel()) instanceof IMolecularAssemblerSupportedPattern;
-            case ENCODED_PATTERN:
+            case ENCODED_PATTERN, PROVIDER_PATTERN:
                 return PatternDetailsHelper.isEncodedPattern(stack);
             case ENCODED_AE_PATTERN:
                 return AEItems.CRAFTING_PATTERN.isSameAs(stack)
@@ -182,7 +182,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     @Override
     public ItemStack getDisplayStack() {
         // If the slot only takes encoded patterns, show the encoded item instead
-        if (isRemote() && this.which == PlacableItemType.ENCODED_PATTERN) {
+        if (isRemote() && (this.which == PlacableItemType.ENCODED_PATTERN || this.which == PlacableItemType.PROVIDER_PATTERN)) {
             final ItemStack is = super.getDisplayStack();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem iep) {
                 final ItemStack out = iep.getOutput(is);
@@ -227,6 +227,7 @@ public class RestrictedInputSlot extends AppEngSlot {
         /**
          * An encoded pattern from any mod (AE2 or otherwise). Delegates to AE2 API to identify such items.
          */
+        PROVIDER_PATTERN(Icon.BACKGROUND_BLANK_PATTERN),
         ENCODED_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
         PATTERN(Icon.BACKGROUND_BLANK_PATTERN),
         BLANK_PATTERN(Icon.BACKGROUND_BLANK_PATTERN),

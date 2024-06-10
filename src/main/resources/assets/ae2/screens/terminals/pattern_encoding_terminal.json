@@ -11,11 +11,11 @@
   "slots": {
     "BLANK_PATTERN": {
       "left": 147,
-      "bottom": 163
+      "bottom": 165
     },
     "ENCODED_PATTERN": {
       "left": 147,
-      "bottom": 116
+      "bottom": 118
     }
   },
   "text": {
@@ -34,7 +34,7 @@
       },
       "position": {
         "left": 8,
-        "bottom": 175
+        "bottom": 177
       }
     }
   },
@@ -57,61 +57,61 @@
     },
     "bottom": {
       "texture": "guis/pattern.png",
-      "srcRect": [0, 71, 195, 178]
+      "srcRect": [0, 71, 195, 180]
     }
   },
   "widgets": {
     "modeTabButton0": {
       "left": 173,
-      "bottom": 172,
+      "bottom": 174,
       "width": 22,
       "height": 22
     },
     "modeTabButton1": {
       "left": 173,
-      "bottom": 151,
+      "bottom": 153,
       "width": 22,
       "height": 22
     },
     "modeTabButton2": {
       "left": 173,
-      "bottom": 130,
+      "bottom": 132,
       "width": 22,
       "height": 22
     },
     "modeTabButton3": {
       "left": 173,
-      "bottom": 109,
+      "bottom": 111,
       "width": 22,
       "height": 22
     },
     "modePanel0": {
       "left": 9,
-      "bottom": 164
+      "bottom": 166
     },
     "modePanel1": {
       "left": 9,
-      "bottom": 164
+      "bottom": 166
     },
     "modePanel2": {
       "left": 9,
-      "bottom": 164
+      "bottom": 166
     },
     "modePanel3": {
       "left": 9,
-      "bottom": 164
+      "bottom": 166
     },
     "modePanel4": {
       "left": 9,
-      "bottom": 164
+      "bottom": 166
     },
     "modePanel5": {
       "left": 9,
-      "bottom": 164
+      "bottom": 166
     },
     "encodePattern": {
       "left": 147,
-      "bottom": 143
+      "bottom": 145
     }
   }
 }

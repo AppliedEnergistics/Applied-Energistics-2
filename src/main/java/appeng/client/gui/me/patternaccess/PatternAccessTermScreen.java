@@ -82,7 +82,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     private static final int GUI_PADDING_Y = 6;
 
     private static final int GUI_HEADER_HEIGHT = 17;
-    private static final int GUI_FOOTER_HEIGHT = 97;
+    private static final int GUI_FOOTER_HEIGHT = 99;
     private static final int COLUMNS = 9;
 
     /**

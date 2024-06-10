@@ -3,7 +3,7 @@
   "includes": ["common/common.json", "common/player_inventory.json"],
   "background": {
     "texture": "guis/spatialio.png",
-    "srcRect": [0, 0, 176, 197]
+    "srcRect": [0, 0, 176, 199]
   },
   "slots": {
     "MACHINE_INPUT": {

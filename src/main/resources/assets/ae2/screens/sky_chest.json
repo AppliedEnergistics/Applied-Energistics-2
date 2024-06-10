@@ -3,7 +3,7 @@
   "includes": ["common/palette.json", "common/player_inventory.json"],
   "background": {
     "texture": "guis/skychest.png",
-    "srcRect": [0, 0, 176, 185]
+    "srcRect": [0, 0, 176, 187]
   },
   "slots": {
     "STORAGE": {
@@ -30,7 +30,7 @@
       },
       "position": {
         "left": 8,
-        "bottom": 93
+        "bottom": 95
       }
     }
   }

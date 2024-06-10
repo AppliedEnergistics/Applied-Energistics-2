@@ -4,29 +4,29 @@
   "slots": {
     "SMITHING_TABLE_TEMPLATE": {
       "left": 15,
-      "bottom": 138
+      "bottom": 140
     },
     "SMITHING_TABLE_BASE": {
       "left": 33,
-      "bottom": 138
+      "bottom": 140
     },
     "SMITHING_TABLE_ADDITION": {
       "left": 51,
-      "bottom": 138
+      "bottom": 140
     },
     "SMITHING_TABLE_RESULT": {
       "left": 109,
-      "bottom": 138
+      "bottom": 140
     }
   },
   "widgets": {
     "smithingTableSubstitutions": {
       "left": 24,
-      "bottom": 149
+      "bottom": 151
     },
     "smithingTableClearPattern": {
       "left": 14,
-      "bottom": 149
+      "bottom": 151
     }
   }
 }

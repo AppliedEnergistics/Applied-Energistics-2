@@ -262,6 +262,15 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
+        // Added a custom slot highlight effect - RID
+        if (this.hoveredSlot != null) {
+            guiGraphics.hLine(leftPos + this.hoveredSlot.x, leftPos + this.hoveredSlot.x + 16, topPos + this.hoveredSlot.y - 1, 0xFFdaffff);
+            guiGraphics.hLine(leftPos + this.hoveredSlot.x - 1, leftPos + this.hoveredSlot.x + 16, topPos + this.hoveredSlot.y + 16, 0xFFdaffff);
+            guiGraphics.vLine(leftPos + this.hoveredSlot.x - 1, topPos + this.hoveredSlot.y - 2, topPos + this.hoveredSlot.y + 16, 0xFFdaffff);
+            guiGraphics.vLine(leftPos + this.hoveredSlot.x + 16, topPos + this.hoveredSlot.y - 2, topPos + this.hoveredSlot.y + 16, 0xFFdaffff);
+            renderSlotHighlight(guiGraphics, leftPos + this.hoveredSlot.x, topPos + this.hoveredSlot.y, 0, 0x669cd3ff);
+        }
+
         renderTooltips(guiGraphics, mouseX, mouseY);
 
         if (AEConfig.instance().isShowDebugGuiOverlays()) {

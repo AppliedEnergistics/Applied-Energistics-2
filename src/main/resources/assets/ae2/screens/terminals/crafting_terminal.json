@@ -5,12 +5,12 @@
   "slots": {
     "CRAFTING_GRID": {
       "left": 26,
-      "bottom": 156,
+      "bottom": 158,
       "grid": "BREAK_AFTER_3COLS"
     },
     "CRAFTING_RESULT": {
       "left": 134,
-      "bottom": 138
+      "bottom": 140
     }
   },
   "text": {
@@ -29,7 +29,7 @@
       },
       "position": {
         "left": 8,
-        "bottom": 175
+        "bottom": 177
       }
     }
   },
@@ -52,17 +52,17 @@
     },
     "bottom": {
       "texture": "guis/crafting.png",
-      "srcRect": [0, 71, 195, 178]
+      "srcRect": [0, 71, 195, 180]
     }
   },
   "widgets": {
     "clearCraftingGrid": {
       "left": 81,
-      "bottom": 157
+      "bottom": 159
     },
     "clearToPlayerInv": {
       "left": 91,
-      "bottom": 157
+      "bottom": 159
     }
   }
 }

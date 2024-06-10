@@ -21,7 +21,7 @@
     },
     "bottom": {
       "texture": "guis/terminal.png",
-      "srcRect": [0, 71, 195, 97]
+      "srcRect": [0, 71, 195, 99]
     }
   },
   "text": {
