@@ -18,6 +18,8 @@ This farm works fully automatically with <ItemLink id="flawless_budding_quartz" 
 budding certus quartz you will have to replace the budding block manually. Or, as described in [Semi-Auto Certus Farm](semiauto-certus-farm.md)
 and [Advanced Certus Farm](advanced-certus-farm.md), automatically.
 
+See [Certus Growth](../ae2-mechanics/certus-growth.md) for estimated speeds.
+
 <GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/simple_certus_farm.snbt" />
 

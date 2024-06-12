@@ -58,7 +58,7 @@ To actively move items, use an <ItemLink id="io_port" />.
 
     <BoxAnnotation color="#dd3333" min="14 0 11" max="15 1 12" thickness="0.05">
         Local Storage at a mob farm. This drive has cells partitioned to the drops you want to keep, like bones and arrows.
-        The drive itself is not given priority, because the thing that affects the rpiority is the storage bus accessing the subnet
+        The drive itself is not given priority, because the thing that affects the priority is the storage bus accessing the subnet
         from the main net. The cells have equal distribution cards and overflow destruction cards.
     </BoxAnnotation>
 

@@ -15,6 +15,8 @@ Instead of having a big stockpile of budding blocks and manually refreshing them
 this setup uses [Charger Automation](charger-automation.md) and [Throwing-In-Water Automation](throw-in-water-automation.md)
 to do it automatically.
 
+See [Certus Growth](../ae2-mechanics/certus-growth.md) for estimated speeds.
+
 **THIS IS A COMPLEX BUILD WITH STUFF HIDDEN BEHIND OTHER STUFF, PAN AROUND TO VIEW IT FROM ALL ANGLES**
 
 <GameScene zoom="6" interactive={true}>
