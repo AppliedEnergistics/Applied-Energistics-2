@@ -1,6 +1,10 @@
 {
   "$schema": "../schema.json",
-  "includes": ["../common/common.json", "../common/player_inventory.json", "../common/terminal_toolbox.json"],
+  "includes": [
+    "../common/common.json",
+    "../common/player_inventory.json",
+    "../common/terminal_toolbox.json"
+  ],
   "terminalStyle": {
     "slotsPerRow": 9,
     "header": {

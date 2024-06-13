@@ -21,7 +21,6 @@ import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.Color;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.core.definitions.AEParts;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
@@ -189,14 +188,6 @@ public class CPUSelectionList implements ICompositeWidget {
                 Mth.clamp(scrollbar.getCurrentScroll(), 0, menu.cpuList.cpus().size()),
                 Mth.clamp(scrollbar.getCurrentScroll() + ROWS, 0, menu.cpuList.cpus().size()));
         for (var cpu : cpus) {
-//            int color = -1;
-//            if (cpu.serial() == menu.getSelectedCpuSerial()) {
-//                color = selectedColor;
-//            }
-//            buttonBg.dest(x, y)
-//                    .colorRgb(color)
-//                    .blit(guiGraphics);
-
             if (cpu.serial() == menu.getSelectedCpuSerial()) {
                 buttonBgSelected.dest(x, y).blit(guiGraphics);
             } else {
@@ -216,11 +207,8 @@ public class CPUSelectionList implements ICompositeWidget {
             if (currentJob != null) {
                 // Show what was initially requested
                 infoBar.add(Icon.S_CRAFT, 1f, x + 2, y + 9);
-//                infoBar.addSpace(-4);
                 var craftAmt = currentJob.what().formatAmount(currentJob.amount(), AmountFormat.SLOT);
                 infoBar.add(craftAmt, textColor.toARGB(), 0.666f, x + 14, y + 13);
-//                infoBar.addSpace(2);
-//                infoBar.add(Icon.SLOT_BACKGROUND, 0.8f, x + 47, y + 2);
                 infoBar.add(currentJob.what(), 0.666f, x + 55, y + 9);
 
                 // Draw a bar at the bottom of the button to indicate job progress
@@ -236,19 +224,15 @@ public class CPUSelectionList implements ICompositeWidget {
                 guiGraphics.pose().popPose();
 
             } else {
-                infoBar.add(Icon.S_STORAGE, 1f,x + 24, y + 9);
-//                infoBar.addSpace(-4);
+                infoBar.add(Icon.S_STORAGE, 1f, x + 24, y + 9);
 
                 String storageAmount = formatStorage(cpu);
                 infoBar.add(storageAmount, textColor.toARGB(), 0.666f, x + 36, y + 13);
-//                infoBar.addSpace(2);
 
                 if (cpu.coProcessors() > 0) {
                     infoBar.add(Icon.S_PROCESSOR, 1f, x + 2, y + 9);
-//                    infoBar.addSpace(-4);
                     String coProcessorCount = String.valueOf(cpu.coProcessors());
                     infoBar.add(coProcessorCount, textColor.toARGB(), 0.666f, x + 14, y + 13);
-//                    infoBar.addSpace(4);
                 }
 
                 switch (cpu.mode()) {

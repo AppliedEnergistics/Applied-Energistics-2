@@ -18,13 +18,13 @@
 
 package appeng.client.gui.me.crafting;
 
-import appeng.client.gui.widgets.Scrollbar;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.CPUSelectionList;
+import appeng.client.gui.widgets.Scrollbar;
 import appeng.menu.me.crafting.CraftingStatusMenu;
 
 /**

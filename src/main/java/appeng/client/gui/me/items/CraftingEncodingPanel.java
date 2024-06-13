@@ -6,8 +6,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 import appeng.api.config.ActionItems;
 import appeng.client.Point;
@@ -39,11 +37,6 @@ public class CraftingEncodingPanel extends EncodingModePanel {
         this.substitutionsBtn = createCraftingSubstitutionButton(widgets);
         this.fluidSubstitutionsBtn = createCraftingFluidSubstitutionButton(widgets);
     }
-
-//    @Override
-//    public ItemStack getTabIconItem() {
-//        return Items.CRAFTING_TABLE.getDefaultInstance();
-//    }
 
     @Override
     Icon getIcon() {

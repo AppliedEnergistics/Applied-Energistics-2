@@ -15,7 +15,6 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
-import appeng.init.client.InitItemModelsProperties;
 
 public class ItemModelProvider extends net.neoforged.neoforge.client.model.generators.ItemModelProvider
         implements IAE2DataProvider {

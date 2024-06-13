@@ -1,22 +1,22 @@
 {
-	"credit": "Made with Blockbench",
-	"texture_size": [32, 32],
-	"textures": {
-		"0": "ae2:block/wireless_access_point",
-		"particle": "ae2:block/wireless_access_point"
-	},
-	"elements": [
-		{
-			"from": [4, 4, 14],
-			"to": [12, 12, 15],
-			"faces": {
-				"north": {"uv": [8, 9, 4, 13], "texture": "#0"},
-				"east": {"uv": [8, 9, 7.5, 13], "texture": "#0"},
-				"south": {"uv": [4, 9, 8, 13], "texture": "#0"},
-				"west": {"uv": [4.5, 9, 4, 13], "texture": "#0"},
-				"up": {"uv": [4, 9.5, 8, 9], "texture": "#0"},
-				"down": {"uv": [4, 13, 8, 12.5], "texture": "#0"}
-			}
-		}
-	]
+  "credit": "Made with Blockbench",
+  "texture_size": [32, 32],
+  "textures": {
+    "0": "ae2:block/wireless_access_point",
+    "particle": "ae2:block/wireless_access_point"
+  },
+  "elements": [
+    {
+      "from": [4, 4, 14],
+      "to": [12, 12, 15],
+      "faces": {
+        "north": { "uv": [8, 9, 4, 13], "texture": "#0" },
+        "east": { "uv": [8, 9, 7.5, 13], "texture": "#0" },
+        "south": { "uv": [4, 9, 8, 13], "texture": "#0" },
+        "west": { "uv": [4.5, 9, 4, 13], "texture": "#0" },
+        "up": { "uv": [4, 9.5, 8, 9], "texture": "#0" },
+        "down": { "uv": [4, 13, 8, 12.5], "texture": "#0" }
+      }
+    }
+  ]
 }

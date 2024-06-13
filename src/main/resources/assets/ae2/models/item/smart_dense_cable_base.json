@@ -1,35 +1,35 @@
 {
-	"credit": "Made with Blockbench",
-	"parent": "ae2:item/part_base",
-	"textures": {
-		"channels": "ae2:part/cable/dense_smart/0"
-	},
-	"elements": [
-		{
-			"name": "Base",
-			"from": [4, 4, 2],
-			"to": [12, 12, 14],
-			"faces": {
-				"north": {"uv": [4, 4, 12, 12], "texture": "#base"},
-				"east": {"uv": [0, 4, 3, 12], "texture": "#base"},
-				"south": {"uv": [12, 4, 4, 12], "texture": "#base"},
-				"west": {"uv": [16, 4, 13, 12], "texture": "#base"},
-				"up": {"uv": [4, 0, 12, 3], "texture": "#base"},
-				"down": {"uv": [4, 13, 12, 16], "texture": "#base"}
-			}
-		},
-		{
-			"name": "Channels",
-			"from": [4, 4, 2],
-			"to": [12, 12, 14],
-			"faces": {
-				"north": {"uv": [4, 4, 12, 12], "texture": "#channels"},
-				"east": {"uv": [0, 4, 4, 12], "texture": "#channels"},
-				"south": {"uv": [12, 4, 4, 12], "texture": "#channels"},
-				"west": {"uv": [4, 4, 0, 12], "texture": "#channels"},
-				"up": {"uv": [4, 0, 12, 4], "texture": "#channels"},
-				"down": {"uv": [4, 12, 12, 16], "texture": "#channels"}
-			}
-		}
-	]
+  "credit": "Made with Blockbench",
+  "parent": "ae2:item/part_base",
+  "textures": {
+    "channels": "ae2:part/cable/dense_smart/0"
+  },
+  "elements": [
+    {
+      "name": "Base",
+      "from": [4, 4, 2],
+      "to": [12, 12, 14],
+      "faces": {
+        "north": { "uv": [4, 4, 12, 12], "texture": "#base" },
+        "east": { "uv": [0, 4, 3, 12], "texture": "#base" },
+        "south": { "uv": [12, 4, 4, 12], "texture": "#base" },
+        "west": { "uv": [16, 4, 13, 12], "texture": "#base" },
+        "up": { "uv": [4, 0, 12, 3], "texture": "#base" },
+        "down": { "uv": [4, 13, 12, 16], "texture": "#base" }
+      }
+    },
+    {
+      "name": "Channels",
+      "from": [4, 4, 2],
+      "to": [12, 12, 14],
+      "faces": {
+        "north": { "uv": [4, 4, 12, 12], "texture": "#channels" },
+        "east": { "uv": [0, 4, 4, 12], "texture": "#channels" },
+        "south": { "uv": [12, 4, 4, 12], "texture": "#channels" },
+        "west": { "uv": [4, 4, 0, 12], "texture": "#channels" },
+        "up": { "uv": [4, 0, 12, 4], "texture": "#channels" },
+        "down": { "uv": [4, 12, 12, 16], "texture": "#channels" }
+      }
+    }
+  ]
 }

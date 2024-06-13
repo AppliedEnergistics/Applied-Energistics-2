@@ -45,7 +45,8 @@ import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 public enum AEColor implements StringRepresentable {
     // TODO (Rid): Sorted the colours based on the colour wheel.
     WHITE("White", "gui.ae2.White", "white", DyeColor.WHITE, 0xb4b4b4, 0xe0e0e0, 0xf9f9f9, 0x000000),
-    LIGHT_GRAY("Light Gray", "gui.ae2.LightGray", "light_gray", DyeColor.LIGHT_GRAY, 0x7e7e7e, 0xa09fa0, 0xc4c4c4, 0x000000),
+    LIGHT_GRAY("Light Gray", "gui.ae2.LightGray", "light_gray", DyeColor.LIGHT_GRAY, 0x7e7e7e, 0xa09fa0, 0xc4c4c4,
+            0x000000),
     GRAY("Gray", "gui.ae2.Gray", "gray", DyeColor.GRAY, 0x4f4f4f, 0x6c6b6c, 0x949294, 0x000000),
     BLACK("Black", "gui.ae2.Black", "black", DyeColor.BLACK, 0x131313, 0x272727, 0x3b3b3b, 0xFFFFFF),
     LIME("Lime", "gui.ae2.Lime", "lime", DyeColor.LIME, 0x4ec04e, 0x70e259, 0xb3f86d, 0x000000),
@@ -57,7 +58,8 @@ public enum AEColor implements StringRepresentable {
     MAGENTA("Magenta", "gui.ae2.Magenta", "magenta", DyeColor.MAGENTA, 0xc15189, 0xd5719c, 0xe69ebf, 0x000000),
     PURPLE("Purple", "gui.ae2.Purple", "purple", DyeColor.PURPLE, 0x6e5cb8, 0x915dcd, 0xb06fdd, 0x000000),
     BLUE("Blue", "gui.ae2.Blue", "blue", DyeColor.BLUE, 0x337ff0, 0x3894ff, 0x40c1ff, 0x000000),
-    LIGHT_BLUE("Light Blue", "gui.ae2.LightBlue", "light_blue", DyeColor.LIGHT_BLUE, 0x69b9ff, 0x70d2ff, 0x80f7ff, 0x000000),
+    LIGHT_BLUE("Light Blue", "gui.ae2.LightBlue", "light_blue", DyeColor.LIGHT_BLUE, 0x69b9ff, 0x70d2ff, 0x80f7ff,
+            0x000000),
     CYAN("Cyan", "gui.ae2.Cyan", "cyan", DyeColor.CYAN, 0x22b0ae, 0x2fccb7, 0x65e8c9, 0x000000),
     GREEN("Green", "gui.ae2.Green", "green", DyeColor.GREEN, 0x079b6b, 0x17b86d, 0x32d850, 0x000000),
     TRANSPARENT("Fluix", "gui.ae2.Fluix", "fluix", null, 0x5a479e, 0x915dcd, 0xe2a3e3, 0x000000);

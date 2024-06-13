@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import appeng.client.gui.widgets.*;
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
@@ -33,13 +32,20 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.client.Point;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.WidgetStyle;
+import appeng.client.gui.widgets.AE2Button;
+import appeng.client.gui.widgets.AECheckbox;
+import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.BackgroundPanel;
+import appeng.client.gui.widgets.IResizableWidget;
+import appeng.client.gui.widgets.NumberEntryWidget;
+import appeng.client.gui.widgets.Scrollbar;
+import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
 import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.SwitchGuisPacket;

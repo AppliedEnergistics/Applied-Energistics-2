@@ -18,14 +18,12 @@
 
 package appeng.client.gui.implementations;
 
-import appeng.client.gui.Icon;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import appeng.client.gui.Icon;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.network.ServerboundPacket;

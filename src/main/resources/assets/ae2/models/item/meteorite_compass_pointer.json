@@ -1,23 +1,23 @@
 {
-	"credit": "Made with Blockbench",
-	"parent": "block/block",
-	"textures": {
-		"0": "ae2:item/meteorite_compass"
-	},
-	"elements": [
-		{
-			"name": "Pointer",
-			"from": [7.5, 1, 5],
-			"to": [8.5, 2, 8],
-			"faces": {
-				"north": {"uv": [0, 5, 1, 6], "texture": "#0"},
-				"east": {"uv": [0, 5, 1, 8], "rotation": 90, "texture": "#0"},
-				"south": {"uv": [0, 7, 1, 8], "texture": "#0"},
-				"west": {"uv": [0, 5, 1, 8], "rotation": 270, "texture": "#0"},
-				"up": {"uv": [0, 5, 1, 8], "texture": "#0"},
-				"down": {"uv": [0, 5, 1, 8], "rotation": 180, "texture": "#0"}
-			}
-		}
-	],
-	"display": {}
+  "credit": "Made with Blockbench",
+  "parent": "block/block",
+  "textures": {
+    "0": "ae2:item/meteorite_compass"
+  },
+  "elements": [
+    {
+      "name": "Pointer",
+      "from": [7.5, 1, 5],
+      "to": [8.5, 2, 8],
+      "faces": {
+        "north": { "uv": [0, 5, 1, 6], "texture": "#0" },
+        "east": { "uv": [0, 5, 1, 8], "rotation": 90, "texture": "#0" },
+        "south": { "uv": [0, 7, 1, 8], "texture": "#0" },
+        "west": { "uv": [0, 5, 1, 8], "rotation": 270, "texture": "#0" },
+        "up": { "uv": [0, 5, 1, 8], "texture": "#0" },
+        "down": { "uv": [0, 5, 1, 8], "rotation": 180, "texture": "#0" }
+      }
+    }
+  ],
+  "display": {}
 }

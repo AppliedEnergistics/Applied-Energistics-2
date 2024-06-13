@@ -20,7 +20,6 @@ package appeng.client.gui.me.crafting;
 
 import java.text.NumberFormat;
 
-import net.minecraft.ChatFormatting;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.GuiGraphics;

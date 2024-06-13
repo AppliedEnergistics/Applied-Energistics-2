@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 
 import appeng.api.config.ActionItems;
@@ -42,11 +41,6 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
         this.resultSlot = new Slot(new SimpleContainer(1), 0, 0, 0);
         menu.addClientSideSlot(resultSlot, SlotSemantics.SMITHING_TABLE_RESULT);
     }
-
-//    @Override
-//    public ItemStack getTabIconItem() {
-//        return Items.SMITHING_TABLE.getDefaultInstance();
-//    }
 
     @Override
     Icon getIcon() {

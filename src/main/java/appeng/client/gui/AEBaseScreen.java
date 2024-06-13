@@ -27,7 +27,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import appeng.client.gui.implementations.SkyChestScreen;
 import com.google.common.base.Stopwatch;
 import com.mojang.blaze3d.platform.InputConstants;
 
@@ -150,7 +149,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         this.verticalToolbar = new VerticalButtonBar();
 //        this.widgets.add("verticalToolbar", this.verticalToolbar = new VerticalButtonBar());
 
-        // TODO (RID): Added a check if a Screen should have the Vertical Tool Bar. This was added to avoid rendering the bar from the SkyChestScreen.
+        // TODO (RID): Added a check if a Screen should have the Vertical Tool Bar. This was added to avoid rendering
+        // the bar from the SkyChestScreen.
         if (shouldAddToolbar()) {
             this.widgets.add("verticalToolbar", this.verticalToolbar);
         }
@@ -264,10 +264,14 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         // Added a custom slot highlight effect - RID
         if (this.hoveredSlot != null) {
-            guiGraphics.hLine(leftPos + this.hoveredSlot.x, leftPos + this.hoveredSlot.x + 16, topPos + this.hoveredSlot.y - 1, 0xFFdaffff);
-            guiGraphics.hLine(leftPos + this.hoveredSlot.x - 1, leftPos + this.hoveredSlot.x + 16, topPos + this.hoveredSlot.y + 16, 0xFFdaffff);
-            guiGraphics.vLine(leftPos + this.hoveredSlot.x - 1, topPos + this.hoveredSlot.y - 2, topPos + this.hoveredSlot.y + 16, 0xFFdaffff);
-            guiGraphics.vLine(leftPos + this.hoveredSlot.x + 16, topPos + this.hoveredSlot.y - 2, topPos + this.hoveredSlot.y + 16, 0xFFdaffff);
+            guiGraphics.hLine(leftPos + this.hoveredSlot.x, leftPos + this.hoveredSlot.x + 16,
+                    topPos + this.hoveredSlot.y - 1, 0xFFdaffff);
+            guiGraphics.hLine(leftPos + this.hoveredSlot.x - 1, leftPos + this.hoveredSlot.x + 16,
+                    topPos + this.hoveredSlot.y + 16, 0xFFdaffff);
+            guiGraphics.vLine(leftPos + this.hoveredSlot.x - 1, topPos + this.hoveredSlot.y - 2,
+                    topPos + this.hoveredSlot.y + 16, 0xFFdaffff);
+            guiGraphics.vLine(leftPos + this.hoveredSlot.x + 16, topPos + this.hoveredSlot.y - 2,
+                    topPos + this.hoveredSlot.y + 16, 0xFFdaffff);
             renderSlotHighlight(guiGraphics, leftPos + this.hoveredSlot.x, topPos + this.hoveredSlot.y, 0, 0x669cd3ff);
         }
 

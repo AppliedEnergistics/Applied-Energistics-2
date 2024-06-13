@@ -1,14 +1,12 @@
 package appeng.client.gui.me.items;
 
-import appeng.client.gui.Icon;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 import appeng.api.config.ActionItems;
 import appeng.client.Point;
+import appeng.client.gui.Icon;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.ActionButton;
@@ -86,11 +84,6 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
         widgets.setTooltipAreaEnabled("processing-optional-output2", visible);
         widgets.setTooltipAreaEnabled("processing-optional-output3", visible);
     }
-
-//    @Override
-//    public ItemStack getTabIconItem() {
-//        return Items.FURNACE.getDefaultInstance();
-//    }
 
     @Override
     Icon getIcon() {

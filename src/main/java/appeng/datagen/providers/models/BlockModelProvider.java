@@ -147,9 +147,6 @@ public class BlockModelProvider extends AE2BlockStateProvider {
     }
 
     private void quartzGrowthAccelerator() {
-//        var unpoweredModel = getExistingModel("block/growth_accelerator_off");
-//        var poweredModel = getExistingModel("block/growth_accelerator_on");
-
         var unpoweredModel = models().cubeBottomTop(
                 modelPath(AEBlocks.GROWTH_ACCELERATOR),
                 makeId("block/growth_accelerator_side"),
@@ -253,8 +250,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                 makeId("block/vibration_chamber_front"),
                 makeId("block/vibration_chamber_back"),
                 makeId("block/vibration_chamber_side"),
-                makeId("block/vibration_chamber_side")
-                ).texture("particle", makeId("block/vibration_chamber_front"));
+                makeId("block/vibration_chamber_side")).texture("particle", makeId("block/vibration_chamber_front"));
         var onModel = models().cube(
                 modelPath(AEBlocks.VIBRATION_CHAMBER) + "_on",
                 makeId("block/generics/bottom"),
@@ -262,8 +258,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                 makeId("block/vibration_chamber_front_on"),
                 makeId("block/vibration_chamber_back_on"),
                 makeId("block/vibration_chamber_side"),
-                makeId("block/vibration_chamber_side")
-                ).texture("particle", makeId("block/vibration_chamber_front_on"));
+                makeId("block/vibration_chamber_side")).texture("particle", makeId("block/vibration_chamber_front_on"));
 
         multiVariantGenerator(AEBlocks.VIBRATION_CHAMBER)
                 .with(createFacingSpinDispatch())
@@ -277,16 +272,6 @@ public class BlockModelProvider extends AE2BlockStateProvider {
     private void spatialAnchor() {
         var offModel = getExistingModel("block/spatial_anchor");
         var onModel = getExistingModel("block/spatial_anchor_on");
-//        var offModel = models().cubeBottomTop(
-//                modelPath(AEBlocks.SPATIAL_ANCHOR),
-//                makeId("block/spatial_anchor_side_off"),
-//                makeId("block/spatial_anchor_bottom"),
-//                makeId("block/spatial_anchor_top_off"));
-//        var onModel = models().cubeBottomTop(
-//                modelPath(AEBlocks.SPATIAL_ANCHOR) + "_on",
-//                makeId("block/spatial_anchor_side"),
-//                makeId("block/spatial_anchor_bottom"),
-//                makeId("block/spatial_anchor_top"));
 
         multiVariantGenerator(AEBlocks.SPATIAL_ANCHOR)
                 .with(createFacingDispatch(90, 0))
@@ -324,16 +309,6 @@ public class BlockModelProvider extends AE2BlockStateProvider {
     private void ioPort() {
         var offModel = models().getExistingFile(AppEng.makeId("block/io_port"));
         var onModel = models().getExistingFile(AppEng.makeId("block/io_port_on"));
-//        var offModel = models().cubeBottomTop(
-//                modelPath(AEBlocks.IO_PORT),
-//                makeId("block/io_port_side_off"),
-//                makeId("block/io_port_bottom"),
-//                makeId("block/io_port_top_off"));
-//        var onModel = models().cubeBottomTop(
-//                modelPath(AEBlocks.IO_PORT) + "_on",
-//                makeId("block/io_port_side"),
-//                makeId("block/io_port_bottom"),
-//                makeId("block/io_port_top"));
 
         multiVariantGenerator(AEBlocks.IO_PORT)
                 .with(createFacingSpinDispatch())
@@ -346,16 +321,6 @@ public class BlockModelProvider extends AE2BlockStateProvider {
     private void spatialIoPort() {
         var offModel = models().getExistingFile(AppEng.makeId("block/spatial_io_port"));
         var onModel = models().getExistingFile(AppEng.makeId("block/spatial_io_port_on"));
-//        var offModel = models().cubeBottomTop(
-//                modelPath(AEBlocks.SPATIAL_IO_PORT),
-//                makeId("block/spatial_io_port_side_off"),
-//                makeId("block/generics/bottom"),
-//                makeId("block/spatial_io_port_top_off"));
-//        var onModel = models().cubeBottomTop(
-//                modelPath(AEBlocks.SPATIAL_IO_PORT) + "_on",
-//                makeId("block/spatial_io_port_side"),
-//                makeId("block/generics/bottom"),
-//                makeId("block/spatial_io_port_top"));
 
         multiVariantGenerator(AEBlocks.SPATIAL_IO_PORT)
                 .with(createFacingSpinDispatch())

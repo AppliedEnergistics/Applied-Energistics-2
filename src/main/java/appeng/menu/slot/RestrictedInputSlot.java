@@ -182,7 +182,8 @@ public class RestrictedInputSlot extends AppEngSlot {
     @Override
     public ItemStack getDisplayStack() {
         // If the slot only takes encoded patterns, show the encoded item instead
-        if (isRemote() && (this.which == PlacableItemType.ENCODED_PATTERN || this.which == PlacableItemType.PROVIDER_PATTERN)) {
+        if (isRemote() && (this.which == PlacableItemType.ENCODED_PATTERN
+                || this.which == PlacableItemType.PROVIDER_PATTERN)) {
             final ItemStack is = super.getDisplayStack();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem iep) {
                 final ItemStack out = iep.getOutput(is);

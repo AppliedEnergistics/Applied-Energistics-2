@@ -95,7 +95,7 @@ public class AECheckbox extends AbstractButton {
             }
         }
 
-        if(!isMouseOver(mouseX, mouseY)) {
+        if (!isMouseOver(mouseX, mouseY)) {
             setFocused(false);
         }
 
@@ -110,7 +110,8 @@ public class AECheckbox extends AbstractButton {
         // try to vertically center if it's just one line
         var lineY = getY() + (lines.size() <= 1 ? 4 : 1);
         for (var line : lines) {
-            guiGraphics.drawString(font, line, getX() + (isRadio() ? 16 : 26), lineY, style.getColor(textColor).toARGB(), false);
+            guiGraphics.drawString(font, line, getX() + (isRadio() ? 16 : 26), lineY,
+                    style.getColor(textColor).toARGB(), false);
             lineY += font.lineHeight;
         }
     }

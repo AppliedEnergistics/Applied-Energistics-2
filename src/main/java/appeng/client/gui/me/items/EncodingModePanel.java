@@ -1,12 +1,11 @@
 package appeng.client.gui.me.items;
 
-import appeng.client.gui.Icon;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
+import appeng.client.gui.Icon;
 import appeng.client.gui.WidgetContainer;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 
@@ -28,6 +27,7 @@ public abstract class EncodingModePanel implements ICompositeWidget {
 //    abstract ItemStack getTabIconItem();
 
     abstract Icon getIcon();
+
     abstract Component getTabTooltip();
 
     @Override

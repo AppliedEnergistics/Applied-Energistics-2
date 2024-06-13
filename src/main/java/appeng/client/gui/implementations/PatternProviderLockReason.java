@@ -1,14 +1,13 @@
 package appeng.client.gui.implementations;
 
-import net.minecraft.network.chat.Style;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.Mth;
 
 import appeng.api.client.AEKeyRendering;
 import appeng.api.config.LockCraftingMode;
@@ -64,11 +63,11 @@ public class PatternProviderLockReason implements ICompositeWidget {
         if (menu.getCraftingLockedReason() == LockCraftingMode.NONE) {
             icon = Icon.UNLOCKED;
             lockStatusText = GuiText.CraftingLockIsUnlocked.text()
-                    .setStyle(Style.EMPTY.withColor(Mth.color(125/255f, 169/255f, 210/255f)));
+                    .setStyle(Style.EMPTY.withColor(Mth.color(125 / 255f, 169 / 255f, 210 / 255f)));
         } else {
             icon = Icon.LOCKED;
             lockStatusText = GuiText.CraftingLockIsLocked.text()
-                    .setStyle(Style.EMPTY.withColor(Mth.color(193/255f, 66/255f, 75/255f)));
+                    .setStyle(Style.EMPTY.withColor(Mth.color(193 / 255f, 66 / 255f, 75 / 255f)));
         }
 
         icon.getBlitter().dest(x, y).blit(guiGraphics);

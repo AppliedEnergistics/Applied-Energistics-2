@@ -1,11 +1,9 @@
 package appeng.client.gui.me.common;
 
-import appeng.client.gui.Icon;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.AESubScreen;
+import appeng.client.gui.Icon;
 import appeng.client.gui.widgets.AECheckbox;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;

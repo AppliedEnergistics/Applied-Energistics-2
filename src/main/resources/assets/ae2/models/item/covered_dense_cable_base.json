@@ -1,19 +1,19 @@
 {
-	"credit": "Made with Blockbench",
-	"parent": "ae2:item/part_base",
-	"elements": [
-		{
-			"name": "Base",
-			"from": [4, 4, 2],
-			"to": [12, 12, 14],
-			"faces": {
-				"north": {"uv": [4, 4, 12, 12], "texture": "#base"},
-				"east": {"uv": [3, 4, 0, 12], "texture": "#base"},
-				"south": {"uv": [12, 4, 4, 12], "texture": "#base"},
-				"west": {"uv": [16, 4, 13, 12], "texture": "#base"},
-				"up": {"uv": [4, 0, 12, 3], "texture": "#base"},
-				"down": {"uv": [4, 13, 12, 16], "texture": "#base"}
-			}
-		}
-	]
+  "credit": "Made with Blockbench",
+  "parent": "ae2:item/part_base",
+  "elements": [
+    {
+      "name": "Base",
+      "from": [4, 4, 2],
+      "to": [12, 12, 14],
+      "faces": {
+        "north": { "uv": [4, 4, 12, 12], "texture": "#base" },
+        "east": { "uv": [3, 4, 0, 12], "texture": "#base" },
+        "south": { "uv": [12, 4, 4, 12], "texture": "#base" },
+        "west": { "uv": [16, 4, 13, 12], "texture": "#base" },
+        "up": { "uv": [4, 0, 12, 3], "texture": "#base" },
+        "down": { "uv": [4, 13, 12, 16], "texture": "#base" }
+      }
+    }
+  ]
 }

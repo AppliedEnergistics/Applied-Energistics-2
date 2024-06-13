@@ -2,7 +2,6 @@ package appeng.client.gui.me.items;
 
 import java.util.Objects;
 
-import appeng.client.gui.Icon;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -13,11 +12,11 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 
 import appeng.client.Point;
+import appeng.client.gui.Icon;
 import appeng.client.gui.Tooltip;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
@@ -158,11 +157,6 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     public boolean onMouseWheel(Point mousePos, double delta) {
         return scrollbar.onMouseWheel(mousePos, delta);
     }
-
-//    @Override
-//    public ItemStack getTabIconItem() {
-//        return new ItemStack(Items.STONECUTTER);
-//    }
 
     @Override
     Icon getIcon() {

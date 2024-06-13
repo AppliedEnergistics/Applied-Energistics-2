@@ -1,23 +1,23 @@
 {
-	"credit": "Made with Blockbench",
-	"ambientocclusion": false,
-	"texture_size": [32, 32],
-	"textures": {
-		"torch": "ae2:block/wireless_access_point"
-	},
-	"elements": [
-		{
-			"from": [7, 7, 4],
-			"to": [9, 9, 9],
-			"rotation": {"angle": 0, "axis": "y", "origin": [16, 0, 0]},
-			"faces": {
-				"north": {"uv": [10.5, 5, 11.5, 6], "texture": "#torch"},
-				"east": {"uv": [10.5, 3, 13, 4], "texture": "#torch"},
-				"south": {"uv": [1, 0, 2, 1], "texture": "#torch"},
-				"west": {"uv": [10.5, 4, 13, 5], "texture": "#torch"},
-				"up": {"uv": [13, 3, 10.5, 4], "rotation": 90, "texture": "#torch"},
-				"down": {"uv": [13, 4, 10.5, 5], "rotation": 90, "texture": "#torch"}
-			}
-		}
-	]
+  "credit": "Made with Blockbench",
+  "ambientocclusion": false,
+  "texture_size": [32, 32],
+  "textures": {
+    "torch": "ae2:block/wireless_access_point"
+  },
+  "elements": [
+    {
+      "from": [7, 7, 4],
+      "to": [9, 9, 9],
+      "rotation": { "angle": 0, "axis": "y", "origin": [16, 0, 0] },
+      "faces": {
+        "north": { "uv": [10.5, 5, 11.5, 6], "texture": "#torch" },
+        "east": { "uv": [10.5, 3, 13, 4], "texture": "#torch" },
+        "south": { "uv": [1, 0, 2, 1], "texture": "#torch" },
+        "west": { "uv": [10.5, 4, 13, 5], "texture": "#torch" },
+        "up": { "uv": [13, 3, 10.5, 4], "rotation": 90, "texture": "#torch" },
+        "down": { "uv": [13, 4, 10.5, 5], "rotation": 90, "texture": "#torch" }
+      }
+    }
+  ]
 }
