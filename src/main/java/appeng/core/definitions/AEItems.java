@@ -152,12 +152,12 @@ public final class AEItems {
     ///
     private static ItemDefinition<PortableCellItem> makePortableItemCell(ResourceLocation id, StorageTier tier) {
         var name = tier.namePrefix() + " Portable Item Cell";
-        return item(name, id, p -> new PortableCellItem(AEKeyType.items(), 63 - tier.index() * 9, MEStorageMenu.PORTABLE_ITEM_CELL_TYPE, tier, p.stacksTo(1), 0xDDDDDD));
+        return item(name, id, p -> new PortableCellItem(AEKeyType.items(), 63 - tier.index() * 9, MEStorageMenu.PORTABLE_ITEM_CELL_TYPE, tier, p.stacksTo(1), 0x80caff));
     }
 
     private static ItemDefinition<PortableCellItem> makePortableFluidCell(ResourceLocation id, StorageTier tier) {
         var name = tier.namePrefix() + " Portable Fluid Cell";
-        return item(name, id, p -> new PortableCellItem(AEKeyType.fluids(), 18, MEStorageMenu.PORTABLE_FLUID_CELL_TYPE, tier, p.stacksTo(1), 0xFF6D36));
+        return item(name, id, p -> new PortableCellItem(AEKeyType.fluids(), 18, MEStorageMenu.PORTABLE_FLUID_CELL_TYPE, tier, p.stacksTo(1), 0x80caff));
     }
 
     public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL1K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL1K, StorageTier.SIZE_1K);

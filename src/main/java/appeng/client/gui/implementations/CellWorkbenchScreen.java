@@ -54,7 +54,7 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchMenu> {
 
         this.fuzzyMode = addToLeftToolbar(
                 new SettingToggleButton<>(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::toggleFuzzyMode));
-        this.addToLeftToolbar(new ActionButton(ActionItems.WRENCH, act -> menu.partition()));
+        this.addToLeftToolbar(new ActionButton(ActionItems.COG, act -> menu.partition()));
         this.addToLeftToolbar(new ActionButton(ActionItems.CLOSE, act -> menu.clear()));
         this.copyMode = this.addToLeftToolbar(new ToggleButton(Icon.COPY_MODE_ON, Icon.COPY_MODE_OFF,
                 GuiText.CopyMode.text(), GuiText.CopyModeDesc.text(), act -> menu.nextWorkBenchCopyMode()));

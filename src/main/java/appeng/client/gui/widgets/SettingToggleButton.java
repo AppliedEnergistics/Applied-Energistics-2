@@ -131,10 +131,10 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     ButtonToolTips.RedstoneMode,
                     ButtonToolTips.ActiveOnPulse);
 
-            registerApp(Icon.REDSTONE_LOW, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL,
+            registerApp(Icon.REDSTONE_BELOW, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL,
                     ButtonToolTips.RedstoneMode,
                     ButtonToolTips.EmitLevelsBelow);
-            registerApp(Icon.REDSTONE_HIGH, Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL,
+            registerApp(Icon.REDSTONE_ABOVE_EQUAL, Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL,
                     ButtonToolTips.RedstoneMode,
                     ButtonToolTips.EmitLevelAbove);
 
@@ -269,10 +269,10 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(Icon.UNLOCKED, Settings.LOCK_CRAFTING_MODE, LockCraftingMode.NONE,
                     ButtonToolTips.LockCraftingMode,
                     ButtonToolTips.LockCraftingModeNone);
-            registerApp(Icon.REDSTONE_LOW, Settings.LOCK_CRAFTING_MODE, LockCraftingMode.LOCK_WHILE_HIGH,
+            registerApp(Icon.REDSTONE_ON, Settings.LOCK_CRAFTING_MODE, LockCraftingMode.LOCK_WHILE_HIGH,
                     ButtonToolTips.LockCraftingMode,
                     ButtonToolTips.LockCraftingWhileRedstoneHigh);
-            registerApp(Icon.REDSTONE_HIGH, Settings.LOCK_CRAFTING_MODE, LockCraftingMode.LOCK_WHILE_LOW,
+            registerApp(Icon.REDSTONE_OFF, Settings.LOCK_CRAFTING_MODE, LockCraftingMode.LOCK_WHILE_LOW,
                     ButtonToolTips.LockCraftingMode,
                     ButtonToolTips.LockCraftingWhileRedstoneLow);
             registerApp(Icon.REDSTONE_PULSE, Settings.LOCK_CRAFTING_MODE, LockCraftingMode.LOCK_UNTIL_PULSE,

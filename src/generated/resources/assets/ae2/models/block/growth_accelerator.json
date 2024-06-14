@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "ae2:block/growth_accelerator_bottom",
+    "side": "ae2:block/growth_accelerator_side",
+    "top": "ae2:block/growth_accelerator_top"
+  }
+}

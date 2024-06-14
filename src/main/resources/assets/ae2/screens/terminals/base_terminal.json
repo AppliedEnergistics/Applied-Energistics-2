@@ -1,6 +1,10 @@
 {
   "$schema": "../schema.json",
-  "includes": ["../common/common.json", "../common/player_inventory.json"],
+  "includes": [
+    "../common/common.json",
+    "../common/player_inventory.json",
+    "../common/terminal_toolbox.json"
+  ],
   "terminalStyle": {
     "slotsPerRow": 9,
     "header": {
@@ -21,7 +25,7 @@
     },
     "bottom": {
       "texture": "guis/terminal.png",
-      "srcRect": [0, 71, 195, 97]
+      "srcRect": [0, 71, 195, 99]
     }
   },
   "text": {
@@ -41,12 +45,14 @@
       "top": 18
     },
     "craftingStatus": {
-      "left": 170,
-      "top": -4,
-      "hideEdge": true
+      "left": 171,
+      "top": -5,
+      "hideEdge": false,
+      "width": 20,
+      "height": 20
     },
     "viewCells": {
-      "right": -2,
+      "right": 800,
       "top": 0
     },
     "search": {

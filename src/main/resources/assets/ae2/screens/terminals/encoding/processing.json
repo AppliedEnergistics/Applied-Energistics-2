@@ -3,20 +3,20 @@
   "$schema": "../../schema.json",
   "slots": {
     "PROCESSING_INPUTS": {
-      "left": 26,
-      "bottom": 156,
+      "left": 24,
+      "bottom": 158,
       "grid": "BREAK_AFTER_3COLS"
     },
     "PROCESSING_OUTPUTS": {
-      "left": 110,
-      "bottom": 156,
+      "left": 109,
+      "bottom": 158,
       "grid": "VERTICAL"
     }
   },
   "tooltips": {
     "processing-primary-output": {
       "left": 109,
-      "bottom": 157,
+      "bottom": 158,
       "width": 18,
       "height": 18,
       "tooltip": [
@@ -31,7 +31,7 @@
     },
     "processing-optional-output1": {
       "left": 109,
-      "bottom": 157,
+      "bottom": 158,
       "width": 18,
       "height": 18,
       "tooltip": [
@@ -46,7 +46,7 @@
     },
     "processing-optional-output2": {
       "left": 109,
-      "bottom": 139,
+      "bottom": 141,
       "width": 18,
       "height": 18,
       "tooltip": [
@@ -61,7 +61,7 @@
     },
     "processing-optional-output3": {
       "left": 109,
-      "bottom": 121,
+      "bottom": 123,
       "width": 18,
       "height": 18,
       "tooltip": [
@@ -77,17 +77,17 @@
   },
   "widgets": {
     "processingPatternModeScrollbar": {
-      "left": 17,
-      "bottom": 156,
+      "left": 15,
+      "bottom": 158,
       "height": 52
     },
     "processingCycleOutput": {
-      "left": 127,
-      "bottom": 152
+      "left": 98,
+      "bottom": 159
     },
     "processingClearPattern": {
-      "left": 82,
-      "bottom": 163
+      "left": 79,
+      "bottom": 159
     }
   }
 }

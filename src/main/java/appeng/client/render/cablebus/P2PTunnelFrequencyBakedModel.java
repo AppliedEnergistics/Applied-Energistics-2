@@ -44,7 +44,7 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
 
     private final static Cache<Long, List<BakedQuad>> modelCache = CacheBuilder.newBuilder().maximumSize(100).build();
 
-    private static final int[][] QUAD_OFFSETS = new int[][] { { 4, 10, 2 }, { 10, 10, 2 }, { 4, 4, 2 }, { 10, 4, 2 } };
+    private static final int[][] QUAD_OFFSETS = new int[][] { { 3, 11, 2 }, { 11, 11, 2 }, { 3, 3, 2 }, { 11, 3, 2 } };
 
     public P2PTunnelFrequencyBakedModel(TextureAtlasSprite texture) {
         this.texture = texture;

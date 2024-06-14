@@ -2,7 +2,6 @@
   "parent": "ae2:part/display_off",
   "textures": {
     "lightsBright": "ae2:part/conversion_monitor_bright",
-    "lightsMedium": "ae2:part/conversion_monitor_medium",
-    "lightsDark": "ae2:part/conversion_monitor_dark"
+    "lightsMedium": "ae2:part/conversion_monitor_medium"
   }
 }

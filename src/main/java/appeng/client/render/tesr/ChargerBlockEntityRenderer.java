@@ -41,7 +41,11 @@ public final class ChargerBlockEntityRenderer {
             new ItemRenderable<>(ChargerBlockEntityRenderer::getRenderedItem));
 
     private static Pair<ItemStack, Transformation> getRenderedItem(ChargerBlockEntity blockEntity) {
-        Transformation transform = new Transformation(new Vector3f(0.5f, 0.375f, 0.5f), null, null, null);
+
+        double time = System.currentTimeMillis() / 1000.0;
+        float yOffset = (float) Math.sin(time) * 0.02f;
+
+        Transformation transform = new Transformation(new Vector3f(0.5f, 0.35f + yOffset, 0.5f), null, null, null);
         return new ImmutablePair<>(blockEntity.getInternalInventory().getStackInSlot(0), transform);
     }
 }

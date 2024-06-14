@@ -1,7 +1,9 @@
 {
+  "credit": "Made with Blockbench",
   "ambientocclusion": false,
   "textures": {
-    "cell": "ae2:block/drive/cells/default_cell"
+    "particle": "ae2:block/drive/drive_cells",
+    "cell": "ae2:block/drive/drive_cells"
   },
   "elements": [
     {

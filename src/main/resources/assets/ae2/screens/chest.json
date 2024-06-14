@@ -3,7 +3,7 @@
   "includes": ["common/common.json", "common/player_inventory.json"],
   "background": {
     "texture": "guis/chest.png",
-    "srcRect": [0, 0, 176, 166]
+    "srcRect": [0, 0, 176, 168]
   },
   "slots": {
     "STORAGE_CELL": {
@@ -24,8 +24,10 @@
   },
   "widgets": {
     "openPriority": {
-      "left": 154,
-      "top": 0
+      "left": 152,
+      "top": -5,
+      "width": 20,
+      "height": 20
     }
   }
 }

@@ -30,16 +30,15 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.client.Point;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.WidgetStyle;
+import appeng.client.gui.widgets.AE2Button;
 import appeng.client.gui.widgets.AECheckbox;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.BackgroundPanel;
@@ -110,13 +109,13 @@ public class WidgetContainer {
      * Convenient way to add Vanilla buttons without having to specify x,y,width and height. The actual
      * position/rectangle is instead sourced from the screen style.
      */
-    public Button addButton(String id, Component text, OnPress action) {
-        var button = Button.builder(text, action).build();
+    public AE2Button addButton(String id, Component text, OnPress action) {
+        var button = new AE2Button(text, action);
         add(id, button);
         return button;
     }
 
-    public Button addButton(String id, Component text, Runnable action) {
+    public AE2Button addButton(String id, Component text, Runnable action) {
         return addButton(id, text, btn -> action.run());
     }
 
@@ -329,8 +328,7 @@ public class WidgetContainer {
      * Adds a button named "openPriority" that opens the priority GUI for the current menu host.
      */
     public void addOpenPriorityButton() {
-        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-        add("openPriority", new TabButton(Icon.WRENCH, GuiText.Priority.text(),
+        add("openPriority", new TabButton(Icon.PRIORITY, GuiText.Priority.text(),
                 btn -> openPriorityGui()));
     }
 

@@ -3,27 +3,27 @@
   "$schema": "../../schema.json",
   "slots": {
     "CRAFTING_GRID": {
-      "left": 18,
-      "bottom": 156,
+      "left": 15,
+      "bottom": 158,
       "grid": "BREAK_AFTER_3COLS"
     },
     "CRAFTING_RESULT": {
-      "left": 110,
-      "bottom": 138
+      "left": 106,
+      "bottom": 140
     }
   },
   "widgets": {
     "craftingSubstitutions": {
-      "left": 84,
-      "bottom": 163
+      "left": 80,
+      "bottom": 159
     },
     "craftingFluidSubstitutions": {
-      "left": 94,
-      "bottom": 163
+      "left": 90,
+      "bottom": 159
     },
     "craftingClearPattern": {
-      "left": 74,
-      "bottom": 163
+      "left": 70,
+      "bottom": 159
     }
   }
 }

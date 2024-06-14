@@ -1,14 +1,18 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json"],
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json",
+    "common/toolbox.json"
+  ],
   "background": {
     "texture": "guis/molecular_assembler.png",
-    "srcRect": [0, 0, 176, 197]
+    "srcRect": [0, 0, 176, 199]
   },
   "slots": {
     "MACHINE_CRAFTING_GRID": {
       "left": 29,
-      "top": 30,
+      "top": 31,
       "grid": "BREAK_AFTER_3COLS"
     },
     "ENCODED_PATTERN": {
@@ -17,7 +21,7 @@
     },
     "MACHINE_OUTPUT": {
       "left": 126,
-      "top": 48
+      "top": 49
     }
   },
   "text": {
@@ -34,7 +38,7 @@
   "images": {
     "progressBar": {
       "texture": "guis/molecular_assembler.png",
-      "srcRect": [148, 201, 6, 18]
+      "srcRect": [176, 0, 6, 18]
     }
   },
   "widgets": {

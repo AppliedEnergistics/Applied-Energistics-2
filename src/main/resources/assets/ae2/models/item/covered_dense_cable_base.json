@@ -1,35 +1,18 @@
 {
+  "credit": "Made with Blockbench",
   "parent": "ae2:item/part_base",
   "elements": [
     {
       "name": "Base",
-      "from": [4.0, 4.0, 2.0],
-      "to": [12.0, 12.0, 14.0],
+      "from": [4, 4, 2],
+      "to": [12, 12, 14],
       "faces": {
-        "north": {
-          "texture": "#base",
-          "uv": [6.0, 6.0, 10.0, 10.0]
-        },
-        "east": {
-          "texture": "#base",
-          "uv": [0.0, 4.0, 4.0, 12.0]
-        },
-        "south": {
-          "texture": "#base",
-          "uv": [10.0, 6.0, 6.0, 10.0]
-        },
-        "west": {
-          "texture": "#base",
-          "uv": [4.0, 4.0, 0.0, 12.0]
-        },
-        "up": {
-          "texture": "#base",
-          "uv": [4.0, 0.0, 12.0, 5.0]
-        },
-        "down": {
-          "texture": "#base",
-          "uv": [4.0, 12.0, 12.0, 16.0]
-        }
+        "north": { "uv": [4, 4, 12, 12], "texture": "#base" },
+        "east": { "uv": [3, 4, 0, 12], "texture": "#base" },
+        "south": { "uv": [12, 4, 4, 12], "texture": "#base" },
+        "west": { "uv": [16, 4, 13, 12], "texture": "#base" },
+        "up": { "uv": [4, 0, 12, 3], "texture": "#base" },
+        "down": { "uv": [4, 13, 12, 16], "texture": "#base" }
       }
     }
   ]

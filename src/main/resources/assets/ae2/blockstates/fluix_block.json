@@ -1,0 +1,15 @@
+{
+  "variants": {
+    "": {
+      "model": "ae2:block/fluix_block"
+    }
+  },
+  "athena:loader": "athena:ctm",
+  "ctm_textures": {
+    "center": "ae2:block/fluix_block_center",
+    "empty": "ae2:block/fluix_block_empty",
+    "horizontal": "ae2:block/fluix_block_h",
+    "vertical": "ae2:block/fluix_block_v",
+    "particle": "ae2:block/fluix_block"
+  }
+}

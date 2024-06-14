@@ -185,6 +185,9 @@ dependencies {
         runtimeOnly("top.theillusivec4.curios:curios-neoforge:${project.curios_version}")
     }
 
+    // Athena
+    implementation("curse.maven:athena-841890:5176890")
+
     // unit test dependencies
     testImplementation(platform("org.junit:junit-bom:${project.junit_version}"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
@@ -544,6 +547,7 @@ check.dependsOn tasks.register('validateResources', JavaExec) {
     mainClass = 'ValidateResourceIds'
     workingDir "."
     args "guidebook"
+    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
 }
 
 /**

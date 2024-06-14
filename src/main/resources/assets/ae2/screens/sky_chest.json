@@ -1,25 +1,36 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json"],
+  "includes": ["common/palette.json", "common/player_inventory.json"],
   "background": {
     "texture": "guis/skychest.png",
-    "srcRect": [0, 0, 176, 195]
+    "srcRect": [0, 0, 176, 187]
   },
   "slots": {
     "STORAGE": {
       "left": 8,
-      "top": 24,
+      "top": 18,
       "grid": "BREAK_AFTER_9COLS"
     }
   },
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.ae2.SkyChest"
+        "translate": "gui.ae2.SkyChest",
+        "color": "#575e54"
       },
       "position": {
         "left": 8,
-        "top": 8
+        "top": 6
+      }
+    },
+    "player_inventory_title": {
+      "text": {
+        "translate": "container.inventory",
+        "color": "#575e54"
+      },
+      "position": {
+        "left": 8,
+        "bottom": 95
       }
     }
   }

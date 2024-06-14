@@ -1,8 +1,7 @@
 {
   "textures": {
     "lightsBright": "ae2:part/storage_monitor_bright",
-    "lightsMedium": "ae2:part/storage_monitor_medium",
-    "lightsDark": "ae2:part/storage_monitor_dark"
+    "lightsMedium": "ae2:part/storage_monitor_medium"
   },
   "elements": [
     {
@@ -23,17 +22,6 @@
         "north": {
           "texture": "#lightsMedium",
           "tintindex": 2,
-          "unlit": true
-        }
-      }
-    },
-    {
-      "from": [2, 2, 0],
-      "to": [14, 14, 2],
-      "faces": {
-        "north": {
-          "texture": "#lightsDark",
-          "tintindex": 1,
           "unlit": true
         }
       }

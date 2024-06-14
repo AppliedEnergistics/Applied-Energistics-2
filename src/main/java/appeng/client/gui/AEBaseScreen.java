@@ -132,7 +132,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     protected final WidgetContainer widgets;
     protected final ScreenStyle style;
     protected final AEConfig config = AEConfig.instance();
-
     /**
      * The positions of all slots when a subscreen is opened.
      */
@@ -147,7 +146,14 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         this.style = Objects.requireNonNull(style, "style");
         this.widgets = new WidgetContainer(style);
-        this.widgets.add("verticalToolbar", this.verticalToolbar = new VerticalButtonBar());
+        this.verticalToolbar = new VerticalButtonBar();
+//        this.widgets.add("verticalToolbar", this.verticalToolbar = new VerticalButtonBar());
+
+        // TODO (RID): Added a check if a Screen should have the Vertical Tool Bar. This was added to avoid rendering
+        // the bar from the SkyChestScreen.
+        if (shouldAddToolbar()) {
+            this.widgets.add("verticalToolbar", this.verticalToolbar);
+        }
 
         // Add a help-button to the vertical button bar
         this.helpButton = addToLeftToolbar(new OpenGuideButton(btn -> openHelp()));
@@ -168,6 +174,10 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         positionSlots();
 
         widgets.populateScreen(this::addRenderableWidget, getBounds(true), this);
+    }
+
+    protected boolean shouldAddToolbar() {
+        return true; // Default behavior is to add the toolbar
     }
 
     private void positionSlots() {
@@ -251,6 +261,19 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         this.widgets.updateBeforeRender();
 
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
+
+        // Added a custom slot highlight effect - RID
+        if (this.hoveredSlot != null) {
+            guiGraphics.hLine(leftPos + this.hoveredSlot.x, leftPos + this.hoveredSlot.x + 16,
+                    topPos + this.hoveredSlot.y - 1, 0xFFdaffff);
+            guiGraphics.hLine(leftPos + this.hoveredSlot.x - 1, leftPos + this.hoveredSlot.x + 16,
+                    topPos + this.hoveredSlot.y + 16, 0xFFdaffff);
+            guiGraphics.vLine(leftPos + this.hoveredSlot.x - 1, topPos + this.hoveredSlot.y - 2,
+                    topPos + this.hoveredSlot.y + 16, 0xFFdaffff);
+            guiGraphics.vLine(leftPos + this.hoveredSlot.x + 16, topPos + this.hoveredSlot.y - 2,
+                    topPos + this.hoveredSlot.y + 16, 0xFFdaffff);
+            renderSlotHighlight(guiGraphics, leftPos + this.hoveredSlot.x, topPos + this.hoveredSlot.y, 0, 0x669cd3ff);
+        }
 
         renderTooltips(guiGraphics, mouseX, mouseY);
 
@@ -504,7 +527,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         // If a slot is optional and doesn't currently render, we still need to provide a background for it
         if (alwaysDraw || slot.isRenderDisabled()) {
             // If the slot is disabled, shade the background overlay
-            float alpha = slot.isSlotEnabled() ? 1.0f : 0.4f;
+            float alpha = slot.isSlotEnabled() ? 1.0f : 0.2f;
 
             Point pos = slot.getBackgroundPos();
 

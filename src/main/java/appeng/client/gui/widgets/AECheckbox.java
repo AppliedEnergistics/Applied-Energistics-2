@@ -16,11 +16,10 @@ public class AECheckbox extends AbstractButton {
 
     private static final Blitter BLITTER = Blitter.texture("guis/checkbox.png", 64, 64);
 
-    private static final Blitter UNCHECKED = BLITTER.copy().src(0, 0, SIZE, SIZE);
-    private static final Blitter UNCHECKED_FOCUS = BLITTER.copy().src(SIZE, 0, SIZE, SIZE);
-    private static final Blitter CHECKED = BLITTER.copy().src(0, SIZE, SIZE, SIZE);
-    private static final Blitter CHECKED_FOCUS = BLITTER.copy().src(SIZE, SIZE, SIZE, SIZE);
-
+    private static final Blitter UNCHECKED = BLITTER.copy().src(0, 28, 22, 12);
+    private static final Blitter UNCHECKED_FOCUS = BLITTER.copy().src(22, 28, 22, 12);
+    private static final Blitter CHECKED = BLITTER.copy().src(0, 40, 22, 12);
+    private static final Blitter CHECKED_FOCUS = BLITTER.copy().src(22, 40, 22, 12);
     private static final Blitter RADIO_UNCHECKED = BLITTER.copy().src(2 * SIZE, 0, SIZE, SIZE);
     private static final Blitter RADIO_UNCHECKED_FOCUS = BLITTER.copy().src(3 * SIZE, 0, SIZE, SIZE);
     private static final Blitter RADIO_CHECKED = BLITTER.copy().src(2 * SIZE, SIZE, SIZE, SIZE);
@@ -83,17 +82,21 @@ public class AECheckbox extends AbstractButton {
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Blitter icon;
         if (isRadio()) {
-            if (isFocused() || isMouseOver(mouseX, mouseY)) {
+            if (isMouseOver(mouseX, mouseY)) {
                 icon = isSelected() ? RADIO_CHECKED_FOCUS : RADIO_UNCHECKED_FOCUS;
             } else {
                 icon = isSelected() ? RADIO_CHECKED : RADIO_UNCHECKED;
             }
         } else {
-            if (isFocused() || isMouseOver(mouseX, mouseY)) {
+            if (isMouseOver(mouseX, mouseY) && !isFocused()) {
                 icon = isSelected() ? CHECKED_FOCUS : UNCHECKED_FOCUS;
             } else {
                 icon = isSelected() ? CHECKED : UNCHECKED;
             }
+        }
+
+        if (!isMouseOver(mouseX, mouseY)) {
+            setFocused(false);
         }
 
         var minecraft = Minecraft.getInstance();
@@ -103,11 +106,12 @@ public class AECheckbox extends AbstractButton {
         var opacity = isActive() ? 1 : 0.5f;
 
         icon.dest(getX(), getY()).opacity(opacity).blit(guiGraphics);
-        var lines = font.split(getMessage(), width - SIZE - 2);
+        var lines = font.split(getMessage(), width - 22);
         // try to vertically center if it's just one line
         var lineY = getY() + (lines.size() <= 1 ? 4 : 1);
         for (var line : lines) {
-            guiGraphics.drawString(font, line, getX() + SIZE + 2, lineY, style.getColor(textColor).toARGB(), false);
+            guiGraphics.drawString(font, line, getX() + (isRadio() ? 16 : 26), lineY,
+                    style.getColor(textColor).toARGB(), false);
             lineY += font.lineHeight;
         }
     }

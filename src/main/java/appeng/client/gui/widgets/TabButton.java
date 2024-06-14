@@ -38,6 +38,8 @@ public class TabButton extends Button implements ITooltip {
 
     private boolean selected;
 
+    private boolean disableBackground = false;
+
     public enum Style {
         CORNER,
         BOX,
@@ -79,24 +81,29 @@ public class TabButton extends Button implements ITooltip {
                     yield Icon.HORIZONTAL_TAB;
                 }
             };
-
-            backdrop.getBlitter().dest(getX(), getY()).blit(guiGraphics);
+            if (!disableBackground) {
+                backdrop.getBlitter().dest(getX(), getY()).blit(guiGraphics);
+            }
 
             var iconX = switch (this.style) {
-                case CORNER -> 4;
-                case BOX -> 3;
-                case HORIZONTAL -> 1;
+                case CORNER -> 1;
+                case BOX -> 2;
+                case HORIZONTAL -> 3;
             };
-            var iconY = 3;
+            var iconY = switch (this.style) {
+                case CORNER -> 1;
+                case BOX -> 2;
+                case HORIZONTAL -> 3;
+            };
 
             if (this.icon != null) {
-                this.icon.getBlitter().dest(getX() + iconX, getY() + iconY).blit(guiGraphics);
+                this.icon.getBlitter().dest(getX() + iconX, getY() + iconY - 1).blit(guiGraphics);
             }
 
             if (this.item != null) {
                 var pose = guiGraphics.pose();
                 pose.pushPose();
-                pose.translate(0, 0, 100);
+                pose.translate(0f, -1f, 100);
                 guiGraphics.renderItem(this.item, getX() + iconX, getY() + iconY);
                 var font = Minecraft.getInstance().font;
                 guiGraphics.renderItemDecorations(font, this.item, getX() + iconX, getY() + iconY);
@@ -134,5 +141,13 @@ public class TabButton extends Button implements ITooltip {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public boolean isDisableBackground() {
+        return disableBackground;
+    }
+
+    public void setDisableBackground(boolean disableBackground) {
+        this.disableBackground = disableBackground;
     }
 }

@@ -3,7 +3,7 @@
   "includes": ["common/common.json"],
   "background": {
     "texture": "guis/craftingcpu.png",
-    "srcRect": [0, 0, 238, 184]
+    "srcRect": [0, 0, 238, 185]
   },
   "text": {
     "dialog_title": {

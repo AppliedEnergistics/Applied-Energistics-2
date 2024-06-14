@@ -1,10 +1,9 @@
 package appeng.client.gui.me.common;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.AESubScreen;
+import appeng.client.gui.Icon;
 import appeng.client.gui.widgets.AECheckbox;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
@@ -94,10 +93,8 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
     }
 
     private void addBackButton() {
-        var icon = menu.getHost().getMainMenuIcon();
-        var label = icon.getHoverName();
-        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-        TabButton button = new TabButton(icon, label, btn -> returnToParent());
+        var label = menu.getHost().getMainMenuIcon().getHoverName();
+        TabButton button = new TabButton(Icon.BACK, label, btn -> returnToParent());
         widgets.add("back", button);
     }
 

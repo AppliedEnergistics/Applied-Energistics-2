@@ -1,33 +1,19 @@
 {
+  "credit": "Made with Blockbench",
   "ambientocclusion": false,
   "textures": {
-    "emitter": "ae2:part/level_emitter_on",
-    "particle": "ae2:part/level_emitter_on"
+    "particle": "ae2:part/level_emitter_off",
+    "emitter": "ae2:part/level_emitter_off"
   },
   "elements": [
     {
       "from": [7, 7, 3],
       "to": [9, 9, 4],
       "faces": {
-        "up": {
-          "texture": "#emitter",
-          "uv": [9, 7, 10, 9],
-          "rotation": 90
-        },
-        "down": {
-          "texture": "#emitter",
-          "uv": [9, 7, 10, 9],
-          "rotation": 270
-        },
-        "east": {
-          "texture": "#emitter",
-          "uv": [9, 7, 10, 9],
-          "rotation": 180
-        },
-        "west": {
-          "texture": "#emitter",
-          "uv": [9, 7, 10, 9]
-        }
+        "east": { "uv": [9, 7, 10, 9], "rotation": 180, "texture": "#emitter" },
+        "west": { "uv": [9, 7, 10, 9], "texture": "#emitter" },
+        "up": { "uv": [9, 7, 10, 9], "rotation": 90, "texture": "#emitter" },
+        "down": { "uv": [9, 7, 10, 9], "rotation": 270, "texture": "#emitter" }
       }
     },
     {
@@ -36,48 +22,14 @@
       "shade": false,
       "faces": {
         "north": {
-          "texture": "#emitter",
-          "uv": [6, 7, 8, 9],
+          "uv": [4, 9, 6, 11],
           "rotation": 270,
-          "unlit": true
-        }
-      }
-    },
-    {
-      "from": [6, 7, -1],
-      "to": [10, 9, 3],
-      "shade": false,
-      "faces": {
-        "up": {
-          "texture": "#emitter",
-          "uv": [5, 6, 9, 10],
-          "rotation": 90,
-          "unlit": true
+          "texture": "#emitter"
         },
-        "down": {
-          "texture": "#emitter",
-          "uv": [5, 6, 9, 10],
-          "rotation": 270,
-          "unlit": true
-        }
-      }
-    },
-    {
-      "from": [7, 6, -1],
-      "to": [9, 10, 3],
-      "shade": false,
-      "faces": {
-        "west": {
-          "texture": "#emitter",
-          "uv": [5, 6, 9, 10],
-          "unlit": true
-        },
-        "east": {
-          "texture": "#emitter",
-          "uv": [5, 6, 9, 10],
-          "rotation": 180,
-          "unlit": true
-        }
+        "east": { "uv": [9, 9, 6, 11], "texture": "#emitter" },
+        "west": { "uv": [6, 11, 9, 9], "texture": "#emitter" },
+        "up": { "uv": [6, 9, 9, 11], "rotation": 90, "texture": "#emitter" },
+        "down": { "uv": [9, 11, 6, 9], "rotation": 90, "texture": "#emitter" }
       }
     }
   ]

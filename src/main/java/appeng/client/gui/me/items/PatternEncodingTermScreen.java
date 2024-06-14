@@ -66,7 +66,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
                 case STONECUTTING -> new StonecuttingEncodingPanel(this, widgets);
             };
             var tabButton = new TabButton(
-                    panel.getTabIconItem(),
+                    panel.getIcon(),
                     panel.getTabTooltip(),
                     btn -> getMenu().setMode(mode));
             tabButton.setStyle(TabButton.Style.HORIZONTAL);

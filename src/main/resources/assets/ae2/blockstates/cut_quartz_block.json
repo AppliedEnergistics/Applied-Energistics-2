@@ -1,0 +1,15 @@
+{
+  "variants": {
+    "": {
+      "model": "ae2:block/cut_quartz_block"
+    }
+  },
+  "athena:loader": "athena:ctm",
+  "ctm_textures": {
+    "center": "ae2:block/cut_quartz_block_center",
+    "empty": "ae2:block/smooth_quartz_block",
+    "horizontal": "ae2:block/cut_quartz_block_h",
+    "vertical": "ae2:block/cut_quartz_block_v",
+    "particle": "ae2:block/cut_quartz_block"
+  }
+}

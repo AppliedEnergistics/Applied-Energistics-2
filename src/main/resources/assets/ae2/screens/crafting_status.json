@@ -2,34 +2,34 @@
   "$schema": "schema.json",
   "includes": ["crafting_cpu.json"],
   "widgets": {
-    "verticalToolbar": {
-      "right": -20,
-      "top": 6
-    },
     "back": {
-      "left": 213,
-      "top": -4,
-      "hideEdge": true
+      "left": 214,
+      "top": -5,
+      "hideEdge": false
     },
     "selectCpuList": {
       "$comment": "List of available crafting CPU and their status",
-      "left": -94,
-      "top": 4,
+      "left": -88,
+      "top": 0,
       "width": 94,
       "height": 164
     },
     "selectCpuScrollbar": {
-      "left": -16,
-      "top": 23,
+      "left": -11,
+      "top": 19,
       "width": 12,
       "height": 137
+    },
+    "verticalToolbar": {
+      "left": -85,
+      "top": 1
     }
   },
   "text": {
     "cpuListTitle": {
       "position": {
-        "top": 12,
-        "left": -86
+        "top": 7,
+        "left": -81
       },
       "text": {
         "translate": "gui.ae2.CraftingCPUs"
@@ -48,6 +48,12 @@
       "textureWidth": 256,
       "textureHeight": 256,
       "srcRect": [100, 0, 67, 22]
+    },
+    "cpuListButtonSelected": {
+      "texture": "guis/cpu_selector.png",
+      "textureWidth": 256,
+      "textureHeight": 256,
+      "srcRect": [100, 22, 67, 22]
     }
   }
 }

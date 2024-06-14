@@ -3,11 +3,10 @@ package appeng.client.gui.me.items;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 import appeng.api.config.ActionItems;
 import appeng.client.Point;
+import appeng.client.gui.Icon;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.ActionButton;
@@ -16,7 +15,7 @@ import appeng.core.localization.GuiText;
 import appeng.menu.SlotSemantics;
 
 public class ProcessingEncodingPanel extends EncodingModePanel {
-    private static final Blitter BG = Blitter.texture("guis/pattern_modes.png").src(0, 70, 126, 68);
+    private static final Blitter BG = Blitter.texture("guis/pattern_modes.png").src(0, 70, 124, 66);
 
     private final ActionButton clearBtn;
     private final ActionButton cycleOutputBtn;
@@ -26,14 +25,16 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
         super(screen, widgets);
 
         // Add buttons for the processing mode
-        clearBtn = new ActionButton(ActionItems.CLOSE, act -> menu.clear());
+        clearBtn = new ActionButton(ActionItems.S_CLOSE, act -> menu.clear());
         clearBtn.setHalfSize(true);
+        clearBtn.setDisableBackground(true);
         widgets.add("processingClearPattern", clearBtn);
 
         this.cycleOutputBtn = new ActionButton(
-                ActionItems.CYCLE_PROCESSING_OUTPUT,
+                ActionItems.S_CYCLE_PROCESSING_OUTPUT,
                 act -> menu.cycleProcessingOutput());
         this.cycleOutputBtn.setHalfSize(true);
+        this.cycleOutputBtn.setDisableBackground(true);
         widgets.add("processingCycleOutput", this.cycleOutputBtn);
 
         this.scrollbar = widgets.addScrollBar("processingPatternModeScrollbar", Scrollbar.SMALL);
@@ -69,7 +70,7 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
 
     @Override
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
-        BG.dest(bounds.getX() + 9, bounds.getY() + bounds.getHeight() - 164).blit(guiGraphics);
+        BG.dest(bounds.getX() + 8, bounds.getY() + bounds.getHeight() - 165).blit(guiGraphics);
     }
 
     @Override
@@ -85,8 +86,8 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
     }
 
     @Override
-    public ItemStack getTabIconItem() {
-        return Items.FURNACE.getDefaultInstance();
+    Icon getIcon() {
+        return Icon.TAB_PROCESSING;
     }
 
     @Override

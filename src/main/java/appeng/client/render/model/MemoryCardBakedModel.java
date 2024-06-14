@@ -103,7 +103,7 @@ class MemoryCardBakedModel implements BakedModel {
                 final AEColor color = this.colors.get(x, y);
 
                 builder.setColorRGB(color.mediumVariant);
-                builder.addCube(7 + x, 8 + 1 - y, 7.5f, 7 + x + 1, 8 + 1 - y + 1, 8.5f);
+                builder.addCube(8 + x, 8 + 1 - y, 7.5f, 8 + x + 1, 8 + 1 - y + 1, 8.5f);
             }
         }
 

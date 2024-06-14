@@ -299,6 +299,10 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
             new ResourceLocation("minecraft", "container/creative_inventory/scroller"),
             new ResourceLocation("minecraft", "container/creative_inventory/scroller_disabled"));
 
+    public static final Style BIG = Style.create(
+            AppEng.makeId("big_scroller"),
+            AppEng.makeId("big_scroller_disabled"));
+
     public static final Style SMALL = Style.create(
             AppEng.makeId("small_scroller"),
             AppEng.makeId("small_scroller_disabled"));

@@ -1,22 +1,26 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json"],
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json",
+    "common/toolbox.json"
+  ],
   "background": {
     "texture": "guis/inscriber.png",
-    "srcRect": [0, 0, 176, 176]
+    "srcRect": [0, 0, 176, 178]
   },
   "slots": {
     "INSCRIBER_PLATE_TOP": {
-      "left": 45,
-      "top": 16
+      "left": 39,
+      "top": 23
     },
     "MACHINE_INPUT": {
       "left": 63,
       "top": 39
     },
     "INSCRIBER_PLATE_BOTTOM": {
-      "left": 45,
-      "top": 62
+      "left": 39,
+      "top": 55
     },
     "MACHINE_OUTPUT": {
       "left": 113,
@@ -37,7 +41,7 @@
   "images": {
     "progressBar": {
       "texture": "guis/inscriber.png",
-      "srcRect": [135, 177, 6, 18]
+      "srcRect": [176, 0, 6, 18]
     }
   },
   "widgets": {

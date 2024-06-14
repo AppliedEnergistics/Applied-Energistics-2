@@ -1,30 +1,21 @@
 {
   "credit": "Made with Blockbench",
+  "texture_size": [32, 32],
   "textures": {
-    "indicator": "ae2:part/monitor_sides_status_on"
+    "0": "ae2:block/wireless_access_point",
+    "particle": "ae2:block/wireless_access_point"
   },
   "elements": [
     {
-      "from": [5, 5, 15],
-      "to": [11, 11, 16],
-      "rotation": { "angle": 0, "axis": "y", "origin": [0, 0, 16] },
+      "from": [4, 4, 14],
+      "to": [12, 12, 15],
       "faces": {
-        "east": {
-          "uv": [16, 5, 15, 11],
-          "texture": "#indicator",
-          "tintindex": 3
-        },
-        "west": {
-          "uv": [1, 5, 0, 11],
-          "texture": "#indicator",
-          "tintindex": 3
-        },
-        "up": { "uv": [5, 1, 11, 0], "texture": "#indicator", "tintindex": 3 },
-        "down": {
-          "uv": [5, 16, 11, 15],
-          "texture": "#indicator",
-          "tintindex": 3
-        }
+        "north": { "uv": [8, 9, 4, 13], "texture": "#0" },
+        "east": { "uv": [8, 9, 7.5, 13], "texture": "#0" },
+        "south": { "uv": [4, 9, 8, 13], "texture": "#0" },
+        "west": { "uv": [4.5, 9, 4, 13], "texture": "#0" },
+        "up": { "uv": [4, 9.5, 8, 9], "texture": "#0" },
+        "down": { "uv": [4, 13, 8, 12.5], "texture": "#0" }
       }
     }
   ]

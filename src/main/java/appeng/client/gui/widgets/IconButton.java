@@ -80,23 +80,11 @@ public abstract class IconButton extends Button implements ITooltip {
             RenderSystem.disableDepthTest();
             RenderSystem.enableBlend(); // FIXME: This should be the _default_ state, but some vanilla widget disables
 
-            if (isFocused()) {
-                // Draw 1px border with 4 quads, don't rely on the background as it can be disabled.
-                // top
-                guiGraphics.fill(getX() - 1, getY() - 1, getX() + width + 1, getY(), 0xFFFFFFFF);
-                // left
-                guiGraphics.fill(getX() - 1, getY(), getX(), getY() + height, 0xFFFFFFFF);
-                // right
-                guiGraphics.fill(getX() + width, getY(), getX() + width + 1, getY() + height, 0xFFFFFFFF);
-                // bottom
-                guiGraphics.fill(getX() - 1, getY() + height, getX() + width + 1, getY() + height + 1, 0xFFFFFFFF);
-            }
-
             if (this.halfSize) {
                 var pose = guiGraphics.pose();
                 pose.pushPose();
                 pose.translate(getX(), getY(), 0.0F);
-                pose.scale(0.5f, 0.5f, 1.f);
+                pose.scale(1.f, 1.f, 1.f);
 
                 if (!disableBackground) {
                     Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(0, 0).blit(guiGraphics);
@@ -105,9 +93,16 @@ public abstract class IconButton extends Button implements ITooltip {
                 pose.popPose();
             } else {
                 if (!disableBackground) {
-                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(getX(), getY()).blit(guiGraphics);
+                    if (!isHovered()) {
+                        Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(getX() - 1, getY(), 18, 20).blit(guiGraphics);
+                        icon.getBlitter().dest(getX(), getY() + 1).blit(guiGraphics);
+                    } else {
+                        Icon.TOOLBAR_BUTTON_BACKGROUND_HOVER.getBlitter().dest(getX() - 1, getY() + 1, 18, 20)
+                                .blit(guiGraphics);
+                        icon.getBlitter().dest(getX(), getY() + 2).blit(guiGraphics);
+                    }
                 }
-                icon.getBlitter().dest(getX(), getY()).blit(guiGraphics);
+
             }
             RenderSystem.enableDepthTest();
 

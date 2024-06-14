@@ -104,7 +104,7 @@ public class KeyTypeSelectionScreen<C extends AEBaseMenu & KeyTypeSelectionMenu,
                 var text = keyType.getDescription();
 
                 // Dynamic width based on text size
-                int textboxWidth = AECheckbox.SIZE + 2 + Minecraft.getInstance().font.width(text);
+                int textboxWidth = 24 + Minecraft.getInstance().font.width(text);
 
                 var checkbox = new AECheckbox(xPos, yPos, textboxWidth, AECheckbox.SIZE, screen.getStyle(),
                         keyType.getDescription());

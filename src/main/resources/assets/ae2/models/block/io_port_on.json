@@ -1,0 +1,9 @@
+{
+  "parent": "ae2:block/spatial_io_port",
+  "textures": {
+    "particle": "ae2:block/io_port_front",
+    "top": "ae2:block/io_port_top",
+    "front": "ae2:block/io_port_front",
+    "side": "ae2:block/generics/side"
+  }
+}

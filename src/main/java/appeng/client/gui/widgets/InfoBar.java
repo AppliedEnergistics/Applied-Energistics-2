@@ -37,31 +37,32 @@ public class InfoBar {
         void render(GuiGraphics guiGraphics, int x, int y);
     }
 
-    void add(Icon icon, float scale) {
-        widgets.add(new IconWidget(icon, scale));
+    // TODO (RID): Added xPos and yPos to give me better control over render, but the code below might need refactoring
+    void add(Icon icon, float scale, int xPos, int yPos) {
+        widgets.add(new IconWidget(icon, scale, xPos, yPos));
     }
 
-    void add(String text, int color, float scale) {
-        widgets.add(new TextWidget(Component.literal(text), color, scale));
+    void add(String text, int color, float scale, int xPos, int yPos) {
+        widgets.add(new TextWidget(Component.literal(text), color, scale, xPos, yPos));
     }
 
-    void add(Component text, int color, float scale) {
-        widgets.add(new TextWidget(text, color, scale));
+    void add(Component text, int color, float scale, int xPos, int yPos) {
+        widgets.add(new TextWidget(text, color, scale, xPos, yPos));
     }
 
-    void add(AEKey what, float scale) {
-        widgets.add(new StackWidget(what, scale));
+    void add(AEKey what, float scale, int xPos, int yPos) {
+        widgets.add(new StackWidget(what, scale, xPos, yPos));
     }
 
-    void add(ItemLike what, float scale) {
-        widgets.add(new StackWidget(AEItemKey.of(what), scale));
+    void add(ItemLike what, float scale, int xPos, int yPos) {
+        widgets.add(new StackWidget(AEItemKey.of(what), scale, xPos, yPos));
     }
 
     void addSpace(int width) {
         widgets.add(new SpaceWidget(width));
     }
 
-    private record StackWidget(AEKey what, float scale) implements Widget {
+    private record StackWidget(AEKey what, float scale, int xPos, int yPos) implements Widget {
         @Override
         public int getWidth() {
             return Math.round(16 * scale);
@@ -76,14 +77,14 @@ public class InfoBar {
         public void render(GuiGraphics guiGraphics, int x, int y) {
             var poseStack = guiGraphics.pose();
             poseStack.pushPose();
-            poseStack.translate(x, y, 0);
+            poseStack.translate(xPos, yPos, 0);
             poseStack.scale(scale, scale, 1);
             AEKeyRendering.drawInGui(Minecraft.getInstance(), guiGraphics, 0, 0, what);
             poseStack.popPose();
         }
     }
 
-    private record IconWidget(Icon icon, float scale) implements Widget {
+    private record IconWidget(Icon icon, float scale, int xPos, int yPos) implements Widget {
         @Override
         public int getWidth() {
             return Math.round(16 * scale);
@@ -98,7 +99,7 @@ public class InfoBar {
         public void render(GuiGraphics guiGraphics, int x, int y) {
             var poseStack = guiGraphics.pose();
             poseStack.pushPose();
-            poseStack.translate(x, y, 0);
+            poseStack.translate(xPos, yPos, 0);
             poseStack.scale(scale, scale, 1);
             icon.getBlitter()
                     .dest(0, 0)
@@ -111,13 +112,17 @@ public class InfoBar {
         private final Component text;
         private final int color;
         private final float scale;
+        private final int xPos;
+        private final int yPos;
         private final int width;
         private final int height;
 
-        public TextWidget(Component text, int color, float scale) {
+        public TextWidget(Component text, int color, float scale, int xPos, int yPos) {
             this.text = text;
             this.color = color;
             this.scale = scale;
+            this.xPos = xPos;
+            this.yPos = yPos;
             var font = Minecraft.getInstance().font;
             this.width = Math.round(font.width(text) * scale);
             this.height = Math.round(font.lineHeight * scale);
@@ -138,7 +143,7 @@ public class InfoBar {
             var poseStack = guiGraphics.pose();
             var font = Minecraft.getInstance().font;
             poseStack.pushPose();
-            poseStack.translate(x, y, 0);
+            poseStack.translate(xPos, yPos, 0);
             poseStack.scale(scale, scale, 1);
             guiGraphics.drawString(font, text, 0, 0, color, false);
             poseStack.popPose();
