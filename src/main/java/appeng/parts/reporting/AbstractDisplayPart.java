@@ -39,17 +39,17 @@ public abstract class AbstractDisplayPart extends AbstractReportingPart {
 
     // The base chassis of all display parts
     @PartModels
-    protected static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/display_base");
+    protected static final ResourceLocation MODEL_BASE = AppEng.makeId( "part/display_base");
 
     // Models that contain the status indicator light
     @PartModels
-    protected static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
+    protected static final ResourceLocation MODEL_STATUS_OFF = AppEng.makeId(
             "part/display_status_off");
     @PartModels
-    protected static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
+    protected static final ResourceLocation MODEL_STATUS_ON = AppEng.makeId(
             "part/display_status_on");
     @PartModels
-    protected static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
+    protected static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = AppEng.makeId(
             "part/display_status_has_channel");
 
     public AbstractDisplayPart(IPartItem<?> partItem, boolean requireChannel) {

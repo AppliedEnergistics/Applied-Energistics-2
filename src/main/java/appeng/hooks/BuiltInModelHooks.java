@@ -35,7 +35,7 @@ public class BuiltInModelHooks {
         // Vanilla loads item models as <id>#inventory, which we replicate here
         if (variantId instanceof ModelResourceLocation modelId) {
             if ("inventory".equals(modelId.getVariant())) {
-                var itemModelId = new ResourceLocation(modelId.getNamespace(), "item/" + modelId.getPath());
+                var itemModelId = ResourceLocation.fromNamespaceAndPath(modelId.getNamespace(), "item/" + modelId.getPath());
                 return builtInModels.get(itemModelId);
             }
 

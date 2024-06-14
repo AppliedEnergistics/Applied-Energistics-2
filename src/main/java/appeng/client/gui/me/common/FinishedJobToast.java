@@ -18,7 +18,7 @@ import appeng.core.localization.GuiText;
  * A Minecraft toast for a finished crafting job.
  */
 public class FinishedJobToast implements Toast {
-    private static final ResourceLocation BACKGROUND_SPRITE = new ResourceLocation("toast/recipe");
+    private static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.parse("toast/recipe");
 
     private static final long TIME_VISIBLE = 2500;
     private static final int TITLE_COLOR = 0xFF500050;

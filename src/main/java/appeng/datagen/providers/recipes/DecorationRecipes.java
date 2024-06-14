@@ -131,7 +131,7 @@ public class DecorationRecipes extends AE2RecipeProvider {
     }
 
     private ResourceLocation prefix(String prefix, ResourceLocation id) {
-        return new ResourceLocation(
+        return ResourceLocation.fromNamespaceAndPath(
                 id.getNamespace(),
                 prefix + id.getPath());
     }

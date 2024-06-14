@@ -254,6 +254,6 @@ class GuideSourceWatcher {
         if (!ResourceLocation.isValidResourceLocation(relativePathStr)) {
             return null;
         }
-        return new ResourceLocation(namespace, relativePathStr);
+        return ResourceLocation.fromNamespaceAndPath(namespace, relativePathStr);
     }
 }

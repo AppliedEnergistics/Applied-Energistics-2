@@ -40,9 +40,9 @@ import appeng.core.AppEng;
  */
 public class MemoryCardModel implements BasicUnbakedModel {
 
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/memory_card_base");
+    public static final ResourceLocation MODEL_BASE = AppEng.makeId( "item/memory_card_base");
     private static final Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "item/memory_card_hash"));
+            AppEng.makeId( "item/memory_card_hash"));
 
     @Override
     public Collection<ResourceLocation> getDependencies() {

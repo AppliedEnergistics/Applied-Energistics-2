@@ -64,7 +64,7 @@ public final class AEEntities {
         SharedConstants.CHECK_DATA_FIXER_SCHEMA = false;
         EntityType<T> result = builder.build(registryLoc);
         SharedConstants.CHECK_DATA_FIXER_SCHEMA = prev;
-        ENTITY_TYPES.put(new ResourceLocation(registryLoc), result);
+        ENTITY_TYPES.put(ResourceLocation.parse(registryLoc), result);
         return result;
     }
 

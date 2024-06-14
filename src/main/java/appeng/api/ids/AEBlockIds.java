@@ -168,6 +168,6 @@ public final class AEBlockIds {
     public static final ResourceLocation CRANK = id("crank");
 
     private static ResourceLocation id(String id) {
-        return new ResourceLocation(AEConstants.MOD_ID, id);
+        return ResourceLocation.fromNamespaceAndPath(AEConstants.MOD_ID, id);
     }
 }

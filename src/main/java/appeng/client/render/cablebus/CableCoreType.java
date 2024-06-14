@@ -73,7 +73,7 @@ public enum CableCoreType {
 
     public Material getTexture(AEColor color) {
         return new Material(TextureAtlas.LOCATION_BLOCKS,
-                new ResourceLocation(AppEng.MOD_ID, this.textureFolder + "/" + color.name().toLowerCase(Locale.ROOT)));
+                AppEng.makeId( this.textureFolder + "/" + color.name().toLowerCase(Locale.ROOT)));
     }
 
 }

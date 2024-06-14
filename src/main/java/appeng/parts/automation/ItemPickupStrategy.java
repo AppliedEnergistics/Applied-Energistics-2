@@ -40,7 +40,7 @@ import appeng.util.Platform;
 
 public class ItemPickupStrategy implements PickupStrategy {
 
-    public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation TAG_BLACKLIST = AppEng.makeId(
             "blacklisted/annihilation_plane");
 
     private static final TagKey<Block> BLOCK_BLACKLIST = TagKey.create(Registries.BLOCK, TAG_BLACKLIST);

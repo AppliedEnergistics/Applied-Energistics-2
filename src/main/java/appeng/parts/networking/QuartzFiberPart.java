@@ -57,7 +57,7 @@ import appeng.parts.PartModel;
 public class QuartzFiberPart extends AEBasePart {
 
     @PartModels
-    private static final IPartModel MODELS = new PartModel(new ResourceLocation(AppEng.MOD_ID, "part/quartz_fiber"));
+    private static final IPartModel MODELS = new PartModel(AppEng.makeId( "part/quartz_fiber"));
 
     private final IManagedGridNode outerNode;
 

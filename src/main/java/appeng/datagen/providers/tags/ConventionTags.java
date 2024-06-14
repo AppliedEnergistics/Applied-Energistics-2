@@ -172,11 +172,11 @@ public final class ConventionTags {
     }
 
     private static TagKey<Item> tag(String name) {
-        return net.minecraft.tags.TagKey.create(Registries.ITEM, new ResourceLocation(name));
+        return net.minecraft.tags.TagKey.create(Registries.ITEM, ResourceLocation.parse(name));
     }
 
     private static TagKey<Block> blockTag(String name) {
-        return net.minecraft.tags.TagKey.create(Registries.BLOCK, new ResourceLocation(name));
+        return net.minecraft.tags.TagKey.create(Registries.BLOCK, ResourceLocation.parse(name));
     }
 
 }

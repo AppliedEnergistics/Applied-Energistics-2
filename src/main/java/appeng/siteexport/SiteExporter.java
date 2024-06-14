@@ -281,7 +281,7 @@ public final class SiteExporter implements ResourceExporter {
         if (idx != -1) {
             path = path.substring(0, idx);
         }
-        return new ResourceLocation(currentPage.getId().getNamespace(), path + "_" + suffix);
+        return ResourceLocation.fromNamespaceAndPath(currentPage.getId().getNamespace(), path + "_" + suffix);
     }
 
     @Override
@@ -588,7 +588,7 @@ public final class SiteExporter implements ResourceExporter {
 
         ResourceLocation id = textureId;
         if (!id.getPath().endsWith(".png")) {
-            id = new ResourceLocation(id.getNamespace(), id.getPath() + ".png");
+            id = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath() + ".png");
         }
 
         var outputPath = getPathForWriting(id);

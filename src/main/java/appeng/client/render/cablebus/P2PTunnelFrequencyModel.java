@@ -34,7 +34,7 @@ import appeng.core.AppEng;
 public class P2PTunnelFrequencyModel implements BasicUnbakedModel {
 
     private static final Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "part/p2p_tunnel_frequency"));
+            AppEng.makeId( "part/p2p_tunnel_frequency"));
 
     @org.jetbrains.annotations.Nullable
     @Override

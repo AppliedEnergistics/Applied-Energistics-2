@@ -15,9 +15,9 @@ public final class IdUtils {
 
     public static ResourceLocation resolveId(String idText, String defaultNamespace) {
         if (!idText.contains(":")) {
-            return new ResourceLocation(defaultNamespace, idText);
+            return ResourceLocation.fromNamespaceAndPath(defaultNamespace, idText);
         }
-        return new ResourceLocation(idText);
+        return ResourceLocation.parse(idText);
     }
 
     /**
@@ -29,18 +29,18 @@ public final class IdUtils {
             throws ResourceLocationException {
         if (idText.startsWith("/")) {
             // Absolute path, but relative to namespace
-            return new ResourceLocation(anchor.getNamespace(), idText.substring(1));
+            return ResourceLocation.fromNamespaceAndPath(anchor.getNamespace(), idText.substring(1));
         } else if (!idText.contains(":")) {
             URI uri = URI.create(anchor.getPath());
             uri = uri.resolve(idText);
 
             var relativeId = uri.toString();
 
-            return new ResourceLocation(anchor.getNamespace(), relativeId);
+            return ResourceLocation.fromNamespaceAndPath(anchor.getNamespace(), relativeId);
         }
 
         // if it contains a ":" it's assumed to be absolute
-        return new ResourceLocation(idText);
+        return ResourceLocation.parse(idText);
     }
 
 }

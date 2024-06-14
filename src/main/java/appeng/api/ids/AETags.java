@@ -84,15 +84,15 @@ public final class AETags {
     public static final TagKey<Block> GROWTH_ACCELERATABLE = blockTag("ae2:growth_acceleratable");
 
     private static TagKey<Item> itemTag(String name) {
-        return TagKey.create(Registries.ITEM, new ResourceLocation(name));
+        return TagKey.create(Registries.ITEM, ResourceLocation.parse(name));
     }
 
     private static TagKey<Fluid> fluidTag(String name) {
-        return TagKey.create(Registries.FLUID, new ResourceLocation(name));
+        return TagKey.create(Registries.FLUID, ResourceLocation.parse(name));
     }
 
     private static TagKey<Block> blockTag(String name) {
-        return TagKey.create(Registries.BLOCK, new ResourceLocation(name));
+        return TagKey.create(Registries.BLOCK, ResourceLocation.parse(name));
     }
 
 }

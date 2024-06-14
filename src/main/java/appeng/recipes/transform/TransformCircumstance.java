@@ -53,7 +53,7 @@ public class TransformCircumstance {
         if (type.equals("explosion"))
             return explosion();
         else if (type.equals("fluid")) {
-            return fluid(TagKey.create(Registries.FLUID, new ResourceLocation(obj.get("tag").getAsString())));
+            return fluid(TagKey.create(Registries.FLUID, ResourceLocation.parse(obj.get("tag").getAsString())));
         } else
             throw new JsonParseException("Invalid transform recipe type " + type);
     }

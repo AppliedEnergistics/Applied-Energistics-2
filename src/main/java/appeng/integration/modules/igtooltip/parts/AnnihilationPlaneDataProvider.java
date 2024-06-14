@@ -25,7 +25,7 @@ public class AnnihilationPlaneDataProvider
 
             var enchantments = serverData.getCompound(TAG_ENCHANTMENTS);
             for (var enchantmentId : enchantments.getAllKeys()) {
-                var enchantment = BuiltInRegistries.ENCHANTMENT.get(new ResourceLocation(enchantmentId));
+                var enchantment = BuiltInRegistries.ENCHANTMENT.get(ResourceLocation.parse(enchantmentId));
                 var level = enchantments.getInt(enchantmentId);
                 if (enchantment != null) {
                     tooltip.addLine(enchantment.getFullname(level));

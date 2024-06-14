@@ -33,11 +33,11 @@ import appeng.parts.PartModel;
  */
 public class PlaneModels {
 
-    public static final ResourceLocation MODEL_CHASSIS_OFF = new ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_CHASSIS_OFF = AppEng.makeId(
             "part/transition_plane_off");
-    public static final ResourceLocation MODEL_CHASSIS_ON = new ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_CHASSIS_ON = AppEng.makeId(
             "part/transition_plane_on");
-    public static final ResourceLocation MODEL_CHASSIS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_CHASSIS_HAS_CHANNEL = AppEng.makeId(
             "part/transition_plane_has_channel");
 
     private final IPartModel modelOff;
@@ -47,8 +47,8 @@ public class PlaneModels {
     private final IPartModel modelHasChannel;
 
     public PlaneModels(String planeOffLocation, String planeOnLocation) {
-        ResourceLocation planeOff = new ResourceLocation(AppEng.MOD_ID, planeOffLocation);
-        ResourceLocation planeOn = new ResourceLocation(AppEng.MOD_ID, planeOnLocation);
+        ResourceLocation planeOff = AppEng.makeId( planeOffLocation);
+        ResourceLocation planeOn = AppEng.makeId( planeOnLocation);
 
         this.modelOff = new PartModel(MODEL_CHASSIS_OFF, planeOff);
         this.modelOn = new PartModel(MODEL_CHASSIS_ON, planeOff);

@@ -165,13 +165,13 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 AEItems.NETWORK_TOOL.asItem());
 
         tag(AETags.METAL_INGOTS)
-                .addOptionalTag(new ResourceLocation("c:ingots/copper"))
-                .addOptionalTag(new ResourceLocation("c:ingots/tin"))
-                .addOptionalTag(new ResourceLocation("c:ingots/iron"))
-                .addOptionalTag(new ResourceLocation("c:ingots/gold"))
-                .addOptionalTag(new ResourceLocation("c:ingots/brass"))
-                .addOptionalTag(new ResourceLocation("c:ingots/nickel"))
-                .addOptionalTag(new ResourceLocation("c:ingots/aluminium"));
+                .addOptionalTag(ResourceLocation.parse("c:ingots/copper"))
+                .addOptionalTag(ResourceLocation.parse("c:ingots/tin"))
+                .addOptionalTag(ResourceLocation.parse("c:ingots/iron"))
+                .addOptionalTag(ResourceLocation.parse("c:ingots/gold"))
+                .addOptionalTag(ResourceLocation.parse("c:ingots/brass"))
+                .addOptionalTag(ResourceLocation.parse("c:ingots/nickel"))
+                .addOptionalTag(ResourceLocation.parse("c:ingots/aluminium"));
 
         tag(ConventionTags.PATTERN_PROVIDER)
                 .add(AEParts.PATTERN_PROVIDER.asItem())
@@ -231,7 +231,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
         tag(ConventionTags.CAN_REMOVE_COLOR).add(Items.WATER_BUCKET, Items.SNOWBALL);
 
         // Manually add tags for mods that are unlikely to do it themselves since we don't want to force users to craft
-        tag(ConventionTags.WRENCH).addOptional(new ResourceLocation("immersiveengineering:hammer"));
+        tag(ConventionTags.WRENCH).addOptional(ResourceLocation.parse("immersiveengineering:hammer"));
 
         addP2pAttunementTags();
     }
@@ -240,7 +240,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
     // Assumes that items or item tags generally have the same name as the block equivalent.
     private void copyBlockTags() {
         mirrorBlockTag(Tags.Blocks.STORAGE_BLOCKS.location());
-        mirrorBlockTag(new ResourceLocation("c:storage_blocks/certus_quartz"));
+        mirrorBlockTag(ResourceLocation.parse("c:storage_blocks/certus_quartz"));
     }
 
     private void mirrorBlockTag(ResourceLocation tagName) {

@@ -247,6 +247,6 @@ public final class AEItemIds {
     public static final ResourceLocation QUANTUM_ENTANGLED_SINGULARITY = id("quantum_entangled_singularity");
 
     private static ResourceLocation id(String id) {
-        return new ResourceLocation(AEConstants.MOD_ID, id);
+        return ResourceLocation.fromNamespaceAndPath(AEConstants.MOD_ID, id);
     }
 }

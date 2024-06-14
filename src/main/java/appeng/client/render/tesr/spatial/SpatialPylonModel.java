@@ -51,7 +51,7 @@ public class SpatialPylonModel implements BasicUnbakedModel {
 
     private static Material getTexturePath(SpatialPylonTextureType type) {
         return new Material(TextureAtlas.LOCATION_BLOCKS,
-                new ResourceLocation(AppEng.MOD_ID, "block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
+                AppEng.makeId( "block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
     }
 
 }

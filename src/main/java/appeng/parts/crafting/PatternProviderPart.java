@@ -52,21 +52,21 @@ import appeng.util.SettingsFrom;
 
 public class PatternProviderPart extends AEBasePart implements PatternProviderLogicHost {
 
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_BASE = AppEng.makeId(
             "part/pattern_provider_base");
 
     // TODO: unify the following between the 3 interface parts?
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/interface_off"));
+            AppEng.makeId( "part/interface_off"));
 
     @PartModels
     public static final PartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/interface_on"));
+            AppEng.makeId( "part/interface_on"));
 
     @PartModels
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/interface_has_channel"));
+            AppEng.makeId( "part/interface_has_channel"));
 
     protected final PatternProviderLogic logic = createLogic();
 

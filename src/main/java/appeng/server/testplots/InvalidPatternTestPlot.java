@@ -26,7 +26,7 @@ public class InvalidPatternTestPlot {
             pattern.set(AEComponents.ENCODED_CRAFTING_PATTERN, new EncodedCraftingPattern(
                     encodedPattern.inputs(),
                     encodedPattern.result(),
-                    new ResourceLocation("invalid"),
+                    ResourceLocation.parse("invalid"),
                     encodedPattern.canSubstitute(),
                     encodedPattern.canSubstituteFluids()));
             chest.getInternalInventory().addItems(pattern);

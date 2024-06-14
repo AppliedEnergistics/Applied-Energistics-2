@@ -39,10 +39,10 @@ import appeng.client.render.BasicUnbakedModel;
  */
 public class MeteoriteCompassModel implements BasicUnbakedModel {
 
-    private static final ResourceLocation MODEL_BASE = new ResourceLocation(
+    private static final ResourceLocation MODEL_BASE = ResourceLocation.parse(
             "ae2:item/meteorite_compass_base");
 
-    private static final ResourceLocation MODEL_POINTER = new ResourceLocation(
+    private static final ResourceLocation MODEL_POINTER = ResourceLocation.parse(
             "ae2:item/meteorite_compass_pointer");
 
     @Nullable

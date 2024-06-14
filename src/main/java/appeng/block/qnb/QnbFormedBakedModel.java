@@ -51,18 +51,18 @@ import appeng.core.definitions.AEBlocks;
 class QnbFormedBakedModel implements IDynamicBakedModel {
 
     private static final Material TEXTURE_LINK = new Material(TextureAtlas.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "block/quantum_link"));
+            AppEng.makeId( "block/quantum_link"));
     private static final Material TEXTURE_RING = new Material(TextureAtlas.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring"));
+            AppEng.makeId( "block/quantum_ring"));
     private static final Material TEXTURE_RING_LIGHT = new Material(TextureAtlas.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light"));
+            AppEng.makeId( "block/quantum_ring_light"));
     private static final Material TEXTURE_RING_LIGHT_CORNER = new Material(
             TextureAtlas.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
+            AppEng.makeId( "block/quantum_ring_light_corner"));
     private static final Material TEXTURE_CABLE_GLASS = new Material(TextureAtlas.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "part/cable/glass/transparent"));
+            AppEng.makeId( "part/cable/glass/transparent"));
     private static final Material TEXTURE_COVERED_CABLE = new Material(TextureAtlas.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "part/cable/covered/transparent"));
+            AppEng.makeId( "part/cable/covered/transparent"));
 
     private static final float DEFAULT_RENDER_MIN = 2.0f;
     private static final float DEFAULT_RENDER_MAX = 14.0f;

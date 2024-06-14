@@ -39,7 +39,7 @@ import appeng.parts.PartModel;
 public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink {
 
     @PartModels
-    private static final IPartModel MODELS = new PartModel(new ResourceLocation(AppEng.MOD_ID, "part/energy_acceptor"));
+    private static final IPartModel MODELS = new PartModel(AppEng.makeId( "part/energy_acceptor"));
     private ForgeEnergyAdapter forgeEnergyAdapter;
 
     public EnergyAcceptorPart(IPartItem<?> partItem) {
