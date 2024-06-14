@@ -547,6 +547,7 @@ check.dependsOn tasks.register('validateResources', JavaExec) {
     mainClass = 'ValidateResourceIds'
     workingDir "."
     args "guidebook"
+    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
 }
 
 /**
