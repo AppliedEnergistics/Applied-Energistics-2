@@ -1,11 +1,13 @@
 package appeng.recipes.transform;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 
@@ -14,6 +16,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -80,15 +83,16 @@ public final class TransformLogic {
             }
 
             if (missingIngredients.isEmpty()) {
-                SimpleContainer recipeContainer = new SimpleContainer(selectedEntities.size());
-                int i = 0;
+                var items = new ArrayList<ItemStack>(selectedEntities.size());
                 for (var e : selectedEntities) {
-                    recipeContainer.setItem(i++, e.getItem().split(1));
+                    items.add(e.getItem().split(1));
 
                     if (e.getItem().getCount() <= 0) {
                         e.discard();
                     }
                 }
+                var recipeInput = new TransformRecipeInput(items);
+                var craftResult = recipe.assemble(recipeInput, level.registryAccess());
 
                 var random = level.getRandom();
                 final double x = Math.floor(entity.getX()) + .25d + random.nextDouble() * .5;
@@ -98,8 +102,7 @@ public final class TransformLogic {
                 final double ySpeed = random.nextDouble() * .25 - 0.125;
                 final double zSpeed = random.nextDouble() * .25 - 0.125;
 
-                final ItemEntity newEntity = new ItemEntity(level, x, y, z,
-                        recipe.assemble(recipeContainer, level.registryAccess()));
+                final ItemEntity newEntity = new ItemEntity(level, x, y, z, craftResult);
 
                 newEntity.setDeltaMovement(xSpeed, ySpeed, zSpeed);
                 level.addFreshEntity(newEntity);

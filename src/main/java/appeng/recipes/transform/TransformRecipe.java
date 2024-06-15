@@ -25,7 +25,7 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.init.InitRecipeTypes;
 
-public final class TransformRecipe implements Recipe<RecipeInput> {
+public final class TransformRecipe implements Recipe<TransformRecipeInput> {
     public static final ResourceLocation TYPE_ID = AppEng.makeId("transform");
     public static final RecipeType<TransformRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
 
@@ -76,12 +76,12 @@ public final class TransformRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public boolean matches(RecipeInput container, Level level) {
+    public boolean matches(TransformRecipeInput container, Level level) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(RecipeInput container, HolderLookup.Provider registries) {
+    public ItemStack assemble(TransformRecipeInput container, HolderLookup.Provider registries) {
         ItemStack result = getResultItem(registries).copy();
         if (AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(result) && result.getCount() > 1) {
             QuantumBridgeBlockEntity.assignFrequency(result);

@@ -32,6 +32,7 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -136,13 +137,14 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
         }
 
         Level level = this.getPlayerInventory().player.level();
-        this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, recipeTestContainer, level)
+        var craftInput = recipeTestContainer.asCraftInput();
+        this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftInput, level)
                 .orElse(null);
 
         if (this.currentRecipe == null) {
             this.outputSlot.set(ItemStack.EMPTY);
         } else {
-            this.outputSlot.set(this.currentRecipe.value().assemble(recipeTestContainer, level.registryAccess()));
+            this.outputSlot.set(this.currentRecipe.value().assemble(craftInput, level.registryAccess()));
         }
     }
 
