@@ -196,7 +196,7 @@ public interface RenderContext {
     }
 
     default MultiBufferSource.BufferSource beginBatch() {
-        return MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        return MultiBufferSource.immediate(new ByteBufferBuilder(512));
     }
 
     default void endBatch(MultiBufferSource.BufferSource batch) {

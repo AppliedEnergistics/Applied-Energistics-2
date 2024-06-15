@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.minecraft.core.Registry;
+import net.minecraft.world.item.enchantment.Enchantment;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -253,13 +255,15 @@ public class ItemPickupStrategy implements PickupStrategy {
         }
 
         if (enchantments != null) {
+            var enchantmentRegistry = level.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+
             var efficiencyFactor = 1f;
-            var efficiencyLevel = enchantments.getLevel(Enchantments.EFFICIENCY);
+            var efficiencyLevel = enchantments.getLevel(enchantmentRegistry.getHolderOrThrow(Enchantments.EFFICIENCY));
             if (efficiencyLevel > 0) {
                 // Reduce total energy usage incurred by other enchantments by 15% per Efficiency level.
                 efficiencyFactor *= Math.pow(0.85, efficiencyLevel);
             }
-            var unbreakingLevel = enchantments.getLevel(Enchantments.UNBREAKING);
+            var unbreakingLevel = enchantments.getLevel(enchantmentRegistry.getHolderOrThrow(Enchantments.UNBREAKING));
             if (unbreakingLevel > 0) {
                 // Give plane only a (100 / (level + 1))% chance to use energy.
                 // This is similar to vanilla Unbreaking behaviour for tools.

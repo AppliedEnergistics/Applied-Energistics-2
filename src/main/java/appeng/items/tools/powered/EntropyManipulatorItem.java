@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -230,13 +231,12 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         BlockState smeltedBlockState = null;
         List<ItemStack> smeltedDrops = new ArrayList<>();
 
-        var tempInv = new SimpleContainer(1);
         for (ItemStack i : drops) {
-            tempInv.setItem(0, i);
+            var tempInv = new SingleRecipeInput(i);
             Optional<SmeltingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, tempInv,
                     level).map(RecipeHolder::value);
 
-            if (!recipe.isPresent()) {
+            if (recipe.isEmpty()) {
                 return false;
             }
 

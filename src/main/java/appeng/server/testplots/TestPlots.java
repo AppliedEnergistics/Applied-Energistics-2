@@ -16,6 +16,8 @@ import java.util.function.Consumer;
 
 import com.google.common.collect.Sets;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -224,15 +226,19 @@ public final class TestPlots {
         return plot;
     }
 
+    private static AEItemKey createEnchantedPickaxe(Level level) {
+        var enchantmentRegistry = level.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+
+        var enchantedPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
+        enchantedPickaxe.enchant(enchantmentRegistry.getHolderOrThrow(Enchantments.FORTUNE), 3);
+        return AEItemKey.of(enchantedPickaxe);
+    }
+
     /**
      * A wall of all terminals/monitors in all color combinations.
      */
     @TestPlot("all_terminals")
     public static void allTerminals(PlotBuilder plot) {
-        var enchantedPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
-        enchantedPickaxe.enchant(Enchantments.FORTUNE, 3);
-        var enchantedPickaxeKey = AEItemKey.of(enchantedPickaxe);
-
         plot.creativeEnergyCell("0 -1 0");
 
         plot.cable("[-1,0] [0,8] 0", AEParts.COVERED_DENSE_CABLE);
@@ -240,10 +246,11 @@ public final class TestPlots {
         plot.block("[-1,0] 5 0", AEBlocks.CONTROLLER);
         plot.storageDrive(new BlockPos(0, 5, 1));
         plot.afterGridInitAt("0 5 1", (grid, gridNode) -> {
+            var enchantedPickaxe = createEnchantedPickaxe(gridNode.getLevel());
             var storage = grid.getStorageService().getInventory();
             var src = new BaseActionSource();
             storage.insert(AEItemKey.of(Items.DIAMOND_PICKAXE), 10, Actionable.MODULATE, src);
-            storage.insert(enchantedPickaxeKey, 1234, Actionable.MODULATE, src);
+            storage.insert(enchantedPickaxe, 1234, Actionable.MODULATE, src);
             storage.insert(AEItemKey.of(Items.ACACIA_LOG), Integer.MAX_VALUE, Actionable.MODULATE, src);
         });
 
@@ -269,7 +276,8 @@ public final class TestPlots {
             line.part("3 0 0", Direction.NORTH, AEParts.PATTERN_ENCODING_TERMINAL);
             line.part("4 0 0", Direction.NORTH, AEParts.PATTERN_ACCESS_TERMINAL);
             line.part("5 0 0", Direction.NORTH, AEParts.STORAGE_MONITOR, monitor -> {
-                monitor.setConfiguredItem(enchantedPickaxeKey);
+                var enchantedPickaxe = createEnchantedPickaxe(monitor.getLevel());
+                monitor.setConfiguredItem(enchantedPickaxe);
                 monitor.setLocked(true);
             });
             line.part("6 0 0", Direction.NORTH, AEParts.CONVERSION_MONITOR, monitor -> {
@@ -578,7 +586,7 @@ public final class TestPlots {
         plot.blockState(BlockPos.ZERO, Blocks.DISPENSER.defaultBlockState()
                 .setValue(DispenserBlock.FACING, Direction.SOUTH));
         plot.customizeBlockEntity(BlockPos.ZERO, BlockEntityType.DISPENSER, dispenser -> {
-            dispenser.addItem(createMatterCannon(ammos));
+            dispenser.setItem(0, createMatterCannon(ammos));
         });
         plot.buttonOn(BlockPos.ZERO, Direction.NORTH);
     }

@@ -523,8 +523,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public void addToMainCreativeTab(CreativeModeTab.Output output) {
-        super.addToMainCreativeTab(output);
+    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+        super.addToMainCreativeTab(parameters, output);
 
         output.accept(createFullColorApplicator());
     }

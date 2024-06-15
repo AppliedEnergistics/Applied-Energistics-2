@@ -60,7 +60,7 @@ public class LytWidget extends LytBlock implements InteractiveElement {
                 context.guiGraphics(),
                 mouseDocPos != null ? mouseDocPos.getX() : -100,
                 mouseDocPos != null ? mouseDocPos.getY() : -100,
-                minecraft.getDeltaFrameTime());
+                minecraft.getTimer().getRealtimeDeltaTicks());
     }
 
     private void updateWidgetPosition() {

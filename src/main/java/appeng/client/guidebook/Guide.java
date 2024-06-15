@@ -426,10 +426,10 @@ public final class Guide implements PageCollection {
             this.folder = Objects.requireNonNull(folder, "folder");
 
             // Both folder and default namespace need to be valid resource paths
-            if (!ResourceLocation.isValidResourceLocation(defaultNamespace + ":dummy")) {
+            if (!ResourceLocation.isValidNamespace(defaultNamespace)) {
                 throw new IllegalArgumentException("The default namespace for a guide needs to be a valid namespace");
             }
-            if (!ResourceLocation.isValidResourceLocation("dummy:" + folder)) {
+            if (!ResourceLocation.isValidPath(folder)) {
                 throw new IllegalArgumentException("The folder for a guide needs to be a valid resource location");
             }
 

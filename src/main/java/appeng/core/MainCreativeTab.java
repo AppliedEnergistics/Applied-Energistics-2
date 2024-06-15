@@ -74,9 +74,9 @@ public final class MainCreativeTab {
             // For block items, the block controls the creative tab
             if (item instanceof AEBaseBlockItem baseItem
                     && baseItem.getBlock() instanceof AEBaseBlock baseBlock) {
-                baseBlock.addToMainCreativeTab(output);
+                baseBlock.addToMainCreativeTab(itemDisplayParameters, output);
             } else if (item instanceof AEBaseItem baseItem) {
-                baseItem.addToMainCreativeTab(output);
+                baseItem.addToMainCreativeTab(itemDisplayParameters, output);
             } else {
                 output.accept(itemDef);
             }
