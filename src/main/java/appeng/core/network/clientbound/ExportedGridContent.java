@@ -56,7 +56,7 @@ public record ExportedGridContent(int serialNumber,
         var spServer = Minecraft.getInstance().getSingleplayerServer();
         var connection = Minecraft.getInstance().getConnection();
         if (spServer != null) {
-            saveDir = spServer.getServerDirectory().toPath();
+            saveDir = spServer.getServerDirectory();
             filename = "ae2_grid_";
         } else if (connection != null) {
             filename = "ae2_grid_from_server_";

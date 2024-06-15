@@ -77,7 +77,7 @@ public class UnlitQuadHooks {
     public static BlockElementFace enhanceModelElementFace(BlockElementFace modelElement, JsonElement jsonElement) {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
         if (GsonHelper.getAsBoolean(jsonObject, "unlit", false)) {
-            return new BlockElementFace(modelElement.cullForDirection(), modelElement.tintIndex(), modelElement.texture(), modelElement.setUv(),
+            return new BlockElementFace(modelElement.cullForDirection(), modelElement.tintIndex(), modelElement.texture(), modelElement.uv(),
                     new ExtraFaceData(0xFFFFFFFF, 15, 15, true), new org.apache.commons.lang3.mutable.MutableObject<>());
         }
         return modelElement;
