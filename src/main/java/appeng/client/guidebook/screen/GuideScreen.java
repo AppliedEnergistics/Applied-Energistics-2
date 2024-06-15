@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.Tesselator;
 
 import org.jetbrains.annotations.Nullable;
@@ -791,7 +792,7 @@ public class GuideScreen extends Screen {
         }
 
         var poseStack = guiGraphics.pose();
-        var bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        var bufferSource = MultiBufferSource.immediate(new ByteBufferBuilder(512));
         poseStack.pushPose();
         poseStack.translate(0.0, 0.0, zOffset);
         int currentY = y;

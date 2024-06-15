@@ -20,6 +20,7 @@ package appeng.menu.slot;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.world.item.crafting.CraftingInput;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
@@ -154,7 +155,7 @@ public class AppEngCraftingSlot extends AppEngSlot implements RecipeCraftingHold
 
     // TODO: This is really hacky and NEEDS to be solved with a full menu/gui
     // refactoring.
-    protected NonNullList<ItemStack> getRemainingItems(CraftingContainer ic, Level level) {
+    protected NonNullList<ItemStack> getRemainingItems(CraftingInput ic, Level level) {
         return level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, level)
                 .map(recipe -> recipe.value().getRemainingItems(ic))
                 .orElse(NonNullList.withSize(9, ItemStack.EMPTY));

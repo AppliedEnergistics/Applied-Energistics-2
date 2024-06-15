@@ -48,7 +48,7 @@ public class MeteoriteCompassModel implements BasicUnbakedModel {
     @Nullable
     @Override
     public BakedModel bake(ModelBaker loader, Function<Material, TextureAtlasSprite> textureGetter,
-            ModelState rotationContainer, ResourceLocation modelId) {
+            ModelState rotationContainer) {
         BakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
         BakedModel pointerModel = loader.bake(MODEL_POINTER, rotationContainer);
         return new MeteoriteCompassBakedModel(baseModel, pointerModel);

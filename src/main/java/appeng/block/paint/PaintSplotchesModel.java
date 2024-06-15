@@ -35,7 +35,7 @@ public class PaintSplotchesModel implements UnbakedModel {
     @org.jetbrains.annotations.Nullable
     @Override
     public BakedModel bake(ModelBaker modelBaker, Function<Material, TextureAtlasSprite> textureGetter,
-            ModelState modelState, ResourceLocation resourceLocation) {
+            ModelState modelState) {
         return new PaintSplotchesBakedModel(textureGetter);
     }
 

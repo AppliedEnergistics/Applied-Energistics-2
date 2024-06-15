@@ -27,6 +27,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.world.item.crafting.RecipeInput;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
@@ -60,7 +61,7 @@ import appeng.items.tools.powered.EntropyManipulatorItem;
 /**
  * A special recipe used for the {@link EntropyManipulatorItem}.
  */
-public class EntropyRecipe implements Recipe<Container> {
+public class EntropyRecipe implements Recipe<RecipeInput> {
 
     public static final MapCodec<EntropyRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             EntropyMode.CODEC.fieldOf("mode").forGetter(EntropyRecipe::getMode),
@@ -91,12 +92,12 @@ public class EntropyRecipe implements Recipe<Container> {
     }
 
     @Override
-    public boolean matches(Container inv, Level level) {
+    public boolean matches(RecipeInput inv, Level level) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(Container inv, HolderLookup.Provider registries) {
+    public ItemStack assemble(RecipeInput inv, HolderLookup.Provider registries) {
         return ItemStack.EMPTY;
     }
 

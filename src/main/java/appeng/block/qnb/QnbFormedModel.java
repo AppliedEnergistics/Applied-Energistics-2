@@ -41,7 +41,7 @@ public class QnbFormedModel implements BasicUnbakedModel {
     @org.jetbrains.annotations.Nullable
     @Override
     public BakedModel bake(ModelBaker modelBaker, Function<Material, TextureAtlasSprite> textureGetter,
-            ModelState modelState, ResourceLocation resourceLocation) {
+            ModelState modelState) {
         BakedModel ringModel = modelBaker.bake(MODEL_RING, modelState);
         return new QnbFormedBakedModel(ringModel, textureGetter);
     }

@@ -59,7 +59,7 @@ public class ColorApplicatorModel implements BasicUnbakedModel {
     @Nullable
     @Override
     public BakedModel bake(ModelBaker bakery, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelTransform, ResourceLocation modelId) {
+            ModelState modelTransform) {
         BakedModel baseModel = bakery.bake(MODEL_BASE, modelTransform);
 
         TextureAtlasSprite texDark = spriteGetter.apply(TEXTURE_DARK);

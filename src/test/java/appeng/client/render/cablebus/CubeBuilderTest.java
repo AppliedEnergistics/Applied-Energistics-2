@@ -56,7 +56,7 @@ class CubeBuilderTest {
 
     // Get the order of vertices compared to the original array
     private int[] getVertexOrder(int[] originalData, int[] data) {
-        var vertexInts = DefaultVertexFormat.BLOCK.getIntegerSize();
+        var vertexInts = FaceBakery.VERTEX_INT_SIZE;
         var orgVertexCount = originalData.length / vertexInts;
         var vertexCount = data.length / vertexInts;
         int[] result = new int[vertexCount];

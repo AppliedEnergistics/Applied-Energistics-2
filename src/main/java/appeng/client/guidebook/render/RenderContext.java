@@ -1,5 +1,6 @@
 package appeng.client.guidebook.render;
 
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 
@@ -142,7 +143,7 @@ public interface RenderContext {
     }
 
     default void renderText(String text, ResolvedTextStyle style, float x, float y) {
-        var bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        var bufferSource = MultiBufferSource.immediate(new ByteBufferBuilder(512));
         renderTextInBatch(text, style, x, y, bufferSource);
         bufferSource.endBatch();
     }

@@ -80,7 +80,7 @@ public class InitStackRenderHandlers {
             // We don't scale the normal matrix to avoid lighting issues.
             poseStack.mulPose(new Matrix4f().scale(scale, scale, 0.001f));
             // Rotate the normal matrix a little for nicer lighting.
-            poseStack.last().normal().rotateX(Mth.DEG_TO_RAD * -45f);
+            poseStack.last().setNormal().rotateX(Mth.DEG_TO_RAD * -45f);
 
             Minecraft.getInstance().getItemRenderer().renderStatic(what.getReadOnlyStack(), ItemDisplayContext.GUI,
                     combinedLight, OverlayTexture.NO_OVERLAY, poseStack, buffers, level, 0);
@@ -139,34 +139,34 @@ public class InitStackRenderHandlers {
             var y1 = -scale / 2;
 
             var transform = poseStack.last().pose();
-            buffer.vertex(transform, x0, y1, 0)
-                    .color(color)
-                    .uv(sprite.getU0(), sprite.getV1())
+            buffer.addVertex(transform, x0, y1, 0)
+                    .setColor(color)
+                    .setUv(sprite.getU0(), sprite.getV1())
                     .overlayCoords(OverlayTexture.NO_OVERLAY)
-                    .uv2(combinedLight)
-                    .normal(0, 0, 1)
-                    .endVertex();
-            buffer.vertex(transform, x1, y1, 0)
-                    .color(color)
-                    .uv(sprite.getU1(), sprite.getV1())
+                    .setLight(combinedLight)
+                    .setNormal(0, 0, 1)
+                    ;
+            buffer.addVertex(transform, x1, y1, 0)
+                    .setColor(color)
+                    .setUv(sprite.getU1(), sprite.getV1())
                     .overlayCoords(OverlayTexture.NO_OVERLAY)
-                    .uv2(combinedLight)
-                    .normal(0, 0, 1)
-                    .endVertex();
-            buffer.vertex(transform, x1, y0, 0)
-                    .color(color)
-                    .uv(sprite.getU1(), sprite.getV0())
+                    .setLight(combinedLight)
+                    .setNormal(0, 0, 1)
+                    ;
+            buffer.addVertex(transform, x1, y0, 0)
+                    .setColor(color)
+                    .setUv(sprite.getU1(), sprite.getV0())
                     .overlayCoords(OverlayTexture.NO_OVERLAY)
-                    .uv2(combinedLight)
-                    .normal(0, 0, 1)
-                    .endVertex();
-            buffer.vertex(transform, x0, y0, 0)
-                    .color(color)
-                    .uv(sprite.getU0(), sprite.getV0())
+                    .setLight(combinedLight)
+                    .setNormal(0, 0, 1)
+                    ;
+            buffer.addVertex(transform, x0, y0, 0)
+                    .setColor(color)
+                    .setUv(sprite.getU0(), sprite.getV0())
                     .overlayCoords(OverlayTexture.NO_OVERLAY)
-                    .uv2(combinedLight)
-                    .normal(0, 0, 1)
-                    .endVertex();
+                    .setLight(combinedLight)
+                    .setNormal(0, 0, 1)
+                    ;
             poseStack.popPose();
         }
 

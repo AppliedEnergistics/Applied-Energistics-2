@@ -21,12 +21,10 @@ package appeng.client.gui.style;
 import java.util.Objects;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
@@ -307,24 +305,19 @@ public final class Blitter {
 
         Matrix4f matrix = guiGraphics.pose().last().pose();
 
-        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder.vertex(matrix, x1, y2, 0)
-                .uv(minU, maxV)
-                .color(r, g, b, a)
-                .endVertex();
-        bufferbuilder.vertex(matrix, x2, y2, 0)
-                .uv(maxU, maxV)
-                .color(r, g, b, a)
-                .endVertex();
-        bufferbuilder.vertex(matrix, x2, y1, 0)
-                .uv(maxU, minV)
-                .color(r, g, b, a)
-                .endVertex();
-        bufferbuilder.vertex(matrix, x1, y1, 0)
-                .uv(minU, minV)
-                .color(r, g, b, a)
-                .endVertex();
+        var bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        bufferbuilder.addVertex(matrix, x1, y2, 0)
+                .setUv(minU, maxV)
+                .setColor(r, g, b, a);
+        bufferbuilder.addVertex(matrix, x2, y2, 0)
+                .setUv(maxU, maxV)
+                .setColor(r, g, b, a);
+        bufferbuilder.addVertex(matrix, x2, y1, 0)
+                .setUv(maxU, minV)
+                .setColor(r, g, b, a);
+        bufferbuilder.addVertex(matrix, x1, y1, 0)
+                .setUv(minU, minV)
+                .setColor(r, g, b, a);
 
         if (blending) {
             RenderSystem.enableBlend();
@@ -332,7 +325,7 @@ public final class Blitter {
         } else {
             RenderSystem.disableBlend();
         }
-        BufferUploader.drawWithShader(bufferbuilder.end());
+        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
     }
 
 }

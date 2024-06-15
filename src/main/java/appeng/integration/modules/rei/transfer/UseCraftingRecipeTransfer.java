@@ -87,7 +87,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
                 // Highlight the slots with missing ingredients
                 int color = missingSlots.anyMissing() ? ORANGE_PLUS_BUTTON_COLOR : BLUE_PLUS_BUTTON_COLOR;
                 var result = Result.createSuccessful()
-                        .color(color)
+                        .setColor(color)
                         .renderer(createErrorRenderer(missingSlots));
 
                 var tooltip = TransferHelper.createCraftingTooltip(missingSlots, craftMissing, true);

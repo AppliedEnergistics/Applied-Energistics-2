@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.annotations.VisibleForTesting;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.world.item.crafting.CraftingInput;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -307,59 +308,6 @@ public class Platform {
         player.moveTo(blockEntity.getBlockPos().getX() + 0.5, blockEntity.getBlockPos().getY() + 0.5,
                 blockEntity.getBlockPos().getZ() + 0.5,
                 yaw, pitch);
-    }
-
-    public static ItemStack extractItemsByRecipe(IEnergySource energySrc,
-            IActionSource mySrc,
-            MEStorage src,
-            Level level,
-            Recipe<CraftingContainer> r,
-            ItemStack output,
-            CraftingContainer ci,
-            ItemStack providedTemplate,
-            int slot,
-            KeyCounter items,
-            Actionable realForFake,
-            IPartitionList filter) {
-        if (energySrc.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.9) {
-            if (providedTemplate == null) {
-                return ItemStack.EMPTY;
-            }
-
-            var ae_req = AEItemKey.of(providedTemplate);
-
-            if (filter == null || filter.isListed(ae_req)) {
-                var extracted = src.extract(ae_req, 1, realForFake, mySrc);
-                if (extracted > 0) {
-                    energySrc.extractAEPower(1, realForFake, PowerMultiplier.CONFIG);
-                    return ae_req.toStack();
-                }
-            }
-
-            var checkFuzzy = !providedTemplate.getComponents().isEmpty() || providedTemplate.isDamageableItem();
-
-            if (items != null && checkFuzzy) {
-                for (var x : items) {
-                    if (x.getKey() instanceof AEItemKey itemKey) {
-                        if (providedTemplate.getItem() == itemKey.getItem() && !itemKey.matches(output)) {
-                            ci.setItem(slot, itemKey.toStack());
-                            if (r.matches(ci, level)
-                                    && ItemStack.matches(r.assemble(ci, level.registryAccess()), output)) {
-                                if (filter == null || filter.isListed(itemKey)) {
-                                    var ex = src.extract(itemKey, 1, realForFake, mySrc);
-                                    if (ex > 0) {
-                                        energySrc.extractAEPower(1, realForFake, PowerMultiplier.CONFIG);
-                                        return itemKey.toStack();
-                                    }
-                                }
-                            }
-                            ci.setItem(slot, providedTemplate);
-                        }
-                    }
-                }
-            }
-        }
-        return ItemStack.EMPTY;
     }
 
     public static void notifyBlocksOfNeighbors(Level level, BlockPos pos) {

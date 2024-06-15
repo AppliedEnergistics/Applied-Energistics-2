@@ -43,21 +43,21 @@ public class LightningFX extends TextureSheetParticle {
     private static final int STEPS = 5;
     private static final int BRIGHTNESS = 13 << 4;
 
-    private final double[][] precomputedSteps;
-    private final double[] vertices = new double[3];
-    private final double[] verticesWithUV = new double[3];
+    private final float[][] precomputedSteps;
+    private final float[] vertices = new float[3];
+    private final float[] verticesWithUV = new float[3];
     private boolean hasData = false;
 
     private LightningFX(ClientLevel level, double x, double y, double z, double r,
-            double g, double b) {
+                        double g, double b) {
         this(level, x, y, z, r, g, b, 6);
         this.regen();
     }
 
     protected LightningFX(ClientLevel level, double x, double y, double z, double r,
-            double g, double b, int maxAge) {
+                          double g, double b, int maxAge) {
         super(level, x, y, z, r, g, b);
-        this.precomputedSteps = new double[LightningFX.STEPS][3];
+        this.precomputedSteps = new float[LightningFX.STEPS][3];
         this.xd = 0;
         this.yd = 0;
         this.zd = 0;
@@ -65,16 +65,16 @@ public class LightningFX extends TextureSheetParticle {
     }
 
     protected void regen() {
-        double lastDirectionX = (RANDOM_GENERATOR.nextDouble() - 0.5) * 0.9;
-        double lastDirectionY = (RANDOM_GENERATOR.nextDouble() - 0.5) * 0.9;
-        double lastDirectionZ = (RANDOM_GENERATOR.nextDouble() - 0.5) * 0.9;
+        float lastDirectionX = (RANDOM_GENERATOR.nextFloat() - 0.5f) * 0.9f;
+        float lastDirectionY = (RANDOM_GENERATOR.nextFloat() - 0.5f) * 0.9f;
+        float lastDirectionZ = (RANDOM_GENERATOR.nextFloat() - 0.5f) * 0.9f;
         for (int s = 0; s < LightningFX.STEPS; s++) {
             this.precomputedSteps[s][0] = lastDirectionX = (lastDirectionX
-                    + (RANDOM_GENERATOR.nextDouble() - 0.5) * 0.9) / 2.0;
+                    + (RANDOM_GENERATOR.nextFloat() - 0.5f) * 0.9f) / 2.0f;
             this.precomputedSteps[s][1] = lastDirectionY = (lastDirectionY
-                    + (RANDOM_GENERATOR.nextDouble() - 0.5) * 0.9) / 2.0;
+                    + (RANDOM_GENERATOR.nextFloat() - 0.5f) * 0.9f) / 2.0f;
             this.precomputedSteps[s][2] = lastDirectionZ = (lastDirectionZ
-                    + (RANDOM_GENERATOR.nextDouble() - 0.5) * 0.9) / 2.0;
+                    + (RANDOM_GENERATOR.nextFloat() - 0.5f) * 0.9f) / 2.0f;
         }
     }
 
@@ -125,14 +125,14 @@ public class LightningFX extends TextureSheetParticle {
         float u = this.getU0() + (this.getU1() - this.getU0()) / 2;
         float v = this.getV0() + (this.getV1() - this.getV0()) / 2;
 
-        double scale = 0.02;// 0.02F * this.particleScale;
+        float scale = 0.02f;// 0.02F * this.particleScale;
 
-        final double[] a = new double[3];
-        final double[] b = new double[3];
+        final float[] a = new float[3];
+        final float[] b = new float[3];
 
-        double ox = 0;
-        double oy = 0;
-        double oz = 0;
+        float ox = 0;
+        float oy = 0;
+        float oz = 0;
 
         final Player p = Minecraft.getInstance().player;
 
@@ -142,7 +142,7 @@ public class LightningFX extends TextureSheetParticle {
 
         for (int layer = 0; layer < 2; layer++) {
             if (layer == 0) {
-                scale = 0.04;
+                scale = 0.04f;
                 // FIXME offX *= 0.001;
                 // FIXME offY *= 0.001;
                 // FIXME offZ *= 0.001;
@@ -153,7 +153,7 @@ public class LightningFX extends TextureSheetParticle {
                 // FIXME offX = 0;
                 // FIXME offY = 0;
                 // FIXME offZ = 0;
-                scale = 0.02;
+                scale = 0.02f;
                 red = this.rCol * j * 0.9f;
                 green = this.gCol * j * 0.65f;
                 blue = this.bCol * j * 0.85f;
@@ -163,18 +163,18 @@ public class LightningFX extends TextureSheetParticle {
                 this.clear();
 
                 // FIXME removed interpPos here, check if this is correct
-                double x = centerX; // FIXME - offX;
-                double y = centerY; // FIXME - offY;
-                double z = centerZ; // FIXME - offZ;
+                float x = centerX; // FIXME - offX;
+                float y = centerY; // FIXME - offY;
+                float z = centerZ; // FIXME - offZ;
 
                 for (int s = 0; s < LightningFX.STEPS; s++) {
-                    final double xN = x + this.precomputedSteps[s][0];
-                    final double yN = y + this.precomputedSteps[s][1];
-                    final double zN = z + this.precomputedSteps[s][2];
+                    final float xN = x + this.precomputedSteps[s][0];
+                    final float yN = y + this.precomputedSteps[s][1];
+                    final float zN = z + this.precomputedSteps[s][2];
 
-                    final double xD = xN - x;
-                    final double yD = yN - y;
-                    final double zD = zN - z;
+                    final float xD = xN - x;
+                    final float yD = yN - y;
+                    final float zD = zN - z;
 
                     if (cycle == 0) {
                         ox = yD * 0 - 1 * zD;
@@ -192,8 +192,8 @@ public class LightningFX extends TextureSheetParticle {
                         oz = xD * 0 - 1 * yD;
                     }
 
-                    final double ss = Math.sqrt(ox * ox + oy * oy + oz * oz)
-                            / (((double) LightningFX.STEPS - (double) s) / LightningFX.STEPS * scale);
+                    final float ss = Mth.sqrt(ox * ox + oy * oy + oz * oz)
+                            / (((float) LightningFX.STEPS - (float) s) / LightningFX.STEPS * scale);
                     ox /= ss;
                     oy /= ss;
                     oz /= ss;
@@ -220,17 +220,17 @@ public class LightningFX extends TextureSheetParticle {
         this.hasData = false;
     }
 
-    private void draw(float red, float green, float blue, VertexConsumer tess, double[] a, double[] b,
+    private void draw(float red, float green, float blue, VertexConsumer tess, float[] a, float[] b,
             float u, float v) {
         if (this.hasData) {
-            tess.vertex(a[0], a[1], a[2]).uv(u, v).color(red, green, blue, this.alpha)
-                    .uv2(BRIGHTNESS, BRIGHTNESS).endVertex();
-            tess.vertex(this.vertices[0], this.vertices[1], this.vertices[2]).uv(u, v)
-                    .color(red, green, blue, this.alpha).uv2(BRIGHTNESS, BRIGHTNESS).endVertex();
-            tess.vertex(this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2]).uv(u, v)
-                    .color(red, green, blue, this.alpha).uv2(BRIGHTNESS, BRIGHTNESS).endVertex();
-            tess.vertex(b[0], b[1], b[2]).uv(u, v).color(red, green, blue, this.alpha)
-                    .uv2(BRIGHTNESS, BRIGHTNESS).endVertex();
+            tess.addVertex(a[0], a[1], a[2]).setUv(u, v).setColor(red, green, blue, this.alpha)
+                    .setUv2(BRIGHTNESS, BRIGHTNESS);
+            tess.addVertex(this.vertices[0], this.vertices[1], this.vertices[2]).setUv(u, v)
+                    .setColor(red, green, blue, this.alpha).setUv2(BRIGHTNESS, BRIGHTNESS);
+            tess.addVertex(this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2]).setUv(u, v)
+                    .setColor(red, green, blue, this.alpha).setUv2(BRIGHTNESS, BRIGHTNESS);
+            tess.addVertex(b[0], b[1], b[2]).setUv(u, v).setColor(red, green, blue, this.alpha)
+                    .setUv2(BRIGHTNESS, BRIGHTNESS);
         }
         this.hasData = true;
         for (int x = 0; x < 3; x++) {
@@ -239,7 +239,7 @@ public class LightningFX extends TextureSheetParticle {
         }
     }
 
-    protected double[][] getPrecomputedSteps() {
+    protected float[][] getPrecomputedSteps() {
         return this.precomputedSteps;
     }
 
@@ -251,9 +251,10 @@ public class LightningFX extends TextureSheetParticle {
             this.spriteSet = spriteSet;
         }
 
+
         @Override
         public Particle createParticle(SimpleParticleType typeIn, ClientLevel level, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
+                                       double xSpeed, double ySpeed, double zSpeed) {
             LightningFX lightningFX = new LightningFX(level, x, y, z, xSpeed, ySpeed, zSpeed);
             lightningFX.pickSprite(this.spriteSet);
             return lightningFX;

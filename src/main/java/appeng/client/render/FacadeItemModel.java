@@ -42,9 +42,7 @@ public class FacadeItemModel implements BasicUnbakedModel {
     private static final ResourceLocation MODEL_BASE = AppEng.makeId( "item/facade_base");
 
     @Override
-    public BakedModel bake(ModelBaker baker,
-            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-            ResourceLocation modelLocation) {
+    public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform) {
         BakedModel bakedBaseModel = baker.bake(MODEL_BASE, modelTransform);
         FacadeBuilder facadeBuilder = new FacadeBuilder(baker, null);
 

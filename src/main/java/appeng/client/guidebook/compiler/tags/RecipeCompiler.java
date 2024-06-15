@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
+import net.minecraft.world.item.crafting.RecipeInput;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.Container;
@@ -104,7 +105,7 @@ public class RecipeCompiler extends BlockTagCompiler {
     /**
      * Maps a recipe type to a factory that can create a layout block to display it.
      */
-    private record RecipeTypeMapping<T extends Recipe<C>, C extends Container>(
+    private record RecipeTypeMapping<T extends Recipe<C>, C extends RecipeInput>(
             RecipeType<T> recipeType,
             Function<RecipeHolder<T>, LytBlock> factory) {
         @Nullable

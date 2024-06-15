@@ -99,14 +99,14 @@ public class CraftingFx extends TextureSheetParticle {
         float minV = this.getV0();
         float maxV = this.getV1();
         int j = 15728880; // full brightness
-        buffer.vertex(avector3f[0].x(), avector3f[0].y(), avector3f[0].z()).uv(maxU, maxV)
-                .color(this.rCol, this.gCol, this.bCol, alpha).uv2(j).endVertex();
-        buffer.vertex(avector3f[1].x(), avector3f[1].y(), avector3f[1].z()).uv(maxU, minV)
-                .color(this.rCol, this.gCol, this.bCol, alpha).uv2(j).endVertex();
-        buffer.vertex(avector3f[2].x(), avector3f[2].y(), avector3f[2].z()).uv(minU, minV)
-                .color(this.rCol, this.gCol, this.bCol, alpha).uv2(j).endVertex();
-        buffer.vertex(avector3f[3].x(), avector3f[3].y(), avector3f[3].z()).uv(minU, maxV)
-                .color(this.rCol, this.gCol, this.bCol, alpha).uv2(j).endVertex();
+        buffer.addVertex(avector3f[0].x(), avector3f[0].y(), avector3f[0].z()).setUv(maxU, maxV)
+                .setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(j);
+        buffer.addVertex(avector3f[1].x(), avector3f[1].y(), avector3f[1].z()).setUv(maxU, minV)
+                .setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(j);
+        buffer.addVertex(avector3f[2].x(), avector3f[2].y(), avector3f[2].z()).setUv(minU, minV)
+                .setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(j);
+        buffer.addVertex(avector3f[3].x(), avector3f[3].y(), avector3f[3].z()).setUv(minU, maxV)
+                .setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(j);
     }
 
     // https://easings.net/#easeOutCirc

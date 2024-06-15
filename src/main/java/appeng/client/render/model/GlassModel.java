@@ -39,7 +39,7 @@ public class GlassModel implements BasicUnbakedModel {
     @Nullable
     @Override
     public BakedModel bake(ModelBaker loader, Function<Material, TextureAtlasSprite> textureGetter,
-            ModelState rotationContainer, ResourceLocation modelId) {
+            ModelState rotationContainer) {
         return new GlassBakedModel(textureGetter);
     }
 

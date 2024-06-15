@@ -220,30 +220,28 @@ class GlassBakedModel implements IDynamicBakedModel {
         float v1 = Mth.clamp(0 - vOffset, 0, 1);
         float v2 = Mth.clamp(1 - vOffset, 0, 1);
 
-        var result = new MutableObject<BakedQuad>();
-        var builder = new QuadBakingVertexConsumer(result::setValue);
+        var builder = new QuadBakingVertexConsumer();
         builder.setSprite(sprite);
         builder.setDirection(side);
         this.putVertex(builder, normal, c1.x(), c1.y(), c1.z(), sprite, u1, v1);
         this.putVertex(builder, normal, c2.x(), c2.y(), c2.z(), sprite, u1, v2);
         this.putVertex(builder, normal, c3.x(), c3.y(), c3.z(), sprite, u2, v2);
         this.putVertex(builder, normal, c4.x(), c4.y(), c4.z(), sprite, u2, v1);
-        return result.getValue();
+        return builder.bakeQuad();
     }
 
     /*
      * This method is as complicated as it is, because the order in which we push data into the vertexbuffer actually
      * has to be precisely the order in which the vertex elements had been declared in the vertex format.
      */
-    private void putVertex(QuadBakingVertexConsumer builder, Vec3 normal, double x, double y, double z,
+    private void putVertex(QuadBakingVertexConsumer builder, Vec3 normal, float x, float y, float z,
             TextureAtlasSprite sprite, float u, float v) {
-        builder.vertex(x, y, z);
-        builder.color(1.0f, 1.0f, 1.0f, 1.0f);
-        builder.normal((float) normal.x, (float) normal.y, (float) normal.z);
+        builder.addVertex(x, y, z);
+        builder.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        builder.setNormal((float) normal.x, (float) normal.y, (float) normal.z);
         u = sprite.getU(u);
         v = sprite.getV(v);
-        builder.uv(u, v);
-        builder.endVertex();
+        builder.setUv(u, v);
     }
 
     @Override

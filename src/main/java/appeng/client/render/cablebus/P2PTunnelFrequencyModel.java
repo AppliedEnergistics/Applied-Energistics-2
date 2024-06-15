@@ -39,7 +39,7 @@ public class P2PTunnelFrequencyModel implements BasicUnbakedModel {
     @org.jetbrains.annotations.Nullable
     @Override
     public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> textureGetter,
-            ModelState modelState, ResourceLocation resourceLocation) {
+            ModelState modelState) {
         final TextureAtlasSprite texture = textureGetter.apply(TEXTURE);
         return new P2PTunnelFrequencyBakedModel(texture);
     }

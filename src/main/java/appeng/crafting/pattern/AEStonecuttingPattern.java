@@ -25,6 +25,7 @@ import java.util.Map;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.world.item.crafting.RecipeInput;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
@@ -231,7 +232,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     }
 
     @Override
-    public ItemStack assemble(Container container, Level level) {
+    public ItemStack assemble(RecipeInput container, Level level) {
         // Jiggle the container around
         var testContainer = new SimpleContainer(2);
         testContainer.setItem(0, container.getItem(CRAFTING_GRID_SLOT));
@@ -262,7 +263,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingContainer container) {
+    public NonNullList<ItemStack> getRemainingItems(RecipeInput container) {
         // Stonecutter does not support remainders
         return NonNullList.withSize(container.getContainerSize(), ItemStack.EMPTY);
     }

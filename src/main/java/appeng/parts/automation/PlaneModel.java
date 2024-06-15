@@ -47,8 +47,7 @@ public class PlaneModel implements BasicUnbakedModel {
 
     @Override
     public BakedModel bake(ModelBaker bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-            ResourceLocation modelLocation) {
+            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform) {
         TextureAtlasSprite frontSprite = spriteGetter.apply(this.frontTexture);
         TextureAtlasSprite sidesSprite = spriteGetter.apply(this.sidesTexture);
         TextureAtlasSprite backSprite = spriteGetter.apply(this.backTexture);
