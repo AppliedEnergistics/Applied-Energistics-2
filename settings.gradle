@@ -12,7 +12,7 @@ pluginManagement {
         id 'com.diffplug.spotless' version '6.25.0'
         id 'com.github.johnrengelman.shadow' version '8.1.1'
         id 'de.undercouch.download' version '5.4.0'
-        id 'net.neoforged.moddev' version '0.1.74'
+        id 'net.neoforged.moddev' version '0.1.85'
     }
 }
 
