@@ -18,6 +18,9 @@
 
 package appeng.items.tools.quartz;
 
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,8 +43,6 @@ import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
-    private final RandomSource random = RandomSource.create();
-
     public QuartzCuttingKnifeItem(Properties props, QuartzToolType type) {
         super(props);
     }
@@ -70,7 +71,14 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
     @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
         var broken = new MutableBoolean(false);
-        itemStack.hurtAndBreak(1, random, null, broken::setTrue);
+        if (CommonHooks.getCraftingPlayer() instanceof ServerPlayer serverPlayer) {
+            itemStack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, ignored -> broken.setTrue());
+        } else {
+            var currentServer = ServerLifecycleHooks.getCurrentServer();
+            if (currentServer != null) {
+                itemStack.hurtAndBreak(1, currentServer.overworld(), null, ignored -> broken.setTrue());
+            }
+        }
         return broken.getValue() ? ItemStack.EMPTY : itemStack;
     }
 

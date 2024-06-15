@@ -19,6 +19,7 @@
 package appeng.menu.implementations;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -123,12 +124,11 @@ public class QuartzKnifeMenu extends AEBaseMenu {
         }
 
         private void makePlate() {
-            if (isServerSide() && !this.getInventory().extractItem(0, 1, false).isEmpty()) {
+            if (getPlayer() instanceof ServerPlayer serverPlayer && !this.getInventory().extractItem(0, 1, false).isEmpty()) {
                 final ItemStack item = itemMenuHost.getItemStack();
                 final ItemStack before = item.copy();
                 Inventory playerInv = QuartzKnifeMenu.this.getPlayerInventory();
-                var player = getPlayer();
-                item.hurtAndBreak(1, player.level().getRandom(), player, () -> {
+                item.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, ignored -> {
                     if (itemMenuHost.getPlayerInventorySlot() != null) {
                         playerInv.setItem(itemMenuHost.getPlayerInventorySlot(), ItemStack.EMPTY);
                     }
