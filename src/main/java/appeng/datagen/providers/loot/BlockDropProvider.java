@@ -30,8 +30,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
@@ -43,12 +42,10 @@ import net.minecraft.world.level.storage.loot.entries.TagEntry;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.ApplyExplosionDecay;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import org.jetbrains.annotations.NotNull;
 
-import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -77,17 +74,21 @@ public class BlockDropProvider extends BlockLootSubProvider {
     }
 
     public BlockDropProvider(HolderLookup.Provider providers) {
-        super(Set.of(), FeatureFlagSet.of(), providers);
+        super(Set.of(), FeatureFlags.REGISTRY.allFlags(), providers);
+    }
+
+    @Override
+    protected Iterable<Block> getKnownBlocks() {
+        return BuiltInRegistries.BLOCK
+                .stream()
+                .filter(entry -> entry.getLootTable().location().getNamespace().equals(AppEng.MOD_ID))
+                .toList();
     }
 
     @Override
     public void generate() {
-        for (var entry : BuiltInRegistries.BLOCK.entrySet()) {
-            LootTable.Builder builder;
-            if (entry.getKey().location().getNamespace().equals(AppEng.MOD_ID)) {
-                builder = overrides.getOrDefault(entry.getValue(), this::defaultBuilder).apply(entry.getValue());
-                add(entry.getValue(), builder);
-            }
+        for (var block : getKnownBlocks()) {
+            add(block, overrides.getOrDefault(block, this::defaultBuilder).apply(block));
         }
     }
 
@@ -127,16 +128,7 @@ public class BlockDropProvider extends BlockLootSubProvider {
                                 .add(LootItem.lootTableItem(AEItems.TABLET)));
     }
 
-    private Path getPath(Path root, ResourceLocation id) {
-        return root.resolve("data/" + id.getNamespace() + "/loot_tables/blocks/" + id.getPath() + ".json");
-    }
-
-    public Holder<LootTable> finishBuilding(LootTable.Builder builder) {
-        return Holder.direct(builder.setParamSet(LootContextParamSets.BLOCK).build());
-    }
-
     protected final Holder<Enchantment> getEnchantment(ResourceKey<Enchantment> key) {
         return registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(key);
     }
-
 }

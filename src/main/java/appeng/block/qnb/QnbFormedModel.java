@@ -36,7 +36,7 @@ import appeng.core.AppEng;
 
 public class QnbFormedModel implements BasicUnbakedModel {
 
-    private static final ResourceLocation MODEL_RING = AppEng.makeId( "block/qnb/ring");
+    private static final ResourceLocation MODEL_RING = AppEng.makeId("block/qnb/ring");
 
     @org.jetbrains.annotations.Nullable
     @Override

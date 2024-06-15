@@ -642,7 +642,8 @@ public final class Guide implements PageCollection {
 
     private void registerReloadListener(IEventBus modEventBus) {
         modEventBus.addListener((RegisterClientReloadListenersEvent evt) -> {
-            evt.registerReloadListener(new ReloadListener(ResourceLocation.fromNamespaceAndPath(defaultNamespace, folder)));
+            evt.registerReloadListener(
+                    new ReloadListener(ResourceLocation.fromNamespaceAndPath(defaultNamespace, folder)));
         });
     }
 }

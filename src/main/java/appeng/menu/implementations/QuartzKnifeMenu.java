@@ -124,7 +124,8 @@ public class QuartzKnifeMenu extends AEBaseMenu {
         }
 
         private void makePlate() {
-            if (getPlayer() instanceof ServerPlayer serverPlayer && !this.getInventory().extractItem(0, 1, false).isEmpty()) {
+            if (getPlayer() instanceof ServerPlayer serverPlayer
+                    && !this.getInventory().extractItem(0, 1, false).isEmpty()) {
                 final ItemStack item = itemMenuHost.getItemStack();
                 final ItemStack before = item.copy();
                 Inventory playerInv = QuartzKnifeMenu.this.getPlayerInventory();

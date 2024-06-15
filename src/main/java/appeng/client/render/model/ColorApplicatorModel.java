@@ -45,11 +45,11 @@ public class ColorApplicatorModel implements BasicUnbakedModel {
             "item/color_applicator_colored");
 
     private static final Material TEXTURE_DARK = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId( "item/color_applicator_tip_dark"));
+            AppEng.makeId("item/color_applicator_tip_dark"));
     private static final Material TEXTURE_MEDIUM = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId( "item/color_applicator_tip_medium"));
+            AppEng.makeId("item/color_applicator_tip_medium"));
     private static final Material TEXTURE_BRIGHT = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId( "item/color_applicator_tip_bright"));
+            AppEng.makeId("item/color_applicator_tip_bright"));
 
     @Override
     public Collection<ResourceLocation> getDependencies() {

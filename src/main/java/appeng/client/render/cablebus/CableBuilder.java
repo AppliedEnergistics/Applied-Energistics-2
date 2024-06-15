@@ -29,7 +29,6 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
@@ -87,7 +86,7 @@ class CableBuilder {
         };
 
         return new Material(TextureAtlas.LOCATION_BLOCKS,
-                AppEng.makeId( textureFolder + color.name().toLowerCase(Locale.ROOT)));
+                AppEng.makeId(textureFolder + color.name().toLowerCase(Locale.ROOT)));
     }
 
     /**

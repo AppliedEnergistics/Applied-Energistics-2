@@ -2,7 +2,6 @@ package appeng.client.guidebook.render;
 
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

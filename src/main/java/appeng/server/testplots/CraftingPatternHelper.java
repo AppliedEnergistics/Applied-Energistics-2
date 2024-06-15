@@ -1,17 +1,14 @@
 package appeng.server.testplots;
 
+import java.util.Collections;
+
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.PatternDetailsHelper;
-import appeng.menu.AutoCraftingMenu;
-
-import java.util.Arrays;
-import java.util.Collections;
 
 public class CraftingPatternHelper {
     public static ItemStack encodeShapelessCraftingRecipe(Level level, ItemStack... inputs) {

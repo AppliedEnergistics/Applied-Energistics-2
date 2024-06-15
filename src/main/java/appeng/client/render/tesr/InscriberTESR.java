@@ -33,7 +33,6 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -56,7 +55,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
     private static final Material TEXTURE_INSIDE = new Material(InventoryMenu.BLOCK_ATLAS,
-            AppEng.makeId( "block/inscriber_inside"));
+            AppEng.makeId("block/inscriber_inside"));
 
     public InscriberTESR(BlockEntityRendererProvider.Context context) {
     }

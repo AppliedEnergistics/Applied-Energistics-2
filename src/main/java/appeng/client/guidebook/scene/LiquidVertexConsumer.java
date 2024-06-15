@@ -4,10 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.SectionPos;
-import org.joml.Vector3f;
 
 /**
  * The only purpose of this vertex consumer proxy is to transform vertex positions emitted by the
@@ -59,8 +59,10 @@ public class LiquidVertexConsumer implements VertexConsumer {
     }
 
     @Override
-    public void addVertex(float p_351049_, float p_350528_, float p_351018_, int p_350427_, float p_350508_, float p_350864_, int p_350846_, int p_350731_, float p_350784_, float p_351051_, float p_350759_) {
-        delegate.addVertex(p_351049_, p_350528_, p_351018_, p_350427_, p_350508_, p_350864_, p_350846_, p_350731_, p_350784_, p_351051_, p_350759_);
+    public void addVertex(float p_351049_, float p_350528_, float p_351018_, int p_350427_, float p_350508_,
+            float p_350864_, int p_350846_, int p_350731_, float p_350784_, float p_351051_, float p_350759_) {
+        delegate.addVertex(p_351049_, p_350528_, p_351018_, p_350427_, p_350508_, p_350864_, p_350846_, p_350731_,
+                p_350784_, p_351051_, p_350759_);
     }
 
     @Override
@@ -89,13 +91,16 @@ public class LiquidVertexConsumer implements VertexConsumer {
     }
 
     @Override
-    public void putBulkData(PoseStack.Pose pPose, BakedQuad pQuad, float pRed, float pGreen, float pBlue, float pAlpha, int pPackedLight, int pPackedOverlay) {
+    public void putBulkData(PoseStack.Pose pPose, BakedQuad pQuad, float pRed, float pGreen, float pBlue, float pAlpha,
+            int pPackedLight, int pPackedOverlay) {
         delegate.putBulkData(pPose, pQuad, pRed, pGreen, pBlue, pAlpha, pPackedLight, pPackedOverlay);
     }
 
     @Override
-    public void putBulkData(PoseStack.Pose pPose, BakedQuad pQuad, float[] pBrightness, float pRed, float pGreen, float pBlue, float pAlpha, int[] pLightmap, int pPackedOverlay, boolean p_331268_) {
-        delegate.putBulkData(pPose, pQuad, pBrightness, pRed, pGreen, pBlue, pAlpha, pLightmap, pPackedOverlay, p_331268_);
+    public void putBulkData(PoseStack.Pose pPose, BakedQuad pQuad, float[] pBrightness, float pRed, float pGreen,
+            float pBlue, float pAlpha, int[] pLightmap, int pPackedOverlay, boolean p_331268_) {
+        delegate.putBulkData(pPose, pQuad, pBrightness, pRed, pGreen, pBlue, pAlpha, pLightmap, pPackedOverlay,
+                p_331268_);
     }
 
     @Override

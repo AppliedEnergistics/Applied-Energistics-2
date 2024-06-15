@@ -6,7 +6,6 @@ import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
@@ -28,9 +27,9 @@ import appeng.thirdparty.fabric.SpriteFinder;
  * @param indexBuffer Can be null if sequential indices are to be used.
  */
 record Mesh(MeshData.DrawState drawState,
-            ByteBuffer vertexBuffer,
-            @Nullable ByteBuffer indexBuffer,
-            RenderType renderType) {
+        ByteBuffer vertexBuffer,
+        @Nullable ByteBuffer indexBuffer,
+        RenderType renderType) {
 
     /**
      * Checks if the mesh contains any texture atlases that are animated.

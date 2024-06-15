@@ -47,8 +47,8 @@ public class PlaneModels {
     private final IPartModel modelHasChannel;
 
     public PlaneModels(String planeOffLocation, String planeOnLocation) {
-        ResourceLocation planeOff = AppEng.makeId( planeOffLocation);
-        ResourceLocation planeOn = AppEng.makeId( planeOnLocation);
+        ResourceLocation planeOff = AppEng.makeId(planeOffLocation);
+        ResourceLocation planeOn = AppEng.makeId(planeOnLocation);
 
         this.modelOff = new PartModel(MODEL_CHASSIS_OFF, planeOff);
         this.modelOn = new PartModel(MODEL_CHASSIS_ON, planeOff);

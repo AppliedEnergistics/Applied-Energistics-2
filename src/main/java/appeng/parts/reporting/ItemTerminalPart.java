@@ -29,9 +29,9 @@ import appeng.parts.PartModel;
 public class ItemTerminalPart extends AbstractTerminalPart {
 
     @PartModels
-    public static final ResourceLocation MODEL_OFF = AppEng.makeId( "part/terminal_off");
+    public static final ResourceLocation MODEL_OFF = AppEng.makeId("part/terminal_off");
     @PartModels
-    public static final ResourceLocation MODEL_ON = AppEng.makeId( "part/terminal_on");
+    public static final ResourceLocation MODEL_ON = AppEng.makeId("part/terminal_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);

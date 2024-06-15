@@ -38,7 +38,7 @@ public class StorageMonitorPart extends AbstractMonitorPart {
     public static final ResourceLocation MODEL_OFF = AppEng.makeId(
             "part/storage_monitor_off");
     @PartModels
-    public static final ResourceLocation MODEL_ON = AppEng.makeId( "part/storage_monitor_on");
+    public static final ResourceLocation MODEL_ON = AppEng.makeId("part/storage_monitor_on");
     @PartModels
     public static final ResourceLocation MODEL_LOCKED_OFF = AppEng.makeId(
             "part/storage_monitor_locked_off");

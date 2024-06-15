@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectSortedMaps;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectSortedMaps;
 
 /**
  * A buffer source we pass into the standard renderer to capture all rendered 3D data in buffers suitable for export.

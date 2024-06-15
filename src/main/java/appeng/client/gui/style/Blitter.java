@@ -25,6 +25,7 @@ import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
@@ -100,7 +101,7 @@ public final class Blitter {
      * Creates a blitter where the source rectangle is in relation to a texture of the given size.
      */
     public static Blitter texture(String file, int referenceWidth, int referenceHeight) {
-        return new Blitter(AppEng.makeId( "textures/" + file), referenceWidth, referenceHeight);
+        return new Blitter(AppEng.makeId("textures/" + file), referenceWidth, referenceHeight);
     }
 
     /**
@@ -305,7 +306,8 @@ public final class Blitter {
 
         Matrix4f matrix = guiGraphics.pose().last().pose();
 
-        var bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        var bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS,
+                DefaultVertexFormat.POSITION_TEX_COLOR);
         bufferbuilder.addVertex(matrix, x1, y2, 0)
                 .setUv(minU, maxV)
                 .setColor(r, g, b, a);

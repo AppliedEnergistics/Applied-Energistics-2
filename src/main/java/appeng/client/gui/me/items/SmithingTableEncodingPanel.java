@@ -9,6 +9,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmithingRecipeInput;
 
 import appeng.api.config.ActionItems;
 import appeng.client.Point;
@@ -20,7 +21,6 @@ import appeng.client.gui.widgets.ToggleButton;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.menu.SlotSemantics;
-import net.minecraft.world.item.crafting.SmithingRecipeInput;
 
 public class SmithingTableEncodingPanel extends EncodingModePanel {
     private static final Blitter BG = Blitter.texture("guis/pattern_modes.png").src(128, 70, 124, 66);
@@ -80,10 +80,9 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
         this.substitutionsBtn.setState(this.menu.substitute);
 
         var recipeInput = new SmithingRecipeInput(
-            menu.getSmithingTableTemplateSlot().getItem(),
-            menu.getSmithingTableBaseSlot().getItem(),
-            menu.getSmithingTableAdditionSlot().getItem()
-        );
+                menu.getSmithingTableTemplateSlot().getItem(),
+                menu.getSmithingTableBaseSlot().getItem(),
+                menu.getSmithingTableAdditionSlot().getItem());
 
         var level = menu.getPlayer().level();
         var recipe = level.getRecipeManager()

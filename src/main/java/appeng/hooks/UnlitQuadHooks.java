@@ -20,26 +20,14 @@ package appeng.hooks;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
-import com.mojang.blaze3d.vertex.VertexFormatElement.Type;
 
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockElement;
 import net.minecraft.client.renderer.block.model.BlockElementFace;
-import net.minecraft.client.renderer.block.model.BlockFaceUV;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.neoforged.neoforge.client.model.ExtraFaceData;
 
 import appeng.core.AppEng;
-import net.neoforged.neoforge.client.model.ExtraFaceData;
-import org.apache.commons.lang3.mutable.MutableObject;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Implementation details of allowing quads to be defined as "unlit" in JSON models by specifying an "unlit" boolean
@@ -77,8 +65,10 @@ public class UnlitQuadHooks {
     public static BlockElementFace enhanceModelElementFace(BlockElementFace modelElement, JsonElement jsonElement) {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
         if (GsonHelper.getAsBoolean(jsonObject, "unlit", false)) {
-            return new BlockElementFace(modelElement.cullForDirection(), modelElement.tintIndex(), modelElement.texture(), modelElement.uv(),
-                    new ExtraFaceData(0xFFFFFFFF, 15, 15, true), new org.apache.commons.lang3.mutable.MutableObject<>());
+            return new BlockElementFace(modelElement.cullForDirection(), modelElement.tintIndex(),
+                    modelElement.texture(), modelElement.uv(),
+                    new ExtraFaceData(0xFFFFFFFF, 15, 15, true),
+                    new org.apache.commons.lang3.mutable.MutableObject<>());
         }
         return modelElement;
     }

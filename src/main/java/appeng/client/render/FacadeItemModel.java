@@ -39,10 +39,11 @@ import appeng.core.AppEng;
 public class FacadeItemModel implements BasicUnbakedModel {
 
     // We use this to get the default item transforms and make our lives easier
-    private static final ResourceLocation MODEL_BASE = AppEng.makeId( "item/facade_base");
+    private static final ResourceLocation MODEL_BASE = AppEng.makeId("item/facade_base");
 
     @Override
-    public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform) {
+    public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
+            ModelState modelTransform) {
         BakedModel bakedBaseModel = baker.bake(MODEL_BASE, modelTransform);
         FacadeBuilder facadeBuilder = new FacadeBuilder(baker, null);
 

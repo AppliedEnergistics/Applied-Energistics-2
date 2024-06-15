@@ -27,7 +27,6 @@ import java.util.stream.IntStream;
 
 import com.google.common.base.Strings;
 
-import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;

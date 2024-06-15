@@ -24,22 +24,17 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SmithingRecipe;
+import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 import net.minecraft.world.level.Level;
@@ -101,8 +96,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         var testFrame = new SmithingRecipeInput(
                 template.toStack(),
                 base.toStack(),
-                addition.toStack()
-        );
+                addition.toStack());
 
         if (!this.recipe.matches(testFrame, level)) {
             throw new IllegalStateException("The recipe " + recipeId + " no longer matches the encoded input.");
@@ -188,8 +182,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         var testFrame = new SmithingRecipeInput(
                 container.getItem(TEMPLATE_CRAFTING_GRID_SLOT),
                 container.getItem(BASE_CRAFTING_GRID_SLOT),
-                container.getItem(ADDITION_CRAFTING_GRID_SLOT)
-        );
+                container.getItem(ADDITION_CRAFTING_GRID_SLOT));
 
         if (recipe.matches(testFrame, level)) {
             return recipe.assemble(testFrame, level.registryAccess());
@@ -219,18 +212,15 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
             case TEMPLATE_CRAFTING_GRID_SLOT -> new SmithingRecipeInput(
                     key.toStack(),
                     base.toStack(),
-                    addition.toStack()
-            );
+                    addition.toStack());
             case BASE_CRAFTING_GRID_SLOT -> new SmithingRecipeInput(
                     template.toStack(),
                     key.toStack(),
-                    addition.toStack()
-            );
+                    addition.toStack());
             case ADDITION_CRAFTING_GRID_SLOT -> new SmithingRecipeInput(
                     template.toStack(),
                     base.toStack(),
-                    key.toStack()
-            );
+                    key.toStack());
             default -> null;
         };
         if (testInput == null) {
@@ -238,7 +228,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         }
 
         return recipe.matches(testInput, level)
-               && ItemStack.matches(output, recipe.assemble(testInput, level.registryAccess()));
+                && ItemStack.matches(output, recipe.assemble(testInput, level.registryAccess()));
     }
 
     @Override

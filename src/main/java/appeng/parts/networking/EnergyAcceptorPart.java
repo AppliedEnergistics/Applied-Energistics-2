@@ -18,7 +18,6 @@
 
 package appeng.parts.networking;
 
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import appeng.api.config.AccessRestriction;
@@ -39,7 +38,7 @@ import appeng.parts.PartModel;
 public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink {
 
     @PartModels
-    private static final IPartModel MODELS = new PartModel(AppEng.makeId( "part/energy_acceptor"));
+    private static final IPartModel MODELS = new PartModel(AppEng.makeId("part/energy_acceptor"));
     private ForgeEnergyAdapter forgeEnergyAdapter;
 
     public EnergyAcceptorPart(IPartItem<?> partItem) {

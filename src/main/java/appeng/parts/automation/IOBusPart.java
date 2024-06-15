@@ -65,16 +65,16 @@ import appeng.util.prioritylist.IPartitionList;
 
 public abstract class IOBusPart extends UpgradeablePart implements IGridTickable, IConfigInvHost, ISubMenuHost {
 
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId( "part/import_bus_base");
+    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/import_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            AppEng.makeId( "part/import_bus_off"));
+            AppEng.makeId("part/import_bus_off"));
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            AppEng.makeId( "part/import_bus_on"));
+            AppEng.makeId("part/import_bus_on"));
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            AppEng.makeId( "part/import_bus_has_channel"));
+            AppEng.makeId("part/import_bus_has_channel"));
 
     private final ConfigInventory config;
     // Filter derived from the config

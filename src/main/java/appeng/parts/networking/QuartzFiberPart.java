@@ -26,7 +26,6 @@ import java.util.Objects;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -57,7 +56,7 @@ import appeng.parts.PartModel;
 public class QuartzFiberPart extends AEBasePart {
 
     @PartModels
-    private static final IPartModel MODELS = new PartModel(AppEng.makeId( "part/quartz_fiber"));
+    private static final IPartModel MODELS = new PartModel(AppEng.makeId("part/quartz_fiber"));
 
     private final IManagedGridNode outerNode;
 

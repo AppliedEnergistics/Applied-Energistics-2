@@ -38,7 +38,7 @@ import appeng.items.parts.PartModels;
 public abstract class AbstractPanelPart extends AbstractReportingPart {
 
     @PartModels
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId( "part/monitor_base");
+    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/monitor_base");
 
     public AbstractPanelPart(IPartItem<?> partItem) {
         super(partItem, false);

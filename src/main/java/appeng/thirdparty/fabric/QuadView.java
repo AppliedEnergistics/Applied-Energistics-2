@@ -15,9 +15,6 @@ package appeng.thirdparty.fabric;
  * limitations under the License.
  */
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-
-import net.minecraft.client.renderer.block.model.FaceBakery;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
@@ -25,6 +22,7 @@ import org.joml.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.FaceBakery;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;

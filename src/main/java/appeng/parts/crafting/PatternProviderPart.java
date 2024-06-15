@@ -58,15 +58,15 @@ public class PatternProviderPart extends AEBasePart implements PatternProviderLo
     // TODO: unify the following between the 3 interface parts?
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            AppEng.makeId( "part/interface_off"));
+            AppEng.makeId("part/interface_off"));
 
     @PartModels
     public static final PartModel MODELS_ON = new PartModel(MODEL_BASE,
-            AppEng.makeId( "part/interface_on"));
+            AppEng.makeId("part/interface_on"));
 
     @PartModels
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            AppEng.makeId( "part/interface_has_channel"));
+            AppEng.makeId("part/interface_has_channel"));
 
     protected final PatternProviderLogic logic = createLogic();
 

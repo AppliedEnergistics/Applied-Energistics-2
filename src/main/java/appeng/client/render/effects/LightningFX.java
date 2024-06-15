@@ -49,13 +49,13 @@ public class LightningFX extends TextureSheetParticle {
     private boolean hasData = false;
 
     private LightningFX(ClientLevel level, double x, double y, double z, double r,
-                        double g, double b) {
+            double g, double b) {
         this(level, x, y, z, r, g, b, 6);
         this.regen();
     }
 
     protected LightningFX(ClientLevel level, double x, double y, double z, double r,
-                          double g, double b, int maxAge) {
+            double g, double b, int maxAge) {
         super(level, x, y, z, r, g, b);
         this.precomputedSteps = new float[LightningFX.STEPS][3];
         this.xd = 0;
@@ -251,10 +251,9 @@ public class LightningFX extends TextureSheetParticle {
             this.spriteSet = spriteSet;
         }
 
-
         @Override
         public Particle createParticle(SimpleParticleType typeIn, ClientLevel level, double x, double y, double z,
-                                       double xSpeed, double ySpeed, double zSpeed) {
+                double xSpeed, double ySpeed, double zSpeed) {
             LightningFX lightningFX = new LightningFX(level, x, y, z, xSpeed, ySpeed, zSpeed);
             lightningFX.pickSprite(this.spriteSet);
             return lightningFX;

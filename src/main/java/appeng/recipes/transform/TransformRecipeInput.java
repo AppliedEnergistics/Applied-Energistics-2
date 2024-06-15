@@ -1,9 +1,9 @@
 package appeng.recipes.transform;
 
+import java.util.List;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
-
-import java.util.List;
 
 public record TransformRecipeInput(List<ItemStack> items) implements RecipeInput {
     @Override

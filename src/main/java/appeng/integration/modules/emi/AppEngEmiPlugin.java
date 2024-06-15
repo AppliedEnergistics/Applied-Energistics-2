@@ -7,7 +7,6 @@ import java.util.function.Function;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -176,8 +175,8 @@ public class AppEngEmiPlugin implements EmiPlugin {
     }
 
     private static <C extends RecipeInput, T extends Recipe<C>> void adaptRecipeType(EmiRegistry registry,
-                                                                                     RecipeType<T> recipeType,
-                                                                                     Function<RecipeHolder<T>, ? extends EmiRecipe> adapter) {
+            RecipeType<T> recipeType,
+            Function<RecipeHolder<T>, ? extends EmiRecipe> adapter) {
         registry.getRecipeManager().getAllRecipesFor(recipeType)
                 .stream()
                 .map(adapter)

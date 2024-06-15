@@ -95,19 +95,19 @@ import appeng.util.prioritylist.IPartitionList;
 public class StorageBusPart extends UpgradeablePart
         implements IGridTickable, IStorageProvider, IPriorityHost, IConfigInvHost {
 
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId( "part/storage_bus_base");
+    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/storage_bus_base");
 
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            AppEng.makeId( "part/storage_bus_off"));
+            AppEng.makeId("part/storage_bus_off"));
 
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            AppEng.makeId( "part/storage_bus_on"));
+            AppEng.makeId("part/storage_bus_on"));
 
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            AppEng.makeId( "part/storage_bus_has_channel"));
+            AppEng.makeId("part/storage_bus_has_channel"));
 
     protected final IActionSource source;
     private final ConfigInventory config = ConfigInventory.configTypes(63).changeListener(this::onConfigurationChanged)

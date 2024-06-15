@@ -22,13 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import appeng.api.config.PowerMultiplier;
-import appeng.util.prioritylist.IPartitionList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -38,6 +34,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
@@ -51,6 +48,7 @@ import appeng.menu.me.items.CraftingTermMenu;
 import appeng.util.Platform;
 import appeng.util.inv.CarriedItemInventory;
 import appeng.util.inv.PlayerInternalInventory;
+import appeng.util.prioritylist.IPartitionList;
 
 /**
  * This is the crafting result slot of the crafting terminal, which also handles performing the actual crafting when a
@@ -236,18 +234,18 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     }
 
     private static ItemStack extractItemsByRecipe(IEnergySource energySrc,
-                                                 IActionSource mySrc,
-                                                 MEStorage src,
-                                                 Level level,
-                                                 Recipe<CraftingInput> r,
-                                                 ItemStack output,
-                                                 int gridWidth, int gridHeight,
-                                                 List<ItemStack> craftingItems,
-                                                 ItemStack providedTemplate,
-                                                 int slot,
-                                                 KeyCounter items,
-                                                 Actionable realForFake,
-                                                 IPartitionList filter) {
+            IActionSource mySrc,
+            MEStorage src,
+            Level level,
+            Recipe<CraftingInput> r,
+            ItemStack output,
+            int gridWidth, int gridHeight,
+            List<ItemStack> craftingItems,
+            ItemStack providedTemplate,
+            int slot,
+            KeyCounter items,
+            Actionable realForFake,
+            IPartitionList filter) {
 
         if (energySrc.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.9) {
             if (providedTemplate == null) {
@@ -276,7 +274,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                             craftingInputItems.set(slot, itemKey.toStack());
                             var adjustedCraftingInput = CraftingInput.of(gridWidth, gridHeight, craftingInputItems);
                             if (r.matches(adjustedCraftingInput, level)
-                                && ItemStack.matches(r.assemble(adjustedCraftingInput, level.registryAccess()), output)) {
+                                    && ItemStack.matches(r.assemble(adjustedCraftingInput, level.registryAccess()),
+                                            output)) {
                                 if (filter == null || filter.isListed(itemKey)) {
                                     var ex = src.extract(itemKey, 1, realForFake, mySrc);
                                     if (ex > 0) {

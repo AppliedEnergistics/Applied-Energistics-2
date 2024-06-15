@@ -20,13 +20,11 @@ package appeng.client.render.cablebus;
 
 import java.util.EnumMap;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-
-import net.minecraft.client.renderer.block.model.FaceBakery;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.block.model.FaceBakery;
 import net.minecraft.core.Direction;
 
 import appeng.api.orientation.BlockOrientation;

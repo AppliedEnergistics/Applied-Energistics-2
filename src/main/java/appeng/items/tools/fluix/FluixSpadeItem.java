@@ -11,7 +11,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
-import appeng.core.localization.GuiText;
 import appeng.hooks.IntrinsicEnchantItem;
 
 public class FluixSpadeItem extends ShovelItem implements IntrinsicEnchantItem {

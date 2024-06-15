@@ -1,6 +1,7 @@
 package appeng.items.tools.fluix;
 
-import appeng.hooks.IntrinsicEnchantItem;
+import java.util.List;
+
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -9,7 +10,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
-import java.util.List;
+import appeng.hooks.IntrinsicEnchantItem;
 
 public class FluixSwordItem extends SwordItem implements IntrinsicEnchantItem {
     private final IntrinsicEnchantment intrinsicEnchantment = new IntrinsicEnchantment(Enchantments.LOOTING, 1);
@@ -26,7 +27,7 @@ public class FluixSwordItem extends SwordItem implements IntrinsicEnchantItem {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
-                                TooltipFlag isAdvanced) {
+            TooltipFlag isAdvanced) {
         intrinsicEnchantment.appendHoverText(context, tooltipComponents);
     }
 

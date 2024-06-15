@@ -22,23 +22,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 
 import it.unimi.dsi.fastutil.ints.IntArraySet;
@@ -229,7 +227,8 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             if (invalidIngredients) {
                 this.currentRecipe = null;
             } else {
-                this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level).orElse(null);
+                this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level)
+                        .orElse(null);
             }
             this.currentMode = this.mode;
             checkFluidSubstitutionSupport();
@@ -388,8 +387,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         var input = new SmithingRecipeInput(
                 template.toStack(),
                 base.toStack(),
-                addition.toStack()
-        );
+                addition.toStack());
 
         var level = getPlayer().level();
         var recipe = level.getRecipeManager()
@@ -513,7 +511,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         if (encodedInputsInv.getKey(0) instanceof AEItemKey itemKey) {
             var level = getPlayer().level();
             var recipeManager = level.getRecipeManager();
-            var recipeInput  = new SingleRecipeInput(itemKey.toStack());
+            var recipeInput = new SingleRecipeInput(itemKey.toStack());
             stonecuttingRecipes.addAll(
                     recipeManager.getRecipesFor(RecipeType.STONECUTTING, recipeInput, level));
         }
