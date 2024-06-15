@@ -116,7 +116,7 @@ public class TransformCategory implements DisplayCategory<TransformRecipeWrapper
         }
 
         widgets.add(Widgets.createLabel(new Point(bounds.getCenterX(), bounds.y + 15), circumstance)
-                .setColor(0x7E7E7E)
+                .color(0x7E7E7E)
                 .noShadow());
 
         return widgets;

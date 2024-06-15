@@ -377,13 +377,13 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     }
 
     @Override
-    public ItemStack assemble(RecipeInput container, Level level) {
+    public ItemStack assemble(CraftingContainer container, Level level) {
         if (canSubstitute && recipe.isSpecial()) {
             // For special recipes, we need to test the recipe with assemble, unfortunately, since the output might
             // depend on the inputs in a way that can't be detected by changing one input at the time.
             var items = NonNullList.withSize(CRAFTING_GRID_DIMENSION * CRAFTING_GRID_DIMENSION, ItemStack.EMPTY);
 
-            for (int x = 0; x < container.size(); ++x) {
+            for (int x = 0; x < container.getContainerSize(); ++x) {
                 ItemStack item = container.getItem(x);
                 var stack = GenericStack.unwrapItemStack(item);
                 if (stack != null) {
@@ -402,7 +402,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             return recipe.assemble(testInput, level.registryAccess());
         }
 
-        for (int x = 0; x < container.size(); x++) {
+        for (int x = 0; x < container.getContainerSize(); x++) {
             ItemStack item = container.getItem(x);
             var stack = GenericStack.unwrapItemStack(item);
             if (stack != null) {
@@ -422,15 +422,15 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(RecipeInput container) {
+    public NonNullList<ItemStack> getRemainingItems(CraftingContainer container) {
         // Replace substituted fluids with the original item and ensure the slot is deleted
         // after calling getRemainingItems. This is to fix compatibility with mods that *actually*
         // search for the fluid containers in the container and warn/error if they're not found.
         // See AE2 bug 6804 for details.
 
         if (canSubstituteFluids) {
-            var slotsToClear = new boolean[container.size()];
-            for (int x = 0; x < container.size(); ++x) {
+            var slotsToClear = new boolean[container.getContainerSize()];
+            for (int x = 0; x < container.getContainerSize(); ++x) {
                 var validFluid = getValidFluid(x);
                 if (validFluid != null) {
                     var item = container.getItem(x);
@@ -442,7 +442,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
                 }
             }
 
-            var result = this.recipe.getRemainingItems(container);
+            var result = this.recipe.getRemainingItems(container.asCraftInput());
 
             // Now ensure the empty buckets are cleared since we didn't really use any buckets to begin with
             for (int i = 0; i < slotsToClear.length; i++) {
@@ -454,7 +454,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             return result;
         } else {
             // If no fluid substitution occurred, just call it as-is
-            return this.recipe.getRemainingItems(container);
+            return this.recipe.getRemainingItems(container.asCraftInput());
         }
     }
 
@@ -471,14 +471,10 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             // We only support buckets since we can't predict the behavior of other kinds of containers (ender tanks...)
 
             // Check that the remaining item is indeed the emptied container.
-            var testFrameCopy = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
-            for (int i = 0; i < 9; ++i) {
-                testFrameCopy.setItem(i, testFrame.getItem(i).copy());
-            }
             // Note: the following call might do a performed extraction with mods that have native fluid container
             // support (such as immersive engineering "fluid aware" recipes). This is only safe because we restrict this
             // code path to buckets.
-            var remainingItems = recipe.getRemainingItems(testFrameCopy);
+            var remainingItems = recipe.getRemainingItems(makeCraftingInput());
             var slotRemainder = remainingItems.get(slot);
             if (slotRemainder.getCount() == 1 && slotRemainder.is(Items.BUCKET)) {
                 return new GenericStack(containedFluid.what(), containedFluid.amount());

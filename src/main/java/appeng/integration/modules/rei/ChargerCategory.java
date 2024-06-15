@@ -76,7 +76,7 @@ public class ChargerCategory implements DisplayCategory<ChargerDisplay> {
         widgets.add(Widgets
                 .createLabel(new Point(x + 20, y + 35),
                         ItemModText.CHARGER_REQUIRED_POWER.text(turns, ChargerBlockEntity.POWER_MAXIMUM_AMOUNT))
-                .setColor(0x7E7E7E)
+                .color(0x7E7E7E)
                 .noShadow()
                 .leftAligned());
 

@@ -68,7 +68,7 @@ public class EntropyRecipeCategory implements DisplayCategory<EntropyRecipeDispl
         };
 
         var modeLabel = Widgets.createLabel(new Point(centerX + 4, y + 2), labelText)
-                .setColor(BODY_TEXT_COLOR)
+                .color(BODY_TEXT_COLOR)
                 .noShadow()
                 .centered();
         var modeLabelX = modeLabel.getBounds().x;
@@ -81,7 +81,7 @@ public class EntropyRecipeCategory implements DisplayCategory<EntropyRecipeDispl
 
         widgets.add(Widgets.createArrow(new Point(centerX - 12, y + 14)));
         widgets.add(Widgets.createLabel(new Point(centerX, y + 38), interaction)
-                .setColor(BODY_TEXT_COLOR).noShadow().centered());
+                .color(BODY_TEXT_COLOR).noShadow().centered());
 
         widgets.add(Widgets.createSlot(new Point(centerX - 34, y + 15)).entries(recipe.getInput()).markInput());
 

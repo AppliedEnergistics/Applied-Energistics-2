@@ -22,10 +22,13 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
 import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.SingleItemRecipe;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
@@ -63,7 +66,6 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     public final boolean canSubstitute;
     private final ResourceLocation recipeId;
     private final StonecutterRecipe recipe;
-    private final Container testFrame;
     private final AEItemKey input;
     private final ItemStack output;
     private final IInput[] inputs;
@@ -84,7 +86,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
             throw new IllegalArgumentException("Pattern references missing content");
         }
 
-        this.input = AEItemKey.of(encodedPattern.input());
+        this.input = Objects.requireNonNull(AEItemKey.of(encodedPattern.input()));
         this.canSubstitute = encodedPattern.canSubstitute();
 
         // Find recipe
@@ -96,14 +98,12 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         }
 
         // Build frame and find output
-        this.testFrame = new SimpleContainer(1);
-        this.testFrame.setItem(0, input.toStack());
-
-        if (!this.recipe.matches(testFrame, level)) {
+        var testInput = new SingleRecipeInput(input.toStack());
+        if (!this.recipe.matches(testInput, level)) {
             throw new IllegalStateException("The recipe " + recipeId + " no longer matches the encoded input.");
         }
 
-        this.output = this.recipe.assemble(testFrame, level.registryAccess());
+        this.output = this.recipe.assemble(testInput, level.registryAccess());
         if (this.output.isEmpty()) {
             throw new IllegalStateException("The recipe " + recipeId + " produced an empty item stack result.");
         }
@@ -193,16 +193,12 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         }
 
         // Fill frame and check result
-        var previousStack = testFrame.removeItemNoUpdate(0);
-        testFrame.setItem(0, key.toStack());
+        var testInput = new SingleRecipeInput(key.toStack());
 
-        var newResult = recipe.matches(testFrame, level)
-                && ItemStack.matches(output, recipe.assemble(testFrame, level.registryAccess()));
+        var newResult = recipe.matches(testInput, level)
+                && ItemStack.matches(output, recipe.assemble(testInput, level.registryAccess()));
 
         setTestResult(key, newResult);
-
-        // Restore old stack in the frame
-        testFrame.setItem(0, previousStack);
 
         return newResult;
     }
@@ -232,13 +228,12 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     }
 
     @Override
-    public ItemStack assemble(RecipeInput container, Level level) {
+    public ItemStack assemble(CraftingContainer container, Level level) {
         // Jiggle the container around
-        var testContainer = new SimpleContainer(2);
-        testContainer.setItem(0, container.getItem(CRAFTING_GRID_SLOT));
+        var testInput = new SingleRecipeInput(container.getItem(CRAFTING_GRID_SLOT));
 
-        if (recipe.matches(testContainer, level)) {
-            return recipe.assemble(testContainer, level.registryAccess());
+        if (recipe.matches(testInput, level)) {
+            return recipe.assemble(testInput, level.registryAccess());
         }
         return ItemStack.EMPTY;
     }
@@ -260,12 +255,6 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
             gridAccessor.set(CRAFTING_GRID_SLOT, itemKey.toStack());
             table[0].remove(entry.getKey(), 1);
         }
-    }
-
-    @Override
-    public NonNullList<ItemStack> getRemainingItems(RecipeInput container) {
-        // Stonecutter does not support remainders
-        return NonNullList.withSize(container.getContainerSize(), ItemStack.EMPTY);
     }
 
     public AEItemKey getInput() {

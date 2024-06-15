@@ -205,7 +205,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             this.craftingInv.setItem(x, this.gridInv.getStackInSlot(x));
         }
 
-        return !this.myPlan.assemble(this.craftingInv.asCraftInput(), this.getLevel()).isEmpty();
+        return !this.myPlan.assemble(this.craftingInv, this.getLevel()).isEmpty();
     }
 
     @Override
@@ -424,12 +424,12 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             }
 
             this.progress = 0;
-            final ItemStack output = this.myPlan.assemble(this.craftingInv.asCraftInput(), this.getLevel());
+            final ItemStack output = this.myPlan.assemble(this.craftingInv, this.getLevel());
             if (!output.isEmpty()) {
                 CraftingEvent.fireAutoCraftingEvent(getLevel(), this.myPlan, output, this.craftingInv);
 
                 // pushOut might reset the plan back to null, so get the remaining items before
-                var craftingRemainders = this.myPlan.getRemainingItems(this.craftingInv.asCraftInput());
+                var craftingRemainders = this.myPlan.getRemainingItems(this.craftingInv);
 
                 this.pushOut(output.copy());
 
