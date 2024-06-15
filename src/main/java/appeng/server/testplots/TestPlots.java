@@ -14,10 +14,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import appeng.util.Platform;
 import com.google.common.collect.Sets;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -804,8 +808,9 @@ public final class TestPlots {
         plot.cable(origin).part(Direction.NORTH, AEParts.TERMINAL);
         var drive = plot.drive(origin.east());
 
+        var enchantment = Platform.getEnchantment(ServerLifecycleHooks.getCurrentServer(), Enchantments.FORTUNE);
         var pickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
-        pickaxe.enchant(Enchantments.FORTUNE, 1);
+        pickaxe.enchant(enchantment, 1);
         for (var i = 0; i < 10; i++) {
             var cell = drive.addItemCell64k();
             for (var j = 0; j < 63; j++) {
@@ -862,11 +867,13 @@ public final class TestPlots {
         var molecularAssemblerPos = new BlockPos(0, 1, 0);
         plot.blockEntity(molecularAssemblerPos, AEBlocks.MOLECULAR_ASSEMBLER, molecularAssembler -> {
             // Get repair recipe
-            var craftingContainer = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
-            craftingContainer.setItem(0, undamaged.toStack());
-            craftingContainer.setItem(1, undamaged.toStack());
+            var items = NonNullList.withSize(9, ItemStack.EMPTY);
+            items.set(0, undamaged.toStack());
+            items.set(1, undamaged.toStack());
+            var input = CraftingInput.of(3, 3, items);
+
             var level = molecularAssembler.getLevel();
-            var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingContainer, level).get();
+            var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level).get();
 
             // Encode pattern
             var sparseInputs = new ItemStack[9];

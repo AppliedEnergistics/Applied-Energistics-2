@@ -23,15 +23,18 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
+import appeng.datagen.providers.loot.AE2LootTableProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.loot.LootTableProvider;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.common.data.internal.NeoForgeLootTableProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import appeng.core.AppEng;
@@ -79,7 +82,7 @@ public class AE2DataGenerators {
                 createDatapackEntriesBuilder(), Set.of(AppEng.MOD_ID)));
 
         // Loot
-        pack.addProvider(bindRegistries(BlockDropProvider::new, registries));
+        pack.addProvider(packOutput -> new AE2LootTableProvider(packOutput, registries));
 
         // Tags
         var blockTagsProvider = pack
