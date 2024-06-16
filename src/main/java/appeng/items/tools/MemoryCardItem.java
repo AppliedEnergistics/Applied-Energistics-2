@@ -274,7 +274,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
         var p2pFreq = stack.get(AEComponents.EXPORTED_P2P_FREQUENCY);
         if (p2pFreq != null) {
-            final String freqTooltip = ChatFormatting.BOLD + Platform.p2p().toHexString(p2pFreq);
+            var freqTooltip = Platform.p2p().toColoredHexString(p2pFreq).withStyle(ChatFormatting.BOLD);
             lines.add(Tooltips.of(Component.translatable(InGameTooltip.P2PFrequency.getTranslationKey(), freqTooltip)));
         }
     }
