@@ -99,7 +99,7 @@ public final class MeteoritePlacer {
                 AEBlocks.LARGE_QUARTZ_BUD).map(def -> def.block().defaultBlockState()).toList();
         this.skyStone = AEBlocks.SKY_STONE_BLOCK.block().defaultBlockState();
 
-        this.type = getFallout(level, settings.getPos(), settings.getFallout());
+        this.type = getFallout(level, boundingBox.getCenter(), settings.getFallout());
     }
 
     private List<BlockState> getQuartzBudList() {
