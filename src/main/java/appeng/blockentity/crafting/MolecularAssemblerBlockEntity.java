@@ -439,7 +439,16 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
                 int craftingInputLeft = positionedInput.left();
                 int craftingInputTop = positionedInput.top();
-                this.gridInv.clear();
+
+                // Clear out the rows/cols that are in the margin
+                for (int y = 0; y < craftingInv.getHeight(); y++) {
+                    for (int x = 0; x < craftingInv.getWidth(); x++) {
+                        if (y < craftingInputTop || x < craftingInputLeft) {
+                            int idx = x + y * craftingInv.getWidth();
+                            gridInv.setItemDirect(idx, ItemStack.EMPTY);
+                        }
+                    }
+                }
                 for (int y = 0; y < craftinginput.height(); y++) {
                     for (int x = 0; x < craftinginput.width(); x++) {
                         int idx = x + craftingInputLeft + (y + craftingInputTop) * craftingInv.getWidth();
