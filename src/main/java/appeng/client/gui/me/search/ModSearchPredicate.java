@@ -1,5 +1,6 @@
 package appeng.client.gui.me.search;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -8,11 +9,10 @@ import appeng.menu.me.common.GridInventoryEntry;
 import appeng.util.Platform;
 
 final class ModSearchPredicate implements Predicate<GridInventoryEntry> {
+    private final String term;
 
-    private final String inputModName;
-
-    public ModSearchPredicate(String inputModName) {
-        this.inputModName = standardify(inputModName);
+    public ModSearchPredicate(String term) {
+        this.term = normalize(term);
     }
 
     @Override
@@ -21,22 +21,19 @@ final class ModSearchPredicate implements Predicate<GridInventoryEntry> {
         String modId = entryInfo.getModId();
 
         if (modId != null) {
-            if (modId.contains(inputModName)) {
+            if (modId.contains(term)) {
                 return true;
             }
 
             String modName = Platform.getModName(modId);
-            modName = standardify(modName);
-            return modName.contains(inputModName);
+            modName = normalize(modName);
+            return modName.contains(term);
         }
 
         return false;
     }
 
-    /**
-     * util function to standardify the mod string
-     */
-    private String standardify(String input) {
-        return input.toLowerCase().replace(" ", "");
+    private static String normalize(String input) {
+        return input.toLowerCase(Locale.ROOT);
     }
 }
