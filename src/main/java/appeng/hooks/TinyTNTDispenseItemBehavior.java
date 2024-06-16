@@ -36,7 +36,7 @@ public final class TinyTNTDispenseItemBehavior extends DefaultDispenseItemBehavi
         final int i = dispenser.pos().getX() + Direction.getStepX();
         final int j = dispenser.pos().getY() + Direction.getStepY();
         final int k = dispenser.pos().getZ() + Direction.getStepZ();
-        final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(level, i + 0.5F, j + 0.5F, k + 0.5F,
+        final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(level, i + 0.5F, j, k + 0.5F,
                 null);
         level.addFreshEntity(primedTinyTNTEntity);
         dispensedItem.setCount(dispensedItem.getCount() - 1);

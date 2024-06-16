@@ -30,9 +30,10 @@ import net.minecraft.client.renderer.entity.TntMinecartRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import appeng.core.definitions.AEBlocks;
 
 @OnlyIn(Dist.CLIENT)
 public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
@@ -48,7 +49,7 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
     public void render(TinyTNTPrimedEntity tnt, float entityYaw, float partialTicks, PoseStack mStack,
             MultiBufferSource buffers, int packedLight) {
         mStack.pushPose();
-        mStack.translate(0, 0.25F, 0);
+        mStack.translate(0, 0.5F, 0);
         float f2;
 
         if (tnt.getFuse() - partialTicks + 1.0F < 10.0F) {
@@ -68,12 +69,11 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
             mStack.scale(f3, f3, f3);
         }
 
-        mStack.scale(0.5f, 0.5f, 0.5f);
-        f2 = (1.0F - (tnt.getFuse() - partialTicks + 1.0F) / 100.0F) * 0.8F;
         mStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -90.0F));
         mStack.translate(-0.5D, -0.5D, 0.5D);
         mStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 90.0F));
-        TntMinecartRenderer.renderWhiteSolidBlock(this.blockRenderer, Blocks.TNT.defaultBlockState(), mStack, buffers,
+        TntMinecartRenderer.renderWhiteSolidBlock(this.blockRenderer, AEBlocks.TINY_TNT.block().defaultBlockState(),
+                mStack, buffers,
                 packedLight,
                 tnt.getFuse() / 5 % 2 == 0);
         mStack.popPose();

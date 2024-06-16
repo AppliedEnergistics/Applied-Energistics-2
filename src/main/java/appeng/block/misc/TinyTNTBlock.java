@@ -71,7 +71,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
-        if (heldItem.is(Items.FLINT_AND_STEEL) && heldItem.is(Items.FIRE_CHARGE)) {
+        if (heldItem.is(Items.FLINT_AND_STEEL) || heldItem.is(Items.FIRE_CHARGE)) {
             onCaughtFire(state, level, pos, hit.getDirection(), player);
             level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
             Item item = heldItem.getItem();
@@ -97,7 +97,7 @@ public class TinyTNTBlock extends AEBaseBlock {
 
     public void startFuse(Level level, BlockPos pos, LivingEntity igniter) {
         if (!level.isClientSide) {
-            var primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F, pos.getY() + 0.5F,
+            var primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F, pos.getY(),
                     pos.getZ() + 0.5F, igniter);
             level.addFreshEntity(primedTinyTNTEntity);
             level.playSound(null, primedTinyTNTEntity.getX(), primedTinyTNTEntity.getY(),
@@ -151,7 +151,7 @@ public class TinyTNTBlock extends AEBaseBlock {
         super.wasExploded(level, pos, exp);
         if (!level.isClientSide) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F,
-                    pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getIndirectSourceEntity());
+                    pos.getY(), pos.getZ() + 0.5F, exp.getIndirectSourceEntity());
             primedTinyTNTEntity
                     .setFuse(level.random.nextInt(primedTinyTNTEntity.getFuse() / 4)
                             + primedTinyTNTEntity.getFuse() / 8);
