@@ -6,10 +6,10 @@ import java.util.function.Predicate;
 import appeng.menu.me.common.GridInventoryEntry;
 
 final class OrSearchPredicate implements Predicate<GridInventoryEntry> {
-    private final List<Predicate<GridInventoryEntry>> orPartFilters;
+    private final List<Predicate<GridInventoryEntry>> terms;
 
-    private OrSearchPredicate(List<Predicate<GridInventoryEntry>> orPartFilters) {
-        this.orPartFilters = orPartFilters;
+    private OrSearchPredicate(List<Predicate<GridInventoryEntry>> terms) {
+        this.terms = terms;
     }
 
     public static Predicate<GridInventoryEntry> of(List<Predicate<GridInventoryEntry>> filters) {
@@ -17,15 +17,15 @@ final class OrSearchPredicate implements Predicate<GridInventoryEntry> {
             return t -> false;
         }
         if (filters.size() == 1) {
-            return filters.get(0);
+            return filters.getFirst();
         }
         return new OrSearchPredicate(filters);
     }
 
     @Override
-    public boolean test(GridInventoryEntry gridStack) {
-        for (Predicate<GridInventoryEntry> part : orPartFilters) {
-            if (part.test(gridStack)) {
+    public boolean test(GridInventoryEntry entry) {
+        for (var term : terms) {
+            if (term.test(entry)) {
                 return true;
             }
         }
