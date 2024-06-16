@@ -992,7 +992,7 @@
   "waila.ae2.ErrorTooManyChannels": "Fehler: Zu viele Kanäle",
   "waila.ae2.Locked": "Gesperrt",
   "waila.ae2.NetworkBooting": "Netzwerk fährt hoch",
-  "waila.ae2.P2PFrequency": "Frequenz: %",
+  "waila.ae2.P2PFrequency": "Frequenz: %s",
   "waila.ae2.P2PInputManyOutputs": "Verknüpft (Eingangsseite) - %d Ausgänge",
   "waila.ae2.P2PInputOneOutput": "Verknüpft (Eingangsseite)",
   "waila.ae2.P2PMECarriedChannels": "Übertragene Kanäle: %d",
