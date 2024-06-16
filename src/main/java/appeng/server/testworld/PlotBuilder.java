@@ -8,8 +8,10 @@ import java.util.function.Function;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -42,7 +44,14 @@ import appeng.items.parts.PartItem;
 
 public interface PlotBuilder {
 
+    @FunctionalInterface
+    public interface PostBuildAction {
+        void postBuild(ServerLevel level, Player player, BlockPos origin);
+    }
+
     void addBuildAction(BuildAction action);
+
+    void addPostBuildAction(PostBuildAction action);
 
     BoundingBox bb(String def);
 

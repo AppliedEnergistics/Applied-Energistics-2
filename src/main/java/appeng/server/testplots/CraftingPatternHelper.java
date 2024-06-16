@@ -1,21 +1,23 @@
 package appeng.server.testplots;
 
-import net.minecraft.world.inventory.TransientCraftingContainer;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.PatternDetailsHelper;
-import appeng.menu.AutoCraftingMenu;
 
 public class CraftingPatternHelper {
     public static ItemStack encodeShapelessCraftingRecipe(Level level, ItemStack... inputs) {
-        var container = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
+        // Pad out the list to 3x3
+        var items = NonNullList.withSize(3 * 3, ItemStack.EMPTY);
         for (int i = 0; i < inputs.length; i++) {
-            container.setItem(i, inputs[i].copy());
+            items.set(i, inputs[i]);
         }
+        var recipeInput = CraftingInput.of(3, 3, items);
 
-        var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, container, level)
+        var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, recipeInput, level)
                 .orElseThrow(() -> new RuntimeException("Couldn't get a shapeless recipe for the provided input."));
 
         var actualInputs = new ItemStack[9];

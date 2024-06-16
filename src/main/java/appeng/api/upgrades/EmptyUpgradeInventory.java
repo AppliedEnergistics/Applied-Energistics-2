@@ -27,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.EmptyHandler;
+import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 
 final class EmptyUpgradeInventory implements IUpgradeInventory {
     public static final EmptyUpgradeInventory INSTANCE = new EmptyUpgradeInventory();
@@ -59,7 +59,7 @@ final class EmptyUpgradeInventory implements IUpgradeInventory {
 
     @Override
     public IItemHandler toItemHandler() {
-        return EmptyHandler.INSTANCE;
+        return EmptyItemHandler.INSTANCE;
     }
 
     @Override

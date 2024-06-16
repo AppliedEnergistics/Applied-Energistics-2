@@ -17,7 +17,7 @@ public class TestCommandMixin {
     @Inject(method = "verifyStructureExists", at = @At("HEAD"), cancellable = true)
     private static void verifyStructureExists(ServerLevel level, String structureName,
             CallbackInfoReturnable<Boolean> cri) {
-        var testPlot = TestPlots.getById(new ResourceLocation(structureName));
+        var testPlot = TestPlots.getById(ResourceLocation.parse(structureName));
         if (testPlot != null) {
             cri.setReturnValue(true);
         }

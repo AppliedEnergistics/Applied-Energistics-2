@@ -258,7 +258,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             this.setFluidSubstitution(data.getBoolean("substituteFluids"));
 
             if (data.contains("stonecuttingRecipeId", Tag.TAG_STRING)) {
-                this.stonecuttingRecipeId = new ResourceLocation(data.getString("stonecuttingRecipeId"));
+                this.stonecuttingRecipeId = ResourceLocation.parse(data.getString("stonecuttingRecipeId"));
             } else {
                 this.stonecuttingRecipeId = null;
             }

@@ -272,6 +272,6 @@ public final class AEPartIds {
     public static final ResourceLocation LIGHT_P2P_TUNNEL = id("light_p2p_tunnel");
 
     private static ResourceLocation id(String id) {
-        return new ResourceLocation(AEConstants.MOD_ID, id);
+        return ResourceLocation.fromNamespaceAndPath(AEConstants.MOD_ID, id);
     }
 }

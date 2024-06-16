@@ -15,8 +15,8 @@ public class InitRecipeTypes {
     private static final List<ToRegister> toRegister = new ArrayList<>();
 
     public static <T extends Recipe<?>> RecipeType<T> register(String id) {
-        RecipeType<T> type = RecipeType.simple(new ResourceLocation(id));
-        toRegister.add(new ToRegister(type, new ResourceLocation(id)));
+        RecipeType<T> type = RecipeType.simple(ResourceLocation.parse(id));
+        toRegister.add(new ToRegister(type, ResourceLocation.parse(id)));
         return type;
     }
 

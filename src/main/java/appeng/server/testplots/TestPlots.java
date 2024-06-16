@@ -24,17 +24,20 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -73,12 +76,12 @@ import appeng.items.tools.powered.MatterCannonItem;
 import appeng.me.cells.BasicCellInventory;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.service.PathingService;
-import appeng.menu.AutoCraftingMenu;
 import appeng.parts.crafting.PatternProviderPart;
 import appeng.server.testworld.Plot;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.TestCraftingJob;
 import appeng.util.CraftingRecipeUtil;
+import appeng.util.Platform;
 
 @TestPlotClass
 public final class TestPlots {
@@ -224,15 +227,19 @@ public final class TestPlots {
         return plot;
     }
 
+    private static AEItemKey createEnchantedPickaxe(Level level) {
+        var enchantmentRegistry = level.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+
+        var enchantedPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
+        enchantedPickaxe.enchant(enchantmentRegistry.getHolderOrThrow(Enchantments.FORTUNE), 3);
+        return AEItemKey.of(enchantedPickaxe);
+    }
+
     /**
      * A wall of all terminals/monitors in all color combinations.
      */
     @TestPlot("all_terminals")
     public static void allTerminals(PlotBuilder plot) {
-        var enchantedPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
-        enchantedPickaxe.enchant(Enchantments.FORTUNE, 3);
-        var enchantedPickaxeKey = AEItemKey.of(enchantedPickaxe);
-
         plot.creativeEnergyCell("0 -1 0");
 
         plot.cable("[-1,0] [0,8] 0", AEParts.COVERED_DENSE_CABLE);
@@ -240,10 +247,11 @@ public final class TestPlots {
         plot.block("[-1,0] 5 0", AEBlocks.CONTROLLER);
         plot.storageDrive(new BlockPos(0, 5, 1));
         plot.afterGridInitAt("0 5 1", (grid, gridNode) -> {
+            var enchantedPickaxe = createEnchantedPickaxe(gridNode.getLevel());
             var storage = grid.getStorageService().getInventory();
             var src = new BaseActionSource();
             storage.insert(AEItemKey.of(Items.DIAMOND_PICKAXE), 10, Actionable.MODULATE, src);
-            storage.insert(enchantedPickaxeKey, 1234, Actionable.MODULATE, src);
+            storage.insert(enchantedPickaxe, 1234, Actionable.MODULATE, src);
             storage.insert(AEItemKey.of(Items.ACACIA_LOG), Integer.MAX_VALUE, Actionable.MODULATE, src);
         });
 
@@ -269,7 +277,8 @@ public final class TestPlots {
             line.part("3 0 0", Direction.NORTH, AEParts.PATTERN_ENCODING_TERMINAL);
             line.part("4 0 0", Direction.NORTH, AEParts.PATTERN_ACCESS_TERMINAL);
             line.part("5 0 0", Direction.NORTH, AEParts.STORAGE_MONITOR, monitor -> {
-                monitor.setConfiguredItem(enchantedPickaxeKey);
+                var enchantedPickaxe = createEnchantedPickaxe(monitor.getLevel());
+                monitor.setConfiguredItem(enchantedPickaxe);
                 monitor.setLocked(true);
             });
             line.part("6 0 0", Direction.NORTH, AEParts.CONVERSION_MONITOR, monitor -> {
@@ -578,7 +587,7 @@ public final class TestPlots {
         plot.blockState(BlockPos.ZERO, Blocks.DISPENSER.defaultBlockState()
                 .setValue(DispenserBlock.FACING, Direction.SOUTH));
         plot.customizeBlockEntity(BlockPos.ZERO, BlockEntityType.DISPENSER, dispenser -> {
-            dispenser.addItem(createMatterCannon(ammos));
+            dispenser.setItem(0, createMatterCannon(ammos));
         });
         plot.buttonOn(BlockPos.ZERO, Direction.NORTH);
     }
@@ -796,15 +805,18 @@ public final class TestPlots {
         plot.cable(origin).part(Direction.NORTH, AEParts.TERMINAL);
         var drive = plot.drive(origin.east());
 
-        var pickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
-        pickaxe.enchant(Enchantments.FORTUNE, 1);
-        for (var i = 0; i < 10; i++) {
-            var cell = drive.addItemCell64k();
-            for (var j = 0; j < 63; j++) {
-                pickaxe.setDamageValue(pickaxe.getDamageValue() + 1);
-                cell.add(AEItemKey.of(pickaxe), 2);
+        plot.addPostBuildAction((level, player, ignored) -> {
+            var enchantment = Platform.getEnchantment(level, Enchantments.FORTUNE);
+            var pickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
+            pickaxe.enchant(enchantment, 1);
+            for (var i = 0; i < 10; i++) {
+                var cell = drive.addItemCell64k();
+                for (var j = 0; j < 63; j++) {
+                    pickaxe.setDamageValue(pickaxe.getDamageValue() + 1);
+                    cell.add(AEItemKey.of(pickaxe), 2);
+                }
             }
-        }
+        });
     }
 
     @TestPlot("import_from_cauldron")
@@ -854,11 +866,13 @@ public final class TestPlots {
         var molecularAssemblerPos = new BlockPos(0, 1, 0);
         plot.blockEntity(molecularAssemblerPos, AEBlocks.MOLECULAR_ASSEMBLER, molecularAssembler -> {
             // Get repair recipe
-            var craftingContainer = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
-            craftingContainer.setItem(0, undamaged.toStack());
-            craftingContainer.setItem(1, undamaged.toStack());
+            var items = NonNullList.withSize(9, ItemStack.EMPTY);
+            items.set(0, undamaged.toStack());
+            items.set(1, undamaged.toStack());
+            var input = CraftingInput.of(3, 3, items);
+
             var level = molecularAssembler.getLevel();
-            var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingContainer, level).get();
+            var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level).get();
 
             // Encode pattern
             var sparseInputs = new ItemStack[9];

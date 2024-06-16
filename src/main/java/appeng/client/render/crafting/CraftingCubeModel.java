@@ -47,7 +47,7 @@ public class CraftingCubeModel implements BasicUnbakedModel {
     @org.jetbrains.annotations.Nullable
     @Override
     public BakedModel bake(ModelBaker loader, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelState, ResourceLocation modelId) {
+            ModelState modelState) {
         return this.provider.getBakedModel(spriteGetter);
     }
 }

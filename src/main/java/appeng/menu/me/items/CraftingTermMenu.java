@@ -136,13 +136,14 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
         }
 
         Level level = this.getPlayerInventory().player.level();
-        this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, recipeTestContainer, level)
+        var craftInput = recipeTestContainer.asCraftInput();
+        this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftInput, level)
                 .orElse(null);
 
         if (this.currentRecipe == null) {
             this.outputSlot.set(ItemStack.EMPTY);
         } else {
-            this.outputSlot.set(this.currentRecipe.value().assemble(recipeTestContainer, level.registryAccess()));
+            this.outputSlot.set(this.currentRecipe.value().assemble(craftInput, level.registryAccess()));
         }
     }
 

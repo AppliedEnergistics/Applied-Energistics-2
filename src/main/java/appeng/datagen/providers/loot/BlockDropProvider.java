@@ -18,11 +18,8 @@
 
 package appeng.datagen.providers.loot;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
@@ -32,12 +29,11 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.PackOutput;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -48,27 +44,23 @@ import net.minecraft.world.level.storage.loot.entries.TagEntry;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.ApplyExplosionDecay;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.BlockDefinition;
-import appeng.datagen.providers.IAE2DataProvider;
 import appeng.datagen.providers.tags.ConventionTags;
 
-public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataProvider {
+public class BlockDropProvider extends BlockLootSubProvider {
     private final Map<Block, Function<Block, LootTable.Builder>> overrides = createOverrides();
-    private final CompletableFuture<HolderLookup.Provider> registries;
 
     @NotNull
     private ImmutableMap<Block, Function<Block, LootTable.Builder>> createOverrides() {
         return ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
                 .put(AEBlocks.MATRIX_FRAME.block(), $ -> LootTable.lootTable())
-                .put(AEBlocks.MYSTERIOUS_CUBE.block(), BlockDropProvider::mysteriousCube)
+                .put(AEBlocks.MYSTERIOUS_CUBE.block(), this::mysteriousCube)
                 // Flawless budding quartz always degrades by 1.
                 .put(AEBlocks.FLAWLESS_BUDDING_QUARTZ.block(), flawlessBuddingQuartz())
                 // Imperfect budding quartz degrades by 1 without silk touch, and does not degrade with silk touch.
@@ -80,48 +72,27 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
                 .put(AEBlocks.MEDIUM_QUARTZ_BUD.block(), this::quartzBud)
                 .put(AEBlocks.LARGE_QUARTZ_BUD.block(), this::quartzBud)
                 // Quartz clusters drop themselves with silk touch, and some crystals without silk touch.
-                .put(AEBlocks.QUARTZ_CLUSTER.block(), BlockDropProvider::quartzCluster)
+                .put(AEBlocks.QUARTZ_CLUSTER.block(), this::quartzCluster)
                 .build();
     }
 
-    private final Path outputFolder;
+    public BlockDropProvider(HolderLookup.Provider providers) {
+        super(Set.of(), FeatureFlags.REGISTRY.allFlags(), providers);
+    }
 
-    public BlockDropProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(Set.of(), FeatureFlagSet.of());
-        this.outputFolder = output.getOutputFolder();
-        this.registries = registries;
+    @Override
+    protected Iterable<Block> getKnownBlocks() {
+        return BuiltInRegistries.BLOCK
+                .stream()
+                .filter(entry -> entry.getLootTable().location().getNamespace().equals(AppEng.MOD_ID))
+                .toList();
     }
 
     @Override
     public void generate() {
-    }
-
-    @Override
-    public CompletableFuture<?> run(CachedOutput cache) {
-        return this.registries.thenCompose(registries -> run(cache, registries));
-    }
-
-    public CompletableFuture<?> run(CachedOutput cache, HolderLookup.Provider registries) {
-        var futures = new ArrayList<CompletableFuture<?>>();
-
-        for (var entry : BuiltInRegistries.BLOCK.entrySet()) {
-            LootTable.Builder builder;
-            if (entry.getKey().location().getNamespace().equals(AppEng.MOD_ID)) {
-                builder = overrides.getOrDefault(entry.getValue(), this::defaultBuilder).apply(entry.getValue());
-
-                futures.add(DataProvider.saveStable(cache, registries, LootTable.CODEC, finishBuilding(builder),
-                        getPath(outputFolder, entry.getKey().location())));
-            }
+        for (var block : getKnownBlocks()) {
+            add(block, overrides.getOrDefault(block, this::defaultBuilder).apply(block));
         }
-
-        var table = LootTable.lootTable()
-                .withPool(LootPool.lootPool()
-                        .setRolls(UniformGenerator.between(1, 3))
-                        .add(LootItem.lootTableItem(AEBlocks.SKY_STONE_BLOCK)));
-        futures.add(DataProvider.saveStable(cache, registries, LootTable.CODEC, finishBuilding(table),
-                getPath(outputFolder, AppEng.makeId("chests/meteorite"))));
-
-        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
     private LootTable.Builder defaultBuilder(Block block) {
@@ -144,33 +115,23 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
         return createSingleItemTableWithSilkTouch(bud, AEItems.CERTUS_QUARTZ_DUST);
     }
 
-    private static LootTable.Builder quartzCluster(Block cluster) {
+    private LootTable.Builder quartzCluster(Block cluster) {
         return createSilkTouchDispatchTable(cluster,
                 LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL)
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(4)))
-                        .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.FORTUNE))
+                        .apply(ApplyBonusCount.addUniformBonusCount(getEnchantment(Enchantments.FORTUNE)))
                         .apply(ApplyExplosionDecay.explosionDecay()));
     }
 
-    private static LootTable.Builder mysteriousCube(Block block) {
+    private LootTable.Builder mysteriousCube(Block block) {
         return createSilkTouchDispatchTable(block, TagEntry.tagContents(ConventionTags.INSCRIBER_PRESSES)
                 .when(ExplosionCondition.survivesExplosion()))
                 .withPool(
-                        LootPool.lootPool().when(HAS_NO_SILK_TOUCH).setRolls(ConstantValue.exactly(1.0F))
+                        LootPool.lootPool().when(doesNotHaveSilkTouch()).setRolls(ConstantValue.exactly(1.0F))
                                 .add(LootItem.lootTableItem(AEItems.TABLET)));
     }
 
-    private Path getPath(Path root, ResourceLocation id) {
-        return root.resolve("data/" + id.getNamespace() + "/loot_tables/blocks/" + id.getPath() + ".json");
+    protected final Holder<Enchantment> getEnchantment(ResourceKey<Enchantment> key) {
+        return registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(key);
     }
-
-    public Holder<LootTable> finishBuilding(LootTable.Builder builder) {
-        return Holder.direct(builder.setParamSet(LootContextParamSets.BLOCK).build());
-    }
-
-    @Override
-    public String getName() {
-        return AppEng.MOD_NAME + " Block Drops";
-    }
-
 }

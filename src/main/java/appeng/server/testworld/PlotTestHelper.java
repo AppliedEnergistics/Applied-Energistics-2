@@ -87,7 +87,7 @@ public class PlotTestHelper extends GameTestHelper {
     public IGrid getGrid(BlockPos pos) {
         checkAllInitialized();
 
-        var be = getBlockEntity(pos);
+        var be = getLevel().getBlockEntity(absolutePos(pos));
         if (be instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
             IGrid grid = gridConnectedBlockEntity.getMainNode().getGrid();
             check(grid != null, "no grid", pos);
@@ -112,7 +112,7 @@ public class PlotTestHelper extends GameTestHelper {
      */
     public void checkAllInitialized() {
         forEveryBlockInStructure(blockPos -> {
-            var be = getBlockEntity(blockPos);
+            var be = getLevel().getBlockEntity(absolutePos(blockPos));
             if (be instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
                 check(gridConnectedBlockEntity.getMainNode().isReady(), "BE " + be + " is not ready");
             } else if (be instanceof IPartHost partHost) {

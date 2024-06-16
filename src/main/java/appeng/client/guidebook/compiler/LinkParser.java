@@ -34,7 +34,7 @@ public final class LinkParser {
             } else {
                 // Fully namespaced, absolute page id
                 try {
-                    pageId = new ResourceLocation(uri.getScheme() + ":" + uri.getSchemeSpecificPart());
+                    pageId = ResourceLocation.parse(uri.getScheme() + ":" + uri.getSchemeSpecificPart());
                 } catch (ResourceLocationException ignored) {
                     visitor.handleError("Invalid resource location");
                     return;

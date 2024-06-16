@@ -384,7 +384,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
 
         try {
-            this.cellItem = BuiltInRegistries.ITEM.get(new ResourceLocation(data.getString("cellId")));
+            this.cellItem = BuiltInRegistries.ITEM.get(ResourceLocation.parse(data.getString("cellId")));
         } catch (Exception e) {
             LOG.warn("Couldn't read cell item for {} from {}", this, data);
             this.cellItem = Items.AIR;

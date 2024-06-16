@@ -37,7 +37,7 @@ public abstract class AEBaseItem extends Item {
         return id != BuiltInRegistries.ITEM.getDefaultKey() ? id : null;
     }
 
-    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
         output.accept(this);
     }
 

@@ -1,7 +1,7 @@
 package appeng.client.guidebook.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -48,18 +48,16 @@ public class GuideScrollbar extends AbstractWidget {
         int top = getY() + getThumbTop();
         int bottom = top + thumbHeight;
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferBuilder = tesselator.getBuilder();
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        bufferBuilder.vertex(left, bottom, 0.0).color(128, 128, 128, 255).endVertex();
-        bufferBuilder.vertex(right, bottom, 0.0).color(128, 128, 128, 255).endVertex();
-        bufferBuilder.vertex(right, top, 0.0).color(128, 128, 128, 255).endVertex();
-        bufferBuilder.vertex(left, top, 0.0).color(128, 128, 128, 255).endVertex();
-        bufferBuilder.vertex(left, bottom - 1, 0.0).color(192, 192, 192, 255).endVertex();
-        bufferBuilder.vertex(right - 1, bottom - 1, 0.0).color(192, 192, 192, 255).endVertex();
-        bufferBuilder.vertex(right - 1, top, 0.0).color(192, 192, 192, 255).endVertex();
-        bufferBuilder.vertex(left, top, 0.0).color(192, 192, 192, 255).endVertex();
-        tesselator.end();
+        var builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        builder.addVertex(left, bottom, 0.0f).setColor(128, 128, 128, 255);
+        builder.addVertex(right, bottom, 0.0f).setColor(128, 128, 128, 255);
+        builder.addVertex(right, top, 0.0f).setColor(128, 128, 128, 255);
+        builder.addVertex(left, top, 0.0f).setColor(128, 128, 128, 255);
+        builder.addVertex(left, bottom - 1, 0.0f).setColor(192, 192, 192, 255);
+        builder.addVertex(right - 1, bottom - 1, 0.0f).setColor(192, 192, 192, 255);
+        builder.addVertex(right - 1, top, 0.0f).setColor(192, 192, 192, 255);
+        builder.addVertex(left, top, 0.0f).setColor(192, 192, 192, 255);
+        BufferUploader.drawWithShader(builder.buildOrThrow());
     }
 
     /**

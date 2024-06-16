@@ -35,7 +35,6 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -43,6 +42,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.ClipContext.Fluid;
 import net.minecraft.world.level.Level;
@@ -230,13 +230,12 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         BlockState smeltedBlockState = null;
         List<ItemStack> smeltedDrops = new ArrayList<>();
 
-        var tempInv = new SimpleContainer(1);
         for (ItemStack i : drops) {
-            tempInv.setItem(0, i);
+            var tempInv = new SingleRecipeInput(i);
             Optional<SmeltingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, tempInv,
                     level).map(RecipeHolder::value);
 
-            if (!recipe.isPresent()) {
+            if (recipe.isEmpty()) {
                 return false;
             }
 

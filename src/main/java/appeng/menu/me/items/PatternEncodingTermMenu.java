@@ -25,16 +25,18 @@ import java.util.List;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 
 import it.unimi.dsi.fastutil.ints.IntArraySet;
@@ -207,23 +209,26 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
 
     private ItemStack getAndUpdateOutput() {
         var level = this.getPlayerInventory().player.level();
-        var ic = new TransientCraftingContainer(this, CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT);
 
+        var items = NonNullList.withSize(CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT, ItemStack.EMPTY);
         boolean invalidIngredients = false;
-        for (int x = 0; x < ic.getContainerSize(); x++) {
+        for (int x = 0; x < items.size(); x++) {
             var stack = getEncodedCraftingIngredient(x);
             if (stack != null) {
-                ic.setItem(x, stack);
+                items.set(x, stack);
             } else {
                 invalidIngredients = true;
             }
         }
 
-        if (this.currentRecipe == null || !this.currentRecipe.value().matches(ic, level)) {
+        var input = CraftingInput.of(CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT, items);
+
+        if (this.currentRecipe == null || !this.currentRecipe.value().matches(input, level)) {
             if (invalidIngredients) {
                 this.currentRecipe = null;
             } else {
-                this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, level).orElse(null);
+                this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level)
+                        .orElse(null);
             }
             this.currentMode = this.mode;
             checkFluidSubstitutionSupport();
@@ -234,7 +239,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         if (this.currentRecipe == null) {
             is = ItemStack.EMPTY;
         } else {
-            is = this.currentRecipe.value().assemble(ic, level.registryAccess());
+            is = this.currentRecipe.value().assemble(input, level.registryAccess());
         }
 
         this.craftOutputSlot.setDisplayedCraftingOutput(is);
@@ -379,20 +384,20 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             return null;
         }
 
-        var container = new SimpleContainer(3);
-        container.setItem(0, template.toStack());
-        container.setItem(1, base.toStack());
-        container.setItem(2, addition.toStack());
+        var input = new SmithingRecipeInput(
+                template.toStack(),
+                base.toStack(),
+                addition.toStack());
 
         var level = getPlayer().level();
         var recipe = level.getRecipeManager()
-                .getRecipeFor(RecipeType.SMITHING, container, level)
+                .getRecipeFor(RecipeType.SMITHING, input, level)
                 .orElse(null);
         if (recipe == null) {
             return null;
         }
 
-        var output = AEItemKey.of(recipe.value().assemble(container, level.registryAccess()));
+        var output = AEItemKey.of(recipe.value().assemble(input, level.registryAccess()));
 
         return PatternDetailsHelper.encodeSmithingTablePattern(recipe, template, base, addition, output,
                 encodingLogic.isSubstitution());
@@ -409,12 +414,11 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             return null;
         }
 
-        SimpleContainer container = new SimpleContainer(1);
-        container.setItem(0, input.toStack());
+        var recipeInput = new SingleRecipeInput(input.toStack());
 
         var level = getPlayer().level();
         var recipe = level.getRecipeManager()
-                .getRecipeFor(RecipeType.STONECUTTING, container, level, stonecuttingRecipeId)
+                .getRecipeFor(RecipeType.STONECUTTING, recipeInput, level, stonecuttingRecipeId)
                 .orElse(null);
         if (recipe == null) {
             return null;
@@ -507,10 +511,9 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         if (encodedInputsInv.getKey(0) instanceof AEItemKey itemKey) {
             var level = getPlayer().level();
             var recipeManager = level.getRecipeManager();
-            var inventory = new SimpleContainer(1);
-            inventory.setItem(0, itemKey.toStack());
+            var recipeInput = new SingleRecipeInput(itemKey.toStack());
             stonecuttingRecipes.addAll(
-                    recipeManager.getRecipesFor(RecipeType.STONECUTTING, inventory, level));
+                    recipeManager.getRecipesFor(RecipeType.STONECUTTING, recipeInput, level));
         }
 
         // Deselect a recipe that is now unavailable

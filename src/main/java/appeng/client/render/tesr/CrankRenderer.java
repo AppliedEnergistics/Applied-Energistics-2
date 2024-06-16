@@ -28,7 +28,7 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
@@ -41,8 +41,10 @@ import appeng.core.AppEng;
 @OnlyIn(Dist.CLIENT)
 public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {
 
-    public static final ResourceLocation BASE_MODEL = AppEng.makeId("block/crank_base");
-    public static final ResourceLocation HANDLE_MODEL = AppEng.makeId("block/crank_handle");
+    public static final ModelResourceLocation BASE_MODEL = ModelResourceLocation
+            .standalone(AppEng.makeId("block/crank_base"));
+    public static final ModelResourceLocation HANDLE_MODEL = ModelResourceLocation
+            .standalone(AppEng.makeId("block/crank_handle"));
 
     private final BlockRenderDispatcher blockRenderer;
 

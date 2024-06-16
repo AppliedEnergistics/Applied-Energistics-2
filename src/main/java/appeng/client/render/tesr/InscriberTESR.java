@@ -33,7 +33,6 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -56,7 +55,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
     private static final Material TEXTURE_INSIDE = new Material(InventoryMenu.BLOCK_ATLAS,
-            new ResourceLocation(AppEng.MOD_ID, "block/inscriber_inside"));
+            AppEng.makeId("block/inscriber_inside"));
 
     public InscriberTESR(BlockEntityRendererProvider.Context context) {
     }
@@ -232,13 +231,12 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
 
     private static void addVertex(VertexConsumer vb, PoseStack ms, TextureAtlasSprite sprite, float x, float y,
             float z, float texU, float texV, int overlayUV, int lightmapUV, Direction front) {
-        vb.vertex(ms.last().pose(), x, y, z);
-        vb.color(1.0f, 1.0f, 1.0f, 1.0f);
-        vb.uv(sprite.getU(texU), sprite.getV(texV));
-        vb.overlayCoords(overlayUV);
-        vb.uv2(lightmapUV);
-        vb.normal(ms.last(), front.getStepX(), front.getStepY(), front.getStepZ());
-        vb.endVertex();
+        vb.addVertex(ms.last().pose(), x, y, z);
+        vb.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        vb.setUv(sprite.getU(texU), sprite.getV(texV));
+        vb.setOverlay(overlayUV);
+        vb.setLight(lightmapUV);
+        vb.setNormal(ms.last(), front.getStepX(), front.getStepY(), front.getStepZ());
     }
 
     private void renderItem(PoseStack ms, ItemStack stack, float o, MultiBufferSource buffers,

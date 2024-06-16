@@ -6,10 +6,11 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
@@ -32,7 +33,6 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.items.storage.CreativeCellItem;
 import appeng.me.helpers.BaseActionSource;
-import appeng.menu.AutoCraftingMenu;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.SpawnExtraGridTestToolsChest;
 import appeng.server.testworld.TestCraftingJob;
@@ -240,14 +240,15 @@ public final class AutoCraftingTestPlots {
                 })
                 .toArray(ItemStack[]::new);
 
-        var c = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
+        var c = NonNullList.withSize(9, ItemStack.EMPTY);
         for (int i = 0; i < stacks.length; i++) {
-            c.setItem(i, stacks[i]);
+            c.set(i, stacks[i]);
         }
+        var recipeInput = CraftingInput.of(3, 3, c);
 
-        var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, c, level).orElseThrow();
+        var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, recipeInput, level).orElseThrow();
 
-        var result = recipe.value().assemble(c, level.registryAccess());
+        var result = recipe.value().assemble(recipeInput, level.registryAccess());
 
         return PatternDetailsHelper.encodeCraftingPattern(
                 recipe,

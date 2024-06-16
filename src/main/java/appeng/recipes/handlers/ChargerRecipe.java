@@ -8,10 +8,10 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -19,7 +19,7 @@ import net.minecraft.world.level.Level;
 import appeng.core.AppEng;
 import appeng.init.InitRecipeTypes;
 
-public class ChargerRecipe implements Recipe<Container> {
+public class ChargerRecipe implements Recipe<RecipeInput> {
     public static final ResourceLocation TYPE_ID = AppEng.makeId("charger");
 
     public static final RecipeType<ChargerRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
@@ -49,12 +49,12 @@ public class ChargerRecipe implements Recipe<Container> {
     }
 
     @Override
-    public boolean matches(Container container, Level level) {
+    public boolean matches(RecipeInput container, Level level) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(Container container, HolderLookup.Provider registries) {
+    public ItemStack assemble(RecipeInput container, HolderLookup.Provider registries) {
         return null;
     }
 

@@ -21,7 +21,7 @@ package appeng.items.tools.quartz;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.util.RandomSource;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -30,6 +30,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -40,8 +42,6 @@ import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
-    private final RandomSource random = RandomSource.create();
-
     public QuartzCuttingKnifeItem(Properties props, QuartzToolType type) {
         super(props);
     }
@@ -70,7 +70,14 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
     @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
         var broken = new MutableBoolean(false);
-        itemStack.hurtAndBreak(1, random, null, broken::setTrue);
+        if (CommonHooks.getCraftingPlayer() instanceof ServerPlayer serverPlayer) {
+            itemStack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, ignored -> broken.setTrue());
+        } else {
+            var currentServer = ServerLifecycleHooks.getCurrentServer();
+            if (currentServer != null) {
+                itemStack.hurtAndBreak(1, currentServer.overworld(), null, ignored -> broken.setTrue());
+            }
+        }
         return broken.getValue() ? ItemStack.EMPTY : itemStack;
     }
 

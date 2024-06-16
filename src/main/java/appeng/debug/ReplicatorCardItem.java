@@ -130,7 +130,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                 final int src_side = ish.getInt("side");
                 final String worldId = ish.getString("w");
                 final Level src_w = level.getServer()
-                        .getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(worldId)));
+                        .getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(worldId)));
                 final int replications = ish.getInt("r") + 1;
 
                 var gh = GridHelper.getNodeHost(src_w, new BlockPos(src_x, src_y, src_z));
@@ -228,7 +228,7 @@ public class ReplicatorCardItem extends AEBaseItem {
     }
 
     @Override
-    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
         if (AEConfig.instance().isDebugToolsEnabled()) {
             output.accept(this);
         }

@@ -254,7 +254,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         return false;
     }
 
-    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
         // do nothing
     }
 

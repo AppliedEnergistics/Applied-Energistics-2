@@ -24,17 +24,15 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.RecipeCraftingHolder;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.CommonHooks;
 
 import appeng.api.inventories.InternalInventory;
-import appeng.helpers.Inventories;
 import appeng.util.inv.AppEngInternalInventory;
 
 public class AppEngCraftingSlot extends AppEngSlot implements RecipeCraftingHolder {
@@ -101,32 +99,27 @@ public class AppEngCraftingSlot extends AppEngSlot implements RecipeCraftingHold
     public void onTake(Player player, ItemStack stack) {
         this.amountCrafted += stack.getCount();
         this.checkTakeAchievements(stack);
-        CommonHooks.setCraftingPlayer(player);
-        final CraftingContainer ic = new TransientCraftingContainer(this.getMenu(), 3, 3);
 
-        for (int x = 0; x < this.craftingGrid.size(); x++) {
-            ic.setItem(x, this.craftingGrid.getStackInSlot(x));
+        var items = NonNullList.withSize(this.craftingGrid.size(), ItemStack.EMPTY);
+        for (int i = 0; i < this.craftingGrid.size(); i++) {
+            items.set(i, this.craftingGrid.getStackInSlot(i));
         }
+        var input = CraftingInput.of(3, 3, items);
 
-        var aitemstack = this.getRemainingItems(ic, player.level());
-
-        Inventories.copy(ic, this.craftingGrid, false);
-
+        CommonHooks.setCraftingPlayer(player);
+        var remainingItems = this.getRemainingItems(input, player.level());
         CommonHooks.setCraftingPlayer(null);
 
-        for (int i = 0; i < aitemstack.size(); ++i) {
-            final ItemStack itemstack1 = this.craftingGrid.getStackInSlot(i);
-            final ItemStack itemstack2 = aitemstack.get(i);
+        for (int i = 0; i < this.craftingGrid.size(); ++i) {
+            // Consumes the item from the grid
+            this.craftingGrid.extractItem(i, 1, false);
 
-            if (!itemstack1.isEmpty()) {
-                this.craftingGrid.extractItem(i, 1, false);
-            }
-
-            if (!itemstack2.isEmpty()) {
+            var remainingInSlot = remainingItems.get(i);
+            if (!remainingInSlot.isEmpty()) {
                 if (this.craftingGrid.getStackInSlot(i).isEmpty()) {
-                    this.craftingGrid.setItemDirect(i, itemstack2);
-                } else if (!this.player.getInventory().add(itemstack2)) {
-                    this.player.drop(itemstack2, false);
+                    this.craftingGrid.setItemDirect(i, remainingInSlot);
+                } else if (!this.player.getInventory().add(remainingInSlot)) {
+                    this.player.drop(remainingInSlot, false);
                 }
             }
         }
@@ -154,7 +147,7 @@ public class AppEngCraftingSlot extends AppEngSlot implements RecipeCraftingHold
 
     // TODO: This is really hacky and NEEDS to be solved with a full menu/gui
     // refactoring.
-    protected NonNullList<ItemStack> getRemainingItems(CraftingContainer ic, Level level) {
+    protected NonNullList<ItemStack> getRemainingItems(CraftingInput ic, Level level) {
         return level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, level)
                 .map(recipe -> recipe.value().getRemainingItems(ic))
                 .orElse(NonNullList.withSize(9, ItemStack.EMPTY));

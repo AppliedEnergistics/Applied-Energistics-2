@@ -76,7 +76,7 @@ public final class TransitionInfo {
     }
 
     public static TransitionInfo fromTag(CompoundTag tag) {
-        ResourceLocation worldId = new ResourceLocation(tag.getString(TAG_WORLD_ID));
+        ResourceLocation worldId = ResourceLocation.parse(tag.getString(TAG_WORLD_ID));
         BlockPos min = NbtUtils.readBlockPos(tag, TAG_MIN).orElseThrow();
         BlockPos max = NbtUtils.readBlockPos(tag, TAG_MAX).orElseThrow();
         Instant timestamp = Instant.ofEpochMilli(tag.getLong(TAG_TIMESTAMP));

@@ -34,7 +34,6 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.IDynamicBakedModel;
@@ -52,11 +51,11 @@ import appeng.helpers.Splotch;
 class PaintSplotchesBakedModel implements IDynamicBakedModel {
 
     private static final Material TEXTURE_PAINT1 = new Material(TextureAtlas.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "block/paint1"));
+            AppEng.makeId("block/paint1"));
     private static final Material TEXTURE_PAINT2 = new Material(TextureAtlas.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "block/paint2"));
+            AppEng.makeId("block/paint2"));
     private static final Material TEXTURE_PAINT3 = new Material(TextureAtlas.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "block/paint3"));
+            AppEng.makeId("block/paint3"));
 
     private final TextureAtlasSprite[] textures;
 

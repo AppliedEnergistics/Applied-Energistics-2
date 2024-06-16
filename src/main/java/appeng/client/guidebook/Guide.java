@@ -239,7 +239,7 @@ public final class Guide implements PageCollection {
         }
 
         // Transform id such that the path is prefixed with "ae2assets", the source folder for the guidebook assets
-        id = new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath());
+        id = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath());
 
         var resource = Minecraft.getInstance().getResourceManager().getResource(id).orElse(null);
         if (resource == null) {
@@ -301,7 +301,7 @@ public final class Guide implements PageCollection {
                     location -> location.getPath().endsWith(".md"));
 
             for (var entry : resources.entrySet()) {
-                var pageId = new ResourceLocation(
+                var pageId = ResourceLocation.fromNamespaceAndPath(
                         entry.getKey().getNamespace(),
                         entry.getKey().getPath().substring((folder + "/").length()));
 
@@ -426,10 +426,10 @@ public final class Guide implements PageCollection {
             this.folder = Objects.requireNonNull(folder, "folder");
 
             // Both folder and default namespace need to be valid resource paths
-            if (!ResourceLocation.isValidResourceLocation(defaultNamespace + ":dummy")) {
+            if (!ResourceLocation.isValidNamespace(defaultNamespace)) {
                 throw new IllegalArgumentException("The default namespace for a guide needs to be a valid namespace");
             }
-            if (!ResourceLocation.isValidResourceLocation("dummy:" + folder)) {
+            if (!ResourceLocation.isValidPath(folder)) {
                 throw new IllegalArgumentException("The folder for a guide needs to be a valid resource location");
             }
 
@@ -437,7 +437,7 @@ public final class Guide implements PageCollection {
             try {
                 var startupPageIdText = System.getProperty(startupPageProperty);
                 if (startupPageIdText != null) {
-                    this.startupPage = new ResourceLocation(startupPageIdText);
+                    this.startupPage = ResourceLocation.parse(startupPageIdText);
                 }
             } catch (Exception e) {
                 LOGGER.error("Specified invalid page id in system property {}", startupPageProperty);
@@ -642,7 +642,8 @@ public final class Guide implements PageCollection {
 
     private void registerReloadListener(IEventBus modEventBus) {
         modEventBus.addListener((RegisterClientReloadListenersEvent evt) -> {
-            evt.registerReloadListener(new ReloadListener(new ResourceLocation(defaultNamespace, folder)));
+            evt.registerReloadListener(
+                    new ReloadListener(ResourceLocation.fromNamespaceAndPath(defaultNamespace, folder)));
         });
     }
 }

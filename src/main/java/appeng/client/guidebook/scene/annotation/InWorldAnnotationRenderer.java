@@ -277,11 +277,10 @@ public final class InWorldAnnotationRenderer {
             int color,
             Vector3f bottomLeft,
             float u, float v) {
-        consumer.vertex(bottomLeft.x, bottomLeft.y, bottomLeft.z)
-                .color(color)
-                .uv(u, v)
-                .uv2(LightTexture.FULL_BRIGHT)
-                .normal(faceNormal.x(), faceNormal.y(), faceNormal.z())
-                .endVertex();
+        consumer.addVertex(bottomLeft.x, bottomLeft.y, bottomLeft.z)
+                .setColor(color)
+                .setUv(u, v)
+                .setLight(LightTexture.FULL_BRIGHT)
+                .setNormal(faceNormal.x(), faceNormal.y(), faceNormal.z());
     }
 }

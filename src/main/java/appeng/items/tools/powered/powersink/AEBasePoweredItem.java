@@ -56,8 +56,8 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public void addToMainCreativeTab(CreativeModeTab.Output output) {
-        super.addToMainCreativeTab(output);
+    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+        super.addToMainCreativeTab(parameters, output);
 
         var charged = new ItemStack(this, 1);
         injectAEPower(charged, getAEMaxPower(charged), Actionable.MODULATE);

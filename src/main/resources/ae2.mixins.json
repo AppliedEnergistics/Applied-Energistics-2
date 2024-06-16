@@ -16,7 +16,6 @@
   ],
   "client": [
     "unlitquad.ModelManagerMixin",
-    "unlitquad.BlockModelMixin",
     "unlitquad.BlockPartFaceDeserializerMixin",
     "AbstractContainerScreenMixin",
     "GuiGraphicsMixin",

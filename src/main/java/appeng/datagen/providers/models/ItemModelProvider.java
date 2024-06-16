@@ -180,7 +180,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
     private void handheld(ItemDefinition<?> item) {
         singleTexture(
                 item.id().getPath(),
-                new ResourceLocation("item/handheld"),
+                ResourceLocation.parse("item/handheld"),
                 "layer0",
                 makeId("item/" + item.id().getPath()));
     }
@@ -231,6 +231,6 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
     }
 
     private static ResourceLocation makeId(String id) {
-        return id.contains(":") ? new ResourceLocation(id) : AppEng.makeId(id);
+        return id.contains(":") ? ResourceLocation.parse(id) : AppEng.makeId(id);
     }
 }

@@ -140,7 +140,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
     }
 
     @Override
-    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
         // Don't show in creative mode, since it's not useful without NBT
     }
 

@@ -34,18 +34,21 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -58,23 +61,15 @@ import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.SortOrder;
 import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.MEStorage;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.util.helpers.P2PHelper;
-import appeng.util.prioritylist.IPartitionList;
 
 public class Platform {
 
@@ -309,59 +304,6 @@ public class Platform {
                 yaw, pitch);
     }
 
-    public static ItemStack extractItemsByRecipe(IEnergySource energySrc,
-            IActionSource mySrc,
-            MEStorage src,
-            Level level,
-            Recipe<CraftingContainer> r,
-            ItemStack output,
-            CraftingContainer ci,
-            ItemStack providedTemplate,
-            int slot,
-            KeyCounter items,
-            Actionable realForFake,
-            IPartitionList filter) {
-        if (energySrc.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.9) {
-            if (providedTemplate == null) {
-                return ItemStack.EMPTY;
-            }
-
-            var ae_req = AEItemKey.of(providedTemplate);
-
-            if (filter == null || filter.isListed(ae_req)) {
-                var extracted = src.extract(ae_req, 1, realForFake, mySrc);
-                if (extracted > 0) {
-                    energySrc.extractAEPower(1, realForFake, PowerMultiplier.CONFIG);
-                    return ae_req.toStack();
-                }
-            }
-
-            var checkFuzzy = !providedTemplate.getComponents().isEmpty() || providedTemplate.isDamageableItem();
-
-            if (items != null && checkFuzzy) {
-                for (var x : items) {
-                    if (x.getKey() instanceof AEItemKey itemKey) {
-                        if (providedTemplate.getItem() == itemKey.getItem() && !itemKey.matches(output)) {
-                            ci.setItem(slot, itemKey.toStack());
-                            if (r.matches(ci, level)
-                                    && ItemStack.matches(r.assemble(ci, level.registryAccess()), output)) {
-                                if (filter == null || filter.isListed(itemKey)) {
-                                    var ex = src.extract(itemKey, 1, realForFake, mySrc);
-                                    if (ex > 0) {
-                                        energySrc.extractAEPower(1, realForFake, PowerMultiplier.CONFIG);
-                                        return itemKey.toStack();
-                                    }
-                                }
-                            }
-                            ci.setItem(slot, providedTemplate);
-                        }
-                    }
-                }
-            }
-        }
-        return ItemStack.EMPTY;
-    }
-
     public static void notifyBlocksOfNeighbors(Level level, BlockPos pos) {
         if (level != null && !level.isClientSide) {
             TickHandler.instance().addCallable(level, new BlockUpdate(pos));
@@ -452,5 +394,19 @@ public class Platform {
      */
     public static boolean isDevelopmentEnvironment() {
         return !FMLEnvironment.production;
+    }
+
+    /**
+     * Uses the given server to look up an enchantment.
+     */
+    public static Holder<Enchantment> getEnchantment(MinecraftServer server, ResourceKey<Enchantment> enchantment) {
+        return server.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment);
+    }
+
+    /**
+     * Uses the given server-level to look up an enchantment.
+     */
+    public static Holder<Enchantment> getEnchantment(ServerLevel level, ResourceKey<Enchantment> enchantment) {
+        return level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment);
     }
 }

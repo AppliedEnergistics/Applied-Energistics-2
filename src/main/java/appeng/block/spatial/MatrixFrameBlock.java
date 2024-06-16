@@ -49,7 +49,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
         // do nothing
     }
 

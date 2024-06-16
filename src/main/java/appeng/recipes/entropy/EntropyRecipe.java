@@ -38,10 +38,10 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -60,7 +60,7 @@ import appeng.items.tools.powered.EntropyManipulatorItem;
 /**
  * A special recipe used for the {@link EntropyManipulatorItem}.
  */
-public class EntropyRecipe implements Recipe<Container> {
+public class EntropyRecipe implements Recipe<RecipeInput> {
 
     public static final MapCodec<EntropyRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             EntropyMode.CODEC.fieldOf("mode").forGetter(EntropyRecipe::getMode),
@@ -91,12 +91,12 @@ public class EntropyRecipe implements Recipe<Container> {
     }
 
     @Override
-    public boolean matches(Container inv, Level level) {
+    public boolean matches(RecipeInput inv, Level level) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(Container inv, HolderLookup.Provider registries) {
+    public ItemStack assemble(RecipeInput inv, HolderLookup.Provider registries) {
         return ItemStack.EMPTY;
     }
 

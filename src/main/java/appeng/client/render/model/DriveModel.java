@@ -42,15 +42,15 @@ import appeng.init.internal.InitStorageCells;
 
 public class DriveModel implements BasicUnbakedModel {
 
-    private static final ResourceLocation MODEL_BASE = new ResourceLocation(
+    private static final ResourceLocation MODEL_BASE = ResourceLocation.parse(
             "ae2:block/drive/drive_base");
-    private static final ResourceLocation MODEL_CELL_EMPTY = new ResourceLocation(
+    private static final ResourceLocation MODEL_CELL_EMPTY = ResourceLocation.parse(
             "ae2:block/drive/drive_cell_empty");
 
     @Nullable
     @Override
     public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelTransform, ResourceLocation modelLocation) {
+            ModelState modelTransform) {
         final Map<Item, BakedModel> cellModels = new IdentityHashMap<>();
 
         // Load the base model and the model for each cell model.

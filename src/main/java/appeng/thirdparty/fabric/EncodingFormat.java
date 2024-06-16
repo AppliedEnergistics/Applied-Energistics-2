@@ -19,6 +19,7 @@ import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
+import net.minecraft.client.renderer.block.model.FaceBakery;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 
@@ -59,7 +60,7 @@ public abstract class EncodingFormat {
         VERTEX_V = VERTEX_U + 1;
         VERTEX_LIGHTMAP = HEADER_STRIDE + 6;
         VERTEX_NORMAL = HEADER_STRIDE + 7;
-        VERTEX_STRIDE = format.getIntegerSize();
+        VERTEX_STRIDE = FaceBakery.VERTEX_INT_SIZE;
         QUAD_STRIDE = VERTEX_STRIDE * 4;
         QUAD_STRIDE_BYTES = QUAD_STRIDE * 4;
         TOTAL_STRIDE = HEADER_STRIDE + QUAD_STRIDE;

@@ -38,7 +38,7 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEDamageTypes;
 import appeng.datagen.providers.advancements.AdvancementGenerator;
 import appeng.datagen.providers.localization.LocalizationProvider;
-import appeng.datagen.providers.loot.BlockDropProvider;
+import appeng.datagen.providers.loot.AE2LootTableProvider;
 import appeng.datagen.providers.models.BlockModelProvider;
 import appeng.datagen.providers.models.CableModelProvider;
 import appeng.datagen.providers.models.DecorationModelProvider;
@@ -79,7 +79,7 @@ public class AE2DataGenerators {
                 createDatapackEntriesBuilder(), Set.of(AppEng.MOD_ID)));
 
         // Loot
-        pack.addProvider(bindRegistries(BlockDropProvider::new, registries));
+        pack.addProvider(packOutput -> new AE2LootTableProvider(packOutput, registries));
 
         // Tags
         var blockTagsProvider = pack

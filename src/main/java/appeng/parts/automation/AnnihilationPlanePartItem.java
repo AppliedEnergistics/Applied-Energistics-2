@@ -3,6 +3,7 @@ package appeng.parts.automation;
 import java.util.List;
 
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -63,11 +64,13 @@ public class AnnihilationPlanePartItem extends PartItem<AnnihilationPlanePart> {
     }
 
     @Override
-    public void addToMainCreativeTab(CreativeModeTab.Output output) {
-        super.addToMainCreativeTab(output);
+    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+        super.addToMainCreativeTab(parameters, output);
+
+        var enchantmentRegistry = parameters.holders().lookupOrThrow(Registries.ENCHANTMENT);
 
         var enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enchantments.set(Enchantments.SILK_TOUCH, 1);
+        enchantments.set(enchantmentRegistry.getOrThrow(Enchantments.SILK_TOUCH), 1);
 
         var silkTouch = new ItemStack(this);
         silkTouch.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());

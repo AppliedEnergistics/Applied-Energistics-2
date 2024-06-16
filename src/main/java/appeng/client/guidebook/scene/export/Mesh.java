@@ -6,7 +6,7 @@ import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 
@@ -23,19 +23,13 @@ import appeng.thirdparty.fabric.SpriteFinder;
 
 /**
  * Captured rendering data.
- * 
- * @param indexBuffer Can be null if {@link BufferBuilder.DrawState#sequentialIndex()} is true.
+ *
+ * @param indexBuffer Can be null if sequential indices are to be used.
  */
-record Mesh(BufferBuilder.DrawState drawState,
+record Mesh(MeshData.DrawState drawState,
         ByteBuffer vertexBuffer,
         @Nullable ByteBuffer indexBuffer,
         RenderType renderType) {
-
-    Mesh {
-        if (indexBuffer == null && !drawState.sequentialIndex()) {
-            throw new NullPointerException("indexBuffer");
-        }
-    }
 
     /**
      * Checks if the mesh contains any texture atlases that are animated.
@@ -63,12 +57,12 @@ record Mesh(BufferBuilder.DrawState drawState,
         var offset = 0;
         VertexFormatElement uvElement = null;
         for (var element : renderType.format().getElements()) {
-            if (element.getUsage() == VertexFormatElement.Usage.UV && element.getIndex() == 0
-                    && element.getCount() == 2) {
+            if (element.usage() == VertexFormatElement.Usage.UV && element.index() == 0
+                    && element.count() == 2) {
                 uvElement = element;
                 break;
             }
-            offset += element.getByteSize();
+            offset += element.byteSize();
         }
 
         if (uvElement == null) {
@@ -88,7 +82,7 @@ record Mesh(BufferBuilder.DrawState drawState,
     }
 
     private Stream<Vector4i> streamIndices() {
-        if (drawState.sequentialIndex()) {
+        if (indexBuffer == null) {
             var quadCount = drawState.vertexCount() / 4;
             return IntStream.range(0, quadCount)
                     .mapToObj(quadIdx -> new Vector4i(quadIdx * 4, quadIdx * 4 + 1, quadIdx * 4 + 2, quadIdx * 4 + 3));
@@ -133,8 +127,8 @@ record Mesh(BufferBuilder.DrawState drawState,
         var stride = drawState.format().getVertexSize();
         var dataStart = index * stride + offset;
         return new Vector2f(
-                readFloat(uvElement.getType(), dataStart),
-                readFloat(uvElement.getType(), dataStart + uvElement.getType().getSize()));
+                readFloat(uvElement.type(), dataStart),
+                readFloat(uvElement.type(), dataStart + uvElement.type().size()));
     }
 
     private float readFloat(VertexFormatElement.Type type, int offset) {

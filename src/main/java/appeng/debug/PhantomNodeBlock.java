@@ -42,7 +42,7 @@ public class PhantomNodeBlock extends AEBaseEntityBlock<PhantomNodeBlockEntity> 
     }
 
     @Override
-    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
         if (AEConfig.instance().isDebugToolsEnabled()) {
             output.accept(this);
         }

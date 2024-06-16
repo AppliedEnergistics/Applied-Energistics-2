@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 
@@ -31,17 +30,6 @@ public class BuiltInModelHooks {
         if (!AppEng.MOD_ID.equals(variantId.getNamespace())) {
             return null;
         }
-
-        // Vanilla loads item models as <id>#inventory, which we replicate here
-        if (variantId instanceof ModelResourceLocation modelId) {
-            if ("inventory".equals(modelId.getVariant())) {
-                var itemModelId = new ResourceLocation(modelId.getNamespace(), "item/" + modelId.getPath());
-                return builtInModels.get(itemModelId);
-            }
-
-            return null;
-        } else {
-            return builtInModels.get(variantId);
-        }
+        return builtInModels.get(variantId);
     }
 }

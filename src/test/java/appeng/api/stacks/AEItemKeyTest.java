@@ -11,24 +11,29 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.testframework.junit.EphemeralTestServerProvider;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.ids.AEComponents;
 import appeng.core.definitions.AEItems;
 import appeng.util.BootstrapMinecraft;
+import appeng.util.Platform;
 
 @BootstrapMinecraft
+@ExtendWith(EphemeralTestServerProvider.class)
 class AEItemKeyTest {
     private RegistryAccess registries = RegistryAccess.EMPTY;
 
@@ -137,10 +142,10 @@ class AEItemKeyTest {
     }
 
     @Test
-    void testFuzzyEqualsDifferentNbt() {
+    void testFuzzyEqualsDifferentNbt(MinecraftServer server) {
         var pick1 = new ItemStack(Items.DIAMOND_PICKAXE);
         var pick2 = new ItemStack(Items.DIAMOND_PICKAXE);
-        pick2.enchant(Enchantments.FORTUNE, 2);
+        pick2.enchant(Platform.getEnchantment(server, Enchantments.FORTUNE), 2);
         assertNotEquals(pick1.getComponents(), pick2.getComponents());
 
         assertTrue(AEItemKey.of(pick1).fuzzyEquals(AEItemKey.of(pick2), FuzzyMode.IGNORE_ALL));
@@ -201,7 +206,7 @@ class AEItemKeyTest {
      * Regression test for {@link FuzzySearch#COMPARATOR} wrongly using AEKey identity comparison as a last resort.
      */
     @Test
-    void testDifferentInstances() {
+    void testDifferentInstances(MinecraftServer server) {
         int testCount = 100;
         while (testCount-- > 0) {
 
@@ -211,7 +216,7 @@ class AEItemKeyTest {
 
             for (int i = 0; i < COUNT; i++) {
                 var stack = new ItemStack(Items.DIAMOND_SWORD);
-                stack.enchant(Enchantments.SHARPNESS, i + 1);
+                stack.enchant(Platform.getEnchantment(server, Enchantments.SHARPNESS), i + 1);
                 keys[i] = AEItemKey.of(stack);
                 keyCopies[i] = AEItemKey.of(stack);
 

@@ -88,7 +88,7 @@ public abstract class AEBaseBlock extends Block implements IOrientableBlock {
                 .pushReaction(PushReaction.DESTROY);
     }
 
-    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
         output.accept(this);
     }
 

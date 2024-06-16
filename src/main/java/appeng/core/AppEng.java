@@ -45,7 +45,7 @@ public interface AppEng {
     }
 
     static ResourceLocation makeId(String id) {
-        return new ResourceLocation(MOD_ID, id);
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, id);
     }
 
     /**

@@ -118,6 +118,6 @@ public class MatterCannonAmmoProvider extends AE2RecipeProvider {
 
     private static void tag(RecipeOutput consumer, String recipeId, String tagId, float weight) {
         MatterCannonAmmo.ammo(consumer, AppEng.makeId("matter_cannon/" + recipeId),
-                TagKey.create(Registries.ITEM, new ResourceLocation(tagId)), weight);
+                TagKey.create(Registries.ITEM, ResourceLocation.parse(tagId)), weight);
     }
 }

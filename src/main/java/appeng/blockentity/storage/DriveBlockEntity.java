@@ -184,7 +184,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
             var tagName = "cell" + i;
             if (data.contains(tagName, Tag.TAG_COMPOUND)) {
                 var cellData = data.getCompound(tagName);
-                var id = new ResourceLocation(cellData.getString("id"));
+                var id = ResourceLocation.parse(cellData.getString("id"));
                 var cellStateName = cellData.getString("state");
 
                 clientSideCellItems[i] = BuiltInRegistries.ITEM.getOptional(id).orElse(null);

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.SectionPos;
@@ -24,100 +25,106 @@ public class LiquidVertexConsumer implements VertexConsumer {
     }
 
     @Override
-    public VertexConsumer vertex(double x, double y, double z) {
+    public VertexConsumer addVertex(float x, float y, float z) {
         x += sectionPos.getX() * SectionPos.SECTION_SIZE;
         y += sectionPos.getY() * SectionPos.SECTION_SIZE;
         z += sectionPos.getZ() * SectionPos.SECTION_SIZE;
 
-        return delegate.vertex(x, y, z);
+        return delegate.addVertex(x, y, z);
     }
 
     @Override
-    public VertexConsumer color(int red, int green, int blue, int alpha) {
-        return delegate.color(red, green, blue, alpha);
+    public VertexConsumer setColor(int i, int i1, int i2, int i3) {
+        return delegate.setColor(i, i1, i2, i3);
     }
 
     @Override
-    public VertexConsumer uv(float u, float v) {
-        return delegate.uv(u, v);
+    public VertexConsumer setUv(float v, float v1) {
+        return delegate.setUv(v, v1);
     }
 
     @Override
-    public VertexConsumer overlayCoords(int u, int v) {
-        return delegate.overlayCoords(u, v);
+    public VertexConsumer setUv1(int i, int i1) {
+        return delegate.setUv1(i, i1);
     }
 
     @Override
-    public VertexConsumer uv2(int u, int v) {
-        return delegate.uv2(u, v);
+    public VertexConsumer setUv2(int i, int i1) {
+        return delegate.setUv2(i, i1);
     }
 
     @Override
-    public VertexConsumer normal(float x, float y, float z) {
-        return delegate.normal(x, y, z);
+    public VertexConsumer setNormal(float v, float v1, float v2) {
+        return delegate.setNormal(v, v1, v2);
     }
 
     @Override
-    public void endVertex() {
-        delegate.endVertex();
+    public void addVertex(float p_351049_, float p_350528_, float p_351018_, int p_350427_, float p_350508_,
+            float p_350864_, int p_350846_, int p_350731_, float p_350784_, float p_351051_, float p_350759_) {
+        delegate.addVertex(p_351049_, p_350528_, p_351018_, p_350427_, p_350508_, p_350864_, p_350846_, p_350731_,
+                p_350784_, p_351051_, p_350759_);
     }
 
     @Override
-    public void vertex(float x, float y, float z, float red, float green, float blue, float alpha, float texU,
-            float texV, int overlayUV, int lightmapUV, float normalX, float normalY, float normalZ) {
-        delegate.vertex(x, y, z, red, green, blue, alpha, texU, texV, overlayUV, lightmapUV, normalX, normalY, normalZ);
+    public VertexConsumer setColor(float p_350350_, float p_350356_, float p_350623_, float p_350312_) {
+        return delegate.setColor(p_350350_, p_350356_, p_350623_, p_350312_);
     }
 
     @Override
-    public void defaultColor(int red, int green, int blue, int alpha) {
-        delegate.defaultColor(red, green, blue, alpha);
+    public VertexConsumer setColor(int p_350809_) {
+        return delegate.setColor(p_350809_);
     }
 
     @Override
-    public void unsetDefaultColor() {
-        delegate.unsetDefaultColor();
+    public VertexConsumer setWhiteAlpha(int p_350979_) {
+        return delegate.setWhiteAlpha(p_350979_);
     }
 
     @Override
-    public VertexConsumer color(float red, float green, float blue, float alpha) {
-        return delegate.color(red, green, blue, alpha);
+    public VertexConsumer setLight(int p_350855_) {
+        return delegate.setLight(p_350855_);
     }
 
     @Override
-    public VertexConsumer color(int i) {
-        return delegate.color(i);
+    public VertexConsumer setOverlay(int p_350697_) {
+        return delegate.setOverlay(p_350697_);
     }
 
     @Override
-    public VertexConsumer uv2(int lightmapUV) {
-        return delegate.uv2(lightmapUV);
+    public void putBulkData(PoseStack.Pose pPose, BakedQuad pQuad, float pRed, float pGreen, float pBlue, float pAlpha,
+            int pPackedLight, int pPackedOverlay) {
+        delegate.putBulkData(pPose, pQuad, pRed, pGreen, pBlue, pAlpha, pPackedLight, pPackedOverlay);
     }
 
     @Override
-    public VertexConsumer overlayCoords(int overlayUV) {
-        return delegate.overlayCoords(overlayUV);
+    public void putBulkData(PoseStack.Pose pPose, BakedQuad pQuad, float[] pBrightness, float pRed, float pGreen,
+            float pBlue, float pAlpha, int[] pLightmap, int pPackedOverlay, boolean p_331268_) {
+        delegate.putBulkData(pPose, pQuad, pBrightness, pRed, pGreen, pBlue, pAlpha, pLightmap, pPackedOverlay,
+                p_331268_);
     }
 
     @Override
-    public void putBulkData(PoseStack.Pose poseEntry, BakedQuad quad, float red, float green, float blue, float alpha,
-            int combinedLight, int combinedOverlay) {
-        delegate.putBulkData(poseEntry, quad, red, green, blue, alpha, combinedLight, combinedOverlay);
+    public VertexConsumer addVertex(Vector3f p_350685_) {
+        return delegate.addVertex(p_350685_);
     }
 
     @Override
-    public void putBulkData(PoseStack.Pose poseEntry, BakedQuad quad, float[] colorMuls, float red, float green,
-            float blue, float alpha, int[] combinedLights, int combinedOverlay, boolean mulColor) {
-        delegate.putBulkData(poseEntry, quad, colorMuls, red, green, blue, alpha, combinedLights, combinedOverlay,
-                mulColor);
+    public VertexConsumer addVertex(PoseStack.Pose p_352288_, Vector3f p_352298_) {
+        return delegate.addVertex(p_352288_, p_352298_);
     }
 
     @Override
-    public VertexConsumer vertex(Matrix4f matrix4f, float f, float g, float h) {
-        return delegate.vertex(matrix4f, f, g, h);
+    public VertexConsumer addVertex(PoseStack.Pose p_350506_, float p_350934_, float p_350873_, float p_350981_) {
+        return delegate.addVertex(p_350506_, p_350934_, p_350873_, p_350981_);
     }
 
     @Override
-    public VertexConsumer normal(PoseStack.Pose pose, float x, float y, float z) {
-        return delegate.normal(pose, x, y, z);
+    public VertexConsumer addVertex(Matrix4f p_350929_, float p_350884_, float p_350885_, float p_350942_) {
+        return delegate.addVertex(p_350929_, p_350884_, p_350885_, p_350942_);
+    }
+
+    @Override
+    public VertexConsumer setNormal(PoseStack.Pose p_350592_, float p_350534_, float p_350411_, float p_350441_) {
+        return delegate.setNormal(p_350592_, p_350534_, p_350411_, p_350441_);
     }
 }

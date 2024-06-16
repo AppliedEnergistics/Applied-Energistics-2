@@ -20,7 +20,6 @@ package appeng.spatial;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -34,10 +33,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.entity.Visibility;
-import net.minecraft.world.level.portal.PortalInfo;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.util.ITeleporter;
 
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
@@ -110,27 +108,15 @@ public class SpatialStorageHelper {
             AdvancementTriggers.SPATIAL_EXPLORER.trigger((ServerPlayer) entity);
         }
 
-        PortalInfo portalInfo = new PortalInfo(new Vec3(link.x, link.y, link.z), Vec3.ZERO, entity.getYRot(),
-                entity.getXRot());
-        entity = entity.changeDimension(link.dim, new ITeleporter() {
-            @Override
-            public Entity placeEntity(Entity entity, ServerLevel currentLevel, ServerLevel destLevel, float yaw,
-                    Function<Boolean, Entity> repositionEntity) {
-                return repositionEntity.apply(false);
-            }
-
-            @Override
-            public PortalInfo getPortalInfo(Entity entity, ServerLevel destLevel,
-                    Function<ServerLevel, PortalInfo> defaultPortalInfo) {
-                return portalInfo;
-            }
-        });
-
-        if (entity != null && !passengersOnOtherSide.isEmpty()) {
-            for (Entity passanger : passengersOnOtherSide) {
-                passanger.startRiding(entity, true);
-            }
-        }
+        entity.changeDimension(new DimensionTransition(
+                newLevel, new Vec3(link.x, link.y, link.z), Vec3.ZERO, entity.getYRot(),
+                entity.getXRot(), transportedEntity -> {
+                    if (!passengersOnOtherSide.isEmpty()) {
+                        for (Entity passanger : passengersOnOtherSide) {
+                            passanger.startRiding(transportedEntity, true);
+                        }
+                    }
+                }));
 
         return entity;
     }
