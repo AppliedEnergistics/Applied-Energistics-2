@@ -405,8 +405,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
             // This can change due to changes in the search settings sub-screen
             this.searchField.setTooltipMessage(List.of(
-                    config.isSearchTooltips() ? GuiText.SearchTooltipIncludingTooltips.text()
-                            : GuiText.SearchTooltip.text(),
+                    GuiText.SearchTooltip.text(),
                     GuiText.SearchTooltipModId.text(),
                     GuiText.SearchTooltipTag.text(),
                     GuiText.SearchTooltipToolTips.text(),

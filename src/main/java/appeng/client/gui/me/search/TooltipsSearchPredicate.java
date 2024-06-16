@@ -1,5 +1,6 @@
 package appeng.client.gui.me.search;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -14,11 +15,11 @@ import appeng.util.Platform;
 
 final class TooltipsSearchPredicate implements Predicate<GridInventoryEntry> {
     private final String tooltip;
-    private final RepoSearch repoSearch;
+    private final Map<AEKey, String> tooltipCache;
 
-    public TooltipsSearchPredicate(String tooltip, RepoSearch repoSearch) {
-        this.tooltip = standardify(tooltip.toLowerCase());
-        this.repoSearch = repoSearch;
+    public TooltipsSearchPredicate(String tooltip, Map<AEKey, String> tooltipCache) {
+        this.tooltip = normalize(tooltip.toLowerCase());
+        this.tooltipCache = tooltipCache;
     }
 
     @Override
@@ -26,18 +27,14 @@ final class TooltipsSearchPredicate implements Predicate<GridInventoryEntry> {
         AEKey entryInfo = Objects.requireNonNull(gridInventoryEntry.getWhat());
         var tooltipText = getTooltipText(entryInfo);
 
-        if (tooltipText.toLowerCase().contains(tooltip)) {
-            return true;
-        }
-
-        return false;
+        return tooltipText.contains(tooltip);
     }
 
     /**
      * Gets the concatenated text of a keys tooltip for search purposes.
      */
     private String getTooltipText(AEKey what) {
-        return repoSearch.tooltipCache.computeIfAbsent(what, key -> {
+        return tooltipCache.computeIfAbsent(what, key -> {
             var lines = AEKeyRendering.getTooltip(key);
 
             var tooltipText = new StringBuilder();
@@ -72,14 +69,11 @@ final class TooltipsSearchPredicate implements Predicate<GridInventoryEntry> {
                 }
             }
 
-            return standardify(tooltipText.toString());
+            return normalize(tooltipText.toString());
         });
     }
 
-    /**
-     * util function to standardify the tool tips string
-     */
-    private String standardify(String input) {
+    private static String normalize(String input) {
         return input.toLowerCase().replace(" ", "");
     }
 }
