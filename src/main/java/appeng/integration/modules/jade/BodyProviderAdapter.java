@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
-import snownee.jade.api.Identifiers;
+import snownee.jade.api.JadeIds;
 import snownee.jade.api.config.IPluginConfig;
 
 import appeng.api.integrations.igtooltip.providers.BodyProvider;
@@ -28,8 +28,8 @@ class BodyProviderAdapter<T extends BlockEntity> extends BaseProvider implements
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-        tooltip.remove(Identifiers.UNIVERSAL_ENERGY_STORAGE_DETAILED);
-        tooltip.remove(Identifiers.UNIVERSAL_FLUID_STORAGE_DETAILED);
+        tooltip.remove(JadeIds.UNIVERSAL_ENERGY_STORAGE_DETAILED);
+        tooltip.remove(JadeIds.UNIVERSAL_FLUID_STORAGE_DETAILED);
 
         var context = ContextHelper.getContext(accessor);
         var tooltipBuilder = new JadeTooltipBuilder(tooltip);
