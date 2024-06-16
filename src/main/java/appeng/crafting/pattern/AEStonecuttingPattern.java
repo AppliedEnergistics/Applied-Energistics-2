@@ -30,10 +30,10 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -223,7 +223,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer container, Level level) {
+    public ItemStack assemble(CraftingInput container, Level level) {
         // Jiggle the container around
         var testInput = new SingleRecipeInput(container.getItem(CRAFTING_GRID_SLOT));
 

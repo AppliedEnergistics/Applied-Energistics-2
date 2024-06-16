@@ -47,7 +47,6 @@ import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.ModList;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -806,16 +805,18 @@ public final class TestPlots {
         plot.cable(origin).part(Direction.NORTH, AEParts.TERMINAL);
         var drive = plot.drive(origin.east());
 
-        var enchantment = Platform.getEnchantment(ServerLifecycleHooks.getCurrentServer(), Enchantments.FORTUNE);
-        var pickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
-        pickaxe.enchant(enchantment, 1);
-        for (var i = 0; i < 10; i++) {
-            var cell = drive.addItemCell64k();
-            for (var j = 0; j < 63; j++) {
-                pickaxe.setDamageValue(pickaxe.getDamageValue() + 1);
-                cell.add(AEItemKey.of(pickaxe), 2);
+        plot.addPostBuildAction((level, player, ignored) -> {
+            var enchantment = Platform.getEnchantment(level, Enchantments.FORTUNE);
+            var pickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
+            pickaxe.enchant(enchantment, 1);
+            for (var i = 0; i < 10; i++) {
+                var cell = drive.addItemCell64k();
+                for (var j = 0; j < 63; j++) {
+                    pickaxe.setDamageValue(pickaxe.getDamageValue() + 1);
+                    cell.add(AEItemKey.of(pickaxe), 2);
+                }
             }
-        }
+        });
     }
 
     @TestPlot("import_from_cauldron")

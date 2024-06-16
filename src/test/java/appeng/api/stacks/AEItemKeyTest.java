@@ -9,9 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
-import appeng.util.Platform;
-import net.minecraft.server.MinecraftServer;
-import net.neoforged.testframework.junit.EphemeralTestServerProvider;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,16 +18,19 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.testframework.junit.EphemeralTestServerProvider;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.ids.AEComponents;
 import appeng.core.definitions.AEItems;
 import appeng.util.BootstrapMinecraft;
+import appeng.util.Platform;
 
 @BootstrapMinecraft
 @ExtendWith(EphemeralTestServerProvider.class)

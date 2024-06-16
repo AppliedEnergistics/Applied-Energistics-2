@@ -1,7 +1,5 @@
 package appeng.server.testplots;
 
-import java.util.Collections;
-
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -14,7 +12,9 @@ public class CraftingPatternHelper {
     public static ItemStack encodeShapelessCraftingRecipe(Level level, ItemStack... inputs) {
         // Pad out the list to 3x3
         var items = NonNullList.withSize(3 * 3, ItemStack.EMPTY);
-        Collections.addAll(items, inputs);
+        for (int i = 0; i < inputs.length; i++) {
+            items.set(i, inputs[i]);
+        }
         var recipeInput = CraftingInput.of(3, 3, items);
 
         var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, recipeInput, level)

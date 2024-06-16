@@ -33,7 +33,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -372,13 +371,13 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer container, Level level) {
+    public ItemStack assemble(CraftingInput container, Level level) {
         if (canSubstitute && recipe.isSpecial()) {
             // For special recipes, we need to test the recipe with assemble, unfortunately, since the output might
             // depend on the inputs in a way that can't be detected by changing one input at the time.
             var items = NonNullList.withSize(CRAFTING_GRID_DIMENSION * CRAFTING_GRID_DIMENSION, ItemStack.EMPTY);
 
-            for (int x = 0; x < container.getContainerSize(); ++x) {
+            for (int x = 0; x < container.size(); ++x) {
                 ItemStack item = container.getItem(x);
                 var stack = GenericStack.unwrapItemStack(item);
                 if (stack != null) {
@@ -397,7 +396,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             return recipe.assemble(testInput, level.registryAccess());
         }
 
-        for (int x = 0; x < container.getContainerSize(); x++) {
+        for (int x = 0; x < container.size(); x++) {
             ItemStack item = container.getItem(x);
             var stack = GenericStack.unwrapItemStack(item);
             if (stack != null) {
@@ -417,27 +416,38 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingContainer container) {
+    public NonNullList<ItemStack> getRemainingItems(CraftingInput container) {
         // Replace substituted fluids with the original item and ensure the slot is deleted
         // after calling getRemainingItems. This is to fix compatibility with mods that *actually*
         // search for the fluid containers in the container and warn/error if they're not found.
         // See AE2 bug 6804 for details.
 
         if (canSubstituteFluids) {
-            var slotsToClear = new boolean[container.getContainerSize()];
-            for (int x = 0; x < container.getContainerSize(); ++x) {
+            var adjustedItems = new ArrayList<ItemStack>(container.size());
+            for (int i = 0; i < container.size(); i++) {
+                adjustedItems.add(container.getItem(i));
+            }
+
+            var slotsToClear = new boolean[container.size()];
+            for (int x = 0; x < container.size(); ++x) {
                 var validFluid = getValidFluid(x);
                 if (validFluid != null) {
                     var item = container.getItem(x);
                     var stack = GenericStack.unwrapItemStack(item);
                     if (validFluid.equals(stack)) {
-                        container.setItem(x, ((AEItemKey) sparseInputs.get(x).what()).toStack());
+                        adjustedItems.set(x, ((AEItemKey) sparseInputs.get(x).what()).toStack());
                         slotsToClear[x] = true;
                     }
                 }
             }
 
-            var result = this.recipe.getRemainingItems(container.asCraftInput());
+            // Since we did not remove items, the positioning itself should not change.
+            var adjustedInput = CraftingInput.of(container.width(), container.height(), adjustedItems);
+            if (adjustedInput.size() != container.size()) {
+                throw new IllegalStateException("After fluid substitution, the container size changed: "
+                        + adjustedInput.size() + " != " + container.size());
+            }
+            var result = this.recipe.getRemainingItems(adjustedInput);
 
             // Now ensure the empty buckets are cleared since we didn't really use any buckets to begin with
             for (int i = 0; i < slotsToClear.length; i++) {
@@ -449,7 +459,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             return result;
         } else {
             // If no fluid substitution occurred, just call it as-is
-            return this.recipe.getRemainingItems(container.asCraftInput());
+            return this.recipe.getRemainingItems(container);
         }
     }
 

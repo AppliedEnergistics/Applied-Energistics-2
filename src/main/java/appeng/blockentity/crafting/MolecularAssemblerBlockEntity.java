@@ -205,7 +205,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             this.craftingInv.setItem(x, this.gridInv.getStackInSlot(x));
         }
 
-        return !this.myPlan.assemble(this.craftingInv, this.getLevel()).isEmpty();
+        return !this.myPlan.assemble(this.craftingInv.asCraftInput(), this.getLevel()).isEmpty();
     }
 
     @Override
@@ -423,18 +423,28 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 this.craftingInv.setItem(x, this.gridInv.getStackInSlot(x));
             }
 
+            var positionedInput = craftingInv.asPositionedCraftInput();
+            var craftinginput = positionedInput.input();
+
             this.progress = 0;
-            final ItemStack output = this.myPlan.assemble(this.craftingInv, this.getLevel());
+            final ItemStack output = this.myPlan.assemble(craftinginput, this.getLevel());
             if (!output.isEmpty()) {
+                output.onCraftedBySystem(level);
                 CraftingEvent.fireAutoCraftingEvent(getLevel(), this.myPlan, output, this.craftingInv);
 
                 // pushOut might reset the plan back to null, so get the remaining items before
-                var craftingRemainders = this.myPlan.getRemainingItems(this.craftingInv);
+                var craftingRemainders = this.myPlan.getRemainingItems(craftinginput);
 
                 this.pushOut(output.copy());
 
-                for (int x = 0; x < this.craftingInv.getContainerSize(); x++) {
-                    this.gridInv.setItemDirect(x, craftingRemainders.get(x));
+                int craftingInputLeft = positionedInput.left();
+                int craftingInputTop = positionedInput.top();
+                this.gridInv.clear();
+                for (int y = 0; y < craftinginput.height(); y++) {
+                    for (int x = 0; x < craftinginput.width(); x++) {
+                        int idx = x + craftingInputLeft + (y + craftingInputTop) * craftingInv.getWidth();
+                        gridInv.setItemDirect(idx, craftingRemainders.get(x + y * craftinginput.width()));
+                    }
                 }
 
                 if (this.patternInv.isEmpty()) {

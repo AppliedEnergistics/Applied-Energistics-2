@@ -19,6 +19,7 @@ public class Plot implements PlotBuilder {
     private final ResourceLocation id;
 
     private final List<BuildAction> buildActions = new ArrayList<>();
+    private final List<PostBuildAction> postBuildActions = new ArrayList<>();
 
     private Test test;
 
@@ -44,6 +45,11 @@ public class Plot implements PlotBuilder {
     @Override
     public void addBuildAction(BuildAction action) {
         buildActions.add(action);
+    }
+
+    @Override
+    public void addPostBuildAction(PostBuildAction action) {
+        postBuildActions.add(action);
     }
 
     @Override
@@ -84,6 +90,10 @@ public class Plot implements PlotBuilder {
 
         for (var action : buildActions) {
             action.spawnEntities(level, origin, entities);
+        }
+
+        for (var action : postBuildActions) {
+            action.postBuild(level, player, origin);
         }
     }
 

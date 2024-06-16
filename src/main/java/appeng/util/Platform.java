@@ -402,4 +402,11 @@ public class Platform {
     public static Holder<Enchantment> getEnchantment(MinecraftServer server, ResourceKey<Enchantment> enchantment) {
         return server.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment);
     }
+
+    /**
+     * Uses the given server-level to look up an enchantment.
+     */
+    public static Holder<Enchantment> getEnchantment(ServerLevel level, ResourceKey<Enchantment> enchantment) {
+        return level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment);
+    }
 }
