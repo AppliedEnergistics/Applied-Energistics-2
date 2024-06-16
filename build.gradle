@@ -386,17 +386,6 @@ shadowJar {
         into 'assets/ae2/ae2guide'
     }
 
-    manifest {
-        attributes([
-                "Specification-Title"   : "Applied Energistics 2",
-                "Specification-Vendor"  : "TeamAppliedEnergistics",
-                "Specification-Version" : "${project.version}",
-                "Implementation-Title"  : "${project.name}",
-                "Implementation-Version": "${project.version}",
-                "Implementation-Vendor" : "TeamAppliedEnergistics",
-        ])
-    }
-
     relocate "io.methvin", "appeng.shaded.methvin"
     relocate "org.yaml.snakeyaml", "appeng.shaded.snakeyaml"
 
