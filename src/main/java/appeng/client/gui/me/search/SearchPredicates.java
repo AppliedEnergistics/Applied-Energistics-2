@@ -9,6 +9,9 @@ import appeng.menu.me.common.GridInventoryEntry;
 
 final class SearchPredicates {
 
+    /*
+     * Creates a predicate for provided search string.
+     */
     static Predicate<GridInventoryEntry> fromString(String searchString, RepoSearch repoSearch) {
         List<Predicate<GridInventoryEntry>> gridPredictions;
 
@@ -30,6 +33,10 @@ final class SearchPredicates {
         return AndSearchPredicate.of(gridPredictions);
     }
 
+    /*
+     * Created as a helper function for {@code fromString()}. This is designed to handle between the | (or operations)
+     * to and the searched together delimited by " " Each space in {@code query} treated as a separate 'and' operation.
+     */
     private static List<Predicate<GridInventoryEntry>> getPredicates(String query, RepoSearch repoSearch) {
         List<Predicate<GridInventoryEntry>> predicateFilters = new LinkedList<>();
 
