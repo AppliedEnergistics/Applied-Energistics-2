@@ -32,6 +32,7 @@ import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -305,7 +306,11 @@ public abstract class AEBasePart
     @Override
     @MustBeInvokedByOverriders
     public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
-        this.customName = input.get(AEComponents.EXPORTED_CUSTOM_NAME);
+        if (mode == SettingsFrom.DISMANTLE_ITEM) {
+            this.customName = input.get(DataComponents.CUSTOM_NAME);
+        } else if (mode == SettingsFrom.MEMORY_CARD) {
+            this.customName = input.get(AEComponents.EXPORTED_CUSTOM_NAME);
+        }
 
         MemoryCardItem.importGenericSettings(this, input, player);
     }
@@ -313,7 +318,11 @@ public abstract class AEBasePart
     @Override
     @MustBeInvokedByOverriders
     public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder) {
-        builder.set(AEComponents.EXPORTED_CUSTOM_NAME, this.customName);
+        if (mode == SettingsFrom.DISMANTLE_ITEM) {
+            builder.set(DataComponents.CUSTOM_NAME, this.customName);
+        } else if (mode == SettingsFrom.MEMORY_CARD) {
+            builder.set(AEComponents.EXPORTED_CUSTOM_NAME, this.customName);
+        }
 
         if (mode == SettingsFrom.MEMORY_CARD) {
             MemoryCardItem.exportGenericSettings(this, builder);
