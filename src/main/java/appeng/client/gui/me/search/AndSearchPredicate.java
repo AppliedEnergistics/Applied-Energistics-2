@@ -17,7 +17,7 @@ final class AndSearchPredicate implements Predicate<GridInventoryEntry> {
             return t -> true;
         }
         if (predicates.size() == 1) {
-            return predicates.getFirst();
+            return predicates.get(0);
         }
         return new AndSearchPredicate(predicates);
     }

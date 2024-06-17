@@ -17,7 +17,7 @@ final class OrSearchPredicate implements Predicate<GridInventoryEntry> {
             return t -> false;
         }
         if (filters.size() == 1) {
-            return filters.getFirst();
+            return filters.get(0);
         }
         return new OrSearchPredicate(filters);
     }
