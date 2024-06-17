@@ -632,9 +632,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     boolean craftable = entry.isCraftable();
                     var useLargeFonts = config.isUseLargeFonts();
                     if (craftable && (isViewOnlyCraftable() || storedAmount <= 0)) {
-                        var craftLabelText = useLargeFonts ? GuiText.LargeFontCraft.getLocal()
-                                : GuiText.SmallFontCraft.getLocal();
-                        StackSizeRenderer.renderSizeLabel(guiGraphics, this.font, s.x, s.y, craftLabelText);
+                        StackSizeRenderer.renderSizeLabel(guiGraphics, this.font, s.x, s.y, "+");
                     } else {
                         AmountFormat format = useLargeFonts ? AmountFormat.SLOT_LARGE_FONT
                                 : AmountFormat.SLOT;

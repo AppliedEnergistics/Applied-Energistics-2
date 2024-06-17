@@ -104,22 +104,29 @@ public class AppEngCraftingSlot extends AppEngSlot implements RecipeCraftingHold
         for (int i = 0; i < this.craftingGrid.size(); i++) {
             items.set(i, this.craftingGrid.getStackInSlot(i));
         }
-        var input = CraftingInput.of(3, 3, items);
+        var positioned = CraftingInput.ofPositioned(3, 3, items);
 
         CommonHooks.setCraftingPlayer(player);
-        var remainingItems = this.getRemainingItems(input, player.level());
+        var remainingItems = this.getRemainingItems(positioned.input(), player.level());
         CommonHooks.setCraftingPlayer(null);
 
-        for (int i = 0; i < this.craftingGrid.size(); ++i) {
-            // Consumes the item from the grid
-            this.craftingGrid.extractItem(i, 1, false);
+        for (var y = 0; y < 3; y++) {
+            for (var x = 0; x < 3; x++) {
+                var slotIdx = y * 3 + x;
+                var remainderIdx = (y - positioned.top()) * 3 + (x - positioned.left());
 
-            var remainingInSlot = remainingItems.get(i);
-            if (!remainingInSlot.isEmpty()) {
-                if (this.craftingGrid.getStackInSlot(i).isEmpty()) {
-                    this.craftingGrid.setItemDirect(i, remainingInSlot);
-                } else if (!this.player.getInventory().add(remainingInSlot)) {
-                    this.player.drop(remainingInSlot, false);
+                // Consumes the item from the grid
+                this.craftingGrid.extractItem(slotIdx, 1, false);
+
+                if (remainderIdx >= 0 && remainderIdx < remainingItems.size()) {
+                    var remainingInSlot = remainingItems.get(remainderIdx);
+                    if (!remainingInSlot.isEmpty()) {
+                        if (this.craftingGrid.getStackInSlot(slotIdx).isEmpty()) {
+                            this.craftingGrid.setItemDirect(slotIdx, remainingInSlot);
+                        } else if (!this.player.getInventory().add(remainingInSlot)) {
+                            this.player.drop(remainingInSlot, false);
+                        }
+                    }
                 }
             }
         }
