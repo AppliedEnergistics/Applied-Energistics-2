@@ -126,8 +126,6 @@ public enum GuiText implements LocalizationEnum {
     InvalidPattern("Invalid Pattern"),
     InvalidSingularity("Invalid Singularity"),
     Items("Items"),
-    // Used in a terminal to indicate that an item is craftable
-    LargeFontCraft("+"),
     LevelEmitter("ME Level Emitter"),
     LightBlue("Light Blue"),
     LightGray("Light Gray"),
@@ -201,7 +199,6 @@ public enum GuiText implements LocalizationEnum {
     ShowingOf("Showing %d of %d"),
     SkyChest("Sky Stone Chest"),
     // Used in a terminal to indicate that an item is craftable
-    SmallFontCraft("Craft"),
     SmithingTablePattern("Smithing Table Patterns"),
     SpatialAnchor("Spatial Anchor"),
     SpatialAnchorAll("Spanning: %d chunks in %d worlds"),

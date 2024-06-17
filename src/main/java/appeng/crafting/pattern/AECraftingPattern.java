@@ -73,6 +73,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     private final Input[] inputs;
     private final ItemStack output;
     private final List<GenericStack> outputsArray;
+    private final CraftingInput.Positioned positionedPattern;
     /**
      * We cache results of isValid(...) calls for stacks that don't have NBT.
      */
@@ -100,12 +101,12 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         this.recipe = (CraftingRecipe) recipeHolder.value();
 
         // Build frame and find output
-        var craftingInput = makeCraftingInput();
-        if (!this.recipe.matches(craftingInput, level)) {
+        this.positionedPattern = makeCraftingInput();
+        if (!this.recipe.matches(positionedPattern.input(), level)) {
             throw new IllegalStateException("The recipe " + recipe + " no longer matches the encoded input.");
         }
 
-        this.output = this.recipe.assemble(craftingInput, level.registryAccess());
+        this.output = this.recipe.assemble(positionedPattern.input(), level.registryAccess());
         if (this.output.isEmpty()) {
             throw new IllegalStateException(
                     "The recipe " + encodedPattern.recipeId() + " produced an empty item stack result.");
@@ -264,8 +265,8 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         // Fill frame and check result
         var testCraftingInput = makeCraftingInputWithReplacedSlot(slot, key);
 
-        var newResult = recipe.matches(testCraftingInput, level)
-                && ItemStack.matches(output, recipe.assemble(testCraftingInput, level.registryAccess()));
+        var newResult = recipe.matches(testCraftingInput.input(), level)
+                && ItemStack.matches(output, recipe.assemble(testCraftingInput.input(), level.registryAccess()));
 
         setTestResult(slot, key, newResult);
 
@@ -282,11 +283,18 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         // Consider making this more efficient in the future? (e.g. cache the produced remainders)
 
         // Fill frame
-        var testInput = makeCraftingInputWithReplacedSlot(slot, key);
+        var positioned = makeCraftingInputWithReplacedSlot(slot, key);
         // Get remainder
-        var remainder = recipe.getRemainingItems(testInput).get(slot);
+        var remainingItems = recipe.getRemainingItems(positioned.input());
 
-        return remainder;
+        var x = (slot % CRAFTING_GRID_DIMENSION - positioned.left());
+        var y = slot / CRAFTING_GRID_DIMENSION - positioned.top();
+        var remainderIdx = y * positioned.input().width() + x;
+        if (remainderIdx >= 0 && remainderIdx < remainingItems.size()) {
+            return remainingItems.get(remainderIdx);
+        }
+
+        return ItemStack.EMPTY;
     }
 
     /**
@@ -372,6 +380,11 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
 
     @Override
     public ItemStack assemble(CraftingInput container, Level level) {
+        if (positionedPattern.input().width() != container.width()
+            || positionedPattern.input().height() != container.height()) {
+            return ItemStack.EMPTY;
+        }
+
         if (canSubstitute && recipe.isSpecial()) {
             // For special recipes, we need to test the recipe with assemble, unfortunately, since the output might
             // depend on the inputs in a way that can't be detected by changing one input at the time.
@@ -396,20 +409,24 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             return recipe.assemble(testInput, level.registryAccess());
         }
 
-        for (int x = 0; x < container.size(); x++) {
-            ItemStack item = container.getItem(x);
-            var stack = GenericStack.unwrapItemStack(item);
-            if (stack != null) {
-                // If we receive a pure fluid stack, we'll convert it to the appropriate container item
-                // If it matches the allowable input
-                var validFluid = getValidFluid(x);
-                if (validFluid != null && validFluid.equals(stack)) {
-                    continue;
+        for (int i = 0; i < sparseInputs.size(); i++) {
+            var x = (i % CRAFTING_GRID_DIMENSION) - positionedPattern.left();
+            var y = i / CRAFTING_GRID_DIMENSION - positionedPattern.top();
+            if ( x >= 0 && x < container.width() && y >= 0 && y < container.height() ) {
+                ItemStack item = container.getItem(x, y);
+                var stack = GenericStack.unwrapItemStack(item);
+                if (stack != null) {
+                    // If we receive a pure fluid stack, we'll convert it to the appropriate container item
+                    // If it matches the allowable input
+                    var validFluid = getValidFluid(i);
+                    if (validFluid != null && validFluid.equals(stack)) {
+                        continue;
+                    }
                 }
-            }
 
-            if (!isItemValid(x, AEItemKey.of(item), level)) {
-                return ItemStack.EMPTY;
+                if (!isItemValid(i, AEItemKey.of(item), level)) {
+                    return ItemStack.EMPTY;
+                }
             }
         }
         return output;
@@ -479,10 +496,17 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             // Note: the following call might do a performed extraction with mods that have native fluid container
             // support (such as immersive engineering "fluid aware" recipes). This is only safe because we restrict this
             // code path to buckets.
-            var remainingItems = recipe.getRemainingItems(makeCraftingInput());
-            var slotRemainder = remainingItems.get(slot);
-            if (slotRemainder.getCount() == 1 && slotRemainder.is(Items.BUCKET)) {
-                return new GenericStack(containedFluid.what(), containedFluid.amount());
+            var positioned = makeCraftingInput();
+
+            var remainingItems = recipe.getRemainingItems(positioned.input());
+            var x = (slot % 3 - positioned.left());
+            var y = slot / 3 - positioned.top();
+            var remainderIdx = y * positioned.input().width() + x;
+            if (remainderIdx >= 0 && remainderIdx < remainingItems.size()) {
+                var slotRemainder = remainingItems.get(remainderIdx);
+                if (slotRemainder.getCount() == 1 && slotRemainder.is(Items.BUCKET)) {
+                    return new GenericStack(containedFluid.what(), containedFluid.amount());
+                }
             }
         }
 
@@ -622,14 +646,14 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         return Arrays.asList(result);
     }
 
-    private CraftingInput makeCraftingInput() {
-        return CraftingInput.of(CRAFTING_GRID_DIMENSION, CRAFTING_GRID_DIMENSION, makeCraftingInputItems());
+    private CraftingInput.Positioned makeCraftingInput() {
+        return CraftingInput.ofPositioned(CRAFTING_GRID_DIMENSION, CRAFTING_GRID_DIMENSION, makeCraftingInputItems());
     }
 
-    private CraftingInput makeCraftingInputWithReplacedSlot(int slot, AEItemKey replacement) {
+    private CraftingInput.Positioned makeCraftingInputWithReplacedSlot(int slot, AEItemKey replacement) {
         var items = makeCraftingInputItems();
         items.set(slot, replacement.toStack());
-        return CraftingInput.of(CRAFTING_GRID_DIMENSION, CRAFTING_GRID_DIMENSION, items);
+        return CraftingInput.ofPositioned(CRAFTING_GRID_DIMENSION, CRAFTING_GRID_DIMENSION, items);
     }
 
     private List<ItemStack> makeCraftingInputItems() {
