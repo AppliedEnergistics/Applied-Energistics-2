@@ -381,7 +381,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     @Override
     public ItemStack assemble(CraftingInput container, Level level) {
         if (positionedPattern.input().width() != container.width()
-            || positionedPattern.input().height() != container.height()) {
+                || positionedPattern.input().height() != container.height()) {
             return ItemStack.EMPTY;
         }
 
@@ -412,7 +412,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         for (int i = 0; i < sparseInputs.size(); i++) {
             var x = (i % CRAFTING_GRID_DIMENSION) - positionedPattern.left();
             var y = i / CRAFTING_GRID_DIMENSION - positionedPattern.top();
-            if ( x >= 0 && x < container.width() && y >= 0 && y < container.height() ) {
+            if (x >= 0 && x < container.width() && y >= 0 && y < container.height()) {
                 ItemStack item = container.getItem(x, y);
                 var stack = GenericStack.unwrapItemStack(item);
                 if (stack != null) {
