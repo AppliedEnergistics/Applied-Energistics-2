@@ -21,13 +21,10 @@ package appeng.client.gui.widgets;
 import java.util.Collections;
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
@@ -66,49 +63,42 @@ public abstract class IconButton extends Button implements ITooltip {
 
         if (this.visible) {
             var icon = this.getIcon();
-
-            Blitter blitter = icon.getBlitter();
-            if (!this.active) {
-                blitter.opacity(0.5f);
-            }
+            var item = this.getItemOverlay();
 
             if (this.halfSize) {
                 this.width = 8;
                 this.height = 8;
             }
 
-            RenderSystem.disableDepthTest();
-            RenderSystem.enableBlend(); // FIXME: This should be the _default_ state, but some vanilla widget disables
+            var yOffset = isHoveredOrFocused() ? 1 : 0;
 
             if (this.halfSize) {
-                var pose = guiGraphics.pose();
-                pose.pushPose();
-                pose.translate(getX(), getY(), 0.0F);
-                pose.scale(1.f, 1.f, 1.f);
-
                 if (!disableBackground) {
-                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(0, 0).blit(guiGraphics);
+                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(getX(), getY()).zOffset(10).blit(guiGraphics);
                 }
-                blitter.dest(0, 0).blit(guiGraphics);
-                pose.popPose();
+                if (item != null) {
+                    guiGraphics.renderItem(new ItemStack(item), getX(), getY(), 0, 20);
+                } else if (icon != null) {
+                    Blitter blitter = icon.getBlitter();
+                    if (!this.active) {
+                        blitter.opacity(0.5f);
+                    }
+                    blitter.dest(getX(), getY()).zOffset(20).blit(guiGraphics);
+                }
             } else {
                 if (!disableBackground) {
-                    if (!isHovered()) {
-                        Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(getX() - 1, getY(), 18, 20).blit(guiGraphics);
-                        icon.getBlitter().dest(getX(), getY() + 1).blit(guiGraphics);
-                    } else {
-                        Icon.TOOLBAR_BUTTON_BACKGROUND_HOVER.getBlitter().dest(getX() - 1, getY() + 1, 18, 20)
-                                .blit(guiGraphics);
-                        icon.getBlitter().dest(getX(), getY() + 2).blit(guiGraphics);
-                    }
+                    Icon bgIcon = isHoveredOrFocused() ? Icon.TOOLBAR_BUTTON_BACKGROUND_HOVER
+                            : Icon.TOOLBAR_BUTTON_BACKGROUND;
+                    bgIcon.getBlitter()
+                            .dest(getX() - 1, getY() + yOffset, 18, 20)
+                            .zOffset(2)
+                            .blit(guiGraphics);
                 }
-
-            }
-            RenderSystem.enableDepthTest();
-
-            var item = this.getItemOverlay();
-            if (item != null) {
-                guiGraphics.renderItem(new ItemStack(item), getX(), getY());
+                if (item != null) {
+                    guiGraphics.renderItem(new ItemStack(item), getX(), getY() + 1 + yOffset, 0, 3);
+                } else if (icon != null) {
+                    icon.getBlitter().dest(getX(), getY() + 1 + yOffset).zOffset(3).blit(guiGraphics);
+                }
             }
         }
     }

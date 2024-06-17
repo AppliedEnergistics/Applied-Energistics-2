@@ -69,6 +69,7 @@ public final class Blitter {
     private Rect2i destRect = new Rect2i(0, 0, 0, 0);
     private boolean blending = true;
     private TextureTransform transform = TextureTransform.NONE;
+    private int zOffset;
 
     Blitter(ResourceLocation texture, int referenceWidth, int referenceHeight) {
         this.texture = texture;
@@ -261,6 +262,11 @@ public final class Blitter {
         return color(r, g, b);
     }
 
+    public Blitter zOffset(int offset) {
+        this.zOffset = offset;
+        return this;
+    }
+
     public void blit(GuiGraphics guiGraphics) {
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, this.texture);
@@ -308,16 +314,16 @@ public final class Blitter {
 
         var bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS,
                 DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder.addVertex(matrix, x1, y2, 0)
+        bufferbuilder.addVertex(matrix, x1, y2, zOffset)
                 .setUv(minU, maxV)
                 .setColor(r, g, b, a);
-        bufferbuilder.addVertex(matrix, x2, y2, 0)
+        bufferbuilder.addVertex(matrix, x2, y2, zOffset)
                 .setUv(maxU, maxV)
                 .setColor(r, g, b, a);
-        bufferbuilder.addVertex(matrix, x2, y1, 0)
+        bufferbuilder.addVertex(matrix, x2, y1, zOffset)
                 .setUv(maxU, minV)
                 .setColor(r, g, b, a);
-        bufferbuilder.addVertex(matrix, x1, y1, 0)
+        bufferbuilder.addVertex(matrix, x1, y1, zOffset)
                 .setUv(minU, minV)
                 .setColor(r, g, b, a);
 
