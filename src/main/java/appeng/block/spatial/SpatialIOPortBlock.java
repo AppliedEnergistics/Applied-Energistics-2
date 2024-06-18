@@ -33,7 +33,7 @@ import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
 import appeng.menu.MenuOpener;
-import appeng.menu.implementations.VibrationChamberMenu;
+import appeng.menu.implementations.SpatialIOPortMenu;
 import appeng.menu.locator.MenuLocators;
 
 public class SpatialIOPortBlock extends AEBaseEntityBlock<SpatialIOPortBlockEntity> {
@@ -76,7 +76,7 @@ public class SpatialIOPortBlock extends AEBaseEntityBlock<SpatialIOPortBlockEnti
             BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof SpatialIOPortBlockEntity be) {
             if (!level.isClientSide) {
-                MenuOpener.open(VibrationChamberMenu.TYPE, player, MenuLocators.forBlockEntity(be));
+                MenuOpener.open(SpatialIOPortMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
