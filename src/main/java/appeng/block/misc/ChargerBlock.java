@@ -83,6 +83,10 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
                     inv.setItemDirect(0, toInsert);
                     return ItemInteractionResult.sidedSuccess(level.isClientSide);
                 }
+            } else {
+                Platform.spawnDrops(player.level(), charger.getBlockPos().relative(charger.getFront()),
+                        List.of(chargingItem));
+                return ItemInteractionResult.sidedSuccess(level.isClientSide);
             }
         }
 
