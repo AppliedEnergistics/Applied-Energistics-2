@@ -76,7 +76,7 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
             Player player, InteractionHand hand, BlockHitResult hit) {
         if (level.getBlockEntity(pos) instanceof ChargerBlockEntity charger) {
             var inv = charger.getInternalInventory();
-            var chargingItem = inv.extractItem(0, Integer.MAX_VALUE, false);
+            var chargingItem = inv.getStackInSlot(0);
             if (chargingItem.isEmpty()) {
                 if (ChargerRecipes.findRecipe(level, heldItem) != null || Platform.isChargeable(heldItem)) {
                     var toInsert = heldItem.split(1);
@@ -94,8 +94,9 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
             BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof ChargerBlockEntity charger) {
             var inv = charger.getInternalInventory();
-            var chargingItem = inv.extractItem(0, Integer.MAX_VALUE, false);
+            var chargingItem = inv.getStackInSlot(0);
             if (!chargingItem.isEmpty()) {
+                inv.setItemDirect(0, ItemStack.EMPTY);
                 Platform.spawnDrops(player.level(), charger.getBlockPos().relative(charger.getFront()),
                         List.of(chargingItem));
                 return InteractionResult.sidedSuccess(level.isClientSide);
