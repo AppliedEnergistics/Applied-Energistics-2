@@ -42,6 +42,7 @@ body:
     attributes:
       label: Which minecraft version are you using?
       options:
+        - "1.21"
         - "1.20"
         - "1.19"
         - "1.18"
@@ -60,6 +61,7 @@ body:
       label: On which mod loaders does it happen?
       multiple: true
       options:
+        - NeoForge
         - Forge
         - Fabric
     validations:
