@@ -57,6 +57,16 @@ public final class IngredientConverters {
     @SuppressWarnings("unchecked")
     @Nullable
     public static synchronized <T> IngredientConverter<T> getConverter(IIngredientType<T> type) {
-        return (IngredientConverter<T>) convertersByType.get(type);
+        var result = (IngredientConverter<T>) convertersByType.get(type);
+        if (result == null) {
+            // REI JEI emulation uses incompatible ingredient types.
+            // Fall back to looking for ingredient converters by their supported ingredient class.
+            for (var entry : convertersByType.entrySet()) {
+                if (entry.getKey().getIngredientClass() == type.getIngredientClass()) {
+                    return (IngredientConverter<T>) entry.getValue();
+                }
+            }
+        }
+        return result;
     }
 }
