@@ -5,6 +5,9 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.ingredients.IIngredientType;
@@ -37,6 +40,13 @@ public final class GenericEntryStackHelper {
         var converter = IngredientConverters.getConverter(type);
         if (converter != null) {
             return converter.getStackFromIngredient(ingredient);
+        }
+        // REI JEI emulation uses incompatible ingredient types. Fall back to last-resort conversion of basic Vanilla
+        // types
+        if (ingredient instanceof ItemStack stack) {
+            return GenericStack.fromItemStack(stack);
+        } else if (ingredient instanceof FluidStack stack) {
+            return GenericStack.fromFluidStack(stack);
         }
         return null;
     }
