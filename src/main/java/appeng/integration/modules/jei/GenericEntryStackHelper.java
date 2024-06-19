@@ -41,13 +41,6 @@ public final class GenericEntryStackHelper {
         if (converter != null) {
             return converter.getStackFromIngredient(ingredient);
         }
-        // REI JEI emulation uses incompatible ingredient types. Fall back to last-resort conversion of basic Vanilla
-        // types
-        if (ingredient instanceof ItemStack stack) {
-            return GenericStack.fromItemStack(stack);
-        } else if (ingredient instanceof FluidStack stack) {
-            return GenericStack.fromFluidStack(stack);
-        }
         return null;
     }
 
