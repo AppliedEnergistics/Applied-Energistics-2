@@ -22,6 +22,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
@@ -200,7 +201,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
     public ItemStack getTextureItem(ItemStack is) {
         CompoundTag nbt = is.getTag();
 
-        if (nbt == null) {
+        if (nbt == null || !nbt.contains(NBT_ITEM_ID, Tag.TAG_STRING)) {
             return ItemStack.EMPTY;
         }
 
