@@ -1,23 +1,18 @@
 package appeng.integration.modules.jei;
 
-import java.util.List;
-import java.util.Objects;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-
+import appeng.api.integrations.jei.IngredientConverter;
+import appeng.api.integrations.jei.IngredientConverters;
+import appeng.api.stacks.GenericStack;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.runtime.IIngredientManager;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.api.integrations.jei.IngredientConverter;
-import appeng.api.integrations.jei.IngredientConverters;
-import appeng.api.stacks.GenericStack;
+import java.util.List;
+import java.util.Objects;
 
 public final class GenericEntryStackHelper {
     private GenericEntryStackHelper() {
@@ -63,7 +58,7 @@ public final class GenericEntryStackHelper {
 
     @Nullable
     private static <T> ITypedIngredient<T> makeTypedIngredient(IIngredientManager manager,
-            IngredientConverter<T> converter, GenericStack stack) {
+                                                               IngredientConverter<T> converter, GenericStack stack) {
         var ingredient = converter.getIngredientFromStack(stack);
         if (ingredient != null) {
             return manager.createTypedIngredient(converter.getIngredientType(), ingredient).orElse(null);
@@ -104,7 +99,7 @@ public final class GenericEntryStackHelper {
 
     @Nullable
     private static <T, U> GenericStack tryConvertTypedToStack(IngredientConverter<T> converter,
-            IIngredientType<U> ingredientType, U ingredient) {
+                                                              IIngredientType<U> ingredientType, U ingredient) {
         if (converter.getIngredientType().equals(ingredientType)) {
             return converter.getIngredientType()
                     .castIngredient(ingredient)
