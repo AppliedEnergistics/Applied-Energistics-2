@@ -378,11 +378,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
             // This can change due to changes in the search settings sub-screen
             this.searchField.setTooltipMessage(List.of(
-                    config.isSearchTooltips() ? GuiText.SearchTooltipIncludingTooltips.text()
-                            : GuiText.SearchTooltip.text(),
+                    GuiText.SearchTooltip.text(),
                     GuiText.SearchTooltipModId.text(),
-                    GuiText.SearchTooltipItemId.text(),
-                    GuiText.SearchTooltipTag.text()));
+                    GuiText.SearchTooltipTag.text(),
+                    GuiText.SearchTooltipToolTips.text(),
+                    GuiText.SearchTooltipItemId.text()));
 
             // Sync the search text both ways but make the direction depend on which search has the focus
             if (config.isSyncWithExternalSearch()) {
