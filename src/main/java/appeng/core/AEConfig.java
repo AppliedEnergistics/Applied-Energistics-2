@@ -229,14 +229,6 @@ public final class AEConfig {
                 + this.wirelessCostMultiplier * Math.pow(boosters, 1 + boosters / this.wirelessHighWirelessCount);
     }
 
-    public boolean isSearchTooltips() {
-        return CLIENT.searchTooltips.get();
-    }
-
-    public void setSearchTooltips(boolean enable) {
-        CLIENT.searchTooltips.set(enable);
-    }
-
     public boolean isSearchModNameInTooltips() {
         return CLIENT.searchModNameInTooltips.get();
     }
@@ -564,7 +556,6 @@ public final class AEConfig {
         public final IntegerOption terminalMargin;
 
         // Search Settings
-        public final BooleanOption searchTooltips;
         public final BooleanOption searchModNameInTooltips;
         public final BooleanOption useExternalSearch;
         public final BooleanOption clearExternalSearchOnOpen;
@@ -606,8 +597,6 @@ public final class AEConfig {
 
             // Search Settings
             var search = root.subsection("search");
-            this.searchTooltips = search.addBoolean("searchTooltips", true,
-                    "Should tooltips be searched. Performance impact");
             this.searchModNameInTooltips = search.addBoolean("searchModNameInTooltips", false,
                     "Should the mod name be included when searching in tooltips.");
             this.useExternalSearch = search.addBoolean("useExternalSearch", false,
