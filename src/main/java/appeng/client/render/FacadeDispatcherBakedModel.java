@@ -19,7 +19,6 @@
 package appeng.client.render;
 
 import java.util.List;
-import java.util.Objects;
 
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -52,11 +51,11 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel {
 
         ItemStack textureItem = itemFacade.getTextureItem(stack);
 
-        int hash = Objects.hash(BuiltInRegistries.ITEM.getKey(textureItem.getItem()), textureItem.getTag());
-        FacadeBakedItemModel model = cache.get(hash);
+        var itemId = BuiltInRegistries.ITEM.getId(textureItem.getItem());
+        FacadeBakedItemModel model = cache.get(itemId);
         if (model == null) {
             model = new FacadeBakedItemModel(getBaseModel(), textureItem, facadeBuilder);
-            cache.put(hash, model);
+            cache.put(itemId, model);
         }
 
         return List.of(model);

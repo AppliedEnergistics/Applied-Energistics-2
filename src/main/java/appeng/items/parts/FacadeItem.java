@@ -22,7 +22,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
@@ -47,6 +46,7 @@ import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartHelper;
 import appeng.core.AEConfig;
+import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
 import appeng.facade.FacadePart;
 import appeng.items.AEBaseItem;
@@ -201,12 +201,27 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
     public ItemStack getTextureItem(ItemStack is) {
         CompoundTag nbt = is.getTag();
 
-        if (nbt == null || !nbt.contains(NBT_ITEM_ID, Tag.TAG_STRING)) {
+        if (nbt == null) {
             return ItemStack.EMPTY;
         }
 
-        ResourceLocation itemId = new ResourceLocation(nbt.getString(NBT_ITEM_ID));
-        Item baseItem = BuiltInRegistries.ITEM.get(itemId);
+        var itemIdText = nbt.getString(NBT_ITEM_ID);
+        if (itemIdText.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+
+        ResourceLocation itemId;
+        try {
+            itemId = new ResourceLocation(itemIdText);
+        } catch (Exception e) {
+            AELog.warn("Found facade item with invalid texture item: %s", itemIdText);
+            return ItemStack.EMPTY;
+        }
+        Item baseItem = BuiltInRegistries.ITEM.getOptional(itemId).orElse(null);
+        if (baseItem == null) {
+            AELog.warn("Found facade item with invalid texture item: %s", itemIdText);
+            return ItemStack.EMPTY;
+        }
 
         return new ItemStack(baseItem, 1);
     }
