@@ -24,6 +24,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
@@ -245,6 +246,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
 
     private void mirrorBlockTag(ResourceLocation tagName) {
         copy(TagKey.create(Registries.BLOCK, tagName), TagKey.create(Registries.ITEM, tagName));
+        copy(BlockTags.WALLS, ItemTags.WALLS);
     }
 
     private void addP2pAttunementTags() {
