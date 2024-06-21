@@ -48,8 +48,8 @@ public final class FacadeRecipe extends CustomRecipe {
     }
 
     private ItemStack getOutput(CraftingInput inv, boolean createFacade) {
-        if (inv.getItem(0).isEmpty() && inv.getItem(2).isEmpty() && inv.getItem(6).isEmpty()
-                && inv.getItem(8).isEmpty()) {
+        if (inv.width() == 3 && inv.height() == 3 && inv.getItem(0).isEmpty() && inv.getItem(2).isEmpty()
+                && inv.getItem(6).isEmpty() && inv.getItem(8).isEmpty()) {
             if (this.anchor.isSameAs(inv.getItem(1)) && this.anchor.isSameAs(inv.getItem(3))
                     && this.anchor.isSameAs(inv.getItem(5)) && this.anchor.isSameAs(inv.getItem(7))) {
                 final ItemStack facades = this.facade.createFacadeForItem(inv.getItem(4), !createFacade);
