@@ -60,6 +60,7 @@ public class OverlayManager {
         poseStack.pushPose();
 
         Vec3 projectedView = minecraft.gameRenderer.getMainCamera().getPosition();
+        poseStack.mulPose(minecraft.gameRenderer.getMainCamera().rotation().invert());
         poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
         for (OverlayRenderer handler : overlayHandlers.entrySet().stream()
