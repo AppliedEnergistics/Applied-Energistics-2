@@ -23,6 +23,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 100
+          fetch-tags: true
       - uses: ./.github/actions/gradle-setup
       - name: Generate assets
         run: ./gradlew runData

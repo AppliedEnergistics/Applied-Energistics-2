@@ -164,7 +164,7 @@ public abstract class ProjectVersionSource implements ValueSource<String, Projec
 
         var exitCode = process.waitFor();
         if (exitCode != 0) {
-            throw new RuntimeException("Failed running " + combinedArgs);
+            throw new RuntimeException("Failed running " + combinedArgs + ": " + result);
         }
 
         return result.toString();
