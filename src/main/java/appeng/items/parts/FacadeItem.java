@@ -51,8 +51,6 @@ import appeng.items.AEBaseItem;
 
 public class FacadeItem extends AEBaseItem implements IFacadeItem {
 
-    private static final String NBT_ITEM_ID = "item";
-
     public FacadeItem(Properties properties) {
         super(properties);
     }

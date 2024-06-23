@@ -45,6 +45,7 @@ sourceSets {
 }
 
 configurations {
+    localRuntimeOnly
     shaded {
         transitive = false
     }
@@ -53,7 +54,11 @@ configurations {
     guideExportOnly
     configurations.compileClasspath.extendsFrom(guideExportOnly)
     configurations.runtimeClasspath.extendsFrom(guideExportOnly)
+
+    runtimeClasspath.extendsFrom localRuntimeOnly
 }
+
+import appengbuild.*
 
 repositories {
     mavenLocal()
@@ -113,16 +118,6 @@ repositories {
             includeGroup "mezz.jei"
         }
     }
-
-    maven {
-        name 'Maven for PR #147' // https://github.com/neoforged/FancyModLoader/pull/147
-        url 'https://prmaven.neoforged.net/FancyModLoader/pr147'
-        content {
-            includeModule('net.neoforged.fancymodloader', 'junit-fml')
-            includeModule('net.neoforged.fancymodloader', 'earlydisplay')
-            includeModule('net.neoforged.fancymodloader', 'loader')
-        }
-    }
     mavenCentral()
 }
 
@@ -152,41 +147,40 @@ dependencies {
 
     // compile against provided APIs
     compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
-
-    // Always depend on the REI API to compile
-    if (project.runtime_itemlist_mod == "emi") {
-        runtimeOnly "dev.emi:emi-neoforge:${emi_version}"
-
-        compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
-    } else if (project.runtime_itemlist_mod == "rei") {
-        implementation "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
-    } else {
-        compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
-    }
-
+    compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     compileOnly "mcp.mobius.waila:wthit-api:neo-${project.wthit_version}"
-    if (project.runtime_tooltip_mod == "wthit") {
-        runtimeOnly("mcp.mobius.waila:wthit:neo-${project.wthit_version}")
+    compileOnly "curse.maven:jade-324717:${project.jade_file_id}"
+    compileOnly "mcjty.theoneprobe:theoneprobe:${project.top_version}"
+
+    switch (project.runtime_itemlist_mod) {
+        case "emi":
+            localRuntimeOnly "dev.emi:emi-neoforge:${emi_version}"
+            break
+        case "rei":
+            localRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
+            break
     }
 
-    if (project.runtime_tooltip_mod == "jade") {
-        implementation("curse.maven:jade-324717:${project.jade_file_id}")
-    } else {
-        compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
-    }
-
-    if (project.runtime_tooltip_mod == "top") {
-        implementation("mcjty.theoneprobe:theoneprobe:${project.top_version}")
-    } else {
-        compileOnly("mcjty.theoneprobe:theoneprobe:${project.top_version}")
+    switch (project.runtime_tooltip_mod) {
+        case "wthit":
+            localRuntimeOnly "mcp.mobius.waila:wthit:neo-${project.wthit_version}"
+            break
+        case "jade":
+            localRuntimeOnly "curse.maven:jade-324717:${project.jade_file_id}"
+            break
+        case "top":
+            localRuntimeOnly "mcjty.theoneprobe:theoneprobe:${project.top_version}"
+            break
     }
 
     if (project.runtime_curio == "true") {
-        runtimeOnly("top.theillusivec4.curios:curios-neoforge:${project.curios_version}")
+        localRuntimeOnly("top.theillusivec4.curios:curios-neoforge:${project.curios_version}")
     }
 
     // Athena
-    implementation("curse.maven:athena-841890:5176890")
+    if (project.runtime_athena == "true") {
+        localRuntimeOnly("curse.maven:athena-841890:${project.athena_file_id}")
+    }
 
     // unit test dependencies
     testImplementation(platform("org.junit:junit-bom:${project.junit_version}"))
@@ -242,7 +236,11 @@ if (ext.tag) {
         throw new GradleException("Invalid semver: $version")
     }
 } else {
-    version = version_major + "." + version_minor + "." + version_patch
+    // This essentially tries to implement delay expansion of the project version based on a value source to
+    // still support configuration caching.
+    version = providers.gradleProperty("version").orElse(providers.of(ProjectVersionSource.class, spec -> {
+        spec.getParameters().getDefaultBranches().addAll("main", "neoforge/" + project.minecraft_version)
+    })).get()
 
     def pr = System.getenv('PR_NUMBER') ?: ""
     if (pr) {
@@ -254,6 +252,9 @@ if (ext.tag) {
         version += "+branch." + branch
     }
 }
+
+tasks.register("printProjectVersion", PrintProjectVersion.class);
+
 test {
     useJUnitPlatform()
 
