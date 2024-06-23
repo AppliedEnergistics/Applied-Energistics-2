@@ -1,7 +1,11 @@
+import appengbuild.ProjectDefaultsPlugin
+
 plugins {
     id 'java-library'
     id "com.diffplug.spotless"
 }
+
+apply plugin: ProjectDefaultsPlugin
 
 dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.36'
@@ -14,16 +18,13 @@ dependencies {
     testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testImplementation 'org.junit.jupiter:junit-jupiter-params'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-    testRuntimeOnly 'org.slf4j:slf4j-simple:1.7.36'
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+    testRuntimeOnly "org.slf4j:slf4j-simple:1.7.36"
 }
 
 test {
     useJUnitPlatform()
-}
-
-repositories {
-    mavenCentral()
 }
 
 /////////////

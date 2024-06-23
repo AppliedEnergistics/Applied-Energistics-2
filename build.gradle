@@ -28,8 +28,14 @@ plugins {
     id "net.neoforged.moddev"
     id "maven-publish"
     id "com.diffplug.spotless"
-    id "com.github.johnrengelman.shadow"
+    id 'io.github.goooler.shadow'
     id "de.undercouch.download"
+}
+
+apply plugin: ProjectDefaultsPlugin
+
+base {
+    archivesName = "appliedenergistics2"
 }
 
 sourceSets {
@@ -45,6 +51,7 @@ sourceSets {
 }
 
 configurations {
+    localRuntimeOnly
     shaded {
         transitive = false
     }
@@ -53,78 +60,11 @@ configurations {
     guideExportOnly
     configurations.compileClasspath.extendsFrom(guideExportOnly)
     configurations.runtimeClasspath.extendsFrom(guideExportOnly)
+
+    runtimeClasspath.extendsFrom localRuntimeOnly
 }
 
-repositories {
-    mavenLocal()
-    maven {
-        name 'Maven for PR #54' // https://github.com/neoforged/FancyModLoader/pull/54
-        url 'https://prmaven.neoforged.net/FancyModLoader/pr54'
-        content {
-            includeModule('net.neoforged.fancymodloader', 'earlydisplay')
-            includeModule('net.neoforged.fancymodloader', 'junit-fml')
-            includeModule('net.neoforged.fancymodloader', 'loader')
-        }
-    }
-    maven {
-        url "https://maven.shedaniel.me/"
-        content {
-            includeGroup "me.shedaniel"
-            includeGroup "me.shedaniel.cloth"
-            includeGroup "dev.architectury"
-        }
-    }
-    maven {
-        url "https://maven2.bai.lol"
-        content {
-            includeGroup "mcp.mobius.waila"
-            includeGroup "lol.bai"
-        }
-    }
-    maven {
-        name = "TerraformersMC"
-        url = "https://maven.terraformersmc.com/"
-        content {
-            includeGroup "dev.emi"
-        }
-    }
-    maven {
-        name 'cursemaven'
-        url "https://www.cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-    maven { // for TOP
-        url "https://maven.k-4u.nl/"
-        content {
-            includeGroup "mcjty.theoneprobe"
-        }
-    }
-    maven {
-        url = "https://maven.theillusivec4.top/"
-        content {
-            includeGroup "top.theillusivec4.curios"
-        }
-    }
-    maven {
-        url = "https://maven.blamejared.com/"
-        content {
-            includeGroup "mezz.jei"
-        }
-    }
-
-    maven {
-        name 'Maven for PR #147' // https://github.com/neoforged/FancyModLoader/pull/147
-        url 'https://prmaven.neoforged.net/FancyModLoader/pr147'
-        content {
-            includeModule('net.neoforged.fancymodloader', 'junit-fml')
-            includeModule('net.neoforged.fancymodloader', 'earlydisplay')
-            includeModule('net.neoforged.fancymodloader', 'loader')
-        }
-    }
-    mavenCentral()
-}
+import appengbuild.*
 
 dependencies {
     // To be copied into the jar file
@@ -152,49 +92,49 @@ dependencies {
 
     // compile against provided APIs
     compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
-
-    // Always depend on the REI API to compile
-    if (project.runtime_itemlist_mod == "emi") {
-        runtimeOnly "dev.emi:emi-neoforge:${emi_version}"
-
-        compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
-    } else if (project.runtime_itemlist_mod == "rei") {
-        implementation "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
-    } else {
-        compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
-    }
-
+    compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     compileOnly "mcp.mobius.waila:wthit-api:neo-${project.wthit_version}"
-    if (project.runtime_tooltip_mod == "wthit") {
-        runtimeOnly("mcp.mobius.waila:wthit:neo-${project.wthit_version}")
+    compileOnly "curse.maven:jade-324717:${project.jade_file_id}"
+    compileOnly "mcjty.theoneprobe:theoneprobe:${project.top_version}"
+
+    switch (project.runtime_itemlist_mod) {
+        case "emi":
+            localRuntimeOnly "dev.emi:emi-neoforge:${emi_version}"
+            break
+        case "rei":
+            localRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
+            break
     }
 
-    if (project.runtime_tooltip_mod == "jade") {
-        implementation("curse.maven:jade-324717:${project.jade_file_id}")
-    } else {
-        compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
-    }
-
-    if (project.runtime_tooltip_mod == "top") {
-        implementation("mcjty.theoneprobe:theoneprobe:${project.top_version}")
-    } else {
-        compileOnly("mcjty.theoneprobe:theoneprobe:${project.top_version}")
+    switch (project.runtime_tooltip_mod) {
+        case "wthit":
+            localRuntimeOnly "mcp.mobius.waila:wthit:neo-${project.wthit_version}"
+            break
+        case "jade":
+            localRuntimeOnly "curse.maven:jade-324717:${project.jade_file_id}"
+            break
+        case "top":
+            localRuntimeOnly "mcjty.theoneprobe:theoneprobe:${project.top_version}"
+            break
     }
 
     if (project.runtime_curio == "true") {
-        runtimeOnly("top.theillusivec4.curios:curios-neoforge:${project.curios_version}")
+        localRuntimeOnly("top.theillusivec4.curios:curios-neoforge:${project.curios_version}")
     }
 
     // Athena
-    implementation("curse.maven:athena-841890:5176890")
+    if (project.runtime_athena == "true") {
+        localRuntimeOnly("curse.maven:athena-841890:${project.athena_file_id}")
+    }
 
     // unit test dependencies
     testImplementation(platform("org.junit:junit-bom:${project.junit_version}"))
+    testImplementation(platform("org.assertj:assertj-bom:${project.assertj_version}"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testImplementation("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.assertj:assertj-core:3.19.0")
+    testImplementation("org.assertj:assertj-core")
     testImplementation("com.google.guava:guava-testlib:21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.12.0")
     testImplementation("net.neoforged:testframework:${project.neoforge_version}")
@@ -203,24 +143,6 @@ dependencies {
 
     buildtoolsImplementation 'de.siegmar:fastcsv:2.1.0'
     buildtoolsImplementation 'com.google.code.gson:gson:2.8.9'
-}
-archivesBaseName = artifact_basename
-
-allprojects {
-    group = artifact_group
-
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
-        }
-    }
-
-    // ensure everything uses UTF-8 and not some random codepage chosen by gradle
-    tasks.withType(JavaCompile).configureEach {
-        options.encoding = 'UTF-8'
-        options.deprecation = false
-        options.compilerArgs << "-Xmaxerrs" << "9999"
-    }
 }
 
 ///////////////////
@@ -231,7 +153,7 @@ if (ext.tag) {
         throw new GradleException("Tags for the neoforge version should start with neoforge/: ${ext.tag}")
     }
 
-    version = ext.tag.substring("neoforge/v".length())
+    project.version = ext.tag.substring("neoforge/v".length())
     // Validate that the rest is a semver version
     if (version ==~ /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/) {
         if (System.getenv("GITHUB_ENV")) {
@@ -242,18 +164,20 @@ if (ext.tag) {
         throw new GradleException("Invalid semver: $version")
     }
 } else {
-    version = version_major + "." + version_minor + "." + version_patch
-
-    def pr = System.getenv('PR_NUMBER') ?: ""
-    if (pr) {
-        version += "+pr." + pr
-    }
-
-    def branch = System.getenv('BRANCH') ?: ""
-    if (branch) {
-        version += "+branch." + branch
-    }
+    // This essentially tries to implement delay expansion of the project version based on a value source to
+    // still support configuration caching.
+    project.version = providers.gradleProperty("version").orElse("").flatMap(version -> {
+        if (!version.isBlank()) {
+            return version;
+        }
+        return providers.of(ProjectVersionSource.class, spec -> {
+            spec.getParameters().getDefaultBranches().addAll("main", "neoforge/" + project.minecraft_version)
+        });
+    }).get()
 }
+
+tasks.register("printProjectVersion", PrintProjectVersion.class);
+
 test {
     useJUnitPlatform()
 
@@ -353,22 +277,25 @@ neoForge {
 
 //////////////
 // Artifacts
+Map<String, String> expansionVariables = [
+        "project_version": project.version,
+        'minecraft_version': project.minecraft_version_range,
+        'neoforge_version': project.neoforge_version_range,
+        'top_version': project.top_version_range,
+        'jade_version': project.jade_version_range
+]
+
 processResources {
     exclude '.cache'
     // Ensure the resources get re-evaluate when the version changes
-    inputs.property("version", project.version)
-    inputs.property("minecraft_version", project.minecraft_version_range)
-    inputs.property("neoforge_version", project.neoforge_version)
-    inputs.property("neoforge_version_range", project.neoforge_version_range)
-    inputs.property("top_version", project.top_version)
-    inputs.property("jade_version", project.jade_version_range)
+    for (var entry : expansionVariables.entrySet()) {
+        inputs.property(entry.key, entry.value)
+    }
 
     filesMatching("META-INF/neoforge.mods.toml") {
-        expand 'minecraft_version': project.minecraft_version_range, 'neoforge_version': project.neoforge_version_range,
-                'top_version': project.top_version_range,
-                'jade_version': project.jade_version_range
+        expand expansionVariables
         filter { line ->
-            line.replace('version="0.0.0"', "version=\"$version\"")
+            line.replace('version="0.0.0"', "version=\"${expansionVariables['project_version']}\"")
         }
     }
 }
@@ -411,17 +338,18 @@ javadoc {
 }
 javadoc publicApiIncludePatterns
 
-task javadocJar(type: Jar, dependsOn: javadoc, group: "build") {
+tasks.register('javadocJar', Jar) {
+    dependsOn javadoc
     archiveClassifier = "javadoc"
     from javadoc.destinationDir
 }
 
-task sourcesJar(type: Jar) {
+tasks.register('sourcesJar', Jar) {
     archiveClassifier = "sources"
     from sourceSets.main.allJava
 }
 
-task apiJar(type: Jar, group: "build") {
+tasks.register('apiJar', Jar) {
     archiveClassifier = "api"
     // api jar ist just a development aid and serves as both a binary and source jar simultaneously
     from sourceSets.main.output
@@ -443,8 +371,7 @@ artifacts {
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = project.group
-            artifactId = project.archivesBaseName
+            artifactId = "appliedenergistics2"
             version = project.version
 
             artifact shadowJar
@@ -506,29 +433,23 @@ spotless {
 
 ////////////////
 // Crowdin
-task uploadToCrowdin(type: JavaExec) {
+tasks.register('uploadToCrowdin', JavaExec) {
     classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'upload_source'
     workingDir "."
 }
-task uploadTranslations(type: JavaExec) {
+tasks.register('uploadTranslations', JavaExec) {
     classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'upload_translations'
     workingDir "."
 }
-task downloadFromCrowdin(type: JavaExec) {
+tasks.register('downloadFromCrowdin', JavaExec) {
     classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'update_translations'
     workingDir "."
-}
-
-// See https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5259
-// Gradle module metadata contains mapped dependencies, making our artifacts unconsumable
-tasks.withType(GenerateModuleMetadata) {
-    enabled = false
 }
 
 check.dependsOn tasks.register('validateResources', JavaExec) {
@@ -562,7 +483,7 @@ tasks.register('downloadFlatbufferCompiler', Download) {
         throw new GradleException("Unknown OS: $os")
     }
     onlyIfModified true
-    dest "${project.buildDir}/flatc.zip"
+    dest layout.buildDirectory.file("flatc.zip")
 }
 
 tasks.register('downloadAndUnzipFlatbufferCompiler', Copy) {

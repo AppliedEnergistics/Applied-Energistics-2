@@ -14,6 +14,9 @@
 # Scripts
 !/scripts
 /scripts/node_modules
+!/buildSrc
+/buildSrc/build
+/buildSrc/.gradle
 
 # include markdowns
 !*.md
