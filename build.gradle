@@ -28,8 +28,13 @@ plugins {
     id "net.neoforged.moddev"
     id "maven-publish"
     id "com.diffplug.spotless"
-    id "com.github.johnrengelman.shadow"
+    id 'io.github.goooler.shadow'
     id "de.undercouch.download"
+}
+
+base {
+    group = "appeng"
+    archivesName = "appliedenergistics2"
 }
 
 sourceSets {
@@ -59,67 +64,6 @@ configurations {
 }
 
 import appengbuild.*
-
-repositories {
-    mavenLocal()
-    maven {
-        name 'Maven for PR #54' // https://github.com/neoforged/FancyModLoader/pull/54
-        url 'https://prmaven.neoforged.net/FancyModLoader/pr54'
-        content {
-            includeModule('net.neoforged.fancymodloader', 'earlydisplay')
-            includeModule('net.neoforged.fancymodloader', 'junit-fml')
-            includeModule('net.neoforged.fancymodloader', 'loader')
-        }
-    }
-    maven {
-        url "https://maven.shedaniel.me/"
-        content {
-            includeGroup "me.shedaniel"
-            includeGroup "me.shedaniel.cloth"
-            includeGroup "dev.architectury"
-        }
-    }
-    maven {
-        url "https://maven2.bai.lol"
-        content {
-            includeGroup "mcp.mobius.waila"
-            includeGroup "lol.bai"
-        }
-    }
-    maven {
-        name = "TerraformersMC"
-        url = "https://maven.terraformersmc.com/"
-        content {
-            includeGroup "dev.emi"
-        }
-    }
-    maven {
-        name 'cursemaven'
-        url "https://www.cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-    maven { // for TOP
-        url "https://maven.k-4u.nl/"
-        content {
-            includeGroup "mcjty.theoneprobe"
-        }
-    }
-    maven {
-        url = "https://maven.theillusivec4.top/"
-        content {
-            includeGroup "top.theillusivec4.curios"
-        }
-    }
-    maven {
-        url = "https://maven.blamejared.com/"
-        content {
-            includeGroup "mezz.jei"
-        }
-    }
-    mavenCentral()
-}
 
 dependencies {
     // To be copied into the jar file
@@ -184,11 +128,12 @@ dependencies {
 
     // unit test dependencies
     testImplementation(platform("org.junit:junit-bom:${project.junit_version}"))
+    testImplementation(platform("org.assertj:assertj-bom:${project.assertj_version}"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testImplementation("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.assertj:assertj-core:3.19.0")
+    testImplementation("org.assertj:assertj-core")
     testImplementation("com.google.guava:guava-testlib:21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.12.0")
     testImplementation("net.neoforged:testframework:${project.neoforge_version}")
@@ -198,10 +143,11 @@ dependencies {
     buildtoolsImplementation 'de.siegmar:fastcsv:2.1.0'
     buildtoolsImplementation 'com.google.code.gson:gson:2.8.9'
 }
-archivesBaseName = artifact_basename
 
 allprojects {
-    group = artifact_group
+    base {
+        group = "appeng"
+    }
 
     java {
         toolchain {
@@ -349,22 +295,25 @@ neoForge {
 
 //////////////
 // Artifacts
+Map<String, String> expansionVariables = [
+        "project_version": project.version,
+        'minecraft_version': project.minecraft_version_range,
+        'neoforge_version': project.neoforge_version_range,
+        'top_version': project.top_version_range,
+        'jade_version': project.jade_version_range
+]
+
 processResources {
     exclude '.cache'
     // Ensure the resources get re-evaluate when the version changes
-    inputs.property("version", project.version)
-    inputs.property("minecraft_version", project.minecraft_version_range)
-    inputs.property("neoforge_version", project.neoforge_version)
-    inputs.property("neoforge_version_range", project.neoforge_version_range)
-    inputs.property("top_version", project.top_version)
-    inputs.property("jade_version", project.jade_version_range)
+    for (var entry : expansionVariables.entrySet()) {
+        inputs.property(entry.key, entry.value)
+    }
 
     filesMatching("META-INF/neoforge.mods.toml") {
-        expand 'minecraft_version': project.minecraft_version_range, 'neoforge_version': project.neoforge_version_range,
-                'top_version': project.top_version_range,
-                'jade_version': project.jade_version_range
+        expand expansionVariables
         filter { line ->
-            line.replace('version="0.0.0"', "version=\"$version\"")
+            line.replace('version="0.0.0"', "version=\"${expansionVariables['project_version']}\"")
         }
     }
 }
@@ -439,8 +388,7 @@ artifacts {
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = project.group
-            artifactId = project.archivesBaseName
+            artifactId = "appliedenergistics2"
             version = project.version
 
             artifact shadowJar
@@ -558,7 +506,7 @@ tasks.register('downloadFlatbufferCompiler', Download) {
         throw new GradleException("Unknown OS: $os")
     }
     onlyIfModified true
-    dest "${project.buildDir}/flatc.zip"
+    dest layout.buildDirectory.file("flatc.zip")
 }
 
 tasks.register('downloadAndUnzipFlatbufferCompiler', Copy) {
