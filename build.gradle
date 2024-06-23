@@ -32,8 +32,9 @@ plugins {
     id "de.undercouch.download"
 }
 
+apply plugin: ProjectDefaultsPlugin
+
 base {
-    group = "appeng"
     archivesName = "appliedenergistics2"
 }
 
@@ -142,25 +143,6 @@ dependencies {
 
     buildtoolsImplementation 'de.siegmar:fastcsv:2.1.0'
     buildtoolsImplementation 'com.google.code.gson:gson:2.8.9'
-}
-
-allprojects {
-    base {
-        group = "appeng"
-    }
-
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
-        }
-    }
-
-    // ensure everything uses UTF-8 and not some random codepage chosen by gradle
-    tasks.withType(JavaCompile).configureEach {
-        options.encoding = 'UTF-8'
-        options.deprecation = false
-        options.compilerArgs << "-Xmaxerrs" << "9999"
-    }
 }
 
 ///////////////////
@@ -356,17 +338,18 @@ javadoc {
 }
 javadoc publicApiIncludePatterns
 
-task javadocJar(type: Jar, dependsOn: javadoc, group: "build") {
+tasks.register('javadocJar', Jar) {
+    dependsOn javadoc
     archiveClassifier = "javadoc"
     from javadoc.destinationDir
 }
 
-task sourcesJar(type: Jar) {
+tasks.register('sourcesJar', Jar) {
     archiveClassifier = "sources"
     from sourceSets.main.allJava
 }
 
-task apiJar(type: Jar, group: "build") {
+tasks.register('apiJar', Jar) {
     archiveClassifier = "api"
     // api jar ist just a development aid and serves as both a binary and source jar simultaneously
     from sourceSets.main.output
@@ -450,29 +433,23 @@ spotless {
 
 ////////////////
 // Crowdin
-task uploadToCrowdin(type: JavaExec) {
+tasks.register('uploadToCrowdin', JavaExec) {
     classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'upload_source'
     workingDir "."
 }
-task uploadTranslations(type: JavaExec) {
+tasks.register('uploadTranslations', JavaExec) {
     classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'upload_translations'
     workingDir "."
 }
-task downloadFromCrowdin(type: JavaExec) {
+tasks.register('downloadFromCrowdin', JavaExec) {
     classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'update_translations'
     workingDir "."
-}
-
-// See https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5259
-// Gradle module metadata contains mapped dependencies, making our artifacts unconsumable
-tasks.withType(GenerateModuleMetadata) {
-    enabled = false
 }
 
 check.dependsOn tasks.register('validateResources', JavaExec) {
