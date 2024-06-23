@@ -49,9 +49,7 @@ public abstract class ProjectVersionSource implements ValueSource<String, Projec
             throw new RuntimeException("Git version command did not return a git version: " + gitVersion);
         }
 
-        var tag = calculate();
-        System.out.println(tag);
-        return "";
+        return calculate();
     }
 
     private String calculate() throws IOException, InterruptedException {

@@ -225,7 +225,7 @@ if (ext.tag) {
         throw new GradleException("Tags for the neoforge version should start with neoforge/: ${ext.tag}")
     }
 
-    version = ext.tag.substring("neoforge/v".length())
+    project.version = ext.tag.substring("neoforge/v".length())
     // Validate that the rest is a semver version
     if (version ==~ /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/) {
         if (System.getenv("GITHUB_ENV")) {
@@ -238,19 +238,14 @@ if (ext.tag) {
 } else {
     // This essentially tries to implement delay expansion of the project version based on a value source to
     // still support configuration caching.
-    version = providers.gradleProperty("version").orElse(providers.of(ProjectVersionSource.class, spec -> {
-        spec.getParameters().getDefaultBranches().addAll("main", "neoforge/" + project.minecraft_version)
-    })).get()
-
-    def pr = System.getenv('PR_NUMBER') ?: ""
-    if (pr) {
-        version += "+pr." + pr
-    }
-
-    def branch = System.getenv('BRANCH') ?: ""
-    if (branch) {
-        version += "+branch." + branch
-    }
+    project.version = providers.gradleProperty("version").orElse("").flatMap(version -> {
+        if (!version.isBlank()) {
+            return version;
+        }
+        return providers.of(ProjectVersionSource.class, spec -> {
+            spec.getParameters().getDefaultBranches().addAll("main", "neoforge/" + project.minecraft_version)
+        });
+    }).get()
 }
 
 tasks.register("printProjectVersion", PrintProjectVersion.class);

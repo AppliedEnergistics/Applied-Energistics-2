@@ -18,7 +18,7 @@ import java.nio.file.StandardOpenOption;
 public abstract class PrintProjectVersion extends DefaultTask {
     @Inject
     public PrintProjectVersion(Project project) {
-        getVersion().set(project.provider(() -> project.getVersion().toString()));
+        getVersion().convention(project.provider(() -> project.getVersion().toString()));
         getOutputs().upToDateWhen(task -> false);
     }
 
