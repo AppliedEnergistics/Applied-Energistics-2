@@ -61,7 +61,7 @@ public abstract class ProjectVersionSource implements ValueSource<String, Projec
         var version = String.join(".", triplet);
 
         // Appends a -pre.<offset>
-        version += "-pre." + describe.offset();
+        version += "-alpha." + describe.offset();
 
         var branchSuffix = getBranchSuffix();
         if (branchSuffix != null) {
