@@ -118,7 +118,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
 
     @Override
     public int getLightLevel() {
-        if (this.isOutput() && this.isPowered()) {
+        if (this.isOutput() && this.isPowered() && this.getInput() != null) {
             return this.blockLight(this.lastValue);
         }
 
