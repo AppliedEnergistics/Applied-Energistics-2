@@ -18,12 +18,15 @@ jobs:
       VERSION: ${{ steps.prepare_artifact_metadata.outputs.VERSION }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 100
+          fetch-tags: true
       - uses: ./.github/actions/gradle-setup
       - name: Build with Gradle
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew build -x check --no-daemon --max-workers 1
+        run: ./gradlew printProjectVersion build -x check --max-workers 1
       - name: Prepare artifact metadata. Note that VERSION is set by the gradle script.
         id: prepare_artifact_metadata
         run: |
@@ -89,7 +92,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 100
+          fetch-tags: true
       - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
         uses: actions/download-artifact@v4
@@ -139,7 +145,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 100
+          fetch-tags: true
       - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
         uses: actions/download-artifact@v4
