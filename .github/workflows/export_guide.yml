@@ -11,7 +11,7 @@ on:
   push: {}
 
 jobs:
-  exprt-guide:
+  export-guide:
     name: Export Guide
     runs-on: ubuntu-latest
 
@@ -44,7 +44,7 @@ jobs:
   # Attach the guide as a release artifact if we're building a tag which might be a release
   attach-release-artifact:
     if: startsWith(github.ref, 'refs/tags/fabric/v') || startsWith(github.ref, 'refs/tags/neoforge/v')
-    needs: build
+    needs: export-guide
     name: Attach Release Artifact
     runs-on: ubuntu-latest
     steps:
@@ -67,7 +67,7 @@ jobs:
   # Minecraft version will be used to upload the guide data for it.
   # We only publish our main Neoforge releases to the site.
   publish-web-release:
-    needs: build
+    needs: export-guide
     name: Publish Release to Web
     runs-on: ubuntu-latest
     environment: Production
@@ -107,7 +107,7 @@ jobs:
   # push to master, it'll only run for manually triggered workflows (workflow_dispatch)
   # or once per night.
   publish-web-snapshot:
-    needs: build
+    needs: export-guide
     name: Publish Snapshot to Web
     runs-on: ubuntu-latest
     environment: Production
