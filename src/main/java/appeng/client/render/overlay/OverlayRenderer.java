@@ -41,15 +41,18 @@ public class OverlayRenderer {
     }
 
     public void render(PoseStack poseStack, MultiBufferSource buffer) {
+        RenderType typeLinesOccluded = OverlayRenderType.getBlockHilightLineOccluded();
+        render(poseStack, buffer.getBuffer(typeLinesOccluded), true, 0x30ffffff);
+
         RenderType typeFaces = OverlayRenderType.getBlockHilightFace();
-        render(poseStack, buffer.getBuffer(typeFaces), false);
+        render(poseStack, buffer.getBuffer(typeFaces), false, this.source.getOverlayColor());
 
         RenderType typeLines = OverlayRenderType.getBlockHilightLine();
-        render(poseStack, buffer.getBuffer(typeLines), true);
+        render(poseStack, buffer.getBuffer(typeLines), true, this.source.getOverlayColor());
     }
 
-    private void render(PoseStack poseStack, VertexConsumer builder, boolean renderLines) {
-        int[] cols = OverlayRenderType.decomposeColor(this.source.getOverlayColor());
+    private void render(PoseStack poseStack, VertexConsumer builder, boolean renderLines, int color) {
+        int[] cols = OverlayRenderType.decomposeColor(color);
         for (ChunkPos pos : this.source.getOverlayChunks()) {
             poseStack.pushPose();
             poseStack.translate(pos.getMinBlockX(), 0, pos.getMinBlockZ());

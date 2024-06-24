@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -60,16 +59,18 @@ public class OverlayManager {
         poseStack.pushPose();
 
         Vec3 projectedView = minecraft.gameRenderer.getMainCamera().getPosition();
+        poseStack.mulPose(minecraft.gameRenderer.getMainCamera().rotation().invert());
         poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
-        for (OverlayRenderer handler : overlayHandlers.entrySet().stream()
+        for (var handler : overlayHandlers.entrySet().stream()
                 .filter(e -> e.getKey().getLevel() == minecraft.level).map(Entry::getValue)
-                .collect(Collectors.toList())) {
+                .toList()) {
             handler.render(poseStack, buffer);
         }
 
         poseStack.popPose();
 
+        buffer.endBatch(OverlayRenderType.getBlockHilightLineOccluded());
         buffer.endBatch(OverlayRenderType.getBlockHilightFace());
         buffer.endBatch(OverlayRenderType.getBlockHilightLine());
     }
