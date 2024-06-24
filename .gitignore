@@ -23,6 +23,7 @@
 !LICENSE
 
 # include sourcecode
+!docs/
 !src/
 src/generated/resources/.cache
 out
