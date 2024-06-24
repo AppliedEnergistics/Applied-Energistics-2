@@ -154,15 +154,6 @@ if (ext.tag) {
     }
 
     project.version = ext.tag.substring("neoforge/v".length())
-    // Validate that the rest is a semver version
-    if (version ==~ /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/) {
-        if (System.getenv("GITHUB_ENV")) {
-            def envFile = new File(System.getenv("GITHUB_ENV"))
-            envFile.append("VERSION=${version}")
-        }
-    } else {
-        throw new GradleException("Invalid semver: $version")
-    }
 } else {
     // This essentially tries to implement delay expansion of the project version based on a value source to
     // still support configuration caching.
