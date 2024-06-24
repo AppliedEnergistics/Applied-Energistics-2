@@ -18,10 +18,7 @@ jobs:
       VERSION: ${{ steps.prepare_artifact_metadata.outputs.VERSION }}
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 100
-          fetch-tags: true
+      - uses: ./.github/actions/checkout
       - uses: ./.github/actions/gradle-setup
       - name: Build with Gradle
         env:
@@ -92,10 +89,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 100
-          fetch-tags: true
+      - uses: ./.github/actions/checkout
       - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
         uses: actions/download-artifact@v4
@@ -145,10 +139,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 100
-          fetch-tags: true
+      - uses: ./.github/actions/checkout
       - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
         uses: actions/download-artifact@v4

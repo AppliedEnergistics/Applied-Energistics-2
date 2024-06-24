@@ -10,10 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 100
-          fetch-tags: true
+      - uses: ./.github/actions/checkout
       - uses: ./.github/actions/gradle-setup
       - uses: actions/setup-node@v2
         with:
