@@ -1,6 +1,7 @@
 package appeng.client.guidebook.hotkey;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.base.Strings;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -14,6 +15,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -43,8 +45,8 @@ public final class OpenGuideHotkey {
 
     private static boolean newTick = true;
 
-    // The last itemstack the tooltip was being shown for
-    private static ItemStack lastStack;
+    // The previous item the tooltip was being shown for
+    private static ResourceLocation previousItemId;
     @Nullable
     private static PageAnchor guidebookPage;
     // Full ticks since the button was held (reduces slowly when not held)
@@ -133,15 +135,16 @@ public final class OpenGuideHotkey {
     }
 
     private static void update(ItemStack itemStack) {
-        if (itemStack != lastStack) {
-            lastStack = itemStack;
+        var itemId = itemStack.getItemHolder()
+                .unwrapKey()
+                .map(ResourceKey::location)
+                .orElse(null);
+
+        if (!Objects.equals(itemId, previousItemId)) {
+            previousItemId = itemId;
             guidebookPage = null;
             ticksKeyHeld = 0;
 
-            var itemId = itemStack.getItemHolder()
-                    .unwrapKey()
-                    .map(ResourceKey::location)
-                    .orElse(null);
             if (itemId == null) {
                 return;
             }
