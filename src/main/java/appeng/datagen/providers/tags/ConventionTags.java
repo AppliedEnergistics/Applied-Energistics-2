@@ -49,6 +49,10 @@ public final class ConventionTags {
     private ConventionTags() {
     }
 
+    /**
+     * This tag contains all data component types that should be cleared from a memory card when it is
+     * shift+right-clicked.
+     */
     public static final TagKey<DataComponentType<?>> EXPORTED_SETTINGS = net.minecraft.tags.TagKey.create(
             Registries.DATA_COMPONENT_TYPE,
             AppEng.makeId("exported_settings"));
