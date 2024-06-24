@@ -16,6 +16,7 @@ import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.AESubScreen;
 import appeng.client.gui.ICompositeWidget;
+import appeng.client.gui.Icon;
 import appeng.client.gui.widgets.AECheckbox;
 import appeng.client.gui.widgets.TabButton;
 import appeng.menu.AEBaseMenu;
@@ -38,7 +39,7 @@ public class KeyTypeSelectionScreen<C extends AEBaseMenu & KeyTypeSelectionMenu,
     private void addBackButton(ISubMenuHost subMenuHost) {
         var icon = subMenuHost.getMainMenuIcon();
         var label = icon.getHoverName();
-        TabButton button = new TabButton(icon, label, btn -> returnToParent());
+        TabButton button = new TabButton(Icon.BACK, label, btn -> returnToParent());
         widgets.add("back", button);
     }
 

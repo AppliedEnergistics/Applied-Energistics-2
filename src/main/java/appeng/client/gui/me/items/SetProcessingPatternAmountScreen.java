@@ -27,6 +27,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AESubScreen;
+import appeng.client.gui.Icon;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.me.common.ClientDisplaySlot;
 import appeng.client.gui.widgets.NumberEntryWidget;
@@ -61,7 +62,7 @@ public class SetProcessingPatternAmountScreen<C extends PatternEncodingTermMenu>
 
         var icon = getMenu().getHost().getMainMenuIcon();
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-        var button = new TabButton(icon, icon.getHoverName(), btn -> {
+        var button = new TabButton(Icon.BACK, icon.getHoverName(), btn -> {
             returnToParent();
         });
         widgets.add("back", button);
