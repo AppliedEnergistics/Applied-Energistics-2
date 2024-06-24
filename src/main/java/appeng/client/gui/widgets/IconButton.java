@@ -70,7 +70,7 @@ public abstract class IconButton extends Button implements ITooltip {
                 this.height = 8;
             }
 
-            var yOffset = isHoveredOrFocused() ? 1 : 0;
+            var yOffset = isHovered() ? 1 : 0;
 
             if (this.halfSize) {
                 if (!disableBackground) {
@@ -87,8 +87,11 @@ public abstract class IconButton extends Button implements ITooltip {
                 }
             } else {
                 if (!disableBackground) {
-                    Icon bgIcon = isHoveredOrFocused() ? Icon.TOOLBAR_BUTTON_BACKGROUND_HOVER
-                            : Icon.TOOLBAR_BUTTON_BACKGROUND;
+                    Icon bgIcon =
+                            isHovered() ? Icon.TOOLBAR_BUTTON_BACKGROUND_HOVER :
+                            isFocused() ? Icon.TOOLBAR_BUTTON_BACKGROUND_FOCUS :
+                            Icon.TOOLBAR_BUTTON_BACKGROUND;
+
                     bgIcon.getBlitter()
                             .dest(getX() - 1, getY() + yOffset, 18, 20)
                             .zOffset(2)

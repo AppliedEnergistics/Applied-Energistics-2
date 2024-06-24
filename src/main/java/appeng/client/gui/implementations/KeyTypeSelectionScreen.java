@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import appeng.client.gui.Icon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.Rect2i;
@@ -38,7 +39,7 @@ public class KeyTypeSelectionScreen<C extends AEBaseMenu & KeyTypeSelectionMenu,
     private void addBackButton(ISubMenuHost subMenuHost) {
         var icon = subMenuHost.getMainMenuIcon();
         var label = icon.getHoverName();
-        TabButton button = new TabButton(icon, label, btn -> returnToParent());
+        TabButton button = new TabButton(Icon.BACK, label, btn -> returnToParent());
         widgets.add("back", button);
     }
 
