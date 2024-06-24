@@ -20,7 +20,6 @@ package appeng.client.gui.me.items;
 
 import java.util.function.Consumer;
 
-import appeng.client.gui.Icon;
 import com.google.common.primitives.Longs;
 
 import net.minecraft.client.Minecraft;
@@ -28,6 +27,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AESubScreen;
+import appeng.client.gui.Icon;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.me.common.ClientDisplaySlot;
 import appeng.client.gui.widgets.NumberEntryWidget;

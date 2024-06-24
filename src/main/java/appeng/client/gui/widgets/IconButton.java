@@ -87,10 +87,8 @@ public abstract class IconButton extends Button implements ITooltip {
                 }
             } else {
                 if (!disableBackground) {
-                    Icon bgIcon =
-                            isHovered() ? Icon.TOOLBAR_BUTTON_BACKGROUND_HOVER :
-                            isFocused() ? Icon.TOOLBAR_BUTTON_BACKGROUND_FOCUS :
-                            Icon.TOOLBAR_BUTTON_BACKGROUND;
+                    Icon bgIcon = isHovered() ? Icon.TOOLBAR_BUTTON_BACKGROUND_HOVER
+                            : isFocused() ? Icon.TOOLBAR_BUTTON_BACKGROUND_FOCUS : Icon.TOOLBAR_BUTTON_BACKGROUND;
 
                     bgIcon.getBlitter()
                             .dest(getX() - 1, getY() + yOffset, 18, 20)
