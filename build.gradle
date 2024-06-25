@@ -65,6 +65,7 @@ configurations {
 }
 
 import appengbuild.*
+import com.diffplug.gradle.spotless.JsonExtension
 
 dependencies {
     // To be copied into the jar file
@@ -420,7 +421,12 @@ spotless {
    json {
         target 'src/*/resources/**/*.json'
         targetExclude 'src/generated/resources/**'
-        biome()
+        var biomeConfig = it.new JsonExtension.BiomeJson(null)
+        try {
+            biomeConfig.downloadDir(new File(rootDir, ".gradle/biome").absolutePath)
+        } catch (Exception ignored) {
+        }
+        addStep(biomeConfig.createStep())
         indentWithSpaces(2)
         endWithNewline()
     }

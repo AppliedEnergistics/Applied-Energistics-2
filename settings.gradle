@@ -17,10 +17,9 @@ plugins {
 }
 
 dependencyResolutionManagement {
-    repositoriesMode = RepositoriesMode.PREFER_SETTINGS
-    rulesMode = RulesMode.PREFER_SETTINGS
+    repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
+    rulesMode = RulesMode.FAIL_ON_PROJECT_RULES
     repositories {
-        mavenLocal()
         maven {
             url "https://maven.shedaniel.me/"
             content {
