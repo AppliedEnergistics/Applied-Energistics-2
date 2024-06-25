@@ -411,14 +411,18 @@ spotless {
             if (it.contains('*;\n')) {
                 throw new Error('No wildcard imports allowed')
             }
+
+            it
         }
         bumpThisNumberIfACustomStepChanges(1)
     }
 
-    format 'json', {
+   json {
         target 'src/*/resources/**/*.json'
         targetExclude 'src/generated/resources/**'
-        prettier().config(['parser': 'json'])
+        biome()
+        indentWithSpaces(2)
+        endWithNewline()
     }
 }
 

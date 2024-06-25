@@ -17,8 +17,8 @@ plugins {
 }
 
 dependencyResolutionManagement {
-    repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
-    rulesMode = RulesMode.FAIL_ON_PROJECT_RULES
+    repositoriesMode = RepositoriesMode.PREFER_SETTINGS
+    rulesMode = RulesMode.PREFER_SETTINGS
     repositories {
         mavenLocal()
         maven {
