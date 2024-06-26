@@ -25,6 +25,8 @@ import java.util.Objects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import org.joml.Quaternionf;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.world.phys.Vec3;
@@ -32,7 +34,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
 import appeng.api.util.DimensionalBlockPos;
-import org.joml.Quaternionf;
 
 /**
  * This is based on the area render of https://github.com/TeamPneumatic/pnc-repressurized/
