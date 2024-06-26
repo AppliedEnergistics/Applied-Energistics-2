@@ -32,6 +32,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
 import appeng.api.util.DimensionalBlockPos;
+import org.joml.Quaternionf;
 
 /**
  * This is based on the area render of https://github.com/TeamPneumatic/pnc-repressurized/
@@ -59,7 +60,9 @@ public class OverlayManager {
         poseStack.pushPose();
 
         Vec3 projectedView = minecraft.gameRenderer.getMainCamera().getPosition();
-        poseStack.mulPose(minecraft.gameRenderer.getMainCamera().rotation().invert());
+        Quaternionf rotation = new Quaternionf();
+        minecraft.gameRenderer.getMainCamera().rotation().invert(rotation);
+        poseStack.mulPose(rotation);
         poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
         for (var handler : overlayHandlers.entrySet().stream()
