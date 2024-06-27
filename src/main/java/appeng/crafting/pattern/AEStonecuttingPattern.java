@@ -224,8 +224,12 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
 
     @Override
     public ItemStack assemble(CraftingInput container, Level level) {
+        if (container.size() != 1) {
+            return ItemStack.EMPTY;
+        }
+
         // Jiggle the container around
-        var testInput = new SingleRecipeInput(container.getItem(CRAFTING_GRID_SLOT));
+        var testInput = new SingleRecipeInput(container.getItem(0));
 
         if (recipe.matches(testInput, level)) {
             return recipe.assemble(testInput, level.registryAccess());
