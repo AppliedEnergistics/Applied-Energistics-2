@@ -25,6 +25,8 @@ import java.util.Objects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import org.joml.Quaternionf;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.world.phys.Vec3;
@@ -52,6 +54,10 @@ public class OverlayManager {
             return;
         }
 
+        if (overlayHandlers.isEmpty()) {
+            return;
+        }
+
         Minecraft minecraft = Minecraft.getInstance();
         BufferSource buffer = minecraft.renderBuffers().bufferSource();
         PoseStack poseStack = event.getPoseStack();
@@ -59,7 +65,9 @@ public class OverlayManager {
         poseStack.pushPose();
 
         Vec3 projectedView = minecraft.gameRenderer.getMainCamera().getPosition();
-        poseStack.mulPose(minecraft.gameRenderer.getMainCamera().rotation().invert());
+        Quaternionf rotation = new Quaternionf(minecraft.gameRenderer.getMainCamera().rotation());
+        rotation.invert();
+        poseStack.mulPose(rotation);
         poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
         for (var handler : overlayHandlers.entrySet().stream()
