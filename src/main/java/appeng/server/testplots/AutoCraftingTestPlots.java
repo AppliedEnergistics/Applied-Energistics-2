@@ -1,18 +1,12 @@
 package appeng.server.testplots;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
@@ -106,7 +100,7 @@ public final class AutoCraftingTestPlots {
             var level = gridNode.getLevel();
             var patterns = new ArrayList<ItemStack>();
             // Crafting pattern table with substitutions enabled and some items that are NOT in storage
-            patterns.add(encodeCraftingPattern(
+            patterns.add(CraftingPatternHelper.encodeCraftingPattern(
                     level,
                     new Object[] {
                             Items.OAK_PLANKS, Items.OAK_PLANKS, null,
@@ -117,7 +111,7 @@ public final class AutoCraftingTestPlots {
                     false));
             // Crafting pattern table with substitutions enabled and some items that are NOT in storage,
             // and an actual sparse pattern
-            patterns.add(encodeCraftingPattern(
+            patterns.add(CraftingPatternHelper.encodeCraftingPattern(
                     level,
                     new Object[] {
                             Items.OAK_PLANKS, Items.OAK_PLANKS, Items.OAK_PLANKS,
@@ -125,6 +119,13 @@ public final class AutoCraftingTestPlots {
                             Items.CRIMSON_PLANKS, Items.OAK_PLANKS, Items.OAK_PLANKS
                     },
                     true,
+                    false));
+
+            // Pattern for stonecutter
+            patterns.add(CraftingPatternHelper.encodeStoneCutterPattern(
+                    level,
+                    Items.STONE,
+                    Items.STONE_BRICKS,
                     false));
 
             // This isn't a real sensible pattern, but we need some pattern that results in fluid being crafted
@@ -136,9 +137,19 @@ public final class AutoCraftingTestPlots {
                     List.of(
                             new GenericStack(AEFluidKey.of(Fluids.WATER), AEFluidKey.AMOUNT_BUCKET))));
 
+            // Add a smithing recipe to make netherite picks
+            patterns.add(CraftingPatternHelper.encodeSmithingPattern(
+                    level, Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, Items.DIAMOND_PICKAXE, Items.NETHERITE_INGOT,
+                    true));
+
             // Add ingredients to network storage
             var networkInv = grid.getStorageService().getInventory();
             networkInv.insert(AEItemKey.of(Items.OAK_PLANKS), 83, Actionable.MODULATE, new BaseActionSource());
+            networkInv.insert(AEItemKey.of(Items.STONE), 192, Actionable.MODULATE, new BaseActionSource());
+            networkInv.insert(AEItemKey.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), 64, Actionable.MODULATE,
+                    new BaseActionSource());
+            networkInv.insert(AEItemKey.of(Items.DIAMOND_PICKAXE), 64, Actionable.MODULATE, new BaseActionSource());
+            networkInv.insert(AEItemKey.of(Items.NETHERITE_INGOT), 64, Actionable.MODULATE, new BaseActionSource());
 
             // Distribute patterns across the pattern providers in the grid
             for (var provider : grid.getMachines(PatternProviderBlockEntity.class)) {
@@ -218,44 +229,6 @@ public final class AutoCraftingTestPlots {
         plot.block("-1 0 [-2,-1]", Blocks.COBBLESTONE);
         plot.block("-2 0 1", Blocks.COBBLESTONE);
         plot.block("-2 0 -2", Blocks.WATER);
-    }
-
-    private static ItemStack encodeCraftingPattern(ServerLevel level,
-            Object[] ingredients,
-            boolean allowSubstitutions,
-            boolean allowFluidSubstitutions) {
-
-        // Allow a mixed input of items or item stacks as ingredients
-        var stacks = Arrays.stream(ingredients)
-                .map(in -> {
-                    if (in instanceof ItemLike itemLike) {
-                        return new ItemStack(itemLike);
-                    } else if (in instanceof ItemStack itemStack) {
-                        return itemStack;
-                    } else if (in == null) {
-                        return ItemStack.EMPTY;
-                    } else {
-                        throw new IllegalArgumentException("Unsupported argument: " + in);
-                    }
-                })
-                .toArray(ItemStack[]::new);
-
-        var c = NonNullList.withSize(9, ItemStack.EMPTY);
-        for (int i = 0; i < stacks.length; i++) {
-            c.set(i, stacks[i]);
-        }
-        var recipeInput = CraftingInput.of(3, 3, c);
-
-        var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, recipeInput, level).orElseThrow();
-
-        var result = recipe.value().assemble(recipeInput, level.registryAccess());
-
-        return PatternDetailsHelper.encodeCraftingPattern(
-                recipe,
-                stacks,
-                result,
-                allowSubstitutions,
-                allowFluidSubstitutions);
     }
 
     private static void craftingCube(PlotBuilder plot) {
