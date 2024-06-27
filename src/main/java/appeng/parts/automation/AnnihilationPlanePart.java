@@ -121,7 +121,8 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
         super.readFromNBT(data, registries);
 
         var enchantmentsTag = data.getCompound("enchantments");
-        this.enchantments = ItemEnchantments.CODEC.decode(NbtOps.INSTANCE, enchantmentsTag)
+        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+        this.enchantments = ItemEnchantments.CODEC.decode(ops, enchantmentsTag)
                 .ifError(err -> LOG.warn("Failed to load enchantments for part {}: {}", this, err.message()))
                 .getOrThrow()
                 .getFirst();
@@ -131,7 +132,8 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
     public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.writeToNBT(data, registries);
 
-        var enchantmentsTag = ItemEnchantments.CODEC.encodeStart(NbtOps.INSTANCE, enchantments).getOrThrow();
+        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+        var enchantmentsTag = ItemEnchantments.CODEC.encodeStart(ops, enchantments).getOrThrow();
         if (enchantmentsTag instanceof CompoundTag compoundTag && !compoundTag.isEmpty()) {
             data.put("enchantments", enchantmentsTag);
         }

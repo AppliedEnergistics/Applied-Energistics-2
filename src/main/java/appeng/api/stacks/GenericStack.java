@@ -75,7 +75,8 @@ public record GenericStack(AEKey what, long amount) {
         if (tag.isEmpty()) {
             return null;
         }
-        return GenericStack.CODEC.decode(NbtOps.INSTANCE, tag)
+        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+        return GenericStack.CODEC.decode(ops, tag)
                 .ifError(err -> LOG.error("Failed to decode GenericStack from {}: {}", tag, err.message()))
                 .getPartialOrThrow()
                 .getFirst();
@@ -86,7 +87,8 @@ public record GenericStack(AEKey what, long amount) {
             return new CompoundTag();
         }
 
-        return (CompoundTag) GenericStack.CODEC.encodeStart(NbtOps.INSTANCE, stack).getOrThrow();
+        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+        return (CompoundTag) GenericStack.CODEC.encodeStart(ops, stack).getOrThrow();
     }
 
     /**
