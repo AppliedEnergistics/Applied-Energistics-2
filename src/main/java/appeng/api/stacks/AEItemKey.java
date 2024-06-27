@@ -150,8 +150,9 @@ public final class AEItemKey extends AEKey {
 
     @Nullable
     public static AEItemKey fromTag(HolderLookup.Provider registries, CompoundTag tag) {
+        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
         try {
-            return CODEC.decode(registries.createSerializationContext(NbtOps.INSTANCE), tag).getOrThrow().getFirst();
+            return CODEC.decode(ops, tag).getOrThrow().getFirst();
         } catch (Exception e) {
             AELog.debug("Tried to load an invalid item key from NBT: %s", tag, e);
             return null;
@@ -160,7 +161,8 @@ public final class AEItemKey extends AEKey {
 
     @Override
     public CompoundTag toTag(HolderLookup.Provider registries) {
-        return (CompoundTag) CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this)
+        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+        return (CompoundTag) CODEC.encodeStart(ops, this)
                 .getOrThrow();
     }
 

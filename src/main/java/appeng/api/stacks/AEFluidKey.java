@@ -111,8 +111,9 @@ public final class AEFluidKey extends AEKey {
     }
 
     public static AEFluidKey fromTag(HolderLookup.Provider registries, CompoundTag tag) {
+        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
         try {
-            return CODEC.decode(registries.createSerializationContext(NbtOps.INSTANCE), tag).getOrThrow().getFirst();
+            return CODEC.decode(ops, tag).getOrThrow().getFirst();
         } catch (Exception e) {
             AELog.debug("Tried to load an invalid fluid key from NBT: %s", tag, e);
             return null;
@@ -121,8 +122,8 @@ public final class AEFluidKey extends AEKey {
 
     @Override
     public CompoundTag toTag(HolderLookup.Provider registries) {
-        return (CompoundTag) CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this)
-                .getOrThrow();
+        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+        return (CompoundTag) CODEC.encodeStart(ops, this).getOrThrow();
     }
 
     @Override

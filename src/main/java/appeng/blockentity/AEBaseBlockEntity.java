@@ -516,10 +516,11 @@ public class AEBaseBlockEntity extends BlockEntity
         var data = new CompoundTag();
         saveAdditional(data, registries);
 
+        var ops = registries.createSerializationContext(JsonOps.INSTANCE);
         JsonStreamUtil.writeProperties(Map.of(
-                "blockState", BlockState.CODEC.encodeStart(JsonOps.INSTANCE, getBlockState()).getOrThrow(),
+                "blockState", BlockState.CODEC.encodeStart(ops, getBlockState()).getOrThrow(),
                 "level", level.dimension().location().toString(),
                 "pos", getBlockPos(),
-                "data", CompoundTag.CODEC.encodeStart(JsonOps.INSTANCE, data).getOrThrow()), writer);
+                "data", CompoundTag.CODEC.encodeStart(ops, data).getOrThrow()), writer);
     }
 }
