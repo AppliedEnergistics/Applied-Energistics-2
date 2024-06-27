@@ -108,7 +108,7 @@ jobs:
           local-repository-path: build/repo
           remote-repository-url: https://maven.pkg.github.com/AppliedEnergistics/Applied-Energistics-2/
           remote-repository-username: ${{ github.actor }}
-          remote-repository-password: ${{ secrets.GITHUB_TOKEN }}
+          remote-repository-password: ${{ github.token }}
 
   deploy-curseforge:
     name: Deploy to Curseforge
