@@ -49,7 +49,6 @@ jobs:
     name: Upload Release Artifacts
     needs: build
     runs-on: ubuntu-latest
-    if: false
     steps:
       - name: Download build artifact
         uses: actions/download-artifact@v4
@@ -112,7 +111,6 @@ jobs:
     name: Deploy to Curseforge
     needs: build
     runs-on: ubuntu-latest
-    if: false
     steps:
       - name: Download build artifact
         uses: actions/download-artifact@v4
@@ -164,7 +162,6 @@ jobs:
     name: Deploy to Modrinth
     needs: build
     runs-on: ubuntu-latest
-    if: false
     steps:
       - name: Download build artifact
         uses: actions/download-artifact@v4
