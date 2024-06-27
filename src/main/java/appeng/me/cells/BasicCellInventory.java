@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -52,6 +54,7 @@ import appeng.util.prioritylist.IPartitionList;
 public class BasicCellInventory implements StorageCell {
     private static final int MAX_ITEM_TYPES = 63;
 
+    @Nullable
     private final ISaveProvider container;
     private final AEKeyType keyType;
     private final IPartitionList partitionList;
@@ -66,7 +69,7 @@ public class BasicCellInventory implements StorageCell {
     private final boolean hasVoidUpgrade;
     private boolean isPersisted = true;
 
-    private BasicCellInventory(IBasicCellItem cellType, ItemStack o, ISaveProvider container) {
+    private BasicCellInventory(IBasicCellItem cellType, ItemStack o, @Nullable ISaveProvider container) {
         this.i = o;
         this.cellType = cellType;
         this.maxItemTypes = this.cellType.getTotalTypes(this.i);
@@ -137,7 +140,7 @@ public class BasicCellInventory implements StorageCell {
         return partitionList instanceof FuzzyPriorityList;
     }
 
-    public static BasicCellInventory createInventory(ItemStack o, ISaveProvider container) {
+    public static BasicCellInventory createInventory(ItemStack o, @Nullable ISaveProvider container) {
         Objects.requireNonNull(o, "Cannot create cell inventory for null itemstack");
 
         if (!(o.getItem() instanceof IBasicCellItem cellType)) {

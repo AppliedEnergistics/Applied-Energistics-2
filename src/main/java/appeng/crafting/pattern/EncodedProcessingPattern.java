@@ -23,8 +23,9 @@ public record EncodedProcessingPattern(
     }
 
     public static final Codec<EncodedProcessingPattern> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            GenericStack.NULLABLE_LIST_CODEC.fieldOf("sparseInputs").forGetter(EncodedProcessingPattern::sparseInputs),
-            GenericStack.NULLABLE_LIST_CODEC.fieldOf("sparseOutputs")
+            GenericStack.FAULT_TOLERANT_NULLABLE_LIST_CODEC.fieldOf("sparseInputs")
+                    .forGetter(EncodedProcessingPattern::sparseInputs),
+            GenericStack.FAULT_TOLERANT_NULLABLE_LIST_CODEC.fieldOf("sparseOutputs")
                     .forGetter(EncodedProcessingPattern::sparseOutputs))
             .apply(builder, EncodedProcessingPattern::new));
 

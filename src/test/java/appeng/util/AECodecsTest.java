@@ -2,6 +2,10 @@ package appeng.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Comparator;
@@ -14,14 +18,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.BundleContents;
 import net.minecraft.world.item.component.CustomData;
 
 import appeng.api.ids.AEComponents;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
 import appeng.core.definitions.AEItems;
 
 class AECodecsTest {
@@ -129,6 +138,85 @@ class AECodecsTest {
                     .getFirst();
             var reencoded = faultTolerantCodec.encodeStart(NbtOps.INSTANCE, decoded).result().get();
             assertEquals(encodedWithBrokenItem, reencoded);
+        }
+    }
+
+    @Nested
+    class FaultTolerantGenericStackCodec {
+        @Test
+        void testFaultTolerantSerialization() {
+            // Construct a stack that will fail Serialization due to exceeding the maximum stack size
+            var stack = new ItemStack(Items.STICK);
+            stack.set(DataComponents.BUNDLE_CONTENTS, new BundleContents(List.of(
+                    new ItemStack(Items.STICK, 999))));
+
+            // Validate our assumption that this throws
+            assertThrows(Exception.class, () -> stack.save(RegistryAccess.EMPTY));
+
+            // Build a generic stack out of this item
+            var listInput = List.of(
+                    GenericStack.fromItemStack(AEItems.FORMATION_CORE.stack()),
+                    GenericStack.fromItemStack(stack),
+                    GenericStack.fromItemStack(AEItems.ANNIHILATION_CORE.stack()));
+            var encodedList = GenericStack.FAULT_TOLERANT_LIST_CODEC.encodeStart(NbtOps.INSTANCE, listInput)
+                    .getOrThrow();
+
+            // Now decode again and assert the broken stick was replaced by a missing content item
+            var stackList = GenericStack.FAULT_TOLERANT_LIST_CODEC.decode(NbtOps.INSTANCE, encodedList)
+                    .getOrThrow().getFirst();
+
+            // No item should be missing
+            assertThat(stackList).hasSize(3);
+
+            // The two unaffected items should be untouched
+            assertThat(stackList.get(0)).isEqualTo(GenericStack.fromItemStack(AEItems.FORMATION_CORE.stack()));
+            assertThat(stackList.get(2)).isEqualTo(GenericStack.fromItemStack(AEItems.ANNIHILATION_CORE.stack()));
+
+            // Assert that the missing content item is as we expect
+            var brokenStack = stackList.get(1);
+            assertNotNull(brokenStack);
+            assertEquals(1, brokenStack.amount());
+            var resultItemKey = assertInstanceOf(AEItemKey.class, brokenStack.what());
+            assertSame(AEItems.MISSING_CONTENT.asItem(), resultItemKey.getItem());
+            assertEquals("Value must be within range [1;99]: 999",
+                    resultItemKey.get(AEComponents.MISSING_CONTENT_ERROR));
+        }
+
+        @Test
+        void testFaultTolerantDeserialization() {
+            // Use a known broken NBT to deserialize a generic stack list from by injecting an unknown item id
+            // Build a generic stack out of this item
+            var listInput = List.of(
+                    GenericStack.fromItemStack(AEItems.FORMATION_CORE.stack()),
+                    GenericStack.fromItemStack(new ItemStack(Items.DIAMOND)),
+                    GenericStack.fromItemStack(AEItems.ANNIHILATION_CORE.stack()));
+            var encodedList = GenericStack.FAULT_TOLERANT_LIST_CODEC.encodeStart(NbtOps.INSTANCE, listInput)
+                    .getOrThrow();
+
+            // Now break it by replacing diamonds with unknown_item
+            assertEquals(1, RecursiveTagReplace.replace(encodedList, "minecraft:diamond",
+                    "unknown_mod:does_not_exist"));
+
+            // Now decode again and assert the broken stick was replaced by a missing content item
+            var stackList = GenericStack.FAULT_TOLERANT_LIST_CODEC.decode(NbtOps.INSTANCE, encodedList)
+                    .getOrThrow().getFirst();
+
+            // No item should be missing
+            assertThat(stackList).hasSize(3);
+
+            // The two unaffected items should be untouched
+            assertThat(stackList.get(0)).isEqualTo(GenericStack.fromItemStack(AEItems.FORMATION_CORE.stack()));
+            assertThat(stackList.get(2)).isEqualTo(GenericStack.fromItemStack(AEItems.ANNIHILATION_CORE.stack()));
+
+            // Assert that the missing content item is as we expect
+            var brokenStack = stackList.get(1);
+            assertNotNull(brokenStack);
+            assertEquals(1, brokenStack.amount());
+            var resultItemKey = assertInstanceOf(AEItemKey.class, brokenStack.what());
+            assertSame(AEItems.MISSING_CONTENT.asItem(), resultItemKey.getItem());
+            assertEquals(
+                    "Unknown registry key in ResourceKey[minecraft:root / minecraft:item]: unknown_mod:does_not_exist",
+                    resultItemKey.get(AEComponents.MISSING_CONTENT_ERROR));
         }
     }
 }

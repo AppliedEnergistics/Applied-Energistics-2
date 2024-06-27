@@ -174,7 +174,7 @@ public final class AEComponents {
      * @see appeng.items.tools.MemoryCardItem
      */
     public static final DataComponentType<List<GenericStack>> EXPORTED_CONFIG_INV = register("exported_config_inv",
-            builder -> builder.persistent(GenericStack.NULLABLE_LIST_CODEC)
+            builder -> builder.persistent(GenericStack.FAULT_TOLERANT_NULLABLE_LIST_CODEC)
                     .networkSynchronized(GenericStack.STREAM_CODEC.apply(ByteBufCodecs.list())));
 
     /**
@@ -301,7 +301,7 @@ public final class AEComponents {
      * Content of a storage cell.
      */
     public static final DataComponentType<List<GenericStack>> STORAGE_CELL_INV = register("storage_cell_inv",
-            builder -> builder.persistent(GenericStack.CODEC.listOf())
+            builder -> builder.persistent(GenericStack.FAULT_TOLERANT_LIST_CODEC)
                     .networkSynchronized(GenericStack.STREAM_CODEC.apply(ByteBufCodecs.list())));
 
     /**
@@ -309,7 +309,7 @@ public final class AEComponents {
      */
     public static final DataComponentType<List<GenericStack>> STORAGE_CELL_CONFIG_INV = register(
             "storage_cell_config_inv",
-            builder -> builder.persistent(GenericStack.NULLABLE_LIST_CODEC)
+            builder -> builder.persistent(GenericStack.FAULT_TOLERANT_NULLABLE_LIST_CODEC)
                     .networkSynchronized(GenericStack.STREAM_CODEC.apply(ByteBufCodecs.list())));
 
     /**

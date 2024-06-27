@@ -47,6 +47,16 @@ public final class AECodecs {
 
         @Override
         public <T> DataResult<T> coApply(DynamicOps<T> ops, ItemStack input, DataResult<T> t) {
+            // When the serialization result failed, we write a missing content item instead
+            // this one will NOT be recoverable
+            if (t instanceof DataResult.Error<T> error) {
+                var missingContent = AEItems.MISSING_CONTENT.stack();
+                LOG.error("Failed to serialize ItemStack {}: {}", input, error.message());
+                missingContent.set(AEComponents.MISSING_CONTENT_ERROR, error.message());
+
+                return ItemStack.SINGLE_ITEM_CODEC.encodeStart(ops, missingContent).setLifecycle(t.lifecycle());
+            }
+
             // When the input is a MISSING_CONTENT item and has the original data attached,
             // we write that back.
             if (AEItems.MISSING_CONTENT.isSameAs(input)) {
