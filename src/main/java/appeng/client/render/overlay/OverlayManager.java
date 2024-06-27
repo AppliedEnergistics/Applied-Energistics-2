@@ -54,6 +54,10 @@ public class OverlayManager {
             return;
         }
 
+        if (overlayHandlers.isEmpty()) {
+            return;
+        }
+
         Minecraft minecraft = Minecraft.getInstance();
         BufferSource buffer = minecraft.renderBuffers().bufferSource();
         PoseStack poseStack = event.getPoseStack();
@@ -61,8 +65,8 @@ public class OverlayManager {
         poseStack.pushPose();
 
         Vec3 projectedView = minecraft.gameRenderer.getMainCamera().getPosition();
-        Quaternionf rotation = new Quaternionf();
-        minecraft.gameRenderer.getMainCamera().rotation().invert(rotation);
+        Quaternionf rotation = new Quaternionf(minecraft.gameRenderer.getMainCamera().rotation());
+        rotation.invert();
         poseStack.mulPose(rotation);
         poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
