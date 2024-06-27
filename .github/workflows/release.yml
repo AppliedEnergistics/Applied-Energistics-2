@@ -23,9 +23,7 @@ jobs:
         shell: bash
       - uses: ./.github/actions/gradle-setup
       - name: Build with Gradle
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew printProjectVersion build -x check --max-workers 1
+        run: ./gradlew printProjectVersion build publish -x check --max-workers 1
       - name: Prepare artifact metadata. Note that VERSION is set by the gradle script.
         id: prepare_artifact_metadata
         run: |
@@ -38,7 +36,7 @@ jobs:
           echo VERSION=${VERSION} >> $GITHUB_OUTPUT
       - name: Archive build results
         # It is important to  archive .gradle as well since gradle stores the incremental build state there
-        run: tar -I zstd -cf build.tar.zst .gradle build src/generated
+        run: tar -I zstd -cf build.tar.zst build/libs build/repo
       - name: Upload build and gradle folders
         uses: actions/upload-artifact@v4
         with:
@@ -90,11 +88,9 @@ jobs:
     name: Deploy to Github Packages
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
-      - uses: actions/checkout@v4
-      - run: git fetch origin --tags
-        shell: bash
-      - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
@@ -102,11 +98,14 @@ jobs:
       - name: Unpack build artifact
         run: tar axf build.tar.zst
       - name: Validate artifacts exist
-        run: test -d ./build && test -d ./.gradle
+        run: test -d ./build
       - name: Publish to Github Packages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew publishMavenPublicationToGitHubPackagesRepository --no-daemon --max-workers 1
+        uses: AppliedEnergistics/maven-publish-action@main
+        with:
+          local-repository-path: build/repo
+          remote-repository-url: https://maven.pkg.github.com/AppliedEnergistics/Applied-Energistics-2/
+          remote-repository-username: ${{ github.actor }}
+          remote-repository-password: ${{ github.token }}
 
   deploy-curseforge:
     name: Deploy to Curseforge
@@ -143,10 +142,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: git fetch origin --tags
-        shell: bash
-      - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
@@ -154,12 +149,14 @@ jobs:
       - name: Unpack build artifact
         run: tar axf build.tar.zst
       - name: Validate artifacts exist
-        run: test -d ./build && test -d ./.gradle
+        run: test -d ./build
       - name: Publish to Modmaven
-        env:
-          MODMAVEN_USER: ${{ secrets.MODMAVEN_USER }}
-          MODMAVEN_PASSWORD: ${{ secrets.MODMAVEN_PASSWORD }}
-        run: ./gradlew publishMavenPublicationToModmavenRepository --no-daemon --max-workers 1
+        uses: AppliedEnergistics/maven-publish-action@main
+        with:
+          local-repository-path: build/repo
+          remote-repository-url: https://modmaven.dev/artifactory/local-releases/
+          remote-repository-username: ${{ secrets.MODMAVEN_USER }}
+          remote-repository-password: ${{ secrets.MODMAVEN_PASSWORD }}
 
   deploy-modrinth:
     name: Deploy to Modrinth
