@@ -91,6 +91,8 @@ jobs:
     name: Deploy to Github Packages
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - name: Download build artifact
         uses: actions/download-artifact@v4
@@ -105,7 +107,7 @@ jobs:
         with:
           local-repository-path: build/repo
           remote-repository-url: https://maven.pkg.github.com/AppliedEnergistics/Applied-Energistics-2/
-          remote-repository-username: ${{ env.GITHUB_ACTOR }}
+          remote-repository-username: ${{ github.actor }}
           remote-repository-password: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-curseforge:
