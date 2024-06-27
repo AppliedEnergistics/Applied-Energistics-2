@@ -1,0 +1,132 @@
+name: 'Export Guide'
+
+on:
+  # This will run the workflow every day at 01:00 UTC
+  # This will run against master and publish the development version of the guide
+  schedule:
+    - cron: '0 1 * * *'
+  # Allow running it manually against any ref
+  workflow_dispatch: { }
+  # Run on all push events
+  push: {}
+
+jobs:
+  export-guide:
+    name: Export Guide
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Software OpenGL Rendering
+        run: sudo apt-get install xvfb libgl1-mesa-dri zopfli
+      - uses: actions/checkout@v4
+      - run: git fetch origin --tags
+        shell: bash
+      - uses: ./.github/actions/gradle-setup
+      - name: Export Guide
+        run: DRI_PRIME=0 xvfb-run ./gradlew runGuideexport
+      - name: Optimize PNG compression
+        run: |
+          mkdir oxipng
+          curl -Ls https://github.com/shssoichiro/oxipng/releases/download/v8.0.0/oxipng-8.0.0-x86_64-unknown-linux-musl.tar.gz | tar --strip-components=1 -zx -C oxipng
+          find build/guide -name "*.png" -exec oxipng/oxipng --strip safe {} \;
+      - name: Recompress the guide json
+        run: |
+          gunzip build/guide/guide.*.json.gz
+          zopfli build/guide/guide.*.json
+          rm -f build/guide/guide.*.json
+      - name: Compress guide files before upload as artifact
+        run: tar cf guide.tar build/guide/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: guide
+          path: guide.tar
+
+  # Attach the guide as a release artifact if we're building a tag which might be a release
+  attach-release-artifact:
+    if: startsWith(github.ref, 'refs/tags/fabric/v') || startsWith(github.ref, 'refs/tags/neoforge/v')
+    needs: export-guide
+    name: Attach Release Artifact
+    runs-on: ubuntu-latest
+    steps:
+      - id: download
+        uses: actions/download-artifact@v4
+        with:
+          name: guide
+      - name: Decompress guide tar
+        run: tar xf ${{steps.download.outputs.download-path}}/guide.tar
+      - name: Create ZIP
+        working-directory: build/guide
+        run: zip -r ../../guide-assets.zip .
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: guide-assets.zip
+
+  # This job publishes the release version of guides to S3
+  # Our general approach is that the latest release for any given
+  # Minecraft version will be used to upload the guide data for it.
+  # We only publish our main Neoforge releases to the site.
+  publish-web-release:
+    needs: export-guide
+    name: Publish Release to Web
+    runs-on: ubuntu-latest
+    environment: Production
+    if: startsWith(github.ref, 'refs/tags/neoforge/v')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: guide
+      - name: Decompress guide tar
+        run: tar xf guide.tar
+      - id: versions
+        name: Determine Game and Mod-Version
+        run: |
+          GAME_VERSION=$(jq -r .gameVersion 'build/guide/index.json')
+          echo "Game-Version: $GAME_VERSION"
+          
+          echo "GAME_VERSION=$GAME_VERSION" >> "$GITHUB_OUTPUT"
+          
+          if [ -z "$GAME_VERSION" ]
+          then
+            exit 1
+          fi
+      - uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: 'guide-assets'
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_S3_ENDPOINT: 'https://02aa146d8ef70ae7f9548b98cbb63161.r2.cloudflarestorage.com'
+          AWS_REGION: 'auto'
+          SOURCE_DIR: 'build/guide/'
+          DEST_DIR: "minecraft-${{ steps.versions.outputs.GAME_VERSION }}"
+
+  # This job publishes to a development folder on the S3 bucket and only runs for
+  # the master branch. To avoid the cost of publishing the assets for every
+  # push to master, it'll only run for manually triggered workflows (workflow_dispatch)
+  # or once per night.
+  publish-web-snapshot:
+    needs: export-guide
+    name: Publish Snapshot to Web
+    runs-on: ubuntu-latest
+    environment: Production
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: guide
+      - name: Decompress guide tar
+        run: tar xf guide.tar
+      # Finally, upload to S3
+      - uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: 'guide-assets'
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_S3_ENDPOINT: 'https://02aa146d8ef70ae7f9548b98cbb63161.r2.cloudflarestorage.com'
+          AWS_REGION: 'auto'
+          SOURCE_DIR: 'build/guide/'
+          DEST_DIR: "development"
