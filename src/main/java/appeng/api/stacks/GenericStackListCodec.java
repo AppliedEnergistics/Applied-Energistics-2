@@ -17,15 +17,21 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
 
 class GenericStackListCodec implements Codec<List<@Nullable GenericStack>> {
+    private final Codec<GenericStack> innerCodec;
+
+    public GenericStackListCodec(Codec<GenericStack> innerCodec) {
+        this.innerCodec = innerCodec;
+    }
+
     @Override
     public <T> DataResult<T> encode(List<@Nullable GenericStack> input, DynamicOps<T> ops, T prefix) {
         final ListBuilder<T> builder = ops.listBuilder();
 
-        for (final GenericStack a : input) {
-            if (a == null) {
+        for (var genericStack : input) {
+            if (genericStack == null) {
                 builder.add(ops.emptyMap());
             } else {
-                builder.add(GenericStack.CODEC.encodeStart(ops, a));
+                builder.add(innerCodec.encodeStart(ops, genericStack));
             }
         }
 
@@ -46,7 +52,7 @@ class GenericStackListCodec implements Codec<List<@Nullable GenericStack>> {
                 if (ops.emptyMap().equals(t)) {
                     elements.add(null);
                 } else {
-                    DataResult<Pair<GenericStack, T>> element = GenericStack.CODEC.decode(ops, t);
+                    DataResult<Pair<GenericStack, T>> element = innerCodec.decode(ops, t);
                     element.error().ifPresent(e -> failed.add(t));
                     result.setValue(result.getValue().apply2stable((r, v) -> {
                         elements.add(v.getFirst());
