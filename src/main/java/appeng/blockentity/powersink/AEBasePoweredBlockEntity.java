@@ -53,12 +53,20 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
     private Set<Direction> internalPowerSides = ALL_SIDES;
     private final IEnergyStorage forgeEnergyAdapter;
     // Cache the optional to not continuously re-allocate it or the supplier
-    private final LazyOptional<IEnergyStorage> forgeEnergyAdapterOptional;
+    private LazyOptional<IEnergyStorage> forgeEnergyAdapterOptional;
 
     public AEBasePoweredBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.forgeEnergyAdapter = new ForgeEnergyAdapter(this);
         this.forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        forgeEnergyAdapterOptional.invalidate();
+        // We just create a new one immediately in case this BE gets cleared for use again
+        forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
     }
 
     protected final Set<Direction> getPowerSides() {
