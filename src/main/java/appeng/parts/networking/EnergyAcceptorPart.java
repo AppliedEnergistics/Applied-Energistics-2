@@ -62,6 +62,14 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
     }
 
     @Override
+    public void removeFromWorld() {
+        super.removeFromWorld();
+        forgeEnergyAdapterOptional.invalidate();
+        // In case this part ever gets re-added to the world, immediately create a new lazy optional
+        forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
+    }
+
+    @Override
     public void getBoxes(IPartCollisionHelper bch) {
         bch.addBox(2, 2, 14, 14, 14, 16);
         bch.addBox(4, 4, 12, 12, 12, 14);
