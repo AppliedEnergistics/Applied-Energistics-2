@@ -68,11 +68,6 @@ public interface IMenuCraftingPacket {
     IActionSource getActionSource();
 
     /**
-     * @return consume items?
-     */
-    boolean useRealItems();
-
-    /**
      * @return array of view cells. can contain empty itemstacks.
      */
     List<ItemStack> getViewCells();

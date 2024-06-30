@@ -153,11 +153,6 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
     }
 
     @Override
-    public boolean useRealItems() {
-        return true;
-    }
-
-    @Override
     public void startAutoCrafting(List<AutoCraftEntry> toCraft) {
         CraftConfirmMenu.openWithCraftingList(getActionHost(), (ServerPlayer) getPlayer(), getLocator(), toCraft);
     }

@@ -31,7 +31,6 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
-import appeng.core.AELog;
 import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
 import appeng.helpers.IMenuCraftingPacket;
@@ -117,11 +116,6 @@ public record FillCraftingGridFromRecipePacket(
         var menu = player.containerMenu;
         if (!(menu instanceof IMenuCraftingPacket cct)) {
             // Server might have closed the menu before the client-packet is processed. This is not an error.
-            return;
-        }
-
-        if (!cct.useRealItems()) {
-            AELog.warn("Trying to use real items for crafting in a pattern encoding terminal");
             return;
         }
 

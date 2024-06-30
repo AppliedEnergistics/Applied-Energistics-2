@@ -44,7 +44,6 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
 
 import appeng.api.crafting.PatternDetailsHelper;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.Icon;
@@ -52,7 +51,6 @@ import appeng.client.gui.me.items.PatternEncodingTermScreen;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.AEProcessingPattern;
-import appeng.helpers.IMenuCraftingPacket;
 import appeng.helpers.IPatternTerminalMenuHost;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
@@ -70,7 +68,7 @@ import appeng.util.ConfigInventory;
  *
  * @see PatternEncodingTermScreen
  */
-public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraftingPacket {
+public class PatternEncodingTermMenu extends MEStorageMenu {
 
     private static final int CRAFTING_GRID_WIDTH = 3;
     private static final int CRAFTING_GRID_HEIGHT = 3;
@@ -148,10 +146,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             this.addSlot(this.craftingGridSlots[i] = slot, SlotSemantics.CRAFTING_GRID);
         }
         // Create the output slot used for crafting mode patterns
-        this.addSlot(this.craftOutputSlot = new PatternTermSlot(ip.player, this.getActionSource(), this.energySource,
-                host.getInventory(), encodedInputs, this),
-                SlotSemantics.CRAFTING_RESULT);
-        this.craftOutputSlot.setIcon(null);
+        this.addSlot(this.craftOutputSlot = new PatternTermSlot(), SlotSemantics.CRAFTING_RESULT);
 
         // Create as many slots as needed for processing inputs and outputs
         for (int i = 0; i < processingInputSlots.length; i++) {
@@ -207,6 +202,12 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         this.getAndUpdateOutput();
     }
 
+    @Override
+    public void initializeContents(int stateId, List<ItemStack> items, ItemStack carried) {
+        super.initializeContents(stateId, items, carried);
+        this.getAndUpdateOutput();
+    }
+
     private ItemStack getAndUpdateOutput() {
         var level = this.getPlayerInventory().player.level();
 
@@ -242,7 +243,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             is = this.currentRecipe.value().assemble(input, level.registryAccess());
         }
 
-        this.craftOutputSlot.setDisplayedCraftingOutput(is);
+        this.craftOutputSlot.setResultItem(is);
         return is;
     }
 
@@ -497,10 +498,6 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             this.broadcastChanges();
         }
 
-        if (s == this.craftOutputSlot && isClientSide()) {
-            this.getAndUpdateOutput();
-        }
-
         if (s == this.stonecuttingInputSlot) {
             updateStonecuttingRecipes();
         }
@@ -534,16 +531,6 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
 
         this.broadcastChanges();
         this.getAndUpdateOutput();
-    }
-
-    @Override
-    public InternalInventory getCraftingMatrix() {
-        return encodedInputsInv.createMenuWrapper().getSubInventory(0, CRAFTING_GRID_SLOTS);
-    }
-
-    @Override
-    public boolean useRealItems() {
-        return false;
     }
 
     public EncodingMode getMode() {
