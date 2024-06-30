@@ -86,6 +86,7 @@ import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.MEChestMenu;
 import appeng.menu.locator.MenuLocators;
+import appeng.menu.me.items.BasicCellChestMenu;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -538,11 +539,8 @@ public class MEChestBlockEntity extends AENetworkPowerBlockEntity
             var ch = StorageCells.getHandler(this.getCell());
 
             if (ch != null) {
-                var chg = StorageCells.getGuiHandler(this.getCell());
-                if (chg != null) {
-                    chg.openChestGui(p, this, ch, this.getCell());
-                    return true;
-                }
+                MenuOpener.open(BasicCellChestMenu.TYPE, p, MenuLocators.forBlockEntity(this));
+                return true;
             }
         }
 
