@@ -32,14 +32,14 @@ import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.OrientationStrategies;
 import appeng.api.storage.cells.CellState;
 import appeng.block.AEBaseEntityBlock;
-import appeng.blockentity.storage.ChestBlockEntity;
+import appeng.blockentity.storage.MEChestBlockEntity;
 import appeng.core.localization.PlayerMessages;
 
-public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
+public class MEChestBlock extends AEBaseEntityBlock<MEChestBlockEntity> {
 
     public final static BooleanProperty LIGHTS_ON = BooleanProperty.create("lights_on");
 
-    public ChestBlock() {
+    public MEChestBlock() {
         super(metalProps());
         this.registerDefaultState(this.defaultBlockState().setValue(LIGHTS_ON, false));
     }
@@ -56,7 +56,7 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
     }
 
     @Override
-    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, ChestBlockEntity be) {
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, MEChestBlockEntity be) {
         var cellState = CellState.ABSENT;
 
         if (be.getCellCount() >= 1) {
@@ -69,7 +69,7 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
             BlockHitResult hitResult) {
-        if (level.getBlockEntity(pos) instanceof ChestBlockEntity be) {
+        if (level.getBlockEntity(pos) instanceof MEChestBlockEntity be) {
             if (!level.isClientSide()) {
                 if (hitResult.getDirection() == be.getTop()) {
                     if (!be.openGui(player)) {

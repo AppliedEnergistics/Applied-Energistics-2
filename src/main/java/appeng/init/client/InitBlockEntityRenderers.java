@@ -50,7 +50,7 @@ public final class InitBlockEntityRenderers {
         register(AEBlockEntities.SKY_CHEST, SkyChestTESR::new);
         register(AEBlockEntities.CHARGER, ChargerBlockEntityRenderer.FACTORY);
         register(AEBlockEntities.DRIVE, DriveLedBlockEntityRenderer::new);
-        register(AEBlockEntities.CHEST, ChestBlockEntityRenderer::new);
+        register(AEBlockEntities.ME_CHEST, ChestBlockEntityRenderer::new);
         register(AEBlockEntities.CRAFTING_MONITOR, CraftingMonitorRenderer::new);
         register(AEBlockEntities.MOLECULAR_ASSEMBLER, MolecularAssemblerRenderer::new);
         register(AEBlockEntities.CABLE_BUS, CableBusTESR::new);

@@ -16,32 +16,32 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.menu.implementations;
+package appeng.client.gui.implementations;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
 
-import appeng.blockentity.storage.ChestBlockEntity;
-import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantics;
-import appeng.menu.slot.RestrictedInputSlot;
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.menu.implementations.MEChestMenu;
 
-/**
- * @see appeng.client.gui.implementations.ChestScreen
- */
-public class ChestMenu extends AEBaseMenu {
+public class MEChestScreen extends AEBaseScreen<MEChestMenu> {
 
-    public static final MenuType<ChestMenu> TYPE = MenuTypeBuilder
-            .create(ChestMenu::new, ChestBlockEntity.class)
-            .build("chest");
+    public MEChestScreen(MEChestMenu menu, Inventory playerInventory, Component title,
+            ScreenStyle style) {
+        super(menu, playerInventory, title, style);
 
-    public ChestMenu(int id, Inventory ip, ChestBlockEntity chest) {
-        super(TYPE, id, ip, chest);
+        widgets.addOpenPriorityButton();
+    }
 
-        this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS,
-                chest.getInternalInventory(), 1), SlotSemantics.STORAGE_CELL);
+    @Override
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
-        this.createPlayerInventorySlots(ip);
+        // Show a custom name for the ME Chest on the screen
+        if (!this.title.getString().isEmpty()) {
+            setTextContent(TEXT_ID_DIALOG_TITLE, this.title);
+        }
     }
 
 }

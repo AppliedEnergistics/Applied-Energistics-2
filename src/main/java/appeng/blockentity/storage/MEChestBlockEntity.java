@@ -84,17 +84,17 @@ import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DelegatingMEInventory;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
-import appeng.menu.implementations.ChestMenu;
+import appeng.menu.implementations.MEChestMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class ChestBlockEntity extends AENetworkPowerBlockEntity
+public class MEChestBlockEntity extends AENetworkPowerBlockEntity
         implements IMEChest, ITerminalHost, IPriorityHost, IColorableBlockEntity,
         ServerTickingBlockEntity, IStorageProvider, KeyTypeSelectionHost {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ChestBlockEntity.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MEChestBlockEntity.class);
 
     private final AppEngInternalInventory inputInventory = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory cellInventory = new AppEngInternalInventory(this, 1);
@@ -123,7 +123,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private IFluidHandler fluidHandler;
     private double idlePowerUsage;
 
-    public ChestBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+    public MEChestBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.setInternalMaxPower(PowerMultiplier.CONFIG.multiply(500));
         this.getMainNode()
@@ -574,7 +574,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     public void openCellInventoryMenu(Player player) {
-        MenuOpener.open(ChestMenu.TYPE, player, MenuLocators.forBlockEntity(this));
+        MenuOpener.open(MEChestMenu.TYPE, player, MenuLocators.forBlockEntity(this));
     }
 
     private class ChestMonitorHandler extends DelegatingMEInventory {
@@ -625,7 +625,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private class FluidHandler implements IFluidHandler, IFluidTank {
 
         private boolean canAcceptLiquids() {
-            return ChestBlockEntity.this.cellHandler != null;
+            return MEChestBlockEntity.this.cellHandler != null;
         }
 
         @Override
@@ -670,15 +670,15 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
         @Override
         public int fill(FluidStack resource, FluidAction action) {
-            ChestBlockEntity.this.updateHandler();
+            MEChestBlockEntity.this.updateHandler();
             if (canAcceptLiquids()) {
                 var what = AEFluidKey.of(resource);
                 if (what != null) {
-                    return (int) StorageHelper.poweredInsert(ChestBlockEntity.this,
-                            ChestBlockEntity.this.cellHandler,
+                    return (int) StorageHelper.poweredInsert(MEChestBlockEntity.this,
+                            MEChestBlockEntity.this.cellHandler,
                             what,
                             resource.getAmount(),
-                            ChestBlockEntity.this.mySrc,
+                            MEChestBlockEntity.this.mySrc,
                             Actionable.of(action));
                 }
             }
@@ -737,11 +737,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public ItemStack getMainMenuIcon() {
-        return AEBlocks.CHEST.stack();
+        return AEBlocks.ME_CHEST.stack();
     }
 
     @Override
     public void returnToMainMenu(Player player, ISubMenu subMenu) {
-        MenuOpener.returnTo(ChestMenu.TYPE, player, MenuLocators.forBlockEntity(this));
+        MenuOpener.returnTo(MEChestMenu.TYPE, player, MenuLocators.forBlockEntity(this));
     }
 }

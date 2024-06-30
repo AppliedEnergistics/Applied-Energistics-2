@@ -65,6 +65,7 @@ import appeng.api.storage.StorageCells;
 import appeng.api.util.AEColor;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.blockentity.storage.DriveBlockEntity;
+import appeng.blockentity.storage.MEChestBlockEntity;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -301,7 +302,7 @@ public final class TestPlots {
 
     @TestPlot("item_chest")
     public static void itemChest(PlotBuilder plot) {
-        plot.blockEntity("0 0 0", AEBlocks.CHEST, chest -> {
+        plot.blockEntity("0 0 0", AEBlocks.ME_CHEST, chest -> {
             var cellItem = AEItems.ITEM_CELL_1K.stack();
             var cellInv = StorageCells.getCellInventory(cellItem, null);
             var r = RandomSource.create();
@@ -318,7 +319,7 @@ public final class TestPlots {
 
     @TestPlot("fluid_chest")
     public static void fluidChest(PlotBuilder plot) {
-        plot.blockEntity("0 0 0", AEBlocks.CHEST, chest -> {
+        plot.blockEntity("0 0 0", AEBlocks.ME_CHEST, chest -> {
             var cellItem = AEItems.FLUID_CELL_1K.stack();
             var cellInv = StorageCells.getCellInventory(cellItem, null);
             var r = RandomSource.create();
@@ -569,7 +570,7 @@ public final class TestPlots {
         plot.creativeEnergyCell(origin.below());
         plot.blockEntity(
                 origin,
-                AEBlocks.CHEST,
+                AEBlocks.ME_CHEST,
                 chest -> chest.setCell(createMatterCannon(Items.IRON_NUGGET)));
 
         plot.block("-2 [0,1] 5", Blocks.STONE);
@@ -611,7 +612,7 @@ public final class TestPlots {
     public static void testInsertFluidIntoMEChest(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
         plot.creativeEnergyCell(origin.below());
-        plot.blockEntity(origin, AEBlocks.CHEST, chest -> {
+        plot.blockEntity(origin, AEBlocks.ME_CHEST, chest -> {
             chest.setCell(AEItems.FLUID_CELL_4K.stack());
         });
         plot.cable(origin.east())
@@ -624,7 +625,7 @@ public final class TestPlots {
         plot.creativeEnergyCell(origin.east().north().below());
 
         plot.test(helper -> helper.succeedWhen(() -> {
-            var meChest = (appeng.blockentity.storage.ChestBlockEntity) helper.getBlockEntity(origin);
+            var meChest = (MEChestBlockEntity) helper.getBlockEntity(origin);
             helper.assertContains(meChest.getInventory(), AEFluidKey.of(Fluids.WATER));
         }));
     }
@@ -636,7 +637,7 @@ public final class TestPlots {
     public static void testInsertItemsIntoMEChest(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
         plot.creativeEnergyCell(origin.below());
-        plot.blockEntity(origin, AEBlocks.CHEST, chest -> {
+        plot.blockEntity(origin, AEBlocks.ME_CHEST, chest -> {
             var cell = AEItems.ITEM_CELL_1K.stack();
             AEItems.ITEM_CELL_1K.asItem().getConfigInventory(cell).addFilter(Items.REDSTONE);
             chest.setCell(cell);
@@ -645,7 +646,7 @@ public final class TestPlots {
         plot.hopper(origin.above(), Direction.DOWN, Items.STICK, Items.REDSTONE);
 
         plot.test(helper -> helper.succeedWhen(() -> {
-            var meChest = (appeng.blockentity.storage.ChestBlockEntity) helper.getBlockEntity(origin);
+            var meChest = (MEChestBlockEntity) helper.getBlockEntity(origin);
             helper.assertContains(meChest.getInventory(), AEItemKey.of(Items.REDSTONE));
             // The stick should still be in the hopper
             helper.assertContainerContains(origin.above(), Items.STICK);

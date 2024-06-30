@@ -28,8 +28,8 @@ import appeng.block.networking.EnergyCellBlock;
 import appeng.block.networking.WirelessAccessPointBlock;
 import appeng.block.spatial.SpatialAnchorBlock;
 import appeng.block.spatial.SpatialIOPortBlock;
-import appeng.block.storage.ChestBlock;
 import appeng.block.storage.IOPortBlock;
+import appeng.block.storage.MEChestBlock;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
@@ -132,17 +132,17 @@ public class BlockModelProvider extends AE2BlockStateProvider {
     }
 
     private void meChest() {
-        var multipart = multiPartGenerator(AEBlocks.CHEST);
+        var multipart = multiPartGenerator(AEBlocks.ME_CHEST);
         withOrientations(
                 multipart,
                 Variant.variant().with(VariantProperties.MODEL, AppEng.makeId("block/chest/base")));
         withOrientations(
                 multipart,
-                () -> Condition.condition().term(ChestBlock.LIGHTS_ON, false),
+                () -> Condition.condition().term(MEChestBlock.LIGHTS_ON, false),
                 Variant.variant().with(VariantProperties.MODEL, AppEng.makeId("block/chest/lights_off")));
         withOrientations(
                 multipart,
-                () -> Condition.condition().term(ChestBlock.LIGHTS_ON, true),
+                () -> Condition.condition().term(MEChestBlock.LIGHTS_ON, true),
                 Variant.variant().with(VariantProperties.MODEL, AppEng.makeId("block/chest/lights_on")));
     }
 
