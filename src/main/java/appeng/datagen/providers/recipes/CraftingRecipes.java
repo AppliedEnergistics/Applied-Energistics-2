@@ -502,7 +502,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_crystals/fluix", has(ConventionTags.ALL_FLUIX))
                 .unlockedBy("has_glass_cable", has(AEParts.GLASS_CABLE.item(AEColor.TRANSPARENT)))
                 .save(consumer, AppEng.makeId("network/blocks/spatial_io_pylon"));
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.CHEST)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.ME_CHEST)
                 .pattern("aba")
                 .pattern("c c")
                 .pattern("ded")
@@ -971,7 +971,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
 
         var component = cell.asItem().getTier().componentSupplier().get();
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, cell)
-                .requires(AEBlocks.CHEST)
+                .requires(AEBlocks.ME_CHEST)
                 .requires(component)
                 .requires(AEBlocks.ENERGY_CELL)
                 .requires(housing)

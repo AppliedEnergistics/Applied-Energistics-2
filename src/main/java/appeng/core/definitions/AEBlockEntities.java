@@ -65,9 +65,9 @@ import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
 import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
 import appeng.blockentity.spatial.SpatialPylonBlockEntity;
-import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.blockentity.storage.IOPortBlockEntity;
+import appeng.blockentity.storage.MEChestBlockEntity;
 import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import appeng.core.AppEng;
@@ -106,8 +106,8 @@ public final class AEBlockEntities {
             ControllerBlockEntity.class, ControllerBlockEntity::new, AEBlocks.CONTROLLER);
     public static final BlockEntityType<DriveBlockEntity> DRIVE = create("drive", DriveBlockEntity.class,
             DriveBlockEntity::new, AEBlocks.DRIVE);
-    public static final BlockEntityType<ChestBlockEntity> CHEST = create("chest", ChestBlockEntity.class,
-            ChestBlockEntity::new, AEBlocks.CHEST);
+    public static final BlockEntityType<MEChestBlockEntity> ME_CHEST = create("chest", MEChestBlockEntity.class,
+            MEChestBlockEntity::new, AEBlocks.ME_CHEST);
     public static final BlockEntityType<InterfaceBlockEntity> INTERFACE = create("interface",
             InterfaceBlockEntity.class, InterfaceBlockEntity::new, AEBlocks.INTERFACE);
     public static final BlockEntityType<CellWorkbenchBlockEntity> CELL_WORKBENCH = create("cell_workbench",

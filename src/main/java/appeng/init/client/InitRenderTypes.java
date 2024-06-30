@@ -47,7 +47,7 @@ public final class InitRenderTypes {
             AEBlocks.PAINT,
             AEBlocks.QUANTUM_RING,
             AEBlocks.QUANTUM_LINK,
-            AEBlocks.CHEST,
+            AEBlocks.ME_CHEST,
             AEBlocks.DRIVE,
             AEBlocks.CRAFTING_UNIT,
             AEBlocks.CRAFTING_ACCELERATOR,

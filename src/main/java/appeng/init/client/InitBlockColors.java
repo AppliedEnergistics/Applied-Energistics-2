@@ -37,7 +37,7 @@ public final class InitBlockColors {
     public static void init(BlockColors blockColors) {
         blockColors.register(new StaticBlockColor(AEColor.TRANSPARENT), AEBlocks.WIRELESS_ACCESS_POINT.block());
         blockColors.register(new CableBusColor(), AEBlocks.CABLE_BUS.block());
-        blockColors.register(ColorableBlockEntityBlockColor.INSTANCE, AEBlocks.CHEST.block());
+        blockColors.register(ColorableBlockEntityBlockColor.INSTANCE, AEBlocks.ME_CHEST.block());
     }
 
 }

@@ -22,7 +22,7 @@ import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.misc.GrowthAcceleratorBlockEntity;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.powersink.AEBasePoweredBlockEntity;
-import appeng.blockentity.storage.ChestBlockEntity;
+import appeng.blockentity.storage.MEChestBlockEntity;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
@@ -140,9 +140,10 @@ public final class InitCapabilityProviders {
     }
 
     private static void initMEChest(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, AEBlockEntities.CHEST,
-                ChestBlockEntity::getFluidHandler);
-        event.registerBlockEntity(AECapabilities.ME_STORAGE, AEBlockEntities.CHEST, ChestBlockEntity::getMEStorage);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, AEBlockEntities.ME_CHEST,
+                MEChestBlockEntity::getFluidHandler);
+        event.registerBlockEntity(AECapabilities.ME_STORAGE, AEBlockEntities.ME_CHEST,
+                MEChestBlockEntity::getMEStorage);
     }
 
     private static void initMisc(RegisterCapabilitiesEvent event) {

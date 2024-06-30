@@ -5,7 +5,7 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.storage.ITerminalHost;
 import appeng.api.util.KeyTypeSelectionHost;
-import appeng.blockentity.storage.ChestBlockEntity;
+import appeng.blockentity.storage.MEChestBlockEntity;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEStorageMenu;
 
@@ -19,7 +19,7 @@ public class BasicCellChestMenu extends MEStorageMenu {
     }
 
     /**
-     * {@link ChestBlockEntity} is an instance of {@link KeyTypeSelectionHost}, however basic cells only support a
+     * {@link MEChestBlockEntity} is an instance of {@link KeyTypeSelectionHost}, however basic cells only support a
      * single type.
      */
     @Override
