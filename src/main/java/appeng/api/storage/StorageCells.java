@@ -34,7 +34,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.cells.IBasicCellItem;
-import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ISaveProvider;
 import appeng.api.storage.cells.StorageCell;
@@ -46,7 +45,6 @@ import appeng.api.storage.cells.StorageCell;
 public final class StorageCells {
 
     private static final List<ICellHandler> handlers = new ArrayList<>();
-    private static final List<ICellGuiHandler> guiHandlers = new ArrayList<>();
 
     private StorageCells() {
     }
@@ -65,15 +63,6 @@ public final class StorageCells {
                 "Tried to register the same handler instance twice.");
 
         handlers.add(handler);
-    }
-
-    /**
-     * Register a new handler
-     *
-     * @param handler cell gui handler
-     */
-    public static synchronized void addCellGuiHandler(ICellGuiHandler handler) {
-        guiHandlers.add(handler);
     }
 
     /**
@@ -112,28 +101,6 @@ public final class StorageCells {
             }
         }
         return null;
-    }
-
-    /**
-     * get the handler, for the requested channel.
-     *
-     * @param is ItemStack
-     * @return the handler registered for this channel.
-     */
-    @Nullable
-    public static synchronized ICellGuiHandler getGuiHandler(ItemStack is) {
-        ICellGuiHandler fallBack = null;
-
-        for (ICellGuiHandler ch : guiHandlers) {
-            if (ch.isSpecializedFor(is)) {
-                return ch;
-            }
-
-            if (fallBack == null) {
-                fallBack = ch;
-            }
-        }
-        return fallBack;
     }
 
     /**
