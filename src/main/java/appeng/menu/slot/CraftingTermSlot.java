@@ -215,7 +215,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                         set[x] = extractItemsByRecipe(this.energySrc, this.mySrc, inv, level, r.value(), is,
                                 recipeInput.width(), recipeInput.height(),
                                 ic,
-                                this.getPattern().getStackInSlot(x), x, all, Actionable.MODULATE,
+                                this.getPattern().getStackInSlot(x), x, all,
                                 filter);
                         ic.set(x, set[x]);
                     }
@@ -244,7 +244,6 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             ItemStack providedTemplate,
             int slot,
             KeyCounter items,
-            Actionable realForFake,
             IPartitionList filter) {
 
         if (energySrc.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.9) {
@@ -255,9 +254,9 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             var ae_req = AEItemKey.of(providedTemplate);
 
             if (filter == null || filter.isListed(ae_req)) {
-                var extracted = src.extract(ae_req, 1, realForFake, mySrc);
+                var extracted = src.extract(ae_req, 1, Actionable.MODULATE, mySrc);
                 if (extracted > 0) {
-                    energySrc.extractAEPower(1, realForFake, PowerMultiplier.CONFIG);
+                    energySrc.extractAEPower(1, Actionable.MODULATE, PowerMultiplier.CONFIG);
                     return ae_req.toStack();
                 }
             }
@@ -277,9 +276,9 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                                     && ItemStack.matches(r.assemble(adjustedCraftingInput, level.registryAccess()),
                                             output)) {
                                 if (filter == null || filter.isListed(itemKey)) {
-                                    var ex = src.extract(itemKey, 1, realForFake, mySrc);
+                                    var ex = src.extract(itemKey, 1, Actionable.MODULATE, mySrc);
                                     if (ex > 0) {
-                                        energySrc.extractAEPower(1, realForFake, PowerMultiplier.CONFIG);
+                                        energySrc.extractAEPower(1, Actionable.MODULATE, PowerMultiplier.CONFIG);
                                         return itemKey.toStack();
                                     }
                                 }
