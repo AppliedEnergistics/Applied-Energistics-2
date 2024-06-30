@@ -65,6 +65,7 @@ configurations {
 }
 
 import appengbuild.*
+import com.diffplug.gradle.spotless.JsonExtension
 
 dependencies {
     // To be copied into the jar file
@@ -373,20 +374,8 @@ publishing {
     }
     repositories {
         maven {
-            credentials {
-                username System.getenv("GITHUB_ACTOR")
-                password System.getenv("GITHUB_TOKEN")
-            }
-            name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/AppliedEnergistics/Applied-Energistics-2"
-        }
-        maven {
-            credentials {
-                username System.getenv("MODMAVEN_USER")
-                password System.getenv("MODMAVEN_PASSWORD")
-            }
-            name = "modmaven"
-            url = "https://modmaven.dev/artifactory/local-releases/"
+            name = "Local"
+            url = file("build/repo").toURI()
         }
     }
 }
@@ -411,14 +400,23 @@ spotless {
             if (it.contains('*;\n')) {
                 throw new Error('No wildcard imports allowed')
             }
+
+            it
         }
         bumpThisNumberIfACustomStepChanges(1)
     }
 
-    format 'json', {
+   json {
         target 'src/*/resources/**/*.json'
         targetExclude 'src/generated/resources/**'
-        prettier().config(['parser': 'json'])
+        var biomeConfig = it.new JsonExtension.BiomeJson(null)
+        try {
+            biomeConfig.downloadDir(new File(rootDir, ".gradle/biome").absolutePath)
+        } catch (Exception ignored) {
+        }
+        addStep(biomeConfig.createStep())
+        indentWithSpaces(2)
+        endWithNewline()
     }
 }
 

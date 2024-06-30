@@ -146,9 +146,9 @@ public abstract class AEKey {
 
     @Nullable
     public static AEKey fromTagGeneric(HolderLookup.Provider registries, CompoundTag tag) {
+        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
         try {
-            return CODEC.decode(registries.createSerializationContext(NbtOps.INSTANCE), tag).getOrThrow()
-                    .getFirst();
+            return CODEC.decode(ops, tag).getOrThrow().getFirst();
         } catch (Exception e) {
             LOG.warn("Cannot deserialize generic key from {}: {}", tag, e);
             return null;
@@ -161,7 +161,8 @@ public abstract class AEKey {
      * knowing the actual type beforehand.
      */
     public final CompoundTag toTagGeneric(HolderLookup.Provider registries) {
-        return (CompoundTag) CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this)
+        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+        return (CompoundTag) CODEC.encodeStart(ops, this)
                 .getOrThrow();
     }
 

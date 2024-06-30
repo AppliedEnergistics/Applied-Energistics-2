@@ -46,7 +46,7 @@ class GenericStackTest {
         var list = new ArrayList<GenericStack>();
         list.add(null);
         list.add(new GenericStack(AEItemKey.of(Items.DIAMOND), 1000));
-        CodecTestUtil.testRoundtrip(GenericStack.NULLABLE_LIST_CODEC, list, JsonOps.INSTANCE, expected);
+        CodecTestUtil.testRoundtrip(GenericStack.FAULT_TOLERANT_NULLABLE_LIST_CODEC, list, JsonOps.INSTANCE, expected);
     }
 
     @Nested

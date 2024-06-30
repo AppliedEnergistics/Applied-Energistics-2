@@ -153,9 +153,9 @@ public abstract class AEKeyType {
      */
     @Nullable
     public AEKey loadKeyFromTag(HolderLookup.Provider registries, CompoundTag tag) {
+        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
         try {
-            return codec().codec().decode(registries.createSerializationContext(NbtOps.INSTANCE), tag).getOrThrow()
-                    .getFirst();
+            return codec().codec().decode(ops, tag).getOrThrow().getFirst();
         } catch (Exception e) {
             AELog.debug("Tried to load an invalid item key from NBT: %s", tag, e);
             return null;
