@@ -102,7 +102,8 @@ public class CraftingCpuHelper {
             IPatternDetails details,
             ICraftingInventory sourceInv,
             Level level,
-            KeyCounter expectedOutputs) {
+            KeyCounter expectedOutputs,
+            KeyCounter expectedContainerItems) {
 
         // Extract inputs into the container.
         var inputs = details.getInputs();
@@ -120,7 +121,7 @@ public class CraftingCpuHelper {
                 // Container items!
                 var containerItem = inputs[x].getRemainingKey(template.key());
                 if (containerItem != null) {
-                    expectedOutputs.add(containerItem, extracted);
+                    expectedContainerItems.add(containerItem, extracted);
                 }
 
                 remainingMultiplier -= extracted;
