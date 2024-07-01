@@ -45,6 +45,7 @@ public class ExecutingCraftingJob {
     private static final String NBT_PLAYER_ID = "playerId";
     private static final String NBT_FINAL_OUTPUT = "finalOutput";
     private static final String NBT_WAITING_FOR = "waitingFor";
+    private static final String NBT_WAITING_FOR_ADDITIONAL = "waitingForAdditional";
     private static final String NBT_TIME_TRACKER = "timeTracker";
     private static final String NBT_REMAINING_AMOUNT = "remainingAmount";
     private static final String NBT_TASKS = "tasks";
@@ -52,6 +53,7 @@ public class ExecutingCraftingJob {
 
     final CraftingLink link;
     final ListCraftingInventory waitingFor;
+    final ListCraftingInventory waitingForAdditional;
     final Map<IPatternDetails, TaskProgress> tasks = new HashMap<>();
     final ElapsedTimeTracker timeTracker;
     GenericStack finalOutput;
@@ -69,6 +71,7 @@ public class ExecutingCraftingJob {
         this.finalOutput = plan.finalOutput();
         this.remainingAmount = this.finalOutput.amount();
         this.waitingFor = new ListCraftingInventory(postCraftingDifference::onCraftingDifference);
+        this.waitingForAdditional = new ListCraftingInventory(postCraftingDifference::onCraftingDifference);
 
         // Fill waiting for and tasks
         long totalPending = 0;
@@ -99,6 +102,8 @@ public class ExecutingCraftingJob {
         this.remainingAmount = data.getLong(NBT_REMAINING_AMOUNT);
         this.waitingFor = new ListCraftingInventory(postCraftingDifference::onCraftingDifference);
         this.waitingFor.readFromNBT(data.getList(NBT_WAITING_FOR, Tag.TAG_COMPOUND), registries);
+        this.waitingForAdditional = new ListCraftingInventory(postCraftingDifference::onCraftingDifference);
+        this.waitingForAdditional.readFromNBT(data.getList(NBT_WAITING_FOR_ADDITIONAL, Tag.TAG_COMPOUND), registries);
         this.timeTracker = new ElapsedTimeTracker(data.getCompound(NBT_TIME_TRACKER));
         if (data.contains(NBT_PLAYER_ID, Tag.TAG_INT)) {
             this.playerId = data.getInt(NBT_PLAYER_ID);
@@ -129,6 +134,7 @@ public class ExecutingCraftingJob {
         data.put(NBT_FINAL_OUTPUT, GenericStack.writeTag(registries, finalOutput));
 
         data.put(NBT_WAITING_FOR, waitingFor.writeToNBT(registries));
+        data.put(NBT_WAITING_FOR_ADDITIONAL, waitingForAdditional.writeToNBT(registries));
         data.put(NBT_TIME_TRACKER, timeTracker.writeToNBT());
 
         final ListTag list = new ListTag();

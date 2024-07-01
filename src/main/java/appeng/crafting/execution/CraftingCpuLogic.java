@@ -188,10 +188,11 @@ public class CraftingCpuLogic {
 
             var details = task.getKey();
             var expectedOutputs = new KeyCounter();
+            var expectedContainerItems = new KeyCounter();
             // Contains the inputs for the pattern.
             @Nullable
             var craftingContainer = CraftingCpuHelper.extractPatternInputs(
-                    details, inventory, level, expectedOutputs);
+                    details, inventory, level, expectedOutputs, expectedContainerItems);
 
             // Try to push to each provider.
             for (var provider : craftingService.getProviders(details)) {
@@ -215,6 +216,11 @@ public class CraftingCpuLogic {
                                 Actionable.MODULATE);
                     }
 
+                    for (var expectedContainerItem : expectedContainerItems) {
+                        job.waitingForAdditional.insert(expectedContainerItem.getKey(),
+                                expectedContainerItem.getLongValue(), Actionable.MODULATE);
+                    }
+
                     cluster.markDirty();
 
                     task.getValue().value--;
@@ -229,8 +235,9 @@ public class CraftingCpuLogic {
 
                     // Prepare next inputs.
                     expectedOutputs.reset();
+                    expectedContainerItems.reset();
                     craftingContainer = CraftingCpuHelper.extractPatternInputs(details, inventory,
-                            level, expectedOutputs);
+                            level, expectedOutputs, expectedContainerItems);
                 }
             }
 
@@ -256,18 +263,22 @@ public class CraftingCpuLogic {
 
         // Only accept items we are waiting for.
         var waitingFor = job.waitingFor.extract(what, amount, Actionable.SIMULATE);
-        if (waitingFor <= 0) {
+        var waitingForAdditional = job.waitingForAdditional.extract(what, amount, Actionable.SIMULATE);
+        if (waitingFor <= 0 && waitingForAdditional <= 0) {
             return 0;
         }
 
         // Make sure we don't insert more than what we are waiting for.
-        if (amount > waitingFor) {
-            amount = waitingFor;
+        if (amount > waitingFor + waitingForAdditional) {
+            amount = waitingFor + waitingForAdditional;
         }
 
         if (type == Actionable.MODULATE) {
-            job.timeTracker.decrementItems(amount);
-            job.waitingFor.extract(what, amount, Actionable.MODULATE);
+            var amountWaitingFor = Math.min(amount, waitingFor);
+            var amountWaitingForAdditional = Math.min(amount - amountWaitingFor, waitingForAdditional);
+            job.timeTracker.decrementItems(amountWaitingFor);
+            job.waitingFor.extract(what, amountWaitingFor, Actionable.MODULATE);
+            job.waitingForAdditional.extract(what, amountWaitingForAdditional, Actionable.MODULATE);
             cluster.markDirty();
         }
 
@@ -323,6 +334,7 @@ public class CraftingCpuLogic {
 
         // Clear waitingFor list and post all the relevant changes.
         job.waitingFor.clear();
+        job.waitingForAdditional.clear();
         // Notify opened menus of cancelled scheduled tasks.
         for (var entry : job.tasks.entrySet()) {
             for (var output : entry.getKey().getOutputs()) {
@@ -455,7 +467,8 @@ public class CraftingCpuLogic {
 
     public long getWaitingFor(AEKey template) {
         if (this.job != null) {
-            return this.job.waitingFor.extract(template, Long.MAX_VALUE, Actionable.SIMULATE);
+            return this.job.waitingFor.extract(template, Long.MAX_VALUE, Actionable.SIMULATE)
+                    + this.job.waitingForAdditional.extract(template, Long.MAX_VALUE, Actionable.SIMULATE);
         }
         return 0;
     }
@@ -463,6 +476,9 @@ public class CraftingCpuLogic {
     public void getAllWaitingFor(Set<AEKey> waitingFor) {
         if (this.job != null) {
             for (var entry : this.job.waitingFor.list) {
+                waitingFor.add(entry.getKey());
+            }
+            for (var entry : this.job.waitingForAdditional.list) {
                 waitingFor.add(entry.getKey());
             }
         }
@@ -489,6 +505,7 @@ public class CraftingCpuLogic {
         out.addAll(this.inventory.list);
         if (this.job != null) {
             out.addAll(job.waitingFor.list);
+            out.addAll(job.waitingForAdditional.list);
             for (var t : job.tasks.entrySet()) {
                 for (var output : t.getKey().getOutputs()) {
                     out.add(output.what(), output.amount() * t.getValue().value);
