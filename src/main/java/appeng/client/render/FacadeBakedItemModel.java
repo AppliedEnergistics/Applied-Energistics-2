@@ -18,7 +18,6 @@
 
 package appeng.client.render;
 
-import java.util.Objects;
 import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -56,24 +55,22 @@ public class FacadeBakedItemModel extends ForwardingBakedModel {
 
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
-        if (!(stack.getItem() instanceof FacadeItem)) {
+        if (!(stack.getItem() instanceof FacadeItem itemFacade)) {
             return;
         }
 
         super.emitItemQuads(stack, randomSupplier, context);
 
-        FacadeItem itemFacade = (FacadeItem) stack.getItem();
         ItemStack textureItem = itemFacade.getTextureItem(stack);
+        if (!textureItem.isEmpty()) {
+            int itemId = Item.getId(textureItem.getItem());
+            Mesh mesh = this.cache.get(itemId);
+            if (mesh == null) {
+                mesh = this.facadeBuilder.buildFacadeItemQuads(textureItem, Direction.NORTH);
+                this.cache.put(itemId, mesh);
+            }
 
-        int itemId = Item.getId(textureItem.getItem());
-        int hash = Objects.hash(itemId, textureItem.getTag());
-        Mesh mesh = this.cache.get(hash);
-        if (mesh == null) {
-            mesh = this.facadeBuilder.buildFacadeItemQuads(textureItem, Direction.NORTH);
-            this.cache.put(hash, mesh);
+            mesh.outputTo(context.getEmitter());
         }
-
-        context.meshConsumer().accept(mesh);
-
     }
 }
