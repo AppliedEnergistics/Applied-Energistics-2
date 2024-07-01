@@ -24,7 +24,10 @@ import java.util.List;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.joml.Matrix4f;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -48,6 +51,8 @@ import appeng.client.gui.style.FluidBlitter;
 import appeng.util.Platform;
 
 public class InitStackRenderHandlers {
+    private static final Logger LOG = LoggerFactory.getLogger(InitStackRenderHandlers.class);
+
     private InitStackRenderHandlers() {
     }
 
@@ -95,9 +100,17 @@ public class InitStackRenderHandlers {
 
         @Override
         public List<Component> getTooltip(AEItemKey stack) {
-            return stack.toStack().getTooltipLines(Minecraft.getInstance().player,
-                    Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED
-                            : TooltipFlag.Default.NORMAL);
+            try {
+                return stack.toStack().getTooltipLines(Minecraft.getInstance().player,
+                        Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED
+                                : TooltipFlag.Default.NORMAL);
+            } catch (Exception e) {
+                LOG.error("Getting the tooltip of item {} crashed!", stack.getId(), e);
+                return List.of(
+                        stack.getDisplayName(),
+                        Component.literal(stack.getId().toString()),
+                        Component.literal("GETTING TOOLTIP CRASHED").withStyle(ChatFormatting.RED));
+            }
         }
     }
 
