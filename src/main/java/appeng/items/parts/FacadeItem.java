@@ -205,9 +205,12 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
             return ItemStack.EMPTY;
         }
 
-        ResourceLocation itemId = new ResourceLocation(nbt.getString(NBT_ITEM_ID));
-        Item baseItem = BuiltInRegistries.ITEM.get(itemId);
+        var itemId = ResourceLocation.tryParse(nbt.getString(NBT_ITEM_ID));
+        if (itemId == null) {
+            return ItemStack.EMPTY;
+        }
 
+        Item baseItem = BuiltInRegistries.ITEM.get(itemId);
         return new ItemStack(baseItem, 1);
     }
 
