@@ -164,8 +164,8 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
     @Override
     public void init() {
-        this.visibleRows = config.getTerminalStyle().getRows(
-                (this.height - GUI_HEADER_HEIGHT - GUI_FOOTER_HEIGHT - GUI_TOP_AND_BOTTOM_PADDING) / ROW_HEIGHT);
+        this.visibleRows = Math.max(2, config.getTerminalStyle().getRows(
+                (this.height - GUI_HEADER_HEIGHT - GUI_FOOTER_HEIGHT - GUI_TOP_AND_BOTTOM_PADDING) / ROW_HEIGHT));
         // Render inventory in correct place.
         this.imageHeight = GUI_HEADER_HEIGHT + GUI_FOOTER_HEIGHT + this.visibleRows * ROW_HEIGHT;
 
