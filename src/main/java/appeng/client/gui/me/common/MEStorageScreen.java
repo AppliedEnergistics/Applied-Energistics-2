@@ -812,6 +812,10 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.repo.updateView();
     }
 
+    protected int getVisibleRows() {
+        return rows;
+    }
+
     private void toggleTerminalStyle(SettingToggleButton<appeng.api.config.TerminalStyle> btn, boolean backwards) {
         appeng.api.config.TerminalStyle next = btn.getNextValue(backwards);
         config.setTerminalStyle(next);

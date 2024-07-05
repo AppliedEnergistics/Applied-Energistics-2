@@ -619,6 +619,10 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                 srcRect.getHeight());
     }
 
+    protected int getVisibleRows() {
+        return visibleRows;
+    }
+
     sealed interface Row {
     }
 
