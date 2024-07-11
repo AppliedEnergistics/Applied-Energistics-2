@@ -24,7 +24,7 @@ public class ChargerCategory implements DisplayCategory<ChargerDisplay> {
     private final Renderer icon;
 
     public ChargerCategory() {
-        this.icon = EntryStacks.of(AEBlocks.CHARGER.stack());
+        this.icon = EntryStacks.of(AEBlocks.CHARGER.toStack());
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ChargerCategory implements DisplayCategory<ChargerDisplay> {
 
     @Override
     public Component getTitle() {
-        return AEBlocks.CHARGER.stack().getHoverName();
+        return AEBlocks.CHARGER.toStack().getHoverName();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ChargerCategory implements DisplayCategory<ChargerDisplay> {
                 Widgets.createSlot(new Point(x + 3, y + 30))
                         .unmarkInputOrOutput()
                         .backgroundEnabled(false)
-                        .entry(EntryStacks.of(AEBlocks.CRANK.stack())));
+                        .entry(EntryStacks.of(AEBlocks.CRANK.toStack())));
 
         widgets.add(Widgets.createArrow(new Point(x + 52, y + 8)));
 

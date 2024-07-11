@@ -104,7 +104,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
 
             final Inventory inv = player.getInventory();
 
-            ItemStack is = AEItems.BLANK_PATTERN.stack(stack.getCount());
+            ItemStack is = AEItems.BLANK_PATTERN.toStack(stack.getCount());
             if (!is.isEmpty()) {
                 for (int s = 0; s < player.getInventory().getContainerSize(); s++) {
                     if (inv.getItem(s) == stack) {

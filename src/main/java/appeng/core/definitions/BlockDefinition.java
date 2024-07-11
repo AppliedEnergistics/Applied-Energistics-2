@@ -41,7 +41,7 @@ public class BlockDefinition<T extends Block> extends ItemDefinition<BlockItem> 
     }
 
     @Override
-    public final ItemStack stack(int stackSize) {
+    public final ItemStack toStack(int stackSize) {
         Preconditions.checkArgument(stackSize > 0);
 
         return new ItemStack(block, stackSize);

@@ -56,7 +56,7 @@ public abstract class AEKey {
                 @Override
                 public <T> DataResult<AEKey> apply(DynamicOps<T> ops, MapLike<T> input, DataResult<AEKey> a) {
                     if (a instanceof DataResult.Error<AEKey> error) {
-                        var missingContent = AEItems.MISSING_CONTENT.stack();
+                        var missingContent = AEItems.MISSING_CONTENT.toStack();
                         var convert = ops.convertMap(NbtOps.INSTANCE, ops.createMap(input.entries()));
                         if (convert instanceof CompoundTag compoundTag) {
                             missingContent.set(AEComponents.MISSING_CONTENT_AEKEY_DATA, CustomData.of(compoundTag));
@@ -76,7 +76,7 @@ public abstract class AEKey {
                 public <T> RecordBuilder<T> coApply(DynamicOps<T> ops, AEKey input, RecordBuilder<T> t) {
                     // When the input is a MISSING_CONTENT item and has the original data attached,
                     // we write that back.
-                    if (AEItems.MISSING_CONTENT.isSameAs(input)) {
+                    if (AEItems.MISSING_CONTENT.is(input)) {
                         var originalData = input.get(AEComponents.MISSING_CONTENT_AEKEY_DATA);
                         if (originalData != null) {
                             var originalDataMap = originalData.getUnsafe();

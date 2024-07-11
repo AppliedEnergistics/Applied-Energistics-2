@@ -46,7 +46,7 @@ public final class MainCreativeTab {
     public static void init(Registry<CreativeModeTab> registry) {
         var tab = CreativeModeTab.builder()
                 .title(GuiText.CreativeTab.text())
-                .icon(() -> AEBlocks.CONTROLLER.stack(1))
+                .icon(() -> AEBlocks.CONTROLLER.toStack(1))
                 .displayItems(MainCreativeTab::buildDisplayItems)
                 .build();
         Registry.register(registry, AECreativeTabIds.MAIN, tab);

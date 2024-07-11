@@ -99,7 +99,7 @@ class AECraftingPatternTest {
 
     @Test
     void testDecodeWithoutComponent() {
-        var item = AEItems.CRAFTING_PATTERN.stack();
+        var item = AEItems.CRAFTING_PATTERN.toStack();
         var tag = item.save(registries);
         assertNull(decode((CompoundTag) tag));
     }

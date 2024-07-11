@@ -52,8 +52,8 @@ public final class InscriberRecipes {
     public static InscriberRecipe findRecipe(Level level, ItemStack input, ItemStack plateA, ItemStack plateB,
             boolean supportNamePress) {
         if (supportNamePress) {
-            boolean isNameA = AEItems.NAME_PRESS.isSameAs(plateA);
-            boolean isNameB = AEItems.NAME_PRESS.isSameAs(plateB);
+            boolean isNameA = AEItems.NAME_PRESS.is(plateA);
+            boolean isNameB = AEItems.NAME_PRESS.is(plateB);
 
             if (isNameA && isNameB || isNameA && plateB.isEmpty()) {
                 return makeNamePressRecipe(input, plateA, plateB);

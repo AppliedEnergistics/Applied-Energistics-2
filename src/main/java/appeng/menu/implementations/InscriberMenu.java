@@ -119,8 +119,8 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
 
         if (s == this.middle) {
             ItemDefinition<?> press = AEItems.NAME_PRESS;
-            if (press.isSameAs(top) || press.isSameAs(bot)) {
-                return !press.isSameAs(is);
+            if (press.is(top) || press.is(bot)) {
+                return !press.is(is);
             }
 
             return InscriberRecipes.findRecipe(getHost().getLevel(), is, top, bot, false) != null;
@@ -134,8 +134,8 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
 
             // name presses
             ItemDefinition<?> namePress = AEItems.NAME_PRESS;
-            if (namePress.isSameAs(otherSlot)) {
-                return namePress.isSameAs(is);
+            if (namePress.is(otherSlot)) {
+                return namePress.is(is);
             }
 
             // everything else

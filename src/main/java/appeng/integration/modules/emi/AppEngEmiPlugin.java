@@ -140,10 +140,10 @@ public class AppEngEmiPlugin implements EmiPlugin {
     }
 
     private void registerWorkstations(EmiRegistry registry) {
-        ItemStack craftingTerminal = AEParts.CRAFTING_TERMINAL.stack();
+        ItemStack craftingTerminal = AEParts.CRAFTING_TERMINAL.toStack();
         registry.addWorkstation(VanillaEmiRecipeCategories.CRAFTING, EmiStack.of(craftingTerminal));
 
-        ItemStack wirelessCraftingTerminal = AEItems.WIRELESS_CRAFTING_TERMINAL.stack();
+        ItemStack wirelessCraftingTerminal = AEItems.WIRELESS_CRAFTING_TERMINAL.toStack();
         registry.addWorkstation(VanillaEmiRecipeCategories.CRAFTING, EmiStack.of(wirelessCraftingTerminal));
     }
 

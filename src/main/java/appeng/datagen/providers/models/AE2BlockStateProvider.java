@@ -57,7 +57,7 @@ public abstract class AE2BlockStateProvider extends BlockStateProvider implement
      * Define a block model that is a simple textured cube, and uses the same model for its item.
      */
     protected void simpleBlockAndItem(BlockDefinition<?> block, String textureName) {
-        var model = models().cubeAll(block.id().getPath(), AppEng.makeId(textureName));
+        var model = models().cubeAll(block.getId().getPath(), AppEng.makeId(textureName));
         simpleBlock(block.block(), model);
         simpleBlockItem(block.block(), model);
     }
@@ -67,7 +67,7 @@ public abstract class AE2BlockStateProvider extends BlockStateProvider implement
      */
     protected void wall(BlockDefinition<WallBlock> block, String texture) {
         wallBlock(block.block(), AppEng.makeId(texture));
-        itemModels().wallInventory(block.id().getPath(), AppEng.makeId(texture));
+        itemModels().wallInventory(block.getId().getPath(), AppEng.makeId(texture));
     }
 
     protected void slabBlock(BlockDefinition<SlabBlock> slab, BlockDefinition<?> base) {
@@ -81,24 +81,24 @@ public abstract class AE2BlockStateProvider extends BlockStateProvider implement
         var bottom = AppEng.makeId(bottomTexture);
         var top = AppEng.makeId(topTexture);
 
-        var bottomModel = models().slab(slab.id().getPath(), side, bottom, top);
+        var bottomModel = models().slab(slab.getId().getPath(), side, bottom, top);
         simpleBlockItem(slab.block(), bottomModel);
         slabBlock(
                 slab.block(),
                 bottomModel,
-                models().slabTop(slab.id().getPath() + "_top", side, bottom, top),
-                models().getExistingFile(base.id()));
+                models().slabTop(slab.getId().getPath() + "_top", side, bottom, top),
+                models().getExistingFile(base.getId()));
     }
 
     protected void stairsBlock(BlockDefinition<StairBlock> stairs, BlockDefinition<?> base) {
-        var texture = "block/" + base.id().getPath();
+        var texture = "block/" + base.getId().getPath();
 
         stairsBlock(stairs, texture, texture, texture);
     }
 
     protected void stairsBlock(BlockDefinition<StairBlock> stairs, String bottomTexture, String sideTexture,
             String topTexture) {
-        var baseName = stairs.id().getPath();
+        var baseName = stairs.getId().getPath();
 
         var side = AppEng.makeId(sideTexture);
         var bottom = AppEng.makeId(bottomTexture);

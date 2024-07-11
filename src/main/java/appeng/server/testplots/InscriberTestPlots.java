@@ -21,7 +21,7 @@ public final class InscriberTestPlots {
     @TestPlotGenerator
     public static void generateInscriberRecipePlots(TestPlotCollection tests) {
 
-        var namePlate = AEItems.NAME_PRESS.stack();
+        var namePlate = AEItems.NAME_PRESS.toStack();
         namePlate.set(AEComponents.NAME_PRESS_NAME, Component.literal("HELLO WORLD"));
         var ironIngots = new ItemStack(Items.IRON_INGOT, 2);
         var namedIngots = ironIngots.copy();
@@ -65,11 +65,11 @@ public final class InscriberTestPlots {
         tests.add("inscriber_recipe_" + suffix, plot -> {
             plot.creativeEnergyCell(BlockPos.ZERO.below());
             plot.blockEntity(BlockPos.ZERO, AEBlocks.INSCRIBER, be -> {
-                be.getUpgrades().addItems(AEItems.SPEED_CARD.stack());
-                be.getUpgrades().addItems(AEItems.SPEED_CARD.stack());
-                be.getUpgrades().addItems(AEItems.SPEED_CARD.stack());
-                be.getUpgrades().addItems(AEItems.SPEED_CARD.stack());
-                be.getUpgrades().addItems(AEItems.SPEED_CARD.stack());
+                be.getUpgrades().addItems(AEItems.SPEED_CARD.toStack());
+                be.getUpgrades().addItems(AEItems.SPEED_CARD.toStack());
+                be.getUpgrades().addItems(AEItems.SPEED_CARD.toStack());
+                be.getUpgrades().addItems(AEItems.SPEED_CARD.toStack());
+                be.getUpgrades().addItems(AEItems.SPEED_CARD.toStack());
 
                 var inv = be.getInternalInventory();
                 inv.insertItem(0, topSlot.copy(), false);

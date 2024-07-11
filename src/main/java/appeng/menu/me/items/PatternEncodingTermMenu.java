@@ -281,7 +281,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
             // first check the output slots, should either be null, or a pattern (encoded or otherwise)
             if (!encodeOutput.isEmpty()
                     && !PatternDetailsHelper.isEncodedPattern(encodeOutput)
-                    && !AEItems.BLANK_PATTERN.isSameAs(encodeOutput)) {
+                    && !AEItems.BLANK_PATTERN.is(encodeOutput)) {
                 return;
             } // if nothing is there we should snag a new pattern.
             else if (encodeOutput.isEmpty()) {
@@ -310,7 +310,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         var encodedPattern = this.encodedPatternSlot.getItem();
         if (PatternDetailsHelper.isEncodedPattern(encodedPattern)) {
             this.encodedPatternSlot.set(
-                    AEItems.BLANK_PATTERN.stack(encodedPattern.getCount()));
+                    AEItems.BLANK_PATTERN.toStack(encodedPattern.getCount()));
         }
     }
 
@@ -451,7 +451,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
             return false;
         }
 
-        return AEItems.BLANK_PATTERN.isSameAs(output);
+        return AEItems.BLANK_PATTERN.is(output);
     }
 
     @Override

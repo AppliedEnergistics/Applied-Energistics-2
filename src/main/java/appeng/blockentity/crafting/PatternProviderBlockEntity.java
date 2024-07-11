@@ -132,7 +132,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
 
     @Override
     public AEItemKey getTerminalIcon() {
-        return AEItemKey.of(AEBlocks.PATTERN_PROVIDER.stack());
+        return AEItemKey.of(AEBlocks.PATTERN_PROVIDER.toStack());
     }
 
     @Override
@@ -171,7 +171,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
 
     @Override
     public ItemStack getMainMenuIcon() {
-        return AEBlocks.PATTERN_PROVIDER.stack();
+        return AEBlocks.PATTERN_PROVIDER.toStack();
     }
 
     @Override

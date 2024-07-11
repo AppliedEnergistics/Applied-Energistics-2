@@ -53,7 +53,7 @@ public class CraftingBlockItem extends AEBaseBlockItem {
             int itemCount = player.getItemInHand(hand).getCount();
             player.setItemInHand(hand, ItemStack.EMPTY);
 
-            player.getInventory().placeItemBackInInventory(AEBlocks.CRAFTING_UNIT.stack(itemCount));
+            player.getInventory().placeItemBackInInventory(AEBlocks.CRAFTING_UNIT.toStack(itemCount));
             player.getInventory().placeItemBackInInventory(new ItemStack(disassemblyExtra.get(), itemCount));
 
             return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());

@@ -108,15 +108,15 @@ public class RestrictedInputSlot extends AppEngSlot {
             case ENCODED_PATTERN, PROVIDER_PATTERN:
                 return PatternDetailsHelper.isEncodedPattern(stack);
             case ENCODED_AE_PATTERN:
-                return AEItems.CRAFTING_PATTERN.isSameAs(stack)
-                        || AEItems.PROCESSING_PATTERN.isSameAs(stack)
-                        || AEItems.SMITHING_TABLE_PATTERN.isSameAs(stack)
-                        || AEItems.STONECUTTING_PATTERN.isSameAs(stack);
+                return AEItems.CRAFTING_PATTERN.is(stack)
+                        || AEItems.PROCESSING_PATTERN.is(stack)
+                        || AEItems.SMITHING_TABLE_PATTERN.is(stack)
+                        || AEItems.STONECUTTING_PATTERN.is(stack);
             case BLANK_PATTERN:
-                return AEItems.BLANK_PATTERN.isSameAs(stack);
+                return AEItems.BLANK_PATTERN.is(stack);
 
             case INSCRIBER_PLATE:
-                if (AEItems.NAME_PRESS.isSameAs(stack)) {
+                if (AEItems.NAME_PRESS.is(stack)) {
                     return true;
                 }
 
@@ -133,7 +133,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                 return isMetalIngot(stack);
 
             case VIEW_CELL:
-                return AEItems.VIEW_CELL.isSameAs(stack);
+                return AEItems.VIEW_CELL.is(stack);
             case FUEL:
                 return VibrationChamberBlockEntity.hasBurnTime(stack);
             case POWERED_TOOL:
@@ -141,7 +141,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case QE_SINGULARITY:
                 return QuantumBridgeBlockEntity.isValidEntangledSingularity(stack);
             case RANGE_BOOSTER:
-                return AEItems.WIRELESS_BOOSTER.isSameAs(stack);
+                return AEItems.WIRELESS_BOOSTER.is(stack);
 
             case SPATIAL_STORAGE_CELLS:
                 return stack.getItem() instanceof ISpatialStorageCell

@@ -53,19 +53,19 @@ public class CondenserOutputDisplay implements Display {
 
     private static ItemStack getOutput(CondenserOutput recipe) {
         return switch (recipe) {
-            case MATTER_BALLS -> AEItems.MATTER_BALL.stack();
-            case SINGULARITY -> AEItems.SINGULARITY.stack();
+            case MATTER_BALLS -> AEItems.MATTER_BALL.toStack();
+            case SINGULARITY -> AEItems.SINGULARITY.toStack();
             default -> ItemStack.EMPTY;
         };
     }
 
     private List<EntryStack<ItemStack>> getViableStorageComponents(CondenserOutput condenserOutput) {
         List<EntryStack<ItemStack>> viableComponents = new ArrayList<>();
-        this.addViableComponent(condenserOutput, viableComponents, AEItems.CELL_COMPONENT_1K.stack());
-        this.addViableComponent(condenserOutput, viableComponents, AEItems.CELL_COMPONENT_4K.stack());
-        this.addViableComponent(condenserOutput, viableComponents, AEItems.CELL_COMPONENT_16K.stack());
-        this.addViableComponent(condenserOutput, viableComponents, AEItems.CELL_COMPONENT_64K.stack());
-        this.addViableComponent(condenserOutput, viableComponents, AEItems.CELL_COMPONENT_256K.stack());
+        this.addViableComponent(condenserOutput, viableComponents, AEItems.CELL_COMPONENT_1K.toStack());
+        this.addViableComponent(condenserOutput, viableComponents, AEItems.CELL_COMPONENT_4K.toStack());
+        this.addViableComponent(condenserOutput, viableComponents, AEItems.CELL_COMPONENT_16K.toStack());
+        this.addViableComponent(condenserOutput, viableComponents, AEItems.CELL_COMPONENT_64K.toStack());
+        this.addViableComponent(condenserOutput, viableComponents, AEItems.CELL_COMPONENT_256K.toStack());
         return viableComponents;
     }
 

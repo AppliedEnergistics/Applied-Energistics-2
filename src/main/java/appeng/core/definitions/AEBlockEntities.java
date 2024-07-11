@@ -27,7 +27,6 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -216,16 +215,15 @@ public final class AEBlockEntities {
             BlockDefinition<? extends AEBaseEntityBlock<?>>... blockDefinitions) {
         Preconditions.checkArgument(blockDefinitions.length > 0);
 
-        ResourceLocation id = AppEng.makeId(shortId);
-
-        var blocks = Arrays.stream(blockDefinitions)
-                .map(BlockDefinition::block)
-                .toArray(AEBaseEntityBlock[]::new);
-
         var deferred = DR.register(shortId, () -> {
             AtomicReference<BlockEntityType<T>> typeHolder = new AtomicReference<>();
             BlockEntityType.BlockEntitySupplier<T> supplier = (blockPos, blockState) -> factory.create(typeHolder.get(),
                     blockPos, blockState);
+
+            var blocks = Arrays.stream(blockDefinitions)
+                    .map(BlockDefinition::block)
+                    .toArray(AEBaseEntityBlock[]::new);
+
             var type = BlockEntityType.Builder.of(supplier, blocks).build(null);
             typeHolder.setPlain(type); // Makes it available to the supplier used above
 

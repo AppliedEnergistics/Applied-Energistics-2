@@ -1,7 +1,5 @@
 package appeng.datagen.providers.models;
 
-import static appeng.core.AppEng.makeId;
-
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
@@ -132,7 +130,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
     }
 
     private void storageCell(ItemDefinition<?> item, String background) {
-        String id = item.id().getPath();
+        String id = item.getId().getPath();
         singleTexture(
                 id,
                 mcLoc("item/generated"),
@@ -142,7 +140,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
     }
 
     private void portableCell(ItemDefinition<?> item, String housingType, String tier) {
-        String id = item.id().getPath();
+        String id = item.getId().getPath();
         singleTexture(
                 id,
                 mcLoc("item/generated"),
@@ -179,14 +177,14 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
 
     private void handheld(ItemDefinition<?> item) {
         singleTexture(
-                item.id().getPath(),
+                item.getId().getPath(),
                 ResourceLocation.parse("item/handheld"),
                 "layer0",
-                makeId("item/" + item.id().getPath()));
+                makeId("item/" + item.getId().getPath()));
     }
 
     private void registerEmptyModel(ItemDefinition<?> item) {
-        this.getBuilder(item.id().getPath());
+        this.getBuilder(item.getId().getPath());
     }
 
     /**
@@ -209,7 +207,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
     }
 
     private ItemModelBuilder flatSingleLayer(ItemDefinition<?> item, String texture) {
-        String id = item.id().getPath();
+        String id = item.getId().getPath();
         return singleTexture(
                 id,
                 mcLoc("item/generated"),

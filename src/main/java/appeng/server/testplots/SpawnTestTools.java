@@ -26,7 +26,7 @@ public final class SpawnTestTools {
         var inventory = e.getInventory();
 
         for (var item : List.of(AEItems.WIRELESS_CRAFTING_TERMINAL, AEItems.WIRELESS_TERMINAL)) {
-            var terminal = item.stack();
+            var terminal = item.toStack();
             // Fully charge it
             item.get().injectAEPower(terminal, Double.MAX_VALUE, Actionable.MODULATE);
             // Link it to the WAP we just placed

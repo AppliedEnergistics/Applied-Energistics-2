@@ -18,32 +18,20 @@
 
 package appeng.core.definitions;
 
-import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
-import com.mojang.datafixers.util.Either;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderOwner;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.registries.DeferredItem;
-import net.neoforged.neoforge.registries.datamaps.DataMapType;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.util.helpers.ItemComparisonHelper;
 
-public class ItemDefinition<T extends Item> implements ItemLike, Holder<Item>, Supplier<T> {
+public class ItemDefinition<T extends Item> implements ItemLike, Supplier<T> {
     private final String englishName;
     private final DeferredItem<T> item;
 
@@ -56,23 +44,15 @@ public class ItemDefinition<T extends Item> implements ItemLike, Holder<Item>, S
         return englishName;
     }
 
-    /**
-     * Use {@link #getId()} in preperation for moving to DeferredItem
-     */
-    @Deprecated(since = "1.20.4", forRemoval = true)
-    public ResourceLocation id() {
-        return this.item.getId();
-    }
-
     public ResourceLocation getId() {
         return this.item.getId();
     }
 
-    public ItemStack stack() {
-        return stack(1);
+    public ItemStack toStack() {
+        return toStack(1);
     }
 
-    public ItemStack stack(int stackSize) {
+    public ItemStack toStack(int stackSize) {
         return new ItemStack((ItemLike) item, stackSize);
     }
 
@@ -86,87 +66,18 @@ public class ItemDefinition<T extends Item> implements ItemLike, Holder<Item>, S
      * @param comparableStack compared item
      * @return true if the item stack is a matching item.
      */
-    public final boolean isSameAs(ItemStack comparableStack) {
-        return ItemComparisonHelper.isEqualItemType(comparableStack, this.stack());
+    public final boolean is(ItemStack comparableStack) {
+        return ItemComparisonHelper.isEqualItemType(comparableStack, this.toStack());
     }
 
     /**
      * @return True if this item is represented by the given key.
      */
-    public final boolean isSameAs(AEKey key) {
+    public final boolean is(AEKey key) {
         if (key instanceof AEItemKey itemKey) {
             return asItem() == itemKey.getItem();
         }
         return false;
-    }
-
-    @Override
-    public Item value() {
-        return item.value();
-    }
-
-    @Override
-    public boolean isBound() {
-        return item.isBound();
-    }
-
-    @Override
-    public boolean is(ResourceLocation pLocation) {
-        return item.is(pLocation);
-    }
-
-    @Override
-    public boolean is(ResourceKey<Item> pResourceKey) {
-        return item.is(pResourceKey);
-    }
-
-    @Override
-    public boolean is(Predicate<ResourceKey<Item>> pPredicate) {
-        return item.is(pPredicate);
-    }
-
-    @Override
-    public boolean is(TagKey<Item> pTagKey) {
-        return item.is(pTagKey);
-    }
-
-    @Override
-    public boolean is(Holder<Item> holder) {
-        return item.is(holder);
-    }
-
-    @Override
-    public Stream<TagKey<Item>> tags() {
-        return item.tags();
-    }
-
-    @Override
-    public Either<ResourceKey<Item>, Item> unwrap() {
-        return item.unwrap();
-    }
-
-    @Override
-    public Optional<ResourceKey<Item>> unwrapKey() {
-        return item.unwrapKey();
-    }
-
-    @Override
-    public Kind kind() {
-        return item.kind();
-    }
-
-    @Override
-    public boolean canSerializeIn(HolderOwner<Item> pOwner) {
-        return item.canSerializeIn(pOwner);
-    }
-
-    public static <T> Holder<T> direct(T pValue) {
-        return Holder.direct(pValue);
-    }
-
-    @Override
-    public <T> @Nullable T getData(DataMapType<Item, T> type) {
-        return item.getData(type);
     }
 
     @Override

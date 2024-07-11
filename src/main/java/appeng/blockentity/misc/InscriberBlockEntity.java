@@ -535,13 +535,13 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
 
             // always allow name press
             if (inv == topItemHandler || inv == bottomItemHandler) {
-                if (AEItems.NAME_PRESS.isSameAs(stack)) {
+                if (AEItems.NAME_PRESS.is(stack)) {
                     return true;
                 }
             }
 
-            if (inv == sideItemHandler && (AEItems.NAME_PRESS.isSameAs(topItemHandler.getStackInSlot(0))
-                    || AEItems.NAME_PRESS.isSameAs(bottomItemHandler.getStackInSlot(0)))) {
+            if (inv == sideItemHandler && (AEItems.NAME_PRESS.is(topItemHandler.getStackInSlot(0))
+                    || AEItems.NAME_PRESS.is(bottomItemHandler.getStackInSlot(0)))) {
                 // can always rename anything
                 return true;
             }

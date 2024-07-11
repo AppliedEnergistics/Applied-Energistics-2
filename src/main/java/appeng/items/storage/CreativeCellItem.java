@@ -24,7 +24,6 @@ import java.util.Optional;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ItemLike;
@@ -91,7 +90,7 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     public static ItemStack ofItems(ItemLike... items) {
-        var cell = AEItems.CREATIVE_CELL.stack();
+        var cell = AEItems.CREATIVE_CELL.toStack();
         var configInv = AEItems.CREATIVE_CELL.get().getConfigInventory(cell);
         for (int i = 0; i < items.length; i++) {
             configInv.setStack(i, GenericStack.fromItemStack(new ItemStack(items[i])));
@@ -100,7 +99,7 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     public static ItemStack ofFluids(Fluid... fluids) {
-        var cell = AEItems.CREATIVE_CELL.stack();
+        var cell = AEItems.CREATIVE_CELL.toStack();
         var configInv = AEItems.CREATIVE_CELL.get().getConfigInventory(cell);
         for (int i = 0; i < fluids.length; i++) {
             configInv.setStack(i, new GenericStack(AEFluidKey.of(fluids[i]), 1));

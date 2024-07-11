@@ -58,17 +58,17 @@ public final class AutoCraftingTestPlots {
 
         // Storage and access
         plot.blockEntity("7 0 1", AEBlocks.DRIVE, drive -> {
-            drive.getInternalInventory().addItems(AEItems.ITEM_CELL_64K.stack());
-            drive.getInternalInventory().addItems(AEItems.ITEM_CELL_64K.stack());
-            drive.getInternalInventory().addItems(AEItems.FLUID_CELL_64K.stack());
-            drive.getInternalInventory().addItems(AEItems.FLUID_CELL_64K.stack());
+            drive.getInternalInventory().addItems(AEItems.ITEM_CELL_64K.toStack());
+            drive.getInternalInventory().addItems(AEItems.ITEM_CELL_64K.toStack());
+            drive.getInternalInventory().addItems(AEItems.FLUID_CELL_64K.toStack());
+            drive.getInternalInventory().addItems(AEItems.FLUID_CELL_64K.toStack());
             drive.getInternalInventory().addItems(CreativeCellItem.ofItems(Items.REDSTONE));
             drive.getInternalInventory().addItems(CreativeCellItem.ofFluids(Fluids.LAVA));
         });
         plot.block("7 -1 0", AEBlocks.CELL_WORKBENCH);
         plot.part("6 0 1", Direction.NORTH, AEParts.PATTERN_ENCODING_TERMINAL, term -> {
             var inv = term.getLogic().getBlankPatternInv();
-            inv.addItems(AEItems.BLANK_PATTERN.stack(64));
+            inv.addItems(AEItems.BLANK_PATTERN.toStack(64));
         });
         plot.part("5 0 1", Direction.NORTH, AEParts.PATTERN_ACCESS_TERMINAL);
         plot.part("4 0 1", Direction.NORTH, AEParts.TERMINAL);
@@ -168,7 +168,7 @@ public final class AutoCraftingTestPlots {
     private static void buildChestCraftingExport(PlotBuilder plot) {
         // Subsystem to export chests via crafting card export bus
         plot.cable("0 0 0").part(Direction.SOUTH, AEParts.EXPORT_BUS, eb -> {
-            eb.getUpgrades().addItems(AEItems.CRAFTING_CARD.stack());
+            eb.getUpgrades().addItems(AEItems.CRAFTING_CARD.toStack());
             eb.getConfig().insert(0, AEItemKey.of(Items.CHEST), 1, Actionable.MODULATE);
         });
         plot.block("0 0 1", Blocks.CHEST);
@@ -266,9 +266,9 @@ public final class AutoCraftingTestPlots {
         plot.blockEntity("0 0 -3", AEBlocks.PATTERN_PROVIDER, provider -> {
             var pattern = PatternDetailsHelper.encodeProcessingPattern(
                     List.of(
-                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_CRYSTAL.stack())),
+                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_CRYSTAL.toStack())),
                     List.of(
-                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_DUST.stack())));
+                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_DUST.toStack())));
             provider.getLogic().getPatternInv().addItems(pattern);
         });
         for (var pos : inscriberPos) {
@@ -321,7 +321,7 @@ public final class AutoCraftingTestPlots {
                             GenericStack.fromItemStack(new ItemStack(Items.DIAMOND)),
                             GenericStack.fromItemStack(new ItemStack(Items.STONE))),
                     List.of(
-                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_DUST.stack())));
+                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_DUST.toStack())));
             provider.getLogic().getPatternInv().addItems(pattern);
         });
         plot.blockEntity(chestPos, AEBlocks.SKY_STONE_CHEST, skyChest -> {

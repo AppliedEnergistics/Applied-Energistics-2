@@ -170,7 +170,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
         var quantumRing = AEBlocks.QUANTUM_RING;
 
         if (this.getBlockState().getBlock() == quantumRing.block()) {
-            this.getMainNode().setVisualRepresentation(quantumRing.stack());
+            this.getMainNode().setVisualRepresentation(quantumRing.toStack());
         }
 
         this.updateStatus = true;

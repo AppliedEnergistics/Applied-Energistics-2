@@ -59,10 +59,10 @@ public final class MemoryCardTestPlots {
             var networkToolInv = addNetworkToolToPlayer(player);
 
             // Run part-specific setup code
-            fromPart.getUpgrades().addItems(AEItems.REDSTONE_CARD.stack());
-            fromPart.getUpgrades().addItems(AEItems.FUZZY_CARD.stack());
-            fromPart.getUpgrades().addItems(AEItems.CRAFTING_CARD.stack());
-            fromPart.getUpgrades().addItems(AEItems.CAPACITY_CARD.stack());
+            fromPart.getUpgrades().addItems(AEItems.REDSTONE_CARD.toStack());
+            fromPart.getUpgrades().addItems(AEItems.FUZZY_CARD.toStack());
+            fromPart.getUpgrades().addItems(AEItems.CRAFTING_CARD.toStack());
+            fromPart.getUpgrades().addItems(AEItems.CAPACITY_CARD.toStack());
             fromPart.getConfig().addFilter(Items.STICK);
             fromPart.getConfig().addFilter(Fluids.WATER);
 
@@ -107,9 +107,9 @@ public final class MemoryCardTestPlots {
             var networkToolInv = addNetworkToolToPlayer(player);
 
             // Run part-specific setup code
-            from.getUpgrades().addItems(AEItems.FUZZY_CARD.stack());
+            from.getUpgrades().addItems(AEItems.FUZZY_CARD.toStack());
             // This should be moved out
-            to.getUpgrades().addItems(AEItems.REDSTONE_CARD.stack());
+            to.getUpgrades().addItems(AEItems.REDSTONE_CARD.toStack());
             from.getConfig().setStack(0, new GenericStack(AEItemKey.of(Items.STICK), 1));
             from.getConfig().setStack(1, new GenericStack(AEFluidKey.of(Fluids.WATER), 1));
 
@@ -159,7 +159,7 @@ public final class MemoryCardTestPlots {
             var to = helper.getPart(BlockPos.ZERO, Direction.WEST, PatternProviderPart.class);
 
             var player = helper.makeMockPlayer(GameType.SURVIVAL);
-            player.getInventory().placeItemBackInInventory(AEItems.BLANK_PATTERN.stack(64));
+            player.getInventory().placeItemBackInInventory(AEItems.BLANK_PATTERN.toStack(64));
 
             // This should be copied to the other pattern provider
             var fromPatternInv = from.getLogic().getPatternInv();
@@ -199,7 +199,7 @@ public final class MemoryCardTestPlots {
 
     private static InternalInventory addNetworkToolToPlayer(Player player) {
         // Add all upgrades to the player inventory in a network tool, so restoring settings can install them
-        player.addItem(AEItems.NETWORK_TOOL.stack());
+        player.addItem(AEItems.NETWORK_TOOL.toStack());
         return NetworkToolItem.findNetworkToolInv(player).getInventory();
     }
 

@@ -618,7 +618,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
             // Deduct the used blank patterns
             if (blankPatternsUsed > 0 && !player.getAbilities().instabuild) {
                 new PlayerInternalInventory(playerInv)
-                        .removeItems(blankPatternsUsed, AEItems.BLANK_PATTERN.stack(), null);
+                        .removeItems(blankPatternsUsed, AEItems.BLANK_PATTERN.toStack(), null);
             }
 
             // Warn about not being able to restore all patterns due to lack of blank patterns
@@ -661,7 +661,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
         // Place back the removed blank patterns all at once
         if (blankPatternCount > 0) {
-            playerInv.placeItemBackInInventory(AEItems.BLANK_PATTERN.stack(blankPatternCount), false);
+            playerInv.placeItemBackInInventory(AEItems.BLANK_PATTERN.toStack(blankPatternCount), false);
         }
     }
 

@@ -95,11 +95,11 @@ public class DecorationRecipes extends AE2RecipeProvider {
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, outputBlock, 6).pattern("###").define('#', inputBlock)
                 .unlockedBy(criterionName(block), has(inputBlock))
-                .save(consumer, prefix("shaped/slabs/", block.id()));
+                .save(consumer, prefix("shaped/slabs/", block.getId()));
 
         SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), RecipeCategory.MISC, outputBlock, 2)
                 .unlockedBy(criterionName(block), has(inputBlock))
-                .save(consumer, prefix("block_cutter/slabs/", slabs.id()));
+                .save(consumer, prefix("block_cutter/slabs/", slabs.getId()));
     }
 
     private void stairRecipe(RecipeOutput consumer, BlockDefinition<?> block, BlockDefinition<?> stairs) {
@@ -108,11 +108,11 @@ public class DecorationRecipes extends AE2RecipeProvider {
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, outputBlock, 4).pattern("#  ").pattern("## ").pattern("###")
                 .define('#', inputBlock).unlockedBy(criterionName(block), has(inputBlock))
-                .save(consumer, prefix("shaped/stairs/", block.id()));
+                .save(consumer, prefix("shaped/stairs/", block.getId()));
 
         SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), RecipeCategory.MISC, outputBlock)
                 .unlockedBy(criterionName(block), has(inputBlock))
-                .save(consumer, prefix("block_cutter/stairs/", stairs.id()));
+                .save(consumer, prefix("block_cutter/stairs/", stairs.getId()));
 
     }
 
@@ -122,11 +122,11 @@ public class DecorationRecipes extends AE2RecipeProvider {
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, outputBlock, 6).pattern("###").pattern("###")
                 .define('#', inputBlock).unlockedBy(criterionName(block), has(inputBlock))
-                .save(consumer, prefix("shaped/walls/", block.id()));
+                .save(consumer, prefix("shaped/walls/", block.getId()));
 
         SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), RecipeCategory.MISC, outputBlock)
                 .unlockedBy(criterionName(block), has(inputBlock))
-                .save(consumer, prefix("block_cutter/walls/", wall.id()));
+                .save(consumer, prefix("block_cutter/walls/", wall.getId()));
 
     }
 

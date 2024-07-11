@@ -72,8 +72,8 @@ class EmiCondenserRecipe extends BasicEmiRecipe {
 
     private static ItemStack getOutput(CondenserOutput recipe) {
         return switch (recipe) {
-            case MATTER_BALLS -> AEItems.MATTER_BALL.stack();
-            case SINGULARITY -> AEItems.SINGULARITY.stack();
+            case MATTER_BALLS -> AEItems.MATTER_BALL.toStack();
+            case SINGULARITY -> AEItems.SINGULARITY.toStack();
             default -> ItemStack.EMPTY;
         };
     }

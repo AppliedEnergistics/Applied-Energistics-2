@@ -30,21 +30,21 @@ public class DriveBuilder {
     }
 
     public CreativeCellBuilder addCreativeCell() {
-        var cell = AEItems.CREATIVE_CELL.stack();
+        var cell = AEItems.CREATIVE_CELL.toStack();
         var configInv = AEItems.CREATIVE_CELL.get().getConfigInventory(cell);
         cells.add(cell);
         return new CreativeCellBuilder(configInv);
     }
 
     public ItemCellBuilder addItemCell64k() {
-        var cell = AEItems.ITEM_CELL_64K.stack();
+        var cell = AEItems.ITEM_CELL_64K.toStack();
         var cellInv = BasicCellInventory.createInventory(cell, null);
         cells.add(cell);
         return new ItemCellBuilder(cellInv);
     }
 
     public FluidCellBuilder addFluidCell64k() {
-        var cell = AEItems.FLUID_CELL_64K.stack();
+        var cell = AEItems.FLUID_CELL_64K.toStack();
         var cellInv = BasicCellInventory.createInventory(cell, null);
         cells.add(cell);
         return new FluidCellBuilder(cellInv);

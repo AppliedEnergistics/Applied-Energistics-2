@@ -37,6 +37,6 @@ public record EncodedStonecuttingPattern(
                     EncodedStonecuttingPattern::new);
 
     public boolean containsMissingContent() {
-        return AEItems.MISSING_CONTENT.isSameAs(input) || AEItems.MISSING_CONTENT.isSameAs(output);
+        return AEItems.MISSING_CONTENT.is(input) || AEItems.MISSING_CONTENT.is(output);
     }
 }

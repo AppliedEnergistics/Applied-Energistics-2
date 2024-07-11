@@ -95,7 +95,7 @@ public class QuartzKnifeMenu extends AEBaseMenu {
             }
 
             if (RestrictedInputSlot.isMetalIngot(input) && !currentName.isBlank()) {
-                ItemStack namePressStack = AEItems.NAME_PRESS.stack();
+                ItemStack namePressStack = AEItems.NAME_PRESS.toStack();
                 namePressStack.set(AEComponents.NAME_PRESS_NAME, Component.literal(currentName));
 
                 return namePressStack;
