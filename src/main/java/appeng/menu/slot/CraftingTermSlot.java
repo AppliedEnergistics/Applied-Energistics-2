@@ -41,7 +41,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
-import appeng.helpers.IMenuCraftingPacket;
+import appeng.helpers.ICraftingGridMenu;
 import appeng.helpers.InventoryAction;
 import appeng.items.storage.ViewCellItem;
 import appeng.menu.me.items.CraftingTermMenu;
@@ -62,11 +62,11 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     private final IActionSource mySrc;
     private final IEnergySource energySrc;
     private final MEStorage storage;
-    private final IMenuCraftingPacket menu;
+    private final ICraftingGridMenu menu;
 
     public CraftingTermSlot(Player player, IActionSource mySrc, IEnergySource energySrc,
             MEStorage storage, InternalInventory cMatrix, InternalInventory secondMatrix,
-            IMenuCraftingPacket ccp) {
+            ICraftingGridMenu ccp) {
         super(player, cMatrix);
         this.energySrc = energySrc;
         this.storage = storage;

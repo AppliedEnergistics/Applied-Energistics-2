@@ -40,11 +40,8 @@ public class ConfigInventory extends GenericStackInv {
 
     /**
      * An empty config-type inventory.
-     * 
-     * @deprecated use #empty()
      */
-    @Deprecated(since = "1.20.4")
-    public static final ConfigInventory EMPTY_TYPES = ConfigInventory.configTypes(0).build();
+    private static final ConfigInventory EMPTY_TYPES = ConfigInventory.configTypes(0).build();
 
     /**
      * @return A read-only, empty inventory that is in types mode.
@@ -159,101 +156,6 @@ public class ConfigInventory extends GenericStackInv {
      */
     public static Builder storage(int size) {
         return new Builder(Mode.STORAGE, size);
-    }
-
-    /**
-     * When in types mode, the config inventory will ignore all amounts and always return amount 1 for stacks in the
-     * inventory.
-     * 
-     * @deprecated Use the builder {@link #configTypes(int))
-     */
-    @Deprecated(since = "1.20.4")
-    public static ConfigInventory configTypes(int size, @Nullable Runnable changeListener) {
-        var builder = configTypes(size);
-        if (changeListener != null) {
-            builder.changeListener(changeListener);
-        }
-        return builder.build();
-    }
-
-    /**
-     * When in types mode, the config inventory will ignore all amounts and always return amount 1 for stacks in the
-     * inventory.
-     *
-     * @deprecated Use the builder {@link #configTypes(int))
-     */
-    @Deprecated(since = "1.20.4")
-    public static ConfigInventory configTypes(Set<AEKeyType> supportedTypes, int size,
-            @Nullable Runnable changeListener) {
-        var builder = configTypes(size).supportedTypes(supportedTypes);
-        if (changeListener != null) {
-            builder.changeListener(changeListener);
-        }
-        return builder.build();
-    }
-
-    /**
-     * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
-     *
-     * @deprecated Use the builder {@link #configTypes(int))
-     */
-    @Deprecated(since = "1.20.4")
-    public static ConfigInventory configStacks(Set<AEKeyType> supportedTypes, int size,
-            @Nullable Runnable changeListener, boolean allowOverstacking) {
-        var builder = configStacks(size).supportedTypes(supportedTypes);
-        if (changeListener != null) {
-            builder.changeListener(changeListener);
-        }
-        builder.allowOverstacking(allowOverstacking);
-        return builder.build();
-    }
-
-    /**
-     * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
-     *
-     * @deprecated Use the builder {@link #configTypes(int))
-     */
-    @Deprecated(since = "1.20.4")
-    public static ConfigInventory storage(int size, @Nullable Runnable changeListener) {
-        var builder = storage(size);
-        if (changeListener != null) {
-            builder.changeListener(changeListener);
-        }
-        return builder.build();
-    }
-
-    /**
-     * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
-     *
-     * @deprecated Use the builder {@link #configTypes(int))
-     */
-    @Deprecated(since = "1.20.4")
-    public static ConfigInventory storage(Set<AEKeyType> supportedTypes, int size,
-            @Nullable Runnable changeListener) {
-        var builder = storage(size).supportedTypes(supportedTypes);
-        if (changeListener != null) {
-            builder.changeListener(changeListener);
-        }
-        return builder.build();
-    }
-
-    /**
-     * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
-     *
-     * @deprecated Use the builder {@link #configTypes(int))
-     */
-    @Deprecated(since = "1.20.4")
-    public static ConfigInventory storage(Set<AEKeyType> supportedTypes, @Nullable AEKeySlotFilter slotFilter,
-            int size,
-            @Nullable Runnable changeListener) {
-        var builder = storage(size).supportedTypes(supportedTypes);
-        if (slotFilter != null) {
-            builder.slotFilter(slotFilter);
-        }
-        if (changeListener != null) {
-            builder.changeListener(changeListener);
-        }
-        return builder.build();
     }
 
     @Nullable
