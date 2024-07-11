@@ -76,7 +76,7 @@ import appeng.debug.PhantomNodeBlockEntity;
 public final class AEBlockEntities {
     private static final List<DeferredBlockEntityType<?>> BLOCK_ENTITY_TYPES = new ArrayList<>();
 
-    static final DeferredRegister<BlockEntityType<?>> DR = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE,
+    public static final DeferredRegister<BlockEntityType<?>> DR = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE,
             AppEng.MOD_ID);
 
     public static final DeferredBlockEntityType<InscriberBlockEntity> INSCRIBER = create("inscriber",

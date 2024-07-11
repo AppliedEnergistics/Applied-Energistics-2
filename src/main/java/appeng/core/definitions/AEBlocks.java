@@ -108,7 +108,7 @@ import appeng.decorative.solid.QuartzLampBlock;
  * Internal implementation for the API blocks
  */
 public final class AEBlocks {
-    static final DeferredRegister.Blocks DR = DeferredRegister.createBlocks(AppEng.MOD_ID);
+    public static final DeferredRegister.Blocks DR = DeferredRegister.createBlocks(AppEng.MOD_ID);
 
     private static final List<BlockDefinition<?>> BLOCKS = new ArrayList<>();
     private static final Properties QUARTZ_CLUSTER_PROPERTIES = defaultProps(MapColor.COLOR_CYAN,

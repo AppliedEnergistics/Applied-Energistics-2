@@ -18,18 +18,20 @@
 
 package appeng.init;
 
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.core.Registry;
 
+import appeng.core.AppEng;
 import appeng.core.stats.AdvancementTriggers;
 
 public final class InitAdvancementTriggers {
 
-    public static void init() {
-        CriteriaTriggers.register("ae2:network_apprentice", AdvancementTriggers.NETWORK_APPRENTICE);
-        CriteriaTriggers.register("ae2:network_engineer", AdvancementTriggers.NETWORK_ENGINEER);
-        CriteriaTriggers.register("ae2:network_admin", AdvancementTriggers.NETWORK_ADMIN);
-        CriteriaTriggers.register("ae2:spatial_explorer", AdvancementTriggers.SPATIAL_EXPLORER);
-        CriteriaTriggers.register("ae2:recursive_networking", AdvancementTriggers.RECURSIVE);
+    public static void init(Registry<CriterionTrigger<?>> registry) {
+        Registry.register(registry, AppEng.makeId("network_apprentice"), AdvancementTriggers.NETWORK_APPRENTICE);
+        Registry.register(registry, AppEng.makeId("network_engineer"), AdvancementTriggers.NETWORK_ENGINEER);
+        Registry.register(registry, AppEng.makeId("network_admin"), AdvancementTriggers.NETWORK_ADMIN);
+        Registry.register(registry, AppEng.makeId("spatial_explorer"), AdvancementTriggers.SPATIAL_EXPLORER);
+        Registry.register(registry, AppEng.makeId("recursive_networking"), AdvancementTriggers.RECURSIVE);
     }
 
 }

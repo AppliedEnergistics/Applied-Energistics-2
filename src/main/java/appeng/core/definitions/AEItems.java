@@ -99,7 +99,7 @@ import appeng.menu.me.common.MEStorageMenu;
  * Internal implementation for the API items
  */
 public final class AEItems {
-    static final DeferredRegister.Items DR = DeferredRegister.createItems(AppEng.MOD_ID);
+    public static final DeferredRegister.Items DR = DeferredRegister.createItems(AppEng.MOD_ID);
 
     // spotless:off
     private static final List<ItemDefinition<?>> ITEMS = new ArrayList<>();

@@ -57,11 +57,11 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import appeng.api.ids.AEComponents;
 import appeng.api.parts.CableRenderMode;
 import appeng.api.stacks.AEKeyType;
-import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.AEKeyTypesInternal;
+import appeng.core.definitions.AEBlockEntities;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
-import appeng.core.definitions.RegistrationInternal;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.InitNetwork;
 import appeng.hooks.SkyStoneBreakSpeed;
@@ -119,7 +119,9 @@ public abstract class AppEngBase implements AppEng {
         INSTANCE = this;
 
         AEParts.init();
-        RegistrationInternal.subscribe(modEventBus);
+        AEBlocks.DR.register(modEventBus);
+        AEItems.DR.register(modEventBus);
+        AEBlockEntities.DR.register(modEventBus);
         AEComponents.DR.register(modEventBus);
         InitStructures.register(modEventBus);
 
@@ -130,35 +132,39 @@ public abstract class AppEngBase implements AppEng {
         modEventBus.addListener(InitCapabilityProviders::register);
         modEventBus.addListener(EventPriority.LOWEST, InitCapabilityProviders::registerGenericAdapters);
         modEventBus.addListener((RegisterEvent event) -> {
-            if (event.getRegistryKey().equals(Registries.SOUND_EVENT)) {
+            if (event.getRegistryKey() == Registries.SOUND_EVENT) {
                 registerSounds(BuiltInRegistries.SOUND_EVENT);
-                return;
             } else if (event.getRegistryKey() == Registries.CREATIVE_MODE_TAB) {
                 registerCreativeTabs(BuiltInRegistries.CREATIVE_MODE_TAB);
-                return;
+            } else if (event.getRegistryKey() == Registries.CUSTOM_STAT) {
+                InitStats.init(event.getRegistry(Registries.CUSTOM_STAT));
+            } else if (event.getRegistryKey() == Registries.TRIGGER_TYPE) {
+                InitAdvancementTriggers.init(event.getRegistry(Registries.TRIGGER_TYPE));
+            } else if (event.getRegistryKey() == Registries.ENTITY_TYPE) {
+                InitEntityTypes.init(event.getRegistry(Registries.ENTITY_TYPE));
+            } else if (event.getRegistryKey() == Registries.PARTICLE_TYPE) {
+                InitParticleTypes.init(event.getRegistry(Registries.PARTICLE_TYPE));
+            } else if (event.getRegistryKey() == Registries.MENU) {
+                InitMenuTypes.init(event.getRegistry(Registries.MENU));
+            } else if (event.getRegistryKey() == Registries.RECIPE_TYPE) {
+                InitRecipeTypes.init(event.getRegistry(Registries.RECIPE_TYPE));
+            } else if (event.getRegistryKey() == Registries.RECIPE_SERIALIZER) {
+                InitRecipeSerializers.init(event.getRegistry(Registries.RECIPE_SERIALIZER));
+            } else if (event.getRegistryKey() == Registries.RECIPE_SERIALIZER) {
+                InitRecipeSerializers.init(event.getRegistry(Registries.RECIPE_SERIALIZER));
+            } else if (event.getRegistryKey() == Registries.CHUNK_GENERATOR) {
+                Registry.register(BuiltInRegistries.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
+                        SpatialStorageChunkGenerator.CODEC);
+            } else if (event.getRegistryKey() == Registries.VILLAGER_PROFESSION) {
+                InitVillager.initProfession(event.getRegistry(Registries.VILLAGER_PROFESSION));
+            } else if (event.getRegistryKey() == Registries.POINT_OF_INTEREST_TYPE) {
+                InitVillager.initPointOfInterestType(event.getRegistry(Registries.POINT_OF_INTEREST_TYPE));
+            } else if (event.getRegistryKey() == AEKeyType.REGISTRY_KEY) {
+                registerKeyTypes(event.getRegistry(AEKeyType.REGISTRY_KEY));
             }
-
-            if (!event.getRegistryKey().equals(Registries.BLOCK)) {
-                return;
-            }
-            // Register everything in the block registration event ;)
-
-            InitStats.init();
-            InitAdvancementTriggers.init();
-
-            InitEntityTypes.init(BuiltInRegistries.ENTITY_TYPE);
-            InitParticleTypes.init(BuiltInRegistries.PARTICLE_TYPE);
-            InitMenuTypes.init(BuiltInRegistries.MENU);
-            InitRecipeTypes.init(BuiltInRegistries.RECIPE_TYPE);
-            InitRecipeSerializers.init(BuiltInRegistries.RECIPE_SERIALIZER);
-            registerKeyTypes();
-            InitVillager.init();
-
-            Registry.register(BuiltInRegistries.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
-                    SpatialStorageChunkGenerator.CODEC);
-
-            HotkeyActions.init();
         });
+
+        NeoForge.EVENT_BUS.addListener(InitVillager::initTrades);
 
         modEventBus.addListener(Integrations::enqueueIMC);
         modEventBus.addListener(this::commonSetup);
@@ -195,6 +201,8 @@ public abstract class AppEngBase implements AppEng {
      * Runs after all mods have had time to run their registrations into registries.
      */
     public void postRegistrationInitialization() {
+        HotkeyActions.init();
+
         // Now that item instances are available, we can initialize registries that need item instances
         InitGridLinkables.init();
         InitStorageCells.init();
@@ -208,9 +216,9 @@ public abstract class AppEngBase implements AppEng {
         InitUpgrades.init();
     }
 
-    public void registerKeyTypes() {
-        AEKeyTypes.register(AEKeyType.items());
-        AEKeyTypes.register(AEKeyType.fluids());
+    public void registerKeyTypes(Registry<AEKeyType> registry) {
+        Registry.register(registry, AEKeyType.items().getId(), AEKeyType.items());
+        Registry.register(registry, AEKeyType.fluids().getId(), AEKeyType.fluids());
     }
 
     public void registerCommands(ServerStartingEvent evt) {
