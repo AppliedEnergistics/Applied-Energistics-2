@@ -47,7 +47,7 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ITerminalHost;
 import appeng.core.network.serverbound.InventoryActionPacket;
-import appeng.helpers.IMenuCraftingPacket;
+import appeng.helpers.ICraftingGridMenu;
 import appeng.helpers.InventoryAction;
 import appeng.me.storage.LinkStatusRespectingInventory;
 import appeng.menu.SlotSemantics;
@@ -65,7 +65,7 @@ import appeng.util.inv.PlayerInternalInventory;
  *
  * @see appeng.client.gui.me.items.CraftingTermScreen
  */
-public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPacket {
+public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu {
 
     public static final MenuType<CraftingTermMenu> TYPE = MenuTypeBuilder
             .create(CraftingTermMenu::new, ITerminalHost.class)

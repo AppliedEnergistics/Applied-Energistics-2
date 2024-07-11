@@ -49,7 +49,7 @@ import appeng.api.storage.ISubMenuHost;
 import appeng.core.AELog;
 import appeng.core.network.clientbound.CraftConfirmPlanPacket;
 import appeng.crafting.execution.CraftingSubmitResult;
-import appeng.helpers.IMenuCraftingPacket;
+import appeng.helpers.ICraftingGridMenu;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
@@ -113,7 +113,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
      * if canceling should return to the craft amount menu.
      */
     @Nullable
-    private List<IMenuCraftingPacket.AutoCraftEntry> autoCraftingQueue;
+    private List<ICraftingGridMenu.AutoCraftEntry> autoCraftingQueue;
     private List<Integer> requestedSlots;
 
     public CraftConfirmMenu(int id, Inventory ip, ISubMenuHost te) {
@@ -133,7 +133,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
      * Open with a list of items to craft, i.e. via REI ctrl+click.
      */
     public static void openWithCraftingList(@Nullable IActionHost terminal, ServerPlayer player,
-            @Nullable MenuHostLocator locator, List<IMenuCraftingPacket.AutoCraftEntry> stacksToCraft) {
+            @Nullable MenuHostLocator locator, List<ICraftingGridMenu.AutoCraftEntry> stacksToCraft) {
         if (terminal == null || locator == null || stacksToCraft.isEmpty()) {
             return;
         }

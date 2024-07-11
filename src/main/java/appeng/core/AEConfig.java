@@ -346,21 +346,6 @@ public final class AEConfig {
         return this.disableColoredCableRecipesInRecipeViewer;
     }
 
-    @Deprecated(since = "1.20.4")
-    public boolean isDisableColoredCableRecipesInJEI() {
-        return isDisableColoredCableRecipesInRecipeViewer();
-    }
-
-    @Deprecated(since = "1.20.4")
-    public boolean isEnableFacadesInJEI() {
-        return isEnableFacadesInRecipeViewer();
-    }
-
-    @Deprecated(since = "1.20.4")
-    public boolean isEnableFacadeRecipesInJEI() {
-        return isEnableFacadeRecipesInRecipeViewer();
-    }
-
     public boolean isEnableFacadesInRecipeViewer() {
         return this.enableFacadesInRecipeViewer;
     }

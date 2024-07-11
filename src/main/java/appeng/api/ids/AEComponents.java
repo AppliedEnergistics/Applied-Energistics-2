@@ -2,28 +2,21 @@ package appeng.api.ids;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
@@ -48,51 +41,6 @@ public final class AEComponents {
     @ApiStatus.Internal
     public static final DeferredRegister<DataComponentType<?>> DR = DeferredRegister
             .create(Registries.DATA_COMPONENT_TYPE, AppEng.MOD_ID);
-
-    // TODO 1.20.5 -> Write a better codec! (without unchecked casts and the intermediate map)
-    private static final Codec<DataComponentMap> DATA_COMPONENT_MAP_CODEC = Codec.dispatchedMap(
-            DataComponentType.CODEC,
-            type -> (Codec<Object>) type.codecOrThrow()).xmap(
-                    dataComponentTypeMap -> new DataComponentMap() {
-                        @Nullable
-                        @Override
-                        public <T> T get(DataComponentType<? extends T> type) {
-                            return (T) dataComponentTypeMap.get(type);
-                        }
-
-                        @Override
-                        public Set<DataComponentType<?>> keySet() {
-                            return dataComponentTypeMap.keySet();
-                        }
-                    },
-                    map -> map.stream().collect(Collectors.toMap(
-                            TypedDataComponent::type,
-                            TypedDataComponent::value)));
-
-    private static final StreamCodec<RegistryFriendlyByteBuf, DataComponentMap> DATA_COMPONENT_MAP_STREAM_CODEC = new StreamCodec<>() {
-        @Override
-        public DataComponentMap decode(RegistryFriendlyByteBuf data) {
-            var count = data.readVarInt();
-            var builder = DataComponentMap.builder();
-            for (int i = 0; i < count; i++) {
-                var typedComponent = TypedDataComponent.STREAM_CODEC.decode(data);
-                set(builder, typedComponent);
-            }
-            return builder.build();
-        }
-
-        private static <T> void set(DataComponentMap.Builder builder, TypedDataComponent<T> component) {
-            builder.set(component.type(), component.value());
-        }
-
-        @Override
-        public void encode(RegistryFriendlyByteBuf data, DataComponentMap map) {
-            data.writeVarInt(map.size());
-            for (TypedDataComponent<?> component : map) {
-                TypedDataComponent.STREAM_CODEC.encode(data, component);
-            }
-        }
-    };
 
     private AEComponents() {
     }
@@ -234,7 +182,7 @@ public final class AEComponents {
 
     /**
      * An encoded crafting pattern.
-     * 
+     *
      * @see AEItems#CRAFTING_PATTERN
      */
     public static final DataComponentType<EncodedCraftingPattern> ENCODED_CRAFTING_PATTERN = register(
@@ -244,7 +192,7 @@ public final class AEComponents {
 
     /**
      * An encoded processing pattern.
-     * 
+     *
      * @see AEItems#PROCESSING_PATTERN
      */
     public static final DataComponentType<EncodedProcessingPattern> ENCODED_PROCESSING_PATTERN = register(
@@ -254,7 +202,7 @@ public final class AEComponents {
 
     /**
      * An encoded stonecutting pattern.
-     * 
+     *
      * @see AEItems#STONECUTTING_PATTERN
      */
     public static final DataComponentType<EncodedStonecuttingPattern> ENCODED_STONECUTTING_PATTERN = register(
@@ -264,7 +212,7 @@ public final class AEComponents {
 
     /**
      * An encoded smithing table pattern.
-     * 
+     *
      * @see AEItems#SMITHING_TABLE_PATTERN
      */
     public static final DataComponentType<EncodedSmithingTablePattern> ENCODED_SMITHING_TABLE_PATTERN = register(

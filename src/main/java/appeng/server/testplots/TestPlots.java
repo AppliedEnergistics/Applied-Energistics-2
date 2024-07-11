@@ -88,9 +88,6 @@ import appeng.util.Platform;
 public final class TestPlots {
     private static final Logger LOG = LoggerFactory.getLogger(TestPlots.class);
 
-    @Deprecated(forRemoval = true, since = "1.20.4")
-    private static final List<Class<?>> PLOT_CLASSES = new ArrayList<>();
-
     @Nullable
     private static Map<ResourceLocation, Consumer<PlotBuilder>> plots;
 
@@ -174,7 +171,7 @@ public final class TestPlots {
     }
 
     private static List<Class<?>> findAllTestPlotClasses() {
-        var result = new ArrayList<>(PLOT_CLASSES);
+        var result = new ArrayList<Class<?>>();
 
         for (var data : ModList.get().getAllScanData()) {
             for (var annotation : data.getAnnotations()) {
@@ -190,15 +187,6 @@ public final class TestPlots {
         }
 
         return result;
-    }
-
-    /**
-     * Annotate with @TestPlotClass
-     */
-    @Deprecated(forRemoval = true, since = "1.20.4")
-    public static synchronized void addPlotClass(Class<?> clazz) {
-        PLOT_CLASSES.add(clazz);
-        plots = null;// reset the plots, in case they are already initialized
     }
 
     public static List<ResourceLocation> getPlotIds() {

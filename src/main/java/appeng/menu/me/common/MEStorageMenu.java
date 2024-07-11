@@ -211,7 +211,7 @@ public class MEStorageMenu extends AEBaseMenu
     }
 
     @Nullable
-    public IGridNode getNetworkNode() {
+    public IGridNode getGridNode() {
         if (host instanceof IActionHost actionHost) {
             return actionHost.getActionableNode();
         }
@@ -306,7 +306,7 @@ public class MEStorageMenu extends AEBaseMenu
     }
 
     private Set<AEKey> getCraftablesFromGrid() {
-        IGridNode hostNode = getNetworkNode();
+        IGridNode hostNode = getGridNode();
         // Wireless terminals do not directly expose the target grid (even though they have one)
         if (hostNode == null && host instanceof IActionHost actionHost) {
             hostNode = actionHost.getActionableNode();
@@ -322,7 +322,7 @@ public class MEStorageMenu extends AEBaseMenu
     }
 
     private void updateActiveCraftingJobs() {
-        IGridNode hostNode = getNetworkNode();
+        IGridNode hostNode = getGridNode();
         IGrid grid = null;
         if (hostNode != null) {
             grid = hostNode.getGrid();
