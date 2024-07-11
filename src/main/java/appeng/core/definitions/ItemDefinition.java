@@ -131,6 +131,11 @@ public class ItemDefinition<T extends Item> implements ItemLike, Holder<Item>, S
     }
 
     @Override
+    public boolean is(Holder<Item> holder) {
+        return item.is(holder);
+    }
+
+    @Override
     public Stream<TagKey<Item>> tags() {
         return item.tags();
     }

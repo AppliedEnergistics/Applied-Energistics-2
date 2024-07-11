@@ -142,9 +142,9 @@ public final class InitCapabilityProviders {
     }
 
     private static void initMEChest(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, AEBlockEntities.ME_CHEST,
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, AEBlockEntities.ME_CHEST.get(),
                 MEChestBlockEntity::getFluidHandler);
-        event.registerBlockEntity(AECapabilities.ME_STORAGE, AEBlockEntities.ME_CHEST,
+        event.registerBlockEntity(AECapabilities.ME_STORAGE, AEBlockEntities.ME_CHEST.get(),
                 MEChestBlockEntity::getMEStorage);
     }
 
