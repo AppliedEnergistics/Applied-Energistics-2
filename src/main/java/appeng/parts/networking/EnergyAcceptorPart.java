@@ -23,7 +23,7 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnits;
+import appeng.api.config.PowerUnit;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
@@ -68,9 +68,9 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
     }
 
     @Override
-    public final double getExternalPowerDemand(PowerUnits externalUnit, double maxPowerRequired) {
-        return PowerUnits.AE.convertTo(externalUnit,
-                Math.max(0.0, this.getFunnelPowerDemand(externalUnit.convertTo(PowerUnits.AE, maxPowerRequired))));
+    public final double getExternalPowerDemand(PowerUnit externalUnit, double maxPowerRequired) {
+        return PowerUnit.AE.convertTo(externalUnit,
+                Math.max(0.0, this.getFunnelPowerDemand(externalUnit.convertTo(PowerUnit.AE, maxPowerRequired))));
     }
 
     protected double getFunnelPowerDemand(double maxRequired) {
@@ -83,8 +83,8 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
     }
 
     @Override
-    public final double injectExternalPower(PowerUnits input, double amt, Actionable mode) {
-        return PowerUnits.AE.convertTo(input, this.funnelPowerIntoStorage(input.convertTo(PowerUnits.AE, amt), mode));
+    public final double injectExternalPower(PowerUnit input, double amt, Actionable mode) {
+        return PowerUnit.AE.convertTo(input, this.funnelPowerIntoStorage(input.convertTo(PowerUnit.AE, amt), mode));
     }
 
     protected double funnelPowerIntoStorage(double power, Actionable mode) {

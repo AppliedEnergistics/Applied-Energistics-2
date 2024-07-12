@@ -42,13 +42,13 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.crafting.PushDirection;
-import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.blockentity.grid.AENetworkedBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.util.SettingsFrom;
 
-public class PatternProviderBlockEntity extends AENetworkBlockEntity implements PatternProviderLogicHost {
+public class PatternProviderBlockEntity extends AENetworkedBlockEntity implements PatternProviderLogicHost {
     protected final PatternProviderLogic logic = createLogic();
 
     public PatternProviderBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {

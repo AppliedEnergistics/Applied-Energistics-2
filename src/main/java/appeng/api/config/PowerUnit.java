@@ -25,7 +25,7 @@ package appeng.api.config;
 
 import net.minecraft.network.chat.Component;
 
-public enum PowerUnits {
+public enum PowerUnit {
     AE("gui.ae2.units.appliedenergistics", "AE"), // Native Units - AE Energy
     FE("gui.ae2.units.fe", "FE"); // Forge Energy
 
@@ -43,7 +43,7 @@ public enum PowerUnits {
      */
     public double conversionRatio = 1.0;
 
-    PowerUnits(String un, String symbolName) {
+    PowerUnit(String un, String symbolName) {
         this.unlocalizedName = un;
         this.symbolName = symbolName;
     }
@@ -60,7 +60,7 @@ public enum PowerUnits {
      *
      * @return value converted to target units, from this units.
      */
-    public double convertTo(PowerUnits target, double value) {
+    public double convertTo(PowerUnit target, double value) {
         return value * this.conversionRatio / target.conversionRatio;
     }
 

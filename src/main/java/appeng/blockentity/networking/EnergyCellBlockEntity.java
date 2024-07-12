@@ -46,12 +46,12 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.block.networking.EnergyCellBlock;
-import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.blockentity.grid.AENetworkedBlockEntity;
 import appeng.me.energy.StoredEnergyAmount;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPowerStorage, IGridTickable {
+public class EnergyCellBlockEntity extends AENetworkedBlockEntity implements IAEPowerStorage, IGridTickable {
 
     private final StoredEnergyAmount stored;
     private byte currentDisplayLevel;

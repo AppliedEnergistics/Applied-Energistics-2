@@ -46,7 +46,7 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
-import appeng.blockentity.grid.AENetworkInvBlockEntity;
+import appeng.blockentity.grid.AENetworkedInvBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -56,7 +56,7 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity implements IGridTickable, IUpgradeableObject {
+public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity implements IGridTickable, IUpgradeableObject {
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1);
     private final InternalInventory invExt = new FilteredInternalInventory(this.inv, new FuelSlotFilter());
 

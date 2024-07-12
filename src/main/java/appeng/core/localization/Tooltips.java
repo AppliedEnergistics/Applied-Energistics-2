@@ -18,7 +18,7 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.behaviors.EmptyingAction;
-import appeng.api.config.PowerUnits;
+import appeng.api.config.PowerUnit;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
@@ -328,7 +328,7 @@ public final class Tooltips {
         return Component.literal(s).withStyle(NORMAL_TOOLTIP_TEXT);
     }
 
-    public static MutableComponent of(PowerUnits pU) {
+    public static MutableComponent of(PowerUnit pU) {
         return pU.textComponent().copy().withStyle(UNIT_TEXT);
     }
 
@@ -415,7 +415,7 @@ public final class Tooltips {
                 Tooltips.of(": "),
                 Tooltips.ofNumber(energy, max),
                 Tooltips.of(" "),
-                Tooltips.of(PowerUnits.AE),
+                Tooltips.of(PowerUnit.AE),
                 Tooltips.of(" ("),
                 Tooltips.ofPercent(energy / max),
                 Tooltips.of(")"));

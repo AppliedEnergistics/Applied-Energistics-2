@@ -36,10 +36,10 @@ import appeng.api.networking.pathing.ControllerState;
 import appeng.api.util.AECableType;
 import appeng.block.networking.ControllerBlock;
 import appeng.block.networking.ControllerBlock.ControllerBlockState;
-import appeng.blockentity.grid.AENetworkPowerBlockEntity;
+import appeng.blockentity.grid.AENetworkedPoweredBlockEntity;
 import appeng.util.Platform;
 
-public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
+public class ControllerBlockEntity extends AENetworkedPoweredBlockEntity {
 
     static {
         GridHelper.addNodeOwnerEventHandler(

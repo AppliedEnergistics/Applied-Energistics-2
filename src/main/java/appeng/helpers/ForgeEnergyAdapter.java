@@ -21,7 +21,7 @@ package appeng.helpers;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.PowerUnits;
+import appeng.api.config.PowerUnit;
 import appeng.blockentity.powersink.IExternalPowerSink;
 
 /**
@@ -38,7 +38,7 @@ public class ForgeEnergyAdapter implements IEnergyStorage {
     @Override
     public final int receiveEnergy(int maxReceive, boolean simulate) {
         final double offered = maxReceive;
-        final double overflow = this.sink.injectExternalPower(PowerUnits.FE, offered,
+        final double overflow = this.sink.injectExternalPower(PowerUnit.FE, offered,
                 simulate ? Actionable.SIMULATE : Actionable.MODULATE);
 
         return (int) (maxReceive - overflow);
@@ -46,12 +46,12 @@ public class ForgeEnergyAdapter implements IEnergyStorage {
 
     @Override
     public final int getEnergyStored() {
-        return (int) Math.floor(PowerUnits.AE.convertTo(PowerUnits.FE, this.sink.getAECurrentPower()));
+        return (int) Math.floor(PowerUnit.AE.convertTo(PowerUnit.FE, this.sink.getAECurrentPower()));
     }
 
     @Override
     public final int getMaxEnergyStored() {
-        return (int) Math.floor(PowerUnits.AE.convertTo(PowerUnits.FE, this.sink.getAEMaxPower()));
+        return (int) Math.floor(PowerUnit.AE.convertTo(PowerUnit.FE, this.sink.getAEMaxPower()));
     }
 
     @Override
