@@ -18,15 +18,10 @@
 
 package appeng.core;
 
-import appeng.api.config.CondenserOutput;
-import appeng.api.config.EnergyUnit;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.Settings;
-import appeng.api.config.TerminalStyle;
-import appeng.api.networking.pathing.ChannelMode;
-import appeng.core.settings.TickRates;
-import appeng.util.EnumCycler;
-import appeng.util.Platform;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.DoubleSupplier;
+
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
@@ -36,9 +31,15 @@ import net.neoforged.neoforge.common.ModConfigSpec.DoubleValue;
 import net.neoforged.neoforge.common.ModConfigSpec.EnumValue;
 import net.neoforged.neoforge.common.ModConfigSpec.IntValue;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.DoubleSupplier;
+import appeng.api.config.CondenserOutput;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.config.PowerUnits;
+import appeng.api.config.Settings;
+import appeng.api.config.TerminalStyle;
+import appeng.api.networking.pathing.ChannelMode;
+import appeng.core.settings.TickRates;
+import appeng.util.EnumCycler;
+import appeng.util.Platform;
 
 public final class AEConfig {
 
@@ -74,14 +75,8 @@ public final class AEConfig {
         return instance;
     }
 
-    public double getConversionRatio(EnergyUnit unit) {
-        return switch (unit) {
-            case AE -> 1.0;
-            case FE -> common.powerRatioForgeEnergy.get();
-        };
-    }
-
     private void syncCommonConfig() {
+        PowerUnits.FE.conversionRatio = common.powerRatioForgeEnergy.get();
         PowerMultiplier.CONFIG.multiplier = common.powerUsageMultiplier.get();
 
         CondenserOutput.MATTER_BALLS.requiredPower = common.condenserMatterBallsPower.get();
@@ -103,12 +98,13 @@ public final class AEConfig {
 
     public double wireless_getMaxRange(int boosters) {
         return common.wirelessBaseRange.get()
-               + common.wirelessBoosterRangeMultiplier.get() * Math.pow(boosters, common.wirelessBoosterExp.get());
+                + common.wirelessBoosterRangeMultiplier.get() * Math.pow(boosters, common.wirelessBoosterExp.get());
     }
 
     public double wireless_getPowerDrain(int boosters) {
         return common.wirelessBaseCost.get()
-               + common.wirelessCostMultiplier.get() * Math.pow(boosters, 1 + boosters / common.wirelessHighWirelessCount.get());
+                + common.wirelessCostMultiplier.get()
+                        * Math.pow(boosters, 1 + boosters / common.wirelessHighWirelessCount.get());
     }
 
     public boolean isSearchModNameInTooltips() {
@@ -179,14 +175,13 @@ public final class AEConfig {
         return common.crystalResonanceGeneratorRate.get();
     }
 
-
-    public EnergyUnit getSelectedEnergyUnit() {
+    public PowerUnits getSelectedEnergyUnit() {
         return this.client.selectedEnergyUnit.get();
     }
 
     public void nextEnergyUnit(boolean backwards) {
         var selected = EnumCycler.rotateEnum(getSelectedEnergyUnit(), backwards,
-                Settings.ENERGY_UNITS.getValues());
+                Settings.POWER_UNITS.getValues());
         client.selectedEnergyUnit.set(selected);
     }
 
@@ -433,7 +428,7 @@ public final class AEConfig {
         public final BooleanValue disableColoredCableRecipesInRecipeViewer;
         public final BooleanValue enableFacadesInRecipeViewer;
         public final BooleanValue enableFacadeRecipesInRecipeViewer;
-        public final EnumValue<EnergyUnit> selectedEnergyUnit;
+        public final EnumValue<PowerUnits> selectedEnergyUnit;
         public final BooleanValue debugGuiOverlays;
         public final BooleanValue showPlacementPreview;
         public final BooleanValue notifyForFinishedCraftingJobs;
@@ -461,7 +456,8 @@ public final class AEConfig {
             var builder = new ModConfigSpec.Builder();
 
             builder.push("recipeViewers");
-            this.disableColoredCableRecipesInRecipeViewer = define(builder, "disableColoredCableRecipesInRecipeViewer", true);
+            this.disableColoredCableRecipesInRecipeViewer = define(builder, "disableColoredCableRecipesInRecipeViewer",
+                    true);
             this.enableFacadesInRecipeViewer = define(builder, "enableFacadesInRecipeViewer", false,
                     "Show facades in REI/JEI/EMI item list");
             this.enableFacadeRecipesInRecipeViewer = define(builder, "enableFacadeRecipesInRecipeViewer", true,
@@ -472,7 +468,7 @@ public final class AEConfig {
             this.enableEffects = define(builder, "enableEffects", true);
             this.useLargeFonts = define(builder, "useTerminalUseLargeFont", false);
             this.useColoredCraftingStatus = define(builder, "useColoredCraftingStatus", true);
-            this.selectedEnergyUnit = defineEnum(builder, "energyUnit", EnergyUnit.AE, "Energy unit shown in AE UIs");
+            this.selectedEnergyUnit = defineEnum(builder, "energyUnit", PowerUnits.AE, "Energy unit shown in AE UIs");
             this.debugGuiOverlays = define(builder, "showDebugGuiOverlays", false, "Show debugging GUI overlays");
             this.showPlacementPreview = define(builder, "showPlacementPreview", true,
                     "Show a preview of part and facade placement");
@@ -720,7 +716,7 @@ public final class AEConfig {
     }
 
     private static BooleanValue define(ModConfigSpec.Builder builder, String name, boolean defaultValue,
-                                       String comment) {
+            String comment) {
         builder.comment(comment);
         return define(builder, name, defaultValue);
     }
@@ -744,18 +740,18 @@ public final class AEConfig {
     }
 
     private static DoubleValue define(ModConfigSpec.Builder builder, String name, double defaultValue, double min,
-                                      double max, String comment) {
+            double max, String comment) {
         builder.comment(comment);
         return define(builder, name, defaultValue, min, max);
     }
 
     private static DoubleValue define(ModConfigSpec.Builder builder, String name, double defaultValue, double min,
-                                      double max) {
+            double max) {
         return builder.defineInRange(name, defaultValue, min, max);
     }
 
     private static IntValue define(ModConfigSpec.Builder builder, String name, int defaultValue, int min, int max,
-                                   String comment) {
+            String comment) {
         builder.comment(comment);
         return define(builder, name, defaultValue, min, max);
     }
@@ -769,12 +765,12 @@ public final class AEConfig {
     }
 
     private static <T extends Enum<T>> EnumValue<T> defineEnum(ModConfigSpec.Builder builder, String name,
-                                                               T defaultValue) {
+            T defaultValue) {
         return builder.defineEnum(name, defaultValue);
     }
 
     private static <T extends Enum<T>> EnumValue<T> defineEnum(ModConfigSpec.Builder builder, String name,
-                                                               T defaultValue, String comment) {
+            T defaultValue, String comment) {
         builder.comment(comment);
         return defineEnum(builder, name, defaultValue);
     }
