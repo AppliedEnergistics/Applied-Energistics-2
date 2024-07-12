@@ -110,7 +110,10 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
 
     @Override
     public void slotsChanged(Container inventory) {
-        updateCurrentRecipeAndOutput(false);
+        // Do not trigger a recursive update from updating the test container
+        if (inventory != recipeTestContainer) {
+            updateCurrentRecipeAndOutput(false);
+        }
     }
 
     private void updateCurrentRecipeAndOutput(boolean forceUpdate) {
