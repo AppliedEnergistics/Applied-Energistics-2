@@ -20,6 +20,7 @@ package appeng.core.definitions;
 
 import java.util.function.Supplier;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -44,20 +45,24 @@ public class ItemDefinition<T extends Item> implements ItemLike, Supplier<T> {
         return englishName;
     }
 
-    public ResourceLocation getId() {
+    public ResourceLocation id() {
         return this.item.getId();
     }
 
-    public ItemStack toStack() {
-        return toStack(1);
+    public ItemStack stack() {
+        return stack(1);
     }
 
-    public ItemStack toStack(int stackSize) {
+    public ItemStack stack(int stackSize) {
         return new ItemStack((ItemLike) item, stackSize);
     }
 
     public GenericStack genericStack(long stackSize) {
         return new GenericStack(AEItemKey.of(item), stackSize);
+    }
+
+    public Holder<Item> holder() {
+        return item;
     }
 
     /**
@@ -67,7 +72,7 @@ public class ItemDefinition<T extends Item> implements ItemLike, Supplier<T> {
      * @return true if the item stack is a matching item.
      */
     public final boolean is(ItemStack comparableStack) {
-        return ItemComparisonHelper.isEqualItemType(comparableStack, this.toStack());
+        return ItemComparisonHelper.isEqualItemType(comparableStack, this.stack());
     }
 
     /**

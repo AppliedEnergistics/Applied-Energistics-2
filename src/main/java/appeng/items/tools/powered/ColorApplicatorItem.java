@@ -547,8 +547,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         // Upgrade energy storage
         var upgrades = item.getUpgrades(applicator);
-        upgrades.addItems(AEItems.ENERGY_CARD.toStack());
-        upgrades.addItems(AEItems.ENERGY_CARD.toStack());
+        upgrades.addItems(AEItems.ENERGY_CARD.stack());
+        upgrades.addItems(AEItems.ENERGY_CARD.stack());
 
         // Fill it up with power
         item.injectAEPower(applicator, item.getAEMaxPower(applicator), Actionable.MODULATE);

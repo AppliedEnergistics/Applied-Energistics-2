@@ -20,7 +20,7 @@ class EmiFacadeGenerator {
     private final EmiStack cableAnchor;
 
     EmiFacadeGenerator() {
-        this.cableAnchor = EmiStack.of(AEParts.CABLE_ANCHOR.toStack());
+        this.cableAnchor = EmiStack.of(AEParts.CABLE_ANCHOR.stack());
     }
 
     public Optional<EmiRecipe> getRecipeFor(ItemStack potentialFacade) {

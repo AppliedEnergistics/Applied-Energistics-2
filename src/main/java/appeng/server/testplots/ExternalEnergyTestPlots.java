@@ -43,8 +43,8 @@ public class ExternalEnergyTestPlots {
     public static void testInscriber(PlotBuilder plot) {
         placeForgeEnergyGenerator(plot);
         plot.blockEntity(ORIGIN, AEBlocks.INSCRIBER, inscriber -> {
-            inscriber.getInternalInventory().insertItem(0, AEItems.SILICON_PRESS.toStack(), false);
-            inscriber.getInternalInventory().insertItem(2, AEItems.SILICON.toStack(), false);
+            inscriber.getInternalInventory().insertItem(0, AEItems.SILICON_PRESS.stack(), false);
+            inscriber.getInternalInventory().insertItem(2, AEItems.SILICON.stack(), false);
         });
         plot.test(helper -> helper.startSequence()
                 .thenWaitUntil(helper::checkAllInitialized)
@@ -61,7 +61,7 @@ public class ExternalEnergyTestPlots {
     public static void testChest(PlotBuilder plot) {
         placeForgeEnergyGenerator(plot);
         plot.blockEntity(ORIGIN, AEBlocks.ME_CHEST, chest -> {
-            chest.getInternalInventory().addItems(AEItems.ITEM_CELL_1K.toStack());
+            chest.getInternalInventory().addItems(AEItems.ITEM_CELL_1K.stack());
         });
         plot.test(helper -> helper.startSequence()
                 .thenWaitUntil(helper::checkAllInitialized)
@@ -82,7 +82,7 @@ public class ExternalEnergyTestPlots {
         placeForgeEnergyGenerator(plot);
         // Insert an uncharged crystal to test it gets charged
         plot.blockEntity(ORIGIN, AEBlocks.CHARGER, charger -> {
-            charger.getInternalInventory().insertItem(0, AEItems.CERTUS_QUARTZ_CRYSTAL.toStack(), false);
+            charger.getInternalInventory().insertItem(0, AEItems.CERTUS_QUARTZ_CRYSTAL.stack(), false);
         });
         plot.test(helper -> helper.startSequence()
                 .thenWaitUntil(helper::checkAllInitialized)

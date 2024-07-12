@@ -52,7 +52,7 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
 
     @Override
     public Renderer getIcon() {
-        return EntryStacks.of(AEBlocks.CONDENSER.toStack());
+        return EntryStacks.of(AEBlocks.CONDENSER.stack());
     }
 
     @Override

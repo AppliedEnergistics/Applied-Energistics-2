@@ -130,7 +130,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
     }
 
     private void storageCell(ItemDefinition<?> item, String background) {
-        String id = item.getId().getPath();
+        String id = item.id().getPath();
         singleTexture(
                 id,
                 mcLoc("item/generated"),
@@ -140,7 +140,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
     }
 
     private void portableCell(ItemDefinition<?> item, String housingType, String tier) {
-        String id = item.getId().getPath();
+        String id = item.id().getPath();
         singleTexture(
                 id,
                 mcLoc("item/generated"),
@@ -177,14 +177,14 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
 
     private void handheld(ItemDefinition<?> item) {
         singleTexture(
-                item.getId().getPath(),
+                item.id().getPath(),
                 ResourceLocation.parse("item/handheld"),
                 "layer0",
-                makeId("item/" + item.getId().getPath()));
+                makeId("item/" + item.id().getPath()));
     }
 
     private void registerEmptyModel(ItemDefinition<?> item) {
-        this.getBuilder(item.getId().getPath());
+        this.getBuilder(item.id().getPath());
     }
 
     /**
@@ -207,7 +207,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
     }
 
     private ItemModelBuilder flatSingleLayer(ItemDefinition<?> item, String texture) {
-        String id = item.getId().getPath();
+        String id = item.id().getPath();
         return singleTexture(
                 id,
                 mcLoc("item/generated"),

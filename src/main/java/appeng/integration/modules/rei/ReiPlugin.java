@@ -228,23 +228,23 @@ public class ReiPlugin implements REIClientPlugin {
     }
 
     private void registerWorkingStations(CategoryRegistry registry) {
-        var condenser = AEBlocks.CONDENSER.toStack();
+        var condenser = AEBlocks.CONDENSER.stack();
         registry.addWorkstations(CondenserCategory.ID, EntryStacks.of(condenser));
 
-        var inscriber = AEBlocks.INSCRIBER.toStack();
+        var inscriber = AEBlocks.INSCRIBER.stack();
         registry.addWorkstations(InscriberRecipeCategory.ID, EntryStacks.of(inscriber));
         registry.setPlusButtonArea(InscriberRecipeCategory.ID, ButtonArea.defaultArea());
 
-        var craftingTerminal = AEParts.CRAFTING_TERMINAL.toStack();
+        var craftingTerminal = AEParts.CRAFTING_TERMINAL.stack();
         registry.addWorkstations(BuiltinPlugin.CRAFTING, EntryStacks.of(craftingTerminal));
 
-        var wirelessCraftingTerminal = chargeFully(AEItems.WIRELESS_CRAFTING_TERMINAL.toStack());
+        var wirelessCraftingTerminal = chargeFully(AEItems.WIRELESS_CRAFTING_TERMINAL.stack());
         registry.addWorkstations(BuiltinPlugin.CRAFTING, EntryStacks.of(wirelessCraftingTerminal));
 
-        registry.addWorkstations(ChargerDisplay.ID, EntryStacks.of(AEBlocks.CHARGER.toStack()));
-        registry.addWorkstations(ChargerDisplay.ID, EntryStacks.of(AEBlocks.CRANK.toStack()));
+        registry.addWorkstations(ChargerDisplay.ID, EntryStacks.of(AEBlocks.CHARGER.stack()));
+        registry.addWorkstations(ChargerDisplay.ID, EntryStacks.of(AEBlocks.CRANK.stack()));
 
-        var entropyManipulator = chargeFully(chargeFully(AEItems.ENTROPY_MANIPULATOR.toStack()));
+        var entropyManipulator = chargeFully(chargeFully(AEItems.ENTROPY_MANIPULATOR.stack()));
         registry.addWorkstations(EntropyRecipeCategory.ID, EntryStacks.of(entropyManipulator));
     }
 

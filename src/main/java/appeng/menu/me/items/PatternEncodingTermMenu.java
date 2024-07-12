@@ -310,7 +310,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         var encodedPattern = this.encodedPatternSlot.getItem();
         if (PatternDetailsHelper.isEncodedPattern(encodedPattern)) {
             this.encodedPatternSlot.set(
-                    AEItems.BLANK_PATTERN.toStack(encodedPattern.getCount()));
+                    AEItems.BLANK_PATTERN.stack(encodedPattern.getCount()));
         }
     }
 

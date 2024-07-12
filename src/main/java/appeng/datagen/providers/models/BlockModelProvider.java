@@ -331,11 +331,11 @@ public class BlockModelProvider extends AE2BlockStateProvider {
     }
 
     private String modelPath(BlockDefinition<?> block) {
-        return block.getId().getPath();
+        return block.id().getPath();
     }
 
     private void emptyModel(BlockDefinition<?> block) {
-        var model = models().getBuilder(block.getId().getPath());
+        var model = models().getBuilder(block.id().getPath());
         simpleBlockAndItem(block, model);
     }
 
@@ -344,12 +344,12 @@ public class BlockModelProvider extends AE2BlockStateProvider {
     }
 
     private void builtInModel(BlockDefinition<?> block, boolean skipItem) {
-        var model = builtInBlockModel(block.getId().getPath());
+        var model = builtInBlockModel(block.id().getPath());
         getVariantBuilder(block.block()).partialState().setModels(new ConfiguredModel(model));
 
         if (!skipItem) {
             // The item model should not reference the block model since that will be replaced in-code
-            itemModels().getBuilder(block.getId().getPath());
+            itemModels().getBuilder(block.id().getPath());
         }
     }
 
@@ -391,7 +391,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
     }
 
     private void generateQuartzCluster(BlockDefinition<?> quartz) {
-        var name = quartz.getId().getPath();
+        var name = quartz.id().getPath();
         var texture = makeId("block/" + name);
         var model = models().cross(name, texture);
         directionalBlock(quartz.block(), model);

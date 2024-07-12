@@ -735,7 +735,7 @@ public class MEChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public ItemStack getMainMenuIcon() {
-        return AEBlocks.ME_CHEST.toStack();
+        return AEBlocks.ME_CHEST.stack();
     }
 
     @Override

@@ -175,6 +175,6 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
                 .pattern("aa")
                 .define('a', crystal)
                 .unlockedBy(criterionName(crystal), has(crystal))
-                .save(consumer, AppEng.makeId("decorative/" + block.getId().getPath()));
+                .save(consumer, AppEng.makeId("decorative/" + block.id().getPath()));
     }
 }

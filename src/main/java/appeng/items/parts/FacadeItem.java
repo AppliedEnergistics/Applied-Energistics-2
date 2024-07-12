@@ -228,7 +228,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
             return ItemStack.EMPTY;
         }
 
-        var facadeStack = AEItems.FACADE.toStack();
+        var facadeStack = AEItems.FACADE.stack();
         facadeStack.set(AEComponents.FACADE_ITEM, item.getDefaultInstance().getItemHolder());
         return facadeStack;
     }

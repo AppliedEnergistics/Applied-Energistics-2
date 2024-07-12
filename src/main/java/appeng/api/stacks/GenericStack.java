@@ -56,7 +56,7 @@ public record GenericStack(AEKey what, long amount) {
         public <T> DataResult<Pair<GenericStack, T>> apply(DynamicOps<T> ops, T input,
                 DataResult<Pair<GenericStack, T>> a) {
             if (a instanceof DataResult.Error<Pair<GenericStack, T>> error) {
-                var missingContent = AEItems.MISSING_CONTENT.toStack();
+                var missingContent = AEItems.MISSING_CONTENT.stack();
                 var convert = Dynamic.convert(ops, NbtOps.INSTANCE, input);
                 if (convert instanceof CompoundTag compoundTag) {
                     missingContent.set(AEComponents.MISSING_CONTENT_ITEMSTACK_DATA, CustomData.of(compoundTag));
@@ -80,7 +80,7 @@ public record GenericStack(AEKey what, long amount) {
             // When the serialization result failed, we write a missing content item instead
             // this one will NOT be recoverable
             if (t instanceof DataResult.Error<T> error) {
-                var missingContent = AEItems.MISSING_CONTENT.toStack();
+                var missingContent = AEItems.MISSING_CONTENT.stack();
                 LOG.error("Failed to serialize GenericStack {}: {}", input, error.message());
                 missingContent.set(AEComponents.MISSING_CONTENT_ERROR, error.message());
 

@@ -113,7 +113,7 @@ class AECodecsTest {
             var brokenItemTag = (CompoundTag) encodedWithBrokenItem.get(1);
             var errorMessage = ItemStack.CODEC.decode(NbtOps.INSTANCE, brokenItemTag).error()
                     .map(DataResult.Error::message).get();
-            var expectedMissingContent = AEItems.MISSING_CONTENT.toStack();
+            var expectedMissingContent = AEItems.MISSING_CONTENT.stack();
             expectedMissingContent.set(AEComponents.MISSING_CONTENT_ITEMSTACK_DATA, CustomData.of(brokenItemTag));
             expectedMissingContent.set(AEComponents.MISSING_CONTENT_ERROR, errorMessage);
 
@@ -155,9 +155,9 @@ class AECodecsTest {
 
             // Build a generic stack out of this item
             var listInput = List.of(
-                    GenericStack.fromItemStack(AEItems.FORMATION_CORE.toStack()),
+                    GenericStack.fromItemStack(AEItems.FORMATION_CORE.stack()),
                     GenericStack.fromItemStack(stack),
-                    GenericStack.fromItemStack(AEItems.ANNIHILATION_CORE.toStack()));
+                    GenericStack.fromItemStack(AEItems.ANNIHILATION_CORE.stack()));
             var encodedList = GenericStack.FAULT_TOLERANT_LIST_CODEC.encodeStart(NbtOps.INSTANCE, listInput)
                     .getOrThrow();
 
@@ -169,8 +169,8 @@ class AECodecsTest {
             assertThat(stackList).hasSize(3);
 
             // The two unaffected items should be untouched
-            assertThat(stackList.get(0)).isEqualTo(GenericStack.fromItemStack(AEItems.FORMATION_CORE.toStack()));
-            assertThat(stackList.get(2)).isEqualTo(GenericStack.fromItemStack(AEItems.ANNIHILATION_CORE.toStack()));
+            assertThat(stackList.get(0)).isEqualTo(GenericStack.fromItemStack(AEItems.FORMATION_CORE.stack()));
+            assertThat(stackList.get(2)).isEqualTo(GenericStack.fromItemStack(AEItems.ANNIHILATION_CORE.stack()));
 
             // Assert that the missing content item is as we expect
             var brokenStack = stackList.get(1);
@@ -187,9 +187,9 @@ class AECodecsTest {
             // Use a known broken NBT to deserialize a generic stack list from by injecting an unknown item id
             // Build a generic stack out of this item
             var listInput = List.of(
-                    GenericStack.fromItemStack(AEItems.FORMATION_CORE.toStack()),
+                    GenericStack.fromItemStack(AEItems.FORMATION_CORE.stack()),
                     GenericStack.fromItemStack(new ItemStack(Items.DIAMOND)),
-                    GenericStack.fromItemStack(AEItems.ANNIHILATION_CORE.toStack()));
+                    GenericStack.fromItemStack(AEItems.ANNIHILATION_CORE.stack()));
             var encodedList = GenericStack.FAULT_TOLERANT_LIST_CODEC.encodeStart(NbtOps.INSTANCE, listInput)
                     .getOrThrow();
 
@@ -205,8 +205,8 @@ class AECodecsTest {
             assertThat(stackList).hasSize(3);
 
             // The two unaffected items should be untouched
-            assertThat(stackList.get(0)).isEqualTo(GenericStack.fromItemStack(AEItems.FORMATION_CORE.toStack()));
-            assertThat(stackList.get(2)).isEqualTo(GenericStack.fromItemStack(AEItems.ANNIHILATION_CORE.toStack()));
+            assertThat(stackList.get(0)).isEqualTo(GenericStack.fromItemStack(AEItems.FORMATION_CORE.stack()));
+            assertThat(stackList.get(2)).isEqualTo(GenericStack.fromItemStack(AEItems.ANNIHILATION_CORE.stack()));
 
             // Assert that the missing content item is as we expect
             var brokenStack = stackList.get(1);

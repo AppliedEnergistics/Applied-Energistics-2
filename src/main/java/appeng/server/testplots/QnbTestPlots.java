@@ -37,7 +37,7 @@ public final class QnbTestPlots {
                     })
                     // Place singularities
                     .thenExecute(() -> {
-                        var singularities = AEItems.QUANTUM_ENTANGLED_SINGULARITY.toStack();
+                        var singularities = AEItems.QUANTUM_ENTANGLED_SINGULARITY.stack();
                         QuantumBridgeBlockEntity.assignFrequency(singularities);
 
                         var coreA = getCore(helper, qnbA);

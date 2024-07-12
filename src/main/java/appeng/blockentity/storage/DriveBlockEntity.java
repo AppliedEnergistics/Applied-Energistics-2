@@ -456,6 +456,6 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public ItemStack getMainMenuIcon() {
-        return AEBlocks.DRIVE.toStack();
+        return AEBlocks.DRIVE.stack();
     }
 }

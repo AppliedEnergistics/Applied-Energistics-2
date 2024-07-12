@@ -48,7 +48,7 @@ public class CableBuilder {
      */
     public CableBuilder craftingEmitter(Direction side, AEKey what) {
         return part(side, AEParts.LEVEL_EMITTER, emitter -> {
-            emitter.getUpgrades().addItems(AEItems.CRAFTING_CARD.toStack());
+            emitter.getUpgrades().addItems(AEItems.CRAFTING_CARD.stack());
             emitter.getConfigManager().putSetting(Settings.CRAFT_VIA_REDSTONE, YesNo.YES);
             emitter.getConfig().addFilter(what);
         });

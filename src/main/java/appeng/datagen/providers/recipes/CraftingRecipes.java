@@ -938,7 +938,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
         for (int i = 0; i < tiers.size(); i++) {
             var fromTier = tiers.get(i);
             var inputCell = fromTier.cell().asItem();
-            var inputId = fromTier.cell().getId();
+            var inputId = fromTier.cell().id();
             var resultComponent = fromTier.component().asItem();
 
             // Allow a direct upgrade to any higher tier
@@ -975,7 +975,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .requires(component)
                 .requires(AEBlocks.ENERGY_CELL)
                 .requires(housing)
-                .unlockedBy("has_" + housing.getId().getPath(), has(housing))
+                .unlockedBy("has_" + housing.id().getPath(), has(housing))
                 .unlockedBy("has_energy_cell", has(AEBlocks.ENERGY_CELL))
                 .save(consumer, cell.get().getRecipeId());
     }

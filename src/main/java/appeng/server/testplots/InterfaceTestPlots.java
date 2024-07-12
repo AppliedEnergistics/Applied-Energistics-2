@@ -183,7 +183,7 @@ public class InterfaceTestPlots {
         plot.creativeEnergyCell(origin);
         // Stock 1 oak_plank via crafting
         plot.blockEntity(origin.above(), AEBlocks.INTERFACE, iface -> {
-            iface.getUpgrades().addItems(AEItems.CRAFTING_CARD.toStack());
+            iface.getUpgrades().addItems(AEItems.CRAFTING_CARD.stack());
             iface.getConfig().setStack(0, new GenericStack(AEItemKey.of(Items.OAK_PLANKS), 1));
         });
         plot.block(origin.east(), AEBlocks.CRAFTING_STORAGE_1K);

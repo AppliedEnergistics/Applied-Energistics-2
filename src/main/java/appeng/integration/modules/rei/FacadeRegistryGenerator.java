@@ -54,7 +54,7 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
 
     FacadeRegistryGenerator() {
         this.itemFacade = AEItems.FACADE.get();
-        this.cableAnchor = Ingredient.of(AEParts.CABLE_ANCHOR.toStack());
+        this.cableAnchor = Ingredient.of(AEParts.CABLE_ANCHOR.stack());
     }
 
     @Override

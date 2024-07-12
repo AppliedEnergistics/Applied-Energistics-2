@@ -115,7 +115,7 @@ public class InterfaceBlockEntity extends AENetworkBlockEntity
 
     @Override
     public ItemStack getMainMenuIcon() {
-        return AEBlocks.INTERFACE.toStack();
+        return AEBlocks.INTERFACE.stack();
     }
 
     @Nullable

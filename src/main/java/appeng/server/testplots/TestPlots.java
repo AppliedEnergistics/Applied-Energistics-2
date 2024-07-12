@@ -291,7 +291,7 @@ public final class TestPlots {
     @TestPlot("item_chest")
     public static void itemChest(PlotBuilder plot) {
         plot.blockEntity("0 0 0", AEBlocks.ME_CHEST, chest -> {
-            var cellItem = AEItems.ITEM_CELL_1K.toStack();
+            var cellItem = AEItems.ITEM_CELL_1K.stack();
             var cellInv = StorageCells.getCellInventory(cellItem, null);
             var r = RandomSource.create();
             for (var i = 0; i < 100; i++) {
@@ -308,7 +308,7 @@ public final class TestPlots {
     @TestPlot("fluid_chest")
     public static void fluidChest(PlotBuilder plot) {
         plot.blockEntity("0 0 0", AEBlocks.ME_CHEST, chest -> {
-            var cellItem = AEItems.FLUID_CELL_1K.toStack();
+            var cellItem = AEItems.FLUID_CELL_1K.stack();
             var cellInv = StorageCells.getCellInventory(cellItem, null);
             var r = RandomSource.create();
             for (var i = 0; i < 100; i++) {
@@ -340,7 +340,7 @@ public final class TestPlots {
                     bus.getConfig().setStack(0, new GenericStack(AEItemKey.of(Items.ENDER_PEARL), 1));
                 });
         plot.blockEntity("3 -1 0", AEBlocks.DRIVE, drive -> {
-            drive.getInternalInventory().addItems(AEItems.ITEM_CELL_64K.toStack());
+            drive.getInternalInventory().addItems(AEItems.ITEM_CELL_64K.stack());
         });
     }
 
@@ -364,7 +364,7 @@ public final class TestPlots {
         plot.filledHopper("1 3 0", Direction.DOWN, AEItems.SILICON);
         plot.creativeEnergyCell("1 2 1");
         plot.blockEntity("1 2 0", AEBlocks.INSCRIBER, inscriber -> {
-            inscriber.getInternalInventory().setItemDirect(0, AEItems.SILICON_PRESS.toStack());
+            inscriber.getInternalInventory().setItemDirect(0, AEItems.SILICON_PRESS.stack());
             BlockOrientation.NORTH_WEST.setOn(inscriber);
         });
 
@@ -387,7 +387,7 @@ public final class TestPlots {
         plot.chest("0 0 1"); // Output Chest
         plot.cable("0 0 0")
                 .part(Direction.SOUTH, AEParts.EXPORT_BUS, exportBus -> {
-                    exportBus.getUpgrades().addItems(AEItems.CRAFTING_CARD.toStack());
+                    exportBus.getUpgrades().addItems(AEItems.CRAFTING_CARD.stack());
                     exportBus.getConfig().addFilter(Items.OAK_PLANKS);
                 });
         plot.cable("0 1 0");
@@ -395,7 +395,7 @@ public final class TestPlots {
                 .craftingEmitter(Direction.DOWN, Items.OAK_PLANKS);
         plot.cable("0 0 -1")
                 .part(Direction.NORTH, AEParts.IMPORT_BUS, part -> {
-                    part.getUpgrades().addItems(AEItems.REDSTONE_CARD.toStack());
+                    part.getUpgrades().addItems(AEItems.REDSTONE_CARD.stack());
                     part.getConfigManager().putSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.HIGH_SIGNAL);
                 });
         plot.block("1 0 0", AEBlocks.CRAFTING_STORAGE_1K);
@@ -466,7 +466,7 @@ public final class TestPlots {
         plot.storageDrive(origin.west());
         plot.cable(origin)
                 .part(Direction.SOUTH, AEParts.IMPORT_BUS, bus -> {
-                    bus.getUpgrades().addItems(AEItems.REDSTONE_CARD.toStack());
+                    bus.getUpgrades().addItems(AEItems.REDSTONE_CARD.stack());
                     bus.getConfigManager().putSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.SIGNAL_PULSE);
                 })
                 .part(Direction.NORTH, AEParts.TERMINAL);
@@ -536,7 +536,7 @@ public final class TestPlots {
                         var pos = helper.absolutePos(BlockPos.ZERO);
                         var importBus = PartHelper.setPart(helper.getLevel(), pos, Direction.NORTH,
                                 null, AEParts.IMPORT_BUS.get());
-                        importBus.getUpgrades().addItems(AEItems.REDSTONE_CARD.toStack());
+                        importBus.getUpgrades().addItems(AEItems.REDSTONE_CARD.stack());
                         importBus.getConfigManager().putSetting(Settings.REDSTONE_CONTROLLED,
                                 RedstoneMode.SIGNAL_PULSE);
                     })
@@ -582,7 +582,7 @@ public final class TestPlots {
     }
 
     private static ItemStack createMatterCannon(Item... ammo) {
-        var cannon = AEItems.MATTER_CANNON.toStack();
+        var cannon = AEItems.MATTER_CANNON.stack();
         ((MatterCannonItem) cannon.getItem()).injectAEPower(cannon, Double.MAX_VALUE, Actionable.MODULATE);
         var cannonInv = BasicCellInventory.createInventory(cannon, null);
         for (var item : ammo) {
@@ -601,7 +601,7 @@ public final class TestPlots {
         var origin = BlockPos.ZERO;
         plot.creativeEnergyCell(origin.below());
         plot.blockEntity(origin, AEBlocks.ME_CHEST, chest -> {
-            chest.setCell(AEItems.FLUID_CELL_4K.toStack());
+            chest.setCell(AEItems.FLUID_CELL_4K.stack());
         });
         plot.cable(origin.east())
                 .part(Direction.WEST, AEParts.EXPORT_BUS, bus -> {
@@ -626,7 +626,7 @@ public final class TestPlots {
         var origin = BlockPos.ZERO;
         plot.creativeEnergyCell(origin.below());
         plot.blockEntity(origin, AEBlocks.ME_CHEST, chest -> {
-            var cell = AEItems.ITEM_CELL_1K.toStack();
+            var cell = AEItems.ITEM_CELL_1K.stack();
             AEItems.ITEM_CELL_1K.get().getConfigInventory(cell).addFilter(Items.REDSTONE);
             chest.setCell(cell);
         });
@@ -720,7 +720,7 @@ public final class TestPlots {
 
                 var cellInv = drive.getInternalInventory();
                 for (int i = 0; i < cellInv.size(); i++) {
-                    var creativeCell = AEItems.CREATIVE_CELL.toStack();
+                    var creativeCell = AEItems.CREATIVE_CELL.stack();
                     var configInv = AEItems.CREATIVE_CELL.get().getConfigInventory(creativeCell);
 
                     for (int j = 0; j < configInv.size(); j++) {
@@ -814,7 +814,7 @@ public final class TestPlots {
         plot.creativeEnergyCell(origin.below());
         plot.cable(origin)
                 .part(Direction.EAST, AEParts.IMPORT_BUS, importBus -> {
-                    importBus.getUpgrades().addItems(AEItems.SPEED_CARD.toStack());
+                    importBus.getUpgrades().addItems(AEItems.SPEED_CARD.stack());
                 })
                 .part(Direction.WEST, AEParts.STORAGE_BUS);
         plot.block(origin.west(), AEBlocks.SKY_STONE_TANK);
@@ -930,10 +930,10 @@ public final class TestPlots {
         plot.cable(o).part(Direction.NORTH, AEParts.STORAGE_BUS)
                 .part(Direction.SOUTH, AEParts.EXPORT_BUS, part -> {
                     part.getConfig().addFilter(Items.STICK);
-                    part.getUpgrades().addItems(AEItems.SPEED_CARD.toStack(1));
-                    part.getUpgrades().addItems(AEItems.SPEED_CARD.toStack(1));
-                    part.getUpgrades().addItems(AEItems.SPEED_CARD.toStack(1));
-                    part.getUpgrades().addItems(AEItems.SPEED_CARD.toStack(1));
+                    part.getUpgrades().addItems(AEItems.SPEED_CARD.stack(1));
+                    part.getUpgrades().addItems(AEItems.SPEED_CARD.stack(1));
+                    part.getUpgrades().addItems(AEItems.SPEED_CARD.stack(1));
+                    part.getUpgrades().addItems(AEItems.SPEED_CARD.stack(1));
                 });
         plot.chest(o.south());
         // Second storage bus on double chest

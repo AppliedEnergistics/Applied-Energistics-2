@@ -189,6 +189,6 @@ public class PatternProviderPart extends AEBasePart implements PatternProviderLo
 
     @Override
     public ItemStack getMainMenuIcon() {
-        return AEParts.PATTERN_PROVIDER.toStack();
+        return AEParts.PATTERN_PROVIDER.stack();
     }
 }

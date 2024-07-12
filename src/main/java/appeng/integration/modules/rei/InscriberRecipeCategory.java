@@ -49,7 +49,7 @@ class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeDisplay>
 
     @Override
     public Renderer getIcon() {
-        return EntryStacks.of(AEBlocks.INSCRIBER.toStack());
+        return EntryStacks.of(AEBlocks.INSCRIBER.stack());
     }
 
     @Override

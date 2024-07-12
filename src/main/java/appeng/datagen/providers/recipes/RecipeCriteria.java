@@ -27,11 +27,11 @@ final class RecipeCriteria {
     }
 
     public static String criterionName(BlockDefinition<?> block) {
-        return String.format("has_%s", block.getId().getPath());
+        return String.format("has_%s", block.id().getPath());
     }
 
     public static String criterionName(ItemDefinition<?> item) {
-        return String.format("has_%s", item.getId().getPath());
+        return String.format("has_%s", item.id().getPath());
     }
 
 }

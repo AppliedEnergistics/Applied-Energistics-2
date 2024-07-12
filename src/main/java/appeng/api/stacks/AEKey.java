@@ -56,7 +56,7 @@ public abstract class AEKey {
                 @Override
                 public <T> DataResult<AEKey> apply(DynamicOps<T> ops, MapLike<T> input, DataResult<AEKey> a) {
                     if (a instanceof DataResult.Error<AEKey> error) {
-                        var missingContent = AEItems.MISSING_CONTENT.toStack();
+                        var missingContent = AEItems.MISSING_CONTENT.stack();
                         var convert = ops.convertMap(NbtOps.INSTANCE, ops.createMap(input.entries()));
                         if (convert instanceof CompoundTag compoundTag) {
                             missingContent.set(AEComponents.MISSING_CONTENT_AEKEY_DATA, CustomData.of(compoundTag));

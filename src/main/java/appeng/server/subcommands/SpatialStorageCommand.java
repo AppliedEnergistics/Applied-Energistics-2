@@ -238,11 +238,11 @@ public class SpatialStorageCommand implements ISubCommand {
         ItemStack cell;
         int longestSide = getLongestSide(plot.getSize());
         if (longestSide <= 2) {
-            cell = AEItems.SPATIAL_CELL2.toStack();
+            cell = AEItems.SPATIAL_CELL2.stack();
         } else if (longestSide <= 16) {
-            cell = AEItems.SPATIAL_CELL16.toStack();
+            cell = AEItems.SPATIAL_CELL16.stack();
         } else {
-            cell = AEItems.SPATIAL_CELL128.toStack();
+            cell = AEItems.SPATIAL_CELL128.stack();
         }
 
         if (!(cell.getItem() instanceof SpatialStorageCellItem spatialCellItem)) {

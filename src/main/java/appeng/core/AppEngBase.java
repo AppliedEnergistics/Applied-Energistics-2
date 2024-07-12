@@ -41,9 +41,7 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
@@ -85,7 +83,6 @@ import appeng.init.internal.InitStorageCells;
 import appeng.init.internal.InitUpgrades;
 import appeng.init.worldgen.InitStructures;
 import appeng.integration.Integrations;
-import appeng.items.tools.MemoryCardItem;
 import appeng.server.AECommand;
 import appeng.server.services.ChunkLoadingService;
 import appeng.server.testworld.GameTestPlotAdapter;
@@ -180,13 +177,8 @@ public abstract class AppEngBase implements AppEng {
 
         NeoForge.EVENT_BUS.addListener(WrenchHook::onPlayerUseBlockEvent);
         NeoForge.EVENT_BUS.addListener(SkyStoneBreakSpeed::handleBreakFaster);
-        // Workaround for https://github.com/MinecraftForge/MinecraftForge/issues/9158.
-        // Can be removed once it's fixed in Forge.
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, (PlayerInteractEvent.RightClickBlock event) -> {
-            if (event.getItemStack().getItem() instanceof MemoryCardItem && event.getEntity().isSecondaryUseActive()) {
-                event.setUseBlock(TriState.TRUE);
-            }
-        });
+
+        HotkeyActions.init();
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -201,8 +193,6 @@ public abstract class AppEngBase implements AppEng {
      * Runs after all mods have had time to run their registrations into registries.
      */
     public void postRegistrationInitialization() {
-        HotkeyActions.init();
-
         // Now that item instances are available, we can initialize registries that need item instances
         InitGridLinkables.init();
         InitStorageCells.init();

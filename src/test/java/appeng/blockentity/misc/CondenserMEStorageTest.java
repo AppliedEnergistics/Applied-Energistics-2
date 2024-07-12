@@ -38,7 +38,7 @@ class CondenserMEStorageTest {
         CondenserOutput.SINGULARITY.requiredPower = 256000;
 
         be.getConfigManager().putSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.SINGULARITY);
-        be.getInternalInventory().setItemDirect(2, AEItems.CELL_COMPONENT_64K.toStack());
+        be.getInternalInventory().setItemDirect(2, AEItems.CELL_COMPONENT_64K.stack());
         be.addPower(99999999999.0);
 
         var singularity = AEItemKey.of(AEItems.SINGULARITY.asItem());
@@ -55,14 +55,14 @@ class CondenserMEStorageTest {
      */
     @Test
     void testEnergyPerUnit() {
-        be.getInternalInventory().setItemDirect(2, AEItems.CELL_COMPONENT_64K.toStack());
+        be.getInternalInventory().setItemDirect(2, AEItems.CELL_COMPONENT_64K.stack());
 
         // test Fluid insert via ME (e.g. Storage bus)
         inv.insert(AEFluidKey.of(Fluids.WATER.getSource()), AEFluidKey.AMOUNT_BUCKET, Actionable.MODULATE,
                 new BaseActionSource());
         assertThat(be.getStoredPower()).isEqualTo(8);
 
-        inv.insert(AEItemKey.of(AEItems.MATTER_BALL.toStack()), 1, Actionable.MODULATE, new BaseActionSource());
+        inv.insert(AEItemKey.of(AEItems.MATTER_BALL.stack()), 1, Actionable.MODULATE, new BaseActionSource());
         assertThat(be.getStoredPower()).isEqualTo(8 + 1);
 
         // test Fluid insert via transfer API
@@ -71,7 +71,7 @@ class CondenserMEStorageTest {
         assertThat(be.getStoredPower()).isEqualTo(8 + 1 + 8);
 
         // test item insert via transfer API
-        be.getExternalInv().insertItem(0, AEItems.MATTER_BALL.toStack(), false);
+        be.getExternalInv().insertItem(0, AEItems.MATTER_BALL.stack(), false);
         assertThat(be.getStoredPower()).isEqualTo(8 + 1 + 8 + 1);
     }
 }

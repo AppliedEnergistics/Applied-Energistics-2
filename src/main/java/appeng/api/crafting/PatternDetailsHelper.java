@@ -120,7 +120,7 @@ public final class PatternDetailsHelper {
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks, or no primary output
      */
     public static ItemStack encodeProcessingPattern(List<GenericStack> sparseInputs, List<GenericStack> sparseOutputs) {
-        var stack = AEItems.PROCESSING_PATTERN.toStack();
+        var stack = AEItems.PROCESSING_PATTERN.stack();
         AEProcessingPattern.encode(stack, sparseInputs, sparseOutputs);
         return stack;
     }
@@ -139,7 +139,7 @@ public final class PatternDetailsHelper {
      */
     public static ItemStack encodeCraftingPattern(RecipeHolder<CraftingRecipe> recipe, ItemStack[] in,
             ItemStack out, boolean allowSubstitutes, boolean allowFluidSubstitutes) {
-        var stack = AEItems.CRAFTING_PATTERN.toStack();
+        var stack = AEItems.CRAFTING_PATTERN.stack();
         AECraftingPattern.encode(stack, recipe, in, out, allowSubstitutes,
                 allowFluidSubstitutes);
         return stack;
@@ -159,7 +159,7 @@ public final class PatternDetailsHelper {
     public static ItemStack encodeStonecuttingPattern(RecipeHolder<StonecutterRecipe> recipe, AEItemKey in,
             AEItemKey out,
             boolean allowSubstitutes) {
-        var stack = AEItems.STONECUTTING_PATTERN.toStack();
+        var stack = AEItems.STONECUTTING_PATTERN.stack();
         AEStonecuttingPattern.encode(stack, recipe, in, out, allowSubstitutes);
         return stack;
     }
@@ -184,7 +184,7 @@ public final class PatternDetailsHelper {
             AEItemKey addition,
             AEItemKey out,
             boolean allowSubstitutes) {
-        var stack = AEItems.SMITHING_TABLE_PATTERN.toStack();
+        var stack = AEItems.SMITHING_TABLE_PATTERN.stack();
         AESmithingTablePattern.encode(stack, recipe, template, base, addition, out, allowSubstitutes);
         return stack;
     }

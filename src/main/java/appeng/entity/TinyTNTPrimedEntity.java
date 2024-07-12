@@ -99,7 +99,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithC
 
         if (this.isInWater() && !this.level().isClientSide()) // put out the fuse.
         {
-            ItemStack tntStack = AEBlocks.TINY_TNT.toStack();
+            ItemStack tntStack = AEBlocks.TINY_TNT.stack();
 
             final ItemEntity item = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(),
                     tntStack);

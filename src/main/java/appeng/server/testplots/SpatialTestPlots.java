@@ -35,7 +35,7 @@ public final class SpatialTestPlots {
         plot.block("0 [1,10] 0", AEBlocks.SPATIAL_PYLON);
         plot.block("0 0 [1,10]", AEBlocks.SPATIAL_PYLON);
         plot.blockEntity("-1 0 0", AEBlocks.SPATIAL_IO_PORT, port -> {
-            port.getInternalInventory().insertItem(0, AEItems.SPATIAL_CELL128.toStack(), false);
+            port.getInternalInventory().insertItem(0, AEItems.SPATIAL_CELL128.stack(), false);
         });
         var leverPos = plot.leverOn(new BlockPos(-1, 0, 0), Direction.WEST);
 
@@ -74,7 +74,7 @@ public final class SpatialTestPlots {
         plot.block("0 [1,10] 0", AEBlocks.SPATIAL_PYLON);
         plot.block("0 0 [1,10]", AEBlocks.SPATIAL_PYLON);
         plot.blockEntity("-1 0 0", AEBlocks.SPATIAL_IO_PORT, port -> {
-            port.getInternalInventory().insertItem(0, AEItems.SPATIAL_CELL128.toStack(), false);
+            port.getInternalInventory().insertItem(0, AEItems.SPATIAL_CELL128.stack(), false);
         });
         var leverPos = plot.leverOn(new BlockPos(-1, 0, 0), Direction.WEST);
 
@@ -115,7 +115,7 @@ public final class SpatialTestPlots {
             plot.block(chickenPos.relative(dir).above(), Blocks.GLASS);
         }
         plot.blockEntity(ioPortPos, AEBlocks.SPATIAL_IO_PORT, port -> {
-            port.getInternalInventory().insertItem(0, AEItems.SPATIAL_CELL2.toStack(), false);
+            port.getInternalInventory().insertItem(0, AEItems.SPATIAL_CELL2.stack(), false);
         });
         var buttonPos = plot.buttonOn(ioPortPos, Direction.WEST);
 
