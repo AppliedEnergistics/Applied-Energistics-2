@@ -18,110 +18,49 @@
 
 package appeng.core;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.DoubleSupplier;
-
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
 import appeng.api.networking.pathing.ChannelMode;
-import appeng.core.config.BooleanOption;
-import appeng.core.config.ConfigFileManager;
-import appeng.core.config.ConfigSection;
-import appeng.core.config.ConfigValidationException;
-import appeng.core.config.DoubleOption;
-import appeng.core.config.EnumOption;
-import appeng.core.config.IntegerOption;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
 import appeng.util.Platform;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
+import net.neoforged.neoforge.common.ModConfigSpec.DoubleValue;
+import net.neoforged.neoforge.common.ModConfigSpec.EnumValue;
+import net.neoforged.neoforge.common.ModConfigSpec.IntValue;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.DoubleSupplier;
 
 public final class AEConfig {
 
-    public static final String CLIENT_CONFIG_PATH = "ae2/client.json";
-    public static final String COMMON_CONFIG_PATH = "ae2/common.json";
-    public final ClientConfig CLIENT;
-    public final ConfigFileManager clientConfigManager;
-    public final CommonConfig COMMON;
-    public final ConfigFileManager commonConfigManager;
-
-    AEConfig(Path configDir) {
-        ConfigSection clientRoot = ConfigSection.createRoot();
-        CLIENT = new ClientConfig(clientRoot);
-
-        if (configDir != null) { // Might be null when running from a test...
-            clientConfigManager = createConfigFileManager(clientRoot, configDir, CLIENT_CONFIG_PATH);
-        } else {
-            clientConfigManager = null;
-        }
-
-        ConfigSection commonRoot = ConfigSection.createRoot();
-        COMMON = new CommonConfig(commonRoot);
-
-        if (configDir != null) {
-            commonConfigManager = createConfigFileManager(commonRoot, configDir, COMMON_CONFIG_PATH);
-        } else {
-            commonConfigManager = null;
-        }
-
-        syncClientConfig();
-        syncCommonConfig();
-    }
-
-    private static ConfigFileManager createConfigFileManager(ConfigSection commonRoot, Path configDir,
-            String filename) {
-        var configFile = configDir.resolve(filename);
-        ConfigFileManager result = new ConfigFileManager(commonRoot, configFile);
-        if (!Files.exists(configFile)) {
-            result.save(); // Save a default file
-        } else {
-            try {
-                result.load();
-            } catch (ConfigValidationException e) {
-                AELog.error("Failed to load AE2 Config. Making backup", e);
-
-                // Backup and delete config files to reset them
-                makeBackupAndReset(configDir, filename);
-            }
-
-            // Re-save immediately to write-out new defaults
-            try {
-                result.save();
-            } catch (Exception e) {
-                AELog.warn(e);
-            }
-        }
-        return result;
-    }
+    private final StartupConfig startup = new StartupConfig();
+    private final ClientConfig client = new ClientConfig();
+    private final CommonConfig common = new CommonConfig();
 
     // Default Energy Conversion Rates
     private static final double DEFAULT_FE_EXCHANGE = 0.5;
 
-    // Config instance
     private static AEConfig instance;
 
-    public static void load(Path configFolder) {
-        if (instance != null) {
-            throw new IllegalStateException("Config is already loaded");
-        }
-        instance = new AEConfig(configFolder);
+    private AEConfig(ModContainer container) {
+        container.registerConfig(ModConfig.Type.STARTUP, startup.spec);
+        container.registerConfig(ModConfig.Type.CLIENT, client.spec);
+        container.registerConfig(ModConfig.Type.COMMON, common.spec);
     }
 
-    private static void makeBackupAndReset(Path configFolder, String configFile) {
-        var backupFile = configFolder.resolve(configFile + ".bak");
-        var originalFile = configFolder.resolve(configFile);
-        try {
-            Files.move(originalFile, backupFile, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            AELog.warn("Failed to backup config file %s: %s!", originalFile, e);
+    public static void register(ModContainer container) {
+        if (!container.getModId().equals(AppEng.MOD_ID)) {
+            throw new IllegalArgumentException();
         }
+        instance = new AEConfig(container);
     }
 
     // Misc
@@ -160,58 +99,58 @@ public final class AEConfig {
     // Tunnels
     public static final double TUNNEL_POWER_LOSS = 0.05;
 
+    public static AEConfig instance() {
+        return instance;
+    }
+
     private void syncClientConfig() {
-        this.disableColoredCableRecipesInRecipeViewer = CLIENT.disableColoredCableRecipesInRecipeViewer.get();
-        this.enableFacadesInRecipeViewer = CLIENT.enableFacadesInRecipeViewer.get();
-        this.enableFacadeRecipesInRecipeViewer = CLIENT.enableFacadeRecipesInRecipeViewer.get();
-        this.enableEffects = CLIENT.enableEffects.get();
-        this.useLargeFonts = CLIENT.useLargeFonts.get();
-        this.useColoredCraftingStatus = CLIENT.useColoredCraftingStatus.get();
+        this.disableColoredCableRecipesInRecipeViewer = client.disableColoredCableRecipesInRecipeViewer.get();
+        this.enableFacadesInRecipeViewer = client.enableFacadesInRecipeViewer.get();
+        this.enableFacadeRecipesInRecipeViewer = client.enableFacadeRecipesInRecipeViewer.get();
+        this.enableEffects = client.enableEffects.get();
+        this.useLargeFonts = client.useLargeFonts.get();
+        this.useColoredCraftingStatus = client.useColoredCraftingStatus.get();
     }
 
     private void syncCommonConfig() {
-        PowerUnits.FE.conversionRatio = COMMON.powerRatioForgeEnergy.get();
-        PowerMultiplier.CONFIG.multiplier = COMMON.powerUsageMultiplier.get();
+        PowerUnits.FE.conversionRatio = common.powerRatioForgeEnergy.get();
+        PowerMultiplier.CONFIG.multiplier = common.powerUsageMultiplier.get();
 
-        CondenserOutput.MATTER_BALLS.requiredPower = COMMON.condenserMatterBallsPower.get();
-        CondenserOutput.SINGULARITY.requiredPower = COMMON.condenserSingularityPower.get();
+        CondenserOutput.MATTER_BALLS.requiredPower = common.condenserMatterBallsPower.get();
+        CondenserOutput.SINGULARITY.requiredPower = common.condenserSingularityPower.get();
 
-        this.wirelessBaseCost = COMMON.wirelessBaseCost.get();
-        this.wirelessCostMultiplier = COMMON.wirelessCostMultiplier.get();
-        this.wirelessBaseRange = COMMON.wirelessBaseRange.get();
-        this.wirelessBoosterRangeMultiplier = COMMON.wirelessBoosterRangeMultiplier.get();
-        this.wirelessBoosterExp = COMMON.wirelessBoosterExp.get();
-        this.wirelessHighWirelessCount = COMMON.wirelessHighWirelessCount.get();
-        this.wirelessTerminalDrainMultiplier = COMMON.wirelessTerminalDrainMultiplier.get();
+        this.wirelessBaseCost = common.wirelessBaseCost.get();
+        this.wirelessCostMultiplier = common.wirelessCostMultiplier.get();
+        this.wirelessBaseRange = common.wirelessBaseRange.get();
+        this.wirelessBoosterRangeMultiplier = common.wirelessBoosterRangeMultiplier.get();
+        this.wirelessBoosterExp = common.wirelessBoosterExp.get();
+        this.wirelessHighWirelessCount = common.wirelessHighWirelessCount.get();
+        this.wirelessTerminalDrainMultiplier = common.wirelessTerminalDrainMultiplier.get();
 
-        this.formationPlaneEntityLimit = COMMON.formationPlaneEntityLimit.get();
+        this.formationPlaneEntityLimit = common.formationPlaneEntityLimit.get();
 
-        this.wirelessTerminalBattery = COMMON.wirelessTerminalBattery.get();
-        this.chargedStaffBattery = COMMON.chargedStaffBattery.get();
-        this.entropyManipulatorBattery = COMMON.entropyManipulatorBattery.get();
-        this.portableCellBattery = COMMON.portableCellBattery.get();
-        this.colorApplicatorBattery = COMMON.colorApplicatorBattery.get();
-        this.matterCannonBattery = COMMON.matterCannonBattery.get();
+        this.wirelessTerminalBattery = common.wirelessTerminalBattery.get();
+        this.chargedStaffBattery = common.chargedStaffBattery.get();
+        this.entropyManipulatorBattery = common.entropyManipulatorBattery.get();
+        this.portableCellBattery = common.portableCellBattery.get();
+        this.colorApplicatorBattery = common.colorApplicatorBattery.get();
+        this.matterCannonBattery = common.matterCannonBattery.get();
 
         for (TickRates tr : TickRates.values()) {
-            tr.setMin(COMMON.tickRateMin.get(tr).get());
-            tr.setMax(COMMON.tickRateMax.get(tr).get());
+            tr.setMin(common.tickRateMin.get(tr).get());
+            tr.setMax(common.tickRateMax.get(tr).get());
         }
 
-        this.spatialPowerMultiplier = COMMON.spatialPowerMultiplier.get();
-        this.spatialPowerExponent = COMMON.spatialPowerExponent.get();
+        this.spatialPowerMultiplier = common.spatialPowerMultiplier.get();
+        this.spatialPowerExponent = common.spatialPowerExponent.get();
 
-        this.craftingCalculationTimePerTick = COMMON.craftingCalculationTimePerTick.get();
-        this.craftingSimulatedExtraction = COMMON.craftingSimulatedExtraction.get();
-        this.spatialAnchorEnablesRandomTicks = COMMON.spatialAnchorEnableRandomTicks.get();
+        this.craftingCalculationTimePerTick = common.craftingCalculationTimePerTick.get();
+        this.craftingSimulatedExtraction = common.craftingSimulatedExtraction.get();
+        this.spatialAnchorEnablesRandomTicks = common.spatialAnchorEnableRandomTicks.get();
 
-        AELog.setCraftingLogEnabled(COMMON.craftingLog.get());
-        AELog.setDebugLogEnabled(COMMON.debugLog.get());
-        AELog.setGridLogEnabled(COMMON.gridLog.get());
-    }
-
-    public static AEConfig instance() {
-        return instance;
+        AELog.setCraftingLogEnabled(common.craftingLog.get());
+        AELog.setDebugLogEnabled(common.debugLog.get());
+        AELog.setGridLogEnabled(common.gridLog.get());
     }
 
     public double wireless_getDrainRate(double range) {
@@ -220,110 +159,104 @@ public final class AEConfig {
 
     public double wireless_getMaxRange(int boosters) {
         return this.wirelessBaseRange
-                + this.wirelessBoosterRangeMultiplier * Math.pow(boosters, this.wirelessBoosterExp);
+               + this.wirelessBoosterRangeMultiplier * Math.pow(boosters, this.wirelessBoosterExp);
     }
 
     public double wireless_getPowerDrain(int boosters) {
         return this.wirelessBaseCost
-                + this.wirelessCostMultiplier * Math.pow(boosters, 1 + boosters / this.wirelessHighWirelessCount);
+               + this.wirelessCostMultiplier * Math.pow(boosters, 1 + boosters / this.wirelessHighWirelessCount);
     }
 
     public boolean isSearchModNameInTooltips() {
-        return CLIENT.searchModNameInTooltips.get();
+        return client.searchModNameInTooltips.get();
     }
 
     public void setSearchModNameInTooltips(boolean enable) {
-        CLIENT.searchModNameInTooltips.set(enable);
+        client.searchModNameInTooltips.set(enable);
     }
 
     public boolean isUseExternalSearch() {
-        return CLIENT.useExternalSearch.get();
+        return client.useExternalSearch.get();
     }
 
     public void setUseExternalSearch(boolean enable) {
-        CLIENT.useExternalSearch.set(enable);
+        client.useExternalSearch.set(enable);
     }
 
     public boolean isClearExternalSearchOnOpen() {
-        return CLIENT.clearExternalSearchOnOpen.get();
+        return client.clearExternalSearchOnOpen.get();
     }
 
     public void setClearExternalSearchOnOpen(boolean enable) {
-        CLIENT.clearExternalSearchOnOpen.set(enable);
+        client.clearExternalSearchOnOpen.set(enable);
     }
 
     public boolean isRememberLastSearch() {
-        return CLIENT.rememberLastSearch.get();
+        return client.rememberLastSearch.get();
     }
 
     public void setRememberLastSearch(boolean enable) {
-        CLIENT.rememberLastSearch.set(enable);
+        client.rememberLastSearch.set(enable);
     }
 
     public boolean isAutoFocusSearch() {
-        return CLIENT.autoFocusSearch.get();
+        return client.autoFocusSearch.get();
     }
 
     public void setAutoFocusSearch(boolean enable) {
-        CLIENT.autoFocusSearch.set(enable);
+        client.autoFocusSearch.set(enable);
     }
 
     public boolean isSyncWithExternalSearch() {
-        return CLIENT.syncWithExternalSearch.get();
+        return client.syncWithExternalSearch.get();
     }
 
     public void setSyncWithExternalSearch(boolean enable) {
-        CLIENT.syncWithExternalSearch.set(enable);
+        client.syncWithExternalSearch.set(enable);
     }
 
     public TerminalStyle getTerminalStyle() {
-        return CLIENT.terminalStyle.get();
+        return client.terminalStyle.get();
     }
 
     public void setTerminalStyle(TerminalStyle setting) {
-        CLIENT.terminalStyle.set(setting);
+        client.terminalStyle.set(setting);
     }
 
     public boolean isGuideHotkeyEnabled() {
-        return CLIENT.enableGuideHotkey.get();
+        return startup.enableGuideHotkey.get();
     }
 
     public double getGridEnergyStoragePerNode() {
-        return COMMON.gridEnergyStoragePerNode.get();
+        return common.gridEnergyStoragePerNode.get();
     }
 
     public double getCrystalResonanceGeneratorRate() {
-        return COMMON.crystalResonanceGeneratorRate.get();
-    }
-
-    public void save() {
+        return common.crystalResonanceGeneratorRate.get();
     }
 
     public void reload() {
-        clientConfigManager.load();
-        commonConfigManager.load();
-
         syncClientConfig();
         syncCommonConfig();
     }
 
     public PowerUnits getSelectedPowerUnit() {
-        return this.CLIENT.selectedPowerUnit.get();
+        return this.client.selectedPowerUnit.get();
     }
 
     public void nextPowerUnit(boolean backwards) {
         PowerUnits selectedPowerUnit = EnumCycler.rotateEnum(getSelectedPowerUnit(), backwards,
                 Settings.POWER_UNITS.getValues());
-        CLIENT.selectedPowerUnit.set(selectedPowerUnit);
+        client.selectedPowerUnit.set(selectedPowerUnit);
     }
 
     // Getters
     public boolean isBlockEntityFacadesEnabled() {
-        return COMMON.allowBlockEntityFacades.get();
+        return common.allowBlockEntityFacades.get();
     }
 
     public boolean isDebugToolsEnabled() {
-        return COMMON.debugTools.get();
+        return common.debugTools.get();
     }
 
     public int getFormationPlaneEntityLimit() {
@@ -375,7 +308,7 @@ public final class AEConfig {
     }
 
     public double getChargerChargeRate() {
-        return COMMON.chargerChargeRate.get();
+        return common.chargerChargeRate.get();
     }
 
     public DoubleSupplier getWirelessTerminalBattery() {
@@ -403,70 +336,70 @@ public final class AEConfig {
     }
 
     public boolean isShowDebugGuiOverlays() {
-        return CLIENT.debugGuiOverlays.get();
+        return client.debugGuiOverlays.get();
     }
 
     public void setShowDebugGuiOverlays(boolean enable) {
-        CLIENT.debugGuiOverlays.set(enable);
+        client.debugGuiOverlays.set(enable);
     }
 
     public boolean isSpawnPressesInMeteoritesEnabled() {
-        return COMMON.spawnPressesInMeteorites.get();
+        return common.spawnPressesInMeteorites.get();
     }
 
     public boolean isSpawnFlawlessOnlyEnabled() {
-        return COMMON.spawnFlawlessOnly.get();
+        return common.spawnFlawlessOnly.get();
     }
 
     public boolean isMatterCanonBlockDamageEnabled() {
-        return COMMON.matterCannonBlockDamage.get();
+        return common.matterCannonBlockDamage.get();
     }
 
     public boolean isTinyTntBlockDamageEnabled() {
-        return COMMON.tinyTntBlockDamage.get();
+        return common.tinyTntBlockDamage.get();
     }
 
     public boolean isDisassemblyCraftingEnabled() {
-        return COMMON.disassemblyCrafting.get();
+        return common.disassemblyCrafting.get();
     }
 
     public int getGrowthAcceleratorSpeed() {
-        return COMMON.growthAcceleratorSpeed.get();
+        return common.growthAcceleratorSpeed.get();
     }
 
     public boolean isAnnihilationPlaneSkyDustGenerationEnabled() {
-        return COMMON.annihilationPlaneSkyDustGeneration.get();
+        return common.annihilationPlaneSkyDustGeneration.get();
     }
 
     public boolean isBlockUpdateLogEnabled() {
-        return COMMON.blockUpdateLog.get();
+        return common.blockUpdateLog.get();
     }
 
     public boolean isChunkLoggerTraceEnabled() {
-        return COMMON.chunkLoggerTrace.get();
+        return common.chunkLoggerTrace.get();
     }
 
     public ChannelMode getChannelMode() {
-        return COMMON.channels.get();
+        return common.channels.get();
     }
 
     public void setChannelModel(ChannelMode mode) {
-        COMMON.channels.set(mode);
+        common.channels.set(mode);
     }
 
     public int getPathfindingStepsPerTick() {
-        return COMMON.pathfindingStepsPerTick.get();
+        return common.pathfindingStepsPerTick.get();
     }
 
     /**
      * @return True if an in-world preview of parts and facade placement should be shown when holding one in hand.
      */
     public boolean isPlacementPreviewEnabled() {
-        return CLIENT.showPlacementPreview.get();
+        return client.showPlacementPreview.get();
     }
 
     public boolean isPortableCellDisassemblyEnabled() {
-        return COMMON.portableCellDisassembly.get();
+        return common.portableCellDisassembly.get();
     }
 
     // Tooltip settings
@@ -475,331 +408,425 @@ public final class AEConfig {
      * Show upgrade inventory in tooltips of storage cells and similar devices.
      */
     public boolean isTooltipShowCellUpgrades() {
-        return CLIENT.tooltipShowCellUpgrades.get();
+        return client.tooltipShowCellUpgrades.get();
     }
 
     /**
      * Show part of the content in tooltips of storage cells and similar devices.
      */
     public boolean isTooltipShowCellContent() {
-        return CLIENT.tooltipShowCellContent.get();
+        return client.tooltipShowCellContent.get();
     }
 
     /**
      * How much of the content to show in storage cellls and similar devices.
      */
     public int getTooltipMaxCellContentShown() {
-        return CLIENT.tooltipMaxCellContentShown.get();
+        return client.tooltipMaxCellContentShown.get();
     }
 
     public boolean isPinAutoCraftedItems() {
-        return CLIENT.pinAutoCraftedItems.get();
+        return client.pinAutoCraftedItems.get();
     }
 
     public void setPinAutoCraftedItems(boolean enabled) {
-        CLIENT.pinAutoCraftedItems.set(enabled);
+        client.pinAutoCraftedItems.set(enabled);
     }
 
     public boolean isNotifyForFinishedCraftingJobs() {
-        return CLIENT.notifyForFinishedCraftingJobs.get();
+        return client.notifyForFinishedCraftingJobs.get();
     }
 
     public void setNotifyForFinishedCraftingJobs(boolean enabled) {
-        CLIENT.notifyForFinishedCraftingJobs.set(enabled);
+        client.notifyForFinishedCraftingJobs.set(enabled);
     }
 
     public boolean isClearGridOnClose() {
-        return CLIENT.clearGridOnClose.get();
+        return client.clearGridOnClose.get();
     }
 
     public void setClearGridOnClose(boolean enabled) {
-        CLIENT.clearGridOnClose.set(enabled);
+        client.clearGridOnClose.set(enabled);
     }
 
     public double getVibrationChamberBaseEnergyPerFuelTick() {
-        return COMMON.vibrationChamberBaseEnergyPerFuelTick.get();
+        return common.vibrationChamberBaseEnergyPerFuelTick.get();
     }
 
     public int getVibrationChamberMinEnergyPerGameTick() {
-        return COMMON.vibrationChamberMinEnergyPerTick.get();
+        return common.vibrationChamberMinEnergyPerTick.get();
     }
 
     public int getVibrationChamberMaxEnergyPerGameTick() {
-        return COMMON.vibrationChamberMaxEnergyPerTick.get();
+        return common.vibrationChamberMaxEnergyPerTick.get();
     }
 
     public int getTerminalMargin() {
-        return CLIENT.terminalMargin.get();
+        return client.terminalMargin.get();
     }
 
-    // Setters keep visibility as low as possible.
+    public void save() {
+        common.spec.save();
+        client.spec.save();
+    }
+
+    private static class StartupConfig {
+        private final ModConfigSpec spec;
+
+        public final BooleanValue enableGuideHotkey;
+
+        public StartupConfig() {
+            var builder = new ModConfigSpec.Builder();
+            this.enableGuideHotkey = define(builder, "enableGuideHotkey", true,
+                    "Enables the 'hold key to show guide' functionality in tooltips");
+            this.spec = builder.build();
+        }
+    }
 
     private static class ClientConfig {
+        private final ModConfigSpec spec;
 
         // Misc
-        public final BooleanOption enableEffects;
-        public final BooleanOption useLargeFonts;
-        public final BooleanOption useColoredCraftingStatus;
-        public final BooleanOption disableColoredCableRecipesInRecipeViewer;
-        public final BooleanOption enableFacadesInRecipeViewer;
-        public final BooleanOption enableFacadeRecipesInRecipeViewer;
-        public final EnumOption<PowerUnits> selectedPowerUnit;
-        public final BooleanOption debugGuiOverlays;
-        public final BooleanOption showPlacementPreview;
-        public final BooleanOption notifyForFinishedCraftingJobs;
+        public final BooleanValue enableEffects;
+        public final BooleanValue useLargeFonts;
+        public final BooleanValue useColoredCraftingStatus;
+        public final BooleanValue disableColoredCableRecipesInRecipeViewer;
+        public final BooleanValue enableFacadesInRecipeViewer;
+        public final BooleanValue enableFacadeRecipesInRecipeViewer;
+        public final EnumValue<PowerUnits> selectedPowerUnit;
+        public final BooleanValue debugGuiOverlays;
+        public final BooleanValue showPlacementPreview;
+        public final BooleanValue notifyForFinishedCraftingJobs;
 
         // Terminal Settings
-        public final EnumOption<TerminalStyle> terminalStyle;
-        public final BooleanOption pinAutoCraftedItems;
-        public final BooleanOption clearGridOnClose;
-        public final IntegerOption terminalMargin;
+        public final EnumValue<TerminalStyle> terminalStyle;
+        public final BooleanValue pinAutoCraftedItems;
+        public final BooleanValue clearGridOnClose;
+        public final IntValue terminalMargin;
 
         // Search Settings
-        public final BooleanOption searchModNameInTooltips;
-        public final BooleanOption useExternalSearch;
-        public final BooleanOption clearExternalSearchOnOpen;
-        public final BooleanOption syncWithExternalSearch;
-        public final BooleanOption rememberLastSearch;
-        public final BooleanOption autoFocusSearch;
+        public final BooleanValue searchModNameInTooltips;
+        public final BooleanValue useExternalSearch;
+        public final BooleanValue clearExternalSearchOnOpen;
+        public final BooleanValue syncWithExternalSearch;
+        public final BooleanValue rememberLastSearch;
+        public final BooleanValue autoFocusSearch;
 
         // Tooltip settings
-        public final BooleanOption tooltipShowCellUpgrades;
-        public final BooleanOption tooltipShowCellContent;
-        public final IntegerOption tooltipMaxCellContentShown;
-        public final BooleanOption enableGuideHotkey;
+        public final BooleanValue tooltipShowCellUpgrades;
+        public final BooleanValue tooltipShowCellContent;
+        public final IntValue tooltipMaxCellContentShown;
 
-        public ClientConfig(ConfigSection root) {
-            var client = root.subsection("client");
-            this.disableColoredCableRecipesInRecipeViewer = client.addBoolean("disableColoredCableRecipesInJEI", true);
-            this.enableFacadesInRecipeViewer = client.addBoolean("enableFacadesInRecipeViewer", false,
+        public ClientConfig() {
+            var builder = new ModConfigSpec.Builder();
+
+            builder.push("client");
+            this.disableColoredCableRecipesInRecipeViewer = define(builder, "disableColoredCableRecipesInJEI", true);
+            this.enableFacadesInRecipeViewer = define(builder, "enableFacadesInRecipeViewer", false,
                     "Show facades in REI/JEI/EMI item list");
-            this.enableFacadeRecipesInRecipeViewer = client.addBoolean("enableFacadeRecipesInRecipeViewer", true,
+            this.enableFacadeRecipesInRecipeViewer = define(builder, "enableFacadeRecipesInRecipeViewer", true,
                     "Show facade recipes in REI/JEI/EMI for supported blocks");
-            this.enableEffects = client.addBoolean("enableEffects", true);
-            this.useLargeFonts = client.addBoolean("useTerminalUseLargeFont", false);
-            this.useColoredCraftingStatus = client.addBoolean("useColoredCraftingStatus", true);
-            this.selectedPowerUnit = client.addEnum("PowerUnit", PowerUnits.AE, "Power unit shown in AE UIs");
-            this.debugGuiOverlays = client.addBoolean("showDebugGuiOverlays", false, "Show debugging GUI overlays");
-            this.showPlacementPreview = client.addBoolean("showPlacementPreview", true,
+            this.enableEffects = define(builder, "enableEffects", true);
+            this.useLargeFonts = define(builder, "useTerminalUseLargeFont", false);
+            this.useColoredCraftingStatus = define(builder, "useColoredCraftingStatus", true);
+            this.selectedPowerUnit = defineEnum(builder, "PowerUnit", PowerUnits.AE, "Power unit shown in AE UIs");
+            this.debugGuiOverlays = define(builder, "showDebugGuiOverlays", false, "Show debugging GUI overlays");
+            this.showPlacementPreview = define(builder, "showPlacementPreview", true,
                     "Show a preview of part and facade placement");
-            this.notifyForFinishedCraftingJobs = client.addBoolean("notifyForFinishedCraftingJobs", true,
+            this.notifyForFinishedCraftingJobs = define(builder, "notifyForFinishedCraftingJobs", true,
                     "Show toast when long-running crafting jobs finish.");
+            builder.pop();
 
-            var terminals = root.subsection("terminals");
-            this.terminalStyle = terminals.addEnum("terminalStyle", TerminalStyle.SMALL);
-            this.pinAutoCraftedItems = terminals.addBoolean("pinAutoCraftedItems", true,
+            var terminals = builder.push("terminals");
+            this.terminalStyle = defineEnum(terminals, "terminalStyle", TerminalStyle.SMALL);
+            this.pinAutoCraftedItems = define(builder, "pinAutoCraftedItems", true,
                     "Pin items that the player auto-crafts to the top of the terminal");
-            this.clearGridOnClose = client.addBoolean("clearGridOnClose", false,
+            this.clearGridOnClose = define(builder, "clearGridOnClose", false,
                     "Automatically clear the crafting/encoding grid when closing the terminal");
-            this.terminalMargin = client.addInt("terminalMargin", 25,
+            this.terminalMargin = define(builder, "terminalMargin", 25,
                     "The vertical margin to apply when sizing terminals. Used to make room for centered item mod search bars");
+            builder.pop();
 
             // Search Settings
-            var search = root.subsection("search");
-            this.searchModNameInTooltips = search.addBoolean("searchModNameInTooltips", false,
+            builder.push("search");
+            this.searchModNameInTooltips = define(builder, "searchModNameInTooltips", false,
                     "Should the mod name be included when searching in tooltips.");
-            this.useExternalSearch = search.addBoolean("useExternalSearch", false,
+            this.useExternalSearch = define(builder, "useExternalSearch", false,
                     "Replaces AEs own search with the search of REI or JEI");
-            this.clearExternalSearchOnOpen = search.addBoolean("clearExternalSearchOnOpen", true,
+            this.clearExternalSearchOnOpen = define(builder, "clearExternalSearchOnOpen", true,
                     "When using useExternalSearch, clears the search when the terminal opens");
-            this.syncWithExternalSearch = search.addBoolean("syncWithExternalSearch", true,
+            this.syncWithExternalSearch = define(builder, "syncWithExternalSearch", true,
                     "When REI/JEI is installed, automatically set the AE or REI/JEI search text when either is changed while the terminal is open");
-            this.rememberLastSearch = search.addBoolean("rememberLastSearch", true,
+            this.rememberLastSearch = define(builder, "rememberLastSearch", true,
                     "Remembers the last search term and restores it when the terminal opens");
-            this.autoFocusSearch = search.addBoolean("autoFocusSearch", false,
+            this.autoFocusSearch = define(builder, "autoFocusSearch", false,
                     "Automatically focuses the search field when the terminal opens");
+            builder.pop();
 
-            var tooltips = root.subsection("tooltips");
-            this.tooltipShowCellUpgrades = tooltips.addBoolean("showCellUpgrades", true,
+            builder.push("tooltips");
+            this.tooltipShowCellUpgrades = define(builder, "showCellUpgrades", true,
                     "Show installed upgrades in the tooltips of storage cells, color applicators and matter cannons");
-            this.tooltipShowCellContent = tooltips.addBoolean("showCellContent", true,
+            this.tooltipShowCellContent = define(builder, "showCellContent", true,
                     "Show a preview of the content in the tooltips of storage cells, color applicators and matter cannons");
-            this.tooltipMaxCellContentShown = tooltips.addInt("maxCellContentShown", 5, 1, 32,
+            this.tooltipMaxCellContentShown = define(builder, "maxCellContentShown", 5, 1, 32,
                     "The maximum number of content entries to show in the tooltip of storage cells, color applicators and matter cannons");
-            this.enableGuideHotkey = tooltips.addBoolean("enableGuideHotkey", true,
-                    "Enables the 'hold key to show guide' functionality in tooltips");
+            builder.pop();
+
+            this.spec = builder.build();
         }
 
     }
 
     private static class CommonConfig {
+        private final ModConfigSpec spec;
 
         // Misc
-        public final IntegerOption formationPlaneEntityLimit;
-        public final IntegerOption craftingCalculationTimePerTick;
-        public final BooleanOption craftingSimulatedExtraction;
-        public final BooleanOption allowBlockEntityFacades;
-        public final BooleanOption debugTools;
-        public final BooleanOption matterCannonBlockDamage;
-        public final BooleanOption tinyTntBlockDamage;
-        public final EnumOption<ChannelMode> channels;
-        public final IntegerOption pathfindingStepsPerTick;
-        public final BooleanOption spatialAnchorEnableRandomTicks;
+        public final IntValue formationPlaneEntityLimit;
+        public final IntValue craftingCalculationTimePerTick;
+        public final BooleanValue craftingSimulatedExtraction;
+        public final BooleanValue allowBlockEntityFacades;
+        public final BooleanValue debugTools;
+        public final BooleanValue matterCannonBlockDamage;
+        public final BooleanValue tinyTntBlockDamage;
+        public final EnumValue<ChannelMode> channels;
+        public final IntValue pathfindingStepsPerTick;
+        public final BooleanValue spatialAnchorEnableRandomTicks;
 
-        public final BooleanOption disassemblyCrafting;
-        public final IntegerOption growthAcceleratorSpeed;
-        public final BooleanOption annihilationPlaneSkyDustGeneration;
+        public final BooleanValue disassemblyCrafting;
+        public final IntValue growthAcceleratorSpeed;
+        public final BooleanValue annihilationPlaneSkyDustGeneration;
 
         // Spatial IO/Dimension
-        public final DoubleOption spatialPowerExponent;
-        public final DoubleOption spatialPowerMultiplier;
+        public final DoubleValue spatialPowerExponent;
+        public final DoubleValue spatialPowerMultiplier;
 
         // Logging
-        public final BooleanOption blockUpdateLog;
-        public final BooleanOption craftingLog;
-        public final BooleanOption debugLog;
-        public final BooleanOption gridLog;
-        public final BooleanOption chunkLoggerTrace;
+        public final BooleanValue blockUpdateLog;
+        public final BooleanValue craftingLog;
+        public final BooleanValue debugLog;
+        public final BooleanValue gridLog;
+        public final BooleanValue chunkLoggerTrace;
 
         // Batteries
-        public final DoubleOption chargerChargeRate;
-        public final IntegerOption wirelessTerminalBattery;
-        public final IntegerOption entropyManipulatorBattery;
-        public final IntegerOption matterCannonBattery;
-        public final IntegerOption portableCellBattery;
-        public final IntegerOption colorApplicatorBattery;
-        public final IntegerOption chargedStaffBattery;
+        public final DoubleValue chargerChargeRate;
+        public final IntValue wirelessTerminalBattery;
+        public final IntValue entropyManipulatorBattery;
+        public final IntValue matterCannonBattery;
+        public final IntValue portableCellBattery;
+        public final IntValue colorApplicatorBattery;
+        public final IntValue chargedStaffBattery;
 
         // Meteors
-        public final BooleanOption spawnPressesInMeteorites;
-        public final BooleanOption spawnFlawlessOnly;
+        public final BooleanValue spawnPressesInMeteorites;
+        public final BooleanValue spawnFlawlessOnly;
 
         // Wireless
-        public final DoubleOption wirelessBaseCost;
-        public final DoubleOption wirelessCostMultiplier;
-        public final DoubleOption wirelessTerminalDrainMultiplier;
-        public final DoubleOption wirelessBaseRange;
-        public final DoubleOption wirelessBoosterRangeMultiplier;
-        public final DoubleOption wirelessBoosterExp;
-        public final DoubleOption wirelessHighWirelessCount;
+        public final DoubleValue wirelessBaseCost;
+        public final DoubleValue wirelessCostMultiplier;
+        public final DoubleValue wirelessTerminalDrainMultiplier;
+        public final DoubleValue wirelessBaseRange;
+        public final DoubleValue wirelessBoosterRangeMultiplier;
+        public final DoubleValue wirelessBoosterExp;
+        public final DoubleValue wirelessHighWirelessCount;
 
         // Portable Cells
-        public final BooleanOption portableCellDisassembly;
+        public final BooleanValue portableCellDisassembly;
 
         // Power Ratios
-        public final DoubleOption powerRatioForgeEnergy;
-        public final DoubleOption powerUsageMultiplier;
-        public final DoubleOption gridEnergyStoragePerNode;
-        public final DoubleOption crystalResonanceGeneratorRate;
+        public final DoubleValue powerRatioForgeEnergy;
+        public final DoubleValue powerUsageMultiplier;
+        public final DoubleValue gridEnergyStoragePerNode;
+        public final DoubleValue crystalResonanceGeneratorRate;
 
         // Vibration Chamber
-        public final DoubleOption vibrationChamberBaseEnergyPerFuelTick;
-        public final IntegerOption vibrationChamberMinEnergyPerTick;
-        public final IntegerOption vibrationChamberMaxEnergyPerTick;
+        public final DoubleValue vibrationChamberBaseEnergyPerFuelTick;
+        public final IntValue vibrationChamberMinEnergyPerTick;
+        public final IntValue vibrationChamberMaxEnergyPerTick;
 
         // Condenser Power Requirement
-        public final IntegerOption condenserMatterBallsPower;
-        public final IntegerOption condenserSingularityPower;
+        public final IntValue condenserMatterBallsPower;
+        public final IntValue condenserSingularityPower;
 
-        public final Map<TickRates, IntegerOption> tickRateMin = new HashMap<>();
-        public final Map<TickRates, IntegerOption> tickRateMax = new HashMap<>();
+        public final Map<TickRates, IntValue> tickRateMin = new HashMap<>();
+        public final Map<TickRates, IntValue> tickRateMax = new HashMap<>();
 
-        public CommonConfig(ConfigSection root) {
+        public CommonConfig() {
+            var builder = new ModConfigSpec.Builder();
 
-            ConfigSection general = root.subsection("general");
-            debugTools = general.addBoolean("unsupportedDeveloperTools", Platform.isDevelopmentEnvironment());
-            matterCannonBlockDamage = general.addBoolean("matterCannonBlockDamage", true,
+            builder.push("builder");
+            debugTools = define(builder, "unsupportedDeveloperTools", Platform.isDevelopmentEnvironment());
+            matterCannonBlockDamage = define(builder, "matterCannonBlockDamage", true,
                     "Enables the ability of the Matter Cannon to break blocks.");
-            tinyTntBlockDamage = general.addBoolean("tinyTntBlockDamage", true,
+            tinyTntBlockDamage = define(builder, "tinyTntBlockDamage", true,
                     "Enables the ability of Tiny TNT to break blocks.");
-            channels = general.addEnum("channels", ChannelMode.DEFAULT,
+            channels = defineEnum(builder, "channels", ChannelMode.DEFAULT,
                     "Changes the channel capacity that cables provide in AE2.");
-            pathfindingStepsPerTick = general.addInt("pathfindingStepsPerTick", 4,
+            pathfindingStepsPerTick = define(builder, "pathfindingStepsPerTick", 4,
                     1, 1024,
                     "The number of pathfinding steps that are taken per tick and per grid that is booting. Lower numbers will mean booting takes longer, but less work is done per tick.");
-            spatialAnchorEnableRandomTicks = general.addBoolean("spatialAnchorEnableRandomTicks", true,
+            spatialAnchorEnableRandomTicks = define(builder, "spatialAnchorEnableRandomTicks", true,
                     "Whether Spatial Anchors should force random chunk ticks and entity spawning.");
+            builder.pop();
 
-            ConfigSection automation = root.subsection("automation");
-            formationPlaneEntityLimit = automation.addInt("formationPlaneEntityLimit", 128);
+            builder.push("automation");
+            formationPlaneEntityLimit = define(builder, "formationPlaneEntityLimit", 128);
+            builder.pop();
 
-            ConfigSection facades = root.subsection("facades");
-            allowBlockEntityFacades = facades.addBoolean("allowBlockEntities", false,
+            builder.push("facades");
+            allowBlockEntityFacades = define(builder, "allowBlockEntities", false,
                     "Unsupported: Allows whitelisting block entities as facades. Could work, have render issues, or corrupt your world. USE AT YOUR OWN RISK.");
+            builder.pop();
 
-            ConfigSection craftingCPU = root.subsection("craftingCPU");
-            this.craftingCalculationTimePerTick = craftingCPU.addInt("craftingCalculationTimePerTick", 5);
-            this.craftingSimulatedExtraction = craftingCPU.addBoolean("craftingSimulatedExtraction", false,
+            builder.push("craftingCPU");
+            this.craftingCalculationTimePerTick = define(builder, "craftingCalculationTimePerTick", 5);
+            this.craftingSimulatedExtraction = define(builder, "craftingSimulatedExtraction", false,
                     "When true: simulate extraction of all the network's contents when starting a crafting job calculation. When false: use the cached available content list (same as terminals). Enabling might work a bit better, but it will significantly reduce performance.");
+            builder.pop();
 
-            var crafting = root.subsection("crafting");
-            disassemblyCrafting = crafting.addBoolean("disassemblyCrafting", true,
+            builder.push("crafting");
+            disassemblyCrafting = define(builder, "disassemblyCrafting", true,
                     "Enable shift-clicking with the crafting units in hand to disassemble them.");
-            growthAcceleratorSpeed = crafting.addInt("growthAccelerator", 10, 1, 100,
+            growthAcceleratorSpeed = define(builder, "growthAccelerator", 10, 1, 100,
                     "Number of ticks between two crystal growth accelerator ticks");
-            annihilationPlaneSkyDustGeneration = crafting.addBoolean("annihilationPlaneSkyDustGeneration", true,
+            annihilationPlaneSkyDustGeneration = define(builder, "annihilationPlaneSkyDustGeneration", true,
                     "If enabled, an annihilation placed face up at the maximum world height will generate sky stone passively.");
+            builder.pop();
 
-            ConfigSection spatialio = root.subsection("spatialio");
-            this.spatialPowerMultiplier = spatialio.addDouble("spatialPowerMultiplier", 1250.0);
-            this.spatialPowerExponent = spatialio.addDouble("spatialPowerExponent", 1.35);
+            builder.push("spatialio");
+            this.spatialPowerMultiplier = define(builder, "spatialPowerMultiplier", 1250.0);
+            this.spatialPowerExponent = define(builder, "spatialPowerExponent", 1.35);
+            builder.pop();
 
-            var logging = root.subsection("logging");
-            blockUpdateLog = logging.addBoolean("blockUpdateLog", false);
-            craftingLog = logging.addBoolean("craftingLog", false);
-            debugLog = logging.addBoolean("debugLog", false);
-            gridLog = logging.addBoolean("gridLog", false);
-            chunkLoggerTrace = logging.addBoolean("chunkLoggerTrace", false,
+            builder.push("logging");
+            blockUpdateLog = define(builder, "blockUpdateLog", false);
+            craftingLog = define(builder, "craftingLog", false);
+            debugLog = define(builder, "debugLog", false);
+            gridLog = define(builder, "gridLog", false);
+            chunkLoggerTrace = define(builder, "chunkLoggerTrace", false,
                     "Enable stack trace logging for the chunk loading debug command");
+            builder.pop();
 
-            ConfigSection battery = root.subsection("battery");
-            this.chargerChargeRate = battery.addDouble("chargerChargeRate", 1,
-                    0.1, 10,
+            builder.push("battery");
+            this.chargerChargeRate = define(builder, "chargerChargeRate", 1.0,
+                    0.1, 10.0,
                     "The chargers charging rate factor, which is applied to the charged items charge rate. 2 means it charges everything twice as fast. 0.5 half as fast.");
-            this.wirelessTerminalBattery = battery.addInt("wirelessTerminal", 1600000);
-            this.chargedStaffBattery = battery.addInt("chargedStaff", 8000);
-            this.entropyManipulatorBattery = battery.addInt("entropyManipulator", 200000);
-            this.portableCellBattery = battery.addInt("portableCell", 20000);
-            this.colorApplicatorBattery = battery.addInt("colorApplicator", 20000);
-            this.matterCannonBattery = battery.addInt("matterCannon", 200000);
+            this.wirelessTerminalBattery = define(builder, "wirelessTerminal", 1600000);
+            this.chargedStaffBattery = define(builder, "chargedStaff", 8000);
+            this.entropyManipulatorBattery = define(builder, "entropyManipulator", 200000);
+            this.portableCellBattery = define(builder, "portableCell", 20000);
+            this.colorApplicatorBattery = define(builder, "colorApplicator", 20000);
+            this.matterCannonBattery = define(builder, "matterCannon", 200000);
+            builder.pop();
 
-            ConfigSection worldGen = root.subsection("worldGen");
+            builder.push("worldGen");
+            this.spawnPressesInMeteorites = define(builder, "spawnPressesInMeteorites", true);
+            this.spawnFlawlessOnly = define(builder, "spawnFlawlessOnly", false);
+            builder.pop();
 
-            this.spawnPressesInMeteorites = worldGen.addBoolean("spawnPressesInMeteorites", true);
-            this.spawnFlawlessOnly = worldGen.addBoolean("spawnFlawlessOnly", false);
+            builder.push("wireless");
+            this.wirelessBaseCost = define(builder, "wirelessBaseCost", 8.0);
+            this.wirelessCostMultiplier = define(builder, "wirelessCostMultiplier", 1.0);
+            this.wirelessBaseRange = define(builder, "wirelessBaseRange", 16.0);
+            this.wirelessBoosterRangeMultiplier = define(builder, "wirelessBoosterRangeMultiplier", 1.0);
+            this.wirelessBoosterExp = define(builder, "wirelessBoosterExp", 1.5);
+            this.wirelessHighWirelessCount = define(builder, "wirelessHighWirelessCount", 64.0);
+            this.wirelessTerminalDrainMultiplier = define(builder, "wirelessTerminalDrainMultiplier", 1.0);
+            builder.pop();
 
-            ConfigSection wireless = root.subsection("wireless");
-            this.wirelessBaseCost = wireless.addDouble("wirelessBaseCost", 8.0);
-            this.wirelessCostMultiplier = wireless.addDouble("wirelessCostMultiplier", 1.0);
-            this.wirelessBaseRange = wireless.addDouble("wirelessBaseRange", 16.0);
-            this.wirelessBoosterRangeMultiplier = wireless.addDouble("wirelessBoosterRangeMultiplier", 1.0);
-            this.wirelessBoosterExp = wireless.addDouble("wirelessBoosterExp", 1.5);
-            this.wirelessHighWirelessCount = wireless.addDouble("wirelessHighWirelessCount", 64.0);
-            this.wirelessTerminalDrainMultiplier = wireless.addDouble("wirelessTerminalDrainMultiplier", 1.0);
-
-            ConfigSection portableCells = root.subsection("PortableCells");
-            portableCellDisassembly = portableCells.addBoolean("allowDisassembly", true,
+            builder.push("PortableCells");
+            portableCellDisassembly = define(builder, "allowDisassembly", true,
                     "Allow disassembly of portable cells into the recipe ingredients using shift+right-click");
+            builder.pop();
 
-            ConfigSection PowerRatios = root.subsection("PowerRatios");
-            powerRatioForgeEnergy = PowerRatios.addDouble("ForgeEnergy", DEFAULT_FE_EXCHANGE);
-            powerUsageMultiplier = PowerRatios.addDouble("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
-            gridEnergyStoragePerNode = PowerRatios.addDouble("GridEnergyStoragePerNode", 25, 1, 1000000,
+            builder.push("PowerRatios");
+            powerRatioForgeEnergy = define(builder, "ForgeEnergy", DEFAULT_FE_EXCHANGE);
+            powerUsageMultiplier = define(builder, "UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
+            gridEnergyStoragePerNode = define(builder, "GridEnergyStoragePerNode", 25.0, 1.0, 1000000.0,
                     "How much energy can the internal grid buffer storage per node attached to the grid.");
-            crystalResonanceGeneratorRate = PowerRatios.addDouble("CrystalResonanceGeneratorRate", 20, 0, 1000000,
+            crystalResonanceGeneratorRate = define(builder, "CrystalResonanceGeneratorRate", 20.0, 0.0, 1000000.0,
                     "How much energy a crystal resonance generator generates per tick.");
+            builder.pop();
 
-            ConfigSection Condenser = root.subsection("Condenser");
-            condenserMatterBallsPower = Condenser.addInt("MatterBalls", 256);
-            condenserSingularityPower = Condenser.addInt("Singularity", 256000);
+            builder.push("Condenser");
+            condenserMatterBallsPower = define(builder, "MatterBalls", 256);
+            condenserSingularityPower = define(builder, "Singularity", 256000);
+            builder.pop();
 
-            ConfigSection tickrates = root.subsection("tickRates",
-                    " Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested.");
+            builder.comment(" Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested.");
+            builder.push("tickRates");
             for (TickRates tickRate : TickRates.values()) {
-                tickRateMin.put(tickRate, tickrates.addInt(tickRate.name() + "Min", tickRate.getDefaultMin()));
-                tickRateMax.put(tickRate, tickrates.addInt(tickRate.name() + "Max", tickRate.getDefaultMax()));
+                tickRateMin.put(tickRate, define(builder, tickRate.name() + "Min", tickRate.getDefaultMin()));
+                tickRateMax.put(tickRate, define(builder, tickRate.name() + "Max", tickRate.getDefaultMax()));
             }
+            builder.pop();
 
-            ConfigSection vibrationChamber = root.subsection("vibrationChamber",
-                    "Settings for the Vibration Chamber");
-            vibrationChamberBaseEnergyPerFuelTick = vibrationChamber.addDouble("baseEnergyPerFuelTick", 5, 0.1, 1000,
+            builder.comment("Settings for the Vibration Chamber");
+            builder.push("vibrationChamber");
+            vibrationChamberBaseEnergyPerFuelTick = define(builder, "baseEnergyPerFuelTick", 5.0, 0.1, 1000.0,
                     "AE energy produced per fuel burn tick (reminder: coal = 1600, block of coal = 16000, lava bucket = 20000 burn ticks)");
-            vibrationChamberMinEnergyPerTick = vibrationChamber.addInt("minEnergyPerGameTick", 4, 0, 1000,
+            vibrationChamberMinEnergyPerTick = define(builder, "minEnergyPerGameTick", 4, 0, 1000,
                     "Minimum amount of AE/t the vibration chamber can slow down to when energy is being wasted.");
-            vibrationChamberMaxEnergyPerTick = vibrationChamber.addInt("baseMaxEnergyPerGameTick", 40, 1, 1000,
+            vibrationChamberMaxEnergyPerTick = define(builder, "baseMaxEnergyPerGameTick", 40, 1, 1000,
                     "Maximum amount of AE/t the vibration chamber can speed up to when generated energy is being fully consumed.");
+            builder.pop();
+
+            spec = builder.build();
         }
 
+    }
+
+    private static BooleanValue define(ModConfigSpec.Builder builder, String name, boolean defaultValue, String comment) {
+        builder.comment(comment);
+        return define(builder, name, defaultValue);
+    }
+
+    private static BooleanValue define(ModConfigSpec.Builder builder, String name, boolean defaultValue) {
+        return builder.define(name, defaultValue);
+    }
+
+    private static IntValue define(ModConfigSpec.Builder builder, String name, int defaultValue, String comment) {
+        builder.comment(comment);
+        return define(builder, name, defaultValue);
+    }
+
+    private static DoubleValue define(ModConfigSpec.Builder builder, String name, double defaultValue) {
+        return define(builder, name, defaultValue, Double.MIN_VALUE, Double.MAX_VALUE);
+    }
+
+    private static DoubleValue define(ModConfigSpec.Builder builder, String name, double defaultValue, String comment) {
+        builder.comment(comment);
+        return define(builder, name, defaultValue);
+    }
+
+    private static DoubleValue define(ModConfigSpec.Builder builder, String name, double defaultValue, double min, double max, String comment) {
+        builder.comment(comment);
+        return define(builder, name, defaultValue, min, max);
+    }
+
+    private static DoubleValue define(ModConfigSpec.Builder builder, String name, double defaultValue, double min, double max) {
+        return builder.defineInRange(name, defaultValue, min, max);
+    }
+
+    private static IntValue define(ModConfigSpec.Builder builder, String name, int defaultValue, int min, int max, String comment) {
+        builder.comment(comment);
+        return define(builder, name, defaultValue, min, max);
+    }
+
+    private static IntValue define(ModConfigSpec.Builder builder, String name, int defaultValue, int min, int max) {
+        return builder.defineInRange(name, defaultValue, min, max);
+    }
+
+    private static IntValue define(ModConfigSpec.Builder builder, String name, int defaultValue) {
+        return define(builder, name, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    private static <T extends Enum<T>> EnumValue<T> defineEnum(ModConfigSpec.Builder builder, String name, T defaultValue) {
+        return builder.defineEnum(name, defaultValue);
+    }
+
+    private static <T extends Enum<T>> EnumValue<T> defineEnum(ModConfigSpec.Builder builder, String name, T defaultValue, String comment) {
+        builder.comment(comment);
+        return defineEnum(builder, name, defaultValue);
     }
 
 }

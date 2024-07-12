@@ -23,6 +23,7 @@ import java.util.Collections;
 
 import com.mojang.brigadier.CommandDispatcher;
 
+import net.neoforged.fml.ModContainer;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.commands.CommandSourceStack;
@@ -40,7 +41,6 @@ import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
@@ -112,13 +112,13 @@ public abstract class AppEngBase implements AppEng {
 
     static AppEngBase INSTANCE;
 
-    public AppEngBase(IEventBus modEventBus) {
+    public AppEngBase(IEventBus modEventBus, ModContainer container) {
         if (INSTANCE != null) {
             throw new IllegalStateException();
         }
         INSTANCE = this;
 
-        AEConfig.load(FMLPaths.CONFIGDIR.get());
+        AEConfig.register(container);
 
         InitGridServices.init();
         InitBlockEntityMoveStrategies.init();
@@ -210,7 +210,6 @@ public abstract class AppEngBase implements AppEng {
         InitCauldronInteraction.init();
         InitDispenserBehavior.init();
 
-        AEConfig.instance().save();
         InitUpgrades.init();
     }
 

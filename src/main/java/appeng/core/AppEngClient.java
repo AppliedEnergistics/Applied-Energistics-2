@@ -23,6 +23,7 @@ import java.util.Objects;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
+import net.neoforged.fml.ModContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,8 +146,8 @@ public class AppEngClient extends AppEngBase {
 
     private final Guide guide;
 
-    public AppEngClient(IEventBus modEventBus) {
-        super(modEventBus);
+    public AppEngClient(IEventBus modEventBus, ModContainer container) {
+        super(modEventBus, container);
         InitBuiltInModels.init();
 
         this.registerClientCommands();
