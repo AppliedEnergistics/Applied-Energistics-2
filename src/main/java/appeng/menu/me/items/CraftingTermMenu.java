@@ -18,25 +18,27 @@
 
 package appeng.menu.me.items;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -75,8 +77,8 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
 
     private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots = new CraftingMatrixSlot[9];
-    private final CraftingContainer recipeTestContainer = new TransientCraftingContainer(this, 3, 3);
-
+    @Nullable
+    private CraftingInput lastTestedInput;
     private final CraftingTermSlot outputSlot;
     private RecipeHolder<CraftingRecipe> currentRecipe;
 
@@ -122,28 +124,25 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
     }
 
     private void updateCurrentRecipeAndOutput(boolean forceUpdate) {
-        boolean hasChanged = forceUpdate;
-        for (int x = 0; x < 9; x++) {
-            var stack = this.craftingSlots[x].getItem();
-            if (!ItemStack.isSameItemSameComponents(stack, recipeTestContainer.getItem(x))) {
-                hasChanged = true;
-                recipeTestContainer.setItem(x, stack.copy());
-            }
+        var testItems = new ArrayList<ItemStack>(this.craftingSlots.length);
+        for (var craftingSlot : this.craftingSlots) {
+            testItems.add(craftingSlot.getItem().copy());
         }
+        var testInput = CraftingInput.of(3, 3, testItems);
 
-        if (!hasChanged) {
+        if (!forceUpdate && Objects.equals(lastTestedInput, testInput)) {
             return;
         }
 
-        Level level = this.getPlayerInventory().player.level();
-        var craftInput = recipeTestContainer.asCraftInput();
-        this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftInput, level)
+        var level = getPlayer().level();
+        this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, testInput, level)
                 .orElse(null);
+        this.lastTestedInput = testInput;
 
         if (this.currentRecipe == null) {
             this.outputSlot.set(ItemStack.EMPTY);
         } else {
-            this.outputSlot.set(this.currentRecipe.value().assemble(craftInput, level.registryAccess()));
+            this.outputSlot.set(this.currentRecipe.value().assemble(testInput, level.registryAccess()));
         }
     }
 
