@@ -40,10 +40,9 @@ import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
@@ -57,8 +56,8 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import appeng.api.ids.AEComponents;
 import appeng.api.parts.CableRenderMode;
 import appeng.api.stacks.AEKeyType;
-import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.AEKeyTypesInternal;
+import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -69,26 +68,24 @@ import appeng.hooks.WrenchHook;
 import appeng.hooks.ticking.TickHandler;
 import appeng.hotkeys.HotkeyActions;
 import appeng.init.InitAdvancementTriggers;
-import appeng.init.InitBlockEntities;
-import appeng.init.InitBlocks;
 import appeng.init.InitCapabilityProviders;
 import appeng.init.InitCauldronInteraction;
 import appeng.init.InitDispenserBehavior;
 import appeng.init.InitEntityTypes;
-import appeng.init.InitItems;
 import appeng.init.InitMenuTypes;
 import appeng.init.InitRecipeSerializers;
 import appeng.init.InitRecipeTypes;
 import appeng.init.InitStats;
 import appeng.init.InitVillager;
 import appeng.init.client.InitParticleTypes;
+import appeng.init.internal.InitBlockEntityMoveStrategies;
 import appeng.init.internal.InitGridLinkables;
+import appeng.init.internal.InitGridServices;
 import appeng.init.internal.InitP2PAttunements;
 import appeng.init.internal.InitStorageCells;
 import appeng.init.internal.InitUpgrades;
 import appeng.init.worldgen.InitStructures;
 import appeng.integration.Integrations;
-import appeng.items.tools.MemoryCardItem;
 import appeng.server.AECommand;
 import appeng.server.services.ChunkLoadingService;
 import appeng.server.testworld.GameTestPlotAdapter;
@@ -121,8 +118,18 @@ public abstract class AppEngBase implements AppEng {
         }
         INSTANCE = this;
 
+        AEConfig.load(FMLPaths.CONFIGDIR.get());
+
+        InitGridServices.init();
+        InitBlockEntityMoveStrategies.init();
+
+        AEParts.init();
+        AEBlocks.DR.register(modEventBus);
+        AEItems.DR.register(modEventBus);
+        AEBlockEntities.DR.register(modEventBus);
         AEComponents.DR.register(modEventBus);
         InitStructures.register(modEventBus);
+
         modEventBus.addListener(this::registerRegistries);
         modEventBus.addListener(MainCreativeTab::initExternal);
         modEventBus.addListener(InitNetwork::init);
@@ -130,43 +137,39 @@ public abstract class AppEngBase implements AppEng {
         modEventBus.addListener(InitCapabilityProviders::register);
         modEventBus.addListener(EventPriority.LOWEST, InitCapabilityProviders::registerGenericAdapters);
         modEventBus.addListener((RegisterEvent event) -> {
-            if (event.getRegistryKey().equals(Registries.SOUND_EVENT)) {
+            if (event.getRegistryKey() == Registries.SOUND_EVENT) {
                 registerSounds(BuiltInRegistries.SOUND_EVENT);
-                return;
             } else if (event.getRegistryKey() == Registries.CREATIVE_MODE_TAB) {
                 registerCreativeTabs(BuiltInRegistries.CREATIVE_MODE_TAB);
-                return;
+            } else if (event.getRegistryKey() == Registries.CUSTOM_STAT) {
+                InitStats.init(event.getRegistry(Registries.CUSTOM_STAT));
+            } else if (event.getRegistryKey() == Registries.TRIGGER_TYPE) {
+                InitAdvancementTriggers.init(event.getRegistry(Registries.TRIGGER_TYPE));
+            } else if (event.getRegistryKey() == Registries.ENTITY_TYPE) {
+                InitEntityTypes.init(event.getRegistry(Registries.ENTITY_TYPE));
+            } else if (event.getRegistryKey() == Registries.PARTICLE_TYPE) {
+                InitParticleTypes.init(event.getRegistry(Registries.PARTICLE_TYPE));
+            } else if (event.getRegistryKey() == Registries.MENU) {
+                InitMenuTypes.init(event.getRegistry(Registries.MENU));
+            } else if (event.getRegistryKey() == Registries.RECIPE_TYPE) {
+                InitRecipeTypes.init(event.getRegistry(Registries.RECIPE_TYPE));
+            } else if (event.getRegistryKey() == Registries.RECIPE_SERIALIZER) {
+                InitRecipeSerializers.init(event.getRegistry(Registries.RECIPE_SERIALIZER));
+            } else if (event.getRegistryKey() == Registries.RECIPE_SERIALIZER) {
+                InitRecipeSerializers.init(event.getRegistry(Registries.RECIPE_SERIALIZER));
+            } else if (event.getRegistryKey() == Registries.CHUNK_GENERATOR) {
+                Registry.register(BuiltInRegistries.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
+                        SpatialStorageChunkGenerator.CODEC);
+            } else if (event.getRegistryKey() == Registries.VILLAGER_PROFESSION) {
+                InitVillager.initProfession(event.getRegistry(Registries.VILLAGER_PROFESSION));
+            } else if (event.getRegistryKey() == Registries.POINT_OF_INTEREST_TYPE) {
+                InitVillager.initPointOfInterestType(event.getRegistry(Registries.POINT_OF_INTEREST_TYPE));
+            } else if (event.getRegistryKey() == AEKeyType.REGISTRY_KEY) {
+                registerKeyTypes(event.getRegistry(AEKeyType.REGISTRY_KEY));
             }
-
-            if (!event.getRegistryKey().equals(Registries.BLOCK)) {
-                return;
-            }
-            // Register everything in the block registration event ;)
-
-            InitStats.init();
-            InitAdvancementTriggers.init();
-
-            // Initialize items in order
-            AEItems.init();
-            AEBlocks.init();
-            AEParts.init();
-
-            InitBlocks.init(BuiltInRegistries.BLOCK);
-            InitItems.init(BuiltInRegistries.ITEM);
-            InitEntityTypes.init(BuiltInRegistries.ENTITY_TYPE);
-            InitParticleTypes.init(BuiltInRegistries.PARTICLE_TYPE);
-            InitBlockEntities.init(BuiltInRegistries.BLOCK_ENTITY_TYPE);
-            InitMenuTypes.init(BuiltInRegistries.MENU);
-            InitRecipeTypes.init(BuiltInRegistries.RECIPE_TYPE);
-            InitRecipeSerializers.init(BuiltInRegistries.RECIPE_SERIALIZER);
-            registerKeyTypes();
-            InitVillager.init();
-
-            Registry.register(BuiltInRegistries.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
-                    SpatialStorageChunkGenerator.CODEC);
-
-            HotkeyActions.init();
         });
+
+        NeoForge.EVENT_BUS.addListener(InitVillager::initTrades);
 
         modEventBus.addListener(Integrations::enqueueIMC);
         modEventBus.addListener(this::commonSetup);
@@ -182,13 +185,8 @@ public abstract class AppEngBase implements AppEng {
 
         NeoForge.EVENT_BUS.addListener(WrenchHook::onPlayerUseBlockEvent);
         NeoForge.EVENT_BUS.addListener(SkyStoneBreakSpeed::handleBreakFaster);
-        // Workaround for https://github.com/MinecraftForge/MinecraftForge/issues/9158.
-        // Can be removed once it's fixed in Forge.
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, (PlayerInteractEvent.RightClickBlock event) -> {
-            if (event.getItemStack().getItem() instanceof MemoryCardItem && event.getEntity().isSecondaryUseActive()) {
-                event.setUseBlock(TriState.TRUE);
-            }
-        });
+
+        HotkeyActions.init();
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -216,9 +214,9 @@ public abstract class AppEngBase implements AppEng {
         InitUpgrades.init();
     }
 
-    public void registerKeyTypes() {
-        AEKeyTypes.register(AEKeyType.items());
-        AEKeyTypes.register(AEKeyType.fluids());
+    public void registerKeyTypes(Registry<AEKeyType> registry) {
+        Registry.register(registry, AEKeyType.items().getId(), AEKeyType.items());
+        Registry.register(registry, AEKeyType.fluids().getId(), AEKeyType.fluids());
     }
 
     public void registerCommands(ServerStartingEvent evt) {
@@ -295,8 +293,8 @@ public abstract class AppEngBase implements AppEng {
 
     protected final CableRenderMode getCableRenderModeForPlayer(@Nullable Player player) {
         if (player != null) {
-            if (AEItems.NETWORK_TOOL.isSameAs(player.getItemInHand(InteractionHand.MAIN_HAND))
-                    || AEItems.NETWORK_TOOL.isSameAs(player.getItemInHand(InteractionHand.OFF_HAND))) {
+            if (AEItems.NETWORK_TOOL.is(player.getItemInHand(InteractionHand.MAIN_HAND))
+                    || AEItems.NETWORK_TOOL.is(player.getItemInHand(InteractionHand.OFF_HAND))) {
                 return CableRenderMode.CABLE_VIEW;
             }
         }

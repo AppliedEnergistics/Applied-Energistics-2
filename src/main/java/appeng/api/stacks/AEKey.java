@@ -76,7 +76,7 @@ public abstract class AEKey {
                 public <T> RecordBuilder<T> coApply(DynamicOps<T> ops, AEKey input, RecordBuilder<T> t) {
                     // When the input is a MISSING_CONTENT item and has the original data attached,
                     // we write that back.
-                    if (AEItems.MISSING_CONTENT.isSameAs(input)) {
+                    if (AEItems.MISSING_CONTENT.is(input)) {
                         var originalData = input.get(AEComponents.MISSING_CONTENT_AEKEY_DATA);
                         if (originalData != null) {
                             var originalDataMap = originalData.getUnsafe();

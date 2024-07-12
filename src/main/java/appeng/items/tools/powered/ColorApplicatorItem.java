@@ -534,7 +534,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
      */
     public static ItemStack createFullColorApplicator() {
         // Give a fully set up color applicator
-        var item = AEItems.COLOR_APPLICATOR.asItem();
+        var item = AEItems.COLOR_APPLICATOR.get();
         var applicator = new ItemStack(item);
 
         // Add all dyes

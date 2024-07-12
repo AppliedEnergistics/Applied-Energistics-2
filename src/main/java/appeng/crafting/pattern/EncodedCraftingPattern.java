@@ -45,6 +45,6 @@ public record EncodedCraftingPattern(
                     EncodedCraftingPattern::new);
 
     public boolean containsMissingContent() {
-        return AEItems.MISSING_CONTENT.isSameAs(result) || inputs.stream().anyMatch(AEItems.MISSING_CONTENT::isSameAs);
+        return AEItems.MISSING_CONTENT.is(result) || inputs.stream().anyMatch(AEItems.MISSING_CONTENT::is);
     }
 }

@@ -20,21 +20,18 @@ package appeng.core.definitions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.AEBaseBlockEntity;
@@ -76,109 +73,111 @@ import appeng.debug.EnergyGeneratorBlockEntity;
 import appeng.debug.ItemGenBlockEntity;
 import appeng.debug.PhantomNodeBlockEntity;
 
-@SuppressWarnings("unused")
 public final class AEBlockEntities {
+    private static final List<DeferredBlockEntityType<?>> BLOCK_ENTITY_TYPES = new ArrayList<>();
 
-    private static final Map<ResourceLocation, BlockEntityType<?>> BLOCK_ENTITY_TYPES = new HashMap<>();
+    public static final DeferredRegister<BlockEntityType<?>> DR = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE,
+            AppEng.MOD_ID);
 
-    private static final List<BlockEntityTypeWithClass<?>> BLOCK_ENTITY_TYPES_WITH_CLASSES = new ArrayList<>();
-
-    public static final BlockEntityType<InscriberBlockEntity> INSCRIBER = create("inscriber",
+    public static final DeferredBlockEntityType<InscriberBlockEntity> INSCRIBER = create("inscriber",
             InscriberBlockEntity.class,
             InscriberBlockEntity::new, AEBlocks.INSCRIBER);
-    public static final BlockEntityType<WirelessAccessPointBlockEntity> WIRELESS_ACCESS_POINT = create(
+    public static final DeferredBlockEntityType<WirelessAccessPointBlockEntity> WIRELESS_ACCESS_POINT = create(
             "wireless_access_point",
             WirelessAccessPointBlockEntity.class, WirelessAccessPointBlockEntity::new, AEBlocks.WIRELESS_ACCESS_POINT);
-    public static final BlockEntityType<ChargerBlockEntity> CHARGER = create("charger", ChargerBlockEntity.class,
+    public static final DeferredBlockEntityType<ChargerBlockEntity> CHARGER = create("charger",
+            ChargerBlockEntity.class,
             ChargerBlockEntity::new, AEBlocks.CHARGER);
-    public static final BlockEntityType<QuantumBridgeBlockEntity> QUANTUM_BRIDGE = create("quantum_ring",
+    public static final DeferredBlockEntityType<QuantumBridgeBlockEntity> QUANTUM_BRIDGE = create("quantum_ring",
             QuantumBridgeBlockEntity.class, QuantumBridgeBlockEntity::new, AEBlocks.QUANTUM_RING,
             AEBlocks.QUANTUM_LINK);
-    public static final BlockEntityType<SpatialPylonBlockEntity> SPATIAL_PYLON = create("spatial_pylon",
+    public static final DeferredBlockEntityType<SpatialPylonBlockEntity> SPATIAL_PYLON = create("spatial_pylon",
             SpatialPylonBlockEntity.class, SpatialPylonBlockEntity::new, AEBlocks.SPATIAL_PYLON);
-    public static final BlockEntityType<SpatialIOPortBlockEntity> SPATIAL_IO_PORT = create("spatial_io_port",
+    public static final DeferredBlockEntityType<SpatialIOPortBlockEntity> SPATIAL_IO_PORT = create("spatial_io_port",
             SpatialIOPortBlockEntity.class, SpatialIOPortBlockEntity::new, AEBlocks.SPATIAL_IO_PORT);
-    public static final BlockEntityType<SpatialAnchorBlockEntity> SPATIAL_ANCHOR = create("spatial_anchor",
+    public static final DeferredBlockEntityType<SpatialAnchorBlockEntity> SPATIAL_ANCHOR = create("spatial_anchor",
             SpatialAnchorBlockEntity.class, SpatialAnchorBlockEntity::new, AEBlocks.SPATIAL_ANCHOR);
-    public static final BlockEntityType<CableBusBlockEntity> CABLE_BUS = create("cable_bus", CableBusBlockEntity.class,
+    public static final DeferredBlockEntityType<CableBusBlockEntity> CABLE_BUS = create("cable_bus",
+            CableBusBlockEntity.class,
             CableBusBlockEntity::new, AEBlocks.CABLE_BUS);
-    public static final BlockEntityType<ControllerBlockEntity> CONTROLLER = create("controller",
+    public static final DeferredBlockEntityType<ControllerBlockEntity> CONTROLLER = create("controller",
             ControllerBlockEntity.class, ControllerBlockEntity::new, AEBlocks.CONTROLLER);
-    public static final BlockEntityType<DriveBlockEntity> DRIVE = create("drive", DriveBlockEntity.class,
+    public static final DeferredBlockEntityType<DriveBlockEntity> DRIVE = create("drive", DriveBlockEntity.class,
             DriveBlockEntity::new, AEBlocks.DRIVE);
-    public static final BlockEntityType<MEChestBlockEntity> ME_CHEST = create("chest", MEChestBlockEntity.class,
+    public static final DeferredBlockEntityType<MEChestBlockEntity> ME_CHEST = create("chest", MEChestBlockEntity.class,
             MEChestBlockEntity::new, AEBlocks.ME_CHEST);
-    public static final BlockEntityType<InterfaceBlockEntity> INTERFACE = create("interface",
+    public static final DeferredBlockEntityType<InterfaceBlockEntity> INTERFACE = create("interface",
             InterfaceBlockEntity.class, InterfaceBlockEntity::new, AEBlocks.INTERFACE);
-    public static final BlockEntityType<CellWorkbenchBlockEntity> CELL_WORKBENCH = create("cell_workbench",
+    public static final DeferredBlockEntityType<CellWorkbenchBlockEntity> CELL_WORKBENCH = create("cell_workbench",
             CellWorkbenchBlockEntity.class, CellWorkbenchBlockEntity::new, AEBlocks.CELL_WORKBENCH);
-    public static final BlockEntityType<IOPortBlockEntity> IO_PORT = create("io_port", IOPortBlockEntity.class,
+    public static final DeferredBlockEntityType<IOPortBlockEntity> IO_PORT = create("io_port", IOPortBlockEntity.class,
             IOPortBlockEntity::new, AEBlocks.IO_PORT);
-    public static final BlockEntityType<CondenserBlockEntity> CONDENSER = create("condenser",
+    public static final DeferredBlockEntityType<CondenserBlockEntity> CONDENSER = create("condenser",
             CondenserBlockEntity.class,
             CondenserBlockEntity::new, AEBlocks.CONDENSER);
-    public static final BlockEntityType<EnergyAcceptorBlockEntity> ENERGY_ACCEPTOR = create("energy_acceptor",
+    public static final DeferredBlockEntityType<EnergyAcceptorBlockEntity> ENERGY_ACCEPTOR = create("energy_acceptor",
             EnergyAcceptorBlockEntity.class, EnergyAcceptorBlockEntity::new, AEBlocks.ENERGY_ACCEPTOR);
-    public static final BlockEntityType<CrystalResonanceGeneratorBlockEntity> CRYSTAL_RESONANCE_GENERATOR = create(
+    public static final DeferredBlockEntityType<CrystalResonanceGeneratorBlockEntity> CRYSTAL_RESONANCE_GENERATOR = create(
             "crystal_resonance_generator",
             CrystalResonanceGeneratorBlockEntity.class, CrystalResonanceGeneratorBlockEntity::new,
             AEBlocks.CRYSTAL_RESONANCE_GENERATOR);
-    public static final BlockEntityType<VibrationChamberBlockEntity> VIBRATION_CHAMBER = create("vibration_chamber",
+    public static final DeferredBlockEntityType<VibrationChamberBlockEntity> VIBRATION_CHAMBER = create(
+            "vibration_chamber",
             VibrationChamberBlockEntity.class, VibrationChamberBlockEntity::new, AEBlocks.VIBRATION_CHAMBER);
-    public static final BlockEntityType<GrowthAcceleratorBlockEntity> GROWTH_ACCELERATOR = create(
+    public static final DeferredBlockEntityType<GrowthAcceleratorBlockEntity> GROWTH_ACCELERATOR = create(
             "growth_accelerator", GrowthAcceleratorBlockEntity.class,
             GrowthAcceleratorBlockEntity::new, AEBlocks.GROWTH_ACCELERATOR);
-    public static final BlockEntityType<EnergyCellBlockEntity> ENERGY_CELL = create("energy_cell",
+    public static final DeferredBlockEntityType<EnergyCellBlockEntity> ENERGY_CELL = create("energy_cell",
             EnergyCellBlockEntity.class, EnergyCellBlockEntity::new, AEBlocks.ENERGY_CELL);
-    public static final BlockEntityType<EnergyCellBlockEntity> DENSE_ENERGY_CELL = create("dense_energy_cell",
+    public static final DeferredBlockEntityType<EnergyCellBlockEntity> DENSE_ENERGY_CELL = create("dense_energy_cell",
             EnergyCellBlockEntity.class, EnergyCellBlockEntity::new, AEBlocks.DENSE_ENERGY_CELL);
-    public static final BlockEntityType<CreativeEnergyCellBlockEntity> CREATIVE_ENERGY_CELL = create(
+    public static final DeferredBlockEntityType<CreativeEnergyCellBlockEntity> CREATIVE_ENERGY_CELL = create(
             "creative_energy_cell",
             CreativeEnergyCellBlockEntity.class, CreativeEnergyCellBlockEntity::new, AEBlocks.CREATIVE_ENERGY_CELL);
-    public static final BlockEntityType<CraftingBlockEntity> CRAFTING_UNIT = create("crafting_unit",
+    public static final DeferredBlockEntityType<CraftingBlockEntity> CRAFTING_UNIT = create("crafting_unit",
             CraftingBlockEntity.class, CraftingBlockEntity::new, AEBlocks.CRAFTING_UNIT,
             AEBlocks.CRAFTING_ACCELERATOR);
-    public static final BlockEntityType<CraftingBlockEntity> CRAFTING_STORAGE = create("crafting_storage",
+    public static final DeferredBlockEntityType<CraftingBlockEntity> CRAFTING_STORAGE = create("crafting_storage",
             CraftingBlockEntity.class, CraftingBlockEntity::new, AEBlocks.CRAFTING_STORAGE_1K,
             AEBlocks.CRAFTING_STORAGE_4K, AEBlocks.CRAFTING_STORAGE_16K, AEBlocks.CRAFTING_STORAGE_64K,
             AEBlocks.CRAFTING_STORAGE_256K);
-    public static final BlockEntityType<CraftingMonitorBlockEntity> CRAFTING_MONITOR = create("crafting_monitor",
+    public static final DeferredBlockEntityType<CraftingMonitorBlockEntity> CRAFTING_MONITOR = create(
+            "crafting_monitor",
             CraftingMonitorBlockEntity.class, CraftingMonitorBlockEntity::new, AEBlocks.CRAFTING_MONITOR);
-    public static final BlockEntityType<PatternProviderBlockEntity> PATTERN_PROVIDER = create(
+    public static final DeferredBlockEntityType<PatternProviderBlockEntity> PATTERN_PROVIDER = create(
             "pattern_provider",
             PatternProviderBlockEntity.class, PatternProviderBlockEntity::new, AEBlocks.PATTERN_PROVIDER);
-    public static final BlockEntityType<MolecularAssemblerBlockEntity> MOLECULAR_ASSEMBLER = create(
+    public static final DeferredBlockEntityType<MolecularAssemblerBlockEntity> MOLECULAR_ASSEMBLER = create(
             "molecular_assembler",
             MolecularAssemblerBlockEntity.class, MolecularAssemblerBlockEntity::new, AEBlocks.MOLECULAR_ASSEMBLER);
-    public static final BlockEntityType<LightDetectorBlockEntity> LIGHT_DETECTOR = create("light_detector",
+    public static final DeferredBlockEntityType<LightDetectorBlockEntity> LIGHT_DETECTOR = create("light_detector",
             LightDetectorBlockEntity.class, LightDetectorBlockEntity::new, AEBlocks.LIGHT_DETECTOR);
-    public static final BlockEntityType<PaintSplotchesBlockEntity> PAINT = create("paint",
+    public static final DeferredBlockEntityType<PaintSplotchesBlockEntity> PAINT = create("paint",
             PaintSplotchesBlockEntity.class,
             PaintSplotchesBlockEntity::new, AEBlocks.PAINT);
-    public static final BlockEntityType<SkyChestBlockEntity> SKY_CHEST = create("sky_chest", SkyChestBlockEntity.class,
+    public static final DeferredBlockEntityType<SkyChestBlockEntity> SKY_CHEST = create("sky_chest",
+            SkyChestBlockEntity.class,
             SkyChestBlockEntity::new, AEBlocks.SKY_STONE_CHEST, AEBlocks.SMOOTH_SKY_STONE_CHEST);
 
-    public static final BlockEntityType<SkyStoneTankBlockEntity> SKY_STONE_TANK = create("sky_tank",
+    public static final DeferredBlockEntityType<SkyStoneTankBlockEntity> SKY_STONE_TANK = create("sky_tank",
             SkyStoneTankBlockEntity.class,
             SkyStoneTankBlockEntity::new, AEBlocks.SKY_STONE_TANK);
 
-    public static final BlockEntityType<ItemGenBlockEntity> DEBUG_ITEM_GEN = create("debug_item_gen",
+    public static final DeferredBlockEntityType<ItemGenBlockEntity> DEBUG_ITEM_GEN = create("debug_item_gen",
             ItemGenBlockEntity.class, ItemGenBlockEntity::new, AEBlocks.DEBUG_ITEM_GEN);
-    public static final BlockEntityType<PhantomNodeBlockEntity> DEBUG_PHANTOM_NODE = create("debug_phantom_node",
+    public static final DeferredBlockEntityType<PhantomNodeBlockEntity> DEBUG_PHANTOM_NODE = create(
+            "debug_phantom_node",
             PhantomNodeBlockEntity.class, PhantomNodeBlockEntity::new, AEBlocks.DEBUG_PHANTOM_NODE);
-    public static final BlockEntityType<CubeGeneratorBlockEntity> DEBUG_CUBE_GEN = create("debug_cube_gen",
+    public static final DeferredBlockEntityType<CubeGeneratorBlockEntity> DEBUG_CUBE_GEN = create("debug_cube_gen",
             CubeGeneratorBlockEntity.class, CubeGeneratorBlockEntity::new, AEBlocks.DEBUG_CUBE_GEN);
-    public static final BlockEntityType<EnergyGeneratorBlockEntity> DEBUG_ENERGY_GEN = create("debug_energy_gen",
+    public static final DeferredBlockEntityType<EnergyGeneratorBlockEntity> DEBUG_ENERGY_GEN = create(
+            "debug_energy_gen",
             EnergyGeneratorBlockEntity.class, EnergyGeneratorBlockEntity::new, AEBlocks.DEBUG_ENERGY_GEN);
 
-    public static final BlockEntityType<CrankBlockEntity> CRANK = create("crank", CrankBlockEntity.class,
+    public static final DeferredBlockEntityType<CrankBlockEntity> CRANK = create("crank", CrankBlockEntity.class,
             CrankBlockEntity::new, AEBlocks.CRANK);
 
     private AEBlockEntities() {
-    }
-
-    public static Map<ResourceLocation, BlockEntityType<?>> getBlockEntityTypes() {
-        return ImmutableMap.copyOf(BLOCK_ENTITY_TYPES);
     }
 
     /**
@@ -187,9 +186,9 @@ public final class AEBlockEntities {
     @SuppressWarnings("unchecked")
     public static <T extends BlockEntity> List<BlockEntityType<? extends T>> getSubclassesOf(Class<T> baseClass) {
         var result = new ArrayList<BlockEntityType<? extends T>>();
-        for (var pair : BLOCK_ENTITY_TYPES_WITH_CLASSES) {
-            if (baseClass.isAssignableFrom(pair.implementation)) {
-                result.add((BlockEntityType<? extends T>) pair.type);
+        for (var type : BLOCK_ENTITY_TYPES) {
+            if (baseClass.isAssignableFrom(type.getBlockEntityClass())) {
+                result.add((BlockEntityType<? extends T>) type.get());
             }
         }
         return result;
@@ -200,9 +199,9 @@ public final class AEBlockEntities {
      */
     public static List<BlockEntityType<?>> getImplementorsOf(Class<?> iface) {
         var result = new ArrayList<BlockEntityType<?>>();
-        for (var pair : BLOCK_ENTITY_TYPES_WITH_CLASSES) {
-            if (iface.isAssignableFrom(pair.implementation)) {
-                result.add(pair.type);
+        for (var type : BLOCK_ENTITY_TYPES) {
+            if (iface.isAssignableFrom(type.getBlockEntityClass())) {
+                result.add(type.get());
             }
         }
         return result;
@@ -210,57 +209,56 @@ public final class AEBlockEntities {
 
     @SuppressWarnings("unchecked")
     @SafeVarargs
-    private static <T extends AEBaseBlockEntity> BlockEntityType<T> create(String shortId,
+    private static <T extends AEBaseBlockEntity> DeferredBlockEntityType<T> create(String shortId,
             Class<T> entityClass,
             BlockEntityFactory<T> factory,
             BlockDefinition<? extends AEBaseEntityBlock<?>>... blockDefinitions) {
         Preconditions.checkArgument(blockDefinitions.length > 0);
 
-        ResourceLocation id = AppEng.makeId(shortId);
+        var deferred = DR.register(shortId, () -> {
+            AtomicReference<BlockEntityType<T>> typeHolder = new AtomicReference<>();
+            BlockEntityType.BlockEntitySupplier<T> supplier = (blockPos, blockState) -> factory.create(typeHolder.get(),
+                    blockPos, blockState);
 
-        var blocks = Arrays.stream(blockDefinitions)
-                .map(BlockDefinition::block)
-                .toArray(AEBaseEntityBlock[]::new);
+            var blocks = Arrays.stream(blockDefinitions)
+                    .map(BlockDefinition::block)
+                    .toArray(AEBaseEntityBlock[]::new);
 
-        AtomicReference<BlockEntityType<T>> typeHolder = new AtomicReference<>();
-        BlockEntityType.BlockEntitySupplier<T> supplier = (blockPos, blockState) -> factory.create(typeHolder.get(),
-                blockPos, blockState);
-        var type = Builder.of(supplier, blocks).build(null);
-        typeHolder.set(type); // Makes it available to the supplier used above
-        BLOCK_ENTITY_TYPES.put(id, type);
-        BLOCK_ENTITY_TYPES_WITH_CLASSES.add(new BlockEntityTypeWithClass<>(type, entityClass));
+            var type = BlockEntityType.Builder.of(supplier, blocks).build(null);
+            typeHolder.setPlain(type); // Makes it available to the supplier used above
 
-        AEBaseBlockEntity.registerBlockEntityItem(type, blockDefinitions[0].asItem());
+            AEBaseBlockEntity.registerBlockEntityItem(type, blockDefinitions[0].asItem());
 
-        // If the block entity classes implement specific interfaces, automatically register them
-        // as tickers with the blocks that create that entity.
-        BlockEntityTicker<T> serverTicker = null;
-        if (ServerTickingBlockEntity.class.isAssignableFrom(entityClass)) {
-            serverTicker = (level, pos, state, entity) -> {
-                ((ServerTickingBlockEntity) entity).serverTick();
-            };
-        }
-        BlockEntityTicker<T> clientTicker = null;
-        if (ClientTickingBlockEntity.class.isAssignableFrom(entityClass)) {
-            clientTicker = (level, pos, state, entity) -> {
-                ((ClientTickingBlockEntity) entity).clientTick();
-            };
-        }
+            // If the block entity classes implement specific interfaces, automatically register them
+            // as tickers with the blocks that create that entity.
+            BlockEntityTicker<T> serverTicker = null;
+            if (ServerTickingBlockEntity.class.isAssignableFrom(entityClass)) {
+                serverTicker = (level, pos, state, entity) -> {
+                    ((ServerTickingBlockEntity) entity).serverTick();
+                };
+            }
+            BlockEntityTicker<T> clientTicker = null;
+            if (ClientTickingBlockEntity.class.isAssignableFrom(entityClass)) {
+                clientTicker = (level, pos, state, entity) -> {
+                    ((ClientTickingBlockEntity) entity).clientTick();
+                };
+            }
 
-        for (var block : blocks) {
-            AEBaseEntityBlock<T> baseBlock = (AEBaseEntityBlock<T>) block;
-            baseBlock.setBlockEntity(entityClass, type, clientTicker, serverTicker);
-        }
+            for (var block : blocks) {
+                AEBaseEntityBlock<T> baseBlock = (AEBaseEntityBlock<T>) block;
+                baseBlock.setBlockEntity(entityClass, type, clientTicker, serverTicker);
+            }
 
-        return type;
+            return type;
+        });
+
+        var result = new DeferredBlockEntityType<>(entityClass, deferred);
+        BLOCK_ENTITY_TYPES.add(result);
+        return result;
     }
 
     @FunctionalInterface
     interface BlockEntityFactory<T extends AEBaseBlockEntity> {
         T create(BlockEntityType<T> type, BlockPos pos, BlockState state);
     }
-
-    private record BlockEntityTypeWithClass<T extends BlockEntity>(BlockEntityType<T> type, Class<T> implementation) {
-    }
-
 }

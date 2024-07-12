@@ -45,9 +45,9 @@ public record EncodedSmithingTablePattern(
                     EncodedSmithingTablePattern::new);
 
     public boolean containsMissingContent() {
-        return AEItems.MISSING_CONTENT.isSameAs(template)
-                || AEItems.MISSING_CONTENT.isSameAs(base)
-                || AEItems.MISSING_CONTENT.isSameAs(addition)
-                || AEItems.MISSING_CONTENT.isSameAs(resultItem);
+        return AEItems.MISSING_CONTENT.is(template)
+                || AEItems.MISSING_CONTENT.is(base)
+                || AEItems.MISSING_CONTENT.is(addition)
+                || AEItems.MISSING_CONTENT.is(resultItem);
     }
 }

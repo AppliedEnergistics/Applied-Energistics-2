@@ -62,7 +62,7 @@ public final class FacadeCreativeTab {
         // uniqueness
         var facades = ItemStackLinkedSet.createTypeAndComponentsSet();
 
-        var itemFacade = AEItems.FACADE.asItem();// Collect all variants of this item from creative tabs
+        var itemFacade = AEItems.FACADE.get();// Collect all variants of this item from creative tabs
         try {
             for (var tab : CreativeModeTabs.allTabs()) {
                 if (tab == group) {

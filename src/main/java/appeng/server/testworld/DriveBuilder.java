@@ -31,7 +31,7 @@ public class DriveBuilder {
 
     public CreativeCellBuilder addCreativeCell() {
         var cell = AEItems.CREATIVE_CELL.stack();
-        var configInv = AEItems.CREATIVE_CELL.asItem().getConfigInventory(cell);
+        var configInv = AEItems.CREATIVE_CELL.get().getConfigInventory(cell);
         cells.add(cell);
         return new CreativeCellBuilder(configInv);
     }
@@ -88,7 +88,7 @@ public class DriveBuilder {
         }
 
         public void add(ItemLike what, long amount) {
-            add(AEItemKey.of(what.asItem()), amount);
+            add(AEItemKey.of(what), amount);
         }
     }
 
@@ -100,7 +100,7 @@ public class DriveBuilder {
         }
 
         public CreativeCellBuilder add(ItemLike item) {
-            return add(AEItemKey.of(item.asItem()));
+            return add(AEItemKey.of(item));
         }
 
         public CreativeCellBuilder add(Fluid fluid) {

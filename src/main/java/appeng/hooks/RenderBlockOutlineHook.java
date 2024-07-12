@@ -159,7 +159,7 @@ public class RenderBlockOutlineHook {
                 // Maybe a bit hacky, but if there's no part on the side to support the facade
                 // We would render a cable anchor implicitly
                 if (partHost.getPart(side) == null) {
-                    var cableAnchor = AEParts.CABLE_ANCHOR.asItem().createPart();
+                    var cableAnchor = AEParts.CABLE_ANCHOR.get().createPart();
                     renderPart(poseStack, buffers, camera, pos, cableAnchor, side, true, insideBlock);
                 }
 

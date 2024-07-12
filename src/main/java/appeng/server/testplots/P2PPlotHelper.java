@@ -31,7 +31,7 @@ public final class P2PPlotHelper {
         plot.afterGridInitAt(origin, (grid, gridNode) -> {
             BlockPos absOrigin = ((AEBasePart) gridNode.getOwner()).getBlockEntity().getBlockPos();
 
-            linkTunnels(grid, tunnel.asItem().getPartClass(), absOrigin.west(), absOrigin.east());
+            linkTunnels(grid, tunnel.get().getPartClass(), absOrigin.west(), absOrigin.east());
         });
     }
 

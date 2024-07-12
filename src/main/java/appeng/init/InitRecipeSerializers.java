@@ -45,7 +45,7 @@ public final class InitRecipeSerializers {
     }
 
     public static void init(Registry<RecipeSerializer<?>> registry) {
-        FacadeItem facadeItem = AEItems.FACADE.asItem();
+        FacadeItem facadeItem = AEItems.FACADE.get();
         register(registry, InscriberRecipe.TYPE_ID, InscriberRecipeSerializer.INSTANCE);
         register(registry, AppEng.makeId("facade"), FacadeRecipe.getSerializer(facadeItem));
         register(registry, EntropyRecipe.TYPE_ID, EntropyRecipeSerializer.INSTANCE);

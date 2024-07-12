@@ -122,7 +122,7 @@ public class FacadeContainer implements IFacadeContainer {
             if ((facadeSides & ix) == ix) {
                 final int id = out.readVarInt();
 
-                final FacadeItem ifa = AEItems.FACADE.asItem();
+                final FacadeItem ifa = AEItems.FACADE.get();
                 final ItemStack facade = ifa.createFromID(id);
                 if (facade != null) {
                     changed = changed || this.storage.getFacade(side) == null;

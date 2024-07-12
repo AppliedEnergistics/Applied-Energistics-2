@@ -39,6 +39,6 @@ public record EncodedProcessingPattern(
 
     public boolean containsMissingContent() {
         return Stream.concat(sparseInputs.stream(), sparseOutputs.stream())
-                .anyMatch(stack -> stack != null && AEItems.MISSING_CONTENT.isSameAs(stack.what()));
+                .anyMatch(stack -> stack != null && AEItems.MISSING_CONTENT.is(stack.what()));
     }
 }

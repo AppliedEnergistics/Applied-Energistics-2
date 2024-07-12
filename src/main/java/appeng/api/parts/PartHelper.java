@@ -138,7 +138,7 @@ public final class PartHelper {
 
             var state = AEBlocks.CABLE_BUS.block().getStateForPlacement(level, pos);
             level.setBlockAndUpdate(pos, state);
-            return level.getBlockEntity(pos, AEBlockEntities.CABLE_BUS).orElse(null);
+            return AEBlockEntities.CABLE_BUS.getBlockEntity(level, pos);
         }
     }
 
@@ -156,7 +156,7 @@ public final class PartHelper {
 
         var state = AEBlocks.CABLE_BUS.block().getStateForPlacement(level, pos);
         level.setBlockAndUpdate(pos, state);
-        return level.getBlockEntity(pos, AEBlockEntities.CABLE_BUS).orElse(null);
+        return AEBlockEntities.CABLE_BUS.getBlockEntity(level, pos);
     }
 
     public static boolean canPlacePartHost(@Nullable Player player, Level level, BlockPos pos) {

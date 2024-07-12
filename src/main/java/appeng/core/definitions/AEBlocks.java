@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+import com.google.common.base.Preconditions;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.ResourceLocation;
@@ -46,6 +48,7 @@ import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockBehaviour.StateArgumentPredicate;
 import net.minecraft.world.level.material.MapColor;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import appeng.api.ids.AEBlockIds;
 import appeng.block.AEBaseBlock;
@@ -104,8 +107,8 @@ import appeng.decorative.solid.QuartzLampBlock;
 /**
  * Internal implementation for the API blocks
  */
-@SuppressWarnings("unused")
 public final class AEBlocks {
+    public static final DeferredRegister.Blocks DR = DeferredRegister.createBlocks(AppEng.MOD_ID);
 
     private static final List<BlockDefinition<?>> BLOCKS = new ArrayList<>();
     private static final Properties QUARTZ_CLUSTER_PROPERTIES = defaultProps(MapColor.COLOR_CYAN,
@@ -269,35 +272,34 @@ public final class AEBlocks {
             ResourceLocation id,
             Supplier<T> blockSupplier,
             @Nullable BiFunction<Block, Item.Properties, BlockItem> itemFactory) {
+        Preconditions.checkArgument(id.getNamespace().equals(AppEng.MOD_ID));
 
         // Create block and matching item
-        T block = blockSupplier.get();
-
-        Item.Properties itemProperties = new Item.Properties();
-
-        BlockItem item;
-        if (itemFactory != null) {
-            item = itemFactory.apply(block, itemProperties);
-            if (item == null) {
-                throw new IllegalArgumentException("BlockItem factory for " + id + " returned null");
+        var deferredBlock = DR.register(id.getPath(), blockSupplier);
+        var deferredItem = AEItems.DR.register(id.getPath(), () -> {
+            var block = deferredBlock.get();
+            var itemProperties = new Item.Properties();
+            if (itemFactory != null) {
+                var item = itemFactory.apply(block, itemProperties);
+                if (item == null) {
+                    throw new IllegalArgumentException("BlockItem factory for " + id + " returned null");
+                }
+                return item;
+            } else if (block instanceof AEBaseBlock) {
+                return new AEBaseBlockItem(block, itemProperties);
+            } else {
+                return new BlockItem(block, itemProperties);
             }
-        } else if (block instanceof AEBaseBlock) {
-            item = new AEBaseBlockItem(block, itemProperties);
-        } else {
-            item = new BlockItem(block, itemProperties);
-        }
+        });
 
-        BlockDefinition<T> definition = new BlockDefinition<>(englishName, id, block, item);
-        MainCreativeTab.add(definition);
+        var itemDef = new ItemDefinition<>(englishName, deferredItem);
+        MainCreativeTab.add(itemDef);
+        BlockDefinition<T> definition = new BlockDefinition<>(englishName, deferredBlock, itemDef);
 
         BLOCKS.add(definition);
 
         return definition;
 
-    }
-
-    // Used to control in which order static constructors are called
-    public static void init() {
     }
 
 }
