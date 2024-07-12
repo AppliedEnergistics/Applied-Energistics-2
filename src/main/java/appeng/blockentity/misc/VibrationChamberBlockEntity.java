@@ -56,7 +56,8 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity implements IGridTickable, IUpgradeableObject {
+public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
+        implements IGridTickable, IUpgradeableObject {
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1);
     private final InternalInventory invExt = new FilteredInternalInventory(this.inv, new FuelSlotFilter());
 
