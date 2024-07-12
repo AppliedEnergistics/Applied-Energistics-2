@@ -47,7 +47,6 @@ import appeng.api.storage.ITerminalHost;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.IMenuCraftingPacket;
-import appeng.helpers.IMenuCraftingPacket.AutoCraftEntry;
 import appeng.helpers.InventoryAction;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.MenuTypeBuilder;
@@ -111,7 +110,10 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
 
     @Override
     public void slotsChanged(Container inventory) {
-        updateCurrentRecipeAndOutput(false);
+        // Do not trigger a recursive update from updating the test container
+        if (inventory != recipeTestContainer) {
+            updateCurrentRecipeAndOutput(false);
+        }
     }
 
     private void updateCurrentRecipeAndOutput(boolean forceUpdate) {
