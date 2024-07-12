@@ -18,6 +18,18 @@
 
 package appeng.core;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.DoubleSupplier;
+
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
+import net.neoforged.neoforge.common.ModConfigSpec.DoubleValue;
+import net.neoforged.neoforge.common.ModConfigSpec.EnumValue;
+import net.neoforged.neoforge.common.ModConfigSpec.IntValue;
+
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
@@ -27,17 +39,6 @@ import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
 import appeng.util.Platform;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
-import net.neoforged.neoforge.common.ModConfigSpec.DoubleValue;
-import net.neoforged.neoforge.common.ModConfigSpec.EnumValue;
-import net.neoforged.neoforge.common.ModConfigSpec.IntValue;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.DoubleSupplier;
 
 public final class AEConfig {
 
@@ -159,12 +160,12 @@ public final class AEConfig {
 
     public double wireless_getMaxRange(int boosters) {
         return this.wirelessBaseRange
-               + this.wirelessBoosterRangeMultiplier * Math.pow(boosters, this.wirelessBoosterExp);
+                + this.wirelessBoosterRangeMultiplier * Math.pow(boosters, this.wirelessBoosterExp);
     }
 
     public double wireless_getPowerDrain(int boosters) {
         return this.wirelessBaseCost
-               + this.wirelessCostMultiplier * Math.pow(boosters, 1 + boosters / this.wirelessHighWirelessCount);
+                + this.wirelessCostMultiplier * Math.pow(boosters, 1 + boosters / this.wirelessHighWirelessCount);
     }
 
     public boolean isSearchModNameInTooltips() {
@@ -752,7 +753,8 @@ public final class AEConfig {
             condenserSingularityPower = define(builder, "Singularity", 256000);
             builder.pop();
 
-            builder.comment(" Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested.");
+            builder.comment(
+                    " Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested.");
             builder.push("tickRates");
             for (TickRates tickRate : TickRates.values()) {
                 tickRateMin.put(tickRate, define(builder, tickRate.name() + "Min", tickRate.getDefaultMin()));
@@ -775,7 +777,8 @@ public final class AEConfig {
 
     }
 
-    private static BooleanValue define(ModConfigSpec.Builder builder, String name, boolean defaultValue, String comment) {
+    private static BooleanValue define(ModConfigSpec.Builder builder, String name, boolean defaultValue,
+            String comment) {
         builder.comment(comment);
         return define(builder, name, defaultValue);
     }
@@ -798,16 +801,19 @@ public final class AEConfig {
         return define(builder, name, defaultValue);
     }
 
-    private static DoubleValue define(ModConfigSpec.Builder builder, String name, double defaultValue, double min, double max, String comment) {
+    private static DoubleValue define(ModConfigSpec.Builder builder, String name, double defaultValue, double min,
+            double max, String comment) {
         builder.comment(comment);
         return define(builder, name, defaultValue, min, max);
     }
 
-    private static DoubleValue define(ModConfigSpec.Builder builder, String name, double defaultValue, double min, double max) {
+    private static DoubleValue define(ModConfigSpec.Builder builder, String name, double defaultValue, double min,
+            double max) {
         return builder.defineInRange(name, defaultValue, min, max);
     }
 
-    private static IntValue define(ModConfigSpec.Builder builder, String name, int defaultValue, int min, int max, String comment) {
+    private static IntValue define(ModConfigSpec.Builder builder, String name, int defaultValue, int min, int max,
+            String comment) {
         builder.comment(comment);
         return define(builder, name, defaultValue, min, max);
     }
@@ -820,11 +826,13 @@ public final class AEConfig {
         return define(builder, name, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
-    private static <T extends Enum<T>> EnumValue<T> defineEnum(ModConfigSpec.Builder builder, String name, T defaultValue) {
+    private static <T extends Enum<T>> EnumValue<T> defineEnum(ModConfigSpec.Builder builder, String name,
+            T defaultValue) {
         return builder.defineEnum(name, defaultValue);
     }
 
-    private static <T extends Enum<T>> EnumValue<T> defineEnum(ModConfigSpec.Builder builder, String name, T defaultValue, String comment) {
+    private static <T extends Enum<T>> EnumValue<T> defineEnum(ModConfigSpec.Builder builder, String name,
+            T defaultValue, String comment) {
         builder.comment(comment);
         return defineEnum(builder, name, defaultValue);
     }
