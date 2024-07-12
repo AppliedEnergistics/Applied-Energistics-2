@@ -20,7 +20,7 @@ class EmiInscriberRecipe extends BasicEmiRecipe {
     private final InscriberRecipe recipe;
 
     public EmiInscriberRecipe(RecipeHolder<InscriberRecipe> holder) {
-        super(CATEGORY, holder.id(), 97, 64);
+        super(CATEGORY, holder.id(), 105, 54);
 
         recipe = holder.value();
 
@@ -46,18 +46,18 @@ class EmiInscriberRecipe extends BasicEmiRecipe {
     public void addWidgets(WidgetHolder widgets) {
         ResourceLocation background = AppEng.makeId("textures/guis/inscriber.png");
 
-        widgets.addTexture(background, 0, 0, 97, 64, 44, 15);
+        widgets.addTexture(background, 0, 0, 105, 54, 36, 20);
 
-        widgets.addAnimatedTexture(background, 91, 24, 6, 18, 135, 177,
+        widgets.addAnimatedTexture(background, 100, 19, 6, 18, 177, 0,
                 2000, false, true, false);
 
-        widgets.addSlot(EmiIngredient.of(recipe.getTopOptional()), 0, 0)
+        widgets.addSlot(EmiIngredient.of(recipe.getTopOptional()), 2, 2)
                 .drawBack(false);
-        widgets.addSlot(EmiIngredient.of(recipe.getMiddleInput()), 18, 23)
+        widgets.addSlot(EmiIngredient.of(recipe.getMiddleInput()), 26, 18)
                 .drawBack(false);
-        widgets.addSlot(EmiIngredient.of(recipe.getBottomOptional()), 0, 46)
+        widgets.addSlot(EmiIngredient.of(recipe.getBottomOptional()), 2, 34)
                 .drawBack(false);
-        widgets.addSlot(EmiStack.of(recipe.getResultItem()), 68, 24)
+        widgets.addSlot(EmiStack.of(recipe.getResultItem()), 76, 19)
                 .drawBack(false);
     }
 }
