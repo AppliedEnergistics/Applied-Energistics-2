@@ -55,13 +55,13 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.blockentity.grid.AENetworkedBlockEntity;
 import appeng.client.render.overlay.IOverlayDataSource;
 import appeng.client.render.overlay.OverlayManager;
 import appeng.me.service.StatisticsService;
 import appeng.server.services.ChunkLoadingService;
 
-public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
+public class SpatialAnchorBlockEntity extends AENetworkedBlockEntity
         implements IGridTickable, IConfigurableObject, IOverlayDataSource {
 
     static {

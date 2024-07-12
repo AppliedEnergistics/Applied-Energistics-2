@@ -75,7 +75,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.KeyTypeSelection;
 import appeng.api.util.KeyTypeSelectionHost;
 import appeng.blockentity.ServerTickingBlockEntity;
-import appeng.blockentity.grid.AENetworkPowerBlockEntity;
+import appeng.blockentity.grid.AENetworkedPoweredBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
@@ -91,7 +91,7 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class MEChestBlockEntity extends AENetworkPowerBlockEntity
+public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
         implements IMEChest, ITerminalHost, IPriorityHost, IColorableBlockEntity,
         ServerTickingBlockEntity, IStorageProvider, KeyTypeSelectionHost {
 

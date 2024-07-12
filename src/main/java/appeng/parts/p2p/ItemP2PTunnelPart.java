@@ -25,7 +25,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
-import appeng.api.config.PowerUnits;
+import appeng.api.config.PowerUnit;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
@@ -103,7 +103,7 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
             }
 
             if (!simulate) {
-                ItemP2PTunnelPart.this.queueTunnelDrain(PowerUnits.FE, amount - remainder);
+                ItemP2PTunnelPart.this.queueTunnelDrain(PowerUnit.FE, amount - remainder);
             }
 
             if (remainder == stack.getCount()) {
@@ -160,7 +160,7 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
                 ItemStack result = input.get().extractItem(slot, amount, simulate);
 
                 if (!simulate) {
-                    queueTunnelDrain(PowerUnits.FE, result.getCount());
+                    queueTunnelDrain(PowerUnit.FE, result.getCount());
                 }
 
                 return result;

@@ -41,10 +41,10 @@ import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.RelativeSide;
 import appeng.api.util.AECableType;
 import appeng.block.misc.GrowthAcceleratorBlock;
-import appeng.blockentity.grid.AENetworkPowerBlockEntity;
+import appeng.blockentity.grid.AENetworkedPoweredBlockEntity;
 import appeng.core.AEConfig;
 
-public class GrowthAcceleratorBlockEntity extends AENetworkPowerBlockEntity implements IPowerChannelState {
+public class GrowthAcceleratorBlockEntity extends AENetworkedPoweredBlockEntity implements IPowerChannelState {
 
     // Allow storage of up to 10 cranks
     public static final int MAX_STORED_POWER = 10 * CrankBlockEntity.POWER_PER_CRANK_TURN;

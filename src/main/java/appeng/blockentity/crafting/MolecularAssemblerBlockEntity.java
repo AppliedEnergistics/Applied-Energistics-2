@@ -59,7 +59,7 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
-import appeng.blockentity.grid.AENetworkInvBlockEntity;
+import appeng.blockentity.grid.AENetworkedInvBlockEntity;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -75,7 +75,7 @@ import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
+public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
         implements IUpgradeableObject, IGridTickable, ICraftingMachine, IPowerChannelState {
 
     /**

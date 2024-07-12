@@ -22,7 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.PowerUnits;
+import appeng.api.config.PowerUnit;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 
 /**
@@ -41,11 +41,11 @@ public class PoweredItemCapabilities implements IEnergyStorage {
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
-        final double convertedOffer = PowerUnits.FE.convertTo(PowerUnits.AE, maxReceive);
+        final double convertedOffer = PowerUnit.FE.convertTo(PowerUnit.AE, maxReceive);
         final double overflow = this.item.injectAEPower(this.is, convertedOffer,
                 simulate ? Actionable.SIMULATE : Actionable.MODULATE);
 
-        return maxReceive - (int) PowerUnits.AE.convertTo(PowerUnits.FE, overflow);
+        return maxReceive - (int) PowerUnit.AE.convertTo(PowerUnit.FE, overflow);
     }
 
     @Override
@@ -55,12 +55,12 @@ public class PoweredItemCapabilities implements IEnergyStorage {
 
     @Override
     public int getEnergyStored() {
-        return (int) PowerUnits.AE.convertTo(PowerUnits.FE, this.item.getAECurrentPower(this.is));
+        return (int) PowerUnit.AE.convertTo(PowerUnit.FE, this.item.getAECurrentPower(this.is));
     }
 
     @Override
     public int getMaxEnergyStored() {
-        return (int) PowerUnits.AE.convertTo(PowerUnits.FE, this.item.getAEMaxPower(this.is));
+        return (int) PowerUnit.AE.convertTo(PowerUnit.FE, this.item.getAEMaxPower(this.is));
     }
 
     @Override

@@ -23,7 +23,7 @@ import java.util.List;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-import appeng.api.config.PowerUnits;
+import appeng.api.config.PowerUnit;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
@@ -81,7 +81,7 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IE
             }
 
             if (!simulate) {
-                FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.FE, total);
+                FEP2PTunnelPart.this.queueTunnelDrain(PowerUnit.FE, total);
             }
 
             return total;
@@ -131,7 +131,7 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IE
                 final int total = input.get().extractEnergy(maxExtract, simulate);
 
                 if (!simulate) {
-                    FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.FE, total);
+                    FEP2PTunnelPart.this.queueTunnelDrain(PowerUnit.FE, total);
                 }
 
                 return total;

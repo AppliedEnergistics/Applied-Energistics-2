@@ -33,7 +33,7 @@ import net.neoforged.neoforge.common.ModConfigSpec.IntValue;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnits;
+import appeng.api.config.PowerUnit;
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
 import appeng.api.networking.pathing.ChannelMode;
@@ -76,7 +76,7 @@ public final class AEConfig {
     }
 
     private void syncCommonConfig() {
-        PowerUnits.FE.conversionRatio = common.powerRatioForgeEnergy.get();
+        PowerUnit.FE.conversionRatio = common.powerRatioForgeEnergy.get();
         PowerMultiplier.CONFIG.multiplier = common.powerUsageMultiplier.get();
 
         CondenserOutput.MATTER_BALLS.requiredPower = common.condenserMatterBallsPower.get();
@@ -175,14 +175,14 @@ public final class AEConfig {
         return common.crystalResonanceGeneratorRate.get();
     }
 
-    public PowerUnits getSelectedEnergyUnit() {
-        return this.client.selectedEnergyUnit.get();
+    public PowerUnit getSelectedEnergyUnit() {
+        return this.client.selectedPowerUnit.get();
     }
 
     public void nextEnergyUnit(boolean backwards) {
         var selected = EnumCycler.rotateEnum(getSelectedEnergyUnit(), backwards,
                 Settings.POWER_UNITS.getValues());
-        client.selectedEnergyUnit.set(selected);
+        client.selectedPowerUnit.set(selected);
     }
 
     // Getters
@@ -428,7 +428,7 @@ public final class AEConfig {
         public final BooleanValue disableColoredCableRecipesInRecipeViewer;
         public final BooleanValue enableFacadesInRecipeViewer;
         public final BooleanValue enableFacadeRecipesInRecipeViewer;
-        public final EnumValue<PowerUnits> selectedEnergyUnit;
+        public final EnumValue<PowerUnit> selectedPowerUnit;
         public final BooleanValue debugGuiOverlays;
         public final BooleanValue showPlacementPreview;
         public final BooleanValue notifyForFinishedCraftingJobs;
@@ -468,7 +468,7 @@ public final class AEConfig {
             this.enableEffects = define(builder, "enableEffects", true);
             this.useLargeFonts = define(builder, "useTerminalUseLargeFont", false);
             this.useColoredCraftingStatus = define(builder, "useColoredCraftingStatus", true);
-            this.selectedEnergyUnit = defineEnum(builder, "energyUnit", PowerUnits.AE, "Energy unit shown in AE UIs");
+            this.selectedPowerUnit = defineEnum(builder, "powerUnit", PowerUnit.AE, "Unit of power shown in AE UIs");
             this.debugGuiOverlays = define(builder, "showDebugGuiOverlays", false, "Show debugging GUI overlays");
             this.showPlacementPreview = define(builder, "showPlacementPreview", true,
                     "Show a preview of part and facade placement");
@@ -677,7 +677,7 @@ public final class AEConfig {
                     "Allow disassembly of portable cells into the recipe ingredients using shift+right-click");
             builder.pop();
 
-            builder.push("energyRatios");
+            builder.push("powerRatios");
             powerRatioForgeEnergy = define(builder, "forgeEnergy", DEFAULT_FE_EXCHANGE);
             powerUsageMultiplier = define(builder, "usageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
             gridEnergyStoragePerNode = define(builder, "gridEnergyStoragePerNode", 25.0, 1.0, 1000000.0,
