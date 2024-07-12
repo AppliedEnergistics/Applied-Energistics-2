@@ -40,6 +40,7 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLLoader;
@@ -55,6 +56,8 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -145,8 +148,8 @@ public class AppEngClient extends AppEngBase {
 
     private final Guide guide;
 
-    public AppEngClient(IEventBus modEventBus) {
-        super(modEventBus);
+    public AppEngClient(IEventBus modEventBus, ModContainer container) {
+        super(modEventBus, container);
         InitBuiltInModels.init();
 
         this.registerClientCommands();
@@ -185,6 +188,8 @@ public class AppEngClient extends AppEngBase {
             tickPinnedKeys(Minecraft.getInstance());
             Hotkeys.checkHotkeys();
         });
+
+        container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }
 
     private void registerDimensionSpecialEffects(RegisterDimensionSpecialEffectsEvent event) {

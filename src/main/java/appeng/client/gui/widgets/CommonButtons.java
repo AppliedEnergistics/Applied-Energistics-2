@@ -28,13 +28,13 @@ public final class CommonButtons {
     }
 
     public static SettingToggleButton<PowerUnits> togglePowerUnit() {
-        return new SettingToggleButton<>(Settings.POWER_UNITS, AEConfig.instance().getSelectedPowerUnit(),
+        return new SettingToggleButton<>(Settings.POWER_UNITS, AEConfig.instance().getSelectedEnergyUnit(),
                 CommonButtons::togglePowerUnit);
     }
 
     private static void togglePowerUnit(SettingToggleButton<PowerUnits> button, boolean backwards) {
-        AEConfig.instance().nextPowerUnit(backwards);
-        button.set(AEConfig.instance().getSelectedPowerUnit());
+        AEConfig.instance().nextEnergyUnit(backwards);
+        button.set(AEConfig.instance().getSelectedEnergyUnit());
     }
 
 }

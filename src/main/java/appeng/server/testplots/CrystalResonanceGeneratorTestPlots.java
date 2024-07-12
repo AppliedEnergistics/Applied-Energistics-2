@@ -71,13 +71,14 @@ public class CrystalResonanceGeneratorTestPlots {
     }
 
     private static void testPassiveGenerationRate(PlotBuilder plot, BlockPos origin) {
-        var rate = AEConfig.instance().getCrystalResonanceGeneratorRate();
         plot.test(new Consumer<>() {
             double lastPower;
             EnergyCellBlockEntity cell;
 
             @Override
             public void accept(PlotTestHelper helper) {
+                var rate = AEConfig.instance().getCrystalResonanceGeneratorRate();
+
                 helper.startSequence()
                         .thenWaitUntil(helper::checkAllInitialized)
                         .thenExecute(() -> {
