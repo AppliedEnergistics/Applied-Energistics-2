@@ -592,7 +592,7 @@ public final class AEConfig {
         public CommonConfig() {
             var builder = new ModConfigSpec.Builder();
 
-            builder.push("builder");
+            builder.push("general");
             debugTools = define(builder, "unsupportedDeveloperTools", Platform.isDevelopmentEnvironment());
             matterCannonBlockDamage = define(builder, "matterCannonBlockDamage", true,
                     "Enables the ability of the Matter Cannon to break blocks.");
@@ -672,23 +672,23 @@ public final class AEConfig {
             this.wirelessTerminalDrainMultiplier = define(builder, "wirelessTerminalDrainMultiplier", 1.0);
             builder.pop();
 
-            builder.push("PortableCells");
+            builder.push("portableCells");
             portableCellDisassembly = define(builder, "allowDisassembly", true,
                     "Allow disassembly of portable cells into the recipe ingredients using shift+right-click");
             builder.pop();
 
-            builder.push("PowerRatios");
-            powerRatioForgeEnergy = define(builder, "ForgeEnergy", DEFAULT_FE_EXCHANGE);
-            powerUsageMultiplier = define(builder, "UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
-            gridEnergyStoragePerNode = define(builder, "GridEnergyStoragePerNode", 25.0, 1.0, 1000000.0,
+            builder.push("energyRatios");
+            powerRatioForgeEnergy = define(builder, "forgeEnergy", DEFAULT_FE_EXCHANGE);
+            powerUsageMultiplier = define(builder, "usageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
+            gridEnergyStoragePerNode = define(builder, "gridEnergyStoragePerNode", 25.0, 1.0, 1000000.0,
                     "How much energy can the internal grid buffer storage per node attached to the grid.");
-            crystalResonanceGeneratorRate = define(builder, "CrystalResonanceGeneratorRate", 20.0, 0.0, 1000000.0,
+            crystalResonanceGeneratorRate = define(builder, "crystalResonanceGeneratorRate", 20.0, 0.0, 1000000.0,
                     "How much energy a crystal resonance generator generates per tick.");
             builder.pop();
 
-            builder.push("Condenser");
-            condenserMatterBallsPower = define(builder, "MatterBalls", 256);
-            condenserSingularityPower = define(builder, "Singularity", 256000);
+            builder.push("condenser");
+            condenserMatterBallsPower = define(builder, "matterBalls", 256);
+            condenserSingularityPower = define(builder, "singularity", 256000);
             builder.pop();
 
             builder.comment(
