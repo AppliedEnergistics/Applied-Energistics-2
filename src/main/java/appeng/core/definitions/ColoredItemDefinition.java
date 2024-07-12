@@ -42,7 +42,7 @@ public final class ColoredItemDefinition<T extends Item> {
     }
 
     public T item(AEColor color) {
-        return this.items.get(color).get();
+        return this.items.get(color).asItem();
     }
 
     public ItemStack stack(AEColor color) {

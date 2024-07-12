@@ -71,6 +71,17 @@ public class ItemDefinition<T extends Item> implements ItemLike, Supplier<T> {
      * @param comparableStack compared item
      * @return true if the item stack is a matching item.
      */
+    @Deprecated(forRemoval = true, since = "1.21")
+    public final boolean isSameAs(ItemStack comparableStack) {
+        return is(comparableStack);
+    }
+
+    /**
+     * Compare {@link ItemStack} with this
+     *
+     * @param comparableStack compared item
+     * @return true if the item stack is a matching item.
+     */
     public final boolean is(ItemStack comparableStack) {
         return ItemComparisonHelper.isEqualItemType(comparableStack, this.stack());
     }
@@ -85,14 +96,21 @@ public class ItemDefinition<T extends Item> implements ItemLike, Supplier<T> {
         return false;
     }
 
+    /**
+     * @return True if this item is represented by the given key.
+     */
+    @Deprecated(forRemoval = true, since = "1.21")
+    public final boolean isSameAs(AEKey key) {
+        return is(key);
+    }
+
     @Override
     public T get() {
         return item.get();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public T asItem() {
-        return (T) item.asItem();
+        return item.get();
     }
 }

@@ -125,7 +125,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         flatSingleLayer(AEItems.WIRELESS_RECEIVER, "item/wireless_receiver");
         flatSingleLayer(AEItems.WIRELESS_TERMINAL, "item/wireless_terminal");
         registerEmptyModel(AEItems.WRAPPED_GENERIC_STACK);
-        registerEmptyModel(AEBlocks.CABLE_BUS);
+        registerEmptyModel(AEBlocks.CABLE_BUS.item());
         registerHandheld();
     }
 

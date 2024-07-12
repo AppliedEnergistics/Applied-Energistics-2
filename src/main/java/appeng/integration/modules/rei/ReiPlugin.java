@@ -294,12 +294,12 @@ public class ReiPlugin implements REIClientPlugin {
             addDescription(registry, AEItems.SILICON_PRESS, GuiText.inWorldCraftingPresses.getTranslationKey());
         }
 
-        addDescription(registry, AEBlocks.CRANK, ItemModText.CRANK_DESCRIPTION.getTranslationKey());
+        addDescription(registry, AEBlocks.CRANK.item(), ItemModText.CRANK_DESCRIPTION.getTranslationKey());
     }
 
     private static void addDescription(DisplayRegistry registry, ItemDefinition<?> itemDefinition, String... message) {
         DefaultInformationDisplay info = DefaultInformationDisplay.createFromEntry(EntryStacks.of(itemDefinition),
-                itemDefinition.asItem().getDescription());
+                itemDefinition.get().getDescription());
         info.lines(Arrays.stream(message).map(Component::translatable).collect(Collectors.toList()));
         registry.add(info);
     }

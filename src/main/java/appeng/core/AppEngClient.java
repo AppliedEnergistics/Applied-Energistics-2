@@ -37,8 +37,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
@@ -122,6 +124,7 @@ import appeng.util.Platform;
 /**
  * Client-specific functionality.
  */
+@Mod(value = AppEng.MOD_ID, dist = Dist.CLIENT)
 public class AppEngClient extends AppEngBase {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppEngClient.class);
 

@@ -160,7 +160,7 @@ public class AppEngEmiPlugin implements EmiPlugin {
             addDescription(registry, AEItems.SILICON_PRESS, GuiText.inWorldCraftingPresses);
         }
 
-        addDescription(registry, AEBlocks.CRANK, ItemModText.CRANK_DESCRIPTION);
+        addDescription(registry, AEBlocks.CRANK.item(), ItemModText.CRANK_DESCRIPTION);
 
     }
 

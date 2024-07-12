@@ -292,17 +292,14 @@ public final class AEBlocks {
             }
         });
 
-        BlockDefinition<T> definition = new BlockDefinition<>(englishName, deferredBlock, deferredItem);
-        MainCreativeTab.add(definition);
+        var itemDef = new ItemDefinition<>(englishName, deferredItem);
+        MainCreativeTab.add(itemDef);
+        BlockDefinition<T> definition = new BlockDefinition<>(englishName, deferredBlock, itemDef);
 
         BLOCKS.add(definition);
 
         return definition;
 
-    }
-
-    // Used to control in which order static constructors are called
-    public static void init() {
     }
 
 }

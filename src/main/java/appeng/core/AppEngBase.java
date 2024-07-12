@@ -40,6 +40,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
@@ -77,7 +78,9 @@ import appeng.init.InitRecipeTypes;
 import appeng.init.InitStats;
 import appeng.init.InitVillager;
 import appeng.init.client.InitParticleTypes;
+import appeng.init.internal.InitBlockEntityMoveStrategies;
 import appeng.init.internal.InitGridLinkables;
+import appeng.init.internal.InitGridServices;
 import appeng.init.internal.InitP2PAttunements;
 import appeng.init.internal.InitStorageCells;
 import appeng.init.internal.InitUpgrades;
@@ -114,6 +117,11 @@ public abstract class AppEngBase implements AppEng {
             throw new IllegalStateException();
         }
         INSTANCE = this;
+
+        AEConfig.load(FMLPaths.CONFIGDIR.get());
+
+        InitGridServices.init();
+        InitBlockEntityMoveStrategies.init();
 
         AEParts.init();
         AEBlocks.DR.register(modEventBus);

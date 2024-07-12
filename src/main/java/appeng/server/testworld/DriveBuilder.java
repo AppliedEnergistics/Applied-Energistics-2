@@ -88,7 +88,7 @@ public class DriveBuilder {
         }
 
         public void add(ItemLike what, long amount) {
-            add(AEItemKey.of(what.asItem()), amount);
+            add(AEItemKey.of(what), amount);
         }
     }
 
@@ -100,7 +100,7 @@ public class DriveBuilder {
         }
 
         public CreativeCellBuilder add(ItemLike item) {
-            return add(AEItemKey.of(item.asItem()));
+            return add(AEItemKey.of(item));
         }
 
         public CreativeCellBuilder add(Fluid fluid) {

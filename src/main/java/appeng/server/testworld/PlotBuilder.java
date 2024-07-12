@@ -85,7 +85,7 @@ public interface PlotBuilder {
     }
 
     default void part(String bb, Direction side, ItemDefinition<? extends PartItem<?>> part) {
-        addBuildAction(new PlacePart(bb(bb), part.get(), side));
+        addBuildAction(new PlacePart(bb(bb), part.asItem(), side));
     }
 
     default void part(BlockPos pos, Direction side, ItemDefinition<? extends PartItem<?>> part) {
