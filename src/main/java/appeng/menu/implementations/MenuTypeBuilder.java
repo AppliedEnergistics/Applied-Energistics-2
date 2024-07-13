@@ -18,12 +18,13 @@
 
 package appeng.menu.implementations;
 
-import java.util.function.Function;
-
+import appeng.core.AppEng;
+import appeng.init.InitMenuTypes;
+import appeng.menu.AEBaseMenu;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuHostLocator;
+import appeng.menu.locator.MenuLocators;
 import com.google.common.base.Preconditions;
-
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -37,13 +38,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.core.AppEng;
-import appeng.init.InitMenuTypes;
-import appeng.menu.AEBaseMenu;
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuHostLocator;
-import appeng.menu.locator.MenuLocators;
+import java.util.function.Function;
 
 /**
  * Builder that allows creation of menu types which can be opened from multiple types of hosts.
@@ -79,12 +76,12 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
     }
 
     public static <C extends AEBaseMenu, I> MenuTypeBuilder<C, I> create(MenuFactory<C, I> factory,
-            Class<I> hostInterface) {
+                                                                         Class<I> hostInterface) {
         return new MenuTypeBuilder<>(hostInterface, factory);
     }
 
     public static <C extends AEBaseMenu, I> MenuTypeBuilder<C, I> create(TypedMenuFactory<C, I> factory,
-            Class<I> hostInterface) {
+                                                                         Class<I> hostInterface) {
         return new MenuTypeBuilder<>(hostInterface, factory);
     }
 
@@ -103,7 +100,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
      * menu is being first opened.
      */
     public MenuTypeBuilder<M, I> withInitialData(InitialDataSerializer<I> initialDataSerializer,
-            InitialDataDeserializer<M, I> initialDataDeserializer) {
+                                                 InitialDataDeserializer<M, I> initialDataDeserializer) {
         this.initialDataSerializer = initialDataSerializer;
         this.initialDataDeserializer = initialDataDeserializer;
         return this;
@@ -122,7 +119,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
                 connection.send(new ServerboundContainerClosePacket(containerId));
             }
             throw new IllegalStateException("Couldn't find menu host at " + locator + " for " + this.id
-                    + " on client. Closing menu.");
+                                            + " on client. Closing menu.");
         }
         M menu = factory.create(containerId, inv, host);
         menu.setReturnedFromSubScreen(packetBuf.readBoolean());
@@ -181,14 +178,18 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
         return true;
     }
 
+    public MenuType<M> build(String id) {
+        return build(AppEng.makeId(id));
+    }
+
     /**
      * Creates a menu type that uses this helper as a factory and network deserializer.
      */
-    public MenuType<M> build(String id) {
+    public MenuType<M> build(ResourceLocation id) {
         Preconditions.checkState(menuType == null, "build was already called");
         Preconditions.checkState(this.id == null, "id should not be set");
 
-        this.id = AppEng.makeId(id);
+        this.id = id;
         menuType = IMenuTypeExtension.create(this::fromNetwork);
         InitMenuTypes.queueRegistration(this.id, menuType);
         MenuOpener.addOpener(menuType, this::open);
