@@ -287,7 +287,7 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(AEEntities.TINY_TNT_PRIMED, TinyTNTPrimedRenderer::new);
+        event.registerEntityRenderer(AEEntities.TINY_TNT_PRIMED.get(), TinyTNTPrimedRenderer::new);
 
         event.registerBlockEntityRenderer(AEBlockEntities.CRANK.get(), CrankRenderer::new);
         event.registerBlockEntityRenderer(AEBlockEntities.INSCRIBER.get(), InscriberTESR::new);

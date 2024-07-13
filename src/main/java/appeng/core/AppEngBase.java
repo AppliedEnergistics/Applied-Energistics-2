@@ -59,6 +59,7 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypesInternal;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEEntities;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.network.ClientboundPacket;
@@ -71,7 +72,6 @@ import appeng.init.InitAdvancementTriggers;
 import appeng.init.InitCapabilityProviders;
 import appeng.init.InitCauldronInteraction;
 import appeng.init.InitDispenserBehavior;
-import appeng.init.InitEntityTypes;
 import appeng.init.InitMenuTypes;
 import appeng.init.InitRecipeSerializers;
 import appeng.init.InitRecipeTypes;
@@ -128,6 +128,7 @@ public abstract class AppEngBase implements AppEng {
         AEItems.DR.register(modEventBus);
         AEBlockEntities.DR.register(modEventBus);
         AEComponents.DR.register(modEventBus);
+        AEEntities.DR.register(modEventBus);
         InitStructures.register(modEventBus);
 
         modEventBus.addListener(this::registerRegistries);
@@ -145,8 +146,6 @@ public abstract class AppEngBase implements AppEng {
                 InitStats.init(event.getRegistry(Registries.CUSTOM_STAT));
             } else if (event.getRegistryKey() == Registries.TRIGGER_TYPE) {
                 InitAdvancementTriggers.init(event.getRegistry(Registries.TRIGGER_TYPE));
-            } else if (event.getRegistryKey() == Registries.ENTITY_TYPE) {
-                InitEntityTypes.init(event.getRegistry(Registries.ENTITY_TYPE));
             } else if (event.getRegistryKey() == Registries.PARTICLE_TYPE) {
                 InitParticleTypes.init(event.getRegistry(Registries.PARTICLE_TYPE));
             } else if (event.getRegistryKey() == Registries.MENU) {
