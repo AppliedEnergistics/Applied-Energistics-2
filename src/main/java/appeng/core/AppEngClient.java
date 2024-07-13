@@ -188,8 +188,6 @@ public class AppEngClient extends AppEngBase {
             tickPinnedKeys(Minecraft.getInstance());
             Hotkeys.checkHotkeys();
         });
-
-        container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }
 
     private void registerDimensionSpecialEffects(RegisterDimensionSpecialEffectsEvent event) {
