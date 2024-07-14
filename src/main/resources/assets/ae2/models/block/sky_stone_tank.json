@@ -5,6 +5,7 @@
     "0": "ae2:block/sky_stone_tank",
     "particle": "ae2:block/sky_stone_tank"
   },
+  "render_type": "cutout",
   "elements": [
     {
       "from": [0, 0, 15],

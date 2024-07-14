@@ -393,7 +393,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
     private void generateQuartzCluster(BlockDefinition<?> quartz) {
         var name = quartz.id().getPath();
         var texture = makeId("block/" + name);
-        var model = models().cross(name, texture);
+        var model = models().cross(name, texture).renderType("cutout");
         directionalBlock(quartz.block(), model);
         itemModels().withExistingParent(name, mcLoc("item/generated")).texture("layer0", texture);
     }

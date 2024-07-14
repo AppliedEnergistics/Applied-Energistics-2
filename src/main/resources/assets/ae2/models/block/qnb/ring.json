@@ -4,6 +4,7 @@
     "particle": "ae2:block/quantum_ring",
     "sides": "ae2:block/quantum_ring"
   },
+  "render_type": "cutout",
   "elements": [
     {
       "from": [2, 2, 2],

@@ -5,6 +5,7 @@
     "lights_medium": "ae2:block/chest/lights_on_medium",
     "lights_dark": "ae2:block/chest/lights_on_dark"
   },
+  "render_type": "cutout",
   "elements": [
     {
       "from": [0, 0, 0],

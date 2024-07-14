@@ -6,6 +6,7 @@
     "particle": "ae2:block/wireless_access_point",
     "base": "ae2:block/wireless_access_point"
   },
+  "render_type": "cutout",
   "elements": [
     {
       "from": [5, 5, 10],

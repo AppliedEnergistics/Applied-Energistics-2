@@ -6,6 +6,7 @@
     "particle": "ae2:block/crg",
     "base": "ae2:block/crg"
   },
+  "render_type": "cutout",
   "elements": [
     {
       "from": [4, 4, 4],
