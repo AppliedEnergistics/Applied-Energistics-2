@@ -56,8 +56,15 @@ public final class AEConfig {
         container.registerConfig(ModConfig.Type.STARTUP, startup.spec);
         container.registerConfig(ModConfig.Type.CLIENT, client.spec);
         container.registerConfig(ModConfig.Type.COMMON, common.spec);
+        container.getEventBus().addListener((ModConfigEvent.Loading evt) -> {
+            if (evt.getConfig().getSpec() == common.spec) {
+                common.sync();
+            }
+        });
         container.getEventBus().addListener((ModConfigEvent.Reloading evt) -> {
-            syncCommonConfig();
+            if (evt.getConfig().getSpec() == common.spec) {
+                common.sync();
+            }
         });
     }
 
@@ -73,23 +80,6 @@ public final class AEConfig {
 
     public static AEConfig instance() {
         return instance;
-    }
-
-    private void syncCommonConfig() {
-        PowerUnit.FE.conversionRatio = common.powerRatioForgeEnergy.get();
-        PowerMultiplier.CONFIG.multiplier = common.powerUsageMultiplier.get();
-
-        CondenserOutput.MATTER_BALLS.requiredPower = common.condenserMatterBallsPower.get();
-        CondenserOutput.SINGULARITY.requiredPower = common.condenserSingularityPower.get();
-
-        for (TickRates tr : TickRates.values()) {
-            tr.setMin(common.tickRateMin.get(tr).get());
-            tr.setMax(common.tickRateMax.get(tr).get());
-        }
-
-        AELog.setCraftingLogEnabled(common.craftingLog.get());
-        AELog.setDebugLogEnabled(common.debugLog.get());
-        AELog.setGridLogEnabled(common.gridLog.get());
     }
 
     public double wireless_getDrainRate(double range) {
@@ -713,6 +703,22 @@ public final class AEConfig {
             spec = builder.build();
         }
 
+        public void sync() {
+            PowerUnit.FE.conversionRatio = powerRatioForgeEnergy.get();
+            PowerMultiplier.CONFIG.multiplier = powerUsageMultiplier.get();
+
+            CondenserOutput.MATTER_BALLS.requiredPower = condenserMatterBallsPower.get();
+            CondenserOutput.SINGULARITY.requiredPower = condenserSingularityPower.get();
+
+            for (TickRates tr : TickRates.values()) {
+                tr.setMin(tickRateMin.get(tr).get());
+                tr.setMax(tickRateMax.get(tr).get());
+            }
+
+            AELog.setCraftingLogEnabled(craftingLog.get());
+            AELog.setDebugLogEnabled(debugLog.get());
+            AELog.setGridLogEnabled(gridLog.get());
+        }
     }
 
     private static BooleanValue define(ModConfigSpec.Builder builder, String name, boolean defaultValue,
