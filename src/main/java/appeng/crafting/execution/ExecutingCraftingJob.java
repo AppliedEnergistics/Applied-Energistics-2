@@ -84,13 +84,15 @@ public class ExecutingCraftingJob {
         for (var entry : plan.patternTimes().entrySet()) {
             tasks.computeIfAbsent(entry.getKey(), p -> new TaskProgress()).value += entry.getValue();
             for (var output : entry.getKey().getOutputs()) {
+                long unitKey = output.what().getAmountPerUnit();
                 long additional = output.amount() * entry.getValue();
+
                 // pendingUnits.entry(unitKey).orDefault().value += entry.value;
                 pendingUnits.mergeLong(unitKey, additional, (long l, long r) -> l + r);
             }
         }
         long totalPendingUnits = 0;
-        for (var entry : pending.entrySet()) {
+        for (var entry : pendingUnits.long2LongEntrySet()) {
             totalPendingUnits += entry.getLongValue() / entry.getLongKey();
         }
         this.timeTracker = new ElapsedTimeTracker(totalPendingUnits);
