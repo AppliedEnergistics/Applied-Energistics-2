@@ -36,6 +36,7 @@ public final class NullConfigManager implements IConfigManager {
     }
 
     @Override
-    public void readFromNBT(CompoundTag src) {
+    public boolean readFromNBT(CompoundTag src) {
+        return false;
     }
 }

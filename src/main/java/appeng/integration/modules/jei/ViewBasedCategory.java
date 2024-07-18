@@ -6,8 +6,8 @@ import java.util.List;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -55,12 +55,13 @@ public abstract class ViewBasedCategory<T> implements IRecipeCategory<T> {
     }
 
     @Override
-    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
+    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX,
+            double mouseY) {
         var cachedView = cache.getUnchecked(recipe);
         for (var widget : getWidgets(cachedView)) {
-            widget.draw(stack);
+            widget.draw(guiGraphics);
         }
-        cachedView.view.draw(stack, recipeSlotsView, mouseX, mouseY);
+        cachedView.view.draw(guiGraphics, recipeSlotsView, mouseX, mouseY);
     }
 
     @Override

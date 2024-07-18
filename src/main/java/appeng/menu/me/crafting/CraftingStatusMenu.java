@@ -24,9 +24,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.WeakHashMap;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableSet;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -34,7 +34,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.CpuSelectionMode;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.stacks.GenericStack;
@@ -60,7 +59,6 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
 
     public static final MenuType<CraftingStatusMenu> TYPE = MenuTypeBuilder
             .create(CraftingStatusMenu::new, ITerminalHost.class)
-            .requirePermission(SecurityPermissions.CRAFT)
             .build("craftingstatus");
 
     private final WeakHashMap<ICraftingCPU, Integer> cpuSerialMap = new WeakHashMap<>();

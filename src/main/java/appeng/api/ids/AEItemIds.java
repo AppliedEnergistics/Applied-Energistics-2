@@ -40,49 +40,11 @@ public final class AEItemIds {
     public static final ResourceLocation VIEW_CELL = id("view_cell");
     public static final ResourceLocation MEMORY_CARD = id("memory_card");
 
-    public static final ResourceLocation MEMORY_CARD_WHITE = id("memory_card_white");
-    public static final ResourceLocation MEMORY_CARD_ORANGE = id("memory_card_orange");
-    public static final ResourceLocation MEMORY_CARD_MAGENTA = id("memory_card_magenta");
-    public static final ResourceLocation MEMORY_CARD_LIGHT_BLUE = id("memory_card_light_blue");
-    public static final ResourceLocation MEMORY_CARD_YELLOW = id("memory_card_yellow");
-    public static final ResourceLocation MEMORY_CARD_LIME = id("memory_card_lime");
-    public static final ResourceLocation MEMORY_CARD_PINK = id("memory_card_pink");
-    public static final ResourceLocation MEMORY_CARD_GRAY = id("memory_card_gray");
-    public static final ResourceLocation MEMORY_CARD_LIGHT_GRAY = id("memory_card_light_gray");
-    public static final ResourceLocation MEMORY_CARD_CYAN = id("memory_card_cyan");
-    public static final ResourceLocation MEMORY_CARD_PURPLE = id("memory_card_purple");
-    public static final ResourceLocation MEMORY_CARD_BLUE = id("memory_card_blue");
-    public static final ResourceLocation MEMORY_CARD_BROWN = id("memory_card_brown");
-    public static final ResourceLocation MEMORY_CARD_GREEN = id("memory_card_green");
-    public static final ResourceLocation MEMORY_CARD_RED = id("memory_card_red");
-    public static final ResourceLocation MEMORY_CARD_BLACK = id("memory_card_black");
-
-    public static final Map<AEColor, ResourceLocation> MEMORY_CARDS = ImmutableMap
-            .<AEColor, ResourceLocation>builder().put(AEColor.WHITE, MEMORY_CARD_WHITE)
-            .put(AEColor.ORANGE, MEMORY_CARD_ORANGE)
-            .put(AEColor.MAGENTA, MEMORY_CARD_MAGENTA)
-            .put(AEColor.LIGHT_BLUE, MEMORY_CARD_LIGHT_BLUE)
-            .put(AEColor.YELLOW, MEMORY_CARD_YELLOW)
-            .put(AEColor.LIME, MEMORY_CARD_LIME)
-            .put(AEColor.PINK, MEMORY_CARD_PINK)
-            .put(AEColor.GRAY, MEMORY_CARD_GRAY)
-            .put(AEColor.LIGHT_GRAY, MEMORY_CARD_LIGHT_GRAY)
-            .put(AEColor.CYAN, MEMORY_CARD_CYAN)
-            .put(AEColor.PURPLE, MEMORY_CARD_PURPLE)
-            .put(AEColor.BLUE, MEMORY_CARD_BLUE)
-            .put(AEColor.BROWN, MEMORY_CARD_BROWN)
-            .put(AEColor.GREEN, MEMORY_CARD_GREEN)
-            .put(AEColor.RED, MEMORY_CARD_RED)
-            .put(AEColor.BLACK, MEMORY_CARD_BLACK)
-            .put(AEColor.TRANSPARENT, MEMORY_CARD)
-            .build();
-
     public static final ResourceLocation BLANK_PATTERN = id("blank_pattern");
     public static final ResourceLocation CRAFTING_PATTERN = id("crafting_pattern");
     public static final ResourceLocation PROCESSING_PATTERN = id("processing_pattern");
     public static final ResourceLocation SMITHING_TABLE_PATTERN = id("smithing_table_pattern");
     public static final ResourceLocation STONECUTTING_PATTERN = id("stonecutting_pattern");
-    public static final ResourceLocation BIOMETRIC_CARD = id("biometric_card");
     public static final ResourceLocation ENTROPY_MANIPULATOR = id("entropy_manipulator");
     public static final ResourceLocation MATTER_CANNON = id("matter_cannon");
     public static final ResourceLocation CHARGED_STAFF = id("charged_staff");
@@ -218,6 +180,7 @@ public final class AEItemIds {
     public static final ResourceLocation NETHER_QUARTZ_WRENCH = id("nether_quartz_wrench");
     public static final ResourceLocation NETHER_QUARTZ_KNIFE = id("nether_quartz_cutting_knife");
 
+    public static final ResourceLocation FLUIX_UPGRADE_SMITHING_TEMPLATE = id("fluix_upgrade_smithing_template");
     public static final ResourceLocation FLUIX_AXE = id("fluix_axe");
     public static final ResourceLocation FLUIX_HOE = id("fluix_hoe");
     public static final ResourceLocation FLUIX_SHOVEL = id("fluix_shovel");

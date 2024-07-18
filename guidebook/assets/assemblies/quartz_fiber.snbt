@@ -1,0 +1,16 @@
+{
+    DataVersion: 3337,
+    size: [3, 1, 2],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 224L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsSouth: 0, connections: ["south"], missingChannel: 0b, powered: 0b}}, east: {gn: {g: 224L, k: -1L, p: 0}, id: "ae2:quartz_fiber", outer: {g: 146L, k: -1L, p: 0}, visual: {missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [0, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 224L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsNorth: 0, connections: ["north"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 146L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 0, channelsWest: 0, connections: ["west", "east"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", south: {gn: {g: 146L, k: -1L, p: 1}, id: "ae2:quartz_fiber", outer: {g: 11155L, k: -1L, p: 1}, visual: {missingChannel: 0b, powered: 0b}}, visual: {}}},
+        {pos: [1, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 11155L, k: -1L, p: 1}, id: "ae2:green_smart_cable", visual: {channelsEast: 0, channelsNorth: 0, connections: ["north", "east"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 146L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsWest: 0, connections: ["west"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 11155L, k: -1L, p: 1}, id: "ae2:green_smart_cable", visual: {channelsWest: 0, connections: ["west"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:cable_bus{light_level:0,waterlogged:false}"
+    ]
+}

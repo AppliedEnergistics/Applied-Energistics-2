@@ -21,7 +21,7 @@ package appeng.parts.p2p;
 import java.util.List;
 import java.util.stream.Stream;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
@@ -40,17 +40,18 @@ import appeng.api.config.PowerUnits;
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.networking.GridFlags;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AECableType;
 import appeng.core.AEConfig;
 import appeng.me.service.P2PService;
-import appeng.parts.BasicStatePart;
+import appeng.parts.AEBasePart;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends BasicStatePart {
+public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePart {
     private static final String CONFIG_NBT_TYPE = "p2pType";
     private static final String CONFIG_NBT_FREQ = "p2pFreq";
 
@@ -61,6 +62,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends BasicSta
     public P2PTunnelPart(IPartItem<?> partItem) {
         super(partItem);
         this.getMainNode().setIdlePowerUsage(this.getPowerDrainPerTick());
+        this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
     }
 
     protected float getPowerDrainPerTick() {
@@ -88,7 +90,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends BasicSta
     }
 
     public Stream<T> getOutputStream() {
-        if (this.getMainNode().isActive()) {
+        if (this.getMainNode().isOnline()) {
             var grid = getMainNode().getGrid();
             if (grid != null) {
                 return P2PService.get(grid).getOutputs(this.getFrequency(), this.getClass());

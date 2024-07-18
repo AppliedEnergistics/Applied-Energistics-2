@@ -1,0 +1,12 @@
+{
+    DataVersion: 3337,
+    size: [3, 1, 1],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:chest{facing:north,lights_on:true,spin:0}", nbt: {filter_type: "ALL", id: "ae2:chest", internalCurrentPower: 0.0d, inv: {item0: {}, item1: {Count: 1b, id: "ae2:item_storage_cell_4k", tag: {amts: [L; 1L], ic: 1L, keys: [{"#c": "ae2:i", id: "minecraft:redstone"}]}}}, paintedColor: 11b, priority: 0, proxy: {g: 136048L, k: -1L, p: 0}, sort_by: "NAME", sort_direction: "ASCENDING", view_mode: "ALL", visual: {cellId: "ae2:item_storage_cell_4k", cellStatus: "NOT_EMPTY", color: "BLUE", powered: 1b}}},
+        {pos: [2, 0, 0], state: "ae2:chest{facing:north,lights_on:true,spin:0}", nbt: {filter_type: "ALL", id: "ae2:chest", internalCurrentPower: 0.0d, inv: {item0: {}, item1: {Count: 1b, id: "ae2:item_storage_cell_4k", tag: {amts: [L; 1L], ic: 1L, keys: [{"#c": "ae2:i", id: "minecraft:redstone"}]}}}, paintedColor: 1b, priority: 0, proxy: {g: 136049L, k: -1L, p: 0}, sort_by: "NAME", sort_direction: "ASCENDING", view_mode: "ALL", visual: {cellId: "ae2:item_storage_cell_4k", cellStatus: "NOT_EMPTY", color: "ORANGE", powered: 1b}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:chest{facing:north,lights_on:true,spin:0}"
+    ]
+}

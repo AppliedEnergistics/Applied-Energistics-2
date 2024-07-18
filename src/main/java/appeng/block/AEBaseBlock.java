@@ -18,25 +18,27 @@
 
 package appeng.block;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 
 import appeng.api.orientation.IOrientableBlock;
 import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.OrientationStrategies;
-import appeng.helpers.AEMaterials;
+import appeng.hooks.WrenchHook;
 
 public abstract class AEBaseBlock extends Block implements IOrientableBlock {
 
@@ -60,30 +62,31 @@ public abstract class AEBaseBlock extends Block implements IOrientableBlock {
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static FabricBlockSettings defaultProps(Material material) {
-        return defaultProps(material, material.getColor());
-    }
-
-    /**
-     * Utility function to create block properties with some sensible defaults for AE blocks.
-     */
-    public static FabricBlockSettings defaultProps(Material material, MaterialColor color) {
-        return FabricBlockSettings.of(material, color)
+    public static BlockBehaviour.Properties defaultProps(MapColor mapColor, SoundType soundType) {
+        return BlockBehaviour.Properties.of()
                 // These values previously were encoded in AEBaseBlock
                 .strength(2.2f, 11.f)
-                .sounds(getDefaultSoundByMaterial(material));
+                .mapColor(mapColor)
+                .sound(soundType);
     }
 
-    private static SoundType getDefaultSoundByMaterial(Material mat) {
-        if (mat == AEMaterials.GLASS || mat == Material.GLASS) {
-            return SoundType.GLASS;
-        } else if (mat == Material.STONE) {
-            return SoundType.STONE;
-        } else if (mat == Material.WOOD) {
-            return SoundType.WOOD;
-        } else {
-            return SoundType.METAL;
-        }
+    public static BlockBehaviour.Properties stoneProps() {
+        return defaultProps(MapColor.STONE, SoundType.STONE).forceSolidOn();
+    }
+
+    public static BlockBehaviour.Properties metalProps() {
+        return defaultProps(MapColor.METAL, SoundType.METAL).forceSolidOn();
+    }
+
+    public static BlockBehaviour.Properties glassProps() {
+        return defaultProps(MapColor.NONE, SoundType.GLASS);
+    }
+
+    public static BlockBehaviour.Properties fixtureProps() {
+        return defaultProps(MapColor.METAL, SoundType.GLASS)
+                .noCollission()
+                .noOcclusion()
+                .pushReaction(PushReaction.DESTROY);
     }
 
     public void addToMainCreativeTab(CreativeModeTab.Output output) {
@@ -106,5 +109,13 @@ public abstract class AEBaseBlock extends Block implements IOrientableBlock {
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         var state = this.defaultBlockState();
         return getOrientationStrategy().getStateForPlacement(state, context);
+    }
+
+    @Override
+    protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) {
+        // Suppress break particles & sound when being disassembled by a wrench
+        if (!WrenchHook.isDisassembling()) {
+            super.spawnDestroyParticles(level, player, pos, state);
+        }
     }
 }

@@ -27,10 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
-
 import com.google.common.base.Preconditions;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -44,7 +43,6 @@ import appeng.api.storage.cells.StorageCell;
  * Storage Cell Registry, used for specially implemented cells, if you just want to make a item act like a cell, or new
  * cell with different bytes, you should probably consider implementing {@link IBasicCellItem} on your item instead.
  */
-@ThreadSafe
 public final class StorageCells {
 
     private static final List<ICellHandler> handlers = new ArrayList<>();

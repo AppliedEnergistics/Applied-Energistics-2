@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2:quartz_glass"
+    },
+    "b": {
+      "tag": "c:redstone_dusts"
+    },
+    "c": {
+      "item": "ae2:spatial_cell_component_2"
+    },
+    "d": {
+      "tag": "c:iron_ingots"
+    }
+  },
+  "pattern": [
+    "aba",
+    "bcb",
+    "ddd"
+  ],
+  "result": {
+    "item": "ae2:spatial_storage_cell_2"
+  },
+  "show_notification": true
+}

@@ -1,18 +1,21 @@
 package appeng.libs.mdast.mdx.model;
 
-import appeng.libs.mdast.model.MdAstParent;
-import appeng.libs.mdast.model.MdAstPhrasingContent;
-import appeng.libs.mdast.model.MdAstStaticPhrasingContent;
-import com.google.gson.stream.JsonWriter;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MdxJsxTextElement extends MdAstParent<MdAstPhrasingContent> implements MdxJsxElementFields, MdAstStaticPhrasingContent {
+import com.google.gson.stream.JsonWriter;
+
+import org.jetbrains.annotations.Nullable;
+
+import appeng.libs.mdast.model.MdAstParent;
+import appeng.libs.mdast.model.MdAstPhrasingContent;
+import appeng.libs.mdast.model.MdAstStaticPhrasingContent;
+
+public class MdxJsxTextElement extends MdAstParent<MdAstPhrasingContent>
+        implements MdxJsxElementFields, MdAstStaticPhrasingContent {
     private String name;
-    private List<MdxJsxAttributeNode> attributes;
+    private final List<MdxJsxAttributeNode> attributes;
 
     public MdxJsxTextElement() {
         this("", new ArrayList<>());
@@ -27,6 +30,11 @@ public class MdxJsxTextElement extends MdAstParent<MdAstPhrasingContent> impleme
     @Override
     public @Nullable String name() {
         return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

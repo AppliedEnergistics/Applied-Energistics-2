@@ -1,0 +1,33 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ae2:shaped/not_so_mysterious_cube"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "press": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "ae2:inscriber_presses"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "press",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ae2:shaped/not_so_mysterious_cube"
+    ]
+  },
+  "sends_telemetry_event": false
+}

@@ -1,9 +1,10 @@
 package appeng.libs.micromark.flow;
 
-import appeng.libs.micromark.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import appeng.libs.micromark.TestUtil;
 
 public class HeadingSetextTest {
     @ParameterizedTest(name = "[{index}] {2}")
@@ -58,6 +59,7 @@ public class HeadingSetextTest {
 
     @Test
     public void testDisabled() {
-        TestUtil.assertGeneratedHtmlWithDisabled("a^n-", "<p>a^n-</p>", "should support turning off setext underlines", "setextUnderline");
+        TestUtil.assertGeneratedHtmlWithDisabled("a^n-", "<p>a^n-</p>", "should support turning off setext underlines",
+                "setextUnderline");
     }
 }

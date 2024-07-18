@@ -21,12 +21,11 @@ package appeng.client.gui.widgets;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.Minecraft;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.sounds.SoundManager;
@@ -62,7 +61,7 @@ public abstract class IconButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
 
         if (this.visible) {
             var icon = this.getIcon();
@@ -81,30 +80,39 @@ public abstract class IconButton extends Button implements ITooltip {
             RenderSystem.enableBlend(); // FIXME: This should be the _default_ state, but some vanilla widget disables
 
             if (isFocused()) {
-                fill(poseStack, getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, 0xFFFFFFFF);
+                // Draw 1px border with 4 quads, don't rely on the background as it can be disabled.
+                // top
+                guiGraphics.fill(getX() - 1, getY() - 1, getX() + width + 1, getY(), 0xFFFFFFFF);
+                // left
+                guiGraphics.fill(getX() - 1, getY(), getX(), getY() + height, 0xFFFFFFFF);
+                // right
+                guiGraphics.fill(getX() + width, getY(), getX() + width + 1, getY() + height, 0xFFFFFFFF);
+                // bottom
+                guiGraphics.fill(getX() - 1, getY() + height, getX() + width + 1, getY() + height + 1, 0xFFFFFFFF);
             }
 
             if (this.halfSize) {
-                poseStack.pushPose();
-                poseStack.translate(getX(), getY(), 0.0F);
-                poseStack.scale(0.5f, 0.5f, 1.f);
+                var pose = guiGraphics.pose();
+                pose.pushPose();
+                pose.translate(getX(), getY(), 0.0F);
+                pose.scale(0.5f, 0.5f, 1.f);
 
                 if (!disableBackground) {
-                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(0, 0).blit(poseStack, getBlitOffset());
+                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(0, 0).blit(guiGraphics);
                 }
-                blitter.dest(0, 0).blit(poseStack, getBlitOffset());
-                poseStack.popPose();
+                blitter.dest(0, 0).blit(guiGraphics);
+                pose.popPose();
             } else {
                 if (!disableBackground) {
-                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(getX(), getY()).blit(poseStack, getBlitOffset());
+                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(getX(), getY()).blit(guiGraphics);
                 }
-                icon.getBlitter().dest(getX(), getY()).blit(poseStack, getBlitOffset());
+                icon.getBlitter().dest(getX(), getY()).blit(guiGraphics);
             }
             RenderSystem.enableDepthTest();
 
             var item = this.getItemOverlay();
             if (item != null) {
-                Minecraft.getInstance().getItemRenderer().renderGuiItem(new ItemStack(item), getX(), getY());
+                guiGraphics.renderItem(new ItemStack(item), getX(), getY());
             }
         }
     }

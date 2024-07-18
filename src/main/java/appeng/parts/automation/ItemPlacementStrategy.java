@@ -1,5 +1,9 @@
 package appeng.parts.automation;
 
+import java.util.UUID;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -30,17 +34,21 @@ public class ItemPlacementStrategy implements PlacementStrategy {
     private final BlockPos pos;
     private final Direction side;
     private final BlockEntity host;
+    @Nullable
+    private final UUID ownerUuid;
     private boolean blocked = false;
 
-    public ItemPlacementStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host) {
+    public ItemPlacementStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host,
+            @Nullable UUID owningPlayerId) {
         this.level = level;
         this.pos = pos;
         this.side = side;
         this.host = host;
+        this.ownerUuid = owningPlayerId;
     }
 
     public void clearBlocked() {
-        this.blocked = !level.getBlockState(pos).getMaterial().isReplaceable();
+        this.blocked = !level.getBlockState(pos).canBeReplaced();
     }
 
     public final long placeInWorld(AEKey what, long amount, Actionable type, boolean placeAsEntity) {
@@ -50,7 +58,7 @@ public class ItemPlacementStrategy implements PlacementStrategy {
 
         var i = itemKey.getItem();
 
-        var maxStorage = (int) Math.min(amount, i.getMaxStackSize());
+        var maxStorage = (int) Math.min(amount, itemKey.getMaxStackSize());
         var is = itemKey.toStack(maxStorage);
         var worked = false;
 
@@ -58,7 +66,7 @@ public class ItemPlacementStrategy implements PlacementStrategy {
 
         final var placePos = pos;
 
-        if (level.getBlockState(placePos).getMaterial().isReplaceable()) {
+        if (level.getBlockState(placePos).canBeReplaced()) {
             if (placeAsEntity) {
                 final var sum = this.countEntitesAround(level, placePos);
 
@@ -68,15 +76,11 @@ public class ItemPlacementStrategy implements PlacementStrategy {
 
                     if (type == Actionable.MODULATE) {
                         is.setCount(maxStorage);
-                        if (!spawnItemEntity(level, host, side, is)) {
-                            // revert in case something prevents spawning.
-                            worked = false;
-                        }
-
+                        spawnItemEntity(level, host, side, is);
                     }
                 }
             } else {
-                final var player = Platform.getPlayer(level);
+                final var player = Platform.getFakePlayer(level, ownerUuid);
                 Platform.configurePlayer(player, side, host);
 
                 maxStorage = is.getCount();
@@ -106,7 +110,7 @@ public class ItemPlacementStrategy implements PlacementStrategy {
             }
         }
 
-        this.blocked = !level.getBlockState(placePos).getMaterial().isReplaceable();
+        this.blocked = !level.getBlockState(placePos).canBeReplaced();
 
         if (worked) {
             return maxStorage;
@@ -115,7 +119,7 @@ public class ItemPlacementStrategy implements PlacementStrategy {
         return 0;
     }
 
-    private static boolean spawnItemEntity(Level level, BlockEntity te, Direction side, ItemStack is) {
+    private static void spawnItemEntity(Level level, BlockEntity te, Direction side, ItemStack is) {
         // The center of the block the plane is located in
         final var centerX = te.getBlockPos().getX() + .5;
         final double centerY = te.getBlockPos().getY();
@@ -158,12 +162,11 @@ public class ItemPlacementStrategy implements PlacementStrategy {
         entity.setPos(absoluteX, absoluteY, absoluteZ);
         entity.setDeltaMovement(side.getStepX() * .1, side.getStepY() * 0.1, side.getStepZ() * 0.1);
 
-        // Try to spawn it and destroy it in case it's not possible
-        if (!level.addFreshEntity(entity)) {
-            entity.discard();
-            return false;
-        }
-        return true;
+        // NOTE: Vanilla generally ignores the return-value of this method when spawning items into the world
+        // Forge will return false when the embedded event is canceled, but the event canceller is responsible
+        // for cleaning up the entity in that case, so we should always assume our spawning was successful,
+        // and consume items...
+        level.addFreshEntity(entity);
     }
 
     private int countEntitesAround(Level level, BlockPos pos) {

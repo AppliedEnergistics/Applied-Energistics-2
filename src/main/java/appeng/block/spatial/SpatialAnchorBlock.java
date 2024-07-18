@@ -18,7 +18,7 @@
 
 package appeng.block.spatial;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -30,7 +30,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.orientation.IOrientationStrategy;
@@ -50,7 +49,7 @@ public class SpatialAnchorBlock extends AEBaseEntityBlock<SpatialAnchorBlockEnti
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public SpatialAnchorBlock() {
-        super(defaultProps(Material.METAL));
+        super(metalProps());
         this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 

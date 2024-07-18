@@ -29,20 +29,24 @@ import appeng.menu.me.crafting.CraftAmountMenu;
 public class ConfirmAutoCraftPacket extends BasePacket {
 
     private final int amount;
+    private final boolean craftMissingAmount;
     private final boolean autoStart;
 
     public ConfirmAutoCraftPacket(FriendlyByteBuf stream) {
         this.autoStart = stream.readBoolean();
+        this.craftMissingAmount = stream.readBoolean();
         this.amount = stream.readInt();
     }
 
-    public ConfirmAutoCraftPacket(int craftAmt, boolean autoStart) {
+    public ConfirmAutoCraftPacket(int craftAmt, boolean craftMissingAmount, boolean autoStart) {
         this.amount = craftAmt;
+        this.craftMissingAmount = craftMissingAmount;
         this.autoStart = autoStart;
 
         final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeInt(this.getPacketID());
         data.writeBoolean(autoStart);
+        data.writeBoolean(craftMissingAmount);
         data.writeInt(this.amount);
         this.configureWrite(data);
     }
@@ -50,7 +54,7 @@ public class ConfirmAutoCraftPacket extends BasePacket {
     @Override
     public void serverPacketData(ServerPlayer player) {
         if (player.containerMenu instanceof CraftAmountMenu menu) {
-            menu.confirm(amount, autoStart);
+            menu.confirm(amount, craftMissingAmount, autoStart);
         }
     }
 }

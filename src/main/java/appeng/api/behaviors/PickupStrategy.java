@@ -1,8 +1,10 @@
 package appeng.api.behaviors;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,9 +42,7 @@ public interface PickupStrategy {
      */
     boolean pickUpEntity(IEnergySource energySource, PickupSink sink, Entity entity);
 
-    Result tryStartPickup(IEnergySource energySource, PickupSink sink);
-
-    void completePickup(IEnergySource energySource, PickupSink sink);
+    Result tryPickup(IEnergySource energySource, PickupSink sink);
 
     enum Result {
         /**
@@ -62,7 +62,7 @@ public interface PickupStrategy {
     @FunctionalInterface
     interface Factory {
         PickupStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide, BlockEntity host,
-                Map<Enchantment, Integer> enchantments);
+                Map<Enchantment, Integer> enchantments, @Nullable UUID owningPlayerId);
     }
 
     static void register(AEKeyType type, Factory factory) {

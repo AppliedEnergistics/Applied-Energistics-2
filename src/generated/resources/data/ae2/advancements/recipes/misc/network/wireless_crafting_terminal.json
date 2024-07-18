@@ -1,0 +1,61 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dense_energy_cell": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:dense_energy_cell"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_terminal": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:crafting_terminal"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ae2:network/wireless_crafting_terminal"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_wireless_receiver": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:wireless_receiver"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_terminal",
+      "has_dense_energy_cell",
+      "has_wireless_receiver",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ae2:network/wireless_crafting_terminal"
+    ]
+  },
+  "sends_telemetry_event": false
+}

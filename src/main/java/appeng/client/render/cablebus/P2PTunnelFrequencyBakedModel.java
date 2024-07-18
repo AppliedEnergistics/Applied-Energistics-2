@@ -21,10 +21,10 @@ package appeng.client.render.cablebus;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
-
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
@@ -86,14 +86,13 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
         final CubeBuilder cb = new CubeBuilder(meshBuilder.getEmitter());
 
         cb.setTexture(this.texture);
-        cb.useStandardUV();
         cb.setEmissiveMaterial(active);
 
         for (int i = 0; i < 4; ++i) {
             final int[] offs = QUAD_OFFSETS[i];
             for (int j = 0; j < 4; ++j) {
                 final AEColor col = colors[j];
-                // Same logic as in Biometric Card Model
+
                 if (active) {
                     cb.setColorRGB(col.mediumVariant);
                 } else {

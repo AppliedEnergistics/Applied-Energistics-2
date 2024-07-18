@@ -1,6 +1,6 @@
 package appeng.block.crafting;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;

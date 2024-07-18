@@ -29,7 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.exceptions.FailedConnectionException;
+import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
@@ -39,13 +39,12 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
-import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
-import appeng.parts.BasicStatePart;
+import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
 
-public class ToggleBusPart extends BasicStatePart {
+public class ToggleBusPart extends AEBasePart {
 
     @PartModels
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/toggle_bus_base");
@@ -68,7 +67,7 @@ public class ToggleBusPart extends BasicStatePart {
             .setTagName("outer")
             .setInWorldNode(true)
             .setIdlePowerUsage(0.0)
-            .setFlags();
+            .setFlags(GridFlags.PREFERRED);
 
     private IGridConnection connection;
     private boolean hasRedstone = false;
@@ -79,7 +78,7 @@ public class ToggleBusPart extends BasicStatePart {
         super(partItem);
 
         this.getMainNode().setIdlePowerUsage(0.0);
-        this.getMainNode().setFlags();
+        this.getMainNode().setFlags(GridFlags.PREFERRED);
     }
 
     @Override
@@ -185,13 +184,8 @@ public class ToggleBusPart extends BasicStatePart {
         if (intention == (this.connection == null)
                 && this.getMainNode().getNode() != null && this.getOuterNode().getNode() != null) {
             if (intention) {
-                try {
-                    this.connection = GridHelper.createGridConnection(this.getMainNode().getNode(),
-                            this.getOuterNode().getNode());
-                } catch (FailedConnectionException e) {
-                    // :(
-                    AELog.debug(e);
-                }
+                this.connection = GridHelper.createConnection(this.getMainNode().getNode(),
+                        this.getOuterNode().getNode());
             } else {
                 this.connection.destroy();
                 this.connection = null;

@@ -38,6 +38,7 @@ import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
+import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -97,7 +98,7 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
                     BakedModel cellChassisModel = getCellChassisModel(cell);
 
                     context.pushTransform(slotTransforms[slot]);
-                    context.fallbackConsumer().accept(cellChassisModel);
+                    context.bakedModelConsumer().accept(cellChassisModel, null);
                     context.meshConsumer().accept(getCellChassisMesh(cell));
                     context.popTransform();
                 }
@@ -205,13 +206,13 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
         RandomSource random = RandomSource.create();
         MeshBuilder meshBuilder = renderer.meshBuilder();
         QuadEmitter emitter = meshBuilder.getEmitter();
-        emitter.material(renderer.materialFinder().disableDiffuse(0, false).disableAo(0, true).find());
+        emitter.material(renderer.materialFinder().disableDiffuse(false).ambientOcclusion(TriState.FALSE).find());
 
         for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
             Direction face = ModelHelper.faceFromIndex(i);
             List<BakedQuad> quads = bakedModel.getQuads(null, face, random);
             for (BakedQuad quad : quads) {
-                emitter.fromVanilla(quad.getVertices(), 0, false);
+                emitter.fromVanilla(quad.getVertices(), 0);
                 emitter.cullFace(face);
                 emitter.nominalFace(face);
                 emitter.emit();
@@ -220,4 +221,8 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
         return meshBuilder.build();
     }
 
+    @Override
+    public boolean isVanillaAdapter() {
+        return false;
+    }
 }

@@ -20,17 +20,15 @@ package appeng.client.gui.me.crafting;
 
 import java.text.NumberFormat;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import org.lwjgl.glfw.GLFW;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.StackWithBounds;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.core.localization.GuiText;
@@ -104,7 +102,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
         setTextContent("cpu_status", cpuDetails);
 
         final int size = plan != null ? plan.getEntries().size() : 0;
-        scrollbar.setRange(0, AbstractTableRenderer.getScrollableRows(size), 1);
+        scrollbar.setRange(0, this.table.getScrollableRows(size), 1);
     }
 
     private Component getNextCpuButtonLabel() {
@@ -123,19 +121,19 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY) {
 
         CraftingPlanSummary plan = menu.getPlan();
         if (plan != null) {
-            this.table.render(poseStack, mouseX, mouseY, plan.getEntries(), scrollbar.getCurrentScroll());
+            this.table.render(guiGraphics, mouseX, mouseY, plan.getEntries(), scrollbar.getCurrentScroll());
         }
 
     }
 
     @org.jetbrains.annotations.Nullable
     @Override
-    public GenericStack getStackUnderMouse(double mouseX, double mouseY) {
+    public StackWithBounds getStackUnderMouse(double mouseX, double mouseY) {
         var hovered = table.getHoveredStack();
         if (hovered != null) {
             return hovered;
@@ -146,8 +144,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
     // Allow players to confirm a craft via the enter key
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (!this.checkHotbarKeys(InputConstants.getKey(keyCode, scanCode))
-                && (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER)) {
+        if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
             this.start();
             return true;
         }

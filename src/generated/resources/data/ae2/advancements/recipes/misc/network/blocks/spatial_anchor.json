@@ -1,0 +1,48 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_128_cubed_spatial_cell_component": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:spatial_cell_component_128"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_spatial_pylon": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:spatial_pylon"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ae2:network/blocks/spatial_anchor"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_128_cubed_spatial_cell_component",
+      "has_spatial_pylon",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ae2:network/blocks/spatial_anchor"
+    ]
+  },
+  "sends_telemetry_event": false
+}

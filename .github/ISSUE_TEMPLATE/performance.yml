@@ -1,0 +1,59 @@
+name: Performance issue
+description: Having a performance issue related to AE2? Please report it here.
+labels: ["performance"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Provide a summary of the issue in the Title above, please do not "[Tag]" it.
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce the performance issue
+      description: |
+        Please provide the steps to reproduce it, otherwise we might not be able to fix it.
+    validations:
+      required: true
+  - type: input
+    id: spark-link
+    attributes:
+      label: Spark profile link
+      description: |
+        Provide a link to a Spark profiler result. You can install [Spark](https://www.curseforge.com/minecraft/mc-mods/spark) to generate a profile.
+        Once it's installed, run `/spark profile` for TPS (server lag) issues and `/sparkc profile` for FPS (client lag) issues. Notice the `c` at the end for client.
+        Then, post a link to the generated profile. Without a profile, we can't do anything about your performance issue.
+    validations:
+      required: true
+  - type: dropdown
+    id: minecraft
+    attributes:
+      label: Which minecraft version are you using?
+      options:
+        - "1.20"
+        - "1.19"
+        - "1.18"
+        - "1.17 - UNSUPPORTED"
+        - "1.16 - UNSUPPORTED"
+        - "1.15 - UNSUPPORTED"
+        - "1.12 - UNSUPPORTED"
+        - "1.10 - UNSUPPORTED"
+        - "1.7  - UNSUPPORTED"
+      description: If the version is UNSUPPORTED, it means your issue will be closed immediately, so don't bother! This is because of the developers' limited time.
+    validations:
+      required: true
+  - type: dropdown
+    id: modloader
+    attributes:
+      label: On which mod loaders does it happen?
+      multiple: true
+      options:
+        - Forge
+        - Fabric
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional details
+      description: |
+        In case you want to optionally provide further informations, which will not fit anywhere else.

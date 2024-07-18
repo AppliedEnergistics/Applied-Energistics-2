@@ -42,7 +42,7 @@ public class CraftingEvent {
             ItemStack craftedItem,
             Container container) {
         var serverLevel = (ServerLevel) level;
-        var fakePlayer = Platform.getPlayer(serverLevel);
+        var fakePlayer = Platform.getFakePlayer(serverLevel, null);
         // TODO FABRIC 117 Expose an event for this in the API
 //        MinecraftForge.EVENT_BUS.post(new PlayerEvent.ItemCraftedEvent(fakePlayer, craftedItem, container));
     }

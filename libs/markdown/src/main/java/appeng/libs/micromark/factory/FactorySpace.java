@@ -13,7 +13,7 @@ public final class FactorySpace {
     }
 
     public static State create(Tokenizer.Effects effects, State ok, String type, Integer max) {
-        var limit = max != null ? max - 1 :  Integer.MAX_VALUE;
+        var limit = max != null ? max - 1 : Integer.MAX_VALUE;
 
         return new StateMachine(effects, ok, type, limit)::start;
     }

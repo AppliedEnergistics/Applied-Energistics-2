@@ -18,14 +18,21 @@
 
 package appeng.debug;
 
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.item.CreativeModeTab;
 
 import appeng.block.AEBaseEntityBlock;
+import appeng.core.AEConfig;
 
 public class ChunkLoaderBlock extends AEBaseEntityBlock<ChunkLoaderBlockEntity> {
 
     public ChunkLoaderBlock() {
-        super(defaultProps(Material.METAL));
+        super(metalProps());
     }
 
+    @Override
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+        if (AEConfig.instance().isDebugToolsEnabled()) {
+            output.accept(this);
+        }
+    }
 }

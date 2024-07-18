@@ -1,6 +1,6 @@
 package appeng.crafting.pattern;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.SimpleContainer;
@@ -49,7 +49,6 @@ public class StonecuttingPatternItem extends EncodedPatternItem {
         try {
             return new AEStonecuttingPattern(what, level);
         } catch (Exception e) {
-            AELog.warn("Could not decode an invalid crafting pattern %s: %s", what.getTag(), e);
             return null;
         }
     }
@@ -80,7 +79,7 @@ public class StonecuttingPatternItem extends EncodedPatternItem {
 
         // Try to find the output in the potential recipe list
         for (var potentialRecipe : potentialRecipes) {
-            if (AEItemKey.matches(output, potentialRecipe.getResultItem())) {
+            if (AEItemKey.matches(output, potentialRecipe.getResultItem(level.registryAccess()))) {
                 // Yay we found a match, reencode the pattern
                 AELog.debug("Re-Encoding pattern from %s -> %s", recipeId, potentialRecipe.getId());
                 StonecuttingPatternEncoding.encode(tag, potentialRecipe, input, output,

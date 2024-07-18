@@ -21,7 +21,7 @@ package appeng.block;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -40,7 +40,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
@@ -128,7 +128,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
             var be = this.getBlockEntity(level, pos);
             if (be != null) {
                 var drops = new ArrayList<ItemStack>();
-                be.addAdditionalDrops(level, pos, drops, false);
+                be.addAdditionalDrops(level, pos, drops);
                 Platform.spawnDrops(level, pos, drops);
             }
         }
@@ -146,7 +146,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         var te = this.getBlockEntity(level, pos);
         if (te instanceof AEBaseInvBlockEntity invBlockEntity) {
-            if (invBlockEntity.getInternalInventory().size() > 0) {
+            if (!invBlockEntity.getInternalInventory().isEmpty()) {
                 return invBlockEntity.getInternalInventory().getRedstoneSignal();
             }
         }
@@ -162,7 +162,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     }
 
     @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer,
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer,
             ItemStack is) {
         // Inherit the item stack's display name, but only if it's a user defined string rather than a translation
         // component, since our custom naming cannot handle untranslated I18N strings and we would translate it using
@@ -171,6 +171,10 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
 
         if (blockEntity == null) {
             return;
+        }
+
+        if (blockEntity instanceof IOwnerAwareBlockEntity ownerAware && placer instanceof Player player) {
+            ownerAware.setOwner(player);
         }
 
         var hoverName = is.getHoverName();
@@ -263,7 +267,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
      * Exports settings of the block entity when it is broken.
      */
     @Override
-    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+    public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
         var drops = super.getDrops(state, builder);
         for (var drop : drops) {
             if (drop.getItem() instanceof BlockItem blockItem && blockItem.getBlock() == this) {

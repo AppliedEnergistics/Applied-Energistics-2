@@ -2,25 +2,28 @@ package appeng.client.gui.me.common;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.item.ItemStack;
 
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.sync.packets.CraftingJobStatusPacket;
 import appeng.items.tools.powered.WirelessTerminalItem;
+import appeng.util.SearchInventoryEvent;
 
 /**
  * Tracks pending crafting jobs started by this player.
  */
 @Environment(EnvType.CLIENT)
 public final class PendingCraftingJobs {
-    private static final Map<String, PendingJob> jobs = new HashMap<>();
+    private static final Map<UUID, PendingJob> jobs = new HashMap<>();
 
     private PendingCraftingJobs() {
     }
@@ -29,14 +32,18 @@ public final class PendingCraftingJobs {
         return jobs.entrySet().stream().anyMatch(s -> s.getValue().what.equals(what));
     }
 
-    public static void jobStatus(String id,
+    public static void clearPendingJobs() {
+        jobs.clear();
+    }
+
+    public static void jobStatus(UUID id,
             AEKey what,
             long requestedAmount,
             long remainingAmount,
             CraftingJobStatusPacket.Status status) {
 
         AELog.debug("Crafting job " + id + " for " + requestedAmount
-                + "x" + AEStackRendering.getDisplayName(what).getString() + ". State=" + status);
+                + "x" + AEKeyRendering.getDisplayName(what).getString() + ". State=" + status);
 
         var existing = jobs.get(id);
         switch (status) {
@@ -61,21 +68,19 @@ public final class PendingCraftingJobs {
     }
 
     private static boolean hasNotificationEnablingItem(LocalPlayer player) {
-        var playerInv = player.getInventory();
-        for (int i = 0; i < playerInv.getContainerSize(); i++) {
-            var stack = playerInv.getItem(i);
+        for (ItemStack stack : SearchInventoryEvent.getItems(player)) {
             if (!stack.isEmpty()
                     && stack.getItem() instanceof WirelessTerminalItem wirelessTerminal
                     // Should have some power
                     && wirelessTerminal.getAECurrentPower(stack) > 0
                     // Should be linked (we don't know if it's linked to the grid for which we get notifications)
-                    && wirelessTerminal.getGridKey(stack).isPresent()) {
+                    && wirelessTerminal.getLinkedPosition(stack) != null) {
                 return true;
             }
         }
         return false;
     }
 
-    record PendingJob(String jobId, AEKey what, long requestedAmount, long remainingAmount) {
+    record PendingJob(UUID jobId, AEKey what, long requestedAmount, long remainingAmount) {
     }
 }

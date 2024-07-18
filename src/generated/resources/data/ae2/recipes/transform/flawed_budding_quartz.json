@@ -1,0 +1,18 @@
+{
+  "type": "ae2:transform",
+  "circumstance": {
+    "type": "fluid",
+    "tag": "minecraft:water"
+  },
+  "ingredients": [
+    {
+      "item": "ae2:charged_certus_quartz_crystal"
+    },
+    {
+      "item": "ae2:chipped_budding_quartz"
+    }
+  ],
+  "result": {
+    "item": "ae2:flawed_budding_quartz"
+  }
+}

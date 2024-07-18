@@ -22,7 +22,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.InterfaceScreen;
@@ -40,10 +39,9 @@ public class InterfaceMenu extends UpgradeableMenu<InterfaceLogicHost> {
 
     public static final MenuType<InterfaceMenu> TYPE = MenuTypeBuilder
             .create(InterfaceMenu::new, InterfaceLogicHost.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("interface");
 
-    public InterfaceMenu(MenuType<InterfaceMenu> menuType, int id, Inventory ip, InterfaceLogicHost host) {
+    public InterfaceMenu(MenuType<? extends InterfaceMenu> menuType, int id, Inventory ip, InterfaceLogicHost host) {
         super(menuType, id, ip, host);
 
         registerClientAction(ACTION_OPEN_SET_AMOUNT, Integer.class, this::openSetAmountMenu);

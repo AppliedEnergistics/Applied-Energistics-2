@@ -105,14 +105,15 @@ public abstract class ModelProvider<T extends ModelBuilder<T>> implements DataPr
         return getBuilder(name).parent(getExistingFile(parent));
     }
 
-    public T cube(String name, ResourceLocation down, ResourceLocation up, ResourceLocation north, ResourceLocation south, ResourceLocation east, ResourceLocation west) {
+    public T cube(String name, ResourceLocation down, ResourceLocation up, ResourceLocation north, ResourceLocation south, ResourceLocation east, ResourceLocation west, ResourceLocation particle) {
         return withExistingParent(name, "cube")
                 .texture("down", down)
                 .texture("up", up)
                 .texture("north", north)
                 .texture("south", south)
                 .texture("east", east)
-                .texture("west", west);
+                .texture("west", west)
+                .texture("particle", particle);
     }
 
     private T singleTexture(String name, String parent, ResourceLocation texture) {

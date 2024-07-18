@@ -1,0 +1,33 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:iron_ingots",
+      "required": false
+    },
+    {
+      "id": "#c:gold_ingots",
+      "required": false
+    },
+    {
+      "id": "#c:copper_ingots",
+      "required": false
+    },
+    {
+      "id": "#c:tin_ingots",
+      "required": false
+    },
+    {
+      "id": "#c:brass_ingots",
+      "required": false
+    },
+    {
+      "id": "#c:nickel_ingots",
+      "required": false
+    },
+    {
+      "id": "#c:aluminium_ingots",
+      "required": false
+    }
+  ]
+}

@@ -2,6 +2,7 @@ package appeng.client.guidebook.document.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -13,6 +14,7 @@ import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.flow.LytFlowInlineBlock;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.layout.Layouts;
+import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.render.SimpleRenderContext;
 
 /**
@@ -53,6 +55,9 @@ public class LytDocument extends LytNode implements LytBlockContainer {
     @Override
     public void removeChild(LytNode node) {
         if (node instanceof LytBlock block) {
+            if (block.parent == this) {
+                block.parent = null;
+            }
             blocks.remove(block);
         }
     }
@@ -64,6 +69,13 @@ public class LytDocument extends LytNode implements LytBlockContainer {
         }
         block.parent = this;
         blocks.add(block);
+    }
+
+    public void clearContent() {
+        for (var block : blocks) {
+            block.parent = null;
+        }
+        blocks.clear();
     }
 
     public void updateLayout(LayoutContext context, int availableWidth) {
@@ -83,7 +95,9 @@ public class LytDocument extends LytNode implements LytBlockContainer {
                 5,
                 5,
                 5,
-                5);
+                5,
+                0,
+                AlignItems.START);
 
         return new Layout(availableWidth, bounds.height());
     }
@@ -97,7 +111,7 @@ public class LytDocument extends LytNode implements LytBlockContainer {
         }
     }
 
-    public void renderBatch(SimpleRenderContext context, MultiBufferSource buffers) {
+    public void renderBatch(RenderContext context, MultiBufferSource buffers) {
         for (var block : blocks) {
             if (!block.getBounds().intersects(context.viewport())) {
                 continue;
@@ -111,7 +125,7 @@ public class LytDocument extends LytNode implements LytBlockContainer {
     }
 
     public void setHoveredElement(HitTestResult hoveredElement) {
-        if (hoveredElement != this.hoveredElement) {
+        if (!Objects.equals(hoveredElement, this.hoveredElement)) {
             if (this.hoveredElement != null) {
                 this.hoveredElement.node.onMouseLeave();
             }

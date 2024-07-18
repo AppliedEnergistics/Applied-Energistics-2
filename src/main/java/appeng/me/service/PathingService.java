@@ -21,7 +21,10 @@ package appeng.me.service;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.GridFlags;
@@ -31,7 +34,6 @@ import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridServiceProvider;
-import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.GridBootingStatusChange;
 import appeng.api.networking.events.GridChannelRequirementChanged;
 import appeng.api.networking.events.GridControllerChange;
@@ -50,7 +52,7 @@ import appeng.me.pathfinding.ControllerValidator;
 import appeng.me.pathfinding.PathingCalculation;
 
 public class PathingService implements IPathingService, IGridServiceProvider {
-    private static final String TAG_CHANNEL_MODE = "channelMode";
+    private static final String TAG_CHANNEL_MODE = "cm";
 
     static {
         GridHelper.addGridServiceEventHandler(GridChannelRequirementChanged.class,
@@ -185,7 +187,11 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     }
 
     @Override
-    public void addNode(IGridNode gridNode) {
+    public void addNode(IGridNode gridNode, @Nullable CompoundTag savedData) {
+        if (savedData != null) {
+            restoreChannelMode(savedData);
+        }
+
         if (gridNode.getOwner() instanceof ControllerBlockEntity controller) {
             this.controllers.add(controller);
             this.recalculateControllerNextTick = true;
@@ -200,6 +206,25 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         }
 
         this.repath();
+    }
+
+    private void restoreChannelMode(CompoundTag savedData) {
+        // Adding a node to the grid will restore its saved channel mode to the grid
+        // in case of conflict (i.e. merging two grids with conflicting modes),
+        // the more relaxed mode will win.
+        if (savedData.contains(TAG_CHANNEL_MODE, Tag.TAG_STRING)) {
+            var channelModeName = savedData.getString(TAG_CHANNEL_MODE);
+            try {
+                var nodeChannelMode = ChannelMode.valueOf(channelModeName);
+                if (!this.channelModeLocked
+                        || nodeChannelMode.getAdHocNetworkChannels() > channelMode.getAdHocNetworkChannels()) {
+                    channelModeLocked = true;
+                    channelMode = nodeChannelMode;
+                }
+            } catch (IllegalArgumentException e) {
+                AELog.warn("Invalid channel mode stored on grid node: %s", channelModeName);
+            }
+        }
     }
 
     private void updateControllerState() {
@@ -360,29 +385,9 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     }
 
     @Override
-    public void onSplit(IGridStorage destinationStorage) {
-        populateGridStorage(destinationStorage);
-    }
-
-    @Override
-    public void onJoin(IGridStorage sourceStorage) {
-        var tag = sourceStorage.dataObject();
-        var channelModeName = tag.getString(TAG_CHANNEL_MODE);
-        try {
-            channelMode = ChannelMode.valueOf(channelModeName);
-            channelModeLocked = true;
-        } catch (IllegalArgumentException ignored) {
-            channelModeLocked = false;
-        }
-    }
-
-    @Override
-    public void populateGridStorage(IGridStorage destinationStorage) {
-        var tag = destinationStorage.dataObject();
+    public void saveNodeData(IGridNode gridNode, CompoundTag savedData) {
         if (channelModeLocked) {
-            tag.putString(TAG_CHANNEL_MODE, channelMode.name());
-        } else {
-            tag.remove(TAG_CHANNEL_MODE);
+            savedData.putString(TAG_CHANNEL_MODE, channelMode.name());
         }
     }
 }

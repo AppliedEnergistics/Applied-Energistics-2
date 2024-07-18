@@ -28,7 +28,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
@@ -43,7 +42,6 @@ public class SpatialAnchorMenu extends AEBaseMenu {
 
     public static final MenuType<SpatialAnchorMenu> TYPE = MenuTypeBuilder
             .create(SpatialAnchorMenu::new, SpatialAnchorBlockEntity.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("spatialanchor");
 
     private static final int UPDATE_DELAY = 20;
@@ -74,8 +72,6 @@ public class SpatialAnchorMenu extends AEBaseMenu {
 
     @Override
     public void broadcastChanges() {
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
-
         if (isServerSide()) {
             SpatialAnchorBlockEntity anchor = (SpatialAnchorBlockEntity) this.getBlockEntity();
             this.setOverlayMode(anchor.getConfigManager().getSetting(Settings.OVERLAY_MODE));

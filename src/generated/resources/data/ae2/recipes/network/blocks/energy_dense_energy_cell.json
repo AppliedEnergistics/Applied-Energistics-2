@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2:energy_cell"
+    },
+    "b": {
+      "item": "ae2:calculation_processor"
+    }
+  },
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "result": {
+    "item": "ae2:dense_energy_cell"
+  },
+  "show_notification": true
+}

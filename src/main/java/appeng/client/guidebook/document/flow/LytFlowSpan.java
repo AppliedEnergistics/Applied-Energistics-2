@@ -3,6 +3,7 @@ package appeng.client.guidebook.document.flow;
 import java.util.ArrayList;
 import java.util.List;
 
+import appeng.client.guidebook.document.block.LytVisitor;
 import appeng.client.guidebook.style.Styleable;
 
 /**
@@ -21,5 +22,12 @@ public class LytFlowSpan extends LytFlowContent implements LytFlowParent, Stylea
         }
         child.setParent(this);
         children.add(child);
+    }
+
+    @Override
+    protected void visitChildren(LytVisitor visitor) {
+        for (var child : children) {
+            child.visit(visitor);
+        }
     }
 }

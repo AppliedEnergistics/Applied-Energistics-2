@@ -1,11 +1,12 @@
 package appeng.libs.micromark.text;
 
-import appeng.libs.micromark.TestUtil;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.List;
+import appeng.libs.micromark.TestUtil;
 
 public class CharacterReferenceTest {
     @ParameterizedTest(name = "[{index}] {2}")
@@ -49,20 +50,16 @@ public class CharacterReferenceTest {
                 List.of(
                         "&nbsp; &amp; &copy; &AElig; &Dcaron;",
                         "&frac34; &HilbertSpace; &DifferentialD;",
-                        "&ClockwiseContourIntegral; &ngE;"
-                ),
+                        "&ClockwiseContourIntegral; &ngE;"),
                 List.of(
-                        "<p>  &amp; © Æ Ď^n¾ ℋ ⅆ^n∲ ≧̸</p>"
-                )
-        );
+                        "<p>  &amp; © Æ Ď^n¾ ℋ ⅆ^n∲ ≧̸</p>"));
     }
 
     @Test
     public void testShouldIgnoreCharacterReferencesInHtml() {
         TestUtil.assertGeneratedDangerousHtml(
                 "<a href=\"&ouml;&ouml;.html\">",
-                "<a href=\"&ouml;&ouml;.html\">"
-        );
+                "<a href=\"&ouml;&ouml;.html\">");
     }
 
     @Test
@@ -72,19 +69,17 @@ public class CharacterReferenceTest {
                         "&nbsp &x; &#; &#x;",
                         "&#987654321;",
                         "&#abcdef0;",
-                        "&ThisIsNotDefined; &hi?;"
-                ),
+                        "&ThisIsNotDefined; &hi?;"),
                 List.of(
                         "<p>&amp;nbsp &amp;x; &amp;#; &amp;#x;",
                         "&amp;#987654321;",
                         "&amp;#abcdef0;",
-                        "&amp;ThisIsNotDefined; &amp;hi?;</p>"
-                )
-        );
+                        "&amp;ThisIsNotDefined; &amp;hi?;</p>"));
     }
 
     @Test
     public void testDisabled() {
-        TestUtil.assertGeneratedHtmlWithDisabled("&amp;", "<p>&amp;</p>", "should support turning off character references", "characterReferences");
+        TestUtil.assertGeneratedHtmlWithDisabled("&amp;", "<p>&amp;</p>",
+                "should support turning off character references", "characterReferences");
     }
 }

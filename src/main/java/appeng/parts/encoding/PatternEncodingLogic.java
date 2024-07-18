@@ -140,8 +140,9 @@ public class PatternEncodingLogic implements InternalInventoryHost {
         this.substitute = pattern.canSubstitute();
 
         encodedInputInv.clear();
-        encodedInputInv.setStack(0, new GenericStack(pattern.getBase(), 1));
-        encodedInputInv.setStack(1, new GenericStack(pattern.getAddition(), 1));
+        encodedInputInv.setStack(0, new GenericStack(pattern.getTemplate(), 1));
+        encodedInputInv.setStack(1, new GenericStack(pattern.getBase(), 1));
+        encodedInputInv.setStack(2, new GenericStack(pattern.getAddition(), 1));
         encodedOutputInv.clear();
     }
 

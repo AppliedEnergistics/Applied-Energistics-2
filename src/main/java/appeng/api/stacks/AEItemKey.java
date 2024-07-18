@@ -13,6 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -30,8 +31,12 @@ public final class AEItemKey extends AEKey {
     private final int hashCode;
     private final int cachedDamage;
 
+    /**
+     * Max stack size cache, or {@code -1} if not initialized.
+     */
+    private int maxStackSize = -1;
+
     private AEItemKey(Item item, InternedTag internedTag) {
-        super(Platform.getItemDisplayName(item, internedTag.tag));
         this.item = item;
         this.internedTag = internedTag;
         this.hashCode = item.hashCode() * 31 + internedTag.hashCode;
@@ -55,7 +60,10 @@ public final class AEItemKey extends AEKey {
         if (stack.isEmpty()) {
             return null;
         }
-        return of(stack.getItem(), stack.getTag());
+        var ret = of(stack.getItem(), stack.getTag());
+        // Cache max stack size since we already have an ItemStack.
+        ret.maxStackSize = stack.getMaxStackSize();
+        return ret;
     }
 
     public static boolean matches(AEKey what, ItemStack itemStack) {
@@ -211,10 +219,15 @@ public final class AEItemKey extends AEKey {
                 break;
             }
 
-            var taken = Math.min(amount, item.getMaxStackSize());
+            var taken = Math.min(amount, getMaxStackSize());
             amount -= taken;
             drops.add(toStack((int) taken));
         }
+    }
+
+    @Override
+    protected Component computeDisplayName() {
+        return Platform.getItemDisplayName(item, internedTag.tag);
     }
 
     @SuppressWarnings("unchecked")
@@ -229,6 +242,16 @@ public final class AEItemKey extends AEKey {
      */
     public boolean isDamaged() {
         return cachedDamage > 0;
+    }
+
+    public int getMaxStackSize() {
+        int ret = maxStackSize;
+
+        if (ret == -1) {
+            maxStackSize = ret = toStack().getMaxStackSize();
+        }
+
+        return ret;
     }
 
     @Override

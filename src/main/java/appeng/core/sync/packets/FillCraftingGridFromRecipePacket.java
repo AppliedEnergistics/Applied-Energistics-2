@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
+
+import org.jetbrains.annotations.Nullable;
 
 import io.netty.buffer.Unpooled;
 
@@ -43,7 +43,6 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
@@ -141,7 +140,6 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
         var grid = node.getGrid();
 
         var storageService = grid.getStorageService();
-        var security = grid.getSecurityService();
         var energy = grid.getEnergyService();
         var craftMatrix = cct.getCraftingMatrix();
 
@@ -169,20 +167,19 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
                     // Grid already has an item that matches the ingredient
                     continue;
                 } else {
-                    if (security.hasPermission(player, SecurityPermissions.INJECT)) {
-                        var in = AEItemKey.of(currentItem);
-                        var inserted = StorageHelper.poweredInsert(energy, storage, in, currentItem.getCount(),
-                                cct.getActionSource());
-                        if (inserted > 0) {
-                            touchedGridStorage = true;
-                        }
-                        if (inserted < currentItem.getCount()) {
-                            currentItem = currentItem.copy();
-                            currentItem.shrink((int) inserted);
-                        } else {
-                            currentItem = ItemStack.EMPTY;
-                        }
+                    var in = AEItemKey.of(currentItem);
+                    var inserted = StorageHelper.poweredInsert(energy, storage, in, currentItem.getCount(),
+                            cct.getActionSource());
+                    if (inserted > 0) {
+                        touchedGridStorage = true;
                     }
+                    if (inserted < currentItem.getCount()) {
+                        currentItem = currentItem.copy();
+                        currentItem.shrink((int) inserted);
+                    } else {
+                        currentItem = ItemStack.EMPTY;
+                    }
+
                     // If more is remaining, try moving it to the player inventory
                     player.getInventory().add(currentItem);
 
@@ -196,7 +193,7 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
 
             // Try to find the best item for this slot. Sort by the amount available in the last tick,
             // then try to extract from most to least available item until 1 can be extracted.
-            if (currentItem.isEmpty() && security.hasPermission(player, SecurityPermissions.EXTRACT)) {
+            if (currentItem.isEmpty()) {
                 var request = findBestMatchingItemStack(ingredient, filter, cachedStorage);
                 for (var what : request) {
                     var extracted = StorageHelper.poweredExtraction(energy, storage, what, 1, cct.getActionSource());
@@ -262,7 +259,7 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
     private NonNullList<Ingredient> getDesiredIngredients(Player player) {
         // Try to retrieve the real recipe on the server-side
         if (this.recipeId != null) {
-            var recipe = player.getLevel().getRecipeManager().byKey(this.recipeId).orElse(null);
+            var recipe = player.level().getRecipeManager().byKey(this.recipeId).orElse(null);
             if (recipe != null) {
                 return CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe);
             }

@@ -18,7 +18,11 @@
 
 package appeng.menu.me.crafting;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.collect.ImmutableList;
 
@@ -28,7 +32,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.stacks.KeyMap;
+import appeng.api.stacks.AEKey;
 
 /**
  * A crafting plan intended to be sent to the client.
@@ -99,7 +103,13 @@ public class CraftingPlanSummary {
      * @param actionSource The action source used to determine the amount of items already stored.
      */
     public static CraftingPlanSummary fromJob(IGrid grid, IActionSource actionSource, ICraftingPlan job) {
-        var plan = new KeyMap<>(null, KeyStats::new);
+        var plan = new HashMap<AEKey, KeyStats>() {
+            private KeyStats mapping(AEKey key) {
+                Objects.requireNonNull(key, "Key may not be null");
+
+                return computeIfAbsent(key, k -> new KeyStats());
+            }
+        };
 
         for (var used : job.usedItems()) {
             plan.mapping(used.getKey()).stored += used.getLongValue();
@@ -118,12 +128,12 @@ public class CraftingPlanSummary {
             }
         }
 
-        var entries = ImmutableList.<CraftingPlanSummaryEntry>builder();
+        var entries = new ArrayList<CraftingPlanSummaryEntry>();
 
         var storage = grid.getStorageService().getInventory();
         var crafting = grid.getCraftingService();
 
-        for (var out : plan) {
+        for (var out : plan.entrySet()) {
             long missingAmount;
             long storedAmount;
             if (job.simulation() && !crafting.canEmitFor(out.getKey())) {
@@ -143,7 +153,9 @@ public class CraftingPlanSummary {
 
         }
 
-        return new CraftingPlanSummary(job.bytes(), job.simulation(), entries.build());
+        Collections.sort(entries);
+
+        return new CraftingPlanSummary(job.bytes(), job.simulation(), List.copyOf(entries));
 
     }
 

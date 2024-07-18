@@ -28,10 +28,9 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
-
 import com.google.common.base.Preconditions;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.resources.ResourceLocation;
@@ -42,7 +41,6 @@ import net.minecraft.world.level.ItemLike;
  * A registry for 3D models used to render storage cells in the world, when they are inserted into a drive or similar
  * machines.
  */
-@ThreadSafe
 public final class StorageCellModels {
 
     private static final ResourceLocation MODEL_CELL_DEFAULT = new ResourceLocation(

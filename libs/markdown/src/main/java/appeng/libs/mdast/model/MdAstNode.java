@@ -1,11 +1,15 @@
 package appeng.libs.mdast.model;
 
-import appeng.libs.unist.UnistNode;
-import appeng.libs.unist.UnistPosition;
+import java.io.IOException;
+import java.util.function.Predicate;
+
 import com.google.gson.stream.JsonWriter;
+
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
+import appeng.libs.mdast.MdAstVisitor;
+import appeng.libs.unist.UnistNode;
+import appeng.libs.unist.UnistPosition;
 
 public abstract class MdAstNode implements UnistNode {
     private final String type;
@@ -37,6 +41,12 @@ public abstract class MdAstNode implements UnistNode {
 
     public abstract void toText(StringBuilder buffer);
 
+    public final String toText() {
+        var builder = new StringBuilder();
+        toText(builder);
+        return builder.toString();
+    }
+
     public final void toJson(JsonWriter writer) throws IOException {
         writer.beginObject();
         writer.name("type").value(type());
@@ -50,4 +60,28 @@ public abstract class MdAstNode implements UnistNode {
 
     protected void writeJson(JsonWriter writer) throws IOException {
     }
+
+    public final MdAstVisitor.Result visit(MdAstVisitor visitor) {
+        var result = visitor.beforeNode(this);
+        if (result == MdAstVisitor.Result.STOP) {
+            return result;
+        }
+        if (result != MdAstVisitor.Result.SKIP_CHILDREN) {
+            if (visitChildren(visitor) == MdAstVisitor.Result.STOP) {
+                return MdAstVisitor.Result.STOP;
+            }
+        }
+        return visitor.afterNode(this);
+    }
+
+    protected MdAstVisitor.Result visitChildren(MdAstVisitor visitor) {
+        return MdAstVisitor.Result.CONTINUE;
+    }
+
+    /**
+     * Remove children matching the given predicate.
+     */
+    public void removeChildren(Predicate<MdAstNode> node, boolean recursive) {
+    }
+
 }

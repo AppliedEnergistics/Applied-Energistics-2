@@ -2,6 +2,7 @@ package appeng.client.guidebook.compiler;
 
 import java.net.URI;
 
+import net.minecraft.ResourceLocationException;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -24,8 +25,12 @@ public final class IdUtils {
      * location. Relative locations must not be namespaced since we would otherwise run into the problem if namespaced
      * locations potentially having a different namespace than the anchor.
      */
-    public static ResourceLocation resolveLink(String idText, ResourceLocation anchor) {
-        if (!idText.contains(":")) {
+    public static ResourceLocation resolveLink(String idText, ResourceLocation anchor)
+            throws ResourceLocationException {
+        if (idText.startsWith("/")) {
+            // Absolute path, but relative to namespace
+            return new ResourceLocation(anchor.getNamespace(), idText.substring(1));
+        } else if (!idText.contains(":")) {
             URI uri = URI.create(anchor.getPath());
             uri = uri.resolve(idText);
 

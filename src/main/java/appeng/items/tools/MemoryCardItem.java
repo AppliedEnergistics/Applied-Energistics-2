@@ -40,6 +40,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -65,7 +66,9 @@ import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.inv.PlayerInternalInventory;
 
-public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolItem {
+public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolItem, DyeableLeatherItem {
+
+    private static final int DEFAULT_BASE_COLOR = 0xDDDDDD;
 
     private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[] { AEColor.TRANSPARENT, AEColor.TRANSPARENT,
             AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
@@ -112,9 +115,9 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
         }
 
         if (importTo instanceof IConfigurableObject configurableObject) {
-            // TODO: 1.20 Make it return true if it read any config at all
-            configurableObject.getConfigManager().readFromNBT(input);
-            imported.add(SettingsCategory.SETTINGS);
+            if (configurableObject.getConfigManager().readFromNBT(input)) {
+                imported.add(SettingsCategory.SETTINGS);
+            }
         }
 
         if (importTo instanceof IPriorityHost pHost && input.contains("priority", Tag.TAG_INT)) {
@@ -135,10 +138,10 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
 
         if (player != null && !player.getCommandSenderWorld().isClientSide()) {
             if (imported.isEmpty()) {
-                player.sendSystemMessage(PlayerMessages.InvalidMachine.text());
+                player.displayClientMessage(PlayerMessages.InvalidMachine.text(), true);
             } else {
                 var restored = Tooltips.conjunction(imported.stream().map(SettingsCategory::getLabel).toList());
-                player.sendSystemMessage(PlayerMessages.InvalidMachinePartiallyRestored.text(restored));
+                player.displayClientMessage(PlayerMessages.InvalidMachinePartiallyRestored.text(restored), true);
             }
         }
     }
@@ -260,9 +263,9 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
                     }
                 }
 
-                if (missingAmount > 0 && !player.level.isClientSide()) {
-                    player.sendSystemMessage(
-                            PlayerMessages.MissingUpgrades.text(entry.getKey().getDescription(), missingAmount));
+                if (missingAmount > 0 && !player.level().isClientSide()) {
+                    player.displayClientMessage(
+                            PlayerMessages.MissingUpgrades.text(entry.getKey().getDescription(), missingAmount), true);
                 }
             }
         }
@@ -359,11 +362,11 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
         }
 
         switch (msg) {
-            case SETTINGS_CLEARED -> player.sendSystemMessage(PlayerMessages.SettingCleared.text());
-            case INVALID_MACHINE -> player.sendSystemMessage(PlayerMessages.InvalidMachine.text());
-            case SETTINGS_LOADED -> player.sendSystemMessage(PlayerMessages.LoadedSettings.text());
-            case SETTINGS_SAVED -> player.sendSystemMessage(PlayerMessages.SavedSettings.text());
-            case SETTINGS_RESET -> player.sendSystemMessage(PlayerMessages.ResetSettings.text());
+            case SETTINGS_CLEARED -> player.displayClientMessage(PlayerMessages.SettingCleared.text(), true);
+            case INVALID_MACHINE -> player.displayClientMessage(PlayerMessages.InvalidMachine.text(), true);
+            case SETTINGS_LOADED -> player.displayClientMessage(PlayerMessages.LoadedSettings.text(), true);
+            case SETTINGS_SAVED -> player.displayClientMessage(PlayerMessages.SavedSettings.text(), true);
+            case SETTINGS_RESET -> player.displayClientMessage(PlayerMessages.ResetSettings.text(), true);
             default -> {
             }
         }
@@ -406,4 +409,22 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
         player.getItemInHand(hand).setTag(null);
     }
 
+    // Override to change the default color
+    @Override
+    public int getColor(ItemStack stack) {
+        CompoundTag compoundTag = stack.getTagElement(TAG_DISPLAY);
+        if (compoundTag != null && compoundTag.contains(TAG_COLOR, 99)) {
+            return compoundTag.getInt(TAG_COLOR);
+        }
+        return DEFAULT_BASE_COLOR;
+    }
+
+    public static int getTintColor(ItemStack stack, int tintIndex) {
+        if (tintIndex == 1 && stack.getItem() instanceof MemoryCardItem memoryCard) {
+            return memoryCard.getColor(stack);
+        } else {
+            // White
+            return 0xFFFFFF;
+        }
+    }
 }

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "c:iron_ingots"
+    },
+    "b": {
+      "tag": "c:glass_blocks"
+    },
+    "c": {
+      "item": "ae2:annihilation_core"
+    },
+    "d": {
+      "item": "ae2:formation_core"
+    }
+  },
+  "pattern": [
+    "aba",
+    "c d",
+    "aba"
+  ],
+  "result": {
+    "item": "ae2:interface"
+  },
+  "show_notification": true
+}

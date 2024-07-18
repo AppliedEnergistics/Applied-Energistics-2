@@ -1,10 +1,13 @@
 package appeng.client.guidebook.indices;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.google.gson.stream.JsonWriter;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -21,10 +24,15 @@ public class MultiValuedIndex<K, V> implements PageIndex {
 
     private final String name;
     private final EntryFunction<K, V> entryFunction;
+    private final JsonSerializer<K> keySerializer;
+    private final JsonSerializer<V> valueSerializer;
 
-    public MultiValuedIndex(String name, EntryFunction<K, V> entryFunction) {
+    public MultiValuedIndex(String name, EntryFunction<K, V> entryFunction, JsonSerializer<K> keySerializer,
+            JsonSerializer<V> valueSerializer) {
         this.name = name;
         this.entryFunction = entryFunction;
+        this.keySerializer = keySerializer;
+        this.valueSerializer = valueSerializer;
     }
 
     @Override
@@ -76,6 +84,20 @@ public class MultiValuedIndex<K, V> implements PageIndex {
                 addToIndex(newPage);
             }
         }
+    }
+
+    @Override
+    public void export(JsonWriter writer) throws IOException {
+        writer.beginArray();
+        for (var entry : index.entrySet()) {
+            keySerializer.write(writer, entry.getKey());
+            writer.beginArray();
+            for (var vRecord : entry.getValue()) {
+                valueSerializer.write(writer, vRecord.value());
+            }
+            writer.endArray();
+        }
+        writer.endArray();
     }
 
     private void addToIndex(ParsedGuidePage page) {

@@ -51,8 +51,30 @@ public class SmartCableTextures {
     // one of each set are composed together to get even/odd colored channels
     private final TextureAtlasSprite[] textures;
 
+    public static final Material[] DENSE_SMART_CHANNELS_TEXTURES = Arrays
+            .stream(new ResourceLocation[] { new ResourceLocation(AppEng.MOD_ID, "part/cable/dense_smart/channels_00"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/dense_smart/channels_01"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/dense_smart/channels_02"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/dense_smart/channels_03"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/dense_smart/channels_04"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/dense_smart/channels_10"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/dense_smart/channels_11"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/dense_smart/channels_12"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/dense_smart/channels_13"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/dense_smart/channels_14")//
+            }).map(e -> new Material(TextureAtlas.LOCATION_BLOCKS, e)).toArray(Material[]::new);
+
+    // Textures used to display channels on dense smart cables. There's two sets of 5
+    // textures each, and
+    // one of each set are composed together to get even/odd colored channels
+    private final TextureAtlasSprite[] densetextures;
+
     public SmartCableTextures(Function<Material, TextureAtlasSprite> bakedTextureGetter) {
         this.textures = Arrays.stream(SMART_CHANNELS_TEXTURES)//
+                .map(bakedTextureGetter)//
+                .toArray(TextureAtlasSprite[]::new);
+
+        this.densetextures = Arrays.stream(DENSE_SMART_CHANNELS_TEXTURES)//
                 .map(bakedTextureGetter)//
                 .toArray(TextureAtlasSprite[]::new);
     }
@@ -70,8 +92,18 @@ public class SmartCableTextures {
         }
     }
 
+    public TextureAtlasSprite getOddTextureForDenseChannels(int channels) {
+        if (channels < 0) {
+            return this.densetextures[0];
+        } else if (channels <= 4) {
+            return this.densetextures[channels];
+        } else {
+            return this.densetextures[4];
+        }
+    }
+
     /**
-     * The odd variant is used for displaying channels 5-8 as in use.
+     * The even variant is used for displaying channels 5-8 as in use.
      */
     public TextureAtlasSprite getEvenTextureForChannels(int channels) {
         if (channels < 5) {
@@ -80,6 +112,16 @@ public class SmartCableTextures {
             return this.textures[1 + channels];
         } else {
             return this.textures[9];
+        }
+    }
+
+    public TextureAtlasSprite getEvenTextureForDenseChannels(int channels) {
+        if (channels < 5) {
+            return this.densetextures[5];
+        } else if (channels <= 8) {
+            return this.densetextures[1 + channels];
+        } else {
+            return this.densetextures[9];
         }
     }
 }

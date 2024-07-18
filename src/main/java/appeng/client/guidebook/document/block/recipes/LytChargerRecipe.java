@@ -4,7 +4,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.document.block.LytBox;
 import appeng.client.guidebook.document.block.LytSlot;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
@@ -12,7 +11,7 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.recipes.handlers.ChargerRecipe;
 
-public class LytChargerRecipe extends LytBox {
+public class LytChargerRecipe extends LytRecipeBox {
     private static final ResourceLocation ARROW_LIGHT = AppEng.makeId("ae2guide/gui/recipe_arrow_light.png");
     private static final ResourceLocation ARROW_DARK = AppEng.makeId("ae2guide/gui/recipe_arrow_dark.png");
 
@@ -23,6 +22,7 @@ public class LytChargerRecipe extends LytBox {
     private final LytSlot resultSlot;
 
     public LytChargerRecipe(ChargerRecipe recipe) {
+        super(recipe);
         this.recipe = recipe;
         setPadding(5);
         paddingTop = 15;

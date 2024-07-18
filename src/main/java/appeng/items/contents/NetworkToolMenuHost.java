@@ -18,7 +18,7 @@
 
 package appeng.items.contents;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -42,6 +42,7 @@ public class NetworkToolMenuHost extends ItemMenuHost implements InternalInvento
         super(player, slot, is);
         this.host = host;
         this.inv = new AppEngInternalInventory(this, 9);
+        this.inv.setEnableClientEvents(true); // Also write to NBT on the client to prevent desyncs
         this.inv.setFilter(new NetworkToolInventoryFilter());
         if (is.hasTag()) // prevent crash when opening network status screen.
         {

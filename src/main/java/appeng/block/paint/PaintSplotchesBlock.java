@@ -25,12 +25,12 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -49,7 +49,7 @@ public class PaintSplotchesBlock extends AEBaseEntityBlock<PaintSplotchesBlockEn
     public static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 2);
 
     public PaintSplotchesBlock() {
-        super(defaultProps(Material.WATER, MaterialColor.NONE).noOcclusion().air().lightLevel(state -> {
+        super(defaultProps(MapColor.NONE, SoundType.WET_GRASS).noOcclusion().air().lightLevel(state -> {
             var lightLevel = state.getValue(LIGHT_LEVEL);
             return switch (lightLevel) {
                 default -> 0;
@@ -68,7 +68,7 @@ public class PaintSplotchesBlock extends AEBaseEntityBlock<PaintSplotchesBlockEn
 
     @Override
     public IOrientationStrategy getOrientationStrategy() {
-        return OrientationStrategies.facingAttached(false);
+        return OrientationStrategies.facingNoPlayerRotation();
     }
 
     @Override

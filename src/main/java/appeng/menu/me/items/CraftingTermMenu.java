@@ -31,6 +31,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -39,7 +40,6 @@ import net.minecraft.world.level.Level;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEItemKey;
@@ -67,14 +67,13 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
 
     public static final MenuType<CraftingTermMenu> TYPE = MenuTypeBuilder
             .create(CraftingTermMenu::new, ITerminalHost.class)
-            .requirePermission(SecurityPermissions.CRAFT)
             .build("craftingterm");
 
     private static final String ACTION_CLEAR_TO_PLAYER = "clearToPlayer";
 
     private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots = new CraftingMatrixSlot[9];
-    private final CraftingContainer recipeTestContainer = new CraftingContainer(this, 3, 3);
+    private final CraftingContainer recipeTestContainer = new TransientCraftingContainer(this, 3, 3);
 
     private final CraftingTermSlot outputSlot;
     private Recipe<CraftingContainer> currentRecipe;
@@ -111,7 +110,10 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
 
     @Override
     public void slotsChanged(Container inventory) {
-        updateCurrentRecipeAndOutput(false);
+        // Do not trigger a recursive update from updating the test container
+        if (inventory != recipeTestContainer) {
+            updateCurrentRecipeAndOutput(false);
+        }
     }
 
     private void updateCurrentRecipeAndOutput(boolean forceUpdate) {
@@ -128,14 +130,14 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
             return;
         }
 
-        Level level = this.getPlayerInventory().player.level;
+        Level level = this.getPlayerInventory().player.level();
         this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, recipeTestContainer, level)
                 .orElse(null);
 
         if (this.currentRecipe == null) {
             this.outputSlot.set(ItemStack.EMPTY);
         } else {
-            this.outputSlot.set(this.currentRecipe.assemble(recipeTestContainer));
+            this.outputSlot.set(this.currentRecipe.assemble(recipeTestContainer, level.registryAccess()));
         }
     }
 
@@ -164,7 +166,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
     public void clearCraftingGrid() {
         Preconditions.checkState(isClientSide());
         CraftingMatrixSlot slot = craftingSlots[0];
-        final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.index, 0);
+        var p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.index, 0);
         NetworkHandler.instance().sendToServer(p);
     }
 

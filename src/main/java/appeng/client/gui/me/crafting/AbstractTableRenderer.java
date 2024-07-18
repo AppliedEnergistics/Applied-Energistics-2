@@ -20,17 +20,17 @@ package appeng.client.gui.me.crafting;
 
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.StackWithBounds;
 import appeng.client.gui.style.PaletteColor;
 
 /**
@@ -41,7 +41,6 @@ public abstract class AbstractTableRenderer<T> {
     private static final int CELL_WIDTH = 67;
     private static final int CELL_HEIGHT = 22;
 
-    private static final int ROWS = 5;
     private static final int COLS = 3;
 
     // This border is only shown in-between cells, not around
@@ -57,25 +56,29 @@ public abstract class AbstractTableRenderer<T> {
     private final float lineHeight;
     private final int x;
     private final int y;
-    private GenericStack hoveredStack;
+    private final int rows;
+    private StackWithBounds hoveredStack;
 
-    public AbstractTableRenderer(AEBaseScreen<?> screen, int x, int y) {
+    public AbstractTableRenderer(AEBaseScreen<?> screen, int x, int y, int rows) {
         this.screen = screen;
         this.x = x;
         this.y = y;
         this.fontRenderer = Minecraft.getInstance().font;
         this.lineHeight = this.fontRenderer.lineHeight * TEXT_SCALE;
+        this.rows = rows;
     }
 
-    public final void render(PoseStack poseStack, int mouseX, int mouseY, List<T> entries, int scrollOffset) {
+    public final void render(GuiGraphics guiGraphics, int mouseX, int mouseY, List<T> entries, int scrollOffset) {
         mouseX -= screen.getGuiLeft();
         mouseY -= screen.getGuiTop();
 
         final int textColor = screen.getStyle().getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
         List<Component> tooltipLines = null;
-        GenericStack hovered = null;
+        StackWithBounds hovered = null;
 
-        for (int row = 0; row < ROWS; row++) {
+        var pose = guiGraphics.pose();
+
+        for (int row = 0; row < this.rows; row++) {
             for (int col = 0; col < COLS; col++) {
                 int i = (row + scrollOffset) * COLS + col;
                 if (i >= entries.size()) {
@@ -89,7 +92,7 @@ public abstract class AbstractTableRenderer<T> {
 
                 int background = getEntryBackgroundColor(entry);
                 if (background != 0) {
-                    GuiComponent.fill(poseStack, cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, background);
+                    guiGraphics.fill(cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, background);
                 }
 
                 List<Component> lines = getEntryDescription(entry);
@@ -104,51 +107,57 @@ public abstract class AbstractTableRenderer<T> {
                 // Position the item at the right side of the cell with a 3px margin
                 int itemX = cellX + CELL_WIDTH - 19;
 
-                poseStack.pushPose();
-                poseStack.scale(TEXT_SCALE, TEXT_SCALE, 1.0f);
+                pose.pushPose();
+                pose.scale(TEXT_SCALE, TEXT_SCALE, 1.0f);
                 for (Component line : lines) {
                     final int w = fontRenderer.width(line);
-                    fontRenderer.draw(poseStack, line,
+                    guiGraphics.drawString(fontRenderer, line,
                             (int) ((itemX - 2 - w * TEXT_SCALE) * INV_TEXT_SCALE),
-                            textY * INV_TEXT_SCALE, textColor);
+                            (int) (textY * INV_TEXT_SCALE), textColor, false);
                     textY += lineHeight + LINE_SPACING;
                 }
-                poseStack.popPose();
+                pose.popPose();
 
                 var entryStack = getEntryStack(entry);
 
                 int itemY = cellY + (CELL_HEIGHT - 16) / 2;
-                AEStackRendering.drawInGui(Minecraft.getInstance(), poseStack, itemX, itemY,
-                        screen.getBlitOffset(), entryStack);
+                AEKeyRendering.drawInGui(Minecraft.getInstance(), guiGraphics, itemX, itemY, entryStack);
 
                 int overlay = getEntryOverlayColor(entry);
                 if (overlay != 0) {
-                    GuiComponent.fill(poseStack, cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, overlay);
+                    guiGraphics.fill(cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, overlay);
                 }
 
                 if (mouseX >= cellX && mouseX <= cellX + CELL_WIDTH
                         && mouseY >= cellY && mouseY <= cellY + CELL_HEIGHT) {
                     tooltipLines = getEntryTooltip(entry);
-                    hovered = new GenericStack(entryStack, 0);
+                    hovered = new StackWithBounds(
+                            new GenericStack(entryStack, 0),
+                            new Rect2i(screen.getGuiLeft() + cellX, screen.getGuiTop() + cellY, CELL_WIDTH,
+                                    CELL_HEIGHT));
                 }
             }
         }
         hoveredStack = hovered;
 
         if (tooltipLines != null) {
-            screen.drawTooltipWithHeader(poseStack, mouseX, mouseY, tooltipLines);
+            screen.drawTooltipWithHeader(guiGraphics, mouseX, mouseY, tooltipLines);
         }
     }
 
-    public GenericStack getHoveredStack() {
+    public StackWithBounds getHoveredStack() {
         return hoveredStack;
     }
 
     /**
      * @return The number of rows that are off-screen given a number of entries.
      */
-    public static int getScrollableRows(int size) {
-        return (size + COLS - 1) / COLS - ROWS;
+    public int getScrollableRows(int size) {
+        return getScrollableRows(size, this.rows);
+    }
+
+    protected static int getScrollableRows(int size, int rows) {
+        return (size + COLS - 1) / COLS - rows;
     }
 
     /**

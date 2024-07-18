@@ -1,0 +1,22 @@
+{
+    DataVersion: 3460,
+    size: [5, 3, 1],
+    data: [
+        {pos: [0, 0, 0], state: "minecraft:hopper{enabled:true,facing:east}", nbt: {Items: [], TransferCooldown: 0, id: "minecraft:hopper"}},
+        {pos: [1, 0, 0], state: "ae2:pattern_provider{push_direction:up}", nbt: {blocking_mode: "NO", id: "ae2:pattern_provider", lock_crafting_mode: "NONE", pattern_access_terminal: "YES", priority: 0, proxy: {g: 83604L, p: 0}, returnInv: [], sendList: [], visual: {}}},
+        {pos: [2, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 83604L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 1, channelsUp: 0, channelsWest: 1, connections: ["up", "west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [3, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 83604L, p: 1}, id: "ae2:blue_smart_cable", visual: {channelsEast: 1, channelsWest: 1, connections: ["west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [0, 1, 0], state: "minecraft:furnace{facing:north,lit:false}", nbt: {BurnTime: 0s, CookTime: 0s, CookTimeTotal: 0s, Items: [], RecipesUsed: {}, id: "minecraft:furnace"}},
+        {pos: [1, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 143L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsEast: 3, channelsUp: 3, connections: ["up", "east"], missingChannel: 0b, powered: 1b}}, down: {fuzzy_mode: "IGNORE_ALL", gn: {g: 143L, p: 0}, id: "ae2:cable_interface", priority: 0, visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {access: "READ_WRITE", config: [{"#": 0L, "#c": "ae2:i", id: "minecraft:coal"}], filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 143L, p: 0}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}}},
+        {pos: [2, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 83604L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsDown: 0, connections: ["down"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {gn: {g: 83604L, p: 0}, id: "ae2:quartz_fiber", outer: {g: 143L, p: 0}, visual: {missingChannel: 0b, powered: 1b}}}},
+        {pos: [0, 2, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 143L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsEast: 3, connections: ["east"], missingChannel: 0b, powered: 1b}}, down: {access: "READ_WRITE", config: [{"#": 0L, "#c": "ae2:i", id: "minecraft:coal"}], filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 143L, p: 0}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", upgrades: [{Count: 1b, Slot: 0, id: "ae2:inverter_card"}], visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 2, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 143L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsDown: 3, channelsWest: 3, connections: ["down", "west"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "minecraft:hopper{enabled:true,facing:east}",
+        "ae2:pattern_provider{push_direction:up}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "minecraft:furnace{facing:north,lit:false}"
+    ]
+}

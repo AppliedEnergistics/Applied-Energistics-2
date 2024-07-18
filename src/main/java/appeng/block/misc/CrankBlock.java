@@ -22,6 +22,7 @@ import java.util.Arrays;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -45,7 +46,6 @@ import appeng.api.orientation.OrientationStrategies;
 import appeng.api.orientation.RelativeSide;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.CrankBlockEntity;
-import appeng.util.FakePlayer;
 
 public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
 

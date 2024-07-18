@@ -26,11 +26,10 @@ package appeng.api.inventories;
 import java.util.Iterator;
 import java.util.function.Predicate;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -344,15 +343,18 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
         }
 
         var inSlot = getStackInSlot(slot);
-        if (!inSlot.isEmpty() && !ItemStack.isSameItemSameTags(inSlot, stack)) {
-            return stack;
-        }
 
         // Calculate how much free space there is in the targeted slot, considering
         // an item-dependent maximum stack size, as well as a potential slot-based limit
         int maxSpace = Math.min(getSlotLimit(slot), stack.getMaxStackSize());
         int freeSpace = maxSpace - inSlot.getCount();
         if (freeSpace <= 0) {
+            return stack;
+        }
+
+        // Check merging stacks after checking if the slot is full, as NBT comparisons are expensive and cap comparisons
+        // even more so.
+        if (!inSlot.isEmpty() && !ItemStack.isSameItemSameTags(inSlot, stack)) {
             return stack;
         }
 

@@ -3,9 +3,8 @@ package appeng.integration.modules.jei;
 import java.util.Arrays;
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.Util;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.level.ItemLike;
 
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -31,7 +30,7 @@ public class CyclingDrawable implements IDrawable {
     }
 
     @Override
-    public void draw(PoseStack stack, int xOffset, int yOffset) {
+    public void draw(GuiGraphics guiGraphics, int xOffset, int yOffset) {
         var now = Util.getMillis();
         if (now > nextFrame + 2000) {
             currentStage++;
@@ -42,7 +41,7 @@ public class CyclingDrawable implements IDrawable {
             currentStage = 0;
         }
 
-        stages.get(currentStage).draw(stack, xOffset, yOffset);
+        stages.get(currentStage).draw(guiGraphics, xOffset, yOffset);
     }
 
     @Override

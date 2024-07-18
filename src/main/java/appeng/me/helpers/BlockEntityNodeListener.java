@@ -28,11 +28,6 @@ public class BlockEntityNodeListener<T extends IGridConnectedBlockEntity> implem
     public static final BlockEntityNodeListener<IGridConnectedBlockEntity> INSTANCE = new BlockEntityNodeListener<>();
 
     @Override
-    public void onSecurityBreak(T nodeOwner, IGridNode node) {
-        nodeOwner.securityBreak();
-    }
-
-    @Override
     public void onSaveChanges(T nodeOwner, IGridNode node) {
         nodeOwner.saveChanges();
     }

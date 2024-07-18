@@ -18,8 +18,7 @@
 
 package appeng.block.misc;
 
-import javax.annotation.Nullable;
-
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import net.fabricmc.api.EnvType;
@@ -35,7 +34,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -58,7 +56,7 @@ import appeng.util.InteractionUtil;
 public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
 
     public ChargerBlock() {
-        super(defaultProps(Material.METAL).noOcclusion());
+        super(metalProps().noOcclusion());
     }
 
     @Override

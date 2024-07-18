@@ -50,62 +50,62 @@
     "openPriority": {
       "left": 154,
       "top": 0,
-      "width": 18,
-      "height": 18
+      "width": 16,
+      "height": 16
     },
     "amtButton1": {
       "left": 8,
       "top": 35,
-      "width": 18,
-      "height": 18
+      "width": 16,
+      "height": 16
     },
     "amtButton2": {
       "left": 26,
       "top": 35,
-      "width": 18,
-      "height": 18
+      "width": 16,
+      "height": 16
     },
     "amtButton3": {
       "left": 44,
       "top": 35,
-      "width": 18,
-      "height": 18
+      "width": 16,
+      "height": 16
     },
     "amtButton4": {
       "left": 62,
       "top": 35,
-      "width": 18,
-      "height": 18
+      "width": 16,
+      "height": 16
     },
     "amtButton5": {
       "left": 80,
       "top": 35,
-      "width": 18,
-      "height": 18
+      "width": 16,
+      "height": 16
     },
     "amtButton6": {
       "left": 98,
       "top": 35,
-      "width": 18,
-      "height": 18
+      "width": 16,
+      "height": 16
     },
     "amtButton7": {
       "left": 116,
       "top": 35,
-      "width": 18,
-      "height": 18
+      "width": 16,
+      "height": 16
     },
     "amtButton8": {
       "left": 134,
       "top": 35,
-      "width": 18,
-      "height": 18
+      "width": 16,
+      "height": 16
     },
     "amtButton9": {
       "left": 152,
       "top": 35,
-      "width": 18,
-      "height": 18
+      "width": 16,
+      "height": 16
     }
   }
 }

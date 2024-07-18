@@ -1,17 +1,18 @@
 package appeng.libs.micromark;
 
-import appeng.libs.micromark.symbol.Codes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import appeng.libs.micromark.symbol.Codes;
 
 /**
  * A context object that helps w/ tokenizing markdown constructs.
@@ -106,7 +107,8 @@ class RootTokenizeContext implements TokenizeContext {
         tokenizer.addResult(tokenizer.initialize, 0);
 
         // Otherwise, resolve, and exit.
-        tokenizer.context.setEvents(Construct.resolveAll(tokenizer.resolveAllConstructs, tokenizer.context.getEvents(), tokenizer.context));
+        tokenizer.context.setEvents(
+                Construct.resolveAll(tokenizer.resolveAllConstructs, tokenizer.context.getEvents(), tokenizer.context));
 
         return tokenizer.context.getEvents();
     }
@@ -150,12 +152,13 @@ class RootTokenizeContext implements TokenizeContext {
      * Whether we’re currently interrupting.<br>
      * Take for example:
      * <p>
+     * 
      * <pre>
      *   ```markdown
      *   a
      *   # b
      *   ```
-     *   </pre>
+     * </pre>
      * <p>
      * At 2:1, we’re “interrupting”.
      */
@@ -200,9 +203,9 @@ class RootTokenizeContext implements TokenizeContext {
     /**
      * Info set when parsing containers.
      * <p>
-     * Containers are parsed in separate phases: their first line (`tokenize`),
-     * continued lines (`continuation.tokenize`), and finally `exit`.
-     * This record can be used to store some information between these hooks.
+     * Containers are parsed in separate phases: their first line (`tokenize`), continued lines
+     * (`continuation.tokenize`), and finally `exit`. This record can be used to store some information between these
+     * hooks.
      */
     @Override
     public Tokenizer.ContainerState getContainerState() {

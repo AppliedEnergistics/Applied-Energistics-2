@@ -20,9 +20,9 @@ package appeng.crafting.inv;
 
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Iterables;
+
+import org.jetbrains.annotations.Nullable;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;

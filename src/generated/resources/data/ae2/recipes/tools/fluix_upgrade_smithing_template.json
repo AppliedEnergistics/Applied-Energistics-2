@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "tag": "c:fluix"
+    }
+  ],
+  "result": {
+    "item": "ae2:fluix_upgrade_smithing_template"
+  }
+}

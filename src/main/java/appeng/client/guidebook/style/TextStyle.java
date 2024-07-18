@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.ResourceLocation;
 
-import appeng.client.guidebook.render.ColorRef;
+import appeng.client.guidebook.color.ColorValue;
 
 public record TextStyle(
         @Nullable Float fontScale,
@@ -14,7 +14,7 @@ public record TextStyle(
         @Nullable Boolean strikethrough,
         @Nullable Boolean obfuscated,
         @Nullable ResourceLocation font,
-        @Nullable ColorRef color,
+        @Nullable ColorValue color,
         @Nullable WhiteSpaceMode whiteSpace,
         @Nullable TextAlignment alignment) {
 
@@ -71,9 +71,43 @@ public record TextStyle(
         private Boolean strikethrough;
         private Boolean obfuscated;
         private ResourceLocation font;
-        private ColorRef color;
+        private ColorValue color;
         private WhiteSpaceMode whiteSpace;
         private TextAlignment alignment;
+
+        public Builder apply(TextStyle style) {
+            if (style.fontScale() != null) {
+                fontScale = style.fontScale();
+            }
+            if (style.bold() != null) {
+                bold = style.bold();
+            }
+            if (style.italic() != null) {
+                italic = style.italic();
+            }
+            if (style.underlined() != null) {
+                underlined = style.underlined();
+            }
+            if (style.strikethrough() != null) {
+                strikethrough = style.strikethrough();
+            }
+            if (style.obfuscated() != null) {
+                obfuscated = style.obfuscated();
+            }
+            if (style.font() != null) {
+                font = style.font();
+            }
+            if (style.color() != null) {
+                color = style.color();
+            }
+            if (style.whiteSpace() != null) {
+                whiteSpace = style.whiteSpace();
+            }
+            if (style.alignment() != null) {
+                alignment = style.alignment();
+            }
+            return this;
+        }
 
         public Builder fontScale(Float fontScale) {
             this.fontScale = fontScale;
@@ -110,7 +144,7 @@ public record TextStyle(
             return this;
         }
 
-        public Builder color(ColorRef color) {
+        public Builder color(ColorValue color) {
             this.color = color;
             return this;
         }

@@ -1,11 +1,12 @@
 package appeng.libs.micromark.text;
 
-import appeng.libs.micromark.TestUtil;
-import appeng.libs.micromark.html.CompileOptions;
-import appeng.libs.micromark.html.ParseOptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import appeng.libs.micromark.TestUtil;
+import appeng.libs.micromark.html.CompileOptions;
+import appeng.libs.micromark.html.ParseOptions;
 
 public class ImageTest {
     @ParameterizedTest(name = "[{index}] {2}")
@@ -51,7 +52,8 @@ public class ImageTest {
 
     @Test
     public void testDisabled() {
-        TestUtil.assertGeneratedHtmlWithDisabled("![x]()", "<p>!<a href=\"\">x</a></p>", "should support turning off label start (image)", "labelStartImage");
+        TestUtil.assertGeneratedHtmlWithDisabled("![x]()", "<p>!<a href=\"\">x</a></p>",
+                "should support turning off label start (image)", "labelStartImage");
     }
 
     @Test
@@ -59,16 +61,14 @@ public class ImageTest {
         TestUtil.assertGeneratedHtml(
                 "![](javascript:alert(1))",
                 "<p><img src=\"\" alt=\"\" /></p>",
-                "should ignore non-http protocols by default"
-        );
+                "should ignore non-http protocols by default");
 
         var options = new CompileOptions().allowDangerousProtocol();
         TestUtil.assertGeneratedHtml("![](javascript:alert(1))",
                 "<p><img src=\"javascript:alert(1)\" alt=\"\" /></p>",
                 "should allow non-http protocols w/ `allowDangerousProtocol`",
                 new ParseOptions(),
-                options
-        );
+                options);
     }
 
 }

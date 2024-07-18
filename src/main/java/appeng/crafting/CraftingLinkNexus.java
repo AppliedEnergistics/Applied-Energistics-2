@@ -18,7 +18,9 @@
 
 package appeng.crafting;
 
-import javax.annotation.Nullable;
+import java.util.UUID;
+
+import org.jetbrains.annotations.Nullable;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingRequester;
@@ -26,7 +28,7 @@ import appeng.me.service.CraftingService;
 
 public class CraftingLinkNexus {
 
-    private final String craftID;
+    private final UUID craftId;
     private boolean canceled = false;
     private boolean done = false;
     private int tickOfDeath = 0;
@@ -35,8 +37,8 @@ public class CraftingLinkNexus {
     @Nullable
     private CraftingLink cpu;
 
-    public CraftingLinkNexus(String craftID) {
-        this.craftID = craftID;
+    public CraftingLinkNexus(UUID craftId) {
+        this.craftId = craftId;
     }
 
     public boolean isDead(IGrid g, CraftingService craftingService) {

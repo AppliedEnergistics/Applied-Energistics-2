@@ -1,0 +1,31 @@
+{
+    DataVersion: 3337,
+    size: [14, 3, 3],
+    data: [
+        {pos: [0, 0, 1], state: "ae2:controller{state:conflicted,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 241L, k: -1L, p: 0}, visual: {}}},
+        {pos: [1, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 241L, k: -1L, p: 0}, id: "ae2:fluix_glass_cable", visual: {channelsEast: 0, channelsWest: 0, connections: ["west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 0, 1], state: "ae2:controller{state:conflicted,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 241L, k: -1L, p: 0}, visual: {}}},
+        {pos: [5, 0, 1], state: "ae2:controller{state:conflicted,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 25357L, k: -1L, p: 0}, visual: {}}},
+        {pos: [8, 0, 1], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 83478L, k: -1L, p: 0}, visual: {}}},
+        {pos: [9, 0, 0], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 83478L, k: -1L, p: 0}, visual: {}}},
+        {pos: [9, 0, 1], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 83478L, k: -1L, p: 0}, visual: {}}},
+        {pos: [12, 0, 1], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 25354L, k: -1L, p: 0}, visual: {}}},
+        {pos: [4, 1, 1], state: "ae2:controller{state:conflicted,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 25357L, k: -1L, p: 0}, visual: {}}},
+        {pos: [5, 1, 1], state: "ae2:controller{state:conflicted,type:inside_b}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 25357L, k: -1L, p: 0}, visual: {}}},
+        {pos: [6, 1, 1], state: "ae2:controller{state:conflicted,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 25357L, k: -1L, p: 0}, visual: {}}},
+        {pos: [9, 1, 1], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 304L, k: -1L, p: 0}, visual: {}}},
+        {pos: [12, 1, 0], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 25354L, k: -1L, p: 0}, visual: {}}},
+        {pos: [12, 1, 1], state: "ae2:controller{state:online,type:column_z}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 25354L, k: -1L, p: 0}, visual: {}}},
+        {pos: [12, 1, 2], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 25354L, k: -1L, p: 0}, visual: {}}},
+        {pos: [13, 1, 1], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 25354L, k: -1L, p: 0}, visual: {}}},
+        {pos: [5, 2, 1], state: "ae2:controller{state:conflicted,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 25357L, k: -1L, p: 0}, visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:controller{state:conflicted,type:block}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "ae2:controller{state:online,type:block}",
+        "ae2:controller{state:conflicted,type:inside_b}",
+        "ae2:controller{state:online,type:column_z}"
+    ]
+}

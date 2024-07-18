@@ -12,7 +12,6 @@
       "name": "LeftContactMount",
       "from": [13, 6, 6],
       "to": [14, 10, 10],
-      "shade": false,
       "faces": {
         "north": {
           "uv": [5, 10, 11, 11],
@@ -34,7 +33,6 @@
       "name": "RightContactMount",
       "from": [2, 6, 6],
       "to": [3, 10, 10],
-      "shade": false,
       "faces": {
         "north": {
           "uv": [5, 10, 11, 11],
@@ -56,7 +54,6 @@
       "name": "InsideTop",
       "from": [5, 13, 5],
       "to": [11, 14, 11],
-      "shade": false,
       "faces": {
         "north": { "uv": [5, 10, 11, 11], "texture": "#Inside" },
         "east": { "uv": [5, 10, 11, 11], "texture": "#Inside" },
@@ -70,7 +67,6 @@
       "name": "Top",
       "from": [2, 14, 2],
       "to": [14, 16, 14],
-      "shade": false,
       "faces": {
         "north": { "uv": [2, 14, 14, 16], "texture": "#Main" },
         "east": { "uv": [0, 2, 2, 14], "rotation": 270, "texture": "#Main" },
@@ -84,7 +80,6 @@
       "name": "InsideBottom",
       "from": [5, 2, 5],
       "to": [11, 3, 11],
-      "shade": false,
       "faces": {
         "north": {
           "uv": [5, 10, 11, 11],
@@ -114,7 +109,6 @@
       "name": "Bottom",
       "from": [2, 0, 2],
       "to": [14, 2, 14],
-      "shade": false,
       "faces": {
         "north": { "uv": [2, 14, 14, 16], "rotation": 180, "texture": "#Main" },
         "east": { "uv": [14, 2, 16, 14], "rotation": 270, "texture": "#Main" },

@@ -25,15 +25,13 @@ public final class FactoryMdxExpression {
             String markerType,
             String chunkType,
             boolean allowLazy,
-            int startColumn
-    ) {
+            int startColumn) {
 
         class StateMachine {
             final Tokenizer.Event tail = context.getLastEvent();
-            final int initialPrefix =
-                    tail != null && tail.token().type.equals(Types.linePrefix)
-                            ? tail.context().sliceSerialize(tail.token(), true).length()
-                            : 0;
+            final int initialPrefix = tail != null && tail.token().type.equals(Types.linePrefix)
+                    ? tail.context().sliceSerialize(tail.token(), true).length()
+                    : 0;
             final int prefixExpressionIndent = initialPrefix != 0 ? initialPrefix + 1 : 0;
             int balance = 1;
             Point startPosition;
@@ -57,8 +55,7 @@ public final class FactoryMdxExpression {
                     throw new ParseException(
                             "Unexpected end of file in expression, expected a corresponding closing brace for `{`",
                             context.now(),
-                            "micromark-extension-mdx-expression:unexpected-eof"
-                    );
+                            "micromark-extension-mdx-expression:unexpected-eof");
                 }
 
                 if (code == Codes.rightCurlyBrace) {
@@ -87,16 +84,13 @@ public final class FactoryMdxExpression {
 
                 var now = context.now();
 
-                if (
-                        now.line() != startPosition.line() &&
-                                !allowLazy &&
-                                context.isOnLazyLine()
-                ) {
+                if (now.line() != startPosition.line() &&
+                        !allowLazy &&
+                        context.isOnLazyLine()) {
                     throw new ParseException(
                             "Unexpected end of file in expression, expected a corresponding closing brace for `{`",
                             context.now(),
-                            "micromark-extension-mdx-expression:unexpected-eof"
-                    );
+                            "micromark-extension-mdx-expression:unexpected-eof");
                 }
 
                 effects.enter(chunkType);
@@ -104,11 +98,9 @@ public final class FactoryMdxExpression {
             }
 
             State inside(int code) {
-                if (
-                        code == Codes.eof ||
-                                code == Codes.rightCurlyBrace ||
-                                CharUtil.markdownLineEnding(code)
-                ) {
+                if (code == Codes.eof ||
+                        code == Codes.rightCurlyBrace ||
+                        CharUtil.markdownLineEnding(code)) {
                     effects.exit(chunkType);
                     return atBreak(code);
                 }

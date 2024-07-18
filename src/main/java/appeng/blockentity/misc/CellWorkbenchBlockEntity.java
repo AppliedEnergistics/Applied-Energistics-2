@@ -183,15 +183,18 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
-        super.addAdditionalDrops(level, pos, drops, remove);
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+        super.addAdditionalDrops(level, pos, drops);
 
         if (!this.cell.getStackInSlot(0).isEmpty()) {
             drops.add(this.cell.getStackInSlot(0));
-            if (remove) {
-                this.cell.setItemDirect(0, ItemStack.EMPTY);
-            }
         }
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        this.cell.clear();
     }
 
     @Override

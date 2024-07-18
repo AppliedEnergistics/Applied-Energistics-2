@@ -58,9 +58,9 @@ public class QuadReInterpolator implements RenderContext.QuadTransform {
 
         // Save the original properties of the quad's vertices
         for (int i = 0; i < 4; i++) {
-            originalSpriteColor[i] = quad.spriteColor(i, 0);
-            originalSpriteU[i] = quad.spriteU(i, 0);
-            originalSpriteV[i] = quad.spriteV(i, 0);
+            originalSpriteColor[i] = quad.color(i);
+            originalSpriteU[i] = quad.u(i);
+            originalSpriteV[i] = quad.v(i);
         }
     }
 
@@ -107,7 +107,7 @@ public class QuadReInterpolator implements RenderContext.QuadTransform {
             mask <<= 8;
         }
 
-        quad.spriteColor(vertexIndex, 0, color);
+        quad.color(vertexIndex, color);
     }
 
     /**
@@ -125,7 +125,7 @@ public class QuadReInterpolator implements RenderContext.QuadTransform {
         p3 = originalSpriteV[2];
         p4 = originalSpriteV[3];
         float v = interpHelper.interpolate(p1, p2, p3, p4);
-        quad.sprite(vertexIndex, 0, u, v);
+        quad.uv(vertexIndex, u, v);
     }
 
     /**

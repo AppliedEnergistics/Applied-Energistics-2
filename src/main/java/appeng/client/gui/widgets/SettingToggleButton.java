@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -219,9 +219,9 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(Icon.VIEW_MODE_ALL, Settings.CRAFT_ONLY, YesNo.NO, ButtonToolTips.Craft,
                     ButtonToolTips.CraftEither);
 
-            registerApp(Icon.PERMISSION_CRAFT, Settings.CRAFT_VIA_REDSTONE, YesNo.YES, ButtonToolTips.EmitterMode,
+            registerApp(Icon.CRAFT_HAMMER, Settings.CRAFT_VIA_REDSTONE, YesNo.YES, ButtonToolTips.EmitterMode,
                     ButtonToolTips.CraftViaRedstone);
-            registerApp(Icon.PERMISSION_EXTRACT, Settings.CRAFT_VIA_REDSTONE, YesNo.NO, ButtonToolTips.EmitterMode,
+            registerApp(Icon.ACCESS_READ, Settings.CRAFT_VIA_REDSTONE, YesNo.NO, ButtonToolTips.EmitterMode,
                     ButtonToolTips.EmitWhenCrafting);
 
             registerApp(Icon.STORAGE_FILTER_EXTRACTABLE_ONLY, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY,
@@ -255,7 +255,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(Icon.FILTER_ON_EXTRACT_DISABLED, Settings.FILTER_ON_EXTRACT, YesNo.NO,
                     ButtonToolTips.FilterOnExtract, ButtonToolTips.FilterOnExtractDisabled);
 
-            registerApp(Icon.PERMISSION_CRAFT, Settings.CPU_SELECTION_MODE, CpuSelectionMode.ANY,
+            registerApp(Icon.CRAFT_HAMMER, Settings.CPU_SELECTION_MODE, CpuSelectionMode.ANY,
                     ButtonToolTips.CpuSelectionMode, ButtonToolTips.CpuSelectionModeAny);
             registerApp(AEParts.TERMINAL, Settings.CPU_SELECTION_MODE, CpuSelectionMode.PLAYER_ONLY,
                     ButtonToolTips.CpuSelectionMode, ButtonToolTips.CpuSelectionModePlayersOnly.text());
@@ -289,6 +289,27 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(Icon.ENTER, Settings.LOCK_CRAFTING_MODE, LockCraftingMode.LOCK_UNTIL_RESULT,
                     ButtonToolTips.LockCraftingMode,
                     ButtonToolTips.LockCraftingUntilResultReturned);
+
+            registerApp(Icon.INSCRIBER_SEPARATE_SIDES, Settings.INSCRIBER_SEPARATE_SIDES, YesNo.YES,
+                    ButtonToolTips.InscriberSideness,
+                    ButtonToolTips.InscriberSidenessSeparate);
+            registerApp(Icon.INSCRIBER_COMBINED_SIDES, Settings.INSCRIBER_SEPARATE_SIDES, YesNo.NO,
+                    ButtonToolTips.InscriberSideness,
+                    ButtonToolTips.InscriberSidenessCombined);
+
+            registerApp(Icon.AUTO_EXPORT_ON, Settings.AUTO_EXPORT, YesNo.YES,
+                    ButtonToolTips.AutoExport,
+                    ButtonToolTips.AutoExportOn);
+            registerApp(Icon.AUTO_EXPORT_OFF, Settings.AUTO_EXPORT, YesNo.NO,
+                    ButtonToolTips.AutoExport,
+                    ButtonToolTips.AutoExportOff);
+
+            registerApp(Icon.INSCRIBER_BUFFER_HIGH, Settings.INSCRIBER_BUFFER_SIZE, YesNo.YES,
+                    ButtonToolTips.InscriberBufferSize,
+                    ButtonToolTips.InscriberBufferHigh);
+            registerApp(Icon.INSCRIBER_BUFFER_LOW, Settings.INSCRIBER_BUFFER_SIZE, YesNo.NO,
+                    ButtonToolTips.InscriberBufferSize,
+                    ButtonToolTips.InscriberBufferLow);
         }
     }
 

@@ -17,13 +17,31 @@
  */
 
 plugins {
-    id 'fabric-loom' version '1.0-SNAPSHOT'
-    id 'maven-publish'
-    id "com.diffplug.spotless" version "5.12.4"
-    id "com.matthewprenger.cursegradle" version "1.4.0"
-    id "com.modrinth.minotaur" version "1.2.1"
-    id 'io.github.juuxel.loom-quiltflower' version '1.7.1'
-    id "com.github.johnrengelman.shadow" version "7.0.0"
+    id "fabric-loom"
+    id "maven-publish"
+    id "com.diffplug.spotless"
+    id "io.github.juuxel.loom-quiltflower"
+    id "com.github.johnrengelman.shadow"
+    id "de.undercouch.download"
+}
+
+sourceSets {
+    portaforgy
+    main {
+        compileClasspath += sourceSets.portaforgy.output
+        runtimeClasspath += sourceSets.portaforgy.output
+        java {
+            srcDir 'src/main/flatbuffers/generated'
+        }
+        resources {
+            srcDir 'src/generated/resources'
+        }
+    }
+    test {
+        compileClasspath += sourceSets.portaforgy.output
+        runtimeClasspath += sourceSets.portaforgy.output
+    }
+    buildtools
 }
 
 configurations {
@@ -31,6 +49,7 @@ configurations {
         transitive = false
     }
     portaforgyImplementation.extendsFrom(compileClasspath)
+    buildtoolsImplementation.extendsFrom(compileClasspath)
 
     internal {
         visible = false
@@ -48,6 +67,7 @@ dependencies {
     shaded project(path: ':libs:markdown', configuration: "archives")
     shaded "io.methvin:directory-watcher:${directory_watcher_version}"
     shaded "org.yaml:snakeyaml:${snakeyaml_version}"
+    shaded "com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}"
 
     internal project(':libs:markdown')
     // Do not inherit any transitive dependencies here since we rely on those dependencies being
@@ -55,32 +75,44 @@ dependencies {
     internal("io.methvin:directory-watcher:${directory_watcher_version}") {
         transitive = false
     }
-    internal("org.yaml:snakeyaml:${snakeyaml_version}")  {
+    internal("org.yaml:snakeyaml:${snakeyaml_version}") {
         transitive = false
     }
+    internal("com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}") {
+        transitive = false
+    }
+    // Used for the guide export
+    internal("org.bytedeco:ffmpeg-platform:6.0-1.5.9")
 
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.18.1:2021.12.19@zip")
+        parchment("org.parchmentmc.data:parchment-1.19.3:2023.02.05@zip")
     }
 
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
 
     // Always depend on the REI API to compile
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}") {
+        exclude group: "net.fabricmc"
         exclude group: "net.fabricmc.fabric-api"
         exclude group: "org.yaml" // snakeyaml
         exclude group: "blue.endless" // jankson
     }
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${project.rei_version}") {
+        exclude group: "net.fabricmc"
         exclude group: "net.fabricmc.fabric-api"
         exclude group: "org.yaml" // snakeyaml
         exclude group: "blue.endless" // jankson
     }
 
     if (project.runtime_itemlist_mod == "jei") {
+        modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+            exclude group: "net.fabricmc"
+            exclude group: "net.fabricmc.fabric-api"
+        }
         modLocalRuntime modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
             exclude group: "mezz.jei"
         }
@@ -89,10 +121,12 @@ dependencies {
             exclude group: "mezz.jei"
         }
         modLocalRuntime modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+            exclude group: "net.fabricmc"
             exclude group: "net.fabricmc.fabric-api"
         }
     } else {
         modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+            exclude group: "net.fabricmc"
             exclude group: "net.fabricmc.fabric-api"
         }
         modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
@@ -101,21 +135,25 @@ dependencies {
     }
 
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}") {
+        exclude group: "net.fabricmc"
         exclude group: "net.fabricmc.fabric-api"
     }
 
     if (project.runtime_tooltip_mod == "wthit") {
         modLocalRuntime("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
+            exclude group: "net.fabricmc"
             exclude group: "net.fabricmc.fabric-api"
         }
     }
 
     modCompileOnly("curse.maven:jade-324717:${project.jade_file_id}") {
+        exclude group: "net.fabricmc"
         exclude group: "net.fabricmc.fabric-api"
     }
 
     if (project.runtime_tooltip_mod == "jade") {
         modLocalRuntime("curse.maven:jade-324717:${project.jade_file_id}") {
+            exclude group: "net.fabricmc"
             exclude group: "net.fabricmc.fabric-api"
         }
     }
@@ -123,23 +161,25 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
     include modImplementation("teamreborn:energy:${project.tr_energy_version}") {
+        exclude group: "net.fabricmc"
         exclude group: "net.fabricmc.fabric-api"
     }
 
+    // TODO 1.20
     // Include No Indium? https://github.com/Luligabi1/NoIndium
-    include "me.luligabi:NoIndium:${project.no_indium_version}"
-
-    internal 'com.google.code.findbugs:jsr305:3.0.2'
+    //include "me.luligabi:NoIndium:${project.no_indium_version}"
 
     // unit test dependencies
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
-    testImplementation("org.junit.platform:junit-platform-launcher:1.8.1")
+    testImplementation(platform("org.junit:junit-bom:${project.junit_version}"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("org.junit.platform:junit-platform-launcher")
     testImplementation("org.assertj:assertj-core:3.19.0")
     testImplementation("com.google.guava:guava-testlib:21.0")
-    testImplementation("org.mockito:mockito-junit-jupiter:4.0.0")
-    testImplementation("org.mockito:mockito-inline:4.0.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
+
+    compileOnly 'org.apache.commons:commons-configuration2:2.9.0'
 }
 
 archivesBaseName = artifact_basename
@@ -253,29 +293,13 @@ if (ext.tag) {
 ext.isAlpha = project.version.contains("alpha")
 ext.isBeta = project.version.contains("beta")
 
-sourceSets {
-    portaforgy
-    main {
-        compileClasspath += sourceSets.portaforgy.output
-        runtimeClasspath += sourceSets.portaforgy.output
-        resources {
-            srcDir 'src/generated/resources'
-        }
-    }
-    test {
-        compileClasspath += sourceSets.portaforgy.output
-        runtimeClasspath += sourceSets.portaforgy.output
-    }
-    crowdin
-}
-
 test {
     useJUnitPlatform()
 }
 
 dependencies {
-    crowdinImplementation 'de.siegmar:fastcsv:2.1.0'
-    crowdinImplementation 'com.google.code.gson:gson:2.8.9'
+    buildtoolsImplementation 'de.siegmar:fastcsv:2.1.0'
+    buildtoolsImplementation 'com.google.code.gson:gson:2.8.9'
 }
 
 ////////////////////
@@ -287,20 +311,37 @@ loom {
         client {
             programArgs "--username", "AE2Dev"
             property "appeng.tests", "true"
+            property 'appeng.version', project.version
+            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
+        }
+        gametestWorld {
+            client()
+            programArgs "--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld"
+            property "appeng.tests", "true"
+            property 'appeng.version', project.version
             property "guideDev.ae2guide.sources", file("guidebook").absolutePath
         }
         guide {
             client()
             programArgs "--username", "AE2Dev"
             property "appeng.tests", "true"
+            property 'appeng.version', project.version
             property "guideDev.ae2guide.sources", file("guidebook").absolutePath
             property "guideDev.ae2guide.startupPage", "ae2:index.md"
         }
         datagen {
             client()
             property "fabric-api.datagen"
+            property 'appeng.version', project.version
             property "fabric-api.datagen.output-dir", file("src/generated/resources").absolutePath
             property "appeng.datagen.existingData", file("src/main/resources").absolutePath
+        }
+        guideexport {
+            client()
+            property "appeng.runGuideExportAndExit", "true"
+            property 'appeng.version', project.version
+            property "appeng.guideExportFolder", file("$buildDir/guide").absolutePath
+            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
         }
 
         // Use to run the tests
@@ -345,18 +386,19 @@ shadowJar {
 
     manifest {
         attributes([
-                "Specification-Title"     : "Applied Energistics 2",
-                "Specification-Vendor"    : "TeamAppliedEnergistics",
-                "Specification-Version"   : "${project.version}",
-                "Implementation-Title"    : "${project.name}",
-                "Implementation-Version"  : "${project.version}",
-                "Implementation-Vendor"   : "TeamAppliedEnergistics",
-                "MixinConfigs"            : "ae2.mixins.json"
+                "Specification-Title"   : "Applied Energistics 2",
+                "Specification-Vendor"  : "TeamAppliedEnergistics",
+                "Specification-Version" : "${project.version}",
+                "Implementation-Title"  : "${project.name}",
+                "Implementation-Version": "${project.version}",
+                "Implementation-Vendor" : "TeamAppliedEnergistics",
+                "MixinConfigs"          : "ae2.mixins.json"
         ])
     }
 
     relocate "io.methvin", "appeng.shaded.methvin"
     relocate "org.yaml.snakeyaml", "appeng.shaded.snakeyaml"
+    relocate "com.google.flatbuffers", "appeng.shaded.flatbuffers"
 
     configurations = [project.configurations.shaded]
     archiveClassifier = jar.archiveClassifier
@@ -400,6 +442,9 @@ task apiJar(type: Jar, group: "build") {
     // api jar ist just a development aid and serves as both a binary and source jar simultaneously
     from sourceSets.main.output
     from sourceSets.main.allJava
+    manifest {
+        attributes("Fabric-Loom-Remap": true)
+    }
 }
 apiJar publicApiIncludePatterns
 
@@ -433,20 +478,8 @@ publishing {
     }
     repositories {
         maven {
-            credentials {
-                username System.getenv("GITHUB_ACTOR")
-                password System.getenv("GITHUB_TOKEN")
-            }
-            name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/AppliedEnergistics/Applied-Energistics-2"
-        }
-        maven {
-            credentials {
-                username System.getenv("MODMAVEN_USER")
-                password System.getenv("MODMAVEN_PASSWORD")
-            }
-            name = "modmaven"
-            url = "https://modmaven.dev/artifactory/local-releases/"
+            name = "Local"
+            url = file("build/repo").toURI()
         }
     }
 }
@@ -482,90 +515,25 @@ spotless {
     }
 }
 
-import com.modrinth.minotaur.TaskModrinthUpload
-
 ////////////////
 // Crowdin
 task uploadToCrowdin(type: JavaExec) {
-    classpath = sourceSets.crowdin.runtimeClasspath
+    classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'upload_source'
     workingDir "."
 }
 task uploadTranslations(type: JavaExec) {
-    classpath = sourceSets.crowdin.runtimeClasspath
+    classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'upload_translations'
     workingDir "."
 }
 task downloadFromCrowdin(type: JavaExec) {
-    classpath = sourceSets.crowdin.runtimeClasspath
+    classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'update_translations'
     workingDir "."
-}
-
-////////////////
-// Curse Forge
-if (System.getenv("CURSEFORGE") && !version.endsWith("-SNAPSHOT") && project.version != "0.0.0") {
-    def cfReleaseType = "release"
-    if (ext.isAlpha) {
-        cfReleaseType = "alpha"
-    } else if (ext.isBeta) {
-        cfReleaseType = "beta"
-    }
-
-    curseforge {
-        apiKey = System.getenv("CURSEFORGE")
-        project {
-            id = project.curseforge_project
-            changelogType = "markdown"
-            changelog = System.getenv("CHANGELOG") ?: "Please visit our [releases](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) for a changelog"
-            releaseType = cfReleaseType
-            addGameVersion project.minecraft_version
-            addGameVersion "Fabric"
-            mainArtifact(remapJar.archiveFile) {
-                displayName = "AE2 ${project.version} [FABRIC]"
-            }
-        }
-        options {
-            forgeGradleIntegration = false
-        }
-        afterEvaluate {
-            tasks.getByName("curseforge${project.curseforge_project}").dependsOn remapJar
-        }
-    }
-}
-
-////////////////
-// Modrinth
-
-import com.modrinth.minotaur.request.VersionType
-
-if (!version.endsWith("-SNAPSHOT") && project.version != "0.0.0") {
-    def mrVersionType = VersionType.RELEASE
-    if (ext.isAlpha) {
-        mrVersionType = VersionType.ALPHA
-    } else if (ext.isBeta) {
-        mrVersionType = VersionType.BETA
-    }
-
-    task publishModrinth(type: TaskModrinthUpload) {
-        onlyIf {
-            System.getenv("MODRINTH")
-        }
-
-        token = System.getenv("MODRINTH")
-        changelog = System.getenv("CHANGELOG") ?: "Please visit our [releases](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) for a changelog"
-        projectId = 'XxWD5pD3'
-        versionName = project.version + " [FABRIC]"
-        versionNumber = "fabric-" + project.version
-        versionType = mrVersionType
-        uploadFile = remapJar
-        addGameVersion(project.minecraft_version)
-        addLoader('fabric')
-    }
-    publishModrinth.dependsOn remapJar
 }
 
 ////////////////
@@ -584,4 +552,97 @@ if (System.getProperty("idea.sync.active") == "true") {
 // Gradle module metadata contains mapped dependencies, making our artifacts unconsumable
 tasks.withType(GenerateModuleMetadata) {
     enabled = false
+}
+
+check.dependsOn tasks.register('validateResources', JavaExec) {
+    group = "verification"
+    classpath = sourceSets.buildtools.runtimeClasspath
+    mainClass = 'ValidateResourceIds'
+    workingDir "."
+    args "guidebook"
+}
+
+/**
+ * This task download the FlatBuffers compiler suitable for the current platform.
+ */
+tasks.register('downloadFlatbufferCompiler', Download) {
+    var os = System.getProperty("os.name").toLowerCase(Locale.ROOT)
+    var arch = System.getProperty("os.arch")
+    if (os.startsWith("windows")) {
+        src "https://github.com/google/flatbuffers/releases/download/v${flatbuffers_version}/Windows.flatc.binary.zip"
+    } else if (os.startsWith("mac")) {
+        if (arch == "aarch64") {
+            src "https://github.com/google/flatbuffers/releases/download/v${flatbuffers_version}/Mac.flatc.binary.zip"
+        } else if (arch == "amd64") {
+            src "https://github.com/google/flatbuffers/releases/download/v${flatbuffers_version}/MacIntel.flatc.binary.zip"
+        } else {
+            throw new GradleException("Unknown Mac architecture: $arch")
+        }
+    } else if (os.startsWith("linux")) {
+        src "https://github.com/google/flatbuffers/releases/download/v${flatbuffers_version}/Linux.flatc.binary.clang++-12.zip"
+    } else {
+        throw new GradleException("Unknown OS: $os")
+    }
+    onlyIfModified true
+    dest "${project.buildDir}/flatc.zip"
+}
+
+tasks.register('downloadAndUnzipFlatbufferCompiler', Copy) {
+    dependsOn downloadFlatbufferCompiler
+    from zipTree(downloadFlatbufferCompiler.dest)
+    into "${project.buildDir}/flatbuffers-bin"
+}
+/**
+ * Update the generated Java Code for our scene export schema.
+ * The code is checked in so this only needs to be run when the schema changes.
+ */
+tasks.register('updateFlatbufferSources', Exec) {
+    group 'build'
+    dependsOn downloadAndUnzipFlatbufferCompiler
+    workingDir project.projectDir
+    commandLine "${project.buildDir}/flatbuffers-bin/flatc",
+            "--gen-mutable",
+            "--java-package-prefix", "appeng.flatbuffers",
+            "--gen-generated",
+            "--java",
+            "-o",
+            "${project.projectDir}/src/main/flatbuffers/generated",
+            "${project.projectDir}/src/main/flatbuffers/scene.fbs"
+
+    doFirst {
+        file("${project.projectDir}/src/main/flatbuffers/generated").deleteDir()
+    }
+    doLast {
+    }
+    doLast {
+        // sadly flatc uses an outdated annotation
+        def folder = file("${project.projectDir}/src/main/flatbuffers/generated")
+        folder.eachFileRecurse(groovy.io.FileType.FILES) { file ->
+            String content = file.text
+            if (content.contains('@javax.annotation.Generated')) {
+                content = content.replace('@javax.annotation.Generated', '@javax.annotation.processing.Generated')
+                file.write(content)
+            }
+        }
+    }
+}
+
+/**
+ * Generate the TypeScript sources for our schema. The sources are manually copied
+ * over to the website repository.
+ */
+tasks.register('updateFlatbufferTypescriptSources', Exec) {
+    group 'build'
+    dependsOn downloadAndUnzipFlatbufferCompiler
+    workingDir project.projectDir
+    commandLine "${project.buildDir}/flatbuffers-bin/flatc",
+            "--ts-flat-files",
+            "--ts",
+            "-o",
+            "${project.buildDir}/scene-ts",
+            "${project.projectDir}/src/main/flatbuffers/scene.fbs"
+
+    doFirst {
+        file("${project.buildDir}/scene-ts").deleteDir()
+    }
 }

@@ -18,13 +18,14 @@
 
 package appeng.blockentity.spatial;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.movable.DefaultBlockEntityMoveStrategy;
 import appeng.core.definitions.AEBlockEntities;
@@ -51,8 +52,9 @@ public class SpatialAnchorMoveStrategy extends DefaultBlockEntityMoveStrategy {
     }
 
     @Override
-    public boolean completeMove(BlockEntity blockEntity, CompoundTag savedData, Level newLevel, BlockPos newPosition) {
-        if (!super.completeMove(blockEntity, savedData, newLevel, newPosition)) {
+    public boolean completeMove(BlockEntity blockEntity, BlockState state, CompoundTag savedData, Level newLevel,
+            BlockPos newPosition) {
+        if (!super.completeMove(blockEntity, state, savedData, newLevel, newPosition)) {
             return false;
         }
         // Notify the new block entity

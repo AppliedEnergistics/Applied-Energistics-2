@@ -23,11 +23,9 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 
@@ -42,7 +40,7 @@ import appeng.datagen.providers.IAE2DataProvider;
 public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider implements IAE2DataProvider {
 
     public ItemTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries,
-            TagsProvider<Block> blockTagsProvider) {
+            CompletableFuture<TagLookup<Block>> blockTagsProvider) {
         super(packOutput, registries, blockTagsProvider);
     }
 
@@ -93,7 +91,6 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
             tag(ConventionTags.GLASS_CABLE).add(AEParts.GLASS_CABLE.item(color));
             tag(ConventionTags.COVERED_CABLE).add(AEParts.COVERED_CABLE.item(color));
             tag(ConventionTags.COVERED_DENSE_CABLE).add(AEParts.COVERED_DENSE_CABLE.item(color));
-            tag(ConventionTags.MEMORY_CARDS).add(AEItems.MEMORY_CARDS.item(color));
         }
 
         tag(ConventionTags.INSCRIBER_PRESSES)
@@ -130,6 +127,32 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
         tag(ConventionTags.QUARTZ_KNIFE)
                 .add(AEItems.CERTUS_QUARTZ_KNIFE.asItem())
                 .add(AEItems.NETHER_QUARTZ_KNIFE.asItem());
+
+        tag(ItemTags.AXES)
+                .add(AEItems.CERTUS_QUARTZ_AXE.asItem())
+                .add(AEItems.NETHER_QUARTZ_AXE.asItem())
+                .add(AEItems.FLUIX_AXE.asItem());
+        tag(ItemTags.HOES)
+                .add(AEItems.CERTUS_QUARTZ_HOE.asItem())
+                .add(AEItems.NETHER_QUARTZ_HOE.asItem())
+                .add(AEItems.FLUIX_HOE.asItem());
+        tag(ItemTags.PICKAXES)
+                .add(AEItems.CERTUS_QUARTZ_PICK.asItem())
+                .add(AEItems.NETHER_QUARTZ_PICK.asItem())
+                .add(AEItems.FLUIX_PICK.asItem());
+        tag(ItemTags.SHOVELS)
+                .add(AEItems.CERTUS_QUARTZ_SHOVEL.asItem())
+                .add(AEItems.NETHER_QUARTZ_SHOVEL.asItem())
+                .add(AEItems.FLUIX_SHOVEL.asItem());
+        tag(ItemTags.SWORDS)
+                .add(AEItems.CERTUS_QUARTZ_SWORD.asItem())
+                .add(AEItems.NETHER_QUARTZ_SWORD.asItem())
+                .add(AEItems.FLUIX_SWORD.asItem());
+
+        tag(ConventionTags.WRENCH).add(
+                AEItems.CERTUS_QUARTZ_WRENCH.asItem(),
+                AEItems.NETHER_QUARTZ_WRENCH.asItem(),
+                AEItems.NETWORK_TOOL.asItem());
 
         tag(AETags.METAL_INGOTS)
                 .addOptionalTag(ConventionTags.IRON_INGOT.location())
@@ -174,12 +197,6 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .add(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem())
                 .add(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
                 .add(AEItems.FLUIX_CRYSTAL.asItem());
-
-        // Fabric replacement for ToolActions for now
-        tag(ConventionTags.WRENCH).add(
-                AEItems.CERTUS_QUARTZ_WRENCH.asItem(),
-                AEItems.NETHER_QUARTZ_WRENCH.asItem(),
-                AEItems.NETWORK_TOOL.asItem());
 
         addConventionTags();
 
@@ -251,52 +268,12 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                         Items.INFESTED_COBBLESTONE,
                         Items.MOSSY_COBBLESTONE);
 
-        tag(ConventionTags.GLASS)
-                .add(
-                        Items.GLASS,
-                        Items.WHITE_STAINED_GLASS,
-                        Items.ORANGE_STAINED_GLASS,
-                        Items.MAGENTA_STAINED_GLASS,
-                        Items.LIGHT_BLUE_STAINED_GLASS,
-                        Items.YELLOW_STAINED_GLASS,
-                        Items.LIME_STAINED_GLASS,
-                        Items.PINK_STAINED_GLASS,
-                        Items.GRAY_STAINED_GLASS,
-                        Items.LIGHT_GRAY_STAINED_GLASS,
-                        Items.CYAN_STAINED_GLASS,
-                        Items.PURPLE_STAINED_GLASS,
-                        Items.BLUE_STAINED_GLASS,
-                        Items.BROWN_STAINED_GLASS,
-                        Items.GREEN_STAINED_GLASS,
-                        Items.RED_STAINED_GLASS,
-                        Items.BLACK_STAINED_GLASS);
-
-        tag(ConventionTags.dye(DyeColor.WHITE)).add(Items.WHITE_DYE);
-        tag(ConventionTags.dye(DyeColor.ORANGE)).add(Items.ORANGE_DYE);
-        tag(ConventionTags.dye(DyeColor.MAGENTA)).add(Items.MAGENTA_DYE);
-        tag(ConventionTags.dye(DyeColor.LIGHT_BLUE)).add(Items.LIGHT_BLUE_DYE);
-        tag(ConventionTags.dye(DyeColor.YELLOW)).add(Items.YELLOW_DYE);
-        tag(ConventionTags.dye(DyeColor.LIME)).add(Items.LIME_DYE);
-        tag(ConventionTags.dye(DyeColor.PINK)).add(Items.PINK_DYE);
-        tag(ConventionTags.dye(DyeColor.GRAY)).add(Items.GRAY_DYE);
-        tag(ConventionTags.dye(DyeColor.LIGHT_GRAY)).add(Items.LIGHT_GRAY_DYE);
-        tag(ConventionTags.dye(DyeColor.CYAN)).add(Items.CYAN_DYE);
-        tag(ConventionTags.dye(DyeColor.PURPLE)).add(Items.PURPLE_DYE);
-        tag(ConventionTags.dye(DyeColor.BLUE)).add(Items.BLUE_DYE);
-        tag(ConventionTags.dye(DyeColor.BROWN)).add(Items.BROWN_DYE);
-        tag(ConventionTags.dye(DyeColor.GREEN)).add(Items.GREEN_DYE);
-        tag(ConventionTags.dye(DyeColor.RED)).add(Items.RED_DYE);
-        tag(ConventionTags.dye(DyeColor.BLACK)).add(Items.BLACK_DYE);
-
         tag(ConventionTags.CAN_REMOVE_COLOR).add(Items.WATER_BUCKET, Items.SNOWBALL);
     }
 
     // Copy the entries AE2 added to certain block tags over to item tags of the same name
     // Assumes that items or item tags generally have the same name as the block equivalent.
     private void copyBlockTags() {
-        mirrorBlockTag(new ResourceLocation("c:ores"));
-        mirrorBlockTag(new ResourceLocation("c:certus_quartz_ores"));
-
         mirrorBlockTag(new ResourceLocation("c:storage_blocks"));
         mirrorBlockTag(new ResourceLocation("c:certus_quartz_blocks"));
     }

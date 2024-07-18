@@ -1,5 +1,16 @@
 package appeng.libs.mdast;
 
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.regex.Pattern;
+
+import org.jetbrains.annotations.Nullable;
+
 import appeng.libs.mdast.model.MdAstBlockquote;
 import appeng.libs.mdast.model.MdAstBreak;
 import appeng.libs.mdast.model.MdAstCode;
@@ -36,21 +47,10 @@ import appeng.libs.micromark.TokenProperty;
 import appeng.libs.micromark.TokenizeContext;
 import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
-import appeng.libs.micromark.html.HtmlContextProperty;
 import appeng.libs.micromark.html.NumericCharacterReference;
 import appeng.libs.micromark.symbol.Codes;
 import appeng.libs.micromark.symbol.Constants;
 import appeng.libs.unist.UnistPoint;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.regex.Pattern;
 
 final class MdastCompiler implements MdastContext {
 
@@ -81,8 +81,7 @@ final class MdastCompiler implements MdastContext {
                         "fragment",
                         "heading",
                         "paragraph",
-                        "strong"
-                )
+                        "strong")
                 .enter("autolink", opener(this::link))
                 .enter("autolinkProtocol", this::onenterdata)
                 .enter("autolinkEmail", this::onenterdata)
@@ -198,10 +197,8 @@ final class MdastCompiler implements MdastContext {
 
             // We preprocess lists to add `listItem` tokens, and to infer whether
             // items the list itself are spread out.
-            if (
-                    event.token().type.equals(Types.listOrdered) ||
-                            event.token().type.equals(Types.listUnordered)
-            ) {
+            if (event.token().type.equals(Types.listOrdered) ||
+                    event.token().type.equals(Types.listUnordered)) {
                 if (event.isEnter()) {
                     listStack.add(index);
                 } else {
@@ -224,7 +221,8 @@ final class MdastCompiler implements MdastContext {
                 try {
                     handler.handle(this, event.token());
                 } finally {
-                    Assert.check(currentTokenContext == event.context(), "currentTokenContext changed while calling handler!");
+                    Assert.check(currentTokenContext == event.context(),
+                            "currentTokenContext changed while calling handler!");
                     currentTokenContext = null;
                 }
             }
@@ -239,14 +237,11 @@ final class MdastCompiler implements MdastContext {
         // Figure out `root` position.
         tree.position = new MdAstPosition()
                 .withStart(point(
-                        !events.isEmpty() ? events.get(0).token().start :
-                                makePoint(1, 1, 0)
-                ))
+                        !events.isEmpty() ? events.get(0).token().start : makePoint(1, 1, 0)))
                 .withEnd(point(
                         !events.isEmpty()
                                 ? events.get(events.size() - 2).token().end
-                                : makePoint(1, 1, 0)
-                ));
+                                : makePoint(1, 1, 0)));
 
         for (var transform : extension.transforms) {
             tree = transform.transform(tree);
@@ -272,11 +267,9 @@ final class MdastCompiler implements MdastContext {
             var event = events.get(index);
             var tokenType = event.token().type;
 
-            if (
-                    tokenType.equals(Types.listUnordered) ||
-                            tokenType.equals(Types.listOrdered) ||
-                            tokenType.equals(Types.blockQuote)
-            ) {
+            if (tokenType.equals(Types.listUnordered) ||
+                    tokenType.equals(Types.listOrdered) ||
+                    tokenType.equals(Types.blockQuote)) {
                 if (event.isEnter()) {
                     containerBalance++;
                 } else {
@@ -286,38 +279,32 @@ final class MdastCompiler implements MdastContext {
                 atMarker = false;
             } else if (tokenType.equals(Types.lineEndingBlank)) {
                 if (event.isEnter()) {
-                    if (
-                            listItem != null &&
-                                    !atMarker &&
-                                    containerBalance == 0 &&
-                                    (firstBlankLineIndex == null || firstBlankLineIndex == 0)
-                    ) {
+                    if (listItem != null &&
+                            !atMarker &&
+                            containerBalance == 0 &&
+                            (firstBlankLineIndex == null || firstBlankLineIndex == 0)) {
                         firstBlankLineIndex = index;
                     }
 
                     atMarker = false;
                 }
-            } else if (
-                    tokenType.equals(Types.linePrefix) ||
-                            tokenType.equals(Types.listItemValue) ||
-                            tokenType.equals(Types.listItemMarker) ||
-                            tokenType.equals(Types.listItemPrefix) ||
-                            tokenType.equals(Types.listItemPrefixWhitespace)
-            ) {
+            } else if (tokenType.equals(Types.linePrefix) ||
+                    tokenType.equals(Types.listItemValue) ||
+                    tokenType.equals(Types.listItemMarker) ||
+                    tokenType.equals(Types.listItemPrefix) ||
+                    tokenType.equals(Types.listItemPrefixWhitespace)) {
                 // Empty.
             } else {
                 atMarker = false;
             }
 
-            if (
-                    (containerBalance == 0 &&
-                            event.isEnter() &&
-                            tokenType.equals(Types.listItemPrefix)) ||
-                            (containerBalance == -1 &&
-                                    event.isExit() &&
-                                    (tokenType.equals(Types.listUnordered) ||
-                                            tokenType.equals(Types.listOrdered)))
-            ) {
+            if ((containerBalance == 0 &&
+                    event.isEnter() &&
+                    tokenType.equals(Types.listItemPrefix)) ||
+                    (containerBalance == -1 &&
+                            event.isExit() &&
+                            (tokenType.equals(Types.listUnordered) ||
+                                    tokenType.equals(Types.listOrdered)))) {
                 if (listItem != null) {
                     var tailIndex = index;
                     lineIndex = null;
@@ -326,11 +313,10 @@ final class MdastCompiler implements MdastContext {
                         var tailEvent = events.get(tailIndex);
                         var tailEventTokenType = tailEvent.token().type;
 
-                        if (
-                                tailEventTokenType.equals(Types.lineEnding) ||
-                                        tailEventTokenType.equals(Types.lineEndingBlank)
-                        ) {
-                            if (tailEvent.isExit()) continue;
+                        if (tailEventTokenType.equals(Types.lineEnding) ||
+                                tailEventTokenType.equals(Types.lineEndingBlank)) {
+                            if (tailEvent.isExit())
+                                continue;
 
                             if (lineIndex != null && lineIndex != 0) {
                                 events.get(lineIndex).token().type = Types.lineEndingBlank;
@@ -339,30 +325,28 @@ final class MdastCompiler implements MdastContext {
 
                             tailEvent.token().type = Types.lineEnding;
                             lineIndex = tailIndex;
-                        } else if (
-                                tailEventTokenType.equals(Types.linePrefix) ||
-                                        tailEventTokenType.equals(Types.blockQuotePrefix) ||
-                                        tailEventTokenType.equals(Types.blockQuotePrefixWhitespace) ||
-                                        tailEventTokenType.equals(Types.blockQuoteMarker) ||
-                                        tailEventTokenType.equals(Types.listItemIndent)
-                        ) {
+                        } else if (tailEventTokenType.equals(Types.linePrefix) ||
+                                tailEventTokenType.equals(Types.blockQuotePrefix) ||
+                                tailEventTokenType.equals(Types.blockQuotePrefixWhitespace) ||
+                                tailEventTokenType.equals(Types.blockQuoteMarker) ||
+                                tailEventTokenType.equals(Types.listItemIndent)) {
                             // Empty
                         } else {
                             break;
                         }
                     }
 
-                    if (
-                            (firstBlankLineIndex != null && firstBlankLineIndex != 0) &&
-                                    (lineIndex == null || lineIndex == 0 || firstBlankLineIndex < lineIndex)
-                    ) {
+                    if ((firstBlankLineIndex != null && firstBlankLineIndex != 0) &&
+                            (lineIndex == null || lineIndex == 0 || firstBlankLineIndex < lineIndex)) {
                         listItem.set(SPREAD, true);
                     }
 
                     // Fix position.
-                    listItem.end = (lineIndex != null && lineIndex != 0) ? events.get(lineIndex).token().start : event.token().end;
+                    listItem.end = (lineIndex != null && lineIndex != 0) ? events.get(lineIndex).token().start
+                            : event.token().end;
 
-                    ListUtils.splice(events, Objects.requireNonNullElse(lineIndex, index), 0, List.of(Tokenizer.Event.exit(listItem, event.context())));
+                    ListUtils.splice(events, Objects.requireNonNullElse(lineIndex, index), 0,
+                            List.of(Tokenizer.Event.exit(listItem, event.context())));
                     index++;
                     length++;
                 }
@@ -501,8 +485,7 @@ final class MdastCompiler implements MdastContext {
                             token.type +
                             "` (" +
                             MdAstPosition.stringify(token.start, token.end) +
-                            "): it’s not open"
-            );
+                            "): it’s not open");
         } else if (!open.token().type.equals(token.type)) {
             if (onExitError != null) {
                 onExitError.error(this, token, open.token());
@@ -548,8 +531,7 @@ final class MdastCompiler implements MdastContext {
             var ancestor = (MdAstList) (stack.get(stack.size() - 2));
             ancestor.start = Integer.parseInt(
                     this.sliceSerialize(token),
-                    Constants.numericBaseDecimal
-            );
+                    Constants.numericBaseDecimal);
             expectingFirstListItemValue = false;
         }
     }
@@ -568,7 +550,8 @@ final class MdastCompiler implements MdastContext {
 
     private void onexitcodefencedfence() {
         // Exit if this is the closing fence.
-        if (flowCodeInside) return;
+        if (flowCodeInside)
+            return;
         this.buffer();
         flowCodeInside = true;
     }
@@ -598,8 +581,7 @@ final class MdastCompiler implements MdastContext {
         var node = (MdAstDefinition) (stack.get(stack.size() - 1));
         node.label = label;
         node.identifier = NormalizeIdentifier.normalizeIdentifier(
-                this.sliceSerialize(token)
-        ).toLowerCase();
+                this.sliceSerialize(token)).toLowerCase();
     }
 
     private void onexitdefinitiontitlestring() {
@@ -626,8 +608,7 @@ final class MdastCompiler implements MdastContext {
                             depth == 4 ||
                             depth == 5 ||
                             depth == 6,
-                    "expected `depth` between `1` and `6`"
-            );
+                    "expected `depth` between `1` and `6`");
 
             node.depth = depth;
         }
@@ -640,8 +621,7 @@ final class MdastCompiler implements MdastContext {
     private void onexitsetextheadinglinesequence(MdastContext context, Token token) {
         var node = (MdAstHeading) (stack.get(stack.size() - 1));
 
-        node.depth =
-                this.sliceSerialize(token).charAt(0) == Codes.equalsTo ? 1 : 2;
+        node.depth = this.sliceSerialize(token).charAt(0) == Codes.equalsTo ? 1 : 2;
     }
 
     private void onexitsetextheading() {
@@ -686,7 +666,7 @@ final class MdastCompiler implements MdastContext {
 
         // If we’re at a hard break, include the line ending in there.
         if (atHardBreak) {
-            if (!(context instanceof MdAstParent<?> parent)) {
+            if (!(context instanceof MdAstParent<?>parent)) {
                 throw new IllegalStateException("expected `parent`");
             }
             var tail = (MdAstNode) parent.children().get(parent.children().size() - 1);
@@ -696,10 +676,8 @@ final class MdastCompiler implements MdastContext {
             return;
         }
 
-        if (
-                !setextHeadingSlurpLineEnding &&
-                        extension.canContainEols.contains(context.type())
-        ) {
+        if (!setextHeadingSlurpLineEnding &&
+                extension.canContainEols.contains(context.type())) {
             onenterdata(this, token);
             onexitdata(this, token);
         }
@@ -757,7 +735,6 @@ final class MdastCompiler implements MdastContext {
 
         referenceType = null;
     }
-
 
     private void onexitimage() {
         var context = stack.get(stack.size() - 1);
@@ -832,7 +809,7 @@ final class MdastCompiler implements MdastContext {
         // Assume a reference.
         inReference = true;
 
-        if (node instanceof MdAstLink link && fragment instanceof MdAstParent<?> container) {
+        if (node instanceof MdAstLink link && fragment instanceof MdAstParent<?>container) {
             for (var child : container.children()) {
                 link.addChild((MdAstNode) child);
             }
@@ -881,13 +858,11 @@ final class MdastCompiler implements MdastContext {
         if (node instanceof LinkOrLinkReference ref) {
             ref.label = label;
             ref.identifier = NormalizeIdentifier.normalizeIdentifier(
-                    this.sliceSerialize(token)
-            ).toLowerCase();
+                    this.sliceSerialize(token)).toLowerCase();
         } else if (node instanceof ImageOrImageReference ref) {
             ref.label = label;
             ref.identifier = NormalizeIdentifier.normalizeIdentifier(
-                    this.sliceSerialize(token)
-            ).toLowerCase();
+                    this.sliceSerialize(token)).toLowerCase();
         } else {
             throw new IllegalStateException("Expected a link or image reference, but found: " + node);
         }
@@ -912,8 +887,7 @@ final class MdastCompiler implements MdastContext {
                     data,
                     type == CharacterReferenceType.characterReferenceMarkerNumeric
                             ? Constants.numericBaseDecimal
-                            : Constants.numericBaseHexadecimal
-            );
+                            : Constants.numericBaseHexadecimal);
             characterReferenceType = null;
         } else {
             // @ts-expect-error `decodeNamedCharacterReference` can return false for
@@ -1030,16 +1004,14 @@ final class MdastCompiler implements MdastContext {
                             right.type +
                             "`, " +
                             MdAstPosition.stringify(right.start, right.end) +
-                            ") is open"
-            );
+                            ") is open");
         } else {
             throw new RuntimeException(
                     "Cannot close document, a token (`" +
                             right.type +
                             "`, " +
                             MdAstPosition.stringify(right.start, right.end) +
-                            ") is still open"
-            );
+                            ") is still open");
         }
     }
 

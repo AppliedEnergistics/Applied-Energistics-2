@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "c:certus_quartz"
+    },
+    "b": {
+      "tag": "c:wooden_rods"
+    }
+  },
+  "pattern": [
+    "a",
+    "b",
+    "b"
+  ],
+  "result": {
+    "item": "ae2:certus_quartz_shovel"
+  },
+  "show_notification": true
+}

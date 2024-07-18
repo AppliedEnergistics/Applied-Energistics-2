@@ -1,0 +1,15 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:titanium_nuggets"
+      ]
+    }
+  ],
+  "type": "ae2:matter_cannon",
+  "ammo": {
+    "tag": "c:titanium_nuggets"
+  },
+  "weight": 47.867
+}

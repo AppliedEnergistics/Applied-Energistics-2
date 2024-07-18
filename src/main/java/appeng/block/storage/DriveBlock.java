@@ -18,7 +18,7 @@
 
 package appeng.block.storage;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -29,7 +29,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.orientation.IOrientationStrategy;
@@ -41,7 +40,7 @@ import appeng.util.InteractionUtil;
 public class DriveBlock extends AEBaseEntityBlock<DriveBlockEntity> {
 
     public DriveBlock() {
-        super(defaultProps(Material.METAL));
+        super(metalProps());
     }
 
     @Override

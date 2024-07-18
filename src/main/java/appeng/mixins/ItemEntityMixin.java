@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -40,7 +41,7 @@ public abstract class ItemEntityMixin extends Entity {
 
     @Inject(at = @At("HEAD"), method = "hurt", cancellable = true)
     void handleExplosion(DamageSource src, float dmg, CallbackInfoReturnable<Boolean> ci) {
-        if (!level.isClientSide && src.isExplosion() && !isRemoved()) {
+        if (!level().isClientSide && src.is(DamageTypeTags.IS_EXPLOSION) && !isRemoved()) {
             var self = (ItemEntity) (Object) this;
             // Just a hashmap lookup - short-circuit to not cause perf issues by iterating entities / recipes
             // unnecessarily.
@@ -67,13 +68,13 @@ public abstract class ItemEntityMixin extends Entity {
         final int i = Mth.floor((this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D);
         final int k = Mth.floor(this.getZ());
 
-        FluidState state = this.level.getFluidState(new BlockPos(j, i, k));
+        FluidState state = this.level().getFluidState(new BlockPos(j, i, k));
         boolean isValidFluid = !state.isEmpty() && TransformLogic.canTransformInFluid(self, state);
 
-        if (level.isClientSide()) {
+        if (level().isClientSide()) {
             if (isValidFluid && this.ae2_delay++ > 30 && AEConfig.instance().isEnableEffects()) {
                 // Client side we only render some cool animations.
-                AppEng.instance().spawnEffect(EffectType.Lightning, this.level, this.getX(), this.getY(), this.getZ(),
+                AppEng.instance().spawnEffect(EffectType.Lightning, this.level(), this.getX(), this.getY(), this.getZ(),
                         null);
                 this.ae2_delay = 0;
             }

@@ -21,9 +21,9 @@ package appeng.core;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.annotation.Nullable;
-
 import com.mojang.brigadier.CommandDispatcher;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -33,15 +33,15 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestRegistry;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -59,9 +59,11 @@ import appeng.core.sync.network.ServerNetworkHandler;
 import appeng.hooks.ToolItemHook;
 import appeng.hooks.WrenchHook;
 import appeng.hooks.ticking.TickHandler;
+import appeng.hotkeys.HotkeyActions;
 import appeng.init.InitApiLookup;
 import appeng.init.InitBlockEntities;
 import appeng.init.InitBlocks;
+import appeng.init.InitCauldronInteraction;
 import appeng.init.InitDispenserBehavior;
 import appeng.init.InitEntityTypes;
 import appeng.init.InitItems;
@@ -75,10 +77,10 @@ import appeng.init.internal.InitP2PAttunements;
 import appeng.init.internal.InitStorageCells;
 import appeng.init.internal.InitUpgrades;
 import appeng.init.worldgen.InitStructures;
-import appeng.items.tools.NetworkToolItem;
 import appeng.server.AECommand;
 import appeng.server.services.ChunkLoadingService;
 import appeng.server.testworld.GameTestPlotAdapter;
+import appeng.sounds.AppEngSounds;
 import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
 
@@ -109,11 +111,11 @@ public abstract class AppEngBase implements AppEng {
         }
         INSTANCE = this;
 
-        AEConfig.load(FabricLoader.getInstance().getConfigDir());
+        if (AEConfig.instance() == null) {
+            AEConfig.load(FabricLoader.getInstance().getConfigDir());
+        }
 
         InitKeyTypes.init();
-
-        MainCreativeTab.init();
 
         // Initialize items in order
         AEItems.init();
@@ -125,8 +127,7 @@ public abstract class AppEngBase implements AppEng {
         InitStorageCells.init();
         InitVillager.init();
 
-        FacadeCreativeTab.init(); // This call has a side-effect (adding it to the creative screen)
-
+        registerCreativeTabs(BuiltInRegistries.CREATIVE_MODE_TAB);
         registerDimension();
         registerBlocks(BuiltInRegistries.BLOCK);
         registerItems(BuiltInRegistries.ITEM);
@@ -136,6 +137,7 @@ public abstract class AppEngBase implements AppEng {
         registerMenuTypes(BuiltInRegistries.MENU);
         registerRecipeSerializers(BuiltInRegistries.RECIPE_SERIALIZER);
         registerStructures(BuiltInRegistries.STRUCTURE_TYPE);
+        registerSounds(BuiltInRegistries.SOUND_EVENT);
 
         postRegistrationInitialization();
 
@@ -148,6 +150,8 @@ public abstract class AppEngBase implements AppEng {
 
         UseBlockCallback.EVENT.register(WrenchHook::onPlayerUseBlock);
         UseBlockCallback.EVENT.register(ToolItemHook::onPlayerUseBlock);
+
+        HotkeyActions.init();
     }
 
     /**
@@ -158,13 +162,12 @@ public abstract class AppEngBase implements AppEng {
         InitP2PAttunements.init();
 
         InitApiLookup.init();
+        InitCauldronInteraction.init();
         InitDispenserBehavior.init();
 
         AEConfig.instance().save();
         InitUpgrades.init();
         initNetworkHandler();
-
-        ChunkLoadingService.register();
     }
 
     protected void initNetworkHandler() {
@@ -208,9 +211,18 @@ public abstract class AppEngBase implements AppEng {
         new AECommand().register(dispatcher);
     }
 
+    public void registerSounds(Registry<SoundEvent> registry) {
+        AppEngSounds.register(registry);
+    }
+
     public void registerDimension() {
         Registry.register(BuiltInRegistries.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
                 SpatialStorageChunkGenerator.CODEC);
+    }
+
+    public void registerCreativeTabs(Registry<CreativeModeTab> registry) {
+        MainCreativeTab.init(registry);
+        FacadeCreativeTab.init(registry);
     }
 
     private void onServerAboutToStart(MinecraftServer server) {
@@ -247,7 +259,7 @@ public abstract class AppEngBase implements AppEng {
             return;
         }
         for (ServerPlayer o : getPlayers()) {
-            if (o != p && o.level == level) {
+            if (o != p && o.level() == level) {
                 final double dX = x - o.getX();
                 final double dY = y - o.getY();
                 final double dZ = z - o.getZ();
@@ -276,15 +288,9 @@ public abstract class AppEngBase implements AppEng {
 
     protected final CableRenderMode getCableRenderModeForPlayer(@Nullable Player player) {
         if (player != null) {
-            for (int x = 0; x < Inventory.getSelectionSize(); x++) {
-                final ItemStack is = player.getInventory().getItem(x);
-
-                if (!is.isEmpty() && is.getItem() instanceof NetworkToolItem) {
-                    final CompoundTag c = is.getTag();
-                    if (c != null && c.getBoolean("hideFacades")) {
-                        return CableRenderMode.CABLE_VIEW;
-                    }
-                }
+            if (AEItems.NETWORK_TOOL.isSameAs(player.getItemInHand(InteractionHand.MAIN_HAND))
+                    || AEItems.NETWORK_TOOL.isSameAs(player.getItemInHand(InteractionHand.OFF_HAND))) {
+                return CableRenderMode.CABLE_VIEW;
             }
         }
 

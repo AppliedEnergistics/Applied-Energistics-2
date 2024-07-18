@@ -46,15 +46,15 @@ public class CubeBuilder {
 
     private final byte[] uvRotations = new byte[Direction.values().length];
 
-    private int color = 0xFFFFFFFF;
+    private final boolean[] flipU = new boolean[Direction.values().length];
 
-    private boolean useStandardUV = false;
+    private final boolean[] flipV = new boolean[Direction.values().length];
+
+    private int color = 0xFFFFFFFF;
 
     private boolean emissiveMaterial;
 
     private final QuadEmitter emitter;
-
-    private int vertexIndex = 0;
 
     public CubeBuilder(QuadEmitter emitter) {
         this.emitter = emitter;
@@ -77,6 +77,14 @@ public class CubeBuilder {
         this.putFace(face, x1, y1, z1, x2, y2, z2);
     }
 
+    public void setFlipU(Direction side, boolean enable) {
+        flipU[side.ordinal()] = enable;
+    }
+
+    public void setFlipV(Direction side, boolean enable) {
+        flipV[side.ordinal()] = enable;
+    }
+
     private static final class UvVector {
         float u1;
         float u2;
@@ -86,63 +94,39 @@ public class CubeBuilder {
 
     private void putFace(Direction face, float x1, float y1, float z1, float x2, float y2, float z2) {
 
-        TextureAtlasSprite texture = this.textures.get(face);
+        var texture = this.textures.get(face);
 
-        QuadEmitter emitter = this.emitter;
-        emitter.colorIndex(-1).nominalFace(face);
+        var emitter = this.emitter;
+        emitter.colorIndex(-1);
 
-        UvVector uv = new UvVector();
+        var uv = new UvVector();
 
         // The user might have set specific UV coordinates for this face
-        Vector4f customUv = this.customUv.get(face);
+        var customUv = this.customUv.get(face);
         if (customUv != null) {
             uv.u1 = texture.getU(customUv.x());
             uv.v1 = texture.getV(customUv.y());
             uv.u2 = texture.getU(customUv.z());
             uv.v2 = texture.getV(customUv.w());
-        } else if (this.useStandardUV) {
-            uv = this.getStandardUv(face, texture, x1, y1, z1, x2, y2, z2);
         } else {
-            uv = this.getDefaultUv(face, texture, x1, y1, z1, x2, y2, z2);
+            uv = this.getStandardUv(face, texture, x1, y1, z1, x2, y2, z2);
         }
 
+        emitter.color(color, color, color, color);
+        emitter.normal(0, face.getStepX(), face.getStepY(), face.getStepZ());
+        emitter.normal(1, face.getStepX(), face.getStepY(), face.getStepZ());
+        emitter.normal(2, face.getStepX(), face.getStepY(), face.getStepZ());
+        emitter.normal(3, face.getStepX(), face.getStepY(), face.getStepZ());
+
+        setFaceUV(face, emitter, uv);
+
         switch (face) {
-            case DOWN -> {
-                this.putVertexBL(face, x1, y1, z2, uv);
-                this.putVertexTL(face, x1, y1, z1, uv);
-                this.putVertexTR(face, x2, y1, z1, uv);
-                this.putVertexBR(face, x2, y1, z2, uv);
-            }
-            case UP -> {
-                this.putVertexTL(face, x1, y2, z1, uv);
-                this.putVertexBL(face, x1, y2, z2, uv);
-                this.putVertexBR(face, x2, y2, z2, uv);
-                this.putVertexTR(face, x2, y2, z1, uv);
-            }
-            case NORTH -> {
-                this.putVertexBR(face, x2, y2, z1, uv);
-                this.putVertexTR(face, x2, y1, z1, uv);
-                this.putVertexTL(face, x1, y1, z1, uv);
-                this.putVertexBL(face, x1, y2, z1, uv);
-            }
-            case SOUTH -> {
-                this.putVertexBL(face, x1, y2, z2, uv);
-                this.putVertexTL(face, x1, y1, z2, uv);
-                this.putVertexTR(face, x2, y1, z2, uv);
-                this.putVertexBR(face, x2, y2, z2, uv);
-            }
-            case WEST -> {
-                this.putVertexBL(face, x1, y2, z1, uv);
-                this.putVertexTL(face, x1, y1, z1, uv);
-                this.putVertexTR(face, x1, y1, z2, uv);
-                this.putVertexBR(face, x1, y2, z2, uv);
-            }
-            case EAST -> {
-                this.putVertexBL(face, x2, y2, z2, uv);
-                this.putVertexTL(face, x2, y1, z2, uv);
-                this.putVertexTR(face, x2, y1, z1, uv);
-                this.putVertexBR(face, x2, y2, z1, uv);
-            }
+            case DOWN -> emitter.square(face, x1, z1, x2, z2, y1);
+            case UP -> emitter.square(face, x1, 1 - z2, x2, 1 - z1, 1 - y2);
+            case NORTH -> emitter.square(face, 1 - x2, y1, 1 - x1, y2, z1);
+            case SOUTH -> emitter.square(face, x1, y1, x2, y2, 1 - z2);
+            case WEST -> emitter.square(face, z1, y1, z2, y2, x1);
+            case EAST -> emitter.square(face, 1 - z2, y1, 1 - z1, y2, 1 - x2);
         }
 
         if (emissiveMaterial) {
@@ -153,218 +137,70 @@ public class CubeBuilder {
         }
 
         emitter.emit();
-        this.vertexIndex = 0;
     }
 
-    private UvVector getDefaultUv(Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2,
-            float y2, float z2) {
+    private void setFaceUV(Direction face, QuadEmitter emitter, UvVector uv) {
+        var rotation = uvRotations[face.ordinal()];
 
-        UvVector uv = new UvVector();
-
-        switch (face) {
-            case DOWN -> {
-                uv.u1 = texture.getU(x1 * 16);
-                uv.v1 = texture.getV(z1 * 16);
-                uv.u2 = texture.getU(x2 * 16);
-                uv.v2 = texture.getV(z2 * 16);
-            }
-            case UP -> {
-                uv.u1 = texture.getU(x1 * 16);
-                uv.v1 = texture.getV(z1 * 16);
-                uv.u2 = texture.getU(x2 * 16);
-                uv.v2 = texture.getV(z2 * 16);
-            }
-            case NORTH -> {
-                uv.u1 = texture.getU(x1 * 16);
-                uv.v1 = texture.getV(16 - y1 * 16);
-                uv.u2 = texture.getU(x2 * 16);
-                uv.v2 = texture.getV(16 - y2 * 16);
-            }
-            case SOUTH -> {
-                uv.u1 = texture.getU(x1 * 16);
-                uv.v1 = texture.getV(16 - y1 * 16);
-                uv.u2 = texture.getU(x2 * 16);
-                uv.v2 = texture.getV(16 - y2 * 16);
-            }
-            case WEST -> {
-                uv.u1 = texture.getU(z1 * 16);
-                uv.v1 = texture.getV(16 - y1 * 16);
-                uv.u2 = texture.getU(z2 * 16);
-                uv.v2 = texture.getV(16 - y2 * 16);
-            }
-            case EAST -> {
-                uv.u1 = texture.getU(z2 * 16);
-                uv.v1 = texture.getV(16 - y1 * 16);
-                uv.u2 = texture.getU(z1 * 16);
-                uv.v2 = texture.getV(16 - y2 * 16);
-            }
+        if (flipU[face.ordinal()]) {
+            var tmp = uv.u1;
+            uv.u1 = uv.u2;
+            uv.u2 = tmp;
+        }
+        if (flipV[face.ordinal()]) {
+            var tmp = uv.v1;
+            uv.v1 = uv.v2;
+            uv.v2 = tmp;
         }
 
-        return uv;
+        switch (face) {
+            case DOWN, UP -> {
+                emitter.uv((0 + 4 - rotation) % 4, uv.u1, uv.v1);
+                emitter.uv((1 + 4 - rotation) % 4, uv.u1, uv.v2);
+                emitter.uv((2 + 4 - rotation) % 4, uv.u2, uv.v2);
+                emitter.uv((3 + 4 - rotation) % 4, uv.u2, uv.v1);
+            }
+            case NORTH, SOUTH, WEST, EAST -> {
+                emitter.uv((0 + 4 - rotation) % 4, uv.u1, uv.v2);
+                emitter.uv((1 + 4 - rotation) % 4, uv.u1, uv.v1);
+                emitter.uv((2 + 4 - rotation) % 4, uv.u2, uv.v1);
+                emitter.uv((3 + 4 - rotation) % 4, uv.u2, uv.v2);
+            }
+        }
     }
 
     private UvVector getStandardUv(Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2,
             float y2, float z2) {
         UvVector uv = new UvVector();
+
+        if (face.getAxis() != Direction.Axis.Y) {
+            uv.v1 = texture.getV(16 - y1 * 16);
+            uv.v2 = texture.getV(16 - y2 * 16);
+        } else {
+            uv.v1 = texture.getV(z1 * 16);
+            uv.v2 = texture.getV(z2 * 16);
+        }
+
         switch (face) {
-            case DOWN -> {
+            case DOWN, UP, SOUTH -> {
                 uv.u1 = texture.getU(x1 * 16);
-                uv.v1 = texture.getV(16 - z1 * 16);
                 uv.u2 = texture.getU(x2 * 16);
-                uv.v2 = texture.getV(16 - z2 * 16);
-            }
-            case UP -> {
-                uv.u1 = texture.getU(x1 * 16);
-                uv.v1 = texture.getV(z1 * 16);
-                uv.u2 = texture.getU(x2 * 16);
-                uv.v2 = texture.getV(z2 * 16);
             }
             case NORTH -> {
-                uv.u1 = texture.getU(16 - x1 * 16);
-                uv.v1 = texture.getV(16 - y1 * 16);
-                uv.u2 = texture.getU(16 - x2 * 16);
-                uv.v2 = texture.getV(16 - y2 * 16);
-            }
-            case SOUTH -> {
-                uv.u1 = texture.getU(x1 * 16);
-                uv.v1 = texture.getV(16 - y1 * 16);
-                uv.u2 = texture.getU(x2 * 16);
-                uv.v2 = texture.getV(16 - y2 * 16);
+                uv.u1 = texture.getU(16 - x2 * 16);
+                uv.u2 = texture.getU(16 - x1 * 16);
             }
             case WEST -> {
                 uv.u1 = texture.getU(z1 * 16);
-                uv.v1 = texture.getV(16 - y1 * 16);
                 uv.u2 = texture.getU(z2 * 16);
-                uv.v2 = texture.getV(16 - y2 * 16);
             }
             case EAST -> {
                 uv.u1 = texture.getU(16 - z2 * 16);
-                uv.v1 = texture.getV(16 - y1 * 16);
                 uv.u2 = texture.getU(16 - z1 * 16);
-                uv.v2 = texture.getV(16 - y2 * 16);
             }
         }
+
         return uv;
-    }
-
-    // uv.u1, uv.v1
-    private void putVertexTL(Direction face, float x, float y, float z, UvVector uv) {
-        float u, v;
-
-        switch (this.uvRotations[face.ordinal()]) {
-            default -> {
-                u = uv.u1;
-                v = uv.v1;
-            }
-            case 1 -> { // 90° clockwise
-                u = uv.u1;
-                v = uv.v2;
-            }
-            case 2 -> { // 180° clockwise
-                u = uv.u2;
-                v = uv.v2;
-            }
-            case 3 -> { // 270° clockwise
-                u = uv.u2;
-                v = uv.v1;
-            }
-        }
-
-        this.putVertex(face, x, y, z, u, v);
-    }
-
-    // uv.u2, uv.v1
-    private void putVertexTR(Direction face, float x, float y, float z, UvVector uv) {
-        float u, v;
-
-        switch (this.uvRotations[face.ordinal()]) {
-            default -> {
-                u = uv.u2;
-                v = uv.v1;
-            }
-            case 1 -> { // 90° clockwise
-                u = uv.u1;
-                v = uv.v1;
-            }
-            case 2 -> { // 180° clockwise
-                u = uv.u1;
-                v = uv.v2;
-            }
-            case 3 -> { // 270° clockwise
-                u = uv.u2;
-                v = uv.v2;
-            }
-        }
-        this.putVertex(face, x, y, z, u, v);
-    }
-
-    // uv.u2, uv.v2
-    private void putVertexBR(Direction face, float x, float y, float z, UvVector uv) {
-
-        float u;
-        float v;
-
-        switch (this.uvRotations[face.ordinal()]) {
-            default -> {
-                u = uv.u2;
-                v = uv.v2;
-            }
-            case 1 -> { // 90° clockwise
-                u = uv.u2;
-                v = uv.v1;
-            }
-            case 2 -> { // 180° clockwise
-                u = uv.u1;
-                v = uv.v1;
-            }
-            case 3 -> { // 270° clockwise
-                u = uv.u1;
-                v = uv.v2;
-            }
-        }
-
-        this.putVertex(face, x, y, z, u, v);
-    }
-
-    // uv.u1, uv.v2
-    private void putVertexBL(Direction face, float x, float y, float z, UvVector uv) {
-
-        float u;
-        float v;
-
-        switch (this.uvRotations[face.ordinal()]) {
-            default -> {
-                u = uv.u1;
-                v = uv.v2;
-            }
-            case 1 -> { // 90° clockwise
-                u = uv.u2;
-                v = uv.v2;
-            }
-            case 2 -> { // 180° clockwise
-                u = uv.u2;
-                v = uv.v1;
-            }
-            case 3 -> { // 270° clockwise
-                u = uv.u1;
-                v = uv.v1;
-            }
-        }
-
-        this.putVertex(face, x, y, z, u, v);
-    }
-
-    private void putVertex(Direction face, float x, float y, float z, float u, float v) {
-
-        emitter.pos(vertexIndex, x, y, z);
-        emitter.normal(vertexIndex, face.getStepX(), face.getStepY(), face.getStepZ());
-
-        // Color format is RGBA
-        emitter.spriteColor(vertexIndex, 0, this.color);
-
-        emitter.sprite(vertexIndex, 0, u, v);
-
-        vertexIndex++;
     }
 
     public void setTexture(TextureAtlasSprite texture) {
@@ -415,20 +251,7 @@ public class CubeBuilder {
     }
 
     public void setUvRotation(Direction facing, int rotation) {
-        if (rotation == 2) {
-            rotation = 3;
-        } else if (rotation == 3) {
-            rotation = 2;
-        }
         Preconditions.checkArgument(rotation >= 0 && rotation <= 3, "rotation");
         this.uvRotations[facing.ordinal()] = (byte) rotation;
     }
-
-    /**
-     * CubeBuilder uses UV optimized for cables by default. This switches to standard UV coordinates.
-     */
-    public void useStandardUV() {
-        this.useStandardUV = true;
-    }
-
 }

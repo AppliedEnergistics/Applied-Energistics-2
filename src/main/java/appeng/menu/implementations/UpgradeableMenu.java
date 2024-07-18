@@ -27,7 +27,6 @@ import net.minecraft.world.level.ItemLike;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SchedulingMode;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.upgrades.IUpgradeInventory;
@@ -116,8 +115,6 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
 
     @Override
     public void broadcastChanges() {
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
-
         if (isServerSide() && getHost() instanceof IConfigurableObject configurableObject) {
             this.loadSettingsFromHost(configurableObject.getConfigManager());
         }

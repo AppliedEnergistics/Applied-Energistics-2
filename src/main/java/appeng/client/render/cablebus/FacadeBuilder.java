@@ -27,7 +27,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
@@ -72,16 +72,8 @@ public class FacadeBuilder {
 
     private final Renderer renderer = RendererAccess.INSTANCE.getRenderer();
 
-    public static final double THIN_THICKNESS = 1D / 16D;
-    public static final double THICK_THICKNESS = 2D / 16D;
-
-    public static final AABB[] THICK_FACADE_BOXES = new AABB[] {
-            new AABB(0.0, 0.0, 0.0, 1.0, THICK_THICKNESS, 1.0),
-            new AABB(0.0, 1.0 - THICK_THICKNESS, 0.0, 1.0, 1.0, 1.0),
-            new AABB(0.0, 0.0, 0.0, 1.0, 1.0, THICK_THICKNESS),
-            new AABB(0.0, 0.0, 1.0 - THICK_THICKNESS, 1.0, 1.0, 1.0),
-            new AABB(0.0, 0.0, 0.0, THICK_THICKNESS, 1.0, 1.0),
-            new AABB(1.0 - THICK_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
+    // Slightly smaller than a pixel to never show the beginning of the second row of pixels of the block's texture.
+    public static final double THIN_THICKNESS = 1D / 16D - 2e-3;
 
     public static final AABB[] THIN_FACADE_BOXES = new AABB[] {
             new AABB(0.0, 0.0, 0.0, 1.0, THIN_THICKNESS, 1.0),
@@ -114,7 +106,7 @@ public class FacadeBuilder {
                 RenderContext.QuadTransform rotator = QuadRotator.get(facing, 0);
 
                 for (BakedQuad quad : partQuads) {
-                    emitter.fromVanilla(quad.getVertices(), 0, false);
+                    emitter.fromVanilla(quad.getVertices(), 0);
                     emitter.cullFace(null);
                     emitter.nominalFace(quad.getDirection());
                     if (!rotator.transform(emitter)) {
@@ -159,7 +151,7 @@ public class FacadeBuilder {
                     Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
                     List<BakedQuad> quads = model.getQuads(null, cullFace, RandomSource.create());
                     for (BakedQuad quad : quads) {
-                        emitter.fromVanilla(quad.getVertices(), 0, false);
+                        emitter.fromVanilla(quad.getVertices(), 0);
                         emitter.cullFace(cullFace);
                         emitter.nominalFace(quad.getDirection());
                         if (!rotator.transform(emitter)) {
@@ -184,7 +176,6 @@ public class FacadeBuilder {
         Set<Direction> sidesWithParts = renderState.getAttachments().keySet();
         BlockPos pos = renderState.getPos();
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
-        boolean thinFacades = isUseThinFacades(partBoxes);
 
         MeshBuilder meshBuilder = renderer.meshBuilder();
         QuadEmitter emitter = meshBuilder.getEmitter();
@@ -214,11 +205,11 @@ public class FacadeBuilder {
 
             BlockState blockState = facadeRenderState.getSourceBlock();
 
-            AABB fullBounds = thinFacades ? THIN_FACADE_BOXES[sideIndex] : THICK_FACADE_BOXES[sideIndex];
+            AABB fullBounds = THIN_FACADE_BOXES[sideIndex];
             AABB facadeBox = fullBounds;
             // If we are a transparent facade, we need to modify out BB.
             if (facadeRenderState.isTransparent()) {
-                double offset = thinFacades ? THIN_THICKNESS : THICK_THICKNESS;
+                double offset = THIN_THICKNESS;
                 AEAxisAlignedBB tmpBB = null;
                 for (Direction face : Direction.values()) {
                     // Only faces that aren't on our axis
@@ -270,7 +261,7 @@ public class FacadeBuilder {
             kicker.setSide(sideIndex);
             kicker.setFacadeMask(facadeMask);
             kicker.setBox(fullBounds);
-            kicker.setThickness(thinFacades ? THIN_THICKNESS : THICK_THICKNESS);
+            kicker.setThickness(THIN_THICKNESS);
 
             QuadReInterpolator interpolator = new QuadReInterpolator();
 
@@ -361,7 +352,7 @@ public class FacadeBuilder {
         QuadReInterpolator interpolator = new QuadReInterpolator();
 
         var itemColors = Minecraft.getInstance().itemColors;
-        QuadClamper clamper = new QuadClamper(THICK_FACADE_BOXES[side.ordinal()]);
+        QuadClamper clamper = new QuadClamper(THIN_FACADE_BOXES[side.ordinal()]);
 
         for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
             Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
@@ -375,7 +366,7 @@ public class FacadeBuilder {
                     quadTinter = new QuadTinter(itemColors.getColor(textureItem, quad.getTintIndex()));
                 }
 
-                emitter.fromVanilla(quad.getVertices(), 0, false);
+                emitter.fromVanilla(quad.getVertices(), 0);
                 emitter.cullFace(cullFace);
                 emitter.nominalFace(quad.getDirection());
                 interpolator.setInputQuad(emitter);
@@ -466,29 +457,5 @@ public class FacadeBuilder {
         }
 
         return boxes;
-    }
-
-    /**
-     * Determines if any of the part's bounding boxes intersects with the outside 2 voxel wide layer. If so, we should
-     * use thinner facades (1 voxel deep).
-     */
-    private static boolean isUseThinFacades(List<AABB> partBoxes) {
-        final double min = 2.0 / 16.0;
-        final double max = 14.0 / 16.0;
-
-        for (AABB bb : partBoxes) {
-            int o = 0;
-            o += bb.maxX > max ? 1 : 0;
-            o += bb.maxY > max ? 1 : 0;
-            o += bb.maxZ > max ? 1 : 0;
-            o += bb.minX < min ? 1 : 0;
-            o += bb.minY < min ? 1 : 0;
-            o += bb.minZ < min ? 1 : 0;
-
-            if (o >= 2) {
-                return true;
-            }
-        }
-        return false;
     }
 }

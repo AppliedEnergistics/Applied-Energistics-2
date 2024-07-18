@@ -1,6 +1,9 @@
 package appeng.libs.micromark;
 
-import appeng.libs.micromark.commonmark.ListConstruct;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import appeng.libs.micromark.commonmark.Attention;
 import appeng.libs.micromark.commonmark.AutoLink;
 import appeng.libs.micromark.commonmark.BlockQuote;
@@ -17,13 +20,10 @@ import appeng.libs.micromark.commonmark.HtmlText;
 import appeng.libs.micromark.commonmark.LabelEnd;
 import appeng.libs.micromark.commonmark.LabelStartImage;
 import appeng.libs.micromark.commonmark.LabelStartLink;
+import appeng.libs.micromark.commonmark.ListConstruct;
 import appeng.libs.micromark.commonmark.SetextUnderline;
 import appeng.libs.micromark.commonmark.ThematicBreak;
 import appeng.libs.micromark.symbol.Codes;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public final class DefaultExtension {
     private DefaultExtension() {
@@ -49,14 +49,12 @@ public final class DefaultExtension {
         extension.document.put(Codes.greaterThan, List.of(BlockQuote.blockQuote));
 
         extension.contentInitial = Map.of(
-                Codes.leftSquareBracket, List.of(Definition.definition)
-        );
+                Codes.leftSquareBracket, List.of(Definition.definition));
 
         extension.flowInitial = Map.of(
                 Codes.horizontalTab, List.of(CodeIndented.codeIndented),
                 Codes.virtualSpace, List.of(CodeIndented.codeIndented),
-                Codes.space, List.of(CodeIndented.codeIndented)
-        );
+                Codes.space, List.of(CodeIndented.codeIndented));
 
         extension.flow = Map.of(
                 Codes.numberSign, List.of(HeadingAtx.headingAtx),
@@ -66,18 +64,17 @@ public final class DefaultExtension {
                 Codes.equalsTo, List.of(SetextUnderline.setextUnderline),
                 Codes.underscore, List.of(ThematicBreak.thematicBreak),
                 Codes.graveAccent, List.of(CodeFenced.codeFenced),
-                Codes.tilde, List.of(CodeFenced.codeFenced)
-        );
+                Codes.tilde, List.of(CodeFenced.codeFenced));
 
         extension.string = Map.of(
                 Codes.ampersand, List.of(CharacterReference.characterReference),
-                Codes.backslash, List.of(CharacterEscape.characterEscape)
-        );
+                Codes.backslash, List.of(CharacterEscape.characterEscape));
 
         extension.text = new HashMap<>();
         extension.text.put(Codes.carriageReturn, List.of(appeng.libs.micromark.commonmark.LineEnding.lineEnding));
         extension.text.put(Codes.lineFeed, List.of(appeng.libs.micromark.commonmark.LineEnding.lineEnding));
-        extension.text.put(Codes.carriageReturnLineFeed, List.of(appeng.libs.micromark.commonmark.LineEnding.lineEnding));
+        extension.text.put(Codes.carriageReturnLineFeed,
+                List.of(appeng.libs.micromark.commonmark.LineEnding.lineEnding));
         extension.text.put(Codes.exclamationMark, List.of(LabelStartImage.labelStartImage));
         extension.text.put(Codes.ampersand, List.of(CharacterReference.characterReference));
         extension.text.put(Codes.asterisk, List.of(Attention.attention));

@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 
@@ -145,16 +144,17 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
     }
 
     private static TransferHandlerRenderer createErrorRenderer(Set<AEKey> craftableKeys) {
-        return (matrices, mouseX, mouseY, delta, widgets, bounds, display) -> {
+        return (guiGraphics, mouseX, mouseY, delta, widgets, bounds, display) -> {
             for (Widget widget : widgets) {
                 if (widget instanceof Slot slot && slot.getNoticeMark() == Slot.INPUT) {
                     if (isCraftable(craftableKeys, slot.getEntries())) {
-                        matrices.pushPose();
-                        matrices.translate(0, 0, 400);
+                        var poseStack = guiGraphics.pose();
+                        poseStack.pushPose();
+                        poseStack.translate(0, 0, 400);
                         Rectangle innerBounds = slot.getInnerBounds();
-                        GuiComponent.fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
+                        guiGraphics.fill(innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
                                 innerBounds.getMaxY(), BLUE_SLOT_HIGHLIGHT_COLOR);
-                        matrices.popPose();
+                        poseStack.popPose();
                     }
                 }
             }

@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.inventory.Slot;
@@ -150,7 +150,8 @@ class GhostIngredientHandler implements DraggableStackVisitor<AEBaseScreen> {
 
                 // Wrap in a generic stack to set it anyway
                 var wrappedFluid = GenericStack.wrapInItemStack(
-                        new GenericStack(AEFluidKey.of(fluidStack.getFluid()), fluidStack.getAmount()));
+                        new GenericStack(AEFluidKey.of(fluidStack.getFluid(), fluidStack.getTag()),
+                                fluidStack.getAmount()));
                 NetworkHandler.instance().sendToServer(new InventoryActionPacket(InventoryAction.SET_FILTER,
                         slot.index, wrappedFluid));
                 return true;

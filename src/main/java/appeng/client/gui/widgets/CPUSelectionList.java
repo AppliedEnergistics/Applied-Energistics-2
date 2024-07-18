@@ -3,13 +3,11 @@ package appeng.client.gui.widgets;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -29,7 +27,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
 import appeng.menu.me.crafting.CraftingStatusMenu;
 
-public class CPUSelectionList extends GuiComponent implements ICompositeWidget {
+public class CPUSelectionList implements ICompositeWidget {
 
     private static final int ROWS = 6;
 
@@ -169,18 +167,20 @@ public class CPUSelectionList extends GuiComponent implements ICompositeWidget {
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
         var x = bounds.getX() + this.bounds.getX();
         var y = bounds.getY() + this.bounds.getY();
         background.dest(
                 x,
                 y,
                 this.bounds.getWidth(),
-                this.bounds.getHeight()).blit(poseStack, zIndex);
+                this.bounds.getHeight()).blit(guiGraphics);
 
         // Move to first button
         x += 9;
         y += 19;
+
+        var pose = guiGraphics.pose();
 
         var font = Minecraft.getInstance().font;
         var cpus = menu.cpuList.cpus().subList(
@@ -193,21 +193,21 @@ public class CPUSelectionList extends GuiComponent implements ICompositeWidget {
             }
             buttonBg.dest(x, y)
                     .colorRgb(color)
-                    .blit(poseStack, zIndex);
+                    .blit(guiGraphics);
 
             var name = getCpuName(cpu);
-            poseStack.pushPose();
-            poseStack.translate(x + 3, y + 3, 0);
-            poseStack.scale(0.8f, 0.8f, 1);
-            font.draw(poseStack, name, 0, 0, textColor.toARGB());
-            poseStack.popPose();
+            pose.pushPose();
+            pose.translate(x + 3, y + 3, 0);
+            pose.scale(0.8f, 0.8f, 1);
+            guiGraphics.drawString(font, name, 0, 0, textColor.toARGB(), false);
+            pose.popPose();
 
             var infoBar = new InfoBar();
 
             var currentJob = cpu.currentJob();
             if (currentJob != null) {
                 // Show what was initially requested
-                infoBar.add(Icon.PERMISSION_CRAFT, 0.6f);
+                infoBar.add(Icon.CRAFT_HAMMER, 0.6f);
                 infoBar.addSpace(2);
                 var craftAmt = currentJob.what().formatAmount(currentJob.amount(), AmountFormat.SLOT);
                 infoBar.add(craftAmt, textColor.toARGB(), 0.6f);
@@ -216,7 +216,7 @@ public class CPUSelectionList extends GuiComponent implements ICompositeWidget {
 
                 // Draw a bar at the bottom of the button to indicate job progress
                 var progress = (int) (cpu.progress() * (buttonBg.getSrcWidth() - 1) / Math.max(1, cpu.totalItems()));
-                fill(poseStack,
+                guiGraphics.fill(
                         x + 1,
                         y + buttonBg.getSrcHeight() - 2,
                         x + progress,
@@ -244,7 +244,7 @@ public class CPUSelectionList extends GuiComponent implements ICompositeWidget {
                 }
             }
 
-            infoBar.render(poseStack, x + 2, y + buttonBg.getSrcHeight() - 12, zIndex);
+            infoBar.render(guiGraphics, x + 2, y + buttonBg.getSrcHeight() - 12);
 
             y += buttonBg.getSrcHeight() + 1;
         }

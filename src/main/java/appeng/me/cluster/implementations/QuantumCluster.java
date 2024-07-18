@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
@@ -32,7 +32,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.features.Locatables;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
@@ -78,7 +77,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
     }
 
     private void onUnload(ServerLevel level) {
-        if (this.center.getLevel() == level) {
+        if (this.center != null && this.center.getLevel() == level) {
             this.setUpdateStatus(false);
             this.destroy();
         }
@@ -131,23 +130,18 @@ public class QuantumCluster implements IAECluster, IActionHost {
                     }
                 }
 
-                try {
-                    if (sideA.connection != null && sideA.connection.getConnection() != null) {
-                        sideA.connection.getConnection().destroy();
-                        sideA.connection = new ConnectionWrapper(null);
-                    }
-
-                    if (sideB.connection != null && sideB.connection.getConnection() != null) {
-                        sideB.connection.getConnection().destroy();
-                        sideB.connection = new ConnectionWrapper(null);
-                    }
-
-                    sideA.connection = sideB.connection = new ConnectionWrapper(
-                            GridHelper.createGridConnection(sideA.getNode(), sideB.getNode()));
-                } catch (FailedConnectionException e) {
-                    // :(
-                    AELog.debug(e);
+                if (sideA.connection != null && sideA.connection.getConnection() != null) {
+                    sideA.connection.getConnection().destroy();
+                    sideA.connection = new ConnectionWrapper(null);
                 }
+
+                if (sideB.connection != null && sideB.connection.getConnection() != null) {
+                    sideB.connection.getConnection().destroy();
+                    sideB.connection = new ConnectionWrapper(null);
+                }
+
+                sideA.connection = sideB.connection = new ConnectionWrapper(
+                        GridHelper.createConnection(sideA.getNode(), sideB.getNode()));
             } else {
                 shutdown = true;
             }
@@ -184,11 +178,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
     }
 
     private boolean isActive() {
-        if (this.isDestroyed || !this.registered) {
-            return false;
-        }
-
-        return this.center.isPowered() && this.hasQES();
+        return !this.isDestroyed && this.registered && hasQES() && getNode() != null;
     }
 
     private IGridNode getNode() {

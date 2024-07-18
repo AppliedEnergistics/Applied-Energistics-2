@@ -20,7 +20,7 @@ package appeng.blockentity.storage;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -391,14 +391,17 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
      * @param drops drops of block entity
      */
     @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
-        super.addAdditionalDrops(level, pos, drops, remove);
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+        super.addAdditionalDrops(level, pos, drops);
 
         for (var upgrade : upgrades) {
             drops.add(upgrade);
         }
-        if (remove) {
-            drops.clear();
-        }
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        upgrades.clear();
     }
 }

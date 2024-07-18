@@ -1,0 +1,16 @@
+{
+    DataVersion: 3337,
+    size: [3, 1, 2],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 104636L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 6, channelsSouth: 6, connections: ["south", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", up: {freq: 0s, gn: {g: 104636L, k: -1L, p: 0}, id: "ae2:light_p2p_tunnel", lastValue: 15, output: 0b, visual: {missingChannel: 0b, powered: 1b}}, visual: {}}},
+        {pos: [0, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 104636L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 6, channelsNorth: 6, connections: ["north", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", up: {freq: 0s, gn: {g: 104636L, k: -1L, p: 0}, id: "ae2:item_p2p_tunnel", output: 0b, visual: {missingChannel: 0b, powered: 1b}}, visual: {}}},
+        {pos: [1, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 104636L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 6, channelsSouth: 6, channelsWest: 6, connections: ["south", "west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", up: {freq: 0s, gn: {g: 104636L, k: -1L, p: 0}, id: "ae2:fe_p2p_tunnel", output: 0b, visual: {missingChannel: 0b, powered: 1b}}, visual: {}}},
+        {pos: [1, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 104636L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 6, channelsNorth: 6, channelsWest: 6, connections: ["north", "west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", up: {freq: 0s, gn: {g: 104636L, k: -1L, p: 0}, id: "ae2:redstone_p2p_tunnel", output: 0b, power: 0, visual: {missingChannel: 0b, powered: 1b}}, visual: {}}},
+        {pos: [2, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 104636L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsSouth: 6, channelsWest: 6, connections: ["south", "west"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", up: {freq: 0s, gn: {g: 104636L, k: -1L, p: 0}, id: "ae2:fluid_p2p_tunnel", output: 0b, visual: {missingChannel: 0b, powered: 1b}}, visual: {}}},
+        {pos: [2, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 104636L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsNorth: 6, channelsWest: 6, connections: ["north", "west"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", up: {freq: 0s, gn: {g: 104636L, k: -1L, p: 0}, id: "ae2:me_p2p_tunnel", outer: {g: 136058L, k: -1L, p: 0}, output: 0b, visual: {missingChannel: 0b, powered: 1b}}, visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:cable_bus{light_level:0,waterlogged:false}"
+    ]
+}

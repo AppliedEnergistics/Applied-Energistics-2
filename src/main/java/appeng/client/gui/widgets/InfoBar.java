@@ -3,13 +3,12 @@ package appeng.client.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.ItemLike;
 
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.client.gui.Icon;
@@ -17,15 +16,14 @@ import appeng.client.gui.Icon;
 public class InfoBar {
     private final List<Widget> widgets = new ArrayList<>();
 
-    public void render(PoseStack poseStack, int x, int y, int z) {
+    public void render(GuiGraphics guiGraphics, int x, int y) {
         var maxHeight = widgets.stream().mapToInt(Widget::getHeight).max().orElse(0);
 
         for (var widget : widgets) {
             widget.render(
-                    poseStack,
+                    guiGraphics,
                     x,
-                    Math.round(y + maxHeight / 2.f - widget.getHeight() / 2.f),
-                    z);
+                    Math.round(y + maxHeight / 2.f - widget.getHeight() / 2.f));
             x += widget.getWidth();
         }
 
@@ -36,7 +34,7 @@ public class InfoBar {
 
         int getHeight();
 
-        void render(PoseStack poseStack, int x, int y, int z);
+        void render(GuiGraphics guiGraphics, int x, int y);
     }
 
     void add(Icon icon, float scale) {
@@ -75,11 +73,12 @@ public class InfoBar {
         }
 
         @Override
-        public void render(PoseStack poseStack, int x, int y, int z) {
+        public void render(GuiGraphics guiGraphics, int x, int y) {
+            var poseStack = guiGraphics.pose();
             poseStack.pushPose();
-            poseStack.translate(x, y, z);
+            poseStack.translate(x, y, 0);
             poseStack.scale(scale, scale, 1);
-            AEStackRendering.drawInGui(Minecraft.getInstance(), poseStack, 0, 0, 0, what);
+            AEKeyRendering.drawInGui(Minecraft.getInstance(), guiGraphics, 0, 0, what);
             poseStack.popPose();
         }
     }
@@ -96,13 +95,14 @@ public class InfoBar {
         }
 
         @Override
-        public void render(PoseStack poseStack, int x, int y, int z) {
+        public void render(GuiGraphics guiGraphics, int x, int y) {
+            var poseStack = guiGraphics.pose();
             poseStack.pushPose();
             poseStack.translate(x, y, 0);
             poseStack.scale(scale, scale, 1);
             icon.getBlitter()
                     .dest(0, 0)
-                    .blit(poseStack, z);
+                    .blit(guiGraphics);
             poseStack.popPose();
         }
     }
@@ -134,12 +134,13 @@ public class InfoBar {
         }
 
         @Override
-        public void render(PoseStack poseStack, int x, int y, int z) {
+        public void render(GuiGraphics guiGraphics, int x, int y) {
+            var poseStack = guiGraphics.pose();
             var font = Minecraft.getInstance().font;
             poseStack.pushPose();
-            poseStack.translate(x, y, z);
+            poseStack.translate(x, y, 0);
             poseStack.scale(scale, scale, 1);
-            font.draw(poseStack, text, 0, 0, color);
+            guiGraphics.drawString(font, text, 0, 0, color, false);
             poseStack.popPose();
         }
     }
@@ -162,7 +163,7 @@ public class InfoBar {
         }
 
         @Override
-        public void render(PoseStack poseStack, int x, int y, int z) {
+        public void render(GuiGraphics guiGraphics, int x, int y) {
         }
     }
 }

@@ -84,8 +84,8 @@ public class TestMeteoritesCommand implements ISubCommand {
         ServerLevel level;
         BlockPos centerBlock;
         if (player != null) {
-            level = player.getLevel();
-            centerBlock = new BlockPos(player.getX(), 0, player.getZ());
+            level = player.serverLevel();
+            centerBlock = BlockPos.containing(player.getX(), 0, player.getZ());
         } else {
             level = srv.getLevel(Level.OVERWORLD);
             centerBlock = level.getSharedSpawnPos();
@@ -183,7 +183,7 @@ public class TestMeteoritesCommand implements ISubCommand {
                     .append(biomeId);
             msg.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
 
-            sender.sendSuccess(msg, true);
+            sender.sendSuccess(() -> msg, true);
         }
     }
 
@@ -215,7 +215,7 @@ public class TestMeteoritesCommand implements ISubCommand {
     }
 
     private static void sendLine(CommandSourceStack sender, String text, Object... args) {
-        sender.sendSuccess(Component.literal(String.format(Locale.ROOT, text, args)), true);
+        sender.sendSuccess(() -> Component.literal(String.format(Locale.ROOT, text, args)), true);
     }
 
 }

@@ -1,3 +1,4 @@
+
 /*
  * This file is part of Applied Energistics 2.
  * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
@@ -19,30 +20,32 @@
 package appeng.util;
 
 import java.text.DecimalFormat;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.collect.Iterables;
+import com.mojang.authlib.GameProfile;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -60,14 +63,9 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
@@ -78,18 +76,12 @@ import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
-import appeng.me.GridNode;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.prioritylist.IPartitionList;
 
 public class Platform {
 
     private static final FabricLoader FABRIC = FabricLoader.getInstance();
-
-    /*
-     * random source, use it for item drop locations...
-     */
-    private static final RandomSource RANDOM_GENERATOR = RandomSource.create();
 
     private static final P2PHelper P2P_HELPER = new P2PHelper();
 
@@ -106,6 +98,14 @@ public class Platform {
 
     // This hack is used to allow tests and the guidebook to provide a recipe manager before the client loads a world
     public static RecipeManager fallbackClientRecipeManager;
+    public static RegistryAccess fallbackClientRegistryAccess;
+
+    public static RegistryAccess getClientRegistryAccess() {
+        if (Minecraft.getInstance() != null && Minecraft.getInstance().level != null) {
+            return Minecraft.getInstance().level.registryAccess();
+        }
+        return Objects.requireNonNull(Platform.fallbackClientRegistryAccess);
+    }
 
     public static RecipeManager getClientRecipeManager() {
         var minecraft = Minecraft.getInstance();
@@ -131,14 +131,6 @@ public class Platform {
 
     public static P2PHelper p2p() {
         return P2P_HELPER;
-    }
-
-    public static RandomSource getRandom() {
-        return RANDOM_GENERATOR;
-    }
-
-    public static float getRandomFloat() {
-        return RANDOM_GENERATOR.nextFloat();
     }
 
     /**
@@ -221,38 +213,10 @@ public class Platform {
     }
 
     public static boolean hasPermissions(DimensionalBlockPos dc, Player player) {
-        if (!dc.isInWorld(player.level)) {
+        if (!dc.isInWorld(player.level())) {
             return false;
         }
-        return player.level.mayInteract(player, dc.getPos());
-    }
-
-    public static boolean checkPermissions(Player player,
-            IActionHost actionHost,
-            SecurityPermissions requiredPermission,
-            boolean requirePower,
-            boolean notifyPlayer) {
-        var gn = actionHost.getActionableNode();
-        if (gn != null) {
-            var g = gn.getGrid();
-            if (requirePower) {
-                var eg = g.getEnergyService();
-                if (!eg.isNetworkPowered()) {
-                    return false;
-                }
-            }
-
-            var sg = g.getSecurityService();
-            if (!sg.hasPermission(player, requiredPermission)) {
-                if (notifyPlayer) {
-                    player.sendSystemMessage(Component.translatable("ae2.permission_denied")
-                            .withStyle(ChatFormatting.RED));
-                }
-                return false;
-            }
-        }
-
-        return true;
+        return player.level().mayInteract(player, dc.getPos());
     }
 
     /*
@@ -290,10 +254,6 @@ public class Platform {
         }
     }
 
-    public static int getRandomInt() {
-        return Math.abs(RANDOM_GENERATOR.nextInt());
-    }
-
     public static String formatModName(String modId) {
         return "" + ChatFormatting.BLUE + ChatFormatting.ITALIC + getModName(modId);
     }
@@ -312,8 +272,7 @@ public class Platform {
     }
 
     public static Component getFluidDisplayName(Fluid fluid, @Nullable CompoundTag tag) {
-        // no usage of the tag, but we keep it for compatibility
-        return Component.translatable(getDescriptionId(fluid));
+        return FluidVariantAttributes.getName(FluidVariant.of(fluid, tag));
     }
 
     // tag copy is not necessary, as the tag is not modified.
@@ -335,25 +294,14 @@ public class Platform {
         return false;
     }
 
-    public static Player getPlayer(ServerLevel level) {
+    public static Player getFakePlayer(ServerLevel level, @Nullable UUID playerUuid) {
         Objects.requireNonNull(level);
 
-        return FakePlayer.getOrCreate(level);
-    }
-
-    /**
-     * Returns a random element from the given collection.
-     *
-     * @return null if the collection is empty
-     */
-    @Nullable
-    public static <T> T pickRandom(Collection<T> outs) {
-        if (outs.isEmpty()) {
-            return null;
+        if (playerUuid == null) {
+            playerUuid = FakePlayer.DEFAULT_UUID;
         }
 
-        int index = RANDOM_GENERATOR.nextInt(outs.size());
-        return Iterables.get(outs, index, null);
+        return FakePlayer.get(level, new GameProfile(playerUuid, "[AE2]"));
     }
 
     public static Direction rotateAround(Direction forward, Direction axis) {
@@ -361,51 +309,7 @@ public class Platform {
             return forward;
         }
         var newForward = forward.getNormal().cross(axis.getNormal());
-        return Objects.requireNonNull(Direction.fromNormal(new BlockPos(newForward)));
-    }
-
-    public static boolean securityCheck(GridNode a, GridNode b) {
-        if (a.getLastSecurityKey() == -1 && b.getLastSecurityKey() == -1
-                || a.getLastSecurityKey() == b.getLastSecurityKey()) {
-            return true;
-        }
-
-        // If the node has no grid, it counts as unpowered
-        final boolean a_isSecure = a.isPowered() && a.getLastSecurityKey() != -1;
-        final boolean b_isSecure = b.isPowered() && b.getLastSecurityKey() != -1;
-
-        if (AEConfig.instance().isSecurityAuditLogEnabled()) {
-            AELog.info(
-                    "Audit: Node A [isSecure=%b, key=%d, playerID=%d, %s] vs Node B[isSecure=%b, key=%d, playerID=%d, %s]",
-                    a_isSecure, a.getLastSecurityKey(), a.getOwningPlayerId(), a, b_isSecure, b.getLastSecurityKey(),
-                    b.getOwningPlayerId(), b);
-        }
-
-        // can't do that son...
-        if (a_isSecure && b_isSecure) {
-            return false;
-        }
-
-        if (!a_isSecure && b_isSecure) {
-            // NOTE: b cannot be powered/secure if b has no grid, so b.getGrid() should succeed
-            return checkPlayerPermissions(b.getGrid(), a.getOwningPlayerId());
-        }
-
-        if (a_isSecure && !b_isSecure) {
-            // NOTE: a cannot be powered/secure if a has no grid, so a.getGrid() should succeed
-            return checkPlayerPermissions(a.getGrid(), b.getOwningPlayerId());
-        }
-
-        return true;
-    }
-
-    private static boolean checkPlayerPermissions(IGrid grid, int playerID) {
-        if (grid == null) {
-            return true;
-        }
-
-        var gs = grid.getSecurityService();
-        return !gs.isAvailable() || gs.hasPermission(playerID, SecurityPermissions.BUILD);
+        return Objects.requireNonNull(Direction.fromDelta(newForward.getX(), newForward.getY(), newForward.getZ()));
     }
 
     public static void configurePlayer(Player player, Direction side, BlockEntity blockEntity) {
@@ -424,28 +328,6 @@ public class Platform {
         player.moveTo(blockEntity.getBlockPos().getX() + 0.5, blockEntity.getBlockPos().getY() + 0.5,
                 blockEntity.getBlockPos().getZ() + 0.5,
                 yaw, pitch);
-    }
-
-    public static boolean canAccess(IManagedGridNode gridProxy, IActionSource src) {
-        var grid = gridProxy.getGrid();
-        if (grid == null) {
-            return false;
-        }
-
-        if (src.player().isPresent()) {
-            return grid.getSecurityService().hasPermission(src.player().get(), SecurityPermissions.BUILD);
-        } else if (src.machine().isPresent()) {
-            final IActionHost te = src.machine().get();
-            final IGridNode n = te.getActionableNode();
-            if (n == null) {
-                return false;
-            }
-
-            final int playerID = n.getOwningPlayerId();
-            return grid.getSecurityService().hasPermission(playerID, SecurityPermissions.BUILD);
-        } else {
-            return grid.getSecurityService().hasPermission(-1, SecurityPermissions.BUILD);
-        }
     }
 
     public static ItemStack extractItemsByRecipe(IEnergySource energySrc,
@@ -482,7 +364,8 @@ public class Platform {
                     if (x.getKey() instanceof AEItemKey itemKey) {
                         if (providedTemplate.getItem() == itemKey.getItem() && !itemKey.matches(output)) {
                             ci.setItem(slot, itemKey.toStack());
-                            if (r.matches(ci, level) && ItemStack.isSame(r.assemble(ci), output)) {
+                            if (r.matches(ci, level)
+                                    && ItemStack.matches(r.assemble(ci, level.registryAccess()), output)) {
                                 if (filter == null || filter.isListed(itemKey)) {
                                     var ex = src.extract(itemKey, 1, realForFake, mySrc);
                                     if (ex > 0) {
@@ -518,41 +401,35 @@ public class Platform {
      */
     @Nullable
     public static BlockEntity getTickingBlockEntity(@Nullable Level level, BlockPos pos) {
-        if (!(level instanceof ServerLevel serverLevel)) {
+        if (!areBlockEntitiesTicking(level, pos)) {
             return null;
         }
 
-        if (!serverLevel.shouldTickBlocksAt(ChunkPos.asLong(pos))) {
-            return null;
-        }
-
-        return serverLevel.getBlockEntity(pos);
+        return level.getBlockEntity(pos);
     }
 
     /**
      * Checks that the chunk at the given position in the given level is in a state where block entities would tick.
-     * Vanilla does this check in {@link Level#tickBlockEntities}
+     * This means that it must both be fully loaded, and close enough to a ticking ticket.
      */
     public static boolean areBlockEntitiesTicking(@Nullable Level level, BlockPos pos) {
-        return level instanceof ServerLevel serverLevel && serverLevel.shouldTickBlocksAt(ChunkPos.asLong(pos));
+        return areBlockEntitiesTicking(level, ChunkPos.asLong(pos));
+    }
+
+    public static boolean areBlockEntitiesTicking(@Nullable Level level, long chunkPos) {
+        // isPositionTicking checks both that the chunk is loaded, and that it's in ticking range...
+        return level instanceof ServerLevel serverLevel && serverLevel.getChunkSource().isPositionTicking(chunkPos);
     }
 
     public static Transaction openOrJoinTx() {
         return Transaction.openNested(Transaction.getCurrentUnsafe());
     }
 
-    public static boolean canItemStacksStack(ItemStack a, ItemStack b) {
-        if (a.isEmpty() || !a.sameItem(b) || a.hasTag() != b.hasTag())
-            return false;
-
-        return (!a.hasTag() || a.getTag().equals(b.getTag()));
-    }
-
     /**
      * Create a full packet of the chunks data with lighting.
      */
     public static Packet<?> getFullChunkPacket(LevelChunk c) {
-        return new ClientboundLevelChunkWithLightPacket(c, c.getLevel().getLightEngine(), null, null, true);
+        return new ClientboundLevelChunkWithLightPacket(c, c.getLevel().getLightEngine(), null, null);
     }
 
     public static ItemStack getInsertionRemainder(ItemStack original, long inserted) {
@@ -578,7 +455,7 @@ public class Platform {
      */
     public static void sendImmediateBlockEntityUpdate(Player player, BlockPos pos) {
         if (player instanceof ServerPlayer serverPlayer) {
-            var be = player.getLevel().getBlockEntity(pos);
+            var be = player.level().getBlockEntity(pos);
             if (be != null) {
                 var packet = be.getUpdatePacket();
                 if (packet != null) {

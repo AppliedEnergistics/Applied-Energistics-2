@@ -6,7 +6,8 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.UpgradeRecipe;
+import net.minecraft.world.item.crafting.SmithingTransformRecipe;
+import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 
 public final class CraftingRecipeUtil {
     private CraftingRecipeUtil() {
@@ -50,12 +51,21 @@ public final class CraftingRecipeUtil {
         return expandedIngredients;
     }
 
-    private static NonNullList<Ingredient> getIngredients(Recipe<?> recipe) {
+    public static NonNullList<Ingredient> getIngredients(Recipe<?> recipe) {
         // Special handling for upgrade recipes since those do not override getIngredients
-        if (recipe instanceof UpgradeRecipe upgradeRecipe) {
-            var ingredients = NonNullList.withSize(2, Ingredient.EMPTY);
-            ingredients.set(0, upgradeRecipe.base);
-            ingredients.set(1, upgradeRecipe.addition);
+        if (recipe instanceof SmithingTrimRecipe trimRecipe) {
+            var ingredients = NonNullList.withSize(3, Ingredient.EMPTY);
+            ingredients.set(0, trimRecipe.template);
+            ingredients.set(1, trimRecipe.base);
+            ingredients.set(2, trimRecipe.addition);
+            return ingredients;
+        }
+
+        if (recipe instanceof SmithingTransformRecipe transformRecipe) {
+            var ingredients = NonNullList.withSize(3, Ingredient.EMPTY);
+            ingredients.set(0, transformRecipe.template);
+            ingredients.set(1, transformRecipe.base);
+            ingredients.set(2, transformRecipe.addition);
             return ingredients;
         }
 

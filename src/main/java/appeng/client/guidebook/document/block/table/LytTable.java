@@ -5,11 +5,11 @@ import java.util.List;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 
+import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
-import appeng.client.guidebook.render.SymbolicColor;
 
 public class LytTable extends LytBlock {
     /**
@@ -60,6 +60,19 @@ public class LytTable extends LytBlock {
     }
 
     @Override
+    protected void onLayoutMoved(int deltaX, int deltaY) {
+        for (var col : columns) {
+            col.x += deltaX;
+        }
+        for (var row : rows) {
+            row.bounds = row.bounds.move(deltaX, deltaY);
+            for (var cell : row.getChildren()) {
+                cell.setLayoutPos(cell.getBounds().point().add(deltaX, deltaY));
+            }
+        }
+    }
+
+    @Override
     public void renderBatch(RenderContext context, MultiBufferSource buffers) {
         for (var row : getChildren()) {
             for (var cell : row.getChildren()) {
@@ -78,7 +91,7 @@ public class LytTable extends LytBlock {
                 // context.fillRect(column.x - 1, bounds.y(), 1, bounds.height(), SymbolicColor.TABLE_BORDER.ref());
             }
             var colRight = column.x + column.width;
-            context.fillRect(colRight, bounds.y(), 1, bounds.height(), SymbolicColor.TABLE_BORDER.ref());
+            context.fillRect(colRight, bounds.y(), 1, bounds.height(), SymbolicColor.TABLE_BORDER);
         }
 
         for (int i = 0; i < rows.size() - 1; i++) {
@@ -88,7 +101,7 @@ public class LytTable extends LytBlock {
                 // context.fillRect(bounds.x(), row.bounds.y() - 1, bounds.width(), 1,
                 // SymbolicColor.TABLE_BORDER.ref());
             }
-            context.fillRect(bounds.x(), row.bounds.bottom(), bounds.width(), 1, SymbolicColor.TABLE_BORDER.ref());
+            context.fillRect(bounds.x(), row.bounds.bottom(), bounds.width(), 1, SymbolicColor.TABLE_BORDER);
         }
 
         for (var row : rows) {

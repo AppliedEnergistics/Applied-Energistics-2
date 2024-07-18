@@ -1,14 +1,15 @@
 package appeng.libs.micromark.extensions;
 
-import appeng.libs.micromark.Micromark;
-import appeng.libs.micromark.Tokenizer;
-import appeng.libs.micromark.html.ParseOptions;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import org.junit.jupiter.api.Test;
+
+import appeng.libs.micromark.Micromark;
+import appeng.libs.micromark.Tokenizer;
+import appeng.libs.micromark.html.ParseOptions;
 
 public class YamlFrontmatterSyntaxTest {
 
@@ -30,8 +31,7 @@ public class YamlFrontmatterSyntaxTest {
     @Test
     public void shouldSupportContentAfterYaml() {
         shouldParseAsFrontmatter(
-                "---\na\n\nb\n---\n", "# Heading\n***\n    code"
-        );
+                "---\na\n\nb\n---\n", "# Heading\n***\n    code");
     }
 
     @Test
@@ -63,7 +63,6 @@ public class YamlFrontmatterSyntaxTest {
     public void shouldNotSupportAnOpeningYamlFenceOfMoreThan3Characters() {
         shouldNotParseAsFrontmatter("----\n---");
     }
-
 
     @Test
     public void shouldNotSupportAClosingYamlFenceOfMoreThan3Characters() {
@@ -144,8 +143,7 @@ public class YamlFrontmatterSyntaxTest {
         } else {
             assertEquals(
                     serializeEvents(events.subList(startOfExtraContent, events.size())),
-                    serializeEvents(additionalContentEvents)
-            );
+                    serializeEvents(additionalContentEvents));
             frontmatterEvents = serializeEvents(events.subList(0, startOfExtraContent));
         }
         assertNotEquals(0, frontmatterEvents.size());

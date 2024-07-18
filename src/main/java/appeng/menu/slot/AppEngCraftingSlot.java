@@ -21,6 +21,7 @@ package appeng.menu.slot;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -73,23 +74,24 @@ public class AppEngCraftingSlot extends AppEngSlot {
      */
     @Override
     protected void checkTakeAchievements(ItemStack par1ItemStack) {
-        par1ItemStack.onCraftedBy(this.player.level, this.player, this.amountCrafted);
+        par1ItemStack.onCraftedBy(this.player.level(), this.player, this.amountCrafted);
         this.amountCrafted = 0;
     }
 
     @Override
     public void onTake(Player playerIn, ItemStack stack) {
         CraftingEvent.fireCraftingEvent(playerIn, stack, this.craftingGrid.toContainer());
+        this.amountCrafted += stack.getCount();
         this.checkTakeAchievements(stack);
         // FIXME FABRIC no crafting hooks
         // ForgeHooks.setCraftingPlayer(playerIn);
-        final CraftingContainer ic = new CraftingContainer(this.getMenu(), 3, 3);
+        final CraftingContainer ic = new TransientCraftingContainer(this.getMenu(), 3, 3);
 
         for (int x = 0; x < this.craftingGrid.size(); x++) {
             ic.setItem(x, this.craftingGrid.getStackInSlot(x));
         }
 
-        var aitemstack = this.getRemainingItems(ic, playerIn.level);
+        var aitemstack = this.getRemainingItems(ic, playerIn.level());
 
         Inventories.copy(ic, this.craftingGrid, false);
 

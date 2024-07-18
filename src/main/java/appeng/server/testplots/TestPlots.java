@@ -25,7 +25,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -61,6 +61,7 @@ import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -77,16 +78,27 @@ import appeng.server.testworld.TestCraftingJob;
 import appeng.util.CraftingRecipeUtil;
 
 public final class TestPlots {
-    private static final Class<?>[] PLOT_CLASSES = {
-            TestPlots.class,
-            AutoCraftingTestPlot.class,
-            P2PTestPlots.class,
-            MemoryCardTestPlots.class,
-            PatternProviderLockModePlots.class
-    };
+    private static final List<Class<?>> PLOT_CLASSES = new ArrayList<>();
 
     @Nullable
     private static Map<ResourceLocation, Consumer<PlotBuilder>> plots;
+
+    static {
+        PLOT_CLASSES.addAll(List.of(
+                TestPlots.class,
+                AutoCraftingTestPlots.class,
+                InscriberTestPlots.class,
+                P2PTestPlots.class,
+                ItemP2PTestPlots.class,
+                MemoryCardTestPlots.class,
+                PatternProviderLockModePlots.class,
+                PatternProviderPlots.class,
+                SpatialTestPlots.class,
+                QnbTestPlots.class,
+                GuidebookPlot.class,
+                SubnetPlots.class,
+                AnnihilationPlaneTests.class));
+    }
 
     private TestPlots() {
     }
@@ -107,13 +119,13 @@ public final class TestPlots {
 
                 for (var method : clazz.getMethods()) {
                     var annotation = method.getAnnotation(TestPlot.class);
-                    if (annotation == null) {
+                    var generatorAnnotation = method.getAnnotation(TestPlotGenerator.class);
+                    if (annotation == null && generatorAnnotation == null) {
                         continue;
                     }
-
-                    var id = new ResourceLocation(annotation.value());
-                    if (plots.containsKey(id)) {
-                        throw new IllegalArgumentException("Duplicate plot ID " + id);
+                    if (annotation != null && generatorAnnotation != null) {
+                        throw new IllegalStateException("Cannot annotate method " + method + " with both "
+                                + "@TestPlot and @TestPlotGenerator");
                     }
 
                     if (!Modifier.isPublic(method.getModifiers())) {
@@ -125,18 +137,39 @@ public final class TestPlots {
                     if (!void.class.equals(method.getReturnType())) {
                         throw new IllegalStateException("Method " + method + " must return void");
                     }
-                    if (!Arrays.asList(method.getParameterTypes()).equals(List.of(PlotBuilder.class))) {
-                        throw new IllegalStateException(
-                                "Method " + method + " must take a single PlotBuilder argument");
-                    }
 
-                    plots.put(id, builder -> {
-                        try {
-                            method.invoke(null, builder);
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            throw new RuntimeException(e);
+                    if (annotation != null) {
+                        if (!Arrays.asList(method.getParameterTypes()).equals(List.of(PlotBuilder.class))) {
+                            throw new IllegalStateException(
+                                    "Method " + method + " must take a single PlotBuilder argument");
                         }
-                    });
+
+                        var id = AppEng.makeId(annotation.value());
+                        plots.put(id, builder -> {
+                            try {
+                                method.invoke(null, builder);
+                            } catch (InvocationTargetException e) {
+                                throw new RuntimeException("Failed building " + id, e.getCause());
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException("Failed to access " + method, e);
+                            }
+                        });
+                    } else if (generatorAnnotation != null) {
+                        if (!Arrays.asList(method.getParameterTypes()).equals(List.of(TestPlotCollection.class))) {
+                            throw new IllegalStateException(
+                                    "Method " + method + " must take a single TestPlotCollection argument");
+                        }
+
+                        var tpc = new TestPlotCollection(plots);
+
+                        try {
+                            method.invoke(null, tpc);
+                        } catch (InvocationTargetException e) {
+                            throw new RuntimeException("Failed building " + method, e.getCause());
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException("Failed to access " + method, e);
+                        }
+                    }
                 }
             }
         } catch (Exception e) {
@@ -144,6 +177,11 @@ public final class TestPlots {
         }
 
         return plots;
+    }
+
+    public static synchronized void addPlotClass(Class<?> clazz) {
+        PLOT_CLASSES.add(clazz);
+        plots = null;// reset the plots, in case they are already initialized
     }
 
     public static List<ResourceLocation> getPlotIds() {
@@ -537,8 +575,9 @@ public final class TestPlots {
         ((MatterCannonItem) cannon.getItem()).injectAEPower(cannon, Double.MAX_VALUE, Actionable.MODULATE);
         var cannonInv = BasicCellInventory.createInventory(cannon, null);
         for (var item : ammo) {
+            var key = AEItemKey.of(item);
             cannonInv.insert(
-                    AEItemKey.of(item), item.getMaxStackSize(), Actionable.MODULATE, new BaseActionSource());
+                    key, key.getMaxStackSize(), Actionable.MODULATE, new BaseActionSource());
         }
         return cannon;
     }
@@ -636,7 +675,7 @@ public final class TestPlots {
                     craftingPattern = PatternDetailsHelper.encodeCraftingPattern(
                             recipe,
                             ingredients,
-                            recipe.getResultItem(),
+                            recipe.getResultItem(node.getLevel().registryAccess()),
                             false,
                             false);
 
@@ -646,8 +685,8 @@ public final class TestPlots {
                             neededIngredients.add(key);
                         }
                     }
-                    if (!recipe.getResultItem().isEmpty()) {
-                        providedResults.add(AEItemKey.of(recipe.getResultItem()));
+                    if (!recipe.getResultItem(node.getLevel().registryAccess()).isEmpty()) {
+                        providedResults.add(AEItemKey.of(recipe.getResultItem(node.getLevel().registryAccess())));
                     }
                 } catch (Exception e) {
                     AELog.warn(e);
@@ -846,7 +885,7 @@ public final class TestPlots {
         var molecularAssemblerPos = new BlockPos(0, 1, 0);
         plot.blockEntity(molecularAssemblerPos, AEBlocks.MOLECULAR_ASSEMBLER, molecularAssembler -> {
             // Get repair recipe
-            var craftingContainer = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
+            var craftingContainer = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
             craftingContainer.setItem(0, undamaged.toStack());
             craftingContainer.setItem(1, undamaged.toStack());
             var level = molecularAssembler.getLevel();
@@ -981,6 +1020,46 @@ public final class TestPlots {
                         "Expected 64 sticks total, but found: " + stickCount);
             });
         });
+    }
+
+    /**
+     * Tests that the priority checks for interface -> interface restocking don't apply when the source interface is on
+     * another network. Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6847.
+     */
+    @TestPlot("interface_to_interface_different_networks")
+    public static void interfaceToInterfaceDifferentNetworks(PlotBuilder plot) {
+        var o = BlockPos.ZERO;
+        plot.cable(o)
+                .part(Direction.NORTH, AEParts.STORAGE_BUS);
+        plot.blockEntity(o.north(), AEBlocks.INTERFACE, iface -> {
+            // Need something in the config to not expose the full network...
+            iface.getConfig().setStack(0, GenericStack.fromItemStack(new ItemStack(Items.APPLE)));
+            iface.getStorage().setStack(0, GenericStack.fromItemStack(new ItemStack(Items.APPLE, 64)));
+        });
+        plot.block(o.north().north(), AEBlocks.CREATIVE_ENERGY_CELL);
+        plot.block(o.east(), AEBlocks.CREATIVE_ENERGY_CELL);
+        plot.blockEntity(o.south(), AEBlocks.INTERFACE, iface -> {
+            iface.getConfig().setStack(0, GenericStack.fromItemStack(new ItemStack(Items.APPLE)));
+        });
+
+        plot.test(helper -> helper.startSequence()
+                // Test interface restock
+                .thenWaitUntil(() -> {
+                    var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.south());
+                    var apples = iface.getStorage().getStack(0);
+                    helper.check(apples != null && apples.amount() == 1, "Expected 1 apple", o.south());
+                })
+                // Test interface pushing items away to subnet
+                .thenExecute(() -> {
+                    var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.south());
+                    iface.getStorage().setStack(1, GenericStack.fromItemStack(new ItemStack(Items.DIAMOND)));
+                })
+                .thenWaitUntil(() -> {
+                    var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.north());
+                    var diamonds = iface.getStorage().getStack(1);
+                    helper.check(diamonds != null && diamonds.amount() == 1, "Expected 1 diamond", o.north());
+                })
+                .thenSucceed());
     }
 
 }

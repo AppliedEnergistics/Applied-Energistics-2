@@ -1,0 +1,16 @@
+{
+    DataVersion: 3337,
+    size: [5, 1, 1],
+    data: [
+        {pos: [0, 0, 0], state: "minecraft:barrel{facing:north,open:false}", nbt: {Items: [], id: "minecraft:barrel"}},
+        {pos: [1, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 421L, k: -1L, p: 0}, id: "ae2:yellow_smart_cable", visual: {channelsEast: 2, connections: ["east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {craft_only: "NO", fuzzy_mode: "IGNORE_ALL", gn: {g: 421L, k: -1L, p: 0}, id: "ae2:export_bus", nextSlot: 0, redstone_controlled: "IGNORE", scheduling_mode: "DEFAULT", visual: {missingChannel: 0b, powered: 1b}}}},
+        {pos: [2, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 421L, k: -1L, p: 0}, id: "ae2:yellow_smart_cable", visual: {channelsEast: 2, channelsWest: 2, connections: ["west", "east"], missingChannel: 0b, powered: 1b}}, down: {gn: {g: 421L, k: -1L, p: 0}, id: "ae2:quartz_fiber", outer: {g: 368L, k: -1L, p: 0}, visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [3, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 421L, k: -1L, p: 0}, id: "ae2:yellow_smart_cable", visual: {channelsWest: 2, connections: ["west"], missingChannel: 0b, powered: 1b}}, east: {fuzzy_mode: "IGNORE_ALL", gn: {g: 421L, k: -1L, p: 0}, id: "ae2:import_bus", redstone_controlled: "IGNORE", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [4, 0, 0], state: "minecraft:barrel{facing:north,open:false}", nbt: {Items: [], id: "minecraft:barrel"}}
+    ],
+    entities: [],
+    palette: [
+        "minecraft:barrel{facing:north,open:false}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}"
+    ]
+}

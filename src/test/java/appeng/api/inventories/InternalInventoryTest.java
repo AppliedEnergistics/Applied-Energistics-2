@@ -403,7 +403,7 @@ class InternalInventoryTest {
                             "16 ender_pearl",
                             // This slot was already at max stack size
                             "16 ender_pearl",
-                            "1 air",
+                            "0 air",
                             // Filled this from 14->16 due to max stack size
                             "16 ender_pearl");
         }
@@ -429,7 +429,7 @@ class InternalInventoryTest {
                             "1 ender_pearl [has NBT]",
                             "15 ender_pearl",
                             "16 ender_pearl",
-                            "1 air",
+                            "0 air",
                             "14 ender_pearl");
         }
 

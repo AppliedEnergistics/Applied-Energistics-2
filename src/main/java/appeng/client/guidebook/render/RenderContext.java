@@ -9,6 +9,7 @@ import org.joml.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -25,6 +26,9 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.BackgroundGenerator;
 import appeng.client.gui.style.FluidBlitter;
+import appeng.client.guidebook.color.ColorValue;
+import appeng.client.guidebook.color.ConstantColor;
+import appeng.client.guidebook.color.LightDarkMode;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.style.ResolvedTextStyle;
 
@@ -36,46 +40,50 @@ public interface RenderContext {
         return lightDarkMode() == LightDarkMode.DARK_MODE;
     }
 
-    PoseStack poseStack();
+    GuiGraphics guiGraphics();
+
+    default PoseStack poseStack() {
+        return guiGraphics().pose();
+    }
 
     LytRect viewport();
 
-    int resolveColor(ColorRef ref);
+    int resolveColor(ColorValue ref);
 
-    void fillRect(LytRect rect, ColorRef topLeft, ColorRef topRight, ColorRef bottomRight, ColorRef bottomLeft);
+    void fillRect(LytRect rect, ColorValue topLeft, ColorValue topRight, ColorValue bottomRight, ColorValue bottomLeft);
 
-    default void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorRef topLeft, ColorRef topRight,
-            ColorRef bottomRight, ColorRef bottomLeft) {
+    default void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorValue topLeft, ColorValue topRight,
+            ColorValue bottomRight, ColorValue bottomLeft) {
         // Just use the entire texture by default
         fillTexturedRect(rect, texture, topLeft, topRight, bottomRight, bottomLeft, 0, 0, 1, 1);
     }
 
-    void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorRef topLeft, ColorRef topRight,
-            ColorRef bottomRight, ColorRef bottomLeft, float u0, float v0, float u1, float v1);
+    void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorValue topLeft, ColorValue topRight,
+            ColorValue bottomRight, ColorValue bottomLeft, float u0, float v0, float u1, float v1);
 
     default void fillTexturedRect(LytRect rect, GuidePageTexture texture) {
-        fillTexturedRect(rect, texture.use(), ColorRef.WHITE);
+        fillTexturedRect(rect, texture.use(), ConstantColor.WHITE);
     }
 
     default void fillTexturedRect(LytRect rect, AbstractTexture texture) {
-        fillTexturedRect(rect, texture, ColorRef.WHITE);
+        fillTexturedRect(rect, texture, ConstantColor.WHITE);
     }
 
-    default void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorRef color) {
+    default void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorValue color) {
         fillTexturedRect(rect, texture, color, color, color, color);
     }
 
-    default void fillTexturedRect(LytRect rect, GuidePageTexture texture, ColorRef color) {
+    default void fillTexturedRect(LytRect rect, GuidePageTexture texture, ColorValue color) {
         fillTexturedRect(rect, texture.use(), color, color, color, color);
     }
 
-    default void fillTexturedRect(LytRect rect, TextureAtlasSprite sprite, ColorRef color) {
+    default void fillTexturedRect(LytRect rect, TextureAtlasSprite sprite, ColorValue color) {
         var texture = Minecraft.getInstance().getTextureManager().getTexture(sprite.atlasLocation());
         fillTexturedRect(rect, texture, color, color, color, color,
                 sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1());
     }
 
-    default void drawIcon(int x, int y, Icon icon, ColorRef color) {
+    default void drawIcon(int x, int y, Icon icon, ColorValue color) {
         var u0 = icon.x / (float) Icon.TEXTURE_WIDTH;
         var v0 = icon.y / (float) Icon.TEXTURE_HEIGHT;
         var u1 = (icon.x + icon.width) / (float) Icon.TEXTURE_WIDTH;
@@ -87,15 +95,15 @@ public interface RenderContext {
     }
 
     default void fillTexturedRect(LytRect rect, ResourceLocation textureId) {
-        fillTexturedRect(rect, textureId, ColorRef.WHITE);
+        fillTexturedRect(rect, textureId, ConstantColor.WHITE);
     }
 
-    default void fillTexturedRect(LytRect rect, ResourceLocation textureId, ColorRef color) {
+    default void fillTexturedRect(LytRect rect, ResourceLocation textureId, ColorValue color) {
         var texture = Minecraft.getInstance().getTextureManager().getTexture(textureId);
         fillTexturedRect(rect, texture, color);
     }
 
-    void fillTriangle(Vec2 p1, Vec2 p2, Vec2 p3, ColorRef color);
+    void fillTriangle(Vec2 p1, Vec2 p2, Vec2 p3, ColorValue color);
 
     default Font font() {
         return Minecraft.getInstance().font;
@@ -130,37 +138,37 @@ public interface RenderContext {
         if (style.fontScale() != 1) {
             matrix = new Matrix4f(matrix);
 
-            matrix.translate(style.fontScale(), style.fontScale(), 1);
-            matrix.translate(new Vector3f(x, y, 0));
+            matrix.scale(style.fontScale(), style.fontScale(), 1);
+            matrix.translate(new Vector3f(x / style.fontScale(), y / style.fontScale(), 0));
             x = 0;
             y = 0;
         }
 
         font().drawInBatch(Component.literal(text).withStyle(effectiveStyle), x, y, resolveColor(style.color()), false,
-                matrix, buffers, false, 0, LightTexture.FULL_BRIGHT);
+                matrix, buffers, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
     }
 
-    default void fillRect(int x, int y, int width, int height, ColorRef color) {
+    default void fillRect(int x, int y, int width, int height, ColorValue color) {
         fillRect(new LytRect(x, y, width, height), color);
     }
 
-    default void fillRect(LytRect rect, ColorRef color) {
+    default void fillRect(LytRect rect, ColorValue color) {
         fillRect(rect, color, color, color, color);
     }
 
-    default void fillGradientVertical(LytRect rect, ColorRef top, ColorRef bottom) {
+    default void fillGradientVertical(LytRect rect, ColorValue top, ColorValue bottom) {
         fillRect(rect, top, top, bottom, bottom);
     }
 
-    default void fillGradientVertical(int x, int y, int width, int height, ColorRef top, ColorRef bottom) {
+    default void fillGradientVertical(int x, int y, int width, int height, ColorValue top, ColorValue bottom) {
         fillGradientVertical(new LytRect(x, y, width, height), top, bottom);
     }
 
-    default void fillGradientHorizontal(LytRect rect, ColorRef left, ColorRef right) {
+    default void fillGradientHorizontal(LytRect rect, ColorValue left, ColorValue right) {
         fillRect(rect, left, right, right, left);
     }
 
-    default void fillGradientHorizontal(int x, int y, int width, int height, ColorRef left, ColorRef right) {
+    default void fillGradientHorizontal(int x, int y, int width, int height, ColorValue left, ColorValue right) {
         fillGradientHorizontal(new LytRect(x, y, width, height), left, right);
     }
 
@@ -180,12 +188,26 @@ public interface RenderContext {
         var key = AEFluidKey.of(fluid, tag);
         FluidBlitter.create(key)
                 .dest(x, y, width, height)
-                .blit(poseStack(), 100 + z);
+                .blit(guiGraphics());
     }
 
     void renderItem(ItemStack stack, int x, int y, int z, float width, float height);
 
     default void renderPanel(LytRect bounds) {
-        BackgroundGenerator.draw(bounds.width(), bounds.height(), poseStack(), 0, bounds.x(), bounds.y());
+        BackgroundGenerator.draw(bounds.width(), bounds.height(), guiGraphics(), bounds.x(), bounds.y());
+    }
+
+    default void pushScissor(LytRect bounds) {
+        var dest = new Vector3f();
+        poseStack().last().pose().transformPosition(bounds.x(), bounds.y(), 0, dest);
+        guiGraphics().enableScissor(
+                (int) dest.x(),
+                (int) dest.y(),
+                (int) (dest.x() + bounds.width()),
+                (int) (dest.y() + bounds.height()));
+    }
+
+    default void popScissor() {
+        guiGraphics().disableScissor();
     }
 }

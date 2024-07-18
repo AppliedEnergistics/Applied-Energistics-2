@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:bedrock",
+    {
+      "id": "#c:movement_restricted",
+      "required": false
+    }
+  ]
+}

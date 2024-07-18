@@ -1,0 +1,29 @@
+{
+  "parent": "ae2:main/storage_bus",
+  "criteria": {
+    "recursive": {
+      "trigger": "ae2:recursive_networking"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "achievement.ae2.Recursive.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "ae2:interface"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "achievement.ae2.Recursive"
+    }
+  },
+  "requirements": [
+    [
+      "recursive"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

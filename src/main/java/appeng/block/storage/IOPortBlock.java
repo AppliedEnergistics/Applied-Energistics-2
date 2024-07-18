@@ -18,7 +18,7 @@
 
 package appeng.block.storage;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -30,7 +30,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.orientation.IOrientationStrategy;
@@ -47,7 +46,7 @@ public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
     public final static BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public IOPortBlock() {
-        super(defaultProps(Material.METAL));
+        super(metalProps());
         this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 

@@ -34,7 +34,7 @@ public class ImportBusPart extends IOBusPart {
     private StackImportStrategy importStrategy;
 
     public ImportBusPart(IPartItem<?> partItem) {
-        super(TickRates.ImportBus, partItem);
+        super(TickRates.ImportBus, StackWorldBehaviors.hasImportStrategyFilter(), partItem);
     }
 
     @Override

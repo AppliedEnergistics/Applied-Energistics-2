@@ -1,0 +1,14 @@
+{
+    DataVersion: 3337,
+    size: [3, 1, 1],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 27333L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsDown: 0, channelsEast: 0, connections: ["east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 0, 0], state: "ae2:growth_accelerator{facing:west,powered:true}", nbt: {id: "ae2:growth_accelerator", proxy: {g: 27333L, k: -1L, p: 0}, visual: {}}},
+        {pos: [2, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 27333L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsWest: 0, connections: ["west"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "ae2:growth_accelerator{facing:west,powered:true}"
+    ]
+}

@@ -31,6 +31,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -42,6 +43,7 @@ import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.spatial.ISpatialService;
+import appeng.core.AEConfig;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
@@ -212,5 +214,12 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
 
     private void outputMsg(Entity player, String string) {
         player.sendSystemMessage(Component.literal(string));
+    }
+
+    @Override
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+        if (AEConfig.instance().isDebugToolsEnabled()) {
+            output.accept(this);
+        }
     }
 }

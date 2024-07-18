@@ -18,7 +18,7 @@
 
 package appeng.block.networking;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,11 +34,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.networking.ControllerBlockEntity;
+import appeng.core.definitions.AEBlocks;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.networktool.NetworkStatusMenu;
@@ -77,7 +77,7 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
             ControllerRenderType.class);
 
     public ControllerBlock() {
-        super(defaultProps(Material.METAL).strength(6));
+        super(metalProps().strength(6));
         this.registerDefaultState(this.defaultBlockState().setValue(CONTROLLER_STATE, ControllerBlockState.offline)
                 .setValue(CONTROLLER_TYPE, ControllerRenderType.block));
     }
@@ -116,12 +116,9 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
         int z = pos.getZ();
 
         // Detect whether controllers are on both sides of the x, y, and z axes
-        final boolean xx = this.getBlockEntity(level, x - 1, y, z) != null
-                && this.getBlockEntity(level, x + 1, y, z) != null;
-        final boolean yy = this.getBlockEntity(level, x, y - 1, z) != null
-                && this.getBlockEntity(level, x, y + 1, z) != null;
-        final boolean zz = this.getBlockEntity(level, x, y, z - 1) != null
-                && this.getBlockEntity(level, x, y, z + 1) != null;
+        final boolean xx = isController(level, x - 1, y, z) && isController(level, x + 1, y, z);
+        final boolean yy = isController(level, x, y - 1, z) && isController(level, x, y + 1, z);
+        final boolean zz = isController(level, x, y, z - 1) && isController(level, x, y, z + 1);
 
         if (xx && !yy && !zz) {
             type = ControllerRenderType.column_x;
@@ -144,6 +141,13 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
         return baseState.setValue(CONTROLLER_TYPE, type);
     }
 
+    private static boolean isController(LevelAccessor level, int x, int y, int z) {
+        // Do NOT query block entity:
+        // - in Spatial IO movement, block entity might have been removed but block might still be there
+        // - if we call getBlockEntity a new block entity will be loaded even though it has already been removed (bad!)
+        return level.getBlockState(new BlockPos(x, y, z)).is(AEBlocks.CONTROLLER.block());
+    }
+
     @Override
     public InteractionResult onActivated(Level level, BlockPos pos, Player player, InteractionHand hand,
             @org.jetbrains.annotations.Nullable ItemStack heldItem, BlockHitResult hit) {
@@ -155,14 +159,5 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
         return InteractionResult.FAIL;
-    }
-
-    @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
-        final ControllerBlockEntity tc = this.getBlockEntity(level, pos);
-        if (tc != null) {
-            tc.updateState();
-        }
     }
 }

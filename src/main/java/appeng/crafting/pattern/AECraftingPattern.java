@@ -22,11 +22,12 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -83,8 +84,8 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         this.recipe = level.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId);
 
         // Build frame and find output
-        this.testFrame = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
-        this.specialRecipeTestFrame = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
+        this.testFrame = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
+        this.specialRecipeTestFrame = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
         for (int i = 0; i < 9; ++i) {
             if (sparseInputs[i] != null) {
                 var itemKey = (AEItemKey) sparseInputs[i].what();
@@ -95,7 +96,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             throw new IllegalStateException("The recipe " + recipe + " no longer matches the encoded input.");
         }
 
-        this.output = this.recipe.assemble(testFrame);
+        this.output = this.recipe.assemble(testFrame, level.registryAccess());
         if (this.output.isEmpty()) {
             throw new IllegalStateException("The recipe " + recipeId + " produced an empty item stack result.");
         }
@@ -254,7 +255,8 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         var previousStack = testFrame.removeItemNoUpdate(slot);
         testFrame.setItem(slot, key.toStack());
 
-        var newResult = recipe.matches(testFrame, level) && ItemStack.matches(output, recipe.assemble(testFrame));
+        var newResult = recipe.matches(testFrame, level)
+                && ItemStack.matches(output, recipe.assemble(testFrame, level.registryAccess()));
 
         setTestResult(slot, key, newResult);
 
@@ -387,7 +389,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
                 specialRecipeTestFrame.setItem(x, item.copy());
             }
 
-            return recipe.assemble(specialRecipeTestFrame);
+            return recipe.assemble(specialRecipeTestFrame, level.registryAccess());
         }
 
         for (int x = 0; x < container.getContainerSize(); x++) {
@@ -458,7 +460,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             // We only support buckets since we can't predict the behavior of other kinds of containers (ender tanks...)
 
             // Check that the remaining item is indeed the emptied container.
-            var testFrameCopy = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
+            var testFrameCopy = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
             for (int i = 0; i < 9; ++i) {
                 testFrameCopy.setItem(i, testFrame.getItem(i).copy());
             }

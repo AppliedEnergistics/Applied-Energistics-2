@@ -45,19 +45,19 @@ import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.misc.CondenserBlockEntity;
 import appeng.blockentity.misc.CrankBlockEntity;
+import appeng.blockentity.misc.GrowthAcceleratorBlockEntity;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.blockentity.misc.LightDetectorBlockEntity;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
-import appeng.blockentity.misc.QuartzGrowthAcceleratorBlockEntity;
-import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.blockentity.networking.CreativeEnergyCellBlockEntity;
+import appeng.blockentity.networking.CrystalResonanceGeneratorBlockEntity;
 import appeng.blockentity.networking.EnergyAcceptorBlockEntity;
 import appeng.blockentity.networking.EnergyCellBlockEntity;
-import appeng.blockentity.networking.WirelessBlockEntity;
+import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
 import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
@@ -82,12 +82,11 @@ public final class AEBlockEntities {
     public static final BlockEntityType<InscriberBlockEntity> INSCRIBER = create("inscriber",
             InscriberBlockEntity.class,
             InscriberBlockEntity::new, AEBlocks.INSCRIBER);
-    public static final BlockEntityType<WirelessBlockEntity> WIRELESS_ACCESS_POINT = create("wireless_access_point",
-            WirelessBlockEntity.class, WirelessBlockEntity::new, AEBlocks.WIRELESS_ACCESS_POINT);
+    public static final BlockEntityType<WirelessAccessPointBlockEntity> WIRELESS_ACCESS_POINT = create(
+            "wireless_access_point",
+            WirelessAccessPointBlockEntity.class, WirelessAccessPointBlockEntity::new, AEBlocks.WIRELESS_ACCESS_POINT);
     public static final BlockEntityType<ChargerBlockEntity> CHARGER = create("charger", ChargerBlockEntity.class,
             ChargerBlockEntity::new, AEBlocks.CHARGER);
-    public static final BlockEntityType<SecurityStationBlockEntity> SECURITY_STATION = create("security_station",
-            SecurityStationBlockEntity.class, SecurityStationBlockEntity::new, AEBlocks.SECURITY_STATION);
     public static final BlockEntityType<QuantumBridgeBlockEntity> QUANTUM_BRIDGE = create("quantum_ring",
             QuantumBridgeBlockEntity.class, QuantumBridgeBlockEntity::new, AEBlocks.QUANTUM_RING,
             AEBlocks.QUANTUM_LINK);
@@ -116,11 +115,15 @@ public final class AEBlockEntities {
             CondenserBlockEntity::new, AEBlocks.CONDENSER);
     public static final BlockEntityType<EnergyAcceptorBlockEntity> ENERGY_ACCEPTOR = create("energy_acceptor",
             EnergyAcceptorBlockEntity.class, EnergyAcceptorBlockEntity::new, AEBlocks.ENERGY_ACCEPTOR);
+    public static final BlockEntityType<CrystalResonanceGeneratorBlockEntity> CRYSTAL_RESONANCE_GENERATOR = create(
+            "crystal_resonance_generator",
+            CrystalResonanceGeneratorBlockEntity.class, CrystalResonanceGeneratorBlockEntity::new,
+            AEBlocks.CRYSTAL_RESONANCE_GENERATOR);
     public static final BlockEntityType<VibrationChamberBlockEntity> VIBRATION_CHAMBER = create("vibration_chamber",
             VibrationChamberBlockEntity.class, VibrationChamberBlockEntity::new, AEBlocks.VIBRATION_CHAMBER);
-    public static final BlockEntityType<QuartzGrowthAcceleratorBlockEntity> QUARTZ_GROWTH_ACCELERATOR = create(
-            "quartz_growth_accelerator", QuartzGrowthAcceleratorBlockEntity.class,
-            QuartzGrowthAcceleratorBlockEntity::new, AEBlocks.QUARTZ_GROWTH_ACCELERATOR);
+    public static final BlockEntityType<GrowthAcceleratorBlockEntity> GROWTH_ACCELERATOR = create(
+            "growth_accelerator", GrowthAcceleratorBlockEntity.class,
+            GrowthAcceleratorBlockEntity::new, AEBlocks.GROWTH_ACCELERATOR);
     public static final BlockEntityType<EnergyCellBlockEntity> ENERGY_CELL = create("energy_cell",
             EnergyCellBlockEntity.class, EnergyCellBlockEntity::new, AEBlocks.ENERGY_CELL);
     public static final BlockEntityType<EnergyCellBlockEntity> DENSE_ENERGY_CELL = create("dense_energy_cell",

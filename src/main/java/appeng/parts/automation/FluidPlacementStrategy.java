@@ -2,6 +2,9 @@ package appeng.parts.automation;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -39,7 +42,8 @@ public class FluidPlacementStrategy implements PlacementStrategy {
      */
     private long lastEffect;
 
-    public FluidPlacementStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host) {
+    public FluidPlacementStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host,
+            @Nullable UUID owningPlayerId) {
         this.level = level;
         this.pos = pos;
         this.side = side;
@@ -90,7 +94,7 @@ public class FluidPlacementStrategy implements PlacementStrategy {
                 liquidBlockContainer.placeLiquid(level, pos, state, ((FlowingFluid) fluid).getSource(false));
                 playEmptySound(level, pos, fluid);
             } else {
-                if (state.canBeReplaced(fluid) && !state.getMaterial().isLiquid()) {
+                if (state.canBeReplaced(fluid) && !state.liquid()) {
                     level.destroyBlock(pos, true);
                 }
 

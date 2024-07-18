@@ -20,19 +20,17 @@ package appeng.menu.me.crafting;
 
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.CalculationStrategy;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.ISubMenuHost;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfirmAutoCraftPacket;
 import appeng.menu.AEBaseMenu;
@@ -51,8 +49,7 @@ import appeng.util.inv.AppEngInternalInventory;
 public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
 
     public static final MenuType<CraftAmountMenu> TYPE = MenuTypeBuilder
-            .create(CraftAmountMenu::new, ITerminalHost.class)
-            .requirePermission(SecurityPermissions.CRAFT)
+            .create(CraftAmountMenu::new, ISubMenuHost.class)
             .build("craftamount");
 
     /**
@@ -65,9 +62,9 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
      */
     private AEKey whatToCraft;
 
-    private final ITerminalHost host;
+    private final ISubMenuHost host;
 
-    public CraftAmountMenu(int id, Inventory ip, ITerminalHost host) {
+    public CraftAmountMenu(int id, Inventory ip, ISubMenuHost host) {
         super(TYPE, id, ip, host);
         this.host = host;
         this.craftingItem = new InaccessibleSlot(new AppEngInternalInventory(1), 0);
@@ -76,7 +73,7 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
     }
 
     @Override
-    public ITerminalHost getHost() {
+    public ISubMenuHost getHost() {
         return host;
     }
 
@@ -92,14 +89,8 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
         }
     }
 
-    @Override
-    public void broadcastChanges() {
-        super.broadcastChanges();
-        this.verifyPermissions(SecurityPermissions.CRAFT, false);
-    }
-
     public Level getLevel() {
-        return this.getPlayerInventory().player.level;
+        return this.getPlayerInventory().player.level();
     }
 
     private void setWhatToCraft(AEKey whatToCraft, int initialAmount) {
@@ -111,12 +102,13 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
      * Confirms the craft request. If called client-side, automatically sends a packet to the server to perform the
      * action there instead.
      *
-     * @param amount    The number of items to craft.
-     * @param autoStart Start crafting immediately when the planning is done.
+     * @param amount             The number of items to craft.
+     * @param craftMissingAmount Craft only as much as needed to have <code>amount</code>
+     * @param autoStart          Start crafting immediately when the planning is done.
      */
-    public void confirm(int amount, boolean autoStart) {
+    public void confirm(int amount, boolean craftMissingAmount, boolean autoStart) {
         if (!isServerSide()) {
-            NetworkHandler.instance().sendToServer(new ConfirmAutoCraftPacket(amount, autoStart));
+            NetworkHandler.instance().sendToServer(new ConfirmAutoCraftPacket(amount, craftMissingAmount, autoStart));
             return;
         }
 
@@ -124,18 +116,40 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
             return;
         }
 
+        if (craftMissingAmount) {
+            var host = getActionHost();
+            if (host != null) {
+                var node = host.getActionableNode();
+                if (node != null) {
+                    var storage = node.getGrid().getStorageService();
+                    var existingAmount = (int) Math.min(storage.getCachedInventory().get(whatToCraft),
+                            Integer.MAX_VALUE);
+                    if (existingAmount > amount) {
+                        amount = 0;
+                    } else {
+                        amount -= existingAmount;
+                    }
+                }
+            }
+        }
+
         var locator = getLocator();
         if (locator != null) {
-            Player player = this.getPlayerInventory().player;
-            MenuOpener.open(CraftConfirmMenu.TYPE, player, locator);
+            var player = getPlayer();
+            if (amount > 0) {
+                MenuOpener.open(CraftConfirmMenu.TYPE, player, locator);
 
-            if (player.containerMenu instanceof CraftConfirmMenu ccc) {
-                ccc.setAutoStart(autoStart);
-                ccc.planJob(
-                        whatToCraft,
-                        amount,
-                        CalculationStrategy.REPORT_MISSING_ITEMS);
-                broadcastChanges();
+                if (player.containerMenu instanceof CraftConfirmMenu ccc) {
+                    ccc.setAutoStart(autoStart);
+                    ccc.planJob(
+                            whatToCraft,
+                            amount,
+                            CalculationStrategy.REPORT_MISSING_ITEMS);
+                    broadcastChanges();
+                }
+            } else {
+                // When the amount to craft is 0, return to the previous menu without crafting
+                this.host.returnToMainMenu(player, this);
             }
         }
     }

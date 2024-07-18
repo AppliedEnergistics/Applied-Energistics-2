@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;

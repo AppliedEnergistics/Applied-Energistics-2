@@ -18,14 +18,9 @@
 
 package appeng.blockentity.misc;
 
-import java.util.Collections;
-import java.util.Iterator;
-
-import javax.annotation.Nullable;
-
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
@@ -40,10 +35,8 @@ import appeng.api.config.Settings;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEKeyType;
-import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -67,8 +60,16 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     private final AppEngInternalInventory outputSlot = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory storageSlot = new AppEngInternalInventory(this, 1);
     private final InternalInventory inputSlot = new CondenseItemHandler();
-    private final Storage<FluidVariant> fluidHandler = new FluidHandler();
-    private final MEHandler meHandler = new MEHandler();
+    private final Storage<FluidVariant> fluidHandler = new CondenseStorage<>(
+            1.0 / AEKeyType.fluids().getAmountPerOperation(),
+            AEFluidKey.AMOUNT_BUCKET);
+
+    /**
+     * This is used to expose a fake ME subnetwork that is only composed of this condenser. The purpose of this is to
+     * enable the condenser to override the {@link appeng.api.storage.MEStorage#isPreferredStorageFor} method to make
+     * sure a condenser is only ever used if an item can't go anywhere else.
+     */
+    private final CondenserMEStorage meStorage = new CondenserMEStorage(this);
 
     private final InternalInventory externalInv = new CombinedInternalInventory(this.inputSlot,
             new FilteredInternalInventory(this.outputSlot, AEItemFilters.EXTRACT_ONLY));
@@ -187,8 +188,8 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         return fluidHandler;
     }
 
-    public MEHandler getMEHandler() {
-        return meHandler;
+    public MEStorage getMEStorage() {
+        return meStorage;
     }
 
     private class CondenseItemHandler extends BaseInternalInventory {
@@ -223,27 +224,30 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return ItemStack.EMPTY;
         }
-    }
-
-    /**
-     * A fluid handler that exposes a 1 bucket tank that can only be filled, and - when filled - will add power to this
-     * condenser.
-     */
-    private class FluidHandler extends SnapshotParticipant<Double> implements InsertionOnlyStorage<FluidVariant> {
-        private double pendingEnergy = 0;
 
         @Override
-        public long insert(FluidVariant resource, long maxAmount, TransactionContext transaction) {
-            // We allow up to a bucket per insert
-            var amount = Math.min(AEFluidKey.AMOUNT_BUCKET, maxAmount);
-            updateSnapshots(transaction);
-            pendingEnergy += amount / (double) AEFluidKey.AMOUNT_BUCKET / AEKeyType.fluids().getAmountPerOperation();
-            return amount;
+        protected Storage<ItemVariant> createStorage() {
+            return new CondenseStorage<>(1.0, Long.MAX_VALUE);
+        }
+    }
+
+    private class CondenseStorage<T> extends SnapshotParticipant<Double> implements InsertionOnlyStorage<T> {
+        private double pendingEnergy = 0;
+        private final double energyFactor;
+        private final long maxAmountPerOperation;
+
+        public CondenseStorage(double energyFactor, long maxAmountPerOperation) {
+            this.energyFactor = energyFactor;
+            this.maxAmountPerOperation = maxAmountPerOperation;
         }
 
         @Override
-        public Iterator<StorageView<FluidVariant>> iterator() {
-            return Collections.emptyIterator();
+        public long insert(T resource, long maxAmount, TransactionContext transaction) {
+            // Clamp the amount per operation
+            var amount = Math.min(maxAmountPerOperation, maxAmount);
+            updateSnapshots(transaction);
+            pendingEnergy += amount * energyFactor;
+            return amount;
         }
 
         @Override
@@ -260,21 +264,6 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         protected void onFinalCommit() {
             CondenserBlockEntity.this.addPower(pendingEnergy);
             pendingEnergy = 0;
-        }
-    }
-
-    /**
-     * This is used to expose a fake ME subnetwork that is only composed of this condenser. The purpose of this is to
-     * enable the condenser to override the {@link appeng.api.storage.MEStorage#isPreferredStorageFor} method to make
-     * sure a condenser is only ever used if an item can't go anywhere else.
-     */
-    private class MEHandler implements IStorageMonitorableAccessor {
-        private final CondenserInventory itemInventory = new CondenserInventory(CondenserBlockEntity.this);
-
-        @Nullable
-        @Override
-        public MEStorage getInventory(IActionSource src) {
-            return this.itemInventory;
         }
     }
 }

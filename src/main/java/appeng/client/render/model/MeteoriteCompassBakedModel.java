@@ -21,8 +21,7 @@ package appeng.client.render.model;
 import java.util.List;
 import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
-
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -83,12 +82,12 @@ public class MeteoriteCompassBakedModel implements BakedModel, FabricBakedModel 
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
             Supplier<RandomSource> randomSupplier, RenderContext context) {
         // Pre-compute the quad count to avoid list resizes
-        context.fallbackConsumer().accept(this.base);
+        context.bakedModelConsumer().accept(this.base);
     }
 
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
-        context.fallbackConsumer().accept(base);
+        context.bakedModelConsumer().accept(base);
 
         // This is used to render a compass pointing in a specific direction when being
         // held in hand
@@ -105,7 +104,7 @@ public class MeteoriteCompassBakedModel implements BakedModel, FabricBakedModel 
             }
             return true;
         });
-        context.fallbackConsumer().accept(this.pointer);
+        context.bakedModelConsumer().accept(this.pointer);
         context.popTransform();
     }
 

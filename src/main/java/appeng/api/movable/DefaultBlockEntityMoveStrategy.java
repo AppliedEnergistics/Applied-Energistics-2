@@ -23,7 +23,7 @@
 
 package appeng.api.movable;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -48,8 +48,9 @@ public abstract class DefaultBlockEntityMoveStrategy implements IBlockEntityMove
     }
 
     @Override
-    public boolean completeMove(BlockEntity blockEntity, CompoundTag savedData, Level newLevel, BlockPos newPosition) {
-        var be = BlockEntity.loadStatic(newPosition, blockEntity.getBlockState(), savedData);
+    public boolean completeMove(BlockEntity blockEntity, BlockState state, CompoundTag savedData, Level newLevel,
+            BlockPos newPosition) {
+        var be = BlockEntity.loadStatic(newPosition, state, savedData);
         if (be != null) {
             newLevel.setBlockEntity(be);
             return true;

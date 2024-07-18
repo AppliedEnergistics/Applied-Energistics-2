@@ -20,9 +20,10 @@ package appeng.parts.automation;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -89,11 +90,17 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
 
     protected final PlacementStrategy getPlacementStrategies() {
         if (placementStrategies == null) {
+            // Defer initialization until the grid exists
+            var node = getMainNode().getNode();
+            if (node == null) {
+                return PlacementStrategy.noop();
+            }
             var self = this.getHost().getBlockEntity();
             var pos = self.getBlockPos().relative(this.getSide());
             var side = getSide().getOpposite();
+            var owningPlayerId = getMainNode().getNode().getOwningPlayerProfileId();
             placementStrategies = StackWorldBehaviors.createPlacementStrategies(
-                    (ServerLevel) self.getLevel(), pos, side, self);
+                    (ServerLevel) self.getLevel(), pos, side, self, owningPlayerId);
         }
         return placementStrategies;
     }
@@ -151,6 +158,20 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
                 getPlacementStrategies().clearBlocked();
             }
         } else {
+            connectionHelper.updateConnections();
+        }
+    }
+
+    @Override
+    public void onUpdateShape(Direction side) {
+        var ourSide = getSide();
+        // A block might have been changed in front of us
+        if (side.equals(ourSide)) {
+            if (!isClientSide()) {
+                getPlacementStrategies().clearBlocked();
+            }
+        } else if (ourSide.getAxis() != side.getAxis()) {
+            // Changes perpendicular to our side may change the connected plane model to change
             connectionHelper.updateConnections();
         }
     }

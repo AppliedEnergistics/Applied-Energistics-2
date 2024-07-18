@@ -1,0 +1,15 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:iridium_nuggets"
+      ]
+    }
+  ],
+  "type": "ae2:matter_cannon",
+  "ammo": {
+    "tag": "c:iridium_nuggets"
+  },
+  "weight": 192.217
+}

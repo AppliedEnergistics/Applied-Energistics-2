@@ -2,27 +2,44 @@ name: 'Build and Test'
 
 on:
   push:
+  pull_request:
+    branches:
+      - '*'
+
+# Cancel outdated builds for the same branch
+concurrency:
+  group: ci-build-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
+    # Only run the pull-request build if the pull-request was opened from another repository,
+    # since we already run this workflow for the branch the pull request was made from.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'microsoft'
-          java-version: '17'
-          cache: 'gradle'
-      - name: Validate no assets
-        run: test ! -d ./src/generated
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/gradle-setup
       - name: Generate assets
         run: ./gradlew runData
-      - name: Validate assets
+      - name: Check that datagen ran
         run: test -d ./src/generated/resources/.cache
-      - name: Build with Gradle
+      - name: Make sure that datagenned files in the repo are up-to-date
+        run: |
+          # Print status for easier debugging
+          git status
+          if [ -n "$(git status --porcelain)" ]; then exit 1; fi
+      # Gradle Step for PRs
+      - name: Build PR with Gradle
         run: ./gradlew build
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        if: github.event_name == 'pull_request'
+      # Gradle Step for normal branch pushes
+      - name: Build PR with Gradle
+        run: ./gradlew build
+        if: github.event_name != 'pull_request'
       - name: Run Game Tests
         run: ./gradlew runGametest
       - name: Upload new Source Text Strings to Crowdin
@@ -31,8 +48,8 @@ jobs:
           GIT_BRANCH: master
           CROWDIN_TOKEN: ${{ secrets.CROWDIN_TOKEN }}
         continue-on-error: true
-        if: github.ref == 'refs/heads/master'
-      - uses: actions/upload-artifact@v2
+        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+      - uses: actions/upload-artifact@v3
         with:
           name: dist
           path: build/libs/

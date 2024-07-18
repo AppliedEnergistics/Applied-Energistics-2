@@ -23,7 +23,7 @@
 
 package appeng.api.parts;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -196,6 +196,12 @@ public interface IPartHost extends ICustomCableConnection {
      * notify neighbors uf updated status.
      */
     void notifyNeighbors();
+
+    /**
+     * notify neighbors uf updated status on the given side of the host. issue the notification immediately and
+     * synchronously.
+     */
+    void notifyNeighborNow(Direction side);
 
     /**
      * true if the block entity is in the world, other wise false.

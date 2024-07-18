@@ -76,6 +76,10 @@ public class LytImage extends LytBlock implements InteractiveElement {
     }
 
     @Override
+    protected void onLayoutMoved(int deltaX, int deltaY) {
+    }
+
+    @Override
     public void renderBatch(RenderContext context, MultiBufferSource buffers) {
     }
 
@@ -90,7 +94,7 @@ public class LytImage extends LytBlock implements InteractiveElement {
     }
 
     @Override
-    public Optional<GuideTooltip> getTooltip() {
+    public Optional<GuideTooltip> getTooltip(float x, float y) {
         if (title != null) {
             return Optional.of(new TextTooltip(Component.literal(title)));
         }

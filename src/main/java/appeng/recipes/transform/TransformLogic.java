@@ -25,19 +25,19 @@ import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 public final class TransformLogic {
     public static boolean canTransformInFluid(ItemEntity entity, FluidState fluid) {
-        return getTransformableItems(entity.getLevel(), fluid.getType()).contains(entity.getItem().getItem());
+        return getTransformableItems(entity.level(), fluid.getType()).contains(entity.getItem().getItem());
     }
 
     public static boolean canTransformInAnyFluid(ItemEntity entity) {
-        return getTransformableItemsAnyFluid(entity.getLevel()).contains(entity.getItem().getItem());
+        return getTransformableItemsAnyFluid(entity.level()).contains(entity.getItem().getItem());
     }
 
     public static boolean canTransformInExplosion(ItemEntity entity) {
-        return getTransformableItemsExplosion(entity.getLevel()).contains(entity.getItem().getItem());
+        return getTransformableItemsExplosion(entity.level()).contains(entity.getItem().getItem());
     }
 
     public static boolean tryTransform(ItemEntity entity, Predicate<TransformCircumstance> circumstancePredicate) {
-        var level = entity.level;
+        var level = entity.level();
 
         var region = new AABB(entity.getX() - 1, entity.getY() - 1, entity.getZ() - 1, entity.getX() + 1,
                 entity.getY() + 1, entity.getZ() + 1);
@@ -95,7 +95,8 @@ public final class TransformLogic {
                 final double ySpeed = random.nextDouble() * .25 - 0.125;
                 final double zSpeed = random.nextDouble() * .25 - 0.125;
 
-                final ItemEntity newEntity = new ItemEntity(level, x, y, z, recipe.assemble(recipeContainer));
+                final ItemEntity newEntity = new ItemEntity(level, x, y, z,
+                        recipe.assemble(recipeContainer, level.registryAccess()));
 
                 newEntity.setDeltaMovement(xSpeed, ySpeed, zSpeed);
                 level.addFreshEntity(newEntity);

@@ -2,11 +2,12 @@ package appeng.crafting.pattern;
 
 import java.util.Arrays;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -53,7 +54,6 @@ public class CraftingPatternItem extends EncodedPatternItem {
         try {
             return new AECraftingPattern(what, level);
         } catch (Exception e) {
-            AELog.warn("Could not decode an invalid crafting pattern %s: %s", what.getTag(), e);
             return null;
         }
     }
@@ -78,7 +78,7 @@ public class CraftingPatternItem extends EncodedPatternItem {
         ResourceLocation currentRecipeId = CraftingPatternEncoding.getRecipeId(tag);
 
         // Fill a crafting inventory with the ingredients to find a suitable recipe
-        CraftingContainer testInventory = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
+        CraftingContainer testInventory = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
         for (int x = 0; x < 9; x++) {
             var ais = x < ingredients.length ? ingredients[x] : null;
             if (ais.what() instanceof AEItemKey itemKey) {
@@ -90,7 +90,8 @@ public class CraftingPatternItem extends EncodedPatternItem {
                 .orElse(null);
 
         // Check that it matches the expected output
-        if (potentialRecipe != null && ItemStack.isSameItemSameTags(product, potentialRecipe.assemble(testInventory))) {
+        if (potentialRecipe != null && ItemStack.isSameItemSameTags(product,
+                potentialRecipe.assemble(testInventory, level.registryAccess()))) {
             // Yay we found a match, reencode the pattern
             AELog.debug("Re-Encoding pattern from %s -> %s", currentRecipeId, potentialRecipe.getId());
             ItemStack[] in = Arrays.stream(ingredients)

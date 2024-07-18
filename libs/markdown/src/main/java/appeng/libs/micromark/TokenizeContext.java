@@ -1,18 +1,21 @@
 package appeng.libs.micromark;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface TokenizeContext {
     @Nullable
     <T> T get(ContextProperty<T> property);
+
     <T> void set(ContextProperty<T> property, T value);
+
     void remove(ContextProperty<?> property);
 
-    @Nullable Tokenizer.Event getLastEvent();
+    @Nullable
+    Tokenizer.Event getLastEvent();
 
     List<Object> sliceStream(Token token);
 

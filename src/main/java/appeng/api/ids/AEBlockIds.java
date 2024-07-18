@@ -61,7 +61,6 @@ public final class AEBlockIds {
     public static final ResourceLocation INSCRIBER = id("inscriber");
     public static final ResourceLocation WIRELESS_ACCESS_POINT = id("wireless_access_point");
     public static final ResourceLocation CHARGER = id("charger");
-    public static final ResourceLocation SECURITY_STATION = id("security_station");
     public static final ResourceLocation QUANTUM_RING = id("quantum_ring");
     public static final ResourceLocation QUANTUM_LINK = id("quantum_link");
     public static final ResourceLocation CONTROLLER = id("controller");
@@ -72,8 +71,10 @@ public final class AEBlockIds {
     public static final ResourceLocation IO_PORT = id("io_port");
     public static final ResourceLocation CONDENSER = id("condenser");
     public static final ResourceLocation ENERGY_ACCEPTOR = id("energy_acceptor");
+    public static final ResourceLocation CRYSTAL_RESONANCE_GENERATOR = id("crystal_resonance_generator");
+
     public static final ResourceLocation VIBRATION_CHAMBER = id("vibration_chamber");
-    public static final ResourceLocation QUARTZ_GROWTH_ACCELERATOR = id("quartz_growth_accelerator");
+    public static final ResourceLocation GROWTH_ACCELERATOR = id("growth_accelerator");
     public static final ResourceLocation ENERGY_CELL = id("energy_cell");
     public static final ResourceLocation DENSE_ENERGY_CELL = id("dense_energy_cell");
     public static final ResourceLocation CABLE_BUS = id("cable_bus");

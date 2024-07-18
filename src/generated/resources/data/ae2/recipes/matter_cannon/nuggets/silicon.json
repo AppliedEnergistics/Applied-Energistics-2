@@ -1,0 +1,15 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:silicon_nuggets"
+      ]
+    }
+  ],
+  "type": "ae2:matter_cannon",
+  "ammo": {
+    "tag": "c:silicon_nuggets"
+  },
+  "weight": 28.0855
+}

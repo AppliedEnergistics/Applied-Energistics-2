@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2:fluix_smart_dense_cable"
+    },
+    "b": {
+      "tag": "c:light_blue_dyes"
+    }
+  },
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "result": {
+    "count": 8,
+    "item": "ae2:light_blue_smart_dense_cable"
+  },
+  "show_notification": true
+}

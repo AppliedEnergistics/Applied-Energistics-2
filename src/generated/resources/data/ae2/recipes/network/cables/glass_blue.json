@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2:fluix_glass_cable"
+    },
+    "b": {
+      "tag": "c:blue_dyes"
+    }
+  },
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "result": {
+    "count": 8,
+    "item": "ae2:blue_glass_cable"
+  },
+  "show_notification": true
+}

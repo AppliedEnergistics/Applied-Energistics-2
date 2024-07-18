@@ -1,6 +1,7 @@
 package appeng.client.guidebook.compiler.tags;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
@@ -18,8 +19,10 @@ import appeng.client.guidebook.document.block.recipes.LytChargerRecipe;
 import appeng.client.guidebook.document.block.recipes.LytCraftingRecipe;
 import appeng.client.guidebook.document.block.recipes.LytInscriberRecipe;
 import appeng.client.guidebook.document.block.recipes.LytSmeltingRecipe;
+import appeng.client.guidebook.document.block.recipes.LytSmithingRecipe;
 import appeng.client.guidebook.document.block.recipes.LytTransformRecipe;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
+import appeng.libs.mdast.model.MdAstNode;
 import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.transform.TransformRecipe;
@@ -29,13 +32,18 @@ import appeng.util.Platform;
  * Shows a Recipe-Book-Like representation of the recipe needed to craft a given item.
  */
 public class RecipeCompiler extends BlockTagCompiler {
-
     private final List<RecipeTypeMapping<?, ?>> mappings = List.of(
             new RecipeTypeMapping<>(RecipeType.CRAFTING, LytCraftingRecipe::new),
             new RecipeTypeMapping<>(RecipeType.SMELTING, LytSmeltingRecipe::new),
+            new RecipeTypeMapping<>(RecipeType.SMITHING, LytSmithingRecipe::new),
             new RecipeTypeMapping<>(InscriberRecipe.TYPE, LytInscriberRecipe::new),
             new RecipeTypeMapping<>(ChargerRecipe.TYPE, LytChargerRecipe::new),
             new RecipeTypeMapping<>(TransformRecipe.TYPE, LytTransformRecipe::new));
+
+    @Override
+    public Set<String> getTagNames() {
+        return Set.of("Recipe", "RecipeFor");
+    }
 
     @Override
     protected void compile(PageCompiler compiler, LytBlockContainer parent, MdxJsxElementFields el) {
@@ -58,6 +66,7 @@ public class RecipeCompiler extends BlockTagCompiler {
             for (var mapping : mappings) {
                 var block = mapping.tryCreate(recipeManager, item);
                 if (block != null) {
+                    block.setSourceNode((MdAstNode) el);
                     parent.append(block);
                     return;
                 }
@@ -80,6 +89,7 @@ public class RecipeCompiler extends BlockTagCompiler {
             for (var mapping : mappings) {
                 var block = mapping.tryCreate(recipe);
                 if (block != null) {
+                    block.setSourceNode((MdAstNode) el);
                     parent.append(block);
                     return;
                 }
@@ -98,8 +108,13 @@ public class RecipeCompiler extends BlockTagCompiler {
         @Nullable
         LytBlock tryCreate(RecipeManager recipeManager, Item resultItem) {
             for (var recipe : recipeManager.byType(recipeType).values()) {
-                if (recipe.getResultItem().getItem() == resultItem) {
-                    return factory.apply(recipe);
+                try {
+                    if (recipe.getResultItem(null).getItem() == resultItem) {
+                        return factory.apply(recipe);
+                    }
+                } catch (Exception ignored) {
+                    // :-P
+                    // Happens if the recipe doesn't accept a null RegistryAccess
                 }
             }
 

@@ -92,7 +92,7 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
         } else if (recipeDisplay.getType() == CondenserOutput.SINGULARITY) {
             widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 78, origin.y + 28, 32, 112, 14, 14));
         }
-        widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
+        widgets.add(Widgets.createDrawableWidget((guiGraphics, mouseX, mouseY, delta) -> {
             Rectangle rect = new Rectangle(origin.x + 78, origin.y + 28, 16, 16);
             if (rect.contains(mouseX, mouseY)) {
                 Tooltip.create(

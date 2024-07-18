@@ -36,7 +36,6 @@ public final class AutoLink {
             this.nok = nok;
         }
 
-
         /**
          * Start of an autolink.
          *
@@ -91,8 +90,8 @@ public final class AutoLink {
                     code == Codes.dash ||
                     code == Codes.dot ||
                     CharUtil.asciiAlphanumeric(code)
-                    ? schemeInsideOrEmailAtext(code)
-                    : emailAtext(code);
+                            ? schemeInsideOrEmailAtext(code)
+                            : emailAtext(code);
         }
 
         /**
@@ -111,13 +110,11 @@ public final class AutoLink {
                 return this::urlInside;
             }
 
-            if (
-                    (code == Codes.plusSign ||
-                            code == Codes.dash ||
-                            code == Codes.dot ||
-                            CharUtil.asciiAlphanumeric(code)) &&
-                            size++ < Constants.autolinkSchemeSizeMax
-            ) {
+            if ((code == Codes.plusSign ||
+                    code == Codes.dash ||
+                    code == Codes.dot ||
+                    CharUtil.asciiAlphanumeric(code)) &&
+                    size++ < Constants.autolinkSchemeSizeMax) {
                 effects.consume(code);
                 return this::schemeInsideOrEmailAtext;
             }
@@ -140,12 +137,10 @@ public final class AutoLink {
             }
 
             // ASCII control or space.
-            if (
-                    code == Codes.eof ||
-                            code == Codes.space ||
-                            code == Codes.lessThan ||
-                            CharUtil.asciiControl(code)
-            ) {
+            if (code == Codes.eof ||
+                    code == Codes.space ||
+                    code == Codes.lessThan ||
+                    CharUtil.asciiControl(code)) {
                 return nok.step(code);
             }
 
@@ -223,10 +218,8 @@ public final class AutoLink {
          * </pre>
          */
         private State emailValue(int code) {
-            if (
-                    (code == Codes.dash || CharUtil.asciiAlphanumeric(code)) &&
-                            size++ < Constants.autolinkDomainSizeMax
-            ) {
+            if ((code == Codes.dash || CharUtil.asciiAlphanumeric(code)) &&
+                    size++ < Constants.autolinkDomainSizeMax) {
                 effects.consume(code);
                 return code == Codes.dash ? this::emailValue : this::emailLabel;
             }

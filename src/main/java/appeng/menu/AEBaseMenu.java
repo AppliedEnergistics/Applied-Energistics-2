@@ -26,13 +26,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -47,7 +47,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
@@ -72,7 +71,6 @@ import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.InaccessibleSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigMenuInventory;
-import appeng.util.Platform;
 
 public abstract class AEBaseMenu extends AbstractContainerMenu {
     private static final int MAX_STRING_LENGTH = 32767;
@@ -93,7 +91,6 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private final Map<String, ClientAction<?>> clientActions = new HashMap<>();
     private boolean menuValid = true;
     private MenuLocator locator;
-    private int ticksSinceCheck = 900;
     // Slots that are only present on the client-side
     private final Set<Slot> clientSideSlot = new HashSet<>();
     /**
@@ -154,33 +151,6 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
     public IActionSource getActionSource() {
         return this.mySrc;
-    }
-
-    public void verifyPermissions(SecurityPermissions security, boolean requirePower) {
-        if (isClientSide()) {
-            return;
-        }
-
-        this.ticksSinceCheck++;
-        if (this.ticksSinceCheck < 20) {
-            return;
-        }
-
-        this.ticksSinceCheck = 0;
-        this.setValidMenu(this.isValidMenu() && this.hasAccess(security, requirePower));
-    }
-
-    protected final boolean hasAccess(SecurityPermissions perm, boolean requirePower) {
-        if (!isActionHost() && !requirePower) {
-            return true; // Hosts that are not grid connected always give access
-        }
-
-        var host = this.getActionHost();
-        if (host != null) {
-            return Platform.checkPermissions(getPlayer(), host, perm, requirePower, false);
-        } else {
-            return false;
-        }
     }
 
     public Inventory getPlayerInventory() {
@@ -298,7 +268,26 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     @Override
+    public void initializeContents(int stateId, List<ItemStack> items, ItemStack carried) {
+        for (int i = 0; i < items.size(); ++i) {
+            var slot = this.getSlot(i);
+            if (slot instanceof AppEngSlot aeSlot) {
+                aeSlot.initialize(items.get(i));
+            } else {
+                slot.set(items.get(i));
+            }
+        }
+
+        this.setCarried(carried);
+        this.stateId = stateId;
+    }
+
+    @Override
     public void broadcastChanges() {
+        if (!isValidMenu()) {
+            return;
+        }
+
         if (itemMenuHost != null && !itemMenuHost.onBroadcastChanges(this)) {
             setValidMenu(false);
             return;
@@ -597,16 +586,15 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         }
 
         if (action == InventoryAction.MOVE_REGION) {
-            final List<Slot> from = new ArrayList<>();
-
-            for (Slot j : this.slots) {
-                if (j != null && j.getClass() == s.getClass() && !(j instanceof CraftingTermSlot)) {
-                    from.add(j);
+            var slotSemantic = getSlotSemantic(s);
+            if (slotSemantic != null) {
+                // Avoid potential concurrent modification i.e. if an upgrade is moved into the machine
+                List<Slot> slotsToMove = List.copyOf(getSlots(slotSemantic));
+                for (var slotToMove : slotsToMove) {
+                    quickMoveStack(player, slotToMove.index);
                 }
-            }
-
-            for (Slot fr : from) {
-                this.quickMoveStack(player, fr.index);
+            } else {
+                quickMoveStack(player, s.index);
             }
         }
 
@@ -622,29 +610,29 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             return;
         }
 
-        // Check how much we can store in the item
-        long amountAllowed = ctx.insert(what, Long.MAX_VALUE, Actionable.SIMULATE);
-        if (amountAllowed == 0) {
-            return; // Nothing.
-        }
-
         // Check if we can pull out of the system
-        var canPull = source.extract(amountAllowed, Actionable.SIMULATE);
+        var canPull = source.extract(Long.MAX_VALUE, Actionable.SIMULATE);
         if (canPull <= 0) {
             return;
         }
 
-        // How much could fit into the carried container
-        long canFill = ctx.insert(what, canPull, Actionable.MODULATE);
-        if (canFill == 0) {
-            return;
+        // Check how much we can store in the item
+        long amountAllowed = ctx.insert(what, canPull, Actionable.SIMULATE);
+        if (amountAllowed == 0) {
+            return; // Nothing.
         }
 
         // Now actually pull out of the system
-        var extracted = source.extract(canFill, Actionable.MODULATE);
+        var extracted = source.extract(amountAllowed, Actionable.MODULATE);
         if (extracted <= 0) {
             // Something went wrong
             AELog.error("Unable to pull fluid out of the ME system even though the simulation said yes ");
+            return;
+        }
+
+        // How much could fit into the carried container
+        long inserted = ctx.insert(what, extracted, Actionable.MODULATE);
+        if (inserted == 0) {
             return;
         }
 
@@ -810,7 +798,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     /**
      * Can be overridden in subclasses to be notified of GUI data updates sent by the server.
      */
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     public void onServerDataSync() {
     }
 

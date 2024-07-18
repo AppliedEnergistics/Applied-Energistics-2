@@ -1,5 +1,7 @@
 package appeng.libs.micromark.extensions;
 
+import java.util.List;
+
 import appeng.libs.micromark.CharUtil;
 import appeng.libs.micromark.Construct;
 import appeng.libs.micromark.Extension;
@@ -8,8 +10,6 @@ import appeng.libs.micromark.TokenizeContext;
 import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
 import appeng.libs.micromark.symbol.Codes;
-
-import java.util.List;
 
 /**
  * Add support for parsing YAML frontmatter in markdown.

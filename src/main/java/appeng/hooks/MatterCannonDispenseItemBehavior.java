@@ -48,7 +48,7 @@ public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemB
                             32 * direction.getStepZ()));
 
             var level = source.getLevel();
-            var p = Platform.getPlayer(level);
+            var p = Platform.getFakePlayer(level, null);
             Platform.configurePlayer(p, direction, source.getEntity());
             tm.fireCannon(level, dispensedItem, p, dir);
         }

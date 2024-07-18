@@ -26,15 +26,12 @@ import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
-import appeng.api.exceptions.FailedConnectionException;
-import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AEColor;
 import appeng.core.AELog;
-import appeng.hooks.ticking.TickHandler;
 
 /**
  * A grid node that is accessible from within the level will also look actively for connections to nodes that are
@@ -57,8 +54,6 @@ public class InWorldGridNode extends GridNode {
 
     @Override
     protected void findInWorldConnections() {
-        final EnumSet<Direction> newSecurityConnections = EnumSet.noneOf(Direction.class);
-
         // Clean up any connections that we might have left over to nodes that we can no longer reach
         cleanupConnections();
 
@@ -95,25 +90,7 @@ public class InWorldGridNode extends GridNode {
                 }
             }
 
-            if (adjacentNode.getLastSecurityKey() != -1) {
-                newSecurityConnections.add(direction);
-            } else {
-                if (!connectTo(direction, adjacentNode)) {
-                    return;
-                }
-            }
-        }
-
-        for (var direction : newSecurityConnections) {
-            pos.setWithOffset(location, direction);
-            var adjacentNode = (GridNode) GridHelper.getExposedNode(getLevel(), pos, direction.getOpposite());
-            if (adjacentNode == null) {
-                continue;
-            }
-
-            if (!connectTo(direction, adjacentNode)) {
-                return;
-            }
+            GridConnection.create(this, adjacentNode, direction);
         }
     }
 
@@ -150,25 +127,6 @@ public class InWorldGridNode extends GridNode {
         var ourColor = getGridColor();
         var theirColor = otherNode.getGridColor();
         return ourColor == AEColor.TRANSPARENT || theirColor == AEColor.TRANSPARENT || ourColor == theirColor;
-    }
-
-    // construct a new connection between this and another nodes.
-    private boolean connectTo(Direction direction, IGridNode adjacentNode) {
-        try {
-            GridConnection.create(adjacentNode, this, direction.getOpposite());
-            return true;
-        } catch (SecurityConnectionException e) {
-            AELog.debug(e);
-            TickHandler.instance().addCallable(
-                    adjacentNode.getLevel(),
-                    () -> callListener(IGridNodeListener::onSecurityBreak));
-
-            return false;
-        } catch (FailedConnectionException e) {
-            AELog.debug(e);
-
-            return false;
-        }
     }
 
     public BlockPos getLocation() {

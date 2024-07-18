@@ -1,5 +1,7 @@
 package appeng.libs.micromark.commonmark;
 
+import java.util.List;
+
 import appeng.libs.micromark.Assert;
 import appeng.libs.micromark.CharUtil;
 import appeng.libs.micromark.Construct;
@@ -9,8 +11,6 @@ import appeng.libs.micromark.TokenizeContext;
 import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
 import appeng.libs.micromark.symbol.Codes;
-
-import java.util.List;
 
 public final class CodeText {
     private CodeText() {
@@ -32,12 +32,10 @@ public final class CodeText {
         Integer enter = null;
 
         // If we start and end with an EOL or a space.
-        if (
-                (events.get(headEnterIndex).token().type.equals(Types.lineEnding) ||
-                        events.get(headEnterIndex).token().type.equals("space")) &&
-                        (events.get(tailExitIndex).token().type.equals(Types.lineEnding) ||
-                                events.get(tailExitIndex).token().type.equals("space"))
-        ) {
+        if ((events.get(headEnterIndex).token().type.equals(Types.lineEnding) ||
+                events.get(headEnterIndex).token().type.equals("space")) &&
+                (events.get(tailExitIndex).token().type.equals(Types.lineEnding) ||
+                        events.get(tailExitIndex).token().type.equals("space"))) {
             index = headEnterIndex;
 
             // And we have data.
@@ -59,16 +57,12 @@ public final class CodeText {
 
         while (++index <= tailExitIndex) {
             if (enter == null) {
-                if (
-                        index != tailExitIndex &&
-                                !events.get(index).token().type.equals(Types.lineEnding)
-                ) {
+                if (index != tailExitIndex &&
+                        !events.get(index).token().type.equals(Types.lineEnding)) {
                     enter = index;
                 }
-            } else if (
-                    index == tailExitIndex ||
-                            events.get(index).token().type.equals(Types.lineEnding)
-            ) {
+            } else if (index == tailExitIndex ||
+                    events.get(index).token().type.equals(Types.lineEnding)) {
                 events.get(enter).token().type = Types.codeTextData;
 
                 if (index != enter + 2) {
@@ -87,10 +81,8 @@ public final class CodeText {
 
     private static boolean previous(TokenizeContext context, int code) {
         // If there is a previous code, there will always be a tail.
-        return (
-                code != Codes.graveAccent ||
-                        context.getLastEvent().token().type.equals(Types.characterEscape)
-        );
+        return (code != Codes.graveAccent ||
+                context.getLastEvent().token().type.equals(Types.characterEscape));
     }
 
     private static class StateMachine {
@@ -110,7 +102,6 @@ public final class CodeText {
             this.nok = nok;
         }
 
-
         /**
          * Start of code (text).
          *
@@ -121,7 +112,7 @@ public final class CodeText {
          *      ^
          * </pre>
          *
-         
+         * 
          */
         private State start(int code) {
             Assert.check(code == Codes.graveAccent, "expected `` ` ``");
@@ -139,7 +130,7 @@ public final class CodeText {
          *     ^
          * </pre>
          *
-         
+         * 
          */
         private State sequenceOpen(int code) {
             if (code == Codes.graveAccent) {
@@ -160,7 +151,7 @@ public final class CodeText {
          *      ^^
          * </pre>
          *
-         
+         * 
          */
         private State between(int code) {
             // EOF.
@@ -203,15 +194,13 @@ public final class CodeText {
          *      ^
          * </pre>
          *
-         
+         * 
          */
         private State data(int code) {
-            if (
-                    code == Codes.eof ||
-                            code == Codes.space ||
-                            code == Codes.graveAccent ||
-                            CharUtil.markdownLineEnding(code)
-            ) {
+            if (code == Codes.eof ||
+                    code == Codes.space ||
+                    code == Codes.graveAccent ||
+                    CharUtil.markdownLineEnding(code)) {
                 effects.exit(Types.codeTextData);
                 return between(code);
             }
@@ -228,7 +217,7 @@ public final class CodeText {
          *       ^
          * </pre>
          *
-         
+         * 
          */
         private State sequenceClose(int code) {
             // More.

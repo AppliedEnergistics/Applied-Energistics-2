@@ -1,0 +1,27 @@
+{
+    DataVersion: 3337,
+    size: [4, 3, 3],
+    data: [
+        {pos: [0, 0, 2], state: "ae2:spatial_pylon{powered_on:true}", nbt: {id: "ae2:spatial_pylon", proxy: {g: 250095L, k: -1L, p: 0}, visual: {axis: "X", axisPosition: "START", online: 1b, powered: 1b}}},
+        {pos: [1, 0, 1], state: "minecraft:smooth_stone"},
+        {pos: [1, 0, 2], state: "ae2:spatial_pylon{powered_on:true}", nbt: {id: "ae2:spatial_pylon", proxy: {g: 250095L, k: -1L, p: 0}, visual: {axis: "X", axisPosition: "END", online: 1b, powered: 1b}}},
+        {pos: [2, 0, 0], state: "ae2:spatial_pylon{powered_on:true}", nbt: {id: "ae2:spatial_pylon", proxy: {g: 250095L, k: -1L, p: 0}, visual: {axis: "Z", axisPosition: "START", online: 1b, powered: 1b}}},
+        {pos: [2, 0, 1], state: "ae2:spatial_pylon{powered_on:true}", nbt: {id: "ae2:spatial_pylon", proxy: {g: 250095L, k: -1L, p: 0}, visual: {axis: "Z", axisPosition: "END", online: 1b, powered: 1b}}},
+        {pos: [2, 0, 2], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 250095L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 4, channelsNorth: 4, channelsUp: 4, channelsWest: 4, connections: ["up", "north", "west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [3, 0, 1], state: "ae2:spatial_io_port{facing:north,powered:true,spin:0}", nbt: {id: "ae2:spatial_io_port", inv: {item0: {Count: 1b, id: "ae2:spatial_storage_cell_2"}, item1: {}}, lastRedstoneState: 1, proxy: {g: 287L, k: -1L, p: 0}, visual: {}}},
+        {pos: [3, 0, 2], state: "ae2:energy_cell{fullness:4}", nbt: {id: "ae2:energy_cell", internalCurrentPower: 198407.375d, proxy: {g: 287L, k: -1L, p: 0}, visual: {}}},
+        {pos: [2, 1, 2], state: "ae2:spatial_pylon{powered_on:true}", nbt: {id: "ae2:spatial_pylon", proxy: {g: 287L, k: -1L, p: 0}, visual: {axis: "Y", axisPosition: "START", online: 1b, powered: 1b}}},
+        {pos: [3, 1, 1], state: "minecraft:oak_button{face:floor,facing:south,powered:false}"},
+        {pos: [2, 2, 2], state: "ae2:spatial_pylon{powered_on:true}", nbt: {id: "ae2:spatial_pylon", proxy: {g: 287L, k: -1L, p: 0}, visual: {axis: "Y", axisPosition: "END", online: 1b, powered: 1b}}}
+    ],
+    entities: [],
+    palette: [
+        "minecraft:smooth_stone",
+        "minecraft:lime_stained_glass",
+        "minecraft:oak_button{face:floor,facing:south,powered:false}",
+        "ae2:spatial_pylon{powered_on:true}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "ae2:spatial_io_port{facing:north,powered:true,spin:0}",
+        "ae2:energy_cell{fullness:4}"
+    ]
+}

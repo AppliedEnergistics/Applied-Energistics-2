@@ -1,0 +1,18 @@
+{
+    DataVersion: 3465,
+    size: [4, 2, 2],
+    data: [
+        {pos: [0, 0, 1], state: "ae2:drive{facing:north,spin:0}", nbt: {id: "ae2:drive", inv: {item0: {Count: 1b, id: "ae2:item_storage_cell_1k", tag: {amts: [L; 2L], ic: 2L, keys: [{"#c": "ae2:i", id: "ae2:quartz_block"}]}}, item1: {Count: 1b, id: "ae2:item_storage_cell_1k", tag: {amts: [L; 2L], ic: 2L, keys: [{"#c": "ae2:i", id: "ae2:quartz_block"}]}}, item2: {Count: 1b, id: "ae2:item_storage_cell_1k", tag: {amts: [L; 2L], ic: 2L, keys: [{"#c": "ae2:i", id: "ae2:quartz_block"}]}}, item3: {Count: 1b, id: "ae2:item_storage_cell_4k", tag: {}}, item4: {}, item5: {}, item6: {}, item7: {}, item8: {}, item9: {}}, priority: 0, proxy: {g: 1117240L, p: 0}, visual: {cell0: {id: "ae2:item_storage_cell_1k", state: "not_empty"}, cell1: {id: "ae2:item_storage_cell_1k", state: "not_empty"}, cell2: {id: "ae2:item_storage_cell_1k", state: "not_empty"}, cell3: {id: "ae2:item_storage_cell_4k", state: "empty"}, online: 1b}}},
+        {pos: [3, 0, 1], state: "ae2:drive{facing:north,spin:0}", nbt: {id: "ae2:drive", inv: {item0: {Count: 1b, id: "ae2:item_storage_cell_1k", tag: {amts: [L; 2L], ic: 2L, keys: [{"#c": "ae2:i", id: "ae2:quartz_block"}]}}, item1: {Count: 1b, id: "ae2:item_storage_cell_1k", tag: {amts: [L; 2L], ic: 2L, keys: [{"#c": "ae2:i", id: "ae2:quartz_block"}]}}, item2: {Count: 1b, id: "ae2:item_storage_cell_1k", tag: {amts: [L; 2L], ic: 2L, keys: [{"#c": "ae2:i", id: "ae2:quartz_block"}]}}, item3: {Count: 1b, id: "ae2:item_storage_cell_4k", tag: {}}, item4: {}, item5: {}, item6: {}, item7: {}, item8: {}, item9: {}}, priority: 0, proxy: {g: 1117246L, p: 0}, visual: {cell0: {id: "ae2:item_storage_cell_1k", state: "not_empty"}, cell1: {id: "ae2:item_storage_cell_1k", state: "not_empty"}, cell2: {id: "ae2:item_storage_cell_1k", state: "not_empty"}, cell3: {id: "ae2:item_storage_cell_4k", state: "empty"}, online: 1b}}},
+        {pos: [0, 1, 1], state: "ae2:cable_bus{light_level:9,waterlogged:false}", nbt: {cable: {gn: {g: 1117240L, p: 0}, id: "ae2:cyan_smart_cable", visual: {channelsDown: 2, connections: ["down"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", north: {filter_type: "ALL", gn: {g: 1117240L, p: 0}, id: "ae2:crafting_terminal", sort_by: "NAME", sort_direction: "ASCENDING", spin: 0b, view_mode: "ALL", visual: {missingChannel: 0b, powered: 1b}}, south: {gn: {g: 1117240L, p: 0}, id: "ae2:cable_energy_acceptor", visual: {missingChannel: 0b, powered: 1b}}, visual: {}}},
+        {pos: [3, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {hasRedstone: 2, id: "ae2:cable_bus", south: {filter_type: "ALL", gn: {g: 1117247L, p: 0}, id: "ae2:crafting_terminal", sort_by: "NAME", sort_direction: "ASCENDING", spin: 0b, view_mode: "ALL", visual: {missingChannel: 0b, powered: 0b}}, visual: {}}},
+        {pos: [3, 1, 1], state: "ae2:energy_acceptor", nbt: {id: "ae2:energy_acceptor", internalCurrentPower: 0.0d, proxy: {g: 1117246L, p: 0}, visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:drive{facing:north,spin:0}",
+        "ae2:cable_bus{light_level:9,waterlogged:false}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "ae2:energy_acceptor"
+    ]
+}

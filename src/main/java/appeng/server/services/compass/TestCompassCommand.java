@@ -33,14 +33,15 @@ public class TestCompassCommand implements ISubCommand {
     @Override
     public void call(MinecraftServer srv, CommandContext<CommandSourceStack> ctx, CommandSourceStack sender) {
         var level = sender.getLevel();
-        var chunkPos = new ChunkPos(new BlockPos(sender.getPosition()));
+        var chunkPos = new ChunkPos(BlockPos.containing(sender.getPosition()));
         var compassRegion = CompassRegion.get(level, chunkPos);
 
         for (var i = 0; i <= level.getSectionsCount(); i++) {
             var hasSkyStone = compassRegion.hasSkyStone(chunkPos.x, chunkPos.z, i);
             var yMin = i * SectionPos.SECTION_SIZE;
             var yMax = (i + 1) * SectionPos.SECTION_SIZE - 1;
-            sender.sendSuccess(PlayerMessages.CompassTestSection.text(yMin, yMax, i, hasSkyStone), false);
+            var iFinal = i;
+            sender.sendSuccess(() -> PlayerMessages.CompassTestSection.text(yMin, yMax, iFinal, hasSkyStone), false);
         }
     }
 }

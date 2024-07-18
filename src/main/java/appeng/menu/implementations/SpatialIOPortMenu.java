@@ -21,7 +21,6 @@ package appeng.menu.implementations;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
@@ -36,7 +35,6 @@ public class SpatialIOPortMenu extends AEBaseMenu {
 
     public static final MenuType<SpatialIOPortMenu> TYPE = MenuTypeBuilder
             .create(SpatialIOPortMenu::new, SpatialIOPortBlockEntity.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("spatialioport");
 
     @GuiSync(0)
@@ -69,8 +67,6 @@ public class SpatialIOPortMenu extends AEBaseMenu {
 
     @Override
     public void broadcastChanges() {
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
-
         if (isServerSide()) {
             this.delay++;
 

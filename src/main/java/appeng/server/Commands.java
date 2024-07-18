@@ -23,49 +23,40 @@ import java.util.Locale;
 import appeng.server.services.compass.TestCompassCommand;
 import appeng.server.subcommands.ChannelModeCommand;
 import appeng.server.subcommands.ChunkLogger;
+import appeng.server.subcommands.ReloadConfigCommand;
 import appeng.server.subcommands.SetupTestWorldCommand;
 import appeng.server.subcommands.SpatialStorageCommand;
-import appeng.server.subcommands.Supporters;
 import appeng.server.subcommands.TestMeteoritesCommand;
 import appeng.server.subcommands.TickMonitoring;
 
 public enum Commands {
-    // Unrestricted
-    Supporters(0, new Supporters()),
+    RELOAD_CONFIG(4, "reloadconfig", new ReloadConfigCommand()),
 
     // Admin
-    Chunklogger(4, new ChunkLogger()),
-    Spatial(4, new SpatialStorageCommand()),
+    CHUNK_LOGGER(4, "chunklogger", new ChunkLogger()),
+    SPATIAL(4, "spatial", new SpatialStorageCommand()),
     CHANNEL_MODE(4, "channelmode", new ChannelModeCommand()),
     TICK_MONITORING(4, "tickmonitor", new TickMonitoring()),
 
     // Testing
-    Compass(4, new TestCompassCommand(), true),
-    TestMeteorites(4, new TestMeteoritesCommand(), true),
-    SetupTestWorld(4, new SetupTestWorldCommand(), true);
+    COMPASS(4, "compass", new TestCompassCommand(), true),
+    TEST_METEORITES(4, "testmeteorites", new TestMeteoritesCommand(), true),
+    SETUP_TEST_WORLD(4, "setuptestworld", new SetupTestWorldCommand(), true);
 
     public final int level;
     public final ISubCommand command;
-    public boolean test;
+    public final boolean test;
     public final String literal;
-
-    Commands(int level, ISubCommand w) {
-        this(level, null, w, false);
-    }
 
     Commands(int level, String literal, ISubCommand w) {
         this(level, literal, w, false);
-    }
-
-    Commands(int level, ISubCommand w, boolean test) {
-        this(level, null, w, test);
     }
 
     Commands(int level, String literal, ISubCommand w, boolean test) {
         this.level = level;
         this.command = w;
         this.test = test;
-        this.literal = literal != null ? literal : this.name();
+        this.literal = literal;
     }
 
     public String literal() {

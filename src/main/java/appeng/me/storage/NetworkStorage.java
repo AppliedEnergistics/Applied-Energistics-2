@@ -26,20 +26,18 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Preconditions;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.core.localization.GuiText;
-import appeng.me.service.SecurityService;
 
 /**
  * Manages all available {@link MEStorage} on the network.
@@ -53,7 +51,6 @@ public class NetworkStorage implements MEStorage {
 
     private static int currentPass = 0;
 
-    private final SecurityService security;
     private final NavigableMap<Integer, List<MEStorage>> priorityInventory;
     private final List<MEStorage> secondPassInventories = new ArrayList<>();
     private int myPass = 0;
@@ -62,8 +59,7 @@ public class NetworkStorage implements MEStorage {
     @Nullable
     private List<QueuedOperation> queuedOperations;
 
-    public NetworkStorage(SecurityService security) {
-        this.security = security;
+    public NetworkStorage() {
         this.priorityInventory = new TreeMap<>(PRIORITY_SORTER);
     }
 
@@ -100,11 +96,6 @@ public class NetworkStorage implements MEStorage {
 
     public long insert(AEKey what, long amount, Actionable type, IActionSource src) {
         if (this.diveList(type)) {
-            return 0;
-        }
-
-        if (this.isPermissionDenied(src, SecurityPermissions.INJECT)) {
-            this.surface(type);
             return 0;
         }
 
@@ -195,33 +186,6 @@ public class NetworkStorage implements MEStorage {
         return false;
     }
 
-    private boolean isPermissionDenied(IActionSource src, SecurityPermissions permission) {
-        if (src.player().isPresent()) {
-            if (!this.security.hasPermission(src.player().get(), permission)) {
-                return true;
-            }
-        } else if (src.machine().isPresent() && this.security.isAvailable()) {
-            var sourceNode = src.machine().get().getActionableNode();
-            if (sourceNode == null) {
-                return true;
-            }
-
-            var sourceGrid = sourceNode.getGrid();
-            if (sourceGrid != this.security.getGrid()) {
-
-                var sg = sourceGrid.getSecurityService();
-                // If the subnet has a security station, check for its owner. Else check for the owner of the grid node.
-                var playerID = sg.isAvailable() ? sg.getOwner() : sourceNode.getOwningPlayerId();
-
-                if (!this.security.hasPermission(playerID, permission)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     private void surface(Actionable type) {
         if (getDepth(type).pop() != this) {
             throw new IllegalStateException("Invalid Access to Networked Storage API detected.");
@@ -242,11 +206,6 @@ public class NetworkStorage implements MEStorage {
 
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         if (this.diveList(mode)) {
-            return 0;
-        }
-
-        if (this.isPermissionDenied(source, SecurityPermissions.EXTRACT)) {
-            this.surface(mode);
             return 0;
         }
 

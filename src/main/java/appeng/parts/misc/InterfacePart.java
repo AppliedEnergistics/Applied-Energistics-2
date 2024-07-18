@@ -20,7 +20,7 @@ package appeng.parts.misc;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -45,10 +45,9 @@ import appeng.helpers.InterfaceLogicHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.AEBasePart;
-import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 
-public class InterfacePart extends BasicStatePart implements InterfaceLogicHost {
+public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/interface_base");
 
@@ -72,11 +71,14 @@ public class InterfacePart extends BasicStatePart implements InterfaceLogicHost 
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/interface_has_channel"));
 
-    private final InterfaceLogic logic;
+    private final InterfaceLogic logic = createLogic();
 
     public InterfacePart(IPartItem<?> partItem) {
         super(partItem);
-        this.logic = new InterfaceLogic(this.getMainNode(), this, partItem.asItem());
+    }
+
+    protected InterfaceLogic createLogic() {
+        return new InterfaceLogic(getMainNode(), this, getPartItem().asItem());
     }
 
     @Override
@@ -116,8 +118,15 @@ public class InterfacePart extends BasicStatePart implements InterfaceLogicHost 
     }
 
     @Override
-    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched, boolean remove) {
-        this.logic.addDrops(drops, remove);
+    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {
+        super.addAdditionalDrops(drops, wrenched);
+        this.logic.addDrops(drops);
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        this.logic.clearContent();
     }
 
     @Override

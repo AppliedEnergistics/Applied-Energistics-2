@@ -26,18 +26,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
 import appeng.helpers.IPatternTerminalLogicHost;
 import appeng.helpers.IPatternTerminalMenuHost;
 import appeng.items.parts.PartModels;
-import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.parts.PartModel;
 import appeng.parts.reporting.AbstractTerminalPart;
-import appeng.util.Platform;
 
 public class PatternEncodingTerminalPart extends AbstractTerminalPart
         implements IPatternTerminalLogicHost, IPatternTerminalMenuHost {
@@ -60,13 +57,21 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart
     }
 
     @Override
-    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched, boolean remove) {
+    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {
+        super.addAdditionalDrops(drops, wrenched);
         for (var is : this.logic.getBlankPatternInv()) {
             drops.add(is);
         }
         for (var is : this.logic.getEncodedPatternInv()) {
             drops.add(is);
         }
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        this.logic.getBlankPatternInv().clear();
+        this.logic.getEncodedPatternInv().clear();
     }
 
     @Override
@@ -84,10 +89,7 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart
 
     @Override
     public MenuType<?> getMenuType(Player p) {
-        if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false, false)) {
-            return PatternEncodingTermMenu.TYPE;
-        }
-        return MEStorageMenu.TYPE;
+        return PatternEncodingTermMenu.TYPE;
     }
 
     @Override

@@ -18,42 +18,46 @@
 
 package appeng.core;
 
-import com.google.common.base.Preconditions;
+import java.util.Collection;
+import java.util.Set;
 
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackLinkedSet;
 import net.minecraft.world.item.Items;
 
 import appeng.api.ids.AECreativeTabIds;
 import appeng.core.definitions.AEItems;
+import appeng.core.localization.GuiText;
 
 public final class FacadeCreativeTab {
 
     private static CreativeModeTab group;
 
-    public static void init() {
-        Preconditions.checkState(group == null);
-        group = FabricItemGroup.builder(AECreativeTabIds.FACADES)
+    public static void init(Registry<CreativeModeTab> registry) {
+        group = FabricItemGroup.builder()
+                .title(GuiText.CreativeTabFacades.text())
                 .icon(() -> {
+                    if (group == null) {
+                        return ItemStack.EMPTY;
+                    }
                     var items = group.getDisplayItems();
                     return items.stream().findFirst().orElse(Items.CAKE.getDefaultInstance());
                 })
                 .displayItems(FacadeCreativeTab::buildDisplayItems)
                 .build();
+        Registry.register(registry, AECreativeTabIds.FACADES, group);
     }
 
-    public static CreativeModeTab getGroup() {
-        if (group == null) {
-            init();
-        }
-        return group;
+    public static Collection<ItemStack> getDisplayItems() {
+        return group == null ? Set.of() : group.getDisplayItems();
     }
 
-    private static void buildDisplayItems(FeatureFlagSet featureFlagSet, CreativeModeTab.Output output,
-            boolean opItems) {
+    private static void buildDisplayItems(CreativeModeTab.ItemDisplayParameters displayParameters,
+            CreativeModeTab.Output output) {
         // We need to create our own set since vanilla doesn't allow duplicates, but we cannot guarantee
         // uniqueness
         var facades = ItemStackLinkedSet.createTypeAndTagSet();

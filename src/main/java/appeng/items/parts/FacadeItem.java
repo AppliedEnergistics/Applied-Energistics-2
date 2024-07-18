@@ -22,8 +22,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -36,6 +38,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.ids.AETags;
@@ -104,6 +107,13 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
         if (!host.getFacadeContainer().addFacade(facade)) {
             return false;
         }
+
+        // Play a placement sound of the underlying block
+        BlockState blockState = facade.getBlockState();
+        SoundType soundType = blockState.getSoundType();
+        level.playSound(null, blockPos, soundType.getPlaceSound(), SoundSource.BLOCKS,
+                (soundType.getVolume() + 1.0F) / 2.0F,
+                soundType.getPitch() * 0.8F);
 
         host.markForSave();
         host.markForUpdate();
@@ -192,13 +202,16 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
     public ItemStack getTextureItem(ItemStack is) {
         CompoundTag nbt = is.getTag();
 
-        if (nbt == null) {
+        if (nbt == null || !nbt.contains(NBT_ITEM_ID, Tag.TAG_STRING)) {
             return ItemStack.EMPTY;
         }
 
-        ResourceLocation itemId = new ResourceLocation(nbt.getString(NBT_ITEM_ID));
-        Item baseItem = BuiltInRegistries.ITEM.get(itemId);
+        var itemId = ResourceLocation.tryParse(nbt.getString(NBT_ITEM_ID));
+        if (itemId == null) {
+            return ItemStack.EMPTY;
+        }
 
+        Item baseItem = BuiltInRegistries.ITEM.get(itemId);
         return new ItemStack(baseItem, 1);
     }
 

@@ -18,11 +18,12 @@
 
 package appeng.client.gui.style;
 
+import java.util.Objects;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
@@ -31,10 +32,12 @@ import org.lwjgl.opengl.GL11;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 
 import appeng.core.AppEng;
@@ -64,6 +67,7 @@ public final class Blitter {
     private Rect2i srcRect;
     private Rect2i destRect = new Rect2i(0, 0, 0, 0);
     private boolean blending = true;
+    private TextureTransform transform = TextureTransform.NONE;
 
     Blitter(ResourceLocation texture, int referenceWidth, int referenceHeight) {
         this.texture = texture;
@@ -104,8 +108,8 @@ public final class Blitter {
      */
     public static Blitter sprite(TextureAtlasSprite sprite) {
         // We use this convoluted method to convert from UV in the range of [0,1] back to pixel values with a
-        // fictitious reference size of Integer.MAX_VALUE. This is converted back to UV later when we actually blit.
-        final int refSize = Integer.MAX_VALUE;
+        // fictitious reference size of a large integer. This is converted back to UV later when we actually blit.
+        final int refSize = Integer.MAX_VALUE / 2; // Don't use max int to prevent overflows after inexact conversions.
 
         return new Blitter(sprite.atlasLocation(), refSize, refSize)
                 .src(
@@ -210,6 +214,14 @@ public final class Blitter {
         return this;
     }
 
+    public Blitter colorArgb(int packedArgb) {
+        this.a = FastColor.ARGB32.alpha(packedArgb);
+        this.r = FastColor.ARGB32.red(packedArgb);
+        this.g = FastColor.ARGB32.green(packedArgb);
+        this.b = FastColor.ARGB32.blue(packedArgb);
+        return this;
+    }
+
     public Blitter opacity(float a) {
         this.a = (int) (Mth.clamp(a, 0, 1) * 255);
         return this;
@@ -217,6 +229,11 @@ public final class Blitter {
 
     public Blitter color(float r, float g, float b, float a) {
         return color(r, g, b).opacity(a);
+    }
+
+    public Blitter transform(TextureTransform transform) {
+        this.transform = Objects.requireNonNull(transform);
+        return this;
     }
 
     /**
@@ -239,13 +256,7 @@ public final class Blitter {
         return color(r, g, b);
     }
 
-    public void blit(int zIndex) {
-        // If we're not using a specific pose stack for transforms, we pass an empty
-        // one to just get an identity transform
-        blit(new PoseStack(), zIndex);
-    }
-
-    public void blit(PoseStack poseStack, int zIndex) {
+    public void blit(GuiGraphics guiGraphics) {
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, this.texture);
 
@@ -261,6 +272,20 @@ public final class Blitter {
             maxV = (srcRect.getY() + srcRect.getHeight()) / (float) referenceHeight;
         }
 
+        // Transform the UV
+        switch (transform) {
+            case MIRROR_H -> {
+                var tmp = minU;
+                minU = maxU;
+                maxU = tmp;
+            }
+            case MIRROR_V -> {
+                var tmp = minV;
+                minV = maxV;
+                maxV = tmp;
+            }
+        }
+
         // It's possible to not set a destination rectangle size, in which case the
         // source rectangle size will be used
         float x1 = destRect.getX();
@@ -274,23 +299,23 @@ public final class Blitter {
             y2 += srcRect.getHeight();
         }
 
-        Matrix4f matrix = poseStack.last().pose();
+        Matrix4f matrix = guiGraphics.pose().last().pose();
 
         BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder.vertex(matrix, x1, y2, zIndex)
+        bufferbuilder.vertex(matrix, x1, y2, 0)
                 .uv(minU, maxV)
                 .color(r, g, b, a)
                 .endVertex();
-        bufferbuilder.vertex(matrix, x2, y2, zIndex)
+        bufferbuilder.vertex(matrix, x2, y2, 0)
                 .uv(maxU, maxV)
                 .color(r, g, b, a)
                 .endVertex();
-        bufferbuilder.vertex(matrix, x2, y1, zIndex)
+        bufferbuilder.vertex(matrix, x2, y1, 0)
                 .uv(maxU, minV)
                 .color(r, g, b, a)
                 .endVertex();
-        bufferbuilder.vertex(matrix, x1, y1, zIndex)
+        bufferbuilder.vertex(matrix, x1, y1, 0)
                 .uv(minU, minV)
                 .color(r, g, b, a)
                 .endVertex();
@@ -301,7 +326,6 @@ public final class Blitter {
         } else {
             RenderSystem.disableBlend();
         }
-        RenderSystem.enableTexture();
         BufferUploader.drawWithShader(bufferbuilder.end());
     }
 

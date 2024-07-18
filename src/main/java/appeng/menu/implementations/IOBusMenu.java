@@ -21,11 +21,8 @@ package appeng.menu.implementations;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.client.gui.implementations.IOBusScreen;
-import appeng.menu.SlotSemantics;
-import appeng.menu.slot.FakeSlot;
-import appeng.menu.slot.OptionalFakeSlot;
+import appeng.core.definitions.AEItems;
 import appeng.parts.automation.ExportBusPart;
 import appeng.parts.automation.IOBusPart;
 import appeng.parts.automation.ImportBusPart;
@@ -39,12 +36,10 @@ public class IOBusMenu extends UpgradeableMenu<IOBusPart> {
 
     public static final MenuType<IOBusMenu> EXPORT_TYPE = MenuTypeBuilder
             .create(IOBusMenu::new, ExportBusPart.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("export_bus");
 
     public static final MenuType<IOBusMenu> IMPORT_TYPE = MenuTypeBuilder
             .create(IOBusMenu::new, ImportBusPart.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("import_bus");
 
     public IOBusMenu(MenuType<?> menuType, int id, Inventory ip, IOBusPart host) {
@@ -53,21 +48,13 @@ public class IOBusMenu extends UpgradeableMenu<IOBusPart> {
 
     @Override
     protected void setupConfig() {
-        var inv = this.getHost().getConfig().createMenuWrapper();
-        var s = SlotSemantics.CONFIG;
-        this.addSlot(new FakeSlot(inv, 0), s);
-
-        // Slots that become available with 1 capacity card
-        this.addSlot(new OptionalFakeSlot(inv, this, 1, 1), s);
-        this.addSlot(new OptionalFakeSlot(inv, this, 2, 1), s);
-        this.addSlot(new OptionalFakeSlot(inv, this, 3, 1), s);
-        this.addSlot(new OptionalFakeSlot(inv, this, 4, 1), s);
-
-        // Slots that become available with 2 capacity cards
-        this.addSlot(new OptionalFakeSlot(inv, this, 5, 2), s);
-        this.addSlot(new OptionalFakeSlot(inv, this, 6, 2), s);
-        this.addSlot(new OptionalFakeSlot(inv, this, 7, 2), s);
-        this.addSlot(new OptionalFakeSlot(inv, this, 8, 2), s);
+        addExpandableConfigSlots(getHost().getConfig(), 2, 9, 5);
     }
 
+    @Override
+    public boolean isSlotEnabled(int idx) {
+        final int upgrades = getUpgrades().getInstalledUpgrades(AEItems.CAPACITY_CARD);
+
+        return upgrades > idx;
+    }
 }

@@ -1,0 +1,15 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:tags_populated",
+      "values": [
+        "c:bismuth_nuggets"
+      ]
+    }
+  ],
+  "type": "ae2:matter_cannon",
+  "ammo": {
+    "tag": "c:bismuth_nuggets"
+  },
+  "weight": 208.9804
+}

@@ -18,6 +18,12 @@
 
 package appeng.parts.networking;
 
+import java.util.function.Predicate;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.Direction;
+
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AECableType;
 import appeng.items.parts.ColoredPartItem;
@@ -33,33 +39,9 @@ public class CoveredCablePart extends CablePart {
     }
 
     @Override
-    public void getBoxes(IPartCollisionHelper bch) {
+    public void getBoxes(IPartCollisionHelper bch, Predicate<@Nullable Direction> filterConnections) {
         updateConnections();
 
-        bch.addBox(5.0, 5.0, 5.0, 11.0, 11.0, 11.0);
-
-        for (var of : this.getConnections()) {
-            switch (of) {
-                case DOWN:
-                    bch.addBox(5.0, 0.0, 5.0, 11.0, 5.0, 11.0);
-                    break;
-                case EAST:
-                    bch.addBox(11.0, 5.0, 5.0, 16.0, 11.0, 11.0);
-                    break;
-                case NORTH:
-                    bch.addBox(5.0, 5.0, 0.0, 11.0, 11.0, 5.0);
-                    break;
-                case SOUTH:
-                    bch.addBox(5.0, 5.0, 11.0, 11.0, 11.0, 16.0);
-                    break;
-                case UP:
-                    bch.addBox(5.0, 11.0, 5.0, 11.0, 16.0, 11.0);
-                    break;
-                case WEST:
-                    bch.addBox(0.0, 5.0, 5.0, 5.0, 11.0, 11.0);
-                    break;
-                default:
-            }
-        }
+        addNonDenseBoxes(bch, filterConnections, 5.0, 11.0);
     }
 }

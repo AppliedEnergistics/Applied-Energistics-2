@@ -35,14 +35,16 @@ public final class CodeFenced {
         Construct closingFenceConstruct = new Construct();
 
         {
-            closingFenceConstruct.tokenize = (context1, effects1, ok1, nok1) -> new ClosingFenceStateMachine(context1, effects1, ok1, nok1).start;
+            closingFenceConstruct.tokenize = (context1, effects1, ok1,
+                    nok1) -> new ClosingFenceStateMachine(context1, effects1, ok1, nok1).start;
             closingFenceConstruct.partial = true;
         }
 
         Construct nonLazyLine = new Construct();
 
         {
-            nonLazyLine.tokenize = (context1, effects1, ok1, nok1) -> new NonLazyLineStateMachine(context1, effects1, ok1, nok1)::start;
+            nonLazyLine.tokenize = (context1, effects1, ok1,
+                    nok1) -> new NonLazyLineStateMachine(context1, effects1, ok1, nok1)::start;
             nonLazyLine.partial = true;
         }
 
@@ -66,15 +68,13 @@ public final class CodeFenced {
         private State start(int code) {
             Assert.check(
                     code == Codes.graveAccent || code == Codes.tilde,
-                    "expected `` ` `` or `~`"
-            );
+                    "expected `` ` `` or `~`");
             effects.enter(Types.codeFenced);
             effects.enter(Types.codeFencedFence);
             effects.enter(Types.codeFencedFenceSequence);
             marker = code;
             return sequenceOpen(code);
         }
-
 
         private State sequenceOpen(int code) {
             if (code == marker) {
@@ -89,7 +89,6 @@ public final class CodeFenced {
                     : FactorySpace.create(effects, this::infoOpen, Types.whitespace).step(code);
         }
 
-
         private State infoOpen(int code) {
             if (code == Codes.eof || CharUtil.markdownLineEnding(code)) {
                 return openAfter(code);
@@ -102,7 +101,6 @@ public final class CodeFenced {
             return info(code);
         }
 
-
         private State info(int code) {
             if (code == Codes.eof || CharUtil.markdownLineEndingOrSpace(code)) {
                 effects.exit(Types.chunkString);
@@ -110,11 +108,11 @@ public final class CodeFenced {
                 return FactorySpace.create(effects, this::infoAfter, Types.whitespace).step(code);
             }
 
-            if (code == Codes.graveAccent && code == marker) return nok.step(code);
+            if (code == Codes.graveAccent && code == marker)
+                return nok.step(code);
             effects.consume(code);
             return this::info;
         }
-
 
         private State infoAfter(int code) {
             if (code == Codes.eof || CharUtil.markdownLineEnding(code)) {
@@ -135,7 +133,8 @@ public final class CodeFenced {
                 return openAfter(code);
             }
 
-            if (code == Codes.graveAccent && code == marker) return nok.step(code);
+            if (code == Codes.graveAccent && code == marker)
+                return nok.step(code);
             effects.consume(code);
             return this::meta;
         }
@@ -158,20 +157,17 @@ public final class CodeFenced {
                                 this::after,
                                 initialPrefix != 0
                                         ? FactorySpace.create(
-                                        effects,
-                                        this::contentStart,
-                                        Types.linePrefix,
-                                        initialPrefix + 1
-                                ) : this::contentStart
-                        ),
-                        this::after
-                ).step(code);
+                                                effects,
+                                                this::contentStart,
+                                                Types.linePrefix,
+                                                initialPrefix + 1)
+                                        : this::contentStart),
+                        this::after).step(code);
             }
 
             effects.enter(Types.codeFlowValue);
             return contentContinue(code);
         }
-
 
         private State contentContinue(int code) {
             if (code == Codes.eof || CharUtil.markdownLineEnding(code)) {
@@ -182,7 +178,6 @@ public final class CodeFenced {
             effects.consume(code);
             return this::contentContinue;
         }
-
 
         private State after(int code) {
             effects.exit(Types.codeFenced);
@@ -233,8 +228,8 @@ public final class CodeFenced {
                         effects,
                         this::closingSequenceStart,
                         Types.linePrefix,
-                        context.getParser().constructs.nullDisable.contains("codeIndented") ? Integer.MAX_VALUE : Constants.tabSize
-                );
+                        context.getParser().constructs.nullDisable.contains("codeIndented") ? Integer.MAX_VALUE
+                                : Constants.tabSize);
             }
 
             private State closingSequenceStart(int code) {
@@ -250,7 +245,8 @@ public final class CodeFenced {
                     return this::closingSequence;
                 }
 
-                if (size < sizeOpen) return nok.step(code);
+                if (size < sizeOpen)
+                    return nok.step(code);
                 effects.exit(Types.codeFencedFenceSequence);
                 return FactorySpace.create(effects, this::closingSequenceEnd, Types.whitespace).step(code);
             }

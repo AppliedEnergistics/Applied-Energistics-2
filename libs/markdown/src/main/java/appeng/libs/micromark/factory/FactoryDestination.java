@@ -12,12 +12,15 @@ public final class FactoryDestination {
     private FactoryDestination() {
     }
 
-    public static State create(Tokenizer.Effects effects, State ok, State nok, String type, String literalType, String literalMarkerType, String rawType, String stringType) {
+    public static State create(Tokenizer.Effects effects, State ok, State nok, String type, String literalType,
+            String literalMarkerType, String rawType, String stringType) {
         return create(effects, ok, nok, type, literalType, literalMarkerType, rawType, stringType, null);
     }
 
-    public static State create(Tokenizer.Effects effects, State ok, State nok, String type, String literalType, String literalMarkerType, String rawType, String stringType, Integer max) {
-        return new StateMachine(effects, ok, nok, type, literalType, literalMarkerType, rawType, stringType, max)::start;
+    public static State create(Tokenizer.Effects effects, State ok, State nok, String type, String literalType,
+            String literalMarkerType, String rawType, String stringType, Integer max) {
+        return new StateMachine(effects, ok, nok, type, literalType, literalMarkerType, rawType, stringType,
+                max)::start;
     }
 
     private static class StateMachine {
@@ -31,9 +34,10 @@ public final class FactoryDestination {
         private final String stringType;
 
         private int limit;
-        private int  balance = 0;
+        private int balance = 0;
 
-        public StateMachine(Tokenizer.Effects effects, State ok, State nok, String type, String literalType, String literalMarkerType, String rawType, String stringType, Integer max) {
+        public StateMachine(Tokenizer.Effects effects, State ok, State nok, String type, String literalType,
+                String literalMarkerType, String rawType, String stringType, Integer max) {
             this.effects = effects;
             this.ok = ok;
             this.nok = nok;
@@ -45,7 +49,6 @@ public final class FactoryDestination {
             this.limit = max != null ? max : Integer.MAX_VALUE;
         }
 
-
         private State start(int code) {
             if (code == Codes.lessThan) {
                 effects.enter(type);
@@ -56,11 +59,9 @@ public final class FactoryDestination {
                 return this::destinationEnclosedBefore;
             }
 
-            if (
-                    code == Codes.eof ||
-                            code == Codes.rightParenthesis ||
-                            CharUtil.asciiControl(code)
-            ) {
+            if (code == Codes.eof ||
+                    code == Codes.rightParenthesis ||
+                    CharUtil.asciiControl(code)) {
                 return nok.step(code);
             }
 
@@ -84,7 +85,7 @@ public final class FactoryDestination {
             }
 
             effects.enter(stringType);
-                    var tokenFields = new Token();
+            var tokenFields = new Token();
             tokenFields.contentType = ContentType.STRING;
             effects.enter(Types.chunkString, tokenFields);
             return destinationEnclosed(code);
@@ -97,11 +98,9 @@ public final class FactoryDestination {
                 return destinationEnclosedBefore(code);
             }
 
-            if (
-                    code == Codes.eof ||
-                            code == Codes.lessThan ||
-                            CharUtil.markdownLineEnding(code)
-            ) {
+            if (code == Codes.eof ||
+                    code == Codes.lessThan ||
+                    CharUtil.markdownLineEnding(code)) {
                 return nok.step(code);
             }
 
@@ -112,11 +111,9 @@ public final class FactoryDestination {
         }
 
         private State destinationEnclosedEscape(int code) {
-            if (
-                    code == Codes.lessThan ||
-                            code == Codes.greaterThan ||
-                            code == Codes.backslash
-            ) {
+            if (code == Codes.lessThan ||
+                    code == Codes.greaterThan ||
+                    code == Codes.backslash) {
                 effects.consume(code);
                 return this::destinationEnclosed;
             }
@@ -126,7 +123,8 @@ public final class FactoryDestination {
 
         private State destinationRaw(int code) {
             if (code == Codes.leftParenthesis) {
-                if (++balance > limit) return nok.step(code);
+                if (++balance > limit)
+                    return nok.step(code);
                 effects.consume(code);
                 return this::destinationRaw;
             }
@@ -145,7 +143,8 @@ public final class FactoryDestination {
             }
 
             if (code == Codes.eof || CharUtil.markdownLineEndingOrSpace(code)) {
-                if (balance != 0) return nok.step(code);
+                if (balance != 0)
+                    return nok.step(code);
                 effects.exit(Types.chunkString);
                 effects.exit(stringType);
                 effects.exit(rawType);
@@ -153,17 +152,16 @@ public final class FactoryDestination {
                 return ok.step(code);
             }
 
-            if (CharUtil.asciiControl(code)) return nok.step(code);
+            if (CharUtil.asciiControl(code))
+                return nok.step(code);
             effects.consume(code);
             return code == Codes.backslash ? this::destinationRawEscape : this::destinationRaw;
         }
 
         private State destinationRawEscape(int code) {
-            if (
-                    code == Codes.leftParenthesis ||
-                            code == Codes.rightParenthesis ||
-                            code == Codes.backslash
-            ) {
+            if (code == Codes.leftParenthesis ||
+                    code == Codes.rightParenthesis ||
+                    code == Codes.backslash) {
                 effects.consume(code);
                 return this::destinationRaw;
             }

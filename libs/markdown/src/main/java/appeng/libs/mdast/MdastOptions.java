@@ -1,11 +1,11 @@
 package appeng.libs.mdast;
 
-import appeng.libs.micromark.Extension;
-import appeng.libs.micromark.html.ParseOptions;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
+import appeng.libs.micromark.Extension;
+import appeng.libs.micromark.html.ParseOptions;
 
 public class MdastOptions extends ParseOptions {
     public final List<MdastExtension> mdastExtensions = new ArrayList<>();

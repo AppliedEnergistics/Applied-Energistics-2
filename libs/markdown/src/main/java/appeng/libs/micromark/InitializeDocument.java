@@ -1,12 +1,13 @@
 package appeng.libs.micromark;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
 import appeng.libs.micromark.factory.FactorySpace;
 import appeng.libs.micromark.symbol.Codes;
 import appeng.libs.micromark.symbol.Constants;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class InitializeDocument {
     private InitializeDocument() {
@@ -62,8 +63,7 @@ public final class InitializeDocument {
                 return effects.attempt.hook(
                         item.construct().continuation,
                         this::documentContinue,
-                        this::checkNewContainers
-                ).step(code);
+                        this::checkNewContainers).step(code);
             }
 
             // Done.
@@ -96,10 +96,8 @@ public final class InitializeDocument {
                 // Find the flow chunk.
                 while (indexBeforeFlow-- > 0) {
                     var event = context.getEvents().get(indexBeforeFlow);
-                    if (
-                            event.type() == Tokenizer.EventType.EXIT &&
-                                    event.token().type.equals(Types.chunkFlow)
-                    ) {
+                    if (event.type() == Tokenizer.EventType.EXIT &&
+                            event.token().type.equals(Types.chunkFlow)) {
                         point = event.token().end;
                         break;
                     }
@@ -123,8 +121,7 @@ public final class InitializeDocument {
                 var eventsToMove = ListUtils.slice(context.getEvents(), indexBeforeExits);
                 context.getEvents().addAll(
                         indexBeforeFlow + 1,
-                        eventsToMove
-                );
+                        eventsToMove);
 
                 // Discard the duplicate exits.
                 ListUtils.setLength(context.getEvents(), index);
@@ -159,7 +156,8 @@ public final class InitializeDocument {
                 // If we do have flow, it could still be a blank line,
                 // but we’d be interrupting it w/ a new container if there’s a current
                 // construct.
-                context.setInterrupt(childFlow.getCurrentConstruct() != null && !childFlow.isGfmTableDynamicInterruptHack());
+                context.setInterrupt(
+                        childFlow.getCurrentConstruct() != null && !childFlow.isGfmTableDynamicInterruptHack());
             }
 
             // Check if there is a new container.
@@ -167,12 +165,12 @@ public final class InitializeDocument {
             return effects.check.hook(
                     containerConstruct,
                     this::thereIsANewContainer,
-                    this::thereIsNoNewContainer
-            ).step(code);
+                    this::thereIsNoNewContainer).step(code);
         }
 
         private State thereIsANewContainer(int code) {
-            if (childFlow != null) closeFlow();
+            if (childFlow != null)
+                closeFlow();
             exitContainers(continued);
             return documentContinued(code);
         }
@@ -189,8 +187,7 @@ public final class InitializeDocument {
             return effects.attempt.hook(
                     containerConstruct,
                     this::containerContinue,
-                    this::flowStart
-            ).step(code);
+                    this::flowStart).step(code);
         }
 
         private State containerContinue(int code) {
@@ -208,7 +205,8 @@ public final class InitializeDocument {
 
         private State flowStart(int code) {
             if (code == Codes.eof) {
-                if (childFlow != null) closeFlow();
+                if (childFlow != null)
+                    closeFlow();
                 exitContainers(0);
                 effects.consume(code);
                 return null;
@@ -304,13 +302,12 @@ public final class InitializeDocument {
                 while (index-- > 0) {
                     var childFlowToken = childFlow.getEvents().get(index).token();
                     if (
-                        // The token starts before the line ending…
-                            childFlowToken.start.offset() < lineStartOffset &&
-                                    // …and either is not ended yet…
-                                    (childFlowToken.end == null ||
-                                            // …or ends after it.
-                                            childFlowToken.end.offset() > lineStartOffset)
-                    ) {
+                    // The token starts before the line ending…
+                    childFlowToken.start.offset() < lineStartOffset &&
+                    // …and either is not ended yet…
+                            (childFlowToken.end == null ||
+                            // …or ends after it.
+                                    childFlowToken.end.offset() > lineStartOffset)) {
                         // Exit: there’s still something open, which means it’s a lazy line
                         // part of something.
                         return;
@@ -327,10 +324,8 @@ public final class InitializeDocument {
                 // Find the previous chunk (the one before the lazy line).
                 while (indexBeforeFlow-- > 0) {
                     var event = context.getEvents().get(indexBeforeFlow);
-                    if (
-                            event.type() == Tokenizer.EventType.EXIT &&
-                                    event.token().type.equals(Types.chunkFlow)
-                    ) {
+                    if (event.type() == Tokenizer.EventType.EXIT &&
+                            event.token().type.equals(Types.chunkFlow)) {
                         if (seen) {
                             point = event.token().end;
                             break;
@@ -399,7 +394,6 @@ public final class InitializeDocument {
                 Types.linePrefix,
                 context.getParser().constructs.nullDisable.contains(Types.codeIndented)
                         ? Integer.MAX_VALUE
-                        : Constants.tabSize
-        );
+                        : Constants.tabSize);
     }
 }

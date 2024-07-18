@@ -1,9 +1,7 @@
 package appeng.recipes.transform;
 
-import java.util.Date;
-
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -13,6 +11,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 
@@ -24,7 +23,6 @@ public final class TransformRecipe implements Recipe<Container> {
     public final NonNullList<Ingredient> ingredients;
     public final ItemStack output;
     public final TransformCircumstance circumstance;
-    private static int singularitySeed = 0;
 
     public TransformRecipe(ResourceLocation id, NonNullList<Ingredient> ingredients, ItemStack output,
             TransformCircumstance circumstance) {
@@ -45,12 +43,10 @@ public final class TransformRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack assemble(Container container) {
-        ItemStack result = getResultItem().copy();
+    public ItemStack assemble(Container container, RegistryAccess registryAccess) {
+        ItemStack result = getResultItem(registryAccess).copy();
         if (AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(result) && result.getCount() > 1) {
-            final CompoundTag cmp = result.getOrCreateTag();
-            cmp.putLong("freq", new Date().getTime() * 100 + singularitySeed % 100);
-            singularitySeed++;
+            QuantumBridgeBlockEntity.assignFrequency(result);
         }
         return result;
     }
@@ -61,6 +57,10 @@ public final class TransformRecipe implements Recipe<Container> {
     }
 
     @Override
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
+        return getResultItem();
+    }
+
     public ItemStack getResultItem() {
         return output;
     }
@@ -80,7 +80,8 @@ public final class TransformRecipe implements Recipe<Container> {
         return TYPE;
     }
 
-    public ResourceLocation id() {
-        return id;
+    @Override
+    public boolean isSpecial() {
+        return true;
     }
 }

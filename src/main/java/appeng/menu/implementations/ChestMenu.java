@@ -21,7 +21,6 @@ package appeng.menu.implementations;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
@@ -34,7 +33,6 @@ public class ChestMenu extends AEBaseMenu {
 
     public static final MenuType<ChestMenu> TYPE = MenuTypeBuilder
             .create(ChestMenu::new, ChestBlockEntity.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("chest");
 
     public ChestMenu(int id, Inventory ip, ChestBlockEntity chest) {

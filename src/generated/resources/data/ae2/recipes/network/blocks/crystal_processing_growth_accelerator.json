@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "c:iron_ingots"
+    },
+    "b": {
+      "item": "ae2:fluix_glass_cable"
+    },
+    "c": {
+      "item": "ae2:quartz_glass"
+    },
+    "d": {
+      "item": "ae2:fluix_block"
+    }
+  },
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "result": {
+    "item": "ae2:growth_accelerator"
+  },
+  "show_notification": true
+}

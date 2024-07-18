@@ -22,7 +22,7 @@ record BlockEntityLocator(BlockPos pos) implements MenuLocator {
 
     @Override
     public <T> @Nullable T locate(Player player, Class<T> hostInterface) {
-        var blockEntity = player.level.getBlockEntity(pos);
+        var blockEntity = player.level().getBlockEntity(pos);
 
         if (hostInterface.isInstance(blockEntity)) {
             return hostInterface.cast(blockEntity);

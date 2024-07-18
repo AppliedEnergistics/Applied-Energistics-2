@@ -2,7 +2,7 @@ package appeng.client.guidebook.style;
 
 import net.minecraft.resources.ResourceLocation;
 
-import appeng.client.guidebook.render.ColorRef;
+import appeng.client.guidebook.color.ColorValue;
 
 public record ResolvedTextStyle(
         float fontScale,
@@ -12,7 +12,7 @@ public record ResolvedTextStyle(
         boolean strikethrough,
         boolean obfuscated,
         ResourceLocation font,
-        ColorRef color,
+        ColorValue color,
         WhiteSpaceMode whiteSpace,
         TextAlignment alignment) {
 }

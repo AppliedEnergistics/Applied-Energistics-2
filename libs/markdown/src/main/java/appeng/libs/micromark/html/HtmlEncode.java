@@ -9,8 +9,7 @@ public class HtmlEncode {
             "\"", "quot",
             "&", "amp",
             "<", "lt",
-            ">", "gt"
-    );
+            ">", "gt");
 
     private static final Pattern ESCAPE_PATTERN = Pattern.compile("[\"&<>]");
 
@@ -20,9 +19,8 @@ public class HtmlEncode {
     /**
      * Encode only the dangerous HTML characters.
      * <p>
-     * This ensures that certain characters which have special meaning in HTML are
-     * dealt with.
-     * Technically, we can skip `>` and `"` in many cases, but CM includes them.
+     * This ensures that certain characters which have special meaning in HTML are dealt with. Technically, we can skip
+     * `>` and `"` in many cases, but CM includes them.
      */
     public static String encode(String value) {
         return ESCAPE_PATTERN.matcher(value).replaceAll(match -> {

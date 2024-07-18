@@ -1,5 +1,8 @@
 package appeng.libs.micromark.commonmark;
 
+import java.util.List;
+import java.util.Objects;
+
 import appeng.libs.micromark.Assert;
 import appeng.libs.micromark.CharUtil;
 import appeng.libs.micromark.Construct;
@@ -12,9 +15,6 @@ import appeng.libs.micromark.Types;
 import appeng.libs.micromark.factory.FactorySpace;
 import appeng.libs.micromark.symbol.Codes;
 import appeng.libs.micromark.symbol.Constants;
-
-import java.util.List;
-import java.util.Objects;
 
 public final class Content {
     private Content() {
@@ -29,13 +29,14 @@ public final class Content {
         content.resolve = Content::resolveContent;
 
         continuationConstruct = new Construct();
-        continuationConstruct.tokenize = (context, effects, ok, nok) -> new ContinuationStateMachine(context, effects, ok, nok)::startLookahead;
+        continuationConstruct.tokenize = (context, effects, ok,
+                nok) -> new ContinuationStateMachine(context, effects, ok, nok)::startLookahead;
         continuationConstruct.partial = true;
     }
 
     /**
-     * Content is transparent: it’s parsed right now. That way, definitions are also
-     * parsed right now: before text in paragraphs (specifically, media) are parsed.
+     * Content is transparent: it’s parsed right now. That way, definitions are also parsed right now: before text in
+     * paragraphs (specifically, media) are parsed.
      */
     private static List<Tokenizer.Event> resolveContent(List<Tokenizer.Event> events, TokenizeContext context) {
         Subtokenize.subtokenize(events);
@@ -57,12 +58,10 @@ public final class Content {
             this.nok = nok;
         }
 
-
         private State start(int code) {
             Assert.check(
                     code != Codes.eof && !CharUtil.markdownLineEnding(code),
-                    "expected no eof or eol"
-            );
+                    "expected no eof or eol");
 
             effects.enter(Types.content);
             var tokenFields = new Token();
@@ -70,7 +69,6 @@ public final class Content {
             previous = effects.enter(Types.chunkContent, tokenFields);
             return data(code);
         }
-
 
         private State data(int code) {
             if (code == Codes.eof) {
@@ -81,8 +79,7 @@ public final class Content {
                 return effects.check.hook(
                         continuationConstruct,
                         this::contentContinue,
-                        this::contentEnd
-                ).step(code);
+                        this::contentEnd).step(code);
             }
 
             // Data.
@@ -90,13 +87,11 @@ public final class Content {
             return this::data;
         }
 
-
         private State contentEnd(int code) {
             effects.exit(Types.chunkContent);
             effects.exit(Types.content);
             return ok.step(code);
         }
-
 
         private State contentContinue(int code) {
             Assert.check(CharUtil.markdownLineEnding(code), "expected eol");
@@ -113,7 +108,6 @@ public final class Content {
 
     }
 
-
     private static class ContinuationStateMachine {
         private final TokenizeContext context;
         private final Tokenizer.Effects effects;
@@ -128,7 +122,6 @@ public final class Content {
             this.nok = nok;
         }
 
-
         private State startLookahead(int code) {
             Assert.check(CharUtil.markdownLineEnding(code), "expected a line ending");
             effects.exit(Types.chunkContent);
@@ -138,7 +131,6 @@ public final class Content {
             return FactorySpace.create(effects, this::prefixed, Types.linePrefix);
         }
 
-
         private State prefixed(int code) {
             if (code == Codes.eof || CharUtil.markdownLineEnding(code)) {
                 return nok.step(code);
@@ -146,12 +138,10 @@ public final class Content {
 
             var tail = context.getLastEvent();
 
-            if (
-                    !context.getParser().constructs.nullDisable.contains("codeIndented") &&
-                            tail != null &&
-                            Objects.equals(tail.token().type, Types.linePrefix) &&
-                            tail.context().sliceSerialize(tail.token(), true).length() >= Constants.tabSize
-            ) {
+            if (!context.getParser().constructs.nullDisable.contains("codeIndented") &&
+                    tail != null &&
+                    Objects.equals(tail.token().type, Types.linePrefix) &&
+                    tail.context().sliceSerialize(tail.token(), true).length() >= Constants.tabSize) {
                 return ok.step(code);
             }
 

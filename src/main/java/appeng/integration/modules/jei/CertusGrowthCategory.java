@@ -1,10 +1,8 @@
 package appeng.integration.modules.jei;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -35,11 +33,11 @@ public class CertusGrowthCategory extends ViewBasedCategory<CertusGrowthCategory
             AEBlocks.FLAWED_BUDDING_QUARTZ.stack(),
             AEBlocks.FLAWLESS_BUDDING_QUARTZ.stack());
 
-    private final List<Item> BUDDING_QUARTZ_DECAY_ORDER = List.of(
-            AEBlocks.QUARTZ_BLOCK.asItem(),
-            AEBlocks.DAMAGED_BUDDING_QUARTZ.asItem(),
-            AEBlocks.CHIPPED_BUDDING_QUARTZ.asItem(),
-            AEBlocks.FLAWED_BUDDING_QUARTZ.asItem());
+    private final List<ItemStack> BUDDING_QUARTZ_DECAY_ORDER = List.of(
+            AEBlocks.QUARTZ_BLOCK.stack(),
+            AEBlocks.DAMAGED_BUDDING_QUARTZ.stack(),
+            AEBlocks.CHIPPED_BUDDING_QUARTZ.stack(),
+            AEBlocks.FLAWED_BUDDING_QUARTZ.stack());
 
     private final List<ItemStack> BUD_GROWTH_STAGES = List.of(
             AEBlocks.SMALL_QUARTZ_BUD.stack(),
@@ -47,15 +45,10 @@ public class CertusGrowthCategory extends ViewBasedCategory<CertusGrowthCategory
             AEBlocks.LARGE_QUARTZ_BUD.stack(),
             AEBlocks.QUARTZ_CLUSTER.stack());
 
-    /**
-     * Default is 4. Fortune applies, though.
-     */
-    private final ItemStack END_RESULT = AEItems.CERTUS_QUARTZ_CRYSTAL.stack(4);
-
     private final IDrawable background;
     private final IDrawable slotBackground;
     private final IDrawable icon;
-    private int centerX;
+    private final int centerX;
 
     public CertusGrowthCategory(IJeiHelpers helpers) {
         super(helpers);
@@ -165,7 +158,7 @@ public class CertusGrowthCategory extends ViewBasedCategory<CertusGrowthCategory
                     } else {
                         finalResult = AEItems.CERTUS_QUARTZ_CRYSTAL.stack(4);
                     }
-                    var outputSlot = builder.addSlot(RecipeIngredientRole.OUTPUT, centerX + 40 - 18, 25)
+                    builder.addSlot(RecipeIngredientRole.OUTPUT, centerX + 40 - 18, 25)
                             .setBackground(slotBackground, -1, -1)
                             .addItemStack(finalResult);
                 }
@@ -190,16 +183,15 @@ public class CertusGrowthCategory extends ViewBasedCategory<CertusGrowthCategory
 
                 @Override
                 public void buildSlots(IRecipeLayoutBuilder builder) {
-                    var decayingVariants = new ArrayList<>(BUDDING_QUARTZ_VARIANTS);
-                    decayingVariants.removeIf(is -> !BUDDING_QUARTZ_DECAY_ORDER.contains(is.getItem()));
-
-                    builder.addSlot(RecipeIngredientRole.INPUT, centerX - 40, 30)
+                    var slot1 = builder.addSlot(RecipeIngredientRole.INPUT, centerX - 40, 30)
                             .setBackground(slotBackground, -1, -1)
-                            .addItemStacks(decayingVariants);
+                            .addItemStacks(BUDDING_QUARTZ_VARIANTS);
 
-                    builder.addSlot(RecipeIngredientRole.OUTPUT, centerX + 40 - 18, 30)
+                    var slot2 = builder.addSlot(RecipeIngredientRole.OUTPUT, centerX + 40 - 18, 30)
                             .setBackground(slotBackground, -1, -1)
-                            .addItemStacks(BUDDING_QUARTZ_DECAY_ORDER.stream().map(ItemStack::new).toList());
+                            .addItemStacks(BUDDING_QUARTZ_DECAY_ORDER);
+
+                    builder.createFocusLink(slot1, slot2);
                 }
             };
             /*
@@ -208,13 +200,15 @@ public class CertusGrowthCategory extends ViewBasedCategory<CertusGrowthCategory
             case BUDDING_QUARTZ_MOVING -> new View() {
                 @Override
                 public void buildSlots(IRecipeLayoutBuilder builder) {
-                    builder.addSlot(RecipeIngredientRole.INPUT, centerX - 40, 22)
+                    var slot1 = builder.addSlot(RecipeIngredientRole.INPUT, centerX - 40, 22)
                             .setBackground(slotBackground, -1, -1)
                             .addItemStacks(BUDDING_QUARTZ_VARIANTS);
 
-                    builder.addSlot(RecipeIngredientRole.OUTPUT, centerX + 40 - 18, 22)
+                    var slot2 = builder.addSlot(RecipeIngredientRole.OUTPUT, centerX + 40 - 18, 22)
                             .setBackground(slotBackground, -1, -1)
-                            .addItemStack(AEBlocks.QUARTZ_BLOCK.stack());
+                            .addItemStacks(BUDDING_QUARTZ_DECAY_ORDER);
+
+                    builder.createFocusLink(slot1, slot2);
                 }
 
                 @Override
@@ -225,9 +219,9 @@ public class CertusGrowthCategory extends ViewBasedCategory<CertusGrowthCategory
 
                     widgets.add(factory.unfilledArrow(centerX - 12, 22));
 
-                    widgets.add(factory.label(centerX, 42, ItemModText.SILK_TOUCH_CAUSES_LESS_DECAY.text())
+                    widgets.add(factory.label(centerX, 42, ItemModText.SILK_TOUCH_PREVENTS_DECAY_FOR_IMPERFECT.text())
                             .bodyText());
-                    widgets.add(factory.label(centerX, 53, ItemModText.SPATIAL_IO_CAUSES_NONE.text())
+                    widgets.add(factory.label(centerX, 53, ItemModText.SPATIAL_IO_NEVER_CAUSES_ANY_DECAY.text())
                             .bodyText());
                 }
             };
@@ -246,13 +240,9 @@ public class CertusGrowthCategory extends ViewBasedCategory<CertusGrowthCategory
                 @Override
                 public void buildSlots(IRecipeLayoutBuilder builder) {
                     // Also include quartz blocks in the list, since those can spawn in meteorites
-                    var decayingVariants = BUDDING_QUARTZ_DECAY_ORDER.stream()
-                            .map(ItemStack::new)
-                            .toList();
-
                     builder.addSlot(RecipeIngredientRole.INPUT, 1, 1)
                             .setBackground(slotBackground, -1, -1)
-                            .addItemStacks(decayingVariants);
+                            .addItemStacks(BUDDING_QUARTZ_DECAY_ORDER);
 
                     builder.addSlot(RecipeIngredientRole.INPUT, 1, 22)
                             .setBackground(slotBackground, -1, -1)
@@ -309,7 +299,7 @@ public class CertusGrowthCategory extends ViewBasedCategory<CertusGrowthCategory
 
                     builder.addSlot(RecipeIngredientRole.CATALYST, centerX + 8, 40)
                             .setBackground(slotBackground, -1, -1)
-                            .addItemStack(AEBlocks.QUARTZ_GROWTH_ACCELERATOR.stack());
+                            .addItemStack(AEBlocks.GROWTH_ACCELERATOR.stack());
                 }
             };
         };

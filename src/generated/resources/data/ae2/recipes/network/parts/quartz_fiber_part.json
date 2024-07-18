@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "c:glass_blocks"
+    },
+    "b": {
+      "tag": "ae2:all_quartz_dust"
+    }
+  },
+  "pattern": [
+    "aaa",
+    "bbb",
+    "aaa"
+  ],
+  "result": {
+    "count": 3,
+    "item": "ae2:quartz_fiber"
+  },
+  "show_notification": true
+}

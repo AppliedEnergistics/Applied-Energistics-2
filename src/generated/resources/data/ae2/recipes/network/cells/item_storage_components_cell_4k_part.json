@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "c:redstone_dusts"
+    },
+    "b": {
+      "item": "ae2:calculation_processor"
+    },
+    "c": {
+      "item": "ae2:cell_component_1k"
+    },
+    "d": {
+      "item": "ae2:quartz_glass"
+    }
+  },
+  "pattern": [
+    "aba",
+    "cdc",
+    "aca"
+  ],
+  "result": {
+    "item": "ae2:cell_component_4k"
+  },
+  "show_notification": true
+}

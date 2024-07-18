@@ -32,7 +32,7 @@ public abstract class DynamicLadderMixin extends Entity {
         BlockState blockState = this.getFeetBlockState();
 
         if (blockState.getBlock() instanceof IDynamicLadder dynamicLadder) {
-            cri.setReturnValue(dynamicLadder.isLadder(blockState, level, blockPos, (LivingEntity) (Object) this));
+            cri.setReturnValue(dynamicLadder.isLadder(blockState, level(), blockPos, (LivingEntity) (Object) this));
         }
     }
 

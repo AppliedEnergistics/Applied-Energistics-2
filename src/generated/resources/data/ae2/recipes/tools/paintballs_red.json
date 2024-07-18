@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2:matter_ball"
+    },
+    "b": {
+      "tag": "c:red_dyes"
+    }
+  },
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "result": {
+    "count": 8,
+    "item": "ae2:red_paint_ball"
+  },
+  "show_notification": true
+}

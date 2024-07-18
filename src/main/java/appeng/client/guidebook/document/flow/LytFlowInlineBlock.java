@@ -2,9 +2,9 @@ package appeng.client.guidebook.document.flow;
 
 import java.util.Optional;
 
-import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.LytSize;
 import appeng.client.guidebook.document.block.LytBlock;
+import appeng.client.guidebook.document.block.LytVisitor;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
 import appeng.client.guidebook.layout.LayoutContext;
@@ -39,7 +39,7 @@ public class LytFlowInlineBlock extends LytFlowContent implements InteractiveEle
         }
 
         // We need to compute the layout
-        var layoutContext = new LayoutContext(new MinecraftFontMetrics(), LytRect.empty());
+        var layoutContext = new LayoutContext(new MinecraftFontMetrics());
         var bounds = block.layout(layoutContext, 0, 0, lineWidth);
         return new LytSize(bounds.right(), bounds.bottom());
     }
@@ -61,10 +61,23 @@ public class LytFlowInlineBlock extends LytFlowContent implements InteractiveEle
     }
 
     @Override
-    public Optional<GuideTooltip> getTooltip() {
+    public Optional<GuideTooltip> getTooltip(float x, float y) {
         if (block instanceof InteractiveElement interactiveElement) {
-            return interactiveElement.getTooltip();
+            return interactiveElement.getTooltip(x, y);
         }
         return Optional.empty();
+    }
+
+    @Override
+    protected void visitChildren(LytVisitor visitor) {
+        if (block != null) {
+            block.visit(visitor);
+        }
+    }
+
+    public static LytFlowInlineBlock of(LytBlock block) {
+        var inlineBlock = new LytFlowInlineBlock();
+        inlineBlock.setBlock(block);
+        return inlineBlock;
     }
 }

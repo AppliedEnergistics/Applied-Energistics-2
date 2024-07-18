@@ -10,7 +10,6 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import appeng.api.ids.AEItemIds;
 import appeng.api.util.AEColor;
-import appeng.client.render.model.BiometricCardModel;
 import appeng.client.render.model.MemoryCardModel;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -29,15 +28,9 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
     protected void registerModels() {
         registerPaintballs();
 
-        flatSingleLayer(BiometricCardModel.MODEL_BASE, "item/biometric_card");
-        builtInItemModel("biometric_card");
-
-        for (AEColor color : AEColor.values()) {
-            String builtInItemModelName = "memory_card"
-                    + (color != AEColor.TRANSPARENT ? ("_" + color.registryPrefix) : "");
-            flatSingleLayer(MemoryCardModel.MODELS_BASE.get(color), "item/" + builtInItemModelName);
-            builtInItemModel(builtInItemModelName);
-        }
+        flatSingleLayer(MemoryCardModel.MODEL_BASE, "item/memory_card_pins")
+                .texture("layer1", "item/memory_card_base");
+        builtInItemModel("memory_card");
 
         builtInItemModel("facade");
         builtInItemModel("meteorite_compass");
@@ -83,6 +76,7 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         flatSingleLayer(AEItems.FLUIX_CRYSTAL, "item/fluix_crystal");
         flatSingleLayer(AEItems.FLUIX_DUST, "item/fluix_dust");
         flatSingleLayer(AEItems.FLUIX_PEARL, "item/fluix_pearl");
+        flatSingleLayer(AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE, "item/fluix_upgrade_smithing_template");
         flatSingleLayer(AEItems.FORMATION_CORE, "item/formation_core");
         flatSingleLayer(AEItems.FUZZY_CARD, "item/card_fuzzy");
         flatSingleLayer(AEItems.INVERTER_CARD, "item/card_inverter");
@@ -101,16 +95,16 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         flatSingleLayer(AEItems.NETHER_QUARTZ_KNIFE, "item/nether_quartz_cutting_knife");
         flatSingleLayer(AEItems.NETHER_QUARTZ_WRENCH, "item/nether_quartz_wrench");
         flatSingleLayer(AEItems.NETWORK_TOOL, "item/network_tool");
-        portableCell(AEItems.PORTABLE_ITEM_CELL1K, "item/portable_item_cell_1k");
-        portableCell(AEItems.PORTABLE_ITEM_CELL4K, "item/portable_item_cell_4k");
-        portableCell(AEItems.PORTABLE_ITEM_CELL16K, "item/portable_item_cell_16k");
-        portableCell(AEItems.PORTABLE_ITEM_CELL64K, "item/portable_item_cell_64k");
-        portableCell(AEItems.PORTABLE_ITEM_CELL256K, "item/portable_item_cell_256k");
-        portableCell(AEItems.PORTABLE_FLUID_CELL1K, "item/portable_fluid_cell_1k");
-        portableCell(AEItems.PORTABLE_FLUID_CELL4K, "item/portable_fluid_cell_4k");
-        portableCell(AEItems.PORTABLE_FLUID_CELL16K, "item/portable_fluid_cell_16k");
-        portableCell(AEItems.PORTABLE_FLUID_CELL64K, "item/portable_fluid_cell_64k");
-        portableCell(AEItems.PORTABLE_FLUID_CELL256K, "item/portable_fluid_cell_256k");
+        portableCell(AEItems.PORTABLE_ITEM_CELL1K, "item", "1k");
+        portableCell(AEItems.PORTABLE_ITEM_CELL4K, "item", "4k");
+        portableCell(AEItems.PORTABLE_ITEM_CELL16K, "item", "16k");
+        portableCell(AEItems.PORTABLE_ITEM_CELL64K, "item", "64k");
+        portableCell(AEItems.PORTABLE_ITEM_CELL256K, "item", "256k");
+        portableCell(AEItems.PORTABLE_FLUID_CELL1K, "fluid", "1k");
+        portableCell(AEItems.PORTABLE_FLUID_CELL4K, "fluid", "4k");
+        portableCell(AEItems.PORTABLE_FLUID_CELL16K, "fluid", "16k");
+        portableCell(AEItems.PORTABLE_FLUID_CELL64K, "fluid", "64k");
+        portableCell(AEItems.PORTABLE_FLUID_CELL256K, "fluid", "256k");
         flatSingleLayer(AEItems.PROCESSING_PATTERN, "item/processing_pattern");
         flatSingleLayer(AEItems.QUANTUM_ENTANGLED_SINGULARITY, "item/quantum_entangled_singularity");
         flatSingleLayer(AEItems.REDSTONE_CARD, "item/card_redstone");
@@ -149,14 +143,16 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
                         .texture("layer1", "item/storage_cell_led");
     }
 
-    private void portableCell(ItemDefinition<?> item, String background) {
+    private void portableCell(ItemDefinition<?> item, String housingType, String tier) {
         String id = item.id().getPath();
         singleTexture(
                 id,
                 mcLoc("item/generated"),
                 "layer0",
-                makeId(background))
-                        .texture("layer1", "item/portable_cell_led");
+                makeId("item/portable_cell_screen"))
+                        .texture("layer1", "item/portable_cell_led")
+                        .texture("layer2", "item/portable_cell_%s_housing".formatted(housingType))
+                        .texture("layer3", "item/portable_cell_side_%s".formatted(tier));
     }
 
     private void registerHandheld() {

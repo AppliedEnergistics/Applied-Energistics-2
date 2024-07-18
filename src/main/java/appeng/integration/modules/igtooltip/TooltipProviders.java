@@ -16,14 +16,17 @@ import appeng.block.crafting.CraftingMonitorBlock;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.misc.ChargerBlock;
 import appeng.block.networking.CableBusBlock;
+import appeng.block.networking.CrystalResonanceGeneratorBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
+import appeng.blockentity.networking.CrystalResonanceGeneratorBlockEntity;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.integration.modules.igtooltip.blocks.ChargerDataProvider;
 import appeng.integration.modules.igtooltip.blocks.CraftingMonitorDataProvider;
+import appeng.integration.modules.igtooltip.blocks.CrystalResonanceGeneratorProvider;
 import appeng.integration.modules.igtooltip.blocks.GridNodeStateDataProvider;
 import appeng.integration.modules.igtooltip.blocks.PatternProviderDataProvider;
 import appeng.integration.modules.igtooltip.blocks.PowerStorageDataProvider;
@@ -145,6 +148,11 @@ public final class TooltipProviders implements TooltipProvider {
 
     @Override
     public void registerClient(ClientRegistration registration) {
+        registration.addBlockEntityBody(
+                CrystalResonanceGeneratorBlockEntity.class,
+                CrystalResonanceGeneratorBlock.class,
+                TooltipIds.CHARGER,
+                new CrystalResonanceGeneratorProvider());
         registration.addBlockEntityBody(
                 ChargerBlockEntity.class,
                 ChargerBlock.class,

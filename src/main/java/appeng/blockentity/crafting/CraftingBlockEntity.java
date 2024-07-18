@@ -25,6 +25,7 @@ import java.util.Set;
 
 import com.google.common.collect.Iterators;
 
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -33,6 +34,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -142,7 +144,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
                 // Not using flag 2 here (only send to clients, prevent block update) will cause
                 // infinite loops
                 // In case there is an inconsistency in the crafting clusters.
-                this.level.setBlock(this.worldPosition, newState, 2);
+                this.level.setBlock(this.worldPosition, newState, Block.UPDATE_CLIENTS);
             }
         }
 
@@ -218,7 +220,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
     public void breakCluster() {
         if (this.cluster != null) {
-            this.cluster.cancel();
+            this.cluster.cancelJob();
             var inv = this.cluster.craftingLogic.getInventory();
 
             // Drop stacks
@@ -244,11 +246,13 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
             }
 
             for (var entry : inv.list) {
-                var position = places.get(Platform.getRandomInt() % places.size());
+                var position = Util.getRandom(places, level.getRandom());
                 var stacks = new ArrayList<ItemStack>();
                 entry.getKey().addDrops(entry.getLongValue(), stacks, this.level, position);
                 Platform.spawnDrops(this.level, position, stacks);
             }
+
+            inv.clear(); // Ensure items only ever get dropped once
 
             this.cluster.destroy();
         }

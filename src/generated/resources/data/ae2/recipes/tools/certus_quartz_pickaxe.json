@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "c:certus_quartz"
+    },
+    "b": {
+      "tag": "c:wooden_rods"
+    }
+  },
+  "pattern": [
+    "aaa",
+    " b ",
+    " b "
+  ],
+  "result": {
+    "item": "ae2:certus_quartz_pickaxe"
+  },
+  "show_notification": true
+}

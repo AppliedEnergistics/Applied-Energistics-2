@@ -11,17 +11,22 @@
 !gradle.properties
 !.travis.yml
 
+# Scripts
+!/scripts
+/scripts/node_modules
+
 # include markdowns
 !*.md
 !LICENSE
 
-# include sourcecode except generated
+# include sourcecode
 !src/
-src/generated
+src/generated/resources/.cache
 out
 build
 !/libs/
 !/guidebook
+/guidebook/sandbox
 
 # include git important files
 !.gitmodules

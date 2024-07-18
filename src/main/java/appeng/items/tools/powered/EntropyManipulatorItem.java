@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,6 +31,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -50,7 +51,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 
@@ -124,7 +124,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             if (level.isClientSide) {
                 return InteractionResult.FAIL;
             }
-            p = Platform.getPlayer((ServerLevel) level);
+            p = Platform.getFakePlayer((ServerLevel) level, null);
             // Fake players cannot crouch and we cannot communicate whether they want to heat or cool
             tryBoth = true;
         }
@@ -240,7 +240,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                 return false;
             }
 
-            ItemStack result = recipe.get().assemble(tempInv);
+            ItemStack result = recipe.get().assemble(tempInv, level.registryAccess());
             if (result.getItem() instanceof BlockItem) {
                 Block smeltedBlock = Block.byItem(result.getItem());
                 if (smeltedBlock == block) {
@@ -251,8 +251,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                 // The first smelted drop that could be placed as a block itself will not be dropped, but
                 // rather replace the current block.
                 if (smeltedBlockState == null
-                        && smeltedBlock != Blocks.AIR
-                        && smeltedBlock.defaultBlockState().getMaterial() != Material.AIR) {
+                        && !smeltedBlock.defaultBlockState().isAir()) {
                     smeltedBlockState = smeltedBlock.defaultBlockState();
                     continue;
                 }
@@ -306,8 +305,10 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             }
         }
 
-        if (!recipe.getDrops().isEmpty()) {
-            Platform.spawnDrops(level, pos, recipe.getDrops());
+        if (!level.isClientSide) {
+            for (var drop : recipe.getDrops()) {
+                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), drop.copy());
+            }
         }
 
         if (recipe.getMode() == EntropyMode.HEAT && !level.isClientSide()) {

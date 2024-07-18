@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2:quartz_glass"
+    },
+    "b": {
+      "item": "ae2:fluix_glass_cable"
+    },
+    "c": {
+      "tag": "c:fluix_dusts"
+    },
+    "d": {
+      "tag": "ae2:all_fluix"
+    }
+  },
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "result": {
+    "item": "ae2:spatial_pylon"
+  },
+  "show_notification": true
+}

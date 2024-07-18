@@ -1,8 +1,8 @@
 package appeng.util;
 
-import javax.annotation.Nullable;
-
 import com.google.gson.JsonParseException;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;

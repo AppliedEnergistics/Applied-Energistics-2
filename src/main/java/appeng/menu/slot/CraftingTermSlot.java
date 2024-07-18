@@ -26,6 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -107,10 +108,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             // This is a shortcut to ensure that for mods that create recipes with result counts larger than
             // the max stack size, it remains possible to pick up those items at least _once_.
             if (getMenu().getCarried().isEmpty()) {
-                var rs = getItem().copy();
-                if (!rs.isEmpty()) {
-                    getMenu().setCarried(this.craftItem(who, rs, storage, storage.getAvailableStacks()));
-                }
+                getMenu().setCarried(craftItem(who, storage, storage.getAvailableStacks()));
                 return;
             }
 
@@ -118,22 +116,32 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             maxTimesToCraft = 1;
         }
 
-        var rs = this.getItem().copy();
-        if (rs.isEmpty()) {
+        // Since we may be crafting multiple times, we have to ensure that we keep crafting the same item.
+        // This may not be the case if not all crafting grid slots have the same number of items in them,
+        // and some ingredients run-out after a few crafts.
+        var itemAtStart = this.getItem().copy();
+        if (itemAtStart.isEmpty()) {
             return;
         }
 
         for (var x = 0; x < maxTimesToCraft; x++) {
-            if (target.simulateAdd(rs).isEmpty()) {
-                var all = storage.getAvailableStacks();
-                final var extra = target.addItems(this.craftItem(who, rs, storage, all));
-                if (!extra.isEmpty()) {
-                    final List<ItemStack> drops = new ArrayList<>();
-                    drops.add(extra);
-                    Platform.spawnDrops(who.level,
-                            new BlockPos((int) who.getX(), (int) who.getY(), (int) who.getZ()), drops);
-                    return;
-                }
+            // Stop if the recipe output has changed (i.e. due to fully consumed input slots)
+            if (!ItemStack.isSameItemSameTags(itemAtStart, getItem())) {
+                return;
+            }
+
+            // Stop if the target inventory is full
+            if (!target.simulateAdd(itemAtStart).isEmpty()) {
+                return;
+            }
+
+            var all = storage.getAvailableStacks();
+            var extra = target.addItems(craftItem(who, storage, all));
+
+            // If we couldn't actually add what we crafted, we drop it and stop
+            if (!extra.isEmpty()) {
+                Platform.spawnDrops(who.level(), who.blockPosition(), List.of(extra));
+                return;
             }
         }
     }
@@ -167,76 +175,75 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         return super.getRemainingItems(ic, level);
     }
 
-    private ItemStack craftItem(Player p, ItemStack request, MEStorage inv,
-            KeyCounter all) {
+    private ItemStack craftItem(Player p, MEStorage inv, KeyCounter all) {
         // update crafting matrix...
-        var is = this.getItem();
-
-        if (!is.isEmpty() && ItemStack.isSame(request, is)) {
-            final var set = new ItemStack[this.getPattern().size()];
-            // Safeguard for empty slots in the inventory for now
-            Arrays.fill(set, ItemStack.EMPTY);
-
-            // add one of each item to the items on the board...
-            var level = p.level;
-            if (!level.isClientSide()) {
-                final var ic = new CraftingContainer(p.containerMenu, 3, 3);
-                for (var x = 0; x < 9; x++) {
-                    ic.setItem(x, this.getPattern().getStackInSlot(x));
-                }
-
-                final var r = this.findRecipe(ic, level);
-
-                if (r == null) {
-                    final var target = request.getItem();
-                    if (target.canBeDepleted() && target.isValidRepairItem(request, request)) {
-                        var isBad = false;
-                        for (var x = 0; x < ic.getContainerSize(); x++) {
-                            final var pis = ic.getItem(x);
-                            if (pis.isEmpty()) {
-                                continue;
-                            }
-                            if (pis.getItem() != target) {
-                                isBad = true;
-                            }
-                        }
-                        if (!isBad) {
-                            super.onTake(p, is);
-                            // actually necessary to cleanup this case...
-                            p.containerMenu.slotsChanged(this.craftInv.toContainer());
-                            return request;
-                        }
-                    }
-                    return ItemStack.EMPTY;
-                }
-
-                is = r.assemble(ic);
-
-                if (inv != null) {
-                    var filter = ViewCellItem.createItemFilter(this.menu.getViewCells());
-                    for (var x = 0; x < this.getPattern().size(); x++) {
-                        if (!this.getPattern().getStackInSlot(x).isEmpty()) {
-                            set[x] = Platform.extractItemsByRecipe(this.energySrc, this.mySrc, inv, level, r, is, ic,
-                                    this.getPattern().getStackInSlot(x), x, all, Actionable.MODULATE,
-                                    filter);
-                            ic.setItem(x, set[x]);
-                        }
-                    }
-                }
-            }
-
-            if (this.preCraft(p, inv, set, is)) {
-                this.makeItem(p, is);
-
-                this.postCraft(p, inv, set, is);
-            }
-
-            p.containerMenu.slotsChanged(this.craftInv.toContainer());
-
-            return is;
+        var is = this.getItem().copy();
+        if (is.isEmpty()) {
+            return ItemStack.EMPTY;
         }
 
-        return ItemStack.EMPTY;
+        // Make sure the item in the slot is still the same item as before
+        final var set = new ItemStack[this.getPattern().size()];
+        // Safeguard for empty slots in the inventory for now
+        Arrays.fill(set, ItemStack.EMPTY);
+
+        // add one of each item to the items on the board...
+        var level = p.level();
+        if (!level.isClientSide()) {
+            final var ic = new TransientCraftingContainer(p.containerMenu, 3, 3);
+            for (var x = 0; x < 9; x++) {
+                ic.setItem(x, this.getPattern().getStackInSlot(x));
+            }
+
+            final var r = this.findRecipe(ic, level);
+
+            if (r == null) {
+                final var target = is.getItem();
+                if (target.canBeDepleted() && target.isValidRepairItem(is, is)) {
+                    var isBad = false;
+                    for (var x = 0; x < ic.getContainerSize(); x++) {
+                        final var pis = ic.getItem(x);
+                        if (pis.isEmpty()) {
+                            continue;
+                        }
+                        if (pis.getItem() != target) {
+                            isBad = true;
+                        }
+                    }
+                    if (!isBad) {
+                        super.onTake(p, is);
+                        // actually necessary to cleanup this case...
+                        p.containerMenu.slotsChanged(this.craftInv.toContainer());
+                        return is;
+                    }
+                }
+                return ItemStack.EMPTY;
+            }
+
+            is = r.assemble(ic, level.registryAccess());
+
+            if (inv != null) {
+                var filter = ViewCellItem.createItemFilter(this.menu.getViewCells());
+                for (var x = 0; x < this.getPattern().size(); x++) {
+                    if (!this.getPattern().getStackInSlot(x).isEmpty()) {
+                        set[x] = Platform.extractItemsByRecipe(this.energySrc, this.mySrc, inv, level, r, is, ic,
+                                this.getPattern().getStackInSlot(x), x, all, Actionable.MODULATE,
+                                filter);
+                        ic.setItem(x, set[x]);
+                    }
+                }
+            }
+        }
+
+        if (this.preCraft(p, inv, set, is)) {
+            this.makeItem(p, is);
+
+            this.postCraft(p, inv, set, is);
+        }
+
+        p.containerMenu.slotsChanged(this.craftInv.toContainer());
+
+        return is;
     }
 
     private boolean preCraft(Player p, MEStorage inv, ItemStack[] set,
@@ -272,7 +279,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         }
 
         if (drops.size() > 0) {
-            Platform.spawnDrops(p.level, new BlockPos((int) p.getX(), (int) p.getY(), (int) p.getZ()), drops);
+            Platform.spawnDrops(p.level(), new BlockPos((int) p.getX(), (int) p.getY(), (int) p.getZ()), drops);
         }
     }
 

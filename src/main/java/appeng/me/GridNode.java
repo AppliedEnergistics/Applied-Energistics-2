@@ -20,7 +20,6 @@ package appeng.me;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Deque;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -28,14 +27,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.annotation.Nonnegative;
-import javax.annotation.Nullable;
+import java.util.UUID;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.MutableClassToInstanceMap;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
@@ -46,6 +45,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridConnection;
@@ -60,7 +60,6 @@ import appeng.api.parts.IPart;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AEColor;
 import appeng.core.AELog;
-import appeng.core.worlddata.IGridStorageSaveData;
 import appeng.me.pathfinding.IPathItem;
 
 public class GridNode implements IGridNode, IPathItem {
@@ -87,9 +86,7 @@ public class GridNode implements IGridNode, IPathItem {
     private AEItemKey visualRepresentation = null;
 
     private AEColor gridColor = AEColor.TRANSPARENT;
-    private long lastSecurityKey = -1;
     private int owningPlayerId = -1;
-    private GridStorage myStorage = null;
     private Grid myGrid;
     private Object visitorIterationNumber = null;
     // connection criteria
@@ -97,6 +94,12 @@ public class GridNode implements IGridNode, IPathItem {
     private int lastUsedChannels = 0;
     private final EnumSet<GridFlags> flags;
     private ClassToInstanceMap<IGridNodeService> services;
+
+    /**
+     * Loaded from NBT and used when the node joins the grid.
+     */
+    @Nullable
+    private CompoundTag savedData;
 
     public <T> GridNode(ServerLevel level,
             T owner,
@@ -143,8 +146,6 @@ public class GridNode implements IGridNode, IPathItem {
         if (gridConnection.isInWorld()) {
             callListener(IGridNodeListener::onInWorldConnectionChanged);
         }
-
-        connections.sort(new ConnectionComparator(this));
     }
 
     void removeConnection(IGridConnection gridConnection) {
@@ -247,7 +248,7 @@ public class GridNode implements IGridNode, IPathItem {
     /**
      * @param usagePerTick The power in AE/t that will be drained by this node.
      */
-    public void setIdlePowerUsage(@Nonnegative double usagePerTick) {
+    public void setIdlePowerUsage(double usagePerTick) {
         this.idlePowerUsage = usagePerTick;
         if (myGrid != null && ready) {
             myGrid.postEvent(new GridPowerIdleChange(this));
@@ -284,21 +285,17 @@ public class GridNode implements IGridNode, IPathItem {
             return;
         }
 
-        boolean wasPowered = isPowered();
+        // Save any data from the old grid to move it over to the new grid
         if (this.myGrid != null) {
+            this.savedData = new CompoundTag();
+            this.myGrid.saveNodeData(this, savedData);
             this.myGrid.remove(this);
-
-            if (this.myGrid.isEmpty()) {
-                this.myGrid.saveState();
-
-                for (var c : grid.getProviders()) {
-                    c.onJoin(this.myGrid.getMyStorage());
-                }
-            }
         }
 
+        boolean wasPowered = isPowered();
         this.myGrid = grid;
-        this.myGrid.add(this);
+        this.myGrid.add(this, savedData);
+
         callListener(IGridNodeListener::onGridChanged);
         if (wasPowered != isPowered()) {
             notifyStatusChange(IGridNodeListener.State.POWER);
@@ -352,10 +349,10 @@ public class GridNode implements IGridNode, IPathItem {
 
         connections.clear();
 
-        this.setGridStorage(null);
         AELog.grid("Destroyed node %s in grid %s", this, this.myGrid);
         if (this.myGrid != null) {
             this.myGrid.remove(this);
+            this.myGrid = null;
         }
     }
 
@@ -413,34 +410,55 @@ public class GridNode implements IGridNode, IPathItem {
         return myGrid.getEnergyService().isNetworkPowered();
     }
 
-    public void loadFromNBT(String name, CompoundTag nodeData) {
-        Preconditions.checkState(!ready, "Cannot load NBT when the node was marked as ready.");
-        if (this.myGrid != null) {
-            throw new IllegalStateException("Loading data after part of a grid, this is invalid.");
+    public void loadFromNBT(String name, CompoundTag nodeDataContainer) {
+        this.owningPlayerId = -1;
+
+        var oldNodeData = this.savedData;
+        if (nodeDataContainer.get(name) instanceof CompoundTag newNodeData) {
+            this.savedData = newNodeData;
+            if (newNodeData.contains("p", Tag.TAG_INT)) {
+                this.owningPlayerId = newNodeData.getInt("p");
+            }
+        } else {
+            this.savedData = null;
         }
 
-        if (nodeData.contains(name, Tag.TAG_COMPOUND)) {
-            final CompoundTag node = nodeData.getCompound(name);
-            this.owningPlayerId = node.getInt("p");
-            this.setLastSecurityKey(node.getLong("k"));
-
-            final long storageID = node.getLong("g");
-            final GridStorage gridStorage = IGridStorageSaveData.get(getLevel()).getGridStorage(storageID);
-            this.setGridStorage(gridStorage);
-        } else {
-            this.owningPlayerId = -1; // Unknown owner
-            setLastSecurityKey(-1);
-            setGridStorage(null);
+        // When we're already part of the grid, we kinda need to leave and rejoin if the data changed...
+        if (ready && this.myGrid != null && !areTagsEqualIgnoringPlayerId(this.savedData, oldNodeData)) {
+            AELog.debug("Resetting grid node %s to reload NBT", this);
+            this.destroy();
+            markReady();
         }
     }
 
-    public void saveToNBT(String name, CompoundTag nodeData) {
-        if (this.myStorage != null) {
-            final CompoundTag node = new CompoundTag();
+    private boolean areTagsEqualIgnoringPlayerId(CompoundTag newData, CompoundTag oldData) {
+        Set<String> newKeys = newData != null ? newData.getAllKeys() : Set.of();
+        Set<String> oldKeys = oldData != null ? oldData.getAllKeys() : Set.of();
+        for (var newKey : newKeys) {
+            if ("p".equals(newKey)) {
+                continue; // Ignore player ID
+            }
+            var newTag = newData.get(newKey);
+            var oldTag = oldData != null ? oldData.get(newKey) : null;
+            if (!Objects.equals(newTag, oldTag)) {
+                return false;
+            }
+        }
+        // Check for missing keys
+        for (var oldKey : oldKeys) {
+            if (!"p".equals(oldKey) && !newKeys.contains(oldKey)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
+    public void saveToNBT(String name, CompoundTag nodeData) {
+        if (this.myGrid != null) {
+
+            var node = new CompoundTag();
             node.putInt("p", this.owningPlayerId);
-            node.putLong("k", this.getLastSecurityKey());
-            node.putLong("g", this.myStorage.getID());
+            this.myGrid.saveNodeData(this, node);
 
             nodeData.put(name, node);
         } else {
@@ -477,6 +495,15 @@ public class GridNode implements IGridNode, IPathItem {
     @Override
     public int getOwningPlayerId() {
         return this.owningPlayerId;
+    }
+
+    @Override
+    public UUID getOwningPlayerProfileId() {
+        if (owningPlayerId == -1) {
+            return null;
+        }
+        IPlayerRegistry mapping = IPlayerRegistry.getMapping(level);
+        return mapping != null ? mapping.getProfileId(owningPlayerId) : null;
     }
 
     protected void findInWorldConnections() {
@@ -519,16 +546,6 @@ public class GridNode implements IGridNode, IPathItem {
                 nextRun.add(gn);
             }
         }
-    }
-
-    GridStorage getGridStorage() {
-        return this.myStorage;
-    }
-
-    void setGridStorage(GridStorage s) {
-        this.myStorage = s;
-        // Don't reset the channels, since we want the node to remain active until repathing is done to immediately
-        // re-add services (such as storage) for active nodes when they join the grid.
     }
 
     @Override
@@ -606,36 +623,12 @@ public class GridNode implements IGridNode, IPathItem {
         }
     }
 
-    public long getLastSecurityKey() {
-        return this.lastSecurityKey;
-    }
-
-    public void setLastSecurityKey(long lastSecurityKey) {
-        this.lastSecurityKey = lastSecurityKey;
-    }
-
     public double getPreviousDraw() {
         return this.previousDraw;
     }
 
     public void setPreviousDraw(double previousDraw) {
         this.previousDraw = previousDraw;
-    }
-
-    private static class ConnectionComparator implements Comparator<IGridConnection> {
-        private final IGridNode gn;
-
-        public ConnectionComparator(IGridNode gn) {
-            this.gn = gn;
-        }
-
-        @Override
-        public int compare(IGridConnection o1, IGridConnection o2) {
-            final boolean preferredA = o1.getOtherSide(this.gn).hasFlag(GridFlags.PREFERRED);
-            final boolean preferredB = o2.getOtherSide(this.gn).hasFlag(GridFlags.PREFERRED);
-
-            return preferredA == preferredB ? 0 : preferredA ? -1 : 1;
-        }
     }
 
     @Nullable

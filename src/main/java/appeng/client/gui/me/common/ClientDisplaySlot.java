@@ -1,6 +1,6 @@
 package appeng.client.gui.me.common;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 

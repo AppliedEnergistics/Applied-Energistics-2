@@ -22,7 +22,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -81,12 +81,6 @@ public interface IGridConnectedBlockEntity extends IActionHost, IOwnerAwareBlock
     default boolean ifGridPresent(Consumer<IGrid> action) {
         return getMainNode().ifPresent(action);
     }
-
-    /**
-     * Used to break the block entity when the grid detects a security violation. Implemented in
-     * {@link AEBaseBlockEntity#securityBreak()}
-     */
-    void securityBreak();
 
     /**
      * Used to save changes in the grid nodes contained in the block entity to disk. Implemented in

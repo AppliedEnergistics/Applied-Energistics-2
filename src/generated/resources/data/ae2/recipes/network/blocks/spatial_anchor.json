@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2:spatial_pylon"
+    },
+    "b": {
+      "item": "ae2:fluix_glass_cable"
+    },
+    "c": {
+      "item": "ae2:spatial_cell_component_128"
+    },
+    "d": {
+      "tag": "c:iron_ingots"
+    },
+    "e": {
+      "item": "ae2:engineering_processor"
+    }
+  },
+  "pattern": [
+    "aaa",
+    "bcb",
+    "ded"
+  ],
+  "result": {
+    "item": "ae2:spatial_anchor"
+  },
+  "show_notification": true
+}

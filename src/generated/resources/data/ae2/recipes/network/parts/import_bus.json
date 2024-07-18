@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2:annihilation_core"
+    },
+    "b": {
+      "tag": "c:iron_ingots"
+    },
+    "c": {
+      "item": "minecraft:sticky_piston"
+    }
+  },
+  "pattern": [
+    " a ",
+    "bcb"
+  ],
+  "result": {
+    "item": "ae2:import_bus"
+  },
+  "show_notification": true
+}

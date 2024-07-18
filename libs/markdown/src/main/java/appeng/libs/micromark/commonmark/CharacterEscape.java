@@ -34,32 +34,32 @@ public final class CharacterEscape {
             this.nok = nok;
         }
 
-            /**
-             * Start of a character escape.
-             *
-             * <pre>
-             * > | a\*b
-             *      ^
-             * </pre>
-             */
-            private State start(int code) {
-                    Assert.check(code == Codes.backslash, "expected `\\`");
-                    effects.enter(Types.characterEscape);
-                    effects.enter(Types.escapeMarker);
-                    effects.consume(code);
-                    effects.exit(Types.escapeMarker);
-                    return this::open;
-          }
+        /**
+         * Start of a character escape.
+         *
+         * <pre>
+         * > | a\*b
+         *      ^
+         * </pre>
+         */
+        private State start(int code) {
+            Assert.check(code == Codes.backslash, "expected `\\`");
+            effects.enter(Types.characterEscape);
+            effects.enter(Types.escapeMarker);
+            effects.consume(code);
+            effects.exit(Types.escapeMarker);
+            return this::open;
+        }
 
-            /**
-             * Inside a character escape, after `\`.
-             *
-             * <pre>
-             * > | a\*b
-             *       ^
-             * </pre>
-             */
-            private State open(int code) {
+        /**
+         * Inside a character escape, after `\`.
+         *
+         * <pre>
+         * > | a\*b
+         *       ^
+         * </pre>
+         */
+        private State open(int code) {
             if (CharUtil.asciiPunctuation(code)) {
                 effects.enter(Types.characterEscapeValue);
                 effects.consume(code);

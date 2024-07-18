@@ -44,8 +44,7 @@ final class JsxText {
                 "mdxJsxTextTagAttributeValueLiteralValue",
                 "mdxJsxTextTagAttributeValueExpression",
                 "mdxJsxTextTagAttributeValueExpressionMarker",
-                "mdxJsxTextTagAttributeValueExpressionValue"
-        );
+                "mdxJsxTextTagAttributeValueExpressionValue");
     }
 
 }

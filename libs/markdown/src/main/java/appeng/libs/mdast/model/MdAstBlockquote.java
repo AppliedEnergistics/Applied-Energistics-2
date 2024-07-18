@@ -1,7 +1,5 @@
 package appeng.libs.mdast.model;
 
-import java.util.List;
-
 /**
  * Blockquote (Parent) represents a section quoted from somewhere else.
  * <p>
@@ -13,13 +11,7 @@ import java.util.List;
  * <p>
  * Yields:
  * <p>
- * {
- * type: 'blockquote',
- * children: [{
- * type: 'paragraph',
- * children: [{type: 'text', value: 'Alpha bravo charlie.'}]
- * }]
- * }
+ * { type: 'blockquote', children: [{ type: 'paragraph', children: [{type: 'text', value: 'Alpha bravo charlie.'}] }] }
  */
 public class MdAstBlockquote extends MdAstParent<MdAstFlowContent> implements MdAstFlowContent {
     public MdAstBlockquote() {

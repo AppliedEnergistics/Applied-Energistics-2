@@ -1,0 +1,22 @@
+{
+    DataVersion: 3337,
+    size: [6, 2, 1],
+    data: [
+        {pos: [2, 0, 0], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 25105L, k: -1L, p: 1}, visual: {}}},
+        {pos: [3, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 83628L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsUp: 0, channelsWest: 1, connections: ["up", "west"], missingChannel: 0b, powered: 1b}}, east: {access: "READ_WRITE", filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 83628L, k: -1L, p: 0}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [4, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25102L, k: -1L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsDown: 3, channelsUp: 3, connections: ["down", "up"], missingChannel: 0b, powered: 1b}}, east: {access: "READ_WRITE", filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 25102L, k: -1L, p: 0}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {fuzzy_mode: "IGNORE_ALL", gn: {g: 25102L, k: -1L, p: 0}, id: "ae2:cable_interface", priority: 0, visual: {missingChannel: 0b, powered: 1b}}}},
+        {pos: [5, 0, 0], state: "minecraft:barrel{facing:north,open:false}", nbt: {Items: [], id: "minecraft:barrel"}},
+        {pos: [2, 1, 0], state: "ae2:cable_bus{light_level:9,waterlogged:false}", nbt: {cable: {gn: {g: 83628L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsDown: 1, channelsEast: 0, connections: ["down", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", north: {filter_type: "ALL", gn: {g: 83628L, k: -1L, p: 0}, id: "ae2:terminal", sort_by: "NAME", sort_direction: "ASCENDING", spin: 0b, view_mode: "ALL", visual: {missingChannel: 0b, powered: 1b}}, visual: {}}},
+        {pos: [3, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 83628L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsDown: 0, channelsEast: 0, channelsWest: 0, connections: ["down", "west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [4, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25102L, k: -1L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsDown: 3, channelsEast: 3, connections: ["down", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {gn: {g: 25102L, k: -1L, p: 0}, id: "ae2:quartz_fiber", outer: {g: 25105L, k: -1L, p: 0}, visual: {missingChannel: 0b, powered: 1b}}}},
+        {pos: [5, 1, 0], state: "ae2:drive{facing:north,spin:0}", nbt: {id: "ae2:drive", inv: {item0: {Count: 1b, id: "ae2:item_storage_cell_1k", tag: {}}, item1: {Count: 1b, id: "ae2:item_storage_cell_1k", tag: {}}, item2: {Count: 1b, id: "ae2:item_storage_cell_1k", tag: {}}, item3: {Count: 1b, id: "ae2:item_storage_cell_1k", tag: {}}, item4: {}, item5: {}, item6: {}, item7: {}, item8: {}, item9: {}}, priority: 0, proxy: {g: 25102L, k: -1L, p: 0}, visual: {cell0: {id: "ae2:item_storage_cell_1k", state: "empty"}, cell1: {id: "ae2:item_storage_cell_1k", state: "empty"}, cell2: {id: "ae2:item_storage_cell_1k", state: "empty"}, cell3: {id: "ae2:item_storage_cell_1k", state: "empty"}, online: 1b}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:controller{state:online,type:block}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "minecraft:barrel{facing:north,open:false}",
+        "ae2:cable_bus{light_level:9,waterlogged:false}",
+        "ae2:drive{facing:north,spin:0}"
+    ]
+}

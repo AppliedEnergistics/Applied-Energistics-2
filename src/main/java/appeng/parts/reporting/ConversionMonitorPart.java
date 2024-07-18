@@ -19,6 +19,7 @@
 package appeng.parts.reporting;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -27,16 +28,20 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.storage.ISubMenuHost;
 import appeng.api.storage.StorageHelper;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.PlayerSource;
+import appeng.menu.ISubMenu;
+import appeng.menu.locator.MenuLocators;
+import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.parts.PartModel;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.inv.PlayerInternalInventory;
 
-public class ConversionMonitorPart extends AbstractMonitorPart {
+public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMenuHost {
 
     @PartModels
     public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID,
@@ -78,6 +83,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         }
 
         final ItemStack eq = player.getItemInHand(hand);
+
         if (this.isLocked()) {
             if (eq.isEmpty()) {
                 this.insertItem(player, hand, true);
@@ -112,7 +118,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         }
 
         if (this.getDisplayed() instanceof AEItemKey itemKey) {
-            this.extractItem(player, itemKey.getItem().getMaxStackSize());
+            this.extractItem(player, itemKey.getMaxStackSize());
         }
 
         return true;
@@ -145,7 +151,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             var cell = grid.getStorageService().getInventory();
 
             if (allItems) {
-                if (this.getDisplayed() instanceof AEItemKey itemKey) {
+                if (getDisplayed() instanceof AEItemKey itemKey) {
                     var inv = new PlayerInternalInventory(player.getInventory());
 
                     for (int x = 0; x < inv.size(); x++) {
@@ -153,8 +159,8 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                         if (itemKey.matches(targetStack)) {
                             var canExtract = inv.extractItem(x, targetStack.getCount(), true);
                             if (!canExtract.isEmpty()) {
-                                var inserted = StorageHelper.poweredInsert(energy, cell, itemKey,
-                                        canExtract.getCount(), new PlayerSource(player, this));
+                                var inserted = StorageHelper.poweredInsert(energy, cell, itemKey, canExtract.getCount(),
+                                        new PlayerSource(player, this));
                                 inv.extractItem(x, (int) inserted, false);
                             }
                         }
@@ -163,8 +169,8 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             } else {
                 var input = player.getItemInHand(hand);
                 if (!input.isEmpty()) {
-                    var inserted = StorageHelper.poweredInsert(energy, cell, AEItemKey.of(input),
-                            input.getCount(), new PlayerSource(player, this));
+                    var inserted = StorageHelper.poweredInsert(energy, cell, AEItemKey.of(input), input.getCount(),
+                            new PlayerSource(player, this));
                     input.shrink((int) inserted);
                 }
             }
@@ -180,6 +186,12 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             return;
         }
 
+        if (getAmount() == 0 && canCraft()) {
+            CraftAmountMenu.open((ServerPlayer) player, MenuLocators.forPart(this), itemKey,
+                    itemKey.getAmountPerUnit());
+            return;
+        }
+
         getMainNode().ifPresent(grid -> {
             var energy = grid.getEnergyService();
             var cell = grid.getStorageService().getInventory();
@@ -187,7 +199,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             var retrieved = StorageHelper.poweredExtraction(energy, cell, itemKey, count,
                     new PlayerSource(player, this));
             if (retrieved != 0) {
-                ItemStack newItems = itemKey.toStack((int) retrieved);
+                var newItems = itemKey.toStack((int) retrieved);
                 if (!player.getInventory().add(newItems)) {
                     player.drop(newItems, false);
                 }
@@ -205,4 +217,13 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                 MODELS_LOCKED_HAS_CHANNEL);
     }
 
+    @Override
+    public void returnToMainMenu(Player player, ISubMenu subMenu) {
+        player.closeContainer();
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon() {
+        return new ItemStack(getPartItem());
+    }
 }

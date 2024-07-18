@@ -2,9 +2,9 @@ package appeng.menu.implementations;
 
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-
 import com.google.common.primitives.Ints;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -12,7 +12,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.level.Level;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.helpers.InterfaceLogicHost;
@@ -34,7 +33,6 @@ public class SetStockAmountMenu extends AEBaseMenu implements ISubMenu {
 
     public static final MenuType<SetStockAmountMenu> TYPE = MenuTypeBuilder
             .create(SetStockAmountMenu::new, InterfaceLogicHost.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("set_stock_amount");
 
     public static final String ACTION_SET_STOCK_AMOUNT = "setStockAmount";
@@ -86,14 +84,8 @@ public class SetStockAmountMenu extends AEBaseMenu implements ISubMenu {
         }
     }
 
-    @Override
-    public void broadcastChanges() {
-        super.broadcastChanges();
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
-    }
-
     public Level getLevel() {
-        return this.getPlayerInventory().player.level;
+        return this.getPlayerInventory().player.level();
     }
 
     private void setWhatToStock(int slot, AEKey whatToStock, int initialAmount) {

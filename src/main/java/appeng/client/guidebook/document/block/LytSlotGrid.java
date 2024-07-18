@@ -5,9 +5,9 @@ import java.util.List;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import appeng.client.gui.Icon;
+import appeng.client.guidebook.color.ConstantColor;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.layout.LayoutContext;
-import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.render.RenderContext;
 
 public class LytSlotGrid extends LytBox {
@@ -37,6 +37,26 @@ public class LytSlotGrid extends LytBox {
         for (var ingredient : ingredients) {
             if (!ingredient.isEmpty()) {
                 grid.setIngredient(0, index++, ingredient);
+            }
+        }
+        return grid;
+    }
+
+    public static LytSlotGrid row(List<Ingredient> ingredients, boolean skipEmpty) {
+        if (!skipEmpty) {
+            var grid = new LytSlotGrid(ingredients.size(), 1);
+            for (int i = 0; i < ingredients.size(); i++) {
+                grid.setIngredient(i, 0, ingredients.get(i));
+            }
+            return grid;
+        }
+
+        var nonEmptyIngredients = (int) ingredients.stream().filter(i -> !i.isEmpty()).count();
+        var grid = new LytSlotGrid(nonEmptyIngredients, 1);
+        var index = 0;
+        for (var ingredient : ingredients) {
+            if (!ingredient.isEmpty()) {
+                grid.setIngredient(index++, 0, ingredient);
             }
         }
         return grid;
@@ -103,7 +123,7 @@ public class LytSlotGrid extends LytBox {
                                 bounds.x() + LytSlot.OUTER_SIZE * x,
                                 bounds.y() + LytSlot.OUTER_SIZE * y,
                                 Icon.SLOT_BACKGROUND,
-                                ColorRef.WHITE);
+                                ConstantColor.WHITE);
                     }
                 }
             }

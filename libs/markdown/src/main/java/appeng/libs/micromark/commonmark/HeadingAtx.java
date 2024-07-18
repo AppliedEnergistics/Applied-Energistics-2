@@ -1,10 +1,12 @@
 package appeng.libs.micromark.commonmark;
 
+import java.util.List;
+
 import appeng.libs.micromark.Assert;
 import appeng.libs.micromark.CharUtil;
-import appeng.libs.micromark.ListUtils;
 import appeng.libs.micromark.Construct;
 import appeng.libs.micromark.ContentType;
+import appeng.libs.micromark.ListUtils;
 import appeng.libs.micromark.State;
 import appeng.libs.micromark.Token;
 import appeng.libs.micromark.TokenizeContext;
@@ -13,8 +15,6 @@ import appeng.libs.micromark.Types;
 import appeng.libs.micromark.factory.FactorySpace;
 import appeng.libs.micromark.symbol.Codes;
 import appeng.libs.micromark.symbol.Constants;
-
-import java.util.List;
 
 public final class HeadingAtx {
     private HeadingAtx() {
@@ -38,40 +38,35 @@ public final class HeadingAtx {
         }
 
         // Suffix whitespace, part of the closing.
-        if (
-                contentEnd - 2 > contentStart &&
-                        events.get(contentEnd).token().type.equals(Types.whitespace)
-        ) {
+        if (contentEnd - 2 > contentStart &&
+                events.get(contentEnd).token().type.equals(Types.whitespace)) {
             contentEnd -= 2;
         }
 
-        if (
-                events.get(contentEnd).token().type.equals(Types.atxHeadingSequence) &&
-                        (contentStart == contentEnd - 1 ||
-                                (contentEnd - 4 > contentStart &&
-                                        events.get(contentEnd - 2).token().type.equals(Types.whitespace)))
-        ) {
+        if (events.get(contentEnd).token().type.equals(Types.atxHeadingSequence) &&
+                (contentStart == contentEnd - 1 ||
+                        (contentEnd - 4 > contentStart &&
+                                events.get(contentEnd - 2).token().type.equals(Types.whitespace)))) {
             contentEnd -= contentStart + 1 == contentEnd ? 2 : 4;
         }
 
         if (contentEnd > contentStart) {
             var content = new Token();
-                    content.type = Types.atxHeadingText;
-                    content.start = events.get(contentStart).token().start;
-                    content.end = events.get(contentEnd).token().end;
+            content.type = Types.atxHeadingText;
+            content.start = events.get(contentStart).token().start;
+            content.end = events.get(contentEnd).token().end;
 
             var text = new Token();
-                    text.type = Types.chunkText;
-                    text.start = events.get(contentStart).token().start;
-                    text.end = events.get(contentEnd).token().end;
-                    text.contentType = ContentType.TEXT;
+            text.type = Types.chunkText;
+            text.start = events.get(contentStart).token().start;
+            text.end = events.get(contentEnd).token().end;
+            text.contentType = ContentType.TEXT;
 
             ListUtils.splice(events, contentStart, contentEnd - contentStart + 1, List.of(
-              Tokenizer.Event.enter(content, context),
-              Tokenizer.Event.enter(text, context),
-              Tokenizer.Event.exit(text, context),
-              Tokenizer.Event.exit(content, context)
-            ));
+                    Tokenizer.Event.enter(content, context),
+                    Tokenizer.Event.enter(text, context),
+                    Tokenizer.Event.exit(text, context),
+                    Tokenizer.Event.exit(content, context)));
         }
 
         return events;
@@ -92,7 +87,6 @@ public final class HeadingAtx {
             this.nok = nok;
         }
 
-        
         private State start(int code) {
             Assert.check(code == Codes.numberSign, "expected `#`");
             effects.enter(Types.atxHeading);
@@ -100,12 +94,9 @@ public final class HeadingAtx {
             return fenceOpenInside(code);
         }
 
-        
         private State fenceOpenInside(int code) {
-            if (
-                    code == Codes.numberSign &&
-                            size++ < Constants.atxHeadingOpeningFenceSizeMax
-            ) {
+            if (code == Codes.numberSign &&
+                    size++ < Constants.atxHeadingOpeningFenceSizeMax) {
                 effects.consume(code);
                 return this::fenceOpenInside;
             }
@@ -118,7 +109,6 @@ public final class HeadingAtx {
             return nok.step(code);
         }
 
-        
         private State headingBreak(int code) {
             if (code == Codes.numberSign) {
                 effects.enter(Types.atxHeadingSequence);
@@ -138,7 +128,6 @@ public final class HeadingAtx {
             return data(code);
         }
 
-        
         private State sequence(int code) {
             if (code == Codes.numberSign) {
                 effects.consume(code);
@@ -149,13 +138,10 @@ public final class HeadingAtx {
             return headingBreak(code);
         }
 
-        
         private State data(int code) {
-            if (
-                    code == Codes.eof ||
-                            code == Codes.numberSign ||
-                            CharUtil.markdownLineEndingOrSpace(code)
-            ) {
+            if (code == Codes.eof ||
+                    code == Codes.numberSign ||
+                    CharUtil.markdownLineEndingOrSpace(code)) {
                 effects.exit(Types.atxHeadingText);
                 return headingBreak(code);
             }

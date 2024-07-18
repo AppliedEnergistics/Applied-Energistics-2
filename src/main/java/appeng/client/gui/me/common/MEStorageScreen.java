@@ -23,16 +23,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.InputConstants.Key;
-import com.mojang.blaze3d.vertex.PoseStack;
 
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
@@ -40,7 +40,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.behaviors.ContainerItemStrategies;
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.config.ActionItems;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
@@ -54,6 +54,7 @@ import appeng.api.stacks.AmountFormat;
 import appeng.api.storage.AEKeyFilter;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.client.Hotkeys;
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.AESubScreen;
@@ -91,6 +92,8 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class MEStorageScreen<C extends MEStorageMenu>
         extends AEBaseScreen<C> implements ISortSource, IConfigManagerListener {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MEStorageScreen.class);
 
     private static final String TEXT_ID_ENTRIES_SHOWN = "entriesShown";
 
@@ -148,8 +151,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         if (this.style.isSupportsAutoCrafting()) {
-            this.craftingStatusBtn = new TabButton(Icon.PERMISSION_CRAFT,
-                    GuiText.CraftingStatus.text(), this.itemRenderer, btn -> showCraftingStatus());
+            this.craftingStatusBtn = new TabButton(Icon.CRAFT_HAMMER,
+                    GuiText.CraftingStatus.text(), btn -> showCraftingStatus());
             this.craftingStatusBtn.setStyle(TabButton.Style.CORNER);
             this.widgets.add("craftingStatus", this.craftingStatusBtn);
         }
@@ -238,8 +241,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         long serial = entry.getSerial();
 
-        // Move as many items of a single type as possible
         if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+            // Move everything from the same group of slots (i.e. player inventory excluding hotbar)
             menu.handleInteraction(serial, InventoryAction.MOVE_REGION);
         } else {
             InventoryAction action = null;
@@ -375,11 +378,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
             // This can change due to changes in the search settings sub-screen
             this.searchField.setTooltipMessage(List.of(
-                    config.isSearchTooltips() ? GuiText.SearchTooltipIncludingTooltips.text()
-                            : GuiText.SearchTooltip.text(),
+                    GuiText.SearchTooltip.text(),
                     GuiText.SearchTooltipModId.text(),
-                    GuiText.SearchTooltipItemId.text(),
-                    GuiText.SearchTooltipTag.text()));
+                    GuiText.SearchTooltipTag.text(),
+                    GuiText.SearchTooltipToolTips.text(),
+                    GuiText.SearchTooltipItemId.text()));
 
             // Sync the search text both ways but make the direction depend on which search has the focus
             if (config.isSyncWithExternalSearch()) {
@@ -406,14 +409,14 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY) {
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;
 
         // Render the pinned row decorations
         if (repo.hasPinnedRow()) {
-            renderPinnedRowDecorations(poseStack);
+            renderPinnedRowDecorations(guiGraphics);
         }
 
         // Show the number of active crafting jobs
@@ -423,12 +426,12 @@ public class MEStorageScreen<C extends MEStorageMenu>
             int x = this.craftingStatusBtn.getX() + (this.craftingStatusBtn.getWidth() - 16) / 2;
             int y = this.craftingStatusBtn.getY() + (this.craftingStatusBtn.getHeight() - 16) / 2;
 
-            StackSizeRenderer.renderSizeLabel(font, x - this.leftPos, y - this.topPos,
+            StackSizeRenderer.renderSizeLabel(guiGraphics, font, x - this.leftPos, y - this.topPos,
                     String.valueOf(menu.activeCraftingJobs));
         }
     }
 
-    private void renderPinnedRowDecorations(PoseStack poseStack) {
+    private void renderPinnedRowDecorations(GuiGraphics guiGraphics) {
         for (Slot slot : menu.slots) {
             if (slot instanceof RepoSlot repoSlot) {
                 var entry = repoSlot.getEntry();
@@ -439,7 +442,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     Blitter.texture("block/molecular_assembler_lights.png", 16, 192)
                             .src(2, 2 + frame * 16, 12, 12)
                             .dest(slot.x - 1, slot.y - 1, 18, 18)
-                            .blit(poseStack, getBlitOffset());
+                            .blit(guiGraphics);
                 }
             }
         }
@@ -513,15 +516,15 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+    public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY, float partialTicks) {
 
         style.getHeader()
                 .dest(offsetX, offsetY)
-                .blit(poseStack, getBlitOffset());
+                .blit(guiGraphics);
 
         int y = offsetY;
-        style.getHeader().dest(offsetX, y).blit(poseStack, getBlitOffset());
+        style.getHeader().dest(offsetX, y).blit(guiGraphics);
         y += style.getHeader().getSrcHeight();
 
         // To draw the first/last row, we need to at least draw 2
@@ -533,42 +536,40 @@ public class MEStorageScreen<C extends MEStorageMenu>
             } else if (x + 1 == rowsToDraw) {
                 row = style.getLastRow();
             }
-            row.dest(offsetX, y).blit(poseStack, getBlitOffset());
+            row.dest(offsetX, y).blit(guiGraphics);
             y += style.getRow().getSrcHeight();
         }
 
-        style.getBottom().dest(offsetX, y).blit(poseStack, getBlitOffset());
+        style.getBottom().dest(offsetX, y).blit(guiGraphics);
 
         // Draw the overlay for the pinned row
         if (repo.hasPinnedRow()) {
             Blitter.texture("guis/terminal.png")
                     .src(0, 204, 162, 18)
                     .dest(offsetX + 7, offsetY + style.getHeader().getSrcHeight())
-                    .blit(poseStack, getBlitOffset());
+                    .blit(guiGraphics);
         }
 
         if (this.searchField != null) {
-            this.searchField.render(poseStack, mouseX, mouseY, partialTicks);
+            this.searchField.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
 
     }
 
     @Override
-    public void renderSlot(PoseStack poseStack, Slot s) {
+    public void renderSlot(GuiGraphics guiGraphics, Slot s) {
         if (s instanceof RepoSlot repoSlot) {
             if (!this.repo.hasPower()) {
-                fill(poseStack, s.x, s.y, 16 + s.x, 16 + s.y, 0x66111111);
+                guiGraphics.fill(s.x, s.y, 16 + s.x, 16 + s.y, 0x66111111);
             } else {
                 GridInventoryEntry entry = repoSlot.getEntry();
                 if (entry != null) {
                     try {
-                        AEStackRendering.drawInGui(
+                        AEKeyRendering.drawInGui(
                                 minecraft,
-                                poseStack,
+                                guiGraphics,
                                 s.x,
-                                s.y,
-                                getBlitOffset(),
-                                entry.getWhat());
+                                s.y, entry.getWhat());
                     } catch (Exception err) {
                         AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
                     }
@@ -581,14 +582,14 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     if (craftable && (isViewOnlyCraftable() || storedAmount <= 0)) {
                         var craftLabelText = useLargeFonts ? GuiText.LargeFontCraft.getLocal()
                                 : GuiText.SmallFontCraft.getLocal();
-                        StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, craftLabelText);
+                        StackSizeRenderer.renderSizeLabel(guiGraphics, this.font, s.x, s.y, craftLabelText);
                     } else {
                         AmountFormat format = useLargeFonts ? AmountFormat.SLOT_LARGE_FONT
                                 : AmountFormat.SLOT;
                         var text = entry.getWhat().formatAmount(storedAmount, format);
-                        StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, text, useLargeFonts);
+                        StackSizeRenderer.renderSizeLabel(guiGraphics, this.font, s.x, s.y, text, useLargeFonts);
                         if (craftable) {
-                            StackSizeRenderer.renderSizeLabel(this.font, s.x - 11, s.y - 11, "+", false);
+                            StackSizeRenderer.renderSizeLabel(guiGraphics, this.font, s.x - 11, s.y - 11, "+", false);
                         }
                     }
                 }
@@ -597,7 +598,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
             return;
         }
 
-        super.renderSlot(poseStack, s);
+        super.renderSlot(guiGraphics, s);
     }
 
     /**
@@ -608,14 +609,14 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    protected void renderTooltip(PoseStack poseStack, int x, int y) {
+    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
         if (this.hoveredSlot instanceof RepoSlot repoSlot) {
             var carried = menu.getCarried();
             if (!carried.isEmpty()) {
                 var emptyingAction = ContainerItemStrategies.getEmptyingAction(carried);
                 if (emptyingAction != null && menu.isKeyVisible(emptyingAction.what())) {
                     drawTooltip(
-                            poseStack,
+                            guiGraphics,
                             x,
                             y,
                             Tooltips.getEmptyingTooltip(ButtonToolTips.StoreAction, carried, emptyingAction));
@@ -629,18 +630,18 @@ public class MEStorageScreen<C extends MEStorageMenu>
             if (carried.isEmpty()) {
                 GridInventoryEntry entry = repoSlot.getEntry();
                 if (entry != null) {
-                    renderGridInventoryEntryTooltip(poseStack, entry, x, y);
+                    renderGridInventoryEntryTooltip(guiGraphics, entry, x, y);
                 }
             }
             return;
         }
 
-        super.renderTooltip(poseStack, x, y);
+        super.renderTooltip(guiGraphics, x, y);
     }
 
-    protected void renderGridInventoryEntryTooltip(PoseStack poseStack, GridInventoryEntry entry, int x, int y) {
+    protected void renderGridInventoryEntryTooltip(GuiGraphics guiGraphics, GridInventoryEntry entry, int x, int y) {
 
-        var currentToolTip = AEStackRendering.getTooltip(entry.getWhat());
+        var currentToolTip = AEKeyRendering.getTooltip(entry.getWhat());
 
         if (Tooltips.shouldShowAmountTooltip(entry.getWhat(), entry.getStoredAmount())) {
             currentToolTip.add(
@@ -666,9 +667,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
         // Special case to support the Item API of visual tooltip components
         if (entry.getWhat() instanceof AEItemKey itemKey) {
             var stack = itemKey.toStack();
-            this.renderTooltip(poseStack, currentToolTip, stack.getTooltipImage(), x, y);
+            guiGraphics.renderTooltip(font, currentToolTip, stack.getTooltipImage(), x, y);
         } else {
-            this.renderComponentTooltip(poseStack, currentToolTip, x, y);
+            guiGraphics.renderComponentTooltip(font, currentToolTip, x, y);
         }
     }
 
@@ -676,10 +677,6 @@ public class MEStorageScreen<C extends MEStorageMenu>
     public boolean charTyped(char character, int modifiers) {
         if (character == ' ' && this.searchField.getValue().isEmpty()) {
             return true;
-        }
-
-        if (shouldAutoFocus() && !this.searchField.isFocused() && isHovered()) {
-            this.setInitialFocus(this.searchField);
         }
 
         return super.charTyped(character, modifiers);
@@ -692,14 +689,14 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        Key input = InputConstants.getKey(keyCode, scanCode);
-        if (this.checkHotbarKeys(input)) {
+        if (this.searchField.isFocused() && keyCode == GLFW.GLFW_KEY_ENTER) {
+            this.searchField.setFocused(false);
+            this.setFocused(null);
             return true;
         }
 
-        if (this.searchField.isFocused() && keyCode == GLFW.GLFW_KEY_ENTER) {
-            this.searchField.setFocus(false);
-            this.setFocused(null);
+        if (!this.searchField.isFocused() && isCloseHotkey(keyCode, scanCode)) {
+            this.getPlayer().closeContainer();
             return true;
         }
 
@@ -790,6 +787,19 @@ public class MEStorageScreen<C extends MEStorageMenu>
         storeState();
         new ArrayList<>(this.children()).forEach(this::removeWidget);
         this.init();
+    }
+
+    private boolean isCloseHotkey(int keyCode, int scanCode) {
+        var hotkeyId = getMenu().getHost().getCloseHotkey();
+        if (hotkeyId != null) {
+            var hotkey = Hotkeys.getHotkeyMapping(hotkeyId);
+            if (hotkey != null) {
+                return hotkey.mapping().matches(keyCode, scanCode);
+            } else {
+                LOG.warn("Terminal host returned unknown hotkey id: {}", hotkeyId);
+            }
+        }
+        return false;
     }
 
     /**

@@ -2,6 +2,10 @@
   "$schema": "schema.json",
   "includes": ["crafting_cpu.json"],
   "widgets": {
+    "verticalToolbar": {
+      "right": -20,
+      "top": 6
+    },
     "back": {
       "left": 213,
       "top": -4,

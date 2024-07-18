@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.google.common.base.Preconditions;
+
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherNode;
 import appeng.me.service.EnergyService;
@@ -50,6 +52,8 @@ public class EnergyWatcher implements IEnergyWatcher {
 
     @Override
     public boolean add(double amount) {
+        Preconditions.checkArgument(amount >= 0, "amount must be >= 0");
+
         final EnergyThreshold eh = new EnergyThreshold(amount, this);
 
         if (this.myInterests.contains(eh)) {
@@ -61,6 +65,8 @@ public class EnergyWatcher implements IEnergyWatcher {
 
     @Override
     public boolean remove(double amount) {
+        Preconditions.checkArgument(amount >= 0, "amount must be >= 0");
+
         final EnergyThreshold eh = new EnergyThreshold(amount, this);
 
         return this.myInterests.remove(eh) && this.service.unregisterEnergyInterest(eh);

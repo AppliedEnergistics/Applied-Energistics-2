@@ -23,18 +23,16 @@
 
 package appeng.api.networking;
 
-import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.events.GridEvent;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.GridConnection;
@@ -184,11 +182,9 @@ public final class GridHelper {
      *
      * @param a to be connected gridnode
      * @param b to be connected gridnode
+     * @throws IllegalStateException If the nodes are already connected.
      */
-    public static IGridConnection createGridConnection(IGridNode a, IGridNode b) throws FailedConnectionException {
-        Objects.requireNonNull(a);
-        Objects.requireNonNull(b);
-
+    public static IGridConnection createConnection(IGridNode a, IGridNode b) {
         return GridConnection.create(a, b, null);
     }
 

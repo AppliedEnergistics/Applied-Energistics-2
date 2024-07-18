@@ -35,6 +35,7 @@ public class MEInventoryHandler extends DelegatingMEInventory {
     private boolean filterAvailableContents;
     private boolean allowExtraction = true;
     private boolean allowInsertion = true;
+    private boolean voidOverflow;
 
     private boolean gettingAvailableContent = false;
 
@@ -71,13 +72,18 @@ public class MEInventoryHandler extends DelegatingMEInventory {
         this.filterAvailableContents = filterAvailableContents;
     }
 
+    public void setVoidOverflow(boolean voidOverflow) {
+        this.voidOverflow = voidOverflow;
+    }
+
     @Override
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         if (!this.allowInsertion || !passesBlackOrWhitelist(what)) {
             return 0;
         }
 
-        return super.insert(what, amount, mode, source);
+        final var inserted = super.insert(what, amount, mode, source);
+        return this.voidOverflow ? amount : inserted;
     }
 
     @Override

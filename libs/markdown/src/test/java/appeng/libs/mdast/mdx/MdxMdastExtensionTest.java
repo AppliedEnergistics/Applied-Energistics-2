@@ -1,14 +1,15 @@
 package appeng.libs.mdast.mdx;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
+
 import appeng.libs.mdast.AbstractMdAstTest;
 import appeng.libs.mdast.MdAst;
 import appeng.libs.mdast.MdastOptions;
 import appeng.libs.mdast.model.MdAstRoot;
 import appeng.libs.mdx.MdxSyntax;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MdxMdastExtensionTest extends AbstractMdAstTest {
 
@@ -52,8 +53,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -81,8 +81,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -110,8 +109,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -139,8 +137,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -170,8 +167,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -199,8 +195,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -244,8 +239,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -282,8 +276,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -318,8 +311,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -335,8 +327,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -352,8 +343,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -374,8 +364,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -401,8 +390,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -434,8 +422,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -459,8 +446,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -486,8 +472,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -515,8 +500,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -537,8 +521,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -562,7 +545,8 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
         var e = assertThrows(Exception.class, () -> {
             fromMdx("a <></b>");
         });
-        assertEquals("Unexpected closing tag `</b>`, expected corresponding closing tag for `<>` (1:3-1:5)", e.getMessage());
+        assertEquals("Unexpected closing tag `</b>`, expected corresponding closing tag for `<>` (1:3-1:5)",
+                e.getMessage());
     }
 
     @Test
@@ -570,7 +554,8 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
         var e = assertThrows(Exception.class, () -> {
             fromMdx("a <b></>");
         });
-        assertEquals("Unexpected closing tag `</>`, expected corresponding closing tag for `<b>` (1:3-1:6)", e.getMessage());
+        assertEquals("Unexpected closing tag `</>`, expected corresponding closing tag for `<b>` (1:3-1:6)",
+                e.getMessage());
     }
 
     @Test
@@ -578,7 +563,8 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
         var e = assertThrows(Exception.class, () -> {
             fromMdx("a <a.b></a>");
         });
-        assertEquals("Unexpected closing tag `</a>`, expected corresponding closing tag for `<a.b>` (1:3-1:8)", e.getMessage());
+        assertEquals("Unexpected closing tag `</a>`, expected corresponding closing tag for `<a.b>` (1:3-1:8)",
+                e.getMessage());
     }
 
     @Test
@@ -586,7 +572,8 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
         var e = assertThrows(Exception.class, () -> {
             fromMdx("a <a></a.b>");
         });
-        assertEquals("Unexpected closing tag `</a.b>`, expected corresponding closing tag for `<a>` (1:3-1:6)", e.getMessage());
+        assertEquals("Unexpected closing tag `</a.b>`, expected corresponding closing tag for `<a>` (1:3-1:6)",
+                e.getMessage());
     }
 
     @Test
@@ -594,7 +581,8 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
         var e = assertThrows(Exception.class, () -> {
             fromMdx("a <a.b></a.c>");
         });
-        assertEquals("Unexpected closing tag `</a.c>`, expected corresponding closing tag for `<a.b>` (1:3-1:8)", e.getMessage());
+        assertEquals("Unexpected closing tag `</a.c>`, expected corresponding closing tag for `<a.b>` (1:3-1:8)",
+                e.getMessage());
     }
 
     @Test
@@ -602,7 +590,8 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
         var e = assertThrows(Exception.class, () -> {
             fromMdx("a <a:b></a>");
         });
-        assertEquals("Unexpected closing tag `</a>`, expected corresponding closing tag for `<a:b>` (1:3-1:8)", e.getMessage());
+        assertEquals("Unexpected closing tag `</a>`, expected corresponding closing tag for `<a:b>` (1:3-1:8)",
+                e.getMessage());
     }
 
     @Test
@@ -610,7 +599,8 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
         var e = assertThrows(Exception.class, () -> {
             fromMdx("a <a></a:b>");
         });
-        assertEquals("Unexpected closing tag `</a:b>`, expected corresponding closing tag for `<a>` (1:3-1:6)", e.getMessage());
+        assertEquals("Unexpected closing tag `</a:b>`, expected corresponding closing tag for `<a>` (1:3-1:6)",
+                e.getMessage());
     }
 
     @Test
@@ -618,7 +608,8 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
         var e = assertThrows(Exception.class, () -> {
             fromMdx("a <a:b></a:c>");
         });
-        assertEquals("Unexpected closing tag `</a:c>`, expected corresponding closing tag for `<a:b>` (1:3-1:8)", e.getMessage());
+        assertEquals("Unexpected closing tag `</a:c>`, expected corresponding closing tag for `<a:b>` (1:3-1:8)",
+                e.getMessage());
     }
 
     @Test
@@ -626,7 +617,8 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
         var e = assertThrows(Exception.class, () -> {
             fromMdx("a <a:b></a.b>");
         });
-        assertEquals("Unexpected closing tag `</a.b>`, expected corresponding closing tag for `<a:b>` (1:3-1:8)", e.getMessage());
+        assertEquals("Unexpected closing tag `</a.b>`, expected corresponding closing tag for `<a:b>` (1:3-1:8)",
+                e.getMessage());
     }
 
     @Test
@@ -678,8 +670,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -709,14 +700,14 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
     void shouldSupportCharacterReferencesInAttributeValues() {
         assertJsonEquals(
-                removePosition(fromMdx("<x y=\"Character references can be used: &quot;, &apos;, &lt;, &gt;, &#x7B;, and &#x7D;, they can be named, decimal, or hexadecimal: &copy; &#8800; &#x1D306;\" />")),
+                removePosition(fromMdx(
+                        "<x y=\"Character references can be used: &quot;, &apos;, &lt;, &gt;, &#x7B;, and &#x7D;, they can be named, decimal, or hexadecimal: &copy; &#8800; &#x1D306;\" />")),
                 """
 
                               {
@@ -738,8 +729,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -766,8 +756,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -789,8 +778,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -830,7 +818,9 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
         var e = assertThrows(Exception.class, () -> {
             fromMdx("<b> a *open </b> close* d.");
         });
-        assertEquals("Expected the closing tag `</b>` either after the end of `emphasis` (1:24) or another opening tag after the start of `emphasis` (1:7)", e.getMessage());
+        assertEquals(
+                "Expected the closing tag `</b>` either after the end of `emphasis` (1:24) or another opening tag after the start of `emphasis` (1:7)",
+                e.getMessage());
     }
 
     @Test
@@ -863,8 +853,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -899,8 +888,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -942,8 +930,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -978,10 +965,8 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
-
 
     @Test
     void shouldSupportBlockQuotesInFlow() {
@@ -1011,8 +996,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -1061,8 +1045,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -1107,8 +1090,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     @Test
@@ -1138,8 +1120,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
                         ]
                           }
 
-                               """
-        );
+                               """);
     }
 
     private static MdAstRoot fromMdx(String markdown) {

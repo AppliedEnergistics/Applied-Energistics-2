@@ -1,0 +1,33 @@
+{
+    DataVersion: 3460,
+    size: [6, 2, 3],
+    data: [
+        {pos: [1, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 621896L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 1, channelsWest: 1, connections: ["west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 621896L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 0, channelsUp: 1, channelsWest: 1, connections: ["up", "west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [3, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 621896L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 0, channelsSouth: 0, channelsUp: 0, channelsWest: 0, connections: ["up", "south", "west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [3, 0, 1], state: "ae2:growth_accelerator{facing:north,powered:true}", nbt: {id: "ae2:growth_accelerator", proxy: {g: 621896L, p: 0}, visual: {}}},
+        {pos: [3, 0, 2], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 621896L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 0, channelsNorth: 0, connections: ["north", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [4, 0, 0], state: "ae2:growth_accelerator{facing:east,powered:true}", nbt: {id: "ae2:growth_accelerator", proxy: {g: 621896L, p: 0}, visual: {}}},
+        {pos: [4, 0, 1], state: "ae2:flawless_budding_quartz"},
+        {pos: [4, 0, 2], state: "ae2:growth_accelerator{facing:west,powered:true}", nbt: {id: "ae2:growth_accelerator", proxy: {g: 621896L, p: 0}, visual: {}}},
+        {pos: [5, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 621896L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsSouth: 0, channelsWest: 0, connections: ["south", "west"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [5, 0, 1], state: "ae2:growth_accelerator{facing:south,powered:true}", nbt: {id: "ae2:growth_accelerator", proxy: {g: 621896L, p: 0}, visual: {}}},
+        {pos: [5, 0, 2], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 621896L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsNorth: 0, channelsWest: 0, connections: ["north", "west"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 621896L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsDown: 1, connections: ["down"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", south: {access: "READ_WRITE", config: [{"#": 0L, "#c": "ae2:i", id: "ae2:certus_quartz_crystal"}], filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 621896L, p: 0}, id: "ae2:storage_bus", priority: 1, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}, visual: {}}},
+        {pos: [2, 1, 1], state: "minecraft:barrel{facing:up,open:false}", nbt: {Items: [{Count: 24b, Slot: 0b, id: "ae2:certus_quartz_crystal"}], id: "minecraft:barrel"}},
+        {pos: [3, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 621898L, p: 0}, id: "ae2:orange_smart_cable", visual: {channelsSouth: 2, connections: ["south"], missingChannel: 0b, powered: 1b}}, down: {gn: {g: 621898L, p: 0}, id: "ae2:quartz_fiber", outer: {g: 621896L, p: 0}, visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [3, 1, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 621898L, p: 0}, id: "ae2:orange_smart_cable", visual: {channelsNorth: 2, connections: ["north"], missingChannel: 0b, powered: 1b}}, east: {Enchantments: [{id: "minecraft:fortune", lvl: 3s}], gn: {g: 621898L, p: 0}, id: "ae2:annihilation_plane", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {access: "READ_WRITE", config: [{"#": 0L, "#c": "ae2:i", id: "ae2:certus_quartz_crystal"}], filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 621898L, p: 0}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}}},
+        {pos: [4, 1, 1], state: "ae2:large_quartz_bud{facing:up,waterlogged:false}"}
+    ],
+    entities: [],
+    palette: [
+        "ae2:flawless_budding_quartz",
+        "ae2:large_quartz_bud{facing:up,waterlogged:false}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "ae2:growth_accelerator{facing:north,powered:true}",
+        "ae2:growth_accelerator{facing:east,powered:true}",
+        "ae2:growth_accelerator{facing:west,powered:true}",
+        "ae2:growth_accelerator{facing:south,powered:true}",
+        "minecraft:barrel{facing:up,open:false}"
+    ]
+}

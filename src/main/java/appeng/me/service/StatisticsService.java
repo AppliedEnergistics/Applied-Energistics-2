@@ -25,7 +25,10 @@ import java.util.Set;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
@@ -65,7 +68,7 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
     }
 
     @Override
-    public void addNode(IGridNode node) {
+    public void addNode(IGridNode node, @Nullable CompoundTag savedData) {
         if (node instanceof InWorldGridNode inWorldNode) {
             this.addChunk(inWorldNode.getLevel(), inWorldNode.getLocation());
         }

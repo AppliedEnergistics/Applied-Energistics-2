@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "fabric:type": "fabric:difference",
+      "base": {
+        "tag": "ae2:covered_cable"
+      },
+      "subtracted": {
+        "item": "ae2:fluix_covered_cable"
+      }
+    },
+    {
+      "tag": "ae2:can_remove_color"
+    }
+  ],
+  "result": {
+    "item": "ae2:fluix_covered_cable"
+  }
+}

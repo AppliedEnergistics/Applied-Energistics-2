@@ -19,10 +19,11 @@
 package appeng.crafting.execution;
 
 import java.util.ArrayList;
-
-import javax.annotation.Nullable;
+import java.util.UUID;
 
 import com.google.common.collect.Iterables;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -71,10 +72,10 @@ public class CraftingCpuHelper {
         return null;
     }
 
-    public static CompoundTag generateLinkData(String craftingID, boolean standalone, boolean req) {
+    public static CompoundTag generateLinkData(UUID craftId, boolean standalone, boolean req) {
         final CompoundTag tag = new CompoundTag();
 
-        tag.putString("CraftID", craftingID);
+        tag.putUUID("craftId", craftId);
         tag.putBoolean("canceled", false);
         tag.putBoolean("done", false);
         tag.putBoolean("standalone", standalone);

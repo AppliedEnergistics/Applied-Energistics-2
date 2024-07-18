@@ -1,8 +1,9 @@
 package appeng.libs.micromark.misc;
 
-import appeng.libs.micromark.TestUtil;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import appeng.libs.micromark.TestUtil;
 
 public class ByteOrderMarkTest {
     @ParameterizedTest(name = "[{index}] {2}")

@@ -6,12 +6,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.Nullable;
@@ -43,10 +46,15 @@ import net.minecraft.world.flag.FeatureFlagSet;
 
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.extensions.DefaultExtensions;
+import appeng.client.guidebook.extensions.Extension;
+import appeng.client.guidebook.extensions.ExtensionCollection;
+import appeng.client.guidebook.extensions.ExtensionPoint;
 import appeng.client.guidebook.indices.CategoryIndex;
 import appeng.client.guidebook.indices.ItemIndex;
 import appeng.client.guidebook.indices.PageIndex;
 import appeng.client.guidebook.navigation.NavigationTree;
+import appeng.client.guidebook.screen.GlobalInMemoryHistory;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.util.Platform;
 
@@ -59,11 +67,11 @@ public final class Guide implements PageCollection {
 
     private final String defaultNamespace;
     private final String folder;
-
     private final Map<ResourceLocation, ParsedGuidePage> developmentPages = new HashMap<>();
     private final Map<Class<?>, PageIndex> indices;
     private NavigationTree navigationTree = new NavigationTree();
     private Map<ResourceLocation, ParsedGuidePage> pages;
+    private final ExtensionCollection extensions;
 
     @Nullable
     private final Path developmentSourceFolder;
@@ -74,12 +82,18 @@ public final class Guide implements PageCollection {
             String folder,
             @Nullable Path developmentSourceFolder,
             @Nullable String developmentSourceNamespace,
-            Map<Class<?>, PageIndex> indices) {
+            Map<Class<?>, PageIndex> indices,
+            ExtensionCollection extensions) {
         this.defaultNamespace = defaultNamespace;
         this.folder = folder;
         this.developmentSourceFolder = developmentSourceFolder;
         this.developmentSourceNamespace = developmentSourceNamespace;
         this.indices = indices;
+        this.extensions = extensions;
+    }
+
+    public String getDefaultNamespace() {
+        return defaultNamespace;
     }
 
     @Override
@@ -121,7 +135,7 @@ public final class Guide implements PageCollection {
 
     // Run a fake datapack reload to properly compile the page (Recipes, Tags, etc.)
     // Only used when we try to compile pages before entering a world (validation, show on startup)
-    private static void runDatapackReload() {
+    public static void runDatapackReload() {
         try {
             var layeredAccess = RegistryLayer.createRegistryAccess();
 
@@ -150,6 +164,7 @@ public final class Guide implements PageCollection {
                     Runnable::run).get();
             stuff.updateRegistryTags(layeredAccess.compositeAccess());
             Platform.fallbackClientRecipeManager = stuff.getRecipeManager();
+            Platform.fallbackClientRegistryAccess = layeredAccess.compositeAccess();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -171,7 +186,17 @@ public final class Guide implements PageCollection {
     public GuidePage getPage(ResourceLocation id) {
         var page = getParsedPage(id);
 
-        return page != null ? PageCompiler.compile(this, page) : null;
+        return page != null ? PageCompiler.compile(this, extensions, page) : null;
+    }
+
+    public Collection<ParsedGuidePage> getPages() {
+        if (pages == null) {
+            throw new IllegalStateException("Pages are not loaded yet.");
+        }
+
+        var pages = new HashMap<>(this.pages);
+        pages.putAll(developmentPages);
+        return pages.values();
     }
 
     @Override
@@ -228,6 +253,10 @@ public final class Guide implements PageCollection {
             }
         }
         return null;
+    }
+
+    public ExtensionCollection getExtensions() {
+        return extensions;
     }
 
     private class ReloadListener extends SimplePreparableReloadListener<Map<ResourceLocation, ParsedGuidePage>>
@@ -357,6 +386,7 @@ public final class Guide implements PageCollection {
         private final String defaultNamespace;
         private final String folder;
         private final Map<Class<?>, PageIndex> indices = new IdentityHashMap<>();
+        private final ExtensionCollection.Builder extensionsBuilder = ExtensionCollection.builder();
         private boolean registerReloadListener = true;
         @Nullable
         private ResourceLocation startupPage;
@@ -364,6 +394,9 @@ public final class Guide implements PageCollection {
         private Path developmentSourceFolder;
         private String developmentSourceNamespace;
         private boolean watchDevelopmentSources = true;
+        private boolean disableDefaultExtensions = false;
+        private final Set<ExtensionPoint<?>> disableDefaultsForExtensionPoints = Collections
+                .newSetFromMap(new IdentityHashMap<>());
 
         private Builder(String defaultNamespace, String folder) {
             this.defaultNamespace = Objects.requireNonNull(defaultNamespace, "defaultNamespace");
@@ -389,8 +422,7 @@ public final class Guide implements PageCollection {
 
             // Development sources folder
             var devSourcesFolderProperty = String.format(Locale.ROOT, "guideDev.%s.sources", folder);
-            var devSourcesNamespaceProperty = String.format(Locale.ROOT, "guideDev.%s.sourcesNamespace",
-                    defaultNamespace);
+            var devSourcesNamespaceProperty = String.format(Locale.ROOT, "guideDev.%s.sourcesNamespace", folder);
             var sourceFolder = System.getProperty(devSourcesFolderProperty);
             if (sourceFolder != null) {
                 developmentSourceFolder = Paths.get(sourceFolder);
@@ -408,6 +440,25 @@ public final class Guide implements PageCollection {
          */
         public Builder registerReloadListener(boolean enable) {
             this.registerReloadListener = enable;
+            return this;
+        }
+
+        /**
+         * Stops the builder from adding any of the default extensions. Use
+         * {@link #disableDefaultExtensions(ExtensionPoint)} to disable the default extensions only for one of the
+         * extension points.
+         */
+        public Builder disableDefaultExtensions() {
+            this.disableDefaultExtensions = true;
+            return this;
+        }
+
+        /**
+         * Stops the builder from adding any of the default extensions to the given extension point.
+         * {@link #disableDefaultExtensions()} takes precedence and will disable all extension points.
+         */
+        public Builder disableDefaultExtensions(ExtensionPoint<?> extensionPoint) {
+            this.disableDefaultsForExtensionPoints.add(extensionPoint);
             return this;
         }
 
@@ -493,11 +544,21 @@ public final class Guide implements PageCollection {
         }
 
         /**
+         * Adds an extension to the given extension point for this guide.
+         */
+        public <T extends Extension> Builder extension(ExtensionPoint<T> extensionPoint, T extension) {
+            extensionsBuilder.add(extensionPoint, extension);
+            return this;
+        }
+
+        /**
          * Creates the guide.
          */
         public Guide build() {
+            var extensionCollection = buildExtensions();
+
             var guide = new Guide(defaultNamespace, folder, developmentSourceFolder, developmentSourceNamespace,
-                    indices);
+                    indices, extensionCollection);
 
             if (registerReloadListener) {
                 guide.registerReloadListener();
@@ -515,7 +576,8 @@ public final class Guide implements PageCollection {
                 if (startupPage != null) {
                     reloadFuture = reloadFuture.thenRun(() -> {
                         var client = Minecraft.getInstance();
-                        client.setScreen(GuideScreen.openNew(guide, PageAnchor.page(startupPage)));
+                        client.setScreen(GuideScreen.openNew(guide, PageAnchor.page(startupPage),
+                                GlobalInMemoryHistory.INSTANCE));
                     });
                 }
                 reloadFuture.whenComplete((unused, throwable) -> {
@@ -526,6 +588,18 @@ public final class Guide implements PageCollection {
             }
 
             return guide;
+        }
+
+        private ExtensionCollection buildExtensions() {
+            var builder = ExtensionCollection.builder();
+
+            if (!disableDefaultExtensions) {
+                DefaultExtensions.addAll(builder, disableDefaultsForExtensionPoints);
+            }
+
+            builder.addAll(extensionsBuilder);
+
+            return builder.build();
         }
     }
 

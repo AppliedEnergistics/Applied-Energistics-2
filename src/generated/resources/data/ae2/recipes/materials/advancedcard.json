@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "c:diamonds"
+    },
+    "b": {
+      "tag": "c:iron_ingots"
+    },
+    "c": {
+      "tag": "c:redstone_dusts"
+    },
+    "d": {
+      "item": "ae2:calculation_processor"
+    }
+  },
+  "pattern": [
+    "ab ",
+    "cdb",
+    "ab "
+  ],
+  "result": {
+    "count": 2,
+    "item": "ae2:advanced_card"
+  },
+  "show_notification": true
+}

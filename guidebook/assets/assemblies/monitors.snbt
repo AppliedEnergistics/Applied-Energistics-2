@@ -1,0 +1,12 @@
+{
+    DataVersion: 3337,
+    size: [2, 1, 1],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:cable_bus{light_level:9,waterlogged:false}", nbt: {cable: {gn: {g: 104636L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 2, connections: ["east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", north: {configuredItem: {"#c": "ae2:i", id: "minecraft:oak_planks"}, gn: {g: 104636L, k: -1L, p: 0}, id: "ae2:conversion_monitor", isLocked: 1b, spin: 0b, visual: {amount: 65L, missingChannel: 0b, powered: 1b}}, visual: {}}},
+        {pos: [1, 0, 0], state: "ae2:cable_bus{light_level:9,waterlogged:false}", nbt: {cable: {gn: {g: 104636L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsDown: 2, channelsWest: 2, connections: ["west"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", north: {configuredItem: {"#c": "ae2:i", id: "minecraft:cobblestone"}, gn: {g: 104636L, k: -1L, p: 0}, id: "ae2:storage_monitor", isLocked: 1b, spin: 0b, visual: {amount: 128L, missingChannel: 0b, powered: 1b}}, visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:cable_bus{light_level:9,waterlogged:false}"
+    ]
+}

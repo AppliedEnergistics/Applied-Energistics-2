@@ -1,0 +1,38 @@
+{
+  "parent": "ae2:main/glass_cable",
+  "criteria": {
+    "part": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:storage_bus"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "achievement.ae2.StorageBus.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "ae2:storage_bus"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "achievement.ae2.StorageBus"
+    }
+  },
+  "requirements": [
+    [
+      "part"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

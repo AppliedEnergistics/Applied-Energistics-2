@@ -40,9 +40,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootDataType;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer.Builder;
 import net.minecraft.world.level.storage.loot.entries.TagEntry;
@@ -69,11 +69,12 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
         return ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
                 .put(AEBlocks.MATRIX_FRAME.block(), $ -> LootTable.lootTable())
                 .put(AEBlocks.MYSTERIOUS_CUBE.block(), BlockDropProvider::mysteriousCube)
-                // Budding quartz degrades by 1 with silk touch, and degrades entirely without silk touch.
-                .put(AEBlocks.FLAWLESS_BUDDING_QUARTZ.block(), b -> buddingQuartz(AEBlocks.FLAWED_BUDDING_QUARTZ))
-                .put(AEBlocks.FLAWED_BUDDING_QUARTZ.block(), b -> buddingQuartz(AEBlocks.CHIPPED_BUDDING_QUARTZ))
-                .put(AEBlocks.CHIPPED_BUDDING_QUARTZ.block(), b -> buddingQuartz(AEBlocks.DAMAGED_BUDDING_QUARTZ))
-                .put(AEBlocks.DAMAGED_BUDDING_QUARTZ.block(), b -> createSingleItemTable(AEBlocks.QUARTZ_BLOCK))
+                // Flawless budding quartz always degrades by 1.
+                .put(AEBlocks.FLAWLESS_BUDDING_QUARTZ.block(), flawlessBuddingQuartz())
+                // Imperfect budding quartz degrades by 1 without silk touch, and does not degrade with silk touch.
+                .put(AEBlocks.FLAWED_BUDDING_QUARTZ.block(), buddingQuartz(AEBlocks.CHIPPED_BUDDING_QUARTZ))
+                .put(AEBlocks.CHIPPED_BUDDING_QUARTZ.block(), buddingQuartz(AEBlocks.DAMAGED_BUDDING_QUARTZ))
+                .put(AEBlocks.DAMAGED_BUDDING_QUARTZ.block(), buddingQuartz(AEBlocks.QUARTZ_BLOCK))
                 // Quartz buds drop themselves with silk touch, and 1 dust without silk touch.
                 .put(AEBlocks.SMALL_QUARTZ_BUD.block(), this::quartzBud)
                 .put(AEBlocks.MEDIUM_QUARTZ_BUD.block(), this::quartzBud)
@@ -130,8 +131,12 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
         return LootTable.lootTable().withPool(pool);
     }
 
-    private LootTable.Builder buddingQuartz(BlockDefinition<?> degradedVersion) {
-        return createSingleItemTableWithSilkTouch(degradedVersion.block(), AEBlocks.QUARTZ_BLOCK.block());
+    private Function<Block, LootTable.Builder> flawlessBuddingQuartz() {
+        return b -> createSingleItemTable(AEBlocks.FLAWED_BUDDING_QUARTZ.block());
+    }
+
+    private Function<Block, LootTable.Builder> buddingQuartz(BlockDefinition<?> degradedVersion) {
+        return b -> createSingleItemTableWithSilkTouch(b, degradedVersion);
     }
 
     private LootTable.Builder quartzBud(Block bud) {
@@ -156,7 +161,7 @@ public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataP
     }
 
     public JsonElement toJson(LootTable.Builder builder) {
-        return LootTables.serialize(finishBuilding(builder));
+        return LootDataType.TABLE.parser().toJsonTree(finishBuilding(builder));
     }
 
     public LootTable finishBuilding(LootTable.Builder builder) {

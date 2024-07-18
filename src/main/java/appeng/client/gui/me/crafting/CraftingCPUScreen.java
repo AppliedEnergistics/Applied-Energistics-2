@@ -25,19 +25,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.CpuSelectionMode;
 import appeng.api.config.Settings;
-import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.StackWithBounds;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
@@ -107,7 +106,7 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         setTextContent(TEXT_ID_DIALOG_TITLE, title);
 
         final int size = this.status != null ? this.status.getEntries().size() : 0;
-        scrollbar.setRange(0, CraftingStatusTableRenderer.getScrollableRows(size), 1);
+        scrollbar.setRange(0, this.table.getScrollableRows(size), 1);
 
         this.schedulingModeButton.set(this.menu.getSchedulingMode());
     }
@@ -117,24 +116,24 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float btn) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float btn) {
         this.cancel.active = !getVisualEntries().isEmpty();
 
-        super.render(poseStack, mouseX, mouseY, btn);
+        super.render(guiGraphics, mouseX, mouseY, btn);
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY) {
-        super.drawFG(poseStack, offsetX, offsetY, mouseX, mouseY);
+    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY) {
+        super.drawFG(guiGraphics, offsetX, offsetY, mouseX, mouseY);
 
         if (status != null) {
-            this.table.render(poseStack, mouseX, mouseY, status.getEntries(), scrollbar.getCurrentScroll());
+            this.table.render(guiGraphics, mouseX, mouseY, status.getEntries(), scrollbar.getCurrentScroll());
         }
     }
 
     @org.jetbrains.annotations.Nullable
     @Override
-    public GenericStack getStackUnderMouse(double mouseX, double mouseY) {
+    public StackWithBounds getStackUnderMouse(double mouseX, double mouseY) {
         var hovered = table.getHoveredStack();
         if (hovered != null) {
             return hovered;
@@ -176,6 +175,7 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         }
 
         List<CraftingStatusEntry> sortedEntries = new ArrayList<>(entries.values());
+        Collections.sort(sortedEntries);
         this.status = new CraftingStatus(
                 true,
                 status.getElapsedTime(),

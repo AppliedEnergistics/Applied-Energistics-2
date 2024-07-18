@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.CreativeModeTab;
 
 import appeng.api.ids.AECreativeTabIds;
@@ -30,27 +30,28 @@ import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseBlockItem;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.ItemDefinition;
+import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 
 public final class MainCreativeTab {
 
     private static final List<ItemDefinition<?>> itemDefs = new ArrayList<>();
 
-    public static CreativeModeTab INSTANCE;
-
-    public static void init() {
-        INSTANCE = FabricItemGroup.builder(AECreativeTabIds.MAIN)
+    public static void init(Registry<CreativeModeTab> registry) {
+        var tab = FabricItemGroup.builder()
+                .title(GuiText.CreativeTab.text())
                 .icon(() -> AEBlocks.CONTROLLER.stack(1))
                 .displayItems(MainCreativeTab::buildDisplayItems)
                 .build();
+        Registry.register(registry, AECreativeTabIds.MAIN, tab);
     }
 
     public static void add(ItemDefinition<?> itemDef) {
         itemDefs.add(itemDef);
     }
 
-    private static void buildDisplayItems(FeatureFlagSet featureFlagSet, CreativeModeTab.Output output,
-            boolean opItems) {
+    private static void buildDisplayItems(CreativeModeTab.ItemDisplayParameters itemDisplayParameters,
+            CreativeModeTab.Output output) {
         for (var itemDef : itemDefs) {
             var item = itemDef.asItem();
 

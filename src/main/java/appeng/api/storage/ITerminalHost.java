@@ -23,12 +23,23 @@
 
 package appeng.api.storage;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigurableObject;
+import appeng.client.Hotkeys;
 
 public interface ITerminalHost extends IUpgradeableObject, IConfigurableObject, ISubMenuHost {
     @Nullable
     MEStorage getInventory();
+
+    /**
+     * An optional hotkey used to close the terminal while its open.
+     *
+     * @return Hotkey id as it would be registered by {@link Hotkeys}, or null if there isn't one
+     */
+    @Nullable
+    default String getCloseHotkey() {
+        return null;
+    }
 }

@@ -18,7 +18,7 @@
 
 package appeng.parts.automation;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -41,6 +41,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
@@ -82,15 +83,20 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
      */
     private boolean pendingPulse = false;
 
-    public IOBusPart(TickRates tickRates, IPartItem<?> partItem) {
+    public IOBusPart(TickRates tickRates, @Nullable AEKeyFilter filter, IPartItem<?> partItem) {
         super(partItem);
         this.tickRates = tickRates;
         this.source = new MachineSource(this);
-        this.config = ConfigInventory.configTypes(StackWorldBehaviors.hasImportStrategyFilter(), 9, this::updateState);
+        this.config = ConfigInventory.configTypes(filter, 63, this::updateState);
         getMainNode().addService(IGridTickable.class, this);
 
         this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+    }
+
+    @Override
+    protected int getUpgradeSlots() {
+        return 5;
     }
 
     @Override
@@ -171,7 +177,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     }
 
     protected int availableSlots() {
-        return Math.min(1 + getInstalledUpgrades(AEItems.CAPACITY_CARD) * 4, this.getConfig().size());
+        return Math.min(18 + getInstalledUpgrades(AEItems.CAPACITY_CARD) * 9, this.getConfig().size());
     }
 
     protected int getOperationsPerTick() {

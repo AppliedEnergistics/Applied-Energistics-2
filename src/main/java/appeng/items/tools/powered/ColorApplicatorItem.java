@@ -26,10 +26,10 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.EnumHashBiMap;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -85,6 +85,7 @@ import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.IBlockTool;
 import appeng.items.contents.CellConfig;
 import appeng.items.misc.PaintBallItem;
+import appeng.items.storage.StorageTier;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.cells.BasicCellHandler;
 import appeng.me.helpers.BaseActionSource;
@@ -142,7 +143,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         Direction side = context.getClickedFace();
         Player p = context.getPlayer(); // This can be null
         if (p == null && level instanceof ServerLevel) {
-            p = Platform.getPlayer((ServerLevel) level);
+            p = Platform.getFakePlayer((ServerLevel) level, null);
         }
 
         final Block blk = level.getBlockState(pos).getBlock();
@@ -167,34 +168,34 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                 return InteractionResult.FAIL;
             }
 
-            if (!paintBall.isEmpty() && paintBall.getItem() instanceof SnowballItem) {
-                var be = level.getBlockEntity(pos);
-                // clean cables.
-                if (p != null
-                        && be instanceof IColorableBlockEntity colorableBlockEntity
-                        && this.getAECurrentPower(is) > POWER_PER_USE
-                        && colorableBlockEntity.getColor() != AEColor.TRANSPARENT) {
-                    if (colorableBlockEntity.recolourBlock(side, AEColor.TRANSPARENT, p)) {
+            if (!paintBall.isEmpty()) {
+                if (paintBall.getItem() instanceof SnowballItem) {
+                    // clean cables.
+                    if (p != null
+                            && level.getBlockEntity(pos) instanceof IColorableBlockEntity colorableBlockEntity
+                            && this.getAECurrentPower(is) > POWER_PER_USE
+                            && colorableBlockEntity.getColor() != AEColor.TRANSPARENT) {
+                        if (colorableBlockEntity.recolourBlock(side, AEColor.TRANSPARENT, p)) {
+                            consumeItem(is, paintBallKey, false);
+                            return InteractionResult.sidedSuccess(level.isClientSide());
+                        }
+                    }
+
+                    // clean paint balls..
+                    final Block testBlk = level.getBlockState(pos.relative(side)).getBlock();
+                    final BlockEntity painted = level.getBlockEntity(pos.relative(side));
+                    if (this.getAECurrentPower(is) > POWER_PER_USE && testBlk instanceof PaintSplotchesBlock
+                            && painted instanceof PaintSplotchesBlockEntity) {
                         consumeItem(is, paintBallKey, false);
+                        ((PaintSplotchesBlockEntity) painted).cleanSide(side.getOpposite());
                         return InteractionResult.sidedSuccess(level.isClientSide());
                     }
                 }
 
-                // clean paint balls..
-                final Block testBlk = level.getBlockState(pos.relative(side)).getBlock();
-                final BlockEntity painted = level.getBlockEntity(pos.relative(side));
-                if (this.getAECurrentPower(is) > POWER_PER_USE && testBlk instanceof PaintSplotchesBlock
-                        && painted instanceof PaintSplotchesBlockEntity) {
-                    consumeItem(is, paintBallKey, false);
-                    ((PaintSplotchesBlockEntity) painted).cleanSide(side.getOpposite());
-                    return InteractionResult.sidedSuccess(level.isClientSide());
-                }
-            } else if (!paintBall.isEmpty()) {
                 final AEColor color = this.getColorFromItem(paintBall);
 
                 if (color != null
                         && this.getAECurrentPower(is) > POWER_PER_USE
-                        && color != AEColor.TRANSPARENT
                         && this.recolourBlock(blk, side, level, pos, color, p)) {
                     consumeItem(is, paintBallKey, false);
                     return InteractionResult.sidedSuccess(level.isClientSide());
@@ -217,13 +218,13 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         if (paintBallColor != null && interactionTarget instanceof Sheep sheep) {
             if (sheep.isAlive() && !sheep.isSheared() && sheep.getColor() != paintBallColor.dye) {
-                if (!player.level.isClientSide && this.getAECurrentPower(is) > POWER_PER_USE) {
+                if (!player.level().isClientSide && this.getAECurrentPower(is) > POWER_PER_USE) {
                     sheep.setColor(paintBallColor.dye);
-                    sheep.level.playSound(player, sheep, SoundEvents.DYE_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
+                    sheep.level().playSound(player, sheep, SoundEvents.DYE_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
                     this.consumeItem(is, AEItemKey.of(paintBall), false);
                 }
 
-                return InteractionResult.sidedSuccess(player.level.isClientSide);
+                return InteractionResult.sidedSuccess(player.level().isClientSide);
             }
         }
 
@@ -469,12 +470,12 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     public int getBytes(ItemStack cellItem) {
-        return 512;
+        return StorageTier.SIZE_4K.bytes() / 2;
     }
 
     @Override
     public int getBytesPerType(ItemStack cellItem) {
-        return 8;
+        return StorageTier.SIZE_4K.bytes() / 128;
     }
 
     @Override

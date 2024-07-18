@@ -3,10 +3,9 @@ package appeng.integration.modules.jei.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -44,13 +43,10 @@ public class Label extends AbstractWidget implements Widget {
     }
 
     @Override
-    public void draw(PoseStack stack) {
+    public void draw(GuiGraphics guiGraphics) {
         for (var line : getLines()) {
-            if (shadow) {
-                font.drawShadow(stack, line.text, line.x, line.y, color);
-            } else {
-                font.draw(stack, line.text, line.x, line.y, color);
-            }
+            var font = Minecraft.getInstance().font;
+            guiGraphics.drawString(font, line.text, (int) line.x, (int) line.y, color, shadow);
         }
     }
 

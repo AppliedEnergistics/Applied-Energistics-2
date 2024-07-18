@@ -29,12 +29,15 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
+
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
-import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.stacks.AEKey;
@@ -77,8 +80,8 @@ public class StorageService implements IStorageService, IGridServiceProvider {
      */
     private final Map<IGridNode, StackWatcher<IStorageWatcherNode>> watchers = new IdentityHashMap<>();
 
-    public StorageService(ISecurityService security) {
-        this.storage = new NetworkStorage((SecurityService) security);
+    public StorageService() {
+        this.storage = new NetworkStorage();
     }
 
     @Override
@@ -142,7 +145,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
      * {@link IStorageWatcherNode}.
      */
     @Override
-    public void addNode(IGridNode node) {
+    public void addNode(IGridNode node, @Nullable CompoundTag savedData) {
         var storageProvider = node.getService(IStorageProvider.class);
         if (storageProvider != null) {
             ProviderState state = new ProviderState(storageProvider);

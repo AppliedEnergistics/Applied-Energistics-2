@@ -3,7 +3,6 @@ package appeng.menu.me.items;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.networking.IGridNode;
 import appeng.helpers.WirelessCraftingTerminalMenuHost;
@@ -19,7 +18,6 @@ public class WirelessCraftingTermMenu extends CraftingTermMenu {
 
     public static final MenuType<WirelessCraftingTermMenu> TYPE = MenuTypeBuilder
             .create(WirelessCraftingTermMenu::new, WirelessCraftingTerminalMenuHost.class)
-            .requirePermission(SecurityPermissions.CRAFT)
             .build("wirelesscraftingterm");
 
     private final WirelessCraftingTerminalMenuHost menuHost;

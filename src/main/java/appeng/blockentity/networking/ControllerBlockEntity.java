@@ -20,6 +20,7 @@ package appeng.blockentity.networking;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -94,8 +95,11 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
         if (this.checkController(this.worldPosition)
                 && this.level.getBlockState(this.worldPosition)
                         .getValue(ControllerBlock.CONTROLLER_STATE) != metaState) {
-            this.level.setBlockAndUpdate(this.worldPosition,
-                    this.level.getBlockState(this.worldPosition).setValue(ControllerBlock.CONTROLLER_STATE, metaState));
+            // We don't want to be sending neighbor updates when a controller is being moved by spatial IO.
+            // So we never send one, and only notify the clients.
+            this.level.setBlock(this.worldPosition,
+                    this.level.getBlockState(this.worldPosition).setValue(ControllerBlock.CONTROLLER_STATE, metaState),
+                    Block.UPDATE_CLIENTS);
         }
 
     }
@@ -123,8 +127,8 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
     }
 
     @Override
-    protected void PowerEvent(PowerEventType x) {
-        getMainNode().ifPresent(grid -> grid.postEvent(new GridPowerStorageStateChanged(this, x)));
+    protected void emitPowerStateEvent(PowerEventType type) {
+        getMainNode().ifPresent(grid -> grid.postEvent(new GridPowerStorageStateChanged(this, type)));
     }
 
     @Override

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "ae2:illuminated_panel"
+    },
+    {
+      "tag": "c:wooden_chests"
+    },
+    {
+      "tag": "ae2:quartz_wrench"
+    },
+    {
+      "item": "ae2:calculation_processor"
+    }
+  ],
+  "result": {
+    "item": "ae2:network_tool"
+  }
+}

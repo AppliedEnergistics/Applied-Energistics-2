@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableSet;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -49,7 +49,6 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.upgrades.IUpgradeInventory;
@@ -71,9 +70,6 @@ import appeng.util.Platform;
  * Contains behavior for interface blocks and parts, which is independent of the storage channel.
  */
 public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, IConfigurableObject {
-
-    public static final int NUMBER_OF_SLOTS = 9;
-
     @Nullable
     private InterfaceInventory localInvHandler;
     @Nullable
@@ -85,13 +81,12 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     protected final IActionSource interfaceRequestSource;
     private final MultiCraftingTracker craftingTracker;
     private final IUpgradeInventory upgrades;
-    private final IStorageMonitorableAccessor accessor = this::getMonitorable;
     private final ConfigManager cm = new ConfigManager(this::onConfigChanged);
     /**
      * Work planned by {@link #updatePlan()} to be performed by {@link #usePlan}. Positive amounts mean restocking from
      * the network is required while negative amounts mean moving to the network is required.
      */
-    private final GenericStack[] plannedWork = new GenericStack[NUMBER_OF_SLOTS];
+    private final GenericStack[] plannedWork;
     private int priority;
     /**
      * Configures what and how much to stock in this inventory.
@@ -104,9 +99,13 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     private final ConfigInventory storage;
 
     public InterfaceLogic(IManagedGridNode gridNode, InterfaceLogicHost host, Item is) {
+        this(gridNode, host, is, 9);
+    }
+
+    public InterfaceLogic(IManagedGridNode gridNode, InterfaceLogicHost host, Item is, int slots) {
         this.host = host;
-        this.config = ConfigInventory.configStacks(null, NUMBER_OF_SLOTS, this::readConfig, false);
-        this.storage = ConfigInventory.storage(NUMBER_OF_SLOTS, this::updatePlan);
+        this.config = ConfigInventory.configStacks(null, slots, this::onConfigRowChanged, false);
+        this.storage = ConfigInventory.storage(slots, this::onStorageChanged);
         this.mainNode = gridNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, new Ticker());
@@ -116,8 +115,9 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
         gridNode.addService(ICraftingRequester.class, this);
         this.upgrades = UpgradeInventories.forMachine(is, 1, this::onUpgradesChanged);
-        this.craftingTracker = new MultiCraftingTracker(this, 9);
+        this.craftingTracker = new MultiCraftingTracker(this, slots);
         this.cm.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+        this.plannedWork = new GenericStack[slots];
 
         getConfig().useRegisteredCapacities();
         getStorage().useRegisteredCapacities();
@@ -157,10 +157,6 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         this.priority = tag.getInt("priority");
     }
 
-    public IStorageMonitorableAccessor getGridStorageAccessor() {
-        return accessor;
-    }
-
     private class Ticker implements IGridTickable {
         @Override
         public TickingRequest getTickingRequest(IGridNode node) {
@@ -187,6 +183,11 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         return src.context(InterfaceRequestContext.class)
                 .map(ctx -> OptionalInt.of(ctx.getPriority()))
                 .orElseGet(OptionalInt::empty);
+    }
+
+    protected final boolean isSameGrid(IActionSource src) {
+        var otherGrid = src.machine().map(IActionHost::getActionableNode).map(IGridNode::getGrid).orElse(null);
+        return otherGrid == mainNode.getGrid();
     }
 
     protected final boolean hasWorkToDo() {
@@ -231,16 +232,6 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         return config;
     }
 
-    private MEStorage getMonitorable(IActionSource src) {
-        // If the given action source can access the grid, return the real inventory
-        if (Platform.canAccess(mainNode, src)) {
-            return getInventory();
-        }
-
-        // Otherwise, return a fallback that only exposes the local interface inventory
-        return getLocalInventory();
-    }
-
     /**
      * Gets the inventory that is exposed to an ME compatible API user if they have access to the grid this interface is
      * a part of. This is normally accessed by storage buses.
@@ -248,7 +239,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
      * If the interface has configured slots, it will <b>always</b> expose its local inventory instead of the grid's
      * inventory.
      */
-    private MEStorage getInventory() {
+    public MEStorage getInventory() {
         if (hasConfig) {
             return getLocalInventory();
         }
@@ -521,7 +512,17 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         updatePlan();
     }
 
-    public void addDrops(List<ItemStack> drops, boolean remove) {
+    private void onConfigRowChanged() {
+        this.host.saveChanges();
+        this.readConfig();
+    }
+
+    private void onStorageChanged() {
+        this.host.saveChanges();
+        this.updatePlan();
+    }
+
+    public void addDrops(List<ItemStack> drops) {
         for (var is : this.upgrades) {
             if (!is.isEmpty()) {
                 drops.add(is);
@@ -536,11 +537,11 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
                         this.host.getBlockEntity().getBlockPos());
             }
         }
+    }
 
-        if (remove) {
-            this.upgrades.clear();
-            this.storage.clear();
-        }
+    public void clearContent() {
+        this.upgrades.clear();
+        this.storage.clear();
     }
 
     public AECableType getCableConnectionType(Direction dir) {
@@ -565,7 +566,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
             // Prevents other interfaces from injecting their items into this interface when they push
             // their local inventory into the network. This prevents items from bouncing back and forth
             // between interfaces.
-            if (getRequestInterfacePriority(source).isPresent()) {
+            if (getRequestInterfacePriority(source).isPresent() && isSameGrid(source)) {
                 return 0;
             }
 
@@ -578,7 +579,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
             // Otherwise we'd see a "ping-pong" effect where two interfaces could start pulling items back and
             // forth of they wanted to stock the same item and happened to have storage buses on them.
             var requestPriority = getRequestInterfacePriority(source);
-            if (requestPriority.isPresent() && requestPriority.getAsInt() <= getPriority()) {
+            if (requestPriority.isPresent() && requestPriority.getAsInt() <= getPriority() && isSameGrid(source)) {
                 return 0;
             }
 

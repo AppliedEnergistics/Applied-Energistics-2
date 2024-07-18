@@ -19,13 +19,14 @@
 package appeng.me.service;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NavigableSet;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -33,6 +34,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
+
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 
 import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 
@@ -44,23 +51,24 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridServiceProvider;
-import appeng.api.networking.IGridStorage;
 import appeng.api.networking.energy.IAEPowerStorage;
-import appeng.api.networking.energy.IEnergyGridProvider;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherNode;
+import appeng.api.networking.energy.IPassiveEnergyGenerator;
 import appeng.api.networking.events.GridPowerIdleChange;
 import appeng.api.networking.events.GridPowerStatusChange;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
-import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.energy.EnergyThreshold;
 import appeng.me.energy.EnergyWatcher;
+import appeng.me.energy.GridEnergyStorage;
+import appeng.me.energy.IEnergyOverlayGridConnection;
 
-public class EnergyService implements IEnergyService, IEnergyGridProvider, IGridServiceProvider {
+public class EnergyService implements IEnergyService, IGridServiceProvider {
+    private static final String TAG_STORED_ENERGY = "e";
 
     static {
         GridHelper.addGridServiceEventHandler(GridPowerIdleChange.class, IEnergyService.class,
@@ -74,18 +82,6 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
                     ((EnergyService) service).storagePowerChangeHandler(event);
                 });
     }
-
-    private static final double MAX_BUFFER_STORAGE = 800;
-
-    private static final Comparator<IEnergyGridProvider> COMPARATOR_HIGHEST_AMOUNT_STORED_FIRST = (o1, o2) -> Double
-            .compare(o2.getProviderStoredEnergy(), o1.getProviderStoredEnergy());
-
-    private static final Comparator<IEnergyGridProvider> COMPARATOR_LOWEST_PERCENTAGE_FIRST = (o1, o2) -> {
-        final double percent1 = (o1.getProviderStoredEnergy() + 1) / (o1.getProviderMaxEnergy() + 1);
-        final double percent2 = (o2.getProviderStoredEnergy() + 1) / (o2.getProviderMaxEnergy() + 1);
-
-        return Double.compare(percent1, percent2);
-    };
 
     private static final Comparator<IAEPowerStorage> COMPARATOR_HIGHEST_PRIORITY_FIRST = (o1, o2) -> {
         final int cmp = Integer.compare(o2.getPriority(), o1.getPriority());
@@ -114,16 +110,18 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     // modifies the energy grid.
     private boolean ongoingInjectOperation = false;
 
-    private final Multiset<IEnergyGridProvider> energyGridProviders = HashMultiset.create();
-    private final Grid grid;
+    private final Multiset<IEnergyOverlayGridConnection> overlayGridConnections = HashMultiset.create();
+    final Grid grid;
     private final HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<>();
+
+    private final GridEnergyStorage localStorage;
 
     /**
      * estimated power available.
      */
     private int availableTicksSinceUpdate = 0;
     private double globalAvailablePower = 0;
-    private double globalMaxPower = MAX_BUFFER_STORAGE;
+    private double providerPowerSum;
 
     /**
      * idle draw.
@@ -144,11 +142,21 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     private final PathingService pgc;
     private double lastStoredPower = -1;
 
-    private final GridPowerStorage localStorage = new GridPowerStorage();
+    /**
+     * Passive generators available on this energy grid.
+     */
+    private final Set<IPassiveEnergyGenerator> passiveGenerators = Collections.newSetFromMap(new IdentityHashMap<>());
+
+    /**
+     * The overlay grid containing all the energy services of grids that may be connected by parts like
+     * {@linkplain appeng.parts.networking.QuartzFiberPart quartz fibers}.
+     */
+    EnergyOverlayGrid overlayGrid = null;
 
     public EnergyService(IGrid g, IPathingService pgc) {
         this.grid = (Grid) g;
         this.pgc = (PathingService) pgc;
+        this.localStorage = new GridEnergyStorage(grid);
         this.requesters.add(this.localStorage);
         this.providers.add(this.localStorage);
     }
@@ -167,16 +175,8 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     public void storagePowerChangeHandler(GridPowerStorageStateChanged ev) {
         if (ev.storage.isAEPublicPowerStorage()) {
             switch (ev.type) {
-                case PROVIDE_POWER:
-                    if (ev.storage.getPowerFlow() != AccessRestriction.WRITE) {
-                        addProvider(ev.storage);
-                    }
-                    break;
-                case REQUEST_POWER:
-                    if (ev.storage.getPowerFlow() != AccessRestriction.READ) {
-                        addRequester(ev.storage);
-                    }
-                    break;
+                case PROVIDE_POWER -> addProvider(ev.storage);
+                case RECEIVE_POWER -> addRequester(ev.storage);
             }
         } else {
             new RuntimeException("Attempt to ask the IEnergyGrid to charge a non public energy store.")
@@ -185,7 +185,35 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     }
 
     @Override
+    public void onServerStartTick() {
+        // replenish the passive power generation reservoir for the overarching energy service
+        // we only allow one passive generator for the entire network
+        for (var passiveGenerator : passiveGenerators) {
+            var currentGenerator = getOverlayGrid().getCurrentPassiveGenerator();
+            if (currentGenerator == passiveGenerator) {
+                passiveGenerator.setSuppressed(false);
+            } else if (currentGenerator == null || passiveGenerator.getRate() > currentGenerator.getRate()) {
+                if (currentGenerator != null) {
+                    currentGenerator.setSuppressed(true);
+                }
+                getOverlayGrid().setCurrentPassiveGenerator(passiveGenerator);
+                passiveGenerator.setSuppressed(false);
+            } else {
+                // Strictly worse than the current generator
+                passiveGenerator.setSuppressed(true);
+            }
+        }
+    }
+
+    @Override
     public void onServerEndTick() {
+        // Inject the passive energy once per overlay grid and do it at the energy service that actually
+        // contains the passive generator.
+        var currentPassiveGenerator = getOverlayGrid().getCurrentPassiveGenerator();
+        if (currentPassiveGenerator != null && passiveGenerators.contains(currentPassiveGenerator)) {
+            injectPower(currentPassiveGenerator.getRate(), Actionable.MODULATE);
+        }
+
         if (!this.interests.isEmpty()) {
             final double oldPower = this.lastStoredPower;
             this.lastStoredPower = this.getStoredPower();
@@ -243,22 +271,13 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     @Override
     public double extractAEPower(double amt, Actionable mode, PowerMultiplier pm) {
         final double toExtract = pm.multiply(amt);
-        final Queue<IEnergyGridProvider> toVisit = new PriorityQueue<>(COMPARATOR_HIGHEST_AMOUNT_STORED_FIRST);
-        final Set<IEnergyGridProvider> visited = new HashSet<>();
-
         double extracted = 0;
-        toVisit.add(this);
 
-        while (!toVisit.isEmpty() && extracted < toExtract) {
-            final IEnergyGridProvider next = toVisit.poll();
-            visited.add(next);
+        for (EnergyService service : getConnectedServices()) {
+            extracted += service.extractProviderPower(toExtract - extracted, mode);
 
-            extracted += next.extractProviderPower(toExtract - extracted, mode);
-
-            for (IEnergyGridProvider iEnergyGridProvider : next.providers()) {
-                if (!visited.contains(iEnergyGridProvider)) {
-                    toVisit.add(iEnergyGridProvider);
-                }
+            if (extracted >= toExtract) {
+                break;
             }
         }
 
@@ -290,7 +309,8 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     /**
      * refresh current stored power.
      */
-    private void refreshPower() {
+    @VisibleForTesting
+    public void refreshPower() {
         this.availableTicksSinceUpdate = 0;
         this.globalAvailablePower = 0;
         for (IAEPowerStorage p : this.providers) {
@@ -298,13 +318,13 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
         }
     }
 
-    @Override
-    public Collection<IEnergyGridProvider> providers() {
-        return this.energyGridProviders;
+    public Collection<IEnergyOverlayGridConnection> getOverlayGridConnections() {
+        return this.overlayGridConnections;
     }
 
-    @Override
     public double extractProviderPower(double amt, Actionable mode) {
+        Preconditions.checkArgument(amt >= 0, "amt must be >= 0");
+
         double extractedPower = 0;
 
         final Iterator<IAEPowerStorage> it = this.providers.iterator();
@@ -329,8 +349,9 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
         final double result = Math.min(extractedPower, amt);
 
         if (mode == Actionable.MODULATE) {
+            // Be nice and try to push returned excess to the grid storage
             if (extractedPower > amt) {
-                this.localStorage.addCurrentAEPower(extractedPower - amt);
+                this.localStorage.injectAEPower(extractedPower - amt, Actionable.MODULATE);
             }
 
             this.globalAvailablePower -= result;
@@ -340,11 +361,12 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
         return result;
     }
 
-    @Override
     public double injectProviderPower(double amt, Actionable mode) {
+        Preconditions.checkArgument(amt >= 0, "amt must be >= 0");
+
         final double originalAmount = amt;
 
-        final Iterator<IAEPowerStorage> it = this.requesters.iterator();
+        var it = this.requesters.iterator();
 
         ongoingInjectOperation = true;
         try {
@@ -369,8 +391,9 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
         return overflow;
     }
 
-    @Override
     public double getProviderEnergyDemand(double maxRequired) {
+        Preconditions.checkArgument(maxRequired >= 0, "maxRequired must be >= 0");
+
         double required = 0;
 
         final Iterator<IAEPowerStorage> it = this.requesters.iterator();
@@ -401,22 +424,13 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
 
     @Override
     public double injectPower(double amt, Actionable mode) {
-        final Queue<IEnergyGridProvider> toVisit = new PriorityQueue<>(COMPARATOR_LOWEST_PERCENTAGE_FIRST);
-        final Set<IEnergyGridProvider> visited = new HashSet<>();
-        toVisit.add(this);
-
         double leftover = amt;
 
-        while (!toVisit.isEmpty() && leftover > 0) {
-            final IEnergyGridProvider next = toVisit.poll();
-            visited.add(next);
+        for (EnergyService service : getConnectedServices()) {
+            leftover = service.injectProviderPower(leftover, mode);
 
-            leftover = next.injectProviderPower(leftover, mode);
-
-            for (IEnergyGridProvider iEnergyGridProvider : next.providers()) {
-                if (!visited.contains(iEnergyGridProvider)) {
-                    toVisit.add(iEnergyGridProvider);
-                }
+            if (leftover <= 0) {
+                break;
             }
         }
 
@@ -434,27 +448,18 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
 
     @Override
     public double getMaxStoredPower() {
-        return this.globalMaxPower;
+        return this.providerPowerSum + this.localStorage.getAEMaxPower();
     }
 
     @Override
     public double getEnergyDemand(double maxRequired) {
-        final Queue<IEnergyGridProvider> toVisit = new PriorityQueue<>(COMPARATOR_LOWEST_PERCENTAGE_FIRST);
-        final Set<IEnergyGridProvider> visited = new HashSet<>();
-        toVisit.add(this);
-
         double required = 0;
 
-        while (!toVisit.isEmpty() && required < maxRequired) {
-            final IEnergyGridProvider next = toVisit.poll();
-            visited.add(next);
+        for (EnergyService service : getConnectedServices()) {
+            required += service.getProviderEnergyDemand(maxRequired - required);
 
-            required += next.getProviderEnergyDemand(maxRequired - required);
-
-            for (IEnergyGridProvider iEnergyGridProvider : next.providers()) {
-                if (!visited.contains(iEnergyGridProvider)) {
-                    toVisit.add(iEnergyGridProvider);
-                }
+            if (required >= maxRequired) {
+                break;
             }
         }
 
@@ -462,32 +467,36 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     }
 
     @Override
-    public double getProviderStoredEnergy() {
-        return this.getStoredPower();
-    }
-
-    @Override
-    public double getProviderMaxEnergy() {
-        return this.getMaxStoredPower();
-    }
-
-    @Override
     public void removeNode(IGridNode node) {
-        var gridProvider = node.getService(IEnergyGridProvider.class);
+        localStorage.removeNode();
+
+        var gridProvider = node.getService(IEnergyOverlayGridConnection.class);
         if (gridProvider != null) {
-            this.energyGridProviders.remove(gridProvider);
+            this.overlayGridConnections.remove(gridProvider);
+            invalidateOverlayEnergyGrid();
         }
 
         // idle draw.
         final GridNode gridNode = (GridNode) node;
         this.drainPerTick -= gridNode.getPreviousDraw();
 
+        // passive generation
+        var passiveGenerator = node.getService(IPassiveEnergyGenerator.class);
+        if (passiveGenerator != null) {
+            passiveGenerators.remove(passiveGenerator);
+
+            var overlayGrid = getOverlayGrid();
+            if (overlayGrid.getCurrentPassiveGenerator() == passiveGenerator) {
+                overlayGrid.setCurrentPassiveGenerator(null);
+            }
+        }
+
         // power storage.
         var ps = node.getService(IAEPowerStorage.class);
         if (ps != null) {
             if (ps.isAEPublicPowerStorage()) {
                 if (ps.getPowerFlow() != AccessRestriction.WRITE) {
-                    this.globalMaxPower -= ps.getAEMaxPower();
+                    this.providerPowerSum -= ps.getAEMaxPower();
                     this.globalAvailablePower -= ps.getAECurrentPower();
                 }
 
@@ -505,7 +514,9 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     private void addRequester(IAEPowerStorage requester) {
         Preconditions.checkState(!ongoingInjectOperation,
                 "Cannot modify energy requesters while energy is being injected.");
-        this.requesters.add(requester);
+        if (requester.getPowerFlow().isAllowInsertion()) {
+            this.requesters.add(requester);
+        }
     }
 
     private void removeRequester(IAEPowerStorage requester) {
@@ -517,7 +528,9 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     private void addProvider(IAEPowerStorage provider) {
         Preconditions.checkState(!ongoingExtractOperation,
                 "Cannot modify energy providers while energy is being extracted.");
-        this.providers.add(provider);
+        if (provider.getPowerFlow().isAllowExtraction()) {
+            this.providers.add(provider);
+        }
     }
 
     private void removeProvider(IAEPowerStorage provider) {
@@ -527,10 +540,13 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     }
 
     @Override
-    public void addNode(IGridNode node) {
-        var gridProvider = node.getService(IEnergyGridProvider.class);
+    public void addNode(IGridNode node, @Nullable CompoundTag storedData) {
+        localStorage.addNode();
+
+        var gridProvider = node.getService(IEnergyOverlayGridConnection.class);
         if (gridProvider != null) {
-            this.energyGridProviders.add(gridProvider);
+            this.overlayGridConnections.add(gridProvider);
+            invalidateOverlayEnergyGrid();
         }
 
         // idle draw...
@@ -538,25 +554,24 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
         gridNode.setPreviousDraw(node.getIdlePowerUsage());
         this.drainPerTick += gridNode.getPreviousDraw();
 
+        // passive generation
+        var passiveGenerator = node.getService(IPassiveEnergyGenerator.class);
+        if (passiveGenerator != null) {
+            passiveGenerators.add(passiveGenerator);
+        }
+
         // power storage
         var ps = node.getService(IAEPowerStorage.class);
         if (ps != null) {
             if (ps.isAEPublicPowerStorage()) {
-                final double max = ps.getAEMaxPower();
-                final double current = ps.getAECurrentPower();
-
-                if (ps.getPowerFlow() != AccessRestriction.WRITE) {
-                    this.globalMaxPower += ps.getAEMaxPower();
+                var powerFlow = ps.getPowerFlow();
+                if (powerFlow.isAllowExtraction()) {
+                    this.globalAvailablePower += ps.getAECurrentPower();
+                    this.providerPowerSum += ps.getAEMaxPower();
                 }
 
-                if (current > 0 && ps.getPowerFlow() != AccessRestriction.WRITE) {
-                    this.globalAvailablePower += current;
-                    addProvider(ps);
-                }
-
-                if (current < max && ps.getPowerFlow() != AccessRestriction.READ) {
-                    addRequester(ps);
-                }
+                addProvider(ps);
+                addRequester(ps);
             }
         }
 
@@ -566,23 +581,23 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
             this.watchers.put(node, iw);
             ews.updateWatcher(iw);
         }
+
+        // If the node came with buffered energy, add it to our internal storage
+        if (storedData != null && storedData.contains(TAG_STORED_ENERGY, Tag.TAG_DOUBLE)) {
+            double buffer = storedData.getDouble(TAG_STORED_ENERGY);
+            if (buffer > 0) {
+                localStorage.injectAEPower(buffer, Actionable.MODULATE);
+            }
+        }
     }
 
     @Override
-    public void onSplit(IGridStorage storageB) {
-        final double newBuffer = this.localStorage.getAECurrentPower() / 2;
-        this.localStorage.removeCurrentAEPower(newBuffer);
-        storageB.dataObject().putDouble("buffer", newBuffer);
-    }
-
-    @Override
-    public void onJoin(IGridStorage storageB) {
-        this.localStorage.addCurrentAEPower(storageB.dataObject().getDouble("buffer"));
-    }
-
-    @Override
-    public void populateGridStorage(IGridStorage storage) {
-        storage.dataObject().putDouble("buffer", this.localStorage.getAECurrentPower());
+    public void saveNodeData(IGridNode gridNode, CompoundTag savedData) {
+        // When node-data is saved, we allocate it 1/N of our stored local energy
+        var perNodeStorage = localStorage.getNodeEnergyShare();
+        if (perNodeStorage > 0) {
+            savedData.putDouble(TAG_STORED_ENERGY, perNodeStorage);
+        }
     }
 
     public boolean registerEnergyInterest(EnergyThreshold threshold) {
@@ -593,73 +608,21 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
         return this.interests.remove(threshold);
     }
 
-    private class GridPowerStorage implements IAEPowerStorage {
-        private double stored = 0;
-
-        @Override
-        public double extractAEPower(double amt, Actionable mode, PowerMultiplier usePowerMultiplier) {
-            double extracted = Math.min(amt, this.stored);
-
-            if (mode == Actionable.MODULATE) {
-                this.removeCurrentAEPower(extracted);
-            }
-
-            return extracted;
-        }
-
-        @Override
-        public boolean isAEPublicPowerStorage() {
-            return true;
-        }
-
-        @Override
-        public double injectAEPower(double amt, Actionable mode) {
-            double toStore = Math.min(amt, MAX_BUFFER_STORAGE - this.stored);
-
-            if (mode == Actionable.MODULATE) {
-                this.addCurrentAEPower(toStore);
-            }
-
-            return amt - toStore;
-        }
-
-        @Override
-        public AccessRestriction getPowerFlow() {
-            return AccessRestriction.READ_WRITE;
-        }
-
-        @Override
-        public double getAEMaxPower() {
-            return MAX_BUFFER_STORAGE;
-        }
-
-        @Override
-        public double getAECurrentPower() {
-            return this.stored;
-        }
-
-        @Override
-        public int getPriority() {
-            // MIN_VALUE to push it to the back
-            return Integer.MIN_VALUE;
-        }
-
-        private void addCurrentAEPower(double amount) {
-            this.stored += amount;
-
-            if (this.stored > 0.01) {
-                EnergyService.this.grid
-                        .postEvent(new GridPowerStorageStateChanged(this, PowerEventType.PROVIDE_POWER));
-            }
-        }
-
-        private void removeCurrentAEPower(double amount) {
-            this.stored -= amount;
-
-            if (this.stored < MAX_BUFFER_STORAGE - 0.001) {
-                EnergyService.this.grid
-                        .postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER));
-            }
+    public void invalidateOverlayEnergyGrid() {
+        if (this.overlayGrid != null) {
+            this.overlayGrid.invalidate();
         }
     }
+
+    private List<EnergyService> getConnectedServices() {
+        return getOverlayGrid().energyServices;
+    }
+
+    private EnergyOverlayGrid getOverlayGrid() {
+        if (this.overlayGrid == null) {
+            EnergyOverlayGrid.buildCache(this);
+        }
+        return Objects.requireNonNull(this.overlayGrid);
+    }
+
 }

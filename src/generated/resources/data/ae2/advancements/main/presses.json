@@ -1,0 +1,83 @@
+{
+  "parent": "ae2:main/root",
+  "criteria": {
+    "calculation": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:calculation_processor_press"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "engineering": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:engineering_processor_press"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "logic": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:logic_processor_press"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "silicon": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:silicon_press"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "achievement.ae2.Presses.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "ae2:logic_processor_press"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "achievement.ae2.Presses"
+    }
+  },
+  "requirements": [
+    [
+      "calculation"
+    ],
+    [
+      "engineering"
+    ],
+    [
+      "logic"
+    ],
+    [
+      "silicon"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

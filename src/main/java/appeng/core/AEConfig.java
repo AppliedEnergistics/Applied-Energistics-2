@@ -41,6 +41,7 @@ import appeng.core.config.EnumOption;
 import appeng.core.config.IntegerOption;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
+import appeng.util.Platform;
 
 public final class AEConfig {
 
@@ -123,6 +124,7 @@ public final class AEConfig {
     private boolean isEnableFacadeRecipesInJEI;
     private int craftingCalculationTimePerTick;
     private boolean craftingSimulatedExtraction;
+    private boolean spatialAnchorEnablesRandomTicks;
 
     // Spatial IO/Dimension
     private double spatialPowerExponent;
@@ -191,6 +193,7 @@ public final class AEConfig {
 
         this.craftingCalculationTimePerTick = COMMON.craftingCalculationTimePerTick.get();
         this.craftingSimulatedExtraction = COMMON.craftingSimulatedExtraction.get();
+        this.spatialAnchorEnablesRandomTicks = COMMON.spatialAnchorEnableRandomTicks.get();
 
         AELog.setCraftingLogEnabled(COMMON.craftingLog.get());
         AELog.setDebugLogEnabled(COMMON.debugLog.get());
@@ -213,14 +216,6 @@ public final class AEConfig {
     public double wireless_getPowerDrain(int boosters) {
         return this.wirelessBaseCost
                 + this.wirelessCostMultiplier * Math.pow(boosters, 1 + boosters / this.wirelessHighWirelessCount);
-    }
-
-    public boolean isSearchTooltips() {
-        return CLIENT.searchTooltips.get();
-    }
-
-    public void setSearchTooltips(boolean enable) {
-        CLIENT.searchTooltips.set(enable);
     }
 
     public boolean isSearchModNameInTooltips() {
@@ -279,7 +274,27 @@ public final class AEConfig {
         CLIENT.terminalStyle.set(setting);
     }
 
+    public boolean isGuideHotkeyEnabled() {
+        return CLIENT.enableGuideHotkey.get();
+    }
+
+    public double getGridEnergyStoragePerNode() {
+        return COMMON.gridEnergyStoragePerNode.get();
+    }
+
+    public double getCrystalResonanceGeneratorRate() {
+        return COMMON.crystalResonanceGeneratorRate.get();
+    }
+
     public void save() {
+    }
+
+    public void reload() {
+        clientConfigManager.load();
+        commonConfigManager.load();
+
+        syncClientConfig();
+        syncCommonConfig();
     }
 
     public PowerUnits getSelectedPowerUnit() {
@@ -337,6 +352,10 @@ public final class AEConfig {
         return this.craftingSimulatedExtraction;
     }
 
+    public boolean isSpatialAnchorEnablesRandomTicks() {
+        return this.spatialAnchorEnablesRandomTicks;
+    }
+
     public double getSpatialPowerExponent() {
         return this.spatialPowerExponent;
     }
@@ -385,6 +404,10 @@ public final class AEConfig {
         return COMMON.spawnPressesInMeteorites.get();
     }
 
+    public boolean isSpawnFlawlessOnlyEnabled() {
+        return COMMON.spawnFlawlessOnly.get();
+    }
+
     public boolean isMatterCanonBlockDamageEnabled() {
         return COMMON.matterCannonBlockDamage.get();
     }
@@ -401,10 +424,6 @@ public final class AEConfig {
         return COMMON.growthAcceleratorSpeed.get();
     }
 
-    public boolean isSecurityAuditLogEnabled() {
-        return COMMON.securityAuditLog.get();
-    }
-
     public boolean isBlockUpdateLogEnabled() {
         return COMMON.blockUpdateLog.get();
     }
@@ -415,10 +434,6 @@ public final class AEConfig {
 
     public boolean isChunkLoggerTraceEnabled() {
         return COMMON.chunkLoggerTrace.get();
-    }
-
-    public boolean serverOpsIgnoreSecurity() {
-        return COMMON.serverOpsIgnoreSecurity.get();
     }
 
     public ChannelMode getChannelMode() {
@@ -491,8 +506,8 @@ public final class AEConfig {
         CLIENT.clearGridOnClose.set(enabled);
     }
 
-    public double getVibrationChamberEnergyPerFuelTick() {
-        return COMMON.vibrationChamberEnergyPerFuelTick.get();
+    public double getVibrationChamberBaseEnergyPerFuelTick() {
+        return COMMON.vibrationChamberBaseEnergyPerFuelTick.get();
     }
 
     public int getVibrationChamberMinEnergyPerGameTick() {
@@ -530,7 +545,6 @@ public final class AEConfig {
         public final IntegerOption terminalMargin;
 
         // Search Settings
-        public final BooleanOption searchTooltips;
         public final BooleanOption searchModNameInTooltips;
         public final BooleanOption useExternalSearch;
         public final BooleanOption clearExternalSearchOnOpen;
@@ -542,6 +556,7 @@ public final class AEConfig {
         public final BooleanOption tooltipShowCellUpgrades;
         public final BooleanOption tooltipShowCellContent;
         public final IntegerOption tooltipMaxCellContentShown;
+        public final BooleanOption enableGuideHotkey;
 
         public ClientConfig(ConfigSection root) {
             var client = root.subsection("client");
@@ -571,8 +586,6 @@ public final class AEConfig {
 
             // Search Settings
             var search = root.subsection("search");
-            this.searchTooltips = search.addBoolean("searchTooltips", true,
-                    "Should tooltips be searched. Performance impact");
             this.searchModNameInTooltips = search.addBoolean("searchModNameInTooltips", false,
                     "Should the mod name be included when searching in tooltips.");
             this.useExternalSearch = search.addBoolean("useExternalSearch", false,
@@ -593,6 +606,8 @@ public final class AEConfig {
                     "Show a preview of the content in the tooltips of storage cells, color applicators and matter cannons");
             this.tooltipMaxCellContentShown = tooltips.addInt("maxCellContentShown", 5, 1, 32,
                     "The maximum number of content entries to show in the tooltip of storage cells, color applicators and matter cannons");
+            this.enableGuideHotkey = tooltips.addBoolean("enableGuideHotkey", true,
+                    "Enables the 'hold key to show guide' functionality in tooltips");
         }
 
     }
@@ -607,9 +622,9 @@ public final class AEConfig {
         public final BooleanOption debugTools;
         public final BooleanOption matterCannonBlockDamage;
         public final BooleanOption tinyTntBlockDamage;
-        public final BooleanOption serverOpsIgnoreSecurity;
         public final EnumOption<ChannelMode> channels;
         public final IntegerOption pathfindingStepsPerTick;
+        public final BooleanOption spatialAnchorEnableRandomTicks;
 
         public final BooleanOption disassemblyCrafting;
         public final IntegerOption growthAcceleratorSpeed;
@@ -619,7 +634,6 @@ public final class AEConfig {
         public final DoubleOption spatialPowerMultiplier;
 
         // Logging
-        public final BooleanOption securityAuditLog;
         public final BooleanOption blockUpdateLog;
         public final BooleanOption packetLog;
         public final BooleanOption craftingLog;
@@ -638,6 +652,7 @@ public final class AEConfig {
 
         // Meteors
         public final BooleanOption spawnPressesInMeteorites;
+        public final BooleanOption spawnFlawlessOnly;
 
         // Wireless
         public final DoubleOption wirelessBaseCost;
@@ -654,9 +669,11 @@ public final class AEConfig {
         // Power Ratios
         public final DoubleOption powerRatioTechReborn;
         public final DoubleOption powerUsageMultiplier;
+        public final DoubleOption gridEnergyStoragePerNode;
+        public final DoubleOption crystalResonanceGeneratorRate;
 
         // Vibration Chamber
-        public final DoubleOption vibrationChamberEnergyPerFuelTick;
+        public final DoubleOption vibrationChamberBaseEnergyPerFuelTick;
         public final IntegerOption vibrationChamberMinEnergyPerTick;
         public final IntegerOption vibrationChamberMaxEnergyPerTick;
 
@@ -670,18 +687,18 @@ public final class AEConfig {
         public CommonConfig(ConfigSection root) {
 
             ConfigSection general = root.subsection("general");
-            debugTools = general.addBoolean("unsupportedDeveloperTools", false);
+            debugTools = general.addBoolean("unsupportedDeveloperTools", Platform.isDevelopmentEnvironment());
             matterCannonBlockDamage = general.addBoolean("matterCannonBlockDamage", true,
                     "Enables the ability of the Matter Cannon to break blocks.");
             tinyTntBlockDamage = general.addBoolean("tinyTntBlockDamage", true,
                     "Enables the ability of Tiny TNT to break blocks.");
-            serverOpsIgnoreSecurity = general.addBoolean("serverOpsIgnoreSecurity", true,
-                    "Server operators are not restricted by ME security terminal settings.");
             channels = general.addEnum("channels", ChannelMode.DEFAULT,
                     "Changes the channel capacity that cables provide in AE2.");
             pathfindingStepsPerTick = general.addInt("pathfindingStepsPerTick", 4,
                     1, 1024,
                     "The number of pathfinding steps that are taken per tick and per grid that is booting. Lower numbers will mean booting takes longer, but less work is done per tick.");
+            spatialAnchorEnableRandomTicks = general.addBoolean("spatialAnchorEnableRandomTicks", true,
+                    "Whether Spatial Anchors should force random chunk ticks and entity spawning.");
 
             ConfigSection automation = root.subsection("automation");
             formationPlaneEntityLimit = automation.addInt("formationPlaneEntityLimit", 128);
@@ -706,7 +723,6 @@ public final class AEConfig {
             this.spatialPowerExponent = spatialio.addDouble("spatialPowerExponent", 1.35);
 
             var logging = root.subsection("logging");
-            securityAuditLog = logging.addBoolean("securityAuditLog", false);
             blockUpdateLog = logging.addBoolean("blockUpdateLog", false);
             packetLog = logging.addBoolean("packetLog", false);
             craftingLog = logging.addBoolean("craftingLog", false);
@@ -729,6 +745,7 @@ public final class AEConfig {
             ConfigSection worldGen = root.subsection("worldGen");
 
             this.spawnPressesInMeteorites = worldGen.addBoolean("spawnPressesInMeteorites", true);
+            this.spawnFlawlessOnly = worldGen.addBoolean("spawnFlawlessOnly", false);
 
             ConfigSection wireless = root.subsection("wireless");
             this.wirelessBaseCost = wireless.addDouble("wirelessBaseCost", 8.0);
@@ -746,6 +763,10 @@ public final class AEConfig {
             ConfigSection PowerRatios = root.subsection("PowerRatios");
             powerRatioTechReborn = PowerRatios.addDouble("TechReborn", DEFAULT_TR_EXCHANGE);
             powerUsageMultiplier = PowerRatios.addDouble("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
+            gridEnergyStoragePerNode = PowerRatios.addDouble("GridEnergyStoragePerNode", 25, 1, 1000000,
+                    "How much energy can the internal grid buffer storage per node attached to the grid.");
+            crystalResonanceGeneratorRate = PowerRatios.addDouble("CrystalResonanceGeneratorRate", 20, 0, 1000000,
+                    "How much energy a crystal resonance generator generates per tick.");
 
             ConfigSection Condenser = root.subsection("Condenser");
             condenserMatterBallsPower = Condenser.addInt("MatterBalls", 256);
@@ -760,11 +781,11 @@ public final class AEConfig {
 
             ConfigSection vibrationChamber = root.subsection("vibrationChamber",
                     "Settings for the Vibration Chamber");
-            vibrationChamberEnergyPerFuelTick = vibrationChamber.addDouble("energyPerFuelTick", 5, 0.1, 1000,
+            vibrationChamberBaseEnergyPerFuelTick = vibrationChamber.addDouble("baseEnergyPerFuelTick", 5, 0.1, 1000,
                     "AE energy produced per fuel burn tick (reminder: coal = 1600, block of coal = 16000, lava bucket = 20000 burn ticks)");
             vibrationChamberMinEnergyPerTick = vibrationChamber.addInt("minEnergyPerGameTick", 4, 0, 1000,
                     "Minimum amount of AE/t the vibration chamber can slow down to when energy is being wasted.");
-            vibrationChamberMaxEnergyPerTick = vibrationChamber.addInt("maxEnergyPerGameTick", 40, 1, 1000,
+            vibrationChamberMaxEnergyPerTick = vibrationChamber.addInt("baseMaxEnergyPerGameTick", 40, 1, 1000,
                     "Maximum amount of AE/t the vibration chamber can speed up to when generated energy is being fully consumed.");
         }
 

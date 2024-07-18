@@ -11,10 +11,7 @@ package appeng.libs.mdast.model;
  * <p>
  * Yields:
  * <p>
- * {
- * type: 'paragraph',
- * children: [{type: 'text', value: 'Alpha bravo charlie.'}]
- * }
+ * { type: 'paragraph', children: [{type: 'text', value: 'Alpha bravo charlie.'}] }
  */
 public class MdAstParagraph extends MdAstParent<MdAstPhrasingContent> implements MdAstContent {
     public MdAstParagraph() {

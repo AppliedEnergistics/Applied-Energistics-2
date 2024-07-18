@@ -74,6 +74,7 @@ public class StorageLevelEmitterScreen extends UpgradeableScreen<StorageLevelEmi
 
         this.redstoneMode.active = notCraftingMode;
         this.redstoneMode.set(menu.getRedStoneMode());
+        this.redstoneMode.setVisibility(notCraftingMode);
 
         this.craftingMode.set(this.menu.getCraftingMode());
         this.craftingMode.setVisibility(!notCraftingMode);

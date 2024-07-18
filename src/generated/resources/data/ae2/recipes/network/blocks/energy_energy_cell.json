@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "ae2:all_certus_quartz"
+    },
+    "b": {
+      "tag": "c:fluix_dusts"
+    },
+    "c": {
+      "item": "ae2:quartz_glass"
+    }
+  },
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "result": {
+    "item": "ae2:energy_cell"
+  },
+  "show_notification": true
+}

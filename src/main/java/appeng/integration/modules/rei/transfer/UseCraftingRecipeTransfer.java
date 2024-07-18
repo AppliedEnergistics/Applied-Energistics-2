@@ -8,7 +8,6 @@ import static appeng.integration.modules.jeirei.TransferHelper.RED_SLOT_HIGHLIGH
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -142,7 +141,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
      * Draw missing slots.
      */
     private static TransferHandlerRenderer createErrorRenderer(CraftingTermMenu.MissingIngredientSlots indices) {
-        return (matrices, mouseX, mouseY, delta, widgets, bounds, display) -> {
+        return (guiGraphics, mouseX, mouseY, delta, widgets, bounds, display) -> {
             int i = 0;
             for (Widget widget : widgets) {
                 if (widget instanceof Slot slot && slot.getNoticeMark() == Slot.INPUT) {
@@ -150,12 +149,13 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
                     boolean craftable = indices.craftableSlots().contains(i);
                     i++;
                     if (missing || craftable) {
-                        matrices.pushPose();
-                        matrices.translate(0, 0, 400);
+                        var poseStack = guiGraphics.pose();
+                        poseStack.pushPose();
+                        poseStack.translate(0, 0, 400);
                         Rectangle innerBounds = slot.getInnerBounds();
-                        GuiComponent.fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
+                        guiGraphics.fill(innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
                                 innerBounds.getMaxY(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
-                        matrices.popPose();
+                        poseStack.popPose();
                     }
                 }
             }

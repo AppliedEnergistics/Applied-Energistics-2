@@ -6,12 +6,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -26,6 +24,7 @@ import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
+import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.registration.IAdvancedRegistration;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -33,12 +32,14 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
+import mezz.jei.api.runtime.IClickableIngredient;
 import mezz.jei.api.runtime.IJeiRuntime;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.features.P2PTunnelAttunementInternal;
 import appeng.api.integrations.jei.IngredientConverters;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.StackWithBounds;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
@@ -66,6 +67,8 @@ public class JEIPlugin implements IModPlugin {
     public static final ResourceLocation TEXTURE = AppEng.makeId("textures/guis/jei.png");
 
     private static final ResourceLocation ID = new ResourceLocation(AppEng.MOD_ID, "core");
+
+    private IJeiRuntime jeiRuntime;
 
     public JEIPlugin() {
         IngredientConverters.register(new ItemIngredientConverter());
@@ -222,17 +225,17 @@ public class JEIPlugin implements IModPlugin {
                         return screen.getExclusionZones();
                     }
 
-                    @Nullable
                     @Override
-                    public Object getIngredientUnderMouse(AEBaseScreen<?> screen, double mouseX, double mouseY) {
+                    public Optional<IClickableIngredient<?>> getClickableIngredientUnderMouse(AEBaseScreen<?> screen,
+                            double mouseX, double mouseY) {
                         // The following code allows the player to show recipes involving fluids in AE fluid terminals
                         // or AE fluid tanks shown in fluid interfaces and other UI.
-                        var stack = screen.getStackUnderMouse(mouseX, mouseY);
-                        if (stack != null) {
-                            return GenericEntryStackHelper.stackToIngredient(stack);
+                        var stackWithBounds = screen.getStackUnderMouse(mouseX, mouseY);
+                        if (stackWithBounds != null) {
+                            return makeClickableIngredient(stackWithBounds);
                         }
 
-                        return null;
+                        return Optional.empty();
                     }
 
                     @Override
@@ -250,14 +253,38 @@ public class JEIPlugin implements IModPlugin {
         registration.addGhostIngredientHandler(AEBaseScreen.class, new GhostIngredientHandler());
     }
 
+    private Optional<IClickableIngredient<?>> makeClickableIngredient(StackWithBounds stackWithBounds) {
+        var ingredient = GenericEntryStackHelper.stackToIngredient(jeiRuntime.getIngredientManager(),
+                stackWithBounds.stack());
+        if (ingredient == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(new ClickableIngredient<>(ingredient, stackWithBounds.bounds()));
+    }
+
+    private record ClickableIngredient<T> (ITypedIngredient<T> ingredient,
+            Rect2i area) implements IClickableIngredient<T> {
+        @Override
+        public ITypedIngredient<T> getTypedIngredient() {
+            return ingredient;
+        }
+
+        @Override
+        public Rect2i getArea() {
+            return area;
+        }
+    }
+
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
+        this.jeiRuntime = jeiRuntime;
         JEIFacade.setInstance(new JeiRuntimeAdapter(jeiRuntime));
         this.hideDebugTools(jeiRuntime);
 
         if (!AEConfig.instance().isEnableFacadesInJEI()) {
             jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK,
-                    FacadeCreativeTab.getGroup().getDisplayItems());
+                    FacadeCreativeTab.getDisplayItems());
         }
     }
 
@@ -284,13 +311,8 @@ public class JEIPlugin implements IModPlugin {
     }
 
     // Copy-pasted from JEI since it doesn't seem to expose these
-    public static void drawHoveringText(PoseStack poseStack, List<Component> textLines, int x, int y) {
-        var minecraft = Minecraft.getInstance();
-        var screen = minecraft.screen;
-        if (screen == null) {
-            return;
-        }
-
-        screen.renderTooltip(poseStack, textLines, Optional.empty(), x, y);
+    public static void drawHoveringText(GuiGraphics guiGraphics, List<Component> textLines, int x, int y) {
+        var font = Minecraft.getInstance().font;
+        guiGraphics.renderTooltip(font, textLines, Optional.empty(), x, y);
     }
 }

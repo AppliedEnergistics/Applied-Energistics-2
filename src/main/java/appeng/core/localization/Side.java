@@ -10,5 +10,6 @@ public enum Side {
     RIGHT,
     LEFT,
     BACK,
-    FRONT
+    FRONT,
+    ANY
 }

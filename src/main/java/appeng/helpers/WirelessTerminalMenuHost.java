@@ -28,7 +28,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.features.Locatables;
+import appeng.api.features.HotkeyAction;
 import appeng.api.implementations.blockentities.IWirelessAccessPoint;
 import appeng.api.implementations.menuobjects.IPortableTerminal;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -38,7 +38,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.IConfigManager;
-import appeng.blockentity.networking.WirelessBlockEntity;
+import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.tools.powered.WirelessTerminalItem;
@@ -48,10 +48,10 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
 
     private final WirelessTerminalItem terminal;
     private final BiConsumer<Player, ISubMenu> returnToMainMenu;
-    private IGrid targetGrid;
+    private final IGrid targetGrid;
     private IStorageService sg;
+    @Nullable
     private IWirelessAccessPoint myWap;
-    private double sqRange = Double.MAX_VALUE;
     /**
      * The distance to the currently connected access point in blocks.
      */
@@ -66,18 +66,9 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
         this.terminal = wirelessTerminalItem;
         this.returnToMainMenu = returnToMainMenu;
 
-        var gridKey = terminal.getGridKey(itemStack);
-        if (gridKey.isEmpty()) {
-            return;
-        }
-
-        var actionHost = Locatables.securityStations().get(player.level, gridKey.getAsLong());
-        if (actionHost != null) {
-            var n = actionHost.getActionableNode();
-            if (n != null) {
-                this.targetGrid = n.getGrid();
-                this.sg = this.targetGrid.getStorageService();
-            }
+        this.targetGrid = wirelessTerminalItem.getLinkedGrid(itemStack, player.level(), player);
+        if (this.targetGrid != null) {
+            this.sg = this.targetGrid.getStorageService();
         }
     }
 
@@ -89,10 +80,13 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
     @Override
     public double extractAEPower(double amt, Actionable mode, PowerMultiplier usePowerMultiplier) {
         if (this.terminal != null) {
+            final double extracted = Math.min(amt, this.terminal.getAECurrentPower(getItemStack()));
+
             if (mode == Actionable.SIMULATE) {
-                return this.terminal.hasPower(getPlayer(), amt, getItemStack()) ? amt : 0;
+                return extracted;
             }
-            return this.terminal.usePower(getPlayer(), amt, getItemStack()) ? amt : 0;
+
+            return this.terminal.usePower(getPlayer(), extracted, getItemStack()) ? extracted : 0;
         }
         return 0.0;
     }
@@ -112,43 +106,54 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
     }
 
     public boolean rangeCheck() {
-        this.sqRange = this.currentDistanceFromGrid = Double.MAX_VALUE;
+        this.currentDistanceFromGrid = Double.MAX_VALUE;
 
         if (this.targetGrid != null) {
-            if (this.myWap != null) {
-                return this.myWap.getGrid() == this.targetGrid && this.testWap(this.myWap);
-            }
+            @Nullable
+            IWirelessAccessPoint bestWap = null;
+            double bestSqDistance = Double.MAX_VALUE;
 
-            for (var wap : this.targetGrid.getMachines(WirelessBlockEntity.class)) {
-                if (this.testWap(wap)) {
-                    this.myWap = wap;
+            // Find closest WAP
+            for (var wap : this.targetGrid.getMachines(WirelessAccessPointBlockEntity.class)) {
+                double sqDistance = getWapSqDistance(wap);
+
+                // If the WAP is not suitable then MAX_VALUE will be returned and the check will fail
+                if (sqDistance < bestSqDistance) {
+                    bestSqDistance = sqDistance;
+                    bestWap = wap;
                 }
             }
 
+            // If no WAP is found this will work too
+            this.myWap = bestWap;
+            this.currentDistanceFromGrid = Math.sqrt(bestSqDistance);
             return this.myWap != null;
         }
+
         return false;
     }
 
-    protected boolean testWap(IWirelessAccessPoint wap) {
+    /**
+     * @return square distance to WAP if the WAP can be used, or {@link Double#MAX_VALUE} if it cannot be used.
+     */
+    protected double getWapSqDistance(IWirelessAccessPoint wap) {
         double rangeLimit = wap.getRange();
         rangeLimit *= rangeLimit;
 
         var dc = wap.getLocation();
 
-        if (dc.getLevel() == this.getPlayer().level) {
+        if (dc.getLevel() == this.getPlayer().level()) {
             var offX = dc.getPos().getX() - this.getPlayer().getX();
             var offY = dc.getPos().getY() - this.getPlayer().getY();
             var offZ = dc.getPos().getZ() - this.getPlayer().getZ();
 
-            final double r = offX * offX + offY * offY + offZ * offZ;
-            if (r < rangeLimit && this.sqRange > r && wap.isActive()) {
-                this.sqRange = r;
-                this.currentDistanceFromGrid = Math.sqrt(r);
-                return true;
+            double r = offX * offX + offY * offY + offZ * offZ;
+            if (r < rangeLimit && wap.isActive()) {
+                return r;
             }
         }
-        return false;
+
+        return Double.MAX_VALUE;
     }
 
     @Override
@@ -164,7 +169,7 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
     private boolean checkWirelessRange(AbstractContainerMenu menu) {
         if (!rangeCheck()) {
             if (!isClientSide()) {
-                getPlayer().sendSystemMessage(PlayerMessages.OutOfRange.text());
+                getPlayer().displayClientMessage(PlayerMessages.OutOfRange.text(), true);
             }
             return false;
         }
@@ -181,5 +186,9 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
     @Override
     public ItemStack getMainMenuIcon() {
         return getItemStack();
+    }
+
+    public String getCloseHotkey() {
+        return HotkeyAction.WIRELESS_TERMINAL;
     }
 }

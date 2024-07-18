@@ -3,7 +3,9 @@ package appeng.parts.automation;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.UUID;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,7 +25,6 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 
 import appeng.api.behaviors.PickupSink;
@@ -50,15 +51,18 @@ public class ItemPickupStrategy implements PickupStrategy {
     private final BlockPos pos;
     private final Direction side;
     private final Map<Enchantment, Integer> enchantments;
+    @Nullable
+    private final UUID ownerUuid;
 
     private boolean isAccepting = true;
 
     public ItemPickupStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host,
-            Map<Enchantment, Integer> enchantments) {
+            Map<Enchantment, Integer> enchantments, @Nullable UUID owningPlayerId) {
         this.level = level;
         this.pos = pos;
         this.side = side;
         this.enchantments = enchantments;
+        this.ownerUuid = owningPlayerId;
     }
 
     @Override
@@ -91,7 +95,7 @@ public class ItemPickupStrategy implements PickupStrategy {
     }
 
     @Override
-    public Result tryStartPickup(IEnergySource energySource, PickupSink sink) {
+    public Result tryPickup(IEnergySource energySource, PickupSink sink) {
         if (this.isAccepting) {
             var blockState = level.getBlockState(pos);
             if (this.canHandleBlock(level, pos, blockState)) {
@@ -104,6 +108,7 @@ public class ItemPickupStrategy implements PickupStrategy {
                 var canStore = this.canStoreItemStacks(sink, items);
 
                 if (hasPower && canStore) {
+                    this.completePickup(energySource, sink, items, requiredPower, blockState);
                     return Result.PICKED_UP;
                 } else {
                     return Result.CANT_STORE;
@@ -114,17 +119,8 @@ public class ItemPickupStrategy implements PickupStrategy {
         return Result.CANT_PICKUP;
     }
 
-    @Override
-    public void completePickup(IEnergySource energySource, PickupSink sink) {
-
-        var blockState = level.getBlockState(pos);
-        if (!this.canHandleBlock(level, pos, blockState)) {
-            return;
-        }
-
-        var items = this.obtainBlockDrops(level, pos);
-        var requiredPower = this.calculateEnergyUsage(level, pos, items);
-
+    private void completePickup(IEnergySource energySource, PickupSink sink, List<ItemStack> items, float requiredPower,
+            BlockState blockState) {
         if (!this.breakBlockAndStoreExtraItems(sink, level, pos)) {
             // We failed to actually replace the block with air, or it already was the case
             return;
@@ -216,17 +212,16 @@ public class ItemPickupStrategy implements PickupStrategy {
             return false;
         }
 
-        var material = state.getMaterial();
         // Note: bedrock, portals, and other unbreakable blocks have a hardness < 0, hence the >= 0 check below.
         var hardness = state.getDestroySpeed(level, pos);
-        var ignoreAirAndFluids = material == Material.AIR || material.isLiquid();
+        var ignoreAirAndFluids = state.isAir() || state.liquid();
 
         return !ignoreAirAndFluids && hardness >= 0f && level.isLoaded(pos)
-                && level.mayInteract(Platform.getPlayer(level), pos);
+                && level.mayInteract(Platform.getFakePlayer(level, ownerUuid), pos);
     }
 
     protected List<ItemStack> obtainBlockDrops(ServerLevel level, BlockPos pos) {
-        var fakePlayer = Platform.getPlayer(level);
+        var fakePlayer = Platform.getFakePlayer(level, ownerUuid);
         var state = level.getBlockState(pos);
         var blockEntity = level.getBlockEntity(pos);
 
@@ -268,7 +263,7 @@ public class ItemPickupStrategy implements PickupStrategy {
             if (enchantments.containsKey(Enchantments.UNBREAKING)) {
                 // Give plane only a (100 / (level + 1))% chance to use energy.
                 // This is similar to vanilla Unbreaking behaviour for tools.
-                int randomNumber = ThreadLocalRandom.current().nextInt(enchantments.get(Enchantments.UNBREAKING) + 1);
+                int randomNumber = level.getRandom().nextInt(enchantments.get(Enchantments.UNBREAKING) + 1);
                 useEnergy = randomNumber == 0;
             }
             var levelSum = enchantments.values().stream().reduce(0, Integer::sum) - efficiencyLevel;

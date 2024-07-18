@@ -23,11 +23,10 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import appeng.api.orientation.BlockOrientation;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.PatternProviderBlock;
-import appeng.block.misc.QuartzGrowthAcceleratorBlock;
-import appeng.block.misc.SecurityStationBlock;
+import appeng.block.misc.GrowthAcceleratorBlock;
 import appeng.block.misc.VibrationChamberBlock;
 import appeng.block.networking.EnergyCellBlock;
-import appeng.block.networking.WirelessBlock;
+import appeng.block.networking.WirelessAccessPointBlock;
 import appeng.block.spatial.SpatialAnchorBlock;
 import appeng.block.spatial.SpatialIOPortBlock;
 import appeng.block.storage.ChestBlock;
@@ -65,10 +64,10 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                 Variant.variant().with(VariantProperties.MODEL, inscriber.getLocation()))
                         .with(createFacingSpinDispatch());
 
+        crystalResonanceGenerator();
         wirelessAccessPoint();
         craftingMonitor();
         quartzGrowthAccelerator();
-        securityStation();
         meChest();
         patternProvider();
         vibrationChamber();
@@ -150,23 +149,12 @@ public class BlockModelProvider extends AE2BlockStateProvider {
     }
 
     private void quartzGrowthAccelerator() {
-        var unpoweredModel = getExistingModel("block/quartz_growth_accelerator_off");
-        var poweredModel = getExistingModel("block/quartz_growth_accelerator_on");
+        var unpoweredModel = getExistingModel("block/growth_accelerator_off");
+        var poweredModel = getExistingModel("block/growth_accelerator_on");
 
-        multiVariantGenerator(AEBlocks.QUARTZ_GROWTH_ACCELERATOR)
+        multiVariantGenerator(AEBlocks.GROWTH_ACCELERATOR)
                 .with(createFacingDispatch(90, 0))
-                .with(PropertyDispatch.property(QuartzGrowthAcceleratorBlock.POWERED)
-                        .select(false, Variant.variant().with(VariantProperties.MODEL, unpoweredModel))
-                        .select(true, Variant.variant().with(VariantProperties.MODEL, poweredModel)));
-    }
-
-    private void securityStation() {
-        var unpoweredModel = getExistingModel("block/security_station_off");
-        var poweredModel = getExistingModel("block/security_station_on");
-
-        multiVariantGenerator(AEBlocks.SECURITY_STATION)
-                .with(createFacingSpinDispatch())
-                .with(PropertyDispatch.property(SecurityStationBlock.POWERED)
+                .with(PropertyDispatch.property(GrowthAcceleratorBlock.POWERED)
                         .select(false, Variant.variant().with(VariantProperties.MODEL, unpoweredModel))
                         .select(true, Variant.variant().with(VariantProperties.MODEL, poweredModel)));
     }
@@ -186,6 +174,27 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                                         BlockOrientation.get(facing));
                             }
                         }));
+    }
+
+    private void crystalResonanceGenerator() {
+        var builder = getVariantBuilder(AEBlocks.CRYSTAL_RESONANCE_GENERATOR.block());
+
+        var modelFile = models().getExistingFile(AppEng.makeId("block/crystal_resonance_generator"));
+
+        for (var facing : Direction.values()) {
+            var rotation = BlockOrientation.get(facing, 0);
+            builder.partialState()
+                    .with(BlockStateProperties.FACING, facing)
+                    .setModels(ConfiguredModel.builder()
+                            .modelFile(modelFile)
+                            // The original is facing "up" while we generally assume models are facing north
+                            // but this looks better as an item model
+                            .rotationX(rotation.getAngleX() + 90)
+                            .rotationY(rotation.getAngleY())
+                            .build());
+        }
+
+        simpleBlockItem(AEBlocks.CRYSTAL_RESONANCE_GENERATOR.block(), modelFile);
     }
 
     private void wirelessAccessPoint() {
@@ -209,28 +218,41 @@ public class BlockModelProvider extends AE2BlockStateProvider {
 
             addModel.apply(chassis).end();
 
-            addModel.apply(antennaOff).condition(WirelessBlock.STATE, WirelessBlock.State.OFF).end();
-            addModel.apply(statusOff).condition(WirelessBlock.STATE, WirelessBlock.State.OFF).end();
+            addModel.apply(antennaOff).condition(WirelessAccessPointBlock.STATE, WirelessAccessPointBlock.State.OFF)
+                    .end();
+            addModel.apply(statusOff).condition(WirelessAccessPointBlock.STATE, WirelessAccessPointBlock.State.OFF)
+                    .end();
 
-            addModel.apply(antennaOff).condition(WirelessBlock.STATE, WirelessBlock.State.ON).end();
-            addModel.apply(statusOn).condition(WirelessBlock.STATE, WirelessBlock.State.ON).end();
+            addModel.apply(antennaOff).condition(WirelessAccessPointBlock.STATE, WirelessAccessPointBlock.State.ON)
+                    .end();
+            addModel.apply(statusOn).condition(WirelessAccessPointBlock.STATE, WirelessAccessPointBlock.State.ON).end();
 
-            addModel.apply(antennaOn).condition(WirelessBlock.STATE, WirelessBlock.State.HAS_CHANNEL).end();
-            addModel.apply(statusOn).condition(WirelessBlock.STATE, WirelessBlock.State.HAS_CHANNEL).end();
+            addModel.apply(antennaOn)
+                    .condition(WirelessAccessPointBlock.STATE, WirelessAccessPointBlock.State.HAS_CHANNEL).end();
+            addModel.apply(statusOn)
+                    .condition(WirelessAccessPointBlock.STATE, WirelessAccessPointBlock.State.HAS_CHANNEL).end();
         }
     }
 
     private void vibrationChamber() {
-        var offModel = models().orientable(
+        var offModel = models().cube(
                 modelPath(AEBlocks.VIBRATION_CHAMBER),
-                makeId("block/vibration_chamber"),
+                makeId("block/vibration_chamber_bottom"),
+                makeId("block/vibration_chamber_top"),
                 makeId("block/vibration_chamber_front"),
-                makeId("block/vibration_chamber"));
-        var onModel = models().orientable(
-                modelPath(AEBlocks.VIBRATION_CHAMBER) + "_on",
+                makeId("block/vibration_chamber_back"),
                 makeId("block/vibration_chamber"),
-                makeId("block/vibration_chamber_front_on"),
+                makeId("block/vibration_chamber"),
                 makeId("block/vibration_chamber"));
+        var onModel = models().cube(
+                modelPath(AEBlocks.VIBRATION_CHAMBER) + "_on",
+                makeId("block/vibration_chamber_bottom"),
+                makeId("block/vibration_chamber_top_on"),
+                makeId("block/vibration_chamber_front_on"),
+                makeId("block/vibration_chamber_back_on"),
+                makeId("block/vibration_chamber_on"),
+                makeId("block/vibration_chamber_on"),
+                makeId("block/vibration_chamber_on"));
 
         multiVariantGenerator(AEBlocks.VIBRATION_CHAMBER)
                 .with(createFacingSpinDispatch())

@@ -75,6 +75,13 @@ public interface IOrientationStrategy {
     }
 
     /**
+     * Indicates that this orientation can be changed by the player (i.e. by wrench).
+     */
+    default boolean allowsPlayerRotation() {
+        return true;
+    }
+
+    /**
      * @return The block state properties used for storing orientation by this strategy.
      */
     Collection<Property<?>> getProperties();

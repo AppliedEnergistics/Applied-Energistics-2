@@ -1,10 +1,10 @@
 package appeng.libs.micromark.misc;
 
-import appeng.libs.micromark.TestUtil;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import appeng.libs.micromark.TestUtil;
 
 public class DangerousProtocolsTest {
     @Nested

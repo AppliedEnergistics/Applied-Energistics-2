@@ -18,7 +18,7 @@
 
 package appeng.items;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.item.v1.FabricItem;
 import net.minecraft.core.registries.BuiltInRegistries;

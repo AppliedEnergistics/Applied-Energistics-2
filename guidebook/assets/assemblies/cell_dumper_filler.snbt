@@ -1,0 +1,16 @@
+{
+    DataVersion: 3460,
+    size: [4, 2, 1],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 632275L, p: 1}, id: "ae2:green_smart_cable", visual: {channelsEast: 2, connections: ["east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", up: {access: "READ_WRITE", filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 632275L, p: 1}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}, visual: {}}},
+        {pos: [1, 0, 0], state: "ae2:energy_cell{fullness:4}", nbt: {id: "ae2:energy_cell", internalCurrentPower: 200000.0d, proxy: {g: 632275L, p: 0}, visual: {}}},
+        {pos: [2, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 632272L, p: 1}, id: "ae2:blue_smart_cable", visual: {channelsEast: 0, connections: ["east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {gn: {g: 632272L, p: 1}, id: "ae2:quartz_fiber", outer: {g: 632275L, p: 1}, visual: {missingChannel: 0b, powered: 1b}}}},
+        {pos: [1, 1, 0], state: "ae2:io_port{facing:north,powered:true,spin:0}", nbt: {fullness_mode: "EMPTY", id: "ae2:io_port", inv: {item0: {}, item1: {}, item10: {}, item11: {}, item2: {}, item3: {}, item4: {}, item5: {}, item6: {}, item7: {}, item8: {}, item9: {}}, lastRedstoneState: 1, operation_mode: "FILL", proxy: {g: 632275L, p: 1}, redstone_controlled: "IGNORE", upgrades: [{Count: 1b, Slot: 0, id: "ae2:speed_card"}, {Count: 1b, Slot: 1, id: "ae2:speed_card"}, {Count: 1b, Slot: 2, id: "ae2:speed_card"}], visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "ae2:energy_cell{fullness:4}",
+        "ae2:io_port{facing:north,powered:true,spin:0}"
+    ]
+}

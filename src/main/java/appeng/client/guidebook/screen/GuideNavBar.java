@@ -3,17 +3,22 @@ package appeng.client.guidebook.screen;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
 
 import appeng.client.Point;
+import appeng.client.guidebook.color.ColorValue;
+import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytParagraph;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
@@ -21,15 +26,15 @@ import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.layout.MinecraftFontMetrics;
 import appeng.client.guidebook.navigation.NavigationNode;
 import appeng.client.guidebook.navigation.NavigationTree;
-import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
-import appeng.client.guidebook.render.SymbolicColor;
+import appeng.sounds.AppEngSounds;
 
 public class GuideNavBar extends AbstractWidget {
     private static final int WIDTH_CLOSED = 15;
     private static final int WIDTH_OPEN = 150;
     private static final int CHILD_ROW_INDENT = 10;
     private static final int PARENT_ROW_INDENT = 7;
+    private static boolean neverInteracted = true;
 
     private NavigationTree navTree;
 
@@ -61,8 +66,17 @@ public class GuideNavBar extends AbstractWidget {
             row.expanded = !row.expanded;
             updateLayout();
 
-            screen.navigateTo(row.node.pageId());
+            var handler = Minecraft.getInstance().getSoundManager();
+            handler.play(SimpleSoundInstance.forUI(AppEngSounds.GUIDE_CLICK_EVENT, 1.0F));
+            if (row.node.pageId() != null) {
+                screen.navigateTo(row.node.pageId());
+            }
         }
+    }
+
+    @Override
+    public void playDownSound(SoundManager handler) {
+        // Mute default sound
     }
 
     @Override
@@ -87,17 +101,18 @@ public class GuideNavBar extends AbstractWidget {
 
     private void setScrollOffset(int offset) {
         var maxScrollOffset = 0;
-        if (!rows.isEmpty()) {
-            var contentHeight = rows.get(rows.size() - 1).bottom - rows.get(0).top;
+        var visibleRows = rows.stream().filter(Row::isVisible).toList();
+        if (!visibleRows.isEmpty()) {
+            var contentHeight = visibleRows.get(visibleRows.size() - 1).bottom - visibleRows.get(0).top;
             maxScrollOffset = Math.max(0, contentHeight - height);
         }
         scrollOffset = Mth.clamp(offset, 0, maxScrollOffset);
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         var viewport = new LytRect(0, scrollOffset, width, height);
-        var renderContext = new SimpleRenderContext(viewport, poseStack, LightDarkMode.LIGHT_MODE);
+        var renderContext = new SimpleRenderContext(viewport, graphics);
 
         boolean containsMouse = (mouseX >= getX() && mouseY >= getY() && mouseX < getX() + width
                 && mouseY <= getY() + height);
@@ -105,6 +120,18 @@ public class GuideNavBar extends AbstractWidget {
             case CLOSED -> {
                 if (containsMouse) {
                     state = State.OPENING;
+                    neverInteracted = false;
+                } else if (neverInteracted) {
+                    // Show animation on 6 second interval
+                    var ot = Math.abs((GLFW.glfwGetTime() % 6) / 3 - 1);
+                    // only play the animation for 6/10*2=1.2 seconds of it
+                    if (ot >= 0.9) {
+                        var t = (ot - 0.9) * 10;
+                        var f = easeOutBounce(t);
+                        width = (int) Math.round(WIDTH_CLOSED + f * (WIDTH_OPEN - WIDTH_CLOSED) * 0.075);
+                    } else {
+                        width = WIDTH_CLOSED;
+                    }
                 }
             }
             case OPENING -> {
@@ -131,35 +158,36 @@ public class GuideNavBar extends AbstractWidget {
         updateMousePos(mouseX, mouseY);
 
         // Check if we need to re-layout
-        var currentNavTree = screen.getPages().getNavigationTree();
+        var currentNavTree = screen.getGuide().getNavigationTree();
         if (currentNavTree != this.navTree) {
             recreateRows();
         }
 
         if (state == State.CLOSED) {
-            renderContext.fillGradientHorizontal(getX(), getY(), width, height, SymbolicColor.NAVBAR_BG_TOP.ref(),
-                    SymbolicColor.NAVBAR_BG_BOTTOM.ref());
+            renderContext.fillGradientHorizontal(getX(), getY(), width, height, SymbolicColor.NAVBAR_BG_TOP,
+                    SymbolicColor.NAVBAR_BG_BOTTOM);
 
-            var p1 = new Vec2(width - 4, height / 2f);
-            var p2 = new Vec2(4, height / 2f - 5);
-            var p3 = new Vec2(4, height / 2f + 5);
+            var p1 = new Vec2(width - WIDTH_CLOSED + WIDTH_CLOSED - 4, height / 2f);
+            var p2 = new Vec2(width - WIDTH_CLOSED + 4, height / 2f - 5);
+            var p3 = new Vec2(width - WIDTH_CLOSED + 4, height / 2f + 5);
 
-            renderContext.fillTriangle(p1, p2, p3, SymbolicColor.NAVBAR_EXPAND_ARROW.ref());
+            renderContext.fillTriangle(p1, p2, p3, SymbolicColor.NAVBAR_EXPAND_ARROW);
         } else {
-            renderContext.fillGradientVertical(getX(), getY(), width, height, SymbolicColor.NAVBAR_BG_TOP.ref(),
-                    SymbolicColor.NAVBAR_BG_BOTTOM.ref());
+            renderContext.fillGradientVertical(getX(), getY(), width, height, SymbolicColor.NAVBAR_BG_TOP,
+                    SymbolicColor.NAVBAR_BG_BOTTOM);
         }
 
         if (state != State.CLOSED) {
-            enableScissor(getX(), getY(), width, height);
+            graphics.enableScissor(getX(), getY(), width, height);
 
-            poseStack.pushPose();
-            poseStack.translate(getX(), getY() - scrollOffset, 0);
+            var pose = graphics.pose();
+            pose.pushPose();
+            pose.translate(getX(), getY() - scrollOffset, 0);
 
             // Draw a backdrop on the hovered row before starting batch rendering
             var hoveredRow = pickRow(mouseX, mouseY);
             if (hoveredRow != null) {
-                renderContext.fillRect(hoveredRow.getBounds(), SymbolicColor.NAVBAR_ROW_HOVER.ref());
+                renderContext.fillRect(hoveredRow.getBounds(), SymbolicColor.NAVBAR_ROW_HOVER);
             }
 
             // Render Text in batch
@@ -196,7 +224,7 @@ public class GuideNavBar extends AbstractWidget {
                     }
 
                     var color = row == hoveredRow ? SymbolicColor.LINK : SymbolicColor.BODY_TEXT;
-                    renderContext.fillTriangle(p1, p2, p3, color.ref());
+                    renderContext.fillTriangle(p1, p2, p3, color);
                 }
 
                 var icon = row.node.icon();
@@ -207,10 +235,14 @@ public class GuideNavBar extends AbstractWidget {
                 }
             }
 
-            poseStack.popPose();
+            pose.popPose();
 
-            disableScissor();
+            graphics.disableScissor();
         }
+    }
+
+    public static double easeOutBounce(double x) {
+        return Math.sqrt(1 - Math.pow(x - 1, 2));
     }
 
     @Nullable
@@ -242,7 +274,7 @@ public class GuideNavBar extends AbstractWidget {
     }
 
     private void recreateRows() {
-        this.navTree = screen.getPages().getNavigationTree();
+        this.navTree = screen.getGuide().getNavigationTree();
         // Save Freeze expanded / scroll position
         this.rows.clear();
 
@@ -262,7 +294,7 @@ public class GuideNavBar extends AbstractWidget {
     }
 
     private void updateLayout() {
-        var context = new LayoutContext(new MinecraftFontMetrics(), new LytRect(0, 0, WIDTH_OPEN, height));
+        var context = new LayoutContext(new MinecraftFontMetrics());
 
         var currentY = 0;
         for (var row : this.rows) {
@@ -329,7 +361,7 @@ public class GuideNavBar extends AbstractWidget {
 
             span = new LytFlowSpan();
             span.appendText(node.title());
-            span.modifyHoverStyle(style -> style.color(SymbolicColor.LINK.ref()));
+            span.modifyHoverStyle(style -> style.color((ColorValue) SymbolicColor.LINK));
             this.paragraph.setPaddingLeft(5);
             this.paragraph.append(span);
         }

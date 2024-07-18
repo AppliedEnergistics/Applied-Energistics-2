@@ -18,7 +18,7 @@
 
 package appeng.block.misc;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -32,7 +32,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.orientation.IOrientationStrategy;
@@ -51,7 +50,7 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public VibrationChamberBlock() {
-        super(defaultProps(Material.METAL).strength(4.2F));
+        super(metalProps().strength(4.2F));
         this.registerDefaultState(this.defaultBlockState().setValue(ACTIVE, false));
     }
 

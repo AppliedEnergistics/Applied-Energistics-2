@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "ae2:block/debug_phantom_node"
+    }
+  }
+}

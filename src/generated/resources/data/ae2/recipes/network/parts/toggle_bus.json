@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "c:redstone_dusts"
+    },
+    "b": {
+      "item": "ae2:fluix_glass_cable"
+    },
+    "c": {
+      "item": "minecraft:lever"
+    }
+  },
+  "pattern": [
+    " a ",
+    "bcb",
+    " a "
+  ],
+  "result": {
+    "item": "ae2:toggle_bus"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "ae2:calculation_processor_press",
+    "ae2:engineering_processor_press",
+    "ae2:logic_processor_press",
+    "ae2:silicon_press"
+  ]
+}

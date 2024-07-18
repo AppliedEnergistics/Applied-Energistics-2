@@ -30,9 +30,9 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -41,7 +41,6 @@ import net.minecraft.world.item.crafting.StonecutterRecipe;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEItemKey;
@@ -83,9 +82,8 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
     private static final String ACTION_SET_STONECUTTING_RECIPE_ID = "setStonecuttingRecipeId";
     private static final String ACTION_CYCLE_PROCESSING_OUTPUT = "cycleProcessingOutput";
 
-    public static MenuType<PatternEncodingTermMenu> TYPE = MenuTypeBuilder
+    public static final MenuType<PatternEncodingTermMenu> TYPE = MenuTypeBuilder
             .create(PatternEncodingTermMenu::new, IPatternTerminalMenuHost.class)
-            .requirePermission(SecurityPermissions.CRAFT)
             .build("patternterm");
 
     private final PatternEncodingLogic encodingLogic;
@@ -93,6 +91,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
     private final FakeSlot[] processingInputSlots = new FakeSlot[AEProcessingPattern.MAX_INPUT_SLOTS];
     private final FakeSlot[] processingOutputSlots = new FakeSlot[AEProcessingPattern.MAX_OUTPUT_SLOTS];
     private final FakeSlot stonecuttingInputSlot;
+    private final FakeSlot smithingTableTemplateSlot;
     private final FakeSlot smithingTableBaseSlot;
     private final FakeSlot smithingTableAdditionSlot;
     private final PatternTermSlot craftOutputSlot;
@@ -169,10 +168,13 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         this.stonecuttingInputSlot.setHideAmount(true);
 
         // Input for smithing table pattern encoding
-        this.addSlot(this.smithingTableBaseSlot = new FakeSlot(encodedInputs, 0),
+        this.addSlot(this.smithingTableTemplateSlot = new FakeSlot(encodedInputs, 0),
+                SlotSemantics.SMITHING_TABLE_TEMPLATE);
+        this.smithingTableTemplateSlot.setHideAmount(true);
+        this.addSlot(this.smithingTableBaseSlot = new FakeSlot(encodedInputs, 1),
                 SlotSemantics.SMITHING_TABLE_BASE);
         this.smithingTableBaseSlot.setHideAmount(true);
-        this.addSlot(this.smithingTableAdditionSlot = new FakeSlot(encodedInputs, 1),
+        this.addSlot(this.smithingTableAdditionSlot = new FakeSlot(encodedInputs, 2),
                 SlotSemantics.SMITHING_TABLE_ADDITION);
         this.smithingTableAdditionSlot.setHideAmount(true);
 
@@ -204,8 +206,8 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
     }
 
     private ItemStack getAndUpdateOutput() {
-        var level = this.getPlayerInventory().player.level;
-        var ic = new CraftingContainer(this, CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT);
+        var level = this.getPlayerInventory().player.level();
+        var ic = new TransientCraftingContainer(this, CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT);
 
         boolean invalidIngredients = false;
         for (int x = 0; x < ic.getContainerSize(); x++) {
@@ -232,7 +234,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         if (this.currentRecipe == null) {
             is = ItemStack.EMPTY;
         } else {
-            is = this.currentRecipe.assemble(ic);
+            is = this.currentRecipe.assemble(ic, level.registryAccess());
         }
 
         this.craftOutputSlot.setDisplayedCraftingOutput(is);
@@ -249,7 +251,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         var encodedPattern = encodePattern();
         if (encodedPattern != null) {
             var decodedPattern = PatternDetailsHelper.decodePattern(encodedPattern,
-                    this.getPlayerInventory().player.level);
+                    this.getPlayerInventory().player.level());
             if (decodedPattern instanceof AECraftingPattern craftingPattern) {
                 for (int i = 0; i < craftingPattern.getSparseInputs().length; i++) {
                     if (craftingPattern.getValidFluid(i) != null) {
@@ -371,16 +373,18 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
 
     @Nullable
     private ItemStack encodeSmithingTablePattern() {
-        if (!(encodedInputsInv.getKey(0) instanceof AEItemKey base)
-                || !(encodedInputsInv.getKey(1) instanceof AEItemKey addition)) {
+        if (!(encodedInputsInv.getKey(0) instanceof AEItemKey template)
+                || !(encodedInputsInv.getKey(1) instanceof AEItemKey base)
+                || !(encodedInputsInv.getKey(2) instanceof AEItemKey addition)) {
             return null;
         }
 
-        var container = new SimpleContainer(2);
-        container.setItem(0, base.toStack());
-        container.setItem(1, addition.toStack());
+        var container = new SimpleContainer(3);
+        container.setItem(0, template.toStack());
+        container.setItem(1, base.toStack());
+        container.setItem(2, addition.toStack());
 
-        var level = getPlayer().level;
+        var level = getPlayer().level();
         var recipe = level.getRecipeManager()
                 .getRecipeFor(RecipeType.SMITHING, container, level)
                 .orElse(null);
@@ -388,9 +392,9 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             return null;
         }
 
-        var output = AEItemKey.of(recipe.assemble(container));
+        var output = AEItemKey.of(recipe.assemble(container, level.registryAccess()));
 
-        return PatternDetailsHelper.encodeSmithingTablePattern(recipe, base, addition, output,
+        return PatternDetailsHelper.encodeSmithingTablePattern(recipe, template, base, addition, output,
                 encodingLogic.isSubstitution());
     }
 
@@ -408,7 +412,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         SimpleContainer container = new SimpleContainer(1);
         container.setItem(0, input.toStack());
 
-        var level = getPlayer().level;
+        var level = getPlayer().level();
         var recipe = level.getRecipeManager()
                 .getRecipeFor(RecipeType.STONECUTTING, container, level, stonecuttingRecipeId)
                 .map(Pair::getSecond)
@@ -417,7 +421,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             return null;
         }
 
-        var output = AEItemKey.of(recipe.getResultItem());
+        var output = AEItemKey.of(recipe.getResultItem(level.registryAccess()));
 
         return PatternDetailsHelper.encodeStonecuttingPattern(recipe, input, output, encodingLogic.isSubstitution());
     }
@@ -502,7 +506,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
     private void updateStonecuttingRecipes() {
         stonecuttingRecipes.clear();
         if (encodedInputsInv.getKey(0) instanceof AEItemKey itemKey) {
-            var level = getPlayer().level;
+            var level = getPlayer().level();
             var recipeManager = level.getRecipeManager();
             var inventory = new SimpleContainer(1);
             inventory.setItem(0, itemKey.toStack());
@@ -648,6 +652,10 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
 
     public FakeSlot[] getProcessingOutputSlots() {
         return processingOutputSlots;
+    }
+
+    public FakeSlot getSmithingTableTemplateSlot() {
+        return smithingTableTemplateSlot;
     }
 
     public FakeSlot getSmithingTableBaseSlot() {

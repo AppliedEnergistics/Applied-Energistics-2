@@ -1,9 +1,10 @@
 package appeng.libs.mdast.model;
 
-import com.google.gson.stream.JsonWriter;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
+
+import com.google.gson.stream.JsonWriter;
+
+import org.jetbrains.annotations.Nullable;
 
 /**
  * LinkReference (Parent) represents a hyperlink through association, or its original source if there is no association.
@@ -18,17 +19,13 @@ import java.io.IOException;
  * <p>
  * Yields:
  * <p>
+ * 
  * <pre>
- * {
- * type: 'linkReference',
- * identifier: 'bravo',
- * label: 'Bravo',
- * referenceType: 'full',
- * children: [{type: 'text', value: 'alpha'}]
- * }
+ * {type:'linkReference',identifier:'bravo',label:'Bravo',referenceType:'full',children:[{type:'text',value:'alpha'}]}
  * </pre>
  */
-public class MdAstLinkReference extends MdAstParent<MdAstStaticPhrasingContent> implements MdAstReference, MdAstPhrasingContent {
+public class MdAstLinkReference extends MdAstParent<MdAstStaticPhrasingContent>
+        implements MdAstReference, MdAstPhrasingContent {
     public String identifier;
     public String label;
     public MdAstReferenceType referenceType;

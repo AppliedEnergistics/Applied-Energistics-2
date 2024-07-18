@@ -5,6 +5,10 @@ import java.util.Optional;
 import appeng.client.guidebook.screen.GuideScreen;
 
 public interface InteractiveElement {
+    default boolean mouseMoved(GuideScreen screen, int x, int y) {
+        return false;
+    }
+
     default boolean mouseClicked(GuideScreen screen, int x, int y, int button) {
         return false;
     }
@@ -13,7 +17,11 @@ public interface InteractiveElement {
         return false;
     }
 
-    default Optional<GuideTooltip> getTooltip() {
+    /**
+     * @param x X position of the mouse in document coordinates.
+     * @param y Y position of the mouse in document coordinates.
+     */
+    default Optional<GuideTooltip> getTooltip(float x, float y) {
         return Optional.empty();
     }
 }

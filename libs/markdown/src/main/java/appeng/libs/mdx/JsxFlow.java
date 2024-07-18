@@ -10,8 +10,6 @@ import appeng.libs.micromark.Types;
 import appeng.libs.micromark.factory.FactorySpace;
 import appeng.libs.micromark.symbol.Codes;
 
-import java.util.ArrayList;
-
 final class JsxFlow {
 
     public static final Construct INSTANCE = new Construct();
@@ -55,8 +53,7 @@ final class JsxFlow {
                         "mdxJsxFlowTagAttributeValueLiteralValue",
                         "mdxJsxFlowTagAttributeValueExpression",
                         "mdxJsxFlowTagAttributeValueExpressionMarker",
-                        "mdxJsxFlowTagAttributeValueExpressionValue"
-                ).step(code);
+                        "mdxJsxFlowTagAttributeValueExpressionValue").step(code);
             }
 
             State after(int code) {
@@ -64,8 +61,8 @@ final class JsxFlow {
                 return code == Codes.lessThan
                         ? start(code)
                         : code == Codes.eof || CharUtil.markdownLineEnding(code)
-                        ? ok.step(code)
-                        : nok.step(code);
+                                ? ok.step(code)
+                                : nok.step(code);
             }
         }
 

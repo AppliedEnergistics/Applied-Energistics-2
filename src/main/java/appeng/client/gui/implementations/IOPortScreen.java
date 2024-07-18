@@ -18,8 +18,7 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -60,17 +59,18 @@ public class IOPortScreen extends UpgradeableScreen<IOPortMenu> {
         super.updateBeforeRender();
 
         this.redstoneMode.set(this.menu.getRedStoneMode());
+        this.redstoneMode.setVisibility(menu.hasUpgrade(AEItems.REDSTONE_CARD));
         this.operationMode.set(this.menu.getOperationMode());
         this.fullMode.set(this.menu.getFullMode());
     }
 
     @Override
-    public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+    public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY, float partialTicks) {
-        super.drawBG(poseStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
+        super.drawBG(guiGraphics, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
-        this.drawItem(offsetX + 66 - 8, offsetY + 17, AEItems.ITEM_CELL_1K.stack());
-        this.drawItem(offsetX + 94 + 8, offsetY + 17, AEBlocks.DRIVE.stack());
+        this.drawItem(guiGraphics, offsetX + 66 - 8, offsetY + 17, AEItems.ITEM_CELL_1K.stack());
+        this.drawItem(guiGraphics, offsetX + 94 + 8, offsetY + 17, AEBlocks.DRIVE.stack());
     }
 
 }

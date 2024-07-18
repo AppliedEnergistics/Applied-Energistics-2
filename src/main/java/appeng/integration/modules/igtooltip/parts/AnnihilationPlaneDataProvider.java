@@ -4,7 +4,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.api.integrations.igtooltip.TooltipBuilder;
 import appeng.api.integrations.igtooltip.TooltipContext;
@@ -35,7 +35,7 @@ public class AnnihilationPlaneDataProvider
     }
 
     @Override
-    public void provideServerData(ServerPlayer player, AnnihilationPlanePart plane, CompoundTag serverData) {
+    public void provideServerData(Player player, AnnihilationPlanePart plane, CompoundTag serverData) {
         var enchantments = plane.getEnchantments();
         if (enchantments != null && !enchantments.isEmpty()) {
             var enchantmentsTag = new CompoundTag();

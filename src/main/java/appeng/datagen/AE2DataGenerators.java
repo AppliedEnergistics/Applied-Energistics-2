@@ -33,6 +33,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
+import appeng.core.definitions.AEDamageTypes;
 import appeng.datagen.providers.WorldGenProvider;
 import appeng.datagen.providers.advancements.AdvancementGenerator;
 import appeng.datagen.providers.localization.LocalizationProvider;
@@ -82,7 +83,8 @@ public class AE2DataGenerators {
 
         // Tags
         var blockTagsProvider = pack.addProvider(bindRegistries(BlockTagsProvider::new, registries));
-        pack.addProvider(packOutput -> new ItemTagsProvider(packOutput, registries, blockTagsProvider));
+        pack.addProvider(
+                packOutput -> new ItemTagsProvider(packOutput, registries, blockTagsProvider.contentsGetter()));
         pack.addProvider(bindRegistries(FluidTagsProvider::new, registries));
         pack.addProvider(bindRegistries(BiomeTagsProvider::new, registries));
         pack.addProvider(bindRegistries(PoiTypeTagsProvider::new, registries));
@@ -131,7 +133,8 @@ public class AE2DataGenerators {
                     .add(Registries.DIMENSION_TYPE, InitDimensionTypes::init)
                     .add(Registries.STRUCTURE, InitStructures::initDatagenStructures)
                     .add(Registries.STRUCTURE_SET, InitStructures::initDatagenStructureSets)
-                    .add(Registries.BIOME, InitBiomes::init);
+                    .add(Registries.BIOME, InitBiomes::init)
+                    .add(Registries.DAMAGE_TYPE, AEDamageTypes::init);
 
             return builder.buildPatch(registryAccess, provider);
         });

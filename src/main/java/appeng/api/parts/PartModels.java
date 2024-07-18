@@ -23,8 +23,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.concurrent.ThreadSafe;
-
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -33,7 +31,6 @@ import net.minecraft.resources.ResourceLocation;
  * The models will automatically be added as dependencies to the model of the cable bus, and registered with
  * {@link ModelLoader#addSpecialModel(net.minecraft.resources.ResourceLocation)}.
  */
-@ThreadSafe
 public final class PartModels {
 
     private static final Set<ResourceLocation> models = new HashSet<>();

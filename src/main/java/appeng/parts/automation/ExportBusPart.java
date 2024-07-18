@@ -18,12 +18,11 @@
 
 package appeng.parts.automation;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -53,7 +52,6 @@ import appeng.helpers.MultiCraftingTracker;
 import appeng.items.parts.PartModels;
 import appeng.menu.implementations.IOBusMenu;
 import appeng.parts.PartModel;
-import appeng.util.Platform;
 import appeng.util.prioritylist.DefaultPriorityList;
 
 /**
@@ -76,13 +74,14 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/export_bus_has_channel"));
 
-    private final MultiCraftingTracker craftingTracker = new MultiCraftingTracker(this, 9);
+    private final MultiCraftingTracker craftingTracker;
     private int nextSlot = 0;
     @Nullable
     private StackExportStrategy exportStrategy;
 
     public ExportBusPart(IPartItem<?> partItem) {
-        super(TickRates.ExportBus, partItem);
+        super(TickRates.ExportBus, StackWorldBehaviors.hasExportStrategyFilter(), partItem);
+        this.craftingTracker = new MultiCraftingTracker(this, getConfig().size());
         getMainNode().addService(ICraftingRequester.class, this);
 
         this.getConfigManager().registerSetting(Settings.CRAFT_ONLY, YesNo.NO);
@@ -222,7 +221,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
 
     protected int getStartingSlot(SchedulingMode schedulingMode, int x) {
         if (schedulingMode == SchedulingMode.RANDOM) {
-            return Platform.getRandom().nextInt(this.availableSlots());
+            return getLevel().getRandom().nextInt(this.availableSlots());
         }
 
         if (schedulingMode == SchedulingMode.ROUNDROBIN) {

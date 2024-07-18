@@ -27,6 +27,7 @@ import java.util.function.Function;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -34,6 +35,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 
+import appeng.api.ids.AECreativeTabIds;
 import appeng.api.ids.AEItemIds;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.upgrades.Upgrades;
@@ -62,13 +64,13 @@ import appeng.items.storage.CreativeCellItem;
 import appeng.items.storage.SpatialStorageCellItem;
 import appeng.items.storage.StorageTier;
 import appeng.items.storage.ViewCellItem;
-import appeng.items.tools.BiometricCardItem;
 import appeng.items.tools.GuideItem;
 import appeng.items.tools.MemoryCardItem;
 import appeng.items.tools.NetworkToolItem;
 import appeng.items.tools.fluix.FluixAxeItem;
 import appeng.items.tools.fluix.FluixHoeItem;
 import appeng.items.tools.fluix.FluixPickaxeItem;
+import appeng.items.tools.fluix.FluixSmithingTemplateItem;
 import appeng.items.tools.fluix.FluixSpadeItem;
 import appeng.items.tools.fluix.FluixSwordItem;
 import appeng.items.tools.powered.ChargedStaffItem;
@@ -125,11 +127,12 @@ public final class AEItems {
     /// FLUIX TOOLS
     ///
 
+    public static final ItemDefinition<FluixSmithingTemplateItem> FLUIX_UPGRADE_SMITHING_TEMPLATE = item("Fluix Upgrade", AEItemIds.FLUIX_UPGRADE_SMITHING_TEMPLATE, p -> new FluixSmithingTemplateItem(), CreativeModeTabs.INGREDIENTS);
     public static final ItemDefinition<FluixAxeItem> FLUIX_AXE = item("Fluix Axe", AEItemIds.FLUIX_AXE, FluixAxeItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
     public static final ItemDefinition<FluixHoeItem> FLUIX_HOE = item("Fluix Hoe", AEItemIds.FLUIX_HOE, FluixHoeItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
     public static final ItemDefinition<FluixSpadeItem> FLUIX_SHOVEL = item("Fluix Shovel", AEItemIds.FLUIX_SHOVEL, FluixSpadeItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
     public static final ItemDefinition<FluixPickaxeItem> FLUIX_PICK = item("Fluix Pickaxe", AEItemIds.FLUIX_PICK, FluixPickaxeItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<FluixSwordItem> FLUIX_SWORD = item("Fluix Sword", AEItemIds.FLUIX_SWORD, FluixSwordItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<FluixSwordItem> FLUIX_SWORD = item("Fluix Sword", AEItemIds.FLUIX_SWORD, FluixSwordItem::new, CreativeModeTabs.COMBAT);
 
     ///
     /// VARIOUS POWERED TOOLS
@@ -147,12 +150,12 @@ public final class AEItems {
     ///
     private static ItemDefinition<PortableCellItem> makePortableItemCell(ResourceLocation id, StorageTier tier) {
         var name = tier.namePrefix() + " Portable Item Cell";
-        return item(name, id, p -> new PortableCellItem(AEKeyType.items(), MEStorageMenu.PORTABLE_ITEM_CELL_TYPE, tier, p.stacksTo(1)));
+        return item(name, id, p -> new PortableCellItem(AEKeyType.items(), 63 - tier.index() * 9, MEStorageMenu.PORTABLE_ITEM_CELL_TYPE, tier, p.stacksTo(1), 0xDDDDDD));
     }
 
     private static ItemDefinition<PortableCellItem> makePortableFluidCell(ResourceLocation id, StorageTier tier) {
         var name = tier.namePrefix() + " Portable Fluid Cell";
-        return item(name, id, p -> new PortableCellItem(AEKeyType.fluids(), MEStorageMenu.PORTABLE_FLUID_CELL_TYPE, tier, p.stacksTo(1)));
+        return item(name, id, p -> new PortableCellItem(AEKeyType.fluids(), 18, MEStorageMenu.PORTABLE_FLUID_CELL_TYPE, tier, p.stacksTo(1), 0xFF6D36));
     }
 
     public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL1K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL1K, StorageTier.SIZE_1K);
@@ -171,10 +174,8 @@ public final class AEItems {
     /// NETWORK RELATED TOOLS
     ///
 
-    public static final ItemDefinition<BiometricCardItem> BIOMETRIC_CARD = item("Biometric Card", AEItemIds.BIOMETRIC_CARD, p -> new BiometricCardItem(p.stacksTo(1)));
     public static final ItemDefinition<NetworkToolItem> NETWORK_TOOL = item("Network Tool", AEItemIds.NETWORK_TOOL, p -> new NetworkToolItem(p.stacksTo(1)));
-    public static final ColoredItemDefinition<MemoryCardItem> MEMORY_CARDS = createColoredItems("Memory Card", AEItemIds.MEMORY_CARDS, (p, color) -> new MemoryCardItem(p.stacksTo(1)));
-
+    public static final ItemDefinition<MemoryCardItem> MEMORY_CARD = item("Memory Card", AEItemIds.MEMORY_CARD, p -> new MemoryCardItem(p.stacksTo(1)));
 
     public static final ItemDefinition<FacadeItem> FACADE = item("Cable Facade", AEItemIds.FACADE, FacadeItem::new);
     public static final ItemDefinition<MaterialItem> BLANK_PATTERN = item("Blank Pattern", AEItemIds.BLANK_PATTERN, MaterialItem::new);
@@ -256,11 +257,11 @@ public final class AEItems {
     public static final ItemDefinition<BasicStorageCell> ITEM_CELL_64K = item("64k ME Item Storage Cell", AEItemIds.ITEM_CELL_64K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_64K, ITEM_CELL_HOUSING, 2.0f, 64, 512, 63, AEKeyType.items()));
     public static final ItemDefinition<BasicStorageCell> ITEM_CELL_256K = item("256k ME Item Storage Cell", AEItemIds.ITEM_CELL_256K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_256K, ITEM_CELL_HOUSING, 2.5f, 256, 2048, 63, AEKeyType.items()));
 
-    public static final ItemDefinition<BasicStorageCell> FLUID_CELL_1K = item("1k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_1K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_1K, FLUID_CELL_HOUSING, 0.5f, 1, 8, 5, AEKeyType.fluids()));
-    public static final ItemDefinition<BasicStorageCell> FLUID_CELL_4K = item("4k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_4K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_4K, FLUID_CELL_HOUSING, 1.0f, 4, 32, 5, AEKeyType.fluids()));
-    public static final ItemDefinition<BasicStorageCell> FLUID_CELL_16K = item("16k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_16K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_16K, FLUID_CELL_HOUSING, 1.5f, 16, 128, 5, AEKeyType.fluids()));
-    public static final ItemDefinition<BasicStorageCell> FLUID_CELL_64K = item("64k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_64K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_64K, FLUID_CELL_HOUSING, 2.0f, 64, 512, 5, AEKeyType.fluids()));
-    public static final ItemDefinition<BasicStorageCell> FLUID_CELL_256K = item("256k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_256K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_256K, FLUID_CELL_HOUSING, 2.5f, 256, 2048, 5, AEKeyType.fluids()));
+    public static final ItemDefinition<BasicStorageCell> FLUID_CELL_1K = item("1k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_1K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_1K, FLUID_CELL_HOUSING, 0.5f, 1, 8, 18, AEKeyType.fluids()));
+    public static final ItemDefinition<BasicStorageCell> FLUID_CELL_4K = item("4k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_4K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_4K, FLUID_CELL_HOUSING, 1.0f, 4, 32, 18, AEKeyType.fluids()));
+    public static final ItemDefinition<BasicStorageCell> FLUID_CELL_16K = item("16k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_16K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_16K, FLUID_CELL_HOUSING, 1.5f, 16, 128, 18, AEKeyType.fluids()));
+    public static final ItemDefinition<BasicStorageCell> FLUID_CELL_64K = item("64k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_64K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_64K, FLUID_CELL_HOUSING, 2.0f, 64, 512, 18, AEKeyType.fluids()));
+    public static final ItemDefinition<BasicStorageCell> FLUID_CELL_256K = item("256k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_256K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_256K, FLUID_CELL_HOUSING, 2.5f, 256, 2048, 18, AEKeyType.fluids()));
 
     public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL2 = item("2³ Spatial Storage Cell", AEItemIds.SPATIAL_CELL_2, p -> new SpatialStorageCellItem(p.stacksTo(1), 2));
     public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL16 = item("16³ Spatial Storage Cell", AEItemIds.SPATIAL_CELL_16, p -> new SpatialStorageCellItem(p.stacksTo(1), 16));
@@ -303,12 +304,12 @@ public final class AEItems {
 
     static <T extends Item> ItemDefinition<T> item(String name, ResourceLocation id,
             Function<FabricItemSettings, T> factory) {
-        return item(name, id, factory, MainCreativeTab.INSTANCE);
+        return item(name, id, factory, AECreativeTabIds.MAIN);
     }
 
     static <T extends Item> ItemDefinition<T> item(String name, ResourceLocation id,
             Function<FabricItemSettings, T> factory,
-            CreativeModeTab group) {
+            ResourceKey<CreativeModeTab> group) {
 
         FabricItemSettings p = new FabricItemSettings();
 
@@ -316,9 +317,9 @@ public final class AEItems {
 
         ItemDefinition<T> definition = new ItemDefinition<>(name, id, item);
 
-        if (group == MainCreativeTab.INSTANCE) {
+        if (group.equals(AECreativeTabIds.MAIN)) {
             MainCreativeTab.add(definition);
-        } else if (group != null) {
+        } else {
             ItemGroupEvents.modifyEntriesEvent(group).register((entries) -> {
                 entries.addAfter(ItemStack.EMPTY, item);
             });

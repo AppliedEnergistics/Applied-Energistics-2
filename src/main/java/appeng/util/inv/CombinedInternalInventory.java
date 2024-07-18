@@ -18,6 +18,12 @@
 
 package appeng.util.inv;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.BaseInternalInventory;
@@ -129,5 +135,16 @@ public class CombinedInternalInventory extends BaseInternalInventory {
         var handler = this.getHandlerFromIndex(index);
         int targetSlot = this.getSlotFromIndex(slot, index);
         handler.sendChangeNotification(targetSlot);
+    }
+
+    @Override
+    protected Storage<ItemVariant> createStorage() {
+        List<Storage<ItemVariant>> parts = new ArrayList<>(this.inventories.length);
+
+        for (InternalInventory inventory : this.inventories) {
+            parts.add(inventory.toStorage());
+        }
+
+        return new CombinedStorage<>(parts);
     }
 }

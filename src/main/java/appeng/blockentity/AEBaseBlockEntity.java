@@ -24,17 +24,16 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import org.jetbrains.annotations.Nullable;
 
 import io.netty.buffer.Unpooled;
 
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -44,6 +43,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
@@ -75,7 +75,7 @@ import appeng.util.helpers.ItemComparisonHelper;
 
 public class AEBaseBlockEntity extends BlockEntity
         implements Nameable, ISegmentedInventory,
-        RenderAttachmentBlockEntity {
+        RenderAttachmentBlockEntity, Clearable {
 
     static {
         DeferredBlockEntityUnloader.register();
@@ -113,6 +113,13 @@ public class AEBaseBlockEntity extends BlockEntity
 
     public boolean notLoaded() {
         return !this.level.hasChunkAt(this.worldPosition);
+    }
+
+    public final GlobalPos getGlobalPos() {
+        if (level == null) {
+            throw new IllegalStateException("Block entity is not in a level");
+        }
+        return GlobalPos.of(level.dimension(), getBlockPos());
     }
 
     public BlockEntity getBlockEntity() {
@@ -185,7 +192,7 @@ public class AEBaseBlockEntity extends BlockEntity
      * Deferred initialization when block entities actually start first ticking in a chunk. The block entity needs to
      * override {@link #clearRemoved()} and call {@link #scheduleInit()} to make this work.
      */
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     public void onReady() {
         readyInvoked++;
 
@@ -310,7 +317,7 @@ public class AEBaseBlockEntity extends BlockEntity
      * @param mode   source of settings
      * @param player The (optional) player, who is exporting the settings
      */
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     public void exportSettings(SettingsFrom mode, CompoundTag output, @Nullable Player player) {
         CustomNameUtil.setCustomName(output, customName);
 
@@ -325,7 +332,7 @@ public class AEBaseBlockEntity extends BlockEntity
      * @param input  source of settings
      * @param player The (optional) player, who is importing the settings
      */
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         var customName = CustomNameUtil.getCustomName(input);
         if (customName != null) {
@@ -338,14 +345,25 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     /**
-     * returns the contents of the block entity but not the block itself, to drop into the world
+     * returns the contents of the block entity but not the block itself, to drop into the world.
+     * <p>
+     * Ensure you also clear the inventories that contribute to additional drops in {@link #clearContent()} when you
+     * override this method.
      *
-     * @param level  level
-     * @param pos    block position
-     * @param drops  drops of block entity
-     * @param remove Remove the drops from the block entity so they don't drop again when it is broken.
+     * @param level level
+     * @param pos   block position
+     * @param drops drops of block entity
      */
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
+    @MustBeInvokedByOverriders
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+    }
+
+    /**
+     * Clears the contents of this block-entity, which would otherwise be dropped by {@link #addAdditionalDrops}.
+     */
+    @Override
+    @MustBeInvokedByOverriders
+    public void clearContent() {
     }
 
     @Override
@@ -357,10 +375,6 @@ public class AEBaseBlockEntity extends BlockEntity
     @Nullable
     public Component getCustomName() {
         return this.customName;
-    }
-
-    public void securityBreak() {
-        this.level.destroyBlock(this.worldPosition, true);
     }
 
     /**
@@ -402,7 +416,7 @@ public class AEBaseBlockEntity extends BlockEntity
 
     @Override
     @Nullable
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     public InternalInventory getSubInventory(ResourceLocation id) {
         return null;
     }
@@ -439,7 +453,8 @@ public class AEBaseBlockEntity extends BlockEntity
             }
 
             // Add and remove extra block entity inventory
-            addAdditionalDrops(level, pos, drops, true);
+            addAdditionalDrops(level, pos, drops);
+            clearContent();
 
             for (var item : drops) {
                 player.getInventory().placeItemBackInInventory(item);

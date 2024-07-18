@@ -1,0 +1,13 @@
+{
+    DataVersion: 3337,
+    size: [3, 1, 1],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 4136L, k: -1L, p: 1}, id: "ae2:blue_smart_cable", visual: {channelsEast: 2, connections: ["east"], missingChannel: 0b, powered: 0b}}, facadeDown: {Count: 1b, id: "ae2:facade", tag: {item: "minecraft:smooth_stone"}}, facadeEast: {Count: 1b, id: "ae2:facade", tag: {item: "minecraft:cobblestone"}}, facadeSouth: {Count: 1b, id: "ae2:facade", tag: {item: "minecraft:cobblestone"}}, facadeUp: {Count: 1b, id: "ae2:facade", tag: {item: "minecraft:stone_bricks"}}, facadeWest: {Count: 1b, id: "ae2:facade", tag: {item: "minecraft:stone_bricks"}}, hasRedstone: 2, id: "ae2:cable_bus", up: {access: "READ_WRITE", filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 4136L, k: -1L, p: 1}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 0b}}, visual: {}, west: {blocking_mode: "NO", gn: {g: 4136L, k: -1L, p: 1}, id: "ae2:cable_pattern_provider", lock_crafting_mode: "NONE", pattern_access_terminal: "YES", priority: 0, returnInv: [], sendList: [], visual: {missingChannel: 0b, powered: 0b}}}},
+        {pos: [1, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 4136L, k: -1L, p: 1}, id: "ae2:blue_smart_cable", visual: {channelsEast: 2, channelsWest: 2, connections: ["west", "east"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 4136L, k: -1L, p: 1}, id: "ae2:blue_smart_cable", visual: {channelsWest: 2, connections: ["west"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:cable_bus{light_level:0,waterlogged:false}"
+    ]
+}

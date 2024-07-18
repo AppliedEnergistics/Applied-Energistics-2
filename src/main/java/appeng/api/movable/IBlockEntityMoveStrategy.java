@@ -23,13 +23,14 @@
 
 package appeng.api.movable;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * A strategy for moving block entities in and out of spatial storage.
@@ -60,11 +61,13 @@ public interface IBlockEntityMoveStrategy {
      *
      * @param entity      The block entity being moved, which has already been removed from the original chunk and
      *                    should not be reused.
+     * @param state       The original block state of the block entity being moved.
      * @param savedData   Data saved by this strategy in {@link #beginMove(BlockEntity)}.
      * @param newLevel    Level to moved to
      * @param newPosition Position to move to
      * @return True if moving succeeded. If false is returned, AE2 will attempt to recover the original entity.
      */
-    boolean completeMove(BlockEntity entity, CompoundTag savedData, Level newLevel, BlockPos newPosition);
+    boolean completeMove(BlockEntity entity, BlockState state, CompoundTag savedData, Level newLevel,
+            BlockPos newPosition);
 
 }

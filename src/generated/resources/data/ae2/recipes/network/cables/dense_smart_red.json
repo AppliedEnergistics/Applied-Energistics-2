@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2:fluix_smart_dense_cable"
+    },
+    "b": {
+      "tag": "c:red_dyes"
+    }
+  },
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "result": {
+    "count": 8,
+    "item": "ae2:red_smart_dense_cable"
+  },
+  "show_notification": true
+}

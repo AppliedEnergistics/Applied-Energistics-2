@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "c:iron_ingots"
+    },
+    "b": {
+      "item": "minecraft:crafting_table"
+    },
+    "c": {
+      "item": "ae2:annihilation_core"
+    },
+    "d": {
+      "item": "ae2:formation_core"
+    }
+  },
+  "pattern": [
+    "aba",
+    "c d",
+    "aba"
+  ],
+  "result": {
+    "item": "ae2:pattern_provider"
+  },
+  "show_notification": true
+}

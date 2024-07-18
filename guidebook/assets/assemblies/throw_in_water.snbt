@@ -1,0 +1,30 @@
+{
+    DataVersion: 3460,
+    size: [5, 3, 3],
+    data: [
+        {pos: [1, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 343L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsSouth: 2, connections: ["south"], missingChannel: 0b, powered: 1b}}, east: {fuzzy_mode: "IGNORE_ALL", gn: {g: 343L, p: 0}, id: "ae2:cable_interface", priority: 0, visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", up: {fuzzy_mode: "IGNORE_ALL", gn: {g: 343L, p: 0}, id: "ae2:formation_plane", place_block: "NO", priority: 0, visual: {missingChannel: 0b, powered: 1b}}, visual: {}}},
+        {pos: [1, 0, 2], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 343L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsEast: 2, channelsNorth: 2, connections: ["north", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 0, 1], state: "ae2:pattern_provider{push_direction:all}", nbt: {blocking_mode: "NO", id: "ae2:pattern_provider", lock_crafting_mode: "NONE", pattern_access_terminal: "YES", patterns: [{Count: 1b, Slot: 0, id: "ae2:processing_pattern", tag: {in: [{"#": 1L, "#c": "ae2:i", id: "ae2:charged_certus_quartz_crystal"}, {"#": 1L, "#c": "ae2:i", id: "minecraft:redstone"}, {"#": 1L, "#c": "ae2:i", id: "minecraft:quartz"}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}], out: [{"#": 2L, "#c": "ae2:i", id: "ae2:fluix_crystal"}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {Count: 1b, Slot: 1, id: "ae2:processing_pattern", tag: {in: [{"#": 3L, "#c": "ae2:i", id: "ae2:charged_certus_quartz_crystal"}, {"#": 1L, "#c": "ae2:i", id: "ae2:quartz_block"}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}], out: [{"#": 1L, "#c": "ae2:i", id: "ae2:flawed_budding_quartz"}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}], priority: 0, proxy: {g: 281L, p: 0}, returnInv: [], sendList: [], visual: {}}},
+        {pos: [2, 0, 2], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 281L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsNorth: 0, connections: ["north"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", up: {gn: {g: 281L, p: 0}, id: "ae2:quartz_fiber", outer: {g: 405015L, p: 0}, visual: {missingChannel: 0b, powered: 1b}}, visual: {}, west: {gn: {g: 281L, p: 0}, id: "ae2:quartz_fiber", outer: {g: 343L, p: 0}, visual: {missingChannel: 0b, powered: 1b}}}},
+        {pos: [3, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 281L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 1, channelsWest: 1, connections: ["west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [0, 1, 0], state: "ae2:quartz_glass"},
+        {pos: [0, 1, 1], state: "ae2:quartz_glass"},
+        {pos: [0, 1, 2], state: "ae2:quartz_glass"},
+        {pos: [1, 1, 0], state: "ae2:quartz_glass"},
+        {pos: [1, 1, 1], state: "minecraft:water{level:0}"},
+        {pos: [1, 1, 2], state: "ae2:quartz_glass"},
+        {pos: [2, 1, 0], state: "ae2:quartz_glass"},
+        {pos: [2, 1, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 405015L, p: 0}, id: "ae2:orange_smart_cable", visual: {channelsSouth: 2, channelsUp: 2, connections: ["up", "south"], missingChannel: 0b, powered: 1b}}, down: {access: "READ_WRITE", config: [{"#": 0L, "#c": "ae2:i", id: "ae2:fluix_crystal"}], filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 405015L, p: 0}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}, facadeWest: {Count: 1b, id: "ae2:facade", tag: {item: "minecraft:stone"}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 1, 2], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 405015L, p: 0}, id: "ae2:orange_smart_cable", visual: {channelsDown: 2, channelsNorth: 2, connections: ["down", "north"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 2, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 405015L, p: 0}, id: "ae2:orange_smart_cable", visual: {channelsEast: 2, connections: ["east"], missingChannel: 0b, powered: 1b}}, down: {gn: {g: 405015L, p: 0}, id: "ae2:annihilation_plane", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 2, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 405015L, p: 0}, id: "ae2:orange_smart_cable", visual: {channelsDown: 2, channelsWest: 2, connections: ["down", "west"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:quartz_glass",
+        "minecraft:water{level:0}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "ae2:pattern_provider{push_direction:all}",
+        "ae2:controller{state:online,type:block}"
+    ]
+}

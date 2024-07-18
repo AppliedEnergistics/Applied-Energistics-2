@@ -28,7 +28,6 @@ import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.features.GridLinkables;
 import appeng.api.features.IGridLinkableHandler;
 import appeng.api.ids.AETags;
-import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.inventories.InternalInventory;
@@ -38,6 +37,7 @@ import appeng.api.upgrades.Upgrades;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 import appeng.blockentity.misc.InscriberRecipes;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.EncodedPatternItem;
@@ -139,8 +139,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case POWERED_TOOL:
                 return Platform.isChargeable(stack);
             case QE_SINGULARITY:
-                return AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(stack);
-
+                return QuantumBridgeBlockEntity.isValidEntangledSingularity(stack);
             case RANGE_BOOSTER:
                 return AEItems.WIRELESS_BOOSTER.isSameAs(stack);
 
@@ -166,8 +165,6 @@ public class RestrictedInputSlot extends AppEngSlot {
                 var handler = GridLinkables.get(stack.getItem());
                 return handler != null && handler.canLink(stack);
             }
-            case BIOMETRIC_CARD:
-                return stack.getItem() instanceof IBiometricCard;
             case UPGRADES:
                 return Upgrades.isUpgradeCardItem(stack);
             default:
@@ -240,7 +237,6 @@ public class RestrictedInputSlot extends AppEngSlot {
         FUEL(Icon.BACKGROUND_FUEL),
         UPGRADES(Icon.BACKGROUND_UPGRADE),
         WORKBENCH_CELL(Icon.BACKGROUND_STORAGE_CELL),
-        BIOMETRIC_CARD(Icon.BACKGROUND_BIOMETRIC_CARD),
         VIEW_CELL(Icon.BACKGROUND_VIEW_CELL),
         INSCRIBER_PLATE(Icon.BACKGROUND_PLATE),
         INSCRIBER_INPUT(Icon.BACKGROUND_INGOT),

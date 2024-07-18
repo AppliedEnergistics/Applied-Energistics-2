@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "ae2:advanced_card"
+    },
+    {
+      "tag": "ae2:all_fluix"
+    }
+  ],
+  "result": {
+    "item": "ae2:speed_card"
+  }
+}

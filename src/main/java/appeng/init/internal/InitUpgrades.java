@@ -57,14 +57,14 @@ public final class InitUpgrades {
         // Import Bus
         Upgrades.add(AEItems.FUZZY_CARD, AEParts.IMPORT_BUS, 1, itemIoBusGroup);
         Upgrades.add(AEItems.REDSTONE_CARD, AEParts.IMPORT_BUS, 1, itemIoBusGroup);
-        Upgrades.add(AEItems.CAPACITY_CARD, AEParts.IMPORT_BUS, 2, itemIoBusGroup);
+        Upgrades.add(AEItems.CAPACITY_CARD, AEParts.IMPORT_BUS, 5, itemIoBusGroup);
         Upgrades.add(AEItems.SPEED_CARD, AEParts.IMPORT_BUS, 4, itemIoBusGroup);
         Upgrades.add(AEItems.INVERTER_CARD, AEParts.IMPORT_BUS, 1, itemIoBusGroup);
 
         // Export Bus
         Upgrades.add(AEItems.FUZZY_CARD, AEParts.EXPORT_BUS, 1, itemIoBusGroup);
         Upgrades.add(AEItems.REDSTONE_CARD, AEParts.EXPORT_BUS, 1, itemIoBusGroup);
-        Upgrades.add(AEItems.CAPACITY_CARD, AEParts.EXPORT_BUS, 2, itemIoBusGroup);
+        Upgrades.add(AEItems.CAPACITY_CARD, AEParts.EXPORT_BUS, 5, itemIoBusGroup);
         Upgrades.add(AEItems.SPEED_CARD, AEParts.EXPORT_BUS, 4, itemIoBusGroup);
         Upgrades.add(AEItems.CRAFTING_CARD, AEParts.EXPORT_BUS, 1, itemIoBusGroup);
 
@@ -121,6 +121,7 @@ public final class InitUpgrades {
         Upgrades.add(AEItems.FUZZY_CARD, AEParts.STORAGE_BUS, 1);
         Upgrades.add(AEItems.INVERTER_CARD, AEParts.STORAGE_BUS, 1);
         Upgrades.add(AEItems.CAPACITY_CARD, AEParts.STORAGE_BUS, 5);
+        Upgrades.add(AEItems.VOID_CARD, AEParts.STORAGE_BUS, 1);
 
         // Formation Plane
         Upgrades.add(AEItems.FUZZY_CARD, AEParts.FORMATION_PLANE, 1);
@@ -143,7 +144,11 @@ public final class InitUpgrades {
         Upgrades.add(AEItems.SPEED_CARD, AEBlocks.MOLECULAR_ASSEMBLER, 5);
 
         // Inscriber
-        Upgrades.add(AEItems.SPEED_CARD, AEBlocks.INSCRIBER, 3);
+        Upgrades.add(AEItems.SPEED_CARD, AEBlocks.INSCRIBER, 4);
+
+        // Vibration Chamber
+        Upgrades.add(AEItems.ENERGY_CARD, AEBlocks.VIBRATION_CHAMBER, 3);
+        Upgrades.add(AEItems.SPEED_CARD, AEBlocks.VIBRATION_CHAMBER, 3);
     }
 
 }

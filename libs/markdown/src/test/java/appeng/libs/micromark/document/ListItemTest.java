@@ -1,16 +1,17 @@
 package appeng.libs.micromark.document;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
 import appeng.libs.micromark.Extension;
 import appeng.libs.micromark.Micromark;
 import appeng.libs.micromark.TestUtil;
 import appeng.libs.micromark.html.CompileOptions;
 import appeng.libs.micromark.html.HtmlCompiler;
 import appeng.libs.micromark.html.ParseOptions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ListItemTest {
     @ParameterizedTest(name = "[{index}] {2}")
@@ -114,20 +115,17 @@ public class ListItemTest {
         TestUtil.assertGeneratedDangerousHtml(
                 "- foo\n- bar\n\n<!-- -->\n\n- baz\n- bim",
                 "<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n<!-- -->\n<ul>\n<li>baz</li>\n<li>bim</li>\n</ul>",
-                "should support HTML comments between lists"
-        );
+                "should support HTML comments between lists");
 
         TestUtil.assertGeneratedDangerousHtml(
                 "-   foo\n\n    notcode\n\n-   foo\n\n<!-- -->\n\n    code",
                 "<ul>\n<li>\n<p>foo</p>\n<p>notcode</p>\n</li>\n<li>\n<p>foo</p>\n</li>\n</ul>\n<!-- -->\n<pre><code>code\n</code></pre>",
-                "should support HTML comments between lists and indented code"
-        );
+                "should support HTML comments between lists and indented code");
 
         TestUtil.assertGeneratedDangerousHtml(
                 "* a\n\n<!---->\n\n* b",
                 "<ul>\n<li>a</li>\n</ul>\n<!---->\n<ul>\n<li>b</li>\n</ul>",
-                "should support the common list breaking comment method"
-        );
+                "should support the common list breaking comment method");
 
     }
 
@@ -143,9 +141,7 @@ public class ListItemTest {
         assertEquals(
                 "<p>- one</p>\n<p>two</p>",
                 new HtmlCompiler().compile(Micromark.parseAndPostprocess("- one\n\n two", parseOptions)),
-                "should support turning off lists"
-        );
+                "should support turning off lists");
     }
-
 
 }

@@ -2,6 +2,7 @@ package appeng.client.guidebook.document.flow;
 
 import org.jetbrains.annotations.Nullable;
 
+import appeng.client.guidebook.document.block.LytVisitor;
 import appeng.client.guidebook.style.Styleable;
 import appeng.client.guidebook.style.TextStyle;
 
@@ -59,5 +60,14 @@ public class LytFlowContent implements Styleable {
     @Override
     public @Nullable Styleable getStylingParent() {
         return getParent() instanceof Styleable stylingParent ? stylingParent : null;
+    }
+
+    public final void visit(LytVisitor visitor) {
+        visitor.beforeFlowContent(this);
+        visitChildren(visitor);
+        visitor.afterFlowContent(this);
+    }
+
+    protected void visitChildren(LytVisitor visitor) {
     }
 }

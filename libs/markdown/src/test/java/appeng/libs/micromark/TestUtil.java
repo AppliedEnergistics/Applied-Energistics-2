@@ -1,12 +1,12 @@
 package appeng.libs.micromark;
 
-import appeng.libs.micromark.html.CompileOptions;
-import appeng.libs.micromark.html.HtmlCompiler;
-import appeng.libs.micromark.html.ParseOptions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import appeng.libs.micromark.html.CompileOptions;
+import appeng.libs.micromark.html.HtmlCompiler;
+import appeng.libs.micromark.html.ParseOptions;
 
 public class TestUtil {
 
@@ -14,7 +14,8 @@ public class TestUtil {
         assertGeneratedHtmlWithDisabled(markdown, expectedHtml, null, disabledConstruct);
     }
 
-    public static void assertGeneratedHtmlWithDisabled(String markdown, String expectedHtml, String message, String disabledConstruct) {
+    public static void assertGeneratedHtmlWithDisabled(String markdown, String expectedHtml, String message,
+            String disabledConstruct) {
         var options = new ParseOptions();
         options.withSyntaxExtension(new Extension() {
             {
@@ -44,7 +45,8 @@ public class TestUtil {
         assertGeneratedHtml(markdown, expectedHtml, message, options, new CompileOptions());
     }
 
-    public static void assertGeneratedHtml(String markdown, String expectedHtml, String message, ParseOptions options, CompileOptions compileOptions) {
+    public static void assertGeneratedHtml(String markdown, String expectedHtml, String message, ParseOptions options,
+            CompileOptions compileOptions) {
         markdown = markdown != null ? markdown : "";
         markdown = markdown.replace("^n", "\n");
         expectedHtml = expectedHtml != null ? expectedHtml : "";

@@ -18,10 +18,8 @@ public interface UnistNode {
     Object data();
 
     /**
-     * The location in the source document.
-     * Null if this node is generated.
+     * The location in the source document. Null if this node is generated.
      */
     @Nullable
     UnistPosition position();
 }
-

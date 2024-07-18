@@ -69,7 +69,7 @@ public class CableAnchorPart implements IPart {
 
     @Override
     public boolean isLadder(LivingEntity entity) {
-        return this.mySide.getStepY() == 0 && (entity.horizontalCollision || !entity.isOnGround());
+        return this.mySide.getStepY() == 0 && (entity.horizontalCollision || !entity.onGround());
     }
 
     @Override

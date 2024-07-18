@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import appeng.api.exceptions.FailedConnectionException;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -165,8 +165,7 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
          */
         @ParameterizedTest
         @ValueSource(strings = { "wake", "alert", "sleep" })
-        void testNodesCallingTickManagerFunctionsWhileTheyAreTicking(String operation)
-                throws FailedConnectionException {
+        void testNodesCallingTickManagerFunctionsWhileTheyAreTicking(String operation) {
             var timesSinceLastTick = new ArrayList<Integer>();
             var node = makeTickingNode(new TickingRequest(1, 10, false, true), (tickingNode, ticksSinceLastCall) -> {
                 timesSinceLastTick.add(ticksSinceLastCall);
@@ -188,7 +187,7 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
                         timesSinceLastTick2.add(ticksSinceLastTick);
                         return TickRateModulation.SAME;
                     });
-            GridConnection.create(node, secondNode, null);
+            GridHelper.createConnection(node, secondNode);
 
             runTick(node.getGrid(), 25);
             assertThat(timesSinceLastTick).containsExactly(5, 10, 10);

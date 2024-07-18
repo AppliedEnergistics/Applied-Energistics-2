@@ -1,0 +1,33 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_crystals/fluix": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "ae2:all_fluix"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ae2:network/blocks/energy_energy_acceptor"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_crystals/fluix",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ae2:network/blocks/energy_energy_acceptor"
+    ]
+  },
+  "sends_telemetry_event": false
+}

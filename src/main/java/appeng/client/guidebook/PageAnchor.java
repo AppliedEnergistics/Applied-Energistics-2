@@ -14,4 +14,13 @@ public record PageAnchor(ResourceLocation pageId, @Nullable String anchor) {
     public static PageAnchor page(ResourceLocation pageId) {
         return new PageAnchor(pageId, null);
     }
+
+    @Override
+    public String toString() {
+        if (anchor != null) {
+            return pageId.toString() + "#" + anchor;
+        } else {
+            return pageId.toString();
+        }
+    }
 }

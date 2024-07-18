@@ -1,0 +1,90 @@
+{
+  "parent": "ae2:main/controller",
+  "criteria": {
+    "c16k": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:item_storage_cell_16k"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "c1k": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:item_storage_cell_1k"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "c256k": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:item_storage_cell_256k"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "c4k": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:item_storage_cell_4k"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "c64k": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:item_storage_cell_64k"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "achievement.ae2.StorageCell.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "ae2:item_storage_cell_64k"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "achievement.ae2.StorageCell"
+    }
+  },
+  "requirements": [
+    [
+      "c1k",
+      "c4k",
+      "c16k",
+      "c64k",
+      "c256k"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

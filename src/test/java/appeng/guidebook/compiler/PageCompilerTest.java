@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.extensions.ExtensionCollection;
 import appeng.core.AppEng;
 import appeng.util.BootstrapMinecraft;
 
@@ -37,7 +38,7 @@ class PageCompilerTest {
                     .watchDevelopmentSources(false)
                     .registerReloadListener(false)
                     .build();
-            return PageCompiler.compile(testPages, parsed);
+            return PageCompiler.compile(testPages, ExtensionCollection.empty(), parsed);
         }
     }
 

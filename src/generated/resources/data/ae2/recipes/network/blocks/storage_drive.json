@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "c:iron_ingots"
+    },
+    "b": {
+      "item": "ae2:engineering_processor"
+    },
+    "c": {
+      "item": "ae2:fluix_glass_cable"
+    }
+  },
+  "pattern": [
+    "aba",
+    "c c",
+    "aba"
+  ],
+  "result": {
+    "item": "ae2:drive"
+  },
+  "show_notification": true
+}

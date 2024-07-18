@@ -22,18 +22,18 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.saveddata.SavedData;
 
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.core.worlddata.AESavedData;
 
 /**
  * Handles the matching between UUIDs and internal IDs for security systems. This whole system could be replaced by
@@ -43,7 +43,7 @@ import appeng.core.AppEng;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-final class PlayerRegistryInternal extends SavedData implements IPlayerRegistry {
+final class PlayerRegistryInternal extends AESavedData implements IPlayerRegistry {
 
     private static final String NAME = AppEng.MOD_ID + "_players";
     private static final String TAG_PLAYER_IDS = "playerIds";

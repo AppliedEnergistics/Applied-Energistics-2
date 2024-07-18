@@ -21,7 +21,7 @@ package appeng.parts.automation;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,6 +34,7 @@ import net.minecraft.world.level.BlockGetter;
 
 import appeng.api.behaviors.PickupStrategy;
 import appeng.api.config.Actionable;
+import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
@@ -51,11 +52,11 @@ import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
-import appeng.parts.BasicStatePart;
+import appeng.parts.AEBasePart;
 import appeng.util.EnchantmentUtil;
 import appeng.util.SettingsFrom;
 
-public class AnnihilationPlanePart extends BasicStatePart implements IGridTickable {
+public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
 
     private static final PlaneModels MODELS = new PlaneModels("part/annihilation_plane",
             "part/annihilation_plane_on");
@@ -72,8 +73,6 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     @Nullable
     protected List<PickupStrategy> pickupStrategies;
 
-    private PickupStrategy pendingPickupStrategy;
-
     /**
      * Enchantments found on the plane when it was placed will be used to enchant the fake tool used for picking up
      * blocks.
@@ -88,6 +87,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     public AnnihilationPlanePart(IPartItem<?> partItem) {
         super(partItem);
         getMainNode().addService(IGridTickable.class, this);
+        getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
     }
 
     @Override
@@ -156,11 +156,17 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     protected List<PickupStrategy> getPickupStrategies() {
         if (pickupStrategies == null) {
+            // Don't initialize if the node is not initialized yet
+            var node = getMainNode().getNode();
+            if (node == null) {
+                return List.of();
+            }
             var self = this.getHost().getBlockEntity();
             var pos = self.getBlockPos().relative(this.getSide());
             var side = getSide().getOpposite();
+            var owner = node.getOwningPlayerProfileId();
             pickupStrategies = StackWorldBehaviors.createPickupStrategies((ServerLevel) self.getLevel(),
-                    pos, side, self, enchantments);
+                    pos, side, self, enchantments, owner);
         }
         return pickupStrategies;
     }
@@ -192,7 +198,19 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             if (!isClientSide()) {
                 this.refresh();
             }
-        } else {
+        }
+    }
+
+    @Override
+    public void onUpdateShape(Direction side) {
+        var ourSide = getSide();
+        // A block might have been placed in front of us
+        if (side.equals(ourSide)) {
+            if (!isClientSide()) {
+                this.refresh();
+            }
+        } else if (ourSide.getAxis() != side.getAxis()) {
+            // Changes perpendicular to our side may change the connected plane model to change
             connectionHelper.updateConnections();
         }
     }
@@ -287,21 +305,15 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             return TickRateModulation.IDLE;
         }
 
-        if (pendingPickupStrategy != null) {
-            pendingPickupStrategy.completePickup(grid.getEnergyService(), this::insertIntoGrid);
-            pendingPickupStrategy = null;
-        }
-
         // Reset to allow more entity pickups
         for (var pickupStrategy : getPickupStrategies()) {
             pickupStrategy.reset();
         }
 
         for (PickupStrategy pickupStrategy : getPickupStrategies()) {
-            var pickupResult = pickupStrategy.tryStartPickup(grid.getEnergyService(), this::insertIntoGrid);
+            var pickupResult = pickupStrategy.tryPickup(grid.getEnergyService(), this::insertIntoGrid);
 
             if (pickupResult == PickupStrategy.Result.PICKED_UP) {
-                pendingPickupStrategy = pickupStrategy;
                 return TickRateModulation.URGENT;
             } else if (pickupResult == PickupStrategy.Result.CANT_STORE) {
                 // If there's a compatible block, but we can't store it, wait longer

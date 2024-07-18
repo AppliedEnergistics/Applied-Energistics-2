@@ -1,9 +1,9 @@
 package appeng.libs.micromark;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
 
 public final class ListUtils {
     private ListUtils() {
@@ -16,8 +16,7 @@ public final class ListUtils {
     }
 
     /**
-     * This does not return the removed items, and takes `items` as an
-     * array instead of rest parameters.
+     * This does not return the removed items, and takes `items` as an array instead of rest parameters.
      */
     public static <T> void splice(List<T> list, int start, int remove, List<T> items) {
         var removeEnd = Math.min(list.size(), start + remove);
@@ -27,11 +26,10 @@ public final class ListUtils {
     }
 
     /**
-     * Append `items` (an array) at the end of `list` (another array).
-     * When `list` was empty, returns `items` instead.
+     * Append `items` (an array) at the end of `list` (another array). When `list` was empty, returns `items` instead.
      * <p>
-     * This prevents a potentially expensive operation when `list` is empty,
-     * and adds items in batches to prevent V8 from hanging.
+     * This prevents a potentially expensive operation when `list` is empty, and adds items in batches to prevent V8
+     * from hanging.
      */
     public static <T> List<T> push(List<T> list, List<T> items) {
         list.addAll(items);

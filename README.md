@@ -1,4 +1,4 @@
-[![Build master](https://img.shields.io/github/workflow/status/AppliedEnergistics/Applied-Energistics-2/Build%20master?style=flat-square)](https://github.com/AppliedEnergistics/Applied-Energistics-2/actions?query=workflow%3A%22Build+master%22)
+[![Build master](https://img.shields.io/github/actions/workflow/status/AppliedEnergistics/Applied-Energistics-2/build.yml?style=flat-square&branch=master)](https://github.com/AppliedEnergistics/Applied-Energistics-2/actions?query=workflow%3A%22Build+master%22)
 [![Latest Release](https://img.shields.io/github/v/release/AppliedEnergistics/Applied-Energistics-2?style=flat-square&label=Release)](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases)
 [![Latest PreRelease](https://img.shields.io/github/v/release/AppliedEnergistics/Applied-Energistics-2?include_prereleases&style=flat-square&label=Pre)](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases)
 
@@ -24,7 +24,8 @@ A Mod about Matter, Energy and using them to conquer the world..
 
 ## Contacts
 
-* [Website](https://appliedenergistics.github.io/)
+* [Website](https://appliedenergistics.org/)
+* [Players Guide](https://guide.appliedenergistics.org/)
 * [Discord](https://discord.gg/Zd6t9ka7ne)
 * [GitHub](https://github.com/AppliedEnergistics/Applied-Energistics-2)
 
@@ -41,6 +42,10 @@ A Mod about Matter, Energy and using them to conquer the world..
   - [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%203.0-yellow.svg?style=flat-square)](https://creativecommons.org/licenses/by-nc-sa/3.0/)
 * Text and Translations
   - [![License](https://img.shields.io/badge/License-No%20Restriction-green.svg?style=flat-square)](https://creativecommons.org/publicdomain/zero/1.0/)
+* Additional Sound Licenses
+  - Guidebook Click Sound
+    - [EminYILDIRIM](https://freesound.org/people/EminYILDIRIM/sounds/536108/) 
+    - [![License](https://img.shields.io/badge/License-CC%20BY%204.0-yellow.svg?style=flat-square)](https://creativecommons.org/licenses/by/4.0/)
 
 ## Downloads
 
@@ -58,7 +63,7 @@ Applied Energistics 2 crashing, have a suggestion, found a bug?  Create an issue
     * If it is already possible with vanilla and AE2 itself, the suggestion will be considered invalid.
     * Asking for a smaller version, more compact version, or more efficient version of something will also be considered invalid.
 2. Go to [the issues page](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues) and click [new issue](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/new)
-3. If applicable, use on of the provided templates. It will also contain further details about required or useful information to add.
+3. If applicable, use one of the provided templates. It will also contain further details about required or useful information to add.
 4. Click `Submit New Issue`, and wait for feedback!
 
 Providing as many details as possible does help us to find and resolve the issue faster and also you getting a fixed version as fast as possible.
@@ -91,19 +96,16 @@ AE2 is also available without authentication from Modmaven. You can use the foll
 When compiling against the AE2 API you can use gradle dependencies, just add
 
     dependencies {
-        compileOnly "appeng:appliedenergistics2:VERSION:api"
+        modCompileOnly "appeng:appliedenergistics2-fabric:VERSION:api"
     }
 
-or add the `compileOnly` line to your existing dependencies task to your build.gradle.
+or add the `modCompileOnly` line to your existing dependencies task to your build.gradle.
 
 Replace `VERSION` with the desired one. With 1.15+ we switched to using [semver](https://semver.org/). 
 It is highly recommended following its specification and further considering an upper bound for the dependency version.
 A change of the `MAJOR` version will be an API break and can lead to various crashes. Better to inform a player about the addon not supporting the new version until it could be tested or updated.
 
-An example string would be `appeng:appliedenergistics2:7.0.0-alpha.6:api` for the API only or `appeng:appliedenergistics2:7.0.0-alpha.6` for the whole mod.
-
-Builds obtained [here](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) or via [maven](https://github.com/AppliedEnergistics/Applied-Energistics-2/packages) should work in a development environment.
-However the dependency might need to be wrapped in `fg.deobf()` like `runtimeOnly fg.deobf("appeng:appliedenergistics2:VERSION:api")`
+An example string would be `appeng:appliedenergistics2-fabric:12.9.5:api` for the API only or `appeng:appliedenergistics2-fabric:12.9.5` for the whole mod.
 
 ## Building
 

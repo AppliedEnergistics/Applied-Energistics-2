@@ -32,17 +32,16 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.function.Consumer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.google.common.primitives.Longs;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
@@ -59,11 +58,12 @@ import appeng.core.localization.GuiText;
  * A utility widget that consists of a text-field to enter a number with attached buttons to increment/decrement the
  * number in fixed intervals.
  */
-public class NumberEntryWidget extends GuiComponent implements ICompositeWidget {
+public class NumberEntryWidget implements ICompositeWidget {
 
     private static final long[] STEPS = new long[] { 1, 10, 100, 1000 };
     private static final Component PLUS = Component.literal("+");
     private static final Component MINUS = Component.literal("-");
+    private static final int UNIT_PADDING = 3;
     private final int errorTextColor;
     private final int normalTextColor;
 
@@ -86,6 +86,7 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
     private Rect2i bounds = new Rect2i(0, 0, 0, 0);
 
     private Rect2i textFieldBounds = Rects.ZERO;
+    private Point currentScreenOrigin = Point.ZERO;
 
     public NumberEntryWidget(ScreenStyle style, NumberEntryType type) {
         this.errorTextColor = style.getColor(PaletteColor.TEXTFIELD_ERROR).toARGB();
@@ -103,7 +104,6 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
         this.textField.setMaxLength(16);
         this.textField.setTextColor(normalTextColor);
         this.textField.setVisible(true);
-        this.textField.setFocus(true);
         this.textField.setResponder(text -> {
             validate();
             if (onChange != null) {
@@ -138,8 +138,12 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
      */
     public void setTextFieldBounds(Rect2i bounds) {
         this.textFieldBounds = bounds;
-        this.textField.move(Point.fromTopLeft(bounds));
-        this.textField.resize(bounds.getWidth(), bounds.getHeight());
+        this.textField.move(currentScreenOrigin.move(bounds.getX(), bounds.getY()));
+        int unitWidth = 0;
+        if (this.type.unit() != null) {
+            unitWidth = Minecraft.getInstance().font.width(this.type.unit()) + UNIT_PADDING;
+        }
+        this.textField.resize(bounds.getWidth() - unitWidth, bounds.getHeight());
     }
 
     public void setTextFieldStyle(WidgetStyle style) {
@@ -203,9 +207,8 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
         buttons.forEach(addWidget);
 
         // Placing this here will give a sensible tab order
-        var textFieldBounds = Rects.move(this.textFieldBounds, bounds.getX(), bounds.getY());
-        this.textField.move(Point.fromTopLeft(textFieldBounds));
-        this.textField.resize(textFieldBounds.getWidth(), textFieldBounds.getHeight());
+        this.currentScreenOrigin = Point.fromTopLeft(bounds);
+        setTextFieldBounds(this.textFieldBounds);
         screen.setInitialFocus(this.textField);
         addWidget.accept(this.textField);
 
@@ -234,8 +237,15 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
         // we need to re-validate because the icon may now be present and needs it's
         // initial state
         this.validate();
+    }
 
-        screen.changeFocus(true);
+    /**
+     * Returns whether the text field begins with an equals sign. This is used by crafting request screens in order to
+     * request just enough of an item to bring the total stored amount to the input amount, rather than requesting the
+     * input amount itself.
+     */
+    public boolean startsWithEquals() {
+        return textField.getValue().startsWith("=");
     }
 
     /**
@@ -264,6 +274,11 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
             return OptionalLong.empty();
         }
 
+        // Reject decimal values if the unit is integral
+        if (type.amountPerUnit() == 1 && internalValue.get().scale() > 0) {
+            return OptionalLong.empty();
+        }
+
         var externalValue = convertToExternalValue(internalValue.get());
         if (externalValue < minValue) {
             return OptionalLong.empty();
@@ -274,7 +289,7 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
     }
 
     public void setLongValue(long value) {
-        var internalValue = convertToInternalValue(Mth.clamp(value, minValue, maxValue));
+        var internalValue = convertToInternalValue(Longs.constrainToRange(value, minValue, maxValue));
         this.textField.setValue(decimalFormat.format(internalValue));
         this.textField.moveCursorToEnd();
         this.textField.setHighlightPos(0);
@@ -300,7 +315,11 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
      * Retrieves the numeric representation of the value entered by the user, if it is convertible.
      */
     private Optional<BigDecimal> getValueInternal() {
-        return MathExpressionParser.parse(textField.getValue(), decimalFormat);
+        var textValue = textField.getValue();
+        if (textValue.startsWith("=")) {
+            textValue = textValue.substring(1);
+        }
+        return MathExpressionParser.parse(textValue, decimalFormat);
     }
 
     /*
@@ -374,6 +393,7 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
             return;
         }
         this.type = type;
+        setTextFieldBounds(this.textFieldBounds);
         // Update the external with the now changed scaling
         if (onChange != null) {
             onChange.run();
@@ -395,15 +415,14 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
         if (type.unit() != null) {
             var font = Minecraft.getInstance().font;
-            font.draw(
-                    poseStack,
-                    type.unit(),
-                    bounds.getX() + textFieldBounds.getX() + textFieldBounds.getWidth() + 3,
-                    bounds.getY() + textFieldBounds.getY() + (textFieldBounds.getHeight() - font.lineHeight) / 2f + 1,
-                    ChatFormatting.DARK_GRAY.getColor());
+            var x = bounds.getX() + textFieldBounds.getX() + textFieldBounds.getWidth()
+                    - font.width(type.unit());
+            var y = (int) (bounds.getY() + textFieldBounds.getY() + (textFieldBounds.getHeight() - font.lineHeight) / 2f
+                    + 1);
+            guiGraphics.drawString(font, type.unit(), x, y, ChatFormatting.DARK_GRAY.getColor(), false);
         }
     }
 

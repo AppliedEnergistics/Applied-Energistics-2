@@ -23,7 +23,6 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.util.IConfigManager;
@@ -40,7 +39,6 @@ public class IOPortMenu extends UpgradeableMenu<IOPortBlockEntity> {
 
     public static final MenuType<IOPortMenu> TYPE = MenuTypeBuilder
             .create(IOPortMenu::new, IOPortBlockEntity.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("ioport");
 
     @GuiSync(2)

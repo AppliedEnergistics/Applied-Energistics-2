@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.vertex.PoseStack;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Button.OnPress;
@@ -163,7 +163,7 @@ public class WidgetContainer {
         for (var entry : widgets.entrySet()) {
             var widget = entry.getValue();
             if (widget.isFocused()) {
-                widget.changeFocus(false); // Minecraft already cleared focus on the screen
+                widget.setFocused(false); // Minecraft already cleared focus on the screen
             }
 
             // Position the widget
@@ -224,23 +224,23 @@ public class WidgetContainer {
     }
 
     /**
-     * @see ICompositeWidget#drawBackgroundLayer(PoseStack, int, Rect2i, Point)
+     * @see ICompositeWidget#drawBackgroundLayer(GuiGraphics, Rect2i, Point)
      */
-    public void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
         for (var widget : compositeWidgets.values()) {
             if (widget.isVisible()) {
-                widget.drawBackgroundLayer(poseStack, zIndex, bounds, mouse);
+                widget.drawBackgroundLayer(guiGraphics, bounds, mouse);
             }
         }
     }
 
     /**
-     * @see ICompositeWidget#drawForegroundLayer(PoseStack, int, Rect2i, Point)
+     * @see ICompositeWidget#drawForegroundLayer(GuiGraphics, Rect2i, Point)
      */
-    public void drawForegroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    public void drawForegroundLayer(GuiGraphics poseStack, Rect2i bounds, Point mouse) {
         for (var widget : compositeWidgets.values()) {
             if (widget.isVisible()) {
-                widget.drawForegroundLayer(poseStack, zIndex, bounds, mouse);
+                widget.drawForegroundLayer(poseStack, bounds, mouse);
             }
         }
     }
@@ -330,7 +330,7 @@ public class WidgetContainer {
     public void addOpenPriorityButton() {
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         add("openPriority", new TabButton(Icon.WRENCH, GuiText.Priority.text(),
-                itemRenderer, btn -> openPriorityGui()));
+                btn -> openPriorityGui()));
     }
 
     private void openPriorityGui() {
@@ -397,7 +397,7 @@ public class WidgetContainer {
         searchField.setBordered(false);
         searchField.setMaxLength(25);
         searchField.setTextColor(0xFFFFFF);
-        searchField.setSelectionColor(0xFF008000);
+        searchField.setSelectionColor(0xFF000080);
         searchField.setVisible(true);
         add(id, searchField);
         return searchField;

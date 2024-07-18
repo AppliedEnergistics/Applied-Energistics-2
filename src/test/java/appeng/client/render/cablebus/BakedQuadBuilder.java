@@ -37,14 +37,7 @@ class BakedQuadBuilder extends MutableQuadViewImpl implements QuadEmitter {
     }
 
     @Override
-    public QuadEmitter emit() {
-        var limit = material().spriteDepth();
-
-        for (int l = 0; l < limit; l++) {
-            output.add(toBakedQuad(l, finder != null ? finder.find(this, l) : null, false));
-        }
-
-        clear();
-        return this;
+    public void emitDirectly() {
+        output.add(toBakedQuad(finder != null ? finder.find(this) : null));
     }
 }

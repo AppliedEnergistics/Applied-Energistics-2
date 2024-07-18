@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -198,7 +198,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         return node != null ? node.getGrid() : null;
     }
 
-    public void cancel() {
+    @Override
+    public void cancelJob() {
         craftingLogic.cancel();
     }
 

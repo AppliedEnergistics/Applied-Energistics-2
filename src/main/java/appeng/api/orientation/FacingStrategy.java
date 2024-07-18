@@ -13,15 +13,19 @@ import net.minecraft.world.level.block.state.properties.Property;
 /**
  * Implements a strategy that allows blocks to be oriented using a single directional property.
  */
-class FacingStrategy implements IOrientationStrategy {
+public class FacingStrategy implements IOrientationStrategy {
     private final DirectionProperty property;
     private final List<Property<?>> properties;
-    private final boolean attached;
+    private final boolean allowsPlayerRotation;
 
-    public FacingStrategy(DirectionProperty property, boolean attached) {
+    protected FacingStrategy(DirectionProperty property) {
+        this(property, true);
+    }
+
+    protected FacingStrategy(DirectionProperty property, boolean allowsPlayerRotation) {
         this.property = property;
         this.properties = Collections.singletonList(property);
-        this.attached = attached;
+        this.allowsPlayerRotation = allowsPlayerRotation;
     }
 
     @Override
@@ -40,6 +44,11 @@ class FacingStrategy implements IOrientationStrategy {
     @Override
     public BlockState getStateForPlacement(BlockState state, BlockPlaceContext context) {
         return setFacing(state, context.getClickedFace());
+    }
+
+    @Override
+    public boolean allowsPlayerRotation() {
+        return allowsPlayerRotation;
     }
 
     @Override

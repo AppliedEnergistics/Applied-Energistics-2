@@ -1,10 +1,12 @@
 package appeng.libs.mdast.mdx.model;
 
-import appeng.libs.mdast.model.MdAstNode;
+import java.io.IOException;
+
 import com.google.gson.stream.JsonWriter;
+
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
+import appeng.libs.mdast.model.MdAstNode;
 
 public class MdxJsxAttribute extends MdAstNode implements MdxJsxAttributeNode {
     public String name = "";
@@ -13,6 +15,12 @@ public class MdxJsxAttribute extends MdAstNode implements MdxJsxAttributeNode {
 
     public MdxJsxAttribute() {
         super("mdxJsxAttribute");
+    }
+
+    public MdxJsxAttribute(String name, @Nullable Object value) {
+        this();
+        this.name = name;
+        this.value = value;
     }
 
     @Override
@@ -25,8 +33,20 @@ public class MdxJsxAttribute extends MdAstNode implements MdxJsxAttributeNode {
         this.value = node;
     }
 
+    public boolean hasExpressionValue() {
+        return value instanceof MdxJsxAttributeValueExpression;
+    }
+
+    public boolean hasStringValue() {
+        return value instanceof String;
+    }
+
     public String getStringValue() {
         return (String) value;
+    }
+
+    public String getExpressionValue() {
+        return ((MdxJsxAttributeValueExpression) value).value;
     }
 
     public void setValue(String value) {

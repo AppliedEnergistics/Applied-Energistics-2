@@ -4,26 +4,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.ResourceLocationException;
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ConfirmLinkScreen;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.PageCollection;
+import appeng.client.guidebook.color.SymbolicColor;
+import appeng.client.guidebook.document.LytErrorSink;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytBlockContainer;
 import appeng.client.guidebook.document.block.LytDocument;
@@ -42,8 +43,10 @@ import appeng.client.guidebook.document.flow.LytFlowParent;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.document.flow.LytFlowText;
 import appeng.client.guidebook.document.interaction.TextTooltip;
+import appeng.client.guidebook.extensions.Extension;
+import appeng.client.guidebook.extensions.ExtensionCollection;
+import appeng.client.guidebook.extensions.ExtensionPoint;
 import appeng.client.guidebook.indices.PageIndex;
-import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.style.TextAlignment;
 import appeng.client.guidebook.style.WhiteSpaceMode;
 import appeng.libs.mdast.MdAst;
@@ -89,24 +92,40 @@ public final class PageCompiler {
     private static final int DEFAULT_ELEMENT_SPACING = 5;
 
     private final PageCollection pages;
+    private final ExtensionCollection extensions;
     private final String sourcePack;
-    private final ResourceLocation id;
+    private final ResourceLocation pageId;
     private final String pageContent;
 
-    public PageCompiler(
-            PageCollection pages,
-            String sourcePack,
-            ResourceLocation id,
+    private final Map<String, TagCompiler> tagCompilers = new HashMap<>();
+
+    // Data associated with the current page being compiled, this is used by
+    // compilers to communicate with each other within the current page.
+    private final Map<State<?>, Object> compilerState = new IdentityHashMap<>();
+
+    public PageCompiler(PageCollection pages, ExtensionCollection extensions, String sourcePack,
+            ResourceLocation pageId,
             String pageContent) {
         this.pages = pages;
+        this.extensions = extensions;
         this.sourcePack = sourcePack;
-        this.id = id;
+        this.pageId = pageId;
         this.pageContent = pageContent;
+
+        // Index available tag-compilers
+        for (var tagCompiler : extensions.get(TagCompiler.EXTENSION_POINT)) {
+            for (String tagName : tagCompiler.getTagNames()) {
+                tagCompilers.put(tagName, tagCompiler);
+            }
+        }
     }
 
     public static ParsedGuidePage parse(String sourcePack, ResourceLocation id, InputStream in) throws IOException {
         String pageContent = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        return parse(sourcePack, id, pageContent);
+    }
 
+    public static ParsedGuidePage parse(String sourcePack, ResourceLocation id, String pageContent) {
         // Normalize line ending
         pageContent = pageContent.replaceAll("\\r\\n?", "\n");
 
@@ -126,16 +145,25 @@ public final class PageCompiler {
         return new ParsedGuidePage(sourcePack, id, pageContent, astRoot, frontmatter);
     }
 
-    public static GuidePage compile(PageCollection pages, ParsedGuidePage parsedPage) {
+    public static GuidePage compile(PageCollection pages, ExtensionCollection extensions, ParsedGuidePage parsedPage) {
         // Translate page tree over to layout pages
-        var document = new PageCompiler(pages, parsedPage.sourcePack, parsedPage.id, parsedPage.source)
+        var document = new PageCompiler(pages, extensions, parsedPage.sourcePack, parsedPage.id, parsedPage.source)
                 .compile(parsedPage.astRoot);
 
         return new GuidePage(parsedPage.sourcePack, parsedPage.id, document);
     }
 
+    public ExtensionCollection getExtensions() {
+        return extensions;
+    }
+
+    public <T extends Extension> List<T> getExtensions(ExtensionPoint<T> extensionPoint) {
+        return extensions.get(extensionPoint);
+    }
+
     private LytDocument compile(MdAstRoot root) {
         var document = new LytDocument();
+        document.setSourceNode(root);
         compileBlockContext(root, document);
         return document;
     }
@@ -162,8 +190,12 @@ public final class PageCompiler {
     }
 
     public void compileBlockContext(MdAstParent<?> markdownParent, LytBlockContainer layoutParent) {
+        compileBlockContext(markdownParent.children(), layoutParent);
+    }
+
+    public void compileBlockContext(List<? extends MdAstAnyContent> children, LytBlockContainer layoutParent) {
         LytBlock previousLayoutChild = null;
-        for (var child : markdownParent.children()) {
+        for (var child : children) {
             LytBlock layoutChild;
             if (child instanceof MdAstThematicBreak) {
                 layoutChild = new LytThematicBreak();
@@ -192,9 +224,9 @@ public final class PageCompiler {
             } else if (child instanceof GfmTable astTable) {
                 layoutChild = compileTable(astTable);
             } else if (child instanceof MdxJsxFlowElement el) {
-                var compiler = TagCompilers.get(el.name());
+                var compiler = tagCompilers.get(el.name());
                 if (compiler == null) {
-                    layoutChild = createErrorBlock("Unhandled MDX element in block context", (MdAstNode) child);
+                    layoutChild = createErrorBlock("Unhandled MDX element in block context", child);
                 } else {
                     layoutChild = null;
                     compiler.compileBlockContext(this, layoutParent, el);
@@ -210,10 +242,13 @@ public final class PageCompiler {
                     layoutChild = paragraph;
                 }
             } else {
-                layoutChild = createErrorBlock("Unhandled Markdown node in block context", (MdAstNode) child);
+                layoutChild = createErrorBlock("Unhandled Markdown node in block context", child);
             }
 
             if (layoutChild != null) {
+                if (child instanceof MdAstNode astNode) {
+                    layoutChild.setSourceNode(astNode);
+                }
                 layoutParent.append(layoutChild);
             }
             previousLayoutChild = layoutChild;
@@ -238,7 +273,7 @@ public final class PageCompiler {
                 }
                 list.append(listItem);
             } else {
-                list.append(createErrorBlock("Cannot handle list content", (MdAstNode) listContent));
+                list.append(createErrorBlock("Cannot handle list content", listContent));
             }
         }
         return list;
@@ -274,25 +309,12 @@ public final class PageCompiler {
         return table;
     }
 
-    /**
-     * Converts formatted Minecraft text into our flow content.
-     */
-    public void compileComponentToFlow(FormattedText formattedText, LytFlowParent layoutParent) {
-        formattedText.visit((style, text) -> {
-            if (style.isEmpty()) {
-                layoutParent.appendText(text);
-            } else {
-                var span = new LytFlowSpan();
-                // TODO: Convert style
-                span.appendText(text);
-                layoutParent.append(span);
-            }
-            return Optional.empty();
-        }, Style.EMPTY);
+    public void compileFlowContext(MdAstParent<?> markdownParent, LytFlowParent layoutParent) {
+        compileFlowContext(markdownParent.children(), layoutParent);
     }
 
-    public void compileFlowContext(MdAstParent<?> markdownParent, LytFlowParent layoutParent) {
-        for (var child : markdownParent.children()) {
+    public void compileFlowContext(Collection<? extends MdAstAnyContent> children, LytFlowParent layoutParent) {
+        for (var child : children) {
             compileFlowContent(layoutParent, child);
         }
     }
@@ -321,21 +343,21 @@ public final class PageCompiler {
         } else if (content instanceof MdAstBreak) {
             layoutChild = new LytFlowBreak();
         } else if (content instanceof MdAstLink astLink) {
-            layoutChild = compileLink(astLink);
+            layoutChild = compileLink(astLink, layoutParent);
         } else if (content instanceof MdAstImage astImage) {
             var inlineBlock = new LytFlowInlineBlock();
             inlineBlock.setBlock(compileImage(astImage));
             layoutChild = inlineBlock;
         } else if (content instanceof MdxJsxTextElement el) {
-            var compiler = TagCompilers.get(el.name());
+            var compiler = tagCompilers.get(el.name());
             if (compiler == null) {
-                layoutChild = createErrorFlowContent("Unhandled MDX element in flow context", (MdAstNode) content);
+                layoutChild = createErrorFlowContent("Unhandled MDX element in flow context", content);
             } else {
                 layoutChild = null;
                 compiler.compileFlowContext(this, layoutParent, el);
             }
         } else {
-            layoutChild = createErrorFlowContent("Unhandled Markdown node in flow context", (MdAstNode) content);
+            layoutChild = createErrorFlowContent("Unhandled Markdown node in flow context", content);
         }
 
         if (layoutChild != null) {
@@ -343,43 +365,28 @@ public final class PageCompiler {
         }
     }
 
-    private LytFlowContent compileLink(MdAstLink astLink) {
+    private LytFlowContent compileLink(MdAstLink astLink, LytErrorSink errorSink) {
         var link = new LytFlowLink();
         if (astLink.title != null && !astLink.title.isEmpty()) {
             link.setTooltip(new TextTooltip(astLink.title));
         }
+        if (astLink.url != null && !astLink.url.isEmpty()) {
+            LinkParser.parseLink(this, astLink.url, new LinkParser.Visitor() {
+                @Override
+                public void handlePage(PageAnchor page) {
+                    link.setPageLink(page);
+                }
 
-        // Internal vs. external links
-        var uri = URI.create(astLink.url);
-        if (uri.isAbsolute()) {
-            link.setClickCallback(screen -> {
-                var mc = Minecraft.getInstance();
-                mc.setScreen(new ConfirmLinkScreen(yes -> {
-                    if (yes) {
-                        Util.getPlatform().openUri(uri);
-                    }
+                @Override
+                public void handleExternal(URI uri) {
+                    link.setExternalUrl(uri);
+                }
 
-                    mc.setScreen(screen);
-                }, astLink.url, false));
+                @Override
+                public void handleError(String error) {
+                    errorSink.appendError(PageCompiler.this, error, astLink);
+                }
             });
-        } else {
-
-            // Determine the page id, account for relative paths
-            ResourceLocation pageId;
-            try {
-                pageId = IdUtils.resolveLink(uri.getPath(), id);
-            } catch (ResourceLocationException ignored) {
-                return createErrorFlowContent("Invalid page link", astLink);
-            }
-
-            if (!pages.pageExists(pageId)) {
-                LOGGER.error("Broken link to page '{}' in page {}", astLink.url, id);
-            } else {
-                var anchor = new PageAnchor(pageId, uri.getFragment());
-                link.setClickCallback(screen -> {
-                    screen.navigateTo(anchor);
-                });
-            }
         }
 
         compileFlowContext(astLink, link);
@@ -392,7 +399,7 @@ public final class PageCompiler {
         image.setTitle(astImage.title);
         image.setAlt(astImage.alt);
         try {
-            var imageId = IdUtils.resolveLink(astImage.url, id);
+            var imageId = IdUtils.resolveLink(astImage.url, pageId);
             var imageContent = pages.loadAsset(imageId);
             if (imageContent == null) {
                 LOGGER.error("Couldn't find image {}", astImage.url);
@@ -415,52 +422,75 @@ public final class PageCompiler {
     public LytFlowContent createErrorFlowContent(String text, UnistNode child) {
         LytFlowSpan span = new LytFlowSpan();
         span.modifyStyle(style -> {
-            style.color(new ColorRef(0xFFFF0000))
-                    .whiteSpace(WhiteSpaceMode.PRE);
+            style.color(SymbolicColor.ERROR_TEXT).whiteSpace(WhiteSpaceMode.PRE);
         });
 
         // Find the position in the source
-        var pos = child.position().start();
-        var startOfLine = pageContent.lastIndexOf('\n', pos.offset()) + 1;
-        var endOfLine = pageContent.indexOf('\n', pos.offset() + 1);
-        if (endOfLine == -1) {
-            endOfLine = pageContent.length();
+        var position = child.position();
+        if (position != null) {
+            var pos = position.start();
+            var startOfLine = pageContent.lastIndexOf('\n', pos.offset()) + 1;
+            var endOfLine = pageContent.indexOf('\n', pos.offset() + 1);
+            if (endOfLine == -1) {
+                endOfLine = pageContent.length();
+            }
+            var line = pageContent.substring(startOfLine, endOfLine);
+
+            text += " " + child.type() + " (" + MdAstPosition.stringify(pos) + ")";
+
+            span.appendText(text);
+            span.appendBreak();
+
+            span.appendText(line);
+            span.appendBreak();
+
+            span.appendText("~".repeat(pos.column() - 1) + "^");
+            span.appendBreak();
+
+            LOGGER.warn("{}\n{}\n{}\n", text, line, "~".repeat(pos.column() - 1) + "^");
+        } else {
+            LOGGER.warn("{}\n", text);
         }
-        var line = pageContent.substring(startOfLine, endOfLine);
-
-        text += " " + child.type() + " (" + MdAstPosition.stringify(pos) + ")";
-
-        span.appendText(text);
-        span.appendBreak();
-
-        span.appendText(line);
-        span.appendBreak();
-
-        span.appendText("~".repeat(pos.column() - 1) + "^");
-        span.appendBreak();
-
-        LOGGER.warn("{}\n{}\n{}\n", text, line, "~".repeat(pos.column() - 1) + "^");
 
         return span;
     }
 
     public ResourceLocation resolveId(String idText) {
-        return IdUtils.resolveId(idText, id.getNamespace());
+        return IdUtils.resolveId(idText, pageId.getNamespace());
     }
 
-    public ResourceLocation getId() {
-        return id;
+    /**
+     * Get the current page id.
+     */
+    public ResourceLocation getPageId() {
+        return pageId;
     }
 
     public PageCollection getPageCollection() {
         return pages;
     }
 
-    public byte[] loadAsset(ResourceLocation imageId) {
+    public byte @Nullable [] loadAsset(ResourceLocation imageId) {
         return pages.loadAsset(imageId);
     }
 
     public <T extends PageIndex> T getIndex(Class<T> clazz) {
         return pages.getIndex(clazz);
+    }
+
+    public <T> T getCompilerState(State<T> state) {
+        var current = compilerState.getOrDefault(state, state.defaultValue);
+        return state.dataClass.cast(current);
+    }
+
+    public <T> void setCompilerState(State<T> state, T value) {
+        compilerState.put(state, value);
+    }
+
+    public <T> void clearCompilerState(State<T> state) {
+        compilerState.remove(state);
+    }
+
+    public record State<T> (String name, Class<T> dataClass, T defaultValue) {
     }
 }

@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.InlineBlockAlignment;
+import appeng.client.guidebook.document.flow.LytFlowAnchor;
 import appeng.client.guidebook.document.flow.LytFlowBreak;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.flow.LytFlowInlineBlock;
@@ -61,6 +62,9 @@ class LineBuilder implements Consumer<LytFlowContent> {
             appendBreak(content);
         } else if (content instanceof LytFlowInlineBlock inlineBlock) {
             appendInlineBlock(inlineBlock);
+        } else if (content instanceof LytFlowAnchor anchor) {
+            // Simply set the current layout position for the anchor
+            anchor.setLayoutY(lineBoxY);
         } else {
             throw new IllegalArgumentException("Don't know how to layout flow content: " + content);
         }
@@ -204,6 +208,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
         float widthAtBreakOpportunity = 0;
         float curLineWidth = 0;
 
+        var fontScale = style.fontScale();
         var lineBuffer = new StringBuilder();
 
         boolean lastCharWasWhitespace = Character.isWhitespace(lastChar);
@@ -254,7 +259,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
                 lastCharWasWhitespace = false;
             }
 
-            var advance = context.getAdvance(codePoint, style);
+            var advance = context.getAdvance(codePoint, style) * fontScale;
             // Break line if necessary
             if (curLineWidth + advance > remainingLineWidth) {
                 // If we had a break opportunity, use it
@@ -266,7 +271,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
                     if (!lineBuffer.isEmpty() && Character.isWhitespace(lineBuffer.charAt(0))) {
                         var firstChar = lineBuffer.charAt(0);
                         lineBuffer.deleteCharAt(0);
-                        curLineWidth -= context.getAdvance(firstChar, style);
+                        curLineWidth -= context.getAdvance(firstChar, style) * fontScale;
                     }
                 } else {
                     // We exceeded the line length, but did not find a break opportunity
@@ -298,6 +303,8 @@ class LineBuilder implements Consumer<LytFlowContent> {
             return;
         }
 
+        context.clearFloatsAbove(lineBoxY);
+
         var lineHeight = 1;
         var lineWidth = 0;
         for (var el = openLineElement; el != null; el = el.next) {
@@ -317,15 +324,18 @@ class LineBuilder implements Consumer<LytFlowContent> {
         }
 
         // reposition all line elements
+        int actualRight = lineBoxX;
         for (var el = openLineElement; el != null; el = el.next) {
             el.bounds = el.bounds.move(xTranslation, lineBoxY);
             // Ensure that inline blocks update their blocks absolute position
             if (el instanceof LineBlock lineBlock) {
                 lineBlock.getBlock().layout(context, el.bounds.x(), el.bounds.y(), el.bounds.width());
             }
+
+            actualRight = Math.max(actualRight, el.bounds.right());
         }
 
-        var lineBounds = new LytRect(lineBoxX, lineBoxY, lineBoxWidth, lineHeight);
+        var lineBounds = new LytRect(lineBoxX, lineBoxY, actualRight - lineBoxX, lineHeight);
         var line = new Line(lineBounds, openLineElement);
         lines.add(line);
 
@@ -375,9 +385,10 @@ class LineBuilder implements Consumer<LytFlowContent> {
     }
 
     public LytRect getBounds() {
+        var width = lines.stream().mapToInt(l -> l.bounds().width()).max().orElse(0);
         return new LytRect(
                 lineBoxX, startY,
-                lineBoxWidth, lineBoxY - startY);
+                width, lineBoxY - startY);
     }
 
     @FunctionalInterface

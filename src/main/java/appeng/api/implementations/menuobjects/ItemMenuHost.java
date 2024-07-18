@@ -84,7 +84,7 @@ public class ItemMenuHost implements IUpgradeableObject {
      * @return True if this host is on the client-side.
      */
     public boolean isClientSide() {
-        return player.level.isClientSide;
+        return player.level().isClientSide;
     }
 
     /**
@@ -115,7 +115,7 @@ public class ItemMenuHost implements IUpgradeableObject {
         if (!currentItem.isEmpty() && !expectedItem.isEmpty()) {
             if (currentItem == expectedItem) {
                 return true;
-            } else if (ItemStack.isSame(expectedItem, currentItem)) {
+            } else if (ItemStack.isSameItem(expectedItem, currentItem)) {
                 // If the items are still equivalent, we just restore referential equality so that modifications
                 // to the GUI item are reflected in the slot
                 inventory.setItem(slot, expectedItem);
@@ -129,6 +129,11 @@ public class ItemMenuHost implements IUpgradeableObject {
      * Can only be used with a host that implements {@link IEnergySource} only call once per broadcastChanges()
      */
     public boolean drainPower() {
+        // Do not drain power for creative players
+        if (player.isCreative()) {
+            return true;
+        }
+
         if (this instanceof IEnergySource energySource) {
             this.powerTicks++;
             if (this.powerTicks > 10) {

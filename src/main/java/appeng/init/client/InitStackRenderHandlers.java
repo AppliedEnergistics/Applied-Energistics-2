@@ -20,26 +20,29 @@ package appeng.init.client;
 
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.joml.Matrix4f;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
-import appeng.api.client.AEStackRendering;
-import appeng.api.client.IAEStackRenderHandler;
+import appeng.api.client.AEKeyRenderHandler;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKeyType;
@@ -47,37 +50,32 @@ import appeng.client.gui.style.FluidBlitter;
 import appeng.util.Platform;
 
 public class InitStackRenderHandlers {
+    private static final Logger LOG = LoggerFactory.getLogger(InitStackRenderHandlers.class);
+
     private InitStackRenderHandlers() {
     }
 
     public static void init() {
-        AEStackRendering.register(AEKeyType.items(), AEItemKey.class, new ItemKeyRenderHandler());
-        AEStackRendering.register(AEKeyType.fluids(), AEFluidKey.class, new FluidKeyRenderHandler());
+        AEKeyRendering.register(AEKeyType.items(), AEItemKey.class, new ItemKeyRenderHandler());
+        AEKeyRendering.register(AEKeyType.fluids(), AEFluidKey.class, new FluidKeyRenderHandler());
     }
 
-    private static class ItemKeyRenderHandler implements IAEStackRenderHandler<AEItemKey> {
+    private static class ItemKeyRenderHandler implements AEKeyRenderHandler<AEItemKey> {
         @Override
-        public void drawInGui(Minecraft minecraft, PoseStack poseStack, int x, int y, int zIndex,
-                AEItemKey stack) {
+        public void drawInGui(Minecraft minecraft, GuiGraphics guiGraphics, int x, int y, AEItemKey stack) {
+            var poseStack = guiGraphics.pose();
+            poseStack.pushPose();
+
             ItemStack displayStack = stack.toStack();
-            // The item renderer uses this global stack, so we have to apply the current transform to it.
-            var globalStack = RenderSystem.getModelViewStack();
-            globalStack.pushPose();
-            globalStack.mulPoseMatrix(poseStack.last().pose());
-            ItemRenderer itemRenderer = minecraft.getItemRenderer();
-            var oldBlitOffset = itemRenderer.blitOffset;
-            itemRenderer.blitOffset = zIndex;
-            itemRenderer.renderGuiItem(displayStack, x, y);
-            itemRenderer.renderGuiItemDecorations(minecraft.font, displayStack, x, y, "");
-            itemRenderer.blitOffset = oldBlitOffset;
-            globalStack.popPose();
-            // Ensure the global state is correctly reset.
-            RenderSystem.applyModelViewMatrix();
+            guiGraphics.renderItem(displayStack, x, y);
+            guiGraphics.renderItemDecorations(minecraft.font, displayStack, x, y, "");
+
+            poseStack.popPose();
         }
 
         @Override
         public void drawOnBlockFace(PoseStack poseStack, MultiBufferSource buffers, AEItemKey what, float scale,
-                int combinedLight) {
+                int combinedLight, Level level) {
             poseStack.pushPose();
             // Push it out of the block face a bit to avoid z-fighting
             poseStack.translate(0, 0, 0.01f);
@@ -88,8 +86,8 @@ public class InitStackRenderHandlers {
             // Rotate the normal matrix a little for nicer lighting.
             poseStack.last().normal().rotateX(Mth.DEG_TO_RAD * -45f);
 
-            Minecraft.getInstance().getItemRenderer().renderStatic(what.toStack(), ItemTransforms.TransformType.GUI,
-                    combinedLight, OverlayTexture.NO_OVERLAY, poseStack, buffers, 0);
+            Minecraft.getInstance().getItemRenderer().renderStatic(what.toStack(), ItemDisplayContext.GUI,
+                    combinedLight, OverlayTexture.NO_OVERLAY, poseStack, buffers, level, 0);
 
             poseStack.popPose();
         }
@@ -101,24 +99,31 @@ public class InitStackRenderHandlers {
 
         @Override
         public List<Component> getTooltip(AEItemKey stack) {
-            return stack.toStack().getTooltipLines(Minecraft.getInstance().player,
-                    Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED
-                            : TooltipFlag.Default.NORMAL);
+            try {
+                return stack.toStack().getTooltipLines(Minecraft.getInstance().player,
+                        Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED
+                                : TooltipFlag.Default.NORMAL);
+            } catch (Exception e) {
+                LOG.error("Getting the tooltip of item {} crashed!", stack.getId(), e);
+                return List.of(
+                        stack.getDisplayName(),
+                        Component.literal(stack.getId().toString()),
+                        Component.literal("GETTING TOOLTIP CRASHED").withStyle(ChatFormatting.RED));
+            }
         }
     }
 
-    private static class FluidKeyRenderHandler implements IAEStackRenderHandler<AEFluidKey> {
+    private static class FluidKeyRenderHandler implements AEKeyRenderHandler<AEFluidKey> {
         @Override
-        public void drawInGui(Minecraft minecraft, PoseStack poseStack, int x, int y, int zIndex,
-                AEFluidKey what) {
+        public void drawInGui(Minecraft minecraft, GuiGraphics guiGraphics, int x, int y, AEFluidKey what) {
             FluidBlitter.create(what)
                     .dest(x, y, 16, 16)
-                    .blit(poseStack, 100 + zIndex);
+                    .blit(guiGraphics);
         }
 
         @Override
         public void drawOnBlockFace(PoseStack poseStack, MultiBufferSource buffers, AEFluidKey what, float scale,
-                int combinedLight) {
+                int combinedLight, Level level) {
             var variant = what.toVariant();
             var color = FluidVariantRendering.getColor(variant);
             var sprite = FluidVariantRendering.getSprite(variant);

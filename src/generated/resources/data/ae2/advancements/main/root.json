@@ -1,0 +1,38 @@
+{
+  "criteria": {
+    "copper": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:copper_ingot"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "ae2:textures/block/sky_stone_brick.png",
+    "description": {
+      "translate": "achievement.ae2.Root.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "ae2:certus_quartz_crystal"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "achievement.ae2.Root"
+    }
+  },
+  "requirements": [
+    [
+      "copper"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

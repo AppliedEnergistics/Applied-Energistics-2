@@ -21,6 +21,7 @@ package appeng.worldgen.meteorite;
 import java.util.List;
 import java.util.stream.Stream;
 
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
@@ -88,12 +89,7 @@ public final class MeteoritePlacer {
         double realCrater = this.meteoriteSize * 2 + 5;
         this.crater = realCrater * realCrater;
 
-        this.quartzBlocks = Stream.of(
-                AEBlocks.QUARTZ_BLOCK,
-                AEBlocks.DAMAGED_BUDDING_QUARTZ,
-                AEBlocks.CHIPPED_BUDDING_QUARTZ,
-                AEBlocks.FLAWED_BUDDING_QUARTZ,
-                AEBlocks.FLAWLESS_BUDDING_QUARTZ).map(def -> def.block().defaultBlockState()).toList();
+        this.quartzBlocks = getQuartzBudList();
         this.quartzBuds = Stream.of(
                 AEBlocks.SMALL_QUARTZ_BUD,
                 AEBlocks.MEDIUM_QUARTZ_BUD,
@@ -101,6 +97,18 @@ public final class MeteoritePlacer {
         this.skyStone = AEBlocks.SKY_STONE_BLOCK.block().defaultBlockState();
 
         this.type = getFallout(level, settings.getPos(), settings.getFallout());
+    }
+
+    private List<BlockState> getQuartzBudList() {
+        if (AEConfig.instance().isSpawnFlawlessOnlyEnabled()) {
+            return Stream.of(AEBlocks.FLAWLESS_BUDDING_QUARTZ).map(def -> def.block().defaultBlockState()).toList();
+        }
+        return Stream.of(
+                AEBlocks.QUARTZ_BLOCK,
+                AEBlocks.DAMAGED_BUDDING_QUARTZ,
+                AEBlocks.CHIPPED_BUDDING_QUARTZ,
+                AEBlocks.FLAWED_BUDDING_QUARTZ,
+                AEBlocks.FLAWLESS_BUDDING_QUARTZ).map(def -> def.block().defaultBlockState()).toList();
     }
 
     public void place() {
@@ -178,7 +186,7 @@ public final class MeteoritePlacer {
                     if (j > h + distanceFrom * 0.02) {
                         BlockState currentBlock = level.getBlockState(blockPos);
 
-                        if (craterType != CraterType.NORMAL && j < y && currentBlock.getMaterial().isSolid()) {
+                        if (craterType != CraterType.NORMAL && j < y && currentBlock.isSolid()) {
                             if (j > h + distanceFrom * 0.02) {
                                 this.putter.put(level, blockPos, filler);
                             }
@@ -240,7 +248,7 @@ public final class MeteoritePlacer {
                                 // Add a bud on top if it's not a regular certus block (index 0), and not the center.
                                 // (70% chance)
                                 if (certusIndex != 0 && (dx != 0 || dz != 0) && random.nextFloat() <= 0.7) {
-                                    var bud = quartzBuds.get(random.nextInt(quartzBuds.size()));
+                                    var bud = Util.getRandom(quartzBuds, random);
                                     var budState = bud.setValue(AmethystClusterBlock.FACING, Direction.UP);
                                     this.putter.put(level, pos.offset(0, 1, 0), budState);
                                 }
@@ -285,7 +293,7 @@ public final class MeteoritePlacer {
                     }
 
                     // TODO reconsider
-                    if (state.getMaterial().isReplaceable()) {
+                    if (state.canBeReplaced()) {
                         if (!level.isEmptyBlock(blockPosUp)) {
                             final BlockState stateUp = level.getBlockState(blockPosUp);
                             level.setBlock(blockPos, stateUp, Block.UPDATE_ALL);
@@ -296,7 +304,7 @@ public final class MeteoritePlacer {
                             final double dist = dx * dx + dy * dy + dz * dz;
 
                             final BlockState xf = level.getBlockState(blockPosDown);
-                            if (!xf.getMaterial().isReplaceable()) {
+                            if (!xf.canBeReplaced()) {
                                 final double extraRange = random.nextDouble() * 0.6;
                                 final double height = this.crater * (extraRange + 0.2)
                                         - Math.abs(dist - this.crater * 1.7);

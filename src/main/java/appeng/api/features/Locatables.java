@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.level.Level;
 
@@ -37,8 +37,6 @@ import appeng.api.networking.security.IActionHost;
  * A Registry for locatable items, works based on serial numbers.
  */
 public final class Locatables {
-
-    private static final Type<IActionHost> SECURITY_STATIONS = new Type<>();
 
     private static final Type<IActionHost> QUANTUM_NETWORK_BRIDGES = new Type<>();
 
@@ -101,13 +99,6 @@ public final class Locatables {
     }
 
     private Locatables() {
-    }
-
-    /**
-     * @return The registry that can be used to locate security stations using their unique key.
-     */
-    public static Type<IActionHost> securityStations() {
-        return SECURITY_STATIONS;
     }
 
     /**

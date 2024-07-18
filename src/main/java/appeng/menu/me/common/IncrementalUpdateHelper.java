@@ -24,10 +24,10 @@ import java.util.Set;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 

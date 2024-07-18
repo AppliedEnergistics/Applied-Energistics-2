@@ -18,9 +18,9 @@
 
 package appeng.recipes.transform;
 
-import javax.annotation.Nullable;
-
 import com.google.gson.JsonObject;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;

@@ -21,10 +21,9 @@ package appeng.client.gui;
 import java.util.List;
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.Rect2i;
@@ -99,24 +98,22 @@ public interface ICompositeWidget {
     /**
      * Draw this composite widget on the background layer of the screen.
      *
-     * @param poseStack The current matrix stack. Is NOT transformed to the screen, but rather is at the origin of the
-     *                  window.
-     * @param zIndex    The z-index to draw at.
-     * @param bounds    The bounds of the current dialog in window coordinates.
-     * @param mouse     The current mouse position relative to the dialogs origin.
+     * @param guiGraphics The current matrix stack. Is NOT transformed to the screen, but rather is at the origin of the
+     *                    window.
+     * @param bounds      The bounds of the current dialog in window coordinates.
+     * @param mouse       The current mouse position relative to the dialogs origin.
      */
-    default void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    default void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
     }
 
     /**
      * Draw this composite widget on the foreground layer of the screen.
      *
-     * @param poseStack The current matrix stack. Is transformed such that 0,0 is at the dialogs origin.
-     * @param zIndex    The z-index to draw at.
-     * @param bounds    The bounds of the current dialog in dialog coordinates (x,y are 0).
-     * @param mouse     The current mouse position relative to the dialogs origin.
+     * @param guiGraphics The current matrix stack. Is transformed such that 0,0 is at the dialogs origin.
+     * @param bounds      The bounds of the current dialog in dialog coordinates (x,y are 0).
+     * @param mouse       The current mouse position relative to the dialogs origin.
      */
-    default void drawForegroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    default void drawForegroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
     }
 
     /**

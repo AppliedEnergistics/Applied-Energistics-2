@@ -1,5 +1,9 @@
 package appeng.client.guidebook.document;
 
+import org.joml.Matrix4f;
+import org.joml.Vector2i;
+import org.joml.Vector3f;
+
 public record LytRect(int x, int y, int width, int height) {
 
     private static final LytRect EMPTY = new LytRect(0, 0, 0, 0);
@@ -75,6 +79,11 @@ public record LytRect(int x, int y, int width, int height) {
                 bottom - y);
     }
 
+    public boolean contains(LytPoint point) {
+        return point.x() >= this.x && point.x() < right() &&
+                point.y() >= this.y && point.y() < bottom();
+    }
+
     public boolean contains(int x, int y) {
         return x >= this.x && x < right() &&
                 y >= this.y && y < bottom();
@@ -90,5 +99,23 @@ public record LytRect(int x, int y, int width, int height) {
 
     public LytRect withY(int y) {
         return new LytRect(x, y, width, height);
+    }
+
+    public LytRect transform(Matrix4f pose) {
+        var tmp = new Vector3f();
+        pose.transformPosition(x, y, 0, tmp);
+
+        var left = (int) tmp.x;
+        var top = (int) tmp.y;
+
+        return new LytRect(left, top, width, height);
+    }
+
+    public LytSize size() {
+        return new LytSize(width, height);
+    }
+
+    public Vector2i point() {
+        return new Vector2i(x, y);
     }
 }

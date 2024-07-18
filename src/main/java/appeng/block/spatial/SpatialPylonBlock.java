@@ -27,14 +27,13 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.spatial.SpatialPylonBlockEntity;
-import appeng.helpers.AEMaterials;
 
 public class SpatialPylonBlock extends AEBaseEntityBlock<SpatialPylonBlockEntity> {
 
     public static final BooleanProperty POWERED_ON = BooleanProperty.create("powered_on");
 
     public SpatialPylonBlock() {
-        super(defaultProps(AEMaterials.GLASS).lightLevel(state -> {
+        super(glassProps().lightLevel(state -> {
             return state.getValue(POWERED_ON) ? 8 : 0;
         }));
         registerDefaultState(defaultBlockState().setValue(POWERED_ON, false));
@@ -48,8 +47,8 @@ public class SpatialPylonBlock extends AEBaseEntityBlock<SpatialPylonBlockEntity
 
     @Override
     protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, SpatialPylonBlockEntity be) {
-        var poweredOn = (be.getDisplayBits() & SpatialPylonBlockEntity.DISPLAY_POWERED_ENABLED) != 0;
-        return currentState.setValue(SpatialPylonBlock.POWERED_ON, poweredOn);
+        var state = be.getClientState();
+        return currentState.setValue(SpatialPylonBlock.POWERED_ON, state.powered());
     }
 
     @SuppressWarnings("deprecation")

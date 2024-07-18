@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "c:wooden_rods"
+    },
+    "b": {
+      "tag": "c:iron_ingots"
+    },
+    "c": {
+      "tag": "c:certus_quartz"
+    }
+  },
+  "pattern": [
+    "  a",
+    "ba ",
+    "cc "
+  ],
+  "result": {
+    "item": "ae2:certus_quartz_cutting_knife"
+  },
+  "show_notification": true
+}

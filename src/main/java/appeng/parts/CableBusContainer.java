@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -39,6 +39,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,11 +50,10 @@ import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.api.config.YesNo;
-import appeng.api.exceptions.FailedConnectionException;
-import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.implementations.parts.ICablePart;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
+import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
@@ -74,7 +74,6 @@ import appeng.helpers.AEMultiBlockEntity;
 import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.FacadeItem;
-import appeng.me.GridConnection;
 import appeng.me.InWorldGridNode;
 import appeng.parts.networking.CablePart;
 import appeng.util.InteractionUtil;
@@ -101,6 +100,8 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     // Cached collision shape for anything but living entities
     private VoxelShape cachedCollisionShape;
     private VoxelShape cachedShape;
+    // For which cable render mode the cached shape was created
+    private CableRenderMode cachedShapeCableRenderMode;
 
     public CableBusContainer(IPartHost host) {
         this.tcb = host;
@@ -200,17 +201,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                     if (existingPart != null) {
                         var existingPartNode = existingPart.getGridNode();
                         if (existingPartNode != null) {
-                            try {
-                                GridConnection.create(cableNode, existingPartNode, null);
-                            } catch (FailedConnectionException e) {
-                                if (!(e instanceof SecurityConnectionException)) {
-                                    AELog.warn(e); // Security check failures are already logged in the security check
-                                }
-
-                                cablePart.removeFromWorld();
-                                this.storage.setCenter(null);
-                                return null;
-                            }
+                            GridHelper.createConnection(cableNode, existingPartNode);
                         }
                     }
                 }
@@ -238,17 +229,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                 var partNode = part.getGridNode();
 
                 if (cableNode != null && partNode != null) {
-                    try {
-                        GridConnection.create(cableNode, partNode, null);
-                    } catch (FailedConnectionException e) {
-                        if (!(e instanceof SecurityConnectionException)) {
-                            AELog.warn(e); // Security check failures are already logged in the security check
-                        }
-
-                        part.removeFromWorld();
-                        this.storage.removePart(side);
-                        return null;
-                    }
+                    GridHelper.createConnection(cableNode, partNode);
                 }
             }
         }
@@ -485,6 +466,11 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
+    public void notifyNeighborNow(Direction side) {
+        this.tcb.notifyNeighborNow(side);
+    }
+
+    @Override
     public boolean isInWorld() {
         return this.inWorld;
     }
@@ -549,12 +535,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                         if (center != null) {
                             final IGridNode cn = center.getGridNode();
                             if (cn != null) {
-                                try {
-                                    GridHelper.createGridConnection(cn, sn);
-                                } catch (FailedConnectionException e) {
-                                    // ekk
-                                    AELog.debug(e);
-                                }
+                                GridHelper.createConnection(cn, sn);
                             }
                         }
                     }
@@ -674,6 +655,16 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             var part = this.getPart(s);
             if (part != null) {
                 part.onNeighborChanged(level, pos, neighbor);
+            }
+        }
+    }
+
+    @Override
+    public void onUpdateShape(LevelAccessor level, BlockPos pos, Direction side) {
+        for (var s : Platform.DIRECTIONS_WITH_NULL) {
+            var part = this.getPart(s);
+            if (part != null) {
+                part.onUpdateShape(side);
             }
         }
 
@@ -880,15 +871,22 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return drops;
     }
 
-    public List<ItemStack> addAdditionalDrops(List<ItemStack> drops, boolean remove) {
+    public void addAdditionalDrops(List<ItemStack> drops) {
         for (var side : Platform.DIRECTIONS_WITH_NULL) {
             var part = this.getPart(side);
             if (part != null) {
-                part.addAdditionalDrops(drops, false, remove);
+                part.addAdditionalDrops(drops, false);
             }
         }
+    }
 
-        return drops;
+    public void clearContent() {
+        for (var s : Platform.DIRECTIONS_WITH_NULL) {
+            var part = getPart(s);
+            if (part != null) {
+                part.clearContent();
+            }
+        }
     }
 
     @Override
@@ -1021,8 +1019,10 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
      * See {@link Block#getShape}
      */
     public VoxelShape getShape() {
-        if (cachedShape == null) {
+        var currentRenderMode = PartHelper.getCableRenderMode();
+        if (cachedShape == null || currentRenderMode != cachedShapeCableRenderMode) {
             cachedShape = createShape(false, false);
+            cachedShapeCableRenderMode = currentRenderMode;
         }
 
         return cachedShape;
@@ -1052,7 +1052,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     private VoxelShape createShape(boolean forCollision, boolean forItemEntity) {
         final List<AABB> boxes = new ArrayList<>();
 
-        final IFacadeContainer fc = this.getFacadeContainer();
+        var fc = this.getFacadeContainer();
         for (Direction s : Platform.DIRECTIONS_WITH_NULL) {
             final IPartCollisionHelper bch = new BusCollisionHelper(boxes, s, !forCollision);
 
@@ -1063,7 +1063,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
             if ((PartHelper.getCableRenderMode().opaqueFacades || forCollision)
                     && s != null) {
-                final IFacadePart fp = fc.getFacade(s);
+                var fp = fc.getFacade(s);
                 if (fp != null) {
                     fp.getBoxes(bch, forItemEntity);
                 }
@@ -1100,5 +1100,4 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             });
         }
     }
-
 }

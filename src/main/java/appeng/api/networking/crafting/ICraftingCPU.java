@@ -23,7 +23,7 @@
 
 package appeng.api.networking.crafting;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
 
@@ -41,6 +41,11 @@ public interface ICraftingCPU {
      */
     @Nullable
     CraftingJobStatus getJobStatus();
+
+    /**
+     * Cancels the current job.
+     */
+    void cancelJob();
 
     /**
      * @return the available storage in bytes

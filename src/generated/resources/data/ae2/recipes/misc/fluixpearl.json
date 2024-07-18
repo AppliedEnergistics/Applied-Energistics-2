@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "c:fluix_dusts"
+    },
+    "b": {
+      "tag": "ae2:all_fluix"
+    },
+    "c": {
+      "tag": "c:ender_pearls"
+    }
+  },
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "result": {
+    "item": "ae2:fluix_pearl"
+  },
+  "show_notification": true
+}

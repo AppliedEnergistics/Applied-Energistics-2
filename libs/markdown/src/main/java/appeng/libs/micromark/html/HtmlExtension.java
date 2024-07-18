@@ -1,10 +1,11 @@
 package appeng.libs.micromark.html;
 
-import appeng.libs.micromark.Token;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jetbrains.annotations.Nullable;
+
+import appeng.libs.micromark.Token;
 
 public class HtmlExtension {
     @FunctionalInterface
@@ -25,9 +26,9 @@ public class HtmlExtension {
     public final Map<String, Handler> exit;
 
     private HtmlExtension(@Nullable DocumentHandler enterDocument,
-                          @Nullable DocumentHandler exitDocument,
-                          Map<String, Handler> enter,
-                          Map<String, Handler> exit) {
+            @Nullable DocumentHandler exitDocument,
+            Map<String, Handler> enter,
+            Map<String, Handler> exit) {
         this.enterDocument = enterDocument;
         this.exitDocument = exitDocument;
         this.enter = enter;

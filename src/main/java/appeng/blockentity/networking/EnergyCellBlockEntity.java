@@ -18,45 +18,51 @@
 
 package appeng.blockentity.networking;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkStatus;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.blockentity.grid.AENetworkBlockEntity;
-import appeng.hooks.ticking.TickHandler;
+import appeng.me.energy.StoredEnergyAmount;
+import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPowerStorage {
+public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPowerStorage, IGridTickable {
 
-    private double internalCurrentPower = 0.0;
-    private final double internalMaxPower;
-
-    private byte currentMeta = -1;
-
+    private final StoredEnergyAmount stored;
+    private byte currentDisplayLevel;
     private boolean neighborChangePending;
 
     public EnergyCellBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.getMainNode()
                 .setIdlePowerUsage(0)
-                .addService(IAEPowerStorage.class, this);
+                .addService(IAEPowerStorage.class, this)
+                .addService(IGridTickable.class, this);
 
         var cellBlock = (EnergyCellBlock) getBlockState().getBlock();
-        this.internalMaxPower = cellBlock.getMaxPower();
+        this.stored = new StoredEnergyAmount(0, cellBlock.getMaxPower(), this::emitPowerEvent);
     }
 
     @Override
@@ -68,7 +74,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     public void onReady() {
         super.onReady();
         final int value = this.level.getBlockState(this.worldPosition).getValue(EnergyCellBlock.ENERGY_STORAGE);
-        this.currentMeta = (byte) value;
+        this.currentDisplayLevel = (byte) value;
         this.updateStateForPowerLevel();
     }
 
@@ -88,27 +94,48 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
             return;
         }
 
-        int storageLevel = getStorageLevelFromFillFactor(this.internalCurrentPower / this.internalMaxPower);
+        int storageLevel = getStorageLevelFromFillFactor(this.stored.getAmount() / this.stored.getMaximum());
 
-        if (this.currentMeta != storageLevel) {
-            this.currentMeta = (byte) storageLevel;
+        if (this.currentDisplayLevel != storageLevel) {
+            this.currentDisplayLevel = (byte) storageLevel;
             this.level.setBlockAndUpdate(this.worldPosition,
                     this.level.getBlockState(this.worldPosition).setValue(EnergyCellBlock.ENERGY_STORAGE,
                             storageLevel));
         }
     }
 
+    /**
+     * Marks the current chunk as unsaved, without creating additional loading tickets that would potentially keep this
+     * block loaded forever.
+     */
+    private void setChangedNoTicketUpdate() {
+        if (!(this.level instanceof ServerLevel serverLevel)) {
+            throw new IllegalArgumentException("Expected server level, not " + this.level);
+        }
+
+        var pos = getBlockPos();
+        var chunk = serverLevel.getChunkSource().getChunk(
+                SectionPos.blockToSectionCoord(pos.getX()),
+                SectionPos.blockToSectionCoord(pos.getZ()),
+                ChunkStatus.FULL,
+                false // passing false here is the trick to not adding a ticket!
+        );
+        // The chunk might be null, for example if it has a ticket level of 46 (i.e. about to be unloaded).
+        if (chunk != null) {
+            chunk.setUnsaved(true);
+        }
+    }
+
     private void onAmountChanged() {
-        // Delay the notification since this happens while energy is being extracted/injected from the grid
-        // During injection/extraction, the grid should not be modified
+        setChangedNoTicketUpdate();
+
+        // Delay the notification since this happens while energy is being extracted/injected from the grid.
+        // During injection/extraction, the grid should not be modified.
+        // So defer the notification until the next time this cell is in a ticking chunk.
         if (!neighborChangePending) {
             neighborChangePending = true;
-            TickHandler.instance().addCallable(level, () -> {
-                if (!isRemoved() && neighborChangePending) {
-                    neighborChangePending = false;
-                    updateStateForPowerLevel();
-                    setChanged();
-                }
+            getMainNode().ifPresent((grid, node) -> {
+                grid.getTickManager().alertDevice(node);
             });
         }
     }
@@ -116,13 +143,15 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     @Override
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
-        data.putDouble("internalCurrentPower", this.internalCurrentPower);
+        data.putDouble("internalCurrentPower", this.stored.getAmount());
+        data.putBoolean("neighborChangePending", this.neighborChangePending);
     }
 
     @Override
     public void loadTag(CompoundTag data) {
         super.loadTag(data);
-        this.internalCurrentPower = data.getDouble("internalCurrentPower");
+        this.stored.setStored(data.getDouble("internalCurrentPower"));
+        this.neighborChangePending = data.getBoolean("neighborChangePending");
     }
 
     @Override
@@ -130,7 +159,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
         super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            this.internalCurrentPower = input.getDouble("internalCurrentPower");
+            this.stored.setStored(input.getDouble("internalCurrentPower"));
         }
     }
 
@@ -138,49 +167,42 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     public void exportSettings(SettingsFrom from, CompoundTag data, @Nullable Player player) {
         super.exportSettings(from, data, player);
 
-        if (from == SettingsFrom.DISMANTLE_ITEM && this.internalCurrentPower > 0.0001) {
-            data.putDouble("internalCurrentPower", this.internalCurrentPower);
-            data.putDouble("internalMaxPower", this.internalMaxPower); // used for tool tip.
+        if (from == SettingsFrom.DISMANTLE_ITEM && this.stored.getAmount() > 0) {
+            data.putDouble("internalCurrentPower", this.stored.getAmount());
+            data.putDouble("internalMaxPower", this.stored.getMaximum()); // used for tool tip.
         }
     }
 
     @Override
     public final double injectAEPower(double amt, Actionable mode) {
-        if (mode == Actionable.SIMULATE) {
-            final double fakeBattery = this.internalCurrentPower + amt;
-            if (fakeBattery > this.internalMaxPower) {
-                return fakeBattery - this.internalMaxPower;
-            }
-
-            return 0;
-        }
-
-        if (this.internalCurrentPower < 0.01 && amt > 0.01) {
-            this.getMainNode().getNode().getGrid()
-                    .postEvent(new GridPowerStorageStateChanged(this, PowerEventType.PROVIDE_POWER));
-        }
-
-        this.internalCurrentPower += amt;
-        if (this.internalCurrentPower > this.internalMaxPower) {
-            amt = this.internalCurrentPower - this.internalMaxPower;
-            this.internalCurrentPower = this.internalMaxPower;
-
+        var inserted = this.stored.insert(amt, mode == Actionable.MODULATE);
+        if (mode == Actionable.MODULATE && inserted > 0) {
             this.onAmountChanged();
-            return amt;
         }
+        return amt - inserted;
+    }
 
-        this.onAmountChanged();
-        return 0;
+    @Override
+    public final double extractAEPower(double amt, Actionable mode, PowerMultiplier pm) {
+        return pm.divide(this.extractAEPower(pm.multiply(amt), mode));
+    }
+
+    private double extractAEPower(double amt, Actionable mode) {
+        var extracted = this.stored.extract(amt, mode == Actionable.MODULATE);
+        if (mode == Actionable.MODULATE && extracted > 0) {
+            this.onAmountChanged();
+        }
+        return extracted;
     }
 
     @Override
     public double getAEMaxPower() {
-        return this.internalMaxPower;
+        return this.stored.getMaximum();
     }
 
     @Override
     public double getAECurrentPower() {
-        return this.internalCurrentPower;
+        return this.stored.getAmount();
     }
 
     @Override
@@ -194,42 +216,31 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     @Override
-    public final double extractAEPower(double amt, Actionable mode, PowerMultiplier pm) {
-        return pm.divide(this.extractAEPower(pm.multiply(amt), mode));
-    }
-
-    @Override
     public int getPriority() {
         return ((EnergyCellBlock) getBlockState().getBlock()).getPriority();
     }
 
-    private double extractAEPower(double amt, Actionable mode) {
-        if (mode == Actionable.SIMULATE) {
-            if (this.internalCurrentPower > amt) {
-                return amt;
-            }
-            return this.internalCurrentPower;
-        }
-
-        final boolean wasFull = this.internalCurrentPower >= this.internalMaxPower - 0.001;
-
-        if (wasFull && amt > 0.001) {
-            getMainNode().ifPresent(
-                    grid -> grid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER)));
-        }
-
-        if (this.internalCurrentPower > amt) {
-            this.internalCurrentPower -= amt;
-
-            this.onAmountChanged();
-            return amt;
-        }
-
-        amt = this.internalCurrentPower;
-        this.internalCurrentPower = 0;
-
-        this.onAmountChanged();
-        return amt;
+    private void emitPowerEvent(PowerEventType type) {
+        getMainNode().ifPresent(
+                grid -> grid.postEvent(new GridPowerStorageStateChanged(this, type)));
     }
 
+    @Override
+    public TickingRequest getTickingRequest(IGridNode node) {
+        return new TickingRequest(1, 20, !neighborChangePending, true);
+    }
+
+    @Override
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        if (Platform.areBlockEntitiesTicking(getLevel(), getBlockPos())) {
+            if (neighborChangePending) {
+                neighborChangePending = false;
+                setChanged(); // update comparators
+                updateStateForPowerLevel(); // and update block state
+            }
+            return TickRateModulation.SLEEP;
+        } else {
+            return TickRateModulation.IDLE;
+        }
+    }
 }

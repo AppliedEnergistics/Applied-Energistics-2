@@ -69,6 +69,10 @@ public interface InterfaceLogicHost extends IConfigurableObject, IUpgradeableObj
         return getInterfaceLogic().getConfig();
     }
 
+    default GenericStackInv getStorage() {
+        return getInterfaceLogic().getStorage();
+    }
+
     default void openMenu(Player player, MenuLocator locator) {
         MenuOpener.open(InterfaceMenu.TYPE, player, locator);
     }

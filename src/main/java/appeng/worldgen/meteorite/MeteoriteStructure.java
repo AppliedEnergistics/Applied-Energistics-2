@@ -125,7 +125,7 @@ public class MeteoriteStructure extends Structure {
 
         BlockPos actualPos = new BlockPos(centerX, centerY, centerZ);
         boolean craterLake = locateWaterAroundTheCrater(actualPos, meteoriteRadius, context);
-        CraterType craterType = determineCraterType(spawnBiome, random);
+        CraterType craterType = determineCraterType(actualPos, spawnBiome, random);
         boolean pureCrater = random.nextFloat() > .9f;
 
         var fallout = FalloutMode.fromBiome(spawnBiome);
@@ -172,7 +172,7 @@ public class MeteoriteStructure extends Structure {
         return false;
     }
 
-    private static CraterType determineCraterType(Holder<Biome> biomeHolder, WorldgenRandom random) {
+    private static CraterType determineCraterType(BlockPos pos, Holder<Biome> biomeHolder, WorldgenRandom random) {
         // The temperature thresholds below are taken from older Vanilla code
         // (temperature categories)
         var biome = biomeHolder.value();
@@ -191,26 +191,23 @@ public class MeteoriteStructure extends Structure {
             return CraterType.NORMAL;
         }
 
+        boolean canSnow = biome.coldEnoughToSnow(pos);
+
         // Warm biomes, higher chance for lava
         if (temp >= 1) {
 
             // 50% chance to actually spawn as lava
             final boolean lava = random.nextFloat() > .5f;
 
-            switch (biome.getPrecipitation()) {
-                // No rainfall, only lava
-                case NONE:
-                    return lava ? CraterType.LAVA : CraterType.NORMAL;
-
+            if (!biome.hasPrecipitation()) {
+                return lava ? CraterType.LAVA : CraterType.NORMAL;
+            } else if (!canSnow) {
                 // 25% chance to convert a lava to obsidian
-                case RAIN:
-                    final boolean obsidian = random.nextFloat() > .75f;
-                    final CraterType alternativObsidian = obsidian ? CraterType.OBSIDIAN : CraterType.LAVA;
-                    return lava ? alternativObsidian : CraterType.NORMAL;
-
+                final boolean obsidian = random.nextFloat() > .75f;
+                final CraterType alternativObsidian = obsidian ? CraterType.OBSIDIAN : CraterType.LAVA;
+                return lava ? alternativObsidian : CraterType.NORMAL;
+            } else {
                 // Nothing for now.
-                default:
-                    break;
             }
         }
 
@@ -221,23 +218,21 @@ public class MeteoriteStructure extends Structure {
             // 20% to spawn with lava
             final boolean lava = random.nextFloat() > .8f;
 
-            switch (biome.getPrecipitation()) {
+            if (!biome.hasPrecipitation()) {
                 // No rainfall, water how?
-                case NONE:
-                    return lava ? CraterType.LAVA : CraterType.NORMAL;
+                return lava ? CraterType.LAVA : CraterType.NORMAL;
+            } else if (!canSnow) {
                 // Rainfall, can also turn lava to obsidian
-                case RAIN:
-                    final boolean obsidian = random.nextFloat() > .75f;
-                    final CraterType alternativObsidian = obsidian ? CraterType.OBSIDIAN : CraterType.LAVA;
-                    final CraterType craterLake = lake ? CraterType.WATER : CraterType.NORMAL;
-                    return lava ? alternativObsidian : craterLake;
+                final boolean obsidian = random.nextFloat() > .75f;
+                final CraterType alternativObsidian = obsidian ? CraterType.OBSIDIAN : CraterType.LAVA;
+                final CraterType craterLake = lake ? CraterType.WATER : CraterType.NORMAL;
+                return lava ? alternativObsidian : craterLake;
+            } else {
                 // No lava, but snow
-                case SNOW:
-                    final boolean snow = random.nextFloat() > .75f;
-                    final CraterType water = lake ? CraterType.WATER : CraterType.NORMAL;
-                    return snow ? CraterType.SNOW : water;
+                final boolean snow = random.nextFloat() > .75f;
+                final CraterType water = lake ? CraterType.WATER : CraterType.NORMAL;
+                return snow ? CraterType.SNOW : water;
             }
-
         }
 
         // Cold biomes, Snow or Ice, maybe water and very rarely lava.
@@ -249,19 +244,17 @@ public class MeteoriteStructure extends Structure {
             // 75% chance to freeze
             final boolean frozen = random.nextFloat() > .25f;
 
-            switch (biome.getPrecipitation()) {
+            if (!biome.hasPrecipitation()) {
                 // No rainfall, water how?
-                case NONE:
-                    return lava ? CraterType.LAVA : CraterType.NORMAL;
-                case RAIN:
-                    final CraterType frozenLake = frozen ? CraterType.ICE : CraterType.WATER;
-                    final CraterType craterLake = lake ? frozenLake : CraterType.NORMAL;
-                    return lava ? CraterType.LAVA : craterLake;
-                case SNOW:
-                    final CraterType snowCovered = lake ? CraterType.SNOW : CraterType.NORMAL;
-                    return lava ? CraterType.LAVA : snowCovered;
+                return lava ? CraterType.LAVA : CraterType.NORMAL;
+            } else if (!canSnow) {
+                final CraterType frozenLake = frozen ? CraterType.ICE : CraterType.WATER;
+                final CraterType craterLake = lake ? frozenLake : CraterType.NORMAL;
+                return lava ? CraterType.LAVA : craterLake;
+            } else {
+                final CraterType snowCovered = lake ? CraterType.SNOW : CraterType.NORMAL;
+                return lava ? CraterType.LAVA : snowCovered;
             }
-
         }
 
         return CraterType.NORMAL;

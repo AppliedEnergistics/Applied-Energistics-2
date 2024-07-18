@@ -18,7 +18,7 @@
 
 package appeng.client.render;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;

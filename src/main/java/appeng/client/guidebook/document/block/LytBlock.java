@@ -1,5 +1,7 @@
 package appeng.client.guidebook.document.block;
 
+import org.joml.Vector2i;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 
 import appeng.client.guidebook.document.LytRect;
@@ -24,6 +26,15 @@ public abstract class LytBlock extends LytNode {
 
     public boolean isCulled(LytRect viewport) {
         return !viewport.intersects(bounds);
+    }
+
+    public final void setLayoutPos(Vector2i point) {
+        var deltaX = point.x - bounds.x();
+        var deltaY = point.y - bounds.y();
+        if (deltaX != 0 || deltaY != 0) {
+            bounds = bounds.withX(point.x).withY(point.y);
+            onLayoutMoved(deltaX, deltaY);
+        }
     }
 
     public final LytRect layout(LayoutContext context, int x, int y, int availableWidth) {
@@ -63,7 +74,26 @@ public abstract class LytBlock extends LytNode {
         this.marginBottom = marginBottom;
     }
 
+    public int getMarginStart(LytAxis axis) {
+        return switch (axis) {
+            case HORIZONTAL -> getMarginLeft();
+            case VERTICAL -> getMarginTop();
+        };
+    }
+
+    public int getMarginEnd(LytAxis axis) {
+        return switch (axis) {
+            case HORIZONTAL -> getMarginRight();
+            case VERTICAL -> getMarginBottom();
+        };
+    }
+
     protected abstract LytRect computeLayout(LayoutContext context, int x, int y, int availableWidth);
+
+    /**
+     * Implement to react to layout previously computed by {@link #computeLayout} being moved.
+     */
+    protected abstract void onLayoutMoved(int deltaX, int deltaY);
 
     public abstract void renderBatch(RenderContext context, MultiBufferSource buffers);
 

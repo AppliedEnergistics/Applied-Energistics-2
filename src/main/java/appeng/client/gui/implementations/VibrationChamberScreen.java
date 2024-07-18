@@ -18,12 +18,10 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.CommonButtons;
@@ -32,7 +30,7 @@ import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.menu.implementations.VibrationChamberMenu;
 import appeng.util.Platform;
 
-public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberMenu> {
+public class VibrationChamberScreen extends UpgradeableScreen<VibrationChamberMenu> {
 
     // Burn indicator similar to the "flame" in a vanilla furnace
     private static final Blitter BURN_PROGRESS = Blitter.texture("guis/vibchamber.png").src(176, 0, 14, 13);
@@ -56,11 +54,13 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberMenu> {
         super.updateBeforeRender();
 
         var powerPerTick = this.menu.getPowerPerTick();
-        this.generationRateBar.setFullMsg(Component.literal(Platform.formatPower(powerPerTick, true)));
+        var efficiency = this.menu.getFuelEfficiency();
+        this.generationRateBar.setFullMsg(
+                Component.literal(Platform.formatPower(powerPerTick, true) + "\n" + "Eff: " + efficiency + "%"));
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY) {
         // Show the flame "burning down" as we burn through an item of fuel
         if (this.menu.getRemainingBurnTime() > 0) {
@@ -72,7 +72,7 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberMenu> {
                             BURN_PROGRESS.getSrcWidth(),
                             f)
                     .dest(80, 20 + BURN_PROGRESS.getSrcHeight() - f)
-                    .blit(poseStack, getBlitOffset());
+                    .blit(guiGraphics);
         }
     }
 

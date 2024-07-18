@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Future;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -32,7 +32,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CalculationStrategy;
@@ -47,7 +46,6 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ISubMenuHost;
-import appeng.api.storage.ITerminalHost;
 import appeng.core.AELog;
 import appeng.core.sync.packets.CraftConfirmPlanPacket;
 import appeng.crafting.execution.CraftingSubmitResult;
@@ -74,8 +72,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     private static final SyncableSubmitResult NO_ERROR = new SyncableSubmitResult((ICraftingSubmitResult) null);
 
     public static final MenuType<CraftConfirmMenu> TYPE = MenuTypeBuilder
-            .create(CraftConfirmMenu::new, ITerminalHost.class)
-            .requirePermission(SecurityPermissions.CRAFT)
+            .create(CraftConfirmMenu::new, ISubMenuHost.class)
             .build("craftconfirm");
     private final CraftingCPUCycler cpuCycler;
 
@@ -106,7 +103,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
     private CraftingPlanSummary plan;
 
-    private final ITerminalHost host;
+    private final ISubMenuHost host;
 
     /**
      * List of stacks to craft, once this request is through. This is currently used when requesting multiple
@@ -119,7 +116,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     private List<IMenuCraftingPacket.AutoCraftEntry> autoCraftingQueue;
     private List<Integer> requestedSlots;
 
-    public CraftConfirmMenu(int id, Inventory ip, ITerminalHost te) {
+    public CraftConfirmMenu(int id, Inventory ip, ISubMenuHost te) {
         super(TYPE, id, ip, te);
         this.host = te;
         this.cpuCycler = new CraftingCPUCycler(this::cpuMatches, this::onCPUSelectionChanged);
@@ -186,7 +183,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
         var cg = grid.getCraftingService();
 
         this.job = cg.beginCraftingCalculation(
-                player.level,
+                player.level(),
                 this::getActionSrc,
                 what,
                 amount,
@@ -234,14 +231,13 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
                 sendPacketToClient(new CraftConfirmPlanPacket(plan));
             } catch (Throwable e) {
                 this.getPlayerInventory().player.sendSystemMessage(Component.literal("Error: " + e));
-                AELog.debug(e);
+                AELog.warn("Failed to start crafting job.", e);
                 this.setValidMenu(false);
                 this.result = null;
             }
 
             this.job = null;
         }
-        this.verifyPermissions(SecurityPermissions.CRAFT, false);
     }
 
     private IGrid getGrid() {
@@ -318,7 +314,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     }
 
     public Level getLevel() {
-        return this.getPlayerInventory().player.level;
+        return this.getPlayerInventory().player.level();
     }
 
     public boolean isAutoStart() {

@@ -39,20 +39,17 @@ public final class ThematicBreak {
             this.nok = nok;
         }
 
-
         private State start(int code) {
             Assert.check(
                     code == Codes.asterisk ||
                             code == Codes.dash ||
                             code == Codes.underscore,
-                    "expected `*`, `-`, or `_`"
-            );
+                    "expected `*`, `-`, or `_`");
 
             effects.enter(Types.thematicBreak);
             marker = code;
             return atBreak(code);
         }
-
 
         private State atBreak(int code) {
             if (code == marker) {
@@ -64,17 +61,14 @@ public final class ThematicBreak {
                 return FactorySpace.create(effects, this::atBreak, Types.whitespace).step(code);
             }
 
-            if (
-                    size < Constants.thematicBreakMarkerCountMin ||
-                            (code != Codes.eof && !CharUtil.markdownLineEnding(code))
-            ) {
+            if (size < Constants.thematicBreakMarkerCountMin ||
+                    (code != Codes.eof && !CharUtil.markdownLineEnding(code))) {
                 return nok.step(code);
             }
 
             effects.exit(Types.thematicBreak);
             return ok.step(code);
         }
-
 
         private State sequence(int code) {
             if (code == marker) {

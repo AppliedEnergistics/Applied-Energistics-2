@@ -1,0 +1,18 @@
+{
+    DataVersion: 3460,
+    size: [5, 2, 1],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25102L, p: 2}, id: "ae2:blue_smart_cable", visual: {channelsEast: 0, channelsUp: 0, connections: ["up", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 0, 0], state: "ae2:interface", nbt: {fuzzy_mode: "IGNORE_ALL", id: "ae2:interface", priority: 0, proxy: {g: 25102L, p: 2}, visual: {}}},
+        {pos: [2, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25102L, p: 2}, id: "ae2:blue_smart_cable", visual: {channelsEast: 2, channelsUp: 1, channelsWest: 1, connections: ["up", "west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [3, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25102L, p: 1}, id: "ae2:blue_smart_cable", visual: {channelsEast: 2, channelsWest: 2, connections: ["west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [0, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 28319L, p: 2}, id: "ae2:blue_smart_cable", visual: {channelsDown: 0, connections: ["down"], missingChannel: 0b, powered: 1b}}, east: {config: [{"#": 0L, "#c": "ae2:i", id: "minecraft:glass"}], craft_via_redstone: "NO", fuzzy_mode: "IGNORE_ALL", gn: {g: 28319L, p: 2}, id: "ae2:level_emitter", lastReportedValue: 0L, prevState: 1b, redstone_emitter: "LOW_SIGNAL", reportingValue: 128L, visual: {missingChannel: 0b, on: 1b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 28319L, p: 2}, id: "ae2:blue_smart_cable", visual: {channelsEast: 1, connections: ["east"], missingChannel: 0b, powered: 1b}}, down: {config: [{"#": 0L, "#c": "ae2:i", id: "minecraft:glass"}], craft_only: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 28319L, p: 2}, id: "ae2:export_bus", nextSlot: 0, redstone_controlled: "HIGH_SIGNAL", scheduling_mode: "DEFAULT", upgrades: [{Count: 1b, Slot: 0, id: "ae2:crafting_card"}, {Count: 1b, Slot: 1, id: "ae2:redstone_card"}], visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 0, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 28319L, p: 2}, id: "ae2:blue_smart_cable", visual: {channelsDown: 1, channelsWest: 1, connections: ["down", "west"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "ae2:interface"
+    ]
+}

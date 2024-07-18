@@ -7,6 +7,7 @@
     "encoding/smithing_table.json",
     "encoding/stonecutting.json"
   ],
+  "helpTopic": "items-blocks-machines/terminals.md#pattern-encoding-terminal-ui",
   "slots": {
     "BLANK_PATTERN": {
       "left": 147,
@@ -62,27 +63,27 @@
   "widgets": {
     "modeTabButton0": {
       "left": 173,
-      "bottom": 170
+      "bottom": 170,
+      "width": 20,
+      "height": 20
     },
     "modeTabButton1": {
       "left": 173,
-      "bottom": 150
+      "bottom": 150,
+      "width": 20,
+      "height": 20
     },
     "modeTabButton2": {
       "left": 173,
-      "bottom": 130
+      "bottom": 130,
+      "width": 20,
+      "height": 20
     },
     "modeTabButton3": {
       "left": 173,
-      "bottom": 110
-    },
-    "modeTabButton4": {
-      "left": 173,
-      "bottom": 90
-    },
-    "modeTabButton5": {
-      "left": 173,
-      "bottom": 70
+      "bottom": 110,
+      "width": 20,
+      "height": 22
     },
     "modePanel0": {
       "left": 9,

@@ -50,10 +50,16 @@ public class LytParagraph extends LytBlock implements LytFlowContainer {
         var style = resolveStyle();
 
         var bounds = content.computeLayout(context, x, y, availableWidth, style.alignment());
+
         if (paddingBottom != 0) {
             return bounds.withHeight(bounds.height() + paddingBottom);
         }
         return bounds;
+    }
+
+    @Override
+    protected void onLayoutMoved(int deltaX, int deltaY) {
+        content.move(deltaX, deltaY);
     }
 
     @Override
@@ -108,6 +114,27 @@ public class LytParagraph extends LytBlock implements LytFlowContainer {
     @Override
     public Stream<LytRect> enumerateContentBounds(LytFlowContent content) {
         return this.content.enumerateContentBounds(content);
+    }
+
+    @Override
+    protected LytVisitor.Result visitChildren(LytVisitor visitor, boolean includeOutOfTreeContent) {
+        if (super.visitChildren(visitor, includeOutOfTreeContent) == LytVisitor.Result.STOP) {
+            return LytVisitor.Result.STOP;
+        }
+
+        for (var flowContent : getContent()) {
+            flowContent.visit(visitor);
+        }
+
+        return LytVisitor.Result.CONTINUE;
+    }
+
+    public Iterable<LytFlowContent> getContent() {
+        return content.getContent();
+    }
+
+    public void clearContent() {
+        content.clear();
     }
 
     public int getPaddingLeft() {

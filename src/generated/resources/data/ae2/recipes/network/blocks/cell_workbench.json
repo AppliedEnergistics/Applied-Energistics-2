@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "minecraft:wool"
+    },
+    "b": {
+      "item": "ae2:calculation_processor"
+    },
+    "c": {
+      "tag": "c:iron_ingots"
+    },
+    "d": {
+      "tag": "c:wooden_chests"
+    }
+  },
+  "pattern": [
+    "aba",
+    "cdc",
+    "ccc"
+  ],
+  "result": {
+    "item": "ae2:cell_workbench"
+  },
+  "show_notification": true
+}

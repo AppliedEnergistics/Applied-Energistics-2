@@ -18,14 +18,11 @@
 
 package appeng.parts;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
@@ -64,7 +61,6 @@ import appeng.core.definitions.AEParts;
 import appeng.items.tools.MemoryCardItem;
 import appeng.util.CustomNameUtil;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 public abstract class AEBasePart
@@ -293,14 +289,16 @@ public abstract class AEBasePart
      * @param input  compound of source
      * @param player the optional player who is importing the settings
      */
-    @OverridingMethodsMustInvokeSuper
+    @Override
+    @MustBeInvokedByOverriders
     public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         this.customName = CustomNameUtil.getCustomName(input);
 
         MemoryCardItem.importGenericSettings(this, input, player);
     }
 
-    @OverridingMethodsMustInvokeSuper
+    @Override
+    @MustBeInvokedByOverriders
     public void exportSettings(SettingsFrom mode, CompoundTag output) {
         CustomNameUtil.setCustomName(output, this.customName);
 
@@ -393,7 +391,7 @@ public abstract class AEBasePart
 
     @Nullable
     @Override
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     public InternalInventory getSubInventory(ResourceLocation id) {
         return null;
     }
@@ -404,21 +402,6 @@ public abstract class AEBasePart
     public static class NodeListener<T extends AEBasePart> implements IGridNodeListener<T> {
 
         public static final NodeListener<AEBasePart> INSTANCE = new NodeListener<>();
-
-        @Override
-        public void onSecurityBreak(T nodeOwner, IGridNode node) {
-            // Only drop items if the part is still attached at that side
-            if (nodeOwner.getHost().getPart(nodeOwner.getSide()) == nodeOwner) {
-                var items = new ArrayList<ItemStack>();
-                nodeOwner.addPartDrop(items, false);
-                nodeOwner.addAdditionalDrops(items, false, false);
-                nodeOwner.getHost().removePartFromSide(nodeOwner.getSide());
-                if (!items.isEmpty()) {
-                    var be = nodeOwner.getHost().getBlockEntity();
-                    Platform.spawnDrops(be.getLevel(), be.getBlockPos(), items);
-                }
-            }
-        }
 
         @Override
         public void onSaveChanges(T nodeOwner, IGridNode node) {

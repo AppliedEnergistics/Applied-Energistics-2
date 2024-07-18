@@ -1,15 +1,16 @@
 package appeng.libs.micromark.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
 import appeng.libs.micromark.Extension;
 import appeng.libs.micromark.Micromark;
 import appeng.libs.micromark.TestUtil;
 import appeng.libs.micromark.html.HtmlCompiler;
 import appeng.libs.micromark.html.ParseOptions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DefinitionTest {
     @ParameterizedTest(name = "[{index}] {2}")
@@ -88,13 +89,11 @@ public class DefinitionTest {
         TestUtil.assertGeneratedDangerousHtml(
                 "[foo]: <bar>(baz)\n\n[foo]",
                 "<p>[foo]: <bar>(baz)</p>\n<p>[foo]</p>",
-                "should not support definitions w/ no whitespace between destination and title"
-        );
+                "should not support definitions w/ no whitespace between destination and title");
         TestUtil.assertGeneratedDangerousHtml(
                 "[a]\n\n[a]: <b<c>",
                 "<p>[a]</p>\n<p>[a]: &lt;b<c></p>",
-                "should not support a less than in an enclosed destination"
-        );
+                "should not support a less than in an enclosed destination");
     }
 
     @Test
@@ -109,7 +108,6 @@ public class DefinitionTest {
         assertEquals(
                 "<p>[foo]: /url &quot;title&quot;</p>",
                 new HtmlCompiler().compile(Micromark.parseAndPostprocess("[foo]: /url \"title\"", parseOptions)),
-                "should support turning off definitions"
-        );
+                "should support turning off definitions");
     }
 }

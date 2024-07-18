@@ -13,7 +13,8 @@ public final class FactoryTitle {
     private FactoryTitle() {
     }
 
-    public static State create(Tokenizer.Effects effects, State ok, State nok, String type, String markerType, String stringType) {
+    public static State create(Tokenizer.Effects effects, State ok, State nok, String type, String markerType,
+            String stringType) {
         return new StateMachine(effects, ok, nok, type, markerType, stringType)::start;
     }
 
@@ -26,7 +27,8 @@ public final class FactoryTitle {
         private String stringType;
         private int marker;
 
-        public StateMachine(Tokenizer.Effects effects, State ok, State nok, String type, String markerType, String stringType) {
+        public StateMachine(Tokenizer.Effects effects, State ok, State nok, String type, String markerType,
+                String stringType) {
             this.effects = effects;
             this.ok = ok;
             this.nok = nok;
@@ -40,8 +42,7 @@ public final class FactoryTitle {
                     code == Codes.quotationMark ||
                             code == Codes.apostrophe ||
                             code == Codes.leftParenthesis,
-                    "expected `\"`, `'`, or `(`"
-            );
+                    "expected `\"`, `'`, or `(`");
             effects.enter(type);
             effects.enter(markerType);
             effects.consume(code);
@@ -87,7 +88,6 @@ public final class FactoryTitle {
             return title(code);
         }
 
-
         private State title(int code) {
             if (code == marker || code == Codes.eof || CharUtil.markdownLineEnding(code)) {
                 effects.exit(Types.chunkString);
@@ -97,7 +97,6 @@ public final class FactoryTitle {
             effects.consume(code);
             return code == Codes.backslash ? this::titleEscape : this::title;
         }
-
 
         private State titleEscape(int code) {
             if (code == marker || code == Codes.backslash) {

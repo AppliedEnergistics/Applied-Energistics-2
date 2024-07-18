@@ -30,18 +30,19 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import com.google.common.collect.HashMultimap;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -52,6 +53,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import appeng.api.config.Settings;
 import appeng.api.config.ShowPatternProviders;
 import appeng.api.config.TerminalStyle;
+import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.stacks.AEItemKey;
 import appeng.client.gui.AEBaseScreen;
@@ -62,9 +64,9 @@ import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
 import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
@@ -177,12 +179,13 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY) {
 
         this.menu.slots.removeIf(slot -> slot instanceof PatternSlot);
 
         int textColor = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
+        var level = Minecraft.getInstance().level;
 
         final int scrollLevel = scrollbar.getCurrentScroll();
         int i = 0;
@@ -199,12 +202,22 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                                 col * SLOT_SIZE + GUI_PADDING_X,
                                 (i + 1) * SLOT_SIZE);
                         this.menu.slots.add(slot);
+
+                        // Indicate invalid patterns
+                        var pattern = container.getInventory().getStackInSlot(slotsRow.offset + col);
+                        if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level, false) == null) {
+                            guiGraphics.fill(
+                                    slot.x,
+                                    slot.y,
+                                    slot.x + 16,
+                                    slot.y + 16,
+                                    0x7fff0000);
+                        }
                     }
                 } else if (row instanceof GroupHeaderRow headerRow) {
                     var group = headerRow.group;
                     if (group.icon() != null) {
-                        var renderContext = new SimpleRenderContext(LytRect.empty(), poseStack,
-                                LightDarkMode.LIGHT_MODE);
+                        var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics);
                         renderContext.renderItem(
                                 group.icon().toStack(),
                                 GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X,
@@ -227,27 +240,27 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                     var text = Language.getInstance().getVisualOrder(
                             this.font.substrByWidth(displayName, TEXT_MAX_WIDTH - 10));
 
-                    this.font.draw(poseStack, text, GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X + 10,
-                            GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, textColor);
+                    guiGraphics.drawString(font, text, GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X + 10,
+                            GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, textColor, false);
                 }
             }
         }
     }
 
     @Override
-    protected void renderTooltip(PoseStack poseStack, int x, int y) {
+    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
         // Draw line tooltip
         if (hoveredSlot == null) {
             var hoveredLineIndex = getHoveredLineIndex(x, y);
             if (hoveredLineIndex != -1) {
                 var row = rows.get(hoveredLineIndex);
                 if (row instanceof GroupHeaderRow headerRow && !headerRow.group.tooltip().isEmpty()) {
-                    renderTooltip(poseStack, headerRow.group.tooltip(), Optional.empty(), x, y);
+                    guiGraphics.renderTooltip(font, headerRow.group.tooltip(), Optional.empty(), x, y);
                     return;
                 }
             }
         }
-        super.renderTooltip(poseStack, x, y);
+        super.renderTooltip(guiGraphics, x, y);
     }
 
     private int getHoveredLineIndex(int x, int y) {
@@ -316,19 +329,17 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     }
 
     @Override
-    public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+    public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY, float partialTicks) {
-        this.bindTexture("guis/patternaccessterminal.png");
-
         // Draw the top of the dialog
-        blit(poseStack, offsetX, offsetY, HEADER_BBOX);
+        blit(guiGraphics, offsetX, offsetY, HEADER_BBOX);
 
         final int scrollLevel = scrollbar.getCurrentScroll();
 
         int currentY = offsetY + GUI_HEADER_HEIGHT;
 
         // Draw the footer now so slots will draw on top of it
-        blit(poseStack, offsetX, currentY + this.visibleRows * ROW_HEIGHT, FOOTER_BBOX);
+        blit(guiGraphics, offsetX, currentY + this.visibleRows * ROW_HEIGHT, FOOTER_BBOX);
 
         for (int i = 0; i < this.visibleRows; ++i) {
             // Draw the dialog background for this row
@@ -339,13 +350,13 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
             // Draw the background for the slots in an inventory row
             Rect2i bbox = selectRowBackgroundBox(false, firstLine, lastLine);
-            blit(poseStack, offsetX, currentY, bbox);
+            blit(guiGraphics, offsetX, currentY, bbox);
             if (scrollLevel + i < this.rows.size()) {
                 var row = this.rows.get(scrollLevel + i);
                 if (row instanceof SlotsRow slotsRow) {
                     bbox = selectRowBackgroundBox(true, firstLine, lastLine);
                     bbox.setWidth(GUI_PADDING_X + SLOT_SIZE * slotsRow.slots - 1);
-                    blit(poseStack, offsetX, currentY, bbox);
+                    blit(guiGraphics, offsetX, currentY, bbox);
                 }
             }
 
@@ -578,10 +589,12 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     /**
      * A version of blit that lets us pass a source rectangle
      *
-     * @see GuiComponent#blit(PoseStack, int, int, int, int, int, int)
+     * @see GuiGraphics#blit(ResourceLocation, int, int, int, int, int, int)
      */
-    private void blit(PoseStack poseStack, int offsetX, int offsetY, Rect2i srcRect) {
-        blit(poseStack, offsetX, offsetY, srcRect.getX(), srcRect.getY(), srcRect.getWidth(), srcRect.getHeight());
+    private void blit(GuiGraphics guiGraphics, int offsetX, int offsetY, Rect2i srcRect) {
+        var texture = AppEng.makeId("textures/guis/patternaccessterminal.png");
+        guiGraphics.blit(texture, offsetX, offsetY, srcRect.getX(), srcRect.getY(), srcRect.getWidth(),
+                srcRect.getHeight());
     }
 
     sealed interface Row {

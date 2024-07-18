@@ -7,10 +7,10 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
  */
 public final class OrientationStrategies {
     private static final IOrientationStrategy none = new NoOrientationStrategy();
-    private static final IOrientationStrategy horizontalFacing = new FacingStrategy(
-            BlockStateProperties.HORIZONTAL_FACING, false);
-    private static final IOrientationStrategy facing = new FacingStrategy(BlockStateProperties.FACING, false);
-    private static final IOrientationStrategy facingAttached = new FacingStrategy(BlockStateProperties.FACING, true);
+    private static final IOrientationStrategy horizontalFacing = new HorizontalFacingStrategy();
+    private static final IOrientationStrategy facing = new FacingStrategy(BlockStateProperties.FACING);
+    private static final IOrientationStrategy facingNoPlayerRotation = new FacingStrategy(BlockStateProperties.FACING,
+            false);
     private static final IOrientationStrategy full = new FacingWithSpinStrategy();
 
     /**
@@ -25,23 +25,17 @@ public final class OrientationStrategies {
     }
 
     /**
-     * Block can be oriented in 6 directions, but not swivel around that axis. Semantically the block is attached to the
-     * face of another block, but the facing points away from the side it is attached to. This influences how the
-     * default placement is deduced.
+     * Block can be oriented in 6 directions, but not swivel around that axis.
      */
-    public static IOrientationStrategy facingAttached(boolean allowRotation) {
-        return facingAttached;
-    }
-
-    public static IOrientationStrategy facingAttached() {
-        return facingAttached(true);
+    public static IOrientationStrategy facing() {
+        return facing;
     }
 
     /**
      * Block can be oriented in 6 directions, but not swivel around that axis.
      */
-    public static IOrientationStrategy facing() {
-        return facing;
+    public static IOrientationStrategy facingNoPlayerRotation() {
+        return facingNoPlayerRotation;
     }
 
     /**

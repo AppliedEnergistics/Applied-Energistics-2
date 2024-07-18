@@ -23,8 +23,6 @@
 
 package appeng.api.networking.energy;
 
-import javax.annotation.Nonnegative;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridService;
 
@@ -38,26 +36,22 @@ public interface IEnergyService extends IGridService, IEnergySource {
      * the sum of the {@linkplain #getChannelPowerUsage() idle channel power usage} and the idle usages of the machines
      * in the network.
      */
-    @Nonnegative
     double getIdlePowerUsage();
 
     /**
      * @return the current idle power usage of channels
      */
-    @Nonnegative
     double getChannelPowerUsage();
 
     /**
      * @return the average power drain over the past 10 ticks, includes idle usage during this time, and all use of
      *         extractPower.
      */
-    @Nonnegative
     double getAvgPowerUsage();
 
     /**
      * @return the average energy injected into the system per tick, for the last 10 ticks.
      */
-    @Nonnegative
     double getAvgPowerInjection();
 
     /**
@@ -73,29 +67,19 @@ public interface IEnergyService extends IGridService, IEnergySource {
     boolean isNetworkPowered();
 
     /**
-     * AE will accept any power, and store it, to maintain sanity please don't send more then 10,000 at a time.
-     * <p>
-     * IMPORTANT: Network power knows no bounds, for less spamy power flow, networks can store more then their allotted
-     * storage, however, it should be kept to a minimum, to help with this, this method returns the networks current
-     * OVERFLOW, this is not energy you can store some where else, its already stored in the network, you can extract it
-     * if you want, however it it owned by the network, this is different then IAEEnergyStore
-     * <p>
-     * Another important note, is that if a network that had overflow is deleted, its power is gone, this is one of the
-     * reasons why keeping overflow to a minimum is important.
+     * Inject power in the network. Note that each network has some power storage even if there are no energy cells.
      *
      * @param amt  power to inject into the network
      * @param mode should the action be simulated or performed?
-     * @return the amount of power that the network has OVER the limit.
+     * @return the amount of power that the network could not accept
      */
-    @Nonnegative
-    double injectPower(@Nonnegative double amt, Actionable mode);
+    double injectPower(double amt, Actionable mode);
 
     /**
      * this is should be considered an estimate, and not relied upon for real calculations.
      *
      * @return estimated available power.
      */
-    @Nonnegative
     double getStoredPower();
 
     /**
@@ -103,7 +87,6 @@ public interface IEnergyService extends IGridService, IEnergySource {
      *
      * @return estimated available power.
      */
-    @Nonnegative
     double getMaxStoredPower();
 
     /**
@@ -112,6 +95,5 @@ public interface IEnergyService extends IGridService, IEnergySource {
      *
      * @return Amount of power required to charge the grid, in AE.
      */
-    @Nonnegative
-    double getEnergyDemand(@Nonnegative double maxRequired);
+    double getEnergyDemand(double maxRequired);
 }

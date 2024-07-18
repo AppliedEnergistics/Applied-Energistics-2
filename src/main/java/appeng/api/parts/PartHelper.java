@@ -25,7 +25,7 @@ package appeng.api.parts;
 
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -164,7 +164,7 @@ public final class PartHelper {
             return false;
         }
 
-        return level.isEmptyBlock(pos) || level.getBlockState(pos).getMaterial().isReplaceable();
+        return level.isEmptyBlock(pos) || level.getBlockState(pos).canBeReplaced();
     }
 
     /**

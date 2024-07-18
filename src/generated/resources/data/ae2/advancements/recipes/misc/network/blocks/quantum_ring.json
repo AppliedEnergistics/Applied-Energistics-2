@@ -1,0 +1,72 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_energy_cell": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:energy_cell"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_engineering_processor": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:engineering_processor"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_fluix_smart_dense_cable": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "ae2:smart_dense_cable"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_logic_processor": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:logic_processor"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ae2:network/blocks/quantum_ring"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_fluix_smart_dense_cable",
+      "has_energy_cell",
+      "has_logic_processor",
+      "has_engineering_processor",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ae2:network/blocks/quantum_ring"
+    ]
+  },
+  "sends_telemetry_event": false
+}

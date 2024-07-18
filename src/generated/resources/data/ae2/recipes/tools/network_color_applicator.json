@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2:formation_core"
+    },
+    "b": {
+      "tag": "c:iron_ingots"
+    },
+    "c": {
+      "item": "ae2:cell_component_4k"
+    },
+    "d": {
+      "item": "ae2:energy_cell"
+    }
+  },
+  "pattern": [
+    "ab ",
+    "bc ",
+    "  d"
+  ],
+  "result": {
+    "item": "ae2:color_applicator"
+  },
+  "show_notification": true
+}

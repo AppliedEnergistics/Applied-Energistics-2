@@ -23,10 +23,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -126,7 +125,7 @@ public final class UpgradesPanel implements ICompositeWidget {
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
         int slotCount = getUpgradeSlotCount();
         if (slotCount <= 0) {
             return;
@@ -152,11 +151,11 @@ public final class UpgradesPanel implements ICompositeWidget {
             boolean borderBottom = lastRow || lastSlot;
             boolean borderRight = i >= slotCount - MAX_ROWS;
 
-            drawSlot(poseStack, zIndex, x, y, borderLeft, borderTop, borderRight, borderBottom);
+            drawSlot(guiGraphics, x, y, borderLeft, borderTop, borderRight, borderBottom);
 
             // Cover up the inner corner when we just drew a rather ugly "inner corner"
             if (col > 0 && lastSlot && !lastRow) {
-                INNER_CORNER.dest(x, y + SLOT_SIZE).blit(poseStack, zIndex);
+                INNER_CORNER.dest(x, y + SLOT_SIZE).blit(guiGraphics);
             }
         }
     }
@@ -212,7 +211,7 @@ public final class UpgradesPanel implements ICompositeWidget {
         return new Tooltip(tooltip);
     }
 
-    private static void drawSlot(PoseStack poseStack, int zIndex, int x, int y,
+    private static void drawSlot(GuiGraphics guiGraphics, int x, int y,
             boolean borderLeft, boolean borderTop, boolean borderRight, boolean borderBottom) {
         int srcX = PADDING;
         int srcY = PADDING;
@@ -238,7 +237,7 @@ public final class UpgradesPanel implements ICompositeWidget {
 
         BACKGROUND.src(srcX, srcY, srcWidth, srcHeight)
                 .dest(x, y)
-                .blit(poseStack, zIndex);
+                .blit(guiGraphics);
     }
 
     /**

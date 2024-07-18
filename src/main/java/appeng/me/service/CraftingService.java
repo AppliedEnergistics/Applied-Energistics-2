@@ -25,12 +25,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
-
-import javax.annotation.Nullable;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
@@ -38,7 +37,9 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
@@ -115,12 +116,13 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     private final Map<IGridNode, StackWatcher<ICraftingWatcherNode>> craftingWatchers = new HashMap<>();
     private final IGrid grid;
     private final NetworkCraftingProviders craftingProviders = new NetworkCraftingProviders();
-    private final Map<String, CraftingLinkNexus> craftingLinks = new HashMap<>();
+    private final Map<UUID, CraftingLinkNexus> craftingLinks = new HashMap<>();
     private final Multimap<AEKey, StackWatcher<ICraftingWatcherNode>> interests = HashMultimap.create();
     private final InterestManager<StackWatcher<ICraftingWatcherNode>> interestManager = new InterestManager<>(
             this.interests);
     private final IEnergyService energyGrid;
     private final Set<AEKey> currentlyCrafting = new HashSet<>();
+    private final Set<AEKey> currentlyCraftable = new HashSet<>();
     private boolean updateList = false;
 
     public CraftingService(IGrid grid, IStorageService storageGrid, IEnergyService energyGrid) {
@@ -140,12 +142,15 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
         this.craftingLinks.values().removeIf(nexus -> nexus.isDead(this.grid, this));
 
         var previouslyCrafting = new HashSet<>(currentlyCrafting);
+        var previouslyCraftable = new HashSet<>(currentlyCraftable);
         this.currentlyCrafting.clear();
+        this.currentlyCraftable.clear();
+
         for (CraftingCPUCluster cpu : this.craftingCPUClusters) {
             cpu.craftingLogic.tickCraftingLogic(energyGrid, this);
-
             cpu.craftingLogic.getAllWaitingFor(this.currentlyCrafting);
         }
+        currentlyCraftable.addAll(getCraftables(k -> true));
 
         // Notify watchers about items no longer being crafted
         var changed = new HashSet<AEKey>();
@@ -153,10 +158,23 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
         changed.addAll(Sets.difference(currentlyCrafting, previouslyCrafting));
         for (var what : changed) {
             for (var watcher : interestManager.get(what)) {
-                watcher.getHost().onRequestChange(this, what);
+                watcher.getHost().onRequestChange(what);
             }
             for (var watcher : interestManager.getAllStacksWatchers()) {
-                watcher.getHost().onRequestChange(this, what);
+                watcher.getHost().onRequestChange(what);
+            }
+        }
+
+        // Notify watchers about items no longer craftable
+        var changedCraftable = new HashSet<AEKey>();
+        changedCraftable.addAll(Sets.difference(previouslyCraftable, currentlyCraftable));
+        changedCraftable.addAll(Sets.difference(currentlyCraftable, previouslyCraftable));
+        for (var what : changedCraftable) {
+            for (var watcher : interestManager.get(what)) {
+                watcher.getHost().onCraftableChange(what);
+            }
+            for (var watcher : interestManager.getAllStacksWatchers()) {
+                watcher.getHost().onCraftableChange(what);
             }
         }
     }
@@ -186,7 +204,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     }
 
     @Override
-    public void addNode(IGridNode gridNode) {
+    public void addNode(IGridNode gridNode, @Nullable CompoundTag savedData) {
 
         // The provider can already be added because it gets callback from the storage service,
         // in which it might already register itself before coming to this point.

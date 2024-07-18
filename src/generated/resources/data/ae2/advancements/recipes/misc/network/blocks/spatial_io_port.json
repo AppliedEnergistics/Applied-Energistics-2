@@ -1,0 +1,48 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_engineering_processor": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:engineering_processor"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_io_port": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:io_port"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ae2:network/blocks/spatial_io_port"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_io_port",
+      "has_engineering_processor",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ae2:network/blocks/spatial_io_port"
+    ]
+  },
+  "sends_telemetry_event": false
+}

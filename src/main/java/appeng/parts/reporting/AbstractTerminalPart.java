@@ -73,12 +73,19 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched, boolean remove) {
+    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {
+        super.addAdditionalDrops(drops, wrenched);
         for (var is : this.viewCell) {
             if (!is.isEmpty()) {
                 drops.add(is);
             }
         }
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        viewCell.clear();
     }
 
     @Override
@@ -107,7 +114,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
 
     @Override
     public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
-        if (!super.onPartActivate(player, hand, pos) && !player.level.isClientSide) {
+        if (!super.onPartActivate(player, hand, pos) && !player.level().isClientSide) {
             MenuOpener.open(getMenuType(player), player, MenuLocators.forPart(this));
         }
         return true;

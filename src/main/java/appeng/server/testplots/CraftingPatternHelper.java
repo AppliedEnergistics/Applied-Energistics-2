@@ -1,6 +1,6 @@
 package appeng.server.testplots;
 
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -10,7 +10,7 @@ import appeng.menu.AutoCraftingMenu;
 
 public class CraftingPatternHelper {
     public static ItemStack encodeShapelessCraftingRecipe(Level level, ItemStack... inputs) {
-        var container = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
+        var container = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
         for (int i = 0; i < inputs.length; i++) {
             container.setItem(i, inputs[i].copy());
         }
@@ -26,7 +26,7 @@ public class CraftingPatternHelper {
         return PatternDetailsHelper.encodeCraftingPattern(
                 recipe,
                 actualInputs,
-                recipe.getResultItem(),
+                recipe.getResultItem(level.registryAccess()),
                 false,
                 false);
     }

@@ -2,11 +2,17 @@ package appeng.client;
 
 import java.util.HashMap;
 
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 
+import appeng.hotkeys.HotkeyActions;
+
+/**
+ * client side component of {@link HotkeyActions}
+ */
 public class Hotkeys {
 
     private static final HashMap<String, Hotkey> HOTKEYS = new HashMap<>();
@@ -26,5 +32,10 @@ public class Hotkeys {
 
     public static void checkHotkeys() {
         HOTKEYS.forEach((name, hotkey) -> hotkey.check());
+    }
+
+    @Nullable
+    public static Hotkey getHotkeyMapping(@Nullable String id) {
+        return HOTKEYS.get(id);
     }
 }

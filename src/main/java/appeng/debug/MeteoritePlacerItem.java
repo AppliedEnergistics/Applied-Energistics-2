@@ -27,6 +27,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -35,6 +36,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
+import appeng.core.AEConfig;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
@@ -99,8 +101,8 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
         }
 
         // See MeteoriteStructure for original code
-        float coreRadius = Platform.getRandomFloat() * 6.0f + 2;
-        boolean pureCrater = Platform.getRandomFloat() > 0.5f;
+        float coreRadius = level.getRandom().nextFloat() * 6.0f + 2;
+        boolean pureCrater = level.getRandom().nextFloat() > 0.5f;
         CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
 
         MeteoriteSpawner spawner = new MeteoriteSpawner();
@@ -132,5 +134,12 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
         });
 
         return InteractionResult.sidedSuccess(level.isClientSide());
+    }
+
+    @Override
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+        if (AEConfig.instance().isDebugToolsEnabled()) {
+            output.accept(this);
+        }
     }
 }

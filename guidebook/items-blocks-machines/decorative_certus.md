@@ -3,6 +3,9 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Decorative Certus Blocks
   icon: quartz_stairs
+  position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:cut_quartz_block
 - ae2:smooth_quartz_block
@@ -17,7 +20,7 @@ item_ids:
 - ae2:chiseled_quartz_stairs
 - ae2:quartz_wall
 - ae2:cut_quartz_wall
-- ae2:_smooth_quartz_wall
+- ae2:smooth_quartz_wall
 - ae2:quartz_brick_wall
 - ae2:quartz_pillar_wall
 - ae2:chiseled_quartz_wall
@@ -28,18 +31,76 @@ item_ids:
 - ae2:quartz_pillar_slab
 - ae2:chiseled_quartz_slab
 ---
+
 # Decorative Certus Blocks
 
-![Decorative certus blocks](../assets/assemblies/decorative_certus.png)
+<GameScene zoom="3" background="transparent">
+  <ImportStructure src="../assets/assemblies/decorative_certus.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 <ItemLink id="quartz_block" />s can be crafted, smelted, and stonecut into some decorative building blocks
 
-# Recipes
+## Recipes
 
-<RecipeFor id="cut_quartz_block" /> <RecipeFor id="smooth_quartz_block" /> <RecipeFor id="quartz_bricks" /> <RecipeFor id="quartz_pillar" /> <RecipeFor id="chiseled_quartz_block" />
+<Column>
+  <Row gap="0">
+    <RecipeFor id="cut_quartz_block" />
 
-<RecipeFor id="quartz_stairs" /> <RecipeFor id="cut_quartz_stairs" /> <RecipeFor id="smooth_quartz_stairs" /> <RecipeFor id="quartz_brick_stairs" /> <RecipeFor id="quartz_pillar_stairs" /> <RecipeFor id="chiseled_quartz_stairs" />
+    <RecipeFor id="smooth_quartz_block" />
 
-<RecipeFor id="quartz_wall" /> <RecipeFor id="cut_quartz_wall" /> <RecipeFor id="smooth_quartz_wall" /> <RecipeFor id="quartz_brick_wall" /> <RecipeFor id="quartz_pillar_wall" /> <RecipeFor id="chiseled_quartz_wall" />
+    <RecipeFor id="quartz_bricks" />
 
-<RecipeFor id="quartz_slab" /> <RecipeFor id="cut_quartz_slab" /> <RecipeFor id="smooth_quartz_slab" /> <RecipeFor id="quartz_brick_slab" /> <RecipeFor id="quartz_pillar_slab" /> <RecipeFor id="chiseled_quartz_slab" />
+    <RecipeFor id="quartz_pillar" />
+
+    <RecipeFor id="chiseled_quartz_block" />
+  </Row>
+
+  <Row>
+    <RecipeFor id="quartz_stairs" />
+
+    <RecipeFor id="cut_quartz_stairs" />
+
+    <RecipeFor id="smooth_quartz_stairs" />
+  </Row>
+
+  <Row>
+    <RecipeFor id="quartz_brick_stairs" />
+
+    <RecipeFor id="quartz_pillar_stairs" />
+
+    <RecipeFor id="chiseled_quartz_stairs" />
+  </Row>
+
+  <Row>
+    <RecipeFor id="quartz_wall" />
+
+    <RecipeFor id="cut_quartz_wall" />
+
+    <RecipeFor id="smooth_quartz_wall" />
+  </Row>
+
+  <Row>
+    <RecipeFor id="quartz_brick_wall" />
+
+    <RecipeFor id="quartz_pillar_wall" />
+
+    <RecipeFor id="chiseled_quartz_wall" />
+  </Row>
+
+  <Row>
+    <RecipeFor id="quartz_slab" />
+
+    <RecipeFor id="cut_quartz_slab" />
+
+    <RecipeFor id="smooth_quartz_slab" />
+  </Row>
+
+  <Row>
+    <RecipeFor id="quartz_brick_slab" />
+
+    <RecipeFor id="quartz_pillar_slab" />
+
+    <RecipeFor id="chiseled_quartz_slab" />
+  </Row>
+</Column>

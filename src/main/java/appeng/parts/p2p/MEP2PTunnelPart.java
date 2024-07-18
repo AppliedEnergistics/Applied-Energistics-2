@@ -28,7 +28,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridConnection;
@@ -41,7 +40,6 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
-import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.hooks.ticking.TickHandler;
@@ -208,21 +206,9 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
                     continue;
                 }
 
-                try {
-                    var connection = GridHelper.createGridConnection(getExternalFacingNode(),
-                            output.getExternalFacingNode());
-                    connections.put(output, connection);
-                } catch (FailedConnectionException e) {
-                    var start = this.getBlockEntity();
-                    var end = output.getBlockEntity();
-
-                    AELog.debug(e);
-
-                    AELog.warn(
-                            "Failed to establish a ME P2P Tunnel between the tunnels at [x=%d, y=%d, z=%d] and [x=%d, y=%d, z=%d]: %s",
-                            start.getBlockPos().getX(), start.getBlockPos().getY(), start.getBlockPos().getZ(),
-                            end.getBlockPos().getX(), end.getBlockPos().getY(), end.getBlockPos().getZ(), e);
-                }
+                var connection = GridHelper.createConnection(getExternalFacingNode(),
+                        output.getExternalFacingNode());
+                connections.put(output, connection);
             }
         }
     }

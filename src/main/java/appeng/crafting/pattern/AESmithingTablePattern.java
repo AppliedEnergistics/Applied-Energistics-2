@@ -20,7 +20,7 @@ package appeng.crafting.pattern;
 
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +30,9 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.UpgradeRecipe;
+import net.minecraft.world.item.crafting.SmithingRecipe;
+import net.minecraft.world.item.crafting.SmithingTransformRecipe;
+import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
@@ -45,14 +47,16 @@ import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
  */
 public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemblerSupportedPattern {
     // The slot indices in the 3x3 crafting grid that we insert our item into (in the MAC)
-    private static final int BASE_CRAFTING_GRID_SLOT = 3;
+    private static final int TEMPLATE_CRAFTING_GRID_SLOT = 3;
+    private static final int BASE_CRAFTING_GRID_SLOT = 4;
     private static final int ADDITION_CRAFTING_GRID_SLOT = 5;
 
     private final AEItemKey definition;
     public final boolean canSubstitute;
-    private final UpgradeRecipe recipe;
+    private final SmithingRecipe recipe;
     private final Container testFrame;
     private final ItemStack output;
+    private final AEItemKey template;
     private final AEItemKey base;
     private final AEItemKey addition;
     private final IInput[] inputs;
@@ -62,6 +66,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         this.definition = definition;
         var tag = Objects.requireNonNull(definition.getTag());
 
+        this.template = SmithingTablePatternEncoding.getTemplate(tag);
         this.base = SmithingTablePatternEncoding.getBase(tag);
         this.addition = SmithingTablePatternEncoding.getAddition(tag);
         this.canSubstitute = SmithingTablePatternEncoding.canSubstitute(tag);
@@ -71,22 +76,39 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         this.recipe = level.getRecipeManager().byType(RecipeType.SMITHING).get(recipeId);
 
         // Build frame and find output
-        this.testFrame = new SimpleContainer(2);
-        this.testFrame.setItem(0, base.toStack());
-        this.testFrame.setItem(1, addition.toStack());
+        this.testFrame = new SimpleContainer(3);
+        this.testFrame.setItem(0, template.toStack());
+        this.testFrame.setItem(1, base.toStack());
+        this.testFrame.setItem(2, addition.toStack());
 
         if (!this.recipe.matches(testFrame, level)) {
             throw new IllegalStateException("The recipe " + recipeId + " no longer matches the encoded input.");
         }
 
-        this.output = this.recipe.assemble(testFrame);
+        this.output = this.recipe.assemble(testFrame, level.registryAccess());
         if (this.output.isEmpty()) {
             throw new IllegalStateException("The recipe " + recipeId + " produced an empty item stack result.");
         }
 
+        // Find ingredients
+        Ingredient templateIngredient, baseIngredient, additionIngredient;
+        if (this.recipe instanceof SmithingTransformRecipe r) {
+            templateIngredient = r.template;
+            baseIngredient = r.base;
+            additionIngredient = r.addition;
+        } else if (this.recipe instanceof SmithingTrimRecipe r) {
+            templateIngredient = r.template;
+            baseIngredient = r.base;
+            additionIngredient = r.addition;
+        } else {
+            throw new IllegalStateException(
+                    "Don't know how to process non-vanilla smithing recipe: " + this.recipe.getClass());
+        }
+
         this.inputs = new IInput[] {
-                new Input(base, recipe.base, BASE_CRAFTING_GRID_SLOT),
-                new Input(addition, recipe.addition, ADDITION_CRAFTING_GRID_SLOT)
+                new Input(template, templateIngredient, TEMPLATE_CRAFTING_GRID_SLOT),
+                new Input(base, baseIngredient, BASE_CRAFTING_GRID_SLOT),
+                new Input(addition, additionIngredient, ADDITION_CRAFTING_GRID_SLOT)
         };
         this.outputs = new GenericStack[] {
                 GenericStack.fromItemStack(this.output)
@@ -111,6 +133,10 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
     @Override
     public AEItemKey getDefinition() {
         return definition;
+    }
+
+    public AEItemKey getTemplate() {
+        return template;
     }
 
     public AEItemKey getBase() {
@@ -138,12 +164,13 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
     @Override
     public ItemStack assemble(Container container, Level level) {
         // Jiggle the container around
-        var testContainer = new SimpleContainer(2);
-        testContainer.setItem(0, container.getItem(BASE_CRAFTING_GRID_SLOT));
-        testContainer.setItem(1, container.getItem(ADDITION_CRAFTING_GRID_SLOT));
+        var testContainer = new SimpleContainer(3);
+        testContainer.setItem(0, container.getItem(TEMPLATE_CRAFTING_GRID_SLOT));
+        testContainer.setItem(1, container.getItem(BASE_CRAFTING_GRID_SLOT));
+        testContainer.setItem(2, container.getItem(ADDITION_CRAFTING_GRID_SLOT));
 
         if (recipe.matches(testContainer, level)) {
-            return recipe.assemble(testContainer);
+            return recipe.assemble(testContainer, level.registryAccess());
         }
         return ItemStack.EMPTY;
     }
@@ -154,7 +181,9 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         }
 
         if (!canSubstitute) {
-            if (gridSlot == BASE_CRAFTING_GRID_SLOT) {
+            if (gridSlot == TEMPLATE_CRAFTING_GRID_SLOT) {
+                return template.equals(key);
+            } else if (gridSlot == BASE_CRAFTING_GRID_SLOT) {
                 return base.equals(key);
             } else if (gridSlot == ADDITION_CRAFTING_GRID_SLOT) {
                 return addition.equals(key);
@@ -165,10 +194,12 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
 
         // Fill frame and check result
         int containerSlot;
-        if (gridSlot == BASE_CRAFTING_GRID_SLOT) {
+        if (gridSlot == TEMPLATE_CRAFTING_GRID_SLOT) {
             containerSlot = 0;
-        } else if (gridSlot == ADDITION_CRAFTING_GRID_SLOT) {
+        } else if (gridSlot == BASE_CRAFTING_GRID_SLOT) {
             containerSlot = 1;
+        } else if (gridSlot == ADDITION_CRAFTING_GRID_SLOT) {
+            containerSlot = 2;
         } else {
             return false;
         }
@@ -176,7 +207,8 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         var previousStack = testFrame.removeItemNoUpdate(containerSlot);
         testFrame.setItem(containerSlot, key.toStack());
 
-        var newResult = recipe.matches(testFrame, level) && ItemStack.matches(output, recipe.assemble(testFrame));
+        var newResult = recipe.matches(testFrame, level)
+                && ItemStack.matches(output, recipe.assemble(testFrame, level.registryAccess()));
 
         // Restore old stack in the frame
         testFrame.setItem(containerSlot, previousStack);
@@ -186,21 +218,28 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
 
     @Override
     public boolean isSlotEnabled(int slot) {
-        return slot == BASE_CRAFTING_GRID_SLOT || slot == ADDITION_CRAFTING_GRID_SLOT;
+        return slot == TEMPLATE_CRAFTING_GRID_SLOT || slot == BASE_CRAFTING_GRID_SLOT
+                || slot == ADDITION_CRAFTING_GRID_SLOT;
     }
 
     @Override
     public void fillCraftingGrid(KeyCounter[] table, CraftingGridAccessor gridAccessor) {
         var entry = table[0].getFirstEntry();
         if (entry != null && entry.getKey() instanceof AEItemKey itemKey) {
-            gridAccessor.set(BASE_CRAFTING_GRID_SLOT, itemKey.toStack());
+            gridAccessor.set(TEMPLATE_CRAFTING_GRID_SLOT, itemKey.toStack());
             table[0].remove(entry.getKey(), 1);
         }
 
         entry = table[1].getFirstEntry();
         if (entry != null && entry.getKey() instanceof AEItemKey itemKey) {
-            gridAccessor.set(ADDITION_CRAFTING_GRID_SLOT, itemKey.toStack());
+            gridAccessor.set(BASE_CRAFTING_GRID_SLOT, itemKey.toStack());
             table[1].remove(entry.getKey(), 1);
+        }
+
+        entry = table[2].getFirstEntry();
+        if (entry != null && entry.getKey() instanceof AEItemKey itemKey) {
+            gridAccessor.set(ADDITION_CRAFTING_GRID_SLOT, itemKey.toStack());
+            table[2].remove(entry.getKey(), 1);
         }
     }
 

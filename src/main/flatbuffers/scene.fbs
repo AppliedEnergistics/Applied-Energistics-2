@@ -1,0 +1,137 @@
+
+/**********************************************************************
+
+When you change this, run gradlew updateFlatbufferSources...
+
+**********************************************************************/
+
+namespace scene;
+
+struct ExpVec3 {
+  x:float;
+  y:float;
+  z:float;
+}
+
+struct ExpCameraSettings {
+    yaw: float;
+    pitch: float;
+    roll: float;
+    zoom: float;
+}
+
+// Pre-Defined versions of TransparencyShard in RenderStateShard
+enum ExpTransparency : ubyte {
+    DISABLED,
+    ADDITIVE,
+    LIGHTNING,
+    GLINT,
+    CRUMBLING,
+    TRANSLUCENT
+}
+
+// Pre-Defined versions of DepthTestShard in RenderStateShard
+enum ExpDepthTest : ubyte {
+    DISABLED,
+    EQUAL,
+    LEQUAL,
+    GREATER
+}
+
+struct ExpAnimatedTexturePartFrame {
+    index: ushort;
+    time: ushort;
+}
+
+table ExpAnimatedTexturePart {
+    texture_id: string;
+    x: int;
+    y: int;
+    width: uint;
+    height: uint;
+    frames_path: string;
+    frame_count: uint;
+    frames_per_row: uint;
+    frames: [ExpAnimatedTexturePartFrame];
+}
+
+table ExpSampler {
+    texture_id: string;
+    texture: string;
+    linear_filtering: bool;
+    use_mipmaps: bool;
+}
+
+table ExpMaterial {
+  name:string;
+  shader_name: string;
+  disable_culling:bool;
+  transparency: ExpTransparency;
+  depth_test: ExpDepthTest;
+  samplers: [ExpSampler];
+}
+
+enum ExpPrimitiveType : ubyte {
+    LINES,
+    LINE_STRIP,
+    DEBUG_LINES,
+    DEBUG_LINE_STRIP,
+    TRIANGLES,
+    TRIANGLE_STRIP,
+    TRIANGLE_FAN
+}
+
+enum ExpVertexElementType : ubyte {
+    FLOAT,
+    UBYTE,
+    BYTE,
+    USHORT,
+    SHORT,
+    UINT,
+    INT
+}
+
+enum ExpIndexElementType : ubyte {
+    UINT,
+    USHORT
+}
+
+enum ExpVertexElementUsage : ubyte {
+    POSITION,
+    NORMAL,
+    COLOR,
+    UV
+}
+
+struct ExpVertexFormatElement {
+    index: ubyte;
+    type: ExpVertexElementType;
+    usage: ExpVertexElementUsage;
+    count: ubyte;
+    offset: ubyte;
+    byte_size: ubyte;
+    normalized: bool;
+}
+
+table ExpVertexFormat {
+    elements: [ExpVertexFormatElement];
+    vertex_size: ubyte;
+}
+
+table ExpMesh {
+    material: ExpMaterial;
+    vertex_format: ExpVertexFormat;
+    primitive_type: ExpPrimitiveType;
+    index_buffer: [ubyte];
+    index_type: ExpIndexElementType;
+    index_count: uint;
+    vertex_buffer: [ubyte];
+}
+
+table ExpScene {
+  camera:ExpCameraSettings;
+  meshes:[ExpMesh];
+  animated_textures: [ExpAnimatedTexturePart];
+}
+
+root_type ExpScene;

@@ -1,0 +1,12 @@
+{
+  "type": "ae2:inscriber",
+  "ingredients": {
+    "middle": {
+      "tag": "c:fluix"
+    }
+  },
+  "mode": "inscribe",
+  "result": {
+    "item": "ae2:fluix_dust"
+  }
+}

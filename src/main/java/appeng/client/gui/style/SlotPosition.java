@@ -18,7 +18,7 @@
 
 package appeng.client.gui.style;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import appeng.client.gui.layout.SlotGridLayout;
 

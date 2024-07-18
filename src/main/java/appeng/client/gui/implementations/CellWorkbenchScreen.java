@@ -67,5 +67,4 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchMenu> {
         var fz = button.getNextValue(backwards);
         menu.setCellFuzzyMode(fz);
     }
-
 }

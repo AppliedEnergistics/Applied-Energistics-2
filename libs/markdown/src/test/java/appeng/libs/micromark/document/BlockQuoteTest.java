@@ -1,15 +1,16 @@
 package appeng.libs.micromark.document;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
 import appeng.libs.micromark.Extension;
 import appeng.libs.micromark.Micromark;
 import appeng.libs.micromark.TestUtil;
 import appeng.libs.micromark.html.HtmlCompiler;
 import appeng.libs.micromark.html.ParseOptions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BlockQuoteTest {
     @ParameterizedTest(name = "[{index}] {2}")
@@ -58,7 +59,6 @@ public class BlockQuoteTest {
         assertEquals(
                 "<p>&gt; # a\n&gt; b\n&gt; c</p>",
                 new HtmlCompiler().compile(Micromark.parseAndPostprocess("> # a\n> b\n> c", parseOptions)),
-                "should support turning off block quotes"
-        );
+                "should support turning off block quotes");
     }
 }

@@ -29,8 +29,7 @@ public final class InitializeContent {
             contentStart = effects.attempt.hook(
                     context.getParser().constructs.contentInitial,
                     this::afterContentStartConstruct,
-                    this::paragraphInitial
-            );
+                    this::paragraphInitial);
         }
 
         private State afterContentStartConstruct(int code) {
@@ -42,7 +41,7 @@ public final class InitializeContent {
                 effects.consume(code);
                 return null;
             }
-            
+
             effects.enter(Types.lineEnding);
             effects.consume(code);
             effects.exit(Types.lineEnding);

@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import io.netty.buffer.Unpooled;
 
@@ -48,7 +48,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
     /**
      * Maximum size of a single packet before it will be flushed forcibly.
      */
-    private static final int UNCOMPRESSED_PACKET_BYTE_LIMIT = 512 * 1024 * 1024;
+    private static final int UNCOMPRESSED_PACKET_BYTE_LIMIT = 512 * 1024;
 
     /**
      * Initial buffer size for an update packet.

@@ -36,7 +36,11 @@ public class DriveWatcher extends MEInventoryHandler {
     }
 
     public CellState getStatus() {
-        return ((StorageCell) getDelegate()).getStatus();
+        return getCell().getStatus();
+    }
+
+    public StorageCell getCell() {
+        return (StorageCell) getDelegate();
     }
 
     @Override

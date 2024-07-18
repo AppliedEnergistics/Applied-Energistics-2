@@ -18,14 +18,21 @@
 
 package appeng.debug;
 
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.item.CreativeModeTab;
 
 import appeng.block.AEBaseEntityBlock;
+import appeng.core.AEConfig;
 
 public class EnergyGeneratorBlock extends AEBaseEntityBlock<EnergyGeneratorBlockEntity> {
 
     public EnergyGeneratorBlock() {
-        super(defaultProps(Material.METAL));
+        super(metalProps());
     }
 
+    @Override
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+        if (AEConfig.instance().isDebugToolsEnabled()) {
+            output.accept(this);
+        }
+    }
 }

@@ -80,7 +80,8 @@ public abstract class MinecraftServerMixin {
                 false /* debug */,
                 seed,
                 ImmutableList.of(),
-                false);
+                false,
+                null);
         // NOTE: We don't register the spatial dimension for the world-border. Players can't move freely in that
         // dimension anyway.
         this.levels.put(SpatialStorageDimensionIds.WORLD_ID, level);
