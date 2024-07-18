@@ -27,6 +27,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
+import it.unimi.dsi.fastutil.longs.Long2LongArrayMap;
+
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
@@ -69,19 +71,29 @@ public class ExecutingCraftingJob {
         this.remainingAmount = this.finalOutput.amount();
         this.waitingFor = new ListCraftingInventory(postCraftingDifference::onCraftingDifference);
 
-        // Fill waiting for and tasks
-        long totalPending = 0;
+        // Fill `waitingFor` and `tasks`
+        // Count the number of pending units, by unit size
+        Long2LongArrayMap pendingUnits = new Long2LongArrayMap();
         for (var entry : plan.emittedItems()) {
             waitingFor.insert(entry.getKey(), entry.getLongValue(), Actionable.MODULATE);
-            totalPending += entry.getLongValue();
+
+            long unitKey = entry.getKey().getAmountPerUnit();
+            // pendingUnits.entry(unitKey).orDefault().value += entry.value;
+            pendingUnits.mergeLong(unitKey, entry.getLongValue(), (long l, long r) -> l + r);
         }
         for (var entry : plan.patternTimes().entrySet()) {
             tasks.computeIfAbsent(entry.getKey(), p -> new TaskProgress()).value += entry.getValue();
             for (var output : entry.getKey().getOutputs()) {
-                totalPending += output.amount() * entry.getValue();
+                long additional = output.amount() * entry.getValue();
+                // pendingUnits.entry(unitKey).orDefault().value += entry.value;
+                pendingUnits.mergeLong(unitKey, additional, (long l, long r) -> l + r);
             }
         }
-        this.timeTracker = new ElapsedTimeTracker(totalPending);
+        long totalPendingUnits = 0;
+        for (var entry : pending.entrySet()) {
+            totalPendingUnits += entry.getLongValue() / entry.getLongKey();
+        }
+        this.timeTracker = new ElapsedTimeTracker(totalPendingUnits);
         this.link = link;
         this.playerId = playerId;
     }
