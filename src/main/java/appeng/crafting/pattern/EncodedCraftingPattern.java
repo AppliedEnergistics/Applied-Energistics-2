@@ -1,6 +1,5 @@
 package appeng.crafting.pattern;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.mojang.serialization.Codec;
@@ -50,40 +49,27 @@ public record EncodedCraftingPattern(
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int hash = 1;
+    public boolean equals(Object object) {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
 
-        for (ItemStack i : inputs) {
-            hash = prime * hash + (i == null ? 0 : ItemStack.hashItemAndComponents(i) + i.getCount());
-        }
-        hash = prime * hash + (this.result == null ? 0 : ItemStack.hashItemAndComponents(result) + result.getCount());
-        hash = prime * hash + (this.recipeId == null ? 0 : recipeId.hashCode());
-        hash = prime * hash + (canSubstitute ? 1 : 0);
-        hash = prime * hash + (canSubstituteFluids ? 1 : 0);
-        return hash;
+        EncodedCraftingPattern that = (EncodedCraftingPattern) object;
+        return canSubstitute == that.canSubstitute
+                && canSubstituteFluids == that.canSubstituteFluids
+                && ItemStack.matches(result, that.result)
+                && ItemStack.listMatches(inputs, that.inputs)
+                && recipeId.equals(that.recipeId);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        final EncodedCraftingPattern other = (EncodedCraftingPattern) o;
-
-        if (inputs.size() != other.inputs.size())
-            return false;
-        Iterator<ItemStack> iterThis = inputs.iterator();
-        Iterator<ItemStack> iterOther = other.inputs.iterator();
-        while (iterThis.hasNext() && iterOther.hasNext()) {
-            ItemStack i1 = iterThis.next();
-            ItemStack i2 = iterOther.next();
-            if (!(ItemStack.isSameItemSameComponents(i1, i2) && i1.getCount() == i2.getCount()))
-                return false;
-        }
-        return ItemStack.isSameItemSameComponents(result, other.result) && result.getCount() == other.result.getCount()
-                && recipeId.equals(other.recipeId) && canSubstitute == other.canSubstitute
-                && canSubstituteFluids == other.canSubstituteFluids;
+    public int hashCode() {
+        int result1 = ItemStack.hashStackList(inputs);
+        result1 = 31 * result1 + ItemStack.hashItemAndComponents(result);
+        result1 = 31 * result1 + recipeId.hashCode();
+        result1 = 31 * result1 + Boolean.hashCode(canSubstitute);
+        result1 = 31 * result1 + Boolean.hashCode(canSubstituteFluids);
+        return result1;
     }
 }

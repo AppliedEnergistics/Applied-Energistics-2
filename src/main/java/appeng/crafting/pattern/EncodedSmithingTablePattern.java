@@ -50,4 +50,31 @@ public record EncodedSmithingTablePattern(
                 || AEItems.MISSING_CONTENT.is(addition)
                 || AEItems.MISSING_CONTENT.is(resultItem);
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+
+        EncodedSmithingTablePattern that = (EncodedSmithingTablePattern) object;
+        return canSubstitute == that.canSubstitute
+                && ItemStack.matches(base, that.base)
+                && ItemStack.matches(template, that.template)
+                && ItemStack.matches(addition, that.addition)
+                && ItemStack.matches(resultItem, that.resultItem)
+                && recipeId.equals(that.recipeId);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = ItemStack.hashItemAndComponents(template);
+        result = 31 * result + ItemStack.hashItemAndComponents(base);
+        result = 31 * result + ItemStack.hashItemAndComponents(addition);
+        result = 31 * result + ItemStack.hashItemAndComponents(resultItem);
+        result = 31 * result + Boolean.hashCode(canSubstitute);
+        result = 31 * result + recipeId.hashCode();
+        return result;
+    }
 }
