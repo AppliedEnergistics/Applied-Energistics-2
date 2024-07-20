@@ -87,11 +87,9 @@ public final class ConventionTags {
 
     public static final TagKey<Item> GOLD_NUGGET = Tags.Items.NUGGETS_GOLD;
     public static final TagKey<Item> GOLD_INGOT = Tags.Items.INGOTS_GOLD;
-    public static final TagKey<Item> GOLD_ORE = Tags.Items.ORES_GOLD;
 
     public static final TagKey<Item> IRON_NUGGET = Tags.Items.NUGGETS_IRON;
     public static final TagKey<Item> IRON_INGOT = Tags.Items.INGOTS_IRON;
-    public static final TagKey<Item> IRON_ORE = Tags.Items.ORES_IRON;
 
     public static final TagKey<Item> DIAMOND = Tags.Items.GEMS_DIAMOND;
     public static final TagKey<Item> REDSTONE = Tags.Items.DUSTS_REDSTONE;
@@ -104,7 +102,6 @@ public final class ConventionTags {
     public static final TagKey<Item> CHEST = Tags.Items.CHESTS_WOODEN;
 
     public static final TagKey<Item> STONE = Tags.Items.STONES;
-    public static final TagKey<Item> COBBLESTONE = Tags.Items.COBBLESTONES;
     public static final TagKey<Item> GLASS = Tags.Items.GLASS_BLOCKS;
     public static final TagKey<Block> GLASS_BLOCK = Tags.Blocks.GLASS_BLOCKS;
 
