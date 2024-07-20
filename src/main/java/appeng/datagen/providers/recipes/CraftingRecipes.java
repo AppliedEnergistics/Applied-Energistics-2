@@ -383,7 +383,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .pattern("c a")
                 .pattern("aba")
                 .define('a', ConventionTags.IRON_INGOT)
-                .define('b', Items.STICKY_PISTON)
+                .define('b', Items.PISTON)
                 .define('c', ConventionTags.COPPER_INGOT)
                 .unlockedBy("has_crystals/fluix", has(ConventionTags.ALL_FLUIX))
                 .save(consumer, AppEng.makeId("network/blocks/inscribers"));
@@ -706,7 +706,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .pattern("bcb")
                 .define('a', AEItems.ANNIHILATION_CORE)
                 .define('b', ConventionTags.IRON_INGOT)
-                .define('c', Items.STICKY_PISTON)
+                .define('c', Items.PISTON)
                 .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
                 .save(consumer, AppEng.makeId("network/parts/import_bus"));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEParts.LEVEL_EMITTER)
@@ -721,7 +721,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
                 .save(consumer, AppEng.makeId("network/parts/energy_level_emitter"));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEParts.STORAGE_BUS)
-                .requires(Items.STICKY_PISTON)
+                .requires(Items.PISTON)
                 .requires(ConventionTags.INTERFACE)
                 .requires(Items.PISTON)
                 .unlockedBy("has_interface", has(ConventionTags.INTERFACE))

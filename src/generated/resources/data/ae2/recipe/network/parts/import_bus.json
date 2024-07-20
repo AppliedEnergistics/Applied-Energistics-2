@@ -9,7 +9,7 @@
       "tag": "c:ingots/iron"
     },
     "c": {
-      "item": "minecraft:sticky_piston"
+      "item": "minecraft:piston"
     }
   },
   "pattern": [

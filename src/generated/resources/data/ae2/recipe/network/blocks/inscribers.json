@@ -6,7 +6,7 @@
       "tag": "c:ingots/iron"
     },
     "b": {
-      "item": "minecraft:sticky_piston"
+      "item": "minecraft:piston"
     },
     "c": {
       "tag": "c:ingots/copper"
