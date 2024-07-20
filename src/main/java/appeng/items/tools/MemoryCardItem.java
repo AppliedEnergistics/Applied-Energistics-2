@@ -52,6 +52,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 
+import appeng.api.components.ExportedUpgrades;
 import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
@@ -158,7 +159,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
         return Component.translatable(descriptionId);
     }
 
-    private static List<ItemStack> storeUpgrades(IUpgradeableObject upgradeableObject) {
+    private static ExportedUpgrades storeUpgrades(IUpgradeableObject upgradeableObject) {
         // Accumulate upgrades as itemId->count NBT
         Object2IntMap<ItemStack> upgradeCount = new Object2IntOpenCustomHashMap<>(ItemStackLinkedSet.TYPE_AND_TAG);
         for (var upgrade : upgradeableObject.getUpgrades()) {
@@ -169,10 +170,10 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
         for (var entry : upgradeCount.object2IntEntrySet()) {
             result.add(entry.getKey().copyWithCount(entry.getIntValue()));
         }
-        return result;
+        return new ExportedUpgrades(result);
     }
 
-    private static void restoreUpgrades(Player player, List<ItemStack> desiredUpgrades,
+    private static void restoreUpgrades(Player player, ExportedUpgrades desiredUpgrades,
             IUpgradeableObject upgradeableObject) {
         var upgrades = upgradeableObject.getUpgrades();
 
@@ -182,7 +183,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
             for (int i = 0; i < upgrades.size(); i++) {
                 upgrades.setItemDirect(i, ItemStack.EMPTY);
             }
-            for (var upgrade : desiredUpgrades) {
+            for (var upgrade : desiredUpgrades.upgrades()) {
                 upgrades.addItems(upgrade);
             }
         }
@@ -197,8 +198,8 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
         }
 
         // Map of desired upgrade (ignoring the count in the key) to the desired count
-        var desiredUpgradeCounts = new Reference2IntOpenHashMap<Item>(desiredUpgrades.size());
-        for (var desiredUpgrade : desiredUpgrades) {
+        var desiredUpgradeCounts = new Reference2IntOpenHashMap<Item>(desiredUpgrades.upgrades().size());
+        for (var desiredUpgrade : desiredUpgrades.upgrades()) {
             desiredUpgradeCounts.put(desiredUpgrade.getItem(), desiredUpgrade.getCount());
         }
 

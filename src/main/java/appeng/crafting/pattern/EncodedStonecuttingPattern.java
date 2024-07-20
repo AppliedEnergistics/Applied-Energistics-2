@@ -39,4 +39,27 @@ public record EncodedStonecuttingPattern(
     public boolean containsMissingContent() {
         return AEItems.MISSING_CONTENT.is(input) || AEItems.MISSING_CONTENT.is(output);
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+
+        EncodedStonecuttingPattern that = (EncodedStonecuttingPattern) object;
+        return canSubstitute == that.canSubstitute
+                && ItemStack.matches(input, that.input)
+                && ItemStack.matches(output, that.output)
+                && recipeId.equals(that.recipeId);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = ItemStack.hashItemAndComponents(input);
+        result = 31 * result + ItemStack.hashItemAndComponents(output);
+        result = 31 * result + Boolean.hashCode(canSubstitute);
+        result = 31 * result + recipeId.hashCode();
+        return result;
+    }
 }

@@ -18,11 +18,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import appeng.api.components.ExportedUpgrades;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.MemoryCardColors;
 import appeng.api.stacks.AEKeyType;
@@ -68,8 +68,8 @@ public final class AEComponents {
      *
      * @see appeng.items.tools.MemoryCardItem
      */
-    public static final DataComponentType<List<ItemStack>> EXPORTED_UPGRADES = register("exported_upgrades",
-            builder -> builder.persistent(ItemStack.CODEC.listOf()).networkSynchronized(ItemStack.LIST_STREAM_CODEC));
+    public static final DataComponentType<ExportedUpgrades> EXPORTED_UPGRADES = register("exported_upgrades",
+            builder -> builder.persistent(ExportedUpgrades.CODEC).networkSynchronized(ExportedUpgrades.STREAM_CODEC));
 
     /**
      * Exported machine configuration.
