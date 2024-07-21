@@ -40,9 +40,11 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
@@ -163,6 +165,7 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerHotkeys);
         modEventBus.addListener(this::registerDimensionSpecialEffects);
         modEventBus.addListener(InitScreens::init);
+        modEventBus.addListener(this::enqueueImcMessages);
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
@@ -186,6 +189,11 @@ public class AppEngClient extends AppEngBase {
             tickPinnedKeys(Minecraft.getInstance());
             Hotkeys.checkHotkeys();
         });
+    }
+
+    private void enqueueImcMessages(InterModEnqueueEvent event) {
+        // Our new light-mode UI doesn't play nice with darkmodeeverywhere
+        InterModComms.sendTo("darkmodeeverywhere", "dme-shaderblacklist", () -> "appeng.");
     }
 
     private void registerDimensionSpecialEffects(RegisterDimensionSpecialEffectsEvent event) {

@@ -24,7 +24,7 @@ import appeng.integration.modules.theoneprobe.TOP;
 
 public class Integrations {
 
-    public static void enqueueIMC(final InterModEnqueueEvent event) {
+    public static void enqueueIMC(InterModEnqueueEvent event) {
         TOP.enqueueIMC(event);
     }
 }
