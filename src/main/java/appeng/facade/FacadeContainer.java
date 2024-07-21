@@ -21,13 +21,12 @@ package appeng.facade;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.apache.commons.lang3.StringUtils;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.implementations.items.IFacadeItem;
@@ -112,7 +111,7 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public boolean readFromStream(FriendlyByteBuf out) {
+    public boolean readFromStream(RegistryFriendlyByteBuf out) {
         final int facadeSides = out.readByte();
 
         boolean changed = false;
@@ -120,14 +119,10 @@ public class FacadeContainer implements IFacadeContainer {
         for (var side : Direction.values()) {
             final int ix = 1 << side.ordinal();
             if ((facadeSides & ix) == ix) {
-                final int id = out.readVarInt();
-
                 final FacadeItem ifa = AEItems.FACADE.get();
-                final ItemStack facade = ifa.createFromID(id);
-                if (facade != null) {
-                    changed = changed || this.storage.getFacade(side) == null;
-                    this.storage.setFacade(side, ifa.createPartFromItemStack(facade, side));
-                }
+                final ItemStack facade = ItemStack.STREAM_CODEC.decode(out);
+                changed = changed || this.storage.getFacade(side) == null;
+                this.storage.setFacade(side, ifa.createPartFromItemStack(facade, side));
             } else {
                 changed = changed || this.storage.getFacade(side) != null;
                 this.storage.removeFacade(side);
@@ -138,7 +133,7 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void writeToStream(FriendlyByteBuf out) {
+    public void writeToStream(RegistryFriendlyByteBuf out) {
         int facadeSides = 0;
         for (var side : Direction.values()) {
             if (this.getFacade(side) != null) {
@@ -150,8 +145,7 @@ public class FacadeContainer implements IFacadeContainer {
         for (var side : Direction.values()) {
             final IFacadePart part = this.getFacade(side);
             if (part != null) {
-                final int itemID = Item.getId(part.getItem());
-                out.writeVarInt(itemID);
+                ItemStack.STREAM_CODEC.encode(out, part.getItemStack());
             }
         }
     }

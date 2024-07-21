@@ -643,7 +643,8 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         } else if (p != null && p.facade != null) {
             if (p.facade.onUseItemOn(heldItem, player, hand, localPos)) {
                 // facade changed state
-                partChanged();
+                markForSave();
+                markForUpdate();
             }
         }
         return false;

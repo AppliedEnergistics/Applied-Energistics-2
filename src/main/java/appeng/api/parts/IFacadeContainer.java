@@ -23,6 +23,7 @@
 
 package appeng.api.parts;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
@@ -77,7 +78,7 @@ public interface IFacadeContainer {
      *
      * @return true if it was readable
      */
-    boolean readFromStream(FriendlyByteBuf data);
+    boolean readFromStream(RegistryFriendlyByteBuf data);
 
     /**
      * read from NBT
@@ -92,7 +93,7 @@ public interface IFacadeContainer {
      *
      * @param data to be written data
      */
-    void writeToStream(FriendlyByteBuf data);
+    void writeToStream(RegistryFriendlyByteBuf data);
 
     /**
      * @return true if there are no facades.
