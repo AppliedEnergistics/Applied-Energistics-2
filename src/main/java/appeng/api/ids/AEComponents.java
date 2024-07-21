@@ -20,6 +20,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemContainerContents;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import appeng.api.components.ExportedUpgrades;
@@ -266,6 +267,10 @@ public final class AEComponents {
     public static final DataComponentType<Holder<Item>> FACADE_ITEM = register("facade_item",
             builder -> builder.persistent(BuiltInRegistries.ITEM.holderByNameCodec())
                     .networkSynchronized(ByteBufCodecs.holderRegistry(Registries.ITEM)));
+
+    public static final DataComponentType<BlockState> FACADE_BLOCK_STATE = register("facade_block_state",
+            builder -> builder.persistent(BlockState.CODEC)
+                    .networkSynchronized(ByteBufCodecs.fromCodec(BlockState.CODEC)));
 
     /**
      * The generic stack wrapped in a {@link AEItems#WRAPPED_GENERIC_STACK}

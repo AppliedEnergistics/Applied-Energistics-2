@@ -630,6 +630,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             final IPart part = this.getPart(s);
             if (part != null) {
                 part.onEntityCollision(entity);
+                markForUpdate();
             }
         }
     }
@@ -639,6 +640,11 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         final SelectedPart p = this.selectPartLocal(localPos);
         if (p != null && p.part != null) {
             return p.part.onUseItemOn(heldItem, player, hand, localPos);
+        } else if (p != null && p.facade != null) {
+            if (p.facade.onUseItemOn(heldItem, player, hand, localPos)) {
+                // facade changed state
+                partChanged();
+            }
         }
         return false;
     }
