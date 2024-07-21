@@ -20,7 +20,6 @@
     "AbstractContainerScreenMixin",
     "GuiGraphicsMixin",
     "WrappedGenericStackTooltipModIdMixin",
-    "ResizableSlotHighlightMixin",
     "PickColorMixin",
     "TextureAtlasMixin",
     "PonderWorldMixin",

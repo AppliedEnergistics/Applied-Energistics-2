@@ -262,19 +262,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        // Added a custom slot highlight effect - RID
-        if (this.hoveredSlot != null) {
-            guiGraphics.hLine(leftPos + this.hoveredSlot.x, leftPos + this.hoveredSlot.x + 16,
-                    topPos + this.hoveredSlot.y - 1, 0xFFdaffff);
-            guiGraphics.hLine(leftPos + this.hoveredSlot.x - 1, leftPos + this.hoveredSlot.x + 16,
-                    topPos + this.hoveredSlot.y + 16, 0xFFdaffff);
-            guiGraphics.vLine(leftPos + this.hoveredSlot.x - 1, topPos + this.hoveredSlot.y - 2,
-                    topPos + this.hoveredSlot.y + 16, 0xFFdaffff);
-            guiGraphics.vLine(leftPos + this.hoveredSlot.x + 16, topPos + this.hoveredSlot.y - 2,
-                    topPos + this.hoveredSlot.y + 16, 0xFFdaffff);
-            renderSlotHighlight(guiGraphics, leftPos + this.hoveredSlot.x, topPos + this.hoveredSlot.y, 0, 0x669cd3ff);
-        }
-
         renderTooltips(guiGraphics, mouseX, mouseY);
 
         if (AEConfig.instance().isShowDebugGuiOverlays()) {
@@ -980,11 +967,17 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     /**
-     * Used by mixin to render the slot highlight.
+     * Renders a highlight for the given slot to indicate the mouse is currently hovering over it.
      */
-    public void renderCustomSlotHighlight(GuiGraphics guiGraphics, int x, int y, int z) {
+    protected void renderSlotHighlight(GuiGraphics guiGraphics, Slot slot, int mouseX, int mouseY, float partialTick) {
+        if (!slot.isHighlightable()) {
+            return;
+        }
+
+        int x = slot.x;
+        int y = slot.y;
         int w, h;
-        if (this.hoveredSlot instanceof ResizableSlot resizableSlot) {
+        if (slot instanceof ResizableSlot resizableSlot) {
             w = resizableSlot.getWidth();
             h = resizableSlot.getHeight();
         } else {
@@ -993,7 +986,12 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         // Same as the Vanilla method, just with dynamic width and height
-        guiGraphics.fillGradient(RenderType.guiOverlay(), x, y, x + w, y + h, 0x80ffffff, 0x80ffffff, z);
+        // Added a custom slot highlight effect - RID
+        guiGraphics.hLine(x, x + w, y - 1, 0xFFdaffff);
+        guiGraphics.hLine(x - 1, x + w, y + h, 0xFFdaffff);
+        guiGraphics.vLine(x - 1, y - 2, y + h, 0xFFdaffff);
+        guiGraphics.vLine(x + w, y - 2, y + h, 0xFFdaffff);
+        guiGraphics.fillGradient(RenderType.guiOverlay(), x, y, x + w, y + h, 0x669cd3ff, 0x669cd3ff, 0);
     }
 
     public final void switchToScreen(AEBaseScreen<?> screen) {
