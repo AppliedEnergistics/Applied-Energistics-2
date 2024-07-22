@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.resources.ResourceLocation;
@@ -46,6 +47,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -144,6 +146,8 @@ public class AppEngClient extends AppEngBase {
     private static final KeyMapping MOUSE_WHEEL_ITEM_MODIFIER = new KeyMapping(
             "key.ae2.mouse_wheel_item_modifier", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM,
             InputConstants.KEY_LSHIFT, "key.ae2.category");
+
+    public static final ChunkRenderTypeSet CUTOUT = ChunkRenderTypeSet.of(RenderType.CUTOUT);
 
     private final Guide guide;
 

@@ -43,6 +43,7 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.helpers.Splotch;
 
 /**
@@ -192,6 +193,6 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
 
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-        return ChunkRenderTypeSet.of(RenderType.CUTOUT);
+        return AppEngClient.CUTOUT;
     }
 }

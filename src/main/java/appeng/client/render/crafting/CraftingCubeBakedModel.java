@@ -39,6 +39,7 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.blockentity.crafting.CraftingCubeModelData;
 import appeng.client.render.cablebus.CubeBuilder;
+import appeng.core.AppEngClient;
 import appeng.util.Platform;
 
 /**
@@ -270,6 +271,6 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
 
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-        return ChunkRenderTypeSet.of(RenderType.CUTOUT);
+        return AppEngClient.CUTOUT;
     }
 }

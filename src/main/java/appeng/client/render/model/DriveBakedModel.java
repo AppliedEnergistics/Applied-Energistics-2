@@ -40,6 +40,7 @@ import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.client.render.DelegateBakedModel;
+import appeng.core.AppEngClient;
 import appeng.thirdparty.fabric.MutableQuadView;
 import appeng.thirdparty.fabric.RenderContext;
 
@@ -165,6 +166,6 @@ public class DriveBakedModel extends DelegateBakedModel {
 
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-        return ChunkRenderTypeSet.of(RenderType.CUTOUT);
+        return AppEngClient.CUTOUT;
     }
 }

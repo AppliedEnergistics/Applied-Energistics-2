@@ -46,6 +46,7 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.core.definitions.AEBlocks;
 
 class QnbFormedBakedModel implements IDynamicBakedModel {
@@ -245,6 +246,6 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
 
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-        return ChunkRenderTypeSet.of(RenderType.CUTOUT);
+        return AppEngClient.CUTOUT;
     }
 }
