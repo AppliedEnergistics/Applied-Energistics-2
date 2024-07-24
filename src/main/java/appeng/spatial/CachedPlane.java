@@ -45,7 +45,7 @@ import appeng.api.movable.BlockEntityMoveStrategies;
 import appeng.api.movable.IBlockEntityMoveStrategy;
 import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
-import appeng.server.services.compass.CompassService;
+import appeng.server.services.compass.ServerCompassService;
 import appeng.util.Platform;
 
 public class CachedPlane {
@@ -342,7 +342,7 @@ public class CachedPlane {
 
                 final LevelChunk c = this.myChunks[x][z];
 
-                CompassService.updateArea(this.getLevel(), c);
+                ServerCompassService.updateArea(this.getLevel(), c);
 
                 var cdp = Platform.getFullChunkPacket(c);
                 level.getChunkSource().chunkMap.getPlayers(c.getPos(), false)

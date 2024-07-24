@@ -37,7 +37,7 @@ public class TestCompassCommand implements ISubCommand {
         var compassRegion = CompassRegion.get(level, chunkPos);
 
         for (var i = 0; i <= level.getSectionsCount(); i++) {
-            var hasSkyStone = compassRegion.hasSkyStone(chunkPos.x, chunkPos.z, i);
+            var hasSkyStone = compassRegion.hasCompassTarget(chunkPos.x, chunkPos.z, i);
             var yMin = i * SectionPos.SECTION_SIZE;
             var yMax = (i + 1) * SectionPos.SECTION_SIZE - 1;
             var iFinal = i;
