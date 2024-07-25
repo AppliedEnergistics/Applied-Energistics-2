@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
 
@@ -171,21 +170,22 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
     }
 
     @Override
-    public boolean hasIngredient(Predicate<ItemStack> predicate, int amount) {
+    public boolean hasIngredient(Ingredient ingredient, Object2IntOpenHashMap<Object> reservedAmounts) {
         // In addition to the base item repo, also check the crafting grid if it
         // already contains some of the needed items
         for (var slot : getSlots(SlotSemantics.CRAFTING_GRID)) {
             var stackInSlot = slot.getItem();
-            if (!stackInSlot.isEmpty() && predicate.test(stackInSlot)) {
-                if (stackInSlot.getCount() >= amount) {
+            if (!stackInSlot.isEmpty() && ingredient.test(stackInSlot)) {
+                var reservedAmount = reservedAmounts.getOrDefault(slot, 0);
+                if (stackInSlot.getCount() > reservedAmount) {
+                    reservedAmounts.merge(slot, 1, Integer::sum);
                     return true;
                 }
-                amount -= stackInSlot.getCount();
             }
 
         }
 
-        return super.hasIngredient(predicate, amount);
+        return super.hasIngredient(ingredient, reservedAmounts);
     }
 
     /**
@@ -231,9 +231,8 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
             // Then check the terminal screen's repository of network items
             if (!found) {
                 // We use AE stacks to get an easily comparable item type key that ignores stack size
-                int neededAmount = reservedGridAmounts.getOrDefault(ingredient, 0) + 1;
-                if (hasIngredient(ingredient, neededAmount)) {
-                    reservedGridAmounts.put(ingredient, neededAmount);
+                if (hasIngredient(ingredient, reservedGridAmounts)) {
+                    reservedGridAmounts.merge(ingredient, 1, Integer::sum);
                     found = true;
                 }
             }
@@ -262,12 +261,16 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
             return missingSlots.size() + craftableSlots.size();
         }
 
+        public boolean anyMissingOrCraftable() {
+            return anyMissing() || anyCraftable();
+        }
+
         public boolean anyMissing() {
-            return missingSlots.size() > 0;
+            return !missingSlots.isEmpty();
         }
 
         public boolean anyCraftable() {
-            return craftableSlots.size() > 0;
+            return !craftableSlots.isEmpty();
         }
     }
 

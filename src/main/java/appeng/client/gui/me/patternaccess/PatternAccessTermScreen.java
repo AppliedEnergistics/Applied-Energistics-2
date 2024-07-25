@@ -219,7 +219,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                     if (group.icon() != null) {
                         var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics);
                         renderContext.renderItem(
-                                group.icon().toStack(),
+                                group.icon().getReadOnlyStack(),
                                 GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X,
                                 GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT,
                                 8,

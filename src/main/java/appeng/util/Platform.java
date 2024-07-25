@@ -44,7 +44,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -268,14 +267,6 @@ public class Platform {
         var fluidStack = new FluidStack(fluid, 1);
         fluidStack.setTag(tag);
         return fluidStack.getDisplayName();
-    }
-
-    // tag copy is not necessary, as the tag is not modified.
-    // and this itemStack is not reachable
-    public static Component getItemDisplayName(Item item, @Nullable CompoundTag tag) {
-        var itemStack = new ItemStack(item);
-        itemStack.setTag(tag);
-        return itemStack.getHoverName();
     }
 
     public static boolean isChargeable(ItemStack i) {
