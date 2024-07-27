@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.sun.nio.sctp.Association;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -30,6 +32,8 @@ import appeng.items.materials.UpgradeCardItem;
 public final class Upgrades {
     // Key is the upgrade cards item
     private static final Map<Item, List<Association>> ASSOCIATIONS = new IdentityHashMap<>();
+    // Keeps track of which upgrades an item supports
+    private static final Map<IUpgradeableItem, Set<Item>> SUPPORTED_ITEM_UPGRADES = new IdentityHashMap<>();
     // Key is the upgrade cards item
     private static final Map<Item, List<Component>> UPGRADE_CARD_TOOLTIP_LINES = new IdentityHashMap<>();
 
@@ -61,9 +65,23 @@ public final class Upgrades {
             block = null;
         }
 
+        var upgrade = upgradeCard.asItem();
+
+        // Collect all supported upgrades for upgradable items
+        if (item instanceof IUpgradeableItem upgradeableItem) {
+            var upgrades = SUPPORTED_ITEM_UPGRADES.get(upgradeableItem);
+            if (upgrades == null) {
+                SUPPORTED_ITEM_UPGRADES.put(upgradeableItem, Set.of(upgrade));
+            } else {
+                var newSet = new HashSet<>(upgrades);
+                newSet.add(upgrade);
+                SUPPORTED_ITEM_UPGRADES.put(upgradeableItem, Set.copyOf(newSet));
+            }
+        }
+
         var translatedTooltipGroup = tooltipGroup != null ? Component.translatable(tooltipGroup) : null;
 
-        var association = new Association(upgradeCard.asItem(), item, block, maxSupported, translatedTooltipGroup);
+        var association = new Association(upgrade, item, block, maxSupported, translatedTooltipGroup);
         ASSOCIATIONS.computeIfAbsent(association.upgradeCard(), ignored -> new ArrayList<>())
                 .add(association);
         // Clear tooltip cache
@@ -86,6 +104,13 @@ public final class Upgrades {
         }
 
         return 0;
+    }
+
+    /**
+     * Returns a map from an upgradable item to the upgrades it supports.
+     */
+    public static synchronized Map<IUpgradeableItem, Set<Item>> getUpgradableItems() {
+        return Map.copyOf(SUPPORTED_ITEM_UPGRADES);
     }
 
     /**
