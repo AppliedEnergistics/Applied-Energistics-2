@@ -27,12 +27,11 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -99,15 +98,16 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     /**
      * @return Set of {@link net.minecraft.core.component.DataComponentType} ids that were imported
      */
-    public static Set<ResourceLocation> importGenericSettings(Object importTo, DataComponentMap input,
+    public static Set<DataComponentType<?>> importGenericSettings(Object importTo,
+            DataComponentMap input,
             @Nullable Player player) {
-        var imported = new HashSet<ResourceLocation>();
+        var imported = new HashSet<DataComponentType<?>>();
 
         if (player != null && importTo instanceof IUpgradeableObject upgradeableObject) {
             var desiredUpgrades = input.get(AEComponents.EXPORTED_UPGRADES);
             if (desiredUpgrades != null) {
                 restoreUpgrades(player, desiredUpgrades, upgradeableObject);
-                imported.add(BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(AEComponents.EXPORTED_UPGRADES));
+                imported.add(AEComponents.EXPORTED_UPGRADES);
             }
         }
 
@@ -115,7 +115,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
             var exportedSettings = input.get(AEComponents.EXPORTED_SETTINGS);
             if (exportedSettings != null) {
                 if (configurableObject.getConfigManager().importSettings(exportedSettings)) {
-                    imported.add(BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(AEComponents.EXPORTED_SETTINGS));
+                    imported.add(AEComponents.EXPORTED_SETTINGS);
                 }
             }
         }
@@ -124,7 +124,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
             var exportedPriority = input.get(AEComponents.EXPORTED_PRIORITY);
             if (exportedPriority != null) {
                 pHost.setPriority(exportedPriority);
-                imported.add(BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(AEComponents.EXPORTED_PRIORITY));
+                imported.add(AEComponents.EXPORTED_PRIORITY);
             }
         }
 
@@ -132,7 +132,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
             var exportedConfigInv = input.get(AEComponents.EXPORTED_CONFIG_INV);
             if (exportedConfigInv != null) {
                 configInvHost.getConfig().readFromList(exportedConfigInv);
-                imported.add(BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(AEComponents.EXPORTED_CONFIG_INV));
+                imported.add(AEComponents.EXPORTED_CONFIG_INV);
             }
         }
 
@@ -148,15 +148,30 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
                 player.displayClientMessage(PlayerMessages.InvalidMachine.text(), true);
             } else {
                 var restored = Tooltips
-                        .conjunction(imported.stream().map(MemoryCardItem::getTranslatedSettingCategory).toList());
+                        .conjunction(imported.stream().map(MemoryCardItem::getSettingComponent)
+                                .distinct().toList());
                 player.displayClientMessage(PlayerMessages.InvalidMachinePartiallyRestored.text(restored), true);
             }
         }
     }
 
-    private static Component getTranslatedSettingCategory(ResourceLocation id) {
-        var descriptionId = Util.makeDescriptionId("exported_setting", id);
-        return Component.translatable(descriptionId);
+    private static Set<DataComponentType<?>> getExportedSettings(DataComponentMap input) {
+        var result = new HashSet<DataComponentType<?>>();
+        for (var type : input.keySet()) {
+            if (BuiltInRegistries.DATA_COMPONENT_TYPE.wrapAsHolder(type).is(ConventionTags.EXPORTED_SETTINGS)) {
+                result.add(type);
+            }
+        }
+        return result;
+    }
+
+    public static String getSettingTranslationKey(DataComponentType<?> settingsType) {
+        var id = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(settingsType);
+        return Util.makeDescriptionId("exported_setting", id);
+    }
+
+    private static Component getSettingComponent(DataComponentType<?> settingsType) {
+        return Component.translatable(getSettingTranslationKey(settingsType));
     }
 
     private static ExportedUpgrades storeUpgrades(IUpgradeableObject upgradeableObject) {
@@ -278,26 +293,6 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
             var freqTooltip = Platform.p2p().toColoredHexString(p2pFreq).withStyle(ChatFormatting.BOLD);
             lines.add(Tooltips.of(Component.translatable(InGameTooltip.P2PFrequency.getTranslationKey(), freqTooltip)));
         }
-    }
-
-    /**
-     * Find the localized string...
-     *
-     * @param name possible names for the localized string
-     * @return localized name
-     */
-    private String getFirstValidTranslationKey(String... name) {
-        for (String n : name) {
-            if (I18n.exists(n)) {
-                return n;
-            }
-        }
-
-        for (String n : name) {
-            return n;
-        }
-
-        return "";
     }
 
     @Override

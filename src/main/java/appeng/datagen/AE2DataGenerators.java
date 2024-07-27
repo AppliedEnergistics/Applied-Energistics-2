@@ -91,7 +91,8 @@ public class AE2DataGenerators {
         pack.addProvider(packOutput -> new FluidTagsProvider(packOutput, registries, existingFileHelper));
         pack.addProvider(packOutput -> new BiomeTagsProvider(packOutput, registries, existingFileHelper));
         pack.addProvider(packOutput -> new PoiTypeTagsProvider(packOutput, registries, existingFileHelper));
-        pack.addProvider(packOutput -> new DataComponentTypeTagProvider(packOutput, registries, existingFileHelper));
+        pack.addProvider(packOutput -> new DataComponentTypeTagProvider(packOutput, registries, existingFileHelper,
+                localization));
 
         // Models
         pack.addProvider(packOutput -> new BlockModelProvider(packOutput, existingFileHelper));

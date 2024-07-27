@@ -1,15 +1,15 @@
 {
   "values": [
     "ae2:exported_config_inv",
+    "ae2:exported_patterns",
     "ae2:exported_custom_name",
     "ae2:exported_level_emitter_value",
     "ae2:exported_p2p_frequency",
     "ae2:exported_p2p_type",
-    "ae2:exported_patterns",
     "ae2:exported_priority",
     "ae2:exported_push_direction",
     "ae2:exported_settings",
-    "ae2:exported_settings_source",
-    "ae2:exported_upgrades"
+    "ae2:exported_upgrades",
+    "ae2:exported_settings_source"
   ]
 }
