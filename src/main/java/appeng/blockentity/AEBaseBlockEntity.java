@@ -325,6 +325,7 @@ public class AEBaseBlockEntity extends BlockEntity
 
         if (mode == SettingsFrom.MEMORY_CARD) {
             MemoryCardItem.exportGenericSettings(this, builder);
+            builder.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getItemFromBlockEntity().getDescription());
         }
     }
 

@@ -65,7 +65,6 @@ public class LocalizationProvider implements IAE2DataProvider {
         }
 
         generateJadeLocalizations();
-
         generateLocalizations();
 
         return save(cache, localizations);
