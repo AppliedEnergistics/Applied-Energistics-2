@@ -17,7 +17,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
-import appeng.api.storage.cells.ICellWorkbenchItem;
+import appeng.api.upgrades.IUpgradeableItem;
 import appeng.core.AppEng;
 
 /**
@@ -53,12 +53,12 @@ public class RemoveItemUpgradeRecipe extends CustomRecipe {
         }
 
         var item = input.getItem(0);
-        if (!(item.getItem() instanceof ICellWorkbenchItem workbenchItem)) {
+        if (!(item.getItem() instanceof IUpgradeableItem upgradableItem)) {
             return null;
         }
 
         var upgradable = item.copy();
-        var upgrades = workbenchItem.getUpgrades(upgradable);
+        var upgrades = upgradableItem.getUpgrades(upgradable);
         for (int i = 0; i < upgrades.size(); i++) {
             var upgrade = upgrades.extractItem(i, 1, false);
             if (!upgrade.isEmpty()) {
