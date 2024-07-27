@@ -15,7 +15,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
-import appeng.api.storage.cells.ICellWorkbenchItem;
+import appeng.api.upgrades.IUpgradeableItem;
 import appeng.core.AppEng;
 
 /**
@@ -45,12 +45,12 @@ public class AddItemUpgradeRecipe extends CustomRecipe {
             return ItemStack.EMPTY;
         }
 
-        // Find the workbench item
+        // Find the upgradable item
         for (int i = 0; i < input.size(); i++) {
             var stack = input.getItem(i);
-            if (stack.getItem() instanceof ICellWorkbenchItem workbenchItem) {
+            if (stack.getItem() instanceof IUpgradeableItem upgradableItem) {
                 var upgraded = stack.copy();
-                var upgrades = workbenchItem.getUpgrades(upgraded);
+                var upgrades = upgradableItem.getUpgrades(upgraded);
 
                 for (int j = 0; j < input.size(); j++) {
                     if (j == i) {
