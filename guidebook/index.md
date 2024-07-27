@@ -3,6 +3,9 @@ navigation:
   title: Index/Table of Contents
   position: 0
 ---
+
+![Logo](assets/logo.png)
+
 # What is Applied Energistics 2?
 
 # How To Use This Guide
