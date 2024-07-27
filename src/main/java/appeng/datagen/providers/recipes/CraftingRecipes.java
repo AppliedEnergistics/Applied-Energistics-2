@@ -28,6 +28,8 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.datagen.providers.tags.ConventionTags;
 import appeng.items.tools.powered.PortableCellItem;
+import appeng.recipes.game.AddItemUpgradeRecipe;
+import appeng.recipes.game.RemoveItemUpgradeRecipe;
 import appeng.recipes.game.StorageCellUpgradeRecipe;
 
 public class CraftingRecipes extends AE2RecipeProvider {
@@ -44,6 +46,8 @@ public class CraftingRecipes extends AE2RecipeProvider {
     protected void buildRecipes(RecipeOutput consumer) {
 
         storageCellUpgradeRecipes(consumer);
+
+        itemUpgradeRecipe(consumer);
 
         // ====================================================
         // Basic Cards
@@ -957,6 +961,11 @@ public class CraftingRecipes extends AE2RecipeProvider {
                         null);
             }
         }
+    }
+
+    private void itemUpgradeRecipe(RecipeOutput output) {
+        output.accept(AppEng.makeId("add_item_upgrade"), AddItemUpgradeRecipe.INSTANCE, null);
+        output.accept(AppEng.makeId("remove_item_upgrade"), RemoveItemUpgradeRecipe.INSTANCE, null);
     }
 
     private void portableCell(RecipeOutput consumer, ItemDefinition<PortableCellItem> cell) {

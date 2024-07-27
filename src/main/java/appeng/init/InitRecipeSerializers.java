@@ -27,7 +27,11 @@ import appeng.core.definitions.AEItems;
 import appeng.items.parts.FacadeItem;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.entropy.EntropyRecipeSerializer;
+import appeng.recipes.game.AddItemUpgradeRecipe;
+import appeng.recipes.game.AddItemUpgradeRecipeSerializer;
 import appeng.recipes.game.FacadeRecipe;
+import appeng.recipes.game.RemoveItemUpgradeRecipe;
+import appeng.recipes.game.RemoveItemUpgradeRecipeSerializer;
 import appeng.recipes.game.StorageCellUpgradeRecipe;
 import appeng.recipes.game.StorageCellUpgradeRecipeSerializer;
 import appeng.recipes.handlers.ChargerRecipe;
@@ -53,6 +57,8 @@ public final class InitRecipeSerializers {
         register(registry, TransformRecipe.TYPE_ID, TransformRecipeSerializer.INSTANCE);
         register(registry, ChargerRecipe.TYPE_ID, ChargerRecipeSerializer.INSTANCE);
         register(registry, StorageCellUpgradeRecipe.SERIALIZER_ID, StorageCellUpgradeRecipeSerializer.INSTANCE);
+        register(registry, AddItemUpgradeRecipe.SERIALIZER_ID, AddItemUpgradeRecipeSerializer.INSTANCE);
+        register(registry, RemoveItemUpgradeRecipe.SERIALIZER_ID, RemoveItemUpgradeRecipeSerializer.INSTANCE);
     }
 
     private static void register(Registry<RecipeSerializer<?>> registry, ResourceLocation id,

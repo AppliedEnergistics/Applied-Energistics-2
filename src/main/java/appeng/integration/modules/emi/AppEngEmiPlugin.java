@@ -27,6 +27,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import appeng.api.config.CondenserOutput;
 import appeng.api.features.P2PTunnelAttunementInternal;
 import appeng.api.integrations.emi.EmiStackConverters;
+import appeng.api.upgrades.Upgrades;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.FacadeCreativeTab;
@@ -114,6 +115,13 @@ public class AppEngEmiPlugin implements EmiPlugin {
         // Facades
         if (AEConfig.instance().isEnableFacadeRecipesInRecipeViewer()) {
             registry.addDeferredRecipes(this::registerFacades);
+        }
+
+        // Simple item upgrades
+        for (var entry : Upgrades.getUpgradableItems().entrySet()) {
+            for (var upgrade : entry.getValue()) {
+                registry.addRecipe(new EmiAddItemUpgradeRecipe(entry.getKey(), upgrade));
+            }
         }
 
         // Remove items
