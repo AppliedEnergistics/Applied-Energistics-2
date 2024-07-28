@@ -82,10 +82,6 @@ public interface IGridServiceProvider {
     default void removeNode(IGridNode gridNode) {
     }
 
-    @Deprecated(forRemoval = true, since = "1.20.1")
-    default void addNode(IGridNode gridNode) {
-    }
-
     /**
      * Informs the grid service about a node that was added to the grid.
      * <p>
@@ -97,7 +93,6 @@ public interface IGridServiceProvider {
      *                  {@link #saveNodeData}.
      */
     default void addNode(IGridNode gridNode, @Nullable CompoundTag savedData) {
-        addNode(gridNode);
     }
 
     /**

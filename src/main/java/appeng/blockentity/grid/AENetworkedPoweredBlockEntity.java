@@ -26,7 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.PowerUnits;
+import appeng.api.config.PowerUnit;
 import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IManagedGridNode;
@@ -38,7 +38,7 @@ import appeng.blockentity.powersink.AEBasePoweredBlockEntity;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 
-public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity
+public abstract class AENetworkedPoweredBlockEntity extends AEBasePoweredBlockEntity
         implements IGridConnectedBlockEntity {
 
     private final IManagedGridNode mainNode = createMainNode()
@@ -47,7 +47,7 @@ public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity
             .setInWorldNode(true)
             .setTagName("proxy");
 
-    public AENetworkPowerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+    public AENetworkedPoweredBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         onGridConnectableSidesChanged();
     }
@@ -123,7 +123,7 @@ public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity
 
         @Override
         public void applyTurn() {
-            injectExternalPower(PowerUnits.AE, CrankBlockEntity.POWER_PER_CRANK_TURN, Actionable.MODULATE);
+            injectExternalPower(PowerUnit.AE, CrankBlockEntity.POWER_PER_CRANK_TURN, Actionable.MODULATE);
         }
     }
 }

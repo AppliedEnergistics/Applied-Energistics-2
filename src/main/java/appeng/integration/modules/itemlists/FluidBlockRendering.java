@@ -30,6 +30,12 @@ public final class FluidBlockRendering {
     }
 
     public static void render(GuiGraphics guiGraphics, Fluid fluid, int x, int y, int width, int height) {
+        RenderSystem.runAsFancy(() -> {
+            renderInFancy(guiGraphics, fluid, x, y, width, height);
+        });
+    }
+
+    public static void renderInFancy(GuiGraphics guiGraphics, Fluid fluid, int x, int y, int width, int height) {
         var fluidState = fluid.defaultFluidState();
 
         var blockRenderer = Minecraft.getInstance().getBlockRenderer();

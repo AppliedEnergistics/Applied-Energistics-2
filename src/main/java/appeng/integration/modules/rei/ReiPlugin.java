@@ -203,7 +203,7 @@ public class ReiPlugin implements REIClientPlugin {
     @Override
     public void registerCollapsibleEntries(CollapsibleEntryRegistry registry) {
         if (AEConfig.instance().isEnableFacadesInRecipeViewer()) {
-            FacadeItem facadeItem = AEItems.FACADE.asItem();
+            FacadeItem facadeItem = AEItems.FACADE.get();
             registry.group(AppEng.makeId("facades"), Component.translatable("itemGroup.ae2.facades"),
                     stack -> stack.getType() == VanillaEntryTypes.ITEM && stack.<ItemStack>castValue().is(facadeItem));
         }
@@ -294,12 +294,12 @@ public class ReiPlugin implements REIClientPlugin {
             addDescription(registry, AEItems.SILICON_PRESS, GuiText.inWorldCraftingPresses.getTranslationKey());
         }
 
-        addDescription(registry, AEBlocks.CRANK, ItemModText.CRANK_DESCRIPTION.getTranslationKey());
+        addDescription(registry, AEBlocks.CRANK.item(), ItemModText.CRANK_DESCRIPTION.getTranslationKey());
     }
 
     private static void addDescription(DisplayRegistry registry, ItemDefinition<?> itemDefinition, String... message) {
         DefaultInformationDisplay info = DefaultInformationDisplay.createFromEntry(EntryStacks.of(itemDefinition),
-                itemDefinition.asItem().getDescription());
+                itemDefinition.get().getDescription());
         info.lines(Arrays.stream(message).map(Component::translatable).collect(Collectors.toList()));
         registry.add(info);
     }

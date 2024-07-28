@@ -31,7 +31,7 @@ import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 
-public abstract class AENetworkInvBlockEntity extends AEBaseInvBlockEntity
+public abstract class AENetworkedInvBlockEntity extends AEBaseInvBlockEntity
         implements IGridConnectedBlockEntity {
 
     private final IManagedGridNode mainNode = createMainNode()
@@ -39,7 +39,7 @@ public abstract class AENetworkInvBlockEntity extends AEBaseInvBlockEntity
             .setInWorldNode(true)
             .setTagName("proxy");
 
-    public AENetworkInvBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+    public AENetworkedInvBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         onGridConnectableSidesChanged();
     }

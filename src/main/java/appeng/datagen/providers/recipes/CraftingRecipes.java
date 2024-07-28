@@ -28,6 +28,8 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.datagen.providers.tags.ConventionTags;
 import appeng.items.tools.powered.PortableCellItem;
+import appeng.recipes.game.AddItemUpgradeRecipe;
+import appeng.recipes.game.RemoveItemUpgradeRecipe;
 import appeng.recipes.game.StorageCellUpgradeRecipe;
 
 public class CraftingRecipes extends AE2RecipeProvider {
@@ -44,6 +46,8 @@ public class CraftingRecipes extends AE2RecipeProvider {
     protected void buildRecipes(RecipeOutput consumer) {
 
         storageCellUpgradeRecipes(consumer);
+
+        itemUpgradeRecipe(consumer);
 
         // ====================================================
         // Basic Cards
@@ -383,7 +387,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .pattern("c a")
                 .pattern("aba")
                 .define('a', ConventionTags.IRON_INGOT)
-                .define('b', Items.STICKY_PISTON)
+                .define('b', Items.PISTON)
                 .define('c', ConventionTags.COPPER_INGOT)
                 .unlockedBy("has_crystals/fluix", has(ConventionTags.ALL_FLUIX))
                 .save(consumer, AppEng.makeId("network/blocks/inscribers"));
@@ -502,7 +506,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_crystals/fluix", has(ConventionTags.ALL_FLUIX))
                 .unlockedBy("has_glass_cable", has(AEParts.GLASS_CABLE.item(AEColor.TRANSPARENT)))
                 .save(consumer, AppEng.makeId("network/blocks/spatial_io_pylon"));
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.CHEST)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.ME_CHEST)
                 .pattern("aba")
                 .pattern("c c")
                 .pattern("ded")
@@ -706,7 +710,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .pattern("bcb")
                 .define('a', AEItems.ANNIHILATION_CORE)
                 .define('b', ConventionTags.IRON_INGOT)
-                .define('c', Items.STICKY_PISTON)
+                .define('c', Items.PISTON)
                 .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
                 .save(consumer, AppEng.makeId("network/parts/import_bus"));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEParts.LEVEL_EMITTER)
@@ -721,7 +725,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
                 .save(consumer, AppEng.makeId("network/parts/energy_level_emitter"));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEParts.STORAGE_BUS)
-                .requires(Items.STICKY_PISTON)
+                .requires(Items.PISTON)
                 .requires(ConventionTags.INTERFACE)
                 .requires(Items.PISTON)
                 .unlockedBy("has_interface", has(ConventionTags.INTERFACE))
@@ -959,25 +963,30 @@ public class CraftingRecipes extends AE2RecipeProvider {
         }
     }
 
+    private void itemUpgradeRecipe(RecipeOutput output) {
+        output.accept(AppEng.makeId("add_item_upgrade"), AddItemUpgradeRecipe.INSTANCE, null);
+        output.accept(AppEng.makeId("remove_item_upgrade"), RemoveItemUpgradeRecipe.INSTANCE, null);
+    }
+
     private void portableCell(RecipeOutput consumer, ItemDefinition<PortableCellItem> cell) {
         ItemDefinition<?> housing;
-        if (cell.asItem().getKeyType() == AEKeyType.items()) {
+        if (cell.get().getKeyType() == AEKeyType.items()) {
             housing = AEItems.ITEM_CELL_HOUSING;
-        } else if (cell.asItem().getKeyType() == AEKeyType.fluids()) {
+        } else if (cell.get().getKeyType() == AEKeyType.fluids()) {
             housing = AEItems.FLUID_CELL_HOUSING;
         } else {
-            throw new RuntimeException("No housing known for " + cell.asItem().getKeyType());
+            throw new RuntimeException("No housing known for " + cell.get().getKeyType());
         }
 
-        var component = cell.asItem().getTier().componentSupplier().get();
+        var component = cell.get().getTier().componentSupplier().get();
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, cell)
-                .requires(AEBlocks.CHEST)
+                .requires(AEBlocks.ME_CHEST)
                 .requires(component)
                 .requires(AEBlocks.ENERGY_CELL)
                 .requires(housing)
                 .unlockedBy("has_" + housing.id().getPath(), has(housing))
                 .unlockedBy("has_energy_cell", has(AEBlocks.ENERGY_CELL))
-                .save(consumer, cell.asItem().getRecipeId());
+                .save(consumer, cell.get().getRecipeId());
     }
 
     private void addSpatialCells(RecipeOutput consumer) {

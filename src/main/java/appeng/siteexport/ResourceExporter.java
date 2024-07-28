@@ -15,7 +15,7 @@ import net.minecraft.world.level.material.Fluid;
 
 public interface ResourceExporter {
     default void referenceItem(ItemLike item) {
-        referenceItem(new ItemStack(item.asItem()));
+        referenceItem(new ItemStack(item));
     }
 
     void referenceItem(ItemStack stack);

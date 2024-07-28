@@ -26,8 +26,6 @@ import net.minecraft.resources.ResourceLocation;
 import appeng.api.client.StorageCellModels;
 import appeng.api.storage.StorageCells;
 import appeng.core.definitions.AEItems;
-import appeng.core.registries.cell.BasicFluidCellGuiHandler;
-import appeng.core.registries.cell.BasicItemCellGuiHandler;
 import appeng.me.cells.BasicCellHandler;
 import appeng.me.cells.CreativeCellHandler;
 
@@ -76,8 +74,6 @@ public final class InitStorageCells {
     public static void init() {
         StorageCells.addCellHandler(BasicCellHandler.INSTANCE);
         StorageCells.addCellHandler(CreativeCellHandler.INSTANCE);
-        StorageCells.addCellGuiHandler(new BasicItemCellGuiHandler());
-        StorageCells.addCellGuiHandler(new BasicFluidCellGuiHandler());
 
         StorageCellModels.registerModel(AEItems.ITEM_CELL_1K, MODEL_CELL_ITEMS_1K);
         StorageCellModels.registerModel(AEItems.ITEM_CELL_4K, MODEL_CELL_ITEMS_4K);

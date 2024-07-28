@@ -37,7 +37,7 @@ class EmiCondenserRecipe extends BasicEmiRecipe {
     private final EmiStack output;
 
     public EmiCondenserRecipe(CondenserOutput type) {
-        super(CATEGORY, getRecipeId(type), 94, 48);
+        super(CATEGORY, getRecipeId(type), 96, 48);
         this.type = type;
         this.output = EmiStack.of(getOutput(type));
         this.outputs.add(this.output);
@@ -49,24 +49,24 @@ class EmiCondenserRecipe extends BasicEmiRecipe {
     public void addWidgets(WidgetHolder widgets) {
 
         var background = AppEng.makeId("textures/guis/condenser.png");
-        widgets.addTexture(background, 0, 0, 94, 48, 50, 25);
+        widgets.addTexture(background, 0, 0, 96, 48, 48, 25);
 
         var statesLocation = AppEng.makeId("textures/guis/states.png");
-        widgets.addTexture(statesLocation, 2, 28, 14, 14, 241, 81);
-        widgets.addTexture(statesLocation, 78, 28, 16, 16, 240, 240);
+        widgets.addTexture(statesLocation, 4, 28, 14, 14, 241, 81);
+        widgets.addTexture(statesLocation, 80, 28, 16, 16, 240, 240);
 
-        widgets.addAnimatedTexture(background, 70, 0, 6, 18, 178, 25,
+        widgets.addAnimatedTexture(background, 72, 0, 6, 18, 176, 0,
                 2000, false, true, false);
 
         if (type == CondenserOutput.MATTER_BALLS) {
-            widgets.addTexture(statesLocation, 78, 28, 14, 14, 16, 112);
+            widgets.addTexture(statesLocation, 80, 28, 14, 14, 16, 112);
         } else if (type == CondenserOutput.SINGULARITY) {
-            widgets.addTexture(statesLocation, 78, 28, 14, 14, 32, 112);
+            widgets.addTexture(statesLocation, 80, 28, 14, 14, 32, 112);
         }
-        widgets.addTooltipText(getTooltip(type), 78, 28, 16, 16);
+        widgets.addTooltipText(getTooltip(type), 80, 28, 16, 16);
 
-        widgets.addSlot(output, 54, 26).drawBack(false);
-        widgets.addSlot(viableStorageComponents, 50, 0).drawBack(false);
+        widgets.addSlot(output, 56, 26).drawBack(false);
+        widgets.addSlot(viableStorageComponents, 52, 0).drawBack(false);
 
     }
 

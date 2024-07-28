@@ -77,7 +77,6 @@ public final class ConventionTags {
     // Includes synthetic/purified
     public static final TagKey<Item> ALL_NETHER_QUARTZ = tag("ae2:all_nether_quartz");
     public static final TagKey<Item> NETHER_QUARTZ = Tags.Items.GEMS_QUARTZ;
-    public static final TagKey<Item> NETHER_QUARTZ_ORE = Tags.Items.ORES_QUARTZ;
 
     // Includes synthetic/purified
     public static final TagKey<Item> ALL_FLUIX = tag("ae2:all_fluix");
@@ -88,11 +87,9 @@ public final class ConventionTags {
 
     public static final TagKey<Item> GOLD_NUGGET = Tags.Items.NUGGETS_GOLD;
     public static final TagKey<Item> GOLD_INGOT = Tags.Items.INGOTS_GOLD;
-    public static final TagKey<Item> GOLD_ORE = Tags.Items.ORES_GOLD;
 
     public static final TagKey<Item> IRON_NUGGET = Tags.Items.NUGGETS_IRON;
     public static final TagKey<Item> IRON_INGOT = Tags.Items.INGOTS_IRON;
-    public static final TagKey<Item> IRON_ORE = Tags.Items.ORES_IRON;
 
     public static final TagKey<Item> DIAMOND = Tags.Items.GEMS_DIAMOND;
     public static final TagKey<Item> REDSTONE = Tags.Items.DUSTS_REDSTONE;
@@ -105,7 +102,6 @@ public final class ConventionTags {
     public static final TagKey<Item> CHEST = Tags.Items.CHESTS_WOODEN;
 
     public static final TagKey<Item> STONE = Tags.Items.STONES;
-    public static final TagKey<Item> COBBLESTONE = Tags.Items.COBBLESTONES;
     public static final TagKey<Item> GLASS = Tags.Items.GLASS_BLOCKS;
     public static final TagKey<Block> GLASS_BLOCK = Tags.Blocks.GLASS_BLOCKS;
 
@@ -156,18 +152,12 @@ public final class ConventionTags {
     /**
      * Used to identify items that act as wrenches.
      */
-    public static final TagKey<Item> WRENCH = tag("c:tools/wrenches");
+    public static final TagKey<Item> WRENCH = tag("c:tools/wrench");
 
     public static final Map<DyeColor, TagKey<Item>> DYES = Arrays.stream(DyeColor.values())
             .collect(Collectors.toMap(
                     Function.identity(),
                     dye -> tag("c:dyes/" + dye.getSerializedName())));
-
-    public static final TagKey<Block> STAINED_GLASS_BLOCK = Tags.Blocks.GLASS_BLOCKS_TINTED;
-
-    public static final TagKey<Block> TERRACOTTA_BLOCK = blockTag("c:terracotta");
-
-    public static final TagKey<Item> STORAGE_BLOCKS = Tags.Items.STORAGE_BLOCKS;
 
     public static final TagKey<Item> CURIOS = tag("curios:curio");
 

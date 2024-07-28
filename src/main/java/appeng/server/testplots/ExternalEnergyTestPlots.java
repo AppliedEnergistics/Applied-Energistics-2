@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import appeng.api.stacks.AEItemKey;
 import appeng.block.misc.GrowthAcceleratorBlock;
 import appeng.blockentity.misc.GrowthAcceleratorBlockEntity;
-import appeng.blockentity.storage.ChestBlockEntity;
+import appeng.blockentity.storage.MEChestBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -60,13 +60,13 @@ public class ExternalEnergyTestPlots {
     @TestPlot("fe_chest")
     public static void testChest(PlotBuilder plot) {
         placeForgeEnergyGenerator(plot);
-        plot.blockEntity(ORIGIN, AEBlocks.CHEST, chest -> {
+        plot.blockEntity(ORIGIN, AEBlocks.ME_CHEST, chest -> {
             chest.getInternalInventory().addItems(AEItems.ITEM_CELL_1K.stack());
         });
         plot.test(helper -> helper.startSequence()
                 .thenWaitUntil(helper::checkAllInitialized)
                 .thenWaitUntil(() -> {
-                    var chest = (ChestBlockEntity) helper.getBlockEntity(ORIGIN);
+                    var chest = (MEChestBlockEntity) helper.getBlockEntity(ORIGIN);
                     helper.check(chest.isPowered(), "should be powered", ORIGIN);
                     var linkStatus = chest.getLinkStatus();
                     helper.check(linkStatus.connected(), "link status should be connected: "

@@ -168,7 +168,7 @@ public final class AutoCraftingTestPlots {
     private static void buildChestCraftingExport(PlotBuilder plot) {
         // Subsystem to export chests via crafting card export bus
         plot.cable("0 0 0").part(Direction.SOUTH, AEParts.EXPORT_BUS, eb -> {
-            eb.getUpgrades().addItems(new ItemStack(AEItems.CRAFTING_CARD));
+            eb.getUpgrades().addItems(AEItems.CRAFTING_CARD.stack());
             eb.getConfig().insert(0, AEItemKey.of(Items.CHEST), 1, Actionable.MODULATE);
         });
         plot.block("0 0 1", Blocks.CHEST);

@@ -56,14 +56,6 @@ public interface GenericInternalInventory {
     }
 
     /**
-     * Return true if the key would generally be allowed, ignoring the current state of the inventory.
-     */
-    @Deprecated(since = "1.20.4")
-    default boolean isAllowed(AEKey what) {
-        return isSupportedType(what);
-    }
-
-    /**
      * Return true if the key is {@link #isSupportedType(AEKey) of a supported type} and would pass a potential filter
      * configured for the given slot.
      */

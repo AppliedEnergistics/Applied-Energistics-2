@@ -65,6 +65,7 @@ import appeng.api.storage.StorageCells;
 import appeng.api.util.AEColor;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.blockentity.storage.DriveBlockEntity;
+import appeng.blockentity.storage.MEChestBlockEntity;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -86,9 +87,6 @@ import appeng.util.Platform;
 @TestPlotClass
 public final class TestPlots {
     private static final Logger LOG = LoggerFactory.getLogger(TestPlots.class);
-
-    @Deprecated(forRemoval = true, since = "1.20.4")
-    private static final List<Class<?>> PLOT_CLASSES = new ArrayList<>();
 
     @Nullable
     private static Map<ResourceLocation, Consumer<PlotBuilder>> plots;
@@ -173,7 +171,7 @@ public final class TestPlots {
     }
 
     private static List<Class<?>> findAllTestPlotClasses() {
-        var result = new ArrayList<>(PLOT_CLASSES);
+        var result = new ArrayList<Class<?>>();
 
         for (var data : ModList.get().getAllScanData()) {
             for (var annotation : data.getAnnotations()) {
@@ -189,15 +187,6 @@ public final class TestPlots {
         }
 
         return result;
-    }
-
-    /**
-     * Annotate with @TestPlotClass
-     */
-    @Deprecated(forRemoval = true, since = "1.20.4")
-    public static synchronized void addPlotClass(Class<?> clazz) {
-        PLOT_CLASSES.add(clazz);
-        plots = null;// reset the plots, in case they are already initialized
     }
 
     public static List<ResourceLocation> getPlotIds() {
@@ -301,7 +290,7 @@ public final class TestPlots {
 
     @TestPlot("item_chest")
     public static void itemChest(PlotBuilder plot) {
-        plot.blockEntity("0 0 0", AEBlocks.CHEST, chest -> {
+        plot.blockEntity("0 0 0", AEBlocks.ME_CHEST, chest -> {
             var cellItem = AEItems.ITEM_CELL_1K.stack();
             var cellInv = StorageCells.getCellInventory(cellItem, null);
             var r = RandomSource.create();
@@ -318,7 +307,7 @@ public final class TestPlots {
 
     @TestPlot("fluid_chest")
     public static void fluidChest(PlotBuilder plot) {
-        plot.blockEntity("0 0 0", AEBlocks.CHEST, chest -> {
+        plot.blockEntity("0 0 0", AEBlocks.ME_CHEST, chest -> {
             var cellItem = AEItems.FLUID_CELL_1K.stack();
             var cellInv = StorageCells.getCellInventory(cellItem, null);
             var r = RandomSource.create();
@@ -546,7 +535,7 @@ public final class TestPlots {
                     .thenExecuteAfter(1, () -> {
                         var pos = helper.absolutePos(BlockPos.ZERO);
                         var importBus = PartHelper.setPart(helper.getLevel(), pos, Direction.NORTH,
-                                null, AEParts.IMPORT_BUS.asItem());
+                                null, AEParts.IMPORT_BUS.get());
                         importBus.getUpgrades().addItems(AEItems.REDSTONE_CARD.stack());
                         importBus.getConfigManager().putSetting(Settings.REDSTONE_CONTROLLED,
                                 RedstoneMode.SIGNAL_PULSE);
@@ -569,7 +558,7 @@ public final class TestPlots {
         plot.creativeEnergyCell(origin.below());
         plot.blockEntity(
                 origin,
-                AEBlocks.CHEST,
+                AEBlocks.ME_CHEST,
                 chest -> chest.setCell(createMatterCannon(Items.IRON_NUGGET)));
 
         plot.block("-2 [0,1] 5", Blocks.STONE);
@@ -611,7 +600,7 @@ public final class TestPlots {
     public static void testInsertFluidIntoMEChest(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
         plot.creativeEnergyCell(origin.below());
-        plot.blockEntity(origin, AEBlocks.CHEST, chest -> {
+        plot.blockEntity(origin, AEBlocks.ME_CHEST, chest -> {
             chest.setCell(AEItems.FLUID_CELL_4K.stack());
         });
         plot.cable(origin.east())
@@ -624,7 +613,7 @@ public final class TestPlots {
         plot.creativeEnergyCell(origin.east().north().below());
 
         plot.test(helper -> helper.succeedWhen(() -> {
-            var meChest = (appeng.blockentity.storage.ChestBlockEntity) helper.getBlockEntity(origin);
+            var meChest = (MEChestBlockEntity) helper.getBlockEntity(origin);
             helper.assertContains(meChest.getInventory(), AEFluidKey.of(Fluids.WATER));
         }));
     }
@@ -636,16 +625,16 @@ public final class TestPlots {
     public static void testInsertItemsIntoMEChest(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
         plot.creativeEnergyCell(origin.below());
-        plot.blockEntity(origin, AEBlocks.CHEST, chest -> {
+        plot.blockEntity(origin, AEBlocks.ME_CHEST, chest -> {
             var cell = AEItems.ITEM_CELL_1K.stack();
-            AEItems.ITEM_CELL_1K.asItem().getConfigInventory(cell).addFilter(Items.REDSTONE);
+            AEItems.ITEM_CELL_1K.get().getConfigInventory(cell).addFilter(Items.REDSTONE);
             chest.setCell(cell);
         });
         // Hopper to test insertion of stuff. It should try to insert stick first.
         plot.hopper(origin.above(), Direction.DOWN, Items.STICK, Items.REDSTONE);
 
         plot.test(helper -> helper.succeedWhen(() -> {
-            var meChest = (appeng.blockentity.storage.ChestBlockEntity) helper.getBlockEntity(origin);
+            var meChest = (MEChestBlockEntity) helper.getBlockEntity(origin);
             helper.assertContains(meChest.getInventory(), AEItemKey.of(Items.REDSTONE));
             // The stick should still be in the hopper
             helper.assertContainerContains(origin.above(), Items.STICK);
@@ -732,7 +721,7 @@ public final class TestPlots {
                 var cellInv = drive.getInternalInventory();
                 for (int i = 0; i < cellInv.size(); i++) {
                     var creativeCell = AEItems.CREATIVE_CELL.stack();
-                    var configInv = AEItems.CREATIVE_CELL.asItem().getConfigInventory(creativeCell);
+                    var configInv = AEItems.CREATIVE_CELL.get().getConfigInventory(creativeCell);
 
                     for (int j = 0; j < configInv.size(); j++) {
                         if (!keysToAdd.hasNext()) {

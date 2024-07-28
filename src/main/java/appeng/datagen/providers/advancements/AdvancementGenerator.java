@@ -280,7 +280,7 @@ public class AdvancementGenerator implements AdvancementProvider.AdvancementGene
 
         var facade = Advancement.Builder.advancement()
                 .display(
-                        AEItems.FACADE.asItem().createFacadeForItemUnchecked(new ItemStack(Items.STONE)),
+                        AEItems.FACADE.get().createFacadeForItemUnchecked(new ItemStack(Items.STONE)),
                         localization.component("achievement.ae2.Facade", "Network Aesthetics"),
                         localization.component("achievement.ae2.Facade.desc", "Craft a Cable Facade"),
                         null /* background */,

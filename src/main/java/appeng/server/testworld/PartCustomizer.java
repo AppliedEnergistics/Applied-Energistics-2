@@ -19,7 +19,7 @@ public record PartCustomizer<T extends IPart>(BoundingBox bb,
         Consumer<T> partCustomizer) implements BlockPlacingBuildAction {
     @Override
     public void placeBlock(ServerLevel level, Player player, BlockPos pos, BlockPos minPos, BlockPos maxPos) {
-        var placedPart = PartHelper.getPart(part.asItem(), level, pos, side);
+        var placedPart = PartHelper.getPart(part.get(), level, pos, side);
         if (placedPart != null) {
             partCustomizer.accept(placedPart);
         }

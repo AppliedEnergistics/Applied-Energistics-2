@@ -31,10 +31,9 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
-import appeng.core.AELog;
 import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
-import appeng.helpers.IMenuCraftingPacket;
+import appeng.helpers.ICraftingGridMenu;
 import appeng.items.storage.ViewCellItem;
 import appeng.me.storage.NullInventory;
 import appeng.util.CraftingRecipeUtil;
@@ -115,13 +114,8 @@ public record FillCraftingGridFromRecipePacket(
     public void handleOnServer(ServerPlayer player) {
         // Setup and verification
         var menu = player.containerMenu;
-        if (!(menu instanceof IMenuCraftingPacket cct)) {
+        if (!(menu instanceof ICraftingGridMenu cct)) {
             // Server might have closed the menu before the client-packet is processed. This is not an error.
-            return;
-        }
-
-        if (!cct.useRealItems()) {
-            AELog.warn("Trying to use real items for crafting in a pattern encoding terminal");
             return;
         }
 
@@ -134,7 +128,7 @@ public record FillCraftingGridFromRecipePacket(
         KeyCounter cachedStorage;
 
         @Nullable
-        var node = cct.getNetworkNode();
+        var node = cct.getGridNode();
         if (node != null && cct.getLinkStatus().connected()) {
             craftingService = node.getGrid().getCraftingService();
             storageService = node.getGrid().getStorageService();
@@ -236,12 +230,12 @@ public record FillCraftingGridFromRecipePacket(
 
             // This must be the last call since it changes the menu!
             var stacks = toAutoCraft.entrySet().stream()
-                    .map(e -> new IMenuCraftingPacket.AutoCraftEntry(e.getKey(), e.getValue())).toList();
+                    .map(e -> new ICraftingGridMenu.AutoCraftEntry(e.getKey(), e.getValue())).toList();
             cct.startAutoCrafting(stacks);
         }
     }
 
-    private ItemStack takeIngredientFromPlayer(IMenuCraftingPacket cct, ServerPlayer player, Ingredient ingredient) {
+    private ItemStack takeIngredientFromPlayer(ICraftingGridMenu cct, ServerPlayer player, Ingredient ingredient) {
         var playerInv = player.getInventory();
         for (int i = 0; i < playerInv.items.size(); i++) {
             // Do not take ingredients out of locked slots

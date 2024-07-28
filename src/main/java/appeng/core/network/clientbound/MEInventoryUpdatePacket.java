@@ -18,6 +18,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.connection.ConnectionType;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
@@ -199,7 +200,8 @@ public record MEInventoryUpdatePacket(
 
         private RegistryFriendlyByteBuf ensureData() {
             if (encodedEntries == null) {
-                encodedEntries = new RegistryFriendlyByteBuf(Unpooled.buffer(INITIAL_BUFFER_CAPACITY), registryAccess);
+                encodedEntries = new RegistryFriendlyByteBuf(Unpooled.buffer(INITIAL_BUFFER_CAPACITY), registryAccess,
+                        ConnectionType.NEOFORGE);
             }
             return encodedEntries;
         }

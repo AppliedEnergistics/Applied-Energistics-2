@@ -27,6 +27,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import appeng.api.config.CondenserOutput;
 import appeng.api.features.P2PTunnelAttunementInternal;
 import appeng.api.integrations.emi.EmiStackConverters;
+import appeng.api.upgrades.Upgrades;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.FacadeCreativeTab;
@@ -116,6 +117,13 @@ public class AppEngEmiPlugin implements EmiPlugin {
             registry.addDeferredRecipes(this::registerFacades);
         }
 
+        // Simple item upgrades
+        for (var entry : Upgrades.getUpgradableItems().entrySet()) {
+            for (var upgrade : entry.getValue()) {
+                registry.addRecipe(new EmiAddItemUpgradeRecipe(entry.getKey(), upgrade));
+            }
+        }
+
         // Remove items
         registry.removeEmiStacks(emiStack -> {
             var stack = emiStack.getItemStack();
@@ -160,7 +168,7 @@ public class AppEngEmiPlugin implements EmiPlugin {
             addDescription(registry, AEItems.SILICON_PRESS, GuiText.inWorldCraftingPresses);
         }
 
-        addDescription(registry, AEBlocks.CRANK, ItemModText.CRANK_DESCRIPTION);
+        addDescription(registry, AEBlocks.CRANK.item(), ItemModText.CRANK_DESCRIPTION);
 
     }
 

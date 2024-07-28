@@ -45,6 +45,31 @@ public record EncodedCraftingPattern(
                     EncodedCraftingPattern::new);
 
     public boolean containsMissingContent() {
-        return AEItems.MISSING_CONTENT.isSameAs(result) || inputs.stream().anyMatch(AEItems.MISSING_CONTENT::isSameAs);
+        return AEItems.MISSING_CONTENT.is(result) || inputs.stream().anyMatch(AEItems.MISSING_CONTENT::is);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+
+        EncodedCraftingPattern that = (EncodedCraftingPattern) object;
+        return canSubstitute == that.canSubstitute
+                && canSubstituteFluids == that.canSubstituteFluids
+                && ItemStack.matches(result, that.result)
+                && ItemStack.listMatches(inputs, that.inputs)
+                && recipeId.equals(that.recipeId);
+    }
+
+    @Override
+    public int hashCode() {
+        int result1 = ItemStack.hashStackList(inputs);
+        result1 = 31 * result1 + ItemStack.hashItemAndComponents(result);
+        result1 = 31 * result1 + recipeId.hashCode();
+        result1 = 31 * result1 + Boolean.hashCode(canSubstitute);
+        result1 = 31 * result1 + Boolean.hashCode(canSubstituteFluids);
+        return result1;
     }
 }

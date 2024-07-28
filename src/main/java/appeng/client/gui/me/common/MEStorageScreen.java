@@ -379,7 +379,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
             setTextContent(TEXT_ID_DIALOG_TITLE, this.title);
         } else if (this.menu.getTarget() instanceof IMEChest) {
             // ME Chest uses Item Terminals, but overrides the title
-            setTextContent(TEXT_ID_DIALOG_TITLE, GuiText.Chest.text());
+            setTextContent(TEXT_ID_DIALOG_TITLE, GuiText.MEChest.text());
         }
     }
 
@@ -810,6 +810,10 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         this.repo.updateView();
+    }
+
+    protected int getVisibleRows() {
+        return rows;
     }
 
     private void toggleTerminalStyle(SettingToggleButton<appeng.api.config.TerminalStyle> btn, boolean backwards) {

@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "minecraft:sticky_piston"
+      "item": "minecraft:piston"
     },
     {
       "tag": "ae2:interface"

@@ -43,7 +43,7 @@ public final class InitItemModelsProperties {
     }
 
     public static void init() {
-        ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.asItem();
+        ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.get();
         ItemProperties.register(colorApplicatorItem, COLORED_PREDICATE_ID,
                 (itemStack, level, entity, seed) -> {
                     // If the stack has no color, don't use the colored model since the impact of

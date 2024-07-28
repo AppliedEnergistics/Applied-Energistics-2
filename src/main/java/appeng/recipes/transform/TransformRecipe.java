@@ -81,7 +81,7 @@ public final class TransformRecipe implements Recipe<TransformRecipeInput> {
     @Override
     public ItemStack assemble(TransformRecipeInput container, HolderLookup.Provider registries) {
         ItemStack result = getResultItem(registries).copy();
-        if (AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(result) && result.getCount() > 1) {
+        if (AEItems.QUANTUM_ENTANGLED_SINGULARITY.is(result) && result.getCount() > 1) {
             QuantumBridgeBlockEntity.assignFrequency(result);
         }
         return result;

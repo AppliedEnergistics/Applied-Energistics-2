@@ -49,7 +49,7 @@ import appeng.api.orientation.BlockOrientation;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
-import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.blockentity.grid.AENetworkedBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
@@ -58,7 +58,7 @@ import appeng.util.NullConfigManager;
 import appeng.util.Platform;
 import appeng.util.iterators.ChainedIterator;
 
-public class CraftingBlockEntity extends AENetworkBlockEntity
+public class CraftingBlockEntity extends AENetworkedBlockEntity
         implements IAEMultiBlock<CraftingCPUCluster>, IPowerChannelState, IConfigurableObject {
 
     private final CraftingCPUCalculator calc = new CraftingCPUCalculator(this);

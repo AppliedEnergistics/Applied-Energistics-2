@@ -20,7 +20,6 @@ package appeng.blockentity.crafting;
 
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +29,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -44,17 +42,14 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.crafting.PushDirection;
-import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.blockentity.grid.AENetworkedBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.util.SettingsFrom;
 
-public class PatternProviderBlockEntity extends AENetworkBlockEntity implements PatternProviderLogicHost {
+public class PatternProviderBlockEntity extends AENetworkedBlockEntity implements PatternProviderLogicHost {
     protected final PatternProviderLogic logic = createLogic();
-
-    @Nullable
-    private PushDirection pendingPushDirectionChange;
 
     public PatternProviderBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -99,14 +94,6 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
 
     @Override
     public void onReady() {
-        if (pendingPushDirectionChange != null) {
-            level.setBlockAndUpdate(
-                    getBlockPos(),
-                    getBlockState().setValue(PatternProviderBlock.PUSH_DIRECTION, pendingPushDirectionChange));
-            pendingPushDirectionChange = null;
-            onGridConnectableSidesChanged();
-        }
-
         super.onReady();
         this.logic.updatePatterns();
     }
@@ -120,18 +107,6 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     @Override
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
-
-        // Remove in 1.20.1+: Convert legacy NBT orientation to blockstate
-        if (data.getBoolean("omniDirectional")) {
-            pendingPushDirectionChange = PushDirection.ALL;
-        } else if (data.contains("forward", Tag.TAG_STRING)) {
-            try {
-                var forward = Direction.valueOf(data.getString("forward").toUpperCase(Locale.ROOT));
-                pendingPushDirectionChange = PushDirection.fromDirection(forward);
-            } catch (IllegalArgumentException ignored) {
-            }
-        }
-
         this.logic.readFromNBT(data, registries);
     }
 

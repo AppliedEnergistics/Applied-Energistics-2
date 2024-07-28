@@ -34,14 +34,14 @@ import appeng.blockentity.AEBaseBlockEntity;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 
-public class AENetworkBlockEntity extends AEBaseBlockEntity implements IGridConnectedBlockEntity {
+public class AENetworkedBlockEntity extends AEBaseBlockEntity implements IGridConnectedBlockEntity {
 
     private final IManagedGridNode mainNode = createMainNode()
             .setVisualRepresentation(getItemFromBlockEntity())
             .setInWorldNode(true)
             .setTagName("proxy");
 
-    public AENetworkBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+    public AENetworkedBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         onGridConnectableSidesChanged();
     }

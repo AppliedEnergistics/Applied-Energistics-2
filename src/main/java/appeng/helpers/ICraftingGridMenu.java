@@ -31,9 +31,9 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ILinkStatus;
 
-public interface IMenuCraftingPacket {
+public interface ICraftingGridMenu {
     /**
-     * @return The current link status of the menu, allowing for gating access to {@link #getNetworkNode()}.
+     * @return The current link status of the menu, allowing for gating access to {@link #getGridNode()}.
      */
     default ILinkStatus getLinkStatus() {
         return ILinkStatus.ofConnected();
@@ -43,13 +43,13 @@ public interface IMenuCraftingPacket {
      * @return gain access to network infrastructure.
      */
     @Nullable
-    IGridNode getNetworkNode();
+    IGridNode getGridNode();
 
     /**
      * @return The energy source to use for grid operations (i.e. when transferring in / out from the network)
      */
     default IEnergySource getEnergySource() {
-        var node = getNetworkNode();
+        var node = getGridNode();
         if (node == null) {
             return IEnergySource.empty();
         } else {
@@ -66,11 +66,6 @@ public interface IMenuCraftingPacket {
      * @return who are we?
      */
     IActionSource getActionSource();
-
-    /**
-     * @return consume items?
-     */
-    boolean useRealItems();
 
     /**
      * @return array of view cells. can contain empty itemstacks.

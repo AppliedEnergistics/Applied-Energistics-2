@@ -181,14 +181,18 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
         return true;
     }
 
+    public MenuType<M> build(String id) {
+        return build(AppEng.makeId(id));
+    }
+
     /**
      * Creates a menu type that uses this helper as a factory and network deserializer.
      */
-    public MenuType<M> build(String id) {
+    public MenuType<M> build(ResourceLocation id) {
         Preconditions.checkState(menuType == null, "build was already called");
         Preconditions.checkState(this.id == null, "id should not be set");
 
-        this.id = AppEng.makeId(id);
+        this.id = id;
         menuType = IMenuTypeExtension.create(this::fromNetwork);
         InitMenuTypes.queueRegistration(this.id, menuType);
         MenuOpener.addOpener(menuType, this::open);

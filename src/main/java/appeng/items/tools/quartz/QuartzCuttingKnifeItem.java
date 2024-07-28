@@ -69,16 +69,18 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
 
     @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
+        var result = itemStack.copy();
+
         var broken = new MutableBoolean(false);
         if (CommonHooks.getCraftingPlayer() instanceof ServerPlayer serverPlayer) {
-            itemStack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, ignored -> broken.setTrue());
+            result.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, ignored -> broken.setTrue());
         } else {
             var currentServer = ServerLifecycleHooks.getCurrentServer();
             if (currentServer != null) {
-                itemStack.hurtAndBreak(1, currentServer.overworld(), null, ignored -> broken.setTrue());
+                result.hurtAndBreak(1, currentServer.overworld(), null, ignored -> broken.setTrue());
             }
         }
-        return broken.getValue() ? ItemStack.EMPTY : itemStack;
+        return broken.getValue() ? ItemStack.EMPTY : result;
     }
 
     @Override

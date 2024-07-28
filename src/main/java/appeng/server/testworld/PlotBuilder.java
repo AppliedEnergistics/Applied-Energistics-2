@@ -103,7 +103,7 @@ public interface PlotBuilder {
             Direction side,
             ItemDefinition<? extends PartItem<T>> part,
             Consumer<T> partCustomizer) {
-        addBuildAction(new PlacePart(bb(bb), part.asItem(), side));
+        addBuildAction(new PlacePart(bb(bb), part.get(), side));
         addBuildAction(new PartCustomizer<>(bb(bb), side, part, partCustomizer));
     }
 

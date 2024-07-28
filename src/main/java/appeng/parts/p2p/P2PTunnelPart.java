@@ -36,7 +36,7 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnits;
+import appeng.api.config.PowerUnit;
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.IMemoryCard;
@@ -281,8 +281,8 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
 
     }
 
-    protected void queueTunnelDrain(PowerUnits unit, double f) {
-        final double ae_to_tax = unit.convertTo(PowerUnits.AE, f * AEConfig.TUNNEL_POWER_LOSS);
+    protected void queueTunnelDrain(PowerUnit unit, double f) {
+        final double ae_to_tax = unit.convertTo(PowerUnit.AE, f * AEConfig.TUNNEL_POWER_LOSS);
 
         getMainNode().ifPresent(grid -> {
             grid.getEnergyService().extractAEPower(ae_to_tax, Actionable.MODULATE, PowerMultiplier.ONE);

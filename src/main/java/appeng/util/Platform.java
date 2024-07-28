@@ -61,7 +61,7 @@ import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import appeng.api.config.AccessRestriction;
-import appeng.api.config.PowerUnits;
+import appeng.api.config.PowerUnit;
 import appeng.api.config.SortOrder;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.util.DimensionalBlockPos;
@@ -138,8 +138,8 @@ public class Platform {
     }
 
     public static String formatPower(double p, boolean isRate) {
-        var displayUnits = AEConfig.instance().getSelectedPowerUnit();
-        p = PowerUnits.AE.convertTo(displayUnits, p);
+        var displayUnits = AEConfig.instance().getSelectedEnergyUnit();
+        p = PowerUnit.AE.convertTo(displayUnits, p);
 
         final String[] preFixes = { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
         var unitName = displayUnits.getSymbolName();

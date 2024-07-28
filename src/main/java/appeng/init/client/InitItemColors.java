@@ -54,7 +54,7 @@ public final class InitItemColors {
 
     private static void init(ItemColorRegistrar registrar) {
         // I checked, the ME chest doesn't keep its color in item form
-        registrar.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.CHEST.asItem());
+        registrar.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.ME_CHEST.asItem());
 
         registrar.register(MemoryCardItem::getTintColor, AEItems.MEMORY_CARD);
 

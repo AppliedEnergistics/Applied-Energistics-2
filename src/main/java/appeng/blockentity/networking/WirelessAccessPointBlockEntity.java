@@ -38,13 +38,13 @@ import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.RelativeSide;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
-import appeng.blockentity.grid.AENetworkInvBlockEntity;
+import appeng.blockentity.grid.AENetworkedInvBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.filter.AEItemDefinitionFilter;
 
-public class WirelessAccessPointBlockEntity extends AENetworkInvBlockEntity
+public class WirelessAccessPointBlockEntity extends AENetworkedInvBlockEntity
         implements IWirelessAccessPoint, IPowerChannelState {
 
     public static final int POWERED_FLAG = 1;

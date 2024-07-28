@@ -33,7 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnits;
+import appeng.api.config.PowerUnit;
 import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.inventories.InternalInventory;
@@ -45,14 +45,14 @@ import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.RelativeSide;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
-import appeng.blockentity.grid.AENetworkPowerBlockEntity;
+import appeng.blockentity.grid.AENetworkedPoweredBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.settings.TickRates;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGridTickable {
+public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements IGridTickable {
     public static final int POWER_MAXIMUM_AMOUNT = 1600;
     private static final int POWER_THRESHOLD = POWER_MAXIMUM_AMOUNT - 1;
     private boolean working;
@@ -203,7 +203,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
                 final double extracted = grid.getEnergyService().extractAEPower(toExtract, Actionable.MODULATE,
                         PowerMultiplier.ONE);
 
-                this.injectExternalPower(PowerUnits.AE, extracted, Actionable.MODULATE);
+                this.injectExternalPower(PowerUnit.AE, extracted, Actionable.MODULATE);
             });
 
             changed = true;

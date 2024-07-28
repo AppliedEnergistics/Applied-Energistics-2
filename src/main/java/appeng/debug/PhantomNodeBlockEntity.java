@@ -28,10 +28,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
-import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.blockentity.grid.AENetworkedBlockEntity;
 import appeng.me.helpers.BlockEntityNodeListener;
 
-public class PhantomNodeBlockEntity extends AENetworkBlockEntity {
+public class PhantomNodeBlockEntity extends AENetworkedBlockEntity {
 
     private IManagedGridNode proxy = null;
     private boolean crashMode = false;

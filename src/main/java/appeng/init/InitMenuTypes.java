@@ -26,7 +26,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.menu.implementations.CellWorkbenchMenu;
-import appeng.menu.implementations.ChestMenu;
 import appeng.menu.implementations.CondenserMenu;
 import appeng.menu.implementations.DriveMenu;
 import appeng.menu.implementations.EnergyLevelEmitterMenu;
@@ -35,6 +34,7 @@ import appeng.menu.implementations.IOBusMenu;
 import appeng.menu.implementations.IOPortMenu;
 import appeng.menu.implementations.InscriberMenu;
 import appeng.menu.implementations.InterfaceMenu;
+import appeng.menu.implementations.MEChestMenu;
 import appeng.menu.implementations.MolecularAssemblerMenu;
 import appeng.menu.implementations.PatternAccessTermMenu;
 import appeng.menu.implementations.PatternProviderMenu;
@@ -71,7 +71,7 @@ public final class InitMenuTypes {
         registerAll(registry,
                 BasicCellChestMenu.TYPE,
                 CellWorkbenchMenu.TYPE,
-                ChestMenu.TYPE,
+                MEChestMenu.TYPE,
                 CondenserMenu.TYPE,
                 CraftAmountMenu.TYPE,
                 CraftConfirmMenu.TYPE,

@@ -40,7 +40,7 @@ import appeng.api.orientation.BlockOrientation;
 import appeng.api.util.AECableType;
 import appeng.block.qnb.QnbFormedState;
 import appeng.blockentity.ServerTickingBlockEntity;
-import appeng.blockentity.grid.AENetworkInvBlockEntity;
+import appeng.blockentity.grid.AENetworkedInvBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.me.cluster.IAEMultiBlock;
@@ -50,7 +50,7 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
+public class QuantumBridgeBlockEntity extends AENetworkedInvBlockEntity
         implements IAEMultiBlock<QuantumCluster>, ServerTickingBlockEntity {
 
     public static final ModelProperty<QnbFormedState> FORMED_STATE = new ModelProperty<>();

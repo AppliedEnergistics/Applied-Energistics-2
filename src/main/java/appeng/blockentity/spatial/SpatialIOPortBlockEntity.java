@@ -37,14 +37,14 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridSpatialEvent;
 import appeng.api.util.AECableType;
-import appeng.blockentity.grid.AENetworkInvBlockEntity;
+import appeng.blockentity.grid.AENetworkedInvBlockEntity;
 import appeng.hooks.ticking.TickHandler;
 import appeng.util.ILevelRunnable;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
+public class SpatialIOPortBlockEntity extends AENetworkedInvBlockEntity {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 2);
     private final InternalInventory invExt = new FilteredInternalInventory(this.inv, new SpatialIOFilter());

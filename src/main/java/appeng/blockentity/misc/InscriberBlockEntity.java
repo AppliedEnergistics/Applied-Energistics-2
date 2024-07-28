@@ -59,7 +59,7 @@ import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.blockentity.grid.AENetworkPowerBlockEntity;
+import appeng.blockentity.grid.AENetworkedPoweredBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
@@ -76,7 +76,7 @@ import appeng.util.inv.filter.IAEItemFilter;
  * @version rv2
  * @since rv0
  */
-public class InscriberBlockEntity extends AENetworkPowerBlockEntity
+public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
         implements IGridTickable, IUpgradeableObject, IConfigurableObject {
     private static final int MAX_PROCESSING_STEPS = 200;
 
@@ -535,13 +535,13 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
 
             // always allow name press
             if (inv == topItemHandler || inv == bottomItemHandler) {
-                if (AEItems.NAME_PRESS.isSameAs(stack)) {
+                if (AEItems.NAME_PRESS.is(stack)) {
                     return true;
                 }
             }
 
-            if (inv == sideItemHandler && (AEItems.NAME_PRESS.isSameAs(topItemHandler.getStackInSlot(0))
-                    || AEItems.NAME_PRESS.isSameAs(bottomItemHandler.getStackInSlot(0)))) {
+            if (inv == sideItemHandler && (AEItems.NAME_PRESS.is(topItemHandler.getStackInSlot(0))
+                    || AEItems.NAME_PRESS.is(bottomItemHandler.getStackInSlot(0)))) {
                 // can always rename anything
                 return true;
             }

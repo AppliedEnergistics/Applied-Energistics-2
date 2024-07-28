@@ -46,11 +46,8 @@ public final class AECapabilities {
     public static BlockCapability<GenericInternalInventory, @Nullable Direction> GENERIC_INTERNAL_INV = BlockCapability
             .createSided(AppEng.makeId("generic_internal_inv"), GenericInternalInventory.class);
 
-    /**
-     * The {@link Direction} context is always {@code null}. TODO 1.20.5: Replace @Nullable Direction by Void context.
-     */
-    public static BlockCapability<IInWorldGridNodeHost, @Nullable Direction> IN_WORLD_GRID_NODE_HOST = BlockCapability
-            .createSided(AppEng.makeId("inworld_gridnode_host"), IInWorldGridNodeHost.class);
+    public static BlockCapability<IInWorldGridNodeHost, Void> IN_WORLD_GRID_NODE_HOST = BlockCapability
+            .createVoid(AppEng.makeId("inworld_gridnode_host"), IInWorldGridNodeHost.class);
 
     public static BlockCapability<ICrankable, @Nullable Direction> CRANKABLE = BlockCapability
             .createSided(AppEng.makeId("crankable"), ICrankable.class);

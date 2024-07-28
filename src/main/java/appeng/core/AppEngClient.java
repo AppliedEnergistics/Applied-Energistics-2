@@ -38,10 +38,13 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.InterModComms;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
@@ -61,6 +64,7 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.parts.CableRenderMode;
+import appeng.blockentity.networking.CableBusTESR;
 import appeng.client.EffectType;
 import appeng.client.Hotkeys;
 import appeng.client.commands.ClientCommands;
@@ -78,6 +82,8 @@ import appeng.client.guidebook.scene.PartAnnotationStrategy;
 import appeng.client.guidebook.screen.GlobalInMemoryHistory;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.client.render.StorageCellClientTooltipComponent;
+import appeng.client.render.crafting.CraftingMonitorRenderer;
+import appeng.client.render.crafting.MolecularAssemblerRenderer;
 import appeng.client.render.effects.CraftingFx;
 import appeng.client.render.effects.EnergyFx;
 import appeng.client.render.effects.EnergyParticleData;
@@ -87,18 +93,26 @@ import appeng.client.render.effects.MatterCannonFX;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.client.render.effects.VibrantFX;
 import appeng.client.render.overlay.OverlayManager;
+import appeng.client.render.tesr.ChargerBlockEntityRenderer;
+import appeng.client.render.tesr.ChestBlockEntityRenderer;
+import appeng.client.render.tesr.CrankRenderer;
+import appeng.client.render.tesr.DriveLedBlockEntityRenderer;
+import appeng.client.render.tesr.InscriberTESR;
+import appeng.client.render.tesr.SkyChestTESR;
+import appeng.client.render.tesr.SkyStoneTankBlockEntityRenderer;
+import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEEntities;
 import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.MouseWheelPacket;
+import appeng.entity.TinyTNTPrimedRenderer;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.BlockAttackHook;
 import appeng.hooks.RenderBlockOutlineHook;
 import appeng.init.client.InitAdditionalModels;
 import appeng.init.client.InitBlockColors;
-import appeng.init.client.InitBlockEntityRenderers;
 import appeng.init.client.InitBuiltInModels;
 import appeng.init.client.InitEntityLayerDefinitions;
-import appeng.init.client.InitEntityRendering;
 import appeng.init.client.InitItemColors;
 import appeng.init.client.InitItemModelsProperties;
 import appeng.init.client.InitRenderTypes;
@@ -113,7 +127,7 @@ import appeng.util.Platform;
 /**
  * Client-specific functionality.
  */
-@OnlyIn(Dist.CLIENT)
+@Mod(value = AppEng.MOD_ID, dist = Dist.CLIENT)
 public class AppEngClient extends AppEngBase {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppEngClient.class);
 
@@ -134,8 +148,8 @@ public class AppEngClient extends AppEngBase {
 
     private final Guide guide;
 
-    public AppEngClient(IEventBus modEventBus) {
-        super(modEventBus);
+    public AppEngClient(IEventBus modEventBus, ModContainer container) {
+        super(modEventBus, container);
         InitBuiltInModels.init();
 
         this.registerClientCommands();
@@ -151,6 +165,7 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerHotkeys);
         modEventBus.addListener(this::registerDimensionSpecialEffects);
         modEventBus.addListener(InitScreens::init);
+        modEventBus.addListener(this::enqueueImcMessages);
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
@@ -174,6 +189,11 @@ public class AppEngClient extends AppEngBase {
             tickPinnedKeys(Minecraft.getInstance());
             Hotkeys.checkHotkeys();
         });
+    }
+
+    private void enqueueImcMessages(InterModEnqueueEvent event) {
+        // Our new light-mode UI doesn't play nice with darkmodeeverywhere
+        InterModComms.sendTo("darkmodeeverywhere", "dme-shaderblacklist", () -> "appeng.");
     }
 
     private void registerDimensionSpecialEffects(RegisterDimensionSpecialEffectsEvent event) {
@@ -275,7 +295,18 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        InitEntityRendering.init(event::registerEntityRenderer);
+        event.registerEntityRenderer(AEEntities.TINY_TNT_PRIMED.get(), TinyTNTPrimedRenderer::new);
+
+        event.registerBlockEntityRenderer(AEBlockEntities.CRANK.get(), CrankRenderer::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.INSCRIBER.get(), InscriberTESR::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.SKY_CHEST.get(), SkyChestTESR::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.CHARGER.get(), ChargerBlockEntityRenderer.FACTORY);
+        event.registerBlockEntityRenderer(AEBlockEntities.DRIVE.get(), DriveLedBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.ME_CHEST.get(), ChestBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.CRAFTING_MONITOR.get(), CraftingMonitorRenderer::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.MOLECULAR_ASSEMBLER.get(), MolecularAssemblerRenderer::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.CABLE_BUS.get(), CableBusTESR::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.SKY_STONE_TANK.get(), SkyStoneTankBlockEntityRenderer::new);
     }
 
     private void registerEntityLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
@@ -299,14 +330,11 @@ public class AppEngClient extends AppEngBase {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     public void modelRegistryEventAdditionalModels(ModelEvent.RegisterAdditional event) {
         InitAdditionalModels.init(event);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public void modelRegistryEvent(RegisterGeometryLoaders event) {
-        InitBlockEntityRenderers.init();
         InitItemModelsProperties.init();
     }
 

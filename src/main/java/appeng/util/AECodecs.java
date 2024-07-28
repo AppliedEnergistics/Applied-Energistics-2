@@ -59,7 +59,7 @@ public final class AECodecs {
 
             // When the input is a MISSING_CONTENT item and has the original data attached,
             // we write that back.
-            if (AEItems.MISSING_CONTENT.isSameAs(input)) {
+            if (AEItems.MISSING_CONTENT.is(input)) {
                 var originalData = input.get(AEComponents.MISSING_CONTENT_ITEMSTACK_DATA);
                 if (originalData != null) {
                     return DataResult.success(Dynamic.convert(NbtOps.INSTANCE, ops, originalData.getUnsafe()),

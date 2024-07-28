@@ -7,8 +7,8 @@ pluginManagement {
         id 'io.github.goooler.shadow' version '8.1.7'
         id 'de.undercouch.download' version '5.6.0'
         // https://projects.neoforged.net/neoforged/ModDevGradle
-        id 'net.neoforged.moddev' version '0.1.112'
-        id 'net.neoforged.moddev.repositories' version '0.1.112'
+        id 'net.neoforged.moddev' version '1.0.13'
+        id 'net.neoforged.moddev.repositories' version '1.0.13'
     }
 }
 

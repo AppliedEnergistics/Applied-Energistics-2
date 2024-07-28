@@ -18,7 +18,7 @@
 
 package appeng.client.gui.widgets;
 
-import appeng.api.config.PowerUnits;
+import appeng.api.config.PowerUnit;
 import appeng.api.config.Settings;
 import appeng.core.AEConfig;
 
@@ -27,14 +27,14 @@ public final class CommonButtons {
     private CommonButtons() {
     }
 
-    public static SettingToggleButton<PowerUnits> togglePowerUnit() {
-        return new SettingToggleButton<>(Settings.POWER_UNITS, AEConfig.instance().getSelectedPowerUnit(),
+    public static SettingToggleButton<PowerUnit> togglePowerUnit() {
+        return new SettingToggleButton<>(Settings.POWER_UNITS, AEConfig.instance().getSelectedEnergyUnit(),
                 CommonButtons::togglePowerUnit);
     }
 
-    private static void togglePowerUnit(SettingToggleButton<PowerUnits> button, boolean backwards) {
-        AEConfig.instance().nextPowerUnit(backwards);
-        button.set(AEConfig.instance().getSelectedPowerUnit());
+    private static void togglePowerUnit(SettingToggleButton<PowerUnit> button, boolean backwards) {
+        AEConfig.instance().nextEnergyUnit(backwards);
+        button.set(AEConfig.instance().getSelectedEnergyUnit());
     }
 
 }

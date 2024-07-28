@@ -30,11 +30,11 @@ public record SpawnExtraGridTestToolsChest(BlockPos chestPos, BlockPos gridPos,
         level.setBlock(absChestPod, AEBlocks.SMOOTH_SKY_STONE_CHEST.block().defaultBlockState(), Block.UPDATE_ALL);
 
         GridInitHelper.doAfterGridInit(level, absGridPos, false, (grid, gridNode) -> {
-            var chestOpt = level.getBlockEntity(absChestPod, AEBlockEntities.SKY_CHEST);
-            chestOpt.ifPresent(chest -> {
+            var chest = AEBlockEntities.SKY_CHEST.getBlockEntity(level, absChestPod);
+            if (chest != null) {
                 var inventory = chest.getInternalInventory();
                 NeoForge.EVENT_BUS.post(new SpawnExtraGridTestTools(plotId, inventory, grid));
-            });
+            }
         });
     }
 }

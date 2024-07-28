@@ -21,7 +21,6 @@ package appeng.blockentity;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -74,7 +73,6 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.orientation.BlockOrientation;
-import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.RelativeSide;
 import appeng.block.AEBaseEntityBlock;
 import appeng.client.render.model.AEModelData;
@@ -105,10 +103,6 @@ public class AEBaseBlockEntity extends BlockEntity
      * subsequently be equal.
      */
     private byte readyInvoked = 0;
-
-    // Remove in 1.20.1+: Convert legacy NBT orientation to blockstate
-    @Nullable
-    private BlockOrientation pendingOrientationChange;
 
     public AEBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -177,16 +171,6 @@ public class AEBaseBlockEntity extends BlockEntity
         } else {
             this.customName = null;
         }
-
-        // Remove in 1.20.1+: Convert legacy NBT orientation to blockstate
-        if (data.contains("forward", Tag.TAG_STRING) && data.contains("up", Tag.TAG_STRING)) {
-            try {
-                var forward = Direction.valueOf(data.getString("forward").toUpperCase(Locale.ROOT));
-                var up = Direction.valueOf(data.getString("up").toUpperCase(Locale.ROOT));
-                pendingOrientationChange = BlockOrientation.get(forward, up);
-            } catch (IllegalArgumentException ignored) {
-            }
-        }
     }
 
     @Override
@@ -212,15 +196,6 @@ public class AEBaseBlockEntity extends BlockEntity
     @MustBeInvokedByOverriders
     public void onReady() {
         readyInvoked++;
-
-        if (pendingOrientationChange != null) {
-            var state = getBlockState();
-            level.setBlockAndUpdate(getBlockPos(), IOrientationStrategy.get(state).setOrientation(
-                    state,
-                    pendingOrientationChange.getSide(RelativeSide.FRONT),
-                    pendingOrientationChange.getSpin()));
-            pendingOrientationChange = null;
-        }
     }
 
     protected void scheduleInit() {
@@ -350,6 +325,7 @@ public class AEBaseBlockEntity extends BlockEntity
 
         if (mode == SettingsFrom.MEMORY_CARD) {
             MemoryCardItem.exportGenericSettings(this, builder);
+            builder.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getItemFromBlockEntity().getDescription());
         }
     }
 

@@ -14,8 +14,8 @@ public final class ColorApplicatorPickColorHook {
     }
 
     public static boolean onPickColor(Player player, BlockHitResult hitResult) {
-        if (!AEItems.COLOR_APPLICATOR.isSameAs(player.getOffhandItem())
-                && !AEItems.COLOR_APPLICATOR.isSameAs(player.getMainHandItem())) {
+        if (!AEItems.COLOR_APPLICATOR.is(player.getOffhandItem())
+                && !AEItems.COLOR_APPLICATOR.is(player.getMainHandItem())) {
             return false;
         }
 
