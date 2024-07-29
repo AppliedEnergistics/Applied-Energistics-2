@@ -46,6 +46,7 @@ import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.IFacadeItem;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartCollisionHelper;
+import appeng.util.InteractionUtil;
 
 public class FacadePart implements IFacadePart {
 
@@ -121,10 +122,18 @@ public class FacadePart implements IFacadePart {
     }
 
     public boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos) {
-        if (!Items.STICK.equals(heldItem.getItem()))
+        if (!InteractionUtil.canWrenchRotate(heldItem))
             return false;
 
         return handleInteraction(player, true, heldItem);
+    }
+
+    public boolean onClicked(Player player, Vec3 pos) {
+        ItemStack heldItem = player.getMainHandItem();
+        if (!InteractionUtil.canWrenchRotate(heldItem))
+            return false;
+
+        return handleInteraction(player, false, heldItem);
     }
 
     private boolean handleInteraction(Player player, boolean shouldCycleState, ItemStack debugStack) {
@@ -140,9 +149,6 @@ public class FacadePart implements IFacadePart {
 
         DebugStickState debugstickstate = debugStack.getOrDefault(DataComponents.DEBUG_STICK_STATE,
                 DebugStickState.EMPTY);
-        if (debugstickstate == null) {
-            return false;
-        }
 
         Property<?> property = debugstickstate.properties().get(holder);
         if (shouldCycleState) {

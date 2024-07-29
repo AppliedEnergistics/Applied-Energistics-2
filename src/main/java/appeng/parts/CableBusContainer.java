@@ -645,6 +645,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                 // facade changed state
                 markForSave();
                 markForUpdate();
+                return true;
             }
         }
         return false;

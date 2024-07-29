@@ -73,4 +73,6 @@ public interface IFacadePart {
     BlockState getBlockState();
 
     boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos);
+
+    boolean onClicked(Player player, Vec3 pos);
 }

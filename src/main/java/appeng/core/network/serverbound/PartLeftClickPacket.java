@@ -63,6 +63,8 @@ public record PartLeftClickPacket(BlockHitResult hitResult, boolean alternateUse
                 } else {
                     selectedPart.part.onShiftClicked(player, localPos);
                 }
+            } else if (selectedPart.facade != null) {
+                selectedPart.facade.onClicked(player, localPos);
             }
         }
     }
