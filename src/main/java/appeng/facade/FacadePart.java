@@ -118,7 +118,6 @@ public class FacadePart implements IFacadePart {
 
     private void setBlockState(BlockState blockState) {
         facade.set(AEComponents.FACADE_BLOCK_STATE, blockState);
-        // TODO sync?
     }
 
     public boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos) {
