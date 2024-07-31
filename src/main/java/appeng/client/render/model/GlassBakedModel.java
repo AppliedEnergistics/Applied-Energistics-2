@@ -45,6 +45,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.model.IDynamicBakedModel;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
@@ -54,6 +55,7 @@ import appeng.decorative.solid.GlassState;
 import appeng.decorative.solid.QuartzGlassBlock;
 
 class GlassBakedModel implements IDynamicBakedModel {
+    private static final ChunkRenderTypeSet RENDER_TYPES = ChunkRenderTypeSet.of(RenderType.CUTOUT);
 
     // This unlisted property is used to determine the actual block that should be
     // rendered
@@ -315,4 +317,8 @@ class GlassBakedModel implements IDynamicBakedModel {
                 .getBlock() instanceof QuartzGlassBlock;
     }
 
+    @Override
+    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
+        return RENDER_TYPES;
+    }
 }

@@ -4,6 +4,7 @@
     "particle": "ae2:block/quantum_link",
     "sides": "ae2:block/quantum_link"
   },
+  "render_type": "cutout",
   "elements": [
     {
       "from": [2, 2, 2],

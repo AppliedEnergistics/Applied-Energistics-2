@@ -5,6 +5,7 @@
   "textures": {
     "torch": "ae2:block/wireless_access_point"
   },
+  "render_type": "cutout",
   "elements": [
     {
       "from": [7, 7, 4],

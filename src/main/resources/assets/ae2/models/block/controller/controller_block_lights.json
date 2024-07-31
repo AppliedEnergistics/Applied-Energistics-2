@@ -3,6 +3,7 @@
   "textures": {
     "particle": "ae2:block/controller"
   },
+  "render_type": "cutout",
   "elements": [
     {
       "faces": {

@@ -7,6 +7,7 @@
     "particle": "ae2:block/mysterious_cube_core",
     "core": "ae2:block/mysterious_cube_core"
   },
+  "render_type": "cutout",
   "elements": [
     {
       "from": [0.01, 0.01, 0.01],

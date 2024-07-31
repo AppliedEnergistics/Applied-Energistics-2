@@ -36,6 +36,7 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.model.IDynamicBakedModel;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
@@ -56,6 +57,8 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
             AppEng.makeId("block/paint2"));
     private static final Material TEXTURE_PAINT3 = new Material(TextureAtlas.LOCATION_BLOCKS,
             AppEng.makeId("block/paint3"));
+
+    private static final ChunkRenderTypeSet RENDER_TYPES = ChunkRenderTypeSet.of(RenderType.CUTOUT);
 
     private final TextureAtlasSprite[] textures;
 
@@ -187,5 +190,10 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
 
     static List<Material> getRequiredTextures() {
         return ImmutableList.of(TEXTURE_PAINT1, TEXTURE_PAINT2, TEXTURE_PAINT3);
+    }
+
+    @Override
+    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
+        return RENDER_TYPES;
     }
 }

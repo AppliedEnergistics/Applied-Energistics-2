@@ -3,6 +3,7 @@
   "textures": {
     "lights": "ae2:block/chest/lights_off"
   },
+  "render_type": "cutout",
   "elements": [
     {
       "from": [0, 0, 0],

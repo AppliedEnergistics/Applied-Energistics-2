@@ -117,7 +117,6 @@ import appeng.init.client.InitBuiltInModels;
 import appeng.init.client.InitEntityLayerDefinitions;
 import appeng.init.client.InitItemColors;
 import appeng.init.client.InitItemModelsProperties;
-import appeng.init.client.InitRenderTypes;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
 import appeng.items.storage.StorageCellTooltipComponent;
@@ -324,7 +323,6 @@ public class AppEngClient extends AppEngBase {
     private void postClientSetup(Minecraft minecraft) {
         StyleManager.initialize(minecraft.getResourceManager());
         InitStackRenderHandlers.init();
-        InitRenderTypes.init();
 
         // Only activate the site exporter when we're not running a release version, since it'll
         // replace blocks around spawn.

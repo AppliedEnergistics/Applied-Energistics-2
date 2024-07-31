@@ -5,6 +5,7 @@
     "particle": "ae2:block/quartz_fixture",
     "quartz": "ae2:block/quartz_fixture"
   },
+  "render_type": "cutout",
   "elements": [
     {
       "from": [7, 8, 10],

@@ -36,6 +36,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.client.render.DelegateBakedModel;
@@ -43,6 +44,7 @@ import appeng.thirdparty.fabric.MutableQuadView;
 import appeng.thirdparty.fabric.RenderContext;
 
 public class DriveBakedModel extends DelegateBakedModel {
+    private static final ChunkRenderTypeSet RENDER_TYPES = ChunkRenderTypeSet.of(RenderType.CUTOUT);
     private final Map<Item, BakedModel> cellModels;
     private final BakedModel defaultCellModel;
 
@@ -160,5 +162,10 @@ public class DriveBakedModel extends DelegateBakedModel {
             }
             return true;
         }
+    }
+
+    @Override
+    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
+        return RENDER_TYPES;
     }
 }

@@ -9,6 +9,7 @@
     "details": "ae2:block/chest/details",
     "particle": "ae2:block/chest/top_item"
   },
+  "render_type": "cutout",
   "elements": [
     {
       "from": [0, 7, 0],

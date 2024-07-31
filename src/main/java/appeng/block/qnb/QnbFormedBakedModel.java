@@ -39,6 +39,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.model.IDynamicBakedModel;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
@@ -48,7 +49,7 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 
 class QnbFormedBakedModel implements IDynamicBakedModel {
-
+    private static final ChunkRenderTypeSet RENDER_TYPES = ChunkRenderTypeSet.of(RenderType.CUTOUT);
     private static final Material TEXTURE_LINK = new Material(TextureAtlas.LOCATION_BLOCKS,
             AppEng.makeId("block/quantum_link"));
     private static final Material TEXTURE_RING = new Material(TextureAtlas.LOCATION_BLOCKS,
@@ -240,5 +241,10 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     public static List<Material> getRequiredTextures() {
         return ImmutableList.of(TEXTURE_LINK, TEXTURE_RING, TEXTURE_CABLE_GLASS, TEXTURE_COVERED_CABLE,
                 TEXTURE_RING_LIGHT, TEXTURE_RING_LIGHT_CORNER);
+    }
+
+    @Override
+    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
+        return RENDER_TYPES;
     }
 }

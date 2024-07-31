@@ -5,6 +5,7 @@
     "particle": "ae2:block/molecular_assembler",
     "base": "ae2:block/molecular_assembler"
   },
+  "render_type": "cutout",
   "elements": [
     {
       "from": [0, 0, 0],

@@ -3,6 +3,7 @@
   "textures": {
     "all": "ae2:block/molecular_assembler_lights"
   },
+  "render_type": "cutout",
   "elements": [
     {
       "from": [2, 2, 2],

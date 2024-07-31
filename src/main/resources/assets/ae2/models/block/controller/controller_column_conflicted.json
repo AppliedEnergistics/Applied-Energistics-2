@@ -5,6 +5,7 @@
     "lights": "ae2:block/controller_column_conflict",
     "particle": "ae2:block/controller"
   },
+  "render_type": "cutout",
   "elements": [
     {
       "faces": {
