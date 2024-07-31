@@ -58,6 +58,8 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -189,6 +191,9 @@ public class AppEngClient extends AppEngBase {
             tickPinnedKeys(Minecraft.getInstance());
             Hotkeys.checkHotkeys();
         });
+
+        container.registerExtensionPoint(IConfigScreenFactory.class,
+                (mc, parent) -> new ConfigurationScreen(container, parent));
     }
 
     private void enqueueImcMessages(InterModEnqueueEvent event) {
@@ -247,9 +252,7 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerHotkeys(RegisterKeyMappingsEvent e) {
-        if (AEConfig.instance().isGuideHotkeyEnabled()) {
-            e.register(OpenGuideHotkey.getHotkey());
-        }
+        e.register(OpenGuideHotkey.getHotkey());
         e.register(MOUSE_WHEEL_ITEM_MODIFIER);
         Hotkeys.finalizeRegistration(e::register);
     }

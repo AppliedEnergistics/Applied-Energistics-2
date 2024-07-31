@@ -43,7 +43,6 @@ import appeng.util.Platform;
 
 public final class AEConfig {
 
-    private final StartupConfig startup = new StartupConfig();
     private final ClientConfig client = new ClientConfig();
     private final CommonConfig common = new CommonConfig();
 
@@ -53,7 +52,6 @@ public final class AEConfig {
     private static AEConfig instance;
 
     private AEConfig(ModContainer container) {
-        container.registerConfig(ModConfig.Type.STARTUP, startup.spec);
         container.registerConfig(ModConfig.Type.CLIENT, client.spec);
         container.registerConfig(ModConfig.Type.COMMON, common.spec);
         container.getEventBus().addListener((ModConfigEvent.Loading evt) -> {
@@ -158,10 +156,6 @@ public final class AEConfig {
     public void setTerminalStyle(TerminalStyle setting) {
         client.terminalStyle.set(setting);
         client.spec.save();
-    }
-
-    public boolean isGuideHotkeyEnabled() {
-        return startup.enableGuideHotkey.get();
     }
 
     public double getGridEnergyStoragePerNode() {
@@ -406,19 +400,6 @@ public final class AEConfig {
     public void save() {
         common.spec.save();
         client.spec.save();
-    }
-
-    private static class StartupConfig {
-        private final ModConfigSpec spec;
-
-        public final BooleanValue enableGuideHotkey;
-
-        public StartupConfig() {
-            var builder = new ModConfigSpec.Builder();
-            this.enableGuideHotkey = define(builder, "enableGuideHotkey", true,
-                    "Enables the 'hold key to show guide' functionality in tooltips");
-            this.spec = builder.build();
-        }
     }
 
     private static class ClientConfig {
