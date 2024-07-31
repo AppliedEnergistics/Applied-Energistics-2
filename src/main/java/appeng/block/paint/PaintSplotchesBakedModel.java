@@ -43,7 +43,6 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AppEng;
-import appeng.core.AppEngClient;
 import appeng.helpers.Splotch;
 
 /**
@@ -58,6 +57,8 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
             AppEng.makeId("block/paint2"));
     private static final Material TEXTURE_PAINT3 = new Material(TextureAtlas.LOCATION_BLOCKS,
             AppEng.makeId("block/paint3"));
+
+    private static final ChunkRenderTypeSet RENDER_TYPES = ChunkRenderTypeSet.of(RenderType.CUTOUT);
 
     private final TextureAtlasSprite[] textures;
 
@@ -193,6 +194,6 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
 
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-        return AppEngClient.CUTOUT;
+        return RENDER_TYPES;
     }
 }

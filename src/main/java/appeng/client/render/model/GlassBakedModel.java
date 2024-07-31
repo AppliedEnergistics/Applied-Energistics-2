@@ -51,11 +51,11 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 
-import appeng.core.AppEngClient;
 import appeng.decorative.solid.GlassState;
 import appeng.decorative.solid.QuartzGlassBlock;
 
 class GlassBakedModel implements IDynamicBakedModel {
+    private static final ChunkRenderTypeSet RENDER_TYPES = ChunkRenderTypeSet.of(RenderType.CUTOUT);
 
     // This unlisted property is used to determine the actual block that should be
     // rendered
@@ -319,6 +319,6 @@ class GlassBakedModel implements IDynamicBakedModel {
 
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-        return AppEngClient.CUTOUT;
+        return RENDER_TYPES;
     }
 }

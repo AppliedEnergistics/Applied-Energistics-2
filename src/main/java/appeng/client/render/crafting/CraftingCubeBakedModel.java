@@ -39,7 +39,6 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.blockentity.crafting.CraftingCubeModelData;
 import appeng.client.render.cablebus.CubeBuilder;
-import appeng.core.AppEngClient;
 import appeng.util.Platform;
 
 /**
@@ -48,6 +47,7 @@ import appeng.util.Platform;
  * "inner" part of each block to the subclasses of this class.
  */
 abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
+    private static final ChunkRenderTypeSet RENDER_TYPES = ChunkRenderTypeSet.of(RenderType.CUTOUT);
 
     private final TextureAtlasSprite ringCorner;
 
@@ -271,6 +271,6 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
 
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-        return AppEngClient.CUTOUT;
+        return RENDER_TYPES;
     }
 }

@@ -38,12 +38,12 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 import appeng.client.render.cablebus.CubeBuilder;
-import appeng.core.AppEngClient;
 
 /**
  * The baked model that will be used for rendering the spatial pylon.
  */
 class SpatialPylonBakedModel implements IDynamicBakedModel {
+    private static final ChunkRenderTypeSet RENDER_TYPES = ChunkRenderTypeSet.of(RenderType.CUTOUT);
 
     private final Map<SpatialPylonTextureType, TextureAtlasSprite> textures;
 
@@ -204,6 +204,6 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
 
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-        return AppEngClient.CUTOUT;
+        return RENDER_TYPES;
     }
 }

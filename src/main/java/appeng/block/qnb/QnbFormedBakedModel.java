@@ -46,11 +46,10 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AppEng;
-import appeng.core.AppEngClient;
 import appeng.core.definitions.AEBlocks;
 
 class QnbFormedBakedModel implements IDynamicBakedModel {
-
+    private static final ChunkRenderTypeSet RENDER_TYPES = ChunkRenderTypeSet.of(RenderType.CUTOUT);
     private static final Material TEXTURE_LINK = new Material(TextureAtlas.LOCATION_BLOCKS,
             AppEng.makeId("block/quantum_link"));
     private static final Material TEXTURE_RING = new Material(TextureAtlas.LOCATION_BLOCKS,
@@ -246,6 +245,6 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
 
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-        return AppEngClient.CUTOUT;
+        return RENDER_TYPES;
     }
 }
