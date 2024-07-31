@@ -321,6 +321,26 @@ public class GuidebookLevel extends Level {
     }
 
     @Override
+    public void setDayTimeFraction(float v) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public float getDayTimeFraction() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public float getDayTimePerTick() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setDayTimePerTick(float v) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public FeatureFlagSet enabledFeatures() {
         return FeatureFlagSet.of();
     }

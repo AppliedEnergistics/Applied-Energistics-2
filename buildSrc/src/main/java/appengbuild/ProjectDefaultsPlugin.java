@@ -20,7 +20,7 @@ public class ProjectDefaultsPlugin implements Plugin<Project> {
 
         // ensure everything uses UTF-8 and not some random codepage chosen by Gradle
         project.getTasks().withType(JavaCompile.class, ProjectDefaultsPlugin::setupCompiler);
-    }
+        }
 
     private static void setupCompiler(JavaCompile task) {
         var options = task.getOptions();

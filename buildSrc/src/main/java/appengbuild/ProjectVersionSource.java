@@ -11,10 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 /**
@@ -153,19 +155,23 @@ public abstract class ProjectVersionSource implements ValueSource<String, Projec
         // We provide no STDIN to the process
         process.getOutputStream().close();
 
-        var reader = process.inputReader(StandardCharsets.UTF_8);
-        String line;
-        var result = new StringBuilder();
-        while ((line = reader.readLine()) != null) {
-            result.append(line);
-        }
+        var processOutput = CompletableFuture.supplyAsync(() -> {
+            try (var reader = process.getInputStream()) {
+                return new String(reader.readAllBytes(), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        });
 
         var exitCode = process.waitFor();
+        var processOutputText = processOutput.join();
+
         if (exitCode != 0) {
-            throw new RuntimeException("Failed running " + combinedArgs + ": " + result);
+            throw new RuntimeException("Failed running " + combinedArgs + ". Exit Code " + exitCode
+                                       + ", Output: " + processOutputText);
         }
 
-        return result.toString();
+        return processOutputText;
     }
 
     public abstract static class ProjectVersionSourceParams implements ValueSourceParameters {
