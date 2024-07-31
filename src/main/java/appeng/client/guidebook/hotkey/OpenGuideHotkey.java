@@ -28,7 +28,6 @@ import appeng.client.guidebook.GuidebookText;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.indices.ItemIndex;
 import appeng.client.guidebook.screen.GuideScreen;
-import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
 
 /**
@@ -58,13 +57,9 @@ public final class OpenGuideHotkey {
     }
 
     public static void init() {
-        if (AEConfig.instance().isGuideHotkeyEnabled()) {
-            NeoForge.EVENT_BUS.addListener(
-                    (ItemTooltipEvent evt) -> handleTooltip(evt.getItemStack(), evt.getFlags(), evt.getToolTip()));
-            NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post evt) -> newTick = true);
-        } else {
-            LOG.info("AE2 guide hotkey is disabled via config.");
-        }
+        NeoForge.EVENT_BUS.addListener(
+                (ItemTooltipEvent evt) -> handleTooltip(evt.getItemStack(), evt.getFlags(), evt.getToolTip()));
+        NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post evt) -> newTick = true);
     }
 
     private static void handleTooltip(ItemStack itemStack, TooltipFlag tooltipFlag, List<Component> lines) {
