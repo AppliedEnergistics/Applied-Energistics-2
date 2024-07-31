@@ -602,6 +602,7 @@
   "gui.tooltips.ae2.InscriberBufferHigh": "Stack to 64",
   "gui.tooltips.ae2.InscriberBufferLow": "Stack to 4",
   "gui.tooltips.ae2.InscriberBufferSize": "Input Slot Stack Size",
+  "gui.tooltips.ae2.InscriberBufferVeryLow": "Stack to 1",
   "gui.tooltips.ae2.InscriberSideness": "Automation Access Mode",
   "gui.tooltips.ae2.InscriberSidenessCombined": "Automation can access any slot from any side. Input slots cannot be extracted from.",
   "gui.tooltips.ae2.InscriberSidenessSeparate": "Automation can access slots from specific sides. Top and bottom slots can be extracted from.",

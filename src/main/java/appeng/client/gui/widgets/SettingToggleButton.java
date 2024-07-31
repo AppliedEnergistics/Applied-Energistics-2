@@ -40,6 +40,7 @@ import appeng.api.config.CondenserOutput;
 import appeng.api.config.CpuSelectionMode;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.InscriberInputCapacity;
 import appeng.api.config.LockCraftingMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.PowerUnit;
@@ -296,12 +297,15 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     ButtonToolTips.AutoExport,
                     ButtonToolTips.AutoExportOff);
 
-            registerApp(Icon.INSCRIBER_BUFFER_HIGH, Settings.INSCRIBER_BUFFER_SIZE, YesNo.YES,
+            registerApp(Icon.INSCRIBER_BUFFER_64, Settings.INSCRIBER_INPUT_CAPACITY, InscriberInputCapacity.SIXTY_FOUR,
                     ButtonToolTips.InscriberBufferSize,
                     ButtonToolTips.InscriberBufferHigh);
-            registerApp(Icon.INSCRIBER_BUFFER_LOW, Settings.INSCRIBER_BUFFER_SIZE, YesNo.NO,
+            registerApp(Icon.INSCRIBER_BUFFER_4, Settings.INSCRIBER_INPUT_CAPACITY, InscriberInputCapacity.FOUR,
                     ButtonToolTips.InscriberBufferSize,
                     ButtonToolTips.InscriberBufferLow);
+            registerApp(Icon.INSCRIBER_BUFFER_1, Settings.INSCRIBER_INPUT_CAPACITY, InscriberInputCapacity.ONE,
+                    ButtonToolTips.InscriberBufferSize,
+                    ButtonToolTips.InscriberBufferVeryLow);
         }
     }
 

@@ -88,6 +88,7 @@ public enum ButtonToolTips implements LocalizationEnum {
     FuzzyMode("Fuzzy Comparison"),
     IOMode("Input/Output Mode"),
     InscriberBufferSize("Input Slot Stack Size"),
+    InscriberBufferVeryLow("Stack to 1"),
     InscriberBufferLow("Stack to 4"),
     InscriberBufferHigh("Stack to 64"),
     InscriberSideness("Automation Access Mode"),
