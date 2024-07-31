@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.InscriberInputCapacity;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
@@ -128,7 +129,7 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
         this.configManager = IConfigManager.builder(this::onConfigChanged)
                 .registerSetting(Settings.INSCRIBER_SEPARATE_SIDES, YesNo.NO)
                 .registerSetting(Settings.AUTO_EXPORT, YesNo.NO)
-                .registerSetting(Settings.INSCRIBER_BUFFER_SIZE, YesNo.YES)
+                .registerSetting(Settings.INSCRIBER_INPUT_CAPACITY, InscriberInputCapacity.SIXTY_FOUR)
                 .build();
 
         var automationFilter = new AutomationFilter();
@@ -159,6 +160,10 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
         super.loadTag(data, registries);
         this.upgrades.readFromNBT(data, "upgrades", registries);
         this.configManager.readFromNBT(data, registries);
+        // TODO 1.22: Remove compat with old format.
+        if ("NO".equals(data.getString("inscriber_buffer_size"))) {
+            this.configManager.putSetting(Settings.INSCRIBER_INPUT_CAPACITY, InscriberInputCapacity.FOUR);
+        }
 
         // Update stack tracker
         lastStacks.put(topItemHandler, topItemHandler.getStackInSlot(0));
@@ -458,16 +463,11 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
             invalidateCapabilities();
         }
 
-        if (setting == Settings.INSCRIBER_BUFFER_SIZE) {
-            if (configManager.getSetting(Settings.INSCRIBER_BUFFER_SIZE) == YesNo.YES) {
-                topItemHandler.setMaxStackSize(0, 64);
-                sideItemHandler.setMaxStackSize(0, 64);
-                bottomItemHandler.setMaxStackSize(0, 64);
-            } else {
-                topItemHandler.setMaxStackSize(0, 4);
-                sideItemHandler.setMaxStackSize(0, 4);
-                bottomItemHandler.setMaxStackSize(0, 4);
-            }
+        if (setting == Settings.INSCRIBER_INPUT_CAPACITY) {
+            var capacity = configManager.getSetting(Settings.INSCRIBER_INPUT_CAPACITY).capacity;
+            topItemHandler.setMaxStackSize(0, capacity);
+            sideItemHandler.setMaxStackSize(0, capacity);
+            bottomItemHandler.setMaxStackSize(0, capacity);
         }
 
         saveChanges();
