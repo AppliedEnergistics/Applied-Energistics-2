@@ -300,9 +300,13 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        if (!isActive()) {
+            return TickRateModulation.SLEEP;
+        }
+
         var grid = node.getGrid();
 
-        if (isActive() && continuousGeneration != null) {
+        if (continuousGeneration != null) {
             continuousGenerationTicks += ticksSinceLastCall;
             if (continuousGenerationTicks >= continuousGeneration.ticks) {
                 long amount = continuousGenerationTicks / continuousGeneration.ticks;
