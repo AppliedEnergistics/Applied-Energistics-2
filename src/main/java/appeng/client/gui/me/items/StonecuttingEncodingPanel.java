@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -159,7 +160,7 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     }
 
     @Override
-    Icon getIcon() {
+    ResourceLocation getIcon() {
         return Icon.TAB_STONECUTTING;
     }
 

@@ -3,6 +3,7 @@ package appeng.client.gui.widgets;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.client.gui.Icon;
 import appeng.core.localization.ButtonToolTips;
@@ -20,7 +21,7 @@ public class OpenGuideButton extends IconButton {
     }
 
     @Override
-    protected Icon getIcon() {
+    protected ResourceLocation getSprite() {
         return Icon.HELP;
     }
 }

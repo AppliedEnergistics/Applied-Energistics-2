@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.ISubMenuHost;
@@ -101,7 +102,7 @@ public class KeyTypeSelectionButton extends IconButton {
     }
 
     @Override
-    protected Icon getIcon() {
+    protected ResourceLocation getSprite() {
         return Icon.TYPE_FILTER_ALL;
     }
 }

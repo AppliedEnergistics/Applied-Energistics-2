@@ -65,6 +65,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
 import appeng.client.gui.style.BackgroundGenerator;
+import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.SlotPosition;
 import appeng.client.gui.style.Text;
@@ -518,7 +519,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
             Point pos = slot.getBackgroundPos();
 
-            Icon.SLOT_BACKGROUND.getBlitter()
+            Blitter.guiSprite(Icon.SLOT_BACKGROUND)
                     .dest(leftPos + pos.getX(), topPos + pos.getY())
                     .color(1, 1, 1, alpha)
                     .blit(guiGraphics);
@@ -827,7 +828,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         // If the slot has a background icon, render it, but only if the slot is empty
         // or it requests the icon to be always drawn
         if ((s.renderIconWithItem() || is.isEmpty()) && s.isSlotEnabled() && s.getIcon() != null) {
-            s.getIcon().getBlitter()
+            Blitter.guiSprite(s.getIcon())
                     .dest(s.x, s.y)
                     .opacity(s.getOpacityOfIcon())
                     .blit(guiGraphics);
