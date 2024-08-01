@@ -27,7 +27,7 @@ public class ElapsedTimeTracker {
 
     private long lastTime = System.nanoTime();
     private long elapsedTime = 0;
-    private final long startItemCount;
+    private long startItemCount;
     private long remainingItemCount;
 
     public ElapsedTimeTracker(long startItemCount) {
@@ -49,11 +49,21 @@ public class ElapsedTimeTracker {
         return data;
     }
 
-    void decrementItems(long itemDiff) {
+    private void updateTime() {
         long currentTime = System.nanoTime();
         this.elapsedTime = this.elapsedTime + (currentTime - this.lastTime);
         this.lastTime = currentTime;
+    }
+
+    void decrementItems(long itemDiff) {
+        updateTime();
         this.remainingItemCount -= itemDiff;
+    }
+
+    void addMaxItems(long itemDiff) {
+        updateTime();
+        this.startItemCount += itemDiff;
+        this.remainingItemCount += itemDiff;
     }
 
     public long getElapsedTime() {
