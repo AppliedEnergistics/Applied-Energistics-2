@@ -188,10 +188,11 @@ public class CraftingCpuLogic {
 
             var details = task.getKey();
             var expectedOutputs = new KeyCounter();
+            var expectedContainerItems = new KeyCounter();
             // Contains the inputs for the pattern.
             @Nullable
             var craftingContainer = CraftingCpuHelper.extractPatternInputs(
-                    details, inventory, level, expectedOutputs);
+                    details, inventory, level, expectedOutputs, expectedContainerItems);
 
             // Try to push to each provider.
             for (var provider : craftingService.getProviders(details)) {
@@ -214,6 +215,11 @@ public class CraftingCpuLogic {
                         job.waitingFor.insert(expectedOutput.getKey(), expectedOutput.getLongValue(),
                                 Actionable.MODULATE);
                     }
+                    for (var expectedContainerItem : expectedContainerItems) {
+                        job.waitingFor.insert(expectedContainerItem.getKey(), expectedContainerItem.getLongValue(),
+                                Actionable.MODULATE);
+                        job.timeTracker.addMaxItems(expectedContainerItem.getLongValue());
+                    }
 
                     cluster.markDirty();
 
@@ -229,8 +235,9 @@ public class CraftingCpuLogic {
 
                     // Prepare next inputs.
                     expectedOutputs.reset();
+                    expectedContainerItems.reset();
                     craftingContainer = CraftingCpuHelper.extractPatternInputs(details, inventory,
-                            level, expectedOutputs);
+                            level, expectedOutputs, expectedContainerItems);
                 }
             }
 
