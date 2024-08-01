@@ -27,6 +27,8 @@ public class ElapsedTimeTracker {
 
     private long lastTime = System.nanoTime();
     private long elapsedTime = 0;
+    // TODO 1.21 rename: "start item count" is not a good name:
+    // this item count can increase when container items are scheduled.
     private long startItemCount;
     private long remainingItemCount;
 
