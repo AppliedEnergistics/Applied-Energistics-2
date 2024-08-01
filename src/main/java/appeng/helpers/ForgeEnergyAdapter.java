@@ -27,6 +27,7 @@ import team.reborn.energy.api.EnergyStorage;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
 import appeng.blockentity.powersink.IExternalPowerSink;
+import appeng.me.energy.StoredEnergyAmount;
 
 /**
  * Adapts an {@link IExternalPowerSink} to TR Energy's {@link EnergyStorage} by buffering energy packets. Not ideal, but
@@ -54,6 +55,10 @@ public class ForgeEnergyAdapter extends SnapshotParticipant<Double> implements E
     @Override
     protected void onFinalCommit() {
         buffer = sink.injectExternalPower(PowerUnits.TR, buffer, Actionable.MODULATE);
+        if (buffer < StoredEnergyAmount.MIN_AMOUNT) {
+            // Prevent a small leftover amount from blocking further energy insertions.
+            buffer = 0;
+        }
     }
 
     @Override
@@ -62,7 +67,7 @@ public class ForgeEnergyAdapter extends SnapshotParticipant<Double> implements E
         // Always schedule a push into the network at outer commit.
         updateSnapshots(transaction);
 
-        if (Math.abs(buffer) <= 1e-9) {
+        if (buffer == 0) {
             // Cap at the remaining capacity...
             maxAmount = (long) Math
                     .floor(Math.min(maxAmount, this.sink.getExternalPowerDemand(PowerUnits.TR, maxAmount)));
