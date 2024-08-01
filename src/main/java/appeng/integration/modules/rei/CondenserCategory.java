@@ -77,13 +77,13 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
         ResourceLocation location = AppEng.makeId("textures/guis/condenser.png");
         widgets.add(Widgets.createTexturedWidget(location, origin.x, origin.y, 50, 25, 94, 48));
 
-        widgets.add(new SpriteWidget(Icon.BACKGROUND_TRASH, 3, 27, 16, 16));
-        widgets.add(new SpriteWidget(Icon.TOOLBAR_BUTTON_BACKGROUND, 79, 28, 16, 16));
+        widgets.add(new SpriteWidget(Icon.BACKGROUND_TRASH, bounds.x + 3, bounds.y + 27, 16, 16));
+        widgets.add(new SpriteWidget(Icon.TOOLBAR_BUTTON_BACKGROUND, bounds.x + 79, bounds.y + 28, 16, 16));
 
         if (recipeDisplay.getType() == CondenserOutput.MATTER_BALLS) {
-            widgets.add(new SpriteWidget(Icon.CONDENSER_OUTPUT_MATTER_BALL, 79, 27, 16, 16));
+            widgets.add(new SpriteWidget(Icon.CONDENSER_OUTPUT_MATTER_BALL, bounds.x + 79, bounds.y + 27, 16, 16));
         } else if (recipeDisplay.getType() == CondenserOutput.SINGULARITY) {
-            widgets.add(new SpriteWidget(Icon.CONDENSER_OUTPUT_SINGULARITY, 79, 27, 16, 16));
+            widgets.add(new SpriteWidget(Icon.CONDENSER_OUTPUT_SINGULARITY, bounds.x + 79, bounds.y + 27, 16, 16));
         }
         widgets.add(Widgets.createDrawableWidget((guiGraphics, mouseX, mouseY, delta) -> {
             Rectangle rect = new Rectangle(origin.x + 78, origin.y + 28, 16, 16);
