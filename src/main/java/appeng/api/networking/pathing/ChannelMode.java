@@ -35,15 +35,14 @@ public enum ChannelMode {
     }
 
     /**
-     * @return The maximum number of channels supported by ad-hoc networks. 0 disables any requirements.
+     * @return The maximum number of channels supported by ad-hoc networks.
      */
     public int getAdHocNetworkChannels() {
         return adHocNetworkChannels;
     }
 
     /**
-     * @return Multiplier for the default capacity of cables. Must be a power of two. 0 disables cable capacity
-     *         requirements altogether.
+     * @return Multiplier for the default capacity of cables. Must be a power of two.
      */
     public int getCableCapacityFactor() {
         return cableCapacityFactor;
