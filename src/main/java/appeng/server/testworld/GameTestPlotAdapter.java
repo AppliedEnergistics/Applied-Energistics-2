@@ -41,6 +41,7 @@ public class GameTestPlotAdapter {
                     true,
                     1,
                     1,
+                    test.skyAccess,
                     gameTestHelper -> {
                         test.getTestFunction().accept(new PlotTestHelper(
                                 getPlotTranslation(plot.getBounds()),
