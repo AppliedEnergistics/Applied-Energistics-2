@@ -112,6 +112,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
 
         for (AEColor color : AEColor.VALID_COLORS) {
             tag(ConventionTags.PAINT_BALLS).add(AEItems.COLORED_PAINT_BALL.item(color));
+            tag(ConventionTags.LUMEN_PAINT_BALLS).add(AEItems.COLORED_LUMEN_PAINT_BALL.item(color));
         }
 
         tag(ConventionTags.SILICON)

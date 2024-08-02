@@ -121,6 +121,7 @@ public final class ConventionTags {
     public static final TagKey<Item> QUARTZ_WRENCH = tag("ae2:quartz_wrench");
     public static final TagKey<Item> QUARTZ_KNIFE = tag("ae2:knife");
     public static final TagKey<Item> PAINT_BALLS = tag("ae2:paint_balls");
+    public static final TagKey<Item> LUMEN_PAINT_BALLS = tag("ae2:lumen_paint_balls");
     public static final TagKey<Item> INSCRIBER_PRESSES = tag("ae2:inscriber_presses");
     /**
      * Items that can be used in recipes to remove color from colored items.
