@@ -19,6 +19,8 @@ jobs:
       - name: Install Software OpenGL Rendering
         run: sudo apt-get install xvfb libgl1-mesa-dri zopfli
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
       - run: git fetch origin --tags
         shell: bash
       - uses: ./.github/actions/gradle-setup

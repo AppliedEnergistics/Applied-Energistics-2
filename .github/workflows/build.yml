@@ -23,6 +23,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
       - run: git fetch origin --tags
         shell: bash
       - uses: ./.github/actions/gradle-setup
@@ -30,7 +32,7 @@ jobs:
         run: ./gradlew runData
       - name: Check that datagen ran
         run: test -d ./src/generated/resources/.cache
-      - name: Make sure that datagenned files in the repo are up-to-date
+      - name: Make sure that generated files in the repo are up-to-date
         run: |
           # Print status for easier debugging
           git status
