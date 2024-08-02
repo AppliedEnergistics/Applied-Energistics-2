@@ -48,3 +48,11 @@ config="ae2.mixins.json"
     versionRange="${jade_version}"
     ordering="AFTER"
     side="BOTH"
+
+# VanillaFix caused us grief in the past
+# https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/8034
+# https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/7539
+[[dependencies.ae2]]
+    modId="vanillafix"
+    type="discouraged"
+    reason="VanillaFix breaks some NeoForge features that AE2 depends on. Do not report AE2 bugs if VanillaFix is present."
