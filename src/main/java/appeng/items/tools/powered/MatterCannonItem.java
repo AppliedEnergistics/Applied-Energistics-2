@@ -32,7 +32,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Sheep;
@@ -295,6 +294,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
             double closest = 9999999.0D;
 
             for (Entity entity1 : list) {
+                // Do not shoot your horse.
                 if (p.isPassenger() && entity1.hasPassenger(p)) {
                     continue;
                 }
@@ -332,7 +332,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                                     : pos.getLocation().distanceToSqr(vec) + 1)));
 
             if (pos.getType() != Type.MISS) {
-                final DamageSource dmgSrc = level.damageSources().source(AEDamageTypes.MATTER_CANNON, p);
+                var dmgSrc = level.damageSources().source(AEDamageTypes.MATTER_CANNON, p);
 
                 if (pos instanceof EntityHitResult entityResult) {
                     Entity entityHit = entityResult.getEntity();
@@ -341,8 +341,6 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                     if (entityHit instanceof LivingEntity el) {
                         penetration -= dmg;
                         el.knockback(0, -direction.x, -direction.z);
-                        // el.knockBack( p, 0, Vector3d.x,
-                        // Vector3d.z );
                         el.hurt(dmgSrc, dmg);
                         if (!el.isAlive()) {
                             hasDestroyed = true;
@@ -366,7 +364,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                                 && Platform.hasPermissions(new DimensionalBlockPos(level, blockPos), p)) {
                             hasDestroyed = true;
                             penetration -= hardness;
-                            penetration *= 0.60;
+                            penetration *= 0.60F;
                             level.destroyBlock(blockPos, true);
                         }
                     }
