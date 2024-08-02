@@ -10,27 +10,28 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 /**
  * Largely adapted from https://github.com/neoforged/GradleUtils
  */
 public abstract class ProjectVersionSource implements ValueSource<String, ProjectVersionSource.ProjectVersionSourceParams> {
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectVersionSource.class);
+
     private static final Pattern[] VALID_VERSION_TAGS = {
             Pattern.compile("neoforge/v(\\d+\\.\\d+\\.\\d+)(|[+-].*)?"),
             Pattern.compile("forge/v(\\d+\\.\\d+\\.\\d+)(|[+-].*)?"),
             Pattern.compile("fabric/v(\\d+\\.\\d+\\.\\d+)(|[+-].*)?"),
             Pattern.compile("v(\\d+\\.\\d+\\.\\d+)(|[+-].*)?")
     };
-
-    private static final Logger LOG = LoggerFactory.getLogger(ProjectVersionSource.class);
 
     @Override
     public String obtain() {
@@ -155,28 +156,74 @@ public abstract class ProjectVersionSource implements ValueSource<String, Projec
         // We provide no STDIN to the process
         process.getOutputStream().close();
 
-        var processOutput = CompletableFuture.supplyAsync(() -> {
-            try (var reader = process.getInputStream()) {
-                return new String(reader.readAllBytes(), StandardCharsets.UTF_8);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+        // Combined output is easier for debugging problems
+        var combinedOutput = new StringBuilder();
+        // Stdout is easier for parsing output in the successful case
+        var stdout = new StringBuilder();
+
+        var stdoutReader = startLineReaderThread(process.inputReader(), line -> {
+            stdout.append(line);
+            synchronized (combinedOutput) {
+                combinedOutput.append(line);
+            }
+        });
+        var stderrReader = startLineReaderThread(process.errorReader(), line -> {
+            synchronized (combinedOutput) {
+                combinedOutput.append(line);
             }
         });
 
         var exitCode = process.waitFor();
-        var processOutputText = processOutput.join();
+
+        stderrReader.join();
+        stdoutReader.join();
 
         if (exitCode != 0) {
             throw new RuntimeException("Failed running " + combinedArgs + ". Exit Code " + exitCode
-                                       + ", Output: " + processOutputText);
+                                       + ", Output: " + combinedOutput);
         }
 
-        return processOutputText;
+        return stdout.toString().trim();
+    }
+
+    private static Thread startLineReaderThread(BufferedReader reader, Consumer<String> lineHandler) {
+        var stdoutReader = new Thread(() -> {
+            try {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    lineHandler.accept(line);
+                }
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            } finally {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    LOG.error("Failed to close process output stream.", e);
+                }
+            }
+        });
+        stdoutReader.setUncaughtExceptionHandler((t, e) -> LOG.error("Failed to read output of external process.", e));
+        stdoutReader.setDaemon(true);
+        stdoutReader.start();
+        return stdoutReader;
     }
 
     public abstract static class ProjectVersionSourceParams implements ValueSourceParameters {
         @Input
         @Optional
         public abstract ListProperty<String> getDefaultBranches();
+    }
+
+    private static class NativeEncodingHolder {
+        static final Charset charset;
+
+        static {
+            var nativeEncoding = System.getProperty("native.encoding");
+            if (nativeEncoding == null) {
+                throw new IllegalStateException("The native.encoding system property is not available, but should be since Java 17!");
+            }
+            charset = Charset.forName(nativeEncoding);
+        }
     }
 }
