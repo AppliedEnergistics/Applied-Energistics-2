@@ -218,10 +218,6 @@ public final class AEConfig {
         return common.craftingCalculationTimePerTick.get();
     }
 
-    public boolean isCraftingSimulatedExtraction() {
-        return common.craftingSimulatedExtraction.get();
-    }
-
     public boolean isSpatialAnchorEnablesRandomTicks() {
         return common.spatialAnchorEnableRandomTicks.get();
     }
@@ -506,7 +502,6 @@ public final class AEConfig {
         // Misc
         public final IntValue formationPlaneEntityLimit;
         public final IntValue craftingCalculationTimePerTick;
-        public final BooleanValue craftingSimulatedExtraction;
         public final BooleanValue allowBlockEntityFacades;
         public final BooleanValue debugTools;
         public final BooleanValue matterCannonBlockDamage;
@@ -602,8 +597,6 @@ public final class AEConfig {
 
             builder.push("craftingCPU");
             this.craftingCalculationTimePerTick = define(builder, "craftingCalculationTimePerTick", 5);
-            this.craftingSimulatedExtraction = define(builder, "craftingSimulatedExtraction", false,
-                    "When true: simulate extraction of all the network's contents when starting a crafting job calculation. When false: use the cached available content list (same as terminals). Enabling might work a bit better, but it will significantly reduce performance.");
             builder.pop();
 
             builder.push("crafting");

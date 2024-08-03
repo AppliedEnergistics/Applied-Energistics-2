@@ -24,13 +24,11 @@ import com.google.common.collect.Iterables;
 
 import org.jetbrains.annotations.Nullable;
 
-import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
-import appeng.core.AEConfig;
 
 /**
  * Currently, extracts the whole network contents when the job starts. Lazily extracting is unfortunately not possible
@@ -47,9 +45,7 @@ public class NetworkCraftingSimulationState extends CraftingSimulationState {
         }
 
         for (var stack : storage.getCachedInventory()) {
-            long networkAmount = AEConfig.instance().isCraftingSimulatedExtraction()
-                    ? storage.getInventory().extract(stack.getKey(), stack.getLongValue(), Actionable.SIMULATE, src)
-                    : stack.getLongValue();
+            long networkAmount = stack.getLongValue();
             if (networkAmount > 0) {
                 this.list.add(stack.getKey(), networkAmount);
             }
