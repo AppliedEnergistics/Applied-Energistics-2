@@ -1,28 +1,10 @@
 package appeng.client.guidebook.command;
 
-import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
-
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Locale;
-import java.util.concurrent.CompletableFuture;
-
+import appeng.core.AppEngClient;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.PointerBuffer;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.util.tinyfd.TinyFileDialogs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.commands.CommandSourceStack;
@@ -43,6 +25,25 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.util.tinyfd.TinyFileDialogs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
+
+import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 
 /**
  * Implements commands that help with the workflow to create and edit structures for use in the guidebook. The commands
@@ -57,18 +58,34 @@ public class GuidebookStructureCommands {
     @Nullable
     private static String lastOpenedOrSavedPath;
 
-    private static final String[] FILE_PATTERNS = { "*.snbt", "*.nbt" };
+    private static final String[] FILE_PATTERNS = {"*.snbt", "*.nbt"};
 
     private static final String FILE_PATTERN_DESC = "Structure NBT Files (*.snbt, *.nbt)";
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> rootCommand = literal("ae2guide");
 
+        registerPlaceAllStructures(rootCommand);
+
         registerImportCommand(rootCommand);
 
         registerExportCommand(rootCommand);
 
         dispatcher.register(rootCommand);
+    }
+
+    private static void registerPlaceAllStructures(LiteralArgumentBuilder<CommandSourceStack> rootCommand) {
+        LiteralArgumentBuilder<CommandSourceStack> subcommand = literal("placeallstructures");
+        // Only usable on singleplayer worlds and only by the local player (in case it is opened to LAN)
+        subcommand.requires(source -> Minecraft.getInstance().hasSingleplayerServer());
+        subcommand
+                .then(Commands.argument("origin", BlockPosArgument.blockPos())
+                        .executes(context -> {
+                            var origin = BlockPosArgument.getBlockPos(context, "origin");
+                            placeAllStructures(context.getSource().getLevel(), origin);
+                            return 0;
+                        }));
+        rootCommand.then(subcommand);
     }
 
     private static void registerImportCommand(LiteralArgumentBuilder<CommandSourceStack> rootCommand) {
@@ -83,6 +100,56 @@ public class GuidebookStructureCommands {
                             return 0;
                         }));
         rootCommand.then(importSubcommand);
+    }
+
+    private static void placeAllStructures(ServerLevel level, BlockPos origin) {
+        var guide = AppEngClient.instance().getGuide();
+        var sourceFolder = guide.getDevelopmentSourceFolder();
+        if (sourceFolder == null) {
+            return;
+        }
+
+        var minecraft = Minecraft.getInstance();
+        var server = minecraft.getSingleplayerServer();
+        var player = minecraft.player;
+        if (server == null || player == null) {
+            return;
+        }
+
+        List<Path> snbtFiles;
+        try (var s = Files.walk(sourceFolder).filter(p -> Files.isRegularFile(p) && p.getFileName().toString().endsWith(".snbt"))) {
+            snbtFiles = s.toList();
+        } catch (IOException e) {
+            LOG.error("Failed to find all structures.", e);
+            player.sendSystemMessage(Component.literal(e.toString()));
+            return;
+        }
+
+        for (var snbtFile : snbtFiles) {
+            LOG.info("Placing {}", snbtFile);
+            try {
+                var manager = level.getServer().getStructureManager();
+                CompoundTag compound;
+                var textInFile = Files.readString(snbtFile, StandardCharsets.UTF_8);
+                compound = NbtUtils.snbtToStructure(textInFile);
+
+                var structure = manager.readStructure(compound);
+                if (!structure.placeInWorld(
+                        level,
+                        origin,
+                        origin,
+                        new StructurePlaceSettings(),
+                        new SingleThreadedRandomSource(0L),
+                        Block.UPDATE_CLIENTS)) {
+                    player.sendSystemMessage(Component.literal("Failed to place " + snbtFile));
+                }
+
+                origin = origin.offset(structure.getSize().getX() + 2, 0, 0);
+            } catch (Exception e) {
+                LOG.error("Failed to place {}.", snbtFile, e);
+                player.sendSystemMessage(Component.literal("Failed to place " + snbtFile + ": " + e));
+            }
+        }
     }
 
     private static void importStructure(ServerLevel level, BlockPos origin) {
@@ -101,35 +168,11 @@ public class GuidebookStructureCommands {
                     }
 
                     lastOpenedOrSavedPath = selectedPath; // remember for save dialog
-
-                    var manager = server.getStructureManager();
                     try {
-                        CompoundTag compound;
-                        if (selectedPath.toLowerCase(Locale.ROOT).endsWith(".snbt")) {
-                            var textInFile = Files.readString(Paths.get(selectedPath), StandardCharsets.UTF_8);
-                            try {
-                                compound = NbtUtils.snbtToStructure(textInFile);
-                            } catch (CommandSyntaxException e) {
-                                LOG.error("Failed to parse structure.", e);
-                                player.sendSystemMessage(Component.literal(e.toString()));
-                                return null;
-                            }
-                        } else {
-                            try (var is = new BufferedInputStream(new FileInputStream(selectedPath))) {
-                                compound = NbtIo.readCompressed(is, NbtAccounter.unlimitedHeap());
-                            }
-                        }
-                        var structure = manager.readStructure(compound);
-                        if (!structure.placeInWorld(
-                                level,
-                                origin,
-                                origin,
-                                new StructurePlaceSettings(),
-                                new SingleThreadedRandomSource(0L),
-                                Block.UPDATE_CLIENTS)) {
-                            player.sendSystemMessage(Component.literal("Failed to place structure"));
-                        } else {
+                        if (placeStructure(level, origin, selectedPath)) {
                             player.sendSystemMessage(Component.literal("Placed structure"));
+                        } else {
+                            player.sendSystemMessage(Component.literal("Failed to place structure"));
                         }
                     } catch (Exception e) {
                         LOG.error("Failed to place structure.", e);
@@ -143,6 +186,29 @@ public class GuidebookStructureCommands {
                         minecraft.setScreen(null);
                     }
                 }, minecraft);
+    }
+
+    private static boolean placeStructure(ServerLevel level,
+                                          BlockPos origin,
+                                          String structurePath) throws CommandSyntaxException, IOException {
+        var manager = level.getServer().getStructureManager();
+        CompoundTag compound;
+        if (structurePath.toLowerCase(Locale.ROOT).endsWith(".snbt")) {
+            var textInFile = Files.readString(Paths.get(structurePath), StandardCharsets.UTF_8);
+            compound = NbtUtils.snbtToStructure(textInFile);
+        } else {
+            try (var is = new BufferedInputStream(new FileInputStream(structurePath))) {
+                compound = NbtIo.readCompressed(is, NbtAccounter.unlimitedHeap());
+            }
+        }
+        var structure = manager.readStructure(compound);
+        return structure.placeInWorld(
+                level,
+                origin,
+                origin,
+                new StructurePlaceSettings(),
+                new SingleThreadedRandomSource(0L),
+                Block.UPDATE_CLIENTS);
     }
 
     private static void registerExportCommand(LiteralArgumentBuilder<CommandSourceStack> rootCommand) {
