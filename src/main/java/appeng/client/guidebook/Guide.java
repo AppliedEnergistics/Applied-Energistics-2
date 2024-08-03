@@ -280,6 +280,11 @@ public final class Guide implements PageCollection {
         return null;
     }
 
+    @Nullable
+    public Path getDevelopmentSourceFolder() {
+        return developmentSourceFolder;
+    }
+
     public ExtensionCollection getExtensions() {
         return extensions;
     }
