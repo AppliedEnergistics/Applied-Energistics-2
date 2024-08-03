@@ -1,5 +1,7 @@
 package appeng.server.testworld;
 
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -29,7 +31,7 @@ public record SpawnExtraGridTestToolsChest(BlockPos chestPos, BlockPos gridPos,
         var absGridPos = gridPos.offset(origin);
         level.setBlock(absChestPod, AEBlocks.SMOOTH_SKY_STONE_CHEST.block().defaultBlockState(), Block.UPDATE_ALL);
 
-        GridInitHelper.doAfterGridInit(level, absGridPos, false, (grid, gridNode) -> {
+        GridInitHelper.doAfterGridInit(level, List.of(absGridPos), false, (grid, gridNode) -> {
             var chest = AEBlockEntities.SKY_CHEST.getBlockEntity(level, absChestPod);
             if (chest != null) {
                 var inventory = chest.getInternalInventory();

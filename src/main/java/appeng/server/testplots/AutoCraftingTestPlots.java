@@ -96,7 +96,7 @@ public final class AutoCraftingTestPlots {
         plot.cable("4 0 [6,9]", AEParts.SMART_DENSE_CABLE);
 
         // Add post-processing action once the grid is up and running
-        plot.afterGridInitAt("4 0 4", (grid, gridNode) -> {
+        plot.afterGridInitAt(new BlockPos(4, 0, 4), (grid, gridNode) -> {
             var level = gridNode.getLevel();
             var patterns = new ArrayList<ItemStack>();
             // Crafting pattern table with substitutions enabled and some items that are NOT in storage

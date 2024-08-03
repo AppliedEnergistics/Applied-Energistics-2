@@ -60,8 +60,8 @@ public class P2PService implements IGridService, IGridServiceProvider {
     }
 
     private final IGrid myGrid;
-    private final HashMap<Short, P2PTunnelPart> inputs = new HashMap<>();
-    private final Multimap<Short, P2PTunnelPart> outputs = LinkedHashMultimap.create();
+    private final HashMap<Short, P2PTunnelPart<?>> inputs = new HashMap<>();
+    private final Multimap<Short, P2PTunnelPart<?>> outputs = LinkedHashMultimap.create();
     private final Random frequencyGenerator;
 
     public P2PService(IGrid g) {
