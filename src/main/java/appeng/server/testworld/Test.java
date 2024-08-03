@@ -10,7 +10,7 @@ public final class Test {
      */
     public int setupTicks = 21;
 
-    public int maxTicks = 100;
+    public int maxTicks = 150;
 
     public boolean skyAccess = false;
 

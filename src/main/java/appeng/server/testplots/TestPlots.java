@@ -235,7 +235,7 @@ public final class TestPlots {
         plot.part("0 [0,8] 0", Direction.WEST, AEParts.CABLE_ANCHOR);
         plot.block("[-1,0] 5 0", AEBlocks.CONTROLLER);
         plot.storageDrive(new BlockPos(0, 5, 1));
-        plot.afterGridInitAt("0 5 1", (grid, gridNode) -> {
+        plot.afterGridInitAt(new BlockPos(0, 5, 1), (grid, gridNode) -> {
             var enchantedPickaxe = createEnchantedPickaxe(gridNode.getLevel());
             var storage = grid.getStorageService().getInventory();
             var src = new BaseActionSource();
@@ -657,7 +657,7 @@ public final class TestPlots {
                 .part(Direction.EAST, AEParts.PATTERN_PROVIDER)
                 .part(Direction.WEST, AEParts.PATTERN_PROVIDER);
 
-        plot.afterGridExistsAt("0 0 0", (grid, node) -> {
+        plot.afterGridExistsAt(BlockPos.ZERO, (grid, node) -> {
             // This has so many nodes it needs infinite mode
             ((PathingService) grid.getPathingService()).setForcedChannelMode(ChannelMode.INFINITE);
 

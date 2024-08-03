@@ -85,7 +85,7 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
 
     @Override
     public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction side) {
-        if (level instanceof Level && this.getBlockEntity(level, pos).isReady()) {
+        if (level instanceof Level && this.getBlockEntity(level, pos).isExposedToLight()) {
             // FIXME: This is ... uhm... fishy
             return ((Level) level).getMaxLocalRawBrightness(pos) - 6;
         }
