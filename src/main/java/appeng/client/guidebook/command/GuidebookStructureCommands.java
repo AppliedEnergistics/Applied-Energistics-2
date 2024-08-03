@@ -1,10 +1,30 @@
 package appeng.client.guidebook.command;
 
-import appeng.core.AppEngClient;
+import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
+
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.util.tinyfd.TinyFileDialogs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.commands.CommandSourceStack;
@@ -25,25 +45,8 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.PointerBuffer;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.util.tinyfd.TinyFileDialogs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.CompletableFuture;
-
-import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
+import appeng.core.AppEngClient;
 
 /**
  * Implements commands that help with the workflow to create and edit structures for use in the guidebook. The commands
@@ -58,7 +61,7 @@ public class GuidebookStructureCommands {
     @Nullable
     private static String lastOpenedOrSavedPath;
 
-    private static final String[] FILE_PATTERNS = {"*.snbt", "*.nbt"};
+    private static final String[] FILE_PATTERNS = { "*.snbt", "*.nbt" };
 
     private static final String FILE_PATTERN_DESC = "Structure NBT Files (*.snbt, *.nbt)";
 
@@ -117,7 +120,8 @@ public class GuidebookStructureCommands {
         }
 
         List<Path> snbtFiles;
-        try (var s = Files.walk(sourceFolder).filter(p -> Files.isRegularFile(p) && p.getFileName().toString().endsWith(".snbt"))) {
+        try (var s = Files.walk(sourceFolder)
+                .filter(p -> Files.isRegularFile(p) && p.getFileName().toString().endsWith(".snbt"))) {
             snbtFiles = s.toList();
         } catch (IOException e) {
             LOG.error("Failed to find all structures.", e);
@@ -189,8 +193,8 @@ public class GuidebookStructureCommands {
     }
 
     private static boolean placeStructure(ServerLevel level,
-                                          BlockPos origin,
-                                          String structurePath) throws CommandSyntaxException, IOException {
+            BlockPos origin,
+            String structurePath) throws CommandSyntaxException, IOException {
         var manager = level.getServer().getStructureManager();
         CompoundTag compound;
         if (structurePath.toLowerCase(Locale.ROOT).endsWith(".snbt")) {

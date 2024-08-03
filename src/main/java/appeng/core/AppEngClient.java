@@ -20,7 +20,6 @@ package appeng.core;
 
 import java.util.Objects;
 
-import appeng.MigrateGuidebookStructures;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
@@ -284,12 +283,6 @@ public class AppEngClient extends AppEngBase {
 
     private void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            try {
-                //MigrateGuidebookStructures.main(new String[0]);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
             Minecraft minecraft = Minecraft.getInstance();
             try {
                 postClientSetup(minecraft);

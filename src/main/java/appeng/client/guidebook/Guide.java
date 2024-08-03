@@ -1,18 +1,27 @@
 package appeng.client.guidebook;
 
-import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
-import appeng.client.guidebook.extensions.DefaultExtensions;
-import appeng.client.guidebook.extensions.Extension;
-import appeng.client.guidebook.extensions.ExtensionCollection;
-import appeng.client.guidebook.extensions.ExtensionPoint;
-import appeng.client.guidebook.indices.CategoryIndex;
-import appeng.client.guidebook.indices.ItemIndex;
-import appeng.client.guidebook.indices.PageIndex;
-import appeng.client.guidebook.navigation.NavigationTree;
-import appeng.client.guidebook.screen.GlobalInMemoryHistory;
-import appeng.client.guidebook.screen.GuideScreen;
-import appeng.util.Platform;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+
+import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.LoadingOverlay;
@@ -38,27 +47,20 @@ import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.resource.ResourcePackLoader;
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.extensions.DefaultExtensions;
+import appeng.client.guidebook.extensions.Extension;
+import appeng.client.guidebook.extensions.ExtensionCollection;
+import appeng.client.guidebook.extensions.ExtensionPoint;
+import appeng.client.guidebook.indices.CategoryIndex;
+import appeng.client.guidebook.indices.ItemIndex;
+import appeng.client.guidebook.indices.PageIndex;
+import appeng.client.guidebook.navigation.NavigationTree;
+import appeng.client.guidebook.screen.GlobalInMemoryHistory;
+import appeng.client.guidebook.screen.GuideScreen;
+import appeng.util.Platform;
 
 /**
  * Encapsulates a Guide, which consists of a collection of Markdown pages and associated content, loaded from a
@@ -81,11 +83,11 @@ public final class Guide implements PageCollection {
     private final String developmentSourceNamespace;
 
     private Guide(String defaultNamespace,
-                  String folder,
-                  @Nullable Path developmentSourceFolder,
-                  @Nullable String developmentSourceNamespace,
-                  Map<Class<?>, PageIndex> indices,
-                  ExtensionCollection extensions) {
+            String folder,
+            @Nullable Path developmentSourceFolder,
+            @Nullable String developmentSourceNamespace,
+            Map<Class<?>, PageIndex> indices,
+            ExtensionCollection extensions) {
         this.defaultNamespace = defaultNamespace;
         this.folder = folder;
         this.developmentSourceFolder = developmentSourceFolder;
@@ -296,7 +298,7 @@ public final class Guide implements PageCollection {
 
         @Override
         protected Map<ResourceLocation, ParsedGuidePage> prepare(ResourceManager resourceManager,
-                                                                 ProfilerFiller profiler) {
+                ProfilerFiller profiler) {
             profiler.startTick();
             Map<ResourceLocation, ParsedGuidePage> pages = new HashMap<>();
 
@@ -322,7 +324,7 @@ public final class Guide implements PageCollection {
 
         @Override
         protected void apply(Map<ResourceLocation, ParsedGuidePage> pages, ResourceManager resourceManager,
-                             ProfilerFiller profiler) {
+                ProfilerFiller profiler) {
             profiler.startTick();
             Guide.this.pages = pages;
             profiler.push("indices");
