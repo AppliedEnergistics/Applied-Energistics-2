@@ -182,7 +182,7 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
                         changed = true;
                     }
                 }
-            } else if (this.getInternalCurrentPower() > POWER_THRESHOLD
+            } else if (this.getInternalCurrentPower() >= POWER_THRESHOLD
                     && ChargerRecipes.findRecipe(level, myItem) != null) {
                 this.working = true;
                 if (level != null && level.getRandom().nextFloat() > 0.8f) {
