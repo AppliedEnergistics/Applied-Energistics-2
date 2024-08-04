@@ -29,7 +29,7 @@ import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 
-import appeng.server.services.compass.CompassService;
+import appeng.server.services.compass.ServerCompassService;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructurePiece extends StructurePiece {
@@ -92,6 +92,6 @@ public class MeteoriteStructurePiece extends StructurePiece {
             RandomSource rand, BoundingBox bounds, ChunkPos chunkPos, BlockPos blockPos) {
         MeteoritePlacer.place(level, settings, bounds, rand);
 
-        CompassService.updateArea(level.getLevel(), level.getChunk(chunkPos.x, chunkPos.z));
+        ServerCompassService.updateArea(level.getLevel(), level.getChunk(chunkPos.x, chunkPos.z));
     }
 }

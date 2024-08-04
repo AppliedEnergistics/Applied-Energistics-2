@@ -12,12 +12,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.MysteriousCubeBlockEntity;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
-import appeng.server.services.compass.CompassService;
+import appeng.server.services.compass.ServerCompassService;
 
-public class MysteriousCubeBlock extends AEBaseBlock {
+public class MysteriousCubeBlock extends AEBaseEntityBlock<MysteriousCubeBlockEntity> {
     // Not a redstone conductor to prevent using it as a facade.
     public static final Properties PROPERTIES = metalProps().strength(10, 1000).isRedstoneConductor(Blocks::never);
 
@@ -28,7 +29,7 @@ public class MysteriousCubeBlock extends AEBaseBlock {
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (level instanceof ServerLevel serverLevel) {
-            CompassService.notifyBlockChange(serverLevel, pos);
+            ServerCompassService.notifyBlockChange(serverLevel, pos);
         }
     }
 
@@ -41,7 +42,7 @@ public class MysteriousCubeBlock extends AEBaseBlock {
         super.onRemove(state, level, pos, newState, isMoving);
 
         if (level instanceof ServerLevel serverLevel) {
-            CompassService.notifyBlockChange(serverLevel, pos);
+            ServerCompassService.notifyBlockChange(serverLevel, pos);
         }
     }
 

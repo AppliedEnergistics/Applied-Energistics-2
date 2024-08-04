@@ -49,6 +49,7 @@ import appeng.blockentity.misc.GrowthAcceleratorBlockEntity;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.blockentity.misc.LightDetectorBlockEntity;
+import appeng.blockentity.misc.MysteriousCubeBlockEntity;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
@@ -176,6 +177,10 @@ public final class AEBlockEntities {
 
     public static final DeferredBlockEntityType<CrankBlockEntity> CRANK = create("crank", CrankBlockEntity.class,
             CrankBlockEntity::new, AEBlocks.CRANK);
+
+    public static final DeferredBlockEntityType<MysteriousCubeBlockEntity> MYSTERIOUS_CUBE = create("mysterious_cube",
+            MysteriousCubeBlockEntity.class,
+            MysteriousCubeBlockEntity::new, AEBlocks.MYSTERIOUS_CUBE);
 
     private AEBlockEntities() {
     }
