@@ -195,9 +195,11 @@ public class MeteoriteCompassBakedModel implements IDynamicBakedModel {
 
             // GUI obviously will not include the players view rotation
             if (cameraTransformType == ItemDisplayContext.GUI) {
-                var player = Minecraft.getInstance().player;
-                float offRads = (float) (player.getYRot() / 180.0f * (float) Math.PI + Math.PI);
-                d += offRads;
+                if (Minecraft.getInstance() != null && Minecraft.getInstance().player != null) {
+                    var player = Minecraft.getInstance().player;
+                    float offRads = (float) (player.getYRot() / 180.0f * (float) Math.PI + Math.PI);
+                    d += offRads;
+                }
             }
 
             return new FixedRotationModel((float) d + rotation);
