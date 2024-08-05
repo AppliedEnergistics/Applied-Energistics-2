@@ -24,6 +24,7 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -97,10 +98,14 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
         int maxTimesToCraft;
         InternalInventory target;
-        if (action == InventoryAction.CRAFT_SHIFT) // craft into player inventory...
+        if (action == InventoryAction.CRAFT_SHIFT || action == InventoryAction.CRAFT_ALL) // craft into player inventory...
         {
             target = new PlayerInternalInventory(who.getInventory());
-            maxTimesToCraft = (int) Math.floor((double) this.getItem().getMaxStackSize() / (double) howManyPerCraft);
+            if (action == InventoryAction.CRAFT_SHIFT) {
+                maxTimesToCraft = (int) Math.floor((double) this.getItem().getMaxStackSize() / (double) howManyPerCraft);
+            } else {
+                maxTimesToCraft = (int) Math.floor((double) this.getItem().getMaxStackSize() / (double) howManyPerCraft * Inventory.INVENTORY_SIZE);
+            }
         } else if (action == InventoryAction.CRAFT_STACK) // craft into hand, full stack
         {
             target = new CarriedItemInventory(getMenu());
