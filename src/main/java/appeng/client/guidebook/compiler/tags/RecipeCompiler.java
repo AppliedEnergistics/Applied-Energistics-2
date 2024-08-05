@@ -109,6 +109,8 @@ public class RecipeCompiler extends BlockTagCompiler {
             Function<RecipeHolder<T>, LytBlock> factory) {
         @Nullable
         LytBlock tryCreate(RecipeManager recipeManager, Item resultItem) {
+            var registryAccess = Platform.getClientRegistryAccess();
+
             // We try to find non-special recipes first then fall back to special
             List<RecipeHolder<T>> fallbackCandidates = new ArrayList<>();
             for (var recipe : recipeManager.byType(recipeType)) {
@@ -117,24 +119,14 @@ public class RecipeCompiler extends BlockTagCompiler {
                     continue;
                 }
 
-                try {
-                    if (recipe.value().getResultItem(null).getItem() == resultItem) {
-                        return factory.apply(recipe);
-                    }
-                } catch (Exception ignored) {
-                    // :-P
-                    // Happens if the recipe doesn't accept a null RegistryAccess
+                if (recipe.value().getResultItem(registryAccess).getItem() == resultItem) {
+                    return factory.apply(recipe);
                 }
             }
 
             for (var recipe : fallbackCandidates) {
-                try {
-                    if (recipe.value().getResultItem(null).getItem() == resultItem) {
-                        return factory.apply(recipe);
-                    }
-                } catch (Exception ignored) {
-                    // :-P
-                    // Happens if the recipe doesn't accept a null RegistryAccess
+                if (recipe.value().getResultItem(registryAccess).getItem() == resultItem) {
+                    return factory.apply(recipe);
                 }
             }
 
