@@ -20,225 +20,176 @@ package appeng.client.gui;
 
 import net.minecraft.resources.ResourceLocation;
 
-import appeng.client.gui.style.Blitter;
 import appeng.core.AppEng;
 
-/**
- * Edit in {@code assets/ae2/textures/guis/states.png}.
- */
-public enum Icon {
-    // ROW 0
-    REDSTONE_LOW(0, 0),
-    REDSTONE_HIGH(16, 0),
-    REDSTONE_PULSE(32, 0),
-    REDSTONE_IGNORE(48, 0),
-    REDSTONE_OFF(64, 0),
-    REDSTONE_ON(80, 0),
-    REDSTONE_ABOVE_EQUAL(192, 0),
-    REDSTONE_BELOW(208, 0),
-    // CLEAR, STASH
-    CLEAR(96, 0),
-    ENTER(112, 0),
-    // ENCODE
-    WHITE_ARROW_DOWN(128, 0),
-    // LOCKED
-    LOCKED(144, 0),
-    // UNLOCKED
-    UNLOCKED(160, 0),
-    HELP(176, 0),
-    BACKGROUND_PRIMARY_OUTPUT(224, 0),
-    BACKGROUND_STORAGE_CELL(240, 0),
-
-    // ROW 1
-    VIEW_MODE_STORED(0, 16),
-    VIEW_MODE_ALL(32, 16),
-    VIEW_MODE_CRAFTING(48, 16),
-    BLOCKING_MODE_NO(64, 16),
-    BLOCKING_MODE_YES(80, 16),
-    BACK(96, 16),
-    TRANSPARENT_FACADES_OFF(96, 16),
-    TRANSPARENT_FACADES_ON(112, 16),
-    TYPE_FILTER_ITEMS(128, 16),
-    TYPE_FILTER_FLUIDS(144, 16),
-    TYPE_FILTER_ALL(160, 16),
-    BACKGROUND_ORE(240, 16),
-
-    // ROW 2
-    SEARCH_AUTO_FOCUS(48, 32),
-    SEARCH_DEFAULT(64, 32),
-    SEARCH_JEI(80, 32),
-    SEARCH_REI(96, 32),
-    SEARCH_AUTO_FOCUS_REMEMBER(112, 32),
-    SEARCH_REMEMBER(128, 32),
-    SEARCH_JEI_AUTO_CLEAR(144, 32),
-    SEARCH_REI_AUTO_CLEAR(160, 32),
-    BACKGROUND_PLATE(224, 32),
-    BACKGROUND_DUST(240, 32),
-    TAB_CRAFTING(0, 32),
-    TAB_PROCESSING(16, 32),
-    TAB_SMITHING(32, 32),
-    TAB_STONECUTTING(48, 32),
-
-    // ROW 3
-    ARROW_UP(0, 48),
-    ARROW_DOWN(16, 48),
-    ARROW_RIGHT(32, 48),
-    ARROW_LEFT(48, 48),
-    SUBSTITUTION_ENABLED(64, 48),
-    STORAGE_FILTER_EXTRACTABLE_ONLY(80, 48),
-    STORAGE_FILTER_EXTRACTABLE_NONE(96, 48),
-    SUBSTITUTION_DISABLED(112, 48),
-    FLUID_SUBSTITUTION_ENABLED(128, 48),
-    FLUID_SUBSTITUTION_DISABLED(144, 48),
-    FILTER_ON_EXTRACT_ENABLED(160, 48),
-    FILTER_ON_EXTRACT_DISABLED(176, 48),
-    BACKGROUND_INGOT(224, 48),
-    BACKGROUND_STORAGE_COMPONENT(240, 48),
-
-    // ROW 4
-    SORT_BY_NAME(0, 64),
-    SORT_BY_AMOUNT(16, 64),
-    // WRENCH | PARTITION STORAGE
-    COG(32, 64),
-    COG_DISABLED(48, 64),
-    LEVEL_ITEM(64, 64),
-    SORT_BY_INVENTORY_TWEAKS(80, 64),
-    SORT_BY_MOD(96, 64),
-    PRIORITY(144, 64),
-    BACKGROUND_VIEW_CELL(224, 64),
-    BACKGROUND_WIRELESS_TERM(240, 64),
-
-    // ROW 5
-    FULLNESS_EMPTY(0, 80),
-    FULLNESS_HALF(16, 80),
-    FULLNESS_FULL(32, 80),
-    LEVEL_ENERGY(48, 80),
-    PATTERN_ACCESS_SHOW(64, 80),
-    PATTERN_ACCESS_HIDE(80, 80),
-    PATTERN_TERMINAL_VISIBLE(96, 80),
-    PATTERN_TERMINAL_ALL(112, 80),
-    PATTERN_TERMINAL_NOT_FULL(128, 80),
-    BACKGROUND_TRASH(240, 80),
-
-    // ROW 6
-    FUZZY_PERCENT_25(0, 96),
-    FUZZY_PERCENT_50(16, 96),
-    FUZZY_PERCENT_75(32, 96),
-    FUZZY_PERCENT_99(48, 96),
-    FUZZY_IGNORE(64, 96),
-    INSCRIBER_SEPARATE_SIDES(80, 96),
-    INSCRIBER_COMBINED_SIDES(96, 96),
-    AUTO_EXPORT_OFF(112, 96),
-    AUTO_EXPORT_ON(128, 96),
-    INSCRIBER_BUFFER_4(144, 96),
-    INSCRIBER_BUFFER_64(160, 96),
-    INSCRIBER_BUFFER_1(176, 96),
-    BACKGROUND_WIRELESS_BOOSTER(240, 96),
-
-    // ROW 7
-    CONDENSER_OUTPUT_TRASH(0, 112),
-    CONDENSER_OUTPUT_MATTER_BALL(16, 112),
-    CONDENSER_OUTPUT_SINGULARITY(32, 112),
-    BACKGROUND_ENCODED_PATTERN(240, 112),
-
-    // ROW 8
-    INVALID(0, 128),
-    VALID(16, 128),
-    WHITELIST(32, 128),
-    BLACKLIST(48, 128),
-    HORIZONTAL_TAB(128, 128, 22, 22),
-    HORIZONTAL_TAB_SELECTED(128, 150, 22, 22),
-    HORIZONTAL_TAB_FOCUS(150, 128, 22, 22),
-    BACKGROUND_BLANK_PATTERN(240, 128),
-    TOOLBAR_BUTTON_BACKGROUND(176, 128, 18, 20),
-    TOOLBAR_BUTTON_BACKGROUND_FOCUS(194, 128, 18, 20),
-    TOOLBAR_BUTTON_BACKGROUND_HOVER(212, 128, 18, 20),
-
-    // ROW 9
-    ACCESS_WRITE(0, 144),
-    ACCESS_READ(16, 144),
-    ACCESS_READ_WRITE(32, 144),
-    CRAFT_HAMMER(48, 144),
-    BACKGROUND_CHARGABLE(240, 144),
-
-    // ROW 10
-    POWER_UNIT_AE(0, 160),
-    POWER_UNIT_EU(16, 160),
-    POWER_UNIT_J(32, 160),
-    POWER_UNIT_W(48, 160),
-    POWER_UNIT_RF(64, 160),
-    POWER_UNIT_TR(80, 160),
-    BACKGROUND_SINGULARITY(240, 160),
-
-    // ROW 11
-    COPY_MODE_ON(80, 176),
-    BACKGROUND_SPATIAL_CELL_NO_SHADOW(224, 176),
-    BACKGROUND_SPATIAL_CELL(240, 176),
-
-    // ROW 12
-    COPY_MODE_OFF(80, 192),
-    TAB_BUTTON_BACKGROUND_BORDERLESS(128, 192, 25, 22),
-    TAB_BUTTON_BACKGROUND(160, 192, 20, 20),
-    SLOT_BACKGROUND(192, 192, 18, 18),
-    BACKGROUND_FUEL(240, 192),
-
-    // ROW 13
-    TERMINAL_STYLE_SMALL(0, 208),
-    TERMINAL_STYLE_MEDIUM(16, 208),
-    TERMINAL_STYLE_TALL(32, 208),
-    TERMINAL_STYLE_FULL(48, 208),
-    BACKGROUND_UPGRADE(240, 208),
-
-    // ROW 14
-    PLACEMENT_BLOCK(0, 224),
-    PLACEMENT_ITEM(16, 224),
-    TAB_BUTTON_BACKGROUND_BORDERLESS_FOCUS(128, 224, 25, 22),
-    TAB_BUTTON_BACKGROUND_FOCUS(160, 224, 22, 22),
-
-    SCHEDULING_DEFAULT(0, 240),
-    SCHEDULING_ROUND_ROBIN(16, 240),
-    SCHEDULING_RANDOM(32, 240),
-    OVERLAY_OFF(48, 240),
-    OVERLAY_ON(64, 240),
-
-    // Small Icons
-    S_ARROW_UP(224, 192, 8, 8),
-    S_ARROW_DOWN(232, 192, 8, 8),
-    S_CLEAR(224, 200, 8, 8),
-    S_CYCLE(232, 200, 8, 8),
-    S_SUBSTITUTION_ENABLED(224, 208, 8, 8),
-    S_SUBSTITUTION_DISABLED(232, 208, 8, 8),
-    S_FLUID_SUBSTITUTION_ENABLED(224, 216, 8, 8),
-    S_FLUID_SUBSTITUTION_DISABLED(232, 216, 8, 8),
-    S_STORAGE(208, 224, 10, 10),
-    S_PROCESSOR(208, 234, 10, 10),
-    S_CRAFT(208, 244, 10, 10),
-    S_TERMINAL(192, 224, 10, 10),
-    S_MACHINE(192, 234, 10, 10);
-
-    public final int x;
-    public final int y;
-    public final int width;
-    public final int height;
-
-    public static final ResourceLocation TEXTURE = AppEng.makeId("textures/guis/states.png");
-    public static final int TEXTURE_WIDTH = 256;
-    public static final int TEXTURE_HEIGHT = 256;
-
-    Icon(int x, int y) {
-        this(x, y, 16, 16);
+public final class Icon {
+    private Icon() {
     }
 
-    Icon(int x, int y, int width, int height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-    }
-
-    public Blitter getBlitter() {
-        return Blitter.texture(TEXTURE, TEXTURE_WIDTH, TEXTURE_HEIGHT)
-                .src(x, y, width, height);
-    }
-
+    public static final ResourceLocation REDSTONE_LOW = AppEng.makeId("icons/redstone_low");
+    public static final ResourceLocation REDSTONE_HIGH = AppEng.makeId("icons/redstone_high");
+    public static final ResourceLocation REDSTONE_PULSE = AppEng.makeId("icons/redstone_pulse");
+    public static final ResourceLocation REDSTONE_IGNORE = AppEng.makeId("icons/redstone_ignore");
+    public static final ResourceLocation REDSTONE_OFF = AppEng.makeId("icons/redstone_off");
+    public static final ResourceLocation REDSTONE_ON = AppEng.makeId("icons/redstone_on");
+    public static final ResourceLocation REDSTONE_ABOVE_EQUAL = AppEng.makeId("icons/redstone_above_equal");
+    public static final ResourceLocation REDSTONE_BELOW = AppEng.makeId("icons/redstone_below");
+    public static final ResourceLocation CLEAR = AppEng.makeId("icons/clear");
+    public static final ResourceLocation ENTER = AppEng.makeId("icons/enter");
+    public static final ResourceLocation WHITE_ARROW_DOWN = AppEng.makeId("icons/white_arrow_down");
+    public static final ResourceLocation LOCKED = AppEng.makeId("icons/locked");
+    public static final ResourceLocation UNLOCKED = AppEng.makeId("icons/unlocked");
+    public static final ResourceLocation HELP = AppEng.makeId("icons/help");
+    public static final ResourceLocation BACKGROUND_PRIMARY_OUTPUT = AppEng.makeId("icons/background_primary_output");
+    public static final ResourceLocation BACKGROUND_STORAGE_CELL = AppEng.makeId("icons/background_storage_cell");
+    public static final ResourceLocation VIEW_MODE_STORED = AppEng.makeId("icons/view_mode_stored");
+    public static final ResourceLocation VIEW_MODE_ALL = AppEng.makeId("icons/view_mode_all");
+    public static final ResourceLocation VIEW_MODE_CRAFTING = AppEng.makeId("icons/view_mode_crafting");
+    public static final ResourceLocation BLOCKING_MODE_NO = AppEng.makeId("icons/blocking_mode_no");
+    public static final ResourceLocation BLOCKING_MODE_YES = AppEng.makeId("icons/blocking_mode_yes");
+    public static final ResourceLocation BACK = AppEng.makeId("icons/back");
+    public static final ResourceLocation TRANSPARENT_FACADES_OFF = AppEng.makeId("icons/transparent_facades_off");
+    public static final ResourceLocation TRANSPARENT_FACADES_ON = AppEng.makeId("icons/transparent_facades_on");
+    public static final ResourceLocation TYPE_FILTER_ITEMS = AppEng.makeId("icons/type_filter_items");
+    public static final ResourceLocation TYPE_FILTER_FLUIDS = AppEng.makeId("icons/type_filter_fluids");
+    public static final ResourceLocation TYPE_FILTER_ALL = AppEng.makeId("icons/type_filter_all");
+    public static final ResourceLocation BACKGROUND_ORE = AppEng.makeId("icons/background_ore");
+    public static final ResourceLocation SEARCH_AUTO_FOCUS = AppEng.makeId("icons/search_auto_focus");
+    public static final ResourceLocation SEARCH_DEFAULT = AppEng.makeId("icons/search_default");
+    public static final ResourceLocation SEARCH_JEI = AppEng.makeId("icons/search_jei");
+    public static final ResourceLocation SEARCH_REI = AppEng.makeId("icons/search_rei");
+    public static final ResourceLocation SEARCH_AUTO_FOCUS_REMEMBER = AppEng.makeId("icons/search_auto_focus_remember");
+    public static final ResourceLocation SEARCH_REMEMBER = AppEng.makeId("icons/search_remember");
+    public static final ResourceLocation SEARCH_JEI_AUTO_CLEAR = AppEng.makeId("icons/search_jei_auto_clear");
+    public static final ResourceLocation SEARCH_REI_AUTO_CLEAR = AppEng.makeId("icons/search_rei_auto_clear");
+    public static final ResourceLocation BACKGROUND_PLATE = AppEng.makeId("icons/background_plate");
+    public static final ResourceLocation BACKGROUND_DUST = AppEng.makeId("icons/background_dust");
+    public static final ResourceLocation TAB_CRAFTING = AppEng.makeId("icons/tab_crafting");
+    public static final ResourceLocation TAB_PROCESSING = AppEng.makeId("icons/tab_processing");
+    public static final ResourceLocation TAB_SMITHING = AppEng.makeId("icons/tab_smithing");
+    public static final ResourceLocation TAB_STONECUTTING = AppEng.makeId("icons/tab_stonecutting");
+    public static final ResourceLocation ARROW_UP = AppEng.makeId("icons/arrow_up");
+    public static final ResourceLocation ARROW_DOWN = AppEng.makeId("icons/arrow_down");
+    public static final ResourceLocation ARROW_RIGHT = AppEng.makeId("icons/arrow_right");
+    public static final ResourceLocation ARROW_LEFT = AppEng.makeId("icons/arrow_left");
+    public static final ResourceLocation SUBSTITUTION_ENABLED = AppEng.makeId("icons/substitution_enabled");
+    public static final ResourceLocation STORAGE_FILTER_EXTRACTABLE_ONLY = AppEng
+            .makeId("icons/storage_filter_extractable_only");
+    public static final ResourceLocation STORAGE_FILTER_EXTRACTABLE_NONE = AppEng
+            .makeId("icons/storage_filter_extractable_none");
+    public static final ResourceLocation SUBSTITUTION_DISABLED = AppEng.makeId("icons/substitution_disabled");
+    public static final ResourceLocation FLUID_SUBSTITUTION_ENABLED = AppEng.makeId("icons/fluid_substitution_enabled");
+    public static final ResourceLocation FLUID_SUBSTITUTION_DISABLED = AppEng
+            .makeId("icons/fluid_substitution_disabled");
+    public static final ResourceLocation FILTER_ON_EXTRACT_ENABLED = AppEng.makeId("icons/filter_on_extract_enabled");
+    public static final ResourceLocation FILTER_ON_EXTRACT_DISABLED = AppEng.makeId("icons/filter_on_extract_disabled");
+    public static final ResourceLocation BACKGROUND_INGOT = AppEng.makeId("icons/background_ingot");
+    public static final ResourceLocation BACKGROUND_STORAGE_COMPONENT = AppEng
+            .makeId("icons/background_storage_component");
+    public static final ResourceLocation SORT_BY_NAME = AppEng.makeId("icons/sort_by_name");
+    public static final ResourceLocation SORT_BY_AMOUNT = AppEng.makeId("icons/sort_by_amount");
+    public static final ResourceLocation COG = AppEng.makeId("icons/cog");
+    public static final ResourceLocation COG_DISABLED = AppEng.makeId("icons/cog_disabled");
+    public static final ResourceLocation LEVEL_ITEM = AppEng.makeId("icons/level_item");
+    public static final ResourceLocation SORT_BY_INVENTORY_TWEAKS = AppEng.makeId("icons/sort_by_inventory_tweaks");
+    public static final ResourceLocation SORT_BY_MOD = AppEng.makeId("icons/sort_by_mod");
+    public static final ResourceLocation PRIORITY = AppEng.makeId("icons/priority");
+    public static final ResourceLocation BACKGROUND_VIEW_CELL = AppEng.makeId("icons/background_view_cell");
+    public static final ResourceLocation BACKGROUND_WIRELESS_TERM = AppEng.makeId("icons/background_wireless_term");
+    public static final ResourceLocation FULLNESS_EMPTY = AppEng.makeId("icons/fullness_empty");
+    public static final ResourceLocation FULLNESS_HALF = AppEng.makeId("icons/fullness_half");
+    public static final ResourceLocation FULLNESS_FULL = AppEng.makeId("icons/fullness_full");
+    public static final ResourceLocation LEVEL_ENERGY = AppEng.makeId("icons/level_energy");
+    public static final ResourceLocation PATTERN_ACCESS_SHOW = AppEng.makeId("icons/pattern_access_show");
+    public static final ResourceLocation PATTERN_ACCESS_HIDE = AppEng.makeId("icons/pattern_access_hide");
+    public static final ResourceLocation PATTERN_TERMINAL_VISIBLE = AppEng.makeId("icons/pattern_terminal_visible");
+    public static final ResourceLocation PATTERN_TERMINAL_ALL = AppEng.makeId("icons/pattern_terminal_all");
+    public static final ResourceLocation PATTERN_TERMINAL_NOT_FULL = AppEng.makeId("icons/pattern_terminal_not_full");
+    public static final ResourceLocation BACKGROUND_TRASH = AppEng.makeId("icons/background_trash");
+    public static final ResourceLocation FUZZY_PERCENT_25 = AppEng.makeId("icons/fuzzy_percent_25");
+    public static final ResourceLocation FUZZY_PERCENT_50 = AppEng.makeId("icons/fuzzy_percent_50");
+    public static final ResourceLocation FUZZY_PERCENT_75 = AppEng.makeId("icons/fuzzy_percent_75");
+    public static final ResourceLocation FUZZY_PERCENT_99 = AppEng.makeId("icons/fuzzy_percent_99");
+    public static final ResourceLocation FUZZY_IGNORE = AppEng.makeId("icons/fuzzy_ignore");
+    public static final ResourceLocation INSCRIBER_SEPARATE_SIDES = AppEng.makeId("icons/inscriber_separate_sides");
+    public static final ResourceLocation INSCRIBER_COMBINED_SIDES = AppEng.makeId("icons/inscriber_combined_sides");
+    public static final ResourceLocation AUTO_EXPORT_OFF = AppEng.makeId("icons/auto_export_off");
+    public static final ResourceLocation AUTO_EXPORT_ON = AppEng.makeId("icons/auto_export_on");
+    public static final ResourceLocation INSCRIBER_BUFFER_4 = AppEng.makeId("icons/inscriber_buffer_4");
+    public static final ResourceLocation INSCRIBER_BUFFER_64 = AppEng.makeId("icons/inscriber_buffer_64");
+    public static final ResourceLocation INSCRIBER_BUFFER_1 = AppEng.makeId("icons/inscriber_buffer_1");
+    public static final ResourceLocation BACKGROUND_WIRELESS_BOOSTER = AppEng
+            .makeId("icons/background_wireless_booster");
+    public static final ResourceLocation CONDENSER_OUTPUT_TRASH = AppEng.makeId("icons/condenser_output_trash");
+    public static final ResourceLocation CONDENSER_OUTPUT_MATTER_BALL = AppEng
+            .makeId("icons/condenser_output_matter_ball");
+    public static final ResourceLocation CONDENSER_OUTPUT_SINGULARITY = AppEng
+            .makeId("icons/condenser_output_singularity");
+    public static final ResourceLocation BACKGROUND_ENCODED_PATTERN = AppEng.makeId("icons/background_encoded_pattern");
+    public static final ResourceLocation INVALID = AppEng.makeId("icons/invalid");
+    public static final ResourceLocation VALID = AppEng.makeId("icons/valid");
+    public static final ResourceLocation WHITELIST = AppEng.makeId("icons/whitelist");
+    public static final ResourceLocation BLACKLIST = AppEng.makeId("icons/blacklist");
+    public static final ResourceLocation HORIZONTAL_TAB = AppEng.makeId("icons/horizontal_tab");
+    public static final ResourceLocation HORIZONTAL_TAB_SELECTED = AppEng.makeId("icons/horizontal_tab_selected");
+    public static final ResourceLocation HORIZONTAL_TAB_FOCUS = AppEng.makeId("icons/horizontal_tab_focus");
+    public static final ResourceLocation BACKGROUND_BLANK_PATTERN = AppEng.makeId("icons/background_blank_pattern");
+    public static final ResourceLocation TOOLBAR_BUTTON_BACKGROUND = AppEng.makeId("icons/toolbar_button_background");
+    public static final ResourceLocation TOOLBAR_BUTTON_BACKGROUND_FOCUS = AppEng
+            .makeId("icons/toolbar_button_background_focus");
+    public static final ResourceLocation TOOLBAR_BUTTON_BACKGROUND_HOVER = AppEng
+            .makeId("icons/toolbar_button_background_hover");
+    public static final ResourceLocation ACCESS_WRITE = AppEng.makeId("icons/access_write");
+    public static final ResourceLocation ACCESS_READ = AppEng.makeId("icons/access_read");
+    public static final ResourceLocation ACCESS_READ_WRITE = AppEng.makeId("icons/access_read_write");
+    public static final ResourceLocation CRAFT_HAMMER = AppEng.makeId("icons/craft_hammer");
+    public static final ResourceLocation BACKGROUND_CHARGABLE = AppEng.makeId("icons/background_chargable");
+    public static final ResourceLocation POWER_UNIT_AE = AppEng.makeId("icons/power_unit_ae");
+    public static final ResourceLocation POWER_UNIT_EU = AppEng.makeId("icons/power_unit_eu");
+    public static final ResourceLocation POWER_UNIT_J = AppEng.makeId("icons/power_unit_j");
+    public static final ResourceLocation POWER_UNIT_W = AppEng.makeId("icons/power_unit_w");
+    public static final ResourceLocation POWER_UNIT_RF = AppEng.makeId("icons/power_unit_rf");
+    public static final ResourceLocation POWER_UNIT_TR = AppEng.makeId("icons/power_unit_tr");
+    public static final ResourceLocation BACKGROUND_SINGULARITY = AppEng.makeId("icons/background_singularity");
+    public static final ResourceLocation COPY_MODE_ON = AppEng.makeId("icons/copy_mode_on");
+    public static final ResourceLocation BACKGROUND_SPATIAL_CELL_NO_SHADOW = AppEng
+            .makeId("icons/background_spatial_cell_no_shadow");
+    public static final ResourceLocation BACKGROUND_SPATIAL_CELL = AppEng.makeId("icons/background_spatial_cell");
+    public static final ResourceLocation COPY_MODE_OFF = AppEng.makeId("icons/copy_mode_off");
+    public static final ResourceLocation TAB_BUTTON_BACKGROUND_BORDERLESS = AppEng
+            .makeId("icons/tab_button_background_borderless");
+    public static final ResourceLocation TAB_BUTTON_BACKGROUND = AppEng.makeId("icons/tab_button_background");
+    public static final ResourceLocation SLOT_BACKGROUND = AppEng.makeId("icons/slot_background");
+    public static final ResourceLocation BACKGROUND_FUEL = AppEng.makeId("icons/background_fuel");
+    public static final ResourceLocation TERMINAL_STYLE_SMALL = AppEng.makeId("icons/terminal_style_small");
+    public static final ResourceLocation TERMINAL_STYLE_MEDIUM = AppEng.makeId("icons/terminal_style_medium");
+    public static final ResourceLocation TERMINAL_STYLE_TALL = AppEng.makeId("icons/terminal_style_tall");
+    public static final ResourceLocation TERMINAL_STYLE_FULL = AppEng.makeId("icons/terminal_style_full");
+    public static final ResourceLocation BACKGROUND_UPGRADE = AppEng.makeId("icons/background_upgrade");
+    public static final ResourceLocation PLACEMENT_BLOCK = AppEng.makeId("icons/placement_block");
+    public static final ResourceLocation PLACEMENT_ITEM = AppEng.makeId("icons/placement_item");
+    public static final ResourceLocation TAB_BUTTON_BACKGROUND_BORDERLESS_FOCUS = AppEng
+            .makeId("icons/tab_button_background_borderless_focus");
+    public static final ResourceLocation TAB_BUTTON_BACKGROUND_FOCUS = AppEng
+            .makeId("icons/tab_button_background_focus");
+    public static final ResourceLocation SCHEDULING_DEFAULT = AppEng.makeId("icons/scheduling_default");
+    public static final ResourceLocation SCHEDULING_ROUND_ROBIN = AppEng.makeId("icons/scheduling_round_robin");
+    public static final ResourceLocation SCHEDULING_RANDOM = AppEng.makeId("icons/scheduling_random");
+    public static final ResourceLocation OVERLAY_OFF = AppEng.makeId("icons/overlay_off");
+    public static final ResourceLocation OVERLAY_ON = AppEng.makeId("icons/overlay_on");
+    public static final ResourceLocation S_ARROW_UP = AppEng.makeId("icons/s_arrow_up");
+    public static final ResourceLocation S_ARROW_DOWN = AppEng.makeId("icons/s_arrow_down");
+    public static final ResourceLocation S_CLEAR = AppEng.makeId("icons/s_clear");
+    public static final ResourceLocation S_CYCLE = AppEng.makeId("icons/s_cycle");
+    public static final ResourceLocation S_SUBSTITUTION_ENABLED = AppEng.makeId("icons/s_substitution_enabled");
+    public static final ResourceLocation S_SUBSTITUTION_DISABLED = AppEng.makeId("icons/s_substitution_disabled");
+    public static final ResourceLocation S_FLUID_SUBSTITUTION_ENABLED = AppEng
+            .makeId("icons/s_fluid_substitution_enabled");
+    public static final ResourceLocation S_FLUID_SUBSTITUTION_DISABLED = AppEng
+            .makeId("icons/s_fluid_substitution_disabled");
+    public static final ResourceLocation S_STORAGE = AppEng.makeId("icons/s_storage");
+    public static final ResourceLocation S_PROCESSOR = AppEng.makeId("icons/s_processor");
+    public static final ResourceLocation S_CRAFT = AppEng.makeId("icons/s_craft");
+    public static final ResourceLocation S_TERMINAL = AppEng.makeId("icons/s_terminal");
+    public static final ResourceLocation S_MACHINE = AppEng.makeId("icons/s_machine");
 }
