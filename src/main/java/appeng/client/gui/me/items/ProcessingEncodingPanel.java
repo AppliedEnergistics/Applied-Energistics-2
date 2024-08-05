@@ -3,6 +3,7 @@ package appeng.client.gui.me.items;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.config.ActionItems;
 import appeng.client.Point;
@@ -86,7 +87,7 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
     }
 
     @Override
-    Icon getIcon() {
+    ResourceLocation getIcon() {
         return Icon.TAB_PROCESSING;
     }
 

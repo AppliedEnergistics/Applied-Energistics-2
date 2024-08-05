@@ -23,7 +23,6 @@ import net.minecraft.world.phys.Vec2;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import appeng.api.stacks.AEFluidKey;
-import appeng.client.gui.Icon;
 import appeng.client.gui.style.BackgroundGenerator;
 import appeng.client.gui.style.FluidBlitter;
 import appeng.client.guidebook.color.ColorValue;
@@ -84,14 +83,20 @@ public interface RenderContext {
                 sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1());
     }
 
-    default void drawIcon(int x, int y, Icon icon, ColorValue color) {
-        var u0 = icon.x / (float) Icon.TEXTURE_WIDTH;
-        var v0 = icon.y / (float) Icon.TEXTURE_HEIGHT;
-        var u1 = (icon.x + icon.width) / (float) Icon.TEXTURE_WIDTH;
-        var v1 = (icon.y + icon.height) / (float) Icon.TEXTURE_HEIGHT;
+    default void drawIcon(int x, int y, ResourceLocation guiSprite, ColorValue color) {
+        var sprite = Minecraft.getInstance().getGuiSprites().getSprite(guiSprite);
+        drawIcon(x, y, sprite, color);
+    }
 
-        var texture = Minecraft.getInstance().getTextureManager().getTexture(Icon.TEXTURE);
-        fillTexturedRect(new LytRect(x, y, icon.width, icon.height), texture, color, color, color, color,
+    default void drawIcon(int x, int y, TextureAtlasSprite sprite, ColorValue color) {
+        var u0 = sprite.getU0();
+        var v0 = sprite.getV0();
+        var u1 = sprite.getU1();
+        var v1 = sprite.getV1();
+
+        var contents = sprite.contents();
+        var texture = Minecraft.getInstance().getTextureManager().getTexture(sprite.atlasLocation());
+        fillTexturedRect(new LytRect(x, y, contents.width(), contents.height()), texture, color, color, color, color,
                 u0, v0, u1, v1);
     }
 

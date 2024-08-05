@@ -22,29 +22,28 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
-
-import appeng.client.gui.Icon;
+import net.minecraft.resources.ResourceLocation;
 
 public class ToggleButton extends IconButton implements ITooltip {
 
     private final Listener listener;
 
-    private final Icon iconOn;
-    private final Icon iconOff;
+    private final ResourceLocation iconOn;
+    private final ResourceLocation iconOff;
 
     private List<Component> tooltipOn = Collections.emptyList();
     private List<Component> tooltipOff = Collections.emptyList();
 
     private boolean state;
 
-    public ToggleButton(Icon on, Icon off, Component displayName,
+    public ToggleButton(ResourceLocation on, ResourceLocation off, Component displayName,
             Component displayHint, Listener listener) {
         this(on, off, listener);
         setTooltipOn(List.of(displayName, displayHint));
         setTooltipOff(List.of(displayName, displayHint));
     }
 
-    public ToggleButton(Icon on, Icon off, Listener listener) {
+    public ToggleButton(ResourceLocation on, ResourceLocation off, Listener listener) {
         super(null);
         this.iconOn = on;
         this.iconOff = off;
@@ -68,7 +67,7 @@ public class ToggleButton extends IconButton implements ITooltip {
         this.state = isOn;
     }
 
-    protected Icon getIcon() {
+    protected ResourceLocation getSprite() {
         return this.state ? this.iconOn : this.iconOff;
     }
 

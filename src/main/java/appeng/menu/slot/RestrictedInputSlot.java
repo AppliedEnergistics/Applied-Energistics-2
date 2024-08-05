@@ -18,6 +18,7 @@
 
 package appeng.menu.slot;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -245,9 +246,9 @@ public class RestrictedInputSlot extends AppEngSlot {
         INSCRIBER_INPUT(Icon.BACKGROUND_INGOT),
         METAL_INGOTS(Icon.BACKGROUND_INGOT);
 
-        public final Icon icon;
+        public final ResourceLocation icon;
 
-        PlacableItemType(Icon o) {
+        PlacableItemType(ResourceLocation o) {
             this.icon = o;
         }
     }

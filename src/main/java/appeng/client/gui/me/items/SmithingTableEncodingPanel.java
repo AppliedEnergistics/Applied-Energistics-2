@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -44,7 +45,7 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
     }
 
     @Override
-    Icon getIcon() {
+    ResourceLocation getIcon() {
         return Icon.TAB_SMITHING;
     }
 

@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.config.ActionItems;
 import appeng.client.gui.Icon;
@@ -31,7 +32,7 @@ import appeng.core.localization.ButtonToolTips;
 
 public class ActionButton extends IconButton {
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);
-    private final Icon icon;
+    private final ResourceLocation icon;
 
     public ActionButton(ActionItems action, Runnable onPress) {
         this(action, a -> onPress.run());
@@ -105,7 +106,7 @@ public class ActionButton extends IconButton {
     }
 
     @Override
-    protected Icon getIcon() {
+    protected ResourceLocation getSprite() {
         return icon;
     }
 

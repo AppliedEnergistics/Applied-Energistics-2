@@ -6,12 +6,13 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 
 import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
-import appeng.client.gui.Icon;
+import appeng.client.gui.style.Blitter;
 
 public class InfoBar {
     private final List<Widget> widgets = new ArrayList<>();
@@ -38,7 +39,7 @@ public class InfoBar {
     }
 
     // TODO (RID): Added xPos and yPos to give me better control over render, but the code below might need refactoring
-    void add(Icon icon, float scale, int xPos, int yPos) {
+    void add(ResourceLocation icon, float scale, int xPos, int yPos) {
         widgets.add(new IconWidget(icon, scale, xPos, yPos));
     }
 
@@ -84,7 +85,7 @@ public class InfoBar {
         }
     }
 
-    private record IconWidget(Icon icon, float scale, int xPos, int yPos) implements Widget {
+    private record IconWidget(ResourceLocation icon, float scale, int xPos, int yPos) implements Widget {
         @Override
         public int getWidth() {
             return Math.round(16 * scale);
@@ -101,7 +102,7 @@ public class InfoBar {
             poseStack.pushPose();
             poseStack.translate(xPos, yPos, 0);
             poseStack.scale(scale, scale, 1);
-            icon.getBlitter()
+            Blitter.guiSprite(icon)
                     .dest(0, 0)
                     .blit(guiGraphics);
             poseStack.popPose();
