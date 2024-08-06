@@ -18,45 +18,6 @@
 
 package appeng.client.gui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
-import com.google.common.base.Stopwatch;
-import com.mojang.blaze3d.platform.InputConstants;
-
-import org.jetbrains.annotations.MustBeInvokedByOverriders;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ComponentRenderUtils;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.network.PacketDistributor;
-
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.behaviors.EmptyingAction;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -73,6 +34,7 @@ import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.client.gui.widgets.OpenGuideButton;
 import appeng.client.gui.widgets.PanelBlitter;
+import appeng.client.gui.widgets.SpriteLayer;
 import appeng.client.gui.widgets.VerticalButtonBar;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.color.SymbolicColor;
@@ -100,6 +62,42 @@ import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.IOptionalSlot;
 import appeng.menu.slot.ResizableSlot;
 import appeng.util.ConfigMenuInventory;
+import com.google.common.base.Stopwatch;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ComponentRenderUtils;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContainerScreen<T> {
     private static final Logger LOG = LoggerFactory.getLogger(AEBaseScreen.class);
@@ -348,8 +346,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
                 var area = tooltipWidget.getTooltipArea();
                 if (mouseX >= area.getX() && mouseY >= area.getY() &&
-                        mouseX < area.getX() + area.getWidth()
-                        && mouseY < area.getY() + area.getHeight()) {
+                    mouseX < area.getX() + area.getWidth()
+                    && mouseY < area.getY() + area.getHeight()) {
                     var tooltip = new Tooltip(tooltipWidget.getTooltipMessage());
                     if (!tooltip.getContent().isEmpty()) {
                         drawTooltipWithHeader(guiGraphics, tooltip, mouseX, mouseY);
@@ -498,7 +496,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     @Override
     protected final void renderBg(GuiGraphics guiGraphics, float f, int x,
-            int y) {
+                                  int y) {
 
         this.drawBG(guiGraphics, leftPos, topPos, x, y, f);
 
@@ -639,8 +637,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         if (this.drag_click.size() <= 1
-                && mouseButton == InputConstants.MOUSE_BUTTON_RIGHT
-                && getEmptyingAction(slot, menu.getCarried()) != null) {
+            && mouseButton == InputConstants.MOUSE_BUTTON_RIGHT
+            && getEmptyingAction(slot, menu.getCarried()) != null) {
             var p = new InventoryActionPacket(InventoryAction.EMPTY_ITEM, slotIdx, 0);
             PacketDistributor.sendToServer(p);
             return;
@@ -671,7 +669,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         if (slot != null &&
-                InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+            InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
             int slotNum = slot.index;
             final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slotNum, 0);
             PacketDistributor.sendToServer(p);
@@ -682,7 +680,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             this.disableShiftClick = true;
 
             if (this.dbl_whichItem.isEmpty() || this.bl_clicked != slot
-                    || this.dbl_clickTimer.elapsed(TimeUnit.MILLISECONDS) > 250) {
+                || this.dbl_clickTimer.elapsed(TimeUnit.MILLISECONDS) > 250) {
                 // some simple double click logic.
                 this.bl_clicked = slot;
                 this.dbl_clickTimer = Stopwatch.createStarted();
@@ -693,8 +691,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 final List<Slot> slots = this.getInventorySlots();
                 for (Slot inventorySlot : slots) {
                     if (inventorySlot != null && inventorySlot.mayPickup(getPlayer()) && inventorySlot.hasItem()
-                            && isSameInventory(inventorySlot, slot)
-                            && AbstractContainerMenu.canItemQuickReplace(inventorySlot, this.dbl_whichItem, true)) {
+                        && isSameInventory(inventorySlot, slot)
+                        && AbstractContainerMenu.canItemQuickReplace(inventorySlot, this.dbl_whichItem, true)) {
                         this.slotClicked(inventorySlot, inventorySlot.index, 0, ClickType.QUICK_MOVE);
                     }
                 }
@@ -739,7 +737,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                     final List<Slot> slots = this.getInventorySlots();
                     for (Slot s : slots) {
                         if (s.slot == j && s.container == this.menu.getPlayerInventory()
-                                && !s.mayPickup(this.menu.getPlayerInventory().player)) {
+                            && !s.mayPickup(this.menu.getPlayerInventory().player)) {
                             return false;
                         }
                     }
@@ -750,7 +748,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                     } else {
                         for (Slot s : slots) {
                             if (s.slot == j
-                                    && s.container == this.menu.getPlayerInventory()) {
+                                && s.container == this.menu.getPlayerInventory()) {
                                 ServerboundPacket message = new SwapSlotsPacket(s.index, theSlot.index);
                                 PacketDistributor.sendToServer(message);
                                 return true;
@@ -775,7 +773,14 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY,
-            float partialTicks) {
+                       float partialTicks) {
+
+        var background = style.getBackground();
+        if (background != null) {
+            background.dest(offsetX, offsetY).blit(guiGraphics);
+        }
+
+        var bgLayer = new SpriteLayer();
 
         var generatedBackground = style.getGeneratedBackground();
         if (generatedBackground != null) {
@@ -784,14 +789,51 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                     0, 0,
                     generatedBackground.getWidth(),
                     generatedBackground.getHeight());
-            blitter.blit(guiGraphics, offsetX, offsetY);
+            blitter.render(bgLayer, 0, 0xffffffff);
         }
 
-        var background = style.getBackground();
-        if (background != null) {
-            background.dest(offsetX, offsetY).blit(guiGraphics);
+        // Group all slots by semantic. We make the assumption here
+        // that visually the slots belonging to the same semantic are contiguous.
+        for (var semantic : menu.getSlotBySemantic().keySet()) {
+            var slots = menu.getSlotBySemantic().get(semantic);
+            int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE;
+            for (var slot : slots) {
+                if (!slot.isActive()) {
+                    continue;
+                }
+
+                // Slots are 16x16 but our border is 18x18
+                minX = Math.min(minX, slot.x - 1);
+                minY = Math.min(minY, slot.y - 1);
+                maxX = Math.max(maxX, slot.x + 17);
+                maxY = Math.max(maxY, slot.y + 17);
+            }
+
+            if (minX == Integer.MAX_VALUE) {
+                continue; // No visible slots found
+            }
+
+            bgLayer.fillSprite(
+                    AppEng.makeId("slot"),
+                    minX,
+                    minY,
+                    1,
+                    maxX - minX ,
+                    maxY - minY,
+                    0xffffffff
+            );
+            bgLayer.fillSprite(
+                    AppEng.makeId("slot_border"),
+                    minX,
+                    minY,
+                    2,
+                    maxX - minX ,
+                    maxY - minY,
+                    0xffffffff
+            );
         }
 
+        bgLayer.render(guiGraphics.pose(), offsetX, offsetY, 0);
     }
 
     public void drawItem(GuiGraphics guiGraphics, int x, int y, ItemStack is) {

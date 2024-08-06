@@ -29,6 +29,9 @@ import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -269,6 +272,10 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
     public List<Slot> getSlots(SlotSemantic semantic) {
         return slotsBySemantic.get(semantic);
+    }
+
+    public ListMultimap<SlotSemantic, Slot> getSlotBySemantic() {
+        return Multimaps.unmodifiableListMultimap(slotsBySemantic);
     }
 
     @Override
