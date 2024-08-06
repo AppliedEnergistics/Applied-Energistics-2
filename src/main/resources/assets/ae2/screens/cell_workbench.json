@@ -5,9 +5,9 @@
     "common/player_inventory.json",
     "common/toolbox.json"
   ],
-  "background": {
-    "texture": "guis/cellworkbench.png",
-    "srcRect": [0, 0, 176, 253]
+  "generatedBackground": {
+    "width": 176,
+    "height": 253
   },
   "slots": {
     "STORAGE_CELL": {
