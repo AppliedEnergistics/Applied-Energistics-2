@@ -3,6 +3,7 @@ package appeng.client.guidebook.document.block;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import appeng.client.guidebook.color.ColorValue;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +21,7 @@ import appeng.core.AppEng;
  * Renders a standard Minecraft GUI slot.
  */
 public class LytSlot extends LytBlock implements InteractiveElement {
-    public static final ResourceLocation SLOT_LIGHT = AppEng.makeId("ae2guide/gui/slot_light.png");
+    public static final ResourceLocation SLOT_LIGHT = AppEng.makeId("slot");
     public static final ResourceLocation SLOT_DARK = AppEng.makeId("ae2guide/gui/slot_dark.png");
     public static final ResourceLocation LARGE_SLOT_LIGHT = AppEng.makeId("ae2guide/gui/large_slot_light.png");
     public static final ResourceLocation LARGE_SLOT_DARK = AppEng.makeId("ae2guide/gui/large_slot_dark.png");
@@ -81,7 +82,7 @@ public class LytSlot extends LytBlock implements InteractiveElement {
         } else {
             texture = context.isDarkMode() ? SLOT_DARK : SLOT_LIGHT;
         }
-        context.fillTexturedRect(bounds, texture);
+        context.drawIcon(bounds.x(), bounds.y(), texture);
 
         var padding = largeSlot ? LARGE_PADDING : PADDING;
 
