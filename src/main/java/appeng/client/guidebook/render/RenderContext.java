@@ -83,6 +83,10 @@ public interface RenderContext {
                 sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1());
     }
 
+    default void drawIcon(int x, int y, ResourceLocation guiSprite) {
+        drawIcon(x, y, guiSprite, ConstantColor.WHITE);
+    }
+
     default void drawIcon(int x, int y, ResourceLocation guiSprite, ColorValue color) {
         var sprite = Minecraft.getInstance().getGuiSprites().getSprite(guiSprite);
         drawIcon(x, y, sprite, color);

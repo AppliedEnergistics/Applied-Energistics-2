@@ -131,6 +131,10 @@ public final class SpriteLayer {
     }
 
     public void addQuad(float x, float y, float z, float width, float height, int color, float minU, float maxU, float minV, float maxV) {
+        if (width < 0 || height < 0) {
+            return;
+        }
+
         builder.addVertex(x, y, z).setUv(minU, minV).setColor(color);
         builder.addVertex(x, y + height, z).setUv(minU, maxV).setColor(color);
         builder.addVertex(x + width, y + height, z).setUv(maxU, maxV).setColor(color);
