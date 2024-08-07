@@ -39,10 +39,9 @@ public class P2PHelper {
         return colors;
     }
 
-    private static int getFrequencyNibble(short frequency, int i){
+    private static int getFrequencyNibble(short frequency, int i) {
         return frequency >> 4 * (3 - i) & 0xF;
     }
-
 
     public short fromColors(AEColor[] colors) {
         Preconditions.checkArgument(colors.length == 4);
@@ -76,8 +75,7 @@ public class P2PHelper {
         for (var i = 0; i < 4; i++) {
             var nibble = getFrequencyNibble(frequency, i);
             var hex = Component.literal(HEX_DIGITS[nibble]);
-            parent.append(hex.setStyle
-                    (hex.getStyle().withColor(AEColor.values()[nibble].whiteVariant)));
+            parent.append(hex.setStyle(hex.getStyle().withColor(AEColor.values()[nibble].whiteVariant)));
         }
 
         return parent;
