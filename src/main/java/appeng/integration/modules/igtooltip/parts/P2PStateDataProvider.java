@@ -1,5 +1,6 @@
 package appeng.integration.modules.igtooltip.parts;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -45,10 +46,10 @@ public final class P2PStateDataProvider implements BodyProvider<P2PTunnelPart>, 
             var freq = serverData.getShort(TAG_P2P_FREQUENCY);
 
             // Show the frequency and name of the frequency if it exists
-            var freqTooltip = Platform.p2p().toHexString(freq);
+            var freqTooltip = Platform.p2p().toColoredHexString(freq).withStyle(ChatFormatting.BOLD);
             if (serverData.contains(TAG_P2P_FREQUENCY_NAME, Tag.TAG_STRING)) {
                 var freqName = serverData.getString(TAG_P2P_FREQUENCY_NAME);
-                freqTooltip = freqName + " (" + freqTooltip + ")";
+                freqTooltip = Component.literal(freqName).append(" (").append(freqTooltip).append(")");
             }
 
             tooltip.addLine(InGameTooltip.P2PFrequency.text(freqTooltip));
