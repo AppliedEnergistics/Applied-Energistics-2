@@ -278,6 +278,7 @@
   "config.jade.plugin_ae2.part_tooltip": "AE2组件提示信息",
   "config.jade.plugin_ae2.pattern_provider": "AE2样板供应器",
   "config.jade.plugin_ae2.power_storage": "AE2能源状态",
+  "death.attack.matter_cannon": "%1$s被%2$s射杀",
   "death.attack.matter_cannon.item": "%1$s 被 %2$s 使用 %3$s 射杀了",
   "entity.ae2.tiny_tnt_primed": "被激活的迷你TNT",
   "entity.minecraft.villager.ae2.fluix_researcher": "福鲁伊克斯研究员",
