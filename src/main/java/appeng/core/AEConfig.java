@@ -100,8 +100,10 @@ public final class AEConfig {
     }
 
     public void setSearchModNameInTooltips(boolean enable) {
-        client.searchModNameInTooltips.set(enable);
-        client.spec.save();
+        if (enable != client.searchModNameInTooltips.getAsBoolean()) {
+            client.searchModNameInTooltips.set(enable);
+            client.spec.save();
+        }
     }
 
     public boolean isUseExternalSearch() {
@@ -109,8 +111,10 @@ public final class AEConfig {
     }
 
     public void setUseExternalSearch(boolean enable) {
-        client.useExternalSearch.set(enable);
-        client.spec.save();
+        if (enable != client.useExternalSearch.getAsBoolean()) {
+            client.useExternalSearch.set(enable);
+            client.spec.save();
+        }
     }
 
     public boolean isClearExternalSearchOnOpen() {
@@ -118,8 +122,10 @@ public final class AEConfig {
     }
 
     public void setClearExternalSearchOnOpen(boolean enable) {
-        client.clearExternalSearchOnOpen.set(enable);
-        client.spec.save();
+        if (enable != client.clearExternalSearchOnOpen.getAsBoolean()) {
+            client.clearExternalSearchOnOpen.set(enable);
+            client.spec.save();
+        }
     }
 
     public boolean isRememberLastSearch() {
@@ -127,8 +133,10 @@ public final class AEConfig {
     }
 
     public void setRememberLastSearch(boolean enable) {
-        client.rememberLastSearch.set(enable);
-        client.spec.save();
+        if (enable != client.rememberLastSearch.getAsBoolean()) {
+            client.rememberLastSearch.set(enable);
+            client.spec.save();
+        }
     }
 
     public boolean isAutoFocusSearch() {
@@ -136,8 +144,10 @@ public final class AEConfig {
     }
 
     public void setAutoFocusSearch(boolean enable) {
-        client.autoFocusSearch.set(enable);
-        client.spec.save();
+        if (enable != client.autoFocusSearch.getAsBoolean()) {
+            client.autoFocusSearch.set(enable);
+            client.spec.save();
+        }
     }
 
     public boolean isSyncWithExternalSearch() {
@@ -145,8 +155,10 @@ public final class AEConfig {
     }
 
     public void setSyncWithExternalSearch(boolean enable) {
-        client.syncWithExternalSearch.set(enable);
-        client.spec.save();
+        if (enable != client.syncWithExternalSearch.getAsBoolean()) {
+            client.syncWithExternalSearch.set(enable);
+            client.spec.save();
+        }
     }
 
     public TerminalStyle getTerminalStyle() {
@@ -154,8 +166,10 @@ public final class AEConfig {
     }
 
     public void setTerminalStyle(TerminalStyle setting) {
-        client.terminalStyle.set(setting);
-        client.spec.save();
+        if (setting != client.terminalStyle.get()) {
+            client.terminalStyle.set(setting);
+            client.spec.save();
+        }
     }
 
     public double getGridEnergyStoragePerNode() {
@@ -263,8 +277,10 @@ public final class AEConfig {
     }
 
     public void setShowDebugGuiOverlays(boolean enable) {
-        client.debugGuiOverlays.set(enable);
-        client.spec.save();
+        if (enable != client.debugGuiOverlays.getAsBoolean()) {
+            client.debugGuiOverlays.set(enable);
+            client.spec.save();
+        }
     }
 
     public boolean isSpawnPressesInMeteoritesEnabled() {
@@ -308,8 +324,10 @@ public final class AEConfig {
     }
 
     public void setChannelModel(ChannelMode mode) {
-        common.channels.set(mode);
-        client.spec.save();
+        if (mode != common.channels.get()) {
+            common.channels.set(mode);
+            client.spec.save();
+        }
     }
 
     public int getPathfindingStepsPerTick() {
@@ -355,8 +373,10 @@ public final class AEConfig {
     }
 
     public void setPinAutoCraftedItems(boolean enabled) {
-        client.pinAutoCraftedItems.set(enabled);
-        client.spec.save();
+        if (enabled != client.pinAutoCraftedItems.getAsBoolean()) {
+            client.pinAutoCraftedItems.set(enabled);
+            client.spec.save();
+        }
     }
 
     public boolean isNotifyForFinishedCraftingJobs() {
@@ -364,8 +384,10 @@ public final class AEConfig {
     }
 
     public void setNotifyForFinishedCraftingJobs(boolean enabled) {
-        client.notifyForFinishedCraftingJobs.set(enabled);
-        client.spec.save();
+        if (enabled != client.notifyForFinishedCraftingJobs.getAsBoolean()) {
+            client.notifyForFinishedCraftingJobs.set(enabled);
+            client.spec.save();
+        }
     }
 
     public boolean isClearGridOnClose() {
@@ -373,8 +395,10 @@ public final class AEConfig {
     }
 
     public void setClearGridOnClose(boolean enabled) {
-        client.clearGridOnClose.set(enabled);
-        client.spec.save();
+        if (enabled != client.clearGridOnClose.getAsBoolean()) {
+            client.clearGridOnClose.set(enabled);
+            client.spec.save();
+        }
     }
 
     public double getVibrationChamberBaseEnergyPerFuelTick() {
