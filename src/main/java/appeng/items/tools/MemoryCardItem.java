@@ -57,6 +57,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
+import appeng.core.localization.InGameTooltip;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.localization.Tooltips;
 import appeng.helpers.IConfigInvHost;
@@ -288,11 +289,11 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, DyeableLe
             lines.add(Tooltips.of(Component.translatable(tooltipKey)));
         }
 
-        if (data.contains("freq")) {
-            final short freq = data.getShort("freq");
-            final String freqTooltip = ChatFormatting.BOLD + Platform.p2p().toHexString(freq);
+        if (data.contains("p2pFreq")) {
+            final short freq = data.getShort("p2pFreq");
+            var freqTooltip = Platform.p2p().toColoredHexString(freq).withStyle(ChatFormatting.BOLD);
 
-            lines.add(Tooltips.of(Component.translatable("gui.tooltips.ae2.P2PFrequency", freqTooltip)));
+            lines.add(Tooltips.of(Component.translatable(InGameTooltip.P2PFrequency.getTranslationKey(), freqTooltip)));
         }
     }
 

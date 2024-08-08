@@ -20,6 +20,9 @@ package appeng.util.helpers;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+
 import appeng.api.util.AEColor;
 
 public class P2PHelper {
@@ -28,12 +31,16 @@ public class P2PHelper {
         final AEColor[] colors = new AEColor[4];
 
         for (int i = 0; i < 4; i++) {
-            int nibble = frequency >> 4 * (3 - i) & 0xF;
+            int nibble = getFrequencyNibble(frequency, i);
 
             colors[i] = AEColor.values()[nibble];
         }
 
         return colors;
+    }
+
+    private static int getFrequencyNibble(short frequency, int i) {
+        return frequency >> 4 * (3 - i) & 0xF;
     }
 
     public short fromColors(AEColor[] colors) {
@@ -56,6 +63,22 @@ public class P2PHelper {
 
     public String toHexString(short frequency) {
         return String.format("%04X", frequency);
+    }
+
+    private static final String[] HEX_DIGITS = {
+            "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"
+    };
+
+    public MutableComponent toColoredHexString(short frequency) {
+        var parent = Component.empty();
+
+        for (var i = 0; i < 4; i++) {
+            var nibble = getFrequencyNibble(frequency, i);
+            var hex = Component.literal(HEX_DIGITS[nibble]);
+            parent.append(hex.setStyle(hex.getStyle().withColor(AEColor.values()[nibble].mediumVariant)));
+        }
+
+        return parent;
     }
 
 }
