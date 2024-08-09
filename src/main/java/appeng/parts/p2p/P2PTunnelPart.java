@@ -19,7 +19,6 @@
 package appeng.parts.p2p;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.jetbrains.annotations.Nullable;
@@ -160,8 +159,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
                 final boolean wasOutput = this.isOutput();
                 this.setOutput(false);
 
-                final boolean needsNewFrequency = wasOutput || this.getFrequency() == 0
-                        || Objects.equals(storedFrequency, newFreq);
+                var needsNewFrequency = wasOutput || newFreq == 0;
 
                 var grid = getMainNode().getGrid();
                 if (grid != null) {
