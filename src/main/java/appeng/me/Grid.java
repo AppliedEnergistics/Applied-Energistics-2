@@ -21,7 +21,6 @@ package appeng.me;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,6 +43,7 @@ import appeng.api.networking.events.GridEvent;
 import appeng.core.AELog;
 import appeng.core.worlddata.IGridStorageSaveData;
 import appeng.hooks.ticking.TickHandler;
+import appeng.me.helpers.GridServiceContainer;
 
 public class Grid implements IGrid {
     /**
@@ -53,7 +53,7 @@ public class Grid implements IGrid {
     private static int nextSerial = 0;
 
     private final SetMultimap<Class<?>, IGridNode> machines = MultimapBuilder.hashKeys().hashSetValues().build();
-    private final Map<Class<?>, IGridServiceProvider> services;
+    private final GridServiceContainer services;
     private GridNode pivot;
     private int priority; // how import is this network?
     private GridStorage myStorage;
@@ -89,7 +89,7 @@ public class Grid implements IGrid {
     }
 
     Collection<IGridServiceProvider> getProviders() {
-        return this.services.values();
+        return this.services.services().values();
     }
 
     @Override
@@ -98,7 +98,7 @@ public class Grid implements IGrid {
     }
 
     void remove(GridNode gridNode) {
-        for (var c : this.services.values()) {
+        for (var c : services.services().values()) {
             c.removeNode(gridNode);
         }
 
@@ -131,7 +131,7 @@ public class Grid implements IGrid {
                 this.myStorage = gs;
                 this.myStorage.setGrid(this);
 
-                for (var gc : this.services.values()) {
+                for (var gc : this.services.services().values()) {
                     gc.onJoin(this.myStorage);
                 }
             } else if (grid != this) {
@@ -144,11 +144,11 @@ public class Grid implements IGrid {
                 if (!gs.hasDivided(this.myStorage)) {
                     gs.addDivided(this.myStorage);
 
-                    for (var gc : ((Grid) grid).services.values()) {
+                    for (var gc : ((Grid) grid).services.services().values()) {
                         gc.onSplit(tmp);
                     }
 
-                    for (var gc : this.services.values()) {
+                    for (var gc : this.services.services().values()) {
                         gc.onJoin(tmp);
                     }
                 }
@@ -164,7 +164,7 @@ public class Grid implements IGrid {
         // track node.
         this.machines.put(gridNode.getOwner().getClass(), gridNode);
 
-        for (var service : this.services.values()) {
+        for (var service : this.services.services().values()) {
             service.addNode(gridNode);
         }
     }
@@ -172,7 +172,7 @@ public class Grid implements IGrid {
     @SuppressWarnings("unchecked")
     @Override
     public <C extends IGridService> C getService(Class<C> iface) {
-        var service = this.services.get(iface);
+        var service = this.services.services().get(iface);
         if (service == null) {
             throw new IllegalArgumentException("Service " + iface + " is not registered");
         }
@@ -241,7 +241,7 @@ public class Grid implements IGrid {
     }
 
     public void onServerStartTick() {
-        for (var gc : this.services.values()) {
+        for (var gc : this.services.serverStartTickServices()) {
             if (this.pivot != null) {
                 gc.onServerStartTick();
             }
@@ -249,7 +249,7 @@ public class Grid implements IGrid {
     }
 
     public void onLevelStartTick(Level level) {
-        for (var gc : this.services.values()) {
+        for (var gc : this.services.levelStartTickServices()) {
             if (this.pivot != null) {
                 gc.onLevelStartTick(level);
             }
@@ -257,7 +257,7 @@ public class Grid implements IGrid {
     }
 
     public void onLevelEndTick(Level level) {
-        for (var gc : this.services.values()) {
+        for (var gc : this.services.levelEndtickServices()) {
             if (this.pivot != null) {
                 gc.onLevelEndTick(level);
             }
@@ -265,7 +265,7 @@ public class Grid implements IGrid {
     }
 
     public void onServerEndTick() {
-        for (var gc : this.services.values()) {
+        for (var gc : this.services.serverEndTickServices()) {
             if (this.pivot != null) {
                 gc.onServerEndTick();
             }
@@ -273,7 +273,7 @@ public class Grid implements IGrid {
     }
 
     void saveState() {
-        for (var c : this.services.values()) {
+        for (var c : this.services.services().values()) {
             c.populateGridStorage(this.myStorage);
         }
     }
