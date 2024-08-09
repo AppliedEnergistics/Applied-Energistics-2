@@ -1,14 +1,5 @@
 package appeng.client.guidebook.document.block;
 
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-
-import appeng.client.guidebook.color.ColorValue;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
@@ -16,6 +7,13 @@ import appeng.client.guidebook.document.interaction.ItemTooltip;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
 import appeng.core.AppEng;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Renders a standard Minecraft GUI slot.
@@ -23,7 +21,7 @@ import appeng.core.AppEng;
 public class LytSlot extends LytBlock implements InteractiveElement {
     public static final ResourceLocation SLOT_LIGHT = AppEng.makeId("slot");
     public static final ResourceLocation SLOT_DARK = AppEng.makeId("ae2guide/gui/slot_dark.png");
-    public static final ResourceLocation LARGE_SLOT_LIGHT = AppEng.makeId("ae2guide/gui/large_slot_light.png");
+    public static final ResourceLocation LARGE_SLOT_LIGHT = AppEng.makeId("slot_large");
     public static final ResourceLocation LARGE_SLOT_DARK = AppEng.makeId("ae2guide/gui/large_slot_dark.png");
 
     private static final int ITEM_SIZE = 16;
@@ -42,7 +40,7 @@ public class LytSlot extends LytBlock implements InteractiveElement {
     }
 
     public LytSlot(ItemStack stack) {
-        this.stacks = new ItemStack[] { stack };
+        this.stacks = new ItemStack[]{stack};
     }
 
     public boolean isLargeSlot() {
@@ -82,7 +80,12 @@ public class LytSlot extends LytBlock implements InteractiveElement {
         } else {
             texture = context.isDarkMode() ? SLOT_DARK : SLOT_LIGHT;
         }
-        context.drawIcon(bounds.x(), bounds.y(), texture);
+        context.fillIcon(bounds, texture);
+
+        // Render a border around the slot if we're not contained in a slot grid
+        if (!(parent instanceof LytSlotGrid)) {
+            context.fillIcon(bounds, AppEng.makeId("slot_border"));
+        }
 
         var padding = largeSlot ? LARGE_PADDING : PADDING;
 

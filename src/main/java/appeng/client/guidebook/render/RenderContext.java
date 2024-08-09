@@ -1,11 +1,17 @@
 package appeng.client.guidebook.render;
 
+import appeng.api.stacks.AEFluidKey;
+import appeng.client.gui.style.FluidBlitter;
+import appeng.client.gui.widgets.PanelBlitter;
+import appeng.client.gui.widgets.SpriteLayer;
+import appeng.client.guidebook.color.ColorValue;
+import appeng.client.guidebook.color.ConstantColor;
+import appeng.client.guidebook.color.LightDarkMode;
+import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.layout.MinecraftFontMetrics;
+import appeng.client.guidebook.style.ResolvedTextStyle;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.StringSplitter;
 import net.minecraft.client.gui.Font;
@@ -21,16 +27,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec2;
 import net.neoforged.neoforge.fluids.FluidStack;
-
-import appeng.api.stacks.AEFluidKey;
-import appeng.client.gui.style.FluidBlitter;
-import appeng.client.gui.widgets.PanelBlitter;
-import appeng.client.guidebook.color.ColorValue;
-import appeng.client.guidebook.color.ConstantColor;
-import appeng.client.guidebook.color.LightDarkMode;
-import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.layout.MinecraftFontMetrics;
-import appeng.client.guidebook.style.ResolvedTextStyle;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 public interface RenderContext {
 
@@ -53,13 +51,13 @@ public interface RenderContext {
     void fillRect(LytRect rect, ColorValue topLeft, ColorValue topRight, ColorValue bottomRight, ColorValue bottomLeft);
 
     default void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorValue topLeft, ColorValue topRight,
-            ColorValue bottomRight, ColorValue bottomLeft) {
+                                  ColorValue bottomRight, ColorValue bottomLeft) {
         // Just use the entire texture by default
         fillTexturedRect(rect, texture, topLeft, topRight, bottomRight, bottomLeft, 0, 0, 1, 1);
     }
 
     void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorValue topLeft, ColorValue topRight,
-            ColorValue bottomRight, ColorValue bottomLeft, float u0, float v0, float u1, float v1);
+                          ColorValue bottomRight, ColorValue bottomLeft, float u0, float v0, float u1, float v1);
 
     default void fillTexturedRect(LytRect rect, GuidePageTexture texture) {
         fillTexturedRect(rect, texture.use(), ConstantColor.WHITE);
@@ -93,15 +91,27 @@ public interface RenderContext {
     }
 
     default void drawIcon(int x, int y, TextureAtlasSprite sprite, ColorValue color) {
-        var u0 = sprite.getU0();
-        var v0 = sprite.getV0();
-        var u1 = sprite.getU1();
-        var v1 = sprite.getV1();
-
         var contents = sprite.contents();
-        var texture = Minecraft.getInstance().getTextureManager().getTexture(sprite.atlasLocation());
-        fillTexturedRect(new LytRect(x, y, contents.width(), contents.height()), texture, color, color, color, color,
-                u0, v0, u1, v1);
+        fillIcon(x, y, contents.width(), contents.height(), sprite, color);
+    }
+
+    default void fillIcon(LytRect bounds, ResourceLocation guiSprite) {
+        fillIcon(bounds.x(), bounds.y(), bounds.width(), bounds.height(), guiSprite);
+    }
+
+    default void fillIcon(int x, int y, int width, int height, ResourceLocation guiSprite) {
+        fillIcon(x, y, width, height, guiSprite, ConstantColor.WHITE);
+    }
+
+    default void fillIcon(int x, int y, int width, int height, ResourceLocation guiSprite, ColorValue color) {
+        var sprite = Minecraft.getInstance().getGuiSprites().getSprite(guiSprite);
+        fillIcon(x, y, width, height, sprite, color);
+    }
+
+    default void fillIcon(int x, int y, int width, int height, TextureAtlasSprite sprite, ColorValue color) {
+        var spriteLayer = new SpriteLayer();
+        spriteLayer.fillSprite(sprite.contents().name(), 0, 0, 0, width, height, resolveColor(color));
+        spriteLayer.render(poseStack(), x, y, 0);
     }
 
     default void fillTexturedRect(LytRect rect, ResourceLocation textureId) {
@@ -138,7 +148,7 @@ public interface RenderContext {
         var lineHeight = fontMetrics.getLineHeight(style);
         var overallHeight = splitLines.size() * lineHeight;
         var overallWidth = (int) (splitLines.stream().mapToDouble(splitter::stringWidth).max().orElse(0f)
-                * style.fontScale());
+                                  * style.fontScale());
         var textRect = new LytRect(0, 0, overallWidth, overallHeight);
         textRect = textRect.centerIn(rect);
 
@@ -218,12 +228,14 @@ public interface RenderContext {
     default void renderFluid(Fluid fluid, int x, int y, int z, int width, int height) {
         FluidBlitter.create(AEFluidKey.of(fluid))
                 .dest(x, y, width, height)
+                .zOffset(z)
                 .blit(guiGraphics());
     }
 
     default void renderFluid(FluidStack stack, int x, int y, int z, int width, int height) {
         FluidBlitter.create(stack)
                 .dest(x, y, width, height)
+                .zOffset(z)
                 .blit(guiGraphics());
     }
 

@@ -29,7 +29,6 @@ public final class SpriteLayer {
     }
 
     public void addSprite(ResourceLocation sprite, int x, int y) {
-
     }
 
     public void fillSprite(ResourceLocation id, float x, float y, float z, float width, float height, int color) {

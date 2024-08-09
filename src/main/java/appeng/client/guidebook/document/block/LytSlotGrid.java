@@ -129,12 +129,9 @@ public class LytSlotGrid extends LytBox {
             }
         }
 
-        context.guiGraphics().blitSprite(
-                AppEng.makeId("slot_border"),
-                bounds.x(), bounds.y(), 100, bounds.width(), bounds.height()
-        );
-
         super.render(context);
+
+        context.fillIcon(bounds, AppEng.makeId("slot_border"));
     }
 
     private int getSlotIndex(int col, int row) {
