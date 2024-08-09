@@ -27,11 +27,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import net.minecraft.world.level.Level;
+
+import appeng.me.helpers.GridServiceContainer;
 
 /**
  * A registry of grid services to extend grid functionality.
@@ -92,14 +96,37 @@ public final class GridServices {
      * <p/>
      * This is used by AE2 internally to initialize the services for a grid.
      */
-    static Map<Class<?>, IGridServiceProvider> createServices(IGrid g) {
-        var result = new LinkedHashMap<Class<?>, IGridServiceProvider>(registry.size());
+    static GridServiceContainer createServices(IGrid g) {
+        var services = new IdentityHashMap<Class<?>, IGridServiceProvider>(registry.size());
+        var serverStartTickServices = new ArrayList<IGridServiceProvider>(registry.size());
+        var levelStartTickServices = new ArrayList<IGridServiceProvider>(registry.size());
+        var levelEndTickServices = new ArrayList<IGridServiceProvider>(registry.size());
+        var serverEndTickServices = new ArrayList<IGridServiceProvider>(registry.size());
 
         for (var registration : registry) {
-            result.put(registration.publicInterface, registration.construct(g, result));
+            var service = registration.construct(g, services);
+            services.put(registration.publicInterface, service);
+
+            if (registration.hasServerStartTick) {
+                serverStartTickServices.add(service);
+            }
+            if (registration.hasLevelStartTick) {
+                levelStartTickServices.add(service);
+            }
+            if (registration.hasLevelEndTick) {
+                levelEndTickServices.add(service);
+            }
+            if (registration.hasServerEndTick) {
+                serverEndTickServices.add(service);
+            }
         }
 
-        return result;
+        return new GridServiceContainer(
+                services,
+                serverStartTickServices.toArray(IGridServiceProvider[]::new),
+                levelStartTickServices.toArray(IGridServiceProvider[]::new),
+                levelEndTickServices.toArray(IGridServiceProvider[]::new),
+                serverEndTickServices.toArray(IGridServiceProvider[]::new));
     }
 
     private static class GridCacheRegistration<T extends IGridServiceProvider> {
@@ -113,6 +140,11 @@ public final class GridServices {
         private final Class<?>[] constructorParameterTypes;
 
         private final Set<Class<?>> dependencies;
+
+        private final boolean hasServerStartTick;
+        private final boolean hasLevelStartTick;
+        private final boolean hasLevelEndTick;
+        private final boolean hasServerEndTick;
 
         @SuppressWarnings("unchecked")
         public GridCacheRegistration(Class<T> implClass, Class<?> publicInterface) {
@@ -130,6 +162,19 @@ public final class GridServices {
             this.dependencies = Arrays.stream(this.constructorParameterTypes)
                     .filter(t -> !t.equals(IGrid.class))
                     .collect(Collectors.toSet());
+
+            try {
+                this.hasServerStartTick = implClass.getMethod("onServerStartTick")
+                        .getDeclaringClass() != IGridServiceProvider.class;
+                this.hasLevelStartTick = implClass.getMethod("onLevelStartTick", Level.class)
+                        .getDeclaringClass() != IGridServiceProvider.class;
+                this.hasLevelEndTick = implClass.getMethod("onLevelEndTick", Level.class)
+                        .getDeclaringClass() != IGridServiceProvider.class;
+                this.hasServerEndTick = implClass.getMethod("onServerEndTick")
+                        .getDeclaringClass() != IGridServiceProvider.class;
+            } catch (NoSuchMethodException exception) {
+                throw new RuntimeException("Failed to check which methods the grid service implements", exception);
+            }
         }
 
         public IGridServiceProvider construct(IGrid g, Map<Class<?>, IGridServiceProvider> createdServices) {

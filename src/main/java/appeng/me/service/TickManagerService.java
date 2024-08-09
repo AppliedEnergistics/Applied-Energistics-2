@@ -18,7 +18,7 @@
 
 package appeng.me.service;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LongSummaryStatistics;
 import java.util.Map;
 import java.util.Objects;
@@ -50,10 +50,10 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
     private static final int TICK_RATE_SPEED_UP_FACTOR = 2;
     private static final int TICK_RATE_SLOW_DOWN_FACTOR = 1;
 
-    private final Map<IGridNode, TickTracker> alertable = new HashMap<>();
-    private final Map<IGridNode, TickTracker> sleeping = new HashMap<>();
-    private final Map<IGridNode, TickTracker> awake = new HashMap<>();
-    private final Map<Level, PriorityQueue<TickTracker>> upcomingTicks = new HashMap<>();
+    private final Map<IGridNode, TickTracker> alertable = new IdentityHashMap<>();
+    private final Map<IGridNode, TickTracker> sleeping = new IdentityHashMap<>();
+    private final Map<IGridNode, TickTracker> awake = new IdentityHashMap<>();
+    private final Map<Level, PriorityQueue<TickTracker>> upcomingTicks = new IdentityHashMap<>();
 
     private PriorityQueue<TickTracker> currentlyTickingQueue = null;
 
@@ -68,10 +68,6 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
     @Override
     public void onServerStartTick() {
         this.currentTick++;
-    }
-
-    @Override
-    public void onLevelStartTick(Level level) {
     }
 
     @Override

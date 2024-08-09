@@ -18,14 +18,14 @@
 
 package appeng.api.networking;
 
-import java.util.Map;
+import appeng.me.helpers.GridServiceContainer;
 
 /**
  * Allows access to non-public features of {@link GridServices}.
  */
 public class GridServicesInternal {
 
-    public static Map<Class<?>, IGridServiceProvider> createServices(IGrid g) {
+    public static GridServiceContainer createServices(IGrid g) {
         return GridServices.createServices(g);
     }
 
