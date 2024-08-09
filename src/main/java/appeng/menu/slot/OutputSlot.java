@@ -18,14 +18,14 @@
 
 package appeng.menu.slot;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
+import appeng.client.gui.Icon;
 
 public class OutputSlot extends AppEngSlot {
 
-    public OutputSlot(InternalInventory inv, int invSlot, ResourceLocation icon) {
+    public OutputSlot(InternalInventory inv, int invSlot, Icon icon) {
         super(inv, invSlot);
         this.setIcon(icon);
     }

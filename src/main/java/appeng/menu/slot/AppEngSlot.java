@@ -24,7 +24,6 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
@@ -33,6 +32,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.GenericStack;
+import appeng.client.gui.Icon;
 import appeng.core.AELog;
 import appeng.menu.AEBaseMenu;
 
@@ -55,7 +55,7 @@ public class AppEngSlot extends Slot {
      * Shows an icon from the icon sprite-sheet in the background of this slot.
      */
     @Nullable
-    private ResourceLocation icon;
+    private Icon icon;
     /**
      * Caches if the item stack currently contained in this slot is "valid" or not for UI purposes.
      */
@@ -235,11 +235,11 @@ public class AppEngSlot extends Slot {
         return false;
     }
 
-    public ResourceLocation getIcon() {
+    public Icon getIcon() {
         return this.icon;
     }
 
-    public void setIcon(ResourceLocation icon) {
+    public void setIcon(Icon icon) {
         this.icon = icon;
     }
 

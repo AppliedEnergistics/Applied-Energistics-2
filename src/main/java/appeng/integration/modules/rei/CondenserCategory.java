@@ -40,7 +40,6 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
 import appeng.api.config.CondenserOutput;
-import appeng.client.gui.Icon;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 
@@ -77,13 +76,21 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
         ResourceLocation location = AppEng.makeId("textures/guis/condenser.png");
         widgets.add(Widgets.createTexturedWidget(location, origin.x, origin.y, 50, 25, 94, 48));
 
-        widgets.add(new SpriteWidget(Icon.BACKGROUND_TRASH, bounds.x + 3, bounds.y + 27, 16, 16));
-        widgets.add(new SpriteWidget(Icon.TOOLBAR_BUTTON_BACKGROUND, bounds.x + 79, bounds.y + 28, 16, 16));
+        ResourceLocation statesLocation = AppEng.makeId("textures/guis/states.png");
+        widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 2, origin.y + 28, 241, 81, 14, 14));
+        widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 78, origin.y + 28, 240, 240, 16, 16));
+
+        // FIXME IDrawableStatic progressDrawable = guiHelper.drawableBuilder(location,
+        // 178, 25, 6, 18).addPadding(0, 0, 70, 0)
+        // FIXME .build();
+        // FIXME this.progress = guiHelper.createAnimatedDrawable(progressDrawable, 40,
+        // IDrawableAnimated.StartDirection.BOTTOM,
+        // FIXME false);
 
         if (recipeDisplay.getType() == CondenserOutput.MATTER_BALLS) {
-            widgets.add(new SpriteWidget(Icon.CONDENSER_OUTPUT_MATTER_BALL, bounds.x + 79, bounds.y + 27, 16, 16));
+            widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 78, origin.y + 28, 16, 112, 14, 14));
         } else if (recipeDisplay.getType() == CondenserOutput.SINGULARITY) {
-            widgets.add(new SpriteWidget(Icon.CONDENSER_OUTPUT_SINGULARITY, bounds.x + 79, bounds.y + 27, 16, 16));
+            widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 78, origin.y + 28, 32, 112, 14, 14));
         }
         widgets.add(Widgets.createDrawableWidget((guiGraphics, mouseX, mouseY, delta) -> {
             Rectangle rect = new Rectangle(origin.x + 78, origin.y + 28, 16, 16);

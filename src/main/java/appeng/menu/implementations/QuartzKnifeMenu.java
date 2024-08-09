@@ -19,7 +19,6 @@
 package appeng.menu.implementations;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -31,6 +30,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerDestroyItemEvent;
 import appeng.api.ids.AEComponents;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.inventories.InternalInventory;
+import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
@@ -82,7 +82,7 @@ public class QuartzKnifeMenu extends AEBaseMenu {
     }
 
     private class QuartzKniveSlot extends OutputSlot {
-        QuartzKniveSlot(InternalInventory inv, int invSlot, ResourceLocation icon) {
+        QuartzKniveSlot(InternalInventory inv, int invSlot, Icon icon) {
             super(inv, invSlot, icon);
         }
 

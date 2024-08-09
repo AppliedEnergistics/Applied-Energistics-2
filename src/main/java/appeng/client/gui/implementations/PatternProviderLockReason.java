@@ -7,7 +7,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import appeng.api.client.AEKeyRendering;
@@ -17,7 +16,6 @@ import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.Icon;
 import appeng.client.gui.Tooltip;
-import appeng.client.gui.style.Blitter;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.InGameTooltip;
 
@@ -60,7 +58,7 @@ public class PatternProviderLockReason implements ICompositeWidget {
     public void drawForegroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
         var menu = screen.getMenu();
 
-        ResourceLocation icon;
+        Icon icon;
         Component lockStatusText;
         if (menu.getCraftingLockedReason() == LockCraftingMode.NONE) {
             icon = Icon.UNLOCKED;
@@ -72,7 +70,7 @@ public class PatternProviderLockReason implements ICompositeWidget {
                     .setStyle(Style.EMPTY.withColor(Mth.color(193 / 255f, 66 / 255f, 75 / 255f)));
         }
 
-        Blitter.guiSprite(icon).dest(x, y).blit(guiGraphics);
+        icon.getBlitter().dest(x, y).blit(guiGraphics);
         guiGraphics.drawString(Minecraft.getInstance().font, lockStatusText, x + 15, y + 5, -1, false);
     }
 

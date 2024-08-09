@@ -28,7 +28,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -63,7 +62,7 @@ public abstract class IconButton extends Button implements ITooltip {
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
 
         if (this.visible) {
-            var icon = this.getSprite();
+            var icon = this.getIcon();
             var item = this.getItemOverlay();
 
             if (this.halfSize) {
@@ -75,13 +74,12 @@ public abstract class IconButton extends Button implements ITooltip {
 
             if (this.halfSize) {
                 if (!disableBackground) {
-                    Blitter.guiSprite(Icon.TOOLBAR_BUTTON_BACKGROUND).dest(getX(), getY()).zOffset(10)
-                            .blit(guiGraphics);
+                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(getX(), getY()).zOffset(10).blit(guiGraphics);
                 }
                 if (item != null) {
                     guiGraphics.renderItem(new ItemStack(item), getX(), getY(), 0, 20);
                 } else if (icon != null) {
-                    Blitter blitter = Blitter.guiSprite(icon);
+                    Blitter blitter = icon.getBlitter();
                     if (!this.active) {
                         blitter.opacity(0.5f);
                     }
@@ -89,10 +87,10 @@ public abstract class IconButton extends Button implements ITooltip {
                 }
             } else {
                 if (!disableBackground) {
-                    var bgIcon = isHovered() ? Icon.TOOLBAR_BUTTON_BACKGROUND_HOVER
+                    Icon bgIcon = isHovered() ? Icon.TOOLBAR_BUTTON_BACKGROUND_HOVER
                             : isFocused() ? Icon.TOOLBAR_BUTTON_BACKGROUND_FOCUS : Icon.TOOLBAR_BUTTON_BACKGROUND;
 
-                    Blitter.guiSprite(bgIcon)
+                    bgIcon.getBlitter()
                             .dest(getX() - 1, getY() + yOffset, 18, 20)
                             .zOffset(2)
                             .blit(guiGraphics);
@@ -100,16 +98,16 @@ public abstract class IconButton extends Button implements ITooltip {
                 if (item != null) {
                     guiGraphics.renderItem(new ItemStack(item), getX(), getY() + 1 + yOffset, 0, 3);
                 } else if (icon != null) {
-                    Blitter.guiSprite(icon).dest(getX(), getY() + 1 + yOffset).zOffset(3).blit(guiGraphics);
+                    icon.getBlitter().dest(getX(), getY() + 1 + yOffset).zOffset(3).blit(guiGraphics);
                 }
             }
         }
     }
 
-    protected abstract ResourceLocation getSprite();
+    protected abstract Icon getIcon();
 
     /**
-     * Prioritized over {@link #getSprite()} if not null.
+     * Prioritized over {@link #getIcon()} if not null.
      */
     @Nullable
     protected Item getItemOverlay() {

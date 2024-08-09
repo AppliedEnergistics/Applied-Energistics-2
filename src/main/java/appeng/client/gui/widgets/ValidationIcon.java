@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import appeng.client.gui.Icon;
 
@@ -63,7 +62,7 @@ public class ValidationIcon extends IconButton {
     }
 
     @Override
-    protected ResourceLocation getSprite() {
+    protected Icon getIcon() {
         return Icon.INVALID;
     }
 

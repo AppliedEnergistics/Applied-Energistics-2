@@ -27,15 +27,13 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.client.gui.Icon;
-import appeng.client.gui.style.Blitter;
 
 public class TabButton extends Button implements ITooltip {
     private Style style = Style.BOX;
-    private ResourceLocation icon = null;
+    private Icon icon = null;
     private ItemStack item;
 
     private boolean selected;
@@ -48,7 +46,7 @@ public class TabButton extends Button implements ITooltip {
         HORIZONTAL
     }
 
-    public TabButton(ResourceLocation ico, Component message, OnPress onPress) {
+    public TabButton(Icon ico, Component message, OnPress onPress) {
         super(0, 0, 22, 22, message, onPress, Button.DEFAULT_NARRATION);
 
         this.icon = ico;
@@ -84,7 +82,7 @@ public class TabButton extends Button implements ITooltip {
                 }
             };
             if (!disableBackground) {
-                Blitter.guiSprite(backdrop).dest(getX(), getY()).blit(guiGraphics);
+                backdrop.getBlitter().dest(getX(), getY()).blit(guiGraphics);
             }
 
             var iconX = switch (this.style) {
@@ -99,7 +97,7 @@ public class TabButton extends Button implements ITooltip {
             };
 
             if (this.icon != null) {
-                Blitter.guiSprite(this.icon).dest(getX() + iconX, getY() + iconY - 1).blit(guiGraphics);
+                this.icon.getBlitter().dest(getX() + iconX, getY() + iconY - 1).blit(guiGraphics);
             }
 
             if (this.item != null) {

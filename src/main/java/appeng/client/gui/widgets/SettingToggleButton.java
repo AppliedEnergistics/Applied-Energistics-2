@@ -32,7 +32,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
@@ -327,7 +326,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         onPress.handle(this, backwards);
     }
 
-    private static <T extends Enum<T>> void registerApp(ResourceLocation sprite, Setting<T> setting, T val,
+    private static <T extends Enum<T>> void registerApp(Icon icon, Setting<T> setting, T val,
             ButtonToolTips title, Component... tooltipLines) {
         var lines = new ArrayList<Component>();
         lines.add(title.text());
@@ -335,7 +334,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
 
         appearances.put(
                 new EnumPair<>(setting, val),
-                new ButtonAppearance(sprite, null, lines));
+                new ButtonAppearance(icon, null, lines));
     }
 
     private static <T extends Enum<T>> void registerApp(ItemLike item, Setting<T> setting, T val,
@@ -349,9 +348,9 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                 new ButtonAppearance(null, item.asItem(), lines));
     }
 
-    private static <T extends Enum<T>> void registerApp(ResourceLocation sprite, Setting<T> setting, T val,
+    private static <T extends Enum<T>> void registerApp(Icon icon, Setting<T> setting, T val,
             ButtonToolTips title, ButtonToolTips hint) {
-        registerApp(sprite, setting, val, title, hint.text());
+        registerApp(icon, setting, val, title, hint.text());
     }
 
     @Nullable
@@ -363,10 +362,10 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     }
 
     @Override
-    protected ResourceLocation getSprite() {
+    protected Icon getIcon() {
         var app = getApperance();
-        if (app != null && app.sprite() != null) {
-            return app.sprite();
+        if (app != null && app.icon != null) {
+            return app.icon;
         }
         return Icon.TOOLBAR_BUTTON_BACKGROUND;
     }
@@ -441,7 +440,6 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         }
     }
 
-    private record ButtonAppearance(@Nullable ResourceLocation sprite, @Nullable Item item,
-            List<Component> tooltipLines) {
+    private record ButtonAppearance(@Nullable Icon icon, @Nullable Item item, List<Component> tooltipLines) {
     }
 }

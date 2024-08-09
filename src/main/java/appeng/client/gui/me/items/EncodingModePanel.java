@@ -2,10 +2,10 @@ package appeng.client.gui.me.items;
 
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
+import appeng.client.gui.Icon;
 import appeng.client.gui.WidgetContainer;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 
@@ -23,7 +23,10 @@ public abstract class EncodingModePanel implements ICompositeWidget {
         this.widgets = widgets;
     }
 
-    abstract ResourceLocation getIcon();
+    // TODO (Rid): Replaced the ItemStack and an Icon
+//    abstract ItemStack getTabIconItem();
+
+    abstract Icon getIcon();
 
     abstract Component getTabTooltip();
 

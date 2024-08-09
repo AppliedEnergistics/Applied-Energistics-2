@@ -21,7 +21,6 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import appeng.api.config.CondenserOutput;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.blockentity.misc.CondenserBlockEntity;
-import appeng.client.gui.Icon;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -52,19 +51,17 @@ class EmiCondenserRecipe extends BasicEmiRecipe {
         var background = AppEng.makeId("textures/guis/condenser.png");
         widgets.addTexture(background, 0, 0, 96, 48, 48, 25);
 
-        widgets.add(new SpriteWidget(Icon.BACKGROUND_TRASH, 3, 27, 16, 16));
-        widgets.add(new SpriteWidget(Icon.TOOLBAR_BUTTON_BACKGROUND, 79, 28, 16, 16));
-        widgets.addDrawable(79, 28, 16, 16, (draw, mouseX, mouseY, delta) -> {
-            draw.blitSprite(Icon.TOOLBAR_BUTTON_BACKGROUND, 0, 0, 16, 16);
-        });
+        var statesLocation = AppEng.makeId("textures/guis/states.png");
+        widgets.addTexture(statesLocation, 4, 28, 14, 14, 241, 81);
+        widgets.addTexture(statesLocation, 80, 28, 16, 16, 240, 240);
 
         widgets.addAnimatedTexture(background, 72, 0, 6, 18, 176, 0,
                 2000, false, true, false);
 
         if (type == CondenserOutput.MATTER_BALLS) {
-            widgets.add(new SpriteWidget(Icon.CONDENSER_OUTPUT_MATTER_BALL, 79, 27, 16, 16));
+            widgets.addTexture(statesLocation, 80, 28, 14, 14, 16, 112);
         } else if (type == CondenserOutput.SINGULARITY) {
-            widgets.add(new SpriteWidget(Icon.CONDENSER_OUTPUT_SINGULARITY, 79, 27, 16, 16));
+            widgets.addTexture(statesLocation, 80, 28, 14, 14, 32, 112);
         }
         widgets.addTooltipText(getTooltip(type), 80, 28, 16, 16);
 
