@@ -661,6 +661,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             InventoryAction action;
             if (hasShiftDown()) {
                 action = InventoryAction.CRAFT_SHIFT;
+            } else if (hasAltDown()) {
+                action = InventoryAction.CRAFT_ALL;
             } else {
                 // Craft stack on right-click, craft single on left-click
                 action = mouseButton == 1 ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;

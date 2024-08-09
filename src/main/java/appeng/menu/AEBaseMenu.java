@@ -541,6 +541,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         if (s instanceof CraftingTermSlot) {
             switch (action) {
                 case CRAFT_SHIFT:
+                case CRAFT_ALL:
                 case CRAFT_ITEM:
                 case CRAFT_STACK:
                     ((CraftingTermSlot) s).doClick(action, player);
