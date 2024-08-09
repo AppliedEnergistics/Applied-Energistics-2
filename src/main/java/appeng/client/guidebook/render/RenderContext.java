@@ -23,8 +23,8 @@ import net.minecraft.world.phys.Vec2;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import appeng.api.stacks.AEFluidKey;
+import appeng.client.gui.style.BackgroundGenerator;
 import appeng.client.gui.style.FluidBlitter;
-import appeng.client.gui.widgets.PanelBlitter;
 import appeng.client.guidebook.color.ColorValue;
 import appeng.client.guidebook.color.ConstantColor;
 import appeng.client.guidebook.color.LightDarkMode;
@@ -226,9 +226,7 @@ public interface RenderContext {
     void renderItem(ItemStack stack, int x, int y, int z, float width, float height);
 
     default void renderPanel(LytRect bounds) {
-        var panelBlitter = new PanelBlitter();
-        panelBlitter.addBounds(0, 0, bounds.width(), bounds.height());
-        panelBlitter.blit(guiGraphics(), bounds.x(), bounds.y());
+        BackgroundGenerator.draw(bounds.width(), bounds.height(), guiGraphics(), bounds.x(), bounds.y());
     }
 
     default void pushScissor(LytRect bounds) {

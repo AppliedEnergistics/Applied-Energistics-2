@@ -64,6 +64,7 @@ import appeng.api.parts.IPart;
 import appeng.api.stacks.GenericStack;
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
+import appeng.client.gui.style.BackgroundGenerator;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.SlotPosition;
@@ -72,7 +73,6 @@ import appeng.client.gui.style.TextAlignment;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.client.gui.widgets.OpenGuideButton;
-import appeng.client.gui.widgets.PanelBlitter;
 import appeng.client.gui.widgets.VerticalButtonBar;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.color.SymbolicColor;
@@ -653,7 +653,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
             var action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
                     : InventoryAction.PICKUP_OR_SET_DOWN;
-            PacketDistributor.sendToServer(new InventoryActionPacket(action, slotIdx, 0));
+            var p = new InventoryActionPacket(action, slotIdx, 0);
+            PacketDistributor.sendToServer(p);
             return;
         }
 
@@ -666,7 +667,9 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 action = mouseButton == 1 ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
             }
 
-            PacketDistributor.sendToServer(new InventoryActionPacket(action, slotIdx, 0));
+            final InventoryActionPacket p = new InventoryActionPacket(action, slotIdx, 0);
+            PacketDistributor.sendToServer(p);
+
             return;
         }
 
@@ -779,12 +782,12 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         var generatedBackground = style.getGeneratedBackground();
         if (generatedBackground != null) {
-            var blitter = new PanelBlitter();
-            blitter.addBounds(
-                    0, 0,
+            BackgroundGenerator.draw(
                     generatedBackground.getWidth(),
-                    generatedBackground.getHeight());
-            blitter.blit(guiGraphics, offsetX, offsetY);
+                    generatedBackground.getHeight(),
+                    guiGraphics,
+                    offsetX,
+                    offsetY);
         }
 
         var background = style.getBackground();
