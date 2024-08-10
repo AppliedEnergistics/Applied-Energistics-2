@@ -1,6 +1,8 @@
 package appeng.client.gui.assets;
 
+import appeng.core.AEConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling;
 import net.minecraft.resources.ResourceLocation;
 
@@ -8,6 +10,11 @@ import net.minecraft.resources.ResourceLocation;
  * Asset management
  */
 public final class GuiAssets {
+    /**
+     * @see net.minecraft.client.gui.GuiSpriteManager
+     */
+    public static final ResourceLocation GUI_SPRITE_ATLAS = ResourceLocation.withDefaultNamespace("textures/atlas/gui.png");
+
     private GuiAssets() {
     }
 
@@ -33,7 +40,7 @@ public final class GuiAssets {
         return new NineSliceSprite(
                 sprite.atlasLocation(),
                 border,
-                new float[] { u0, u1, u2, u3, v0, v1, v2, v3 });
+                new float[]{u0, u1, u2, u3, v0, v1, v2, v3});
     }
 
     /**
@@ -41,7 +48,7 @@ public final class GuiAssets {
      *           These values refer to the atlas.
      */
     public record NineSliceSprite(ResourceLocation atlasLocation,
-            GuiSpriteScaling.NineSlice.Border border,
-            float[] uv) {
+                                  GuiSpriteScaling.NineSlice.Border border,
+                                  float[] uv) {
     }
 }

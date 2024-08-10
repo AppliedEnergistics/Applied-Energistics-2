@@ -14,7 +14,7 @@ public class PanelBlitter {
     private static final ResourceLocation WINDOW_SPRITE = AppEng.makeId("window");
     private static final ResourceLocation INNER_BORDER_SPRITE = AppEng.makeId("window_inner");
 
-    private final List<Rectangle> rects = new ArrayList<>();
+    private final List<Rect2i> rects = new ArrayList<>();
 
     private final List<Rectangle> processedRects = new ArrayList<>();
 
@@ -56,7 +56,7 @@ public class PanelBlitter {
     }
 
     public void addBounds(int x, int y, int width, int height) {
-        rects.add(new Rectangle(x, y, width, height));
+        rects.add(new Rect2i(x, y, width, height));
         processedRects.clear();
     }
 
@@ -75,8 +75,9 @@ public class PanelBlitter {
         if (processedRects.size() != rects.size()) {
             processedRects.clear();
             for (var rect : rects) {
-                processedRects.add(rect.copy());
+                processedRects.add(new Rectangle(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight()));
             }
+
             // Merge/Split Edges with other rectangles
             for (var rect : processedRects) {
                 for (var otherRect : processedRects) {
@@ -442,6 +443,12 @@ public class PanelBlitter {
             }
             edges.clear();
             edges.addAll(tempEdges);
+        }
+
+        public boolean contains(Rectangle rect) {
+            var right = rect.x + rect.width;
+            var bottom = rect.y + rect.height;
+            return rect.x >= x && rect.y >= y && right <= x + width && bottom <= y + height;
         }
     }
 

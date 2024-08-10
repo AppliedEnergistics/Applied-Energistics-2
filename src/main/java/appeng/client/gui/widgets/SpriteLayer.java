@@ -1,5 +1,6 @@
 package appeng.client.gui.widgets;
 
+import appeng.client.gui.assets.GuiAssets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -16,15 +17,12 @@ import net.minecraft.resources.ResourceLocation;
  * Helper to build and draw a layer of sprites in a single draw-call.
  */
 public final class SpriteLayer {
-    /**
-     * @see net.minecraft.client.gui.GuiSpriteManager
-     */
-    private static final ResourceLocation GUI_SPRITE_ATLAS = ResourceLocation.withDefaultNamespace("textures/atlas/gui.png");
+
     private final ResourceLocation atlasLocation;
     private BufferBuilder builder;
 
     public SpriteLayer() {
-        atlasLocation = GUI_SPRITE_ATLAS;
+        atlasLocation = GuiAssets.GUI_SPRITE_ATLAS;
         builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
     }
 

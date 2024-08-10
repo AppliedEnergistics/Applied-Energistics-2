@@ -18,17 +18,17 @@
 
 package appeng.client.gui;
 
-import java.util.List;
-import java.util.function.Consumer;
-
-import org.jetbrains.annotations.Nullable;
-
+import appeng.client.Point;
+import appeng.client.gui.widgets.PanelBlitter;
+import appeng.client.gui.widgets.SpriteLayer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.Rect2i;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.client.Point;
+import java.util.List;
+import java.util.function.Consumer;
 
 public interface ICompositeWidget {
 
@@ -60,15 +60,21 @@ public interface ICompositeWidget {
 
         // Automatically add the bounds if they exceed the screen bounds
         if (bounds.getX() < 0
-                || bounds.getY() < 0
-                || bounds.getX() + bounds.getWidth() > screenBounds.getWidth()
-                || bounds.getY() + bounds.getHeight() > screenBounds.getHeight()) {
+            || bounds.getY() < 0
+            || bounds.getX() + bounds.getWidth() > screenBounds.getWidth()
+            || bounds.getY() + bounds.getHeight() > screenBounds.getHeight()) {
             exclusionZones.add(new Rect2i(
                     screenBounds.getX() + bounds.getX(),
                     screenBounds.getY() + bounds.getY(),
                     bounds.getWidth(),
                     bounds.getHeight()));
         }
+    }
+
+    /**
+     * Allows the widget to add to the background panels shown on the screen.
+     */
+    default void addBackgroundPanels(PanelBlitter panels, Rect2i screenBounds) {
     }
 
     /**
@@ -93,6 +99,16 @@ public interface ICompositeWidget {
      * Perform layout directly before any rendering methods are called.
      */
     default void updateBeforeRender() {
+    }
+
+    /**
+     * Draw this composite widget on the background layer of the screen.
+     *
+     * @param layer  The sprite layer this composite widget participates in.
+     * @param bounds The bounds of the current dialog in window coordinates.
+     * @param mouse  The current mouse position relative to the dialogs origin.
+     */
+    default void drawBackgroundSpriteLayer(SpriteLayer layer, Rect2i bounds, Point mouse) {
     }
 
     /**

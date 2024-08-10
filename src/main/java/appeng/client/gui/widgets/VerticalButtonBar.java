@@ -18,19 +18,16 @@
 
 package appeng.client.gui.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-
-import net.minecraft.client.gui.GuiGraphics;
+import appeng.client.Point;
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.ICompositeWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 
-import appeng.client.Point;
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.ICompositeWidget;
-import appeng.core.AppEng;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * A stacked button panel on the left or right side of our UIs.
@@ -121,13 +118,16 @@ public class VerticalButtonBar implements ICompositeWidget {
     }
 
     @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
-        guiGraphics.blitSprite(
-                AppEng.makeId("vertical_buttons_bg"),
-                bounds.getX() + this.bounds.getX() - 2,
-                bounds.getY() + this.bounds.getY() - 1,
-                1,
-                this.bounds.getWidth() + 1,
-                this.bounds.getHeight() + 4);
+    public void addBackgroundPanels(PanelBlitter panels, Rect2i screenBounds) {
+        var panelLeft = bounds.getX() - 2;
+        var panelTop = bounds.getY() - 1;
+
+        panels.addBounds(
+                panelLeft,
+                panelTop,
+                // The panel should be flush with the window
+                -panelLeft,
+                bounds.getHeight() + 4
+        );
     }
 }

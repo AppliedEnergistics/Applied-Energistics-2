@@ -19,10 +19,8 @@ import java.util.concurrent.TimeUnit;
  * Renders a standard Minecraft GUI slot.
  */
 public class LytSlot extends LytBlock implements InteractiveElement {
-    public static final ResourceLocation SLOT_LIGHT = AppEng.makeId("slot");
-    public static final ResourceLocation SLOT_DARK = AppEng.makeId("ae2guide/gui/slot_dark.png");
-    public static final ResourceLocation LARGE_SLOT_LIGHT = AppEng.makeId("slot_large");
-    public static final ResourceLocation LARGE_SLOT_DARK = AppEng.makeId("ae2guide/gui/large_slot_dark.png");
+    public static final ResourceLocation SLOT_BG = AppEng.makeId("slot");
+    public static final ResourceLocation SLOT_LARGE_BG = AppEng.makeId("slot_large");
 
     private static final int ITEM_SIZE = 16;
     private static final int PADDING = 1;
@@ -74,13 +72,7 @@ public class LytSlot extends LytBlock implements InteractiveElement {
         var x = bounds.x();
         var y = bounds.y();
 
-        ResourceLocation texture;
-        if (largeSlot) {
-            texture = context.isDarkMode() ? LARGE_SLOT_DARK : LARGE_SLOT_LIGHT;
-        } else {
-            texture = context.isDarkMode() ? SLOT_DARK : SLOT_LIGHT;
-        }
-        context.fillIcon(bounds, texture);
+        context.fillIcon(bounds, largeSlot ? SLOT_LARGE_BG : SLOT_BG);
 
         // Render a border around the slot if we're not contained in a slot grid
         if (!(parent instanceof LytSlotGrid)) {

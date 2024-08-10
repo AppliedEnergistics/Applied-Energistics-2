@@ -47,7 +47,7 @@ public final class GuiGraphicsHooks {
             @Nullable Level level, ItemStack stack, int x, int y, int seed, int z) {
         var minecraft = Minecraft.getInstance();
 
-        if (stack.getItem() instanceof EncodedPatternItem encodedPattern) {
+        if (stack.getItem() instanceof EncodedPatternItem<?> encodedPattern) {
             if (OVERRIDING_FOR.get() == stack) {
                 return false; // Don't allow recursive model replacements
             }

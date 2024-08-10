@@ -18,19 +18,6 @@
 
 package appeng.core;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.DoubleSupplier;
-
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
-import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
-import net.neoforged.neoforge.common.ModConfigSpec.DoubleValue;
-import net.neoforged.neoforge.common.ModConfigSpec.EnumValue;
-import net.neoforged.neoforge.common.ModConfigSpec.IntValue;
-
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnit;
@@ -40,6 +27,18 @@ import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
 import appeng.util.Platform;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
+import net.neoforged.neoforge.common.ModConfigSpec.DoubleValue;
+import net.neoforged.neoforge.common.ModConfigSpec.EnumValue;
+import net.neoforged.neoforge.common.ModConfigSpec.IntValue;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.DoubleSupplier;
 
 public final class AEConfig {
 
@@ -86,13 +85,24 @@ public final class AEConfig {
 
     public double wireless_getMaxRange(int boosters) {
         return common.wirelessBaseRange.get()
-                + common.wirelessBoosterRangeMultiplier.get() * Math.pow(boosters, common.wirelessBoosterExp.get());
+               + common.wirelessBoosterRangeMultiplier.get() * Math.pow(boosters, common.wirelessBoosterExp.get());
     }
 
     public double wireless_getPowerDrain(int boosters) {
         return common.wirelessBaseCost.get()
-                + common.wirelessCostMultiplier.get()
-                        * Math.pow(boosters, 1 + boosters / common.wirelessHighWirelessCount.get());
+               + common.wirelessCostMultiplier.get()
+                 * Math.pow(boosters, 1 + boosters / common.wirelessHighWirelessCount.get());
+    }
+
+    public boolean isDarkModeEnabled() {
+        return client.darkMode.getAsBoolean();
+    }
+
+    public void setDarkModeEnabled(boolean enabled) {
+        if (enabled != client.darkMode.getAsBoolean()) {
+            client.darkMode.set(enabled);
+            client.spec.save();
+        }
     }
 
     public boolean isSearchModNameInTooltips() {
@@ -426,6 +436,7 @@ public final class AEConfig {
         private final ModConfigSpec spec;
 
         // Misc
+        public final BooleanValue darkMode;
         public final BooleanValue enableEffects;
         public final BooleanValue useLargeFonts;
         public final BooleanValue useColoredCraftingStatus;
@@ -469,6 +480,7 @@ public final class AEConfig {
             builder.pop();
 
             builder.push("client");
+            this.darkMode = define(builder, "darkMode", false);
             this.enableEffects = define(builder, "enableEffects", true);
             this.useLargeFonts = define(builder, "useTerminalUseLargeFont", false);
             this.useColoredCraftingStatus = define(builder, "useColoredCraftingStatus", true);
@@ -733,7 +745,7 @@ public final class AEConfig {
     }
 
     private static BooleanValue define(ModConfigSpec.Builder builder, String name, boolean defaultValue,
-            String comment) {
+                                       String comment) {
         builder.comment(comment);
         return define(builder, name, defaultValue);
     }
@@ -757,18 +769,18 @@ public final class AEConfig {
     }
 
     private static DoubleValue define(ModConfigSpec.Builder builder, String name, double defaultValue, double min,
-            double max, String comment) {
+                                      double max, String comment) {
         builder.comment(comment);
         return define(builder, name, defaultValue, min, max);
     }
 
     private static DoubleValue define(ModConfigSpec.Builder builder, String name, double defaultValue, double min,
-            double max) {
+                                      double max) {
         return builder.defineInRange(name, defaultValue, min, max);
     }
 
     private static IntValue define(ModConfigSpec.Builder builder, String name, int defaultValue, int min, int max,
-            String comment) {
+                                   String comment) {
         builder.comment(comment);
         return define(builder, name, defaultValue, min, max);
     }
@@ -782,12 +794,12 @@ public final class AEConfig {
     }
 
     private static <T extends Enum<T>> EnumValue<T> defineEnum(ModConfigSpec.Builder builder, String name,
-            T defaultValue) {
+                                                               T defaultValue) {
         return builder.defineEnum(name, defaultValue);
     }
 
     private static <T extends Enum<T>> EnumValue<T> defineEnum(ModConfigSpec.Builder builder, String name,
-            T defaultValue, String comment) {
+                                                               T defaultValue, String comment) {
         builder.comment(comment);
         return defineEnum(builder, name, defaultValue);
     }

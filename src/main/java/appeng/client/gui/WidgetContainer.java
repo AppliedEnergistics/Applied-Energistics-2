@@ -18,23 +18,6 @@
 
 package appeng.client.gui;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-
-import com.google.common.base.Preconditions;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button.OnPress;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.PacketDistributor;
-
 import appeng.client.Point;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.WidgetStyle;
@@ -44,12 +27,28 @@ import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.BackgroundPanel;
 import appeng.client.gui.widgets.IResizableWidget;
 import appeng.client.gui.widgets.NumberEntryWidget;
+import appeng.client.gui.widgets.PanelBlitter;
 import appeng.client.gui.widgets.Scrollbar;
+import appeng.client.gui.widgets.SpriteLayer;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
 import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.SwitchGuisPacket;
 import appeng.menu.implementations.PriorityMenu;
+import com.google.common.base.Preconditions;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button.OnPress;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * This utility class helps with positioning commonly used Minecraft {@link AbstractWidget} instances on a screen
@@ -224,6 +223,28 @@ public class WidgetContainer {
     }
 
     /**
+     * @see ICompositeWidget#addBackgroundPanels(PanelBlitter, Rect2i)
+     */
+    public void addBackgroundPanels(PanelBlitter panels, Rect2i screenBounds) {
+        for (var widget : compositeWidgets.values()) {
+            if (widget.isVisible()) {
+                widget.addBackgroundPanels(panels, screenBounds);
+            }
+        }
+    }
+
+    /**
+     * @see ICompositeWidget#drawBackgroundSpriteLayer(SpriteLayer, Rect2i, Point)
+     */
+    public void drawBackgroundSpriteLayer(SpriteLayer spriteLayer, Rect2i bounds, Point mouse) {
+        for (var widget : compositeWidgets.values()) {
+            if (widget.isVisible()) {
+                widget.drawBackgroundSpriteLayer(spriteLayer, bounds, mouse);
+            }
+        }
+    }
+
+    /**
      * @see ICompositeWidget#drawBackgroundLayer(GuiGraphics, Rect2i, Point)
      */
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
@@ -251,8 +272,8 @@ public class WidgetContainer {
     public boolean onMouseDown(Point mousePos, int btn) {
         for (var widget : compositeWidgets.values()) {
             if (widget.isVisible()
-                    && (widget.wantsAllMouseDownEvents() || mousePos.isIn(widget.getBounds()))
-                    && widget.onMouseDown(mousePos, btn)) {
+                && (widget.wantsAllMouseDownEvents() || mousePos.isIn(widget.getBounds()))
+                && widget.onMouseDown(mousePos, btn)) {
                 return true;
             }
         }
@@ -266,8 +287,8 @@ public class WidgetContainer {
     public boolean onMouseUp(Point mousePos, int btn) {
         for (var widget : compositeWidgets.values()) {
             if (widget.isVisible()
-                    && (widget.wantsAllMouseUpEvents() || mousePos.isIn(widget.getBounds()))
-                    && widget.onMouseUp(mousePos, btn)) {
+                && (widget.wantsAllMouseUpEvents() || mousePos.isIn(widget.getBounds()))
+                && widget.onMouseUp(mousePos, btn)) {
                 return true;
             }
         }
@@ -295,8 +316,8 @@ public class WidgetContainer {
         // First pass: dispatch wheel event to widgets the mouse is over
         for (var widget : compositeWidgets.values()) {
             if (widget.isVisible()
-                    && mousePos.isIn(widget.getBounds())
-                    && widget.onMouseWheel(mousePos, wheelDelta)) {
+                && mousePos.isIn(widget.getBounds())
+                && widget.onMouseWheel(mousePos, wheelDelta)) {
                 return true;
             }
         }
@@ -304,8 +325,8 @@ public class WidgetContainer {
         // Second pass: send the event to capturing widgets
         for (var widget : compositeWidgets.values()) {
             if (widget.isVisible()
-                    && widget.wantsAllMouseWheelEvents()
-                    && widget.onMouseWheel(mousePos, wheelDelta)) {
+                && widget.wantsAllMouseWheelEvents()
+                && widget.onMouseWheel(mousePos, wheelDelta)) {
                 return true;
             }
         }
@@ -355,7 +376,7 @@ public class WidgetContainer {
 
             Rect2i bounds = c.getBounds();
             if (mouseX >= bounds.getX() && mouseX < bounds.getX() + bounds.getWidth()
-                    && mouseY >= bounds.getY() && mouseY < bounds.getY() + bounds.getHeight()) {
+                && mouseY >= bounds.getY() && mouseY < bounds.getY() + bounds.getHeight()) {
                 Tooltip tooltip = c.getTooltip(mouseX, mouseY);
                 if (tooltip != null) {
                     return tooltip;
@@ -388,7 +409,7 @@ public class WidgetContainer {
     // rather than less-than.
     private static boolean contains(Rect2i area, int mouseX, int mouseY) {
         return mouseX >= area.getX() && mouseX < area.getX() + area.getWidth()
-                && mouseY >= area.getY() && mouseY < area.getY() + area.getHeight();
+               && mouseY >= area.getY() && mouseY < area.getY() + area.getHeight();
     }
 
     public AETextField addTextField(String id) {

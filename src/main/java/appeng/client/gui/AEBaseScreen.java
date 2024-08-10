@@ -781,16 +781,22 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         var bgLayer = new SpriteLayer();
+        var panels = new PanelBlitter();
 
         var generatedBackground = style.getGeneratedBackground();
         if (generatedBackground != null) {
-            var blitter = new PanelBlitter();
-            blitter.addBounds(
+            panels.addBounds(
                     0, 0,
                     generatedBackground.getWidth(),
                     generatedBackground.getHeight());
-            blitter.render(bgLayer, 0, 0xffffffff);
         }
+
+        widgets.addBackgroundPanels(panels, getBounds(true));
+
+        panels.render(bgLayer, 0, 0xffffffff);
+
+        // Allow all composite widgets to participate in the sprite layer
+        widgets.drawBackgroundSpriteLayer(bgLayer, getBounds(true), new Point(mouseX - leftPos, mouseY - topPos));
 
         // Group all slots by semantic. We make the assumption here
         // that visually the slots belonging to the same semantic are contiguous.
@@ -818,7 +824,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                     minX,
                     minY,
                     1,
-                    maxX - minX ,
+                    maxX - minX,
                     maxY - minY,
                     0xffffffff
             );
@@ -827,7 +833,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                     minX,
                     minY,
                     2,
-                    maxX - minX ,
+                    maxX - minX,
                     maxY - minY,
                     0xffffffff
             );
