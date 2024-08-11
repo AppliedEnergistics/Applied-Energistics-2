@@ -1,6 +1,8 @@
 package appeng.client.gui.widgets;
 
 import appeng.client.gui.assets.GuiAssets;
+import appeng.client.gui.util.RectangleMerger;
+import appeng.client.guidebook.document.LytRect;
 import appeng.core.AppEng;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
@@ -14,7 +16,7 @@ public class PanelBlitter {
     private static final ResourceLocation WINDOW_SPRITE = AppEng.makeId("window");
     private static final ResourceLocation INNER_BORDER_SPRITE = AppEng.makeId("window_inner");
 
-    private final List<Rect2i> rects = new ArrayList<>();
+    private final List<LytRect> rects = new ArrayList<>();
 
     private final List<Rectangle> processedRects = new ArrayList<>();
 
@@ -56,7 +58,7 @@ public class PanelBlitter {
     }
 
     public void addBounds(int x, int y, int width, int height) {
-        rects.add(new Rect2i(x, y, width, height));
+        rects.add(new LytRect(x, y, width, height));
         processedRects.clear();
     }
 
@@ -74,8 +76,8 @@ public class PanelBlitter {
         // Update processed rectangles lazily
         if (processedRects.size() != rects.size()) {
             processedRects.clear();
-            for (var rect : rects) {
-                processedRects.add(new Rectangle(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight()));
+            for (var rect : RectangleMerger.merge(rects)) {
+                processedRects.add(new Rectangle(rect.x(), rect.y(), rect.width(), rect.height()));
             }
 
             // Merge/Split Edges with other rectangles

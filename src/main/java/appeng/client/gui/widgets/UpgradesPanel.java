@@ -18,26 +18,22 @@
 
 package appeng.client.gui.widgets;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.Slot;
-
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.Upgrades;
 import appeng.client.Point;
-import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.Rects;
 import appeng.client.gui.Tooltip;
 import appeng.menu.slot.AppEngSlot;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * A panel that can draw a dynamic number of upgrade slots in a vertical layout.
@@ -45,13 +41,10 @@ import appeng.menu.slot.AppEngSlot;
 public final class UpgradesPanel implements ICompositeWidget {
 
     private static final int SLOT_SIZE = 18;
-    private static final int PADDING = 5;
+    private static final int PADDING = 3;
     private static final int MAX_ROWS = 8;
 
     private final List<Slot> slots;
-
-    // The screen origin in window space (used to layout slots)
-    private Point screenOrigin = Point.ZERO;
 
     // Relative to current screen origin (not window)
     private int x;
@@ -96,11 +89,6 @@ public final class UpgradesPanel implements ICompositeWidget {
         int height = 2 * PADDING + Math.min(MAX_ROWS, slotCount) * SLOT_SIZE;
         int width = 2 * PADDING + (slotCount + MAX_ROWS - 1) / MAX_ROWS * SLOT_SIZE;
         return new Rect2i(x, y, width, height);
-    }
-
-    @Override
-    public void populateScreen(Consumer<AbstractWidget> addWidget, Rect2i bounds, AEBaseScreen<?> screen) {
-        this.screenOrigin = Point.fromTopLeft(bounds);
     }
 
     @Override
