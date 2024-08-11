@@ -2,29 +2,56 @@
   "multipart": [
     {
       "apply": {
-        "model": "ae2:block/controller/controller_block_offline"
+        "model": "ae2:block/controller/controller_block_offline_a"
       },
       "when": {
         "state": "offline",
-        "type": "block"
+        "type": "block_a"
       }
     },
     {
       "apply": {
-        "model": "ae2:block/controller/controller_block_online"
+        "model": "ae2:block/controller/controller_block_offline_b"
+      },
+      "when": {
+        "state": "offline",
+        "type": "block_b"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controller/controller_block_online_a"
       },
       "when": {
         "state": "online",
-        "type": "block"
+        "type": "block_a"
       }
     },
     {
       "apply": {
-        "model": "ae2:block/controller/controller_block_conflicted"
+        "model": "ae2:block/controller/controller_block_online_b"
+      },
+      "when": {
+        "state": "online",
+        "type": "block_b"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controller/controller_block_conflicted_a"
       },
       "when": {
         "state": "conflicted",
-        "type": "block"
+        "type": "block_a"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controller/controller_block_conflicted_b"
+      },
+      "when": {
+        "state": "conflicted",
+        "type": "block_b"
       }
     },
     {
