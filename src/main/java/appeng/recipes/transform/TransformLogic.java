@@ -23,7 +23,8 @@ import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 
-import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 
 public final class TransformLogic {
     public static boolean canTransformInFluid(ItemEntity entity, FluidState fluid) {
@@ -55,37 +56,38 @@ public final class TransformLogic {
                 continue;
 
             List<Ingredient> missingIngredients = Lists.newArrayList(recipe.ingredients);
-            Set<ItemEntity> selectedEntities = new ReferenceOpenHashSet<>(missingIngredients.size());
+            Reference2IntMap<ItemEntity> consumedItems = new Reference2IntOpenHashMap<>(missingIngredients.size());
 
             if (recipe.circumstance.isExplosion()) {
                 if (missingIngredients.stream().noneMatch(i -> i.test(entity.getItem())))
                     continue;
             } else {
-                if (!missingIngredients.get(0).test(entity.getItem()))
+                if (!missingIngredients.getFirst().test(entity.getItem()))
                     continue;
             }
 
             for (var itemEntity : itemEntities) {
-                final ItemStack other = itemEntity.getItem();
+                var other = itemEntity.getItem();
                 if (!other.isEmpty()) {
                     for (var it = missingIngredients.iterator(); it.hasNext();) {
                         Ingredient ing = it.next();
-                        if (ing.test(other)) {
-                            selectedEntities.add(itemEntity);
+                        var alreadyClaimed = consumedItems.getInt(itemEntity);
+                        if (ing.test(other) && other.getCount() - alreadyClaimed > 0) {
+                            consumedItems.merge(itemEntity, 1, Integer::sum);
                             it.remove();
-                            break;
                         }
                     }
                 }
             }
 
             if (missingIngredients.isEmpty()) {
-                var items = new ArrayList<ItemStack>(selectedEntities.size());
-                for (var e : selectedEntities) {
-                    items.add(e.getItem().split(1));
+                var items = new ArrayList<ItemStack>(consumedItems.size());
+                for (var e : consumedItems.reference2IntEntrySet()) {
+                    var itemEntity = e.getKey();
+                    items.add(itemEntity.getItem().split(e.getIntValue()));
 
-                    if (e.getItem().getCount() <= 0) {
-                        e.discard();
+                    if (itemEntity.getItem().getCount() <= 0) {
+                        itemEntity.discard();
                     }
                 }
                 var recipeInput = new TransformRecipeInput(items);
