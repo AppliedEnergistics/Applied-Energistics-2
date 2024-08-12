@@ -9,7 +9,6 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.StorageCells;
-import appeng.client.Point;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
 
@@ -43,16 +42,6 @@ public class CellPartitionSlot extends FakeSlot implements IOptionalSlot {
         if (canFitInsideCell(is)) {
             super.set(is);
         }
-    }
-
-    @Override
-    public boolean isRenderDisabled() {
-        return true;
-    }
-
-    @Override
-    public Point getBackgroundPos() {
-        return new Point(x - 1, y - 1);
     }
 
     @Override

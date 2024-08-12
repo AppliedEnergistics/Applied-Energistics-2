@@ -47,7 +47,7 @@ public class UpgradeableScreen<T extends UpgradeableMenu<?>> extends AEBaseScree
                 menu.getSlots(SlotSemantics.UPGRADE),
                 this::getCompatibleUpgrades));
         if (menu.getToolbox().isPresent()) {
-            this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolbox().getName()));
+            this.widgets.add("toolbox", new ToolboxPanel(menu.getToolbox().getName()));
         }
     }
 

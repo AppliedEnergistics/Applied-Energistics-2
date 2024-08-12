@@ -194,7 +194,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                 menu.getSlots(SlotSemantics.UPGRADE),
                 menu.getHost()));
         if (menu.getToolbox().isPresent()) {
-            this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolbox().getName()));
+            this.widgets.add("toolbox", new ToolboxPanel(menu.getToolbox().getName()));
         }
 
         // Restore previous search term

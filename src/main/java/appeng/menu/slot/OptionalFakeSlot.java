@@ -21,13 +21,10 @@ package appeng.menu.slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
-import appeng.client.Point;
 
 public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
-
     private final int groupNum;
     private final IOptionalSlotHost host;
-    private boolean renderDisabled = true;
 
     public OptionalFakeSlot(InternalInventory inv, IOptionalSlotHost containerBus, int invSlot,
             int groupNum) {
@@ -52,19 +49,5 @@ public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
         }
 
         return this.host.isSlotEnabled(this.groupNum);
-    }
-
-    @Override
-    public boolean isRenderDisabled() {
-        return this.renderDisabled;
-    }
-
-    public void setRenderDisabled(boolean renderDisabled) {
-        this.renderDisabled = renderDisabled;
-    }
-
-    @Override
-    public Point getBackgroundPos() {
-        return new Point(x - 1, y - 1);
     }
 }

@@ -1,11 +1,12 @@
 package appeng.client.gui.util;
 
-import appeng.client.guidebook.document.LytRect;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+
+import appeng.client.guidebook.document.LytRect;
 
 public class RectangleMergerTest {
     @Test
@@ -61,8 +62,7 @@ public class RectangleMergerTest {
                 .containsOnly(
                         new LytRect(5, 10, 19, 50),
                         new LytRect(24, 10, 1, 50),
-                        new LytRect(25, 10, 20, 50)
-                );
+                        new LytRect(25, 10, 20, 50));
     }
 
     @Test
@@ -81,7 +81,6 @@ public class RectangleMergerTest {
                         new LytRect(-5, -10, 10, 20),
                         new LytRect(5, -15, 5, 30),
                         new LytRect(10, -15, 5, 10),
-                        new LytRect(10, 5, 5, 10)
-                );
+                        new LytRect(10, 5, 5, 10));
     }
 }

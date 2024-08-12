@@ -1,17 +1,11 @@
 package appeng.client.guidebook.render;
 
-import appeng.api.stacks.AEFluidKey;
-import appeng.client.gui.style.FluidBlitter;
-import appeng.client.gui.widgets.PanelBlitter;
-import appeng.client.gui.widgets.SpriteLayer;
-import appeng.client.guidebook.color.ColorValue;
-import appeng.client.guidebook.color.ConstantColor;
-import appeng.client.guidebook.color.LightDarkMode;
-import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.layout.MinecraftFontMetrics;
-import appeng.client.guidebook.style.ResolvedTextStyle;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.StringSplitter;
 import net.minecraft.client.gui.Font;
@@ -27,8 +21,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec2;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+
+import appeng.api.stacks.AEFluidKey;
+import appeng.client.gui.style.FluidBlitter;
+import appeng.client.gui.widgets.PanelBlitter;
+import appeng.client.gui.widgets.SpriteLayer;
+import appeng.client.guidebook.color.ColorValue;
+import appeng.client.guidebook.color.ConstantColor;
+import appeng.client.guidebook.color.LightDarkMode;
+import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.layout.MinecraftFontMetrics;
+import appeng.client.guidebook.style.ResolvedTextStyle;
 
 public interface RenderContext {
 
@@ -51,13 +54,13 @@ public interface RenderContext {
     void fillRect(LytRect rect, ColorValue topLeft, ColorValue topRight, ColorValue bottomRight, ColorValue bottomLeft);
 
     default void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorValue topLeft, ColorValue topRight,
-                                  ColorValue bottomRight, ColorValue bottomLeft) {
+            ColorValue bottomRight, ColorValue bottomLeft) {
         // Just use the entire texture by default
         fillTexturedRect(rect, texture, topLeft, topRight, bottomRight, bottomLeft, 0, 0, 1, 1);
     }
 
     void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorValue topLeft, ColorValue topRight,
-                          ColorValue bottomRight, ColorValue bottomLeft, float u0, float v0, float u1, float v1);
+            ColorValue bottomRight, ColorValue bottomLeft, float u0, float v0, float u1, float v1);
 
     default void fillTexturedRect(LytRect rect, GuidePageTexture texture) {
         fillTexturedRect(rect, texture.use(), ConstantColor.WHITE);
@@ -148,7 +151,7 @@ public interface RenderContext {
         var lineHeight = fontMetrics.getLineHeight(style);
         var overallHeight = splitLines.size() * lineHeight;
         var overallWidth = (int) (splitLines.stream().mapToDouble(splitter::stringWidth).max().orElse(0f)
-                                  * style.fontScale());
+                * style.fontScale());
         var textRect = new LytRect(0, 0, overallWidth, overallHeight);
         textRect = textRect.centerIn(rect);
 

@@ -18,24 +18,10 @@
 
 package appeng.menu.slot;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-
-import appeng.client.Point;
-
-/**
- * @author BrockWS
- * @version rv6 - 2/05/2018
- * @since rv6 2/05/2018
- */
 public interface IOptionalSlot {
     default boolean isRenderDisabled() {
-        return false;
+        return true;
     }
 
     boolean isSlotEnabled();
-
-    @OnlyIn(Dist.CLIENT)
-    Point getBackgroundPos();
-
 }

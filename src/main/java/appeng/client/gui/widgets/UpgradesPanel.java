@@ -18,22 +18,26 @@
 
 package appeng.client.gui.widgets;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.Upgrades;
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.Rects;
 import appeng.client.gui.Tooltip;
+import appeng.client.gui.assets.GuiAssets;
+import appeng.client.gui.assets.SpritePadding;
 import appeng.menu.slot.AppEngSlot;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.Slot;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * A panel that can draw a dynamic number of upgrade slots in a vertical layout.
@@ -41,10 +45,10 @@ import java.util.function.Supplier;
 public final class UpgradesPanel implements ICompositeWidget {
 
     private static final int SLOT_SIZE = 18;
-    private static final int PADDING = 3;
     private static final int MAX_ROWS = 8;
 
     private final List<Slot> slots;
+    private final SpritePadding padding;
 
     // Relative to current screen origin (not window)
     private int x;
@@ -63,11 +67,14 @@ public final class UpgradesPanel implements ICompositeWidget {
     public UpgradesPanel(List<Slot> slots, Supplier<List<Component>> tooltipSupplier) {
         this.slots = slots;
         this.tooltipSupplier = tooltipSupplier;
+
+        // Padding is derived from the GUI sprite for windows
+        padding = GuiAssets.getWindowPadding().expand(3);
     }
 
     @Override
     public void setPosition(Point position) {
-        x = position.getX();
+        x = position.getX() - padding.left();
         y = position.getY();
     }
 
@@ -86,15 +93,15 @@ public final class UpgradesPanel implements ICompositeWidget {
     public Rect2i getBounds() {
         int slotCount = getUpgradeSlotCount();
 
-        int height = 2 * PADDING + Math.min(MAX_ROWS, slotCount) * SLOT_SIZE;
-        int width = 2 * PADDING + (slotCount + MAX_ROWS - 1) / MAX_ROWS * SLOT_SIZE;
+        int height = padding.height() + Math.min(MAX_ROWS, slotCount) * SLOT_SIZE;
+        int width = padding.width() + (slotCount + MAX_ROWS - 1) / MAX_ROWS * SLOT_SIZE;
         return new Rect2i(x, y, width, height);
     }
 
     @Override
     public void updateBeforeRender() {
-        int slotOriginX = this.x;
-        int slotOriginY = this.y + PADDING;
+        int slotOriginX = this.x + padding.left();
+        int slotOriginY = this.y + padding.top();
 
         for (Slot slot : slots) {
             if (!slot.isActive()) {
@@ -124,12 +131,12 @@ public final class UpgradesPanel implements ICompositeWidget {
         int fullCols = slotCount / MAX_ROWS;
         int rightEdge = x;
         if (fullCols > 0) {
-            int fullColWidth = PADDING * 2 + fullCols * SLOT_SIZE;
+            int fullColWidth = padding.width() + fullCols * SLOT_SIZE;
             visitor.accept(new Rect2i(
                     rightEdge,
                     y,
                     fullColWidth,
-                    PADDING * 2 + MAX_ROWS * SLOT_SIZE));
+                    padding.height() + MAX_ROWS * SLOT_SIZE));
             rightEdge += fullColWidth;
         }
 
@@ -140,8 +147,8 @@ public final class UpgradesPanel implements ICompositeWidget {
                     rightEdge,
                     y,
                     // We need to add padding in case there's no full column that already includes it
-                    SLOT_SIZE + (fullCols > 0 ? 0 : PADDING * 2),
-                    PADDING * 2 + remaining * SLOT_SIZE));
+                    SLOT_SIZE + (fullCols > 0 ? 0 : padding.width()),
+                    padding.height() + remaining * SLOT_SIZE));
         }
     }
 

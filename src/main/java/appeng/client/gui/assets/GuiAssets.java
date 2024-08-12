@@ -1,10 +1,10 @@
 package appeng.client.gui.assets;
 
-import appeng.core.AEConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling;
 import net.minecraft.resources.ResourceLocation;
+
+import appeng.core.AppEng;
 
 /**
  * Asset management
@@ -13,9 +13,20 @@ public final class GuiAssets {
     /**
      * @see net.minecraft.client.gui.GuiSpriteManager
      */
-    public static final ResourceLocation GUI_SPRITE_ATLAS = ResourceLocation.withDefaultNamespace("textures/atlas/gui.png");
+    public static final ResourceLocation GUI_SPRITE_ATLAS = ResourceLocation
+            .withDefaultNamespace("textures/atlas/gui.png");
+
+    public static final ResourceLocation WINDOW_SPRITE = AppEng.makeId("window");
+    public static final ResourceLocation INNER_BORDER_SPRITE = AppEng.makeId("window_inner");
+    public static final ResourceLocation SLOT_BACKGROUND = AppEng.makeId("slot");
+    public static final ResourceLocation SLOT_LARGE_BACKGROUND = AppEng.makeId("slot_large");
+    public static final ResourceLocation SLOT_BORDER = AppEng.makeId("slot_border");
 
     private GuiAssets() {
+    }
+
+    public static SpritePadding getWindowPadding() {
+        return getNineSliceSprite(WINDOW_SPRITE).padding;
     }
 
     public static NineSliceSprite getNineSliceSprite(ResourceLocation id) {
@@ -39,8 +50,8 @@ public final class GuiAssets {
 
         return new NineSliceSprite(
                 sprite.atlasLocation(),
-                border,
-                new float[]{u0, u1, u2, u3, v0, v1, v2, v3});
+                new SpritePadding(border.left(), border.top(), border.right(), border.bottom()),
+                new float[] { u0, u1, u2, u3, v0, v1, v2, v3 });
     }
 
     /**
@@ -48,7 +59,7 @@ public final class GuiAssets {
      *           These values refer to the atlas.
      */
     public record NineSliceSprite(ResourceLocation atlasLocation,
-                                  GuiSpriteScaling.NineSlice.Border border,
-                                  float[] uv) {
+            SpritePadding padding,
+            float[] uv) {
     }
 }

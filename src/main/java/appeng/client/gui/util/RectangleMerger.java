@@ -1,10 +1,10 @@
 package appeng.client.gui.util;
 
-import appeng.client.guidebook.document.LytRect;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import appeng.client.guidebook.document.LytRect;
 
 /**
  * Remove overlapping rectangles and produce a list of equivalent non-overlapping rectangles.
@@ -14,12 +14,11 @@ public final class RectangleMerger {
     }
 
     /**
-     * This implements a line-sweep algorithm that ensures all rectangles are non-overlapping
-     * by merging or subdividing overlapping rectangles.
+     * This implements a line-sweep algorithm that ensures all rectangles are non-overlapping by merging or subdividing
+     * overlapping rectangles.
      * <p>
-     * What this algorithm ends up doing is essentially cutting up the union of all rectangles into
-     * vertical stripes by scanning from left-to-right and producing rectangles whenever a rectangle
-     * ends on the horizontal axis.
+     * What this algorithm ends up doing is essentially cutting up the union of all rectangles into vertical stripes by
+     * scanning from left-to-right and producing rectangles whenever a rectangle ends on the horizontal axis.
      */
     public static List<LytRect> merge(List<LytRect> rects) {
         if (rects.isEmpty()) {
@@ -51,8 +50,7 @@ public final class RectangleMerger {
             int top = 0;
             int opened = 0; // Used to find the end of rectangles that overlap on the y-axis
 
-            yEvents:
-            for (int j = 0; j < yEvents.size(); j++) {
+            yEvents: for (int j = 0; j < yEvents.size(); j++) {
                 var yEvent = yEvents.get(j);
 
                 // Only process rects for which we are between open/close on the primary axis

@@ -1,20 +1,16 @@
 package appeng.client.gui.widgets;
 
-import appeng.client.gui.assets.GuiAssets;
-import appeng.client.gui.util.RectangleMerger;
-import appeng.client.guidebook.document.LytRect;
-import appeng.core.AppEng;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.resources.ResourceLocation;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class PanelBlitter {
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.Rect2i;
 
-    private static final ResourceLocation WINDOW_SPRITE = AppEng.makeId("window");
-    private static final ResourceLocation INNER_BORDER_SPRITE = AppEng.makeId("window_inner");
+import appeng.client.gui.assets.GuiAssets;
+import appeng.client.gui.util.RectangleMerger;
+import appeng.client.guidebook.document.LytRect;
+
+public class PanelBlitter {
 
     private final List<LytRect> rects = new ArrayList<>();
 
@@ -35,8 +31,8 @@ public class PanelBlitter {
     private final SpriteSlice INNER_BOTTOM_LEFT;
 
     public PanelBlitter() {
-        var window = GuiAssets.getNineSliceSprite(WINDOW_SPRITE);
-        var inner = GuiAssets.getNineSliceSprite(INNER_BORDER_SPRITE);
+        var window = GuiAssets.getNineSliceSprite(GuiAssets.WINDOW_SPRITE);
+        var inner = GuiAssets.getNineSliceSprite(GuiAssets.INNER_BORDER_SPRITE);
 
         CENTER = new SpriteSlice(window, 4);
         OUTER_TOP_LEFT = new SpriteSlice(window, 0);
@@ -151,7 +147,7 @@ public class PanelBlitter {
 
                 // We must use the width/height the corner would normally be, in case it is filled in
                 // with an edge sprite.
-                var border = cornerStyle.nineSlice.border();
+                var border = cornerStyle.nineSlice.padding();
                 var width = switch (i) {
                     default -> border.left();
                     case 1, 2 -> border.right();
@@ -279,7 +275,7 @@ public class PanelBlitter {
     }
 
     private final class Rectangle {
-        SpriteSlice[] corners = new SpriteSlice[]{
+        SpriteSlice[] corners = new SpriteSlice[] {
                 OUTER_TOP_LEFT,
                 OUTER_TOP_RIGHT,
                 OUTER_BOTTOM_RIGHT,
@@ -468,11 +464,11 @@ public class PanelBlitter {
      */
     private record SpriteSlice(GuiAssets.NineSliceSprite nineSlice, int slice) {
         int height() {
-            return slice / 3 == 2 ? nineSlice.border().bottom() : nineSlice.border().top();
+            return slice / 3 == 2 ? nineSlice.padding().bottom() : nineSlice.padding().top();
         }
 
         int width() {
-            return slice % 3 == 2 ? nineSlice.border().right() : nineSlice.border().left();
+            return slice % 3 == 2 ? nineSlice.padding().right() : nineSlice.padding().left();
         }
 
         public void addQuad(SpriteLayer layer, float x, float y, float z, float width, float height, int color) {
