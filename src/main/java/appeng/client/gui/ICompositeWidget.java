@@ -29,6 +29,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.Rect2i;
 
 import appeng.client.Point;
+import appeng.client.gui.widgets.PanelBlitter;
+import appeng.client.gui.widgets.SpriteLayer;
 
 public interface ICompositeWidget {
 
@@ -72,6 +74,12 @@ public interface ICompositeWidget {
     }
 
     /**
+     * Allows the widget to add to the background panels shown on the screen.
+     */
+    default void addBackgroundPanels(PanelBlitter panels, Rect2i screenBounds) {
+    }
+
+    /**
      * Reinitializes a Vanilla screen and populates it with additional vanilla widgets.
      * <p/>
      * This is called initially when the screen is first shown, and called again everytime the screen is resized, as
@@ -93,6 +101,16 @@ public interface ICompositeWidget {
      * Perform layout directly before any rendering methods are called.
      */
     default void updateBeforeRender() {
+    }
+
+    /**
+     * Draw this composite widget on the background layer of the screen.
+     *
+     * @param layer  The sprite layer this composite widget participates in.
+     * @param bounds The bounds of the current dialog in window coordinates.
+     * @param mouse  The current mouse position relative to the dialogs origin.
+     */
+    default void drawBackgroundSpriteLayer(SpriteLayer layer, Rect2i bounds, Point mouse) {
     }
 
     /**

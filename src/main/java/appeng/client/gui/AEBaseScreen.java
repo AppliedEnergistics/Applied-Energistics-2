@@ -48,6 +48,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -63,8 +64,8 @@ import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.parts.IPart;
 import appeng.api.stacks.GenericStack;
 import appeng.client.Point;
+import appeng.client.gui.assets.GuiAssets;
 import appeng.client.gui.layout.SlotGridLayout;
-import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.SlotPosition;
 import appeng.client.gui.style.Text;
@@ -73,6 +74,7 @@ import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.client.gui.widgets.OpenGuideButton;
 import appeng.client.gui.widgets.PanelBlitter;
+import appeng.client.gui.widgets.SpriteLayer;
 import appeng.client.gui.widgets.VerticalButtonBar;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.color.SymbolicColor;
@@ -148,7 +150,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         this.style = Objects.requireNonNull(style, "style");
         this.widgets = new WidgetContainer(style);
         this.verticalToolbar = new VerticalButtonBar();
-//        this.widgets.add("verticalToolbar", this.verticalToolbar = new VerticalButtonBar());
 
         // TODO (RID): Added a check if a Screen should have the Vertical Tool Bar. This was added to avoid rendering
         // the bar from the SkyChestScreen.
@@ -503,27 +504,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         this.drawBG(guiGraphics, leftPos, topPos, x, y, f);
 
         widgets.drawBackgroundLayer(guiGraphics, getBounds(true), new Point(x - leftPos, y - topPos));
-
-        for (Slot slot : this.getInventorySlots()) {
-            if (slot instanceof IOptionalSlot) {
-                drawOptionalSlotBackground(guiGraphics, (IOptionalSlot) slot, false);
-            }
-        }
-    }
-
-    private void drawOptionalSlotBackground(GuiGraphics guiGraphics, IOptionalSlot slot, boolean alwaysDraw) {
-        // If a slot is optional and doesn't currently render, we still need to provide a background for it
-        if (alwaysDraw || slot.isRenderDisabled()) {
-            // If the slot is disabled, shade the background overlay
-            float alpha = slot.isSlotEnabled() ? 1.0f : 0.2f;
-
-            Point pos = slot.getBackgroundPos();
-
-            Blitter.guiSprite(Icon.SLOT_BACKGROUND)
-                    .dest(leftPos + pos.getX(), topPos + pos.getY())
-                    .color(1, 1, 1, alpha)
-                    .blit(guiGraphics);
-        }
     }
 
     // Convert global mouse x,y to relative Point
@@ -777,21 +757,108 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY,
             float partialTicks) {
 
-        var generatedBackground = style.getGeneratedBackground();
-        if (generatedBackground != null) {
-            var blitter = new PanelBlitter();
-            blitter.addBounds(
-                    0, 0,
-                    generatedBackground.getWidth(),
-                    generatedBackground.getHeight());
-            blitter.blit(guiGraphics, offsetX, offsetY);
-        }
-
         var background = style.getBackground();
         if (background != null) {
             background.dest(offsetX, offsetY).blit(guiGraphics);
         }
 
+        var bgLayer = new SpriteLayer();
+        var panels = new PanelBlitter();
+
+        var generatedBackground = style.getGeneratedBackground();
+        if (generatedBackground != null) {
+            panels.addBounds(
+                    0, 0,
+                    generatedBackground.getWidth(),
+                    generatedBackground.getHeight());
+        }
+
+        widgets.addBackgroundPanels(panels, getBounds(true));
+
+        panels.render(bgLayer, 0, 0xffffffff);
+
+        // Allow all composite widgets to participate in the sprite layer
+        widgets.drawBackgroundSpriteLayer(bgLayer, getBounds(true), new Point(mouseX - leftPos, mouseY - topPos));
+
+        // Group all slots by semantic. We make the assumption here
+        // that visually the slots belonging to the same semantic are contiguous.
+        for (var semantic : menu.getSlotBySemantic().keySet()) {
+            var slots = menu.getSlotBySemantic().get(semantic);
+            int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE;
+            for (var slot : slots) {
+                float opacity = 1;
+                if (!slot.isActive()) {
+                    // If a slot is optional and doesn't currently render, we still need to provide a background for it
+                    if (slot instanceof IOptionalSlot optionalSlot && optionalSlot.isRenderDisabled()) {
+                        opacity = 0.2f;
+                    } else {
+                        continue;
+                    }
+                }
+
+                var sprite = GuiAssets.SLOT_BACKGROUND;
+                var backgroundX = slot.x - 1;
+                var backgroundY = slot.y - 1;
+                int backgroundWidth = 18;
+                int backgroundHeight = 18;
+                if (slot instanceof ResizableSlot resizableSlot) {
+                    backgroundWidth = resizableSlot.getWidth() + 2;
+                    backgroundHeight = resizableSlot.getHeight() + 2;
+                    sprite = GuiAssets.SLOT_LARGE_BACKGROUND;
+                }
+
+                var color = FastColor.ARGB32.colorFromFloat(opacity, 1f, 1f, 1f);
+                bgLayer.fillSprite(
+                        sprite,
+                        backgroundX,
+                        backgroundY,
+                        1,
+                        backgroundWidth,
+                        backgroundHeight,
+                        color);
+
+                minX = Math.min(minX, backgroundX);
+                minY = Math.min(minY, backgroundY);
+                maxX = Math.max(maxX, backgroundX + backgroundWidth);
+                maxY = Math.max(maxY, backgroundY + backgroundHeight);
+            }
+
+            for (var slot : slots) {
+                if (slot instanceof AppEngSlot appEngSlot && slot.isActive()) {
+                    renderAppEngSlotSpriteLayer(appEngSlot, bgLayer, 1.1f);
+                }
+            }
+
+            if (minX != Integer.MAX_VALUE) {
+                bgLayer.fillSprite(
+                        GuiAssets.SLOT_BORDER,
+                        minX,
+                        minY,
+                        2,
+                        maxX - minX,
+                        maxY - minY,
+                        0xffffffff);
+            }
+        }
+
+        bgLayer.render(guiGraphics.pose(), offsetX, offsetY, 0);
+    }
+
+    private void renderAppEngSlotSpriteLayer(AppEngSlot s, SpriteLayer bgLayer, float baseZ) {
+        var is = s.getItem();
+
+        // If the slot has a background icon, render it, but only if the slot is empty
+        // or it requests the icon to be always drawn
+        if ((s.renderIconWithItem() || is.isEmpty()) && s.isSlotEnabled() && s.getIcon() != null) {
+            var opacity = s.getOpacityOfIcon();
+            var color = FastColor.ARGB32.colorFromFloat(opacity, 1, 1, 1);
+            bgLayer.fillSprite(s.getIcon(), s.x, s.y, baseZ, 16, 16, color);
+        }
+
+        // Draw a red background for slots that are in an invalid state
+        if (!s.isValid()) {
+            bgLayer.fillSprite(AppEng.makeId("slot_invalid"), s.x, s.y, baseZ + 0.1f, 16, 16, -1);
+        }
     }
 
     public void drawItem(GuiGraphics guiGraphics, int x, int y, ItemStack is) {
@@ -820,22 +887,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     private void renderAppEngSlot(GuiGraphics guiGraphics, AppEngSlot s) {
-        var is = s.getItem();
-
-        // If the slot has a background icon, render it, but only if the slot is empty
-        // or it requests the icon to be always drawn
-        if ((s.renderIconWithItem() || is.isEmpty()) && s.isSlotEnabled() && s.getIcon() != null) {
-            Blitter.guiSprite(s.getIcon())
-                    .dest(s.x, s.y)
-                    .opacity(s.getOpacityOfIcon())
-                    .blit(guiGraphics);
-        }
-
-        // Draw a red background for slots that are in an invalid state
-        if (!s.isValid()) {
-            guiGraphics.fill(s.x, s.y, 16 + s.x, 16 + s.y, 0x66ff6666);
-        }
-
         super.renderSlot(guiGraphics, s);
     }
 

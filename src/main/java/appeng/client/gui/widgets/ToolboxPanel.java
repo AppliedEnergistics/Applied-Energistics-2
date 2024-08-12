@@ -21,15 +21,12 @@ package appeng.client.gui.widgets;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.Tooltip;
-import appeng.client.gui.style.Blitter;
-import appeng.client.gui.style.ScreenStyle;
 import appeng.core.localization.GuiText;
 
 /**
@@ -37,16 +34,12 @@ import appeng.core.localization.GuiText;
  */
 public class ToolboxPanel implements ICompositeWidget {
 
-    // Backdrop for the 3x3 toolbox offered by the network-tool
-    private final Blitter background;
-
     private final Component toolbeltName;
 
     // Relative to the origin of the current screen (not window)
     private Rect2i bounds = new Rect2i(0, 0, 0, 0);
 
-    public ToolboxPanel(ScreenStyle style, Component toolbeltName) {
-        this.background = style.getImage("toolbox");
+    public ToolboxPanel(Component toolbeltName) {
         this.toolbeltName = toolbeltName;
     }
 
@@ -66,12 +59,8 @@ public class ToolboxPanel implements ICompositeWidget {
     }
 
     @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
-        background.dest(
-                bounds.getX() + this.bounds.getX(),
-                bounds.getY() + this.bounds.getY(),
-                this.bounds.getWidth(),
-                this.bounds.getHeight()).blit(guiGraphics);
+    public void addBackgroundPanels(PanelBlitter panels, Rect2i screenBounds) {
+        panels.addBounds(bounds);
     }
 
     @Nullable

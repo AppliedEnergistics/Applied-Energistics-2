@@ -24,7 +24,8 @@
     "TextureAtlasMixin",
     "PonderWorldMixin",
     "ModelBakeryMixin",
-    "VariantDeserializerMixin"
+    "VariantDeserializerMixin",
+    "GuiSpriteManagerMixin"
   ],
   "server": [],
   "injectors": {

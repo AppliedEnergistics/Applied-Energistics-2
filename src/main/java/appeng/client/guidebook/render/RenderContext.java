@@ -25,6 +25,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import appeng.api.stacks.AEFluidKey;
 import appeng.client.gui.style.FluidBlitter;
 import appeng.client.gui.widgets.PanelBlitter;
+import appeng.client.gui.widgets.SpriteLayer;
 import appeng.client.guidebook.color.ColorValue;
 import appeng.client.guidebook.color.ConstantColor;
 import appeng.client.guidebook.color.LightDarkMode;
@@ -83,21 +84,37 @@ public interface RenderContext {
                 sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1());
     }
 
+    default void drawIcon(int x, int y, ResourceLocation guiSprite) {
+        drawIcon(x, y, guiSprite, ConstantColor.WHITE);
+    }
+
     default void drawIcon(int x, int y, ResourceLocation guiSprite, ColorValue color) {
         var sprite = Minecraft.getInstance().getGuiSprites().getSprite(guiSprite);
         drawIcon(x, y, sprite, color);
     }
 
     default void drawIcon(int x, int y, TextureAtlasSprite sprite, ColorValue color) {
-        var u0 = sprite.getU0();
-        var v0 = sprite.getV0();
-        var u1 = sprite.getU1();
-        var v1 = sprite.getV1();
-
         var contents = sprite.contents();
-        var texture = Minecraft.getInstance().getTextureManager().getTexture(sprite.atlasLocation());
-        fillTexturedRect(new LytRect(x, y, contents.width(), contents.height()), texture, color, color, color, color,
-                u0, v0, u1, v1);
+        fillIcon(x, y, contents.width(), contents.height(), sprite, color);
+    }
+
+    default void fillIcon(LytRect bounds, ResourceLocation guiSprite) {
+        fillIcon(bounds.x(), bounds.y(), bounds.width(), bounds.height(), guiSprite);
+    }
+
+    default void fillIcon(int x, int y, int width, int height, ResourceLocation guiSprite) {
+        fillIcon(x, y, width, height, guiSprite, ConstantColor.WHITE);
+    }
+
+    default void fillIcon(int x, int y, int width, int height, ResourceLocation guiSprite, ColorValue color) {
+        var sprite = Minecraft.getInstance().getGuiSprites().getSprite(guiSprite);
+        fillIcon(x, y, width, height, sprite, color);
+    }
+
+    default void fillIcon(int x, int y, int width, int height, TextureAtlasSprite sprite, ColorValue color) {
+        var spriteLayer = new SpriteLayer();
+        spriteLayer.fillSprite(sprite.contents().name(), 0, 0, 0, width, height, resolveColor(color));
+        spriteLayer.render(poseStack(), x, y, 0);
     }
 
     default void fillTexturedRect(LytRect rect, ResourceLocation textureId) {
@@ -214,12 +231,14 @@ public interface RenderContext {
     default void renderFluid(Fluid fluid, int x, int y, int z, int width, int height) {
         FluidBlitter.create(AEFluidKey.of(fluid))
                 .dest(x, y, width, height)
+                .zOffset(z)
                 .blit(guiGraphics());
     }
 
     default void renderFluid(FluidStack stack, int x, int y, int z, int width, int height) {
         FluidBlitter.create(stack)
                 .dest(x, y, width, height)
+                .zOffset(z)
                 .blit(guiGraphics());
     }
 

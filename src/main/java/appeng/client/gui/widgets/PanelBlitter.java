@@ -3,29 +3,16 @@ package appeng.client.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
-
-import org.joml.Matrix4f;
-
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.resources.ResourceLocation;
 
 import appeng.client.gui.assets.GuiAssets;
-import appeng.core.AppEng;
+import appeng.client.gui.util.RectangleMerger;
+import appeng.client.guidebook.document.LytRect;
 
 public class PanelBlitter {
 
-    private static final ResourceLocation WINDOW_SPRITE = AppEng.makeId("window");
-    private static final ResourceLocation INNER_BORDER_SPRITE = AppEng.makeId("window_inner");
-
-    private final List<Rectangle> rects = new ArrayList<>();
+    private final List<LytRect> rects = new ArrayList<>();
 
     private final List<Rectangle> processedRects = new ArrayList<>();
 
@@ -44,8 +31,8 @@ public class PanelBlitter {
     private final SpriteSlice INNER_BOTTOM_LEFT;
 
     public PanelBlitter() {
-        var window = GuiAssets.getNineSliceSprite(WINDOW_SPRITE);
-        var inner = GuiAssets.getNineSliceSprite(INNER_BORDER_SPRITE);
+        var window = GuiAssets.getNineSliceSprite(GuiAssets.WINDOW_SPRITE);
+        var inner = GuiAssets.getNineSliceSprite(GuiAssets.INNER_BORDER_SPRITE);
 
         CENTER = new SpriteSlice(window, 4);
         OUTER_TOP_LEFT = new SpriteSlice(window, 0);
@@ -67,7 +54,7 @@ public class PanelBlitter {
     }
 
     public void addBounds(int x, int y, int width, int height) {
-        rects.add(new Rectangle(x, y, width, height));
+        rects.add(new LytRect(x, y, width, height));
         processedRects.clear();
     }
 
@@ -76,13 +63,19 @@ public class PanelBlitter {
     }
 
     public void blit(GuiGraphics graphics, int xOffset, int yOffset, int zOffset, int color) {
+        SpriteLayer layer = new SpriteLayer();
+        render(layer, 0, color);
+        layer.render(graphics.pose(), xOffset, yOffset, zOffset);
+    }
 
+    public void render(SpriteLayer layer, int z, int color) {
         // Update processed rectangles lazily
         if (processedRects.size() != rects.size()) {
             processedRects.clear();
-            for (var rect : rects) {
-                processedRects.add(rect.copy());
+            for (var rect : RectangleMerger.merge(rects)) {
+                processedRects.add(new Rectangle(rect.x(), rect.y(), rect.width(), rect.height()));
             }
+
             // Merge/Split Edges with other rectangles
             for (var rect : processedRects) {
                 for (var otherRect : processedRects) {
@@ -98,9 +91,6 @@ public class PanelBlitter {
                 }
             }
         }
-
-        var builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        var matrix = graphics.pose().last().pose();
 
         for (var rect : processedRects) {
             var outerTop = rect.outerTop();
@@ -145,8 +135,7 @@ public class PanelBlitter {
                         default -> throw new IndexOutOfBoundsException("side");
                     }
 
-                    renderEdge(matrix, builder, edge.style, side, xOffset + el, yOffset + et, xOffset + er,
-                            yOffset + eb, zOffset, color);
+                    renderEdge(layer, edge.style, side, el, et, er, eb, z, color);
                 }
             }
 
@@ -158,7 +147,7 @@ public class PanelBlitter {
 
                 // We must use the width/height the corner would normally be, in case it is filled in
                 // with an edge sprite.
-                var border = cornerStyle.nineSlice.border();
+                var border = cornerStyle.nineSlice.padding();
                 var width = switch (i) {
                     default -> border.left();
                     case 1, 2 -> border.right();
@@ -170,39 +159,31 @@ public class PanelBlitter {
 
                 var x = switch (i) {
                     // Left aligned
-                    default -> xOffset + rect.x;
+                    default -> rect.x;
                     // Right aligned
-                    case 1, 2 -> xOffset + rect.outerRight() - width;
+                    case 1, 2 -> rect.outerRight() - width;
                 };
                 var y = switch (i) {
                     // Top aligned
-                    default -> yOffset + rect.y;
+                    default -> rect.y;
                     // Bottom aligned
-                    case 2, 3 -> yOffset + rect.outerBottom() - height;
+                    case 2, 3 -> rect.outerBottom() - height;
                 };
 
-                cornerStyle.addQuad(matrix, builder, x, y, zOffset, width, height, color);
+                cornerStyle.addQuad(layer, x, y, z, width, height, color);
             }
 
-            CENTER.addQuad(matrix, builder, xOffset + innerLeft, yOffset + innerTop, zOffset,
+            CENTER.addQuad(layer, innerLeft, innerTop, z,
                     innerRight - innerLeft, innerBottom - innerTop,
                     color);
-        }
-
-        try (var meshData = builder.build()) {
-            if (meshData != null) {
-                RenderSystem.setShaderTexture(0, CENTER.nineSlice.atlasLocation());
-                RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-                BufferUploader.drawWithShader(meshData);
-            }
         }
     }
 
     /**
      * Rendering an edge potentially involves rendering a start or end cap if the edge hits an adjacent rectangle.
      */
-    private void renderEdge(Matrix4f matrix,
-            VertexConsumer vertices,
+    private void renderEdge(
+            SpriteLayer layer,
             EdgeStyle style,
             int side,
             int left,
@@ -222,7 +203,7 @@ public class PanelBlitter {
                 case 2 -> BOTTOM_BORDER;
                 case 3 -> LEFT_BORDER;
             };
-            edgeStyle.addQuad(matrix, vertices, left, top, z, right - left, bottom - top, color);
+            edgeStyle.addQuad(layer, left, top, z, right - left, bottom - top, color);
         } else {
             SpriteSlice innerStartCorner;
             SpriteSlice innerEndCorner;
@@ -255,32 +236,31 @@ public class PanelBlitter {
             if (side == 1 || side == 3) {
                 // Vertical
                 if (innerStartCorner != null) {
-                    innerStartCorner.addQuad(matrix, vertices, left, top, z, innerStartCorner.width(),
+                    innerStartCorner.addQuad(layer, left, top, z, innerStartCorner.width(),
                             innerStartCorner.height(), color);
                     top += innerStartCorner.height();
                 }
                 if (innerEndCorner != null) {
-                    innerEndCorner.addQuad(matrix, vertices, left, bottom - innerEndCorner.height(), z,
+                    innerEndCorner.addQuad(layer, left, bottom - innerEndCorner.height(), z,
                             innerEndCorner.width(), innerEndCorner.height(), color);
                     bottom -= innerEndCorner.height();
                 }
             } else {
                 // Horizontal
                 if (innerStartCorner != null) {
-                    innerStartCorner.addQuad(matrix, vertices, left, top, z, innerStartCorner.width(),
+                    innerStartCorner.addQuad(layer, left, top, z, innerStartCorner.width(),
                             innerStartCorner.height(), color);
                     left += innerStartCorner.width();
                 }
                 if (innerEndCorner != null) {
-                    innerEndCorner.addQuad(matrix, vertices, right - innerEndCorner.width(), top, z,
+                    innerEndCorner.addQuad(layer, right - innerEndCorner.width(), top, z,
                             innerEndCorner.width(), innerEndCorner.height(), color);
                     right -= innerEndCorner.width();
                 }
             }
             if (right - left > 0 && bottom - top > 0) {
                 CENTER.addQuad(
-                        matrix,
-                        vertices,
+                        layer,
                         left, top, z,
                         right - left, bottom - top,
                         color);
@@ -462,6 +442,12 @@ public class PanelBlitter {
             edges.clear();
             edges.addAll(tempEdges);
         }
+
+        public boolean contains(Rectangle rect) {
+            var right = rect.x + rect.width;
+            var bottom = rect.y + rect.height;
+            return rect.x >= x && rect.y >= y && right <= x + width && bottom <= y + height;
+        }
     }
 
     private enum EdgeStyle {
@@ -478,15 +464,14 @@ public class PanelBlitter {
      */
     private record SpriteSlice(GuiAssets.NineSliceSprite nineSlice, int slice) {
         int height() {
-            return slice / 3 == 2 ? nineSlice.border().bottom() : nineSlice.border().top();
+            return slice / 3 == 2 ? nineSlice.padding().bottom() : nineSlice.padding().top();
         }
 
         int width() {
-            return slice % 3 == 2 ? nineSlice.border().right() : nineSlice.border().left();
+            return slice % 3 == 2 ? nineSlice.padding().right() : nineSlice.padding().left();
         }
 
-        public void addQuad(Matrix4f matrix, VertexConsumer vertices, float x, float y, float z, float width,
-                float height, int color) {
+        public void addQuad(SpriteLayer layer, float x, float y, float z, float width, float height, int color) {
             int row = slice / 3;
             int col = slice % 3;
 
@@ -496,11 +481,7 @@ public class PanelBlitter {
             var minV = uv[4 + row];
             var maxV = uv[4 + row + 1];
 
-            vertices.addVertex(matrix, x, y, z).setUv(minU, minV).setColor(color);
-            vertices.addVertex(matrix, x, y + height, z).setUv(minU, maxV).setColor(color);
-            vertices.addVertex(matrix, x + width, y + height, z).setUv(maxU, maxV).setColor(color);
-            vertices.addVertex(matrix, x + width, y, z).setUv(maxU, minV).setColor(color);
+            layer.addQuad(x, y, z, width, height, color, minU, maxU, minV, maxV);
         }
     }
-
 }

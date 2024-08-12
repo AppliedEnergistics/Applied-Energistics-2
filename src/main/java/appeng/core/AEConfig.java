@@ -95,6 +95,17 @@ public final class AEConfig {
                         * Math.pow(boosters, 1 + boosters / common.wirelessHighWirelessCount.get());
     }
 
+    public boolean isDarkModeEnabled() {
+        return client.darkMode.getAsBoolean();
+    }
+
+    public void setDarkModeEnabled(boolean enabled) {
+        if (enabled != client.darkMode.getAsBoolean()) {
+            client.darkMode.set(enabled);
+            client.spec.save();
+        }
+    }
+
     public boolean isSearchModNameInTooltips() {
         return client.searchModNameInTooltips.get();
     }
@@ -426,6 +437,7 @@ public final class AEConfig {
         private final ModConfigSpec spec;
 
         // Misc
+        public final BooleanValue darkMode;
         public final BooleanValue enableEffects;
         public final BooleanValue useLargeFonts;
         public final BooleanValue useColoredCraftingStatus;
@@ -469,6 +481,7 @@ public final class AEConfig {
             builder.pop();
 
             builder.push("client");
+            this.darkMode = define(builder, "darkMode", false);
             this.enableEffects = define(builder, "enableEffects", true);
             this.useLargeFonts = define(builder, "useTerminalUseLargeFont", false);
             this.useColoredCraftingStatus = define(builder, "useColoredCraftingStatus", true);

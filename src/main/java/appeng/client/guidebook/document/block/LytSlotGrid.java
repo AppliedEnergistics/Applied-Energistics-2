@@ -9,6 +9,7 @@ import appeng.client.guidebook.color.ConstantColor;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
+import appeng.core.AppEng;
 
 public class LytSlotGrid extends LytBox {
     private final int width;
@@ -130,6 +131,8 @@ public class LytSlotGrid extends LytBox {
         }
 
         super.render(context);
+
+        context.fillIcon(bounds, AppEng.makeId("slot_border"));
     }
 
     private int getSlotIndex(int col, int row) {

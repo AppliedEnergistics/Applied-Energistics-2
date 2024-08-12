@@ -8,14 +8,6 @@
       "grid": "BREAK_AFTER_3COLS"
     }
   },
-  "images": {
-    "toolbox": {
-      "texture": "guis/extra_panels.png",
-      "textureWidth": 128,
-      "textureHeight": 128,
-      "srcRect": [69, 62, 59, 66]
-    }
-  },
   "widgets": {
     "toolbox": {
       "$comment": "The toolbox found on some screens",

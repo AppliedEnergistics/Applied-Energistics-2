@@ -25,8 +25,6 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
@@ -34,11 +32,11 @@ import net.minecraft.world.inventory.Slot;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.Upgrades;
 import appeng.client.Point;
-import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.Rects;
 import appeng.client.gui.Tooltip;
-import appeng.client.gui.style.Blitter;
+import appeng.client.gui.assets.GuiAssets;
+import appeng.client.gui.assets.SpritePadding;
 import appeng.menu.slot.AppEngSlot;
 
 /**
@@ -47,16 +45,10 @@ import appeng.menu.slot.AppEngSlot;
 public final class UpgradesPanel implements ICompositeWidget {
 
     private static final int SLOT_SIZE = 18;
-    private static final int PADDING = 5;
     private static final int MAX_ROWS = 8;
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/extra_panels.png", 128, 128);
-    private static final Blitter INNER_CORNER = BACKGROUND.copy().src(12, 33, SLOT_SIZE, SLOT_SIZE);
-
     private final List<Slot> slots;
-
-    // The screen origin in window space (used to layout slots)
-    private Point screenOrigin = Point.ZERO;
+    private final SpritePadding padding;
 
     // Relative to current screen origin (not window)
     private int x;
@@ -75,11 +67,14 @@ public final class UpgradesPanel implements ICompositeWidget {
     public UpgradesPanel(List<Slot> slots, Supplier<List<Component>> tooltipSupplier) {
         this.slots = slots;
         this.tooltipSupplier = tooltipSupplier;
+
+        // Padding is derived from the GUI sprite for windows
+        padding = GuiAssets.getWindowPadding().expand(3);
     }
 
     @Override
     public void setPosition(Point position) {
-        x = position.getX();
+        x = position.getX() - padding.left();
         y = position.getY();
     }
 
@@ -98,20 +93,15 @@ public final class UpgradesPanel implements ICompositeWidget {
     public Rect2i getBounds() {
         int slotCount = getUpgradeSlotCount();
 
-        int height = 2 * PADDING + Math.min(MAX_ROWS, slotCount) * SLOT_SIZE;
-        int width = 2 * PADDING + (slotCount + MAX_ROWS - 1) / MAX_ROWS * SLOT_SIZE;
+        int height = padding.height() + Math.min(MAX_ROWS, slotCount) * SLOT_SIZE;
+        int width = padding.width() + (slotCount + MAX_ROWS - 1) / MAX_ROWS * SLOT_SIZE;
         return new Rect2i(x, y, width, height);
     }
 
     @Override
-    public void populateScreen(Consumer<AbstractWidget> addWidget, Rect2i bounds, AEBaseScreen<?> screen) {
-        this.screenOrigin = Point.fromTopLeft(bounds);
-    }
-
-    @Override
     public void updateBeforeRender() {
-        int slotOriginX = this.x;
-        int slotOriginY = this.y + PADDING;
+        int slotOriginX = this.x + padding.left();
+        int slotOriginY = this.y + padding.top();
 
         for (Slot slot : slots) {
             if (!slot.isActive()) {
@@ -125,80 +115,41 @@ public final class UpgradesPanel implements ICompositeWidget {
     }
 
     @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
-        int slotCount = getUpgradeSlotCount();
-        if (slotCount <= 0) {
-            return;
-        }
-
-        // This is the absolute x,y coord of the first slot within the panel
-        int slotOriginX = screenOrigin.getX() + this.x + PADDING;
-        int slotOriginY = screenOrigin.getY() + this.y + PADDING;
-
-        for (int i = 0; i < slotCount; i++) {
-            // Unlike other UIs, this is drawn top-to-bottom,left-to-right
-            int row = i % MAX_ROWS;
-            int col = i / MAX_ROWS;
-
-            int x = slotOriginX + col * SLOT_SIZE;
-            int y = slotOriginY + row * SLOT_SIZE;
-
-            boolean borderLeft = col == 0;
-            boolean borderTop = row == 0;
-            // The panel can have a "jagged" edge if the number of slots is not divisible by MAX_ROWS
-            boolean lastSlot = i + 1 >= slotCount;
-            boolean lastRow = row + 1 >= MAX_ROWS;
-            boolean borderBottom = lastRow || lastSlot;
-            boolean borderRight = i >= slotCount - MAX_ROWS;
-
-            drawSlot(guiGraphics, x, y, borderLeft, borderTop, borderRight, borderBottom);
-
-            // Cover up the inner corner when we just drew a rather ugly "inner corner"
-            if (col > 0 && lastSlot && !lastRow) {
-                INNER_CORNER.dest(x, y + SLOT_SIZE).blit(guiGraphics);
-            }
-        }
-        // Added border to match the rest of the GUI style - RID
-        guiGraphics.hLine(slotOriginX - 4, slotOriginX + 11, slotOriginY, 0XFFf2f2f2);
-        guiGraphics.hLine(slotOriginX - 4, slotOriginX + 11, slotOriginY + (SLOT_SIZE * slotCount) - 1, 0XFFf2f2f2);
-        guiGraphics.vLine(slotOriginX - 5, slotOriginY - 1, slotOriginY + (SLOT_SIZE * slotCount), 0XFFf2f2f2);
-        guiGraphics.vLine(slotOriginX + 12, slotOriginY - 1, slotOriginY + (SLOT_SIZE * slotCount), 0XFFf2f2f2);
+    public void addBackgroundPanels(PanelBlitter panels, Rect2i screenBounds) {
+        visitBackgroundPanels(panels::addBounds);
     }
 
     @Override
     public void addExclusionZones(List<Rect2i> exclusionZones, Rect2i screenBounds) {
-        int offsetX = screenBounds.getX();
-        int offsetY = screenBounds.getY();
+        visitBackgroundPanels(rect -> exclusionZones.add(Rects.move(rect, screenBounds.getX(), screenBounds.getY())));
+    }
 
+    private void visitBackgroundPanels(Consumer<Rect2i> visitor) {
         int slotCount = getUpgradeSlotCount();
-
-        // Use a bit of a margin around the zone to avoid things looking too cramped
-        final int margin = 2;
 
         // Add a single bounding rectangle for as many columns as are fully populated
         int fullCols = slotCount / MAX_ROWS;
-        int rightEdge = offsetX + x;
+        int rightEdge = x;
         if (fullCols > 0) {
-            int fullColWidth = PADDING * 2 + fullCols * SLOT_SIZE;
-            exclusionZones.add(Rects.expand(new Rect2i(
+            int fullColWidth = padding.width() + fullCols * SLOT_SIZE;
+            visitor.accept(new Rect2i(
                     rightEdge,
-                    offsetY + y,
+                    y,
                     fullColWidth,
-                    PADDING * 2 + MAX_ROWS * SLOT_SIZE), margin));
+                    padding.height() + MAX_ROWS * SLOT_SIZE));
             rightEdge += fullColWidth;
         }
 
         // If there's a partially populated row at the end, add a smaller rectangle for it
         int remaining = slotCount - fullCols * MAX_ROWS;
         if (remaining > 0) {
-            exclusionZones.add(Rects.expand(new Rect2i(
+            visitor.accept(new Rect2i(
                     rightEdge,
-                    offsetY + y,
+                    y,
                     // We need to add padding in case there's no full column that already includes it
-                    SLOT_SIZE + (fullCols > 0 ? 0 : PADDING * 2),
-                    PADDING * 2 + remaining * SLOT_SIZE), margin));
+                    SLOT_SIZE + (fullCols > 0 ? 0 : padding.width()),
+                    padding.height() + remaining * SLOT_SIZE));
         }
-
     }
 
     @Nullable
@@ -214,35 +165,6 @@ public final class UpgradesPanel implements ICompositeWidget {
         }
 
         return new Tooltip(tooltip);
-    }
-
-    private static void drawSlot(GuiGraphics guiGraphics, int x, int y,
-            boolean borderLeft, boolean borderTop, boolean borderRight, boolean borderBottom) {
-        int srcX = PADDING;
-        int srcY = PADDING;
-        int srcWidth = SLOT_SIZE;
-        int srcHeight = SLOT_SIZE;
-
-        if (borderLeft) {
-            x -= PADDING;
-            srcX = 0;
-            srcWidth += PADDING;
-        }
-        if (borderRight) {
-            srcWidth += PADDING;
-        }
-        if (borderTop) {
-            y -= PADDING;
-            srcY = 0;
-            srcHeight += PADDING;
-        }
-        if (borderBottom) {
-            srcHeight += PADDING + 2;
-        }
-
-        BACKGROUND.src(srcX, srcY, srcWidth, srcHeight)
-                .dest(x, y)
-                .blit(guiGraphics);
     }
 
     /**

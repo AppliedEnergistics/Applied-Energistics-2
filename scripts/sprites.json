@@ -1,0 +1,1059 @@
+[
+  {
+    "filename": "redstone_low.png",
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "redstone_high.png",
+    "x": 16,
+    "y": 0,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "redstone_pulse.png",
+    "x": 32,
+    "y": 0,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "redstone_ignore.png",
+    "x": 48,
+    "y": 0,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "redstone_off.png",
+    "x": 64,
+    "y": 0,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "redstone_on.png",
+    "x": 80,
+    "y": 0,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "redstone_above_equal.png",
+    "x": 192,
+    "y": 0,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "redstone_below.png",
+    "x": 208,
+    "y": 0,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "clear.png",
+    "x": 96,
+    "y": 0,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "enter.png",
+    "x": 112,
+    "y": 0,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "white_arrow_down.png",
+    "x": 128,
+    "y": 0,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "locked.png",
+    "x": 144,
+    "y": 0,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "unlocked.png",
+    "x": 160,
+    "y": 0,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "help.png",
+    "x": 176,
+    "y": 0,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_primary_output.png",
+    "x": 224,
+    "y": 0,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_storage_cell.png",
+    "x": 240,
+    "y": 0,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "view_mode_stored.png",
+    "x": 0,
+    "y": 16,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "view_mode_all.png",
+    "x": 32,
+    "y": 16,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "view_mode_crafting.png",
+    "x": 48,
+    "y": 16,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "blocking_mode_no.png",
+    "x": 64,
+    "y": 16,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "blocking_mode_yes.png",
+    "x": 80,
+    "y": 16,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "back.png",
+    "x": 96,
+    "y": 16,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "transparent_facades_off.png",
+    "x": 96,
+    "y": 16,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "transparent_facades_on.png",
+    "x": 112,
+    "y": 16,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "type_filter_items.png",
+    "x": 128,
+    "y": 16,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "type_filter_fluids.png",
+    "x": 144,
+    "y": 16,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "type_filter_all.png",
+    "x": 160,
+    "y": 16,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_ore.png",
+    "x": 240,
+    "y": 16,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "search_auto_focus.png",
+    "x": 48,
+    "y": 32,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "search_default.png",
+    "x": 64,
+    "y": 32,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "search_jei.png",
+    "x": 80,
+    "y": 32,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "search_rei.png",
+    "x": 96,
+    "y": 32,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "search_auto_focus_remember.png",
+    "x": 112,
+    "y": 32,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "search_remember.png",
+    "x": 128,
+    "y": 32,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "search_jei_auto_clear.png",
+    "x": 144,
+    "y": 32,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "search_rei_auto_clear.png",
+    "x": 160,
+    "y": 32,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_plate.png",
+    "x": 224,
+    "y": 32,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_dust.png",
+    "x": 240,
+    "y": 32,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "tab_crafting.png",
+    "x": 0,
+    "y": 32,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "tab_processing.png",
+    "x": 16,
+    "y": 32,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "tab_smithing.png",
+    "x": 32,
+    "y": 32,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "tab_stonecutting.png",
+    "x": 48,
+    "y": 32,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "arrow_up.png",
+    "x": 0,
+    "y": 48,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "arrow_down.png",
+    "x": 16,
+    "y": 48,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "arrow_right.png",
+    "x": 32,
+    "y": 48,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "arrow_left.png",
+    "x": 48,
+    "y": 48,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "substitution_enabled.png",
+    "x": 64,
+    "y": 48,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "storage_filter_extractable_only.png",
+    "x": 80,
+    "y": 48,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "storage_filter_extractable_none.png",
+    "x": 96,
+    "y": 48,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "substitution_disabled.png",
+    "x": 112,
+    "y": 48,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "fluid_substitution_enabled.png",
+    "x": 128,
+    "y": 48,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "fluid_substitution_disabled.png",
+    "x": 144,
+    "y": 48,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "filter_on_extract_enabled.png",
+    "x": 160,
+    "y": 48,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "filter_on_extract_disabled.png",
+    "x": 176,
+    "y": 48,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_ingot.png",
+    "x": 224,
+    "y": 48,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_storage_component.png",
+    "x": 240,
+    "y": 48,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "sort_by_name.png",
+    "x": 0,
+    "y": 64,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "sort_by_amount.png",
+    "x": 16,
+    "y": 64,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "cog.png",
+    "x": 32,
+    "y": 64,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "cog_disabled.png",
+    "x": 48,
+    "y": 64,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "level_item.png",
+    "x": 64,
+    "y": 64,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "sort_by_inventory_tweaks.png",
+    "x": 80,
+    "y": 64,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "sort_by_mod.png",
+    "x": 96,
+    "y": 64,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "priority.png",
+    "x": 144,
+    "y": 64,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_view_cell.png",
+    "x": 224,
+    "y": 64,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_wireless_term.png",
+    "x": 240,
+    "y": 64,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "fullness_empty.png",
+    "x": 0,
+    "y": 80,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "fullness_half.png",
+    "x": 16,
+    "y": 80,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "fullness_full.png",
+    "x": 32,
+    "y": 80,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "level_energy.png",
+    "x": 48,
+    "y": 80,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "pattern_access_show.png",
+    "x": 64,
+    "y": 80,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "pattern_access_hide.png",
+    "x": 80,
+    "y": 80,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "pattern_terminal_visible.png",
+    "x": 96,
+    "y": 80,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "pattern_terminal_all.png",
+    "x": 112,
+    "y": 80,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "pattern_terminal_not_full.png",
+    "x": 128,
+    "y": 80,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_trash.png",
+    "x": 240,
+    "y": 80,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "fuzzy_percent_25.png",
+    "x": 0,
+    "y": 96,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "fuzzy_percent_50.png",
+    "x": 16,
+    "y": 96,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "fuzzy_percent_75.png",
+    "x": 32,
+    "y": 96,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "fuzzy_percent_99.png",
+    "x": 48,
+    "y": 96,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "fuzzy_ignore.png",
+    "x": 64,
+    "y": 96,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "inscriber_separate_sides.png",
+    "x": 80,
+    "y": 96,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "inscriber_combined_sides.png",
+    "x": 96,
+    "y": 96,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "auto_export_off.png",
+    "x": 112,
+    "y": 96,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "auto_export_on.png",
+    "x": 128,
+    "y": 96,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "inscriber_buffer_4.png",
+    "x": 144,
+    "y": 96,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "inscriber_buffer_64.png",
+    "x": 160,
+    "y": 96,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "inscriber_buffer_1.png",
+    "x": 176,
+    "y": 96,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_wireless_booster.png",
+    "x": 240,
+    "y": 96,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "condenser_output_trash.png",
+    "x": 0,
+    "y": 112,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "condenser_output_matter_ball.png",
+    "x": 16,
+    "y": 112,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "condenser_output_singularity.png",
+    "x": 32,
+    "y": 112,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_encoded_pattern.png",
+    "x": 240,
+    "y": 112,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "invalid.png",
+    "x": 0,
+    "y": 128,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "valid.png",
+    "x": 16,
+    "y": 128,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "whitelist.png",
+    "x": 32,
+    "y": 128,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "blacklist.png",
+    "x": 48,
+    "y": 128,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "horizontal_tab.png",
+    "x": 128,
+    "y": 128,
+    "w": 22,
+    "h": 22
+  },
+  {
+    "filename": "horizontal_tab_selected.png",
+    "x": 128,
+    "y": 150,
+    "w": 22,
+    "h": 22
+  },
+  {
+    "filename": "horizontal_tab_focus.png",
+    "x": 150,
+    "y": 128,
+    "w": 22,
+    "h": 22
+  },
+  {
+    "filename": "background_blank_pattern.png",
+    "x": 240,
+    "y": 128,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "toolbar_button_background.png",
+    "x": 176,
+    "y": 128,
+    "w": 18,
+    "h": 20
+  },
+  {
+    "filename": "toolbar_button_background_focus.png",
+    "x": 194,
+    "y": 128,
+    "w": 18,
+    "h": 20
+  },
+  {
+    "filename": "toolbar_button_background_hover.png",
+    "x": 212,
+    "y": 128,
+    "w": 18,
+    "h": 20
+  },
+  {
+    "filename": "access_write.png",
+    "x": 0,
+    "y": 144,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "access_read.png",
+    "x": 16,
+    "y": 144,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "access_read_write.png",
+    "x": 32,
+    "y": 144,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "craft_hammer.png",
+    "x": 48,
+    "y": 144,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_chargable.png",
+    "x": 240,
+    "y": 144,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "power_unit_ae.png",
+    "x": 0,
+    "y": 160,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "power_unit_eu.png",
+    "x": 16,
+    "y": 160,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "power_unit_j.png",
+    "x": 32,
+    "y": 160,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "power_unit_w.png",
+    "x": 48,
+    "y": 160,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "power_unit_rf.png",
+    "x": 64,
+    "y": 160,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "power_unit_tr.png",
+    "x": 80,
+    "y": 160,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_singularity.png",
+    "x": 240,
+    "y": 160,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "copy_mode_on.png",
+    "x": 80,
+    "y": 176,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_spatial_cell_no_shadow.png",
+    "x": 224,
+    "y": 176,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_spatial_cell.png",
+    "x": 240,
+    "y": 176,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "copy_mode_off.png",
+    "x": 80,
+    "y": 192,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "tab_button_background_borderless.png",
+    "x": 128,
+    "y": 192,
+    "w": 25,
+    "h": 22
+  },
+  {
+    "filename": "tab_button_background.png",
+    "x": 160,
+    "y": 192,
+    "w": 20,
+    "h": 20
+  },
+  {
+    "filename": "slot_background.png",
+    "x": 192,
+    "y": 192,
+    "w": 18,
+    "h": 18
+  },
+  {
+    "filename": "background_fuel.png",
+    "x": 240,
+    "y": 192,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "terminal_style_small.png",
+    "x": 0,
+    "y": 208,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "terminal_style_medium.png",
+    "x": 16,
+    "y": 208,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "terminal_style_tall.png",
+    "x": 32,
+    "y": 208,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "terminal_style_full.png",
+    "x": 48,
+    "y": 208,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "background_upgrade.png",
+    "x": 240,
+    "y": 208,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "placement_block.png",
+    "x": 0,
+    "y": 224,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "placement_item.png",
+    "x": 16,
+    "y": 224,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "tab_button_background_borderless_focus.png",
+    "x": 128,
+    "y": 224,
+    "w": 25,
+    "h": 22
+  },
+  {
+    "filename": "tab_button_background_focus.png",
+    "x": 160,
+    "y": 224,
+    "w": 22,
+    "h": 22
+  },
+  {
+    "filename": "scheduling_default.png",
+    "x": 0,
+    "y": 240,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "scheduling_round_robin.png",
+    "x": 16,
+    "y": 240,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "scheduling_random.png",
+    "x": 32,
+    "y": 240,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "overlay_off.png",
+    "x": 48,
+    "y": 240,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "overlay_on.png",
+    "x": 64,
+    "y": 240,
+    "w": 16,
+    "h": 16
+  },
+  {
+    "filename": "s_arrow_up.png",
+    "x": 224,
+    "y": 192,
+    "w": 8,
+    "h": 8
+  },
+  {
+    "filename": "s_arrow_down.png",
+    "x": 232,
+    "y": 192,
+    "w": 8,
+    "h": 8
+  },
+  {
+    "filename": "s_clear.png",
+    "x": 224,
+    "y": 200,
+    "w": 8,
+    "h": 8
+  },
+  {
+    "filename": "s_cycle.png",
+    "x": 232,
+    "y": 200,
+    "w": 8,
+    "h": 8
+  },
+  {
+    "filename": "s_substitution_enabled.png",
+    "x": 224,
+    "y": 208,
+    "w": 8,
+    "h": 8
+  },
+  {
+    "filename": "s_substitution_disabled.png",
+    "x": 232,
+    "y": 208,
+    "w": 8,
+    "h": 8
+  },
+  {
+    "filename": "s_fluid_substitution_enabled.png",
+    "x": 224,
+    "y": 216,
+    "w": 8,
+    "h": 8
+  },
+  {
+    "filename": "s_fluid_substitution_disabled.png",
+    "x": 232,
+    "y": 216,
+    "w": 8,
+    "h": 8
+  },
+  {
+    "filename": "s_storage.png",
+    "x": 208,
+    "y": 224,
+    "w": 10,
+    "h": 10
+  },
+  {
+    "filename": "s_processor.png",
+    "x": 208,
+    "y": 234,
+    "w": 10,
+    "h": 10
+  },
+  {
+    "filename": "s_craft.png",
+    "x": 208,
+    "y": 244,
+    "w": 10,
+    "h": 10
+  },
+  {
+    "filename": "s_terminal.png",
+    "x": 192,
+    "y": 224,
+    "w": 10,
+    "h": 10
+  },
+  {
+    "filename": "s_machine.png",
+    "x": 192,
+    "y": 234,
+    "w": 10,
+    "h": 10
+  }
+]

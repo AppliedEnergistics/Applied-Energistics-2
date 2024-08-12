@@ -44,7 +44,9 @@ import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.BackgroundPanel;
 import appeng.client.gui.widgets.IResizableWidget;
 import appeng.client.gui.widgets.NumberEntryWidget;
+import appeng.client.gui.widgets.PanelBlitter;
 import appeng.client.gui.widgets.Scrollbar;
+import appeng.client.gui.widgets.SpriteLayer;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
 import appeng.core.network.ServerboundPacket;
@@ -219,6 +221,28 @@ public class WidgetContainer {
         for (var widget : compositeWidgets.values()) {
             if (widget.isVisible()) {
                 widget.updateBeforeRender();
+            }
+        }
+    }
+
+    /**
+     * @see ICompositeWidget#addBackgroundPanels(PanelBlitter, Rect2i)
+     */
+    public void addBackgroundPanels(PanelBlitter panels, Rect2i screenBounds) {
+        for (var widget : compositeWidgets.values()) {
+            if (widget.isVisible()) {
+                widget.addBackgroundPanels(panels, screenBounds);
+            }
+        }
+    }
+
+    /**
+     * @see ICompositeWidget#drawBackgroundSpriteLayer(SpriteLayer, Rect2i, Point)
+     */
+    public void drawBackgroundSpriteLayer(SpriteLayer spriteLayer, Rect2i bounds, Point mouse) {
+        for (var widget : compositeWidgets.values()) {
+            if (widget.isVisible()) {
+                widget.drawBackgroundSpriteLayer(spriteLayer, bounds, mouse);
             }
         }
     }
