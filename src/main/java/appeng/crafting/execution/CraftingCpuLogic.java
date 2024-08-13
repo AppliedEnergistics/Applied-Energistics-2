@@ -49,6 +49,7 @@ import appeng.core.network.ClientboundPacket;
 import appeng.core.network.clientbound.CraftingJobStatusPacket;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.inv.ListCraftingInventory;
+import appeng.hooks.ticking.TickHandler;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.service.CraftingService;
 
@@ -74,6 +75,8 @@ public class CraftingCpuLogic {
      * True if the CPU is currently trying to clear its inventory but is not able to.
      */
     private boolean cantStoreItems = false;
+
+    private long lastModifiedOnTick = TickHandler.instance().getCurrentTick();
 
     public CraftingCpuLogic(CraftingCPUCluster cluster) {
         this.cluster = cluster;
@@ -390,9 +393,14 @@ public class CraftingCpuLogic {
     }
 
     private void postChange(AEKey what) {
+        lastModifiedOnTick = TickHandler.instance().getCurrentTick();
         for (var listener : listeners) {
             listener.accept(what);
         }
+    }
+
+    public long getLastModifiedOnTick() {
+        return lastModifiedOnTick;
     }
 
     public boolean hasJob() {
@@ -509,6 +517,8 @@ public class CraftingCpuLogic {
     }
 
     private void notifyJobOwner(ExecutingCraftingJob job, CraftingJobStatusPacket.Status status) {
+        this.lastModifiedOnTick = TickHandler.instance().getCurrentTick();
+
         var playerId = job.playerId;
         if (playerId == null) {
             return;

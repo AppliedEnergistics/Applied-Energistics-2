@@ -71,6 +71,7 @@ import appeng.crafting.CraftingCalculation;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingLinkNexus;
 import appeng.crafting.execution.CraftingSubmitResult;
+import appeng.hooks.ticking.TickHandler;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.InterestManager;
 import appeng.me.helpers.StackWatcher;
@@ -123,11 +124,15 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     private final IEnergyService energyGrid;
     private final Set<AEKey> currentlyCrafting = new HashSet<>();
     private final Set<AEKey> currentlyCraftable = new HashSet<>();
+    private long lastProcessedCraftingLogicChangeTick;
+    private long lastProcessedCraftableChangeTick;
     private boolean updateList = false;
 
     public CraftingService(IGrid grid, IStorageService storageGrid, IEnergyService energyGrid) {
         this.grid = grid;
         this.energyGrid = energyGrid;
+        this.lastProcessedCraftingLogicChangeTick = TickHandler.instance().getCurrentTick();
+        this.lastProcessedCraftableChangeTick = TickHandler.instance().getCurrentTick();
 
         storageGrid.addGlobalStorageProvider(new CraftingServiceStorage(this));
     }
@@ -137,44 +142,74 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
         if (this.updateList) {
             this.updateList = false;
             this.updateCPUClusters();
+            lastProcessedCraftingLogicChangeTick = -1; // Ensure caches below are also updated
         }
 
         this.craftingLinks.values().removeIf(nexus -> nexus.isDead(this.grid, this));
 
-        var previouslyCrafting = new HashSet<>(currentlyCrafting);
-        var previouslyCraftable = new HashSet<>(currentlyCraftable);
-        this.currentlyCrafting.clear();
-        this.currentlyCraftable.clear();
-
-        for (CraftingCPUCluster cpu : this.craftingCPUClusters) {
+        long latestChange = 0;
+        for (var cpu : this.craftingCPUClusters) {
             cpu.craftingLogic.tickCraftingLogic(energyGrid, this);
-            cpu.craftingLogic.getAllWaitingFor(this.currentlyCrafting);
-        }
-        currentlyCraftable.addAll(getCraftables(k -> true));
-
-        // Notify watchers about items no longer being crafted
-        var changed = new HashSet<AEKey>();
-        changed.addAll(Sets.difference(previouslyCrafting, currentlyCrafting));
-        changed.addAll(Sets.difference(currentlyCrafting, previouslyCrafting));
-        for (var what : changed) {
-            for (var watcher : interestManager.get(what)) {
-                watcher.getHost().onRequestChange(what);
-            }
-            for (var watcher : interestManager.getAllStacksWatchers()) {
-                watcher.getHost().onRequestChange(what);
-            }
+            latestChange = Math.max(
+                    latestChange,
+                    cpu.craftingLogic.getLastModifiedOnTick());
         }
 
-        // Notify watchers about items no longer craftable
-        var changedCraftable = new HashSet<AEKey>();
-        changedCraftable.addAll(Sets.difference(previouslyCraftable, currentlyCraftable));
-        changedCraftable.addAll(Sets.difference(currentlyCraftable, previouslyCraftable));
-        for (var what : changedCraftable) {
-            for (var watcher : interestManager.get(what)) {
-                watcher.getHost().onCraftableChange(what);
+        // There's nothing to do if we weren't crafting anything and we don't have any CPUs that could craft
+        if (latestChange != lastProcessedCraftingLogicChangeTick) {
+            lastProcessedCraftingLogicChangeTick = latestChange;
+
+            Set<AEKey> previouslyCrafting = currentlyCrafting.isEmpty() ? Set.of() : new HashSet<>(currentlyCrafting);
+            this.currentlyCrafting.clear();
+
+            for (var cpu : this.craftingCPUClusters) {
+                cpu.craftingLogic.getAllWaitingFor(this.currentlyCrafting);
             }
-            for (var watcher : interestManager.getAllStacksWatchers()) {
-                watcher.getHost().onCraftableChange(what);
+
+            // Notify watchers about items no longer being crafted, but only if there can be changes and there are
+            // watchers
+            if (!interests.isEmpty() && !(previouslyCrafting.isEmpty() && currentlyCrafting.isEmpty())) {
+                var changed = new HashSet<AEKey>();
+                changed.addAll(Sets.difference(previouslyCrafting, currentlyCrafting));
+                changed.addAll(Sets.difference(currentlyCrafting, previouslyCrafting));
+                for (var what : changed) {
+                    for (var watcher : interestManager.get(what)) {
+                        watcher.getHost().onRequestChange(what);
+                    }
+                    for (var watcher : interestManager.getAllStacksWatchers()) {
+                        watcher.getHost().onRequestChange(what);
+                    }
+                }
+            }
+        }
+
+        // Throttle updates of craftables to once every 10 ticks
+        if (lastProcessedCraftableChangeTick != craftingProviders.getLastModifiedOnTick()) {
+            lastProcessedCraftableChangeTick = craftingProviders.getLastModifiedOnTick();
+
+            // If everything is empty, there's nothing to do
+            if (!currentlyCraftable.isEmpty() || !craftingProviders.getCraftableKeys().isEmpty()
+                    || !craftingProviders.getEmittableKeys().isEmpty()) {
+                Set<AEKey> previouslyCraftable = currentlyCraftable.isEmpty() ? Set.of()
+                        : new HashSet<>(currentlyCraftable);
+                this.currentlyCraftable.clear();
+                currentlyCraftable.addAll(craftingProviders.getCraftableKeys());
+                currentlyCraftable.addAll(craftingProviders.getEmittableKeys());
+
+                // Only perform the change tracking if there are watchers
+                if (!interests.isEmpty()) {
+                    var changedCraftable = new HashSet<AEKey>();
+                    changedCraftable.addAll(Sets.difference(previouslyCraftable, currentlyCraftable));
+                    changedCraftable.addAll(Sets.difference(currentlyCraftable, previouslyCraftable));
+                    for (var what : changedCraftable) {
+                        for (var watcher : interestManager.get(what)) {
+                            watcher.getHost().onCraftableChange(what);
+                        }
+                        for (var watcher : interestManager.getAllStacksWatchers()) {
+                            watcher.getHost().onCraftableChange(what);
+                        }
+                    }
+                }
             }
         }
     }

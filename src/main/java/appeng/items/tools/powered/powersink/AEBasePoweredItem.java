@@ -77,7 +77,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     @Override
     public int getBarWidth(ItemStack stack) {
         double filled = getAECurrentPower(stack) / getAEMaxPower(stack);
-        return Mth.clamp((int) (filled * 13), 0, 13);
+        return Mth.clamp((int) Math.round(filled * 13), 0, 13);
     }
 
     @Override
