@@ -98,13 +98,16 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
         int maxTimesToCraft;
         InternalInventory target;
-        if (action == InventoryAction.CRAFT_SHIFT || action == InventoryAction.CRAFT_ALL) // craft into player inventory...
+        if (action == InventoryAction.CRAFT_SHIFT || action == InventoryAction.CRAFT_ALL) // craft into player
+                                                                                          // inventory...
         {
             target = new PlayerInternalInventory(who.getInventory());
             if (action == InventoryAction.CRAFT_SHIFT) {
-                maxTimesToCraft = (int) Math.floor((double) this.getItem().getMaxStackSize() / (double) howManyPerCraft);
+                maxTimesToCraft = (int) Math
+                        .floor((double) this.getItem().getMaxStackSize() / (double) howManyPerCraft);
             } else {
-                maxTimesToCraft = (int) Math.floor((double) this.getItem().getMaxStackSize() / (double) howManyPerCraft * Inventory.INVENTORY_SIZE);
+                maxTimesToCraft = (int) Math.floor((double) this.getItem().getMaxStackSize() / (double) howManyPerCraft
+                        * Inventory.INVENTORY_SIZE);
             }
         } else if (action == InventoryAction.CRAFT_STACK) // craft into hand, full stack
         {
