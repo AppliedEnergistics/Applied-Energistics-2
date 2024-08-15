@@ -42,6 +42,10 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
         }
     }
 
+    public long remove(AEKey key) {
+        return getRecords().removeLong(key);
+    }
+
     public void addAll(VariantCounter other) {
         for (var entry : other.getRecords().object2LongEntrySet()) {
             add(entry.getKey(), entry.getLongValue());
