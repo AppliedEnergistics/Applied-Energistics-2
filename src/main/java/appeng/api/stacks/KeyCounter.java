@@ -94,8 +94,23 @@ public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
         getSubIndex(key).add(key, amount);
     }
 
+    /**
+     * Subtracts the given amount from the value associated with the given key.
+     */
     public void remove(AEKey key, long amount) {
         add(key, -amount);
+    }
+
+    /**
+     * Removes the given key from this counter, and returns the old value (or 0).
+     */
+    public long remove(AEKey key) {
+        var subIndex = getSubIndex(key);
+        var ret = subIndex.remove(key);
+        if (subIndex.isEmpty()) {
+            lists.remove(key.getPrimaryKey());
+        }
+        return ret;
     }
 
     public void set(AEKey key, long amount) {
