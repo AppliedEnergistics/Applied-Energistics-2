@@ -130,6 +130,8 @@ public class ItemPickupStrategy implements PickupStrategy {
             var inserted = storeItemStack(sink, item);
             // If inserting the item fully was not possible, drop it as an item entity instead if the storage clears up,
             // we'll pick it up that way
+            // This will mainly be the case with storages like a compacting drawer (where two inserts can simulate
+            // correctly but only one will succeed)
             if (inserted < item.getCount()) {
                 item.shrink(inserted);
                 Platform.spawnDrops(level, pos, Collections.singletonList(item));
@@ -277,12 +279,12 @@ public class ItemPickupStrategy implements PickupStrategy {
     }
 
     /**
-     * Checks if the network can store the possible drops.
+     * Checks if the network can store the drops.
      * <p>
      * It also sets isAccepting to false, if the item can not be stored.
      *
      * @param itemStacks an array of {@link ItemStack} to test
-     * @return true, if the network can store at least a single item of all drops or no drops are reported
+     * @return true, if the network can store all drops or no drops are reported
      */
     private boolean canStoreItemStacks(PickupSink sink, List<ItemStack> itemStacks) {
         var canStore = itemStacks.isEmpty();
@@ -290,7 +292,7 @@ public class ItemPickupStrategy implements PickupStrategy {
         for (var itemStack : itemStacks) {
             var itemToTest = AEItemKey.of(itemStack);
             var inserted = sink.insert(itemToTest, itemStack.getCount(), Actionable.SIMULATE);
-            if (inserted > 0) {
+            if (inserted == itemStack.getCount()) {
                 canStore = true;
             }
         }
