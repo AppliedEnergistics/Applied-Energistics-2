@@ -224,10 +224,10 @@ public class CPUSelectionList implements ICompositeWidget {
                 guiGraphics.pose().popPose();
 
             } else {
-                infoBar.add(Icon.S_STORAGE, 1f, x + 24, y + 9);
+                infoBar.add(Icon.S_STORAGE, 1f, x + 27, y + 9);
 
                 String storageAmount = formatStorage(cpu);
-                infoBar.add(storageAmount, textColor.toARGB(), 0.666f, x + 36, y + 13);
+                infoBar.add(storageAmount, textColor.toARGB(), 0.666f, x + 39, y + 13);
 
                 if (cpu.coProcessors() > 0) {
                     infoBar.add(Icon.S_PROCESSOR, 1f, x + 2, y + 9);
@@ -248,7 +248,13 @@ public class CPUSelectionList implements ICompositeWidget {
     }
 
     private String formatStorage(CraftingStatusMenu.CraftingCpuListEntry cpu) {
-        return (cpu.storage() / 1024) + "k";
+        long storage = cpu.storage();
+
+        if (storage >= 1024 * 1024) {
+            return (storage / (1024 * 1024)) + "M";
+        } else {
+            return (storage / 1024) + "k";
+        }
     }
 
     private Component getCpuName(CraftingStatusMenu.CraftingCpuListEntry cpu) {
