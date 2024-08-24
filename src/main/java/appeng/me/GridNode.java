@@ -187,7 +187,8 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
 
     public Grid getInternalGrid() {
         if (this.myGrid == null) {
-            this.myGrid = Grid.create(this);
+            Grid.create(this);
+            return Objects.requireNonNull(this.myGrid);
         }
 
         return this.myGrid;

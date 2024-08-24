@@ -160,7 +160,7 @@ if (ext.tag) {
     // still support configuration caching.
     project.version = providers.gradleProperty("version").orElse("").flatMap(version -> {
         if (!version.isBlank()) {
-            return version;
+            return providers.provider { version }
         }
         return providers.of(ProjectVersionSource.class, spec -> {
             spec.getParameters().getDefaultBranches().addAll("main", "neoforge/" + project.minecraft_version)
