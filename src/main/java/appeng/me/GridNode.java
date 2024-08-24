@@ -187,7 +187,12 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
 
     public Grid getInternalGrid() {
         if (this.myGrid == null) {
-            this.myGrid = Grid.create(this);
+            Grid.create(this);
+            // Note that the node can be moved immediately to a new grid when
+            // it triggers adjacent connections due to block updates emitted while it joins the grid.
+            // That means the return value of Grid.create is not necessarily the new grid,
+            // but myGrid will already have been updated by the Grid calling setGrid on this node.
+            return Objects.requireNonNull(this.myGrid);
         }
 
         return this.myGrid;
