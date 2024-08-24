@@ -263,6 +263,17 @@ public class AEBaseBlockEntity extends BlockEntity
     protected void loadVisualState(CompoundTag data) {
     }
 
+    /**
+     * Mark this block to be updated for clients.
+     */
+    public void markForClientUpdate() {
+        this.requestModelDataUpdate();
+
+        if (this.level != null && !this.isRemoved() && !notLoaded()) {
+            this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+        }
+    }
+
     public void markForUpdate() {
         // Clearing the cached model-data is always harmless regardless of status
         this.requestModelDataUpdate();
