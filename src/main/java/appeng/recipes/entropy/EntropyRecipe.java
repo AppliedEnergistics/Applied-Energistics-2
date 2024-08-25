@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import appeng.recipes.AERecipeTypes;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -56,6 +55,7 @@ import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 import appeng.core.AppEng;
 import appeng.items.tools.powered.EntropyManipulatorItem;
+import appeng.recipes.AERecipeTypes;
 
 /**
  * A special recipe used for the {@link EntropyManipulatorItem}.

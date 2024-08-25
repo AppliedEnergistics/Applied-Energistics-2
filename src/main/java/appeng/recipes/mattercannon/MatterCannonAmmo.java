@@ -20,7 +20,6 @@ package appeng.recipes.mattercannon;
 
 import java.util.Objects;
 
-import appeng.recipes.AERecipeTypes;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -47,6 +46,7 @@ import net.neoforged.neoforge.common.conditions.NotCondition;
 import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 
 import appeng.core.AppEng;
+import appeng.recipes.AERecipeTypes;
 
 /**
  * Defines a type of ammo that can be used for the {@link appeng.items.tools.powered.MatterCannonItem}.

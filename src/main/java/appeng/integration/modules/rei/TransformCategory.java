@@ -140,9 +140,7 @@ public class TransformCategory implements DisplayCategory<TransformRecipeWrapper
      */
     private static EntryStack<FluidStack> makeCustomRenderingFluidEntry(Fluid fluid) {
         var fluidStack = EntryStacks.of(fluid);
-        ClientEntryStacks.setRenderer(fluidStack, entryStack -> {
-            return new FluidBlockRenderer();
-        });
+        fluidStack.withRenderer(entryStack -> new FluidBlockRenderer());
         return fluidStack;
     }
 

@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import appeng.recipes.AERecipeTypes;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -129,10 +130,10 @@ public class ReiPlugin implements REIClientPlugin {
             return;
         }
 
-        registry.registerRecipeFiller(InscriberRecipe.class, InscriberRecipe.TYPE, InscriberRecipeDisplay::new);
-        registry.registerRecipeFiller(ChargerRecipe.class, ChargerRecipe.TYPE, ChargerDisplay::new);
-        registry.registerRecipeFiller(TransformRecipe.class, TransformRecipe.TYPE, TransformRecipeWrapper::new);
-        registry.registerRecipeFiller(EntropyRecipe.class, EntropyRecipe.TYPE, EntropyRecipeDisplay::new);
+        registry.registerRecipeFiller(InscriberRecipe.class, AERecipeTypes.INSCRIBER, InscriberRecipeDisplay::new);
+        registry.registerRecipeFiller(ChargerRecipe.class, AERecipeTypes.CHARGER, ChargerDisplay::new);
+        registry.registerRecipeFiller(TransformRecipe.class, AERecipeTypes.TRANSFORM, TransformRecipeWrapper::new);
+        registry.registerRecipeFiller(EntropyRecipe.class, AERecipeTypes.ENTROPY, EntropyRecipeDisplay::new);
         registry.registerRecipeFiller(StorageCellUpgradeRecipe.class, RecipeType.CRAFTING,
                 this::convertStorageCellUpgradeRecipe);
 
@@ -209,6 +210,7 @@ public class ReiPlugin implements REIClientPlugin {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void registerExclusionZones(ExclusionZones zones) {
         if (CompatLayerHelper.IS_LOADED) {

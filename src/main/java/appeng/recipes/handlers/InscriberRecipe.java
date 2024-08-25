@@ -20,7 +20,6 @@ package appeng.recipes.handlers;
 
 import java.util.Objects;
 
-import appeng.recipes.AERecipeTypes;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -40,6 +39,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 import appeng.core.AppEng;
+import appeng.recipes.AERecipeTypes;
 
 public class InscriberRecipe implements Recipe<RecipeInput> {
 

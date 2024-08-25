@@ -21,8 +21,6 @@ package appeng.core;
 import java.util.Collection;
 import java.util.Collections;
 
-import appeng.recipes.AERecipeSerializers;
-import appeng.recipes.AERecipeTypes;
 import com.mojang.brigadier.CommandDispatcher;
 
 import org.jetbrains.annotations.Nullable;
@@ -86,6 +84,8 @@ import appeng.init.internal.InitStorageCells;
 import appeng.init.internal.InitUpgrades;
 import appeng.init.worldgen.InitStructures;
 import appeng.integration.Integrations;
+import appeng.recipes.AERecipeSerializers;
+import appeng.recipes.AERecipeTypes;
 import appeng.server.AECommand;
 import appeng.server.services.ChunkLoadingService;
 import appeng.server.testworld.GameTestPlotAdapter;

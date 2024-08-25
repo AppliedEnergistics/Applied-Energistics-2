@@ -1,6 +1,5 @@
 package appeng.recipes.transform;
 
-import appeng.recipes.AERecipeTypes;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -22,6 +21,7 @@ import net.minecraft.world.level.Level;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
+import appeng.recipes.AERecipeTypes;
 
 public final class TransformRecipe implements Recipe<TransformRecipeInput> {
     @Deprecated(forRemoval = true, since = "1.21.1")
