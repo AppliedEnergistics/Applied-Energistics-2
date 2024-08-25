@@ -25,9 +25,7 @@ import appeng.client.guidebook.document.block.recipes.LytSmithingRecipe;
 import appeng.client.guidebook.document.block.recipes.LytTransformRecipe;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 import appeng.libs.mdast.model.MdAstNode;
-import appeng.recipes.handlers.ChargerRecipe;
-import appeng.recipes.handlers.InscriberRecipe;
-import appeng.recipes.transform.TransformRecipe;
+import appeng.recipes.AERecipeTypes;
 import appeng.util.Platform;
 
 /**
@@ -38,9 +36,9 @@ public class RecipeCompiler extends BlockTagCompiler {
             new RecipeTypeMapping<>(RecipeType.CRAFTING, LytCraftingRecipe::new),
             new RecipeTypeMapping<>(RecipeType.SMELTING, LytSmeltingRecipe::new),
             new RecipeTypeMapping<>(RecipeType.SMITHING, LytSmithingRecipe::new),
-            new RecipeTypeMapping<>(InscriberRecipe.TYPE, LytInscriberRecipe::new),
-            new RecipeTypeMapping<>(ChargerRecipe.TYPE, LytChargerRecipe::new),
-            new RecipeTypeMapping<>(TransformRecipe.TYPE, LytTransformRecipe::new));
+            new RecipeTypeMapping<>(AERecipeTypes.INSCRIBER, LytInscriberRecipe::new),
+            new RecipeTypeMapping<>(AERecipeTypes.CHARGER, LytChargerRecipe::new),
+            new RecipeTypeMapping<>(AERecipeTypes.TRANSFORM, LytTransformRecipe::new));
 
     @Override
     public Set<String> getTagNames() {

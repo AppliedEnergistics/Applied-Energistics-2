@@ -17,12 +17,13 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import appeng.core.AppEng;
-import appeng.init.InitRecipeTypes;
+import appeng.recipes.AERecipeTypes;
 
 public class ChargerRecipe implements Recipe<RecipeInput> {
+    @Deprecated(forRemoval = true, since = "1.21.1")
     public static final ResourceLocation TYPE_ID = AppEng.makeId("charger");
-
-    public static final RecipeType<ChargerRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
+    @Deprecated(forRemoval = true, since = "1.21.1")
+    public static final RecipeType<ChargerRecipe> TYPE = AERecipeTypes.CHARGER;
 
     public final Ingredient ingredient;
     public final NonNullList<Ingredient> ingredients;

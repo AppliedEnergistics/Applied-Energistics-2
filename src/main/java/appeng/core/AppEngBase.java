@@ -73,8 +73,6 @@ import appeng.init.InitCapabilityProviders;
 import appeng.init.InitCauldronInteraction;
 import appeng.init.InitDispenserBehavior;
 import appeng.init.InitMenuTypes;
-import appeng.init.InitRecipeSerializers;
-import appeng.init.InitRecipeTypes;
 import appeng.init.InitStats;
 import appeng.init.InitVillager;
 import appeng.init.client.InitParticleTypes;
@@ -86,6 +84,8 @@ import appeng.init.internal.InitStorageCells;
 import appeng.init.internal.InitUpgrades;
 import appeng.init.worldgen.InitStructures;
 import appeng.integration.Integrations;
+import appeng.recipes.AERecipeSerializers;
+import appeng.recipes.AERecipeTypes;
 import appeng.server.AECommand;
 import appeng.server.services.ChunkLoadingService;
 import appeng.server.testworld.GameTestPlotAdapter;
@@ -129,6 +129,8 @@ public abstract class AppEngBase implements AppEng {
         AEBlockEntities.DR.register(modEventBus);
         AEComponents.DR.register(modEventBus);
         AEEntities.DR.register(modEventBus);
+        AERecipeTypes.DR.register(modEventBus);
+        AERecipeSerializers.DR.register(modEventBus);
         InitStructures.register(modEventBus);
 
         modEventBus.addListener(this::registerRegistries);
@@ -150,12 +152,6 @@ public abstract class AppEngBase implements AppEng {
                 InitParticleTypes.init(event.getRegistry(Registries.PARTICLE_TYPE));
             } else if (event.getRegistryKey() == Registries.MENU) {
                 InitMenuTypes.init(event.getRegistry(Registries.MENU));
-            } else if (event.getRegistryKey() == Registries.RECIPE_TYPE) {
-                InitRecipeTypes.init(event.getRegistry(Registries.RECIPE_TYPE));
-            } else if (event.getRegistryKey() == Registries.RECIPE_SERIALIZER) {
-                InitRecipeSerializers.init(event.getRegistry(Registries.RECIPE_SERIALIZER));
-            } else if (event.getRegistryKey() == Registries.RECIPE_SERIALIZER) {
-                InitRecipeSerializers.init(event.getRegistry(Registries.RECIPE_SERIALIZER));
             } else if (event.getRegistryKey() == Registries.CHUNK_GENERATOR) {
                 Registry.register(BuiltInRegistries.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
                         SpatialStorageChunkGenerator.CODEC);

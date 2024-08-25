@@ -19,7 +19,6 @@ import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.entry.renderer.EntryRenderer;
 import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
 import me.shedaniel.rei.api.client.gui.widgets.TooltipContext;
-import me.shedaniel.rei.api.client.util.ClientEntryStacks;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
@@ -75,13 +74,13 @@ public class EntropyRecipeDisplay implements Display {
         this.outputs = List.copyOf(outputs);
     }
 
-    private static EntryStack<?> makeConsumed(EntryStack<?> entryStack) {
+    private static <T> EntryStack<T> makeConsumed(EntryStack<T> entryStack) {
         entryStack = entryStack.copy();
 
         entryStack.tooltip(ItemModText.CONSUMED.text().withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
-        ClientEntryStacks.setRenderer(entryStack, new EntryRenderer<EntryStack<?>>() {
+        entryStack.withRenderer(new EntryRenderer<>() {
             @Override
-            public void render(EntryStack<EntryStack<?>> entry, GuiGraphics graphics, Rectangle bounds, int mouseX,
+            public void render(EntryStack<T> entry, GuiGraphics graphics, Rectangle bounds, int mouseX,
                     int mouseY, float delta) {
                 var baseRenderer = entry.getDefinition().getRenderer();
                 baseRenderer.render(entry, graphics, bounds, mouseX, mouseY, delta);
@@ -90,7 +89,7 @@ public class EntropyRecipeDisplay implements Display {
             }
 
             @Override
-            public @Nullable Tooltip getTooltip(EntryStack<EntryStack<?>> entry, TooltipContext context) {
+            public @Nullable Tooltip getTooltip(EntryStack<T> entry, TooltipContext context) {
                 var baseRenderer = entry.getDefinition().getRenderer();
                 return baseRenderer.getTooltip(entry, context);
             }
@@ -148,7 +147,7 @@ public class EntropyRecipeDisplay implements Display {
                     AELog.warn("Don't know how to get the source fluid for %s", fluid);
                     entryStack = EntryStacks.of(fluid);
                 }
-                ClientEntryStacks.setTooltipProcessor(entryStack, EntropyRecipeDisplay::addFlowingToTooltip);
+                entryStack.tooltipProcessor(EntropyRecipeDisplay::addFlowingToTooltip);
                 return entryStack;
             } else {
                 return EntryStacks.of(fluid);

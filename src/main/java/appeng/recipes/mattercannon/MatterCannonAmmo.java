@@ -46,16 +46,17 @@ import net.neoforged.neoforge.common.conditions.NotCondition;
 import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 
 import appeng.core.AppEng;
-import appeng.init.InitRecipeTypes;
+import appeng.recipes.AERecipeTypes;
 
 /**
  * Defines a type of ammo that can be used for the {@link appeng.items.tools.powered.MatterCannonItem}.
  */
 public class MatterCannonAmmo implements Recipe<RecipeInput> {
-
+    @Deprecated(forRemoval = true, since = "1.21.1")
     public static final ResourceLocation TYPE_ID = AppEng.makeId("matter_cannon");
 
-    public static final RecipeType<MatterCannonAmmo> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
+    @Deprecated(forRemoval = true, since = "1.21.1")
+    public static final RecipeType<MatterCannonAmmo> TYPE = AERecipeTypes.MATTER_CANNON_AMMO;
 
     public static final MapCodec<MatterCannonAmmo> CODEC = RecordCodecBuilder.mapCodec((builder) -> {
         return builder.group(

@@ -43,11 +43,8 @@ import appeng.integration.modules.itemlists.ItemPredicates;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.menu.me.items.WirelessCraftingTermMenu;
-import appeng.recipes.entropy.EntropyRecipe;
+import appeng.recipes.AERecipeTypes;
 import appeng.recipes.game.StorageCellUpgradeRecipe;
-import appeng.recipes.handlers.ChargerRecipe;
-import appeng.recipes.handlers.InscriberRecipe;
-import appeng.recipes.transform.TransformRecipe;
 
 @EmiEntrypoint
 public class AppEngEmiPlugin implements EmiPlugin {
@@ -82,13 +79,13 @@ public class AppEngEmiPlugin implements EmiPlugin {
         // Inscriber
         registry.addCategory(EmiInscriberRecipe.CATEGORY);
         registry.addWorkstation(EmiInscriberRecipe.CATEGORY, EmiStack.of(AEBlocks.INSCRIBER));
-        adaptRecipeType(registry, InscriberRecipe.TYPE, EmiInscriberRecipe::new);
+        adaptRecipeType(registry, AERecipeTypes.INSCRIBER, EmiInscriberRecipe::new);
 
         // Charger
         registry.addCategory(EmiChargerRecipe.CATEGORY);
         registry.addWorkstation(EmiChargerRecipe.CATEGORY, EmiStack.of(AEBlocks.CHARGER));
         registry.addWorkstation(EmiChargerRecipe.CATEGORY, EmiStack.of(AEBlocks.CRANK));
-        adaptRecipeType(registry, ChargerRecipe.TYPE, EmiChargerRecipe::new);
+        adaptRecipeType(registry, AERecipeTypes.CHARGER, EmiChargerRecipe::new);
 
         // Special upgrade recipes
         adaptSpecialRecipes(registry, StorageCellUpgradeRecipe.class, this::convertStorageCellUpgradeRecipe);
@@ -106,11 +103,11 @@ public class AppEngEmiPlugin implements EmiPlugin {
         // Entropy Manipulator
         registry.addCategory(EmiEntropyRecipe.CATEGORY);
         registry.addWorkstation(EmiEntropyRecipe.CATEGORY, EmiStack.of(AEItems.ENTROPY_MANIPULATOR));
-        adaptRecipeType(registry, EntropyRecipe.TYPE, EmiEntropyRecipe::new);
+        adaptRecipeType(registry, AERecipeTypes.ENTROPY, EmiEntropyRecipe::new);
 
         // In-World Transformation
         registry.addCategory(EmiTransformRecipe.CATEGORY);
-        adaptRecipeType(registry, TransformRecipe.TYPE, EmiTransformRecipe::new);
+        adaptRecipeType(registry, AERecipeTypes.TRANSFORM, EmiTransformRecipe::new);
 
         // Facades
         if (AEConfig.instance().isEnableFacadeRecipesInRecipeViewer()) {

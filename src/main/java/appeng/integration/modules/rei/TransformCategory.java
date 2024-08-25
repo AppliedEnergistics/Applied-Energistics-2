@@ -15,7 +15,6 @@ import me.shedaniel.rei.api.client.gui.Renderer;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
-import me.shedaniel.rei.api.client.util.ClientEntryStacks;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
@@ -140,9 +139,7 @@ public class TransformCategory implements DisplayCategory<TransformRecipeWrapper
      */
     private static EntryStack<FluidStack> makeCustomRenderingFluidEntry(Fluid fluid) {
         var fluidStack = EntryStacks.of(fluid);
-        ClientEntryStacks.setRenderer(fluidStack, entryStack -> {
-            return new FluidBlockRenderer();
-        });
+        fluidStack.withRenderer(entryStack -> new FluidBlockRenderer());
         return fluidStack;
     }
 

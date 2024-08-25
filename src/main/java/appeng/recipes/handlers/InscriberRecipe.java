@@ -39,7 +39,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 import appeng.core.AppEng;
-import appeng.init.InitRecipeTypes;
+import appeng.recipes.AERecipeTypes;
 
 public class InscriberRecipe implements Recipe<RecipeInput> {
 
@@ -71,9 +71,11 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
             InscriberRecipe::getProcessType,
             InscriberRecipe::new);
 
+    @Deprecated(forRemoval = true, since = "1.21.1")
     public static final ResourceLocation TYPE_ID = AppEng.makeId("inscriber");
 
-    public static final RecipeType<InscriberRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
+    @Deprecated(forRemoval = true, since = "1.21.1")
+    public static final RecipeType<InscriberRecipe> TYPE = AERecipeTypes.INSCRIBER;
 
     private final Ingredient middleInput;
     private final Ingredient topOptional;

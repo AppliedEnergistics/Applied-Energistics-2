@@ -57,7 +57,7 @@ public interface ICraftingMachine {
     }
 
     /**
-     * Describe how this machine is displayed & grouped in the pattern access terminal.
+     * Describe how this machine is displayed and grouped in the pattern access terminal.
      */
     PatternContainerGroup getCraftingMachineInfo();
 
