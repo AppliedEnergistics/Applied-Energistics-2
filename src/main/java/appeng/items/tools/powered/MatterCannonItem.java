@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import appeng.recipes.AERecipeTypes;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +80,7 @@ import appeng.items.contents.CellConfig;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
-import appeng.recipes.mattercannon.MatterCannonAmmo;
+import appeng.recipes.AERecipeTypes;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.LookDirection;

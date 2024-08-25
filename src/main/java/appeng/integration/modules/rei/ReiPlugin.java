@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import appeng.recipes.AERecipeTypes;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -78,6 +77,7 @@ import appeng.items.parts.FacadeItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
+import appeng.recipes.AERecipeTypes;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.game.StorageCellUpgradeRecipe;
 import appeng.recipes.handlers.ChargerRecipe;

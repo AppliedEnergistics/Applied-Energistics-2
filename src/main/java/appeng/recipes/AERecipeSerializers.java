@@ -5,8 +5,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import appeng.core.AppEng;
-import appeng.core.definitions.AEItems;
-import appeng.items.parts.FacadeItem;
 import appeng.recipes.entropy.EntropyRecipeSerializer;
 import appeng.recipes.game.AddItemUpgradeRecipeSerializer;
 import appeng.recipes.game.FacadeRecipe;
@@ -25,7 +23,6 @@ public final class AERecipeSerializers {
             .create(Registries.RECIPE_SERIALIZER, AppEng.MOD_ID);
 
     static {
-        FacadeItem facadeItem = AEItems.FACADE.get();
         register("inscriber", InscriberRecipeSerializer.INSTANCE);
         register("facade", FacadeRecipe.SERIALIZER);
         register("entropy", EntropyRecipeSerializer.INSTANCE);
