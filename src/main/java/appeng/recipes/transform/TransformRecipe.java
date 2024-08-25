@@ -1,5 +1,6 @@
 package appeng.recipes.transform;
 
+import appeng.recipes.AERecipeTypes;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -21,11 +22,12 @@ import net.minecraft.world.level.Level;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
-import appeng.init.InitRecipeTypes;
 
 public final class TransformRecipe implements Recipe<TransformRecipeInput> {
+    @Deprecated(forRemoval = true, since = "1.21.1")
     public static final ResourceLocation TYPE_ID = AppEng.makeId("transform");
-    public static final RecipeType<TransformRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
+    @Deprecated(forRemoval = true, since = "1.21.1")
+    public static final RecipeType<TransformRecipe> TYPE = AERecipeTypes.TRANSFORM;
 
     public static final MapCodec<TransformRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> {
         return builder.group(

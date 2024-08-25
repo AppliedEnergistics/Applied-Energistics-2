@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import appeng.recipes.AERecipeTypes;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -54,7 +55,6 @@ import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 import appeng.core.AppEng;
-import appeng.init.InitRecipeTypes;
 import appeng.items.tools.powered.EntropyManipulatorItem;
 
 /**
@@ -76,9 +76,11 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
             EntropyRecipe::getOutput,
             EntropyRecipe::new);
 
+    @Deprecated(forRemoval = true, since = "1.21.1")
     public static final ResourceLocation TYPE_ID = AppEng.makeId("entropy");
 
-    public static final RecipeType<EntropyRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
+    @Deprecated(forRemoval = true, since = "1.21.1")
+    public static final RecipeType<EntropyRecipe> TYPE = AERecipeTypes.ENTROPY;
 
     private final EntropyMode mode;
     private final Input input;
