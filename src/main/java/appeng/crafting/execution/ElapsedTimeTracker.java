@@ -20,6 +20,8 @@ package appeng.crafting.execution;
 
 import net.minecraft.nbt.CompoundTag;
 
+import appeng.api.stacks.AEKeyType;
+
 public class ElapsedTimeTracker {
     private static final String NBT_ELAPSED_TIME = "elapsedTime";
     private static final String NBT_START_ITEM_COUNT = "startItemCount";
@@ -30,9 +32,11 @@ public class ElapsedTimeTracker {
     private final long startItemCount;
     private long remainingItemCount;
 
-    public ElapsedTimeTracker(long startItemCount) {
-        this.startItemCount = startItemCount;
-        this.remainingItemCount = startItemCount;
+    private static final int AEKEY_SCALE_FACTOR = AEKeyType.fluids().getAmountPerUnit();
+
+    public ElapsedTimeTracker(long startItemCount, AEKeyType KeyType) {
+        this.startItemCount = startItemCount * AEKEY_SCALE_FACTOR / KeyType.getAmountPerUnit();
+        this.remainingItemCount = startItemCount * AEKEY_SCALE_FACTOR / KeyType.getAmountPerUnit();
     }
 
     public ElapsedTimeTracker(CompoundTag data) {
@@ -49,11 +53,11 @@ public class ElapsedTimeTracker {
         return data;
     }
 
-    void decrementItems(long itemDiff) {
+    void decrementItems(long itemDiff, AEKeyType KeyType) {
         long currentTime = System.nanoTime();
         this.elapsedTime = this.elapsedTime + (currentTime - this.lastTime);
         this.lastTime = currentTime;
-        this.remainingItemCount -= itemDiff;
+        this.remainingItemCount -= itemDiff * AEKEY_SCALE_FACTOR / KeyType.getAmountPerUnit();
     }
 
     public long getElapsedTime() {
@@ -65,10 +69,10 @@ public class ElapsedTimeTracker {
     }
 
     public long getRemainingItemCount() {
-        return this.remainingItemCount;
+        return Math.round(((float) this.remainingItemCount) / AEKEY_SCALE_FACTOR);
     }
 
     public long getStartItemCount() {
-        return this.startItemCount;
+        return Math.round(((float) this.startItemCount) / AEKEY_SCALE_FACTOR);
     }
 }
