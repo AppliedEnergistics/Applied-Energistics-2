@@ -165,7 +165,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         this.configManager.writeToNBT(tag, registries);
         this.patternInventory.writeToNBT(tag, NBT_MEMORY_CARD_PATTERNS, registries);
         tag.putInt(NBT_PRIORITY, this.priority);
-        if (unlockEvent == UnlockCraftingEvent.PULSE) {
+        if (unlockEvent == UnlockCraftingEvent.REDSTONE_POWER) {
             tag.putByte(NBT_UNLOCK_EVENT, (byte) 1);
         } else if (unlockEvent == UnlockCraftingEvent.RESULT) {
             if (unlockStack != null) {
@@ -174,6 +174,8 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
             } else {
                 LOGGER.error("Saving pattern provider {}, locked waiting for stack, but stack is null!", host);
             }
+        } else if (unlockEvent == UnlockCraftingEvent.REDSTONE_PULSE) {
+            tag.putByte(NBT_UNLOCK_EVENT, (byte) 3);
         }
 
         ListTag sendListTag = new ListTag();
@@ -196,8 +198,9 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         var unlockEventType = tag.getByte(NBT_UNLOCK_EVENT);
         this.unlockEvent = switch (unlockEventType) {
             case 0 -> null;
-            case 1 -> UnlockCraftingEvent.PULSE;
+            case 1 -> UnlockCraftingEvent.REDSTONE_POWER;
             case 2 -> UnlockCraftingEvent.RESULT;
+            case 3 -> UnlockCraftingEvent.REDSTONE_PULSE;
             default -> {
                 LOGGER.error("Unknown unlock event type {} in NBT for pattern provider: {}", unlockEventType, tag);
                 yield null;
@@ -385,7 +388,13 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         var lockMode = configManager.getSetting(Settings.LOCK_CRAFTING_MODE);
         switch (lockMode) {
             case LOCK_UNTIL_PULSE -> {
-                unlockEvent = UnlockCraftingEvent.PULSE;
+                if (getRedstoneState()) {
+                    // Already have signal, wait for no signal before switching to REDSTONE_POWER
+                    unlockEvent = UnlockCraftingEvent.REDSTONE_PULSE;
+                } else {
+                    // No signal, wait for signal
+                    unlockEvent = UnlockCraftingEvent.REDSTONE_POWER;
+                }
                 saveChanges();
             }
             case LOCK_UNTIL_RESULT -> {
@@ -411,7 +420,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         } else if (unlockEvent != null) {
             // Crafting locked by waiting for unlock event
             switch (unlockEvent) {
-                case PULSE -> {
+                case REDSTONE_POWER, REDSTONE_PULSE -> {
                     return LockCraftingMode.LOCK_UNTIL_PULSE;
                 }
                 case RESULT -> {
@@ -768,8 +777,12 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
     public void updateRedstoneState() {
         // If we're waiting for a pulse, update immediately
-        if (unlockEvent == UnlockCraftingEvent.PULSE && getRedstoneState()) {
+        if (unlockEvent == UnlockCraftingEvent.REDSTONE_POWER && getRedstoneState()) {
             unlockEvent = null; // Unlocked!
+            saveChanges();
+        } else if (unlockEvent == UnlockCraftingEvent.REDSTONE_PULSE && !getRedstoneState()) {
+            unlockEvent = UnlockCraftingEvent.REDSTONE_POWER; // Wait for re-power
+            redstoneState = YesNo.UNDECIDED; // Need to re-check signal on next update
             saveChanges();
         } else {
             // Otherwise, just reset back to undecided
