@@ -395,6 +395,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                     // No signal, wait for signal
                     unlockEvent = UnlockCraftingEvent.REDSTONE_POWER;
                 }
+                redstoneState = YesNo.UNDECIDED; // Check redstone state again next update
                 saveChanges();
             }
             case LOCK_UNTIL_RESULT -> {
@@ -776,6 +777,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     }
 
     public void updateRedstoneState() {
+        LOGGER.warn("Updating state {} {}", unlockEvent, redstoneState);
         // If we're waiting for a pulse, update immediately
         if (unlockEvent == UnlockCraftingEvent.REDSTONE_POWER && getRedstoneState()) {
             unlockEvent = null; // Unlocked!
