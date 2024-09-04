@@ -55,10 +55,6 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
         // Allow the annihilation plane to be enchanted with silk touch & fortune
         tag(ItemTags.MINING_LOOT_ENCHANTABLE).add(AEParts.ANNIHILATION_PLANE.asItem());
 
-        // Forge is missing this tag right now
-        tag(ConventionTags.COPPER_INGOT)
-                .add(Items.COPPER_INGOT);
-
         // Provide empty blacklist tags
         tag(AETags.ANNIHILATION_PLANE_ITEM_BLACKLIST);
 
