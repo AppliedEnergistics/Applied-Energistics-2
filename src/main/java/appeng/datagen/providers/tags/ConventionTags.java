@@ -129,10 +129,10 @@ public final class ConventionTags {
     public static final TagKey<Item> CAN_REMOVE_COLOR = tag("ae2:can_remove_color");
 
     // Budding stuff
-    public static final TagKey<Item> BUDDING_BLOCKS = tag("c:budding");
+    public static final TagKey<Item> BUDDING_BLOCKS = Tags.Items.BUDDING_BLOCKS;
     public static final TagKey<Item> BUDS = tag("c:buds");
     public static final TagKey<Item> CLUSTERS = tag("c:clusters");
-    public static final TagKey<Block> BUDDING_BLOCKS_BLOCKS = blockTag("c:budding");
+    public static final TagKey<Block> BUDDING_BLOCKS_BLOCKS = Tags.Blocks.BUDDING_BLOCKS;
     public static final TagKey<Block> BUDS_BLOCKS = blockTag("c:buds");
     public static final TagKey<Block> CLUSTERS_BLOCKS = blockTag("c:clusters");
 

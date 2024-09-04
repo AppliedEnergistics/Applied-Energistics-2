@@ -67,9 +67,7 @@ public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implem
                 .addOptionalTag(ConventionTags.SAPLINGS.location())
                 .addTag(ConventionTags.BUDDING_BLOCKS_BLOCKS);
 
-        // Only provide amethyst in the budding tag since that's the one we use; the other tags are for other mods
         tag(ConventionTags.BUDDING_BLOCKS_BLOCKS)
-                .add(Blocks.BUDDING_AMETHYST)
                 .add(AEBlocks.FLAWLESS_BUDDING_QUARTZ.block())
                 .add(AEBlocks.FLAWED_BUDDING_QUARTZ.block())
                 .add(AEBlocks.CHIPPED_BUDDING_QUARTZ.block())
