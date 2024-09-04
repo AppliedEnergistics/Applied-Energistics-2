@@ -83,7 +83,7 @@ public final class ConventionTags {
     public static final TagKey<Item> FLUIX_DUST = tag("c:dusts/fluix");
     public static final TagKey<Item> FLUIX_CRYSTAL = tag("c:gems/fluix");
 
-    public static final TagKey<Item> COPPER_INGOT = tag("c:ingots/copper");
+    public static final TagKey<Item> COPPER_INGOT = Tags.Items.INGOTS_COPPER;
 
     public static final TagKey<Item> GOLD_NUGGET = Tags.Items.NUGGETS_GOLD;
     public static final TagKey<Item> GOLD_INGOT = Tags.Items.INGOTS_GOLD;
@@ -130,11 +130,11 @@ public final class ConventionTags {
 
     // Budding stuff
     public static final TagKey<Item> BUDDING_BLOCKS = Tags.Items.BUDDING_BLOCKS;
-    public static final TagKey<Item> BUDS = tag("c:buds");
-    public static final TagKey<Item> CLUSTERS = tag("c:clusters");
+    public static final TagKey<Item> BUDS = Tags.Items.BUDS;
+    public static final TagKey<Item> CLUSTERS = Tags.Items.CLUSTERS;
     public static final TagKey<Block> BUDDING_BLOCKS_BLOCKS = Tags.Blocks.BUDDING_BLOCKS;
-    public static final TagKey<Block> BUDS_BLOCKS = blockTag("c:buds");
-    public static final TagKey<Block> CLUSTERS_BLOCKS = blockTag("c:clusters");
+    public static final TagKey<Block> BUDS_BLOCKS = Tags.Blocks.BUDS;
+    public static final TagKey<Block> CLUSTERS_BLOCKS = Tags.Blocks.CLUSTERS;
 
     // For Growth Accelerator
     public static final TagKey<Block> CROPS = BlockTags.CROPS;
@@ -143,7 +143,7 @@ public final class ConventionTags {
     /**
      * Platform tags for blocks that should not be moved, i.e. some pipes, chunk loaders, etc...
      */
-    public static final TagKey<Block> IMMOVABLE_BLOCKS = blockTag("c:relocation_not_supported");
+    public static final TagKey<Block> IMMOVABLE_BLOCKS = Tags.Blocks.RELOCATION_NOT_SUPPORTED;
 
     /**
      * For Worldgen Biomes
