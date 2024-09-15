@@ -18,7 +18,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
 
-import appeng.api.ids.AETags;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
@@ -654,11 +653,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
         // recipes/network/parts
         // ====================================================
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEParts.CABLE_ANCHOR, 4)
-                .requires(AETags.METAL_INGOTS)
-                .requires(ConventionTags.QUARTZ_KNIFE)
-                .unlockedBy("has_knife", has(ConventionTags.QUARTZ_KNIFE))
-                .save(consumer, AppEng.makeId("network/parts/cable_anchor"));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEParts.ENERGY_ACCEPTOR)
                 .requires(AEBlocks.ENERGY_ACCEPTOR)
                 .unlockedBy("has_energy_acceptor", has(AEBlocks.ENERGY_ACCEPTOR))

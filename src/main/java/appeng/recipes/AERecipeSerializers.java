@@ -13,6 +13,7 @@ import appeng.recipes.game.StorageCellUpgradeRecipeSerializer;
 import appeng.recipes.handlers.ChargerRecipeSerializer;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.recipes.mattercannon.MatterCannonAmmoSerializer;
+import appeng.recipes.quartzcutting.QuartzCuttingRecipeSerializer;
 import appeng.recipes.transform.TransformRecipeSerializer;
 
 public final class AERecipeSerializers {
@@ -32,6 +33,7 @@ public final class AERecipeSerializers {
         register("storage_cell_upgrade", StorageCellUpgradeRecipeSerializer.INSTANCE);
         register("add_item_upgrade", AddItemUpgradeRecipeSerializer.INSTANCE);
         register("remove_item_upgrade", RemoveItemUpgradeRecipeSerializer.INSTANCE);
+        register("quartz_cutting", QuartzCuttingRecipeSerializer.INSTANCE);
     }
 
     private static void register(String id, RecipeSerializer<?> serializer) {
