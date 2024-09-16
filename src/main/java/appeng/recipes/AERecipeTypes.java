@@ -10,6 +10,7 @@ import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.mattercannon.MatterCannonAmmo;
+import appeng.recipes.quartzcutting.QuartzCuttingRecipe;
 import appeng.recipes.transform.TransformRecipe;
 
 public final class AERecipeTypes {
@@ -24,6 +25,7 @@ public final class AERecipeTypes {
     public static final RecipeType<InscriberRecipe> INSCRIBER = register("inscriber");
     public static final RecipeType<ChargerRecipe> CHARGER = register("charger");
     public static final RecipeType<MatterCannonAmmo> MATTER_CANNON_AMMO = register("matter_cannon");
+    public static final RecipeType<QuartzCuttingRecipe> QUARTZ_CUTTING = register("quartz_cutting");
 
     private static <T extends Recipe<?>> RecipeType<T> register(String id) {
         RecipeType<T> type = RecipeType.simple(AppEng.makeId(id));

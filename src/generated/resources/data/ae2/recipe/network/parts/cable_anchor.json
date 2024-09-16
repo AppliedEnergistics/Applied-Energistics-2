@@ -1,12 +1,11 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "category": "misc",
+  "type": "ae2:quartz_cutting",
   "ingredients": [
     {
-      "tag": "ae2:metal_ingots"
+      "tag": "ae2:knife"
     },
     {
-      "tag": "ae2:knife"
+      "tag": "ae2:metal_ingots"
     }
   ],
   "result": {
