@@ -59,7 +59,7 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
      * have the usual sub-states.
      */
     public enum ControllerRenderType implements StringRepresentable {
-        block, column_x, column_y, column_z, inside_a, inside_b;
+        block_a, block_b, column_x_a, column_x_b, column_y_a, column_y_b, column_z_a, column_z_b, inside_a, inside_b;
 
         @Override
         public String getSerializedName() {
@@ -77,7 +77,7 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
     public ControllerBlock() {
         super(metalProps().strength(6));
         this.registerDefaultState(this.defaultBlockState().setValue(CONTROLLER_STATE, ControllerBlockState.offline)
-                .setValue(CONTROLLER_TYPE, ControllerRenderType.block));
+                .setValue(CONTROLLER_TYPE, ControllerRenderType.block_a)); // TODO this could be block_b theoretically
     }
 
     @Override
@@ -107,7 +107,7 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
 
     private BlockState getControllerType(BlockState baseState, LevelAccessor level, BlockPos pos) {
         // Only used for columns, really
-        ControllerRenderType type = ControllerRenderType.block;
+        ControllerRenderType type = ControllerRenderType.block_a;
 
         int x = pos.getX();
         int y = pos.getY();
@@ -118,21 +118,39 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
         final boolean yy = isController(level, x, y - 1, z) && isController(level, x, y + 1, z);
         final boolean zz = isController(level, x, y, z - 1) && isController(level, x, y, z + 1);
 
-        if (xx && !yy && !zz) {
-            type = ControllerRenderType.column_x;
-        } else if (!xx && yy && !zz) {
-            type = ControllerRenderType.column_y;
-        } else if (!xx && !yy && zz) {
-            type = ControllerRenderType.column_z;
-        } else if ((xx ? 1 : 0) + (yy ? 1 : 0) + (zz ? 1 : 0) >= 2) {
-            final int v = (Math.abs(x) + Math.abs(y) + Math.abs(z)) % 2;
+        // While i'd like this to be based on the blockstate randomization feature, this
+        // generates an alternating pattern based on level position, so this is not 100% doable with blockstates.
+        final int v = (Math.abs(x) + Math.abs(y) + Math.abs(z)) % 2;
 
-            // While i'd like this to be based on the blockstate randomization feature, this
-            // generates an alternating pattern based on level position, so this is not 100% doable with blockstates.
+        if (xx && !yy && !zz) {
+            if (v == 0) {
+                type = ControllerRenderType.column_x_a;
+            } else {
+                type = ControllerRenderType.column_x_b;
+            }
+        } else if (!xx && yy && !zz) {
+            if (v == 0) {
+                type = ControllerRenderType.column_y_a;
+            } else {
+                type = ControllerRenderType.column_y_b;
+            }
+        } else if (!xx && !yy && zz) {
+            if (v == 0) {
+                type = ControllerRenderType.column_z_a;
+            } else {
+                type = ControllerRenderType.column_z_b;
+            }
+        } else if ((xx ? 1 : 0) + (yy ? 1 : 0) + (zz ? 1 : 0) >= 2) {
             if (v == 0) {
                 type = ControllerRenderType.inside_a;
             } else {
                 type = ControllerRenderType.inside_b;
+            }
+        } else {
+            if (v == 0) {
+                type = ControllerRenderType.block_a;
+            } else {
+                type = ControllerRenderType.block_b;
             }
         }
 

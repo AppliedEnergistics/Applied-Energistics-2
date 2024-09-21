@@ -1,8 +1,6 @@
 {
   "parent": "block/block",
   "textures": {
-    "block": "ae2:block/controller_column_powered",
-    "lights": "ae2:block/controller_column_conflict",
     "particle": "ae2:block/controller"
   },
   "render_type": "cutout",
