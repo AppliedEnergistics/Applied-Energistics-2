@@ -69,10 +69,10 @@ public class ElapsedTimeTracker {
     }
 
     public long getRemainingItemCount() {
-        return Math.round(((float) this.remainingItemCount) / AEKEY_SCALE_FACTOR);
+        return (this.remainingItemCount + AEKEY_SCALE_FACTOR / 2) / AEKEY_SCALE_FACTOR;
     }
 
     public long getStartItemCount() {
-        return Math.round(((float) this.startItemCount) / AEKEY_SCALE_FACTOR);
+        return (this.remainingItemCount + AEKEY_SCALE_FACTOR / 2) / AEKEY_SCALE_FACTOR;
     }
 }
