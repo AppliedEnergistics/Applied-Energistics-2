@@ -42,6 +42,7 @@ import appeng.api.networking.crafting.ICraftingSubmitResult;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.core.AELog;
@@ -221,7 +222,8 @@ public class CraftingCpuLogic {
                     for (var expectedContainerItem : expectedContainerItems) {
                         job.waitingFor.insert(expectedContainerItem.getKey(), expectedContainerItem.getLongValue(),
                                 Actionable.MODULATE);
-                        job.timeTracker.addMaxItems(expectedContainerItem.getLongValue());
+                        job.timeTracker.addMaxItems(expectedContainerItem.getLongValue(),
+                                expectedContainerItem.getKey().getType());
                     }
 
                     cluster.markDirty();
@@ -276,7 +278,7 @@ public class CraftingCpuLogic {
         }
 
         if (type == Actionable.MODULATE) {
-            job.timeTracker.decrementItems(amount);
+            job.timeTracker.decrementItems(amount, what.getType()); // Process Fluid and Items
             job.waitingFor.extract(what, amount, Actionable.MODULATE);
             cluster.markDirty();
         }
@@ -416,7 +418,7 @@ public class CraftingCpuLogic {
         if (this.job != null) {
             return this.job.timeTracker;
         } else {
-            return new ElapsedTimeTracker(0);
+            return new ElapsedTimeTracker(0, AEKeyType.items());
         }
     }
 

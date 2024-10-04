@@ -35,6 +35,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.inv.ListCraftingInventory;
@@ -79,10 +80,10 @@ public class ExecutingCraftingJob {
         for (var entry : plan.patternTimes().entrySet()) {
             tasks.computeIfAbsent(entry.getKey(), p -> new TaskProgress()).value += entry.getValue();
             for (var output : entry.getKey().getOutputs()) {
-                totalPending += output.amount() * entry.getValue();
+                totalPending += output.amount() * entry.getValue() * output.what().getAmountPerUnit();
             }
         }
-        this.timeTracker = new ElapsedTimeTracker(totalPending);
+        this.timeTracker = new ElapsedTimeTracker(totalPending, AEKeyType.items());
         this.link = link;
         this.playerId = playerId;
     }
