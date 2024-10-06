@@ -13,8 +13,8 @@ import net.minecraft.data.recipes.RecipeOutput;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class CraftingUnitUpgradeRecipes extends AE2RecipeProvider {
-    public CraftingUnitUpgradeRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+public class UpgradeRecipes extends AE2RecipeProvider {
+    public UpgradeRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries);
     }
 
@@ -24,11 +24,11 @@ public class CraftingUnitUpgradeRecipes extends AE2RecipeProvider {
     @Override
     public void buildRecipes(RecipeOutput consumer) {
         List<UnitUpgradeTier> recipes = List.of(
-            new UnitUpgradeTier(AEBlocks.CRAFTING_STORAGE_1K, AEItems.ITEM_CELL_1K),
-            new UnitUpgradeTier(AEBlocks.CRAFTING_STORAGE_4K, AEItems.ITEM_CELL_4K),
-            new UnitUpgradeTier(AEBlocks.CRAFTING_STORAGE_16K, AEItems.ITEM_CELL_16K),
-            new UnitUpgradeTier(AEBlocks.CRAFTING_STORAGE_64K, AEItems.ITEM_CELL_64K),
-            new UnitUpgradeTier(AEBlocks.CRAFTING_STORAGE_256K, AEItems.ITEM_CELL_256K)
+            new UnitUpgradeTier(AEBlocks.CRAFTING_STORAGE_1K, AEItems.CELL_COMPONENT_1K),
+            new UnitUpgradeTier(AEBlocks.CRAFTING_STORAGE_4K, AEItems.CELL_COMPONENT_4K),
+            new UnitUpgradeTier(AEBlocks.CRAFTING_STORAGE_16K, AEItems.CELL_COMPONENT_16K),
+            new UnitUpgradeTier(AEBlocks.CRAFTING_STORAGE_64K, AEItems.CELL_COMPONENT_64K),
+            new UnitUpgradeTier(AEBlocks.CRAFTING_STORAGE_256K, AEItems.CELL_COMPONENT_256K)
         );
 
         recipes.forEach(recipe -> consumer.accept(

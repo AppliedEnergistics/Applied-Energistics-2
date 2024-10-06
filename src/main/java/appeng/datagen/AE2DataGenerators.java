@@ -108,7 +108,7 @@ public class AE2DataGenerators {
         pack.addProvider(bindRegistries(TransformRecipes::new, registries));
         pack.addProvider(bindRegistries(ChargerRecipes::new, registries));
         pack.addProvider(bindRegistries(QuartzCuttingRecipesProvider::new, registries));
-        pack.addProvider(bindRegistries(CraftingUnitUpgradeRecipes::new, registries));
+        pack.addProvider(bindRegistries(UpgradeRecipes::new, registries));
 
         // Must run last
         pack.addProvider(packOutput -> localization);

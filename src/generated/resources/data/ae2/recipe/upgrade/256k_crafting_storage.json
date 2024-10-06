@@ -4,10 +4,10 @@
   "disassembly_items": [
     {
       "count": 1,
-      "id": "ae2:item_storage_cell_256k"
+      "id": "ae2:cell_component_256k"
     }
   ],
   "upgrade_items": [
-    "ae2:item_storage_cell_256k"
+    "ae2:cell_component_256k"
   ]
 }
