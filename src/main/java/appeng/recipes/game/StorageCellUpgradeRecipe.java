@@ -143,11 +143,12 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
         }
     }
 
-    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
-        var remainder = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
+    @Override
+    public NonNullList<ItemStack> getRemainingItems(CraftingInput input) {
+        var remainder = NonNullList.withSize(input.size(), ItemStack.EMPTY);
 
         for (int i = 0; i < remainder.size(); ++i) {
-            var stack = inv.getItem(i);
+            var stack = input.getItem(i);
             if (stack.is(inputCell)) {
                 // We replace the cell with the component since it is unstackable and forced to be in match
                 remainder.set(i, new ItemStack(resultComponent));
