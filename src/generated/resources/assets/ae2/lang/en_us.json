@@ -51,6 +51,7 @@
   "achievement.ae2.StorageBus.desc": "Craft a Storage Bus",
   "achievement.ae2.StorageCell": "Better Than Chests",
   "achievement.ae2.StorageCell.desc": "Craft a Storage Cell",
+  "ae2.crafting_unit_busy": "This Crafting Unit is busy!",
   "ae2.emi_integration.category_charger": "Charger",
   "ae2.emi_integration.category_condenser": "Condenser",
   "ae2.emi_integration.category_entropy_manipulator": "Entropy Manipulator",

@@ -107,6 +107,7 @@ public class LocalizationProvider implements IAE2DataProvider {
     }
 
     private void generateLocalizations() {
+        add("ae2.crafting_unit_busy", "This Crafting Unit is busy!");
         add("ae2.permission_denied", "You lack permission to access this.");
         add("biome.ae2.spatial_storage", "Spatial Storage");
         add("commands.ae2.ChunkLoggerOff", "Chunk Logging is now off");

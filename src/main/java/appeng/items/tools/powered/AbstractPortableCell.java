@@ -112,7 +112,7 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
 
         // We refund the crafting recipe ingredients (the first one each)
         var recipe = level.getRecipeManager().byKey(getRecipeId()).orElse(null);
-        if (!(recipe.value() instanceof CraftingRecipe craftingRecipe)) {
+        if (recipe == null || !(recipe.value() instanceof CraftingRecipe craftingRecipe)) {
             AELog.debug("Cannot disassemble portable cell because it's crafting recipe doesn't exist: %s",
                     getRecipeId());
             return false;
