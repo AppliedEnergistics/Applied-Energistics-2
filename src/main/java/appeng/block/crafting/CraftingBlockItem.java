@@ -18,8 +18,16 @@
 
 package appeng.block.crafting;
 
+import java.util.List;
+import java.util.Properties;
 import java.util.function.Supplier;
 
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.recipes.game.CraftingUnitUpgradeRecipe;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -32,6 +40,9 @@ import appeng.block.AEBaseBlockItem;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
 import appeng.util.InteractionUtil;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 /**
  * Item that allows uncrafting CPU parts by disassembling them back into the crafting unit and the extra item.
@@ -40,21 +51,51 @@ public class CraftingBlockItem extends AEBaseBlockItem {
     /**
      * This can be retrieved when disassembling the crafting unit.
      */
+    @Deprecated(forRemoval = true, since = "1.21.1")
     protected final Supplier<ItemLike> disassemblyExtra;
 
+    @Deprecated(forRemoval = true, since = "1.21.1")
     public CraftingBlockItem(Block id, Properties props, Supplier<ItemLike> disassemblyExtra) {
         super(id, props);
         this.disassemblyExtra = disassemblyExtra;
     }
 
+    public CraftingBlockItem(Block id, Properties props) {
+        super(id, props);
+        this.disassemblyExtra = null;
+    }
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (AEConfig.instance().isDisassemblyCraftingEnabled() && InteractionUtil.isInAlternateUseMode(player)) {
-            int itemCount = player.getItemInHand(hand).getCount();
+            ItemStack stack = player.getItemInHand(hand);
+            ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
+
+            if (itemId == BuiltInRegistries.ITEM.getDefaultKey()) {
+                AELog.debug("Cannot disassemble crafting block because its item is unregistered?");
+                return super.use(level, player, hand);
+            }
+
+            var recipe = CraftingUnitUpgradeRecipe.getDisassemblyRecipe(level, AppEng.makeId("upgrade/" + itemId.getPath()), itemId);
+            if (recipe == null) return super.use(level, player, hand);
+
+            int itemCount = stack.getCount();
             player.setItemInHand(hand, ItemStack.EMPTY);
 
-            player.getInventory().placeItemBackInInventory(AEBlocks.CRAFTING_UNIT.stack(itemCount));
-            player.getInventory().placeItemBackInInventory(new ItemStack(disassemblyExtra.get(), itemCount));
+            var inv = player.getInventory();
+            if (recipe.useLootTable()) {
+                // Because this is a loot-table, and there might be chance-dependent conditions,
+                // we need to roll the loot table for each item.
+                LootParams params = new LootParams.Builder((ServerLevel) level).create(LootContextParamSets.EMPTY);
+                for (int i = 0; i < itemCount; i++) {
+                    recipe.getDisassemblyLoot(level, params).forEach(inv::placeItemBackInInventory);
+                }
+            } else {
+                recipe.getDisassemblyItems().forEach(item -> inv.placeItemBackInInventory(item.copyWithCount(item.getCount() * itemCount)));
+            }
+
+            // This is hard-coded, as this is always a base block.
+            inv.placeItemBackInInventory(AEBlocks.CRAFTING_UNIT.stack(itemCount));
 
             return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
         }
