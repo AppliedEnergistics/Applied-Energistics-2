@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
+import appeng.datagen.providers.recipes.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -44,17 +45,6 @@ import appeng.datagen.providers.models.CableModelProvider;
 import appeng.datagen.providers.models.DecorationModelProvider;
 import appeng.datagen.providers.models.ItemModelProvider;
 import appeng.datagen.providers.models.PartModelProvider;
-import appeng.datagen.providers.recipes.ChargerRecipes;
-import appeng.datagen.providers.recipes.CraftingRecipes;
-import appeng.datagen.providers.recipes.DecorationBlockRecipes;
-import appeng.datagen.providers.recipes.DecorationRecipes;
-import appeng.datagen.providers.recipes.EntropyRecipes;
-import appeng.datagen.providers.recipes.InscriberRecipes;
-import appeng.datagen.providers.recipes.MatterCannonAmmoProvider;
-import appeng.datagen.providers.recipes.QuartzCuttingRecipesProvider;
-import appeng.datagen.providers.recipes.SmeltingRecipes;
-import appeng.datagen.providers.recipes.SmithingRecipes;
-import appeng.datagen.providers.recipes.TransformRecipes;
 import appeng.datagen.providers.tags.BiomeTagsProvider;
 import appeng.datagen.providers.tags.BlockTagsProvider;
 import appeng.datagen.providers.tags.DataComponentTypeTagProvider;
@@ -118,6 +108,7 @@ public class AE2DataGenerators {
         pack.addProvider(bindRegistries(TransformRecipes::new, registries));
         pack.addProvider(bindRegistries(ChargerRecipes::new, registries));
         pack.addProvider(bindRegistries(QuartzCuttingRecipesProvider::new, registries));
+        pack.addProvider(bindRegistries(CraftingUnitUpgradeRecipes::new, registries));
 
         // Must run last
         pack.addProvider(packOutput -> localization);

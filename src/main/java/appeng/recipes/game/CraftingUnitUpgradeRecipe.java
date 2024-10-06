@@ -18,13 +18,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootParams;
 
 import java.util.List;
 import java.util.Optional;
 
-public class CraftingUnitUpgradeRecipe implements Recipe<RecipeInput> {
+public class CraftingUnitUpgradeRecipe extends CustomRecipe {
     @Deprecated(forRemoval = true, since = "1.21.1")
     public static final ResourceLocation TYPE_ID = AppEng.makeId("crafting_unit_upgrade");
 
@@ -61,6 +60,7 @@ public class CraftingUnitUpgradeRecipe implements Recipe<RecipeInput> {
     private final ResourceLocation block;
 
     public CraftingUnitUpgradeRecipe(ResourceLocation block, List<Item> upgradeItems, List<ItemStack> disassemblyItems, ResourceLocation lootTable) {
+        super(CraftingBookCategory.MISC);
         this.upgradeItems = ImmutableList.copyOf(upgradeItems);
         this.disassemblyItems = disassemblyItems;
         this.disassemblyLootTable = lootTable;
@@ -172,12 +172,12 @@ public class CraftingUnitUpgradeRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public boolean matches(RecipeInput input, Level level) {
+    public boolean matches(CraftingInput input, Level level) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(RecipeInput input, HolderLookup.Provider registries) {
+    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
         return ItemStack.EMPTY;
     }
 
