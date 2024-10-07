@@ -162,7 +162,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
 
         final BlockState defaultState = block.defaultBlockState();
         final boolean isBlockEntity = defaultState.hasBlockEntity();
-        final boolean isFullCube = defaultState.isRedstoneConductor(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
+        final boolean isFullCube = defaultState.isCollisionShapeFullBlock(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
 
         final boolean isBlockEntityAllowed = !isBlockEntity || areBlockEntitiesEnabled && isWhiteListed;
         final boolean isBlockAllowed = isFullCube || isWhiteListed;
