@@ -18,13 +18,11 @@
 
 package appeng.block.crafting;
 
-import java.util.List;
-import java.util.Properties;
 import java.util.function.Supplier;
 
 import appeng.core.AELog;
 import appeng.core.AppEng;
-import appeng.recipes.game.CraftingUnitUpgradeRecipe;
+import appeng.recipes.game.CraftingUnitTransformRecipe;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -42,7 +40,6 @@ import appeng.core.definitions.AEBlocks;
 import appeng.util.InteractionUtil;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 /**
  * Item that allows uncrafting CPU parts by disassembling them back into the crafting unit and the extra item.
@@ -76,7 +73,7 @@ public class CraftingBlockItem extends AEBaseBlockItem {
                 return super.use(level, player, hand);
             }
 
-            var recipe = CraftingUnitUpgradeRecipe.getDisassemblyRecipe(level, AppEng.makeId("upgrade/" + itemId.getPath()), itemId);
+            var recipe = CraftingUnitTransformRecipe.getDisassemblyRecipe(level, AppEng.makeId("upgrade/" + itemId.getPath()), itemId);
             if (recipe == null) return super.use(level, player, hand);
 
             int itemCount = stack.getCount();

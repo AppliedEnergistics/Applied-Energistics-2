@@ -20,10 +20,8 @@ package appeng.block.crafting;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
-import appeng.recipes.AERecipeTypes;
-import appeng.recipes.game.CraftingUnitUpgradeRecipe;
+import appeng.recipes.game.CraftingUnitTransformRecipe;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -36,7 +34,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -138,7 +135,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     public boolean upgrade(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player) {
         if (heldItem.isEmpty()) return false;
 
-        var upgradeRecipe = CraftingUnitUpgradeRecipe.getUpgradeRecipe(level, heldItem);
+        var upgradeRecipe = CraftingUnitTransformRecipe.getUpgradeRecipe(level, heldItem);
         if (upgradeRecipe == null) return false;
         if (level.isClientSide()) return true;
 
@@ -164,7 +161,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     public InteractionResult disassemble(Level level, Player player, BlockPos pos, BlockState state, BlockState newState) {
         if (this.type == CraftingUnitType.UNIT || level.isClientSide()) return InteractionResult.FAIL;
 
-        var recipe = CraftingUnitUpgradeRecipe.getDisassemblyRecipe(level, AppEng.makeId("upgrade/" + Objects.requireNonNull(this.getRegistryName()).getPath()), this.getRegistryName());
+        var recipe = CraftingUnitTransformRecipe.getDisassemblyRecipe(level, AppEng.makeId("upgrade/" + Objects.requireNonNull(this.getRegistryName()).getPath()), this.getRegistryName());
         if (recipe == null) return InteractionResult.FAIL;
 
         final CraftingBlockEntity cp = this.getBlockEntity(level, pos);

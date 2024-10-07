@@ -1,5 +1,5 @@
 {
-  "type": "ae2:crafting_unit_upgrade",
+  "type": "ae2:crafting_unit_transform",
   "block": "ae2:16k_crafting_storage",
   "disassembly_items": [
     {

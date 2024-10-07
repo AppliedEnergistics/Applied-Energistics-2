@@ -2,7 +2,6 @@ package appeng.recipes.game;
 
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.recipes.AERecipeTypes;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.MapCodec;
@@ -28,21 +27,21 @@ import java.util.Optional;
 /**
  * Used to handle Upgrading / Disassembly of the Crafting Units in the world.
  */
-public class CraftingUnitUpgradeRecipe extends CustomRecipe {
-    public static final MapCodec<CraftingUnitUpgradeRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> {
+public class CraftingUnitTransformRecipe extends CustomRecipe {
+    public static final MapCodec<CraftingUnitTransformRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> {
         return builder.group(
-            ResourceLocation.CODEC.fieldOf("block").forGetter(CraftingUnitUpgradeRecipe::getBlock),
+            ResourceLocation.CODEC.fieldOf("block").forGetter(CraftingUnitTransformRecipe::getBlock),
             BuiltInRegistries.ITEM.byNameCodec().listOf().optionalFieldOf("upgrade_items").forGetter(it -> Optional.ofNullable(it.getUpgradeItems())),
             ItemStack.CODEC.listOf().optionalFieldOf("disassembly_items").forGetter(it -> Optional.ofNullable(it.getDisassemblyItems())),
             ResourceLocation.CODEC.optionalFieldOf("disassembly_loot_table").forGetter(it -> Optional.ofNullable(it.getDisassemblyLootTable()))
         ).apply(builder, (block, upgradeItems, disassemblyItems, disassemblyLoot) ->
-            new CraftingUnitUpgradeRecipe(block, upgradeItems.orElse(null), disassemblyItems.orElse(null), disassemblyLoot.orElse(null))
+            new CraftingUnitTransformRecipe(block, upgradeItems.orElse(null), disassemblyItems.orElse(null), disassemblyLoot.orElse(null))
         );
     });
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, CraftingUnitUpgradeRecipe> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, CraftingUnitTransformRecipe> STREAM_CODEC = StreamCodec.composite(
         ResourceLocation.STREAM_CODEC,
-        CraftingUnitUpgradeRecipe::getBlock,
+        CraftingUnitTransformRecipe::getBlock,
         ByteBufCodecs.registry(BuiltInRegistries.ITEM.key()).apply(ByteBufCodecs.list()).apply(ByteBufCodecs::optional),
         it -> Optional.ofNullable(it.getUpgradeItems()),
         ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()).apply(ByteBufCodecs::optional),
@@ -50,7 +49,7 @@ public class CraftingUnitUpgradeRecipe extends CustomRecipe {
         ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs::optional),
         it -> Optional.ofNullable(it.getDisassemblyLootTable()),
         (block, upgradeItems, disassemblyItems, disassemblyLoot) ->
-            new CraftingUnitUpgradeRecipe(block, upgradeItems.orElse(null), disassemblyItems.orElse(null), disassemblyLoot.orElse(null))
+            new CraftingUnitTransformRecipe(block, upgradeItems.orElse(null), disassemblyItems.orElse(null), disassemblyLoot.orElse(null))
     );
 
     private final ResourceLocation disassemblyLootTable;
@@ -58,7 +57,7 @@ public class CraftingUnitUpgradeRecipe extends CustomRecipe {
     private final List<Item> upgradeItems;
     private final ResourceLocation block;
 
-    public CraftingUnitUpgradeRecipe(ResourceLocation block, List<Item> upgradeItems, List<ItemStack> disassemblyItems, ResourceLocation lootTable) {
+    public CraftingUnitTransformRecipe(ResourceLocation block, List<Item> upgradeItems, List<ItemStack> disassemblyItems, ResourceLocation lootTable) {
         super(CraftingBookCategory.MISC);
         this.upgradeItems = ImmutableList.copyOf(upgradeItems);
         this.disassemblyItems = disassemblyItems;
@@ -132,36 +131,40 @@ public class CraftingUnitUpgradeRecipe extends CustomRecipe {
      * @param level
      * @param location ResourceLocation of the recipe to get.
      * @param block Fallback ResourceLocation to look for.
-     * @return If a single recipe is found - CraftingUnitUpgradeRecipe, otherwise null.
+     * @return If a single recipe is found - CraftingUnitTransformRecipe, otherwise null.
      */
-    public static CraftingUnitUpgradeRecipe getDisassemblyRecipe(Level level, ResourceLocation location, ResourceLocation block) {
+    public static CraftingUnitTransformRecipe getDisassemblyRecipe(Level level, ResourceLocation location, ResourceLocation block) {
         var recipeManager = level.getRecipeManager();
         var recipeHolder = recipeManager.byKey(location);
-        if (recipeHolder.isEmpty()) {
-            var recipes = recipeManager.byType(AERecipeTypes.UNIT_UPGRADE).stream().filter(it -> it.value().getBlock() == block && it.value().canDisassemble()).toList();
-            if (recipes.size() != 1) {
-                if (recipes.size() > 1) {
-                    AELog.debug("Multiple disassembly recipes found for {}. Disassembly is impossible.", block);
-                    recipes.forEach(recipe -> AELog.debug("Recipe: {}", recipe.id()));
-                }
-                return null;
-            }
-            return recipes.getFirst().value();
-        }
 
-        if (recipeHolder.get().value() instanceof CraftingUnitUpgradeRecipe recipe) return recipe;
-        return null;
+        // Checking the direct recipe first - if invalid, search for a correct one.
+        if (
+            recipeHolder.isPresent() &&
+            recipeHolder.get().value() instanceof CraftingUnitTransformRecipe recipe &&
+            recipe.canDisassemble() &&
+            recipe.getBlock() == block
+        ) return recipe;
+
+        var recipes = recipeManager.byType(AERecipeTypes.UNIT_TRANSFORM).stream().filter(it -> it.value().getBlock() == block && it.value().canDisassemble()).toList();
+        if (recipes.size() != 1) {
+            if (recipes.size() > 1) {
+                AELog.debug("Multiple disassembly recipes found for %s. Disassembly is impossible.", block);
+                recipes.forEach(recipe -> AELog.debug("Recipe: %s", recipe.id()));
+            }
+            return null;
+        }
+        return recipes.getFirst().value();
     }
 
     /**
      * Used to get the upgrade recipe for the provided ItemStack.
      * @param level
      * @param upgradeItem ItemStack to upgrade with.
-     * @return If a single recipe is found - CraftingUnitUpgradeRecipe, otherwise null.
+     * @return If a single recipe is found - CraftingUnitTransformRecipe, otherwise null.
      */
-    public static CraftingUnitUpgradeRecipe getUpgradeRecipe(Level level, ItemStack upgradeItem) {
-        List<RecipeHolder<CraftingUnitUpgradeRecipe>> recipes = level.getRecipeManager()
-            .byType(AERecipeTypes.UNIT_UPGRADE)
+    public static CraftingUnitTransformRecipe getUpgradeRecipe(Level level, ItemStack upgradeItem) {
+        List<RecipeHolder<CraftingUnitTransformRecipe>> recipes = level.getRecipeManager()
+            .byType(AERecipeTypes.UNIT_TRANSFORM)
             .stream()
             .filter(it -> it.value().canUpgradeWith(upgradeItem))
             .toList();
@@ -203,11 +206,11 @@ public class CraftingUnitUpgradeRecipe extends CustomRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return CraftingUnitUpgradeSerializer.INSTANCE;
+        return CraftingUnitTransformRecipeSerializer.INSTANCE;
     }
 
     @Override
     public RecipeType<?> getType() {
-        return AERecipeTypes.UNIT_UPGRADE;
+        return AERecipeTypes.UNIT_TRANSFORM;
     }
 }

@@ -1,6 +1,7 @@
 package appeng.recipes;
 
-import appeng.recipes.game.CraftingUnitUpgradeRecipe;
+import appeng.recipes.game.CraftingUnitTransformRecipe;
+import appeng.recipes.game.StorageCellDisassemblyRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -27,7 +28,8 @@ public final class AERecipeTypes {
     public static final RecipeType<ChargerRecipe> CHARGER = register("charger");
     public static final RecipeType<MatterCannonAmmo> MATTER_CANNON_AMMO = register("matter_cannon");
     public static final RecipeType<QuartzCuttingRecipe> QUARTZ_CUTTING = register("quartz_cutting");
-    public static final RecipeType<CraftingUnitUpgradeRecipe> UNIT_UPGRADE = register("crafting_unit_upgrade");
+    public static final RecipeType<CraftingUnitTransformRecipe> UNIT_TRANSFORM = register("crafting_unit_transform");
+    public static final RecipeType<StorageCellDisassemblyRecipe> CELL_DISASSEMBLY = register("storage_cell_disassembly");
 
     private static <T extends Recipe<?>> RecipeType<T> register(String id) {
         RecipeType<T> type = RecipeType.simple(AppEng.makeId(id));

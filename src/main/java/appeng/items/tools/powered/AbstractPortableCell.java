@@ -1,5 +1,9 @@
 package appeng.items.tools.powered;
 
+import appeng.core.AppEng;
+import appeng.recipes.game.StorageCellDisassemblyRecipe;
+import net.minecraft.core.registries.BuiltInRegistries;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.ResourceLocation;
@@ -106,54 +110,47 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
     }
 
     private boolean disassembleDrive(ItemStack stack, Level level, Player player) {
-        if (!AEConfig.instance().isPortableCellDisassemblyEnabled()) {
+        ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
+
+        if (itemId == BuiltInRegistries.ITEM.getDefaultKey()) {
+            AELog.debug("Cannot disassemble portable cell because its item is unregistered?");
             return false;
         }
 
-        // We refund the crafting recipe ingredients (the first one each)
-        var recipe = level.getRecipeManager().byKey(getRecipeId()).orElse(null);
-        if (recipe == null || !(recipe.value() instanceof CraftingRecipe craftingRecipe)) {
-            AELog.debug("Cannot disassemble portable cell because it's crafting recipe doesn't exist: %s",
-                    getRecipeId());
-            return false;
-        }
+        // Recipes are based on the storage cell IDs, so we need to create one!
+        var recipe = StorageCellDisassemblyRecipe.getDisassemblyRecipe(
+            level,
+            AppEng.makeId("upgrade/item_storage_cell_" + StringUtils.substringAfterLast(itemId.getPath(), "_")),
+            stack.getItem()
+        );
+        if (recipe == null) return false;
+        if (level.isClientSide()) return true;
 
-        if (level.isClientSide()) {
+        var playerInventory = player.getInventory();
+        if (playerInventory.getSelected() != stack) return false;
+
+        var inv = StorageCells.getCellInventory(stack, null);
+        if (inv == null) return false;
+
+        if (!inv.getAvailableStacks().isEmpty()) {
+            player.displayClientMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text(), true);
             return true;
         }
 
-        var playerInventory = player.getInventory();
-        if (playerInventory.getSelected() != stack) {
-            return false;
-        }
+        playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
 
-        var inv = StorageCells.getCellInventory(stack, null);
-        if (inv == null) {
-            return false;
-        }
-
-        if (inv.getAvailableStacks().isEmpty()) {
-            playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
-
-            var remainingEnergy = getAECurrentPower(stack);
-            for (var ingredient : craftingRecipe.getIngredients()) {
-                var ingredientStack = ingredient.getItems()[0].copy();
-
-                // Dump remaining energy into whatever can accept it
-                if (remainingEnergy > 0 && ingredientStack.getItem() instanceof EnergyCellBlockItem energyCell) {
-                    remainingEnergy = energyCell.injectAEPower(ingredientStack, remainingEnergy, Actionable.MODULATE);
-                }
-
-                playerInventory.placeItemBackInInventory(ingredientStack);
+        double remainingEnergy = getAECurrentPower(stack);
+        for (ItemStack recipeStack : recipe.getPortableCellDisassemblyItems()) {
+            // Dump remaining energy into whatever can accept it
+            if (remainingEnergy > 0 && recipeStack.getItem() instanceof EnergyCellBlockItem energyCell) {
+                remainingEnergy = energyCell.injectAEPower(recipeStack, remainingEnergy, Actionable.MODULATE);
             }
 
-            // Drop upgrades
-            for (var upgrade : getUpgrades(stack)) {
-                playerInventory.placeItemBackInInventory(upgrade);
-            }
-        } else {
-            player.displayClientMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text(), true);
+            playerInventory.placeItemBackInInventory(recipeStack);
         }
+
+        // Drop upgrades
+        getUpgrades(stack).forEach(playerInventory::placeItemBackInInventory);
 
         return true;
     }
