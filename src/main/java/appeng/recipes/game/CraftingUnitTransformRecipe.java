@@ -163,6 +163,7 @@ public class CraftingUnitTransformRecipe extends CustomRecipe {
 
         var recipes = recipeManager.byType(AERecipeTypes.UNIT_TRANSFORM).stream()
                 .filter(it -> it.value().getBlock() == block && it.value().canDisassemble()).toList();
+
         if (recipes.size() != 1) {
             if (recipes.size() > 1) {
                 AELog.debug("Multiple disassembly recipes found for %s. Disassembly is impossible.", block);

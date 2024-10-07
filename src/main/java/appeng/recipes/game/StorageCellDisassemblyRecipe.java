@@ -118,6 +118,7 @@ public class StorageCellDisassemblyRecipe extends CustomRecipe {
                 .filter(it -> (it.value().getStorageCell() == cell || it.value().getPortableStorageCell() == cell) &&
                         it.value().canDisassemble())
                 .toList();
+
         if (recipes.size() != 1) {
             if (recipes.size() > 1) {
                 AELog.debug("Multiple disassembly recipes found for %s. Disassembly is impossible.", cell);
