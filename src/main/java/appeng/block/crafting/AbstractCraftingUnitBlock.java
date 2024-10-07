@@ -21,7 +21,6 @@ package appeng.block.crafting;
 import java.util.List;
 import java.util.Objects;
 
-import appeng.util.Platform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -138,7 +137,8 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
         return super.useItemOn(heldItem, state, level, pos, player, hand, hit);
     }
 
-    public boolean upgrade(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+    public boolean upgrade(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player,
+            BlockHitResult hit) {
         if (heldItem.isEmpty())
             return false;
 
