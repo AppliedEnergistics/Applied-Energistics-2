@@ -154,11 +154,8 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
             return true;
 
         BlockState newState = newBlock.defaultBlockState();
-        // If Single-Block cluster has formed value set to true,
-        // when it's made out of blocks that can't form single-block clusters
-        // they still get connected to the grid and consume power.
-        // This check prevents that.
-        if (newBlock != AEBlocks.CRAFTING_MONITOR.block() && newBlock != AEBlocks.CRAFTING_ACCELERATOR.block()) {
+        // This check prevents the non-formed single-block cluster from connecting to grid.
+        if (AEBlocks.CRAFTING_STORAGE_1K.block().getBlockEntityType().isValid(newState)) {
             // Prevents flickering when upgrading single-block clusters.
             newState = newState.setValue(FORMED, state.getValue(FORMED));
         }
@@ -191,8 +188,8 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
         if (recipe == null)
             return InteractionResult.FAIL;
 
-        final CraftingBlockEntity cp = this.getBlockEntity(level, pos);
-        if (cp != null && cp.getCluster() != null && cp.getCluster().isBusy()) {
+        CraftingBlockEntity cb = this.getBlockEntity(level, pos);
+        if (cb != null && cb.getCluster() != null && cb.getCluster().isBusy()) {
             player.displayClientMessage(Component.translatable("ae2.crafting_unit_busy").withColor(0xFF1F1F), true);
             return InteractionResult.PASS;
         }
