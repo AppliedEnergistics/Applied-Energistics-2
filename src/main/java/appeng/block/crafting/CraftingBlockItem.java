@@ -18,8 +18,6 @@
 
 package appeng.block.crafting;
 
-import java.util.function.Supplier;
-
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -27,14 +25,12 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 import appeng.block.AEBaseBlockItem;
-import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -45,21 +41,8 @@ import appeng.util.InteractionUtil;
  * Item that allows uncrafting CPU parts by disassembling them back into the crafting unit and the extra item.
  */
 public class CraftingBlockItem extends AEBaseBlockItem {
-    /**
-     * This can be retrieved when disassembling the crafting unit.
-     */
-    @Deprecated(forRemoval = true, since = "1.21.1")
-    protected final Supplier<ItemLike> disassemblyExtra;
-
-    @Deprecated(forRemoval = true, since = "1.21.1")
-    public CraftingBlockItem(Block id, Properties props, Supplier<ItemLike> disassemblyExtra) {
-        super(id, props);
-        this.disassemblyExtra = disassemblyExtra;
-    }
-
     public CraftingBlockItem(Block id, Properties props) {
         super(id, props);
-        this.disassemblyExtra = null;
     }
 
     @Override
@@ -100,8 +83,5 @@ public class CraftingBlockItem extends AEBaseBlockItem {
             return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
         }
         return super.use(level, player, hand);
-    }
-
-    private void disassemble(ItemStack stack, Player player) {
     }
 }

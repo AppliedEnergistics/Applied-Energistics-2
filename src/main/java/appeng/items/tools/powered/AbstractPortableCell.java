@@ -1,6 +1,5 @@
 package appeng.items.tools.powered;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -116,11 +115,8 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
             return false;
         }
 
-        // Recipes are based on the storage cell IDs, so we need to create one!
-        var recipe = StorageCellDisassemblyRecipe.getDisassemblyRecipe(
-                level,
-                AppEng.makeId("upgrade/item_storage_cell_" + StringUtils.substringAfterLast(itemId.getPath(), "_")),
-                stack.getItem());
+        var recipe = StorageCellDisassemblyRecipe.getDisassemblyRecipe(level,
+                AppEng.makeId("upgrade/" + itemId.getPath()), stack.getItem());
         if (recipe == null)
             return false;
         if (level.isClientSide())
@@ -142,7 +138,7 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
         playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
 
         double remainingEnergy = getAECurrentPower(stack);
-        for (ItemStack recipeStack : recipe.getPortableCellDisassemblyItems()) {
+        for (ItemStack recipeStack : recipe.getCellDisassemblyItems()) {
             // Dump remaining energy into whatever can accept it
             if (remainingEnergy > 0 && recipeStack.getItem() instanceof EnergyCellBlockItem energyCell) {
                 remainingEnergy = energyCell.injectAEPower(recipeStack, remainingEnergy, Actionable.MODULATE);

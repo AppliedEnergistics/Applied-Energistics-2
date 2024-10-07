@@ -1,7 +1,15 @@
 {
   "type": "ae2:storage_cell_disassembly",
-  "cell": "ae2:item_storage_cell_4k",
+  "cell": "ae2:portable_item_cell_4k",
   "cell_disassembly_items": [
+    {
+      "count": 1,
+      "id": "ae2:chest"
+    },
+    {
+      "count": 1,
+      "id": "ae2:energy_cell"
+    },
     {
       "count": 1,
       "id": "ae2:item_cell_housing"

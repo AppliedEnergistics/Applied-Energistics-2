@@ -158,11 +158,11 @@ public class CraftingUnitTransformRecipe extends CustomRecipe {
         if (recipeHolder.isPresent() &&
                 recipeHolder.get().value() instanceof CraftingUnitTransformRecipe recipe &&
                 recipe.canDisassemble() &&
-                recipe.getBlock() == block)
+                recipe.getBlock().equals(block))
             return recipe;
 
         var recipes = recipeManager.byType(AERecipeTypes.UNIT_TRANSFORM).stream()
-                .filter(it -> it.value().getBlock() == block && it.value().canDisassemble()).toList();
+                .filter(it -> it.value().getBlock().equals(block) && it.value().canDisassemble()).toList();
 
         if (recipes.size() != 1) {
             if (recipes.size() > 1) {

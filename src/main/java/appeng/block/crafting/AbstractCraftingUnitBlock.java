@@ -21,6 +21,7 @@ package appeng.block.crafting;
 import java.util.List;
 import java.util.Objects;
 
+import appeng.util.Platform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -39,6 +40,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -131,28 +133,38 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     @Override
     protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
-        if (this.upgrade(heldItem, state, level, pos, player))
+        if (this.upgrade(heldItem, state, level, pos, player, hit))
             return ItemInteractionResult.sidedSuccess(level.isClientSide());
         return super.useItemOn(heldItem, state, level, pos, player, hand, hit);
     }
 
-    public boolean upgrade(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player) {
+    public boolean upgrade(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (heldItem.isEmpty())
             return false;
 
         var upgradeRecipe = CraftingUnitTransformRecipe.getUpgradeRecipe(level, heldItem);
         if (upgradeRecipe == null)
             return false;
-        if (level.isClientSide())
-            return true;
 
         Block newBlock = BuiltInRegistries.BLOCK.get(upgradeRecipe.getBlock());
         if (newBlock == state.getBlock())
             return false;
+        // If Upgrading is possible - but disassembly isn't, this will still make the hand animation play.
+        if (level.isClientSide())
+            return true;
 
         BlockState newState = newBlock.defaultBlockState();
-        newState.setValue(POWERED, state.getValue(POWERED));
-        newState.setValue(FORMED, state.getValue(FORMED));
+        // If Single-Block cluster has formed value set to true,
+        // when it's made out of blocks that can't form single-block clusters
+        // they still get connected to the grid and consume power.
+        // This check prevents that.
+        if (newBlock != AEBlocks.CRAFTING_MONITOR.block() && newBlock != AEBlocks.CRAFTING_ACCELERATOR.block()) {
+            // Prevents flickering when upgrading single-block clusters.
+            newState = newState.setValue(FORMED, state.getValue(FORMED));
+        }
+
+        // Makes sure Crafting Monitors are looking at the player.
+        newState = newState.trySetValue(BlockStateProperties.FACING, hit.getDirection());
 
         // Crafting Unit doesn't have a disassembly recipe, so we can ignore the drops.
         InteractionResult result = state.getBlock() == AEBlocks.CRAFTING_UNIT.block()
@@ -204,7 +216,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     }
 
     private boolean transform(Level level, BlockPos pos, BlockState state) {
-        if (!level.removeBlock(pos, false) || !level.setBlock(pos, state, 3))
+        if (level.isClientSide() || !level.removeBlock(pos, false) || !level.setBlock(pos, state, 3))
             return false;
 
         level.playSound(

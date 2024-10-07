@@ -32,40 +32,26 @@ public class StorageCellDisassemblyRecipe extends CustomRecipe {
         return builder.group(
                 BuiltInRegistries.ITEM.byNameCodec().fieldOf("cell")
                         .forGetter(StorageCellDisassemblyRecipe::getStorageCell),
-                BuiltInRegistries.ITEM.byNameCodec().fieldOf("portable_cell")
-                        .forGetter(StorageCellDisassemblyRecipe::getPortableStorageCell),
                 ItemStack.CODEC.listOf().optionalFieldOf("cell_disassembly_items")
-                        .forGetter(it -> Optional.ofNullable(it.getCellDisassemblyItems())),
-                ItemStack.CODEC.listOf().optionalFieldOf("portable_disassembly_items")
-                        .forGetter(it -> Optional.ofNullable(it.getPortableCellDisassemblyItems())))
-                .apply(builder, (cell, portable, cDisassembly, pDisassembly) -> new StorageCellDisassemblyRecipe(cell,
-                        portable, cDisassembly.orElse(null), pDisassembly.orElse(null)));
+                        .forGetter(it -> Optional.ofNullable(it.getCellDisassemblyItems())))
+                .apply(builder,
+                        (cell, cDisassembly) -> new StorageCellDisassemblyRecipe(cell, cDisassembly.orElse(null)));
     });
 
     public static final StreamCodec<RegistryFriendlyByteBuf, StorageCellDisassemblyRecipe> STREAM_CODEC = StreamCodec
             .composite(
                     ByteBufCodecs.registry(BuiltInRegistries.ITEM.key()),
                     StorageCellDisassemblyRecipe::getStorageCell,
-                    ByteBufCodecs.registry(BuiltInRegistries.ITEM.key()),
-                    StorageCellDisassemblyRecipe::getPortableStorageCell,
                     ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()).apply(ByteBufCodecs::optional),
                     it -> Optional.ofNullable(it.getCellDisassemblyItems()),
-                    ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()).apply(ByteBufCodecs::optional),
-                    it -> Optional.ofNullable(it.getPortableCellDisassemblyItems()),
-                    (cell, portable, cDisassembly, pDisassembly) -> new StorageCellDisassemblyRecipe(cell, portable,
-                            cDisassembly.orElse(null), pDisassembly.orElse(null)));
+                    (cell, cDisassembly) -> new StorageCellDisassemblyRecipe(cell, cDisassembly.orElse(null)));
 
-    private final List<ItemStack> portableDisassemblyItems;
     private final List<ItemStack> disassemblyItems;
-    private final Item portableStorageCell;
     private final Item storageCell;
 
-    public StorageCellDisassemblyRecipe(Item storageCell, Item portableStorageCell, List<ItemStack> disassemblyItems,
-            List<ItemStack> portableDisassemblyItems) {
+    public StorageCellDisassemblyRecipe(Item storageCell, List<ItemStack> disassemblyItems) {
         super(CraftingBookCategory.MISC);
-        this.portableDisassemblyItems = portableDisassemblyItems;
         this.disassemblyItems = disassemblyItems;
-        this.portableStorageCell = portableStorageCell;
         this.storageCell = storageCell;
     }
 
@@ -75,14 +61,6 @@ public class StorageCellDisassemblyRecipe extends CustomRecipe {
 
     public List<ItemStack> getCellDisassemblyItems() {
         return disassemblyItems.stream().map(ItemStack::copy).toList();
-    }
-
-    public Item getPortableStorageCell() {
-        return this.portableStorageCell;
-    }
-
-    public List<ItemStack> getPortableCellDisassemblyItems() {
-        return portableDisassemblyItems.stream().map(ItemStack::copy).toList();
     }
 
     /**
@@ -109,14 +87,13 @@ public class StorageCellDisassemblyRecipe extends CustomRecipe {
         if (recipeHolder.isPresent() &&
                 recipeHolder.get().value() instanceof StorageCellDisassemblyRecipe recipe &&
                 recipe.canDisassemble() &&
-                (recipe.getStorageCell() == cell || recipe.getPortableStorageCell() == cell))
+                recipe.getStorageCell() == cell)
             return recipe;
 
         var recipes = recipeManager
                 .byType(AERecipeTypes.CELL_DISASSEMBLY)
                 .stream()
-                .filter(it -> (it.value().getStorageCell() == cell || it.value().getPortableStorageCell() == cell) &&
-                        it.value().canDisassemble())
+                .filter(it -> (it.value().getStorageCell() == cell && it.value().canDisassemble()))
                 .toList();
 
         if (recipes.size() != 1) {
@@ -126,6 +103,7 @@ public class StorageCellDisassemblyRecipe extends CustomRecipe {
             }
             return null;
         }
+
         return recipes.getFirst().value();
     }
 

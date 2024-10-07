@@ -1,0 +1,13 @@
+{
+  "type": "ae2:crafting_unit_transform",
+  "block": "ae2:crafting_monitor",
+  "disassembly_items": [
+    {
+      "count": 1,
+      "id": "ae2:storage_monitor"
+    }
+  ],
+  "upgrade_items": [
+    "ae2:storage_monitor"
+  ]
+}

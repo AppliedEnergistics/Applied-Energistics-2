@@ -34,7 +34,6 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.FuzzyMode;
@@ -57,38 +56,12 @@ import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AEToolItem {
-    /**
-     * This can be retrieved when disassembling the storage cell.
-     */
-    @Deprecated(forRemoval = true, since = "1.21.1")
-    protected final ItemLike coreItem;
-    @Deprecated(forRemoval = true, since = "1.21.1")
-    protected final ItemLike housingItem;
     protected final double idleDrain;
     protected final int totalBytes;
     protected final int bytesPerType;
     protected final int totalTypes;
     private final AEKeyType keyType;
 
-    @Deprecated(forRemoval = true, since = "1.21.1")
-    public BasicStorageCell(Properties properties,
-            ItemLike coreItem,
-            ItemLike housingItem,
-            double idleDrain,
-            int kilobytes,
-            int bytesPerType,
-            int totalTypes,
-            AEKeyType keyType) {
-        super(properties);
-        this.idleDrain = idleDrain;
-        this.totalBytes = kilobytes * 1024;
-        this.coreItem = coreItem;
-        this.housingItem = housingItem;
-        this.bytesPerType = bytesPerType;
-        this.totalTypes = totalTypes;
-        this.keyType = keyType;
-    }
-
     public BasicStorageCell(Properties properties,
             double idleDrain,
             int kilobytes,
@@ -101,9 +74,6 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
         this.bytesPerType = bytesPerType;
         this.totalTypes = totalTypes;
         this.keyType = keyType;
-        // TODO: Remove when deprecated fields are removed.
-        this.housingItem = null;
-        this.coreItem = null;
     }
 
     @Override
@@ -168,14 +138,13 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (InteractionUtil.isInAlternateUseMode(player))
-            this.disassembleDrive(player.getItemInHand(hand), level, player);
+        this.disassembleDrive(player.getItemInHand(hand), level, player);
         return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                 player.getItemInHand(hand));
     }
 
     private boolean disassembleDrive(ItemStack stack, Level level, Player player) {
-        if (level.isClientSide())
+        if (!InteractionUtil.isInAlternateUseMode(player) || level.isClientSide())
             return false;
         ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
 

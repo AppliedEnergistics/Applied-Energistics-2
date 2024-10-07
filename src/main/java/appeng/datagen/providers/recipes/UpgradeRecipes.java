@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
 import appeng.core.definitions.BlockDefinition;
 import appeng.core.definitions.ItemDefinition;
 import appeng.recipes.game.CraftingUnitTransformRecipe;
@@ -25,59 +26,87 @@ public class UpgradeRecipes extends AE2RecipeProvider {
     record UnitTransformTier(BlockDefinition<?> baseBlock, ItemDefinition<?> upgradeItem) {
     }
 
-    record CellDisassemblyTier(ItemDefinition<?> cell, ItemDefinition<?> portable, ItemDefinition<?> component,
-            boolean fluid) {
+    record CellDisassemblyTier(ItemDefinition<?> cell, ItemDefinition<?> component) {
     }
 
     @Override
     public void buildRecipes(RecipeOutput consumer) {
-        List<UnitTransformTier> tiers = List.of(
+        // Crafting Unit Transformation
+        craftingUnitTransform(consumer, List.of(
                 new UnitTransformTier(AEBlocks.CRAFTING_STORAGE_1K, AEItems.CELL_COMPONENT_1K),
                 new UnitTransformTier(AEBlocks.CRAFTING_STORAGE_4K, AEItems.CELL_COMPONENT_4K),
                 new UnitTransformTier(AEBlocks.CRAFTING_STORAGE_16K, AEItems.CELL_COMPONENT_16K),
                 new UnitTransformTier(AEBlocks.CRAFTING_STORAGE_64K, AEItems.CELL_COMPONENT_64K),
-                new UnitTransformTier(AEBlocks.CRAFTING_STORAGE_256K, AEItems.CELL_COMPONENT_256K));
+                new UnitTransformTier(AEBlocks.CRAFTING_STORAGE_256K, AEItems.CELL_COMPONENT_256K),
+                new UnitTransformTier(AEBlocks.CRAFTING_ACCELERATOR, AEItems.ENGINEERING_PROCESSOR),
+                new UnitTransformTier(AEBlocks.CRAFTING_MONITOR, AEParts.STORAGE_MONITOR)));
 
-        List<CellDisassemblyTier> storageTiers = List.of(
-            new CellDisassemblyTier(AEItems.ITEM_CELL_1K, AEItems.PORTABLE_ITEM_CELL1K, AEItems.CELL_COMPONENT_1K, false),
-            new CellDisassemblyTier(AEItems.ITEM_CELL_4K, AEItems.PORTABLE_ITEM_CELL4K, AEItems.CELL_COMPONENT_4K, false),
-            new CellDisassemblyTier(AEItems.ITEM_CELL_16K, AEItems.PORTABLE_ITEM_CELL16K, AEItems.CELL_COMPONENT_16K, false),
-            new CellDisassemblyTier(AEItems.ITEM_CELL_64K, AEItems.PORTABLE_ITEM_CELL64K, AEItems.CELL_COMPONENT_64K, false),
-            new CellDisassemblyTier(AEItems.ITEM_CELL_256K, AEItems.PORTABLE_ITEM_CELL256K, AEItems.CELL_COMPONENT_256K, false),
-            new CellDisassemblyTier(AEItems.FLUID_CELL_1K, AEItems.PORTABLE_FLUID_CELL1K, AEItems.CELL_COMPONENT_1K, true),
-            new CellDisassemblyTier(AEItems.FLUID_CELL_4K, AEItems.PORTABLE_FLUID_CELL4K, AEItems.CELL_COMPONENT_4K, true),
-            new CellDisassemblyTier(AEItems.FLUID_CELL_16K, AEItems.PORTABLE_FLUID_CELL16K, AEItems.CELL_COMPONENT_16K, true),
-            new CellDisassemblyTier(AEItems.FLUID_CELL_64K, AEItems.PORTABLE_FLUID_CELL64K, AEItems.CELL_COMPONENT_64K, true),
-            new CellDisassemblyTier(AEItems.FLUID_CELL_256K, AEItems.PORTABLE_FLUID_CELL256K, AEItems.CELL_COMPONENT_256K, true)
-        );
+        // Item Storage Cells
+        cellDisassembly(consumer, false, false, List.of(
+                new CellDisassemblyTier(AEItems.ITEM_CELL_1K, AEItems.CELL_COMPONENT_1K),
+                new CellDisassemblyTier(AEItems.ITEM_CELL_4K, AEItems.CELL_COMPONENT_4K),
+                new CellDisassemblyTier(AEItems.ITEM_CELL_16K, AEItems.CELL_COMPONENT_16K),
+                new CellDisassemblyTier(AEItems.ITEM_CELL_64K, AEItems.CELL_COMPONENT_64K),
+                new CellDisassemblyTier(AEItems.ITEM_CELL_256K, AEItems.CELL_COMPONENT_256K)));
 
-        tiers.forEach(tier -> consumer.accept(
-                AppEng.makeId("upgrade/" + tier.baseBlock.id().getPath()),
-                new CraftingUnitTransformRecipe(
-                        tier.baseBlock.id(),
-                        List.of(tier.upgradeItem.asItem()),
-                        List.of(tier.upgradeItem.stack()),
-                        null),
-                null));
+        // Fluid Storage Cells
+        cellDisassembly(consumer, false, true, List.of(
+                new CellDisassemblyTier(AEItems.FLUID_CELL_1K, AEItems.CELL_COMPONENT_1K),
+                new CellDisassemblyTier(AEItems.FLUID_CELL_4K, AEItems.CELL_COMPONENT_4K),
+                new CellDisassemblyTier(AEItems.FLUID_CELL_16K, AEItems.CELL_COMPONENT_16K),
+                new CellDisassemblyTier(AEItems.FLUID_CELL_64K, AEItems.CELL_COMPONENT_64K),
+                new CellDisassemblyTier(AEItems.FLUID_CELL_256K, AEItems.CELL_COMPONENT_256K)));
 
-        storageTiers.forEach(tier -> consumer.accept(
-                AppEng.makeId("upgrade/" + tier.cell.id().getPath()),
-                new StorageCellDisassemblyRecipe(
-                        tier.cell.asItem(),
-                        tier.portable.asItem(),
-                        getCellDisassemblyItems(tier.component, tier.fluid),
-                        getPortableDisassemblyItems(tier.component, tier.fluid)),
-                null));
+        // Portable Item Storage Cells
+        cellDisassembly(consumer, true, false, List.of(
+                new CellDisassemblyTier(AEItems.PORTABLE_ITEM_CELL1K, AEItems.CELL_COMPONENT_1K),
+                new CellDisassemblyTier(AEItems.PORTABLE_ITEM_CELL4K, AEItems.CELL_COMPONENT_4K),
+                new CellDisassemblyTier(AEItems.PORTABLE_ITEM_CELL16K, AEItems.CELL_COMPONENT_16K),
+                new CellDisassemblyTier(AEItems.PORTABLE_ITEM_CELL64K, AEItems.CELL_COMPONENT_64K),
+                new CellDisassemblyTier(AEItems.PORTABLE_ITEM_CELL256K, AEItems.CELL_COMPONENT_256K)));
+
+        // Portable Fluid Storage Cells
+        cellDisassembly(consumer, true, true, List.of(
+                new CellDisassemblyTier(AEItems.PORTABLE_FLUID_CELL1K, AEItems.CELL_COMPONENT_1K),
+                new CellDisassemblyTier(AEItems.PORTABLE_FLUID_CELL4K, AEItems.CELL_COMPONENT_4K),
+                new CellDisassemblyTier(AEItems.PORTABLE_FLUID_CELL16K, AEItems.CELL_COMPONENT_16K),
+                new CellDisassemblyTier(AEItems.PORTABLE_FLUID_CELL64K, AEItems.CELL_COMPONENT_64K),
+                new CellDisassemblyTier(AEItems.PORTABLE_FLUID_CELL256K, AEItems.CELL_COMPONENT_256K)));
     }
 
-    private List<ItemStack> getPortableDisassemblyItems(ItemDefinition<?> component, boolean fluid) {
-        return List.of(AEBlocks.ME_CHEST.stack(), AEBlocks.ENERGY_CELL.stack(),
-                fluid ? AEItems.FLUID_CELL_HOUSING.stack() : AEItems.ITEM_CELL_HOUSING.stack(), component.stack());
+    private void cellDisassembly(RecipeOutput consumer, boolean portable, boolean fluid,
+            List<CellDisassemblyTier> tiers) {
+        for (CellDisassemblyTier tier : tiers) {
+            List<ItemStack> results;
+            if (portable) {
+                results = List.of(AEBlocks.ME_CHEST.stack(), AEBlocks.ENERGY_CELL.stack(),
+                        fluid ? AEItems.FLUID_CELL_HOUSING.stack() : AEItems.ITEM_CELL_HOUSING.stack(),
+                        tier.component.stack());
+            } else {
+                results = List.of(fluid ? AEItems.FLUID_CELL_HOUSING.stack() : AEItems.ITEM_CELL_HOUSING.stack(),
+                        tier.component.stack());
+            }
+
+            consumer.accept(
+                    AppEng.makeId("upgrade/" + tier.cell.id().getPath()),
+                    new StorageCellDisassemblyRecipe(
+                            tier.cell.asItem(),
+                            results),
+                    null);
+        }
     }
 
-    private List<ItemStack> getCellDisassemblyItems(ItemDefinition<?> component, boolean fluid) {
-        return List.of(fluid ? AEItems.FLUID_CELL_HOUSING.stack() : AEItems.ITEM_CELL_HOUSING.stack(),
-                component.stack());
+    private void craftingUnitTransform(RecipeOutput consumer, List<UnitTransformTier> tiers) {
+        for (UnitTransformTier tier : tiers) {
+            consumer.accept(
+                    AppEng.makeId("upgrade/" + tier.baseBlock.id().getPath()),
+                    new CraftingUnitTransformRecipe(
+                            tier.baseBlock.id(),
+                            List.of(tier.upgradeItem.asItem()),
+                            List.of(tier.upgradeItem.stack()),
+                            null),
+                    null);
+        }
     }
 
     @Override
