@@ -20,9 +20,6 @@ package appeng.block.crafting;
 
 import java.util.function.Supplier;
 
-import appeng.core.AELog;
-import appeng.core.AppEng;
-import appeng.recipes.game.CraftingUnitTransformRecipe;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -33,13 +30,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 import appeng.block.AEBaseBlockItem;
 import appeng.core.AEConfig;
+import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
+import appeng.recipes.game.CraftingUnitTransformRecipe;
 import appeng.util.InteractionUtil;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 /**
  * Item that allows uncrafting CPU parts by disassembling them back into the crafting unit and the extra item.
@@ -73,8 +73,10 @@ public class CraftingBlockItem extends AEBaseBlockItem {
                 return super.use(level, player, hand);
             }
 
-            var recipe = CraftingUnitTransformRecipe.getDisassemblyRecipe(level, AppEng.makeId("upgrade/" + itemId.getPath()), itemId);
-            if (recipe == null) return super.use(level, player, hand);
+            var recipe = CraftingUnitTransformRecipe.getDisassemblyRecipe(level,
+                    AppEng.makeId("upgrade/" + itemId.getPath()), itemId);
+            if (recipe == null)
+                return super.use(level, player, hand);
 
             int itemCount = stack.getCount();
             player.setItemInHand(hand, ItemStack.EMPTY);
@@ -88,7 +90,8 @@ public class CraftingBlockItem extends AEBaseBlockItem {
                     recipe.getDisassemblyLoot(level, params).forEach(inv::placeItemBackInInventory);
                 }
             } else {
-                recipe.getDisassemblyItems().forEach(item -> inv.placeItemBackInInventory(item.copyWithCount(item.getCount() * itemCount)));
+                recipe.getDisassemblyItems()
+                        .forEach(item -> inv.placeItemBackInInventory(item.copyWithCount(item.getCount() * itemCount)));
             }
 
             // This is hard-coded, as this is always a base block.

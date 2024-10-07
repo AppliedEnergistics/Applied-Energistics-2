@@ -1,12 +1,17 @@
 package appeng.recipes;
 
-import appeng.recipes.game.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import appeng.core.AppEng;
 import appeng.recipes.entropy.EntropyRecipeSerializer;
+import appeng.recipes.game.AddItemUpgradeRecipeSerializer;
+import appeng.recipes.game.CraftingUnitTransformRecipeSerializer;
+import appeng.recipes.game.FacadeRecipe;
+import appeng.recipes.game.RemoveItemUpgradeRecipeSerializer;
+import appeng.recipes.game.StorageCellDisassemblyRecipeSerializer;
+import appeng.recipes.game.StorageCellUpgradeRecipeSerializer;
 import appeng.recipes.handlers.ChargerRecipeSerializer;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.recipes.mattercannon.MatterCannonAmmoSerializer;

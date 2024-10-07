@@ -18,10 +18,9 @@
 
 package appeng.block.crafting;
 
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.recipes.game.CraftingUnitTransformRecipe;
-import appeng.util.InteractionUtil;
+import java.util.List;
+import java.util.Objects;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -48,12 +47,13 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.crafting.CraftingBlockEntity;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.crafting.CraftingCPUMenu;
-
-import java.util.List;
-import java.util.Objects;
+import appeng.recipes.game.CraftingUnitTransformRecipe;
+import appeng.util.InteractionUtil;
 
 public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> extends AEBaseEntityBlock<T> {
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
@@ -111,8 +111,10 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
             BlockHitResult hitResult) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
-            InteractionResult result = this.disassemble(level, player, pos, state, AEBlocks.CRAFTING_UNIT.block().defaultBlockState());
-            if (result != InteractionResult.FAIL) return result;
+            InteractionResult result = this.disassemble(level, player, pos, state,
+                    AEBlocks.CRAFTING_UNIT.block().defaultBlockState());
+            if (result != InteractionResult.FAIL)
+                return result;
         }
 
         if (level.getBlockEntity(pos) instanceof CraftingBlockEntity be && be.isFormed() && be.isActive()) {
@@ -127,42 +129,55 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (this.upgrade(heldItem, state, level, pos, player)) return ItemInteractionResult.sidedSuccess(level.isClientSide());
+    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
+            Player player, InteractionHand hand, BlockHitResult hit) {
+        if (this.upgrade(heldItem, state, level, pos, player))
+            return ItemInteractionResult.sidedSuccess(level.isClientSide());
         return super.useItemOn(heldItem, state, level, pos, player, hand, hit);
     }
 
     public boolean upgrade(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player) {
-        if (heldItem.isEmpty()) return false;
+        if (heldItem.isEmpty())
+            return false;
 
         var upgradeRecipe = CraftingUnitTransformRecipe.getUpgradeRecipe(level, heldItem);
-        if (upgradeRecipe == null) return false;
-        if (level.isClientSide()) return true;
+        if (upgradeRecipe == null)
+            return false;
+        if (level.isClientSide())
+            return true;
 
         Block newBlock = BuiltInRegistries.BLOCK.get(upgradeRecipe.getBlock());
-        if (newBlock == state.getBlock()) return false;
+        if (newBlock == state.getBlock())
+            return false;
 
         BlockState newState = newBlock.defaultBlockState();
         newState.setValue(POWERED, state.getValue(POWERED));
         newState.setValue(FORMED, state.getValue(FORMED));
 
         // Crafting Unit doesn't have a disassembly recipe, so we can ignore the drops.
-        InteractionResult result = state.getBlock() == AEBlocks.CRAFTING_UNIT.block()?
-            this.transform(level, pos, newState)? InteractionResult.SUCCESS: InteractionResult.FAIL:
-            this.disassemble(level, player, pos, state, newState);
+        InteractionResult result = state.getBlock() == AEBlocks.CRAFTING_UNIT.block()
+                ? this.transform(level, pos, newState) ? InteractionResult.SUCCESS : InteractionResult.FAIL
+                : this.disassemble(level, player, pos, state, newState);
 
-        if (result == InteractionResult.FAIL) return false;
+        if (result == InteractionResult.FAIL)
+            return false;
         // Pass => Crafting Unit is busy!
-        if (result == InteractionResult.PASS) return true;
+        if (result == InteractionResult.PASS)
+            return true;
         heldItem.consume(1, player);
         return true;
     }
 
-    public InteractionResult disassemble(Level level, Player player, BlockPos pos, BlockState state, BlockState newState) {
-        if (this.type == CraftingUnitType.UNIT || level.isClientSide()) return InteractionResult.FAIL;
+    public InteractionResult disassemble(Level level, Player player, BlockPos pos, BlockState state,
+            BlockState newState) {
+        if (this.type == CraftingUnitType.UNIT || level.isClientSide())
+            return InteractionResult.FAIL;
 
-        var recipe = CraftingUnitTransformRecipe.getDisassemblyRecipe(level, AppEng.makeId("upgrade/" + Objects.requireNonNull(this.getRegistryName()).getPath()), this.getRegistryName());
-        if (recipe == null) return InteractionResult.FAIL;
+        var recipe = CraftingUnitTransformRecipe.getDisassemblyRecipe(level,
+                AppEng.makeId("upgrade/" + Objects.requireNonNull(this.getRegistryName()).getPath()),
+                this.getRegistryName());
+        if (recipe == null)
+            return InteractionResult.FAIL;
 
         final CraftingBlockEntity cp = this.getBlockEntity(level, pos);
         if (cp != null && cp.getCluster() != null && cp.getCluster().isBusy()) {
@@ -170,14 +185,15 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
             return InteractionResult.PASS;
         }
 
-        if (!this.transform(level, pos, newState)) return InteractionResult.FAIL;
+        if (!this.transform(level, pos, newState))
+            return InteractionResult.FAIL;
 
         List<ItemStack> drop;
         if (recipe.useLootTable()) {
             LootParams params = new LootParams.Builder((ServerLevel) level)
-                .withParameter(LootContextParams.BLOCK_STATE, state)
-                .withParameter(LootContextParams.TOOL, player.getUseItem())
-                .create(LootContextParamSets.EMPTY);
+                    .withParameter(LootContextParams.BLOCK_STATE, state)
+                    .withParameter(LootContextParams.TOOL, player.getUseItem())
+                    .create(LootContextParamSets.EMPTY);
             drop = recipe.getDisassemblyLoot(level, params);
         } else {
             drop = recipe.getDisassemblyItems();
@@ -188,18 +204,18 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     }
 
     private boolean transform(Level level, BlockPos pos, BlockState state) {
-        if (!level.removeBlock(pos, false) || !level.setBlock(pos, state, 3)) return false;
+        if (!level.removeBlock(pos, false) || !level.setBlock(pos, state, 3))
+            return false;
 
         level.playSound(
-            null,
-            pos.getX(),
-            pos.getY(),
-            pos.getZ(),
-            SoundEvents.AMETHYST_BLOCK_HIT,
-            SoundSource.BLOCKS,
-            1f,
-            1f
-        );
+                null,
+                pos.getX(),
+                pos.getY(),
+                pos.getZ(),
+                SoundEvents.AMETHYST_BLOCK_HIT,
+                SoundSource.BLOCKS,
+                1f,
+                1f);
         return true;
     }
 }

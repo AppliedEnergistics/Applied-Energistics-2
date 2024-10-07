@@ -22,11 +22,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import appeng.api.config.Actionable;
-import appeng.block.networking.EnergyCellBlockItem;
-import appeng.core.AELog;
-import appeng.core.AppEng;
-import appeng.recipes.game.StorageCellDisassemblyRecipe;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -50,10 +45,13 @@ import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.UpgradeInventories;
+import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.localization.PlayerMessages;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
+import appeng.recipes.game.StorageCellDisassemblyRecipe;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
@@ -103,7 +101,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
         this.bytesPerType = bytesPerType;
         this.totalTypes = totalTypes;
         this.keyType = keyType;
-        //TODO: Remove when deprecated fields are removed.
+        // TODO: Remove when deprecated fields are removed.
         this.housingItem = null;
         this.coreItem = null;
     }
@@ -170,13 +168,15 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (InteractionUtil.isInAlternateUseMode(player)) this.disassembleDrive(player.getItemInHand(hand), level, player);
+        if (InteractionUtil.isInAlternateUseMode(player))
+            this.disassembleDrive(player.getItemInHand(hand), level, player);
         return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                 player.getItemInHand(hand));
     }
 
     private boolean disassembleDrive(ItemStack stack, Level level, Player player) {
-        if (level.isClientSide()) return false;
+        if (level.isClientSide())
+            return false;
         ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
 
         if (itemId == BuiltInRegistries.ITEM.getDefaultKey()) {
@@ -184,13 +184,16 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
             return false;
         }
 
-        var recipe = StorageCellDisassemblyRecipe.getDisassemblyRecipe(level, AppEng.makeId("upgrade/" + itemId.getPath()), stack.getItem());
-        if (recipe == null) return false;
+        var recipe = StorageCellDisassemblyRecipe.getDisassemblyRecipe(level,
+                AppEng.makeId("upgrade/" + itemId.getPath()), stack.getItem());
+        if (recipe == null)
+            return false;
 
         final Inventory playerInventory = player.getInventory();
         var inv = StorageCells.getCellInventory(stack, null);
 
-        if (inv == null || playerInventory.getSelected() != stack) return false;
+        if (inv == null || playerInventory.getSelected() != stack)
+            return false;
 
         if (!inv.getAvailableStacks().isEmpty()) {
             player.displayClientMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text(), true);

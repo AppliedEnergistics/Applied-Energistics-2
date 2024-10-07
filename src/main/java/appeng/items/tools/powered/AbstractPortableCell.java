@@ -1,11 +1,9 @@
 package appeng.items.tools.powered;
 
-import appeng.core.AppEng;
-import appeng.recipes.game.StorageCellDisassemblyRecipe;
-import net.minecraft.core.registries.BuiltInRegistries;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -15,7 +13,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -30,11 +27,13 @@ import appeng.api.upgrades.Upgrades;
 import appeng.block.networking.EnergyCellBlockItem;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.contents.PortableCellMenuHost;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
+import appeng.recipes.game.StorageCellDisassemblyRecipe;
 import appeng.util.InteractionUtil;
 
 public abstract class AbstractPortableCell extends PoweredContainerItem
@@ -119,18 +118,21 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
 
         // Recipes are based on the storage cell IDs, so we need to create one!
         var recipe = StorageCellDisassemblyRecipe.getDisassemblyRecipe(
-            level,
-            AppEng.makeId("upgrade/item_storage_cell_" + StringUtils.substringAfterLast(itemId.getPath(), "_")),
-            stack.getItem()
-        );
-        if (recipe == null) return false;
-        if (level.isClientSide()) return true;
+                level,
+                AppEng.makeId("upgrade/item_storage_cell_" + StringUtils.substringAfterLast(itemId.getPath(), "_")),
+                stack.getItem());
+        if (recipe == null)
+            return false;
+        if (level.isClientSide())
+            return true;
 
         var playerInventory = player.getInventory();
-        if (playerInventory.getSelected() != stack) return false;
+        if (playerInventory.getSelected() != stack)
+            return false;
 
         var inv = StorageCells.getCellInventory(stack, null);
-        if (inv == null) return false;
+        if (inv == null)
+            return false;
 
         if (!inv.getAvailableStacks().isEmpty()) {
             player.displayClientMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text(), true);
