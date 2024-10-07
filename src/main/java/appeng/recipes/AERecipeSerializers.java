@@ -7,8 +7,10 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import appeng.core.AppEng;
 import appeng.recipes.entropy.EntropyRecipeSerializer;
 import appeng.recipes.game.AddItemUpgradeRecipeSerializer;
+import appeng.recipes.game.CraftingUnitTransformRecipeSerializer;
 import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.game.RemoveItemUpgradeRecipeSerializer;
+import appeng.recipes.game.StorageCellDisassemblyRecipeSerializer;
 import appeng.recipes.game.StorageCellUpgradeRecipeSerializer;
 import appeng.recipes.handlers.ChargerRecipeSerializer;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
@@ -34,6 +36,8 @@ public final class AERecipeSerializers {
         register("add_item_upgrade", AddItemUpgradeRecipeSerializer.INSTANCE);
         register("remove_item_upgrade", RemoveItemUpgradeRecipeSerializer.INSTANCE);
         register("quartz_cutting", QuartzCuttingRecipeSerializer.INSTANCE);
+        register("crafting_unit_transform", CraftingUnitTransformRecipeSerializer.INSTANCE);
+        register("storage_cell_disassembly", StorageCellDisassemblyRecipeSerializer.INSTANCE);
     }
 
     private static void register(String id, RecipeSerializer<?> serializer) {
