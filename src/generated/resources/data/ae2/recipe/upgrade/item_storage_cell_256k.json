@@ -15,11 +15,11 @@
   "portable_disassembly_items": [
     {
       "count": 1,
-      "id": "minecraft:bedrock"
+      "id": "ae2:chest"
     },
     {
       "count": 1,
-      "id": "minecraft:diamond"
+      "id": "ae2:energy_cell"
     },
     {
       "count": 1,
