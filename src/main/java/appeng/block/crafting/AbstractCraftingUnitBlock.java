@@ -56,6 +56,7 @@ import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.crafting.CraftingCPUMenu;
 
 import java.util.List;
+import java.util.Objects;
 
 public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> extends AEBaseEntityBlock<T> {
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
@@ -143,6 +144,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
 
         Block newBlock = BuiltInRegistries.BLOCK.get(upgradeRecipe.getBlock());
         if (newBlock == state.getBlock()) return false;
+
         BlockState newState = newBlock.defaultBlockState();
         newState.setValue(POWERED, state.getValue(POWERED));
         newState.setValue(FORMED, state.getValue(FORMED));
@@ -153,6 +155,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
             this.disassemble(level, player, pos, state, newState);
 
         if (result == InteractionResult.FAIL) return false;
+        // Pass => Crafting Unit is busy!
         if (result == InteractionResult.PASS) return true;
         heldItem.consume(1, player);
         return true;
@@ -161,7 +164,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     public InteractionResult disassemble(Level level, Player player, BlockPos pos, BlockState state, BlockState newState) {
         if (this.type == CraftingUnitType.UNIT || level.isClientSide()) return InteractionResult.FAIL;
 
-        var recipe = CraftingUnitUpgradeRecipe.getDisassemblyRecipe(level, AppEng.makeId("upgrade/" + this.getRegistryName().getPath()), this.getRegistryName());
+        var recipe = CraftingUnitUpgradeRecipe.getDisassemblyRecipe(level, AppEng.makeId("upgrade/" + Objects.requireNonNull(this.getRegistryName()).getPath()), this.getRegistryName());
         if (recipe == null) return InteractionResult.FAIL;
 
         final CraftingBlockEntity cp = this.getBlockEntity(level, pos);

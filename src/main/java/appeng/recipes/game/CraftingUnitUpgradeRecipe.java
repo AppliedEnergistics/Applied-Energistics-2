@@ -1,5 +1,6 @@
 package appeng.recipes.game;
 
+import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.recipes.AERecipeTypes;
@@ -19,17 +20,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Used to handle Upgrading / Disassembly of the Crafting Units in the world.
+ */
 public class CraftingUnitUpgradeRecipe extends CustomRecipe {
-    @Deprecated(forRemoval = true, since = "1.21.1")
-    public static final ResourceLocation TYPE_ID = AppEng.makeId("crafting_unit_upgrade");
-
-    @Deprecated(forRemoval = true, since = "1.21.1")
-    public static final RecipeType<CraftingUnitUpgradeRecipe> TYPE = AERecipeTypes.UNIT_UPGRADE;
-
     public static final MapCodec<CraftingUnitUpgradeRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> {
         return builder.group(
             ResourceLocation.CODEC.fieldOf("block").forGetter(CraftingUnitUpgradeRecipe::getBlock),
@@ -85,11 +84,18 @@ public class CraftingUnitUpgradeRecipe extends CustomRecipe {
 
     public List<ItemStack> getDisassemblyLoot(Level level, LootParams params) {
         if (this.disassemblyLootTable == null || level.isClientSide()) return null;
-        return level
+
+        LootTable table = level
             .getServer()
             .reloadableRegistries()
-            .getLootTable(ResourceKey.create(Registries.LOOT_TABLE, disassemblyLootTable))
-            .getRandomItems(params, level.getRandom());
+            .getLootTable(ResourceKey.create(Registries.LOOT_TABLE, disassemblyLootTable));
+
+        if (table == LootTable.EMPTY) {
+            AELog.debug("LootTable for Crafting Unit Upgrade %s doesn't exist: %s", null, this.disassemblyLootTable);
+            return List.of();
+        }
+
+        return table.getRandomItems(params, level.getRandom());
     }
 
     /**
@@ -168,7 +174,11 @@ public class CraftingUnitUpgradeRecipe extends CustomRecipe {
             return null;
         }
 
-        return recipes.getFirst().value();
+        var recipe = recipes.getFirst();
+
+        if (BuiltInRegistries.BLOCK.get(recipe.value().getBlock()) instanceof AbstractCraftingUnitBlock<?>) return recipe.value();
+        AELog.debug("Found invalid Block provided in Crafting Unit Upgrade Recipe: %s", recipe.id());
+        return null;
     }
 
     @Override
@@ -198,6 +208,6 @@ public class CraftingUnitUpgradeRecipe extends CustomRecipe {
 
     @Override
     public RecipeType<?> getType() {
-        return TYPE;
+        return AERecipeTypes.UNIT_UPGRADE;
     }
 }
