@@ -64,7 +64,7 @@ public class CraftingBlockItem extends AEBaseBlockItem {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (AEConfig.instance().isDisassemblyCraftingEnabled() && InteractionUtil.isInAlternateUseMode(player)) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
             ItemStack stack = player.getItemInHand(hand);
             ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
 
