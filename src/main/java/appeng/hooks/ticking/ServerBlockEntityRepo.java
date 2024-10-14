@@ -40,7 +40,10 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 class ServerBlockEntityRepo {
     record FirstTickInfo<T extends BlockEntity>(T blockEntity, Consumer<? super T> initFunction) {
         void callInit() {
-            initFunction.accept(blockEntity);
+            // It's possible the BE has already been removed after it was loaded. We skip initialization in that case.
+            if (!blockEntity.isRemoved()) {
+                initFunction.accept(blockEntity);
+            }
         }
     }
 
