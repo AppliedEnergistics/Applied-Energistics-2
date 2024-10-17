@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
@@ -20,20 +21,24 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
+import dev.emi.emi.api.recipe.EmiPlayerInventory;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.recipe.handler.EmiCraftContext;
 import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
 import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.Widget;
 
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
 import appeng.integration.modules.itemlists.EncodingHelper;
 import appeng.integration.modules.itemlists.TransferHelper;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
+import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.items.CraftingTermMenu;
 
 abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements StandardRecipeHandler<T> {
@@ -66,6 +71,27 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements StandardRe
             return slot;
         }
         return null;
+    }
+
+    @Override
+    public EmiPlayerInventory getInventory(AbstractContainerScreen<T> screen) {
+        var list = new ArrayList<EmiStack>();
+
+        for (Slot slot : getInputSources(screen.getMenu())) {
+            list.add(EmiStack.of(slot.getItem()));
+        }
+
+        if (screen.getMenu() instanceof MEStorageMenu menu) {
+            var repo = menu.getClientRepo();
+
+            if (repo != null) {
+                for (var entry : repo.getAllEntries()) {
+                    list.add(EmiStackHelper.toEmiStack(new GenericStack(entry.getWhat(), entry.getStoredAmount())));
+                }
+            }
+        }
+
+        return new EmiPlayerInventory(list);
     }
 
     @Override

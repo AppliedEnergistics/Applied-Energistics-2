@@ -1,14 +1,11 @@
 package appeng.integration.modules.emi;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -17,14 +14,11 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
-import dev.emi.emi.api.recipe.EmiPlayerInventory;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiStack;
 
-import appeng.api.stacks.GenericStack;
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.itemlists.CraftingHelper;
-import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.items.CraftingTermMenu;
 
 /**
@@ -45,25 +39,6 @@ public class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends Abs
 
     public EmiUseCraftingRecipeHandler(Class<T> containerClass) {
         super(containerClass);
-    }
-
-    @Override
-    public EmiPlayerInventory getInventory(AbstractContainerScreen<T> screen) {
-        List<EmiStack> list = new ArrayList<>();
-
-        for (Slot slot : getInputSources(screen.getMenu())) {
-            list.add(EmiStack.of(slot.getItem()));
-        }
-
-        var repo = screen.getMenu().getClientRepo();
-
-        if (repo != null) {
-            for (GridInventoryEntry entry : repo.getAllEntries()) {
-                list.add(EmiStackHelper.toEmiStack(new GenericStack(entry.getWhat(), entry.getStoredAmount())));
-            }
-        }
-
-        return new EmiPlayerInventory(list);
     }
 
     @Override
