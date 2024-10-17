@@ -51,6 +51,7 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements StandardRe
         var slots = new ArrayList<Slot>();
         slots.addAll(menu.getSlots(SlotSemantics.PLAYER_INVENTORY));
         slots.addAll(menu.getSlots(SlotSemantics.PLAYER_HOTBAR));
+        slots.addAll(menu.getSlots(SlotSemantics.CRAFTING_GRID));
         return slots;
     }
 
