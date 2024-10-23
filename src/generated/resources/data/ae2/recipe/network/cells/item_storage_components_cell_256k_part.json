@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "item": "ae2:sky_dust"
+      "tag": "c:dusts/sky_stone"
     },
     "b": {
       "item": "ae2:calculation_processor"

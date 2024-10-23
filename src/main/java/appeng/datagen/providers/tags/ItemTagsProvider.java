@@ -55,16 +55,10 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
         // Allow the annihilation plane to be enchanted with silk touch & fortune
         tag(ItemTags.MINING_LOOT_ENCHANTABLE).add(AEParts.ANNIHILATION_PLANE.asItem());
 
-        // Forge is missing this tag right now
-        tag(ConventionTags.COPPER_INGOT)
-                .add(Items.COPPER_INGOT);
-
         // Provide empty blacklist tags
         tag(AETags.ANNIHILATION_PLANE_ITEM_BLACKLIST);
 
-        // Only provide amethyst in the budding tag since that's the one we use; the other tags are for other mods
         tag(ConventionTags.BUDDING_BLOCKS)
-                .add(Items.BUDDING_AMETHYST)
                 .add(AEBlocks.FLAWLESS_BUDDING_QUARTZ.asItem())
                 .add(AEBlocks.FLAWED_BUDDING_QUARTZ.asItem())
                 .add(AEBlocks.CHIPPED_BUDDING_QUARTZ.asItem())
@@ -80,6 +74,8 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .add(AEItems.CERTUS_QUARTZ_DUST.asItem());
         tag(ConventionTags.ENDER_PEARL_DUST)
                 .add(AEItems.ENDER_DUST.asItem());
+        tag(ConventionTags.SKY_STONE_DUST)
+                .add(AEItems.SKY_DUST.asItem());
 
         tag(ConventionTags.ALL_QUARTZ_DUST)
                 .addTag(ConventionTags.CERTUS_QUARTZ_DUST);
@@ -243,11 +239,13 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
     private void copyBlockTags() {
         mirrorBlockTag(Tags.Blocks.STORAGE_BLOCKS.location());
         mirrorBlockTag(ResourceLocation.parse("c:storage_blocks/certus_quartz"));
+        copy(BlockTags.WALLS, ItemTags.WALLS);
+        copy(Tags.Blocks.CHESTS, Tags.Items.CHESTS);
+        copy(ConventionTags.GLASS_BLOCK, ConventionTags.GLASS);
     }
 
     private void mirrorBlockTag(ResourceLocation tagName) {
         copy(TagKey.create(Registries.BLOCK, tagName), TagKey.create(Registries.ITEM, tagName));
-        copy(BlockTags.WALLS, ItemTags.WALLS);
     }
 
     private void addP2pAttunementTags() {
