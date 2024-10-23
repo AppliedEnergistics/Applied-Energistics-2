@@ -27,7 +27,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -67,9 +66,7 @@ public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implem
                 .addOptionalTag(ConventionTags.SAPLINGS.location())
                 .addTag(ConventionTags.BUDDING_BLOCKS_BLOCKS);
 
-        // Only provide amethyst in the budding tag since that's the one we use; the other tags are for other mods
         tag(ConventionTags.BUDDING_BLOCKS_BLOCKS)
-                .add(Blocks.BUDDING_AMETHYST)
                 .add(AEBlocks.FLAWLESS_BUDDING_QUARTZ.block())
                 .add(AEBlocks.FLAWED_BUDDING_QUARTZ.block())
                 .add(AEBlocks.CHIPPED_BUDDING_QUARTZ.block())
@@ -146,9 +143,5 @@ public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implem
             }
         }
 
-    }
-
-    private TagAppender<Block> tag(String name) {
-        return tag(TagKey.create(Registries.BLOCK, ResourceLocation.parse(name)));
     }
 }
