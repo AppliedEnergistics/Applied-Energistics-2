@@ -100,6 +100,9 @@ public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implem
                 AEBlocks.CHISELED_QUARTZ_WALL.block(),
                 AEBlocks.QUARTZ_PILLAR_WALL.block());
 
+        tag(Tags.Blocks.CHESTS).add(AEBlocks.SKY_STONE_CHEST.block(), AEBlocks.SMOOTH_SKY_STONE_CHEST.block());
+        tag(ConventionTags.GLASS_BLOCK).add(AEBlocks.QUARTZ_GLASS.block(), AEBlocks.QUARTZ_VIBRANT_GLASS.block());
+
         // Fixtures should cause walls to have posts
         tag(BlockTags.WALL_POST_OVERRIDE).add(AEBlocks.QUARTZ_FIXTURE.block(), AEBlocks.LIGHT_DETECTOR.block());
 

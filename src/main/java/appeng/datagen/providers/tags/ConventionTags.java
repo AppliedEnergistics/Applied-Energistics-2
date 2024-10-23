@@ -98,6 +98,8 @@ public final class ConventionTags {
     public static final TagKey<Item> ENDER_PEARL = Tags.Items.ENDER_PEARLS;
     public static final TagKey<Item> ENDER_PEARL_DUST = tag("c:dusts/ender_pearl");
 
+    public static final TagKey<Item> SKY_STONE_DUST = tag("c:dusts/sky_stone");
+
     public static final TagKey<Item> WOOD_STICK = Tags.Items.RODS_WOODEN;
     public static final TagKey<Item> CHEST = Tags.Items.CHESTS_WOODEN;
 
@@ -129,12 +131,12 @@ public final class ConventionTags {
     public static final TagKey<Item> CAN_REMOVE_COLOR = tag("ae2:can_remove_color");
 
     // Budding stuff
-    public static final TagKey<Item> BUDDING_BLOCKS = tag("c:budding");
-    public static final TagKey<Item> BUDS = tag("c:buds");
-    public static final TagKey<Item> CLUSTERS = tag("c:clusters");
-    public static final TagKey<Block> BUDDING_BLOCKS_BLOCKS = blockTag("c:budding");
-    public static final TagKey<Block> BUDS_BLOCKS = blockTag("c:buds");
-    public static final TagKey<Block> CLUSTERS_BLOCKS = blockTag("c:clusters");
+    public static final TagKey<Item> BUDDING_BLOCKS = Tags.Items.BUDDING_BLOCKS;
+    public static final TagKey<Item> BUDS = Tags.Items.BUDS;
+    public static final TagKey<Item> CLUSTERS = Tags.Items.CLUSTERS;
+    public static final TagKey<Block> BUDDING_BLOCKS_BLOCKS = Tags.Blocks.BUDDING_BLOCKS;
+    public static final TagKey<Block> BUDS_BLOCKS = Tags.Blocks.BUDS;
+    public static final TagKey<Block> CLUSTERS_BLOCKS = Tags.Blocks.CLUSTERS;
 
     // For Growth Accelerator
     public static final TagKey<Block> CROPS = BlockTags.CROPS;
