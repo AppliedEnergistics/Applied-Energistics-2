@@ -36,34 +36,31 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.DebugStickState;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 
-import appeng.api.ids.AEComponents;
-import appeng.api.implementations.items.IFacadeItem;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartCollisionHelper;
+import appeng.core.definitions.AEItems;
 import appeng.util.InteractionUtil;
 
 public class FacadePart implements IFacadePart {
 
-    private final ItemStack facade;
+    private BlockState facade;
     private final Direction side;
 
-    public FacadePart(ItemStack facade, Direction side) {
+    public FacadePart(BlockState facade, Direction side) {
         Objects.requireNonNull(side, "side");
         Objects.requireNonNull(facade, "facade");
-        this.facade = facade.copy();
-        this.facade.setCount(1);
+        this.facade = facade;
         this.side = side;
     }
 
     @Override
     public ItemStack getItemStack() {
-        return this.facade;
+        return AEItems.FACADE.get().createFacadeForItemUnchecked(getTextureItem());
     }
 
     @Override
@@ -84,40 +81,21 @@ public class FacadePart implements IFacadePart {
 
     @Override
     public Item getItem() {
-        var is = this.getTextureItem();
-        if (is.isEmpty()) {
-            return Items.AIR;
-        }
-        return is.getItem();
+        return facade.getBlock().asItem();
     }
 
     @Override
     public ItemStack getTextureItem() {
-        final Item maybeFacade = this.facade.getItem();
-
-        // AE Facade
-        if (maybeFacade instanceof IFacadeItem facade) {
-
-            return facade.getTextureItem(this.facade);
-        }
-
-        return ItemStack.EMPTY;
+        return new ItemStack(getItem());
     }
 
     @Override
     public BlockState getBlockState() {
-        return facade.getOrDefault(AEComponents.FACADE_BLOCK_STATE, getDefaultBlockState());
-    }
-
-    private BlockState getDefaultBlockState() {
-        if (this.facade.getItem() instanceof IFacadeItem facadeItem) {
-            return facadeItem.getTextureBlockState(this.facade);
-        }
-        return Blocks.GLASS.defaultBlockState();
+        return facade;
     }
 
     private void setBlockState(BlockState blockState) {
-        facade.set(AEComponents.FACADE_BLOCK_STATE, blockState);
+        facade = blockState;
     }
 
     public boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos) {
