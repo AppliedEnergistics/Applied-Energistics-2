@@ -1015,11 +1015,10 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         final IFacadePart facade = this.storage.getFacade(side);
 
         if (facade != null) {
-            final ItemStack textureItem = facade.getTextureItem();
             final BlockState blockState = facade.getBlockState();
 
             Level level = getBlockEntity().getLevel();
-            if (blockState != null && textureItem != null && level != null) {
+            if (blockState != null && level != null) {
                 return new FacadeRenderState(blockState,
                         !facade.getBlockState().isSolidRender(level, getBlockEntity().getBlockPos()));
             }
