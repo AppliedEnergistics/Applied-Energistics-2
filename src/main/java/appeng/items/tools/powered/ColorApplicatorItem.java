@@ -445,7 +445,6 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
             TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, context, lines, advancedTooltips);

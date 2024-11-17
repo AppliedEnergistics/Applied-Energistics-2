@@ -39,13 +39,11 @@ public class AEBaseBlockItem extends BlockItem {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public final void appendHoverText(ItemStack itemStack, Item.TooltipContext context, List<Component> toolTip,
             TooltipFlag advancedTooltips) {
         this.addCheckedInformation(itemStack, context, toolTip, advancedTooltips);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public void addCheckedInformation(ItemStack itemStack, TooltipContext context, List<Component> toolTip,
             TooltipFlag advancedTooltips) {
         this.blockType.appendHoverText(itemStack, context, toolTip, advancedTooltips);
