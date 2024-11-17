@@ -63,7 +63,6 @@ public interface ICableBusContainer {
 
     boolean isLadder(LivingEntity entity);
 
-    @OnlyIn(Dist.CLIENT)
     void animateTick(Level level, BlockPos pos, RandomSource r);
 
     int getLightValue();
