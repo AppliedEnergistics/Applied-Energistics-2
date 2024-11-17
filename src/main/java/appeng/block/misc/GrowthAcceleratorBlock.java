@@ -64,12 +64,9 @@ public class GrowthAcceleratorBlock extends AEBaseEntityBlock<GrowthAcceleratorB
         return OrientationStrategies.facing();
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource r) {
-        if (!AEConfig.instance().isEnableEffects()) {
-            return;
-        }
+        if (!AEConfig.instance().isEnableEffects() || !level.isClientSide()) return;
 
         final GrowthAcceleratorBlockEntity cga = this.getBlockEntity(level, pos);
 
