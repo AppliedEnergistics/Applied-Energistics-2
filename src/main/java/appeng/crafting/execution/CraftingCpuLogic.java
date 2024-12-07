@@ -217,7 +217,8 @@ public class CraftingCpuLogic {
                     for (var expectedContainerItem : expectedContainerItems) {
                         job.waitingFor.insert(expectedContainerItem.getKey(), expectedContainerItem.getLongValue(),
                                 Actionable.MODULATE);
-                        job.timeTracker.addMaxItems(expectedContainerItem.getLongValue());
+                        job.timeTracker.addMaxItems(expectedContainerItem.getLongValue(),
+                                expectedContainerItem.getKey().getType());
                     }
 
                     cluster.markDirty();
@@ -272,7 +273,7 @@ public class CraftingCpuLogic {
         }
 
         if (type == Actionable.MODULATE) {
-            job.timeTracker.decrementItems(amount);
+            job.timeTracker.decrementItems(amount, what.getType()); // Process Fluid and Items
             job.waitingFor.extract(what, amount, Actionable.MODULATE);
             cluster.markDirty();
         }
@@ -407,7 +408,7 @@ public class CraftingCpuLogic {
         if (this.job != null) {
             return this.job.timeTracker;
         } else {
-            return new ElapsedTimeTracker(0);
+            return new ElapsedTimeTracker();
         }
     }
 
