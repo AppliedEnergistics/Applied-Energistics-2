@@ -39,6 +39,7 @@ import appeng.core.network.serverbound.RequestClosestMeteoritePacket;
 import appeng.core.network.serverbound.SelectKeyTypePacket;
 import appeng.core.network.serverbound.SwapSlotsPacket;
 import appeng.core.network.serverbound.SwitchGuisPacket;
+import appeng.core.network.serverbound.UpdateHoldingCtrlPacket;
 
 public class InitNetwork {
     public static void init(RegisterPayloadHandlersEvent event) {
@@ -78,6 +79,7 @@ public class InitNetwork {
         serverbound(registrar, SelectKeyTypePacket.TYPE, SelectKeyTypePacket.STREAM_CODEC);
         serverbound(registrar, SwapSlotsPacket.TYPE, SwapSlotsPacket.STREAM_CODEC);
         serverbound(registrar, SwitchGuisPacket.TYPE, SwitchGuisPacket.STREAM_CODEC);
+        serverbound(registrar, UpdateHoldingCtrlPacket.TYPE, UpdateHoldingCtrlPacket.STREAM_CODEC);
 
         // Bidirectional
         bidirectional(registrar, ConfigValuePacket.TYPE, ConfigValuePacket.STREAM_CODEC);

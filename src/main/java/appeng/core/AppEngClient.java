@@ -102,11 +102,13 @@ import appeng.client.render.tesr.DriveLedBlockEntityRenderer;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.client.render.tesr.SkyStoneTankBlockEntityRenderer;
+import appeng.core.definitions.AEAttachmentTypes;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
 import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.MouseWheelPacket;
+import appeng.core.network.serverbound.UpdateHoldingCtrlPacket;
 import appeng.entity.TinyTNTPrimedRenderer;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.BlockAttackHook;
@@ -146,6 +148,10 @@ public class AppEngClient extends AppEngBase {
     private static final KeyMapping MOUSE_WHEEL_ITEM_MODIFIER = new KeyMapping(
             "key.ae2.mouse_wheel_item_modifier", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM,
             InputConstants.KEY_LSHIFT, "key.ae2.category");
+
+    private static final KeyMapping PART_PLACEMENT_OPPOSITE = new KeyMapping(
+            "key.ae2.part_placement_opposite", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM,
+            InputConstants.KEY_LCONTROL, "key.ae2.category");
 
     private final Guide guide;
 
@@ -253,6 +259,7 @@ public class AppEngClient extends AppEngBase {
     private void registerHotkeys(RegisterKeyMappingsEvent e) {
         e.register(OpenGuideHotkey.getHotkey());
         e.register(MOUSE_WHEEL_ITEM_MODIFIER);
+        e.register(PART_PLACEMENT_OPPOSITE);
         Hotkeys.finalizeRegistration(e::register);
     }
 
@@ -293,6 +300,7 @@ public class AppEngClient extends AppEngBase {
         });
 
         NeoForge.EVENT_BUS.addListener(this::wheelEvent);
+        NeoForge.EVENT_BUS.addListener(this::ctrlEvent);
         NeoForge.EVENT_BUS.register(OverlayManager.getInstance());
     }
 
@@ -355,6 +363,21 @@ public class AppEngClient extends AppEngBase {
                 ServerboundPacket message = new MouseWheelPacket(me.getScrollDeltaY() > 0);
                 PacketDistributor.sendToServer(message);
                 me.setCanceled(true);
+            }
+        }
+    }
+
+    private void ctrlEvent(InputEvent.Key event) {
+        if (event.getKey() == PART_PLACEMENT_OPPOSITE.getKey().getValue()) {
+            var player = Minecraft.getInstance().player;
+
+            if (player != null) {
+                var isDown = event.getAction() == InputConstants.PRESS || event.getAction() == InputConstants.REPEAT;
+                var previousIsDown = player.getData(AEAttachmentTypes.HOLDING_CTRL);
+                if (previousIsDown != isDown) {
+                    player.setData(AEAttachmentTypes.HOLDING_CTRL, isDown);
+                    PacketDistributor.sendToServer(new UpdateHoldingCtrlPacket(isDown));
+                }
             }
         }
     }
