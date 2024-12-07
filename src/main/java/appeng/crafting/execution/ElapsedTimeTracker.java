@@ -19,40 +19,56 @@
 package appeng.crafting.execution;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
+
+import it.unimi.dsi.fastutil.objects.Reference2LongMap;
+import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 
 import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEKeyTypes;
 
 public class ElapsedTimeTracker {
     private static final String NBT_ELAPSED_TIME = "elapsedTime";
-    private static final String NBT_START_ITEM_COUNT = "startItemCount";
-    private static final String NBT_REMAINING_ITEM_COUNT = "remainingItemCount";
+    private static final String NBT_STARTED_WORK = "startedWork";
+    private static final String NBT_COMPLETED_WORK = "completedWork";
 
     private long lastTime = System.nanoTime();
     private long elapsedTime = 0;
-    // TODO 1.21 rename: "start item count" is not a good name:
-    // this item count can increase when container items are scheduled.
-    private long startItemCount;
-    private long remainingItemCount;
 
-    private static final int AEKEY_SCALE_FACTOR = AEKeyType.fluids().getAmountPerUnit();
+    private final Reference2LongMap<AEKeyType> startedWorkByType = new Reference2LongOpenHashMap<>(
+            AEKeyTypes.getAll().size());
+    private final Reference2LongMap<AEKeyType> completedWorkByType = new Reference2LongOpenHashMap<>(
+            AEKeyTypes.getAll().size());
 
-    public ElapsedTimeTracker(long startItemCount, AEKeyType KeyType) {
-        this.startItemCount = startItemCount * AEKEY_SCALE_FACTOR / KeyType.getAmountPerUnit();
-        this.remainingItemCount = startItemCount * AEKEY_SCALE_FACTOR / KeyType.getAmountPerUnit();
+    public ElapsedTimeTracker() {
     }
 
     public ElapsedTimeTracker(CompoundTag data) {
         this.elapsedTime = data.getLong(NBT_ELAPSED_TIME);
-        this.startItemCount = data.getLong(NBT_START_ITEM_COUNT);
-        this.remainingItemCount = data.getLong(NBT_REMAINING_ITEM_COUNT);
+        readLongByTypeMap(data.getCompound(NBT_STARTED_WORK), startedWorkByType);
+        readLongByTypeMap(data.getCompound(NBT_COMPLETED_WORK), completedWorkByType);
     }
 
     public CompoundTag writeToNBT() {
         CompoundTag data = new CompoundTag();
         data.putLong(NBT_ELAPSED_TIME, elapsedTime);
-        data.putLong(NBT_START_ITEM_COUNT, startItemCount);
-        data.putLong(NBT_REMAINING_ITEM_COUNT, remainingItemCount);
+        data.put(NBT_STARTED_WORK, writeLongByTypeMap(startedWorkByType));
+        data.put(NBT_COMPLETED_WORK, writeLongByTypeMap(completedWorkByType));
         return data;
+    }
+
+    private static void readLongByTypeMap(CompoundTag tag, Reference2LongMap<AEKeyType> output) {
+        for (var keyType : AEKeyTypes.getAll()) {
+            output.put(keyType, tag.getLong(keyType.getId().toString()));
+        }
+    }
+
+    private static CompoundTag writeLongByTypeMap(Reference2LongMap<AEKeyType> input) {
+        CompoundTag result = new CompoundTag();
+        for (var entry : input.reference2LongEntrySet()) {
+            result.putLong(entry.getKey().getId().toString(), entry.getLongValue());
+        }
+        return result;
     }
 
     private void updateTime() {
@@ -61,30 +77,58 @@ public class ElapsedTimeTracker {
         this.lastTime = currentTime;
     }
 
-    void decrementItems(long itemDiff, AEKeyType KeyType) {
+    void decrementItems(long itemDiff, AEKeyType keyType) {
         updateTime();
-        this.remainingItemCount -= itemDiff * AEKEY_SCALE_FACTOR / KeyType.getAmountPerUnit();
+        completedWorkByType.merge(keyType, itemDiff, this::saturatedSum);
     }
 
-    void addMaxItems(long itemDiff, AEKeyType KeyType) {
+    private long saturatedSum(long a, long b) {
+        var result = a + b;
+        return result < 0 ? Long.MAX_VALUE : result;
+    }
+
+    void addMaxItems(long itemDiff, AEKeyType keyType) {
         updateTime();
-        this.startItemCount += itemDiff * AEKEY_SCALE_FACTOR / KeyType.getAmountPerUnit();
-        this.remainingItemCount += itemDiff * AEKEY_SCALE_FACTOR / KeyType.getAmountPerUnit();
+        startedWorkByType.merge(keyType, itemDiff, this::saturatedSum);
     }
 
     public long getElapsedTime() {
-        if (remainingItemCount > 0) {
+        boolean allDone = true;
+        for (var keyType : AEKeyTypes.getAll()) {
+            if (completedWorkByType.getLong(keyType) < startedWorkByType.getLong(keyType)) {
+                allDone = false;
+                break;
+            }
+        }
+
+        if (!allDone) {
             return this.elapsedTime + (System.nanoTime() - this.lastTime);
         } else {
             return this.elapsedTime;
         }
     }
 
-    public long getRemainingItemCount() {
-        return (this.remainingItemCount + AEKEY_SCALE_FACTOR / 2) / AEKEY_SCALE_FACTOR;
+    // TODO: 1.21.4 Change the network packet and screen to use this rather than the counts below
+    public float getProgress() {
+        double startedUnits = 0;
+        double completedUnits = 0;
+        for (var keyType : AEKeyTypes.getAll()) {
+            var startedForType = startedWorkByType.getLong(keyType);
+            var completedForType = completedWorkByType.getLong(keyType);
+            startedUnits += startedForType / (double) keyType.getAmountPerUnit();
+            completedUnits += completedForType / (double) keyType.getAmountPerUnit();
+        }
+
+        return Mth.clamp((float) (completedUnits / startedUnits), 0, 1);
     }
 
+    @Deprecated(forRemoval = true)
+    public long getRemainingItemCount() {
+        return (int) (Integer.MAX_VALUE - (double) getProgress() * Integer.MAX_VALUE);
+    }
+
+    @Deprecated(forRemoval = true)
     public long getStartItemCount() {
-        return (this.remainingItemCount + AEKEY_SCALE_FACTOR / 2) / AEKEY_SCALE_FACTOR;
+        return Integer.MAX_VALUE;
     }
 }

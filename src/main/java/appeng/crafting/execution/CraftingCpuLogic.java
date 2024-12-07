@@ -42,7 +42,6 @@ import appeng.api.networking.crafting.ICraftingSubmitResult;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
-import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.core.AELog;
@@ -418,7 +417,7 @@ public class CraftingCpuLogic {
         if (this.job != null) {
             return this.job.timeTracker;
         } else {
-            return new ElapsedTimeTracker(0, AEKeyType.items());
+            return new ElapsedTimeTracker();
         }
     }
 
