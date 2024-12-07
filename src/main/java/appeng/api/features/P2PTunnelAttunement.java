@@ -147,7 +147,7 @@ public final class P2PTunnelAttunement {
         Objects.requireNonNull(itemLike, "item");
         var item = itemLike.asItem();
         Objects.requireNonNull(item, "item");
-        if (!(item instanceof PartItem<?>partItem)) {
+        if (!(item instanceof PartItem<?> partItem)) {
             throw new IllegalArgumentException("Given tunnel part item is not a part");
         }
 

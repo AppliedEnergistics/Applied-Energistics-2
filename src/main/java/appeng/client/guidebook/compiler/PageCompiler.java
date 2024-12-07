@@ -491,6 +491,6 @@ public final class PageCompiler {
         compilerState.remove(state);
     }
 
-    public record State<T> (String name, Class<T> dataClass, T defaultValue) {
+    public record State<T>(String name, Class<T> dataClass, T defaultValue) {
     }
 }

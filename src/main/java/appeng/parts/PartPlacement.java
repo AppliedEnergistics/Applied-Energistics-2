@@ -36,7 +36,7 @@ public class PartPlacement {
         var partStack = context.getItemInHand();
         var side = context.getClickedFace();
 
-        if (!(partStack.getItem() instanceof IPartItem<?>partItem)) {
+        if (!(partStack.getItem() instanceof IPartItem<?> partItem)) {
             return InteractionResult.PASS;
         }
 

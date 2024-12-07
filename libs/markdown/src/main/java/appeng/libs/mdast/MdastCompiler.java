@@ -666,7 +666,7 @@ final class MdastCompiler implements MdastContext {
 
         // If we’re at a hard break, include the line ending in there.
         if (atHardBreak) {
-            if (!(context instanceof MdAstParent<?>parent)) {
+            if (!(context instanceof MdAstParent<?> parent)) {
                 throw new IllegalStateException("expected `parent`");
             }
             var tail = (MdAstNode) parent.children().get(parent.children().size() - 1);
@@ -809,7 +809,7 @@ final class MdastCompiler implements MdastContext {
         // Assume a reference.
         inReference = true;
 
-        if (node instanceof MdAstLink link && fragment instanceof MdAstParent<?>container) {
+        if (node instanceof MdAstLink link && fragment instanceof MdAstParent<?> container) {
             for (var child : container.children()) {
                 link.addChild((MdAstNode) child);
             }

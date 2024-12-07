@@ -146,7 +146,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             return true;
         }
 
-        if (is.getItem() instanceof IPartItem<?>partItem) {
+        if (is.getItem() instanceof IPartItem<?> partItem) {
             var part = partItem.createPart();
             if (part == null) {
                 return false;

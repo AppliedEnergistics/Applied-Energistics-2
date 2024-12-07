@@ -157,7 +157,7 @@ public class ReiPlugin implements REIClientPlugin {
 
         registry.registerDraggableStackVisitor(new GhostIngredientHandler());
         registry.registerFocusedStack((screen, mouse) -> {
-            if (screen instanceof AEBaseScreen<?>aeScreen) {
+            if (screen instanceof AEBaseScreen<?> aeScreen) {
                 var stack = aeScreen.getStackUnderMouse(mouse.x, mouse.y);
                 if (stack != null) {
                     for (var converter : IngredientConverters.getConverters()) {

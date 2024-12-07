@@ -276,7 +276,7 @@ public class AEBaseBlockEntity extends BlockEntity
             boolean alreadyUpdated = false;
             // Let the block update its own state with our internal state changes
             BlockState currentState = getBlockState();
-            if (currentState.getBlock() instanceof AEBaseEntityBlock<?>block) {
+            if (currentState.getBlock() instanceof AEBaseEntityBlock<?> block) {
                 BlockState newState = block.getBlockEntityBlockState(currentState, this);
                 if (currentState != newState) {
                     AELog.blockUpdate(this.worldPosition, currentState, newState, this);

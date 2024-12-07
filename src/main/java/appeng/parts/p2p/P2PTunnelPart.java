@@ -167,7 +167,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
                     newBus = this.getHost().replacePart(partItem, this.getSide(), player, hand);
                 }
 
-                if (newBus instanceof P2PTunnelPart<?>newTunnel) {
+                if (newBus instanceof P2PTunnelPart<?> newTunnel) {
                     newTunnel.importSettings(SettingsFrom.MEMORY_CARD, configData, player);
                 }
 
@@ -181,7 +181,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
         // Attunement via held item replaces the tunnel part with the desired target part type
         var newType = P2PTunnelAttunement.getTunnelPartByTriggerItem(is);
         if (!newType.isEmpty() && newType.getItem() != getPartItem()
-                && newType.getItem() instanceof IPartItem<?>partItem) {
+                && newType.getItem() instanceof IPartItem<?> partItem) {
             var oldOutput = isOutput();
             var myFreq = getFrequency();
 

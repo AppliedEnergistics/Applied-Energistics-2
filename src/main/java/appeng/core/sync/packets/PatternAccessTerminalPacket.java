@@ -100,7 +100,7 @@ public class PatternAccessTerminalPacket extends BasePacket {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void clientPacketData(Player player) {
-        if (Minecraft.getInstance().screen instanceof PatternAccessTermScreen<?>patternAccessTerminal) {
+        if (Minecraft.getInstance().screen instanceof PatternAccessTermScreen<?> patternAccessTerminal) {
             if (fullUpdate) {
                 patternAccessTerminal.postFullUpdate(this.inventoryId, sortBy, group, inventorySize, slots);
             } else {

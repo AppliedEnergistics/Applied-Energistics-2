@@ -366,15 +366,15 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         var properties = new JsonObject();
         for (var matcher : matchers) {
             JsonElement serializedMatcher;
-            if (matcher instanceof SingleValueMatcher<?>singleMatcher) {
+            if (matcher instanceof SingleValueMatcher<?> singleMatcher) {
                 serializedMatcher = new JsonPrimitive(singleMatcher.getValueName());
-            } else if (matcher instanceof MultipleValuesMatcher<?>multiMatcher) {
+            } else if (matcher instanceof MultipleValuesMatcher<?> multiMatcher) {
                 var values = new JsonArray();
                 for (var valueName : multiMatcher.getValueNames()) {
                     values.add(valueName);
                 }
                 serializedMatcher = values;
-            } else if (matcher instanceof RangeValueMatcher<?>rangeMatcher) {
+            } else if (matcher instanceof RangeValueMatcher<?> rangeMatcher) {
                 var range = new JsonObject();
                 range.addProperty("min", rangeMatcher.getMinValueName());
                 range.addProperty("max", rangeMatcher.getMaxValueName());

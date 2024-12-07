@@ -34,7 +34,7 @@ public class CategoryIndex extends MultiValuedIndex<String, PageAnchor> {
             return List.of();
         }
 
-        if (!(categoriesNode instanceof List<?>categoryList)) {
+        if (!(categoriesNode instanceof List<?> categoryList)) {
             LOGGER.warn("Page {} contains malformed categories frontmatter", page.getId());
             return List.of();
         }

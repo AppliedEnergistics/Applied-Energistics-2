@@ -195,7 +195,7 @@ public class DebugCardItem extends AEBaseItem {
                     this.outputSecondaryMessage(player, "Cable Distance", Integer.toString(length));
                 }
 
-                if (center.getOwner() instanceof P2PTunnelPart<?>tunnelPart) {
+                if (center.getOwner() instanceof P2PTunnelPart<?> tunnelPart) {
                     this.outputSecondaryMessage(player, "Freq", Integer.toString(tunnelPart.getFrequency()));
                 }
             } else {

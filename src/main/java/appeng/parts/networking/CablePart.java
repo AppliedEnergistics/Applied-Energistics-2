@@ -92,7 +92,7 @@ public abstract class CablePart extends AEBasePart implements ICablePart {
 
     @Override
     public AEColor getCableColor() {
-        if (getPartItem() instanceof ColoredPartItem<?>coloredPartItem) {
+        if (getPartItem() instanceof ColoredPartItem<?> coloredPartItem) {
             return coloredPartItem.getColor();
         }
         return AEColor.TRANSPARENT;
