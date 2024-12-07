@@ -70,18 +70,18 @@ public class ExecutingCraftingJob {
         this.waitingFor = new ListCraftingInventory(postCraftingDifference::onCraftingDifference);
 
         // Fill waiting for and tasks
-        long totalPending = 0;
+        this.timeTracker = new ElapsedTimeTracker();
         for (var entry : plan.emittedItems()) {
             waitingFor.insert(entry.getKey(), entry.getLongValue(), Actionable.MODULATE);
-            totalPending += entry.getLongValue();
+            timeTracker.addMaxItems(entry.getLongValue(), entry.getKey().getType());
         }
         for (var entry : plan.patternTimes().entrySet()) {
             tasks.computeIfAbsent(entry.getKey(), p -> new TaskProgress()).value += entry.getValue();
             for (var output : entry.getKey().getOutputs()) {
-                totalPending += output.amount() * entry.getValue();
+                var amount = output.amount() * entry.getValue() * output.what().getAmountPerUnit();
+                timeTracker.addMaxItems(amount, output.what().getType());
             }
         }
-        this.timeTracker = new ElapsedTimeTracker(totalPending);
         this.link = link;
         this.playerId = playerId;
     }
