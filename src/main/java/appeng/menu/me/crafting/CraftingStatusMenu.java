@@ -147,6 +147,10 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
         for (var cpu : lastCpuSet) {
             var serial = getOrAssignCpuSerial(cpu);
             var status = cpu.getJobStatus();
+            var progress = 0f;
+            if (status != null && status.totalItems() > 0) {
+                progress = (float) (status.progress() / (double) status.totalItems());
+            }
             entries.add(new CraftingCpuListEntry(
                     serial,
                     cpu.getAvailableStorage(),
@@ -154,8 +158,7 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
                     cpu.getName(),
                     cpu.getSelectionMode(),
                     status != null ? status.crafting() : null,
-                    status != null ? status.totalItems() : 0,
-                    status != null ? status.progress() : 0,
+                    progress,
                     status != null ? status.elapsedTimeNanos() : 0));
         }
         entries.sort(CPU_COMPARATOR);
@@ -226,8 +229,7 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
             Component name,
             CpuSelectionMode mode,
             GenericStack currentJob,
-            long totalItems,
-            long progress,
+            float progress,
             long elapsedTimeNanos) {
         public static CraftingCpuListEntry readFromPacket(RegistryFriendlyByteBuf data) {
             return new CraftingCpuListEntry(
@@ -237,8 +239,7 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
                     data.readBoolean() ? ComponentSerialization.TRUSTED_STREAM_CODEC.decode(data) : null,
                     data.readEnum(CpuSelectionMode.class),
                     GenericStack.readBuffer(data),
-                    data.readVarLong(),
-                    data.readVarLong(),
+                    data.readFloat(),
                     data.readVarLong());
         }
 
@@ -252,8 +253,7 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
             }
             data.writeEnum(mode);
             GenericStack.writeBuffer(currentJob, data);
-            data.writeVarLong(totalItems);
-            data.writeVarLong(progress);
+            data.writeFloat(progress);
             data.writeVarLong(elapsedTimeNanos);
         }
     }
