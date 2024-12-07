@@ -139,7 +139,7 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
                 mcLoc("item/generated"),
                 "layer0",
                 makeId(background))
-                        .texture("layer1", "item/storage_cell_led");
+                .texture("layer1", "item/storage_cell_led");
     }
 
     private void portableCell(ItemDefinition<?> item, String housingType, String tier) {
@@ -149,9 +149,9 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
                 mcLoc("item/generated"),
                 "layer0",
                 makeId("item/portable_cell_screen"))
-                        .texture("layer1", "item/portable_cell_led")
-                        .texture("layer2", "item/portable_cell_%s_housing".formatted(housingType))
-                        .texture("layer3", "item/portable_cell_side_%s".formatted(tier));
+                .texture("layer1", "item/portable_cell_led")
+                .texture("layer2", "item/portable_cell_%s_housing".formatted(housingType))
+                .texture("layer3", "item/portable_cell_side_%s".formatted(tier));
     }
 
     private void registerHandheld() {
@@ -180,10 +180,10 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         // The color applicator uses a separate model when colored
         var coloredColorApplicator = withExistingParent(AEItems.COLOR_APPLICATOR.id().getPath() + "_colored",
                 "item/generated")
-                        .texture("layer0", makeId("item/color_applicator"))
-                        .texture("layer1", makeId("item/color_applicator_tip_dark"))
-                        .texture("layer2", makeId("item/color_applicator_tip_medium"))
-                        .texture("layer3", makeId("item/color_applicator_tip_bright"));
+                .texture("layer0", makeId("item/color_applicator"))
+                .texture("layer1", makeId("item/color_applicator_tip_dark"))
+                .texture("layer2", makeId("item/color_applicator_tip_medium"))
+                .texture("layer3", makeId("item/color_applicator_tip_bright"));
         withExistingParent(AEItems.COLOR_APPLICATOR.id().getPath(), "item/generated")
                 .texture("layer0", makeId("item/color_applicator"))
                 // Use different model when colored

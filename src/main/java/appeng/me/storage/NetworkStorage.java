@@ -269,7 +269,7 @@ public class NetworkStorage implements MEStorage {
         return GuiText.MENetworkStorage.text();
     }
 
-    sealed interface QueuedOperation permits MountOperation,UnmountOperation {
+    sealed interface QueuedOperation permits MountOperation, UnmountOperation {
     }
 
     private record MountOperation(int priority, MEStorage storage) implements QueuedOperation {

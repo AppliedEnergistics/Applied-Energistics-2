@@ -264,7 +264,7 @@ public class JEIPlugin implements IModPlugin {
         return Optional.of(new ClickableIngredient<>(ingredient, stackWithBounds.bounds()));
     }
 
-    private record ClickableIngredient<T> (ITypedIngredient<T> ingredient,
+    private record ClickableIngredient<T>(ITypedIngredient<T> ingredient,
             Rect2i area) implements IClickableIngredient<T> {
         @Override
         public ITypedIngredient<T> getTypedIngredient() {

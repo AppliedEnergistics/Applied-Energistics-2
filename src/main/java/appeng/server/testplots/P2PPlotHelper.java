@@ -89,7 +89,7 @@ public final class P2PPlotHelper {
 
     private static P2PTunnelPart<?> getTunnelAt(Level level, PosAndSide posAndSide) {
         var part = PartHelper.getPart(level, posAndSide.pos(), posAndSide.side());
-        if (!(part instanceof P2PTunnelPart<?>p2PTunnelPart)) {
+        if (!(part instanceof P2PTunnelPart<?> p2PTunnelPart)) {
             throw new IllegalStateException("No P2P @ " + posAndSide);
         }
         return p2PTunnelPart;

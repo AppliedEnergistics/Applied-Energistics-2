@@ -83,7 +83,7 @@ public final class DefaultExtensions {
                 new DiamondAnnotationElementCompiler());
     }
 
-    private record Registration<T extends Extension> (ExtensionPoint<T> extensionPoint,
+    private record Registration<T extends Extension>(ExtensionPoint<T> extensionPoint,
             Supplier<Collection<T>> factory) {
     }
 }

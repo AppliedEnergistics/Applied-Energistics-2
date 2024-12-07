@@ -102,7 +102,7 @@ public class RecipeCompiler extends BlockTagCompiler {
     /**
      * Maps a recipe type to a factory that can create a layout block to display it.
      */
-    private record RecipeTypeMapping<T extends Recipe<C>, C extends Container> (
+    private record RecipeTypeMapping<T extends Recipe<C>, C extends Container>(
             RecipeType<T> recipeType,
             Function<T, LytBlock> factory) {
         @Nullable

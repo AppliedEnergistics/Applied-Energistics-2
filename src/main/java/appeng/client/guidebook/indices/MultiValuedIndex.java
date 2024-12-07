@@ -114,6 +114,6 @@ public class MultiValuedIndex<K, V> implements PageIndex {
         Iterable<Pair<K, V>> getEntry(ParsedGuidePage page);
     }
 
-    private record Record<V> (ResourceLocation pageId, V value) {
+    private record Record<V>(ResourceLocation pageId, V value) {
     }
 }

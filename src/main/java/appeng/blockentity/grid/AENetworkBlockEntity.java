@@ -86,7 +86,7 @@ public class AENetworkBlockEntity extends AEBaseBlockEntity implements IGridConn
         // the state that was saved to disk. This ensures the BlockState after readying
         // the entity is up-to-date.
         BlockState currentState = getBlockState();
-        if (currentState.getBlock() instanceof AEBaseEntityBlock<?>block) {
+        if (currentState.getBlock() instanceof AEBaseEntityBlock<?> block) {
             BlockState newState = block.getBlockEntityBlockState(currentState, this);
             if (currentState != newState) {
                 this.markForUpdate();

@@ -151,9 +151,9 @@ final class RectanglePacking {
     public record Size(int w, int h) {
     }
 
-    public record PositionedArea<T> (int w, int h, List<Positioned<T>> rectangles) {
+    public record PositionedArea<T>(int w, int h, List<Positioned<T>> rectangles) {
     }
 
-    public record Positioned<T> (int x, int y, int w, int h, T what) {
+    public record Positioned<T>(int x, int y, int w, int h, T what) {
     }
 }

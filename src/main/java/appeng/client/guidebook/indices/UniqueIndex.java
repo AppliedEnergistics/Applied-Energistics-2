@@ -121,6 +121,6 @@ public class UniqueIndex<K, V> implements PageIndex {
         Iterable<Pair<K, V>> getEntry(ParsedGuidePage page);
     }
 
-    private record Record<V> (ResourceLocation pageId, V value) {
+    private record Record<V>(ResourceLocation pageId, V value) {
     }
 }

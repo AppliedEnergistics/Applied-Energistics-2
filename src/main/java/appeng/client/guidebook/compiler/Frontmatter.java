@@ -23,7 +23,7 @@ public record Frontmatter(
         Map<String, Object> data = yaml.load(yamlText);
         var navigationObj = data.remove("navigation");
         if (navigationObj != null) {
-            if (!(navigationObj instanceof Map<?, ?>navigationMap)) {
+            if (!(navigationObj instanceof Map<?, ?> navigationMap)) {
                 throw new IllegalArgumentException("The navigation key in the frontmatter has to be a map");
             }
 

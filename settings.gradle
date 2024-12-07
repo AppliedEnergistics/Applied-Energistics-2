@@ -13,8 +13,7 @@ pluginManagement {
     }
     plugins {
         id 'net.neoforged.moddev.legacyforge' version '2.0.56-beta'
-        id 'com.diffplug.spotless' version '5.12.4'
-        id 'io.github.juuxel.loom-quiltflower' version '1.10.0'
+        id 'com.diffplug.spotless' version '6.25.0'
         id 'com.gradleup.shadow' version '8.3.5'
         id 'de.undercouch.download' version '5.4.0'
     }
