@@ -16,17 +16,11 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-buildscript {
-    dependencies {
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
-
 plugins {
-    id "net.neoforged.gradle"
+    id "net.neoforged.moddev.legacyforge"
     id "maven-publish"
     id "com.diffplug.spotless"
-    id "com.github.johnrengelman.shadow"
+    id "com.gradleup.shadow"
     id "de.undercouch.download"
 }
 
@@ -44,13 +38,15 @@ sourceSets {
     buildtools
 }
 
-apply plugin: 'org.spongepowered.mixin'
-
 configurations {
     shaded {
         transitive = false
     }
     buildtoolsImplementation.extendsFrom(compileClasspath)
+    // Dependencies only used for the guide export, but not shipped
+    guideExportOnly
+    configurations.compileClasspath.extendsFrom(guideExportOnly)
+    configurations.runtimeClasspath.extendsFrom(guideExportOnly)
 
     internal {
         visible = false
@@ -74,45 +70,43 @@ dependencies {
     shaded "org.yaml:snakeyaml:${snakeyaml_version}"
     shaded "com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}"
 
-    minecraftLibrary(project(':libs:markdown')) {
+    implementation(project(':libs:markdown')) {
         transitive = false
     }
     // Do not inherit any transitive dependencies here since we rely on those dependencies being
     // present in Minecrafts own dependencies already.
-    minecraftLibrary("io.methvin:directory-watcher:${directory_watcher_version}") {
+    implementation("io.methvin:directory-watcher:${directory_watcher_version}") {
         transitive = false
     }
-    minecraftLibrary("org.yaml:snakeyaml:${snakeyaml_version}") {
+    implementation("org.yaml:snakeyaml:${snakeyaml_version}") {
         transitive = false
     }
-    minecraftLibrary("com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}") {
+    implementation("com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}") {
         transitive = false
     }
     // Used for the guide export
-    minecraftLibrary("org.bytedeco:ffmpeg-platform:6.0-1.5.9")
-
-    minecraft "net.neoforged:forge:${minecraft_version}-${neoforge_version}"
+    guideExportOnly("org.bytedeco:ffmpeg-platform:6.0-1.5.9")
 
     // compile against provided APIs
-    compileOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}-common-api:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}-forge-api:${jei_version}")
+    modCompileOnly "mezz.jei:jei-${jei_minecraft_version}-common-api:${jei_version}"
+    modCompileOnly "mezz.jei:jei-${jei_minecraft_version}-forge-api:${jei_version}"
 
     // Always depend on the REI API to compile
     if (project.runtime_itemlist_mod == "jei") {
-        runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}-forge:${jei_version}")
+        modRuntimeOnly "mezz.jei:jei-${jei_minecraft_version}-forge:${jei_version}"
 
         compileOnly "me.shedaniel.cloth:basic-math:0.6.1"
-        compileOnly fg.deobf("dev.architectury:architectury-forge:${project.architectury_version}")
-        compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
+        modCompileOnly "dev.architectury:architectury-forge:${project.architectury_version}"
+        modCompileOnly "me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}"
     } else if (project.runtime_itemlist_mod == "rei") {
         implementation "me.shedaniel.cloth:basic-math:0.6.1"
-        implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}")
-        implementation fg.deobf("dev.architectury:architectury-forge:${project.architectury_version}")
-        implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
+        modImplementation "me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}"
+        modImplementation "dev.architectury:architectury-forge:${project.architectury_version}"
+        modImplementation "me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}"
     } else {
-        compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}")
-        compileOnly fg.deobf("dev.architectury:architectury-forge:${project.architectury_version}")
-        compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
+        modCompileOnly "me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}"
+        modCompileOnly "dev.architectury:architectury-forge:${project.architectury_version}"
+        modCompileOnly "me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}"
     }
 
     // Locally sourced extra mods for runtime (i.e. testing)
@@ -126,21 +120,21 @@ dependencies {
     }
 
     if (project.runtime_tooltip_mod == "wthit") {
-        runtimeOnly fg.deobf("mcp.mobius.waila:wthit:forge-${project.wthit_version}")
-        runtimeOnly fg.deobf("lol.bai:badpackets:forge-0.1.2")
+        modRuntimeOnly "mcp.mobius.waila:wthit:forge-${project.wthit_version}"
+        modRuntimeOnly "lol.bai:badpackets:forge-0.1.2"
     } else {
-        compileOnly fg.deobf("mcp.mobius.waila:wthit-api:forge-${project.wthit_version}")
+        modCompileOnly "mcp.mobius.waila:wthit-api:forge-${project.wthit_version}"
     }
 
     if (project.runtime_tooltip_mod == "jade") {
-        implementation fg.deobf("curse.maven:jade-324717:${project.jade_file_id}")
+        modImplementation "curse.maven:jade-324717:${project.jade_file_id}"
     } else {
-        compileOnly fg.deobf("curse.maven:jade-324717:${project.jade_file_id}")
+        modCompileOnly "curse.maven:jade-324717:${project.jade_file_id}"
     }
 
     def topDependency = "curse.maven:the-one-probe-245211:4159743"
     if (project.runtime_tooltip_mod == "top") {
-        implementation fg.deobf(topDependency)
+        modImplementation topDependency
     } else {
         compileOnly topDependency
     }
@@ -156,9 +150,11 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
 
     compileOnly 'org.apache.commons:commons-configuration2:2.9.0'
+    compileOnly 'org.jetbrains:annotations:24.1.0'
+    testCompileOnly 'org.jetbrains:annotations:24.1.0'
 
     // Annotation Processors
-    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 archivesBaseName = artifact_basename
 
@@ -284,6 +280,9 @@ ext.isBeta = project.version.contains("beta")
 
 test {
     useJUnitPlatform()
+
+    // Might not need this anymore...
+    systemProperty "guideDev.ae2guide.sources", file("guidebook").absolutePath
 }
 
 dependencies {
@@ -294,91 +293,112 @@ dependencies {
 /**
  * Configures properties common to all run configurations
  */
-def commonRunProperties = {
-    workingDirectory project.file('run')
-    property 'forge.logging.console.level', 'debug'
-    property 'fml.earlyprogresswindow', 'false'
-    property 'appeng.tests', 'true'
-    property 'appeng.version', project.version
-    jvmArgs "--add-opens", "java.base/sun.security.util=ALL-UNNAMED"
-    jvmArgs "--add-opens", "java.base/java.util.jar=ALL-UNNAMED"
-    // See https://github.com/Vazkii/Patchouli#mixin-troubleshooting
-    property 'mixin.env.remapRefMap', 'true'
-    property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-    // property "mixin.debug.export", "true"
+Map<String, String> commonSystemProperties = [
+        'forge.logging.console.level': 'debug',
+        'appeng.tests'               : 'true',
+        'appeng.version'             : project.version
+]
+
+neoForge {
+    version = "${minecraft_version}-${forge_version}"
+
     mods {
-        appliedenergistics2 {
-            source sourceSets.main
+        ae2 {
+            sourceSet sourceSets.main
         }
     }
-}
-
-////////////////////
-// Forge/Minecraft
-minecraft {
-    mappings channel: 'official', version: project.minecraft_version
-
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
+        configureEach {
+            gameDirectory = project.file('run')
+            systemProperties.putAll(commonSystemProperties)
+            // property "mixin.debug.export", "true"
+
+            additionalRuntimeClasspathConfiguration.extendsFrom configurations.shaded
+            additionalRuntimeClasspathConfiguration.extendsFrom configurations.guideExportOnly
+
+            jvmArguments.addAll(
+                    "--add-opens", "java.base/sun.security.util=ALL-UNNAMED",
+                    "--add-opens", "java.base/java.util.jar=ALL-UNNAMED"
+            )
+        }
         client {
-            with commonRunProperties
-            property "appeng.tests", "true"
-            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
+            client()
+            systemProperties.putAll(
+                    "appeng.tests"             : "true",
+                    "guideDev.ae2guide.sources": file("guidebook").absolutePath,
+            )
         }
         gametestWorld {
-            parent runs.client
-            args "--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld"
-            property "appeng.tests", "true"
-            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
+            client()
+            programArguments.addAll(
+                    "--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld"
+            )
+            systemProperties.putAll(
+                    "appeng.tests"             : "true",
+                    "guideDev.ae2guide.sources": file("guidebook").absolutePath,
+            )
         }
         guide {
-            parent runs.client
-            with commonRunProperties
-            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
-            property "guideDev.ae2guide.startupPage", "ae2:index.md"
+            client()
+            systemProperties.putAll(
+                    "guideDev.ae2guide.sources"    : file("guidebook").absolutePath,
+                    "guideDev.ae2guide.startupPage": "ae2:index.md"
+            )
         }
         server {
-            with commonRunProperties
+            server()
         }
         data {
-            with commonRunProperties
-            args '--mod', 'ae2', '--all', '--output', file('src/generated/resources/'), "--existing", file("src/main/resources")
+            data()
+            programArguments.addAll(
+                    '--mod', 'ae2',
+                    '--all',
+                    '--output', file('src/generated/resources/').absolutePath,
+                    '--existing', file('src/main/resources').absolutePath
+            )
         }
         guideexport {
-            parent runs.client
-            with commonRunProperties
-            property "appeng.runGuideExportAndExit", "true"
-            property "appeng.guideExportFolder", file("$buildDir/guide").absolutePath
-            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
+            client()
+            systemProperties.putAll(
+                    "appeng.runGuideExportAndExit": "true",
+                    "appeng.guideExportFolder"    : file("$buildDir/guide").absolutePath,
+                    "guideDev.ae2guide.sources"   : file("guidebook").absolutePath,
+                    "appeng.version"              : project.version
+            )
         }
         // Use to run the tests
         gametest {
-            parent server
-            with commonRunProperties
-            workingDirectory "build/gametest"
+            type = "gameTestServer"
+            gameDirectory = project.file("build/gametest")
         }
     }
-}
 
-///////////
-// Mixins
-mixin {
-    add sourceSets.main, "ae2.mixins.refmap.json"
+    addModdingDependenciesTo(sourceSets.test)
 }
 
 //////////////
 // Artifacts
+Map<String, String> expansionVariables = [
+        "project_version"  : project.version,
+        'minecraft_version': project.minecraft_version_range,
+        'forge_version'    : project.forge_version_range,
+        'jei_version'      : project.jei_version_range,
+        'top_version'      : project.top_version_range,
+        'jade_version'     : project.jade_version_range
+]
+
 processResources {
-    inputs.property("version", version)
     exclude '.cache'
+    // Ensure the resources get re-evaluate when the version changes
+    for (var entry : expansionVariables.entrySet()) {
+        inputs.property(entry.key, entry.value)
+    }
 
     filesMatching("META-INF/mods.toml") {
-        expand 'minecraft_version': project.minecraft_version_range, 'neoforge_version': project.neoforge_version_range,
-                'jei_version': project.jei_version_range, 'top_version': project.top_version_range,
-                'jade_version': project.jade_version_range
+        expand expansionVariables
         filter { line ->
-            line.replace('version="0.0.0"', "version=\"$version\"")
+            line.replace('version="0.0.0"', "version=\"${expansionVariables['project_version']}\"")
         }
     }
 }
@@ -397,12 +417,6 @@ shadowJar {
 
     manifest {
         attributes([
-                "Specification-Title"   : "Applied Energistics 2",
-                "Specification-Vendor"  : "TeamAppliedEnergistics",
-                "Specification-Version" : "${project.version}",
-                "Implementation-Title"  : "${project.name}",
-                "Implementation-Version": "${project.version}",
-                "Implementation-Vendor" : "TeamAppliedEnergistics",
                 "MixinConfigs"          : "ae2.mixins.json"
         ])
     }
@@ -412,18 +426,25 @@ shadowJar {
     relocate "com.google.flatbuffers", "appeng.shaded.flatbuffers"
 
     configurations = [project.configurations.shaded]
-    archiveClassifier = null
+    archiveClassifier = "dev"
 }
 
-reobf {
-    shadowJar {}
+obfuscation {
+    reobfuscate(tasks.named('shadowJar'), sourceSets.main) {
+        archiveClassifier = ""
+    }
 }
-
-afterEvaluate {
-    tasks.reobfJar.enabled = false
-}
+reobfJar.enabled = false
 
 tasks.assemble.dependsOn reobfShadowJar
+
+///////////
+// Mixins
+mixin {
+    var refmap = add sourceSets.main, "ae2.mixins.refmap.json"
+    shadowJar.from refmap
+    config "ae2.mixins.json"
+}
 
 def publicApiIncludePatterns = {
     exclude "**/*Internal.*"
@@ -524,35 +545,23 @@ spotless {
 
 ////////////////
 // Crowdin
-task uploadToCrowdin(type: JavaExec) {
+tasks.register('uploadToCrowdin', JavaExec) {
     classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'upload_source'
     workingDir "."
 }
-task uploadTranslations(type: JavaExec) {
+tasks.register('uploadTranslations', JavaExec) {
     classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'upload_translations'
     workingDir "."
 }
-task downloadFromCrowdin(type: JavaExec) {
+tasks.register('downloadFromCrowdin', JavaExec) {
     classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'update_translations'
     workingDir "."
-}
-
-////////////////
-// IntelliJ Project Import
-// The Mixin annotation process does not have an obfuscation source when running through the IntelliJ compiler,
-// thus we have to prevent it from being activated as part of importing this Gradle project into IntelliJ.
-if (System.getProperty("idea.sync.active") == "true") {
-    afterEvaluate {
-        tasks.withType(JavaCompile).all {
-            it.options.annotationProcessorPath = files()
-        }
-    }
 }
 
 // See https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5259
@@ -567,6 +576,7 @@ check.dependsOn tasks.register('validateResources', JavaExec) {
     mainClass = 'ValidateResourceIds'
     workingDir "."
     args "guidebook"
+    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
 }
 
 /**
@@ -591,7 +601,7 @@ tasks.register('downloadFlatbufferCompiler', Download) {
         throw new GradleException("Unknown OS: $os")
     }
     onlyIfModified true
-    dest "${project.buildDir}/flatc.zip"
+    dest layout.buildDirectory.file("flatc.zip")
 }
 
 tasks.register('downloadAndUnzipFlatbufferCompiler', Copy) {
@@ -652,9 +662,4 @@ tasks.register('updateFlatbufferTypescriptSources', Exec) {
     doFirst {
         file("${project.buildDir}/scene-ts").deleteDir()
     }
-}
-
-
-afterEvaluate {
-
 }
