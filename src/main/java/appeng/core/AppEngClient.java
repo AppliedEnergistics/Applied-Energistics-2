@@ -95,7 +95,6 @@ import appeng.client.render.effects.MatterCannonFX;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.client.render.effects.VibrantFX;
 import appeng.client.render.overlay.OverlayManager;
-import appeng.core.definitions.AEAttachmentTypes;
 import appeng.client.render.tesr.ChargerBlockEntityRenderer;
 import appeng.client.render.tesr.ChestBlockEntityRenderer;
 import appeng.client.render.tesr.CrankRenderer;
@@ -103,12 +102,13 @@ import appeng.client.render.tesr.DriveLedBlockEntityRenderer;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.client.render.tesr.SkyStoneTankBlockEntityRenderer;
+import appeng.core.definitions.AEAttachmentTypes;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
 import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.MouseWheelPacket;
-import appeng.core.network.serverbound.PartPlacementOppositePacket;
+import appeng.core.network.serverbound.UpdateHoldingCtrlPacket;
 import appeng.entity.TinyTNTPrimedRenderer;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.BlockAttackHook;
@@ -372,9 +372,12 @@ public class AppEngClient extends AppEngBase {
             var player = Minecraft.getInstance().player;
 
             if (player != null) {
-                var isDown = event.getAction() == InputConstants.PRESS;
-                player.setData(AEAttachmentTypes.HOLDING_CTRL, isDown);
-                PacketDistributor.sendToServer(new PartPlacementOppositePacket(isDown));
+                var isDown = event.getAction() == InputConstants.PRESS || event.getAction() == InputConstants.REPEAT;
+                var previousIsDown = player.getData(AEAttachmentTypes.HOLDING_CTRL);
+                if (previousIsDown != isDown) {
+                    player.setData(AEAttachmentTypes.HOLDING_CTRL, isDown);
+                    PacketDistributor.sendToServer(new UpdateHoldingCtrlPacket(isDown));
+                }
             }
         }
     }

@@ -10,23 +10,21 @@ import appeng.core.definitions.AEAttachmentTypes;
 import appeng.core.network.CustomAppEngPayload;
 import appeng.core.network.ServerboundPacket;
 
-public record PartPlacementOppositePacket(boolean keyDown) implements ServerboundPacket {
-    public static final StreamCodec<RegistryFriendlyByteBuf, PartPlacementOppositePacket> STREAM_CODEC = StreamCodec
-            .ofMember(
-                    PartPlacementOppositePacket::write,
-                    PartPlacementOppositePacket::decode);
+public record UpdateHoldingCtrlPacket(boolean keyDown) implements ServerboundPacket {
+    public static final StreamCodec<RegistryFriendlyByteBuf, UpdateHoldingCtrlPacket> STREAM_CODEC = StreamCodec
+            .ofMember(UpdateHoldingCtrlPacket::write, UpdateHoldingCtrlPacket::decode);
 
-    public static final Type<PartPlacementOppositePacket> TYPE = CustomAppEngPayload.createType("ctrl_down");
+    public static final Type<UpdateHoldingCtrlPacket> TYPE = CustomAppEngPayload.createType("toggle_ctrl_down");
 
     @NotNull
     @Override
-    public Type<PartPlacementOppositePacket> type() {
+    public Type<UpdateHoldingCtrlPacket> type() {
         return TYPE;
     }
 
-    public static PartPlacementOppositePacket decode(RegistryFriendlyByteBuf buf) {
+    public static UpdateHoldingCtrlPacket decode(RegistryFriendlyByteBuf buf) {
         var keyDown = buf.readBoolean();
-        return new PartPlacementOppositePacket(keyDown);
+        return new UpdateHoldingCtrlPacket(keyDown);
     }
 
     public void write(RegistryFriendlyByteBuf data) {

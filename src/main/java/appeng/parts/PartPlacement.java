@@ -133,7 +133,7 @@ public class PartPlacement {
         // If a cable segment was clicked, try replacing that cable segment by the part
         var replaceCablePlacement = tryReplaceCableSegment(level, partStack, pos, clickLocation);
         if (replaceCablePlacement != null) {
-            return replaceCablePlacement;
+            side = replaceCablePlacement;
         }
 
         if (player != null) {
@@ -157,7 +157,7 @@ public class PartPlacement {
     }
 
     @Nullable
-    private static Placement tryReplaceCableSegment(Level level, ItemStack partStack, BlockPos pos,
+    private static Direction tryReplaceCableSegment(Level level, ItemStack partStack, BlockPos pos,
             Vec3 clickLocation) {
         // Check if there exists a host with a cable in its center
         var host = PartHelper.getPartHost(level, pos);
@@ -187,7 +187,7 @@ public class PartPlacement {
         }
 
         if (host.canAddPart(partStack, hitSide)) {
-            return new Placement(pos, hitSide);
+            return hitSide;
         } else {
             return null;
         }
