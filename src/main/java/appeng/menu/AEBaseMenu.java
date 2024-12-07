@@ -538,12 +538,13 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         }
         var s = this.getSlot(slot);
 
-        if (s instanceof CraftingTermSlot) {
+        if (s instanceof CraftingTermSlot craftingTermSlot) {
             switch (action) {
                 case CRAFT_SHIFT:
+                case CRAFT_ALL:
                 case CRAFT_ITEM:
                 case CRAFT_STACK:
-                    ((CraftingTermSlot) s).doClick(action, player);
+                    craftingTermSlot.doClick(action, player);
                 default:
             }
         }
