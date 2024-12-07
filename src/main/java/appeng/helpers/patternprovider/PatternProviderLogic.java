@@ -777,7 +777,6 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     }
 
     public void updateRedstoneState() {
-        LOGGER.warn("Updating state {} {}", unlockEvent, redstoneState);
         // If we're waiting for a pulse, update immediately
         if (unlockEvent == UnlockCraftingEvent.REDSTONE_POWER && getRedstoneState()) {
             unlockEvent = null; // Unlocked!
