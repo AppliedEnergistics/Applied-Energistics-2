@@ -325,6 +325,7 @@ public final class AEItems {
         if (Objects.equals(group, AECreativeTabIds.MAIN)) {
             MainCreativeTab.add(definition);
         } else if (group != null) {
+            MainCreativeTab.add(definition);
             MainCreativeTab.addExternal(group, definition);
         }
 

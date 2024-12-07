@@ -39,6 +39,16 @@ public final class PatternProviderLockModePlots {
     private PatternProviderLockModePlots() {
     }
 
+    /**
+     * Regression test for #7179 When there was a high redstone signal to begin with, pulse should wait until that
+     * signal is low before unlocking due to a high signal.
+     */
+    @TestPlot("pp_block_lockmode_pulse_starting_high")
+    public static void testBlockLockModePulseStartingHigh(PlotBuilder plot) {
+        setup(plot, false, LockCraftingMode.LOCK_UNTIL_PULSE);
+        testLockModePulse(plot, true);
+    }
+
     @TestPlot("pp_block_lockmode_pulse")
     public static void testBlockLockModePulse(PlotBuilder plot) {
         setup(plot, false, LockCraftingMode.LOCK_UNTIL_PULSE);
@@ -54,43 +64,74 @@ public final class PatternProviderLockModePlots {
     }
 
     private static void testLockModePulse(PlotBuilder plot) {
+        testLockModePulse(plot, false);
+    }
+
+    private static void testLockModePulse(PlotBuilder plot, boolean startHigh) {
         plot.test(helper -> {
             var host = getHost(helper);
             var pp = host.getLogic();
 
-            helper.startSequence()
-                    .thenExecuteAfter(1, () -> {
-                        // Initially it should be unlocked
-                        helper.assertEquals(BlockPos.ZERO, LockCraftingMode.NONE, pp.getCraftingLockedReason());
-                        // Pushing pattern should succeed
-                        helper.check(pushPattern(host), "Pushing pattern failed");
-                        // Now it should be immediately locked
-                        helper.assertEquals(BlockPos.ZERO, LockCraftingMode.LOCK_UNTIL_PULSE,
-                                pp.getCraftingLockedReason());
-                        // Pushing another pattern should fail
-                        helper.check(!pushPattern(host), "Pushing pattern should fail");
-                    })
-                    .thenExecuteAfter(1, () -> {
-                        // Turn the lever on to trigger the pulse
-                        helper.pullLever(LEVER_POS);
+            var sequence = helper.startSequence();
 
-                        // That should immediately unlock the provider
-                        helper.assertEquals(BlockPos.ZERO, LockCraftingMode.NONE, pp.getCraftingLockedReason());
+            if (startHigh) {
+                sequence.thenExecute(() -> {
+                    // Toggle the lever on initially if we should start in high
+                    helper.pullLever(LEVER_POS);
+                });
+            }
 
-                        // Pushing a pattern should succeed now
-                        helper.check(pushPattern(host), "Pushing pattern failed");
+            sequence.thenExecuteAfter(1, () -> {
+                // Initially it should be unlocked
+                helper.assertEquals(BlockPos.ZERO, LockCraftingMode.NONE, pp.getCraftingLockedReason());
+                // Pushing pattern should succeed
+                helper.check(pushPattern(host), "Pushing pattern failed");
+                // Now it should be immediately locked
+                helper.assertEquals(BlockPos.ZERO, LockCraftingMode.LOCK_UNTIL_PULSE,
+                        pp.getCraftingLockedReason());
+                // Pushing another pattern should fail
+                helper.check(!pushPattern(host), "Pushing pattern should fail");
+            });
 
-                        // But that should lock it again, even though the signal is still high
-                        helper.assertEquals(BlockPos.ZERO, LockCraftingMode.LOCK_UNTIL_PULSE,
-                                pp.getCraftingLockedReason());
-                        helper.check(!pushPattern(host), "Pushing pattern should fail");
+            if (startHigh) {
+                sequence.thenExecuteAfter(1, () -> {
+                    // Instead of pulling the lever, trigger a block update
+                    helper.getLevel().updateNeighborsAt(helper.absolutePos(BlockPos.ZERO.above()), Blocks.CHEST);
 
-                        // Turning the lever off should not trigger the pulse
-                        helper.pullLever(LEVER_POS);
-                        helper.assertEquals(BlockPos.ZERO, LockCraftingMode.LOCK_UNTIL_PULSE,
-                                pp.getCraftingLockedReason());
-                        helper.check(!pushPattern(host), "Pushing pattern should fail");
-                    })
+                    // The pattern provider should still be locked
+                    helper.assertEquals(BlockPos.ZERO, LockCraftingMode.LOCK_UNTIL_PULSE,
+                            pp.getCraftingLockedReason());
+
+                    // Now turn the lever off
+                    helper.pullLever(LEVER_POS);
+
+                    // The pattern provider should still be locked
+                    helper.assertEquals(BlockPos.ZERO, LockCraftingMode.LOCK_UNTIL_PULSE,
+                            pp.getCraftingLockedReason());
+                });
+            }
+
+            sequence.thenExecuteAfter(1, () -> {
+                // Turn the lever on to trigger the pulse
+                helper.pullLever(LEVER_POS);
+
+                // That should immediately unlock the provider
+                helper.assertEquals(BlockPos.ZERO, LockCraftingMode.NONE, pp.getCraftingLockedReason());
+
+                // Pushing a pattern should succeed now
+                helper.check(pushPattern(host), "Pushing pattern failed");
+
+                // But that should lock it again, even though the signal is still high
+                helper.assertEquals(BlockPos.ZERO, LockCraftingMode.LOCK_UNTIL_PULSE,
+                        pp.getCraftingLockedReason());
+                helper.check(!pushPattern(host), "Pushing pattern should fail");
+
+                // Turning the lever off should not trigger the pulse
+                helper.pullLever(LEVER_POS);
+                helper.assertEquals(BlockPos.ZERO, LockCraftingMode.LOCK_UNTIL_PULSE,
+                        pp.getCraftingLockedReason());
+                helper.check(!pushPattern(host), "Pushing pattern should fail");
+            })
                     .thenExecuteAfter(1, () -> {
                         // Precondition is that it's still locked
                         helper.assertEquals(BlockPos.ZERO, LockCraftingMode.LOCK_UNTIL_PULSE,

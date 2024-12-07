@@ -661,6 +661,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             InventoryAction action;
             if (hasShiftDown()) {
                 action = InventoryAction.CRAFT_SHIFT;
+            } else if (InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+                action = InventoryAction.CRAFT_ALL;
             } else {
                 // Craft stack on right-click, craft single on left-click
                 action = mouseButton == 1 ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
@@ -672,8 +674,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             return;
         }
 
-        if (slot != null &&
-                InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+        if (slot != null && InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
             int slotNum = slot.index;
             final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slotNum, 0);
             PacketDistributor.sendToServer(p);

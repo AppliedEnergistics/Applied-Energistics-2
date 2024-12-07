@@ -57,6 +57,7 @@ import appeng.api.ids.AEComponents;
 import appeng.api.parts.CableRenderMode;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypesInternal;
+import appeng.core.definitions.AEAttachmentTypes;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
@@ -132,6 +133,7 @@ public abstract class AppEngBase implements AppEng {
         AERecipeTypes.DR.register(modEventBus);
         AERecipeSerializers.DR.register(modEventBus);
         InitStructures.register(modEventBus);
+        AEAttachmentTypes.register(modEventBus);
 
         modEventBus.addListener(this::registerRegistries);
         modEventBus.addListener(MainCreativeTab::initExternal);
