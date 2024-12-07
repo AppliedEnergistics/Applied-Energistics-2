@@ -12,10 +12,10 @@ pluginManagement {
         mavenCentral()
     }
     plugins {
-        id 'net.neoforged.gradle' version '[6.0.13, 6.2)'
+        id 'net.neoforged.moddev.legacyforge' version '2.0.56-beta'
         id 'com.diffplug.spotless' version '5.12.4'
         id 'io.github.juuxel.loom-quiltflower' version '1.10.0'
-        id 'com.github.johnrengelman.shadow' version '7.0.0'
+        id 'com.gradleup.shadow' version '8.3.5'
         id 'de.undercouch.download' version '5.4.0'
     }
 }

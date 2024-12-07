@@ -36,7 +36,7 @@ public abstract class EarlyStartupMixin {
 
     // Don't inject at TAIL because Citadel (possibly other mods too) cause bootStrap() to invoke itself,
     // and we don't want this to be invoked from the nested call since MC isn't fully initialized by then.
-    @Inject(at = @At(value = "INVOKE", target = "net/minecraftforge/registries/GameData. vanillaSnapshot()V", shift = At.Shift.AFTER, by = 1), method = "bootStrap")
+    @Inject(at = @At(value = "INVOKE", target = "net/minecraftforge/registries/GameData.vanillaSnapshot()V", shift = At.Shift.AFTER, by = 1), method = "bootStrap")
     private static void initRegistries(CallbackInfo ci) {
         AppEngBootstrap.runEarlyStartup();
     }
