@@ -1,5 +1,15 @@
 package appeng.datagen.providers.recipes;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
+
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -11,15 +21,6 @@ import appeng.recipes.game.CraftingUnitTransformRecipe;
 import appeng.recipes.game.RemoveItemUpgradeRecipe;
 import appeng.recipes.game.StorageCellDisassemblyRecipe;
 import appeng.recipes.game.StorageCellUpgradeRecipe;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class UpgradeRecipes extends AE2RecipeProvider {
     public UpgradeRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
@@ -61,10 +62,8 @@ public class UpgradeRecipes extends AE2RecipeProvider {
                         new CellUpgradeTier("4k", AEItems.ITEM_CELL_4K, AEItems.CELL_COMPONENT_4K),
                         new CellUpgradeTier("16k", AEItems.ITEM_CELL_16K, AEItems.CELL_COMPONENT_16K),
                         new CellUpgradeTier("64k", AEItems.ITEM_CELL_64K, AEItems.CELL_COMPONENT_64K),
-                        new CellUpgradeTier("256k", AEItems.ITEM_CELL_256K, AEItems.CELL_COMPONENT_256K)
-                ),
-                List.of(AEItems.ITEM_CELL_HOUSING)
-        );
+                        new CellUpgradeTier("256k", AEItems.ITEM_CELL_256K, AEItems.CELL_COMPONENT_256K)),
+                List.of(AEItems.ITEM_CELL_HOUSING));
         storageCellUpgradeRecipes(
                 output,
                 List.of(
@@ -72,10 +71,8 @@ public class UpgradeRecipes extends AE2RecipeProvider {
                         new CellUpgradeTier("4k", AEItems.FLUID_CELL_4K, AEItems.CELL_COMPONENT_4K),
                         new CellUpgradeTier("16k", AEItems.FLUID_CELL_16K, AEItems.CELL_COMPONENT_16K),
                         new CellUpgradeTier("64k", AEItems.FLUID_CELL_64K, AEItems.CELL_COMPONENT_64K),
-                        new CellUpgradeTier("256k", AEItems.FLUID_CELL_256K, AEItems.CELL_COMPONENT_256K)
-                ),
-                List.of(AEItems.FLUID_CELL_HOUSING)
-        );
+                        new CellUpgradeTier("256k", AEItems.FLUID_CELL_256K, AEItems.CELL_COMPONENT_256K)),
+                List.of(AEItems.FLUID_CELL_HOUSING));
         storageCellUpgradeRecipes(
                 output,
                 List.of(
@@ -83,10 +80,8 @@ public class UpgradeRecipes extends AE2RecipeProvider {
                         new CellUpgradeTier("4k", AEItems.PORTABLE_ITEM_CELL4K, AEItems.CELL_COMPONENT_4K),
                         new CellUpgradeTier("16k", AEItems.PORTABLE_ITEM_CELL16K, AEItems.CELL_COMPONENT_16K),
                         new CellUpgradeTier("64k", AEItems.PORTABLE_ITEM_CELL64K, AEItems.CELL_COMPONENT_64K),
-                        new CellUpgradeTier("256k", AEItems.PORTABLE_ITEM_CELL256K, AEItems.CELL_COMPONENT_256K)
-                ),
-                List.of(AEBlocks.ME_CHEST, AEBlocks.ENERGY_CELL, AEItems.ITEM_CELL_HOUSING)
-        );
+                        new CellUpgradeTier("256k", AEItems.PORTABLE_ITEM_CELL256K, AEItems.CELL_COMPONENT_256K)),
+                List.of(AEBlocks.ME_CHEST, AEBlocks.ENERGY_CELL, AEItems.ITEM_CELL_HOUSING));
         storageCellUpgradeRecipes(
                 output,
                 List.of(
@@ -94,13 +89,12 @@ public class UpgradeRecipes extends AE2RecipeProvider {
                         new CellUpgradeTier("4k", AEItems.PORTABLE_FLUID_CELL4K, AEItems.CELL_COMPONENT_4K),
                         new CellUpgradeTier("16k", AEItems.PORTABLE_FLUID_CELL16K, AEItems.CELL_COMPONENT_16K),
                         new CellUpgradeTier("64k", AEItems.PORTABLE_FLUID_CELL64K, AEItems.CELL_COMPONENT_64K),
-                        new CellUpgradeTier("256k", AEItems.PORTABLE_FLUID_CELL256K, AEItems.CELL_COMPONENT_256K)
-                ),
-                List.of(AEBlocks.ME_CHEST, AEBlocks.ENERGY_CELL, AEItems.FLUID_CELL_HOUSING)
-        );
+                        new CellUpgradeTier("256k", AEItems.PORTABLE_FLUID_CELL256K, AEItems.CELL_COMPONENT_256K)),
+                List.of(AEBlocks.ME_CHEST, AEBlocks.ENERGY_CELL, AEItems.FLUID_CELL_HOUSING));
     }
 
-    private void storageCellUpgradeRecipes(RecipeOutput output, List<CellUpgradeTier> tiers, List<ItemLike> additionalDisassemblyItems) {
+    private void storageCellUpgradeRecipes(RecipeOutput output, List<CellUpgradeTier> tiers,
+            List<ItemLike> additionalDisassemblyItems) {
         for (int i = 0; i < tiers.size(); i++) {
             var fromTier = tiers.get(i);
             var inputCell = fromTier.cell().asItem();
@@ -143,10 +137,8 @@ public class UpgradeRecipes extends AE2RecipeProvider {
                 tier.cell.id().withPrefix("cell_upgrade/"),
                 new StorageCellDisassemblyRecipe(
                         tier.cell.asItem(),
-                        results
-                ),
-                null
-        );
+                        results),
+                null);
     }
 
     private void craftingUnitTransform(RecipeOutput consumer, List<UnitTransformTier> tiers) {
