@@ -22,13 +22,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
@@ -44,8 +41,6 @@ import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.UpgradeInventories;
-import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.core.localization.PlayerMessages;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
@@ -144,27 +139,22 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     }
 
     private boolean disassembleDrive(ItemStack stack, Level level, Player player) {
-        if (!InteractionUtil.isInAlternateUseMode(player) || level.isClientSide())
-            return false;
-        ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
-
-        if (itemId == BuiltInRegistries.ITEM.getDefaultKey()) {
-            AELog.debug("Cannot disassemble storage cell because its item is unregistered?");
+        if (!InteractionUtil.isInAlternateUseMode(player)) {
             return false;
         }
 
-        var recipe = StorageCellDisassemblyRecipe.getDisassemblyRecipe(level,
-                AppEng.makeId("upgrade/" + itemId.getPath()), stack.getItem());
-        if (recipe == null)
+        var disassembledStacks = StorageCellDisassemblyRecipe.getDisassemblyResult(level, stack.getItem());
+        if (disassembledStacks.isEmpty()) {
             return false;
+        }
 
-        final Inventory playerInventory = player.getInventory();
+        var playerInventory = player.getInventory();
+        if (playerInventory.getSelected() != stack) {
+            return false;
+        }
+
         var inv = StorageCells.getCellInventory(stack, null);
-
-        if (inv == null || playerInventory.getSelected() != stack)
-            return false;
-
-        if (!inv.getAvailableStacks().isEmpty()) {
+        if (inv != null && !inv.getAvailableStacks().isEmpty()) {
             player.displayClientMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text(), true);
             return false;
         }
@@ -172,7 +162,9 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
         playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
 
         // Drop items from the recipe.
-        recipe.getCellDisassemblyItems().forEach(playerInventory::placeItemBackInInventory);
+        for (var disassembledStack : disassembledStacks) {
+            playerInventory.placeItemBackInInventory(disassembledStack.copy());
+        }
 
         // Drop upgrades
         getUpgrades(stack).forEach(playerInventory::placeItemBackInInventory);

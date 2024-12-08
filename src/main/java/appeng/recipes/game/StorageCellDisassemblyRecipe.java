@@ -1,7 +1,6 @@
 package appeng.recipes.game;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -11,7 +10,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -21,38 +19,35 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-import appeng.core.AELog;
 import appeng.recipes.AERecipeTypes;
 
 /**
  * Used to handle disassembly of the (Portable) Storage Cells.
  */
 public class StorageCellDisassemblyRecipe extends CustomRecipe {
-    public static final MapCodec<StorageCellDisassemblyRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> {
-        return builder.group(
-                BuiltInRegistries.ITEM.byNameCodec().fieldOf("cell")
-                        .forGetter(StorageCellDisassemblyRecipe::getStorageCell),
-                ItemStack.CODEC.listOf().optionalFieldOf("cell_disassembly_items")
-                        .forGetter(it -> Optional.ofNullable(it.getCellDisassemblyItems())))
-                .apply(builder,
-                        (cell, cDisassembly) -> new StorageCellDisassemblyRecipe(cell, cDisassembly.orElse(null)));
-    });
+    public static final MapCodec<StorageCellDisassemblyRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder
+            .group(
+                    BuiltInRegistries.ITEM.byNameCodec().fieldOf("cell")
+                            .forGetter(StorageCellDisassemblyRecipe::getStorageCell),
+                    ItemStack.CODEC.listOf().fieldOf("cell_disassembly_items")
+                            .forGetter(StorageCellDisassemblyRecipe::getCellDisassemblyItems))
+            .apply(builder, StorageCellDisassemblyRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, StorageCellDisassemblyRecipe> STREAM_CODEC = StreamCodec
             .composite(
                     ByteBufCodecs.registry(BuiltInRegistries.ITEM.key()),
                     StorageCellDisassemblyRecipe::getStorageCell,
-                    ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()).apply(ByteBufCodecs::optional),
-                    it -> Optional.ofNullable(it.getCellDisassemblyItems()),
-                    (cell, cDisassembly) -> new StorageCellDisassemblyRecipe(cell, cDisassembly.orElse(null)));
+                    ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()),
+                    StorageCellDisassemblyRecipe::getCellDisassemblyItems,
+                    StorageCellDisassemblyRecipe::new);
 
     private final List<ItemStack> disassemblyItems;
     private final Item storageCell;
 
     public StorageCellDisassemblyRecipe(Item storageCell, List<ItemStack> disassemblyItems) {
         super(CraftingBookCategory.MISC);
-        this.disassemblyItems = disassemblyItems;
         this.storageCell = storageCell;
+        this.disassemblyItems = disassemblyItems;
     }
 
     public Item getStorageCell() {
@@ -67,44 +62,26 @@ public class StorageCellDisassemblyRecipe extends CustomRecipe {
      * @return True when any Disassembly Output is specified.
      */
     public boolean canDisassemble() {
-        return this.disassemblyItems != null && !this.disassemblyItems.isEmpty();
+        return !this.disassemblyItems.isEmpty();
     }
 
     /**
-     * Used to get the disassembly recipe based on the provided ResourceLocation. If not found will do a lookup for
-     * recipes that specify provided storageCell.
-     * 
-     * @param level
-     * @param location ResourceLocation of the recipe to get.
-     * @param cell     Fallback Item to look for.
-     * @return If a single recipe is found - CraftingUnitTransformRecipe, otherwise null.
+     * Used to get the disassembly result based on recipes for the given cell.
+     *
+     * @param cell The cell item being disassembled.
+     * @return An empty list to indicate the cell cannot be disassembled. Note that stacks in the list must be copied by
+     *         the caller.
      */
-    public static StorageCellDisassemblyRecipe getDisassemblyRecipe(Level level, ResourceLocation location, Item cell) {
+    public static List<ItemStack> getDisassemblyResult(Level level, Item cell) {
         var recipeManager = level.getRecipeManager();
-        var recipeHolder = recipeManager.byKey(location);
 
-        // Checking the direct recipe first - if invalid, search for a correct one.
-        if (recipeHolder.isPresent() &&
-                recipeHolder.get().value() instanceof StorageCellDisassemblyRecipe recipe &&
-                recipe.canDisassemble() &&
-                recipe.getStorageCell() == cell)
-            return recipe;
-
-        var recipes = recipeManager
-                .byType(AERecipeTypes.CELL_DISASSEMBLY)
-                .stream()
-                .filter(it -> (it.value().getStorageCell() == cell && it.value().canDisassemble()))
-                .toList();
-
-        if (recipes.size() != 1) {
-            if (recipes.size() > 1) {
-                AELog.debug("Multiple disassembly recipes found for %s. Disassembly is impossible.", cell);
-                recipes.forEach(recipe -> AELog.debug("Recipe: %s", recipe.id()));
+        for (var holder : recipeManager.byType(AERecipeTypes.CELL_DISASSEMBLY)) {
+            if (holder.value().storageCell == cell) {
+                return holder.value().getCellDisassemblyItems();
             }
-            return null;
         }
 
-        return recipes.getFirst().value();
+        return List.of();
     }
 
     @Override

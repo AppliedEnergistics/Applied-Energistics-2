@@ -8,7 +8,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -88,7 +87,7 @@ public class UpgradeRecipes extends AE2RecipeProvider {
             }
 
             consumer.accept(
-                    AppEng.makeId("upgrade/" + tier.cell.id().getPath()),
+                    tier.cell.id().withPrefix("cell_upgrade/"),
                     new StorageCellDisassemblyRecipe(
                             tier.cell.asItem(),
                             results),
@@ -99,12 +98,10 @@ public class UpgradeRecipes extends AE2RecipeProvider {
     private void craftingUnitTransform(RecipeOutput consumer, List<UnitTransformTier> tiers) {
         for (UnitTransformTier tier : tiers) {
             consumer.accept(
-                    AppEng.makeId("upgrade/" + tier.baseBlock.id().getPath()),
+                    tier.baseBlock.id().withPrefix("crafting_unit_upgrade/"),
                     new CraftingUnitTransformRecipe(
-                            tier.baseBlock.id(),
-                            List.of(tier.upgradeItem.asItem()),
-                            List.of(tier.upgradeItem.stack()),
-                            null),
+                            tier.baseBlock.block(),
+                            tier.upgradeItem.asItem()),
                     null);
         }
     }

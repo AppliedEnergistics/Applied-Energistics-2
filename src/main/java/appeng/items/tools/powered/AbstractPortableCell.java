@@ -2,7 +2,6 @@ package appeng.items.tools.powered;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -25,8 +24,6 @@ import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.upgrades.Upgrades;
 import appeng.block.networking.EnergyCellBlockItem;
 import appeng.core.AEConfig;
-import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.contents.PortableCellMenuHost;
 import appeng.menu.MenuOpener;
@@ -108,43 +105,33 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
     }
 
     private boolean disassembleDrive(ItemStack stack, Level level, Player player) {
-        ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
-
-        if (itemId == BuiltInRegistries.ITEM.getDefaultKey()) {
-            AELog.debug("Cannot disassemble portable cell because its item is unregistered?");
+        var playerInventory = player.getInventory();
+        var disassemblyItems = StorageCellDisassemblyRecipe.getDisassemblyResult(level, stack.getItem());
+        if (disassemblyItems.isEmpty() || playerInventory.getSelected() != stack || stack.getCount() != 1) {
             return false;
         }
 
-        var recipe = StorageCellDisassemblyRecipe.getDisassemblyRecipe(level,
-                AppEng.makeId("upgrade/" + itemId.getPath()), stack.getItem());
-        if (recipe == null)
-            return false;
-        if (level.isClientSide())
-            return true;
-
-        var playerInventory = player.getInventory();
-        if (playerInventory.getSelected() != stack)
-            return false;
+        if (level.isClientSide()) {
+            return true; // Further checks cannot be done on the client
+        }
 
         var inv = StorageCells.getCellInventory(stack, null);
-        if (inv == null)
-            return false;
-
-        if (!inv.getAvailableStacks().isEmpty()) {
+        if (inv != null && !inv.getAvailableStacks().isEmpty()) {
             player.displayClientMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text(), true);
-            return true;
+            return true; // Prevents the UI from opening and overlaying the error message
         }
 
         playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
 
         double remainingEnergy = getAECurrentPower(stack);
-        for (ItemStack recipeStack : recipe.getCellDisassemblyItems()) {
+        for (var recipeStack : disassemblyItems) {
+            var droppedStack = recipeStack.copy();
             // Dump remaining energy into whatever can accept it
-            if (remainingEnergy > 0 && recipeStack.getItem() instanceof EnergyCellBlockItem energyCell) {
-                remainingEnergy = energyCell.injectAEPower(recipeStack, remainingEnergy, Actionable.MODULATE);
+            if (remainingEnergy > 0 && droppedStack.getItem() instanceof EnergyCellBlockItem energyCell) {
+                remainingEnergy = energyCell.injectAEPower(droppedStack, remainingEnergy, Actionable.MODULATE);
             }
 
-            playerInventory.placeItemBackInInventory(recipeStack);
+            playerInventory.placeItemBackInInventory(droppedStack);
         }
 
         // Drop upgrades

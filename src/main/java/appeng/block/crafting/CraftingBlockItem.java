@@ -18,21 +18,14 @@
 
 package appeng.block.crafting;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 import appeng.block.AEBaseBlockItem;
-import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.recipes.game.CraftingUnitTransformRecipe;
 import appeng.util.InteractionUtil;
@@ -49,34 +42,17 @@ public class CraftingBlockItem extends AEBaseBlockItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             ItemStack stack = player.getItemInHand(hand);
-            ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
 
-            if (itemId == BuiltInRegistries.ITEM.getDefaultKey()) {
-                AELog.debug("Cannot disassemble crafting block because its item is unregistered?");
+            var removedUpgrade = CraftingUnitTransformRecipe.getRemovedUpgrade(level, getBlock());
+            if (removedUpgrade.isEmpty()) {
                 return super.use(level, player, hand);
             }
-
-            var recipe = CraftingUnitTransformRecipe.getDisassemblyRecipe(level,
-                    AppEng.makeId("upgrade/" + itemId.getPath()), itemId);
-            if (recipe == null)
-                return super.use(level, player, hand);
 
             int itemCount = stack.getCount();
             player.setItemInHand(hand, ItemStack.EMPTY);
 
             var inv = player.getInventory();
-            if (recipe.useLootTable()) {
-                // Because this is a loot-table, and there might be chance-dependent conditions,
-                // we need to roll the loot table for each item.
-                LootParams params = new LootParams.Builder((ServerLevel) level).create(LootContextParamSets.EMPTY);
-                for (int i = 0; i < itemCount; i++) {
-                    recipe.getDisassemblyLoot(level, params).forEach(inv::placeItemBackInInventory);
-                }
-            } else {
-                recipe.getDisassemblyItems()
-                        .forEach(item -> inv.placeItemBackInInventory(item.copyWithCount(item.getCount() * itemCount)));
-            }
-
+            inv.placeItemBackInInventory(removedUpgrade.copyWithCount(removedUpgrade.getCount() * itemCount));
             // This is hard-coded, as this is always a base block.
             inv.placeItemBackInInventory(AEBlocks.CRAFTING_UNIT.stack(itemCount));
 

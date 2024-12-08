@@ -28,7 +28,8 @@ public final class AERecipeTypes {
     public static final RecipeType<ChargerRecipe> CHARGER = register("charger");
     public static final RecipeType<MatterCannonAmmo> MATTER_CANNON_AMMO = register("matter_cannon");
     public static final RecipeType<QuartzCuttingRecipe> QUARTZ_CUTTING = register("quartz_cutting");
-    public static final RecipeType<CraftingUnitTransformRecipe> UNIT_TRANSFORM = register("crafting_unit_transform");
+    public static final RecipeType<CraftingUnitTransformRecipe> CRAFTING_UNIT_TRANSFORM = register(
+            "crafting_unit_transform");
     public static final RecipeType<StorageCellDisassemblyRecipe> CELL_DISASSEMBLY = register(
             "storage_cell_disassembly");
 
