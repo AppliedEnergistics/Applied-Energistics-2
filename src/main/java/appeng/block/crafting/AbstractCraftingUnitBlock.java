@@ -202,7 +202,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     }
 
     private boolean transform(Level level, BlockPos pos, BlockState state) {
-        if (level.isClientSide() || !level.setBlock(pos, state, UPDATE_ALL)) {
+        if (level.isClientSide() || !level.removeBlock(pos, false) || !level.setBlock(pos, state, UPDATE_ALL)) {
             return false;
         }
 
@@ -211,9 +211,9 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
                 pos.getX(),
                 pos.getY(),
                 pos.getZ(),
-                SoundEvents.AMETHYST_BLOCK_HIT,
+                SoundEvents.ITEM_FRAME_REMOVE_ITEM,
                 SoundSource.BLOCKS,
-                1f,
+                0.5f,
                 1f);
         return true;
     }
