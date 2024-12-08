@@ -34,6 +34,7 @@ import dev.emi.emi.api.widget.Widget;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
+import appeng.core.AEConfig;
 import appeng.integration.modules.itemlists.EncodingHelper;
 import appeng.integration.modules.itemlists.TransferHelper;
 import appeng.menu.AEBaseMenu;
@@ -75,6 +76,10 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements StandardRe
 
     @Override
     public EmiPlayerInventory getInventory(AbstractContainerScreen<T> screen) {
+        if (!AEConfig.instance().isExposeNetworkInventoryToEmi()) {
+            return StandardRecipeHandler.super.getInventory(screen);
+        }
+
         var list = new ArrayList<EmiStack>();
 
         for (Slot slot : getInputSources(screen.getMenu())) {
@@ -86,6 +91,9 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements StandardRe
 
             if (repo != null) {
                 for (var entry : repo.getAllEntries()) {
+                    if (entry.getStoredAmount() <= 0) {
+                        continue; // Skip items that are only craftable
+                    }
                     list.add(EmiStackHelper.toEmiStack(new GenericStack(entry.getWhat(), entry.getStoredAmount())));
                 }
             }
