@@ -26,13 +26,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.FuzzyMode;
@@ -47,16 +45,12 @@ import appeng.core.localization.PlayerMessages;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
+import appeng.recipes.game.StorageCellDisassemblyRecipe;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AEToolItem {
-    /**
-     * This can be retrieved when disassembling the storage cell.
-     */
-    protected final ItemLike coreItem;
-    protected final ItemLike housingItem;
     protected final double idleDrain;
     protected final int totalBytes;
     protected final int bytesPerType;
@@ -64,8 +58,6 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     private final AEKeyType keyType;
 
     public BasicStorageCell(Properties properties,
-            ItemLike coreItem,
-            ItemLike housingItem,
             double idleDrain,
             int kilobytes,
             int bytesPerType,
@@ -74,8 +66,6 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
         super(properties);
         this.idleDrain = idleDrain;
         this.totalBytes = kilobytes * 1024;
-        this.coreItem = coreItem;
-        this.housingItem = housingItem;
         this.bytesPerType = bytesPerType;
         this.totalTypes = totalTypes;
         this.keyType = keyType;
@@ -149,36 +139,37 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     }
 
     private boolean disassembleDrive(ItemStack stack, Level level, Player player) {
-        if (InteractionUtil.isInAlternateUseMode(player)) {
-            if (level.isClientSide()) {
-                return false;
-            }
-
-            final Inventory playerInventory = player.getInventory();
-            var inv = StorageCells.getCellInventory(stack, null);
-            if (inv != null && playerInventory.getSelected() == stack) {
-                var list = inv.getAvailableStacks();
-                if (list.isEmpty()) {
-                    playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
-
-                    // drop core
-                    playerInventory.placeItemBackInInventory(new ItemStack(coreItem));
-
-                    // drop upgrades
-                    for (var upgrade : this.getUpgrades(stack)) {
-                        playerInventory.placeItemBackInInventory(upgrade);
-                    }
-
-                    // drop empty storage cell case
-                    playerInventory.placeItemBackInInventory(new ItemStack(housingItem));
-
-                    return true;
-                } else {
-                    player.displayClientMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text(), true);
-                }
-            }
+        if (!InteractionUtil.isInAlternateUseMode(player)) {
+            return false;
         }
-        return false;
+
+        var disassembledStacks = StorageCellDisassemblyRecipe.getDisassemblyResult(level, stack.getItem());
+        if (disassembledStacks.isEmpty()) {
+            return false;
+        }
+
+        var playerInventory = player.getInventory();
+        if (playerInventory.getSelected() != stack) {
+            return false;
+        }
+
+        var inv = StorageCells.getCellInventory(stack, null);
+        if (inv != null && !inv.getAvailableStacks().isEmpty()) {
+            player.displayClientMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text(), true);
+            return false;
+        }
+
+        playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
+
+        // Drop items from the recipe.
+        for (var disassembledStack : disassembledStacks) {
+            playerInventory.placeItemBackInInventory(disassembledStack.copy());
+        }
+
+        // Drop upgrades
+        getUpgrades(stack).forEach(playerInventory::placeItemBackInInventory);
+
+        return true;
     }
 
     @Override

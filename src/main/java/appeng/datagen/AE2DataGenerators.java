@@ -55,6 +55,7 @@ import appeng.datagen.providers.recipes.QuartzCuttingRecipesProvider;
 import appeng.datagen.providers.recipes.SmeltingRecipes;
 import appeng.datagen.providers.recipes.SmithingRecipes;
 import appeng.datagen.providers.recipes.TransformRecipes;
+import appeng.datagen.providers.recipes.UpgradeRecipes;
 import appeng.datagen.providers.tags.BiomeTagsProvider;
 import appeng.datagen.providers.tags.BlockTagsProvider;
 import appeng.datagen.providers.tags.DataComponentTypeTagProvider;
@@ -118,6 +119,7 @@ public class AE2DataGenerators {
         pack.addProvider(bindRegistries(TransformRecipes::new, registries));
         pack.addProvider(bindRegistries(ChargerRecipes::new, registries));
         pack.addProvider(bindRegistries(QuartzCuttingRecipesProvider::new, registries));
+        pack.addProvider(bindRegistries(UpgradeRecipes::new, registries));
 
         // Must run last
         pack.addProvider(packOutput -> localization);

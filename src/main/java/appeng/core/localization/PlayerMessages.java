@@ -26,6 +26,7 @@ public enum PlayerMessages implements LocalizationEnum {
     ClickToShowDetails("Click to show details"),
     ClickToTeleport("Click to teleport into plot"),
     CommunicationError("Error Communicating with Network."),
+    CraftingCpuBusy("This crafting CPU is busy!"),
     DeviceNotLinked("Device is not linked."),
     LinkedNetworkNotFound("Linked network cannot be found"),
     DeviceNotPowered("Device is low on power."),

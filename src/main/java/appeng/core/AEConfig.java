@@ -299,10 +299,6 @@ public final class AEConfig {
         return common.tinyTntBlockDamage.get();
     }
 
-    public boolean isDisassemblyCraftingEnabled() {
-        return common.disassemblyCrafting.get();
-    }
-
     public int getGrowthAcceleratorSpeed() {
         return common.growthAcceleratorSpeed.get();
     }
@@ -339,10 +335,6 @@ public final class AEConfig {
      */
     public boolean isPlacementPreviewEnabled() {
         return client.showPlacementPreview.get();
-    }
-
-    public boolean isPortableCellDisassemblyEnabled() {
-        return common.portableCellDisassembly.get();
     }
 
     // Tooltip settings
@@ -534,7 +526,6 @@ public final class AEConfig {
         public final IntValue pathfindingStepsPerTick;
         public final BooleanValue spatialAnchorEnableRandomTicks;
 
-        public final BooleanValue disassemblyCrafting;
         public final IntValue growthAcceleratorSpeed;
         public final BooleanValue annihilationPlaneSkyDustGeneration;
 
@@ -570,9 +561,6 @@ public final class AEConfig {
         public final DoubleValue wirelessBoosterRangeMultiplier;
         public final DoubleValue wirelessBoosterExp;
         public final DoubleValue wirelessHighWirelessCount;
-
-        // Portable Cells
-        public final BooleanValue portableCellDisassembly;
 
         // Power Ratios
         public final DoubleValue powerRatioForgeEnergy;
@@ -624,8 +612,6 @@ public final class AEConfig {
             builder.pop();
 
             builder.push("crafting");
-            disassemblyCrafting = define(builder, "disassemblyCrafting", true,
-                    "Enable shift-clicking with the crafting units in hand to disassemble them.");
             growthAcceleratorSpeed = define(builder, "growthAccelerator", 10, 1, 100,
                     "Number of ticks between two crystal growth accelerator ticks");
             annihilationPlaneSkyDustGeneration = define(builder, "annihilationPlaneSkyDustGeneration", true,
@@ -671,11 +657,6 @@ public final class AEConfig {
             this.wirelessBoosterExp = define(builder, "wirelessBoosterExp", 1.5);
             this.wirelessHighWirelessCount = define(builder, "wirelessHighWirelessCount", 64.0);
             this.wirelessTerminalDrainMultiplier = define(builder, "wirelessTerminalDrainMultiplier", 1.0);
-            builder.pop();
-
-            builder.push("portableCells");
-            portableCellDisassembly = define(builder, "allowDisassembly", true,
-                    "Allow disassembly of portable cells into the recipe ingredients using shift+right-click");
             builder.pop();
 
             builder.push("powerRatios");
