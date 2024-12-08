@@ -490,7 +490,7 @@ publishing {
             artifactId = project.archivesBaseName
             version = project.version
 
-            artifact shadowJar
+            artifact reobfShadowJar
             artifact sourcesJar
             artifact javadocJar
             artifact apiJar
