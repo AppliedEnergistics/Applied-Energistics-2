@@ -41,7 +41,6 @@ import appeng.api.implementations.items.IFacadeItem;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartHelper;
-import appeng.core.AEConfig;
 import appeng.facade.FacadePart;
 import appeng.items.AEBaseItem;
 
@@ -151,7 +150,6 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
 
         BlockState blockState = block.defaultBlockState();
 
-        final boolean areBlockEntitiesEnabled = AEConfig.instance().isBlockEntityFacadesEnabled();
         final boolean isWhiteListed = block.builtInRegistryHolder().is(AETags.FACADE_BLOCK_WHITELIST);
         final boolean isModel = blockState.getRenderShape() == RenderShape.MODEL;
 
@@ -159,8 +157,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
         final boolean isBlockEntity = defaultState.hasBlockEntity();
         final boolean isFullCube = defaultState.isCollisionShapeFullBlock(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
 
-        // TODO ignore the block entity config option when the block is whitelisted
-        final boolean isBlockEntityAllowed = !isBlockEntity || areBlockEntitiesEnabled && isWhiteListed;
+        final boolean isBlockEntityAllowed = !isBlockEntity || isWhiteListed;
         final boolean isBlockAllowed = isFullCube || isWhiteListed;
 
         if (isModel && isBlockEntityAllowed && isBlockAllowed) {

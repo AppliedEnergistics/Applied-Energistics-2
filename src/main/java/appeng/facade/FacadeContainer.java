@@ -33,6 +33,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.implementations.items.IFacadeItem;
@@ -43,7 +44,7 @@ import appeng.parts.CableBusStorage;
 
 public class FacadeContainer implements IFacadeContainer {
     private static final StreamCodec<ByteBuf, BlockState> BLOCK_STATE_STREAM_CODEC = ByteBufCodecs
-            .fromCodec(BlockState.CODEC);
+            .idMapper(Block.BLOCK_STATE_REGISTRY);
 
     /**
      * Key names to store facades

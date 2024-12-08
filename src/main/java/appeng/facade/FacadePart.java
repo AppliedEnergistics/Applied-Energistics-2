@@ -18,44 +18,34 @@
 
 package appeng.facade;
 
-import java.util.Collection;
 import java.util.Objects;
-
-import javax.annotation.Nullable;
 
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.DebugStickState;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 
+import appeng.api.ids.AEComponents;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.core.definitions.AEItems;
+import appeng.core.localization.PlayerMessages;
 import appeng.util.InteractionUtil;
 
 public class FacadePart implements IFacadePart {
 
-    private BlockState facade;
     private final Direction side;
+    private BlockState facade;
 
     public FacadePart(BlockState facade, Direction side) {
-        Objects.requireNonNull(side, "side");
-        Objects.requireNonNull(facade, "facade");
-        this.facade = facade;
-        this.side = side;
+        this.side = Objects.requireNonNull(side, "side");
+        this.facade = Objects.requireNonNull(facade, "facade");
     }
 
     @Override
@@ -113,54 +103,47 @@ public class FacadePart implements IFacadePart {
         return handleInteraction(player, false, heldItem);
     }
 
-    private boolean handleInteraction(Player player, boolean shouldCycleState, ItemStack debugStack) {
-        Holder<Block> holder = getBlockState().getBlockHolder();
-        StateDefinition<Block, BlockState> statedefinition = holder.value().getStateDefinition();
-        Collection<Property<?>> collection = statedefinition.getProperties();
-        if (collection.isEmpty()) {
-            message(player,
-                    Component.translatable(Items.DEBUG_STICK.getDescriptionId() + ".empty",
-                            holder.getRegisteredName()));
+    private boolean handleInteraction(Player player, boolean shouldCycleState, ItemStack heldItem) {
+        var holder = getBlockState().getBlockHolder();
+        var statedefinition = holder.value().getStateDefinition();
+        var properties = statedefinition.getProperties();
+        if (properties.isEmpty()) {
             return false;
         }
 
-        DebugStickState debugstickstate = debugStack.getOrDefault(DataComponents.DEBUG_STICK_STATE,
-                DebugStickState.EMPTY);
+        var firstProperty = properties.iterator().next();
+        var cyclePropertyName = heldItem.getOrDefault(AEComponents.FACADE_CYCLE_PROPERTY, firstProperty.getName());
+        var property = statedefinition.getProperty(cyclePropertyName);
+        if (property == null) {
+            // Fall back to the first property if the wrench was set to a property that does not exist on this facade
+            property = firstProperty;
+        }
 
-        Property<?> property = debugstickstate.properties().get(holder);
         if (shouldCycleState) {
-            if (property == null) {
-                property = collection.iterator().next();
-            }
+            var newState = getBlockState().cycle(property);
+            setBlockState(newState);
 
-            setBlockState(cycleState(getBlockState(), property, player.isSecondaryUseActive()));
-            message(player, Component.translatable(Items.DEBUG_STICK.getDescriptionId() + ".update",
-                    property.getName(), getNameHelper(getBlockState(), property)));
+            // If we reached the default value of the property, we consider that wrapping and show
+            // a message indicating to the player that they can left-click to change which property is cycled
+            var defaultValue = getBlockState().getBlock().defaultBlockState().getValue(property);
+            if (Objects.equals(newState.getValue(property), defaultValue)) {
+                message(player, PlayerMessages.FacadePropertyWrapped.text(property.getName()));
+            }
         } else {
-            property = getRelative(collection, property, player.isSecondaryUseActive());
-            debugStack.set(DataComponents.DEBUG_STICK_STATE, debugstickstate.withProperty(holder, property));
-            message(player, Component.translatable(Items.DEBUG_STICK.getDescriptionId() + ".select",
-                    property.getName(), getNameHelper(getBlockState(), property)));
+            property = Util.findNextInIterable(properties, property);
+            if (property == firstProperty) {
+                heldItem.remove(AEComponents.FACADE_CYCLE_PROPERTY);
+            } else {
+                heldItem.set(AEComponents.FACADE_CYCLE_PROPERTY, property.getName());
+            }
+            message(player, PlayerMessages.FacadePropertySelected.text(property.getName()));
         }
         return true;
     }
 
-    private static <T extends Comparable<T>> BlockState cycleState(BlockState state, Property<T> property,
-            boolean backwards) {
-        return state.setValue(property, getRelative(property.getPossibleValues(), state.getValue(property), backwards));
-    }
-
-    private static <T> T getRelative(Iterable<T> allowedValues, @Nullable T currentValue, boolean backwards) {
-        return backwards ? Util.findPreviousInIterable(allowedValues, currentValue)
-                : Util.findNextInIterable(allowedValues, currentValue);
-    }
-
     private static void message(Player player, Component messageComponent) {
-        if (player instanceof ServerPlayer serverPlayer)
+        if (player instanceof ServerPlayer serverPlayer) {
             serverPlayer.sendSystemMessage(messageComponent, true);
-    }
-
-    private static <T extends Comparable<T>> String getNameHelper(BlockState state, Property<T> property) {
-        return property.getName(state.getValue(property));
+        }
     }
 }

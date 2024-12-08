@@ -630,7 +630,6 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             final IPart part = this.getPart(s);
             if (part != null) {
                 part.onEntityCollision(entity);
-                markForUpdate();
             }
         }
     }
