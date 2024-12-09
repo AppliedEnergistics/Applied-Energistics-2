@@ -217,6 +217,7 @@
   "chat.ae2.ClickToTeleport": "Klicke hier, um dich in das Areal zu teleportieren",
   "chat.ae2.CommunicationError": "Fehler beim Kommunizieren mit dem Netzwerk.",
   "chat.ae2.CompassTestSection": "Sektion [y=%d-%d] %d: %b",
+  "chat.ae2.CraftingCpuBusy": "Diese fertige CPU ist beschäftigt!",
   "chat.ae2.DeviceNotLinked": "Gerät ist nicht verbunden.",
   "chat.ae2.DeviceNotPowered": "Gerät hat zu wenig Energie",
   "chat.ae2.InvalidMachine": "Die Konfiguration konnte nicht von einem inkompatiblen Gerät geladen werden.",

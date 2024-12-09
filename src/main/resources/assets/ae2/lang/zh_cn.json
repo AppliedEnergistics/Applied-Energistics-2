@@ -217,6 +217,7 @@
   "chat.ae2.ClickToTeleport": "点击传送到该区域",
   "chat.ae2.CommunicationError": "网络交互错误",
   "chat.ae2.CompassTestSection": "选区 [y=%d-%d] %d: %b",
+  "chat.ae2.CraftingCpuBusy": "CPU正忙！",
   "chat.ae2.DeviceNotLinked": "设备未链接",
   "chat.ae2.DeviceNotPowered": "设备供能不足",
   "chat.ae2.InvalidMachine": "无法从不兼容的设备加载配置。",

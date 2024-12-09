@@ -217,6 +217,7 @@
   "chat.ae2.ClickToTeleport": "クリックしてプロットにテレポートします",
   "chat.ae2.CommunicationError": "ネットワーク通信エラー。",
   "chat.ae2.CompassTestSection": "セクション [y=%d-%d] %d: %b",
+  "chat.ae2.CraftingCpuBusy": "このクラフトCPUは忙しいです！",
   "chat.ae2.DeviceNotLinked": "デバイスはリンクされていません。",
   "chat.ae2.DeviceNotPowered": "デバイスの電力が低下しています。",
   "chat.ae2.InvalidMachine": "互換性のないデバイスから設定を読み込めませんでした。",

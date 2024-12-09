@@ -217,6 +217,7 @@
   "chat.ae2.ClickToTeleport": "Klicka för att teleportera till tomt",
   "chat.ae2.CommunicationError": "Fel uppstod under kommunikation med nätverket.",
   "chat.ae2.CompassTestSection": "Avsnitt [y=%d-%d] %d: %b",
+  "chat.ae2.CraftingCpuBusy": "Denna crafting CPU är upptagen!",
   "chat.ae2.DeviceNotLinked": "Enheten är inte länkad.",
   "chat.ae2.DeviceNotPowered": "Enheten har för lite ström.",
   "chat.ae2.InvalidMachine": "Kunde inte ladda konfiguration från en inkompatibel enhet.",
