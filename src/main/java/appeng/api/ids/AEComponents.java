@@ -268,6 +268,12 @@ public final class AEComponents {
                     .networkSynchronized(ByteBufCodecs.holderRegistry(Registries.ITEM)));
 
     /**
+     * Which property of a facade blockstate the wrench is currently cycling through.
+     */
+    public static final DataComponentType<String> FACADE_CYCLE_PROPERTY = register("facade_cycle_property",
+            builder -> builder.persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8));
+
+    /**
      * The generic stack wrapped in a {@link AEItems#WRAPPED_GENERIC_STACK}
      */
     public static final DataComponentType<GenericStack> WRAPPED_STACK = register("wrapped_stack",

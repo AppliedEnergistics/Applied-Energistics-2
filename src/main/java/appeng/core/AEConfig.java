@@ -192,10 +192,6 @@ public final class AEConfig {
     }
 
     // Getters
-    public boolean isBlockEntityFacadesEnabled() {
-        return common.allowBlockEntityFacades.get();
-    }
-
     public boolean isDebugToolsEnabled() {
         return common.debugTools.get();
     }
@@ -525,7 +521,6 @@ public final class AEConfig {
         // Misc
         public final IntValue formationPlaneEntityLimit;
         public final IntValue craftingCalculationTimePerTick;
-        public final BooleanValue allowBlockEntityFacades;
         public final BooleanValue debugTools;
         public final BooleanValue matterCannonBlockDamage;
         public final BooleanValue tinyTntBlockDamage;
@@ -607,11 +602,6 @@ public final class AEConfig {
 
             builder.push("automation");
             formationPlaneEntityLimit = define(builder, "formationPlaneEntityLimit", 128);
-            builder.pop();
-
-            builder.push("facades");
-            allowBlockEntityFacades = define(builder, "allowBlockEntities", false,
-                    "Unsupported: Allows whitelisting block entities as facades. Could work, have render issues, or corrupt your world. USE AT YOUR OWN RISK.");
             builder.pop();
 
             builder.push("craftingCPU");

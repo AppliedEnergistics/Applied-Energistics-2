@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 /**
  * Used Internally.
@@ -77,7 +77,7 @@ public interface IFacadeContainer {
      *
      * @return true if it was readable
      */
-    boolean readFromStream(FriendlyByteBuf data);
+    boolean readFromStream(RegistryFriendlyByteBuf data);
 
     /**
      * read from NBT
@@ -92,7 +92,7 @@ public interface IFacadeContainer {
      *
      * @param data to be written data
      */
-    void writeToStream(FriendlyByteBuf data);
+    void writeToStream(RegistryFriendlyByteBuf data);
 
     /**
      * @return true if there are no facades.

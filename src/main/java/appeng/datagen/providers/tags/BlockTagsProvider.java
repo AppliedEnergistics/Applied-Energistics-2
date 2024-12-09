@@ -55,7 +55,15 @@ public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implem
                 .addOptionalTag(ConventionTags.IMMOVABLE_BLOCKS.location());
         tag(AETags.ANNIHILATION_PLANE_BLOCK_BLACKLIST);
         tag(AETags.FACADE_BLOCK_WHITELIST)
-                .add(AEBlocks.QUARTZ_GLASS.block(), AEBlocks.QUARTZ_VIBRANT_GLASS.block())
+                .add(AEBlocks.QUARTZ_GLASS.block(), AEBlocks.QUARTZ_VIBRANT_GLASS.block(),
+                        Blocks.CHISELED_BOOKSHELF, Blocks.JUKEBOX, Blocks.FURNACE, Blocks.BLAST_FURNACE, Blocks.DROPPER,
+                        Blocks.DISPENSER, Blocks.CRAFTER, Blocks.BARREL, Blocks.BEE_NEST, Blocks.BEEHIVE,
+                        Blocks.SCULK_CATALYST, Blocks.SOUL_SAND, Blocks.HONEY_BLOCK,
+                        AEBlocks.CONTROLLER.block(), AEBlocks.CRAFTING_STORAGE_1K.block(),
+                        AEBlocks.CRAFTING_STORAGE_4K.block(), AEBlocks.CRAFTING_STORAGE_16K.block(),
+                        AEBlocks.CRAFTING_STORAGE_64K.block(), AEBlocks.CRAFTING_STORAGE_256K.block(),
+                        AEBlocks.CRAFTING_MONITOR.block(), AEBlocks.CRAFTING_UNIT.block(),
+                        AEBlocks.CRAFTING_ACCELERATOR.block())
                 .addOptionalTag(ConventionTags.GLASS_BLOCK.location());
         tag(AETags.GROWTH_ACCELERATABLE)
                 // TODO: Should all be in some conventional tag

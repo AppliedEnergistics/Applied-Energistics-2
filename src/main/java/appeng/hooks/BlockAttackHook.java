@@ -100,6 +100,13 @@ public final class BlockAttackHook {
                 // Do not perform the default action (of spawning break particles and breaking the block)
                 return true;
             }
+        } else if (p.facade != null) {
+            if (p.facade.onClicked(player, localPos)) {
+                ServerboundPacket message = new PartLeftClickPacket(hitResult, false);
+                PacketDistributor.sendToServer(message);
+                // Do not perform the default action (of spawning break particles and breaking the block)
+                return true;
+            }
         }
 
         return false;

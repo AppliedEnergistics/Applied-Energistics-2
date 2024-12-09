@@ -20,15 +20,12 @@ package appeng.items.parts;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.EmptyBlockGetter;
 import net.minecraft.world.level.Level;
@@ -44,8 +41,6 @@ import appeng.api.implementations.items.IFacadeItem;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartHelper;
-import appeng.core.AEConfig;
-import appeng.core.definitions.AEItems;
 import appeng.facade.FacadePart;
 import appeng.items.AEBaseItem;
 
@@ -153,18 +148,16 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
             return ItemStack.EMPTY;
         }
 
-        // We only support the default state for facades. Sorry.
         BlockState blockState = block.defaultBlockState();
 
-        final boolean areBlockEntitiesEnabled = AEConfig.instance().isBlockEntityFacadesEnabled();
         final boolean isWhiteListed = block.builtInRegistryHolder().is(AETags.FACADE_BLOCK_WHITELIST);
         final boolean isModel = blockState.getRenderShape() == RenderShape.MODEL;
 
         final BlockState defaultState = block.defaultBlockState();
         final boolean isBlockEntity = defaultState.hasBlockEntity();
-        final boolean isFullCube = defaultState.isRedstoneConductor(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
+        final boolean isFullCube = defaultState.isCollisionShapeFullBlock(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
 
-        final boolean isBlockEntityAllowed = !isBlockEntity || areBlockEntitiesEnabled && isWhiteListed;
+        final boolean isBlockEntityAllowed = !isBlockEntity || isWhiteListed;
         final boolean isBlockAllowed = isFullCube || isWhiteListed;
 
         if (isModel && isBlockEntityAllowed && isBlockAllowed) {
@@ -187,7 +180,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
     public FacadePart createPartFromItemStack(ItemStack is, Direction side) {
         final ItemStack in = this.getTextureItem(is);
         if (!in.isEmpty()) {
-            return new FacadePart(is, side);
+            return new FacadePart(getTextureBlockState(is), side);
         }
         return null;
     }
@@ -219,17 +212,5 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
         }
 
         return block.defaultBlockState();
-    }
-
-    public ItemStack createFromID(int id) {
-        // Convert back to a registry name...
-        Item item = BuiltInRegistries.ITEM.byId(id);
-        if (item == Items.AIR) {
-            return ItemStack.EMPTY;
-        }
-
-        var facadeStack = AEItems.FACADE.stack();
-        facadeStack.set(AEComponents.FACADE_ITEM, item.getDefaultInstance().getItemHolder());
-        return facadeStack;
     }
 }

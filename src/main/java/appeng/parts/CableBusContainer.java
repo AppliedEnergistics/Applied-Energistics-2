@@ -639,6 +639,13 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         final SelectedPart p = this.selectPartLocal(localPos);
         if (p != null && p.part != null) {
             return p.part.onUseItemOn(heldItem, player, hand, localPos);
+        } else if (p != null && p.facade != null) {
+            if (p.facade.onUseItemOn(heldItem, player, hand, localPos)) {
+                // facade changed state
+                markForSave();
+                markForUpdate();
+                return true;
+            }
         }
         return false;
     }
@@ -1007,11 +1014,10 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         final IFacadePart facade = this.storage.getFacade(side);
 
         if (facade != null) {
-            final ItemStack textureItem = facade.getTextureItem();
             final BlockState blockState = facade.getBlockState();
 
             Level level = getBlockEntity().getLevel();
-            if (blockState != null && textureItem != null && level != null) {
+            if (blockState != null && level != null) {
                 return new FacadeRenderState(blockState,
                         !facade.getBlockState().isSolidRender(level, getBlockEntity().getBlockPos()));
             }

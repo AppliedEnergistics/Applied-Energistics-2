@@ -75,7 +75,10 @@ public enum PlayerMessages implements LocalizationEnum {
     MaxUpgradesOfTypeInstalled("No further upgrade cards of this type can be installed."),
     MaxUpgradesInstalled("The upgrade capacity of this machine has been reached."),
     UnknownHotkey("Unknown Hotkey: "),
-    SpecialThanks("Special thanks to %s");
+    SpecialThanks("Special thanks to %s"),
+    FacadePropertySelected("Now cycling through property '%s'."),
+    FacadePropertyWrapped(
+            "Wrapped around to the first value of '%s'. You can change properties by hitting the facade.");
 
     private final String englishText;
 
