@@ -217,6 +217,7 @@
   "chat.ae2.ClickToTeleport": "Нажмите, чтобы телепортироваться на участок",
   "chat.ae2.CommunicationError": "Ошибка связи с сетью.",
   "chat.ae2.CompassTestSection": "Выделение [y=%d-%d] %d: %b",
+  "chat.ae2.CraftingCpuBusy": "Этот процессор для крафта занят!",
   "chat.ae2.DeviceNotLinked": "Устройство не сопряжено.",
   "chat.ae2.DeviceNotPowered": "У устройства мало энергии.",
   "chat.ae2.InvalidMachine": "Не удалось загрузить конфигурацию с несовместимого устройства.",

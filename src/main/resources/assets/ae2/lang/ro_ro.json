@@ -216,6 +216,7 @@
   "chat.ae2.ClickToTeleport": "Click pentru a te teleporta la grafic",
   "chat.ae2.CommunicationError": "Eroare Comunicând cu Reţeaua.",
   "chat.ae2.CompassTestSection": "Secțiunea [y=%d-%d] %d: %b",
+  "chat.ae2.CraftingCpuBusy": "Acest crafting CPU este ocupat!",
   "chat.ae2.DeviceNotLinked": "Dispozitivul nu este conectat.",
   "chat.ae2.DeviceNotPowered": "Mașinăria are energie puţină.",
   "chat.ae2.LastTransition": "Ultima tranziție:",

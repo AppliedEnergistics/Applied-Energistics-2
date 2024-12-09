@@ -217,6 +217,7 @@
   "chat.ae2.ClickToTeleport": "Clicca per teletrasportarti nella trama",
   "chat.ae2.CommunicationError": "Errore nel communicare col Sistema.",
   "chat.ae2.CompassTestSection": "Sezione [y=%d-%d] %d: %b",
+  "chat.ae2.CraftingCpuBusy": "Questa CPU artigianale è occupata!",
   "chat.ae2.DeviceNotLinked": "Dispositivo non è collegato is not linked.",
   "chat.ae2.DeviceNotPowered": "Dispositivo a corto di energia.",
   "chat.ae2.InvalidMachine": "Impossibile caricare la configurazione da un dispositivo incompatibile.",

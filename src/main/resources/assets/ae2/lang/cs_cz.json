@@ -214,6 +214,7 @@
   "chat.ae2.ClickToTeleport": "Klikněte pro teleportování do grafu",
   "chat.ae2.CommunicationError": "Chyba při komunikaci se sítí.",
   "chat.ae2.CompassTestSection": "Sekce [y=%d-%d] %d: %b",
+  "chat.ae2.CraftingCpuBusy": "Tato výroba CPU je zaneprázdná!",
   "chat.ae2.DeviceNotLinked": "Zařízení není připojeno.",
   "chat.ae2.DeviceNotPowered": "Zařízení je vybité.",
   "chat.ae2.LastTransition": "Poslední přechod:",

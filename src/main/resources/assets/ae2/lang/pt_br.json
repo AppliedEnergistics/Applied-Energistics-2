@@ -217,6 +217,7 @@
   "chat.ae2.ClickToTeleport": "Clique para teletransportar para o terreno",
   "chat.ae2.CommunicationError": "Erro ao comunicar com a rede.",
   "chat.ae2.CompassTestSection": "Seção [y=%d-%d] %d: %b",
+  "chat.ae2.CraftingCpuBusy": "Esta crafting CPU está ocupada!",
   "chat.ae2.DeviceNotLinked": "Dispositivo não conectado.",
   "chat.ae2.DeviceNotPowered": "Dispositivo está com baixa energia.",
   "chat.ae2.InvalidMachine": "Não foi possível carregar a configuração de um dispositivo incompatível.",
