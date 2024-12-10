@@ -216,7 +216,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
     @Override
     public boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos) {
-        if (!this.isLocked) {
+        if (!this.isLocked && !InteractionUtil.isInAlternateUseMode(player)) {
             if (isClientSide()) {
                 return true;
             }
@@ -240,7 +240,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             return true;
         }
 
-        return super.onUseWithoutItem(player, pos);
+        return super.onUseItemOn(heldItem, player, hand, pos);
     }
 
     // update the system...

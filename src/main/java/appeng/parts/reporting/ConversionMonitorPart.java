@@ -78,15 +78,15 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMe
             return false;
         }
 
-        if (this.isLocked()) {
+        if (this.isLocked() && !InteractionUtil.isInAlternateUseMode(player)) {
             if (InteractionUtil.canWrenchRotate(heldItem)
                     && (this.getDisplayed() == null || !AEItemKey.matches(getDisplayed(), heldItem))) {
                 // wrench it
                 return super.onUseWithoutItem(player, pos);
-            } else {
+            } else if (!heldItem.isEmpty()) {
                 this.insertItem(player, heldItem);
+                return true;
             }
-            return true;
         } else if (this.getDisplayed() != null && AEItemKey.matches(getDisplayed(), heldItem)) {
             this.insertItem(player, heldItem);
             return true;
@@ -97,7 +97,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMe
 
     @Override
     public boolean onUseWithoutItem(Player player, Vec3 pos) {
-        if (this.isLocked()) {
+        if (this.isLocked() && !InteractionUtil.isInAlternateUseMode(player)) {
             if (isClientSide()) {
                 return true;
             }
