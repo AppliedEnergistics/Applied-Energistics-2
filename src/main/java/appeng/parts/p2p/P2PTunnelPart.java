@@ -45,6 +45,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.util.AECableType;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModelData;
 import appeng.core.AEConfig;
@@ -278,14 +279,42 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
     }
 
     public void onTunnelNetworkChange() {
-
     }
 
-    protected void queueTunnelDrain(PowerUnit unit, double f) {
-        final double ae_to_tax = unit.convertTo(PowerUnit.AE, f * AEConfig.TUNNEL_POWER_LOSS);
+    protected void deductEnergyCost(double energyTransported, PowerUnit typeTransported) {
+        var costFactor = AEConfig.instance().getP2PTunnelEnergyTax();
+        if (costFactor <= 0) {
+            return;
+        }
 
         getMainNode().ifPresent(grid -> {
-            grid.getEnergyService().extractAEPower(ae_to_tax, Actionable.MODULATE, PowerMultiplier.ONE);
+            var tax = typeTransported.convertTo(PowerUnit.AE, energyTransported * costFactor);
+            grid.getEnergyService().extractAEPower(tax, Actionable.MODULATE, PowerMultiplier.CONFIG);
+        });
+    }
+
+    protected void deductTransportCost(long amountTransported, AEKeyType typeTransported) {
+        var costFactor = AEConfig.instance().getP2PTunnelTransportTax();
+        if (costFactor <= 0) {
+            return;
+        }
+
+        getMainNode().ifPresent(grid -> {
+            double operations = amountTransported / (double) typeTransported.getAmountPerOperation();
+            double tax = operations * costFactor;
+            grid.getEnergyService().extractAEPower(tax, Actionable.MODULATE, PowerMultiplier.CONFIG);
+        });
+    }
+
+    /**
+     * Use {@link #deductEnergyCost} or {@link #deductTransportCost}.
+     */
+    @Deprecated(forRemoval = true, since = "1.21.1")
+    protected void queueTunnelDrain(PowerUnit unit, double f) {
+        final double ae_to_tax = unit.convertTo(PowerUnit.AE, f * 0.05);
+
+        getMainNode().ifPresent(grid -> {
+            grid.getEnergyService().extractAEPower(ae_to_tax, Actionable.MODULATE, PowerMultiplier.CONFIG);
         });
     }
 
