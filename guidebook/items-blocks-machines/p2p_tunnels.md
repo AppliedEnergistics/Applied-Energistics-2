@@ -74,7 +74,7 @@ P2P tunnels with certain items:
 - Light P2P tunnels are selected by right-clicking with a torch or glowstone
 
 Some tunnel types have quirks. For instance, ME P2P tunnels' channels cannot pass through other ME P2P tunnels, and
-Energy P2P tunnels indirectly extract a 5% tax on FE or E flowing through themselves by increasing their
+Energy P2P tunnels indirectly extract a 2.5% tax on FE flowing through themselves by increasing their
 [energy](../ae2-mechanics/energy.md) draw.
 
 ## The Most-Used Form of P2P

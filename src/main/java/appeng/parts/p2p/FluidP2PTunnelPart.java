@@ -24,7 +24,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-import appeng.api.config.PowerUnit;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKeyType;
@@ -104,8 +103,7 @@ public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPa
             }
 
             if (action == FluidAction.EXECUTE) {
-                FluidP2PTunnelPart.this.queueTunnelDrain(PowerUnit.FE,
-                        (double) total / AEKeyType.fluids().getAmountPerOperation());
+                deductTransportCost(total, AEKeyType.fluids());
             }
 
             return total;
@@ -163,8 +161,7 @@ public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPa
                 FluidStack result = input.get().drain(resource, action);
 
                 if (action.execute()) {
-                    queueTunnelDrain(PowerUnit.FE,
-                            (double) result.getAmount() / AEKeyType.fluids().getAmountPerOperation());
+                    deductTransportCost(result.getAmount(), AEKeyType.fluids());
                 }
 
                 return result;
@@ -177,8 +174,7 @@ public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPa
                 FluidStack result = input.get().drain(maxDrain, action);
 
                 if (action.execute()) {
-                    queueTunnelDrain(PowerUnit.FE,
-                            (double) result.getAmount() / AEKeyType.fluids().getAmountPerOperation());
+                    deductTransportCost(result.getAmount(), AEKeyType.fluids());
                 }
 
                 return result;

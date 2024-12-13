@@ -73,11 +73,17 @@ public final class AEConfig {
         instance = new AEConfig(container);
     }
 
-    // Tunnels
-    public static final double TUNNEL_POWER_LOSS = 0.05;
-
     public static AEConfig instance() {
         return instance;
+    }
+
+    // Tunnels
+    public double getP2PTunnelEnergyTax() {
+        return common.p2pTunnelEnergyTax.get();
+    }
+
+    public double getP2PTunnelTransportTax() {
+        return common.p2pTunnelTransportTax.get();
     }
 
     public double wireless_getDrainRate(double range) {
@@ -569,6 +575,8 @@ public final class AEConfig {
         public final DoubleValue powerUsageMultiplier;
         public final DoubleValue gridEnergyStoragePerNode;
         public final DoubleValue crystalResonanceGeneratorRate;
+        public final DoubleValue p2pTunnelEnergyTax;
+        public final DoubleValue p2pTunnelTransportTax;
 
         // Vibration Chamber
         public final DoubleValue vibrationChamberBaseEnergyPerFuelTick;
@@ -663,6 +671,10 @@ public final class AEConfig {
                     "How much energy can the internal grid buffer storage per node attached to the grid.");
             crystalResonanceGeneratorRate = define(builder, "crystalResonanceGeneratorRate", 20.0, 0.0, 1000000.0,
                     "How much energy a crystal resonance generator generates per tick.");
+            p2pTunnelEnergyTax = define(builder, "p2pTunnelEnergyTax", 0.025, 0.0, 1.0,
+                    "The cost to transport energy through an energy P2P tunnel expressed as a factor of the transported energy.");
+            p2pTunnelTransportTax = define(builder, "p2pTunnelTransportTax", 0.025, 0.0, 1.0,
+                    "The cost to transport items/fluids/etc. through P2P tunnels, expressed in AE energy per equivalent I/O bus operation for the transported object type (i.e. items=per 1 item, fluids=per 125mb).");
             builder.pop();
 
             builder.push("condenser");
