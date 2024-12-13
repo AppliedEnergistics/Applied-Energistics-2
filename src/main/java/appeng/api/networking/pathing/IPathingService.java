@@ -23,6 +23,7 @@
 
 package appeng.api.networking.pathing;
 
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
 
 /**
@@ -63,4 +64,9 @@ public interface IPathingService extends IGridService {
      * @return The total number of channels currently used by this network.
      */
     int getUsedChannels();
+
+    /**
+     * Whether this PathingService is already aware of the provided node
+     */
+    boolean contains(IGridNode node);
 }

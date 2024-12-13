@@ -170,42 +170,60 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
     @Override
     public void removeNode(IGridNode gridNode) {
+        boolean needsReboot = false;
         if (gridNode.getOwner() instanceof ControllerBlockEntity controller) {
             this.controllers.remove(controller);
             this.recalculateControllerNextTick = true;
+            needsReboot = true;
         }
 
         if (gridNode.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
             this.nodesNeedingChannels.remove(gridNode);
+            needsReboot = true;
         }
 
         if (gridNode.hasFlag(GridFlags.CANNOT_CARRY_COMPRESSED)) {
             this.cannotCarryCompressedNodes.remove(gridNode);
+            needsReboot = true;
         }
 
-        this.repath();
+        if (gridNode.getUsedChannels() == 0 && !needsReboot) {
+            AELog.debug("Skipping reboot for non-carrying node %s", gridNode);
+        } else {
+            AELog.debug("Rebooting from removeNode");
+            this.repath();
+        }
     }
 
     @Override
     public void addNode(IGridNode gridNode, @Nullable CompoundTag savedData) {
+        boolean needsReboot = false;
         if (savedData != null) {
             restoreChannelMode(savedData);
+            needsReboot = true;
         }
 
         if (gridNode.getOwner() instanceof ControllerBlockEntity controller) {
             this.controllers.add(controller);
             this.recalculateControllerNextTick = true;
+            needsReboot = true;
         }
 
         if (gridNode.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
             this.nodesNeedingChannels.add(gridNode);
+            needsReboot = true;
         }
 
         if (gridNode.hasFlag(GridFlags.CANNOT_CARRY_COMPRESSED)) {
             this.cannotCarryCompressedNodes.add(gridNode);
         }
 
-        this.repath();
+        if (needsReboot) {
+            AELog.debug("Rebooting from addNode");
+            this.repath();
+        } else {
+            AELog.debug("Skipping reboot for unimportant node %s", gridNode);
+        }
     }
 
     private void restoreChannelMode(CompoundTag savedData) {
@@ -382,6 +400,11 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     @Override
     public int getUsedChannels() {
         return channelsInUse;
+    }
+
+    @Override
+    public boolean contains(IGridNode node) {
+        return this.grid.containsNode(node);
     }
 
     @Override

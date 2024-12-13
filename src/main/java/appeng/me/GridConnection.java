@@ -32,7 +32,9 @@ import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.pathing.ChannelMode;
+import appeng.core.AELog;
 import appeng.me.pathfinding.IPathItem;
+import appeng.me.service.PathingService;
 
 public class GridConnection implements IGridConnection, IPathItem {
 
@@ -83,6 +85,7 @@ public class GridConnection implements IGridConnection, IPathItem {
     public void destroy() {
         // a connection was destroyed RE-PATH!! (this is not done immediately)
         var p = this.sideA.getInternalGrid().getPathingService();
+        AELog.grid("Rebooting from grid connection destruction");
         p.repath();
 
         this.sideA.removeConnection(this);
@@ -212,11 +215,20 @@ public class GridConnection implements IGridConnection, IPathItem {
         // Create the actual connection
         var connection = new GridConnection(a, b, fromAtoB);
 
-        mergeGrids(a, b);
+        var mergeType = mergeGrids(a, b);
 
-        // a connection was destroyed RE-PATH!!
+        // a connection was destroyed so inform PathingService!!
         var p = connection.sideA.getInternalGrid().getPathingService();
-        p.repath();
+
+        if (mergeType == GridMergeType.SIMPLE) {
+            AELog.grid("Realtime grid merge. Trying to avoid reboot");
+            if (!p.contains(bNode)) {
+                ((PathingService) p).addNode(bNode, null);
+            }
+        } else {
+            AELog.grid("Complex grid merge");
+            p.repath();
+        }
 
         connection.sideA.addConnection(connection);
         connection.sideB.addConnection(connection);
@@ -228,7 +240,8 @@ public class GridConnection implements IGridConnection, IPathItem {
      * Merge the grids of two grid nodes based on both becoming connected. This method assumes that the new connection
      * is NOT yet created, otherwise grid propagation will do more work than needed.
      */
-    private static void mergeGrids(GridNode a, GridNode b) {
+    private static GridMergeType mergeGrids(GridNode a, GridNode b) {
+        GridMergeType mergeType = GridMergeType.COMPLEX;
         // Update both nodes with the new connection.
         var gridA = a.getMyGrid();
         var gridB = b.getMyGrid();
@@ -239,14 +252,17 @@ public class GridConnection implements IGridConnection, IPathItem {
             var grid = Grid.create(a);
             a.setGrid(grid);
             b.setGrid(grid);
+            mergeType = GridMergeType.SIMPLE;
         } else if (gridA == null) {
             // Only node B has a grid, propagate it to A
             assertNodeIsStandalone(a);
             a.setGrid(gridB);
+            mergeType = GridMergeType.SIMPLE;
         } else if (gridB == null) {
             // Only node A has a grid, propagate it to B
             assertNodeIsStandalone(b);
             b.setGrid(gridA);
+            mergeType = GridMergeType.SIMPLE;
         } else if (gridA != gridB) {
             if (isGridABetterThanGridB(gridA, gridB)) {
                 // Both A and B have grids, but A's grid is "better" -> propagate it to B and all its connected nodes
@@ -258,6 +274,8 @@ public class GridConnection implements IGridConnection, IPathItem {
                 a.beginVisit(gp);
             }
         }
+
+        return mergeType;
     }
 
     private static boolean isGridABetterThanGridB(Grid gridA, Grid gridB) {

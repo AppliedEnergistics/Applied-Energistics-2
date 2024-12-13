@@ -202,6 +202,11 @@ public class Grid implements IGrid {
     }
 
     @Override
+    public boolean containsNode(IGridNode node) {
+        return this.machines.containsValue(node);
+    }
+
+    @Override
     public boolean isEmpty() {
         return this.pivot == null;
     }

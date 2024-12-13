@@ -106,6 +106,11 @@ public interface IGrid {
     Iterable<IGridNode> getNodes();
 
     /**
+     * @return true if the grid contains the provided node
+     */
+    boolean containsNode(IGridNode node);
+
+    /**
      * @return true if the last node has been removed from the grid.
      */
     boolean isEmpty();
