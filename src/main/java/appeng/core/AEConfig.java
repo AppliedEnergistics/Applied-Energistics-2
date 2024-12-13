@@ -158,7 +158,13 @@ public final class AEConfig {
     private double wirelessHighWirelessCount;
 
     // Tunnels
-    public static final double TUNNEL_POWER_LOSS = 0.05;
+    public double getP2PTunnelEnergyTax() {
+        return COMMON.p2pTunnelEnergyTax.get();
+    }
+
+    public double getP2PTunnelTransportTax() {
+        return COMMON.p2pTunnelTransportTax.get();
+    }
 
     private void syncClientConfig() {
         this.disableColoredCableRecipesInJEI = CLIENT.disableColoredCableRecipesInJEI.get();
@@ -682,6 +688,8 @@ public final class AEConfig {
         public final DoubleOption powerUsageMultiplier;
         public final DoubleOption gridEnergyStoragePerNode;
         public final DoubleOption crystalResonanceGeneratorRate;
+        public final DoubleOption p2pTunnelEnergyTax;
+        public final DoubleOption p2pTunnelTransportTax;
 
         // Vibration Chamber
         public final DoubleOption vibrationChamberBaseEnergyPerFuelTick;
@@ -778,6 +786,10 @@ public final class AEConfig {
                     "How much energy can the internal grid buffer storage per node attached to the grid.");
             crystalResonanceGeneratorRate = PowerRatios.addDouble("CrystalResonanceGeneratorRate", 20, 0, 1000000,
                     "How much energy a crystal resonance generator generates per tick.");
+            p2pTunnelEnergyTax = PowerRatios.addDouble("p2pTunnelEnergyTax", 0.025, 0.0, 1.0,
+                    "The cost to transport energy through an energy P2P tunnel expressed as a factor of the transported energy.");
+            p2pTunnelTransportTax = PowerRatios.addDouble("p2pTunnelTransportTax", 0.025, 0.0, 1.0,
+                    "The cost to transport items/fluids/etc. through P2P tunnels, expressed in AE energy per equivalent I/O bus operation for the transported object type (i.e. items=per 1 item, fluids=per 125mb).");
 
             ConfigSection Condenser = root.subsection("Condenser");
             condenserMatterBallsPower = Condenser.addInt("MatterBalls", 256);
