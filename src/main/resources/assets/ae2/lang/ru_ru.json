@@ -220,6 +220,8 @@
   "chat.ae2.CraftingCpuBusy": "Этот процессор для крафта занят!",
   "chat.ae2.DeviceNotLinked": "Устройство не сопряжено.",
   "chat.ae2.DeviceNotPowered": "У устройства мало энергии.",
+  "chat.ae2.FacadePropertySelected": "Теперь передвигаемся сквозь свойство '%s'.",
+  "chat.ae2.FacadePropertyWrapped": "Первое значение '%s'. Вы можете изменить свойства, выбрав фасад.",
   "chat.ae2.InvalidMachine": "Не удалось загрузить конфигурацию с несовместимого устройства.",
   "chat.ae2.InvalidMachinePartiallyRestored": "Частично загружена конфигурация: %s.",
   "chat.ae2.LastTransition": "Последнее перемещение:",

@@ -220,6 +220,8 @@
   "chat.ae2.CraftingCpuBusy": "Denna crafting CPU är upptagen!",
   "chat.ae2.DeviceNotLinked": "Enheten är inte länkad.",
   "chat.ae2.DeviceNotPowered": "Enheten har för lite ström.",
+  "chat.ae2.FacadePropertySelected": "Cyklar nu genom egendom '%s'.",
+  "chat.ae2.FacadePropertyWrapped": "Omsluten till det första värdet av '%s'. Du kan ändra egenskaper genom att slå på fasaden.",
   "chat.ae2.InvalidMachine": "Kunde inte ladda konfiguration från en inkompatibel enhet.",
   "chat.ae2.InvalidMachinePartiallyRestored": "Delvis laddad konfiguration: %s.",
   "chat.ae2.LastTransition": "Senaste övergången:",
