@@ -21,6 +21,10 @@ package appeng.me.service;
 import java.util.HashSet;
 import java.util.Set;
 
+import appeng.me.pathfinding.CheckingPathingCalculation;
+import appeng.me.pathfinding.IPathingCalculation;
+import appeng.me.pathfinding.SmarterPathingCalculation;
+import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.advancements.critereon.PlayerTrigger;
@@ -62,7 +66,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                 });
     }
 
-    private PathingCalculation ongoingCalculation = null;
+    private IPathingCalculation ongoingCalculation = null;
     private final Set<ControllerBlockEntity> controllers = new HashSet<>();
     private final Set<IGridNode> nodesNeedingChannels = new HashSet<>();
     private final Set<IGridNode> cannotCarryCompressedNodes = new HashSet<>();
@@ -126,7 +130,10 @@ public class PathingService implements IPathingService, IGridServiceProvider {
             } else if (this.controllerState == ControllerState.CONTROLLER_CONFLICT) {
                 this.grid.getPivot().beginVisit(new AdHocChannelUpdater(0));
             } else {
-                this.ongoingCalculation = new PathingCalculation(grid);
+                this.ongoingCalculation = new CheckingPathingCalculation(
+                        grid,
+                        Lazy.of(() -> new SmarterPathingCalculation(grid)),
+                        Lazy.of(() -> new PathingCalculation(grid)));
             }
         }
 

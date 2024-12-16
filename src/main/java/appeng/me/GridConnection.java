@@ -93,12 +93,12 @@ public class GridConnection implements IGridConnection, IPathItem {
     }
 
     @Override
-    public IGridNode a() {
+    public GridNode a() {
         return this.sideA;
     }
 
     @Override
-    public IGridNode b() {
+    public GridNode b() {
         return this.sideB;
     }
 
@@ -113,15 +113,12 @@ public class GridConnection implements IGridConnection, IPathItem {
     }
 
     @Override
-    public IPathItem getControllerRoute() {
-        if (this.sideA.hasFlag(GridFlags.CANNOT_CARRY)) {
-            return null;
-        }
+    public GridNode getControllerRoute() {
         return this.sideA;
     }
 
     @Override
-    public void setControllerRoute(IPathItem fast) {
+    public void setControllerRoute(@Nullable IPathItem fast) {
         this.lastUsedChannels = 0;
 
         // If the shortest route to the controller is via side B, we need to flip the
@@ -151,6 +148,11 @@ public class GridConnection implements IGridConnection, IPathItem {
     }
 
     @Override
+    public int getUsedChannelCount() {
+        return getLastUsedChannels();
+    }
+
+    @Override
     public Iterable<IPathItem> getPossibleOptions() {
         return ImmutableList.of((IPathItem) this.a(), (IPathItem) this.b());
     }
@@ -163,6 +165,15 @@ public class GridConnection implements IGridConnection, IPathItem {
     @Override
     public boolean hasFlag(GridFlags flag) {
         return false;
+    }
+
+    @Override
+    public void aggregateChildChannels() {
+        if (this.sideB.getControllerRoute() == this) { // Check that we are in B's route
+            this.lastUsedChannels = this.sideB.getUsedChannels();
+        } else {
+            this.lastUsedChannels = 0;
+        }
     }
 
     @Override

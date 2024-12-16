@@ -19,12 +19,19 @@
 package appeng.me.pathfinding;
 
 import appeng.api.networking.GridFlags;
+import org.jetbrains.annotations.Nullable;
 
 public interface IPathItem {
 
+    @Nullable
     IPathItem getControllerRoute();
 
-    void setControllerRoute(IPathItem fast);
+    /**
+     * Sets route to controller.
+     * TODO: why do we even bother in ad hoc case?
+     * @param fast {@code null} when performing ad hoc update
+     */
+    void setControllerRoute(@Nullable IPathItem fast);
 
     /**
      * used to determine if the finder can continue.
@@ -35,6 +42,9 @@ public interface IPathItem {
      * The maximum number of channels connections to this path item can carry.
      */
     int getMaxChannels();
+
+    // TODO: cleanup, it's kinda shit
+    int getUsedChannelCount();
 
     /**
      * find possible choices for other pathing.
@@ -50,6 +60,11 @@ public interface IPathItem {
      * Tests if this path item has the specific grid flag set.
      */
     boolean hasFlag(GridFlags flag);
+
+    /**
+     * Final propagation pass.
+     */
+    void aggregateChildChannels();
 
     /**
      * channels are done, wrap it up.

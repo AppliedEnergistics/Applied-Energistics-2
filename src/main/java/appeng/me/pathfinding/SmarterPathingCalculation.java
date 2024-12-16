@@ -18,11 +18,6 @@
 
 package appeng.me.pathfinding;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridMultiblock;
@@ -31,11 +26,21 @@ import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+
 /**
  * Calculation to assign channels starting from the controllers. Basically a BFS, with one step each tick.
  */
-public class PathingCalculation implements IPathingCalculation {
+public class SmarterPathingCalculation implements IPathingCalculation {
 
+    private boolean finished = false;
+    private final IGrid grid;
     /**
      * Path items that are part of a multiblock that was already granted a channel.
      */
@@ -65,7 +70,9 @@ public class PathingCalculation implements IPathingCalculation {
     /**
      * Create a new pathing calculation from the passed grid.
      */
-    public PathingCalculation(IGrid grid) {
+    public SmarterPathingCalculation(IGrid grid) {
+        this.grid = grid;
+
         // Add every outgoing connection of the controllers (that doesn't point to another controller) to the list.
         for (var node : grid.getMachineNodes(ControllerBlockEntity.class)) {
             visited.add((IPathItem) node);
@@ -109,9 +116,13 @@ public class PathingCalculation implements IPathingCalculation {
                 List<IPathItem> oldOpen = queues[i];
                 queues[i] = new ArrayList<>();
                 processQueue(oldOpen, i);
-                break;
+                return;
             }
         }
+
+        // If we reach this, perform the final channel count update
+        propagateAssignments();
+        finished = true;
     }
 
     private void processQueue(List<IPathItem> oldOpen, int queueIndex) {
@@ -122,14 +133,12 @@ public class PathingCalculation implements IPathingCalculation {
                     pi.setControllerRoute(i);
 
                     if (pi.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
-                        if (this.multiblocksWithChannel.contains(pi)) {
-                            // If this is part of a multiblock that was given a channel before, just give a channel to
-                            // the node.
-                            pi.incrementChannelCount(1);
-                            this.multiblocksWithChannel.remove(pi);
-                        } else {
-                            // Otherwise try to use the channel along the path.
-                            boolean worked = tryUseChannel(pi);
+                        if (!this.multiblocksWithChannel.contains(pi)) {
+                            // Try to use the channel along the path.
+                            boolean worked = tryUseChannel((GridNode) pi);
+                            if (worked) {
+                                ((GridNode) pi).setConsumesChannel();
+                            }
 
                             if (worked && pi.hasFlag(GridFlags.MULTIBLOCK)) {
                                 var multiblock = ((IGridNode) pi).getService(IGridMultiblock.class);
@@ -157,51 +166,84 @@ public class PathingCalculation implements IPathingCalculation {
      *
      * @return true if allocation was successful
      */
-    private boolean tryUseChannel(IPathItem start) {
-        boolean isCompressed = start.hasFlag(GridFlags.COMPRESSED_CHANNEL);
+    private boolean tryUseChannel(GridNode start) {
+        if (start.hasFlag(GridFlags.COMPRESSED_CHANNEL) && !start.getSubtreeAllowsCompressedChannels()) {
+            // Don't send a compressed channel through this item.
+            return false;
+        }
 
         // Check that the allocation is possible.
-        IPathItem pi = start;
+        GridNode pi = start;
         while (pi != null) {
             if (!pi.canSupportMoreChannels()) {
-                if (pi instanceof GridNode node && node.getOwner() instanceof ControllerBlockEntity) {
-                    // Controller => OK
-                    break;
-                }
-                return false;
-            }
-            if (isCompressed && pi.hasFlag(GridFlags.CANNOT_CARRY_COMPRESSED)) {
-                // Don't send a compressed channel through this item.
                 return false;
             }
 
-            pi = pi.getControllerRoute();
+            pi = pi.getHighestSimilarParent();
         }
 
         // Allocate the channel along the path.
         pi = start;
         while (pi != null) {
-            if (pi instanceof GridNode node && node.getOwner() instanceof ControllerBlockEntity) {
-                // Controller => OK
-                break;
-            }
-            channelsByBlocks++;
             pi.incrementChannelCount(1);
-            pi = pi.getControllerRoute();
+            pi = pi.getHighestSimilarParent();
         }
 
         channelsInUse++;
         return true;
     }
 
-    @Override
-    public boolean isFinished() {
-        for (List<IPathItem> queue : queues) {
-            if (!queue.isEmpty()) {
-                return false;
+    private static final Object SUBTREE_END = new Object();
+
+    /**
+     * Propagates assignment to all nodes
+     */
+    private void propagateAssignments() {
+        List<Object> stack = new ArrayList<>();
+
+        for (var node : grid.getMachineNodes(ControllerBlockEntity.class)) {
+            for (var gcc : node.getConnections()) {
+                var gc = (GridConnection) gcc;
+                if (!(gc.getOtherSide(node).getOwner() instanceof ControllerBlockEntity)) {
+                    stack.add(gc);
+                }
             }
         }
-        return true;
+
+        while (!stack.isEmpty()) {
+            Object current = stack.getLast();
+            if (current == SUBTREE_END) {
+                stack.removeLast();
+                IPathItem item = (IPathItem) stack.removeLast();
+                item.aggregateChildChannels();
+                channelsByBlocks += item.getUsedChannelCount();
+            } else {
+                stack.add(SUBTREE_END);
+                if (current instanceof GridConnection connection) {
+                    if (connection.b().getControllerRoute() == current) {
+                        stack.add(connection.b());
+                    }
+                } else {
+                    for (var connection : ((GridNode) current).getConnections()) {
+                        if (((GridConnection) connection).getControllerRoute() == current) {
+                            stack.add(connection);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        // Give a channel to all nodes that are a part of a multiblock that was given a channel before.
+        for (var multiblockNode : multiblocksWithChannel) {
+            multiblockNode.incrementChannelCount(1);
+        }
+        multiblocksWithChannel.clear();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return finished;
     }
 
     @Override

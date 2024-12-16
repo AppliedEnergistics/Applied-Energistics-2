@@ -84,7 +84,11 @@ public interface PlotBuilder {
     }
 
     default CableBuilder denseCable(BlockPos pos) {
-        return cable(posToBb(pos), AEParts.SMART_DENSE_CABLE.item(AEColor.TRANSPARENT));
+        return denseCable(posToBb(pos));
+    }
+
+    default CableBuilder denseCable(String bb) {
+        return cable(bb, AEParts.SMART_DENSE_CABLE.item(AEColor.TRANSPARENT));
     }
 
     default void part(String bb, Direction side, ItemDefinition<? extends PartItem<?>> part) {
