@@ -95,7 +95,8 @@ public class ChannelTests {
                         checker.leafNode("10 0 3", 0);
 
                         checker.ensureEverythingWasChecked();
-                    });
+                    })
+                    .thenSucceed();
         });
     }
 
