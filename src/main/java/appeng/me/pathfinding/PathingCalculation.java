@@ -18,6 +18,15 @@
 
 package appeng.me.pathfinding;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
+
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridMultiblock;
@@ -26,35 +35,46 @@ import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 /**
- * Calculation to assign channels starting from the controllers. Basically a BFS, with one step each tick.
+ * Calculation to assign channels starting from the controllers. The full computation is split in two steps, each linear
+ * time.
+ *
+ * <p>
+ * First, a BFS is performed starting from the controllers. This establishes a tree that connects all path items to a
+ * controller. As nodes that require channels are visited, they are assigned a channel if possible. This is done by
+ * checking the channel count of a few key nodes (max 3) along the path.
+ *
+ * <p>
+ * Second, a DFS is performed to propagate the channel count upwards.
  */
 public class PathingCalculation {
-
-    private boolean finished = false;
     private final IGrid grid;
     /**
      * Path items that are part of a multiblock that was already granted a channel.
      */
-    private final Set<IPathItem> multiblocksWithChannel = new HashSet<>();
+    private final Set<GridNode> multiblocksWithChannel = new HashSet<>();
     /**
      * The BFS queues: all the path items that need to be visited on the next tick. Dense queue is prioritized to have
      * the behavior of dense cables extending the controller faces, then cables, then normal devices.
      */
-    private List<IPathItem>[] queues = new List[] {
-            new ArrayList<>(), // 0: dense cable queue
-            new ArrayList<>(), // 1: normal cable queue
-            new ArrayList<>() // 2: non-cable queue
+    private final Queue<IPathItem>[] queues = new Queue[] {
+            new ArrayDeque<>(), // 0: dense cable queue
+            new ArrayDeque<>(), // 1: normal cable queue
+            new ArrayDeque<>() // 2: non-cable queue
     };
     /**
-     * Path items that are either in the queue, or have been processed already.
+     * Path items that are either in a queue, or have been processed already.
      */
     private final Set<IPathItem> visited = new HashSet<>();
+    /**
+     * Tracks the number of channels assigned to each path item during the BFS pass. Only a few key nodes along any path
+     * are checked and updated.
+     */
+    private final Reference2IntOpenHashMap<GridNode> channelBottlenecks = new Reference2IntOpenHashMap<>();
+    /**
+     * Nodes that have been granted a channel during the BFS pass.
+     */
+    private final Set<GridNode> channelNodes = new HashSet<>();
     /**
      * Tracks the total number of used channels.
      */
@@ -105,24 +125,19 @@ public class PathingCalculation {
         queues[index].add(pathItem);
     }
 
-    public void step() {
-        // Keep processing dense queue as long as it's not empty.
+    public void compute() {
+        // BFS pass
         for (int i = 0; i < 3; ++i) {
-            if (!queues[i].isEmpty()) {
-                List<IPathItem> oldOpen = queues[i];
-                queues[i] = new ArrayList<>();
-                processQueue(oldOpen, i);
-                return;
-            }
+            processQueue(queues[i], i);
         }
 
-        // If we reach this, perform the final channel count update
+        // DFS pass
         propagateAssignments();
-        finished = true;
     }
 
-    private void processQueue(List<IPathItem> oldOpen, int queueIndex) {
-        for (IPathItem i : oldOpen) {
+    private void processQueue(Queue<IPathItem> oldOpen, int queueIndex) {
+        while (!oldOpen.isEmpty()) {
+            IPathItem i = oldOpen.poll();
             for (IPathItem pi : i.getPossibleOptions()) {
                 if (!this.visited.contains(pi)) {
                     // Set BFS parent.
@@ -132,9 +147,6 @@ public class PathingCalculation {
                         if (!this.multiblocksWithChannel.contains(pi)) {
                             // Try to use the channel along the path.
                             boolean worked = tryUseChannel((GridNode) pi);
-                            if (worked) {
-                                ((GridNode) pi).setConsumesChannel();
-                            }
 
                             if (worked && pi.hasFlag(GridFlags.MULTIBLOCK)) {
                                 var multiblock = ((IGridNode) pi).getService(IGridMultiblock.class);
@@ -143,7 +155,7 @@ public class PathingCalculation {
                                     while (oni.hasNext()) {
                                         final IGridNode otherNodes = oni.next();
                                         if (otherNodes != pi) {
-                                            this.multiblocksWithChannel.add((IPathItem) otherNodes);
+                                            this.multiblocksWithChannel.add((GridNode) otherNodes);
                                         }
                                     }
                                 }
@@ -171,7 +183,7 @@ public class PathingCalculation {
         // Check that the allocation is possible.
         GridNode pi = start;
         while (pi != null) {
-            if (!pi.canSupportMoreChannels()) {
+            if (channelBottlenecks.getOrDefault(pi, 0) >= pi.getMaxChannels()) {
                 return false;
             }
 
@@ -181,26 +193,29 @@ public class PathingCalculation {
         // Allocate the channel along the path.
         pi = start;
         while (pi != null) {
-            pi.incrementChannelCount(1);
+            channelBottlenecks.addTo(pi, 1);
             pi = pi.getHighestSimilarParent();
         }
 
-        channelsInUse++;
+        channelNodes.add(start);
         return true;
     }
 
     private static final Object SUBTREE_END = new Object();
 
     /**
-     * Propagates assignment to all nodes
+     * Propagates assignment to all nodes by performing a DFS. The implementation is iterative to avoid stack overflow.
      */
     private void propagateAssignments() {
+        visited.clear();
         List<Object> stack = new ArrayList<>();
 
         for (var node : grid.getMachineNodes(ControllerBlockEntity.class)) {
+            visited.add((IPathItem) node);
             for (var gcc : node.getConnections()) {
                 var gc = (GridConnection) gcc;
                 if (!(gc.getOtherSide(node).getOwner() instanceof ControllerBlockEntity)) {
+                    visited.add(gc);
                     stack.add(gc);
                 }
             }
@@ -211,35 +226,31 @@ public class PathingCalculation {
             if (current == SUBTREE_END) {
                 stack.removeLast();
                 IPathItem item = (IPathItem) stack.removeLast();
-                item.aggregateChildChannels();
-                channelsByBlocks += item.getUsedChannelCount();
-            } else {
-                stack.add(SUBTREE_END);
-                if (current instanceof GridConnection connection) {
-                    if (connection.b().getControllerRoute() == current) {
-                        stack.add(connection.b());
+                // We have visited the entire subtree and can now propagate channels upwards.
+                if (item instanceof GridNode node) {
+                    boolean hasChannel = channelNodes.remove(item);
+                    channelsByBlocks += node.propagateChannelsUpwards(hasChannel);
+                    if (hasChannel) {
+                        channelsInUse++;
                     }
                 } else {
-                    for (var connection : ((GridNode) current).getConnections()) {
-                        if (((GridConnection) connection).getControllerRoute() == current) {
-                            stack.add(connection);
-                        }
+                    channelsByBlocks += ((GridConnection) item).propagateChannelsUpwards();
+                }
+            } else {
+                stack.add(SUBTREE_END);
+                for (var pi : ((IPathItem) current).getPossibleOptions()) {
+                    if (visited.add(pi)) {
+                        stack.add(pi);
                     }
                 }
             }
         }
-
 
         // Give a channel to all nodes that are a part of a multiblock that was given a channel before.
         for (var multiblockNode : multiblocksWithChannel) {
             multiblockNode.incrementChannelCount(1);
         }
         multiblocksWithChannel.clear();
-    }
-
-
-    public boolean isFinished() {
-        return finished;
     }
 
     public int getChannelsInUse() {

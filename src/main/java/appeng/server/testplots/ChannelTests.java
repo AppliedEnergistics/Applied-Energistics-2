@@ -1,18 +1,18 @@
 package appeng.server.testplots;
 
-import appeng.api.networking.GridHelper;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
+
+import net.minecraft.core.BlockPos;
+
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridConnectionVisitor;
 import appeng.api.networking.IGridNode;
 import appeng.core.definitions.AEBlocks;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
-import net.minecraft.core.BlockPos;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 
 @TestPlotClass
 public class ChannelTests {
@@ -130,7 +130,8 @@ public class ChannelTests {
         private void checkNode(BlockPos pos, IGridNode node, int expectedChannelCount) {
             if (nodes.contains(node)) {
                 if (node.getUsedChannels() != expectedChannelCount) {
-                    helper.fail("Node has wrong channel count. Expected %d. Got %d.".formatted(expectedChannelCount, node.getUsedChannels()), pos);
+                    helper.fail("Node has wrong channel count. Expected %d. Got %d.".formatted(expectedChannelCount,
+                            node.getUsedChannels()), pos);
                 }
                 nodes.remove(node);
             } else {
@@ -141,7 +142,8 @@ public class ChannelTests {
         private void checkConnection(BlockPos pos, IGridConnection connection, int expectedChannelCount) {
             if (connections.contains(connection)) {
                 if (connection.getUsedChannels() != expectedChannelCount) {
-                    helper.fail("Connection has wrong channel count. Expected %d. Got %d.".formatted(expectedChannelCount, connection.getUsedChannels()), pos);
+                    helper.fail("Connection has wrong channel count. Expected %d. Got %d."
+                            .formatted(expectedChannelCount, connection.getUsedChannels()), pos);
                 }
                 connections.remove(connection);
             } else {

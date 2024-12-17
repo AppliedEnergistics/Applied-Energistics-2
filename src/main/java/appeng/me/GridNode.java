@@ -30,15 +30,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import appeng.blockentity.networking.ControllerBlockEntity;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.MutableClassToInstanceMap;
 import com.google.gson.stream.JsonWriter;
-
 import com.mojang.logging.LogUtils;
+
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
@@ -66,11 +66,11 @@ import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.parts.IPart;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AEColor;
+import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.core.AELog;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.IDebugExportable;
 import appeng.util.JsonStreamUtil;
-import org.slf4j.Logger;
 
 public class GridNode implements IGridNode, IPathItem, IDebugExportable {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -101,34 +101,41 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
     private int owningPlayerId = -1;
     private Grid myGrid;
     private Object visitorIterationNumber = null;
-    // connection criteria
-    private int usedChannels = 0;
+    /**
+     * Will be modified during pathing and should not be exposed outside of that purpose.
+     */
+    int usedChannels = 0;
+    /**
+     * Finalized version of {@link #usedChannels} once pathing is done.
+     */
     private int lastUsedChannels = 0;
     /**
-     * Used to quickly walk the path to the controller when assigning channels,
-     * based on the observation that the max channel count increases as we get to the controller,
-     * and that we only need to check the highest node of each type.
+     * Used to quickly walk the path to the controller when assigning channels, based on the observation that the max
+     * channel count increases as we get to the controller, and that we only need to check the highest node of each
+     * type.
      *
-     * <p>For example, on the following path:
-     * {@code controller - dense cable 1 - dense cable 2 - dense cable 3 - cable 1 - cable 2 - cable 3 - device}
-     * We need to check that {@code dense cable 1} can accept the additional channel.
-     * If this is true then dense cables {@code 2} and {@code 3} can always accept it.
-     * Same for regular cables, so it is enough to check that {@code dense cable 1} and {@code cable 1} can accept it,
-     * massively speeding up the assignment for large trees.
+     * <p>
+     * For example, on the following path:
+     * {@code controller - dense cable 1 - dense cable 2 - dense cable 3 - cable 1 - cable 2 - cable 3 - device} We need
+     * to check that {@code dense cable 1} can accept the additional channel. If this is true then dense cables
+     * {@code 2} and {@code 3} can always accept it. Same for regular cables, so it is enough to check that
+     * {@code dense cable 1} and {@code cable 1} can accept it, massively speeding up the assignment for large trees.
      *
-     * <p>This field is used to jump up the path.
-     * TODO probably outdated
+     * <p>
+     * This field is used to jump up the path. TODO probably outdated
      * <ul>
-     *     <li>If {@code null}, the next node up the path is a controller.</li>
-     *     <li>Inside of a section with the same effective channel capacity, this field points to the highest node with the same capacity.</li>
-     *     <li>At the beginning of a section with the same effective channel capacity, this field points to the direct GridNode parent.</li>
+     * <li>If {@code null}, the next node up the path is a controller.</li>
+     * <li>Inside of a section with the same effective channel capacity, this field points to the highest node with the
+     * same capacity.</li>
+     * <li>At the beginning of a section with the same effective channel capacity, this field points to the direct
+     * GridNode parent.</li>
      * </ul>
      */
     @Nullable
     private GridNode highestSimilarParent = null;
     private int subtreeMaxChannels;
     private boolean subtreeAllowsCompressedChannels;
-    private boolean consumesChannel;
+    // private boolean consumesChannel;
 
     private final EnumSet<GridFlags> flags;
     private ClassToInstanceMap<IGridNodeService> services;
@@ -153,10 +160,6 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
 
     Grid getMyGrid() {
         return this.myGrid;
-    }
-
-    public int usedChannels() {
-        return this.lastUsedChannels; // TODO: wtf is this?
     }
 
     @FunctionalInterface
@@ -511,7 +514,7 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
 
     @Override
     public boolean meetsChannelRequirements() {
-        return !flags.contains(GridFlags.REQUIRE_CHANNEL) || this.getUsedChannels() > 0;
+        return !flags.contains(GridFlags.REQUIRE_CHANNEL) || this.lastUsedChannels > 0;
     }
 
     @Override
@@ -592,13 +595,18 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
     }
 
     @Override
-    @Nullable
+    public void setAdHocChannels(int channels) {
+        this.usedChannels = channels;
+    }
+
+    @Override
     public IPathItem getControllerRoute() {
-        if (this.connections.isEmpty() || this.hasFlag(GridFlags.CANNOT_CARRY)) {
-            return null;
+        if (this.connections.isEmpty()) {
+            throw new IllegalStateException(
+                    "Node %s has no connections, cannot have a controller route!".formatted(this));
         }
 
-        return this.connections.get(0);
+        return this.connections.getFirst();
     }
 
     public @Nullable GridNode getHighestSimilarParent() {
@@ -609,35 +617,29 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
         return subtreeAllowsCompressedChannels;
     }
 
-    public void setConsumesChannel() {
-        consumesChannel = true;
-    }
-
     @Override
-    public void setControllerRoute(@Nullable IPathItem fast) {
+    public void setControllerRoute(IPathItem fast) {
         this.usedChannels = 0;
 
-        if (fast != null) {
-            this.consumesChannel = false;
-            var nodeParent = (GridNode) fast.getControllerRoute();
-            if (nodeParent.getOwner() instanceof ControllerBlockEntity) {
-                this.highestSimilarParent = null;
-                this.subtreeMaxChannels = getMaxChannels();
-                this.subtreeAllowsCompressedChannels = !hasFlag(GridFlags.CANNOT_CARRY_COMPRESSED);
+        var nodeParent = (GridNode) fast.getControllerRoute();
+        if (nodeParent.getOwner() instanceof ControllerBlockEntity) {
+            this.highestSimilarParent = null;
+            this.subtreeMaxChannels = getMaxChannels();
+            this.subtreeAllowsCompressedChannels = !hasFlag(GridFlags.CANNOT_CARRY_COMPRESSED);
+        } else {
+            if (nodeParent.highestSimilarParent == null) {
+                // Parent is connected to a controller, it is the bottleneck.
+                this.highestSimilarParent = nodeParent;
+            } else if (nodeParent.subtreeMaxChannels == nodeParent.highestSimilarParent.subtreeMaxChannels) {
+                // Parent is not restricting the number of channels, go as high as possible.
+                this.highestSimilarParent = nodeParent.highestSimilarParent;
             } else {
-                if (nodeParent.highestSimilarParent == null) {
-                    // Parent is connected to a controller, it is the bottleneck.
-                    this.highestSimilarParent = nodeParent;
-                } else if (nodeParent.subtreeMaxChannels == nodeParent.highestSimilarParent.subtreeMaxChannels) {
-                    // Parent is not restricting the number of channels, go as high as possible.
-                    this.highestSimilarParent = nodeParent.highestSimilarParent;
-                } else {
-                    // Parent is restricting the number of channels, link to it directly.
-                    this.highestSimilarParent = nodeParent;
-                }
-                this.subtreeMaxChannels = Math.min(nodeParent.subtreeMaxChannels, getMaxChannels());
-                this.subtreeAllowsCompressedChannels = nodeParent.subtreeAllowsCompressedChannels && !hasFlag(GridFlags.CANNOT_CARRY_COMPRESSED);
+                // Parent is restricting the number of channels, link to it directly.
+                this.highestSimilarParent = nodeParent;
             }
+            this.subtreeMaxChannels = Math.min(nodeParent.subtreeMaxChannels, getMaxChannels());
+            this.subtreeAllowsCompressedChannels = nodeParent.subtreeAllowsCompressedChannels
+                    && !hasFlag(GridFlags.CANNOT_CARRY_COMPRESSED);
         }
 
         GridConnection connection = (GridConnection) fast;
@@ -650,13 +652,8 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
     }
 
     @Override
-    public boolean canSupportMoreChannels() {
-        return this.getUsedChannels() < this.getMaxChannels();
-    }
-
-    @Override
     public int getUsedChannels() {
-        return this.usedChannels;
+        return this.lastUsedChannels;
     }
 
     @Override
@@ -678,36 +675,32 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
     }
 
     @Override
-    public int getUsedChannelCount() {
-        return this.usedChannels;
-    }
-
-    @Override
     public Iterable<IPathItem> getPossibleOptions() {
         return ImmutableList.copyOf(this.connections);
     }
 
-    @Override
-    public void incrementChannelCount(int usedChannels) {
-        this.usedChannels += usedChannels;
-    }
-
-    @Override
-    public void aggregateChildChannels() {
+    public int propagateChannelsUpwards(boolean consumesChannel) {
         this.usedChannels = 0;
         for (var connection : connections) {
             if (connection.getControllerRoute() == this) {
-                this.usedChannels += connection.getUsedChannelCount();
+                this.usedChannels += connection.usedChannels;
             }
         }
-        if (this.consumesChannel) {
+        if (consumesChannel) {
             this.usedChannels++;
         }
 
         if (this.usedChannels > getMaxChannels()) {
-            LOGGER.error("Internal channel assignment error. Grid node {} has {} channels passing through it but it only supports up to {}. Please open an issue on the AE2 repository.",
+            LOGGER.error(
+                    "Internal channel assignment error. Grid node {} has {} channels passing through it but it only supports up to {}. Please open an issue on the AE2 repository.",
                     this, this.usedChannels, getMaxChannels());
         }
+
+        return this.usedChannels;
+    }
+
+    public void incrementChannelCount(int usedChannels) {
+        this.usedChannels += usedChannels;
     }
 
     @Override
@@ -718,7 +711,7 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
             return;
         }
 
-        if (this.lastUsedChannels != this.getUsedChannels()) {
+        if (this.lastUsedChannels != this.usedChannels) {
             this.lastUsedChannels = this.usedChannels;
 
             if (this.getInternalGrid() != null) {
