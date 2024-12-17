@@ -188,14 +188,23 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
     /**
      * Creates a menu type that uses this helper as a factory and network deserializer.
      */
-    public MenuType<M> build(ResourceLocation id) {
+    public MenuType<M> buildUnregistered(ResourceLocation id) {
         Preconditions.checkState(menuType == null, "build was already called");
         Preconditions.checkState(this.id == null, "id should not be set");
 
         this.id = id;
         menuType = IMenuTypeExtension.create(this::fromNetwork);
-        InitMenuTypes.queueRegistration(this.id, menuType);
         MenuOpener.addOpener(menuType, this::open);
+        return menuType;
+    }
+
+    /**
+     * Creates a menu type that uses this helper as a factory and network deserializer, and queues it for registration
+     * with Vanilla.
+     */
+    public MenuType<M> build(ResourceLocation id) {
+        var menuType = buildUnregistered(id);
+        InitMenuTypes.queueRegistration(this.id, menuType);
         return menuType;
     }
 
