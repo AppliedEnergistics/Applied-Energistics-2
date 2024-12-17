@@ -220,6 +220,8 @@
   "chat.ae2.CraftingCpuBusy": "Questa CPU artigianale è occupata!",
   "chat.ae2.DeviceNotLinked": "Dispositivo non è collegato is not linked.",
   "chat.ae2.DeviceNotPowered": "Dispositivo a corto di energia.",
+  "chat.ae2.FacadePropertySelected": "Ora in bicicletta attraverso la proprietà '%s'.",
+  "chat.ae2.FacadePropertyWrapped": "Avvolto al primo valore di '%s'. Puoi cambiare le proprietà colpendo la facciata.",
   "chat.ae2.InvalidMachine": "Impossibile caricare la configurazione da un dispositivo incompatibile.",
   "chat.ae2.InvalidMachinePartiallyRestored": "Configurazione parzialmente caricata: %s.",
   "chat.ae2.LastTransition": "Ultima Transizione:",

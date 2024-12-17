@@ -220,6 +220,8 @@
   "chat.ae2.CraftingCpuBusy": "Esta crafting CPU está ocupada!",
   "chat.ae2.DeviceNotLinked": "Dispositivo não conectado.",
   "chat.ae2.DeviceNotPowered": "Dispositivo está com baixa energia.",
+  "chat.ae2.FacadePropertySelected": "Agora pedalando através da propriedade '%s'.",
+  "chat.ae2.FacadePropertyWrapped": "Envolvido ao primeiro valor de '%s'. Você pode alterar propriedades tocando na fachada.",
   "chat.ae2.InvalidMachine": "Não foi possível carregar a configuração de um dispositivo incompatível.",
   "chat.ae2.InvalidMachinePartiallyRestored": "Configuração parcialmente carregada: %s.",
   "chat.ae2.LastTransition": "Última transição:",

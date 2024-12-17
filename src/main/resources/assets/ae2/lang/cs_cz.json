@@ -217,6 +217,8 @@
   "chat.ae2.CraftingCpuBusy": "Tato výroba CPU je zaneprázdná!",
   "chat.ae2.DeviceNotLinked": "Zařízení není připojeno.",
   "chat.ae2.DeviceNotPowered": "Zařízení je vybité.",
+  "chat.ae2.FacadePropertySelected": "Nyní koluje vlastnost '%s'.",
+  "chat.ae2.FacadePropertyWrapped": "Obalen na první hodnotu '%s'. Vlastnosti můžete změnit klepnutím na fasádu.",
   "chat.ae2.LastTransition": "Poslední přechod:",
   "chat.ae2.LastTransitionUnknown": "Poslední přechod je neznámý",
   "chat.ae2.LinkedNetworkNotFound": "Připojená síť nebyla nalezena",

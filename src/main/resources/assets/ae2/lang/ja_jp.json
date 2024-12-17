@@ -220,6 +220,8 @@
   "chat.ae2.CraftingCpuBusy": "このクラフトCPUは忙しいです！",
   "chat.ae2.DeviceNotLinked": "デバイスはリンクされていません。",
   "chat.ae2.DeviceNotPowered": "デバイスの電力が低下しています。",
+  "chat.ae2.FacadePropertySelected": "プロパティ '%s' をサイクリングしています。",
+  "chat.ae2.FacadePropertyWrapped": "最初の値の「%s」に囲まれています。ファサードを押すとプロパティを変更できます。",
   "chat.ae2.InvalidMachine": "互換性のないデバイスから設定を読み込めませんでした。",
   "chat.ae2.InvalidMachinePartiallyRestored": "部分的に読み込まれた設定: %s.",
   "chat.ae2.LastTransition": "前回のトランジション:",

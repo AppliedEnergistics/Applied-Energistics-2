@@ -219,6 +219,8 @@
   "chat.ae2.CraftingCpuBusy": "Acest crafting CPU este ocupat!",
   "chat.ae2.DeviceNotLinked": "Dispozitivul nu este conectat.",
   "chat.ae2.DeviceNotPowered": "Mașinăria are energie puţină.",
+  "chat.ae2.FacadePropertySelected": "Acum ciclizarea prin proprietate '%s'.",
+  "chat.ae2.FacadePropertyWrapped": "Se plimbă la prima valoare a lui '%s'. Poți schimba proprietățile prin accesarea fațadei.",
   "chat.ae2.LastTransition": "Ultima tranziție:",
   "chat.ae2.LastTransitionUnknown": "Ultima tranziție necunoscută",
   "chat.ae2.LinkedNetworkNotFound": "Rețeaua asociată nu poate fi găsită",

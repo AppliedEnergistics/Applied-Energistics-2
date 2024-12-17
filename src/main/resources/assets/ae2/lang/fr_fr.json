@@ -220,6 +220,8 @@
   "chat.ae2.CraftingCpuBusy": "Ce processeur d'artisanat est occupé !",
   "chat.ae2.DeviceNotLinked": "Le dispositif n'est pas lié.",
   "chat.ae2.DeviceNotPowered": "Le dispositif manque de puissance.",
+  "chat.ae2.FacadePropertySelected": "Vélo maintenant à travers la propriété '%s'.",
+  "chat.ae2.FacadePropertyWrapped": "Embarqué à la première valeur de «%s». Vous pouvez changer de propriétés en frappant la façade.",
   "chat.ae2.InvalidMachine": "Impossible de charger la configuration depuis un périphérique incompatible.",
   "chat.ae2.InvalidMachinePartiallyRestored": "Configuration partiellement chargée : %s.",
   "chat.ae2.LastTransition": "Dernière transition:",

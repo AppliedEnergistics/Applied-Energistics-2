@@ -220,6 +220,8 @@
   "chat.ae2.CraftingCpuBusy": "Diese fertige CPU ist beschäftigt!",
   "chat.ae2.DeviceNotLinked": "Gerät ist nicht verbunden.",
   "chat.ae2.DeviceNotPowered": "Gerät hat zu wenig Energie",
+  "chat.ae2.FacadePropertySelected": "Fahren Sie jetzt durch die Eigenschaft '%s'.",
+  "chat.ae2.FacadePropertyWrapped": "Umwickelt auf den ersten Wert von '%s'. Sie können die Eigenschaften ändern, indem Sie die Fassade anklicken.",
   "chat.ae2.InvalidMachine": "Die Konfiguration konnte nicht von einem inkompatiblen Gerät geladen werden.",
   "chat.ae2.InvalidMachinePartiallyRestored": "Teilweise geladene Konfiguration: %s.",
   "chat.ae2.LastTransition": "Letzter Übergang:",

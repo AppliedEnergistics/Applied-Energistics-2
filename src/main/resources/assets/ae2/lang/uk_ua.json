@@ -220,6 +220,7 @@
   "chat.ae2.CraftingCpuBusy": "Цей процесор зайнятий для створення!",
   "chat.ae2.DeviceNotLinked": "Пристрій не прив'язано.",
   "chat.ae2.DeviceNotPowered": "Недостатньо енергії для пристрою.",
+  "chat.ae2.FacadePropertyWrapped": "Загорнуті навколо першого значення%s'. Ви можете змінити властивості, натискаючи на фасад.",
   "chat.ae2.InvalidMachine": "Не вдалося завантажити налаштування з несумісного пристрою.",
   "chat.ae2.InvalidMachinePartiallyRestored": "Частково завантажено конфігурацію: %s.",
   "chat.ae2.LastTransition": "Останній перехід:",
