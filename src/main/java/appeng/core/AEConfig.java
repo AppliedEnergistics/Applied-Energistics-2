@@ -332,10 +332,6 @@ public final class AEConfig {
         }
     }
 
-    public int getPathfindingStepsPerTick() {
-        return common.pathfindingStepsPerTick.get();
-    }
-
     /**
      * @return True if an in-world preview of parts and facade placement should be shown when holding one in hand.
      */
@@ -531,7 +527,6 @@ public final class AEConfig {
         public final BooleanValue matterCannonBlockDamage;
         public final BooleanValue tinyTntBlockDamage;
         public final EnumValue<ChannelMode> channels;
-        public final IntValue pathfindingStepsPerTick;
         public final BooleanValue spatialAnchorEnableRandomTicks;
 
         public final IntValue growthAcceleratorSpeed;
@@ -601,9 +596,6 @@ public final class AEConfig {
                     "Enables the ability of Tiny TNT to break blocks.");
             channels = defineEnum(builder, "channels", ChannelMode.DEFAULT,
                     "Changes the channel capacity that cables provide in AE2.");
-            pathfindingStepsPerTick = define(builder, "pathfindingStepsPerTick", 4,
-                    1, 1024,
-                    "The number of pathfinding steps that are taken per tick and per grid that is booting. Lower numbers will mean booting takes longer, but less work is done per tick.");
             spatialAnchorEnableRandomTicks = define(builder, "spatialAnchorEnableRandomTicks", true,
                     "Whether Spatial Anchors should force random chunk ticks and entity spawning.");
             builder.pop();

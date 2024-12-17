@@ -18,6 +18,7 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPartHost;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -80,18 +81,15 @@ public class PlotTestHelper extends GameTestHelper {
         return partClass.cast(part);
     }
 
-    /**
-     * Find all grids in the area and return the biggest one.
-     */
     @NotNull
-    public IGrid getGrid(BlockPos pos) {
+    public IGridNode getGridNode(BlockPos pos) {
         checkAllInitialized();
 
         var be = getLevel().getBlockEntity(absolutePos(pos));
         if (be instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
-            IGrid grid = gridConnectedBlockEntity.getMainNode().getGrid();
-            check(grid != null, "no grid", pos);
-            return grid;
+            var node = gridConnectedBlockEntity.getMainNode().getNode();
+            check(node != null, "no node", pos);
+            return node;
         }
 
         var nodeHost = GridHelper.getNodeHost(getLevel(), this.absolutePos(pos));
@@ -99,12 +97,21 @@ public class PlotTestHelper extends GameTestHelper {
             for (var side : Direction.values()) {
                 var node = nodeHost.getGridNode(side);
                 if (node != null) {
-                    return node.getGrid();
+                    return node;
                 }
             }
         }
-        fail("no grid", pos);
+        fail("no node", pos);
         return null;
+    }
+
+    /**
+     * Find some grid at the given position.
+     */
+    @NotNull
+    public IGrid getGrid(BlockPos pos) {
+        var node = getGridNode(pos);
+        return node.getGrid();
     }
 
     /**
