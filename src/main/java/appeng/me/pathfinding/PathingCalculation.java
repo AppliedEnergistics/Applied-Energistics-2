@@ -207,15 +207,14 @@ public class PathingCalculation {
      * Propagates assignment to all nodes by performing a DFS. The implementation is iterative to avoid stack overflow.
      */
     private void propagateAssignments() {
-        visited.clear();
         List<Object> stack = new ArrayList<>();
+        Set<IPathItem> controllerNodes = new HashSet<>();
 
         for (var node : grid.getMachineNodes(ControllerBlockEntity.class)) {
-            visited.add((IPathItem) node);
+            controllerNodes.add((IPathItem) node);
             for (var gcc : node.getConnections()) {
                 var gc = (GridConnection) gcc;
                 if (!(gc.getOtherSide(node).getOwner() instanceof ControllerBlockEntity)) {
-                    visited.add(gc);
                     stack.add(gc);
                 }
             }
@@ -239,7 +238,10 @@ public class PathingCalculation {
             } else {
                 stack.add(SUBTREE_END);
                 for (var pi : ((IPathItem) current).getPossibleOptions()) {
-                    if (visited.add(pi)) {
+                    // The neighbor could either be: a child, the parent, or in a different tree if it is closer to
+                    // another controller. It is a child if we are its parent.
+                    // We need to exclude controller nodes because their getControllerRoute() is nonsense.
+                    if (!controllerNodes.contains(pi) && pi.getControllerRoute() == current) {
                         stack.add(pi);
                     }
                 }
