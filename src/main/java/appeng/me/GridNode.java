@@ -110,6 +110,9 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
      */
     private int lastUsedChannels = 0;
     /**
+     * The nearest ancestor of this node which restricts the number of maximum available channels for its subtree. It is
+     * {@code null} if the next node is a controller.
+     * <p>
      * Used to quickly walk the path to the controller when checking channel assignability, based on the observation
      * that the max channel count increases as we get to the controller, and that we only need to check the highest node
      * of each max channel count.
@@ -119,8 +122,6 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
      * need to check that {@code dense cable 1} can accept the additional channel. If this is true then dense cables
      * {@code 2} and {@code 3} can always accept it. Same for regular cables, so it is enough to check that
      * {@code dense cable 1} and {@code cable 1} can accept it, massively speeding up the assignment for large trees.
-     * <p>
-     * This field is used to jump up the path. It is {@code null} if the next node is a controller.
      */
     @Nullable
     private GridNode highestSimilarAncestor = null;
