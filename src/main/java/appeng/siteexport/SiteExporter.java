@@ -19,10 +19,10 @@ import com.google.common.io.RecursiveDeleteOption;
 import com.mojang.blaze3d.platform.NativeImage;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.DetectedVersion;
@@ -91,7 +91,7 @@ import appeng.util.Platform;
 @OnlyIn(Dist.CLIENT)
 public final class SiteExporter implements ResourceExporter {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOG = LoggerFactory.getLogger(SiteExporter.class);
 
     private static final int ICON_DIMENSION = 128;
 
@@ -176,7 +176,7 @@ public final class SiteExporter implements ResourceExporter {
         if (!stack.isEmpty()) {
             items.add(stack.getItem());
             if (!stack.getComponentsPatch().isEmpty()) {
-                LOGGER.error("Couldn't handle stack with NBT tag: {}", stack);
+                LOG.error("Couldn't handle stack with NBT tag: {}", stack);
             }
         }
     }
@@ -239,7 +239,7 @@ public final class SiteExporter implements ResourceExporter {
             } else if (recipe instanceof ChargerRecipe chargerRecipe) {
                 writer.addRecipe(id, chargerRecipe);
             } else {
-                LOGGER.warn("Unable to handle recipe {} of type {}", holder.id(), recipe.getType());
+                LOG.warn("Unable to handle recipe {} of type {}", holder.id(), recipe.getType());
             }
         }
     }
@@ -316,9 +316,9 @@ public final class SiteExporter implements ResourceExporter {
 
         // Load data packs if needed
         if (client.level == null) {
-            LOGGER.info("Reloading datapacks to get recipes");
+            LOG.info("Reloading datapacks to get recipes");
             Guide.runDatapackReload();
-            LOGGER.info("Completed datapack reload");
+            LOG.info("Completed datapack reload");
         }
 
         // Reference all navigation node icons
@@ -329,7 +329,7 @@ public final class SiteExporter implements ResourceExporter {
         for (var page : guide.getPages()) {
             currentPage = page;
 
-            LOGGER.debug("Compiling {}", page);
+            LOG.debug("Compiling {}", page);
             var compiledPage = PageCompiler.compile(guide, guide.getExtensions(), page);
 
             processPage(indexWriter, page, compiledPage);
@@ -468,7 +468,7 @@ public final class SiteExporter implements ResourceExporter {
 
             renderer.setupItemRendering();
 
-            LOGGER.info("Exporting items...");
+            LOG.info("Exporting items...");
             for (var item : items) {
                 var stack = new ItemStack(item);
 
@@ -516,7 +516,7 @@ public final class SiteExporter implements ResourceExporter {
 
             renderer.setupItemRendering();
 
-            LOGGER.info("Exporting fluids...");
+            LOG.info("Exporting fluids...");
             for (var fluid : fluids) {
                 var fluidVariant = new FluidStack(fluid, 1);
                 String fluidId = BuiltInRegistries.FLUID.getKey(fluid).toString();

@@ -73,7 +73,7 @@ import appeng.helpers.InventoryAction;
 import appeng.menu.implementations.PatternAccessTermMenu;
 
 public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AEBaseScreen<C> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PatternAccessTermScreen.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PatternAccessTermScreen.class);
 
     private static final int GUI_WIDTH = 195;
     private static final int GUI_TOP_AND_BOTTOM_PADDING = 54;
@@ -443,7 +443,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             Int2ObjectMap<ItemStack> slots) {
         var record = byId.get(inventoryId);
         if (record == null) {
-            LOGGER.warn("Ignoring incremental update for unknown inventory id {}", inventoryId);
+            LOG.warn("Ignoring incremental update for unknown inventory id {}", inventoryId);
             return;
         }
 

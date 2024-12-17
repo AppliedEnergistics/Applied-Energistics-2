@@ -84,7 +84,7 @@ import appeng.libs.unist.UnistNode;
 
 @ApiStatus.Internal
 public final class PageCompiler {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PageCompiler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PageCompiler.class);
 
     /**
      * Default gap between block-level elements. Set as margin.
@@ -174,13 +174,13 @@ public final class PageCompiler {
         for (var child : root.children()) {
             if (child instanceof MdAstYamlFrontmatter frontmatter) {
                 if (result != null) {
-                    LOGGER.error("Found more than one frontmatter!"); // TODO: proper debugging
+                    LOG.error("Found more than one frontmatter!"); // TODO: proper debugging
                     continue;
                 }
                 try {
                     result = Frontmatter.parse(pageId, frontmatter.value);
                 } catch (Exception e) {
-                    LOGGER.error("Failed to parse frontmatter for page {}", pageId, e);
+                    LOG.error("Failed to parse frontmatter for page {}", pageId, e);
                     break;
                 }
             }
@@ -402,12 +402,12 @@ public final class PageCompiler {
             var imageId = IdUtils.resolveLink(astImage.url, pageId);
             var imageContent = pages.loadAsset(imageId);
             if (imageContent == null) {
-                LOGGER.error("Couldn't find image {}", astImage.url);
+                LOG.error("Couldn't find image {}", astImage.url);
                 image.setTitle("Missing image: " + astImage.url);
             }
             image.setImage(imageId, imageContent);
         } catch (ResourceLocationException e) {
-            LOGGER.error("Invalid image id: {}", astImage.url);
+            LOG.error("Invalid image id: {}", astImage.url);
             image.setTitle("Invalid image URL: " + astImage.url);
         }
         return image;
@@ -447,9 +447,9 @@ public final class PageCompiler {
             span.appendText("~".repeat(pos.column() - 1) + "^");
             span.appendBreak();
 
-            LOGGER.warn("{}\n{}\n{}\n", text, line, "~".repeat(pos.column() - 1) + "^");
+            LOG.warn("{}\n{}\n{}\n", text, line, "~".repeat(pos.column() - 1) + "^");
         } else {
-            LOGGER.warn("{}\n", text);
+            LOG.warn("{}\n", text);
         }
 
         return span;

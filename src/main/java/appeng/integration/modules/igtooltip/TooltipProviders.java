@@ -46,7 +46,7 @@ import appeng.parts.reporting.AbstractMonitorPart;
 
 public final class TooltipProviders implements TooltipProvider {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TooltipProviders.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TooltipProviders.class);
 
     public static final ServiceLoader<TooltipProvider> LOADER = ServiceLoader.load(TooltipProvider.class);
 
@@ -76,7 +76,7 @@ public final class TooltipProviders implements TooltipProvider {
         }
 
         for (var clazz : baseClasses.getBaseClasses()) {
-            LOGGER.debug("Registering default-data for BE {} and sub-classes", clazz);
+            LOG.debug("Registering default-data for BE {} and sub-classes", clazz);
             registration.addBlockEntityData(AppEng.makeId("grid_node"), clazz.blockEntity(),
                     new GridNodeStateDataProvider());
             registration.addBlockEntityData(AppEng.makeId("power_storage"), clazz.blockEntity(),
@@ -86,7 +86,7 @@ public final class TooltipProviders implements TooltipProvider {
         }
 
         for (var clazz : baseClasses.getPartHostClasses()) {
-            LOGGER.debug("Registering part host provider for {} and sub-classes", clazz);
+            LOG.debug("Registering part host provider for {} and sub-classes", clazz);
             registration.addBlockEntityData(
                     AppEng.makeId("base_" + clazz.blockEntity().getSimpleName().toLowerCase(Locale.ROOT)),
                     clazz.blockEntity(),
@@ -103,7 +103,7 @@ public final class TooltipProviders implements TooltipProvider {
         }
 
         for (var clazz : baseClasses.getBaseClasses()) {
-            LOGGER.debug("Registering default client providers for BE {} and sub-classes", clazz);
+            LOG.debug("Registering default client providers for BE {} and sub-classes", clazz);
             registration.addBlockEntityBody(
                     clazz.blockEntity(),
                     clazz.block(),
@@ -123,7 +123,7 @@ public final class TooltipProviders implements TooltipProvider {
         }
 
         for (var clazz : baseClasses.getPartHostClasses()) {
-            LOGGER.debug("Registering part host provider for {} and sub-classes", clazz);
+            LOG.debug("Registering part host provider for {} and sub-classes", clazz);
             registration.addBlockEntityName(
                     clazz.blockEntity(),
                     clazz.block(),

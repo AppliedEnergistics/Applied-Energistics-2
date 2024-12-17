@@ -6,9 +6,8 @@ import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
-import com.mojang.logging.LogUtils;
-
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -20,7 +19,7 @@ import net.minecraft.world.level.saveddata.SavedData;
  * Base class for all AE2 saved data to make them more resistant to crashes while writing. Thank you RS for the idea!
  */
 public abstract class AESavedData extends SavedData {
-    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final Logger LOG = LoggerFactory.getLogger(AESavedData.class);
 
     @Override
     public void save(File file, HolderLookup.Provider registries) {
@@ -44,7 +43,7 @@ public abstract class AESavedData extends SavedData {
                 Files.move(tempFile, targetPath, StandardCopyOption.REPLACE_EXISTING);
             }
         } catch (IOException iOException) {
-            LOGGER.error("Could not save data {}", this, iOException);
+            LOG.error("Could not save data {}", this, iOException);
         }
         this.setDirty(false);
     }

@@ -21,7 +21,7 @@ import appeng.client.guidebook.compiler.ParsedGuidePage;
  * This index is installed by default on all {@linkplain appeng.client.guidebook.Guide guides}.
  */
 public class ItemIndex extends UniqueIndex<ResourceLocation, PageAnchor> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ItemIndex.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ItemIndex.class);
 
     public ItemIndex() {
         super(
@@ -38,7 +38,7 @@ public class ItemIndex extends UniqueIndex<ResourceLocation, PageAnchor> {
         }
 
         if (!(itemIdsNode instanceof List<?> itemIdList)) {
-            LOGGER.warn("Page {} contains malformed item_ids frontmatter", page.getId());
+            LOG.warn("Page {} contains malformed item_ids frontmatter", page.getId());
             return List.of();
         }
 
@@ -50,7 +50,7 @@ public class ItemIndex extends UniqueIndex<ResourceLocation, PageAnchor> {
                 try {
                     itemId = IdUtils.resolveId(itemIdStr, page.getId().getNamespace());
                 } catch (ResourceLocationException e) {
-                    LOGGER.warn("Page {} contains a malformed item_ids frontmatter entry: {}", page.getId(),
+                    LOG.warn("Page {} contains a malformed item_ids frontmatter entry: {}", page.getId(),
                             listEntry);
                     continue;
                 }
@@ -60,11 +60,11 @@ public class ItemIndex extends UniqueIndex<ResourceLocation, PageAnchor> {
                     itemAnchors.add(Pair.of(
                             itemId, new PageAnchor(page.getId(), null)));
                 } else {
-                    LOGGER.warn("Page {} references an unknown item {} in its item_ids frontmatter",
+                    LOG.warn("Page {} references an unknown item {} in its item_ids frontmatter",
                             page.getId(), itemId);
                 }
             } else {
-                LOGGER.warn("Page {} contains a malformed item_ids frontmatter entry: {}", page.getId(), listEntry);
+                LOG.warn("Page {} contains a malformed item_ids frontmatter entry: {}", page.getId(), listEntry);
             }
         }
 

@@ -83,7 +83,7 @@ import appeng.util.inv.PlayerInternalInventory;
  * Shared code between the pattern provider block and part.
  */
 public class PatternProviderLogic implements InternalInventoryHost, ICraftingProvider {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PatternProviderLogic.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PatternProviderLogic.class);
 
     public static final String NBT_MEMORY_CARD_PATTERNS = "patterns";
     public static final String NBT_UNLOCK_EVENT = "unlockEvent";
@@ -172,7 +172,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                 tag.putByte(NBT_UNLOCK_EVENT, (byte) 2);
                 tag.put(NBT_UNLOCK_STACK, GenericStack.writeTag(registries, unlockStack));
             } else {
-                LOGGER.error("Saving pattern provider {}, locked waiting for stack, but stack is null!", host);
+                LOG.error("Saving pattern provider {}, locked waiting for stack, but stack is null!", host);
             }
         } else if (unlockEvent == UnlockCraftingEvent.REDSTONE_PULSE) {
             tag.putByte(NBT_UNLOCK_EVENT, (byte) 3);
@@ -202,14 +202,14 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
             case 2 -> UnlockCraftingEvent.RESULT;
             case 3 -> UnlockCraftingEvent.REDSTONE_PULSE;
             default -> {
-                LOGGER.error("Unknown unlock event type {} in NBT for pattern provider: {}", unlockEventType, tag);
+                LOG.error("Unknown unlock event type {} in NBT for pattern provider: {}", unlockEventType, tag);
                 yield null;
             }
         };
         if (this.unlockEvent == UnlockCraftingEvent.RESULT) {
             this.unlockStack = GenericStack.readTag(registries, tag.getCompound(NBT_UNLOCK_STACK));
             if (this.unlockStack == null) {
-                LOGGER.error("Could not load unlock stack for pattern provider from NBT: {}", tag);
+                LOG.error("Could not load unlock stack for pattern provider from NBT: {}", tag);
             }
         } else {
             this.unlockStack = null;
@@ -682,7 +682,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
         if (unlockStack == null) {
             // Actually an error state...
-            LOGGER.error("pattern provider was waiting for RESULT, but no result was set");
+            LOG.error("pattern provider was waiting for RESULT, but no result was set");
             unlockEvent = null;
         } else if (unlockStack.what().equals(genericStack.what())) {
             var remainingAmount = unlockStack.amount() - genericStack.amount();

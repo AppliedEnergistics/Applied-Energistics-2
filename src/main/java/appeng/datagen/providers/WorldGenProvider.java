@@ -23,7 +23,7 @@ import net.minecraft.resources.RegistryOps;
 import appeng.core.AppEng;
 
 public class WorldGenProvider implements DataProvider {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WorldGenProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WorldGenProvider.class);
 
     private final PackOutput output;
     private final CompletableFuture<HolderLookup.Provider> registries;
@@ -72,7 +72,7 @@ public class WorldGenProvider implements DataProvider {
             DynamicOps<JsonElement> json, Encoder<E> encoder,
             E value) {
         var optional = encoder.encodeStart(json, value).resultOrPartial((error) -> {
-            LOGGER.error("Couldn't serialize element {}: {}", path, error);
+            LOG.error("Couldn't serialize element {}: {}", path, error);
         });
 
         return optional.map(data -> DataProvider.saveStable(cache, data, path));

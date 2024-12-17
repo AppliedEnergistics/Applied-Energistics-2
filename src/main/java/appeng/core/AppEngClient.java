@@ -132,7 +132,7 @@ import appeng.util.Platform;
  */
 @Mod(value = AppEng.MOD_ID, dist = Dist.CLIENT)
 public class AppEngClient extends AppEngBase {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppEngClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AppEngClient.class);
 
     private static AppEngClient INSTANCE;
 
@@ -294,7 +294,7 @@ public class AppEngClient extends AppEngBase {
             try {
                 postClientSetup(minecraft);
             } catch (Throwable e) {
-                LOGGER.error("AE2 failed postClientSetup", e);
+                LOG.error("AE2 failed postClientSetup", e);
                 throw new RuntimeException(e);
             }
         });
@@ -498,7 +498,7 @@ public class AppEngClient extends AppEngBase {
 
             openGuideScreen(screen);
         } catch (Exception e) {
-            LOGGER.error("Failed to open guide.", e);
+            LOG.error("Failed to open guide.", e);
         }
     }
 
@@ -509,7 +509,7 @@ public class AppEngClient extends AppEngBase {
 
             openGuideScreen(screen);
         } catch (Exception e) {
-            LOGGER.error("Failed to open guide at {}.", anchor, e);
+            LOG.error("Failed to open guide at {}.", anchor, e);
         }
     }
 
