@@ -112,7 +112,7 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
     /**
      * Used to quickly walk the path to the controller when checking channel assignability, based on the observation
      * that the max channel count increases as we get to the controller, and that we only need to check the highest node
-     * of each type.
+     * of each max channel count.
      * <p>
      * For example, on the following path:
      * {@code controller - dense cable 1 - dense cable 2 - dense cable 3 - cable 1 - cable 2 - cable 3 - device}, we
@@ -123,7 +123,7 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
      * This field is used to jump up the path. It is {@code null} if the next node is a controller.
      */
     @Nullable
-    private GridNode highestSimilarParent = null;
+    private GridNode highestSimilarAncestor = null;
     private int subtreeMaxChannels;
     private boolean subtreeAllowsCompressedChannels;
 
@@ -599,8 +599,8 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
         return this.connections.getFirst();
     }
 
-    public @Nullable GridNode getHighestSimilarParent() {
-        return highestSimilarParent;
+    public @Nullable GridNode getHighestSimilarAncestor() {
+        return highestSimilarAncestor;
     }
 
     public boolean getSubtreeAllowsCompressedChannels() {
@@ -613,19 +613,19 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
 
         var nodeParent = (GridNode) fast.getControllerRoute();
         if (nodeParent.getOwner() instanceof ControllerBlockEntity) {
-            this.highestSimilarParent = null;
+            this.highestSimilarAncestor = null;
             this.subtreeMaxChannels = getMaxChannels();
             this.subtreeAllowsCompressedChannels = !hasFlag(GridFlags.CANNOT_CARRY_COMPRESSED);
         } else {
-            if (nodeParent.highestSimilarParent == null) {
+            if (nodeParent.highestSimilarAncestor == null) {
                 // Parent is connected to a controller, it is the bottleneck.
-                this.highestSimilarParent = nodeParent;
-            } else if (nodeParent.subtreeMaxChannels == nodeParent.highestSimilarParent.subtreeMaxChannels) {
+                this.highestSimilarAncestor = nodeParent;
+            } else if (nodeParent.subtreeMaxChannels == nodeParent.highestSimilarAncestor.subtreeMaxChannels) {
                 // Parent is not restricting the number of channels, go as high as possible.
-                this.highestSimilarParent = nodeParent.highestSimilarParent;
+                this.highestSimilarAncestor = nodeParent.highestSimilarAncestor;
             } else {
                 // Parent is restricting the number of channels, link to it directly.
-                this.highestSimilarParent = nodeParent;
+                this.highestSimilarAncestor = nodeParent;
             }
             this.subtreeMaxChannels = Math.min(nodeParent.subtreeMaxChannels, getMaxChannels());
             this.subtreeAllowsCompressedChannels = nodeParent.subtreeAllowsCompressedChannels
@@ -695,7 +695,7 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
 
     @Override
     public void finalizeChannels() {
-        this.highestSimilarParent = null;
+        this.highestSimilarAncestor = null;
 
         if (hasFlag(GridFlags.CANNOT_CARRY)) {
             return;

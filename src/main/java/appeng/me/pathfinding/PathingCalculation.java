@@ -38,12 +38,10 @@ import appeng.me.GridNode;
 /**
  * Calculation to assign channels starting from the controllers. The full computation is split in two steps, each linear
  * time.
- *
  * <p>
  * First, a BFS is performed starting from the controllers. This establishes a tree that connects all path items to a
  * controller. As nodes that require channels are visited, they are assigned a channel if possible. This is done by
  * checking the channel count of a few key nodes (max 3) along the path.
- *
  * <p>
  * Second, a DFS is performed to propagate the channel count upwards.
  */
@@ -187,14 +185,14 @@ public class PathingCalculation {
                 return false;
             }
 
-            pi = pi.getHighestSimilarParent();
+            pi = pi.getHighestSimilarAncestor();
         }
 
         // Allocate the channel along the path.
         pi = start;
         while (pi != null) {
             channelBottlenecks.addTo(pi, 1);
-            pi = pi.getHighestSimilarParent();
+            pi = pi.getHighestSimilarAncestor();
         }
 
         channelNodes.add(start);
