@@ -62,7 +62,6 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                 });
     }
 
-    private PathingCalculation ongoingCalculation = null;
     private final Set<ControllerBlockEntity> controllers = new HashSet<>();
     private final Set<IGridNode> nodesNeedingChannels = new HashSet<>();
     private final Set<IGridNode> cannotCarryCompressedNodes = new HashSet<>();
@@ -74,7 +73,6 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     // Flag to indicate a reboot should occur next tick
     private boolean reboot = true;
     private boolean booting = false;
-    private int bootingTicks = 0;
     @Nullable
     private AdHocNetworkError adHocNetworkError;
     private ControllerState controllerState = ControllerState.NO_CONTROLLER;
@@ -99,11 +97,9 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         if (this.reboot) {
             this.reboot = false;
 
-            if (!this.booting) {
-                this.booting = true;
-                this.bootingTicks = 0;
-                this.postBootingStatusChange();
-            }
+            // Preserve the illusion that the network is booting for a while before channel assignment completes.
+            this.booting = true;
+            this.postBootingStatusChange();
 
             this.channelsInUse = 0;
             this.adHocNetworkError = null;
@@ -125,41 +121,24 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                 this.grid.getPivot().beginVisit(new AdHocChannelUpdater(this.channelsInUse));
             } else if (this.controllerState == ControllerState.CONTROLLER_CONFLICT) {
                 this.grid.getPivot().beginVisit(new AdHocChannelUpdater(0));
+                this.channelsInUse = 0;
+                this.channelsByBlocks = 0;
             } else {
-                this.ongoingCalculation = new PathingCalculation(grid);
-            }
-        }
-
-        if (this.booting) {
-            // Work on remaining pathfinding work
-            if (ongoingCalculation != null) { // can be null for ad-hoc or invalid controller state
-                for (var i = 0; i < AEConfig.instance().getPathfindingStepsPerTick(); i++) {
-                    ongoingCalculation.step();
-                    if (ongoingCalculation.isFinished()) {
-                        this.channelsByBlocks = ongoingCalculation.getChannelsByBlocks();
-                        this.channelsInUse = ongoingCalculation.getChannelsInUse();
-                        ongoingCalculation = null;
-                        break;
-                    }
-                }
+                var calculation = new PathingCalculation(grid);
+                calculation.compute();
+                this.channelsInUse = calculation.getChannelsInUse();
+                this.channelsByBlocks = calculation.getChannelsByBlocks();
             }
 
-            bootingTicks++;
+            // check for achievements
+            this.achievementPost();
 
-            // Booting completes when both pathfinding completes, and the minimum boot time has elapsed
-            if (ongoingCalculation == null) {
-                // check for achievements
-                this.achievementPost();
-
-                this.booting = false;
-                this.setChannelPowerUsage(this.channelsByBlocks / 128.0);
-                // Notify of channel changes AFTER we set booting to false, this ensures that any activeness check will
-                // properly return true.
-                this.grid.getPivot().beginVisit(new ChannelFinalizer());
-                this.postBootingStatusChange();
-            } else if (bootingTicks == 2000) {
-                AELog.warn("Booting has still not completed after %d ticks for %s", bootingTicks, grid);
-            }
+            this.booting = false;
+            this.setChannelPowerUsage(this.channelsByBlocks / 128.0);
+            // Notify of channel changes AFTER we set booting to false, this ensures that any activeness check will
+            // properly return true.
+            this.grid.getPivot().beginVisit(new ChannelFinalizer());
+            this.postBootingStatusChange();
         }
     }
 
@@ -344,9 +323,6 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         if (!this.channelModeLocked) {
             this.channelMode = AEConfig.instance().getChannelMode();
         }
-
-        // clean up...
-        this.ongoingCalculation = null;
 
         this.channelsByBlocks = 0;
         this.reboot = true;
