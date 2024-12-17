@@ -22,14 +22,18 @@ import appeng.api.networking.GridFlags;
 
 public interface IPathItem {
 
+    /* USED BY AD HOC PATHING */
+
+    void setAdHocChannels(int channels);
+
+    /* USED BY CONTROLLER PATHING */
+
     IPathItem getControllerRoute();
 
-    void setControllerRoute(IPathItem fast);
-
     /**
-     * used to determine if the finder can continue.
+     * Sets route to controller.
      */
-    boolean canSupportMoreChannels();
+    void setControllerRoute(IPathItem fast);
 
     /**
      * The maximum number of channels connections to this path item can carry.
@@ -37,19 +41,16 @@ public interface IPathItem {
     int getMaxChannels();
 
     /**
-     * find possible choices for other pathing.
+     * Find possible choices for other pathing.
      */
     Iterable<IPathItem> getPossibleOptions();
-
-    /**
-     * add one to the channel count, this is mostly for cables.
-     */
-    void incrementChannelCount(int usedChannels);
 
     /**
      * Tests if this path item has the specific grid flag set.
      */
     boolean hasFlag(GridFlags flag);
+
+    /* USED BY BOTH */
 
     /**
      * channels are done, wrap it up.

@@ -97,6 +97,7 @@ public final class TestPlots {
                 QnbTestPlots.class,
                 GuidebookPlot.class,
                 SubnetPlots.class,
+                ChannelTests.class,
                 AnnihilationPlaneTests.class));
     }
 

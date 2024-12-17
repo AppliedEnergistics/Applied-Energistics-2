@@ -215,7 +215,7 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
             partHost.markForUpdate();
             if (center != null) {
                 final GridNode n = (GridNode) center.getGridNode();
-                this.outputSecondaryMessage(player, "Node Channels", Integer.toString(n.usedChannels()));
+                this.outputSecondaryMessage(player, "Node Channels", Integer.toString(n.getUsedChannels()));
                 for (var entry : n.getInWorldConnections().entrySet()) {
                     this.outputSecondaryMessage(player, "Channels " + entry.getKey().getName(),
                             Integer.toString(entry.getValue().getUsedChannels()));
