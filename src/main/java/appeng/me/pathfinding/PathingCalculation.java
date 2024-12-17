@@ -228,7 +228,7 @@ public class PathingCalculation {
                 IPathItem item = (IPathItem) stack.removeLast();
                 // We have visited the entire subtree and can now propagate channels upwards.
                 if (item instanceof GridNode node) {
-                    boolean hasChannel = channelNodes.remove(item);
+                    boolean hasChannel = channelNodes.contains(item);
                     channelsByBlocks += node.propagateChannelsUpwards(hasChannel);
                     if (hasChannel) {
                         channelsInUse++;
@@ -250,7 +250,6 @@ public class PathingCalculation {
         for (var multiblockNode : multiblocksWithChannel) {
             multiblockNode.incrementChannelCount(1);
         }
-        multiblocksWithChannel.clear();
     }
 
     public int getChannelsInUse() {
