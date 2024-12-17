@@ -31,7 +31,7 @@ public class GuidePageTexture {
         return new GuidePageTexture(AppEng.makeId("missing"), null);
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GuidePageTexture.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GuidePageTexture.class);
 
     // Textures in use by the current page
     private static final Map<GuidePageTexture, DynamicTexture> usedTextures = new IdentityHashMap<>();
@@ -76,7 +76,7 @@ public class GuidePageTexture {
         try {
             return new GuidePageTexture(id, imageContent);
         } catch (Exception e) {
-            LOGGER.error("Failed to get image {}: {}", id, e.toString());
+            LOG.error("Failed to get image {}: {}", id, e.toString());
             return missing();
         }
     }
@@ -91,7 +91,7 @@ public class GuidePageTexture {
                 var nativeImage = NativeImage.read(guidePageTexture.imageContent);
                 return new DynamicTexture(nativeImage);
             } catch (IOException e) {
-                LOGGER.error("Failed to read image {}: {}", guidePageTexture.id, e.toString());
+                LOG.error("Failed to read image {}: {}", guidePageTexture.id, e.toString());
                 return MissingTextureAtlasSprite.getTexture();
             }
         });

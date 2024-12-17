@@ -24,7 +24,7 @@ import appeng.client.guidebook.compiler.ParsedGuidePage;
 
 public class NavigationTree {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NavigationTree.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NavigationTree.class);
 
     private final Map<ResourceLocation, NavigationNode> nodeIndex;
 
@@ -107,7 +107,7 @@ public class NavigationTree {
 
         if (page == null) {
             // These children had a parent that doesn't exist
-            LOGGER.error("Pages {} had unknown navigation parent {}", children, pageId);
+            LOG.error("Pages {} had unknown navigation parent {}", children, pageId);
             return null;
         }
 
@@ -120,7 +120,7 @@ public class NavigationTree {
 
             if (navigationEntry.iconComponents() != null) {
                 var patch = DataComponentPatch.CODEC.parse(JavaOps.INSTANCE, navigationEntry.iconComponents())
-                        .resultOrPartial(err -> LOGGER.error("Failed to deserialize component patch {} for icon {}: {}",
+                        .resultOrPartial(err -> LOG.error("Failed to deserialize component patch {} for icon {}: {}",
                                 navigationEntry.iconComponents(), navigationEntry.iconItemId(), err));
                 icon = new ItemStack(iconItem, 1, patch.orElse(DataComponentPatch.EMPTY));
             } else {
@@ -128,7 +128,7 @@ public class NavigationTree {
             }
 
             if (icon.isEmpty()) {
-                LOGGER.error("Couldn't find icon {} for icon of page {}", navigationEntry.iconItemId(), page);
+                LOG.error("Couldn't find icon {} for icon of page {}", navigationEntry.iconItemId(), page);
             }
         }
 

@@ -17,7 +17,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.storage.StorageHelper;
 
 public class StorageExportStrategy<T, S> implements StackExportStrategy {
-    private static final Logger LOGGER = LoggerFactory.getLogger(StorageExportStrategy.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StorageExportStrategy.class);
     private final BlockCapabilityCache<T, Direction> cache;
     private final HandlerStrategy<T, S> handlerStrategy;
 
@@ -69,7 +69,7 @@ public class StorageExportStrategy<T, S> implements StackExportStrategy {
                 long leftover = extracted - wasInserted;
                 leftover -= inv.getInventory().insert(what, leftover, Actionable.MODULATE, context.getActionSource());
                 if (leftover > 0) {
-                    LOGGER.error("Storage export: adjacent block unexpectedly refused insert, voided {}x{}", leftover,
+                    LOG.error("Storage export: adjacent block unexpectedly refused insert, voided {}x{}", leftover,
                             what);
                 }
             }

@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.neoforged.fml.ModList;
 
 public class SodiumCompat {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SodiumCompat.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SodiumCompat.class);
 
     @Nullable
     private static final MethodHandle METHOD_HANDLE;
@@ -24,10 +24,10 @@ public class SodiumCompat {
                     Class.forName("me.jellysquid.mods.sodium.client.render.texture.SpriteUtil"),
                     "markSpriteActive",
                     MethodType.methodType(void.class, TextureAtlasSprite.class));
-            LOGGER.info("Loaded Sodium active sprite compat.");
+            LOG.info("Loaded Sodium active sprite compat.");
         } catch (NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
             if (ModList.get().getModContainerById("sodium").isPresent()) {
-                LOGGER.error("Failed to load Sodium active sprite compat.", e);
+                LOG.error("Failed to load Sodium active sprite compat.", e);
             }
         }
 

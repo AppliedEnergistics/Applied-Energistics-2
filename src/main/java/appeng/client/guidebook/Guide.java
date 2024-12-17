@@ -67,7 +67,7 @@ import appeng.util.Platform;
  * guide-specific subdirectory of resource packs.
  */
 public final class Guide implements PageCollection {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Guide.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Guide.class);
 
     private final String defaultNamespace;
     private final String folder;
@@ -199,7 +199,7 @@ public final class Guide implements PageCollection {
     @Nullable
     public ParsedGuidePage getParsedPage(ResourceLocation id) {
         if (pages == null) {
-            LOGGER.warn("Can't get page {}. Pages not loaded yet.", id);
+            LOG.warn("Can't get page {}. Pages not loaded yet.", id);
             return null;
         }
 
@@ -233,7 +233,7 @@ public final class Guide implements PageCollection {
                 return in.readAllBytes();
             } catch (FileNotFoundException ignored) {
             } catch (IOException e) {
-                LOGGER.error("Failed to open guidebook asset {}", path);
+                LOG.error("Failed to open guidebook asset {}", path);
                 return null;
             }
         }
@@ -248,7 +248,7 @@ public final class Guide implements PageCollection {
         try (var input = resource.open()) {
             return input.readAllBytes();
         } catch (IOException e) {
-            LOGGER.error("Failed to open guidebook asset {}", id);
+            LOG.error("Failed to open guidebook asset {}", id);
             return null;
         }
     }
@@ -314,7 +314,7 @@ public final class Guide implements PageCollection {
                 try (var in = entry.getValue().open()) {
                     pages.put(pageId, PageCompiler.parse(sourcePackId, pageId, in));
                 } catch (IOException e) {
-                    LOGGER.error("Failed to load guidebook page {} from pack {}", pageId, sourcePackId, e);
+                    LOG.error("Failed to load guidebook page {} from pack {}", pageId, sourcePackId, e);
                 }
             }
 
@@ -445,7 +445,7 @@ public final class Guide implements PageCollection {
                     this.startupPage = ResourceLocation.parse(startupPageIdText);
                 }
             } catch (Exception e) {
-                LOGGER.error("Specified invalid page id in system property {}", startupPageProperty);
+                LOG.error("Specified invalid page id in system property {}", startupPageProperty);
             }
 
             // Development sources folder
@@ -640,7 +640,7 @@ public final class Guide implements PageCollection {
     private void validateAll() {
         // Iterate and compile all pages to warn about errors on startup
         for (var entry : developmentPages.entrySet()) {
-            LOGGER.info("Compiling {}", entry.getKey());
+            LOG.info("Compiling {}", entry.getKey());
             getPage(entry.getKey());
         }
     }

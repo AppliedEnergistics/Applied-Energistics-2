@@ -18,7 +18,7 @@ import appeng.libs.mdast.model.MdAstNode;
 
 public class FloatingImageCompiler extends FlowTagCompiler {
     public static final String TAG_NAME = "FloatingImage";
-    private static final Logger LOGGER = LoggerFactory.getLogger(FloatingImageCompiler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FloatingImageCompiler.class);
 
     @Override
     public Set<String> getTagNames() {
@@ -39,12 +39,12 @@ public class FloatingImageCompiler extends FlowTagCompiler {
             var imageId = IdUtils.resolveLink(src, compiler.getPageId());
             var imageContent = compiler.loadAsset(imageId);
             if (imageContent == null) {
-                LOGGER.error("Couldn't find image {}", src);
+                LOG.error("Couldn't find image {}", src);
                 image.setTitle("Missing image: " + src);
             }
             image.setImage(imageId, imageContent);
         } catch (ResourceLocationException e) {
-            LOGGER.error("Invalid image id: {}", src);
+            LOG.error("Invalid image id: {}", src);
             image.setTitle("Invalid image URL: " + src);
         }
 

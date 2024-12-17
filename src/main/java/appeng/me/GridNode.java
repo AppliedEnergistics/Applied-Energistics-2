@@ -35,10 +35,10 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.MutableClassToInstanceMap;
 import com.google.gson.stream.JsonWriter;
-import com.mojang.logging.LogUtils;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
@@ -73,7 +73,7 @@ import appeng.util.IDebugExportable;
 import appeng.util.JsonStreamUtil;
 
 public class GridNode implements IGridNode, IPathItem, IDebugExportable {
-    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final Logger LOG = LoggerFactory.getLogger(GridNode.class);
 
     private final ServerLevel level;
     /**
@@ -682,7 +682,7 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
         }
 
         if (this.usedChannels > getMaxChannels()) {
-            LOGGER.error(
+            LOG.error(
                     "Internal channel assignment error. Grid node {} has {} channels passing through it but it only supports up to {}. Please open an issue on the AE2 repository.",
                     this, this.usedChannels, getMaxChannels());
         }
