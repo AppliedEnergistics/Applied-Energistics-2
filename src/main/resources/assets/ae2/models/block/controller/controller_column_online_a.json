@@ -1,0 +1,7 @@
+{
+  "parent": "ae2:block/controller/controller_column_lights",
+  "textures": {
+    "block": "ae2:block/controller_column_powered",
+    "lights": "ae2:block/controller_column_lights_a"
+  }
+}
