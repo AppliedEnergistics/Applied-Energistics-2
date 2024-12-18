@@ -23,8 +23,11 @@ import java.util.Map;
 import java.util.function.DoubleSupplier;
 
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.fml.loading.LoadingModList;
+import net.neoforged.fml.loading.moddiscovery.ModInfo;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
 import net.neoforged.neoforge.common.ModConfigSpec.DoubleValue;
@@ -152,6 +155,17 @@ public final class AEConfig {
     public void setAutoFocusSearch(boolean enable) {
         if (enable != client.autoFocusSearch.getAsBoolean()) {
             client.autoFocusSearch.set(enable);
+            client.spec.save();
+        }
+    }
+
+    public boolean isReverseFilterFunction() {
+        return client.reverseFilterFunction.get();
+    }
+
+    public void setReverseFilterFunction(boolean enable) {
+        if (enable != client.reverseFilterFunction.getAsBoolean()) {
+            client.reverseFilterFunction.set(enable);
             client.spec.save();
         }
     }
@@ -445,6 +459,7 @@ public final class AEConfig {
         public final BooleanValue syncWithExternalSearch;
         public final BooleanValue rememberLastSearch;
         public final BooleanValue autoFocusSearch;
+        public final BooleanValue reverseFilterFunction;
 
         // Tooltip settings
         public final BooleanValue tooltipShowCellUpgrades;
@@ -501,6 +516,13 @@ public final class AEConfig {
                     "Remembers the last search term and restores it when the terminal opens");
             this.autoFocusSearch = define(builder, "autoFocusSearch", false,
                     "Automatically focuses the search field when the terminal opens");
+            if (isModLoaded("emi") || isModLoaded("jei")) {
+                this.reverseFilterFunction = define(builder, "reverseFilterFunction", true,
+                        "Reverse the function of # and $ in search filter");
+            } else {
+                this.reverseFilterFunction = define(builder, "reverseFilterFunction", false,
+                        "Reverse the function of # and $ in search filter");
+            } //Synchronising recipe viewer behaviour
             builder.pop();
 
             builder.push("tooltips");
@@ -772,6 +794,13 @@ public final class AEConfig {
             T defaultValue, String comment) {
         builder.comment(comment);
         return defineEnum(builder, name, defaultValue);
+    }
+
+    private static boolean isModLoaded(String modId) {
+        if (ModList.get() == null) {
+            return LoadingModList.get().getMods().stream().map(ModInfo::getModId).anyMatch(modId::equals);
+        }
+        return ModList.get().isLoaded(modId);
     }
 
 }
