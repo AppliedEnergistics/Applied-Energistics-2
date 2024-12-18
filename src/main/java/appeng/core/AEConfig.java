@@ -522,7 +522,7 @@ public final class AEConfig {
             } else {
                 this.reverseFilterFunction = define(builder, "reverseFilterFunction", false,
                         "Reverse the function of # and $ in search filter");
-            } //Synchronising recipe viewer behaviour
+            } // Synchronising recipe viewer behaviour
             builder.pop();
 
             builder.push("tooltips");

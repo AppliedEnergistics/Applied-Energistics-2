@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Predicate;
 
-import appeng.core.AEConfig;
 import it.unimi.dsi.fastutil.longs.Long2BooleanMap;
 import it.unimi.dsi.fastutil.longs.Long2BooleanOpenHashMap;
 
 import appeng.api.stacks.AEKey;
+import appeng.core.AEConfig;
 import appeng.menu.me.common.GridInventoryEntry;
 
 public class RepoSearch {
@@ -71,9 +71,9 @@ public class RepoSearch {
         for (String part : terms) {
             if (part.startsWith("@")) {
                 predicateFilters.add(new ModSearchPredicate(part.substring(1)));
-            } else if (part.startsWith(AEConfig.instance().isReverseFilterFunction() ? "$" : "#")) { //tooltip
+            } else if (part.startsWith(AEConfig.instance().isReverseFilterFunction() ? "$" : "#")) { // tooltip
                 predicateFilters.add(new TooltipsSearchPredicate(part.substring(1), tooltipCache));
-            } else if (part.startsWith(AEConfig.instance().isReverseFilterFunction() ? "#" : "$")) { //tag
+            } else if (part.startsWith(AEConfig.instance().isReverseFilterFunction() ? "#" : "$")) { // tag
                 predicateFilters.add(new TagSearchPredicate(part.substring(1)));
             } else if (part.startsWith("*")) {
                 predicateFilters.add(new ItemIdSearchPredicate(part.substring(1)));
