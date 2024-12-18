@@ -71,16 +71,10 @@ public class RepoSearch {
         for (String part : terms) {
             if (part.startsWith("@")) {
                 predicateFilters.add(new ModSearchPredicate(part.substring(1)));
-            } else if (part.startsWith("#")) {
-                if (AEConfig.instance().isReverseFilterFunction())
-                    predicateFilters.add(new TagSearchPredicate(part.substring(1)));
-                else
-                    predicateFilters.add(new TooltipsSearchPredicate(part.substring(1), tooltipCache));
-            } else if (part.startsWith("$")) {
-                if (AEConfig.instance().isReverseFilterFunction())
-                    predicateFilters.add(new TooltipsSearchPredicate(part.substring(1), tooltipCache));
-                else
-                    predicateFilters.add(new TagSearchPredicate(part.substring(1)));
+            } else if (part.startsWith(AEConfig.instance().isReverseFilterFunction() ? "$" : "#")) { //tooltip
+                predicateFilters.add(new TooltipsSearchPredicate(part.substring(1), tooltipCache));
+            } else if (part.startsWith(AEConfig.instance().isReverseFilterFunction() ? "#" : "$")) { //tag
+                predicateFilters.add(new TagSearchPredicate(part.substring(1)));
             } else if (part.startsWith("*")) {
                 predicateFilters.add(new ItemIdSearchPredicate(part.substring(1)));
             } else {

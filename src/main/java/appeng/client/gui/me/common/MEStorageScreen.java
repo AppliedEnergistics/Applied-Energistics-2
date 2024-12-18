@@ -405,20 +405,14 @@ public class MEStorageScreen<C extends MEStorageMenu>
             setTextHidden(TEXT_ID_ENTRIES_SHOWN, true);
 
             // This can change due to changes in the search settings sub-screen
-            if(config.isReverseFilterFunction())
-                this.searchField.setTooltipMessage(List.of(
-                        GuiText.SearchTooltip.text(),
-                        GuiText.SearchTooltipModId.text(),
-                        GuiText.SearchTooltipTag.text("#", "#"),
-                        GuiText.SearchTooltipToolTips.text("$", "$"),
-                        GuiText.SearchTooltipItemId.text()));
-            else
-                this.searchField.setTooltipMessage(List.of(
-                        GuiText.SearchTooltip.text(),
-                        GuiText.SearchTooltipModId.text(),
-                        GuiText.SearchTooltipTag.text("$", "$"),
-                        GuiText.SearchTooltipToolTips.text("#", "#"),
-                        GuiText.SearchTooltipItemId.text()));
+            String tagPrefix = config.isReverseFilterFunction() ? "#" : "$";
+            String tooltipPrefix = config.isReverseFilterFunction() ? "$" : "#";
+            this.searchField.setTooltipMessage(List.of(
+                    GuiText.SearchTooltip.text(),
+                    GuiText.SearchTooltipModId.text(),
+                    GuiText.SearchTooltipTag.text(tagPrefix, tagPrefix),
+                    GuiText.SearchTooltipToolTips.text(tooltipPrefix, tooltipPrefix),
+                    GuiText.SearchTooltipItemId.text()));
 
             // Sync the search text both ways but make the direction depend on which search has the focus
             if (config.isSyncWithExternalSearch()) {
