@@ -94,7 +94,11 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements StandardRe
                     if (entry.getStoredAmount() <= 0) {
                         continue; // Skip items that are only craftable
                     }
-                    list.add(EmiStackHelper.toEmiStack(new GenericStack(entry.getWhat(), entry.getStoredAmount())));
+                    var emiStack = EmiStackHelper
+                            .toEmiStack(new GenericStack(entry.getWhat(), entry.getStoredAmount()));
+                    if (emiStack != null) {
+                        list.add(emiStack);
+                    }
                 }
             }
         }
