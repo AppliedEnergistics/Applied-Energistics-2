@@ -21,11 +21,8 @@ package appeng.core;
 import java.util.Collection;
 import java.util.Collections;
 
-import com.mojang.brigadier.CommandDispatcher;
-
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -39,10 +36,10 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegisterGameTestsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -210,9 +207,8 @@ public abstract class AppEngBase implements AppEng {
         AEKeyTypes.register(AEKeyType.fluids());
     }
 
-    public void registerCommands(ServerStartingEvent evt) {
-        CommandDispatcher<CommandSourceStack> dispatcher = evt.getServer().getCommands().getDispatcher();
-        new AECommand().register(dispatcher);
+    public void registerCommands(RegisterCommandsEvent evt) {
+        new AECommand().register(evt.getDispatcher());
     }
 
     public void registerSounds(IForgeRegistry<SoundEvent> registry) {
