@@ -21,11 +21,8 @@ package appeng.core;
 import java.util.Collection;
 import java.util.Collections;
 
-import com.mojang.brigadier.CommandDispatcher;
-
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -42,9 +39,9 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -215,9 +212,8 @@ public abstract class AppEngBase implements AppEng {
         Registry.register(registry, AEKeyType.fluids().getId(), AEKeyType.fluids());
     }
 
-    public void registerCommands(ServerStartingEvent evt) {
-        CommandDispatcher<CommandSourceStack> dispatcher = evt.getServer().getCommands().getDispatcher();
-        new AECommand().register(dispatcher);
+    public void registerCommands(RegisterCommandsEvent evt) {
+        new AECommand().register(evt.getDispatcher());
     }
 
     public void registerSounds(Registry<SoundEvent> registry) {
