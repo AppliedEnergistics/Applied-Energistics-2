@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 
 import appeng.api.networking.GridFlags;
@@ -46,6 +49,8 @@ import appeng.me.GridNode;
  * Second, a DFS is performed to propagate the channel count upwards.
  */
 public class PathingCalculation {
+    private static final Logger LOG = LoggerFactory.getLogger(PathingCalculation.class);
+
     private final IGrid grid;
     /**
      * Path items that are part of a multiblock that was already granted a channel.
@@ -152,7 +157,12 @@ public class PathingCalculation {
                                     var oni = multiblock.getMultiblockNodes();
                                     while (oni.hasNext()) {
                                         final IGridNode otherNodes = oni.next();
-                                        if (otherNodes != pi) {
+                                        if (otherNodes == null) {
+                                            // Only a log for now until addons are fixed too. See
+                                            // https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/8295
+                                            LOG.error("Skipping null node returned by grid multiblock node {}",
+                                                    multiblock);
+                                        } else if (otherNodes != pi) {
                                             this.multiblocksWithChannel.add((GridNode) otherNodes);
                                         }
                                     }
