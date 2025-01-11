@@ -16,19 +16,11 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-buildscript {
-    dependencies {
-        // Fix for the shadow plugin using outdated ASM
-        classpath 'org.ow2.asm:asm:9.5'
-        classpath 'org.ow2.asm:asm-commons:9.5'
-    }
-}
-
 plugins {
     id "net.neoforged.moddev"
     id "maven-publish"
     id "com.diffplug.spotless"
-    id 'io.github.goooler.shadow'
+    id 'com.gradleup.shadow'
     id "de.undercouch.download"
 }
 
@@ -183,9 +175,6 @@ neoForge {
             gameDirectory = project.file('run')
             systemProperties = commonSystemProperties
             // property "mixin.debug.export", "true"
-
-            additionalRuntimeClasspathConfiguration.extendsFrom configurations.shaded
-            additionalRuntimeClasspathConfiguration.extendsFrom configurations.guideExportOnly
         }
         client {
             client()
@@ -245,6 +234,9 @@ neoForge {
         testedMod = mods.ae2
     }
 }
+
+configurations.additionalRuntimeClasspath.extendsFrom configurations.shaded
+configurations.additionalRuntimeClasspath.extendsFrom configurations.guideExportOnly
 
 //////////////
 // Artifacts
