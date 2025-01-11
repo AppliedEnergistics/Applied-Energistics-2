@@ -67,6 +67,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import guideme.GuideME;
 import guideme.guidebook.Guide;
 import guideme.guidebook.PageAnchor;
 import guideme.guidebook.command.GuidebookStructureCommands;
@@ -74,8 +75,6 @@ import guideme.guidebook.compiler.TagCompiler;
 import guideme.guidebook.compiler.tags.RecipeTypeMappingSupplier;
 import guideme.guidebook.hotkey.OpenGuideHotkey;
 import guideme.guidebook.scene.ImplicitAnnotationStrategy;
-import guideme.guidebook.screen.GlobalInMemoryHistory;
-import guideme.guidebook.screen.GuideScreen;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.blockentity.networking.CableBusTESR;
@@ -184,7 +183,6 @@ public class AppEngClient extends AppEngBase {
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
         guide = createGuide(modEventBus);
-        OpenGuideHotkey.init();
 
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, (ClientTickEvent.Pre e) -> {
             updateCableRenderMode();
@@ -234,7 +232,8 @@ public class AppEngClient extends AppEngBase {
     }
 
     private Guide createGuide(IEventBus modEventBus) {
-        var guide = Guide.builder(modEventBus, MOD_ID, "ae2guide")
+        var guide = Guide.builder(modEventBus, AppEng.makeId("guide"))
+                .folder("ae2guide")
                 .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
                 .extension(TagCompiler.EXTENSION_POINT, new ConfigValueTagExtension())
                 .extension(RecipeTypeMappingSupplier.EXTENSION_POINT, mappings -> {
@@ -513,34 +512,12 @@ public class AppEngClient extends AppEngBase {
 
     @Override
     public void openGuideAtPreviousPage(ResourceLocation initialPage) {
-        try {
-            var screen = GuideScreen.openAtPreviousPage(guide, PageAnchor.page(initialPage),
-                    GlobalInMemoryHistory.INSTANCE);
-
-            openGuideScreen(screen);
-        } catch (Exception e) {
-            LOG.error("Failed to open guide.", e);
-        }
+        GuideME.openGuideAtPreviousPage(guide, initialPage);
     }
 
     @Override
     public void openGuideAtAnchor(PageAnchor anchor) {
-        try {
-            var screen = GuideScreen.openNew(guide, anchor, GlobalInMemoryHistory.INSTANCE);
-
-            openGuideScreen(screen);
-        } catch (Exception e) {
-            LOG.error("Failed to open guide at {}.", anchor, e);
-        }
-    }
-
-    private static void openGuideScreen(GuideScreen screen) {
-        var minecraft = Minecraft.getInstance();
-        if (minecraft.screen != null) {
-            screen.setReturnToOnClose(minecraft.screen);
-        }
-
-        minecraft.setScreen(screen);
+        GuideME.openGuideAtAnchor(guide, anchor);
     }
 
     public Guide getGuide() {

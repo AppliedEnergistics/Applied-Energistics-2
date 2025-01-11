@@ -22,7 +22,7 @@ dependencyResolutionManagement {
     rulesMode = RulesMode.FAIL_ON_PROJECT_RULES
     repositories {
         maven {
-            url "https://maven.shedaniel.me/"
+            url = "https://maven.shedaniel.me/"
             content {
                 includeGroup "me.shedaniel"
                 includeGroup "me.shedaniel.cloth"
@@ -30,7 +30,7 @@ dependencyResolutionManagement {
             }
         }
         maven {
-            url "https://maven2.bai.lol"
+            url = "https://maven2.bai.lol"
             content {
                 includeGroup "mcp.mobius.waila"
                 includeGroup "lol.bai"
@@ -44,14 +44,14 @@ dependencyResolutionManagement {
             }
         }
         maven {
-            name 'cursemaven'
-            url "https://www.cursemaven.com"
+            name = 'cursemaven'
+            url = "https://www.cursemaven.com"
             content {
                 includeGroup "curse.maven"
             }
         }
         maven { // for TOP
-            url "https://maven.k-4u.nl/"
+            url = "https://maven.k-4u.nl/"
             content {
                 includeGroup "mcjty.theoneprobe"
             }

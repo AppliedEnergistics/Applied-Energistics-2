@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import appeng.client.gui.style.BackgroundGenerator;
 import com.google.common.base.Stopwatch;
 import com.mojang.blaze3d.platform.InputConstants;
 
@@ -63,7 +64,6 @@ import guideme.guidebook.document.DefaultStyles;
 import guideme.guidebook.indices.ItemIndex;
 import guideme.guidebook.style.ResolvedTextStyle;
 import guideme.guidebook.style.TextStyle;
-import guideme.util.BackgroundGenerator;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.behaviors.EmptyingAction;
