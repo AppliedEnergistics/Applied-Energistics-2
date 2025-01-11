@@ -18,6 +18,8 @@
 
 package appeng.core;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 import com.mojang.blaze3d.platform.InputConstants;
@@ -65,6 +67,16 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import guideme.guidebook.Guide;
+import guideme.guidebook.PageAnchor;
+import guideme.guidebook.command.GuidebookStructureCommands;
+import guideme.guidebook.compiler.TagCompiler;
+import guideme.guidebook.compiler.tags.RecipeTypeMappingSupplier;
+import guideme.guidebook.hotkey.OpenGuideHotkey;
+import guideme.guidebook.scene.ImplicitAnnotationStrategy;
+import guideme.guidebook.screen.GlobalInMemoryHistory;
+import guideme.guidebook.screen.GuideScreen;
+
 import appeng.api.parts.CableRenderMode;
 import appeng.blockentity.networking.CableBusTESR;
 import appeng.client.EffectType;
@@ -73,16 +85,11 @@ import appeng.client.commands.ClientCommands;
 import appeng.client.gui.me.common.PendingCraftingJobs;
 import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
-import appeng.client.guidebook.Guide;
-import appeng.client.guidebook.PageAnchor;
-import appeng.client.guidebook.command.GuidebookStructureCommands;
-import appeng.client.guidebook.compiler.TagCompiler;
-import appeng.client.guidebook.extensions.ConfigValueTagExtension;
-import appeng.client.guidebook.hotkey.OpenGuideHotkey;
-import appeng.client.guidebook.scene.ImplicitAnnotationStrategy;
-import appeng.client.guidebook.scene.PartAnnotationStrategy;
-import appeng.client.guidebook.screen.GlobalInMemoryHistory;
-import appeng.client.guidebook.screen.GuideScreen;
+import appeng.client.guidebook.ConfigValueTagExtension;
+import appeng.client.guidebook.LytChargerRecipe;
+import appeng.client.guidebook.LytInscriberRecipe;
+import appeng.client.guidebook.LytTransformRecipe;
+import appeng.client.guidebook.PartAnnotationStrategy;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.crafting.CraftingMonitorRenderer;
 import appeng.client.render.crafting.MolecularAssemblerRenderer;
@@ -122,7 +129,7 @@ import appeng.init.client.InitItemModelsProperties;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
 import appeng.items.storage.StorageCellTooltipComponent;
-import appeng.siteexport.SiteExporter;
+import appeng.recipes.AERecipeTypes;
 import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.spatial.SpatialStorageSkyProperties;
 import appeng.util.Platform;
@@ -227,16 +234,23 @@ public class AppEngClient extends AppEngBase {
     }
 
     private Guide createGuide(IEventBus modEventBus) {
+        var guide = Guide.builder(modEventBus, MOD_ID, "ae2guide")
+                .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
+                .extension(TagCompiler.EXTENSION_POINT, new ConfigValueTagExtension())
+                .extension(RecipeTypeMappingSupplier.EXTENSION_POINT, mappings -> {
+                    mappings.add(AERecipeTypes.INSCRIBER, LytInscriberRecipe::new);
+                    mappings.add(AERecipeTypes.CHARGER, LytChargerRecipe::new);
+                    mappings.add(AERecipeTypes.TRANSFORM, LytTransformRecipe::new);
+                })
+                .build();
+
         NeoForge.EVENT_BUS.addListener((ServerStartingEvent evt) -> {
             var server = evt.getServer();
             var dispatcher = server.getCommands().getDispatcher();
-            GuidebookStructureCommands.register(dispatcher);
+            new GuidebookStructureCommands("ae2guide", guide).register(dispatcher);
         });
 
-        return Guide.builder(modEventBus, MOD_ID, "ae2guide")
-                .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
-                .extension(TagCompiler.EXTENSION_POINT, new ConfigValueTagExtension())
-                .build();
+        return guide;
     }
 
     private void tickPinnedKeys(Minecraft minecraft) {
@@ -335,7 +349,14 @@ public class AppEngClient extends AppEngBase {
         // Only activate the site exporter when we're not running a release version, since it'll
         // replace blocks around spawn.
         if (!FMLLoader.isProduction()) {
-            SiteExporter.initialize();
+            // Automatically run the export once the client has started and then exit
+            if (Boolean.getBoolean("appeng.runGuideExportAndExit")) {
+                Path outputFolder = Paths.get(System.getProperty("appeng.guideExportFolder"));
+
+                // TODO SiteExporter.builder(minecraft, outputFolder, guide)
+                // TODO .build()
+                // TODO .register();
+            }
         }
     }
 

@@ -47,6 +47,9 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import guideme.guidebook.color.ConstantColor;
+import guideme.guidebook.document.LytRect;
+import guideme.guidebook.render.SimpleRenderContext;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 import appeng.api.config.Settings;
@@ -62,9 +65,6 @@ import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.client.guidebook.color.ConstantColor;
-import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.render.SimpleRenderContext;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;

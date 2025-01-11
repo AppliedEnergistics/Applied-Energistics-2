@@ -41,6 +41,8 @@ import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+import guideme.util.TextureTransform;
+
 import appeng.core.AppEng;
 
 /**
@@ -68,7 +70,7 @@ public final class Blitter {
     private Rect2i srcRect;
     private Rect2i destRect = new Rect2i(0, 0, 0, 0);
     private boolean blending = true;
-    private TextureTransform transform = TextureTransform.NONE;
+    private guideme.util.TextureTransform transform = guideme.util.TextureTransform.NONE;
     private int zOffset;
 
     Blitter(ResourceLocation texture, int referenceWidth, int referenceHeight) {

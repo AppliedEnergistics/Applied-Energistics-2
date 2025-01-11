@@ -74,4 +74,4 @@ dependencyResolutionManagement {
 
 rootProject.name = 'ae2';
 
-include 'libs:markdown'
+includeBuild '../../GuideME'

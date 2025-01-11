@@ -25,11 +25,12 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
+import guideme.guidebook.PageAnchor;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
-import appeng.client.guidebook.PageAnchor;
 import appeng.menu.implementations.PriorityMenu;
 
 public class PriorityScreen extends AEBaseScreen<PriorityMenu> {
