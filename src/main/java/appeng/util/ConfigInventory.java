@@ -207,8 +207,10 @@ public class ConfigInventory extends GenericStackInv {
                 // force amount to 0 in types-only mode
                 stack = new GenericStack(stack.what(), 0);
             } else if (!typesOnly && stack.amount() <= 0) {
-                // in stack mode, amounts of 0 or less clear the slot
-                stack = null;
+                // in stack mode, amounts of 0 or less will:
+                // - filter the slot to a minimum of 1 of that stack, if empty
+                // - clear the slot, if not empty
+                stack = getStack(slot) == null ? new GenericStack(stack.what(), 1) : null;
             }
         }
         super.setStack(slot, stack);
