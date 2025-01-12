@@ -1,28 +1,22 @@
 package appeng.client.guidebook;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
-
+import appeng.recipes.transform.TransformRecipe;
+import appeng.util.Platform;
 import guideme.guidebook.document.DefaultStyles;
 import guideme.guidebook.document.LytRect;
 import guideme.guidebook.document.block.LytSlot;
 import guideme.guidebook.document.block.LytSlotGrid;
 import guideme.guidebook.document.block.recipes.LytRecipeBox;
 import guideme.guidebook.layout.LayoutContext;
+import guideme.guidebook.render.GuiAssets;
 import guideme.guidebook.render.RenderContext;
-
-import appeng.core.AppEng;
-import appeng.recipes.transform.TransformRecipe;
-import appeng.util.Platform;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 public class LytTransformRecipe extends LytRecipeBox {
-    private static final ResourceLocation ARROW_LIGHT = AppEng.makeId("ae2guide/gui/recipe_arrow_light.png");
-    private static final ResourceLocation ARROW_DARK = AppEng.makeId("ae2guide/gui/recipe_arrow_dark.png");
-
     private final TransformRecipe recipe;
 
     private final LytSlotGrid inputGrid;
@@ -98,9 +92,10 @@ public class LytTransformRecipe extends LytRecipeBox {
                     bounds.y() + 4);
         }
 
-        context.fillTexturedRect(
+        context.fillIcon(
                 new LytRect(bounds.right() - 25 - 24, bounds.y() + 10 + (bounds.height() - 27) / 2, 24, 17),
-                context.isDarkMode() ? ARROW_DARK : ARROW_LIGHT);
+                GuiAssets.ARROW
+        );
 
         super.render(context);
     }

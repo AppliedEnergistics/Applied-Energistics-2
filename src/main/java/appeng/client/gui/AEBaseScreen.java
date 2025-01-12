@@ -58,11 +58,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import guideme.guidebook.PageAnchor;
-import guideme.guidebook.color.SymbolicColor;
+import guideme.api.color.SymbolicColor;
 import guideme.guidebook.document.DefaultStyles;
 import guideme.guidebook.indices.ItemIndex;
-import guideme.guidebook.style.ResolvedTextStyle;
-import guideme.guidebook.style.TextStyle;
+import guideme.api.style.ResolvedTextStyle;
+import guideme.api.style.TextStyle;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.behaviors.EmptyingAction;

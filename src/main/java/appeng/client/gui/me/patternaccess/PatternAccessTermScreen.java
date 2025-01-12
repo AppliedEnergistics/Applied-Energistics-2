@@ -47,7 +47,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import guideme.guidebook.color.ConstantColor;
+import guideme.api.color.ConstantColor;
 import guideme.guidebook.document.LytRect;
 import guideme.guidebook.render.SimpleRenderContext;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;

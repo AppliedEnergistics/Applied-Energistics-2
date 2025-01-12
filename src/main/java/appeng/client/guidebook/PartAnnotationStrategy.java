@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 
-import guideme.guidebook.color.SymbolicColor;
+import guideme.api.color.SymbolicColor;
 import guideme.guidebook.scene.ImplicitAnnotationStrategy;
 import guideme.guidebook.scene.annotation.InWorldBoxAnnotation;
 import guideme.guidebook.scene.annotation.SceneAnnotation;

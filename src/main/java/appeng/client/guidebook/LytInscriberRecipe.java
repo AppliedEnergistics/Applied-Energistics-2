@@ -1,6 +1,7 @@
 
 package appeng.client.guidebook;
 
+import guideme.guidebook.render.GuiAssets;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -14,10 +15,6 @@ import appeng.core.AppEng;
 import appeng.recipes.handlers.InscriberRecipe;
 
 public class LytInscriberRecipe extends LytRecipeBox {
-
-    private static final ResourceLocation ARROWS_LIGHT = AppEng.makeId("ae2guide/gui/inscriber_arrows_bg_light.png");
-    private static final ResourceLocation ARROWS_DARK = AppEng.makeId("ae2guide/gui/inscriber_arrows_bg_dark.png");
-
     private final InscriberRecipe recipe;
 
     private final LytSlot topSlot;
@@ -53,8 +50,9 @@ public class LytInscriberRecipe extends LytRecipeBox {
         var bounds = getBounds();
         context.renderPanel(bounds);
 
-        context.fillTexturedRect(new LytRect(
-                bounds.x() + 23, bounds.y() + 12, 46, 50), context.isDarkMode() ? ARROWS_DARK : ARROWS_LIGHT);
+        context.fillIcon(new LytRect(
+                bounds.x() + 23, bounds.y() + 12, 46, 50), GuiAssets.ARROW
+        );
 
         super.render(context);
     }

@@ -1,5 +1,6 @@
 package appeng.client.guidebook;
 
+import guideme.guidebook.render.GuiAssets;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -15,9 +16,6 @@ import appeng.core.definitions.AEBlocks;
 import appeng.recipes.handlers.ChargerRecipe;
 
 public class LytChargerRecipe extends LytRecipeBox {
-    private static final ResourceLocation ARROW_LIGHT = AppEng.makeId("ae2guide/gui/recipe_arrow_light.png");
-    private static final ResourceLocation ARROW_DARK = AppEng.makeId("ae2guide/gui/recipe_arrow_dark.png");
-
     private final ChargerRecipe recipe;
 
     private final LytSlot inputSlot;
@@ -66,9 +64,9 @@ public class LytChargerRecipe extends LytRecipeBox {
                 bounds.x() + paddingLeft + 10,
                 bounds.y() + 4);
 
-        context.fillTexturedRect(
+        context.fillIcon(
                 new LytRect(bounds.right() - 25 - 24, bounds.y() + 10 + (bounds.height() - 27) / 2, 24, 17),
-                context.isDarkMode() ? ARROW_DARK : ARROW_LIGHT);
+                GuiAssets.ARROW);
 
         super.render(context);
     }

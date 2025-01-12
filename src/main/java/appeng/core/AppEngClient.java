@@ -70,7 +70,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import guideme.GuideME;
 import guideme.guidebook.Guide;
 import guideme.guidebook.PageAnchor;
-import guideme.guidebook.command.GuidebookStructureCommands;
+import guideme.command.GuidebookStructureCommands;
 import guideme.guidebook.compiler.TagCompiler;
 import guideme.guidebook.compiler.tags.RecipeTypeMappingSupplier;
 import guideme.guidebook.scene.ImplicitAnnotationStrategy;
