@@ -73,7 +73,6 @@ import guideme.guidebook.PageAnchor;
 import guideme.guidebook.command.GuidebookStructureCommands;
 import guideme.guidebook.compiler.TagCompiler;
 import guideme.guidebook.compiler.tags.RecipeTypeMappingSupplier;
-import guideme.guidebook.hotkey.OpenGuideHotkey;
 import guideme.guidebook.scene.ImplicitAnnotationStrategy;
 
 import appeng.api.parts.CableRenderMode;
@@ -270,7 +269,6 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerHotkeys(RegisterKeyMappingsEvent e) {
-        e.register(OpenGuideHotkey.getHotkey());
         e.register(MOUSE_WHEEL_ITEM_MODIFIER);
         e.register(PART_PLACEMENT_OPPOSITE);
         Hotkeys.finalizeRegistration(e::register);

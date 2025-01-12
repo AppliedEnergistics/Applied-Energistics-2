@@ -27,7 +27,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import appeng.client.gui.style.BackgroundGenerator;
 import com.google.common.base.Stopwatch;
 import com.mojang.blaze3d.platform.InputConstants;
 
@@ -72,6 +71,7 @@ import appeng.api.parts.IPart;
 import appeng.api.stacks.GenericStack;
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
+import appeng.client.gui.style.BackgroundGenerator;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.SlotPosition;
 import appeng.client.gui.style.Text;
