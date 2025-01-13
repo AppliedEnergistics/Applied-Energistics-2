@@ -54,6 +54,11 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         multiVariantGenerator(AEBlocks.DRIVE, Variant.variant().with(VariantProperties.MODEL, driveModel.getLocation()))
                 .with(createFacingSpinDispatch());
 
+        driveCells("item", 0);
+        driveCells("fluid", 2);
+
+        driveCell("creative_cell", 6);
+
         var charger = models().getExistingFile(AppEng.makeId("charger"));
         multiVariantGenerator(AEBlocks.CHARGER, Variant.variant().with(VariantProperties.MODEL, charger.getLocation()))
                 .with(createFacingSpinDispatch());
@@ -369,7 +374,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
             models.add(model);
         }
 
-        var item = itemModels().withExistingParent(modelPath(block), models.get(0).getLocation());
+        var item = itemModels().withExistingParent(modelPath(block), models.getFirst().getLocation());
         for (var i = 1; i < models.size(); i++) {
             // The predicate matches "greater than", meaning for fill-level > 0 the first non-empty texture is used
             float fillFactor = i / (float) models.size();
@@ -388,6 +393,55 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                         // Empty model, will be replaced dynamically
                         new ConfiguredModel(models().getBuilder("block/crafting/" + name + "_formed")));
         simpleBlockItem(block.block(), blockModel);
+    }
+
+    private void driveCells(String type, int typeOffset) {
+        driveCell("1k", type, typeOffset, 0);
+        driveCell("4k", type, typeOffset, 2);
+        driveCell("16k", type, typeOffset, 4);
+        driveCell("64k", type, typeOffset, 6);
+        driveCell("256k", type, typeOffset, 8);
+    }
+
+    private void driveCell(String tier, String type, int typeOffset, int tierOffset) {
+        driveCell(tier + "_" + type + "_cell", typeOffset)
+                .texture("tier", "block/drive/drive_cell_tiers")
+                .element()
+                .to(6, 2, 2)
+                .face(Direction.NORTH)
+                .uvs(0, tierOffset, 6, tierOffset + 2)
+                .end()
+                .face(Direction.UP)
+                .uvs(6, tierOffset, 0, tierOffset + 2)
+                .end()
+                .face(Direction.DOWN)
+                .uvs(6, tierOffset, 0, tierOffset + 2)
+                .end()
+                .faces((dir, builder) ->
+                        builder.texture("#tier").cullface(Direction.NORTH).end())
+                .end();
+    }
+
+    private BlockModelBuilder driveCell(String cell, int offset) {
+        var texturePrefix = "block/drive/";
+        return models().getBuilder(texturePrefix + "cells/" + cell)
+                .ao(false)
+                .texture("cell", texturePrefix + "drive_cells")
+                .texture("particle", texturePrefix + "drive_cells")
+                .element()
+                .to(6, 2, 2)
+                .face(Direction.NORTH)
+                .uvs(0, offset, 6, offset + 2)
+                .end()
+                .face(Direction.UP)
+                .uvs(6, offset, 0, offset + 2)
+                .end()
+                .face(Direction.DOWN)
+                .uvs(6, offset, 0, offset + 2)
+                .end()
+                .faces((dir, builder) ->
+                        builder.texture("#cell").cullface(Direction.NORTH).end())
+                .end();
     }
 
     private void generateQuartzCluster(BlockDefinition<?> quartz) {
