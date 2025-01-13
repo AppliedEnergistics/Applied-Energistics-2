@@ -417,8 +417,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                 .face(Direction.DOWN)
                 .uvs(6, tierOffset, 0, tierOffset + 2)
                 .end()
-                .faces((dir, builder) ->
-                        builder.texture("#tier").cullface(Direction.NORTH).end())
+                .faces((dir, builder) -> builder.texture("#tier").cullface(Direction.NORTH).end())
                 .end();
     }
 
@@ -439,8 +438,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                 .face(Direction.DOWN)
                 .uvs(6, offset, 0, offset + 2)
                 .end()
-                .faces((dir, builder) ->
-                        builder.texture("#cell").cullface(Direction.NORTH).end())
+                .faces((dir, builder) -> builder.texture("#cell").cullface(Direction.NORTH).end())
                 .end();
     }
 
