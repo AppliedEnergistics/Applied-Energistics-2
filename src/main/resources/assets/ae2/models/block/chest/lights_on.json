@@ -12,7 +12,7 @@
         "up": {
           "texture": "#lights_bright",
           "tintindex": 3,
-          "unlit": true
+          "forge_data": { "block_light": 15, "sky_light": 15 }
         }
       }
     },
@@ -23,7 +23,7 @@
         "up": {
           "texture": "#lights_medium",
           "tintindex": 2,
-          "unlit": true
+          "forge_data": { "block_light": 15, "sky_light": 15 }
         }
       }
     },
@@ -34,7 +34,7 @@
         "up": {
           "texture": "#lights_dark",
           "tintindex": 1,
-          "unlit": true
+          "forge_data": { "block_light": 15, "sky_light": 15 }
         }
       }
     }
