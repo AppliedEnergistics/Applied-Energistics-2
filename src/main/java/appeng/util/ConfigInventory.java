@@ -210,7 +210,7 @@ public class ConfigInventory extends GenericStackInv {
                 // in stack mode, amounts of 0 or less will:
                 // - filter the slot to a minimum of 1 of that stack, if empty
                 // - clear the slot, if not empty
-                stack = getStack(slot) == null ? new GenericStack(stack.what(), 1) : null;
+                stack = getStack(slot) == null && mode == Mode.CONFIG_STACKS ? new GenericStack(stack.what(), 1) : null;
             }
         }
         super.setStack(slot, stack);
