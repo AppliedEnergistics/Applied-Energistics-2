@@ -10,22 +10,22 @@
         "down": {
           "texture": "#indicator",
           "tintindex": 1,
-          "unlit": true
+          "forge_data": { "block_light": 15, "sky_light": 15 }
         },
         "up": {
           "texture": "#indicator",
           "tintindex": 1,
-          "unlit": true
+          "forge_data": { "block_light": 15, "sky_light": 15 }
         },
         "east": {
           "texture": "#indicator",
           "tintindex": 1,
-          "unlit": true
+          "forge_data": { "block_light": 15, "sky_light": 15 }
         },
         "west": {
           "texture": "#indicator",
           "tintindex": 1,
-          "unlit": true
+          "forge_data": { "block_light": 15, "sky_light": 15 }
         }
       }
     }
