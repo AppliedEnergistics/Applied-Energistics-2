@@ -76,8 +76,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     /**
      * Publicly exposed cached available stacks.
      */
-    private KeyCounter cachedAvailableStacks = new KeyCounter();
-    private KeyCounter cachedAvailableStacksBackBuffer = new KeyCounter();
+    private final KeyCounter cachedAvailableStacks = new KeyCounter();
     /**
      * Private cached amounts, to ensure that we send correct change notifications even if
      * {@link #cachedAvailableStacks} is modified by mistake.
@@ -113,17 +112,14 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         try {
             cachedStacksNeedUpdate = false;
 
-            // Update cache
-            var previousStacks = cachedAvailableStacks;
-            var currentStacks = cachedAvailableStacksBackBuffer;
-            cachedAvailableStacks = currentStacks;
-            cachedAvailableStacksBackBuffer = previousStacks;
-
-            currentStacks.clear();
-            storage.getAvailableStacks(currentStacks);
+            cachedAvailableStacks.clear();
+            storage.getAvailableStacks(cachedAvailableStacks);
+            // clear() only clears the inner maps,
+            // so ensure that the outer map gets cleaned up too
+            cachedAvailableStacks.removeEmptySubmaps();
 
             // Post watcher update for currently available stacks
-            for (var entry : currentStacks) {
+            for (var entry : cachedAvailableStacks) {
                 var what = entry.getKey();
                 var newAmount = entry.getLongValue();
                 if (newAmount != cachedAvailableAmounts.getLong(what)) {
@@ -133,7 +129,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
             // Post watcher update for removed stacks
             for (var entry : cachedAvailableAmounts.object2LongEntrySet()) {
                 var what = entry.getKey();
-                var newAmount = currentStacks.get(what);
+                var newAmount = cachedAvailableStacks.get(what);
                 if (newAmount == 0) {
                     postWatcherUpdate(what, newAmount);
                 }
@@ -141,7 +137,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
             // Update private amounts
             cachedAvailableAmounts.clear();
-            for (var entry : currentStacks) {
+            for (var entry : cachedAvailableStacks) {
                 cachedAvailableAmounts.put(entry.getKey(), entry.getLongValue());
             }
         } finally {
