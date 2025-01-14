@@ -15,8 +15,6 @@
     "StructureTemplateMixin"
   ],
   "client": [
-    "unlitquad.ModelManagerMixin",
-    "unlitquad.BlockPartFaceDeserializerMixin",
     "AbstractContainerScreenMixin",
     "GuiGraphicsMixin",
     "WrappedGenericStackTooltipModIdMixin",
