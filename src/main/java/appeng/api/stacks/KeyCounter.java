@@ -65,6 +65,10 @@ public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
         }
     }
 
+    public void removeEmptySubmaps() {
+        lists.values().removeIf(VariantCounter::isEmpty);
+    }
+
     public void addAll(KeyCounter other) {
         for (var entry : other.lists.entrySet()) {
             var ourSubIndex = lists.get(entry.getKey());
