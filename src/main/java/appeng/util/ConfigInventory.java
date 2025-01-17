@@ -134,8 +134,15 @@ public class ConfigInventory extends GenericStackInv {
                 // force amount to 0 in types-only mode
                 stack = new GenericStack(stack.what(), 0);
             } else if (!typesOnly && stack.amount() <= 0) {
-                // in stack mode, amounts of 0 or less clear the slot
-                stack = null;
+                if (mode == Mode.CONFIG_STACKS && getStack(slot) == null) {
+                    // filter the slot to a minimum of 1 of that stack, if currently empty
+                    // This allows setting a filter using empty containers that are limited to one resource,
+                    // e.g. empty mana tablet.
+                    stack = new GenericStack(stack.what(), 1);
+                } else {
+                    // in stack mode, amounts of 0 or less clear the slot
+                    stack = null;
+                }
             }
         }
         super.setStack(slot, stack);
