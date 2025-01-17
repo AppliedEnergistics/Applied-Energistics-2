@@ -80,6 +80,9 @@ public class ConfigInventoryTest {
         void stacksWithAmountZeroFilterToOne() {
             inv.setStack(0, ZERO_STICK);
             assertEquals(ONE_STICK, inv.getStack(0));
+            // Check that applying the same zero-filter to the same slot clears it
+            inv.setStack(0, ZERO_STICK);
+            assertNull(inv.getStack(0));
         }
 
         @Test
