@@ -139,9 +139,24 @@ public class BasicInventoryTest {
     void testVoidUpgradeUnformatted() {
         var item = AEItems.ITEM_CELL_1K.get();
         var stack = new ItemStack(item);
-        item.getUpgrades(stack).addItems(AEItems.EQUAL_DISTRIBUTION_CARD.stack());
+        item.getUpgrades(stack).addItems(AEItems.VOID_CARD.stack());
 
         var cell = StorageCells.getCellInventory(stack, null);
+        Objects.requireNonNull(cell);
+
+        // Ensure that the first insert of a single type voids only excess.
+        var filler = AEItemKey.of(Items.DIAMOND);
+        assertThat(cell.insert(filler, Long.MAX_VALUE, Actionable.MODULATE, SRC)).isEqualTo(Long.MAX_VALUE);
+        assertThat(cell.getAvailableStacks().get(filler)).isNotZero();
+        // Ensure that new item types that the cell cannot store don't get voided.
+        var rejected = AEItemKey.of(Items.STICK);
+        assertThat(cell.insert(rejected, Long.MAX_VALUE, Actionable.MODULATE, SRC)).isZero();
+
+        // Part two, fill cell with 63 different types this time.
+        cell.extract(filler, Long.MAX_VALUE, Actionable.MODULATE, SRC);
+        item.getUpgrades(stack).removeItems(1, AEItems.VOID_CARD.stack(), null);
+        item.getUpgrades(stack).addItems(AEItems.EQUAL_DISTRIBUTION_CARD.stack());
+        cell = StorageCells.getCellInventory(stack, null);
         Objects.requireNonNull(cell);
 
         var maxTypes = item.getTotalTypes(stack);
