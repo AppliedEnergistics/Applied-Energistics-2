@@ -160,7 +160,7 @@ public class BasicInventoryTest {
         Objects.requireNonNull(cell);
 
         var maxTypes = item.getTotalTypes(stack);
-        var keys = generateDifferentKeys(128);
+        var keys = generateDifferentKeys(maxTypes);
 
         for (int i = 0; i < maxTypes; ++i) {
             cell.insert(keys[i], Long.MAX_VALUE, Actionable.MODULATE, SRC);
