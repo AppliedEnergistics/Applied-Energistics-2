@@ -158,7 +158,7 @@ test {
     useJUnitPlatform()
 
     // Might not need this anymore...
-    systemProperty "guideDev.ae2.guide.sources", file("guidebook").absolutePath
+    systemProperty "guideme.ae2.guide.sources", file("guidebook").absolutePath
 }
 
 dependencies {
@@ -187,7 +187,7 @@ neoForge {
             systemProperties = commonSystemProperties
             // property "mixin.debug.export", "true"
             logLevel = org.slf4j.event.Level.DEBUG
-            systemProperties.put("guideDev.ae2.guide.sources", file("guidebook").absolutePath)
+            systemProperties.put("guideme.ae2.guide.sources", file("guidebook").absolutePath)
         }
         client {
             client()
@@ -203,7 +203,7 @@ neoForge {
         guide {
             client()
 
-            systemProperties.put("guideDev.ae2.guide.startupPage", "ae2:index.md")
+            systemProperties.put("guideme.ae2.guide.startupPage", "ae2:index.md")
         }
         server {
             server()
@@ -219,9 +219,9 @@ neoForge {
         }
         guideexport {
             client()
-            systemProperties.put("guideDev.ae2.guide.export.runAndExit", "true")
-            systemProperties.put("guideDev.ae2.guide.export.destination", file("build/guide").absolutePath)
-            systemProperties.put("guideDev.ae2.guide.export.version", project.version)
+            systemProperties.put("guideme.ae2.guide.export.runAndExit", "true")
+            systemProperties.put("guideme.ae2.guide.export.destination", file("build/guide").absolutePath)
+            systemProperties.put("guideme.ae2.guide.export.version", project.version)
         }
         // Use to run the tests
         gametest {
