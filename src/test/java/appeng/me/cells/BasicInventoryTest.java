@@ -29,7 +29,7 @@ public class BasicInventoryTest {
 
     /**
      * Check that we can extract more than MAX_INT fluid at once from a cell. Regression test for
-     * https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6794
+     * <a href="https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6794">#6794</a>
      */
     @Test
     void testFluidExtract() {
@@ -133,6 +133,32 @@ public class BasicInventoryTest {
 
         // Ensure that items that don't match the filter don't get voided.
         assertThat(cell.insert(rejected, Long.MAX_VALUE, Actionable.MODULATE, SRC)).isZero();
+    }
+
+    @Test
+    void testVoidUpgradeUnformatted() {
+        var item = AEItems.ITEM_CELL_1K.get();
+        var stack = new ItemStack(item);
+        item.getUpgrades(stack).addItems(AEItems.EQUAL_DISTRIBUTION_CARD.stack());
+
+        var cell = StorageCells.getCellInventory(stack, null);
+        Objects.requireNonNull(cell);
+
+        var maxTypes = item.getTotalTypes(stack);
+        var keys = generateDifferentKeys(128);
+
+        for (int i = 0; i < maxTypes; ++i) {
+            cell.insert(keys[i], Long.MAX_VALUE, Actionable.MODULATE, SRC);
+        }
+
+        item.getUpgrades(stack).addItems(AEItems.VOID_CARD.stack());
+        cell = StorageCells.getCellInventory(stack, null);
+        Objects.requireNonNull(cell);
+
+        // Ensure that inserting an already-stored item voids.
+        assertThat(cell.insert(keys[0], Long.MAX_VALUE, Actionable.MODULATE, SRC)).isEqualTo(Long.MAX_VALUE);
+        // Ensure that items that aren't on the cell don't get voided.
+        assertThat(cell.insert(AEItemKey.of(Items.STICK), Long.MAX_VALUE, Actionable.MODULATE, SRC)).isZero();
     }
 
     private static AEItemKey[] generateDifferentKeys(int count) {
