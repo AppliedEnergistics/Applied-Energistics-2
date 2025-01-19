@@ -173,7 +173,7 @@ public class BasicInventoryTest {
         // Ensure that inserting an already-stored item voids.
         assertThat(cell.insert(keys[0], Long.MAX_VALUE, Actionable.MODULATE, SRC)).isEqualTo(Long.MAX_VALUE);
         // Ensure that items that aren't on the cell don't get voided.
-        assertThat(cell.insert(AEItemKey.of(Items.STICK), Long.MAX_VALUE, Actionable.MODULATE, SRC)).isZero();
+        assertThat(cell.insert(rejected, Long.MAX_VALUE, Actionable.MODULATE, SRC)).isZero();
     }
 
     private static AEItemKey[] generateDifferentKeys(int count) {
