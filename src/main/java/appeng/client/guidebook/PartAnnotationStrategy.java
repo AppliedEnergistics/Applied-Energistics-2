@@ -12,11 +12,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 
-import guideme.api.color.SymbolicColor;
-import guideme.guidebook.scene.ImplicitAnnotationStrategy;
-import guideme.guidebook.scene.annotation.InWorldBoxAnnotation;
-import guideme.guidebook.scene.annotation.SceneAnnotation;
-import guideme.guidebook.scene.level.GuidebookLevel;
+import guideme.color.SymbolicColor;
+import guideme.scene.ImplicitAnnotationStrategy;
+import guideme.scene.annotation.InWorldBoxAnnotation;
+import guideme.scene.annotation.SceneAnnotation;
+import guideme.scene.level.GuidebookLevel;
 
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;

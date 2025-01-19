@@ -29,7 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 
-import guideme.guidebook.PageAnchor;
+import guideme.PageAnchor;
 
 import appeng.api.ids.AEConstants;
 import appeng.api.parts.CableRenderMode;

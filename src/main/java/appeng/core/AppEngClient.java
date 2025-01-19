@@ -25,6 +25,7 @@ import java.util.Objects;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
+import guideme.Guide;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,13 +68,13 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import guideme.GuideME;
-import guideme.guidebook.Guide;
-import guideme.guidebook.PageAnchor;
-import guideme.command.GuidebookStructureCommands;
-import guideme.guidebook.compiler.TagCompiler;
-import guideme.guidebook.compiler.tags.RecipeTypeMappingSupplier;
-import guideme.guidebook.scene.ImplicitAnnotationStrategy;
+import guideme.internal.GuideME;
+import guideme.MutableGuide;
+import guideme.PageAnchor;
+import guideme.internal.command.GuidebookStructureCommands;
+import guideme.compiler.TagCompiler;
+import guideme.compiler.tags.RecipeTypeMappingSupplier;
+import guideme.scene.ImplicitAnnotationStrategy;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.blockentity.networking.CableBusTESR;
@@ -158,7 +159,7 @@ public class AppEngClient extends AppEngBase {
             "key.ae2.part_placement_opposite", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM,
             InputConstants.KEY_LCONTROL, "key.ae2.category");
 
-    private final Guide guide;
+    private final MutableGuide guide;
 
     public AppEngClient(IEventBus modEventBus, ModContainer container) {
         super(modEventBus, container);
@@ -230,8 +231,8 @@ public class AppEngClient extends AppEngBase {
         });
     }
 
-    private Guide createGuide(IEventBus modEventBus) {
-        var guide = Guide.builder(modEventBus, AppEng.makeId("guide"))
+    private MutableGuide createGuide(IEventBus modEventBus) {
+        var guide = Guide.builder(AppEng.makeId("guide"))
                 .folder("ae2guide")
                 .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
                 .extension(TagCompiler.EXTENSION_POINT, new ConfigValueTagExtension())
@@ -518,7 +519,7 @@ public class AppEngClient extends AppEngBase {
         GuideME.openGuideAtAnchor(guide, anchor);
     }
 
-    public Guide getGuide() {
+    public MutableGuide getGuide() {
         return guide;
     }
 }

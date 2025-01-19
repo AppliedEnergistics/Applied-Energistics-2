@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-import guideme.guidebook.PageAnchor;
+import guideme.PageAnchor;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;

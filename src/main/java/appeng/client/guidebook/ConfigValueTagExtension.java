@@ -4,9 +4,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import guideme.guidebook.compiler.PageCompiler;
-import guideme.guidebook.compiler.tags.FlowTagCompiler;
-import guideme.guidebook.document.flow.LytFlowParent;
+import guideme.compiler.PageCompiler;
+import guideme.compiler.tags.FlowTagCompiler;
+import guideme.document.flow.LytFlowParent;
 import guideme.libs.mdast.mdx.model.MdxJsxElementFields;
 
 import appeng.core.AEConfig;

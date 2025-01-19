@@ -11,7 +11,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.util.Mth;
 
-import guideme.guidebook.document.LytRect;
+import guideme.document.LytRect;
 
 /**
  * Rendering helper for rendering a rectangle with a dashed outline.

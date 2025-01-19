@@ -1,17 +1,15 @@
 package appeng.client.guidebook;
 
-import guideme.guidebook.render.GuiAssets;
-import net.minecraft.resources.ResourceLocation;
+import guideme.render.GuiAssets;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-import guideme.guidebook.document.DefaultStyles;
-import guideme.guidebook.document.LytRect;
-import guideme.guidebook.document.block.LytSlot;
-import guideme.guidebook.document.block.recipes.LytRecipeBox;
-import guideme.guidebook.layout.LayoutContext;
-import guideme.guidebook.render.RenderContext;
+import guideme.document.DefaultStyles;
+import guideme.document.LytRect;
+import guideme.document.block.LytSlot;
+import guideme.document.block.recipes.LytRecipeBox;
+import guideme.layout.LayoutContext;
+import guideme.render.RenderContext;
 
-import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.recipes.handlers.ChargerRecipe;
 
