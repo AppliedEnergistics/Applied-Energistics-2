@@ -120,7 +120,8 @@ public final class AEBlocks {
             p4) -> false;
     private static final Properties SKY_STONE_CHEST_PROPS = stoneProps().mapColor(MapColor.COLOR_BLACK)
             .strength(5, 150).noOcclusion();
-    private static final Properties FLUIX_PROPERTIES = QUARTZ_PROPERTIES.mapColor(MapColor.COLOR_PURPLE);
+    private static final Properties FLUIX_PROPERTIES = stoneProps().mapColor(MapColor.COLOR_PURPLE)
+            .strength(3, 5).requiresCorrectToolForDrops();
 
     // spotless:off
     public static final BlockDefinition<BuddingCertusQuartzBlock> FLAWLESS_BUDDING_QUARTZ = block("Flawless Budding Certus Quartz", AEBlockIds.FLAWLESS_BUDDING_QUARTZ, () -> new BuddingCertusQuartzBlock(QUARTZ_PROPERTIES.randomTicks()));
