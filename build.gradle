@@ -30,11 +30,10 @@ base {
     archivesName = "appliedenergistics2"
 }
 
+neoForge.version = project.neoforge_version
+
 sourceSets {
     main {
-        java {
-            srcDir 'src/main/flatbuffers/generated'
-        }
         resources {
             srcDir 'src/generated/resources'
         }
@@ -60,28 +59,10 @@ import appengbuild.*
 import com.diffplug.gradle.spotless.JsonExtension
 
 dependencies {
-    // To be copied into the jar file
-    shaded project(path: ':libs:markdown', configuration: "archives")
-    shaded "io.methvin:directory-watcher:${directory_watcher_version}"
-    shaded "org.yaml:snakeyaml:${snakeyaml_version}"
-    shaded "com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}"
-
-    implementation(project(':libs:markdown')) {
-        transitive = false
-    }
-    // Do not inherit any transitive dependencies here since we rely on those dependencies being
-    // present in Minecrafts own dependencies already.
-    implementation("io.methvin:directory-watcher:${directory_watcher_version}") {
-        transitive = false
-    }
-    implementation("org.yaml:snakeyaml:${snakeyaml_version}") {
-        transitive = false
-    }
-    implementation("com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}") {
-        transitive = false
-    }
     // Used for the guide export
     guideExportOnly("org.bytedeco:ffmpeg-platform:${ffmpeg_version}")
+
+    implementation(jarJar("appeng:guideme:${guideme_version}"))
 
     // compile against provided APIs
     compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
@@ -132,8 +113,6 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter:5.12.0")
     testImplementation("net.neoforged:testframework:${project.neoforge_version}")
 
-    compileOnly 'org.apache.commons:commons-configuration2:2.9.0'
-
     buildtoolsImplementation 'de.siegmar:fastcsv:2.1.0'
     buildtoolsImplementation 'com.google.code.gson:gson:2.8.9'
 }
@@ -166,7 +145,7 @@ test {
     useJUnitPlatform()
 
     // Might not need this anymore...
-    systemProperty "guideDev.ae2guide.sources", file("guidebook").absolutePath
+    systemProperty "guideme.ae2.guide.sources", file("guidebook").absolutePath
 }
 
 dependencies {
@@ -178,13 +157,10 @@ dependencies {
  * Configures properties common to all run configurations
  */
 Map<String, String> commonSystemProperties = [
-        'forge.logging.console.level': 'debug',
         'appeng.tests'               : 'true',
 ]
 
 neoForge {
-    version = project.neoforge_version
-
     mods {
         ae2 {
             sourceSet sourceSets.main
@@ -196,31 +172,24 @@ neoForge {
             gameDirectory = project.file('run')
             systemProperties = commonSystemProperties
             // property "mixin.debug.export", "true"
+            logLevel = org.slf4j.event.Level.INFO
+            systemProperty('guideme.ae2.guide.sources', file('guidebook').absolutePath)
         }
         client {
             client()
-            systemProperties = [
-                    *                          : commonSystemProperties,
-                    "appeng.tests"             : "true",
-                    "guideDev.ae2guide.sources": file("guidebook").absolutePath,
-            ]
+            systemProperty('appeng.tests', 'true')
         }
         gametestWorld {
             client()
             programArguments = [
-                    "--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld"
+                    '--username', 'AE2Dev', '--quickPlaySingleplayer', 'GametestWorld'
             ]
-            systemProperties = [
-                    "appeng.tests"             : "true",
-                    "guideDev.ae2guide.sources": file("guidebook").absolutePath,
-            ]
+            systemProperty('appeng.tests', 'true')
         }
         guide {
             client()
-            systemProperties = [
-                    "guideDev.ae2guide.sources"    : file("guidebook").absolutePath,
-                    "guideDev.ae2guide.startupPage": "ae2:index.md"
-            ]
+
+            systemProperty('guideme.showOnStartup', 'ae2:guide')
         }
         server {
             server()
@@ -236,17 +205,13 @@ neoForge {
         }
         guideexport {
             client()
-            systemProperties = [
-                    "appeng.runGuideExportAndExit": "true",
-                    "appeng.guideExportFolder"    : file("$buildDir/guide").absolutePath,
-                    "guideDev.ae2guide.sources"   : file("guidebook").absolutePath,
-                    "appeng.version"              : project.version
-            ]
+            systemProperty('appeng.runGuideExportAndExit', 'true')
+            systemProperty('appeng.guideExportFolder', file('build/guide').absolutePath)
         }
         // Use to run the tests
         gametest {
-            type = "gameTestServer"
-            gameDirectory = project.file("build/gametest")
+            type = 'gameTestServer'
+            gameDirectory = project.file('build/gametest')
         }
     }
 
@@ -338,9 +303,6 @@ tasks.register('apiJar', Jar) {
     // api jar ist just a development aid and serves as both a binary and source jar simultaneously
     from sourceSets.main.output
     from sourceSets.main.allJava
-    manifest {
-        attributes("Fabric-Loom-Remap": true)
-    }
 }
 apiJar publicApiIncludePatterns
 
@@ -440,89 +402,4 @@ check.dependsOn tasks.register('validateResources', JavaExec) {
     workingDir "."
     args "guidebook"
     javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
-}
-
-/**
- * This task download the FlatBuffers compiler suitable for the current platform.
- */
-tasks.register('downloadFlatbufferCompiler', Download) {
-    var os = System.getProperty("os.name").toLowerCase(Locale.ROOT)
-    var arch = System.getProperty("os.arch")
-    if (os.startsWith("windows")) {
-        src "https://github.com/google/flatbuffers/releases/download/v${flatbuffers_version}/Windows.flatc.binary.zip"
-    } else if (os.startsWith("mac")) {
-        if (arch == "aarch64") {
-            src "https://github.com/google/flatbuffers/releases/download/v${flatbuffers_version}/Mac.flatc.binary.zip"
-        } else if (arch == "amd64") {
-            src "https://github.com/google/flatbuffers/releases/download/v${flatbuffers_version}/MacIntel.flatc.binary.zip"
-        } else {
-            throw new GradleException("Unknown Mac architecture: $arch")
-        }
-    } else if (os.startsWith("linux")) {
-        src "https://github.com/google/flatbuffers/releases/download/v${flatbuffers_version}/Linux.flatc.binary.clang++-12.zip"
-    } else {
-        throw new GradleException("Unknown OS: $os")
-    }
-    onlyIfModified true
-    dest layout.buildDirectory.file("flatc.zip")
-}
-
-tasks.register('downloadAndUnzipFlatbufferCompiler', Copy) {
-    dependsOn downloadFlatbufferCompiler
-    from zipTree(downloadFlatbufferCompiler.dest)
-    into "${project.buildDir}/flatbuffers-bin"
-}
-/**
- * Update the generated Java Code for our scene export schema.
- * The code is checked in so this only needs to be run when the schema changes.
- */
-tasks.register('updateFlatbufferSources', Exec) {
-    group 'build'
-    dependsOn downloadAndUnzipFlatbufferCompiler
-    workingDir project.projectDir
-    commandLine "${project.buildDir}/flatbuffers-bin/flatc",
-            "--gen-mutable",
-            "--java-package-prefix", "appeng.flatbuffers",
-            "--gen-generated",
-            "--java",
-            "-o",
-            "${project.projectDir}/src/main/flatbuffers/generated",
-            "${project.projectDir}/src/main/flatbuffers/scene.fbs"
-
-    doFirst {
-        file("${project.projectDir}/src/main/flatbuffers/generated").deleteDir()
-    }
-    doLast {
-    }
-    doLast {
-        // sadly flatc uses an outdated annotation
-        def folder = file("${project.projectDir}/src/main/flatbuffers/generated")
-        folder.eachFileRecurse(groovy.io.FileType.FILES) { file ->
-            String content = file.text
-            if (content.contains('@javax.annotation.Generated')) {
-                content = content.replace('@javax.annotation.Generated', '@javax.annotation.processing.Generated')
-                file.write(content)
-            }
-        }
-    }
-}
-
-/**
- * Generate the TypeScript sources for our schema. The sources are manually copied
- * over to the website repository.
- */
-tasks.register('updateFlatbufferTypescriptSources', Exec) {
-    group 'build'
-    dependsOn downloadAndUnzipFlatbufferCompiler
-    workingDir project.projectDir
-    commandLine "${project.buildDir}/flatbuffers-bin/flatc",
-            "--ts-flat-files",
-            "--ts",
-            "-o",
-            "${project.buildDir}/scene-ts",
-            "${project.projectDir}/src/main/flatbuffers/scene.fbs"
-
-    doFirst {
-        file("${project.buildDir}/scene-ts").deleteDir()
-    }
 }

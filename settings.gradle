@@ -22,50 +22,57 @@ dependencyResolutionManagement {
     rulesMode = RulesMode.FAIL_ON_PROJECT_RULES
     repositories {
         maven {
-            url "https://maven.shedaniel.me/"
+            url = 'https://maven.shedaniel.me/'
             content {
-                includeGroup "me.shedaniel"
-                includeGroup "me.shedaniel.cloth"
-                includeGroup "dev.architectury"
+                includeGroup 'me.shedaniel'
+                includeGroup 'me.shedaniel.cloth'
+                includeGroup 'dev.architectury'
             }
         }
         maven {
-            url "https://maven2.bai.lol"
+            url = 'https://maven2.bai.lol'
             content {
-                includeGroup "mcp.mobius.waila"
-                includeGroup "lol.bai"
+                includeGroup 'mcp.mobius.waila'
+                includeGroup 'lol.bai'
             }
         }
         maven {
-            name = "TerraformersMC"
-            url = "https://maven.terraformersmc.com/"
+            name = 'TerraformersMC'
+            url = 'https://maven.terraformersmc.com/'
             content {
-                includeGroup "dev.emi"
+                includeGroup 'dev.emi'
             }
         }
         maven {
-            name 'cursemaven'
-            url "https://www.cursemaven.com"
+            name = 'cursemaven'
+            url = 'https://www.cursemaven.com'
             content {
-                includeGroup "curse.maven"
+                includeGroup 'curse.maven'
             }
         }
         maven { // for TOP
-            url "https://maven.k-4u.nl/"
+            url = 'https://maven.k-4u.nl/'
             content {
-                includeGroup "mcjty.theoneprobe"
+                includeGroup 'mcjty.theoneprobe'
             }
         }
         maven {
-            url = "https://maven.theillusivec4.top/"
+            url = 'https://maven.theillusivec4.top/'
             content {
-                includeGroup "top.theillusivec4.curios"
+                includeGroup 'top.theillusivec4.curios'
             }
         }
         maven {
-            url = "https://maven.blamejared.com/"
+            url = 'https://maven.blamejared.com/'
             content {
-                includeGroup "mezz.jei"
+                includeGroup 'mezz.jei'
+            }
+        }
+        maven {
+            name = 'modmaven'
+            url = 'https://modmaven.dev/'
+            content {
+                includeGroup 'appeng'
             }
         }
         mavenCentral()
@@ -73,5 +80,3 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = 'ae2';
-
-include 'libs:markdown'

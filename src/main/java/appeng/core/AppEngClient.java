@@ -18,6 +18,8 @@
 
 package appeng.core;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 import com.mojang.blaze3d.platform.InputConstants;
@@ -65,6 +67,15 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import guideme.Guide;
+import guideme.PageAnchor;
+import guideme.compiler.TagCompiler;
+import guideme.compiler.tags.RecipeTypeMappingSupplier;
+import guideme.internal.GuideMEClient;
+import guideme.internal.MutableGuide;
+import guideme.internal.command.GuidebookStructureCommands;
+import guideme.scene.ImplicitAnnotationStrategy;
+
 import appeng.api.parts.CableRenderMode;
 import appeng.blockentity.networking.CableBusTESR;
 import appeng.client.EffectType;
@@ -73,16 +84,11 @@ import appeng.client.commands.ClientCommands;
 import appeng.client.gui.me.common.PendingCraftingJobs;
 import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
-import appeng.client.guidebook.Guide;
-import appeng.client.guidebook.PageAnchor;
-import appeng.client.guidebook.command.GuidebookStructureCommands;
-import appeng.client.guidebook.compiler.TagCompiler;
-import appeng.client.guidebook.extensions.ConfigValueTagExtension;
-import appeng.client.guidebook.hotkey.OpenGuideHotkey;
-import appeng.client.guidebook.scene.ImplicitAnnotationStrategy;
-import appeng.client.guidebook.scene.PartAnnotationStrategy;
-import appeng.client.guidebook.screen.GlobalInMemoryHistory;
-import appeng.client.guidebook.screen.GuideScreen;
+import appeng.client.guidebook.ConfigValueTagExtension;
+import appeng.client.guidebook.LytChargerRecipe;
+import appeng.client.guidebook.LytInscriberRecipe;
+import appeng.client.guidebook.LytTransformRecipe;
+import appeng.client.guidebook.PartAnnotationStrategy;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.crafting.CraftingMonitorRenderer;
 import appeng.client.render.crafting.MolecularAssemblerRenderer;
@@ -122,7 +128,8 @@ import appeng.init.client.InitItemModelsProperties;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
 import appeng.items.storage.StorageCellTooltipComponent;
-import appeng.siteexport.SiteExporter;
+import appeng.recipes.AERecipeTypes;
+import appeng.siteexport.AESiteExporter;
 import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.spatial.SpatialStorageSkyProperties;
 import appeng.util.Platform;
@@ -153,7 +160,7 @@ public class AppEngClient extends AppEngBase {
             "key.ae2.part_placement_opposite", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM,
             InputConstants.KEY_LCONTROL, "key.ae2.category");
 
-    private final Guide guide;
+    private final MutableGuide guide;
 
     public AppEngClient(IEventBus modEventBus, ModContainer container) {
         super(modEventBus, container);
@@ -177,7 +184,6 @@ public class AppEngClient extends AppEngBase {
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
         guide = createGuide(modEventBus);
-        OpenGuideHotkey.init();
 
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, (ClientTickEvent.Pre e) -> {
             updateCableRenderMode();
@@ -226,17 +232,25 @@ public class AppEngClient extends AppEngBase {
         });
     }
 
-    private Guide createGuide(IEventBus modEventBus) {
+    private MutableGuide createGuide(IEventBus modEventBus) {
+        var guide = Guide.builder(AppEng.makeId("guide"))
+                .folder("ae2guide")
+                .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
+                .extension(TagCompiler.EXTENSION_POINT, new ConfigValueTagExtension())
+                .extension(RecipeTypeMappingSupplier.EXTENSION_POINT, mappings -> {
+                    mappings.add(AERecipeTypes.INSCRIBER, LytInscriberRecipe::new);
+                    mappings.add(AERecipeTypes.CHARGER, LytChargerRecipe::new);
+                    mappings.add(AERecipeTypes.TRANSFORM, LytTransformRecipe::new);
+                })
+                .build();
+
         NeoForge.EVENT_BUS.addListener((ServerStartingEvent evt) -> {
             var server = evt.getServer();
             var dispatcher = server.getCommands().getDispatcher();
-            GuidebookStructureCommands.register(dispatcher);
+            new GuidebookStructureCommands("ae2guide", guide).register(dispatcher);
         });
 
-        return Guide.builder(modEventBus, MOD_ID, "ae2guide")
-                .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
-                .extension(TagCompiler.EXTENSION_POINT, new ConfigValueTagExtension())
-                .build();
+        return guide;
     }
 
     private void tickPinnedKeys(Minecraft minecraft) {
@@ -257,7 +271,6 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerHotkeys(RegisterKeyMappingsEvent e) {
-        e.register(OpenGuideHotkey.getHotkey());
         e.register(MOUSE_WHEEL_ITEM_MODIFIER);
         e.register(PART_PLACEMENT_OPPOSITE);
         Hotkeys.finalizeRegistration(e::register);
@@ -335,7 +348,13 @@ public class AppEngClient extends AppEngBase {
         // Only activate the site exporter when we're not running a release version, since it'll
         // replace blocks around spawn.
         if (!FMLLoader.isProduction()) {
-            SiteExporter.initialize();
+            // Automatically run the export once the client has started and then exit
+            if (Boolean.getBoolean("appeng.runGuideExportAndExit")) {
+                Path outputFolder = Paths.get(System.getProperty("appeng.guideExportFolder"));
+
+                new AESiteExporter(minecraft, outputFolder, guide)
+                        .exportOnNextTickAndExit();
+            }
         }
     }
 
@@ -492,37 +511,15 @@ public class AppEngClient extends AppEngBase {
 
     @Override
     public void openGuideAtPreviousPage(ResourceLocation initialPage) {
-        try {
-            var screen = GuideScreen.openAtPreviousPage(guide, PageAnchor.page(initialPage),
-                    GlobalInMemoryHistory.INSTANCE);
-
-            openGuideScreen(screen);
-        } catch (Exception e) {
-            LOG.error("Failed to open guide.", e);
-        }
+        GuideMEClient.openGuideAtPreviousPage(guide, initialPage);
     }
 
     @Override
     public void openGuideAtAnchor(PageAnchor anchor) {
-        try {
-            var screen = GuideScreen.openNew(guide, anchor, GlobalInMemoryHistory.INSTANCE);
-
-            openGuideScreen(screen);
-        } catch (Exception e) {
-            LOG.error("Failed to open guide at {}.", anchor, e);
-        }
+        GuideMEClient.openGuideAtAnchor(guide, anchor);
     }
 
-    private static void openGuideScreen(GuideScreen screen) {
-        var minecraft = Minecraft.getInstance();
-        if (minecraft.screen != null) {
-            screen.setReturnToOnClose(minecraft.screen);
-        }
-
-        minecraft.setScreen(screen);
-    }
-
-    public Guide getGuide() {
+    public MutableGuide getGuide() {
         return guide;
     }
 }

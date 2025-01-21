@@ -29,10 +29,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 
+import guideme.PageAnchor;
+
 import appeng.api.ids.AEConstants;
 import appeng.api.parts.CableRenderMode;
 import appeng.client.EffectType;
-import appeng.client.guidebook.PageAnchor;
 import appeng.core.network.ClientboundPacket;
 
 public interface AppEng {

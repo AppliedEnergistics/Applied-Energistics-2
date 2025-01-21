@@ -57,6 +57,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import guideme.PageAnchor;
+import guideme.color.SymbolicColor;
+import guideme.document.DefaultStyles;
+import guideme.indices.ItemIndex;
+import guideme.style.ResolvedTextStyle;
+import guideme.style.TextStyle;
+
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.behaviors.EmptyingAction;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -73,12 +80,6 @@ import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.client.gui.widgets.OpenGuideButton;
 import appeng.client.gui.widgets.VerticalButtonBar;
-import appeng.client.guidebook.PageAnchor;
-import appeng.client.guidebook.color.SymbolicColor;
-import appeng.client.guidebook.document.DefaultStyles;
-import appeng.client.guidebook.indices.ItemIndex;
-import appeng.client.guidebook.style.ResolvedTextStyle;
-import appeng.client.guidebook.style.TextStyle;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;

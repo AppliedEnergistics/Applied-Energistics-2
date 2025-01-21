@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.Rect2i;
  */
 public final class Point {
 
-    public static final Point ZERO = new Point(0, 0);
+    public static final appeng.client.Point ZERO = new appeng.client.Point(0, 0);
 
     private final int x;
     private final int y;
@@ -35,8 +35,8 @@ public final class Point {
         this.y = y;
     }
 
-    public static Point fromTopLeft(Rect2i bounds) {
-        return new Point(bounds.getX(), bounds.getY());
+    public static appeng.client.Point fromTopLeft(Rect2i bounds) {
+        return new appeng.client.Point(bounds.getX(), bounds.getY());
     }
 
     public int getX() {
@@ -47,8 +47,8 @@ public final class Point {
         return y;
     }
 
-    public Point move(int x, int y) {
-        return new Point(this.x + x, this.y + y);
+    public appeng.client.Point move(int x, int y) {
+        return new appeng.client.Point(this.x + x, this.y + y);
     }
 
     public boolean isIn(Rect2i rect) {
