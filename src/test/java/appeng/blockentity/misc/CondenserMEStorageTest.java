@@ -74,4 +74,23 @@ class CondenserMEStorageTest {
         be.getExternalInv().insertItem(0, AEItems.MATTER_BALL.stack(), false);
         assertThat(be.getStoredPower()).isEqualTo(8 + 1 + 8 + 1);
     }
+
+    @Test
+    void testRejectionWhenOutputFull() {
+        var matterBall = AEItemKey.of(AEItems.MATTER_BALL.stack());
+        var requiredPower = 256;
+        CondenserOutput.MATTER_BALLS.requiredPower = requiredPower;
+
+        be.getConfigManager().putSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.MATTER_BALLS);
+        be.getInternalInventory().setItemDirect(2, AEItems.CELL_COMPONENT_1K.stack());
+
+        for (var i = 0; i < 64; i++) {
+            inv.insert(matterBall, requiredPower, Actionable.MODULATE, new BaseActionSource());
+        }
+
+        assertThat(inv.getAvailableStacks().get(matterBall)).isEqualTo(64);
+        assertThat(be.getStoredPower()).isZero();
+
+        assertThat(inv.insert(matterBall, 1, Actionable.MODULATE, new BaseActionSource())).isZero();
+    }
 }
