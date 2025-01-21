@@ -37,13 +37,7 @@ public final class SpinMapping {
         return 0; // Degenerated up direction just falls back to no spin
     }
 
-    public static int getUpFromSpin(Direction facing, Direction up) {
-        var spinDirs = SPIN_DIRECTIONS[facing.ordinal()];
-        for (int i = 0; i < spinDirs.length; i++) {
-            if (spinDirs[i] == up) {
-                return i;
-            }
-        }
-        return 0; // Degenerated up direction just falls back to no spin
+    public static Direction getUpFromSpin(Direction facing, int spin) {
+        return SPIN_DIRECTIONS[facing.ordinal()][spin];
     }
 }

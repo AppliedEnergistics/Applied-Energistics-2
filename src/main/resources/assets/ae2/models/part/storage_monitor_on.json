@@ -11,7 +11,7 @@
         "north": {
           "texture": "#lightsBright",
           "tintindex": 3,
-          "unlit": true
+          "neoforge_data": { "block_light": 15, "sky_light": 15 }
         }
       }
     },
@@ -22,7 +22,7 @@
         "north": {
           "texture": "#lightsMedium",
           "tintindex": 2,
-          "unlit": true
+          "neoforge_data": { "block_light": 15, "sky_light": 15 }
         }
       }
     }

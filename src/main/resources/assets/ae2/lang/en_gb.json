@@ -6,6 +6,7 @@
   "achievement.ae2.Compass": "Meteorite Hunter",
   "achievement.ae2.Compass.desc": "Craft a Meteorite Compass",
   "achievement.ae2.Controller": "Networking Switchboard",
+  "achievement.ae2.NetworkTool": "Network Diagnostics",
   "gui.ae2.Gray": "Grey",
   "gui.ae2.LightGray": "Light Grey",
   "gui.ae2.inWorldCraftingPresses": "Crafting Presses are obtained by breaking a Mysterious Cube. Mysterious Cubes are in the centre of meteorites which can be found in around the world. They can be located by using a meteorite compass.",

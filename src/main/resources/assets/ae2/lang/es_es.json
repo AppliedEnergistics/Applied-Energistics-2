@@ -667,6 +667,7 @@
   "gui.tooltips.ae2.SchedulingModeRoundRobin": "Exportar usando el modo robin redondo.",
   "gui.tooltips.ae2.SearchSettingsTooltip": "Mostrar Ajustes de Búsqueda",
   "gui.tooltips.ae2.Serial": "Serial: %d",
+  "gui.tooltips.ae2.SetAction": "%s: Establecer %s",
   "gui.tooltips.ae2.ShowAllProviders": "Mostrar todos los proveedores de patrones",
   "gui.tooltips.ae2.ShowNonFullProviders": "Mostrar Proveedores de Patrones visibles con ranuras vacías",
   "gui.tooltips.ae2.ShowVisibleProviders": "Mostrar proveedores de patrones visibles",

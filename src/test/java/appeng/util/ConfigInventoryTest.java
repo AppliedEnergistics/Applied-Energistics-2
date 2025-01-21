@@ -77,13 +77,19 @@ public class ConfigInventoryTest {
         ConfigInventory inv = ConfigInventory.configStacks(1).supportedType(AEKeyType.items()).build();
 
         @Test
-        void stacksWithAmountZeroAreDropped() {
+        void stacksWithAmountZeroFilterToOne() {
+            inv.setStack(0, ZERO_STICK);
+            assertEquals(ONE_STICK, inv.getStack(0));
+            // Check that applying the same zero-filter to the same slot clears it
             inv.setStack(0, ZERO_STICK);
             assertNull(inv.getStack(0));
         }
 
         @Test
-        void stacksWithNegativeAmountsAreDropped() {
+        void stacksWithNegativeAmountsFilterToOne() {
+            inv.setStack(0, new GenericStack(STICK_KEY, -1000));
+            assertEquals(ONE_STICK, inv.getStack(0));
+            // Check that applying the same zero-filter to the same slot clears it
             inv.setStack(0, new GenericStack(STICK_KEY, -1000));
             assertNull(inv.getStack(0));
         }
