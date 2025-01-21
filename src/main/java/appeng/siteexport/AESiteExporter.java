@@ -17,7 +17,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
-import guideme.MutableGuide;
+import guideme.internal.MutableGuide;
 import guideme.internal.siteexport.SiteExporter;
 
 import appeng.client.guidebook.ConfigValueTagExtension;

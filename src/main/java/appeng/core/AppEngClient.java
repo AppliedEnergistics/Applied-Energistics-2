@@ -25,7 +25,6 @@ import java.util.Objects;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-import guideme.Guide;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,12 +67,13 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import guideme.internal.GuideME;
-import guideme.MutableGuide;
+import guideme.Guide;
 import guideme.PageAnchor;
-import guideme.internal.command.GuidebookStructureCommands;
 import guideme.compiler.TagCompiler;
 import guideme.compiler.tags.RecipeTypeMappingSupplier;
+import guideme.internal.GuideME;
+import guideme.internal.MutableGuide;
+import guideme.internal.command.GuidebookStructureCommands;
 import guideme.scene.ImplicitAnnotationStrategy;
 
 import appeng.api.parts.CableRenderMode;
@@ -129,6 +129,7 @@ import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
 import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.recipes.AERecipeTypes;
+import appeng.siteexport.AESiteExporter;
 import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.spatial.SpatialStorageSkyProperties;
 import appeng.util.Platform;
@@ -351,9 +352,8 @@ public class AppEngClient extends AppEngBase {
             if (Boolean.getBoolean("appeng.runGuideExportAndExit")) {
                 Path outputFolder = Paths.get(System.getProperty("appeng.guideExportFolder"));
 
-                // TODO SiteExporter.builder(minecraft, outputFolder, guide)
-                // TODO .build()
-                // TODO .register();
+                new AESiteExporter(minecraft, outputFolder, guide)
+                        .exportOnNextTickAndExit();
             }
         }
     }

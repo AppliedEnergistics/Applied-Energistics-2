@@ -1,6 +1,5 @@
 package appeng.client.guidebook;
 
-import guideme.render.GuiAssets;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import guideme.document.DefaultStyles;
@@ -8,6 +7,7 @@ import guideme.document.LytRect;
 import guideme.document.block.LytSlot;
 import guideme.document.block.recipes.LytRecipeBox;
 import guideme.layout.LayoutContext;
+import guideme.render.GuiAssets;
 import guideme.render.RenderContext;
 
 import appeng.core.definitions.AEBlocks;

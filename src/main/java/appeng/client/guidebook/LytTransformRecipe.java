@@ -1,7 +1,11 @@
 package appeng.client.guidebook;
 
-import appeng.recipes.transform.TransformRecipe;
-import appeng.util.Platform;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+
 import guideme.document.DefaultStyles;
 import guideme.document.LytRect;
 import guideme.document.block.LytSlot;
@@ -10,11 +14,9 @@ import guideme.document.block.recipes.LytRecipeBox;
 import guideme.layout.LayoutContext;
 import guideme.render.GuiAssets;
 import guideme.render.RenderContext;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
+
+import appeng.recipes.transform.TransformRecipe;
+import appeng.util.Platform;
 
 public class LytTransformRecipe extends LytRecipeBox {
     private final TransformRecipe recipe;
@@ -94,8 +96,7 @@ public class LytTransformRecipe extends LytRecipeBox {
 
         context.fillIcon(
                 new LytRect(bounds.right() - 25 - 24, bounds.y() + 10 + (bounds.height() - 27) / 2, 24, 17),
-                GuiAssets.ARROW
-        );
+                GuiAssets.ARROW);
 
         super.render(context);
     }

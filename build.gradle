@@ -62,18 +62,7 @@ dependencies {
     // Used for the guide export
     guideExportOnly("org.bytedeco:ffmpeg-platform:${ffmpeg_version}")
 
-    implementation("appeng:guideme")
-    // Do not inherit any transitive dependencies here since we rely on those transitive dependencies being
-    // present in Minecrafts own dependencies already.
-    additionalRuntimeClasspath("io.methvin:directory-watcher:${directory_watcher_version}") {
-        transitive = false
-    }
-    additionalRuntimeClasspath("org.yaml:snakeyaml:${snakeyaml_version}") {
-        transitive = false
-    }
-    additionalRuntimeClasspath("com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}") {
-        transitive = false
-    }
+    implementation(jarJar("appeng:guideme:${guideme_version}"))
 
     // compile against provided APIs
     compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
@@ -124,8 +113,6 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter:5.12.0")
     testImplementation("net.neoforged:testframework:${project.neoforge_version}")
 
-    compileOnly 'org.apache.commons:commons-configuration2:2.9.0'
-
     buildtoolsImplementation 'de.siegmar:fastcsv:2.1.0'
     buildtoolsImplementation 'com.google.code.gson:gson:2.8.9'
 }
@@ -170,7 +157,6 @@ dependencies {
  * Configures properties common to all run configurations
  */
 Map<String, String> commonSystemProperties = [
-        'forge.logging.console.level': 'debug',
         'appeng.tests'               : 'true',
 ]
 
@@ -186,24 +172,24 @@ neoForge {
             gameDirectory = project.file('run')
             systemProperties = commonSystemProperties
             // property "mixin.debug.export", "true"
-            logLevel = org.slf4j.event.Level.DEBUG
-            systemProperties.put("guideme.ae2.guide.sources", file("guidebook").absolutePath)
+            logLevel = org.slf4j.event.Level.INFO
+            systemProperty('guideme.ae2.guide.sources', file('guidebook').absolutePath)
         }
         client {
             client()
-            systemProperties.put("appeng.tests", "true")
+            systemProperty('appeng.tests', 'true')
         }
         gametestWorld {
             client()
             programArguments = [
-                    "--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld"
+                    '--username', 'AE2Dev', '--quickPlaySingleplayer', 'GametestWorld'
             ]
-            systemProperties.put("appeng.tests", "true")
+            systemProperty('appeng.tests', 'true')
         }
         guide {
             client()
 
-            systemProperties.put("guideme.ae2.guide.startupPage", "ae2:index.md")
+            systemProperty('guideme.showOnStartup', 'ae2:guide')
         }
         server {
             server()
@@ -219,14 +205,13 @@ neoForge {
         }
         guideexport {
             client()
-            systemProperties.put("guideme.ae2.guide.export.runAndExit", "true")
-            systemProperties.put("guideme.ae2.guide.export.destination", file("build/guide").absolutePath)
-            systemProperties.put("guideme.ae2.guide.export.version", project.version)
+            systemProperty('appeng.runGuideExportAndExit', 'true')
+            systemProperty('appeng.guideExportFolder', file('build/guide').absolutePath)
         }
         // Use to run the tests
         gametest {
-            type = "gameTestServer"
-            gameDirectory = project.file("build/gametest")
+            type = 'gameTestServer'
+            gameDirectory = project.file('build/gametest')
         }
     }
 
