@@ -71,7 +71,7 @@ import guideme.Guide;
 import guideme.PageAnchor;
 import guideme.compiler.TagCompiler;
 import guideme.compiler.tags.RecipeTypeMappingSupplier;
-import guideme.internal.GuideME;
+import guideme.internal.GuideMEClient;
 import guideme.internal.MutableGuide;
 import guideme.internal.command.GuidebookStructureCommands;
 import guideme.scene.ImplicitAnnotationStrategy;
@@ -511,12 +511,12 @@ public class AppEngClient extends AppEngBase {
 
     @Override
     public void openGuideAtPreviousPage(ResourceLocation initialPage) {
-        GuideME.openGuideAtPreviousPage(guide, initialPage);
+        GuideMEClient.openGuideAtPreviousPage(guide, initialPage);
     }
 
     @Override
     public void openGuideAtAnchor(PageAnchor anchor) {
-        GuideME.openGuideAtAnchor(guide, anchor);
+        GuideMEClient.openGuideAtAnchor(guide, anchor);
     }
 
     public MutableGuide getGuide() {
