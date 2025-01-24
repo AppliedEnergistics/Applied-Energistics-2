@@ -125,7 +125,6 @@ public class LocalizationProvider implements IAE2DataProvider {
         add("key.ae2.portable_fluid_cell", "Open Portable Fluid Cell");
         add("key.ae2.portable_item_cell", "Open Portable Item Cell");
         add("key.ae2.wireless_terminal", "Open Wireless Terminal");
-        add("key.ae2.guide", "Open Guide for Items");
         add("key.ae2.mouse_wheel_item_modifier", "Modifier for Mouse-Wheel Items");
         add("key.ae2.part_placement_opposite", "Place Parts on Opposite Side");
         add("key.toggle_focus.desc", "Toggle search box focus");

@@ -72,7 +72,6 @@ import guideme.PageAnchor;
 import guideme.compiler.TagCompiler;
 import guideme.compiler.tags.RecipeTypeMappingSupplier;
 import guideme.internal.GuideMEClient;
-import guideme.internal.MutableGuide;
 import guideme.internal.command.GuidebookStructureCommands;
 import guideme.scene.ImplicitAnnotationStrategy;
 
@@ -160,7 +159,7 @@ public class AppEngClient extends AppEngBase {
             "key.ae2.part_placement_opposite", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM,
             InputConstants.KEY_LCONTROL, "key.ae2.category");
 
-    private final MutableGuide guide;
+    private final Guide guide;
 
     public AppEngClient(IEventBus modEventBus, ModContainer container) {
         super(modEventBus, container);
@@ -183,7 +182,7 @@ public class AppEngClient extends AppEngBase {
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
-        guide = createGuide(modEventBus);
+        guide = createGuide();
 
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, (ClientTickEvent.Pre e) -> {
             updateCableRenderMode();
@@ -232,7 +231,7 @@ public class AppEngClient extends AppEngBase {
         });
     }
 
-    private MutableGuide createGuide(IEventBus modEventBus) {
+    private Guide createGuide() {
         var guide = Guide.builder(AppEng.makeId("guide"))
                 .folder("ae2guide")
                 .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
@@ -247,7 +246,7 @@ public class AppEngClient extends AppEngBase {
         NeoForge.EVENT_BUS.addListener((ServerStartingEvent evt) -> {
             var server = evt.getServer();
             var dispatcher = server.getCommands().getDispatcher();
-            new GuidebookStructureCommands("ae2guide", guide).register(dispatcher);
+            new GuidebookStructureCommands("ae2guide").register(dispatcher);
         });
 
         return guide;
@@ -519,7 +518,7 @@ public class AppEngClient extends AppEngBase {
         GuideMEClient.openGuideAtAnchor(guide, anchor);
     }
 
-    public MutableGuide getGuide() {
+    public Guide getGuide() {
         return guide;
     }
 }

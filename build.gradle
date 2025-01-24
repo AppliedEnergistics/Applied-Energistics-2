@@ -20,7 +20,6 @@ plugins {
     id "net.neoforged.moddev"
     id "maven-publish"
     id "com.diffplug.spotless"
-    id 'com.gradleup.shadow'
     id "de.undercouch.download"
 }
 
@@ -43,9 +42,6 @@ sourceSets {
 
 configurations {
     localRuntimeOnly
-    shaded {
-        transitive = false
-    }
     buildtoolsImplementation.extendsFrom(compileClasspath)
     // Dependencies only used for the guide export, but not shipped
     guideExportOnly
@@ -221,7 +217,6 @@ neoForge {
     }
 }
 
-configurations.additionalRuntimeClasspath.extendsFrom configurations.shaded
 configurations.additionalRuntimeClasspath.extendsFrom configurations.guideExportOnly
 
 //////////////
@@ -250,26 +245,10 @@ processResources {
 }
 
 jar {
-    finalizedBy shadowJar
-    archiveClassifier = "plain"
-}
-
-shadowJar {
-    from sourceSets.main.output.classesDirs
-    from sourceSets.main.output.resourcesDir
-
     from('guidebook') {
         into 'assets/ae2/ae2guide'
     }
-
-    relocate "io.methvin", "appeng.shaded.methvin"
-    relocate "org.yaml.snakeyaml", "appeng.shaded.snakeyaml"
-
-    configurations = [project.configurations.shaded]
-    archiveClassifier = null
 }
-
-assemble.dependsOn shadowJar
 
 def publicApiIncludePatterns = {
     exclude "**/*Internal.*"
@@ -320,7 +299,7 @@ publishing {
             artifactId = "appliedenergistics2"
             version = project.version
 
-            artifact shadowJar
+            artifact jar
             artifact sourcesJar
             artifact javadocJar
             artifact apiJar

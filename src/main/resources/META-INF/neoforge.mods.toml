@@ -49,6 +49,13 @@ config="ae2.mixins.json"
     ordering="AFTER"
     side="BOTH"
 
+[[dependencies.ae2]]
+    modId="guideme"
+    type="REQUIRED"
+    versionRange="[2.1.0,)"
+    ordering="AFTER"
+    side="BOTH"
+
 # VanillaFix caused us grief in the past
 # https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/8034
 # https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/7539
