@@ -62,7 +62,7 @@ dependencies {
     // Used for the guide export
     guideExportOnly("org.bytedeco:ffmpeg-platform:${ffmpeg_version}")
 
-    implementation(jarJar("appeng:guideme:${guideme_version}"))
+    implementation("org.appliedenergistics:guideme:${guideme_version}")
 
     // compile against provided APIs
     compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
@@ -231,7 +231,8 @@ Map<String, String> expansionVariables = [
         'minecraft_version': project.minecraft_version_range,
         'neoforge_version': project.neoforge_version_range,
         'top_version': project.top_version_range,
-        'jade_version': project.jade_version_range
+        'jade_version': project.jade_version_range,
+        'guideme_version': project.guideme_version,
 ]
 
 processResources {

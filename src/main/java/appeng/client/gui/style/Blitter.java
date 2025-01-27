@@ -41,8 +41,6 @@ import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import guideme.internal.util.TextureTransform;
-
 import appeng.core.AppEng;
 
 /**
