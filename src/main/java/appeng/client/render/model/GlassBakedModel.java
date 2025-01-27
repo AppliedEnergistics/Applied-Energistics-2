@@ -21,7 +21,7 @@ package appeng.client.render.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -60,8 +60,6 @@ class GlassBakedModel implements IDynamicBakedModel {
     // This unlisted property is used to determine the actual block that should be
     // rendered
     public static final ModelProperty<GlassState> GLASS_STATE = new ModelProperty<>();
-
-    private static final byte[][][] OFFSETS = generateOffsets();
 
     // Alternating textures based on position
     static final Material TEXTURE_A = new Material(TextureAtlas.LOCATION_BLOCKS,
@@ -114,21 +112,13 @@ class GlassBakedModel implements IDynamicBakedModel {
             return Collections.emptyList();
         }
 
-        final GlassState glassState = extraData.get(GLASS_STATE);
+        GlassState glassState = Objects.requireNonNullElse(extraData.get(GLASS_STATE), GlassState.DEFAULT);
 
-        if (glassState == null) {
-            return Collections.emptyList();
-        }
+        int randomOffset = rand.nextInt(4);
+        var u = randomOffset / 16f;
+        var v = rand.nextInt(4) / 16f;
 
-        // TODO: This could just use the Random instance we're given...
-        final int cx = Math.abs(glassState.getX() % 10);
-        final int cy = Math.abs(glassState.getY() % 10);
-        final int cz = Math.abs(glassState.getZ() % 10);
-
-        var u = (OFFSETS[cx][cy][cz] % 4) / 16f;
-        var v = (OFFSETS[9 - cx][9 - cy][9 - cz] % 4) / 16f;
-
-        int texIdx = Math.abs((OFFSETS[cx][cy][cz] + (glassState.getX() + glassState.getY() + glassState.getZ())) % 4);
+        int texIdx = (randomOffset + rand.nextInt(4)) % 4;
 
         if (texIdx < 2) {
             u /= 2;
@@ -270,19 +260,6 @@ class GlassBakedModel implements IDynamicBakedModel {
         return this.frameTextures[this.frameTextures.length - 1];
     }
 
-    private static byte[][][] generateOffsets() {
-        final Random r = new Random(924);
-        final byte[][][] offset = new byte[10][10][10];
-
-        for (int x = 0; x < 10; x++) {
-            for (int y = 0; y < 10; y++) {
-                r.nextBytes(offset[x][y]);
-            }
-        }
-
-        return offset;
-    }
-
     private static GlassState getGlassState(BlockAndTintGetter level, BlockState state, BlockPos pos) {
         /*
          * This needs some explanation: The bit-field contains 4-bits, one for each direction that a frame may be drawn.
@@ -301,7 +278,7 @@ class GlassBakedModel implements IDynamicBakedModel {
             adjacentGlassBlocks[facing.get3DDataValue()] = isGlassBlock(level, state, pos, facing.getOpposite(),
                     facing);
         }
-        return new GlassState(pos.getX(), pos.getY(), pos.getZ(), masks, adjacentGlassBlocks);
+        return new GlassState(masks, adjacentGlassBlocks);
     }
 
     /**
