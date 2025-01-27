@@ -17,7 +17,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
-import guideme.internal.MutableGuide;
+import guideme.Guide;
 import guideme.internal.siteexport.SiteExporter;
 
 import appeng.client.guidebook.ConfigValueTagExtension;
@@ -31,7 +31,7 @@ import appeng.recipes.mattercannon.MatterCannonAmmo;
 import appeng.recipes.transform.TransformRecipe;
 
 public class AESiteExporter extends SiteExporter {
-    public AESiteExporter(Minecraft client, Path outputFolder, MutableGuide guide) {
+    public AESiteExporter(Minecraft client, Path outputFolder, Guide guide) {
         super(client, outputFolder, guide);
 
         // Ref items used as icons

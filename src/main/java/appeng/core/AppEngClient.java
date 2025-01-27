@@ -32,7 +32,6 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -64,16 +63,13 @@ import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import guideme.Guide;
+import guideme.GuidesCommon;
 import guideme.PageAnchor;
 import guideme.compiler.TagCompiler;
 import guideme.compiler.tags.RecipeTypeMappingSupplier;
-import guideme.internal.GuideMEClient;
-import guideme.internal.MutableGuide;
-import guideme.internal.command.GuidebookStructureCommands;
 import guideme.scene.ImplicitAnnotationStrategy;
 
 import appeng.api.parts.CableRenderMode;
@@ -160,7 +156,7 @@ public class AppEngClient extends AppEngBase {
             "key.ae2.part_placement_opposite", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM,
             InputConstants.KEY_LCONTROL, "key.ae2.category");
 
-    private final MutableGuide guide;
+    private final Guide guide;
 
     public AppEngClient(IEventBus modEventBus, ModContainer container) {
         super(modEventBus, container);
@@ -232,7 +228,7 @@ public class AppEngClient extends AppEngBase {
         });
     }
 
-    private MutableGuide createGuide(IEventBus modEventBus) {
+    private Guide createGuide(IEventBus modEventBus) {
         var guide = Guide.builder(AppEng.makeId("guide"))
                 .folder("ae2guide")
                 .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
@@ -243,12 +239,6 @@ public class AppEngClient extends AppEngBase {
                     mappings.add(AERecipeTypes.TRANSFORM, LytTransformRecipe::new);
                 })
                 .build();
-
-        NeoForge.EVENT_BUS.addListener((ServerStartingEvent evt) -> {
-            var server = evt.getServer();
-            var dispatcher = server.getCommands().getDispatcher();
-            new GuidebookStructureCommands("ae2guide", guide).register(dispatcher);
-        });
 
         return guide;
     }
@@ -510,16 +500,11 @@ public class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public void openGuideAtPreviousPage(ResourceLocation initialPage) {
-        GuideMEClient.openGuideAtPreviousPage(guide, initialPage);
-    }
-
-    @Override
     public void openGuideAtAnchor(PageAnchor anchor) {
-        GuideMEClient.openGuideAtAnchor(guide, anchor);
+        GuidesCommon.openGuide(Minecraft.getInstance().player, guide.getId(), anchor);
     }
 
-    public MutableGuide getGuide() {
+    public Guide getGuide() {
         return guide;
     }
 }
