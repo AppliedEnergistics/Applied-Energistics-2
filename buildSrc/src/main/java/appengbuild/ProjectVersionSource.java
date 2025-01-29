@@ -42,7 +42,7 @@ public abstract class ProjectVersionSource implements ValueSource<String, Projec
             throw new RuntimeException("Interrupted");
         } catch (Exception e) {
             LOG.error("Failed to determine Project version from Git.", e);
-            return "0.0.0";
+            return "0.0.0-SNAPSHOT";
         }
     }
 
@@ -63,12 +63,14 @@ public abstract class ProjectVersionSource implements ValueSource<String, Projec
         triplet[triplet.length - 1] = String.valueOf(Integer.parseUnsignedInt(triplet[triplet.length - 1]) + 1);
         var version = String.join(".", triplet);
 
-        // Appends a -pre.<offset>
-        version += "-alpha." + describe.offset();
-
         var branchSuffix = getBranchSuffix();
+
+        // Appends a -pre.<offset>
         if (branchSuffix != null) {
+            version += "-alpha." + describe.offset();
             version += "+" + branchSuffix;
+        } else {
+            version += "-SNAPSHOT";
         }
 
         return version;
