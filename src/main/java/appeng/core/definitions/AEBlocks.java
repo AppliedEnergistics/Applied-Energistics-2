@@ -112,14 +112,16 @@ public final class AEBlocks {
     private static final List<BlockDefinition<?>> BLOCKS = new ArrayList<>();
     private static final Properties QUARTZ_CLUSTER_PROPERTIES = defaultProps(MapColor.COLOR_CYAN,
             SoundType.AMETHYST_CLUSTER).forceSolidOn().strength(1.5f).requiresCorrectToolForDrops();
-    private static final Properties QUARTZ_PROPERTIES = stoneProps()
+    private static final Properties QUARTZ_PROPERTIES = stoneProps().mapColor(MapColor.COLOR_CYAN)
             .strength(3, 5).requiresCorrectToolForDrops();
-    private static final Properties SKYSTONE_PROPERTIES = stoneProps()
+    private static final Properties SKYSTONE_PROPERTIES = stoneProps().mapColor(MapColor.COLOR_BLACK)
             .strength(5, 150).requiresCorrectToolForDrops();
     private static final StateArgumentPredicate<EntityType<?>> NEVER_ALLOW_SPAWN = (p1, p2, p3,
             p4) -> false;
-    private static final Properties SKY_STONE_CHEST_PROPS = stoneProps()
+    private static final Properties SKY_STONE_CHEST_PROPS = stoneProps().mapColor(MapColor.COLOR_BLACK)
             .strength(5, 150).noOcclusion();
+    private static final Properties FLUIX_PROPERTIES = stoneProps().mapColor(MapColor.COLOR_PURPLE)
+            .strength(3, 5).requiresCorrectToolForDrops();
 
     // spotless:off
     public static final BlockDefinition<BuddingCertusQuartzBlock> FLAWLESS_BUDDING_QUARTZ = block("Flawless Budding Certus Quartz", AEBlockIds.FLAWLESS_BUDDING_QUARTZ, () -> new BuddingCertusQuartzBlock(QUARTZ_PROPERTIES.randomTicks()));
@@ -145,7 +147,7 @@ public final class AEBlocks {
             .isValidSpawn(NEVER_ALLOW_SPAWN)));
 
     public static final BlockDefinition<QuartzFixtureBlock> QUARTZ_FIXTURE = block("Charged Quartz Fixture", AEBlockIds.QUARTZ_FIXTURE, QuartzFixtureBlock::new);
-    public static final BlockDefinition<AEDecorativeBlock> FLUIX_BLOCK = block("Fluix Block", AEBlockIds.FLUIX_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<AEDecorativeBlock> FLUIX_BLOCK = block("Fluix Block", AEBlockIds.FLUIX_BLOCK, () -> new AEDecorativeBlock(FLUIX_PROPERTIES));
     public static final BlockDefinition<AEDecorativeBlock> SKY_STONE_BLOCK = block("Sky Stone", AEBlockIds.SKY_STONE_BLOCK, () -> new AEDecorativeBlock(stoneProps().strength(50, 150).requiresCorrectToolForDrops()));
 
     public static final BlockDefinition<AEDecorativeBlock> SMOOTH_SKY_STONE_BLOCK = block("Sky Stone Block", AEBlockIds.SMOOTH_SKY_STONE_BLOCK, () -> new AEDecorativeBlock(SKYSTONE_PROPERTIES));
@@ -208,7 +210,7 @@ public final class AEBlocks {
     public static final BlockDefinition<StairBlock> SMOOTH_SKY_STONE_STAIRS = block("Sky Stone Block Stairs", AEBlockIds.SMOOTH_SKY_STONE_STAIRS, () -> new StairBlock(SMOOTH_SKY_STONE_BLOCK.block().defaultBlockState(), SKYSTONE_PROPERTIES));
     public static final BlockDefinition<StairBlock> SKY_STONE_BRICK_STAIRS = block("Sky Stone Brick Stairs", AEBlockIds.SKY_STONE_BRICK_STAIRS, () -> new StairBlock(SKY_STONE_BRICK.block().defaultBlockState(), SKYSTONE_PROPERTIES));
     public static final BlockDefinition<StairBlock> SKY_STONE_SMALL_BRICK_STAIRS = block("Sky Stone Small Brick Stairs", AEBlockIds.SKY_STONE_SMALL_BRICK_STAIRS, () -> new StairBlock(SKY_STONE_SMALL_BRICK.block().defaultBlockState(), SKYSTONE_PROPERTIES));
-    public static final BlockDefinition<StairBlock> FLUIX_STAIRS = block("Fluix Stairs", AEBlockIds.FLUIX_STAIRS, () -> new StairBlock(FLUIX_BLOCK.block().defaultBlockState(), QUARTZ_PROPERTIES));
+    public static final BlockDefinition<StairBlock> FLUIX_STAIRS = block("Fluix Stairs", AEBlockIds.FLUIX_STAIRS, () -> new StairBlock(FLUIX_BLOCK.block().defaultBlockState(), FLUIX_PROPERTIES));
     public static final BlockDefinition<StairBlock> QUARTZ_STAIRS = block("Certus Quartz Stairs", AEBlockIds.QUARTZ_STAIRS, () -> new StairBlock(QUARTZ_BLOCK.block().defaultBlockState(), QUARTZ_PROPERTIES));
     public static final BlockDefinition<StairBlock> CUT_QUARTZ_STAIRS = block("Cut Certus Quartz Stairs", AEBlockIds.CUT_QUARTZ_STAIRS, () -> new StairBlock(CUT_QUARTZ_BLOCK.block().defaultBlockState(), QUARTZ_PROPERTIES));
     public static final BlockDefinition<StairBlock> SMOOTH_QUARTZ_STAIRS = block("Smooth Certus Quartz Stairs", AEBlockIds.SMOOTH_QUARTZ_STAIRS, () -> new StairBlock(SMOOTH_QUARTZ_BLOCK.block().defaultBlockState(), QUARTZ_PROPERTIES));
@@ -220,7 +222,7 @@ public final class AEBlocks {
     public static final BlockDefinition<WallBlock> SMOOTH_SKY_STONE_WALL = block("Sky Stone Block Wall", AEBlockIds.SMOOTH_SKY_STONE_WALL, () -> new WallBlock(SKYSTONE_PROPERTIES));
     public static final BlockDefinition<WallBlock> SKY_STONE_BRICK_WALL = block("Sky Stone Brick Wall", AEBlockIds.SKY_STONE_BRICK_WALL, () -> new WallBlock(SKYSTONE_PROPERTIES));
     public static final BlockDefinition<WallBlock> SKY_STONE_SMALL_BRICK_WALL = block("Sky Stone Small Brick Wall", AEBlockIds.SKY_STONE_SMALL_BRICK_WALL, () -> new WallBlock(SKYSTONE_PROPERTIES));
-    public static final BlockDefinition<WallBlock> FLUIX_WALL = block("Fluix Wall", AEBlockIds.FLUIX_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<WallBlock> FLUIX_WALL = block("Fluix Wall", AEBlockIds.FLUIX_WALL, () -> new WallBlock(FLUIX_PROPERTIES));
     public static final BlockDefinition<WallBlock> QUARTZ_WALL = block("Certus Quartz Wall", AEBlockIds.QUARTZ_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<WallBlock> CUT_QUARTZ_WALL = block("Cut Certus Quartz Wall", AEBlockIds.CUT_QUARTZ_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<WallBlock> SMOOTH_QUARTZ_WALL = block("Smooth Certus Quartz Wall", AEBlockIds.SMOOTH_QUARTZ_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
@@ -235,7 +237,7 @@ public final class AEBlocks {
     public static final BlockDefinition<SlabBlock> SKY_STONE_BRICK_SLAB = block("Sky Stone Brick Slab", AEBlockIds.SKY_STONE_BRICK_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES));
     public static final BlockDefinition<SlabBlock> SKY_STONE_SMALL_BRICK_SLAB = block("Sky Stone Small Brick Slab", AEBlockIds.SKY_STONE_SMALL_BRICK_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES));
 
-    public static final BlockDefinition<SlabBlock> FLUIX_SLAB = block("Fluix Slab", AEBlockIds.FLUIX_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> FLUIX_SLAB = block("Fluix Slab", AEBlockIds.FLUIX_SLAB, () -> new SlabBlock(FLUIX_PROPERTIES));
     public static final BlockDefinition<SlabBlock> QUARTZ_SLAB = block("Certus Quartz Slab", AEBlockIds.QUARTZ_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<SlabBlock> CUT_QUARTZ_SLAB = block("Cut Certus Quartz Slab", AEBlockIds.CUT_QUARTZ_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<SlabBlock> SMOOTH_QUARTZ_SLAB = block("Smooth Certus Quartz Slab", AEBlockIds.SMOOTH_QUARTZ_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
