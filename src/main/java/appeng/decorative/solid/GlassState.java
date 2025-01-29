@@ -18,6 +18,9 @@
 
 package appeng.decorative.solid;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 import net.minecraft.core.Direction;
 
 /**
@@ -25,32 +28,20 @@ import net.minecraft.core.Direction;
  * block.
  */
 public final class GlassState {
-
-    private final int x;
-    private final int y;
-    private final int z;
+    public static final GlassState DEFAULT;
+    static {
+        var masks = new int[6];
+        Arrays.fill(masks, 0b1111); // Render all 4 borders
+        var adjacentGlassBlocks = new boolean[6]; // Not adjacent to any glass block
+        DEFAULT = new GlassState(masks, adjacentGlassBlocks);
+    }
 
     private final int[] masks;
     private final boolean[] adjacentGlassBlocks;
 
-    public GlassState(int x, int y, int z, int[] masks, boolean[] adjacentGlassBlocks) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public GlassState(int[] masks, boolean[] adjacentGlassBlocks) {
         this.masks = masks.clone();
         this.adjacentGlassBlocks = adjacentGlassBlocks.clone();
-    }
-
-    public int getX() {
-        return this.x;
-    }
-
-    public int getY() {
-        return this.y;
-    }
-
-    public int getZ() {
-        return this.z;
     }
 
     public int getMask(Direction side) {
@@ -59,5 +50,19 @@ public final class GlassState {
 
     public boolean hasAdjacentGlassBlock(Direction side) {
         return adjacentGlassBlocks[side.get3DDataValue()];
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof GlassState that))
+            return false;
+        return Arrays.equals(masks, that.masks) && Arrays.equals(adjacentGlassBlocks, that.adjacentGlassBlocks);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Arrays.hashCode(masks), Arrays.hashCode(adjacentGlassBlocks));
     }
 }
