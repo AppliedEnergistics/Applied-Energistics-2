@@ -40,7 +40,7 @@ public class BasicInventoryTest {
 
     /**
      * Check that we can extract more than MAX_INT fluid at once from a cell. Regression test for
-     * https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6794
+     * <a href="https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6794">#6794</a>
      */
     @Test
     void testFluidExtract() {
@@ -143,6 +143,47 @@ public class BasicInventoryTest {
         assertThat(cell.insert(allowed2, Long.MAX_VALUE, Actionable.MODULATE, SRC)).isEqualTo(Long.MAX_VALUE);
 
         // Ensure that items that don't match the filter don't get voided.
+        assertThat(cell.insert(rejected, Long.MAX_VALUE, Actionable.MODULATE, SRC)).isZero();
+    }
+
+    @Test
+    void testVoidUpgradeUnformatted() {
+        var item = AEItems.ITEM_CELL_1K.asItem();
+        var stack = new ItemStack(item);
+        item.getUpgrades(stack).addItems(AEItems.VOID_CARD.stack());
+
+        var cell = StorageCells.getCellInventory(stack, null);
+        Objects.requireNonNull(cell);
+
+        // Ensure that the first insert of a single type voids only excess.
+        var filler = AEItemKey.of(Items.DIAMOND);
+        assertThat(cell.insert(filler, Long.MAX_VALUE, Actionable.MODULATE, SRC)).isEqualTo(Long.MAX_VALUE);
+        assertThat(cell.getAvailableStacks().get(filler)).isNotZero();
+        // Ensure that new item types that the cell cannot store don't get voided.
+        var rejected = AEItemKey.of(Items.STICK);
+        assertThat(cell.insert(rejected, Long.MAX_VALUE, Actionable.MODULATE, SRC)).isZero();
+
+        // Part two, fill cell with 63 different types this time.
+        cell.extract(filler, Long.MAX_VALUE, Actionable.MODULATE, SRC);
+        item.getUpgrades(stack).removeItems(1, AEItems.VOID_CARD.stack(), null);
+        item.getUpgrades(stack).addItems(AEItems.EQUAL_DISTRIBUTION_CARD.stack());
+        cell = StorageCells.getCellInventory(stack, null);
+        Objects.requireNonNull(cell);
+
+        var maxTypes = item.getTotalTypes(stack);
+        var keys = generateDifferentKeys(maxTypes);
+
+        for (int i = 0; i < maxTypes; ++i) {
+            cell.insert(keys[i], Long.MAX_VALUE, Actionable.MODULATE, SRC);
+        }
+
+        item.getUpgrades(stack).addItems(AEItems.VOID_CARD.stack());
+        cell = StorageCells.getCellInventory(stack, null);
+        Objects.requireNonNull(cell);
+
+        // Ensure that inserting an already-stored item voids.
+        assertThat(cell.insert(keys[0], Long.MAX_VALUE, Actionable.MODULATE, SRC)).isEqualTo(Long.MAX_VALUE);
+        // Ensure that items that aren't on the cell don't get voided.
         assertThat(cell.insert(rejected, Long.MAX_VALUE, Actionable.MODULATE, SRC)).isZero();
     }
 
