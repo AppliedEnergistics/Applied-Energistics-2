@@ -27,6 +27,9 @@ The matter condenser can be used as either a trash can or to create <ItemLink id
     This mode requires that you put a storage component in the top slot of the condenser. Singularities take 256,000 items or buckets
     each, so a <ItemLink id="cell_component_64k" /> (which provides 524,288 bits of capacity) is more than enough.
 
+Note that in the latter two modes where some resource is produced, the Matter Condenser *can* back up and will
+not accept any further input if both the energy and output item buffers are completely filled up.
+
 ## Recipe
 
 <RecipeFor id="condenser" />
