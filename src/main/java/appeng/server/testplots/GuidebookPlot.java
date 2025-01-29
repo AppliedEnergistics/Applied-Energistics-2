@@ -31,10 +31,10 @@ public final class GuidebookPlot {
 
         var controlPos = BlockPos.ZERO.north(2).east(1);
         control(plot, controlPos.east(0), "LOAD", (blockEntity, origin) -> {
-            return String.format(Locale.ROOT, "ae2guide importstructure %s", formatBlockPos(origin));
+            return String.format(Locale.ROOT, "guideme importstructure %s", formatBlockPos(origin));
         });
         control(plot, controlPos.east(1), "SAVE", (blockEntity, origin) -> {
-            return String.format(Locale.ROOT, "ae2guide exportstructure %s %d %d %d", formatBlockPos(origin), 16, 16,
+            return String.format(Locale.ROOT, "guideme exportstructure %s %d %d %d", formatBlockPos(origin), 16, 16,
                     16);
         });
         control(plot, controlPos.east(2), "CLEAR", (blockEntity, origin) -> {
