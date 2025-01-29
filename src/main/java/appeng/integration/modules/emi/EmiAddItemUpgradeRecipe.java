@@ -25,7 +25,7 @@ public class EmiAddItemUpgradeRecipe extends EmiCraftingRecipe {
     private static ResourceLocation makeId(IUpgradeableItem baseItem, Item upgrade) {
         var baseItemId = BuiltInRegistries.ITEM.getKey(baseItem.asItem());
         var upgradeId = BuiltInRegistries.ITEM.getKey(upgrade.asItem());
-        return AppEng.makeId("add_item_upgrade/" + baseItemId.getPath() + "/" + upgradeId.getPath());
+        return AppEng.makeId("/add_item_upgrade/" + baseItemId.getPath() + "/" + upgradeId.getPath());
     }
 
     private static EmiStack makeUpgraded(IUpgradeableItem baseItem, Item upgrade) {
