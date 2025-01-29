@@ -32,7 +32,6 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -64,16 +63,12 @@ import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import guideme.Guide;
+import guideme.GuidesCommon;
 import guideme.PageAnchor;
 import guideme.compiler.TagCompiler;
-import guideme.compiler.tags.RecipeTypeMappingSupplier;
-import guideme.internal.GuideMEClient;
-import guideme.internal.MutableGuide;
-import guideme.internal.command.GuidebookStructureCommands;
 import guideme.scene.ImplicitAnnotationStrategy;
 
 import appeng.api.parts.CableRenderMode;
@@ -85,9 +80,6 @@ import appeng.client.gui.me.common.PendingCraftingJobs;
 import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.guidebook.ConfigValueTagExtension;
-import appeng.client.guidebook.LytChargerRecipe;
-import appeng.client.guidebook.LytInscriberRecipe;
-import appeng.client.guidebook.LytTransformRecipe;
 import appeng.client.guidebook.PartAnnotationStrategy;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.crafting.CraftingMonitorRenderer;
@@ -128,7 +120,6 @@ import appeng.init.client.InitItemModelsProperties;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
 import appeng.items.storage.StorageCellTooltipComponent;
-import appeng.recipes.AERecipeTypes;
 import appeng.siteexport.AESiteExporter;
 import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.spatial.SpatialStorageSkyProperties;
@@ -160,7 +151,7 @@ public class AppEngClient extends AppEngBase {
             "key.ae2.part_placement_opposite", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM,
             InputConstants.KEY_LCONTROL, "key.ae2.category");
 
-    private final MutableGuide guide;
+    private final Guide guide;
 
     public AppEngClient(IEventBus modEventBus, ModContainer container) {
         super(modEventBus, container);
@@ -183,7 +174,7 @@ public class AppEngClient extends AppEngBase {
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
-        guide = createGuide(modEventBus);
+        guide = createGuide();
 
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, (ClientTickEvent.Pre e) -> {
             updateCableRenderMode();
@@ -232,25 +223,13 @@ public class AppEngClient extends AppEngBase {
         });
     }
 
-    private MutableGuide createGuide(IEventBus modEventBus) {
-        var guide = Guide.builder(AppEng.makeId("guide"))
+    private Guide createGuide() {
+
+        return Guide.builder(AppEng.makeId("guide"))
                 .folder("ae2guide")
                 .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
                 .extension(TagCompiler.EXTENSION_POINT, new ConfigValueTagExtension())
-                .extension(RecipeTypeMappingSupplier.EXTENSION_POINT, mappings -> {
-                    mappings.add(AERecipeTypes.INSCRIBER, LytInscriberRecipe::new);
-                    mappings.add(AERecipeTypes.CHARGER, LytChargerRecipe::new);
-                    mappings.add(AERecipeTypes.TRANSFORM, LytTransformRecipe::new);
-                })
                 .build();
-
-        NeoForge.EVENT_BUS.addListener((ServerStartingEvent evt) -> {
-            var server = evt.getServer();
-            var dispatcher = server.getCommands().getDispatcher();
-            new GuidebookStructureCommands("ae2guide", guide).register(dispatcher);
-        });
-
-        return guide;
     }
 
     private void tickPinnedKeys(Minecraft minecraft) {
@@ -510,16 +489,11 @@ public class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public void openGuideAtPreviousPage(ResourceLocation initialPage) {
-        GuideMEClient.openGuideAtPreviousPage(guide, initialPage);
-    }
-
-    @Override
     public void openGuideAtAnchor(PageAnchor anchor) {
-        GuideMEClient.openGuideAtAnchor(guide, anchor);
+        GuidesCommon.openGuide(Minecraft.getInstance().player, guide.getId(), anchor);
     }
 
-    public MutableGuide getGuide() {
+    public Guide getGuide() {
         return guide;
     }
 }

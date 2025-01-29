@@ -68,11 +68,9 @@ dependencyResolutionManagement {
                 includeGroup 'mezz.jei'
             }
         }
-        maven {
-            name = 'modmaven'
-            url = 'https://modmaven.dev/'
+        mavenLocal() {
             content {
-                includeGroup 'appeng'
+                includeModule('org.appliedenergistics', 'guideme')
             }
         }
         mavenCentral()

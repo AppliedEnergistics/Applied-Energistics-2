@@ -100,12 +100,6 @@ public interface AppEng {
     void registerHotkey(String id);
 
     /**
-     * Opens the guidebook (if this is a client) on the last opened page, or the given initial page.
-     */
-    default void openGuideAtPreviousPage(ResourceLocation initialPage) {
-    }
-
-    /**
      * Opens the guidebook (if this is a client) on the last opened page, or the given initial page, if no page has ever
      * been opened yet.
      */

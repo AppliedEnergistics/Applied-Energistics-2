@@ -57,6 +57,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import guideme.GuidesCommon;
 import guideme.PageAnchor;
 import guideme.color.SymbolicColor;
 import guideme.document.DefaultStyles;
@@ -90,6 +91,7 @@ import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.core.network.serverbound.SwapSlotsPacket;
 import appeng.helpers.InventoryAction;
+import appeng.items.tools.GuideItem;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
@@ -1040,7 +1042,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     protected void openHelp() {
         var topic = getHelpTopic();
         if (topic != null) {
-            AppEng.instance().openGuideAtAnchor(topic);
+            GuidesCommon.openGuide(getPlayer(), GuideItem.GUIDE_ID, topic);
         } else {
             LOG.warn("No topic assigned to screen {}, but button was clicked", this);
         }

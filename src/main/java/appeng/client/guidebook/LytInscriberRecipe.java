@@ -7,7 +7,6 @@ import guideme.document.LytRect;
 import guideme.document.block.LytSlot;
 import guideme.document.block.recipes.LytRecipeBox;
 import guideme.layout.LayoutContext;
-import guideme.render.GuiAssets;
 import guideme.render.RenderContext;
 
 import appeng.recipes.handlers.InscriberRecipe;
@@ -49,7 +48,7 @@ public class LytInscriberRecipe extends LytRecipeBox {
         context.renderPanel(bounds);
 
         context.fillIcon(new LytRect(
-                bounds.x() + 23, bounds.y() + 12, 46, 50), GuiAssets.ARROW);
+                bounds.x() + 23, bounds.y() + 12, 46, 50), AE2GuideAssets.INSCRIBER_ARROWS);
 
         super.render(context);
     }
