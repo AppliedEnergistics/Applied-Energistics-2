@@ -69,7 +69,6 @@ import guideme.Guide;
 import guideme.GuidesCommon;
 import guideme.PageAnchor;
 import guideme.compiler.TagCompiler;
-import guideme.compiler.tags.RecipeTypeMappingSupplier;
 import guideme.scene.ImplicitAnnotationStrategy;
 
 import appeng.api.parts.CableRenderMode;
@@ -81,9 +80,6 @@ import appeng.client.gui.me.common.PendingCraftingJobs;
 import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.guidebook.ConfigValueTagExtension;
-import appeng.client.guidebook.LytChargerRecipe;
-import appeng.client.guidebook.LytInscriberRecipe;
-import appeng.client.guidebook.LytTransformRecipe;
 import appeng.client.guidebook.PartAnnotationStrategy;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.crafting.CraftingMonitorRenderer;
@@ -124,7 +120,6 @@ import appeng.init.client.InitItemModelsProperties;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
 import appeng.items.storage.StorageCellTooltipComponent;
-import appeng.recipes.AERecipeTypes;
 import appeng.siteexport.AESiteExporter;
 import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.spatial.SpatialStorageSkyProperties;
@@ -179,7 +174,7 @@ public class AppEngClient extends AppEngBase {
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
-        guide = createGuide(modEventBus);
+        guide = createGuide();
 
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, (ClientTickEvent.Pre e) -> {
             updateCableRenderMode();
@@ -228,19 +223,13 @@ public class AppEngClient extends AppEngBase {
         });
     }
 
-    private Guide createGuide(IEventBus modEventBus) {
-        var guide = Guide.builder(AppEng.makeId("guide"))
+    private Guide createGuide() {
+
+        return Guide.builder(AppEng.makeId("guide"))
                 .folder("ae2guide")
                 .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
                 .extension(TagCompiler.EXTENSION_POINT, new ConfigValueTagExtension())
-                .extension(RecipeTypeMappingSupplier.EXTENSION_POINT, mappings -> {
-                    mappings.add(AERecipeTypes.INSCRIBER, LytInscriberRecipe::new);
-                    mappings.add(AERecipeTypes.CHARGER, LytChargerRecipe::new);
-                    mappings.add(AERecipeTypes.TRANSFORM, LytTransformRecipe::new);
-                })
                 .build();
-
-        return guide;
     }
 
     private void tickPinnedKeys(Minecraft minecraft) {

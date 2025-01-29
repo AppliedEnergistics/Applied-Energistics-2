@@ -68,6 +68,11 @@ dependencyResolutionManagement {
                 includeGroup 'mezz.jei'
             }
         }
+        mavenLocal() {
+            content {
+                includeModule('org.appliedenergistics', 'guideme')
+            }
+        }
         mavenCentral()
     }
 }
