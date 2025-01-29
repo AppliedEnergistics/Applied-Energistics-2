@@ -17,11 +17,10 @@
  */
 
 plugins {
-    id "net.neoforged.moddev"
-    id "maven-publish"
-    id "com.diffplug.spotless"
-    id 'com.gradleup.shadow'
-    id "de.undercouch.download"
+    id 'net.neoforged.moddev'
+    id 'maven-publish'
+    id 'signing'
+    id 'com.diffplug.spotless'
 }
 
 apply plugin: ProjectDefaultsPlugin
@@ -43,9 +42,6 @@ sourceSets {
 
 configurations {
     localRuntimeOnly
-    shaded {
-        transitive = false
-    }
     buildtoolsImplementation.extendsFrom(compileClasspath)
     // Dependencies only used for the guide export, but not shipped
     guideExportOnly
@@ -153,13 +149,6 @@ dependencies {
     buildtoolsImplementation 'com.google.code.gson:gson:2.8.9'
 }
 
-/**
- * Configures properties common to all run configurations
- */
-Map<String, String> commonSystemProperties = [
-        'appeng.tests'               : 'true',
-]
-
 neoForge {
     mods {
         ae2 {
@@ -170,8 +159,8 @@ neoForge {
     runs {
         configureEach {
             gameDirectory = project.file('run')
-            systemProperties = commonSystemProperties
-            // property "mixin.debug.export", "true"
+            systemProperty('appeng.tests', 'true')
+            // systemProperty('mixin.debug.export', 'true')
             logLevel = org.slf4j.event.Level.INFO
             systemProperty('guideme.ae2.guide.sources', file('guidebook').absolutePath)
         }
@@ -221,7 +210,6 @@ neoForge {
     }
 }
 
-configurations.additionalRuntimeClasspath.extendsFrom configurations.shaded
 configurations.additionalRuntimeClasspath.extendsFrom configurations.guideExportOnly
 
 //////////////
@@ -250,28 +238,6 @@ processResources {
     }
 }
 
-jar {
-    finalizedBy shadowJar
-    archiveClassifier = "plain"
-}
-
-shadowJar {
-    from sourceSets.main.output.classesDirs
-    from sourceSets.main.output.resourcesDir
-
-    from('guidebook') {
-        into 'assets/ae2/ae2guide'
-    }
-
-    relocate "io.methvin", "appeng.shaded.methvin"
-    relocate "org.yaml.snakeyaml", "appeng.shaded.snakeyaml"
-
-    configurations = [project.configurations.shaded]
-    archiveClassifier = null
-}
-
-assemble.dependsOn shadowJar
-
 def publicApiIncludePatterns = {
     exclude "**/*Internal.*"
     exclude "**/*Internal\$*.*"
@@ -287,17 +253,6 @@ javadoc {
     options.charSet = 'UTF-8'
 }
 javadoc publicApiIncludePatterns
-
-tasks.register('javadocJar', Jar) {
-    dependsOn javadoc
-    archiveClassifier = "javadoc"
-    from javadoc.destinationDir
-}
-
-tasks.register('sourcesJar', Jar) {
-    archiveClassifier = "sources"
-    from sourceSets.main.allJava
-}
 
 tasks.register('apiJar', Jar) {
     archiveClassifier = "api"
@@ -320,10 +275,38 @@ publishing {
         maven(MavenPublication) {
             artifactId = "appliedenergistics2"
             version = project.version
+            pom {
+                name = "Applied Energistics 2"
+                description = "A Minecraft mod about Matter, Energy and using them to conquer the world..."
+                url = "https://appliedenergistics.org"
+                scm {
+                    connection = "scm:git:git://github.com/AppliedEnergistics/Applied-Energistics-2.git"
+                    developerConnection = "scm:git:ssh://github.com:AppliedEnergistics/Applied-Energistics-2.git"
+                    url = "https://github.com/AppliedEnergistics/Applied-Energistics-2/tree/main"
+                }
+                licenses {
+                    license {
+                        name = "LGPLv3, MIT, CC BY-NC-SA 3.0"
+                        url = "https://github.com/AppliedEnergistics/Applied-Energistics-2?tab=readme-ov-file#license"
+                    }
+                }
+                developers {
+                    developer {
+                        name = "Technici4n"
+                        email = "team@appliedenergistics.org"
+                        organization = "Applied Energistics"
+                        organizationUrl = "https://github.com/AppliedEnergistics/"
+                    }
+                    developer {
+                        name = "shartte"
+                        email = "team@appliedenergistics.org"
+                        organization = "Applied Energistics"
+                        organizationUrl = "https://github.com/AppliedEnergistics/"
+                    }
+                }
+            }
 
-            artifact shadowJar
-            artifact sourcesJar
-            artifact javadocJar
+            from(components.java)
             artifact apiJar
         }
     }
@@ -403,4 +386,16 @@ check.dependsOn tasks.register('validateResources', JavaExec) {
     workingDir "."
     args "guidebook"
     javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+}
+
+signing {
+    def signingKey = findProperty("signingKey")
+    def signingPassword = findProperty("signingPassword")
+    required = signingKey != null && signingPassword != null
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign publishing.publications.maven
+}
+
+afterEvaluate {
+    println('Version: ' + project.version)
 }

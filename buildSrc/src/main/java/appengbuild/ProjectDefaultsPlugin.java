@@ -11,16 +11,21 @@ import java.util.Collections;
 public class ProjectDefaultsPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
-        project.setGroup("appeng");
+        project.setGroup("org.appliedenergistics");
 
         var java = project.getExtensions().getByType(JavaPluginExtension.class);
+
+        // Enable javadoc and sources
+        java.withSourcesJar();
+        java.withJavadocJar();
+
         java.toolchain(spec -> {
             spec.getLanguageVersion().set(project.getProviders().gradleProperty("java_version").map(JavaLanguageVersion::of));
         });
 
         // ensure everything uses UTF-8 and not some random codepage chosen by Gradle
         project.getTasks().withType(JavaCompile.class, ProjectDefaultsPlugin::setupCompiler);
-        }
+    }
 
     private static void setupCompiler(JavaCompile task) {
         var options = task.getOptions();
