@@ -348,7 +348,14 @@ public class BasicCellInventory implements StorageCell {
 
         // Run regular insert logic and then apply void upgrade to the returned value.
         long inserted = innerInsert(what, amount, mode);
-        return this.hasVoidUpgrade ? amount : inserted;
+
+        // In the event that a void card is being used on a (full) unformatted cell, ensure it doesn't void any items
+        // that the cell isn't even storing and cannot store to begin with
+        if (!isPreformatted() && hasVoidUpgrade && !canHoldNewItem()) {
+            return getCellItems().containsKey(what) ? amount : inserted;
+        }
+
+        return hasVoidUpgrade ? amount : inserted;
     }
 
     // Inner insert for items that pass the filter.
