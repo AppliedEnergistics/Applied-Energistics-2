@@ -37,6 +37,9 @@ class CondenserMEStorage implements MEStorage {
     @Override
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         MEStorage.checkPreconditions(what, amount, mode, source);
+        if (!target.canAddOutput()) {
+            return 0;
+        }
         if (mode == Actionable.MODULATE) {
             this.target.addPower(amount / what.getAmountPerOperation());
         }
