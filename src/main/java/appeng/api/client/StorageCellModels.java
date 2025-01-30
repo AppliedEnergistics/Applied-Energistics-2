@@ -56,7 +56,7 @@ public final class StorageCellModels {
      * 
      * <p>
      * You are responsible for ensuring that the given model is actually loaded by the game. See
-     * {@link net.minecraftforge.client.model.ModelLoader#addSpecialModel}.
+     * {@link net.neoforged.neoforge.client.event.ModelEvent.RegisterAdditional}.
      * 
      * This method only maps an {@link Item} to a {@link ResourceLocation} which can be looked up from the
      * {@link ModelBakery}. No validation about missing models will be done.

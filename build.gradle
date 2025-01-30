@@ -238,29 +238,35 @@ processResources {
     }
 }
 
-def publicApiIncludePatterns = {
-    exclude "**/*Internal.*"
-    exclude "**/*Internal\$*.*"
-    include "appeng/api/**"
+tasks.named('jar', Jar) {
+    from('guidebook') {
+        into 'assets/ae2/ae2guide'
+    }
 }
 
-javadoc {
+static void publicApiIncludePatterns(PatternFilterable spec) {
+    spec.exclude "**/*Internal.*"
+    spec.exclude "**/*Internal\$*.*"
+    spec.include "appeng/api/**"
+}
+
+tasks.named('javadoc', Javadoc) {
     source = sourceSets.main.allJava
     classpath = sourceSets.main.compileClasspath + sourceSets.main.output
 
     options.addStringOption('Xdoclint:none', '-quiet')
     options.encoding = 'UTF-8'
     options.charSet = 'UTF-8'
+    publicApiIncludePatterns(it)
 }
-javadoc publicApiIncludePatterns
 
 tasks.register('apiJar', Jar) {
     archiveClassifier = "api"
     // api jar ist just a development aid and serves as both a binary and source jar simultaneously
     from sourceSets.main.output
     from sourceSets.main.allJava
+    publicApiIncludePatterns(it)
 }
-apiJar publicApiIncludePatterns
 
 artifacts {
     archives javadocJar
