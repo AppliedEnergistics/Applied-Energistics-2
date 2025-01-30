@@ -98,7 +98,7 @@ class EmiCondenserRecipe extends BasicEmiRecipe {
     }
 
     private static ResourceLocation getRecipeId(CondenserOutput type) {
-        return AppEng.makeId(type.name().toLowerCase(Locale.ROOT));
+        return AppEng.makeId("/" + type.name().toLowerCase(Locale.ROOT));
     }
 
     private List<Component> getTooltip(CondenserOutput type) {
