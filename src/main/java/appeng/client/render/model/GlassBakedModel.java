@@ -54,7 +54,7 @@ import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import appeng.decorative.solid.GlassState;
 import appeng.decorative.solid.QuartzGlassBlock;
 
-class GlassBakedModel implements IDynamicBakedModel {
+public class GlassBakedModel implements IDynamicBakedModel {
     private static final ChunkRenderTypeSet RENDER_TYPES = ChunkRenderTypeSet.of(RenderType.CUTOUT);
 
     // This unlisted property is used to determine the actual block that should be
@@ -178,16 +178,16 @@ class GlassBakedModel implements IDynamicBakedModel {
 
         int bitmask = 0;
 
-        if (!isGlassBlock(level, state, pos, face, up)) {
+        if (!isGlassBlock(level, state, pos, face, up, face)) {
             bitmask |= 1;
         }
-        if (!isGlassBlock(level, state, pos, face, right)) {
+        if (!isGlassBlock(level, state, pos, face, right, face)) {
             bitmask |= 2;
         }
-        if (!isGlassBlock(level, state, pos, face, down)) {
+        if (!isGlassBlock(level, state, pos, face, down, face)) {
             bitmask |= 4;
         }
-        if (!isGlassBlock(level, state, pos, face, left)) {
+        if (!isGlassBlock(level, state, pos, face, left, face)) {
             bitmask |= 8;
         }
         return bitmask;
@@ -275,8 +275,8 @@ class GlassBakedModel implements IDynamicBakedModel {
         }
         boolean[] adjacentGlassBlocks = new boolean[6];
         for (Direction facing : Direction.values()) {
-            adjacentGlassBlocks[facing.get3DDataValue()] = isGlassBlock(level, state, pos, facing.getOpposite(),
-                    facing);
+            adjacentGlassBlocks[facing.get3DDataValue()] = isGlassBlock(level, state, pos, facing,
+                    facing, facing.getOpposite());
         }
         return new GlassState(masks, adjacentGlassBlocks);
     }
@@ -284,13 +284,23 @@ class GlassBakedModel implements IDynamicBakedModel {
     /**
      * Checks if the given block is a glass block.
      *
-     * @param face   Face of the glass that we are currently checking for.
-     * @param adjDir Direction in which to check.
+     * @param queryingFace Face of the glass that is currently performing the check.
+     * @param adjFace      Face of the glass that we are currently checking for.
+     * @param adjDir       Direction in which to check.
      */
-    private static boolean isGlassBlock(BlockAndTintGetter level, BlockState state, BlockPos pos, Direction face,
-            Direction adjDir) {
+    private static boolean isGlassBlock(BlockAndTintGetter level, BlockState state, BlockPos pos,
+            Direction queryingFace, Direction adjDir, Direction adjFace) {
         var adjacentPos = pos.relative(adjDir);
-        return level.getBlockState(adjacentPos).getAppearance(level, adjacentPos, face, state, pos)
+        var adjacentState = level.getBlockState(adjacentPos);
+        // Checks that the adjacent block is indeed glass
+        if (!(adjacentState.getAppearance(level, adjacentPos, adjFace, state, pos)
+                .getBlock() instanceof QuartzGlassBlock)) {
+            return false;
+        }
+        // Checks that the current block is also glass, in other words that the adjacent block would connect to us.
+        // This ensures consistency between this block and the adjacent block deciding to connect or not.
+        // This is important for advanced use cases such as FramedBlocks.
+        return state.getAppearance(level, pos, queryingFace, adjacentState, adjacentPos)
                 .getBlock() instanceof QuartzGlassBlock;
     }
 
