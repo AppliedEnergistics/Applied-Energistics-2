@@ -1,16 +1,16 @@
 modLoader="javafml"
 loaderVersion="[1,)"
-issueTrackerURL="https://github.com/AppliedEnergistics/Applied-Energistics-2/issues"
-displayURL="https://github.com/AppliedEnergistics/Applied-Energistics-2"
 logoFile="logo.png"
-authors="TeamAppliedEnergistics"
 license="See GitHub repository for details"
+issueTrackerURL="https://github.com/AppliedEnergistics/Applied-Energistics-2/issues"
 
 [[mods]]
 modId="ae2"
-version="0.0.0"
+version="${version}"
 displayName="Applied Energistics 2"
-description="A Mod about Matter, Energy and using them to conquer the world.."
+description="A Mod about Matter, Energy and using them to conquer the world..."
+authors="Team AppliedEnergistics"
+displayURL="https://appliedenergistics.org"
 
 [[mixins]]
 config="ae2.mixins.json"
@@ -18,21 +18,21 @@ config="ae2.mixins.json"
 [[dependencies.ae2]]
     modId="neoforge"
     type="REQUIRED"
-    versionRange="${neoforge_version}"
+    versionRange="${neoforge_version_range}"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.ae2]]
     modId="minecraft"
     type="REQUIRED"
-    versionRange="${minecraft_version}"
+    versionRange="[${minecraft_version}]"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.ae2]]
     modId="guideme"
     type="REQUIRED"
-    versionRange="${guideme_version}"
+    versionRange="[${guideme_version},)"
     side="BOTH"
 
 [[dependencies.ae2]]
@@ -44,14 +44,14 @@ config="ae2.mixins.json"
 [[dependencies.ae2]]
     modId="theoneprobe"
     type="OPTIONAL"
-    versionRange="${top_version}"
+    versionRange="${top_version_range}"
     ordering="AFTER"
     side="BOTH"
 
 [[dependencies.ae2]]
     modId="jade"
     type="OPTIONAL"
-    versionRange="${jade_version}"
+    versionRange="${jade_version_range}"
     ordering="AFTER"
     side="BOTH"
 

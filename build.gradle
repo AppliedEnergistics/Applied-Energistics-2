@@ -214,31 +214,32 @@ configurations.additionalRuntimeClasspath.extendsFrom configurations.guideExport
 
 //////////////
 // Artifacts
-Map<String, String> expansionVariables = [
-        "project_version": project.version,
-        'minecraft_version': project.minecraft_version_range,
-        'neoforge_version': project.neoforge_version_range,
-        'top_version': project.top_version_range,
-        'jade_version': project.jade_version_range,
-        'guideme_version': project.guideme_version,
-]
+final generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
+    group = 'build'
+    from('src/main/neoforge.mods.toml') {
+        rename '(.*)', 'META-INF/$1'
+    }
+    into 'build/generated/modMetadata'
 
-processResources {
-    exclude '.cache'
+    // Exposed project properties
+    Map<String, String> projectProperties = [
+            'version',
+            'minecraft_version',
+            'neoforge_version_range',
+            'top_version_range',
+            'jade_version_range',
+            'guideme_version'
+    ].collectEntries { [it, project[it]] }
+
     // Ensure the resources get re-evaluate when the version changes
-    for (var entry : expansionVariables.entrySet()) {
-        inputs.property(entry.key, entry.value)
-    }
-
-    filesMatching("META-INF/neoforge.mods.toml") {
-        expand expansionVariables
-        filter { line ->
-            line.replace('version="0.0.0"', "version=\"${expansionVariables['project_version']}\"")
-        }
-    }
+    inputs.properties projectProperties
+    expand projectProperties
 }
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
 
 tasks.named('jar', Jar) {
+    exclude '/.cache'
     from('guidebook') {
         into 'assets/ae2/ae2guide'
     }
