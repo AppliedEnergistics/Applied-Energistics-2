@@ -92,6 +92,7 @@ import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.MatterCannonFX;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.client.render.effects.VibrantFX;
+import appeng.client.render.model.GlassBakedModel;
 import appeng.client.render.overlay.OverlayManager;
 import appeng.client.render.tesr.ChargerBlockEntityRenderer;
 import appeng.client.render.tesr.ChestBlockEntityRenderer;
@@ -201,6 +202,7 @@ public class AppEngClient extends AppEngBase {
     private void enqueueImcMessages(InterModEnqueueEvent event) {
         // Our new light-mode UI doesn't play nice with darkmodeeverywhere
         InterModComms.sendTo("darkmodeeverywhere", "dme-shaderblacklist", () -> "appeng.");
+        InterModComms.sendTo("framedblocks", "add_ct_property", () -> GlassBakedModel.GLASS_STATE);
     }
 
     private void registerDimensionSpecialEffects(RegisterDimensionSpecialEffectsEvent event) {
