@@ -3,7 +3,7 @@
   "includes": ["../common/common.json"],
   "generatedBackground": {
     "width": 200,
-    "height": 216
+    "height": 225
   },
   "text": {
     "dialog_title": {
@@ -57,29 +57,29 @@
       "top": 124,
       "width": 75
     },
-    "searchTooltipsCheckbox": {
+    "reverseFilterFunctionCheckbox": {
       "left": 10,
       "top": 144,
       "width": 150
     },
     "rememberCheckbox": {
       "left": 10,
-      "top": 160,
+      "top": 169,
       "width": 150
     },
     "autoFocusCheckbox": {
       "left": 10,
-      "top": 176,
+      "top": 185,
       "width": 150
     },
     "syncWithExternalCheckbox": {
       "left": 10,
-      "top": 192,
+      "top": 201,
       "width": 150
     },
     "clearExternalCheckbox": {
       "left": 10,
-      "top": 160,
+      "top": 144,
       "width": 150
     }
   }
