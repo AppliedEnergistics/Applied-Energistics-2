@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
@@ -239,7 +240,7 @@ public class BasicCellInventory implements StorageCell {
 
     @Override
     public void getAvailableStacks(KeyCounter out) {
-        for (var entry : this.getCellItems().object2LongEntrySet()) {
+        for (var entry : Object2LongMaps.fastIterable(this.getCellItems())) {
             out.add(entry.getKey(), entry.getLongValue());
         }
     }
