@@ -29,6 +29,13 @@ description="A Mod about Matter, Energy and using them to conquer the world.."
     side="BOTH"
 
 [[dependencies.ae2]]
+    modId="guideme"
+    mandatory=true
+    versionRange="${guideme_version}"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.ae2]]
     modId="jei"
     mandatory=false
     versionRange="${jei_version}"

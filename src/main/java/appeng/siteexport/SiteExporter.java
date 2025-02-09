@@ -138,7 +138,8 @@ public final class SiteExporter implements ResourceExporter {
 
                     var guide = AppEngClient.instance().getGuide();
                     try {
-                        export(client, outputFolder, guide);
+                        new AESiteExporter(Minecraft.getInstance(), outputFolder, guide)
+                                .exportOnNextTickAndExit();
                     } catch (Exception e) {
                         e.printStackTrace();
                         System.exit(1);
@@ -169,8 +170,9 @@ public final class SiteExporter implements ResourceExporter {
         }
     }
 
-    private static void export(Minecraft client, Path outputFolder, Guide guide) throws Exception {
-        new SiteExporter(client, outputFolder, guide).export();
+    private static void export(Minecraft client, Path outputFolder, guideme.Guide guide) throws Exception {
+        new AESiteExporter(client, outputFolder, guide)
+                .exportOnNextTickAndExit();
     }
 
     @Override
