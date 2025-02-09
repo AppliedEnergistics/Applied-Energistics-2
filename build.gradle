@@ -291,7 +291,7 @@ Map<String, String> commonSystemProperties = [
         'appeng.version'             : project.version
 ]
 
-neoForge {
+legacyForge {
     version = "${minecraft_version}-${forge_version}"
 
     mods {
