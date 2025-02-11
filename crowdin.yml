@@ -1,0 +1,10 @@
+
+preserve_hierarchy: true
+base_path: guidebook
+
+files:
+  - source: "**/*.md"
+    translation: "%locale_with_underscore%/%original_path%"
+    ignore:
+      - "/**/%locale_with_underscore%/**/*"
+    type: mdx_v2

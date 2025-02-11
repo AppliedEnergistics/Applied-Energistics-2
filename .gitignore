@@ -9,7 +9,7 @@
 !build.gradle
 !settings.gradle
 !gradle.properties
-!.travis.yml
+!crowdin.yml
 
 # Scripts
 !/scripts
