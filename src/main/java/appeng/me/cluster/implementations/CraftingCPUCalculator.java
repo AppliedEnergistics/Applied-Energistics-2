@@ -65,11 +65,11 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
         for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
             final IAEMultiBlock<?> te = (IAEMultiBlock<?>) level.getBlockEntity(blockPos);
 
-            if (te == null || !te.isValid()) {
+            if (te == null || !te.isValid() || !(te instanceof  CraftingBlockEntity)) {
                 return false;
             }
 
-            if (!storage && te instanceof CraftingBlockEntity) {
+            if (!storage) {
                 storage = ((CraftingBlockEntity) te).getStorageBytes() > 0;
             }
         }
