@@ -94,6 +94,7 @@ jobs:
     name: Publish Snapshot to Maven Central
     needs: build
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Download build artifact
         uses: actions/download-artifact@v4
