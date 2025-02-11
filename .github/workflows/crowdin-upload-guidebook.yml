@@ -23,6 +23,4 @@ jobs:
           upload_language: en_us
           upload_sources_args: '--delete-obsolete'
         env:
-          CROWDIN_PROJECT_ID: 1
-          CROWDIN_BASE_URL: https://appliedenergistics.crowdin.com
-          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_TOKEN }}
+          CROWDIN_TOKEN: ${{ secrets.CROWDIN_TOKEN }}
