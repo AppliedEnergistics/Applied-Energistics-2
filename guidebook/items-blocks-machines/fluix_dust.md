@@ -6,7 +6,6 @@ navigation:
   position: 010
 categories:
 - misc ingredients blocks
-categories:
 - network infrastructure
 item_ids:
 - ae2:fluix_dust
