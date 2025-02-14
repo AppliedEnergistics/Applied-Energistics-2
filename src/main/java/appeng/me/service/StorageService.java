@@ -112,8 +112,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
             }
         }
         // Post watcher update for removed stacks
-        for (var entry : cachedAvailableAmounts.object2LongEntrySet()) {
-            var what = entry.getKey();
+        for (var what : cachedAvailableAmounts.keySet()) {
             var newAmount = cachedAvailableStacks.get(what);
             if (newAmount == 0) {
                 postWatcherUpdate(what, newAmount);
