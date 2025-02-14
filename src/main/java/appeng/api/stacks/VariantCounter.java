@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongSortedMap;
 
 import appeng.api.config.FuzzyMode;
@@ -92,7 +93,7 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     @Override
     public Iterator<Object2LongMap.Entry<AEKey>> iterator() {
         if (!dropZeros) {
-            return getRecords().object2LongEntrySet().iterator();
+            return Object2LongMaps.fastIterator(getRecords());
         }
 
         return new NonDefaultIterator();
@@ -141,7 +142,7 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
         private Object2LongMap.Entry<AEKey> next;
 
         public NonDefaultIterator() {
-            this.parent = getRecords().object2LongEntrySet().iterator();
+            this.parent = Object2LongMaps.fastIterator(getRecords());
             this.next = seekNext();
         }
 
