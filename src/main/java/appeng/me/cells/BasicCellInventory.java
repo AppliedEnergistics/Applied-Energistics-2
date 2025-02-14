@@ -22,13 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 
 import appeng.api.config.Actionable;
