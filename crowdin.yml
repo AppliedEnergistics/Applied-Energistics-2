@@ -1,0 +1,12 @@
+
+preserve_hierarchy: true
+project_id: "1"
+base_url: https://appliedenergistics2.crowdin.com/api/v2
+api_token_env: CROWDIN_TOKEN
+
+files:
+  - source: "guidebook/**/*.md"
+    translation: "guidebook/%locale_with_underscore%/%original_path%"
+    ignore:
+      - "**/%locale_with_underscore%/**/*"
+    type: mdx_v2

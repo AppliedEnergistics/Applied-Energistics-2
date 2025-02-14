@@ -396,11 +396,12 @@ check.dependsOn tasks.register('validateResources', JavaExec) {
 }
 
 signing {
-    def signingKey = findProperty("signingKey")
-    def signingPassword = findProperty("signingPassword")
-    required = signingKey != null && signingPassword != null
-    useInMemoryPgpKeys(signingKey, signingPassword)
-    sign publishing.publications.maven
+    String signingKey = findProperty("signingKey")
+    String signingPassword = findProperty("signingPassword")
+    if (signingKey && signingPassword) {
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign publishing.publications.maven
+    }
 }
 
 afterEvaluate {

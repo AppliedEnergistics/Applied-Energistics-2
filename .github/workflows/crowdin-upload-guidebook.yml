@@ -1,0 +1,26 @@
+name: 'Upload English Guidebook to Crowdin'
+
+on:
+  # This will run the workflow every day at 01:00 UTC
+  # This will run against master and publish the development version of the guide
+  schedule:
+    - cron: '0 1 * * *'
+  # Allow running it manually against any ref
+  workflow_dispatch: { }
+
+jobs:
+  upload-guide:
+    name: Upload Guide to Crowdin
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: crowdin action
+        uses: crowdin/github-action@v2
+        with:
+          upload_sources: true
+          upload_language: en_us
+          upload_sources_args: '--delete-obsolete'
+        env:
+          CROWDIN_TOKEN: ${{ secrets.CROWDIN_TOKEN }}

@@ -19,14 +19,12 @@
 package appeng.client.gui.me.common;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 
 import org.joml.Matrix4f;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 
 import appeng.core.AEConfig;
 
@@ -47,7 +45,7 @@ public class StackSizeRenderer {
         final int X = (int) ((xPos + offset + 16.0f + 2.0f - fontRenderer.width(text) * scaleFactor)
                 * inverseScaleFactor);
         final int Y = (int) ((yPos + offset + 16.0f - 5.0f * scaleFactor) * inverseScaleFactor);
-        BufferSource buffer = MultiBufferSource.immediate(new ByteBufferBuilder(512));
+        var buffer = Minecraft.getInstance().renderBuffers().bufferSource();
         fontRenderer.drawInBatch(text, X + 1, Y + 1, 0x413f54, false, matrix, buffer, Font.DisplayMode.NORMAL, 0,
                 15728880);
         fontRenderer.drawInBatch(text, X, Y, 0xffffff, false, matrix, buffer, Font.DisplayMode.NORMAL, 0, 15728880);
