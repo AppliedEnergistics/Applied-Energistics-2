@@ -6,7 +6,26 @@ api_token_env: CROWDIN_TOKEN
 
 files:
   - source: "guidebook/**/*.md"
-    translation: "guidebook/%locale_with_underscore%/%original_path%"
+    translation: "%original_path%/_%two_letters_code%/%original_file_name%"
     ignore:
-      - "**/%locale_with_underscore%/**/*"
+      - "**/_%two_letters_code%/**/*"
+      - "master/**"
     type: mdx_v2
+    translation_replace:
+      "/_fr/": "/fr_fr/"
+      "/_hu/": "/hu_hu/"
+      "/_es/": "/es_es/"
+      "/_cs/": "/cs_cz/"
+      "/_ja/": "/ja_jp/"
+      "/_it/": "/it_it/"
+      "/_ko/": "/ko_kr/"
+      "/_sv/": "/sv_se/"
+      "/_pt-BR/": "/pt_br/"
+      "/_en-GB/": "/en_gb/"
+      "/_ro/": "/ro_ro/"
+      "/_ru/": "/ru_ru/"
+      "/_de/": "/de_de/"
+      "/_tr/": "/tr_tr/"
+      "/_uk/": "/uk_ua/"
+      "/_zh-CN/": "/zh_cn/"
+      "/_zh-TW/": "/zh_tw/"
