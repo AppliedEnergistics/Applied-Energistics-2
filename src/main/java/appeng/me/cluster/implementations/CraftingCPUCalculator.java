@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.blockentity.crafting.CraftingBlockEntity;
-import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 
 public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, CraftingCPUCluster> {
@@ -63,15 +62,11 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
         boolean storage = false;
 
         for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
-            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) level.getBlockEntity(blockPos);
-
-            if (te == null || !te.isValid()) {
+            if (!(level.getBlockEntity(blockPos) instanceof CraftingBlockEntity craftingBlockEntity)) {
                 return false;
             }
 
-            if (!storage && te instanceof CraftingBlockEntity) {
-                storage = ((CraftingBlockEntity) te).getStorageBytes() > 0;
-            }
+            storage |= craftingBlockEntity.getStorageBytes() > 0;
         }
 
         return storage;
