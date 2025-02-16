@@ -1,3 +1,5 @@
+package appengbuild.crowdin;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,18 +17,17 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.OptionalLong;
 import java.util.TreeMap;
 
 /**
- * Manages our translations on https://crwd.in/ae-2
+ * Manages our translations on https://appliedenergistics2.crowdin.com/
  * - Uploads the en_us.json as the source file for making translations
  * - Downloads translated strings and rebuilds them into language files
  */
-public class Crowdin {
+public class Crowdin implements AutoCloseable {
 
     /**
      * Key is the lang-code in Minecraft, Value is the lang-code in Crowdin.
@@ -43,7 +44,6 @@ public class Crowdin {
         LANG_MAPPING.put("ko_kr", "ko");
         LANG_MAPPING.put("sv_se", "sv");
         LANG_MAPPING.put("pt_br", "pt-BR");
-        LANG_MAPPING.put("en_gb", "en-GB");
         LANG_MAPPING.put("ro_ro", "ro");
         LANG_MAPPING.put("ru_ru", "ru");
         LANG_MAPPING.put("de_de", "de");
@@ -52,18 +52,6 @@ public class Crowdin {
         LANG_MAPPING.put("zh_cn", "zh-CN");
         LANG_MAPPING.put("zh_tw", "zh-TW");
     }
-
-    private static final String CROWDIN_BASE_URL = "https://appliedenergistics2.crowdin.com/api/v2";
-
-    /**
-     * Folder where en_us.json is
-     */
-    private static final String SOURCE_FOLDER = "src/generated/resources/assets/ae2/lang";
-
-    /**
-     * Folder where the translated JSON files are
-     */
-    private static final String DESTINATION_FOLDER = "src/main/resources/assets/ae2/lang";
 
     /**
      * We use a fake translations.csv to store our translations on Crowdin.
@@ -89,30 +77,7 @@ public class Crowdin {
         this.token = token;
     }
 
-    public static void main(String[] args) throws Exception {
-        String token = System.getenv("CROWDIN_TOKEN");
-        if (token == null) {
-            System.err.println("Missing CROWDIN_TOKEN environment variable");
-            System.exit(-1);
-        }
-
-        String branch = System.getenv("GIT_BRANCH");
-        if (branch == null) {
-            System.err.println("Missing GIT_BRANCH environment variable");
-            System.exit(-1);
-        }
-
-        var crowdin = new Crowdin(CROWDIN_BASE_URL, token);
-        if (args.length < 1 || args[0].equals("upload_source")) {
-            crowdin.uploadSourceFile(branch, Paths.get(SOURCE_FOLDER));
-        } else if (args[0].equals("upload_translations")) {
-            crowdin.uploadTranslations(branch, Paths.get(DESTINATION_FOLDER));
-        } else if (args[0].equals("update_translations")) {
-            crowdin.downloadTranslations(branch, Paths.get(DESTINATION_FOLDER));
-        }
-    }
-
-    private void uploadSourceFile(String branch, Path folder) throws Exception {
+    public void uploadSourceFile(String branch, Path folder) throws Exception {
         var storageId = createAndUploadCsvFile(createCsvFile(folder, "en_us"), "en_us");
 
         addCsvSourceFile(branch, storageId);
@@ -121,7 +86,7 @@ public class Crowdin {
     /**
      * Uploads all existing translations for a branch. Should be a one-time task.
      */
-    private void uploadTranslations(String branch, Path folder) throws Exception {
+    public void uploadTranslations(String branch, Path folder) throws Exception {
         // Get the file id of the source translation.csv we'll upload the translations for
         var branchId = getBranchId(branch).orElseThrow(() -> new RuntimeException("Branch " + branch + " does not exist."));
         var fileId = getFileId(branchId, TRANSLATIONS_CSV).orElseThrow(() -> new RuntimeException("translation.csv does not exist in " + branch));
@@ -146,7 +111,7 @@ public class Crowdin {
         System.out.println(response.body());
     }
 
-    private void downloadTranslations(String branch, Path folder) throws Exception {
+    public void downloadTranslations(String branch, Path folder) throws Exception {
         var branchId = getBranchId(branch).orElseThrow(() -> new RuntimeException("Couldn't find branch " + branch));
         var fileId = getFileId(branchId, TRANSLATIONS_CSV).orElseThrow(() -> new RuntimeException("Couldn't find file " + TRANSLATIONS_CSV + " on branch" + branch));
 
@@ -389,4 +354,8 @@ public class Crowdin {
         );
     }
 
+    @Override
+    public void close() {
+        httpClient.close();
+    }
 }

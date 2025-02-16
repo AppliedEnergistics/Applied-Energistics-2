@@ -24,6 +24,7 @@ plugins {
 }
 
 apply plugin: ProjectDefaultsPlugin
+apply plugin: CrowdinPlugin
 
 base {
     archivesName = "appliedenergistics2"
@@ -108,9 +109,6 @@ dependencies {
     testImplementation("com.google.guava:guava-testlib:21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.12.0")
     testImplementation("net.neoforged:testframework:${project.neoforge_version}")
-
-    buildtoolsImplementation 'de.siegmar:fastcsv:2.1.0'
-    buildtoolsImplementation 'com.google.code.gson:gson:2.8.9'
 }
 
 ///////////////////
@@ -366,26 +364,6 @@ spotless {
 }
 
 ////////////////
-// Crowdin
-tasks.register('uploadToCrowdin', JavaExec) {
-    classpath = sourceSets.buildtools.runtimeClasspath
-    mainClass = 'Crowdin'
-    args 'upload_source'
-    workingDir "."
-}
-tasks.register('uploadTranslations', JavaExec) {
-    classpath = sourceSets.buildtools.runtimeClasspath
-    mainClass = 'Crowdin'
-    args 'upload_translations'
-    workingDir "."
-}
-tasks.register('downloadFromCrowdin', JavaExec) {
-    classpath = sourceSets.buildtools.runtimeClasspath
-    mainClass = 'Crowdin'
-    args 'update_translations'
-    workingDir "."
-}
-
 check.dependsOn tasks.register('validateResources', JavaExec) {
     group = "verification"
     classpath = sourceSets.buildtools.runtimeClasspath
