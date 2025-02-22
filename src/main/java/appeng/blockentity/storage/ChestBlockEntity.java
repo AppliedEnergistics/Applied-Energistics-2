@@ -511,7 +511,9 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         if (cellHandler != null) {
             cellHandler.cellInventory.persist();
         }
-        this.level.blockEntityChanged(this.worldPosition);
+        if (level.hasChunkAt(this.worldPosition)) {
+            level.getChunkAt(this.worldPosition).setUnsaved(true);
+        }
     }
 
     public void openCellInventoryMenu(Player player) {

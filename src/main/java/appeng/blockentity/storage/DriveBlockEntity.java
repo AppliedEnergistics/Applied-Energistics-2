@@ -398,7 +398,9 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
      * will then be serialized to NBT.
      */
     private void onCellContentChanged() {
-        this.level.blockEntityChanged(this.worldPosition);
+        if (level.hasChunkAt(this.worldPosition)) {
+            level.getChunkAt(this.worldPosition).setUnsaved(true);
+        }
     }
 
     private static class CellValidInventoryFilter implements IAEItemFilter {
