@@ -114,7 +114,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
         } else {
             this.cpu = null;
             // Clear the crafting status
-            sendPacketToClient(new CraftingStatusPacket(CraftingStatus.EMPTY));
+            sendPacketToClient(new CraftingStatusPacket(containerId, CraftingStatus.EMPTY));
         }
     }
 
@@ -146,7 +146,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
                 CraftingStatus status = CraftingStatus.create(this.incrementalUpdateHelper, this.cpu.craftingLogic);
                 this.incrementalUpdateHelper.commitChanges();
 
-                sendPacketToClient(new CraftingStatusPacket(status));
+                sendPacketToClient(new CraftingStatusPacket(containerId, status));
             }
         }
 
