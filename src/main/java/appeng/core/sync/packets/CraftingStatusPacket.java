@@ -30,14 +30,22 @@ import appeng.core.sync.BasePacket;
 import appeng.menu.me.crafting.CraftingStatus;
 
 public class CraftingStatusPacket extends BasePacket {
+    private final int containerId;
     private final CraftingStatus status;
 
     public CraftingStatusPacket(FriendlyByteBuf buffer) {
+        this.containerId = buffer.readInt();
         this.status = CraftingStatus.read(buffer);
     }
 
+    @Deprecated(forRemoval = true)
     public CraftingStatusPacket(CraftingStatus status) {
+        this(-1, status);
+    }
+
+    public CraftingStatusPacket(int containerId, CraftingStatus status) {
         this.status = status;
+        this.containerId = containerId;
 
         var data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeInt(getPacketID());
@@ -47,6 +55,10 @@ public class CraftingStatusPacket extends BasePacket {
 
     @Override
     public void clientPacketData(Player player) {
+        if (containerId != -1 && (player.containerMenu == null || player.containerMenu.containerId != containerId)) {
+            return; // Packet received for an invalid container id, i.e. after closing it client-side
+        }
+
         Screen screen = Minecraft.getInstance().screen;
 
         if (screen instanceof CraftingCPUScreen<?> cpuScreen) {
