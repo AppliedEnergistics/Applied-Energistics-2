@@ -14,7 +14,7 @@ import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
 import appeng.menu.me.crafting.CraftingStatus;
 
-public record CraftingStatusPacket(CraftingStatus status) implements ClientboundPacket {
+public record CraftingStatusPacket(int containerId, CraftingStatus status) implements ClientboundPacket {
     public static final StreamCodec<RegistryFriendlyByteBuf, CraftingStatusPacket> STREAM_CODEC = StreamCodec.ofMember(
             CraftingStatusPacket::write,
             CraftingStatusPacket::decode);
@@ -27,16 +27,23 @@ public record CraftingStatusPacket(CraftingStatus status) implements Clientbound
     }
 
     public static CraftingStatusPacket decode(RegistryFriendlyByteBuf buffer) {
-        return new CraftingStatusPacket(CraftingStatus.read(buffer));
+        return new CraftingStatusPacket(
+                buffer.readInt(),
+                CraftingStatus.read(buffer));
     }
 
     public void write(RegistryFriendlyByteBuf data) {
+        data.writeInt(containerId);
         status.write(data);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void handleOnClient(Player player) {
+        if (player.containerMenu == null || player.containerMenu.containerId != containerId) {
+            return; // Packet received for an invalid container id, i.e. after closing it client-side
+        }
+
         Screen screen = Minecraft.getInstance().screen;
 
         if (screen instanceof CraftingCPUScreen<?> cpuScreen) {
