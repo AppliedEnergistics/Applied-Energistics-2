@@ -108,7 +108,7 @@ dependencies {
         assert versionSep != -1
         def artifactId = basename.substring(0, versionSep)
         def version = basename.substring(versionSep + 1)
-        runtimeOnly fg.deobf("extra-mods:$artifactId:$version")
+        modRuntimeOnly "extra-mods:$artifactId:$version"
     }
 
     if (project.runtime_tooltip_mod == "wthit") {
