@@ -32,11 +32,9 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.api.implementations.items.IFacadeItem;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
@@ -98,18 +96,10 @@ public class FacadeContainer implements IFacadeContainer {
             this.storage.removeFacade(side);
 
             var tag = c.get(NBT_KEY_NAMES[side.ordinal()]);
-            if (tag instanceof CompoundTag facadeTag) {
-                // first try to read tag as facade item for legacy compat
-                var is = ItemStack.parseOptional(registries, facadeTag);
-                if (!is.isEmpty() && is.getItem() instanceof IFacadeItem facadeItem) {
-                    this.storage.setFacade(side, facadeItem.createPartFromItemStack(is, side));
-                } else {
-                    var result = BlockState.CODEC.decode(NbtOps.INSTANCE, tag).result();
-                    if (result.isPresent()) {
-                        var blockState = result.get().getFirst();
-                        this.storage.setFacade(side, new FacadePart(blockState, side));
-                    }
-                }
+            var result = BlockState.CODEC.decode(NbtOps.INSTANCE, tag).result();
+            if (result.isPresent()) {
+                var blockState = result.get().getFirst();
+                this.storage.setFacade(side, new FacadePart(blockState, side));
             }
         }
     }
