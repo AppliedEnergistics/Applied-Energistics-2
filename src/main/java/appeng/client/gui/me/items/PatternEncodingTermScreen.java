@@ -123,8 +123,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
 
     @Override
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        if (this.minecraft.options.keyPickItem.matches(keyCode, scanCode)
-            && handleModifyAmount(getSlotUnderMouse())) {
+        if (this.minecraft.options.keyPickItem.matches(keyCode, scanCode) && handleModifyAmount(getSlotUnderMouse())) {
             return true;
         }
         return super.keyReleased(keyCode, scanCode, modifiers);
@@ -133,8 +132,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
     @Override
     public boolean mouseClicked(double xCoord, double yCoord, int btn) {
         // handler for middle mouse button crafting in survival mode
-        if (this.minecraft.options.keyPickItem.matchesMouse(btn)
-            && handleModifyAmount(getSlotUnderMouse())) {
+        if (this.minecraft.options.keyPickItem.matchesMouse(btn) && handleModifyAmount(getSlotUnderMouse())) {
             return true;
         }
 
