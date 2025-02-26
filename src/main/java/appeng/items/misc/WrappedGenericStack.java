@@ -21,6 +21,8 @@ package appeng.items.misc;
 import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
@@ -44,6 +46,8 @@ import appeng.items.AEBaseItem;
  * item.
  */
 public class WrappedGenericStack extends AEBaseItem {
+    private static final Logger LOG = LoggerFactory.getLogger(WrappedGenericStack.class);
+
     public static ItemStack wrap(GenericStack stack) {
         Objects.requireNonNull(stack, "stack");
         var item = AEItems.WRAPPED_GENERIC_STACK.asItem();
@@ -96,15 +100,22 @@ public class WrappedGenericStack extends AEBaseItem {
      */
     @Override
     public boolean overrideOtherStackedOnMe(ItemStack itemInSlot, ItemStack otherStack, Slot slot,
-            ClickAction clickAction, Player player, SlotAccess otherItemAccess) {
+            ClickAction clickAction, Player player, SlotAccess access) {
         if (player.containerMenu == null) {
             // We need the opened menu since we're ignoring slotAccess due to no helper being available for it in the
             // transfer API
             return true;
         }
 
-        // Allow picking up fluids items with a fluid container, this is a special case for fluids
+        // When trying to stack onto degenerate wrapped stacks, delete them
         var what = unwrapWhat(itemInSlot);
+        if (what == null && slot.getItem() == itemInSlot) {
+            LOG.error("Removing a broken wrapped generic stack from player {} slot {}", player, slot.slot);
+            slot.setByPlayer(ItemStack.EMPTY, itemInSlot);
+            return true;
+        }
+
+        // Allow picking up fluids items with a fluid container, this is a special case for fluids
         if (clickAction == ClickAction.PRIMARY) {
             var heldContainer = ContainerItemStrategies.findCarriedContextForKey(what, player, player.containerMenu);
             if (heldContainer != null) {
