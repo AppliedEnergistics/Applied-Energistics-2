@@ -123,11 +123,11 @@ if (ext.tag) {
 } else {
     // This essentially tries to implement delay expansion of the project version based on a value source to
     // still support configuration caching.
-    project.version = providers.gradleProperty("version").orElse("").flatMap(version -> {
+    project.version = providers.gradleProperty("version").orElse("").flatMap({ version ->
         if (!version.isBlank()) {
             return providers.provider { version }
         }
-        return providers.of(ProjectVersionSource.class, spec -> {
+        return providers.of(ProjectVersionSource.class, { spec ->
             spec.getParameters().getDefaultBranches().addAll("main", "neoforge/" + project.minecraft_version)
         });
     }).get()
