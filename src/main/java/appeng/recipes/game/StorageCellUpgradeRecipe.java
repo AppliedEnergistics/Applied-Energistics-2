@@ -1,5 +1,7 @@
 package appeng.recipes.game;
 
+import java.util.List;
+
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -10,24 +12,20 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
-
-import appeng.core.AppEng;
 
 /**
  * Allows swapping out the storage component of a cell without having to empty it first.
  */
 public class StorageCellUpgradeRecipe extends CustomRecipe {
-    public static final ResourceLocation SERIALIZER_ID = AppEng.makeId("storage_cell_upgrade");
-
     private final Item inputCell;
     private final Item inputComponent;
     private final Item resultCell;
@@ -77,11 +75,6 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients() {
-        return NonNullList.of(Ingredient.EMPTY, Ingredient.of(inputCell), Ingredient.of(inputComponent));
-    }
-
-    @Override
     public boolean matches(CraftingInput container, Level level) {
         var cellsFound = 0;
         var componentsFound = 0;
@@ -105,11 +98,6 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
         }
 
         return cellsFound == 1 && componentsFound == 1;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return new ItemStack(resultCell);
     }
 
     @Override
@@ -152,7 +140,7 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
                 // We replace the cell with the component since it is unstackable and forced to be in match
                 remainder.set(i, new ItemStack(resultComponent));
             } else {
-                remainder.set(i, stack.getCraftingRemainingItem());
+                remainder.set(i, stack.getCraftingRemainder());
             }
         }
 
@@ -160,13 +148,17 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width * height >= 2;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<StorageCellUpgradeRecipe> getSerializer() {
         return StorageCellUpgradeRecipeSerializer.INSTANCE;
     }
 
+    @Override
+    public List<RecipeDisplay> display() {
+        return List.of(
+                new StorageCellUpgradeDisplay(
+                        new SlotDisplay.ItemSlotDisplay(inputCell),
+                        new SlotDisplay.ItemSlotDisplay(inputComponent),
+                        new SlotDisplay.ItemSlotDisplay(resultCell),
+                        new SlotDisplay.ItemSlotDisplay(resultComponent)));
+    }
 }

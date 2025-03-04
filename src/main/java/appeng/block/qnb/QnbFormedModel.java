@@ -19,40 +19,34 @@
 package appeng.block.qnb;
 
 import java.util.Collection;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.context.ContextMap;
 
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
 
 public class QnbFormedModel implements BasicUnbakedModel {
 
-    private static final ResourceLocation MODEL_RING = AppEng.makeId("block/qnb/ring");
+    private static final ResourceLocation MODEL_RING = AppEng.makeId("block/quantum_ring");
 
-    @org.jetbrains.annotations.Nullable
     @Override
-    public BakedModel bake(ModelBaker modelBaker, Function<Material, TextureAtlasSprite> textureGetter,
-            ModelState modelState) {
-        BakedModel ringModel = modelBaker.bake(MODEL_RING, modelState);
-        return new QnbFormedBakedModel(ringModel, textureGetter);
+    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion,
+            boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
+        BakedModel ringModel = baker.bake(MODEL_RING, modelState);
+        return new QnbFormedBakedModel(ringModel, baker.sprites());
     }
 
     @Override
     public Collection<ResourceLocation> getDependencies() {
         return ImmutableSet.of(MODEL_RING);
-    }
-
-    @Override
-    public void resolveParents(Function<ResourceLocation, UnbakedModel> function) {
     }
 
 }

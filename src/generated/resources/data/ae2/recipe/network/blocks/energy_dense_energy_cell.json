@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:energy_cell"
-    },
-    "b": {
-      "item": "ae2:calculation_processor"
-    }
+    "a": "ae2:energy_cell",
+    "b": "ae2:calculation_processor"
   },
   "pattern": [
     "aaa",

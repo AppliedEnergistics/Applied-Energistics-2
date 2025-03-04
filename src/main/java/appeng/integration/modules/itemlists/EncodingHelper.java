@@ -13,7 +13,9 @@ import com.google.common.math.LongMath;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -104,7 +106,7 @@ public final class EncodingHelper {
             Predicate<ItemStack> visiblePredicate) {
         if (recipe != null && recipe.value().getType().equals(RecipeType.STONECUTTING)) {
             menu.setMode(EncodingMode.STONECUTTING);
-            menu.setStonecuttingRecipeId(recipe.id());
+            // TODO 1.21.4 menu.setStonecuttingRecipeId(recipe.id());
         } else if (recipe != null && recipe.value().getType().equals(RecipeType.SMITHING)) {
             menu.setMode(EncodingMode.SMITHING_TABLE);
         } else {
@@ -123,8 +125,8 @@ public final class EncodingHelper {
 
             // Find a good match for every ingredient
             for (int slot = 0; slot < ingredients3x3.size(); slot++) {
-                var ingredient = ingredients3x3.get(slot);
-                if (ingredient.isEmpty()) {
+                var ingredient = ingredients3x3.get(slot).orElse(null);
+                if (ingredient == null) {
                     continue; // Skip empty slots
                 }
 
@@ -139,12 +141,13 @@ public final class EncodingHelper {
                 // To avoid encoding hidden entries, we'll cycle through the ingredient and try to find a visible
                 // stack, otherwise we'll use the first entry.
                 var bestIngredient = bestNetworkIngredient.orElseGet(() -> {
-                    for (var stack : ingredient.getItems()) {
-                        if (visiblePredicate.test(stack)) {
-                            return stack;
-                        }
-                    }
-                    return ingredient.getItems()[0];
+                    // TODO 1.21.4 SHIT
+                    var ingredientStacks = ingredient.items()
+                            .map(Holder::value)
+                            .map(Item::getDefaultInstance);
+
+                    return ingredientStacks.filter(visiblePredicate).findFirst()
+                            .orElse(ingredientStacks.findFirst().orElse(ItemStack.EMPTY));
                 });
 
                 encodedInputs.set(slot, bestIngredient);

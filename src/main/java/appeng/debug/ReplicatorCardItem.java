@@ -29,8 +29,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -45,6 +43,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.spatial.ISpatialService;
 import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 
@@ -63,7 +62,7 @@ public class ReplicatorCardItem extends AEBaseItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player playerIn, InteractionHand handIn) {
+    public InteractionResult use(Level level, Player playerIn, InteractionHand handIn) {
         if (!level.isClientSide()) {
             var stack = playerIn.getItemInHand(handIn);
             CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> {
@@ -77,7 +76,7 @@ public class ReplicatorCardItem extends AEBaseItem {
             });
 
             var replications = getReplications(stack);
-            playerIn.sendSystemMessage(Component.literal(replications + 1 + "³ Replications"));
+            AppEng.instance().sendSystemMessage(playerIn, Component.literal(replications + 1 + "³ Replications"));
         }
 
         return super.use(level, playerIn, handIn);
@@ -88,7 +87,7 @@ public class ReplicatorCardItem extends AEBaseItem {
         Level level = context.getLevel();
         if (level.isClientSide()) {
             // Needed, otherwise client will trigger onItemRightClick also on server...
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         Player player = context.getPlayer();
@@ -220,11 +219,11 @@ public class ReplicatorCardItem extends AEBaseItem {
                 this.outputMsg(player, "No Source Defined");
             }
         }
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
-    private void outputMsg(Entity player, String string) {
-        player.sendSystemMessage(Component.literal(string));
+    private void outputMsg(Player player, String string) {
+        AppEng.instance().sendSystemMessage(player, Component.literal(string));
     }
 
     @Override

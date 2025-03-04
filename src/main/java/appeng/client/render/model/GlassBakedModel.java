@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import com.google.common.base.Strings;
@@ -33,10 +32,11 @@ import org.joml.Vector3f;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -73,6 +73,7 @@ public class GlassBakedModel implements IDynamicBakedModel {
 
     // Frame texture
     static final Material[] TEXTURES_FRAME = generateTexturesFrame();
+    private final ItemTransforms transforms;
 
     // Generates the required textures for the frame
     private static Material[] generateTexturesFrame() {
@@ -85,16 +86,17 @@ public class GlassBakedModel implements IDynamicBakedModel {
 
     private final TextureAtlasSprite[] frameTextures;
 
-    public GlassBakedModel(Function<Material, TextureAtlasSprite> bakedTextureGetter) {
-        this.glassTextures = new TextureAtlasSprite[] { bakedTextureGetter.apply(TEXTURE_A),
-                bakedTextureGetter.apply(TEXTURE_B), bakedTextureGetter.apply(TEXTURE_C),
-                bakedTextureGetter.apply(TEXTURE_D) };
+    public GlassBakedModel(ItemTransforms transforms, SpriteGetter bakedTextureGetter) {
+        this.transforms = transforms;
+        this.glassTextures = new TextureAtlasSprite[] { bakedTextureGetter.get(TEXTURE_A),
+                bakedTextureGetter.get(TEXTURE_B), bakedTextureGetter.get(TEXTURE_C),
+                bakedTextureGetter.get(TEXTURE_D) };
 
         // The first frame texture would be empty, so we simply leave it set to null
         // here
         this.frameTextures = new TextureAtlasSprite[16];
         for (int i = 0; i < TEXTURES_FRAME.length; i++) {
-            this.frameTextures[1 + i] = bakedTextureGetter.apply(TEXTURES_FRAME[i]);
+            this.frameTextures[1 + i] = bakedTextureGetter.get(TEXTURES_FRAME[i]);
         }
     }
 
@@ -201,8 +203,7 @@ public class GlassBakedModel implements IDynamicBakedModel {
 
     private BakedQuad createQuad(Direction side, Vector3f c1, Vector3f c2, Vector3f c3, Vector3f c4,
             TextureAtlasSprite sprite, float uOffset, float vOffset) {
-        Vec3 normal = new Vec3(side.getNormal().getX(), side.getNormal().getY(),
-                side.getNormal().getZ());
+        Vec3 normal = side.getUnitVec3();
 
         // Apply the u,v shift.
         // This mirrors the logic from OffsetIcon from 1.7
@@ -236,22 +237,12 @@ public class GlassBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public ItemOverrides getOverrides() {
-        return ItemOverrides.EMPTY;
-    }
-
-    @Override
     public boolean useAmbientOcclusion() {
         return false;
     }
 
     @Override
     public boolean isGui3d() {
-        return false;
-    }
-
-    @Override
-    public boolean isCustomRenderer() {
         return false;
     }
 
@@ -307,5 +298,10 @@ public class GlassBakedModel implements IDynamicBakedModel {
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
         return RENDER_TYPES;
+    }
+
+    @Override
+    public ItemTransforms getTransforms() {
+        return transforms;
     }
 }

@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Sheep;
@@ -122,16 +122,15 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player p, InteractionHand hand) {
+    public InteractionResult use(Level level, Player p, InteractionHand hand) {
         var stack = p.getItemInHand(hand);
 
         var direction = InteractionUtil.getPlayerRay(p, 255);
 
         if (fireCannon(level, stack, p, direction)) {
-            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                    stack);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
         } else {
-            return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+            return InteractionResult.FAIL;
         }
     }
 
@@ -166,7 +165,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
 
         extractAEPower(stack, ENERGY_PER_SHOT * shotPower, Actionable.MODULATE);
 
-        if (level.isClientSide()) {
+        if (!(level instanceof ServerLevel serverLevel)) {
             // Up until this point, we can simulate on the client, after this,
             // we need to run the server-side version
             return true;
@@ -194,7 +193,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                 return true;
             }
         } else {
-            standardAmmo(penetration, level, player, rayFrom, rayTo, direction, x, y, z);
+            standardAmmo(penetration, serverLevel, player, rayFrom, rayTo, direction, x, y, z);
         }
 
         return true;
@@ -286,7 +285,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         }
     }
 
-    private void standardAmmo(float penetration, Level level, Player p, Vec3 Vector3d,
+    private void standardAmmo(float penetration, ServerLevel level, Player p, Vec3 Vector3d,
             Vec3 Vector3d1, Vec3 direction, double d0, double d1, double d2) {
         boolean hasDestroyed = true;
         while (penetration > 0 && hasDestroyed) {
@@ -358,7 +357,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                     } else if (entityHit instanceof ItemEntity) {
                         hasDestroyed = true;
                         entityHit.discard();
-                    } else if (entityHit.hurt(dmgSrc, dmg)) {
+                    } else if (entityHit.hurtServer(level, dmgSrc, dmg)) {
                         hasDestroyed = !entityHit.isAlive();
                     }
                 } else if (pos instanceof BlockHitResult blockResult) {
@@ -459,7 +458,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
             return 0;
         }
 
-        var recipes = server.getRecipeManager().byType(AERecipeTypes.MATTER_CANNON_AMMO);
+        var recipes = server.getRecipeManager().recipeMap().byType(AERecipeTypes.MATTER_CANNON_AMMO);
         for (var holder : recipes) {
             var ammoRecipe = holder.value();
             if (what.matches(ammoRecipe.getAmmo())) {

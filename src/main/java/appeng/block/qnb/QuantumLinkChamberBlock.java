@@ -51,8 +51,8 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
                 new AABB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
     }
 
-    public QuantumLinkChamberBlock() {
-        super(glassProps());
+    public QuantumLinkChamberBlock(Properties p) {
+        super(glassProps(p));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
             if (!level.isClientSide()) {
                 MenuOpener.open(QNBMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

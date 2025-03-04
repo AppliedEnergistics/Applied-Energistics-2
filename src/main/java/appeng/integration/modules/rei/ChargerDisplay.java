@@ -34,6 +34,6 @@ public record ChargerDisplay(RecipeHolder<ChargerRecipe> holder) implements Disp
 
     @Override
     public Optional<ResourceLocation> getDisplayLocation() {
-        return Optional.of(holder.id());
+        return Optional.of(holder.id().location());
     }
 }

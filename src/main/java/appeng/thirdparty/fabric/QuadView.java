@@ -206,7 +206,7 @@ public interface QuadView {
         int[] vertexData = new int[VANILLA_QUAD_STRIDE];
         toVanilla(vertexData, 0);
         // TODO material inspection: set color index to -1 if the material disables it
-        return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite, hasShade(), hasAmbientOcclusion());
+        return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite, hasShade(), 0, hasAmbientOcclusion());
     }
 
     default BakedQuad toBlockBakedQuad() {

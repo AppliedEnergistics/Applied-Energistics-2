@@ -2,12 +2,12 @@
 navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: ME Chest
-  icon: chest
+  icon: me_chest
   position: 210
 categories:
 - devices
 item_ids:
-- ae2:chest
+- ae2:me_chest
 ---
 
 # The ME Chest
@@ -70,4 +70,4 @@ from network storage, higher priority storages will be filled and lower priority
 
 ## Recipe
 
-<RecipeFor id="chest" />
+<RecipeFor id="me_chest" />

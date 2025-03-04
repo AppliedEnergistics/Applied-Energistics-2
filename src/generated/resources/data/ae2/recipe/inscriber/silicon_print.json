@@ -1,12 +1,8 @@
 {
   "type": "ae2:inscriber",
   "ingredients": {
-    "middle": {
-      "tag": "c:silicon"
-    },
-    "top": {
-      "item": "ae2:silicon_press"
-    }
+    "middle": "#c:silicon",
+    "top": "ae2:silicon_press"
   },
   "mode": "inscribe",
   "result": {

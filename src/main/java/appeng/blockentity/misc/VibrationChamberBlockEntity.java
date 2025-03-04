@@ -282,7 +282,7 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
 
                 if (is.getCount() <= 1) {
                     // fuel was fully consumed. for items like lava-bucket, put the remainder in the slot
-                    this.inv.setItemDirect(0, fuelItem.getCraftingRemainingItem(is));
+                    this.inv.setItemDirect(0, fuelItem.getCraftingRemainder(is));
                 } else {
                     is.shrink(1);
                     this.inv.setItemDirect(0, is);
@@ -308,11 +308,11 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
         }
     }
 
-    public static int getBurnTime(ItemStack is) {
-        return is.getBurnTime(null);
+    public int getBurnTime(ItemStack is) {
+        return is.getBurnTime(null, level.fuelValues());
     }
 
-    public static boolean hasBurnTime(ItemStack is) {
+    public boolean hasBurnTime(ItemStack is) {
         return getBurnTime(is) > 0;
     }
 
@@ -367,7 +367,7 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
         return baseMaxEnergyRate + baseMaxEnergyRate * this.upgrades.getInstalledUpgrades(AEItems.SPEED_CARD) / 2.0f;
     }
 
-    private static class FuelSlotFilter implements IAEItemFilter {
+    private class FuelSlotFilter implements IAEItemFilter {
         @Override
         public boolean allowExtract(InternalInventory inv, int slot, int amount) {
             return !hasBurnTime(inv.getStackInSlot(slot));

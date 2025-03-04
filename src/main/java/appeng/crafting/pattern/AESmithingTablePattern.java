@@ -21,17 +21,22 @@ package appeng.crafting.pattern;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
@@ -60,16 +65,16 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
 
     private final AEItemKey definition;
     public final boolean canSubstitute;
-    private final ResourceLocation recipeId;
+    private final ResourceKey<Recipe<?>> recipeId;
     private final SmithingRecipe recipe;
     private final ItemStack output;
     private final AEItemKey template;
     private final AEItemKey base;
     private final AEItemKey addition;
-    private final IInput[] inputs;
+    private final @Nullable IInput[] inputs;
     private final List<GenericStack> outputs;
 
-    public AESmithingTablePattern(AEItemKey definition, Level level) {
+    public AESmithingTablePattern(AEItemKey definition, ServerLevel level) {
         this.definition = definition;
 
         var encodedPattern = definition.get(AEComponents.ENCODED_SMITHING_TABLE_PATTERN);
@@ -86,7 +91,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
 
         // Find recipe
         this.recipeId = encodedPattern.recipeId();
-        this.recipe = level.getRecipeManager().byKey(recipeId).map(holder -> (SmithingRecipe) holder.value())
+        this.recipe = level.recipeAccess().byKey(recipeId).map(holder -> (SmithingRecipe) holder.value())
                 .orElse(null);
         if (recipe == null) {
             throw new IllegalStateException("Smithing pattern references unknown recipe " + recipeId);
@@ -108,7 +113,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         }
 
         // Find ingredients
-        Ingredient templateIngredient, baseIngredient, additionIngredient;
+        Optional<Ingredient> templateIngredient, baseIngredient, additionIngredient;
         if (this.recipe instanceof SmithingTransformRecipe r) {
             templateIngredient = r.template;
             baseIngredient = r.base;
@@ -123,14 +128,14 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         }
 
         this.inputs = new IInput[] {
-                new Input(template, templateIngredient, TEMPLATE_CRAFTING_GRID_SLOT),
-                new Input(base, baseIngredient, BASE_CRAFTING_GRID_SLOT),
-                new Input(addition, additionIngredient, ADDITION_CRAFTING_GRID_SLOT)
+                templateIngredient.map(i -> new Input(template, i, TEMPLATE_CRAFTING_GRID_SLOT)).orElse(null),
+                baseIngredient.map(i -> new Input(base, i, BASE_CRAFTING_GRID_SLOT)).orElse(null),
+                additionIngredient.map(i -> new Input(addition, i, ADDITION_CRAFTING_GRID_SLOT)).orElse(null)
         };
         this.outputs = Collections.singletonList(GenericStack.fromItemStack(this.output));
     }
 
-    public ResourceLocation getRecipeId() {
+    public ResourceKey<Recipe<?>> getRecipeId() {
         return recipeId;
     }
 
@@ -319,7 +324,8 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
             if (!canSubstitute) {
                 this.possibleInputs = new GenericStack[] { new GenericStack(what, 1) };
             } else {
-                ItemStack[] matchingStacks = recipeIngredient.getItems();
+                ItemStack[] matchingStacks = recipeIngredient.items().map(Holder::value).map(Item::getDefaultInstance)
+                        .toArray(ItemStack[]::new); // TODO 1.21.4 can't stay like this
                 this.possibleInputs = new GenericStack[matchingStacks.length + 1];
                 // Ensure that the stack chosen by the user gets precedence.
                 this.possibleInputs[0] = new GenericStack(what, 1);

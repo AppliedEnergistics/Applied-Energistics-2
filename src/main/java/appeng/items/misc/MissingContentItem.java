@@ -56,7 +56,7 @@ public class MissingContentItem extends Item {
             AEKeyType keyType = null;
             try {
                 var keyTypeString = brokenDataTag.getString(AEKey.TYPE_FIELD);
-                keyType = AEKeyTypesInternal.getRegistry().get(ResourceLocation.parse(keyTypeString));
+                keyType = AEKeyTypesInternal.getRegistry().getValue(ResourceLocation.parse(keyTypeString));
                 if (keyType == null) {
                     missingId.append(" (").append(keyTypeString).append(")");
                 }

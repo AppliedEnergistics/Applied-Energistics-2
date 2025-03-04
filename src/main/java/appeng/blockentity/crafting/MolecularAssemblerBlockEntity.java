@@ -29,6 +29,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -123,7 +124,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
         if (hasCustomName()) {
             name = getCustomName();
         } else {
-            name = AEBlocks.MOLECULAR_ASSEMBLER.asItem().getDescription();
+            name = AEBlocks.MOLECULAR_ASSEMBLER.asItem().getName();
         }
         var icon = AEItemKey.of(AEBlocks.MOLECULAR_ASSEMBLER);
 
@@ -135,7 +136,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
         } else {
             tooltip = List.of(
                     GuiText.CompatibleUpgrade.text(
-                            Tooltips.of(AEItems.SPEED_CARD.asItem().getDescription()),
+                            Tooltips.of(AEItems.SPEED_CARD.asItem().getName()),
                             Tooltips.ofUnformattedNumber(accelerationCards)));
         }
 
@@ -265,6 +266,10 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
     }
 
     private void recalculatePlan() {
+        if (!(getLevel() instanceof ServerLevel level)) {
+            return;
+        }
+
         this.reboot = true;
 
         if (this.forcePlan) {
@@ -274,7 +279,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
             if (getLevel() != null && myPlan == null) {
                 if (!myPattern.isEmpty()) {
                     if (PatternDetailsHelper.decodePattern(myPattern,
-                            getLevel()) instanceof IMolecularAssemblerSupportedPattern supportedPlan) {
+                            level) instanceof IMolecularAssemblerSupportedPattern supportedPlan) {
                         this.myPlan = supportedPlan;
                     }
                 }
@@ -300,7 +305,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
             if (ItemStack.isSameItemSameComponents(is, this.myPattern)) {
                 reset = false;
             } else if (PatternDetailsHelper.decodePattern(is,
-                    getLevel()) instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
+                    level) instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
                 reset = false;
                 this.progress = 0;
                 this.myPattern = is;
@@ -590,16 +595,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
 
     @Nullable
     public IMolecularAssemblerSupportedPattern getCurrentPattern() {
-        if (isClientSide()) {
-            var patternItem = patternInv.getStackInSlot(0);
-            var pattern = PatternDetailsHelper.decodePattern(patternItem, level);
-            if (pattern instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
-                return supportedPattern;
-            }
-            return null;
-        } else {
-            return myPlan;
-        }
+        return myPlan;
     }
 
     private class CraftingGridFilter implements IAEItemFilter {

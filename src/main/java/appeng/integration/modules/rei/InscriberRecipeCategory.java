@@ -54,7 +54,7 @@ class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeDisplay>
 
     @Override
     public Component getTitle() {
-        return AEBlocks.INSCRIBER.asItem().getDescription();
+        return AEBlocks.INSCRIBER.asItem().getName();
     }
 
     @Override

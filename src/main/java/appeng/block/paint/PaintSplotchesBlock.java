@@ -19,10 +19,14 @@
 package appeng.block.paint;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -48,8 +52,8 @@ public class PaintSplotchesBlock extends AEBaseEntityBlock<PaintSplotchesBlockEn
      */
     public static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 2);
 
-    public PaintSplotchesBlock() {
-        super(defaultProps(MapColor.NONE, SoundType.WET_GRASS).noOcclusion().air().lightLevel(state -> {
+    public PaintSplotchesBlock(Properties p) {
+        super(defaultProps(p, MapColor.NONE, SoundType.WET_GRASS).noOcclusion().air().lightLevel(state -> {
             var lightLevel = state.getValue(LIGHT_LEVEL);
             return switch (lightLevel) {
                 default -> 0;
@@ -82,13 +86,15 @@ public class PaintSplotchesBlock extends AEBaseEntityBlock<PaintSplotchesBlockEn
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
-        final PaintSplotchesBlockEntity tp = this.getBlockEntity(level, pos);
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess,
+            BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        var tp = this.getBlockEntity(level, pos);
 
         if (tp != null) {
-            tp.neighborChanged();
+            return tp.updateShape();
         }
+
+        return state;
     }
 
     @Override

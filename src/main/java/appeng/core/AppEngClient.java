@@ -32,6 +32,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -47,18 +48,19 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.event.ModelEvent.RegisterGeometryLoaders;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
@@ -66,12 +68,11 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import guideme.Guide;
-import guideme.GuidesCommon;
-import guideme.PageAnchor;
 import guideme.compiler.TagCompiler;
 import guideme.scene.ImplicitAnnotationStrategy;
 
 import appeng.api.parts.CableRenderMode;
+import appeng.block.networking.CableBusBlockClientExtensions;
 import appeng.blockentity.networking.CableBusTESR;
 import appeng.client.EffectType;
 import appeng.client.Hotkeys;
@@ -92,14 +93,15 @@ import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.MatterCannonFX;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.client.render.effects.VibrantFX;
+import appeng.client.render.model.BuiltInModelLoader;
 import appeng.client.render.model.GlassBakedModel;
 import appeng.client.render.overlay.OverlayManager;
 import appeng.client.render.tesr.ChargerBlockEntityRenderer;
-import appeng.client.render.tesr.ChestBlockEntityRenderer;
 import appeng.client.render.tesr.CrankRenderer;
 import appeng.client.render.tesr.DriveLedBlockEntityRenderer;
 import appeng.client.render.tesr.InscriberTESR;
-import appeng.client.render.tesr.SkyChestTESR;
+import appeng.client.render.tesr.MEChestBlockEntityRenderer;
+import appeng.client.render.tesr.SkyStoneChestRenderer;
 import appeng.client.render.tesr.SkyStoneTankBlockEntityRenderer;
 import appeng.core.definitions.AEAttachmentTypes;
 import appeng.core.definitions.AEBlockEntities;
@@ -117,8 +119,10 @@ import appeng.init.client.InitBlockColors;
 import appeng.init.client.InitBuiltInModels;
 import appeng.init.client.InitEntityLayerDefinitions;
 import appeng.init.client.InitItemColors;
+import appeng.init.client.InitItemModels;
 import appeng.init.client.InitItemModelsProperties;
 import appeng.init.client.InitScreens;
+import appeng.init.client.InitSpecialRenderers;
 import appeng.init.client.InitStackRenderHandlers;
 import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.siteexport.AESiteExporter;
@@ -163,7 +167,7 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerClientTooltipComponents);
         modEventBus.addListener(this::registerParticleFactories);
         modEventBus.addListener(this::modelRegistryEventAdditionalModels);
-        modEventBus.addListener(this::modelRegistryEvent);
+        modEventBus.addListener(this::registerModelLoader);
         modEventBus.addListener(this::registerBlockColors);
         modEventBus.addListener(this::registerItemColors);
         modEventBus.addListener(this::registerEntityRenderers);
@@ -172,6 +176,11 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerDimensionSpecialEffects);
         modEventBus.addListener(InitScreens::init);
         modEventBus.addListener(this::enqueueImcMessages);
+        modEventBus.addListener(this::registerClientExtensions);
+        modEventBus.addListener(this::registerReloadListeners);
+        modEventBus.addListener(InitItemModelsProperties::init);
+        modEventBus.addListener(InitItemModels::init);
+        modEventBus.addListener(InitSpecialRenderers::init);
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
@@ -197,6 +206,14 @@ public class AppEngClient extends AppEngBase {
 
         container.registerExtensionPoint(IConfigScreenFactory.class,
                 (mc, parent) -> new ConfigurationScreen(container, parent));
+    }
+
+    private void registerModelLoader(ModelEvent.RegisterLoaders event) {
+        event.register(BuiltInModelLoader.ID, new BuiltInModelLoader());
+    }
+
+    private void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        event.registerBlock(new CableBusBlockClientExtensions(AEBlocks.CABLE_BUS.block()), AEBlocks.CABLE_BUS.block());
     }
 
     private void enqueueImcMessages(InterModEnqueueEvent event) {
@@ -274,7 +291,7 @@ public class AppEngClient extends AppEngBase {
         InitBlockColors.init(event.getBlockColors());
     }
 
-    public void registerItemColors(RegisterColorHandlersEvent.Item event) {
+    public void registerItemColors(RegisterColorHandlersEvent.ItemTintSources event) {
         InitItemColors.init(event);
     }
 
@@ -303,10 +320,10 @@ public class AppEngClient extends AppEngBase {
 
         event.registerBlockEntityRenderer(AEBlockEntities.CRANK.get(), CrankRenderer::new);
         event.registerBlockEntityRenderer(AEBlockEntities.INSCRIBER.get(), InscriberTESR::new);
-        event.registerBlockEntityRenderer(AEBlockEntities.SKY_CHEST.get(), SkyChestTESR::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.SKY_CHEST.get(), SkyStoneChestRenderer::new);
         event.registerBlockEntityRenderer(AEBlockEntities.CHARGER.get(), ChargerBlockEntityRenderer.FACTORY);
         event.registerBlockEntityRenderer(AEBlockEntities.DRIVE.get(), DriveLedBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(AEBlockEntities.ME_CHEST.get(), ChestBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.ME_CHEST.get(), MEChestBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(AEBlockEntities.CRAFTING_MONITOR.get(), CraftingMonitorRenderer::new);
         event.registerBlockEntityRenderer(AEBlockEntities.MOLECULAR_ASSEMBLER.get(), MolecularAssemblerRenderer::new);
         event.registerBlockEntityRenderer(AEBlockEntities.CABLE_BUS.get(), CableBusTESR::new);
@@ -319,11 +336,14 @@ public class AppEngClient extends AppEngBase {
         });
     }
 
+    private void registerReloadListeners(AddClientReloadListenersEvent event) {
+        event.addListener(AppEng.makeId("styles"), StyleManager.getReloadListener());
+    }
+
     /**
      * Called when other mods have finished initializing and the client is now available.
      */
     private void postClientSetup(Minecraft minecraft) {
-        StyleManager.initialize(minecraft.getResourceManager());
         InitStackRenderHandlers.init();
 
         // Only activate the site exporter when we're not running a release version, since it'll
@@ -341,10 +361,6 @@ public class AppEngClient extends AppEngBase {
 
     public void modelRegistryEventAdditionalModels(ModelEvent.RegisterAdditional event) {
         InitAdditionalModels.init(event);
-    }
-
-    public void modelRegistryEvent(RegisterGeometryLoaders event) {
-        InitItemModelsProperties.init();
     }
 
     private void wheelEvent(final InputEvent.MouseScrollingEvent me) {
@@ -490,12 +506,15 @@ public class AppEngClient extends AppEngBase {
         return this.getCableRenderModeForPlayer(mc.player);
     }
 
-    @Override
-    public void openGuideAtAnchor(PageAnchor anchor) {
-        GuidesCommon.openGuide(Minecraft.getInstance().player, guide.getId(), anchor);
-    }
-
     public Guide getGuide() {
         return guide;
+    }
+
+    @Override
+    public void sendSystemMessage(Player player, Component text) {
+        if (player == Minecraft.getInstance().player) {
+            Minecraft.getInstance().gui.getChat().addMessage(text);
+        }
+        super.sendSystemMessage(player, text);
     }
 }

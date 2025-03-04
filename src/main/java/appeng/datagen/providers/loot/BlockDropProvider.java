@@ -84,7 +84,10 @@ public class BlockDropProvider extends BlockLootSubProvider {
     protected Iterable<Block> getKnownBlocks() {
         return BuiltInRegistries.BLOCK
                 .stream()
-                .filter(entry -> entry.getLootTable().location().getNamespace().equals(AppEng.MOD_ID))
+                .filter(entry -> {
+                    var lootTable = entry.getLootTable().orElse(null);
+                    return lootTable != null && lootTable.location().getNamespace().equals(AppEng.MOD_ID);
+                })
                 .toList();
     }
 
@@ -128,7 +131,7 @@ public class BlockDropProvider extends BlockLootSubProvider {
                 .when(ExplosionCondition.survivesExplosion()))
                 .withPool(
                         LootPool.lootPool().when(doesNotHaveSilkTouch()).setRolls(ConstantValue.exactly(1.0F))
-                                .add(LootItem.lootTableItem(AEItems.TABLET)));
+                                .add(LootItem.lootTableItem(AEItems.GUIDE)));
     }
 
     protected final Holder<Enchantment> getEnchantment(ResourceKey<Enchantment> key) {

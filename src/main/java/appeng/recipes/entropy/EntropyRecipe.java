@@ -30,7 +30,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -39,8 +38,10 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -79,9 +80,6 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
     @Deprecated(forRemoval = true, since = "1.21.1")
     public static final ResourceLocation TYPE_ID = AppEng.makeId("entropy");
 
-    @Deprecated(forRemoval = true, since = "1.21.1")
-    public static final RecipeType<EntropyRecipe> TYPE = AERecipeTypes.ENTROPY;
-
     private final EntropyMode mode;
     private final Input input;
     private final Output output;
@@ -103,28 +101,23 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return false;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<EntropyRecipe> getSerializer() {
         return EntropyRecipeSerializer.INSTANCE;
     }
 
     @Override
-    public RecipeType<?> getType() {
-        return TYPE;
+    public RecipeType<EntropyRecipe> getType() {
+        return AERecipeTypes.ENTROPY;
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients() {
-        return NonNullList.create();
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     public EntropyMode getMode() {
@@ -258,7 +251,7 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
                 Output::block,
                 FluidOutput.STREAM_CODEC.apply(ByteBufCodecs::optional),
                 Output::fluid,
-                ItemStack.LIST_STREAM_CODEC,
+                ItemStack.OPTIONAL_LIST_STREAM_CODEC,
                 Output::drops,
                 Output::new);
     }

@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "ae2:illuminated_panel"
-    },
-    {
-      "tag": "c:chests/wooden"
-    },
-    {
-      "tag": "ae2:quartz_wrench"
-    },
-    {
-      "item": "ae2:calculation_processor"
-    }
+    "#ae2:illuminated_panel",
+    "#c:chests/wooden",
+    "#ae2:quartz_wrench",
+    "ae2:calculation_processor"
   ],
   "result": {
     "count": 1,

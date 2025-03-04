@@ -69,8 +69,8 @@ class InitScreensTest {
      * Tests that all of the styles referenced can be deserialized.
      */
     @Test
-    void testBrokenStyles() throws IOException {
-        StyleManager.initialize(MockResourceManager.create());
+    void testBrokenStyles() {
+        StyleManager.getReloadListener().onResourceManagerReload(MockResourceManager.create());
 
         List<String> errors = new ArrayList<>();
         for (String path : InitScreens.MENU_STYLES.values()) {
@@ -103,7 +103,7 @@ class InitScreensTest {
             Language.loadFromJson(in, i18n::put);
         }
 
-        StyleManager.initialize(MockResourceManager.create());
+        StyleManager.getReloadListener().onResourceManagerReload(MockResourceManager.create());
 
         Map<String, String> errors = new HashMap<>();
         for (String path : InitScreens.MENU_STYLES.values()) {

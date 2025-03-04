@@ -27,8 +27,7 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.TntMinecartRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.TntRenderState;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -36,8 +35,11 @@ import net.neoforged.api.distmarker.OnlyIn;
 import appeng.core.definitions.AEBlocks;
 
 @OnlyIn(Dist.CLIENT)
-public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
+public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity, TntRenderState> {
     private final BlockRenderDispatcher blockRenderer;
+
+    record State() {
+    }
 
     public TinyTNTPrimedRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -46,14 +48,25 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
     }
 
     @Override
-    public void render(TinyTNTPrimedEntity tnt, float entityYaw, float partialTicks, PoseStack mStack,
-            MultiBufferSource buffers, int packedLight) {
-        mStack.pushPose();
-        mStack.translate(0, 0.5F, 0);
+    public TntRenderState createRenderState() {
+        return new TntRenderState();
+    }
+
+    @Override
+    public void extractRenderState(TinyTNTPrimedEntity p_entity, TntRenderState reusedState, float partialTick) {
+        super.extractRenderState(p_entity, reusedState, partialTick);
+        reusedState.fuseRemainingInTicks = p_entity.getFuse();
+    }
+
+    @Override
+    public void render(TntRenderState renderState, PoseStack poseStack, MultiBufferSource bufferSource,
+            int packedLight) {
+        poseStack.pushPose();
+        poseStack.translate(0, 0.5F, 0);
         float f2;
 
-        if (tnt.getFuse() - partialTicks + 1.0F < 10.0F) {
-            f2 = 1.0F - (tnt.getFuse() - partialTicks + 1.0F) / 10.0F;
+        if (renderState.fuseRemainingInTicks - renderState.partialTick + 1.0F < 10.0F) {
+            f2 = 1.0F - (renderState.fuseRemainingInTicks - renderState.partialTick + 1.0F) / 10.0F;
 
             if (f2 < 0.0F) {
                 f2 = 0.0F;
@@ -66,22 +79,19 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
             f2 *= f2;
             f2 *= f2;
             final float f3 = 1.0F + f2 * 0.3F;
-            mStack.scale(f3, f3, f3);
+            poseStack.scale(f3, f3, f3);
         }
 
-        mStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -90.0F));
-        mStack.translate(-0.5D, -0.5D, 0.5D);
-        mStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 90.0F));
+        poseStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -90.0F));
+        poseStack.translate(-0.5D, -0.5D, 0.5D);
+        poseStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 90.0F));
         TntMinecartRenderer.renderWhiteSolidBlock(this.blockRenderer, AEBlocks.TINY_TNT.block().defaultBlockState(),
-                mStack, buffers,
+                poseStack, bufferSource,
                 packedLight,
-                tnt.getFuse() / 5 % 2 == 0);
-        mStack.popPose();
-        super.render(tnt, entityYaw, partialTicks, mStack, buffers, packedLight);
+                renderState.fuseRemainingInTicks / 5 % 2 == 0);
+        poseStack.popPose();
+
+        super.render(renderState, poseStack, bufferSource, packedLight);
     }
 
-    @Override
-    public ResourceLocation getTextureLocation(TinyTNTPrimedEntity entity) {
-        return TextureAtlas.LOCATION_BLOCKS;
-    }
 }

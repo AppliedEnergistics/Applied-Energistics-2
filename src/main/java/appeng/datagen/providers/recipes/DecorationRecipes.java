@@ -20,19 +20,14 @@ package appeng.datagen.providers.recipes;
 
 import static appeng.datagen.providers.recipes.RecipeCriteria.criterionName;
 
-import java.util.concurrent.CompletableFuture;
-
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
-import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.BlockDefinition;
@@ -63,19 +58,19 @@ public class DecorationRecipes extends AE2RecipeProvider {
             { AEBlocks.QUARTZ_PILLAR, AEBlocks.QUARTZ_PILLAR_SLAB, AEBlocks.QUARTZ_PILLAR_STAIRS,
                     AEBlocks.QUARTZ_PILLAR_WALL }, };
 
-    public DecorationRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    public DecorationRecipes(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
     }
 
     @Override
-    public void buildRecipes(RecipeOutput consumer) {
+    public void buildRecipes() {
         for (var block : blocks) {
-            slabRecipe(consumer, block[0], block[1]);
-            stairRecipe(consumer, block[0], block[2]);
-            wallRecipe(consumer, block[0], block[3]);
+            slabRecipe(block[0], block[1]);
+            stairRecipe(block[0], block[2]);
+            wallRecipe(block[0], block[3]);
         }
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.NOT_SO_MYSTERIOUS_CUBE, 4)
+        shaped(RecipeCategory.MISC, AEBlocks.NOT_SO_MYSTERIOUS_CUBE, 4)
                 .pattern("ScS")
                 .pattern("eCl")
                 .pattern("SsS")
@@ -86,59 +81,54 @@ public class DecorationRecipes extends AE2RecipeProvider {
                 .define('l', AEItems.LOGIC_PROCESSOR_PRESS)
                 .define('s', AEItems.SILICON_PRESS)
                 .unlockedBy("press", has(ConventionTags.INSCRIBER_PRESSES))
-                .save(consumer, AppEng.makeId("shaped/not_so_mysterious_cube"));
+                .save(output, makeId("shaped/not_so_mysterious_cube"));
     }
 
-    private void slabRecipe(RecipeOutput consumer, BlockDefinition<?> block, BlockDefinition<?> slabs) {
+    private void slabRecipe(BlockDefinition<?> block, BlockDefinition<?> slabs) {
         Block inputBlock = block.block();
         Block outputBlock = slabs.block();
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, outputBlock, 6).pattern("###").define('#', inputBlock)
+        shaped(RecipeCategory.MISC, outputBlock, 6).pattern("###").define('#', inputBlock)
                 .unlockedBy(criterionName(block), has(inputBlock))
-                .save(consumer, prefix("shaped/slabs/", block.id()));
+                .save(output, prefix("shaped/slabs/", block.id()));
 
         SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), RecipeCategory.MISC, outputBlock, 2)
                 .unlockedBy(criterionName(block), has(inputBlock))
-                .save(consumer, prefix("block_cutter/slabs/", slabs.id()));
+                .save(output, prefix("block_cutter/slabs/", slabs.id()));
     }
 
-    private void stairRecipe(RecipeOutput consumer, BlockDefinition<?> block, BlockDefinition<?> stairs) {
+    private void stairRecipe(BlockDefinition<?> block, BlockDefinition<?> stairs) {
         Block inputBlock = block.block();
         Block outputBlock = stairs.block();
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, outputBlock, 4).pattern("#  ").pattern("## ").pattern("###")
+        shaped(RecipeCategory.MISC, outputBlock, 4).pattern("#  ").pattern("## ").pattern("###")
                 .define('#', inputBlock).unlockedBy(criterionName(block), has(inputBlock))
-                .save(consumer, prefix("shaped/stairs/", block.id()));
+                .save(output, prefix("shaped/stairs/", block.id()));
 
         SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), RecipeCategory.MISC, outputBlock)
                 .unlockedBy(criterionName(block), has(inputBlock))
-                .save(consumer, prefix("block_cutter/stairs/", stairs.id()));
+                .save(output, prefix("block_cutter/stairs/", stairs.id()));
 
     }
 
-    private void wallRecipe(RecipeOutput consumer, BlockDefinition<?> block, BlockDefinition<?> wall) {
+    protected final String prefix(String prefix, ResourceLocation id) {
+        return ResourceLocation.fromNamespaceAndPath(
+                id.getNamespace(),
+                prefix + id.getPath()).toString();
+    }
+
+    private void wallRecipe(BlockDefinition<?> block, BlockDefinition<?> wall) {
         Block inputBlock = block.block();
         Block outputBlock = wall.block();
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, outputBlock, 6).pattern("###").pattern("###")
+        shaped(RecipeCategory.MISC, outputBlock, 6).pattern("###").pattern("###")
                 .define('#', inputBlock).unlockedBy(criterionName(block), has(inputBlock))
-                .save(consumer, prefix("shaped/walls/", block.id()));
+                .save(output, prefix("shaped/walls/", block.id()));
 
         SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), RecipeCategory.MISC, outputBlock)
                 .unlockedBy(criterionName(block), has(inputBlock))
-                .save(consumer, prefix("block_cutter/walls/", wall.id()));
+                .save(output, prefix("block_cutter/walls/", wall.id()));
 
-    }
-
-    private ResourceLocation prefix(String prefix, ResourceLocation id) {
-        return ResourceLocation.fromNamespaceAndPath(
-                id.getNamespace(),
-                prefix + id.getPath());
-    }
-
-    @Override
-    public String getName() {
-        return AppEng.MOD_NAME + " Decorative Blocks";
     }
 
 }

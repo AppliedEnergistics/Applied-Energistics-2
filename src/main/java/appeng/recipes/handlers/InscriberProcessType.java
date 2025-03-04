@@ -18,14 +18,37 @@
 
 package appeng.recipes.handlers;
 
-public enum InscriberProcessType {
+import com.mojang.serialization.Codec;
+
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.StringRepresentable;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
+
+public enum InscriberProcessType implements StringRepresentable {
     /**
      * Doesn't spend the optional inputs (top and bottom). Used for example to make printed circuits, or copy presses.
      */
-    INSCRIBE,
+    INSCRIBE("inscribe"),
 
     /**
      * Spends the optional inputs. Used for example to turn printed circuits into processors.
      */
-    PRESS
+    PRESS("press");
+
+    private final String serializedName;
+
+    public static Codec<InscriberProcessType> CODEC = StringRepresentable.fromEnum(InscriberProcessType::values);
+
+    public static StreamCodec<FriendlyByteBuf, InscriberProcessType> STREAM_CODEC = NeoForgeStreamCodecs
+            .enumCodec(InscriberProcessType.class);
+
+    InscriberProcessType(String serializedName) {
+        this.serializedName = serializedName;
+    }
+
+    @Override
+    public String getSerializedName() {
+        return serializedName;
+    }
 }

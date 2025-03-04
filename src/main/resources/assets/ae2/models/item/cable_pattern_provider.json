@@ -3,6 +3,7 @@
   "textures": {
     "sides": "ae2:part/pattern_provider_sides",
     "back": "ae2:part/pattern_provider_back",
-    "front": "ae2:part/pattern_provider"
+    "front": "ae2:part/pattern_provider",
+    "particle": "ae2:part/pattern_provider"
   }
 }

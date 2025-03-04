@@ -30,8 +30,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -46,6 +44,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.networking.ControllerBlockEntity;
+import appeng.core.AppEng;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.AEBaseItem;
 import appeng.me.Grid;
@@ -64,7 +63,7 @@ public class DebugCardItem extends AEBaseItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         if (InteractionUtil.isInAlternateUseMode(player) && !level.isClientSide) {
             int grids = 0;
 
@@ -87,11 +86,11 @@ public class DebugCardItem extends AEBaseItem {
             this.outputSecondaryMessage(player, "Current Tick: ",
                     Long.toString(TickHandler.instance().getCurrentTick()));
             for (var line : TickHandler.instance().getBlockEntityReport()) {
-                player.sendSystemMessage(line);
+                AppEng.instance().sendSystemMessage(player, line);
             }
         }
 
-        return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -226,7 +225,7 @@ public class DebugCardItem extends AEBaseItem {
                     msg.append(Component.literal(v.name().substring(0, 1))
                             .withStyle(cablePart.isConnected(v) ? ChatFormatting.GREEN : ChatFormatting.DARK_GRAY));
                 }
-                player.sendSystemMessage(Component.literal("Connected Sides: ")
+                AppEng.instance().sendSystemMessage(player, Component.literal("Connected Sides: ")
                         .withStyle(ChatFormatting.GRAY)
                         .append(msg));
             }
@@ -252,7 +251,7 @@ public class DebugCardItem extends AEBaseItem {
             outputSecondaryMessage(player, "ReadyInvoked", "" + be.getReadyInvoked());
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     private void divider(Player player) {
@@ -260,25 +259,25 @@ public class DebugCardItem extends AEBaseItem {
                 ChatFormatting.DARK_PURPLE);
     }
 
-    private void outputMessage(Entity player, String string, ChatFormatting... chatFormattings) {
-        player.sendSystemMessage(Component.literal(string).withStyle(chatFormattings));
+    private void outputMessage(Player player, String string, ChatFormatting... chatFormattings) {
+        AppEng.instance().sendSystemMessage(player, Component.literal(string).withStyle(chatFormattings));
     }
 
-    private void outputMessage(Entity player, String string) {
-        player.sendSystemMessage(Component.literal(string));
+    private void outputMessage(Player player, String string) {
+        AppEng.instance().sendSystemMessage(player, Component.literal(string));
     }
 
-    private void outputPrimaryMessage(Entity player, String label, String value) {
+    private void outputPrimaryMessage(Player player, String label, String value) {
         this.outputLabeledMessage(player, label, value, ChatFormatting.BOLD, ChatFormatting.LIGHT_PURPLE);
     }
 
-    private void outputSecondaryMessage(Entity player, String label, String value) {
+    private void outputSecondaryMessage(Player player, String label, String value) {
         this.outputLabeledMessage(player, label, value, ChatFormatting.GRAY);
     }
 
-    private void outputLabeledMessage(Entity player, String label, String value,
+    private void outputLabeledMessage(Player player, String label, String value,
             ChatFormatting... chatFormattings) {
-        player.sendSystemMessage(Component.literal("")
+        AppEng.instance().sendSystemMessage(player, Component.literal("")
                 .append(Component.literal(label + ": ").withStyle(chatFormattings))
                 .append(value));
     }

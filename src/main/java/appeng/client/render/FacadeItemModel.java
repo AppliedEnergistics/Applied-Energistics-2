@@ -20,14 +20,14 @@ package appeng.client.render;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.function.Function;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.context.ContextMap;
 
 import appeng.client.render.cablebus.FacadeBuilder;
 import appeng.core.AppEng;
@@ -42,9 +42,9 @@ public class FacadeItemModel implements BasicUnbakedModel {
     private static final ResourceLocation MODEL_BASE = AppEng.makeId("item/facade_base");
 
     @Override
-    public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelTransform) {
-        BakedModel bakedBaseModel = baker.bake(MODEL_BASE, modelTransform);
+    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion,
+            boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
+        BakedModel bakedBaseModel = baker.bake(MODEL_BASE, modelState);
         FacadeBuilder facadeBuilder = new FacadeBuilder(baker, null);
 
         return new FacadeDispatcherBakedModel(bakedBaseModel, facadeBuilder);

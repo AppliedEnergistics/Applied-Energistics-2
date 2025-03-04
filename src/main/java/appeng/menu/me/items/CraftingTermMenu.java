@@ -29,6 +29,7 @@ import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -104,7 +105,10 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
                 this.energySource, linkStatusInventory, craftingGridInv, craftingGridInv, this),
                 SlotSemantics.CRAFTING_RESULT);
 
-        updateCurrentRecipeAndOutput(true);
+        var serverLevel = getServerLevel();
+        if (serverLevel != null) {
+            updateCurrentRecipeAndOutput(serverLevel, true);
+        }
 
         registerClientAction(ACTION_CLEAR_TO_PLAYER, this::clearToPlayerInventory);
     }
@@ -120,10 +124,13 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
 
     @Override
     public void slotsChanged(Container inventory) {
-        updateCurrentRecipeAndOutput(false);
+        var level = getServerLevel();
+        if (level != null) {
+            updateCurrentRecipeAndOutput(level, false);
+        }
     }
 
-    private void updateCurrentRecipeAndOutput(boolean forceUpdate) {
+    private void updateCurrentRecipeAndOutput(ServerLevel level, boolean forceUpdate) {
         var testItems = new ArrayList<ItemStack>(this.craftingSlots.length);
         for (var craftingSlot : this.craftingSlots) {
             testItems.add(craftingSlot.getItem().copy());
@@ -134,8 +141,7 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
             return;
         }
 
-        var level = getPlayer().level();
-        this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, testInput, level)
+        this.currentRecipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, testInput, level)
                 .orElse(null);
         this.lastTestedInput = testInput;
 
@@ -240,11 +246,16 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
 
             // Check the terminal once again, but this time for craftable items
             if (!found) {
-                for (var stack : ingredient.getItems()) {
-                    if (isCraftable(stack)) {
-                        craftableSlots.add(entry.getKey());
-                        found = true;
-                        break;
+                var clientRepo = getClientRepo();
+
+                if (clientRepo != null) {
+                    for (var stack : clientRepo.getAllEntries()) {
+                        if (stack.isCraftable() && stack.getWhat() instanceof AEItemKey itemKey
+                                && ingredient.test(itemKey.getReadOnlyStack())) {
+                            craftableSlots.add(entry.getKey());
+                            found = true;
+                            break;
+                        }
                     }
                 }
             }

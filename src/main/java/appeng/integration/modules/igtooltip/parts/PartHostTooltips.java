@@ -41,7 +41,7 @@ public final class PartHostTooltips {
                 }
             }
 
-            return selected.part.getPartItem().asItem().getDescription();
+            return selected.part.getPartItem().asItem().getName();
         } else {
             return null;
         }

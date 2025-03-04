@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
@@ -37,6 +38,8 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -835,6 +838,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         b.set(testB);
     }
 
+    @Nullable
+    protected final ServerLevel getServerLevel() {
+        return getPlayer().level() instanceof ServerLevel serverLevel ? serverLevel : null;
+    }
+
     /**
      * Can be overridden in subclasses to be notified of GUI data updates sent by the server.
      */
@@ -1028,5 +1036,12 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
     public void setReturnedFromSubScreen(boolean returnedFromSubScreen) {
         this.returnedFromSubScreen = returnedFromSubScreen;
+    }
+
+    protected final <T> void syncField(int id,
+            Supplier<T> getter,
+            Consumer<T> setter,
+            StreamCodec<? super RegistryFriendlyByteBuf, T> codec) {
+
     }
 }

@@ -9,7 +9,7 @@ import org.joml.Quaternionf;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.client.renderer.FogParameters;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,12 +30,6 @@ public final class FluidBlockRendering {
     }
 
     public static void render(GuiGraphics guiGraphics, Fluid fluid, int x, int y, int width, int height) {
-        RenderSystem.runAsFancy(() -> {
-            renderInFancy(guiGraphics, fluid, x, y, width, height);
-        });
-    }
-
-    public static void renderInFancy(GuiGraphics guiGraphics, Fluid fluid, int x, int y, int width, int height) {
         var fluidState = fluid.defaultFluidState();
 
         var blockRenderer = Minecraft.getInstance().getBlockRenderer();
@@ -50,7 +44,7 @@ public final class FluidBlockRendering {
         worldMatStack.mul(guiGraphics.pose().last().pose());
         worldMatStack.translate(x, y, 0);
 
-        FogRenderer.setupNoFog();
+        RenderSystem.setShaderFog(FogParameters.NO_FOG);
 
         // The fluid block will render [-0.5,0.5] since it's intended for world-rendering
         // we need to scale it to the rectangle's size, and then move it to the center
@@ -74,7 +68,6 @@ public final class FluidBlockRendering {
         // Reset the render state and return to the previous modelview matrix
         renderType.clearRenderState();
         worldMatStack.popMatrix();
-        RenderSystem.applyModelViewMatrix();
     }
 
     private static void setupOrthographicProjection(Matrix4fStack worldMatStack) {
@@ -94,8 +87,6 @@ public final class FluidBlockRendering {
 
         // Move into the center of the block for the transforms
         worldMatStack.translate(-0.5f, -0.5f, -0.5f);
-
-        RenderSystem.applyModelViewMatrix();
     }
 
     private static class FakeWorld implements BlockAndTintGetter {
@@ -165,7 +156,7 @@ public final class FluidBlockRendering {
         }
 
         @Override
-        public int getMinBuildHeight() {
+        public int getMinY() {
             return 0;
         }
     }

@@ -7,7 +7,7 @@ import guideme.document.block.LytSlot;
 import guideme.layout.LayoutContext;
 import guideme.render.RenderContext;
 
-import appeng.recipes.handlers.InscriberRecipe;
+import appeng.recipes.handlers.InscriberRecipeDisplay;
 
 public class LytInscriberRecipe extends LytBox {
     private final LytSlot topSlot;
@@ -15,11 +15,11 @@ public class LytInscriberRecipe extends LytBox {
     private final LytSlot bottomSlot;
     private final LytSlot resultSlot;
 
-    public LytInscriberRecipe(InscriberRecipe recipe) {
-        append(topSlot = new LytSlot(recipe.getTopOptional()));
-        append(middleSlot = new LytSlot(recipe.getMiddleInput()));
-        append(bottomSlot = new LytSlot(recipe.getBottomOptional()));
-        append(resultSlot = new LytSlot(recipe.getResultItem()));
+    public LytInscriberRecipe(InscriberRecipeDisplay recipe) {
+        append(topSlot = new LytSlot(recipe.top()));
+        append(middleSlot = new LytSlot(recipe.middle()));
+        append(bottomSlot = new LytSlot(recipe.bottom()));
+        append(resultSlot = new LytSlot(recipe.result()));
         resultSlot.setLargeSlot(true);
     }
 

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:cut_quartz_slab"
-    }
+    "a": "ae2:cut_quartz_slab"
   },
   "pattern": [
     "a",

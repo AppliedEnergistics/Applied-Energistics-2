@@ -1,16 +1,20 @@
 package appeng.recipes.handlers;
 
+import java.util.Optional;
+
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
 public class InscriberRecipeBuilder {
     private final Ingredient middleInput;
-    private Ingredient topOptional = Ingredient.EMPTY;
-    private Ingredient bottomOptional = Ingredient.EMPTY;
+    private Optional<Ingredient> topOptional = Optional.empty();
+    private Optional<Ingredient> bottomOptional = Optional.empty();
     private final ItemLike output;
     private final int count;
     private InscriberProcessType mode = InscriberProcessType.INSCRIBE;
@@ -25,7 +29,7 @@ public class InscriberRecipeBuilder {
         return new InscriberRecipeBuilder(Ingredient.of(middle), output, count);
     }
 
-    public static InscriberRecipeBuilder inscribe(TagKey<Item> middle, ItemLike output, int count) {
+    public static InscriberRecipeBuilder inscribe(HolderSet<Item> middle, ItemLike output, int count) {
         return new InscriberRecipeBuilder(Ingredient.of(middle), output, count);
     }
 
@@ -34,12 +38,12 @@ public class InscriberRecipeBuilder {
     }
 
     public InscriberRecipeBuilder setTop(Ingredient topOptional) {
-        this.topOptional = topOptional;
+        this.topOptional = Optional.of(topOptional);
         return this;
     }
 
     public InscriberRecipeBuilder setBottom(Ingredient bottomOptional) {
-        this.bottomOptional = bottomOptional;
+        this.bottomOptional = Optional.of(bottomOptional);
         return this;
     }
 
@@ -55,6 +59,6 @@ public class InscriberRecipeBuilder {
         var recipe = new InscriberRecipe(
                 middleInput, result, topOptional, bottomOptional, mode);
 
-        consumer.accept(id, recipe, null);
+        consumer.accept(ResourceKey.create(Registries.RECIPE, id), recipe, null);
     }
 }

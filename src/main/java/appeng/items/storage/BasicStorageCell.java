@@ -23,9 +23,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
@@ -37,7 +37,6 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.StorageCells;
-import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.UpgradeInventories;
@@ -132,13 +131,14 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        this.disassembleDrive(player.getItemInHand(hand), level, player);
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                player.getItemInHand(hand));
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+        if (level instanceof ServerLevel serverLevel) {
+            this.disassembleDrive(player.getItemInHand(hand), serverLevel, player);
+        }
+        return InteractionResult.SUCCESS;
     }
 
-    private boolean disassembleDrive(ItemStack stack, Level level, Player player) {
+    private boolean disassembleDrive(ItemStack stack, ServerLevel level, Player player) {
         if (!InteractionUtil.isInAlternateUseMode(player)) {
             return false;
         }
@@ -174,20 +174,10 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        return this.disassembleDrive(stack, context.getLevel(), context.getPlayer())
-                ? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
-                : InteractionResult.PASS;
-    }
-
-    public static int getColor(ItemStack stack, int tintIndex) {
-        if (tintIndex == 1) {
-            // Determine LED color
-            var cellInv = StorageCells.getCellInventory(stack, null);
-            var cellStatus = cellInv != null ? cellInv.getStatus() : CellState.EMPTY;
-            return cellStatus.getStateColor();
-        } else {
-            // White
-            return 0xFFFFFF;
+        if (context.getLevel() instanceof ServerLevel serverLevel
+                && this.disassembleDrive(stack, serverLevel, context.getPlayer())) {
+            return InteractionResult.SUCCESS;
         }
+        return InteractionResult.PASS;
     }
 }

@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:quartz_glass"
-    },
-    "b": {
-      "tag": "c:dusts/redstone"
-    },
-    "c": {
-      "item": "ae2:spatial_cell_component_16"
-    },
-    "d": {
-      "tag": "c:ingots/iron"
-    }
+    "a": "ae2:quartz_glass",
+    "b": "#c:dusts/redstone",
+    "c": "ae2:spatial_cell_component_16",
+    "d": "#c:ingots/iron"
   },
   "pattern": [
     "aba",

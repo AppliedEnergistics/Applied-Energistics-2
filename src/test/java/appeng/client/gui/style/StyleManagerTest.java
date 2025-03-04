@@ -19,7 +19,6 @@
 package appeng.client.gui.style;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
@@ -30,8 +29,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 import appeng.client.gui.MockResourceManager;
 import appeng.menu.SlotSemantics;
@@ -43,19 +40,8 @@ class StyleManagerTest {
     ArgumentCaptor<PreparableReloadListener> reloadCaptor;
 
     @Test
-    void testInitialize() throws IOException {
-        ReloadableResourceManager resourceManager = MockResourceManager.create();
-        StyleManager.initialize(resourceManager);
-        verify(resourceManager).registerReloadListener(reloadCaptor.capture());
-        assertThat(reloadCaptor.getValue())
-                .isNotNull()
-                .isInstanceOf(ResourceManagerReloadListener.class);
-        ((ResourceManagerReloadListener) reloadCaptor.getValue()).onResourceManagerReload(resourceManager);
-    }
-
-    @Test
     void testLoadStyleDoc() throws IOException {
-        StyleManager.initialize(MockResourceManager.create());
+        StyleManager.getReloadListener().onResourceManagerReload(MockResourceManager.create());
 
         ScreenStyle style = StyleManager.loadStyleDoc("/screens/cell_workbench.json");
 

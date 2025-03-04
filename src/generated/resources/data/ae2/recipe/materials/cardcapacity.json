@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "ae2:all_certus_quartz"
-    },
-    {
-      "item": "ae2:basic_card"
-    }
+    "#ae2:all_certus_quartz",
+    "ae2:basic_card"
   ],
   "result": {
     "count": 1,

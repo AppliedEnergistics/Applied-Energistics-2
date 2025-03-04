@@ -18,14 +18,12 @@
 
 package appeng.parts.reporting;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.data.ModelData;
@@ -76,8 +74,8 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
-        if (pos.relative(this.getSide()).equals(neighbor)) {
+    public void onUpdateShape(Direction side) {
+        if (side.equals(getSide())) {
             this.opacity = -1;
             this.getHost().markForUpdate();
         }
@@ -146,7 +144,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
             var te = getHost().getBlockEntity();
             Level level = te.getLevel();
             var pos = te.getBlockPos().relative(this.getSide());
-            this.opacity = level.getBlockState(pos).getLightBlock(level, pos);
+            this.opacity = level.getBlockState(pos).getLightBlock();
         }
 
         return Math.max(0, emit - opacity);

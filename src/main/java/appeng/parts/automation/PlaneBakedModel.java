@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -51,8 +51,12 @@ public class PlaneBakedModel implements IDynamicBakedModel {
 
     private final Map<PlaneConnections, List<BakedQuad>> quads;
 
-    PlaneBakedModel(TextureAtlasSprite frontTexture, TextureAtlasSprite sidesTexture, TextureAtlasSprite backTexture) {
+    private final ItemTransforms transforms;
+
+    PlaneBakedModel(TextureAtlasSprite frontTexture, TextureAtlasSprite sidesTexture, TextureAtlasSprite backTexture,
+            ItemTransforms transforms) {
         this.frontTexture = frontTexture;
+        this.transforms = transforms;
 
         quads = new HashMap<>(PlaneConnections.PERMUTATIONS.size());
         // Create all possible permutations (16)
@@ -107,17 +111,12 @@ public class PlaneBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isCustomRenderer() {
-        return false;
-    }
-
-    @Override
     public TextureAtlasSprite getParticleIcon() {
         return this.frontTexture;
     }
 
     @Override
-    public ItemOverrides getOverrides() {
-        return ItemOverrides.EMPTY;
+    public ItemTransforms getTransforms() {
+        return transforms;
     }
 }

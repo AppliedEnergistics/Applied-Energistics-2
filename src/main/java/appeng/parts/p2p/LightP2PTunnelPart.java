@@ -20,11 +20,10 @@ package appeng.parts.p2p;
 
 import java.util.List;
 
-import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -107,8 +106,8 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
-        if (this.isOutput() && pos.relative(this.getSide()).equals(neighbor)) {
+    public void onUpdateShape(Direction side) {
+        if (this.isOutput() && side.equals(getSide())) {
             this.opacity = -1;
             this.getHost().markForUpdate();
         } else {

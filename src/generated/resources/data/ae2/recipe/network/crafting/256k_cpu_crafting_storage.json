@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "ae2:crafting_unit"
-    },
-    {
-      "item": "ae2:cell_component_256k"
-    }
+    "ae2:crafting_unit",
+    "ae2:cell_component_256k"
   ],
   "result": {
     "count": 1,

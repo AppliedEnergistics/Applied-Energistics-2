@@ -25,7 +25,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -37,6 +36,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
@@ -54,9 +54,9 @@ public class MeteoritePlacerItem extends AEBaseItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (level.isClientSide()) {
-            return InteractionResultHolder.pass(player.getItemInHand(hand));
+            return InteractionResult.PASS;
         }
 
         if (InteractionUtil.isInAlternateUseMode(player)) {
@@ -72,9 +72,9 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
             var craterType = getCraterType(itemStack);
 
-            player.sendSystemMessage(Component.literal(craterType.name()));
+            AppEng.instance().sendSystemMessage(player, Component.literal(craterType.name()));
 
-            return InteractionResultHolder.success(itemStack);
+            return InteractionResult.SUCCESS;
         }
 
         return super.use(level, player, hand);
@@ -110,7 +110,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
                 pureCrater);
 
         if (spawned == null) {
-            player.sendSystemMessage(Component.literal("Un-suitable Location."));
+            AppEng.instance().sendSystemMessage(player, Component.literal("Un-suitable Location."));
             return InteractionResult.FAIL;
         }
 
@@ -133,7 +133,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
             player.connection.send(Platform.getFullChunkPacket(c));
         });
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     @Override

@@ -27,7 +27,7 @@ import com.google.common.cache.CacheBuilder;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -46,8 +46,11 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
 
     private static final int[][] QUAD_OFFSETS = new int[][] { { 3, 11, 2 }, { 11, 11, 2 }, { 3, 3, 2 }, { 11, 3, 2 } };
 
-    public P2PTunnelFrequencyBakedModel(TextureAtlasSprite texture) {
+    private final ItemTransforms transforms;
+
+    public P2PTunnelFrequencyBakedModel(TextureAtlasSprite texture, ItemTransforms transforms) {
         this.texture = texture;
+        this.transforms = transforms;
     }
 
     @Override
@@ -123,8 +126,8 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isCustomRenderer() {
-        return true;
+    public ItemTransforms getTransforms() {
+        return transforms;
     }
 
     @Override
@@ -132,8 +135,4 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
         return this.texture;
     }
 
-    @Override
-    public ItemOverrides getOverrides() {
-        return ItemOverrides.EMPTY;
-    }
 }

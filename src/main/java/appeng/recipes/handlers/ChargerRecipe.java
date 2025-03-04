@@ -1,22 +1,29 @@
 package appeng.recipes.handlers;
 
+import java.util.List;
+
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 
 import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
 import appeng.recipes.AERecipeTypes;
 
 public class ChargerRecipe implements Recipe<RecipeInput> {
@@ -26,13 +33,12 @@ public class ChargerRecipe implements Recipe<RecipeInput> {
     public static final RecipeType<ChargerRecipe> TYPE = AERecipeTypes.CHARGER;
 
     public final Ingredient ingredient;
-    public final NonNullList<Ingredient> ingredients;
     public final ItemStack result;
 
     public static final MapCodec<ChargerRecipe> CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder
                     .group(
-                            Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(ChargerRecipe::getIngredient),
+                            Ingredient.CODEC.fieldOf("ingredient").forGetter(ChargerRecipe::getIngredient),
                             ItemStack.CODEC.fieldOf("result").forGetter(cr -> cr.result))
                     .apply(builder, ChargerRecipe::new));
 
@@ -46,7 +52,6 @@ public class ChargerRecipe implements Recipe<RecipeInput> {
     public ChargerRecipe(Ingredient ingredient, ItemStack result) {
         this.ingredient = ingredient;
         this.result = result;
-        this.ingredients = NonNullList.of(Ingredient.EMPTY, ingredient);
     }
 
     @Override
@@ -59,27 +64,17 @@ public class ChargerRecipe implements Recipe<RecipeInput> {
         return null;
     }
 
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return false;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return getResultItem();
-    }
-
     public ItemStack getResultItem() {
         return result;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<ChargerRecipe> getSerializer() {
         return ChargerRecipeSerializer.INSTANCE;
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<ChargerRecipe> getType() {
         return TYPE;
     }
 
@@ -88,8 +83,22 @@ public class ChargerRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients() {
-        return ingredients;
+    public List<RecipeDisplay> display() {
+        return List.of(
+                new ChargerRecipeDisplay(
+                        ingredient.display(),
+                        new SlotDisplay.ItemStackSlotDisplay(result),
+                        new SlotDisplay.ItemSlotDisplay(AEBlocks.CHARGER.asItem())));
+    }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     @Override

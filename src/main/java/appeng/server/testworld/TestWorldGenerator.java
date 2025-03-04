@@ -204,7 +204,7 @@ public class TestWorldGenerator {
             if (!sec.hasOnlyAir()) {
                 var p = new BlockPos.MutableBlockPos();
                 var air = Blocks.AIR.defaultBlockState();
-                int bottomBlock = chunk.getMinBuildHeight() + SectionPos.SECTION_SIZE * sectionId;
+                int bottomBlock = chunk.getMinY() + SectionPos.SECTION_SIZE * sectionId;
                 for (var y = 0; y < SectionPos.SECTION_SIZE; y++) {
                     p.setY(bottomBlock + y);
                     for (var x = 0; x < 16; x++) {

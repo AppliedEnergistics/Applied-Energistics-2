@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:sky_stone_block"
-    },
-    "b": {
-      "item": "ae2:quartz_glass"
-    }
+    "a": "ae2:sky_stone_block",
+    "b": "ae2:quartz_glass"
   },
   "pattern": [
     "aaa",

@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:formation_core"
-    },
-    "b": {
-      "tag": "c:ingots/iron"
-    },
-    "c": {
-      "item": "ae2:cell_component_4k"
-    },
-    "d": {
-      "item": "ae2:energy_cell"
-    }
+    "a": "ae2:formation_core",
+    "b": "#c:ingots/iron",
+    "c": "ae2:cell_component_4k",
+    "d": "ae2:energy_cell"
   },
   "pattern": [
     "ab ",

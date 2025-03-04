@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/cadmium"
-  },
+  "ammo": "#c:nuggets/cadmium",
   "weight": 112.411
 }

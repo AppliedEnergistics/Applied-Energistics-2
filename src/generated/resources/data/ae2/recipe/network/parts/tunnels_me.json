@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "c:ingots/iron"
-    },
-    "b": {
-      "item": "ae2:engineering_processor"
-    },
-    "c": {
-      "tag": "ae2:all_fluix"
-    }
+    "a": "#c:ingots/iron",
+    "b": "ae2:engineering_processor",
+    "c": "#ae2:all_fluix"
   },
   "pattern": [
     " a ",

@@ -7,11 +7,15 @@ import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Lifecycle;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.netty.buffer.ByteBuf;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 
@@ -22,6 +26,24 @@ public final class AECodecs {
     private static final Logger LOG = LoggerFactory.getLogger(AECodecs.class);
 
     private AECodecs() {
+    }
+
+    public static <B extends ByteBuf, V> StreamCodec<B, V> nullable(StreamCodec<B, V> codec) {
+        return new StreamCodec<>() {
+            @Nullable
+            public V decode(B buffer) {
+                return buffer.readBoolean() ? codec.decode(buffer) : null;
+            }
+
+            public void encode(B buffer, @Nullable V value) {
+                if (value != null) {
+                    buffer.writeBoolean(true);
+                    codec.encode(buffer, value);
+                } else {
+                    buffer.writeBoolean(false);
+                }
+            }
+        };
     }
 
     private static final Codec.ResultFunction<ItemStack> MISSING_CONTENT_ITEMSTACK_RESULT = new Codec.ResultFunction<>() {

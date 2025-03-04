@@ -19,11 +19,11 @@
 package appeng.client.render.cablebus;
 
 import java.util.Arrays;
-import java.util.function.Function;
 
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.core.AppEng;
@@ -69,13 +69,13 @@ public class SmartCableTextures {
     // one of each set are composed together to get even/odd colored channels
     private final TextureAtlasSprite[] densetextures;
 
-    public SmartCableTextures(Function<Material, TextureAtlasSprite> bakedTextureGetter) {
-        this.textures = Arrays.stream(SMART_CHANNELS_TEXTURES)//
-                .map(bakedTextureGetter)//
+    public SmartCableTextures(SpriteGetter bakedTextureGetter) {
+        this.textures = Arrays.stream(SMART_CHANNELS_TEXTURES)
+                .map(bakedTextureGetter::get)
                 .toArray(TextureAtlasSprite[]::new);
 
-        this.densetextures = Arrays.stream(DENSE_SMART_CHANNELS_TEXTURES)//
-                .map(bakedTextureGetter)//
+        this.densetextures = Arrays.stream(DENSE_SMART_CHANNELS_TEXTURES)
+                .map(bakedTextureGetter::get)
                 .toArray(TextureAtlasSprite[]::new);
     }
 

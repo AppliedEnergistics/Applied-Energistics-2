@@ -12,7 +12,6 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.stacks.AEItemKey;
@@ -45,7 +44,7 @@ public class CraftingPatternHelper {
         }
         var recipeInput = CraftingInput.of(3, 3, c);
 
-        var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, recipeInput, level).orElseThrow();
+        var recipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, recipeInput, level).orElseThrow();
 
         var result = recipe.value().assemble(recipeInput, level.registryAccess());
 
@@ -57,7 +56,7 @@ public class CraftingPatternHelper {
                 allowFluidSubstitutions);
     }
 
-    public static ItemStack encodeShapelessCraftingRecipe(Level level, ItemStack... inputs) {
+    public static ItemStack encodeShapelessCraftingRecipe(ServerLevel level, ItemStack... inputs) {
         // Pad out the list to 3x3
         var items = NonNullList.withSize(3 * 3, ItemStack.EMPTY);
         for (int i = 0; i < inputs.length; i++) {
@@ -65,7 +64,7 @@ public class CraftingPatternHelper {
         }
         var recipeInput = CraftingInput.of(3, 3, items);
 
-        var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, recipeInput, level)
+        var recipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, recipeInput, level)
                 .orElseThrow(() -> new RuntimeException("Couldn't get a shapeless recipe for the provided input."));
 
         var actualInputs = new ItemStack[9];
@@ -73,23 +72,27 @@ public class CraftingPatternHelper {
             actualInputs[i] = i < inputs.length ? inputs[i] : ItemStack.EMPTY;
         }
 
+        var result = recipe.value().assemble(recipeInput, level.registryAccess());
+
         return PatternDetailsHelper.encodeCraftingPattern(
                 recipe,
                 actualInputs,
-                recipe.value().getResultItem(level.registryAccess()),
+                result,
                 false,
                 false);
     }
 
-    public static ItemStack encodeStoneCutterPattern(Level level, ItemLike inputItem, ItemLike outputItem,
+    public static ItemStack encodeStoneCutterPattern(ServerLevel level, ItemLike inputItem, ItemLike outputItem,
             boolean allowSubstitutes) {
 
         var input = new SingleRecipeInput(new ItemStack(inputItem));
 
         RecipeHolder<StonecutterRecipe> foundRecipe = null;
-        for (var holder : level.getRecipeManager().getRecipesFor(RecipeType.STONECUTTING, input, level)) {
+        var it = level.recipeAccess().recipeMap().getRecipesFor(RecipeType.STONECUTTING, input, level).iterator();
+        while (it.hasNext()) {
+            var holder = it.next();
             StonecutterRecipe recipe = holder.value();
-            if (recipe.getResultItem(level.registryAccess()).is(outputItem.asItem())) {
+            if (recipe.assemble(input, level.registryAccess()).is(outputItem.asItem())) {
                 foundRecipe = holder;
                 break;
             }
@@ -107,12 +110,13 @@ public class CraftingPatternHelper {
                 allowSubstitutes);
     }
 
-    public static ItemStack encodeSmithingPattern(Level level, ItemLike template, ItemLike base, ItemLike addition,
+    public static ItemStack encodeSmithingPattern(ServerLevel level, ItemLike template, ItemLike base,
+            ItemLike addition,
             boolean allowSubstitutes) {
 
         var input = new SmithingRecipeInput(new ItemStack(template), new ItemStack(base), new ItemStack(addition));
 
-        var foundRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMITHING, input, level).orElse(null);
+        var foundRecipe = level.recipeAccess().getRecipeFor(RecipeType.SMITHING, input, level).orElse(null);
         if (foundRecipe == null) {
             throw new RuntimeException(
                     "No stonecutter recipe found for template=" + template + " and base=" + base + " and addition="

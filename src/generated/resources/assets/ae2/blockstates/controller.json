@@ -1,0 +1,157 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "ae2:block/controller_block_offline"
+      },
+      "when": {
+        "type": "block",
+        "state": "offline"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controller_block_online"
+      },
+      "when": {
+        "type": "block",
+        "state": "online"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controller_block_conflicted"
+      },
+      "when": {
+        "type": "block",
+        "state": "conflicted"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controller_column_offline",
+        "x": 90,
+        "y": 90
+      },
+      "when": {
+        "type": "column_x",
+        "state": "offline"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controller_column_offline"
+      },
+      "when": {
+        "type": "column_y",
+        "state": "offline"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controller_column_offline",
+        "x": 90
+      },
+      "when": {
+        "type": "column_z",
+        "state": "offline"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controller_column_online",
+        "x": 90,
+        "y": 90
+      },
+      "when": {
+        "type": "column_x",
+        "state": "online"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controller_column_online"
+      },
+      "when": {
+        "type": "column_y",
+        "state": "online"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controller_column_online",
+        "x": 90
+      },
+      "when": {
+        "type": "column_z",
+        "state": "online"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controller_column_conflicted",
+        "x": 90,
+        "y": 90
+      },
+      "when": {
+        "type": "column_x",
+        "state": "conflicted"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controller_column_conflicted"
+      },
+      "when": {
+        "type": "column_y",
+        "state": "conflicted"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controller_column_conflicted",
+        "x": 90
+      },
+      "when": {
+        "type": "column_z",
+        "state": "conflicted"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controller_inside_a"
+      },
+      "when": {
+        "type": "inside_a",
+        "state": "offline|online"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controller_inside_b"
+      },
+      "when": {
+        "type": "inside_b",
+        "state": "offline|online"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controllerinside_a_conflicted"
+      },
+      "when": {
+        "type": "inside_a",
+        "state": "conflicted"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/controllerinside_b_conflicted"
+      },
+      "when": {
+        "type": "inside_b",
+        "state": "conflicted"
+      }
+    }
+  ]
+}

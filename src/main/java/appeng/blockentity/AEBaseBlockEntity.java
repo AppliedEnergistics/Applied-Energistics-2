@@ -341,7 +341,7 @@ public class AEBaseBlockEntity extends BlockEntity
 
         if (mode == SettingsFrom.MEMORY_CARD) {
             MemoryCardItem.exportGenericSettings(this, builder);
-            builder.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getItemFromBlockEntity().getDescription());
+            builder.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getItemFromBlockEntity().getName());
         }
     }
 
@@ -386,7 +386,7 @@ public class AEBaseBlockEntity extends BlockEntity
 
     @Override
     public Component getName() {
-        return Objects.requireNonNullElse(this.customName, getItemFromBlockEntity().getDescription());
+        return Objects.requireNonNullElse(this.customName, getItemFromBlockEntity().getName());
     }
 
     @Override
@@ -479,7 +479,7 @@ public class AEBaseBlockEntity extends BlockEntity
         level.removeBlock(pos, false);
         block.destroy(level, pos, getBlockState());
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     public byte getQueuedForReady() {

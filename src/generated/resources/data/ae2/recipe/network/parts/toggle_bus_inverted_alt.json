@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "ae2:toggle_bus"
-    }
+    "ae2:toggle_bus"
   ],
   "result": {
     "count": 1,

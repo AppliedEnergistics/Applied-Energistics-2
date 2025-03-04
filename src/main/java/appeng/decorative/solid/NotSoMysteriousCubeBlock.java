@@ -13,8 +13,8 @@ import appeng.core.localization.Tooltips;
 import appeng.decorative.AEDecorativeBlock;
 
 public class NotSoMysteriousCubeBlock extends AEDecorativeBlock {
-    public NotSoMysteriousCubeBlock() {
-        super(MysteriousCubeBlock.PROPERTIES);
+    public NotSoMysteriousCubeBlock(Properties p) {
+        super(MysteriousCubeBlock.properties(p));
     }
 
     @Override

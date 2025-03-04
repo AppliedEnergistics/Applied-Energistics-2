@@ -93,10 +93,10 @@ public class TestMeteoritesCommand implements ISubCommand {
 
         ChunkPos center = new ChunkPos(centerBlock);
 
-        var structures = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
-        var structure = structures.get(MeteoriteStructure.KEY);
-        var structureSets = level.registryAccess().registryOrThrow(Registries.STRUCTURE_SET);
-        var structureSet = structureSets.getHolderOrThrow(MeteoriteStructure.STRUCTURE_SET_KEY);
+        var structures = level.registryAccess().lookupOrThrow(Registries.STRUCTURE);
+        var structure = structures.getValueOrThrow(MeteoriteStructure.KEY);
+        var structureSets = level.registryAccess().lookupOrThrow(Registries.STRUCTURE_SET);
+        var structureSet = structureSets.getOrThrow(MeteoriteStructure.STRUCTURE_SET_KEY);
 
         var generatorState = level.getChunkSource().getGeneratorState();
 

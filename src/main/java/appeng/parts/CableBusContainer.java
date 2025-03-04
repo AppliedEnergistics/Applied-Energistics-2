@@ -40,7 +40,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -672,7 +672,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public void onUpdateShape(LevelAccessor level, BlockPos pos, Direction side) {
+    public void onUpdateShape(LevelReader level, BlockPos pos, Direction side) {
         for (var s : Platform.DIRECTIONS_WITH_NULL) {
             var part = this.getPart(s);
             if (part != null) {
@@ -1019,7 +1019,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             Level level = getBlockEntity().getLevel();
             if (blockState != null && level != null) {
                 return new FacadeRenderState(blockState,
-                        !facade.getBlockState().isSolidRender(level, getBlockEntity().getBlockPos()));
+                        !facade.getBlockState().isSolidRender());
             }
         }
 
@@ -1103,8 +1103,8 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                     var neighborPos = ourPos.relative(side);
                     var neighborState = level.getBlockState(neighborPos);
                     var ourState = be.getBlockState();
-                    BlockState newNeighborState = neighborState.updateShape(side.getOpposite(), ourState, level,
-                            neighborPos, ourPos);
+                    BlockState newNeighborState = neighborState.updateShape(level, level, neighborPos,
+                            side.getOpposite(), ourPos, ourState, level.getRandom());
                     Block.updateOrDestroy(neighborState, newNeighborState, level, neighborPos, Block.UPDATE_ALL,
                             Block.UPDATE_LIMIT);
                 }

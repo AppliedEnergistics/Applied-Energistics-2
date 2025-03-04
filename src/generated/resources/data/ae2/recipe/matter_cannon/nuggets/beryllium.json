@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/beryllium"
-  },
+  "ammo": "#c:nuggets/beryllium",
   "weight": 9.0122
 }

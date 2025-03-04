@@ -28,7 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.parts.SelectedPart;
@@ -72,7 +72,7 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public void onUpdateShape(LevelAccessor level, BlockPos pos, Direction side) {
+    public void onUpdateShape(LevelReader level, BlockPos pos, Direction side) {
     }
 
     @Override

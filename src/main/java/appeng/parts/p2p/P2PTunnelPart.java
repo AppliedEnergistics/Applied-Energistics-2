@@ -199,7 +199,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
                 this.onTunnelConfigChange();
 
                 MemoryCardItem.clearCard(heldItem);
-                heldItem.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getPartItem().asItem().getDescription());
+                heldItem.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getPartItem().asItem().getName());
                 heldItem.applyComponents(exportSettings(SettingsFrom.MEMORY_CARD));
 
                 if (needsNewFrequency) {

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "c:ingots/iron"
-    },
-    "b": {
-      "item": "minecraft:piston"
-    },
-    "c": {
-      "tag": "c:ingots/copper"
-    }
+    "a": "#c:ingots/iron",
+    "b": "minecraft:piston",
+    "c": "#c:ingots/copper"
   },
   "pattern": [
     "aba",

@@ -72,7 +72,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
             }
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     public static boolean canPlaceFacade(IPartHost host, IFacadePart facade) {

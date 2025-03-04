@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:quartz_glass"
-    },
-    "b": {
-      "item": "ae2:fluix_pearl"
-    }
+    "a": "ae2:quartz_glass",
+    "b": "ae2:fluix_pearl"
   },
   "pattern": [
     "aba",

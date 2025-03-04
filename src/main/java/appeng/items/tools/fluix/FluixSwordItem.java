@@ -16,8 +16,7 @@ public class FluixSwordItem extends SwordItem implements IntrinsicEnchantItem {
     private final IntrinsicEnchantment intrinsicEnchantment = new IntrinsicEnchantment(Enchantments.LOOTING, 1);
 
     public FluixSwordItem(Properties props) {
-        super(FluixToolType.FLUIX.getToolTier(),
-                props.attributes(createAttributes(FluixToolType.FLUIX.getToolTier(), 3, -2.4f)));
+        super(FluixToolType.FLUIX.getMaterial(), 3, -2.4f, props.repairable(FluixToolType.FLUIX.getRepairIngredient()));
     }
 
     @Override

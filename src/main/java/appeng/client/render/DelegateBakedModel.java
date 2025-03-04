@@ -27,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -61,15 +60,9 @@ public abstract class DelegateBakedModel implements BakedModel {
     }
 
     @Override
-    public ItemOverrides getOverrides() {
-        return baseModel.getOverrides();
-    }
-
-    @Override
-    public BakedModel applyTransform(ItemDisplayContext transformType, PoseStack poseStack,
+    public void applyTransform(ItemDisplayContext transformType, PoseStack poseStack,
             boolean applyLeftHandTransform) {
         baseModel.applyTransform(transformType, poseStack, applyLeftHandTransform);
-        return this;
     }
 
     @Override
@@ -90,11 +83,6 @@ public abstract class DelegateBakedModel implements BakedModel {
     @Override
     public boolean isGui3d() {
         return this.baseModel.isGui3d();
-    }
-
-    @Override
-    public boolean isCustomRenderer() {
-        return this.baseModel.isCustomRenderer();
     }
 
     public BakedModel getBaseModel() {

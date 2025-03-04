@@ -1,37 +1,42 @@
 package appeng.datagen.providers.models;
 
-import net.minecraft.data.PackOutput;
+import net.minecraft.client.color.item.Constant;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
+import net.minecraft.client.data.models.model.ModelTemplate;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.renderer.item.EmptyModel;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.util.ARGB;
+import net.minecraft.world.level.ItemLike;
 
-import appeng.api.ids.AEItemIds;
 import appeng.api.util.AEColor;
-import appeng.client.render.model.MemoryCardModel;
+import appeng.client.item.ColorApplicatorItemModel;
+import appeng.client.item.PortableCellColorTintSource;
+import appeng.client.item.StorageCellStateTintSource;
+import appeng.client.render.model.MemoryCardItemModel;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
-import appeng.datagen.providers.IAE2DataProvider;
 
-public class ItemModelProvider extends net.neoforged.neoforge.client.model.generators.ItemModelProvider
-        implements IAE2DataProvider {
-    public ItemModelProvider(PackOutput packOutput, ExistingFileHelper existingFileHelper) {
-        super(packOutput, AppEng.MOD_ID, existingFileHelper);
+public class ItemModelProvider extends ModelSubProvider {
+    public ItemModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+        super(blockModels, itemModels);
     }
 
     @Override
-    protected void registerModels() {
+    protected void register() {
         registerPaintballs();
 
         flatSingleLayer(AEItems.MISSING_CONTENT, "minecraft:item/barrier");
 
-        flatSingleLayer(MemoryCardModel.MODEL_BASE, "item/memory_card_base")
-                .texture("layer1", "item/memory_card_led");
-        builtInItemModel("memory_card");
-
-        builtInItemModel("facade");
-        builtInItemModel("meteorite_compass");
+        builtInItemModel(AEItems.FACADE);
+        builtInItemModel(AEItems.METEORITE_COMPASS);
 
         flatSingleLayer(AEItems.ADVANCED_CARD, "item/advanced_card");
         flatSingleLayer(AEItems.VOID_CARD, "item/card_void");
@@ -50,8 +55,6 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         flatSingleLayer(AEItems.CERTUS_QUARTZ_CRYSTAL, "item/certus_quartz_crystal");
         flatSingleLayer(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, "item/certus_quartz_crystal_charged");
         flatSingleLayer(AEItems.CERTUS_QUARTZ_DUST, "item/certus_quartz_dust");
-        flatSingleLayer(AEItems.CERTUS_QUARTZ_KNIFE, "item/certus_quartz_cutting_knife");
-        flatSingleLayer(AEItems.CERTUS_QUARTZ_WRENCH, "item/certus_quartz_wrench");
         flatSingleLayer(AEItems.CRAFTING_CARD, "item/card_crafting");
         flatSingleLayer(AEItems.CRAFTING_PATTERN, "item/crafting_pattern");
         flatSingleLayer(AEItems.DEBUG_CARD, "item/debug_card");
@@ -89,8 +92,6 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         flatSingleLayer(AEItems.LOGIC_PROCESSOR_PRINT, "item/printed_logic_processor");
         flatSingleLayer(AEItems.MATTER_BALL, "item/matter_ball");
         flatSingleLayer(AEItems.NAME_PRESS, "item/name_press");
-        flatSingleLayer(AEItems.NETHER_QUARTZ_KNIFE, "item/nether_quartz_cutting_knife");
-        flatSingleLayer(AEItems.NETHER_QUARTZ_WRENCH, "item/nether_quartz_wrench");
         portableCell(AEItems.PORTABLE_ITEM_CELL1K, "item", "1k");
         portableCell(AEItems.PORTABLE_ITEM_CELL4K, "item", "4k");
         portableCell(AEItems.PORTABLE_ITEM_CELL16K, "item", "16k");
@@ -118,7 +119,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         flatSingleLayer(AEItems.SPEED_CARD, "item/card_speed");
         flatSingleLayer(AEItems.SMITHING_TABLE_PATTERN, "item/smithing_table_pattern");
         flatSingleLayer(AEItems.STONECUTTING_PATTERN, "item/stonecutting_pattern");
-        flatSingleLayer(AEItemIds.GUIDE, "item/guide");
+        flatSingleLayer(AEItems.GUIDE, "item/guide");
         flatSingleLayer(AEItems.VIEW_CELL, "item/view_cell");
         flatSingleLayer(AEItems.WIRELESS_BOOSTER, "item/wireless_booster");
         flatSingleLayer(AEItems.WIRELESS_CRAFTING_TERMINAL, "item/wireless_crafting_terminal");
@@ -127,28 +128,62 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         registerEmptyModel(AEItems.WRAPPED_GENERIC_STACK);
         registerEmptyModel(AEBlocks.CABLE_BUS.item());
         registerHandheld();
+
+        memoryCard();
+        itemModels.itemModelOutput.accept(
+                AEItems.COLOR_APPLICATOR.asItem(),
+                new ColorApplicatorItemModel.Unbaked(
+                        ModelLocationUtils.getModelLocation(AEItems.COLOR_APPLICATOR.asItem()),
+                        ModelLocationUtils.getModelLocation(AEItems.COLOR_APPLICATOR.asItem(), "_colored")));
+        itemModels.declareCustomModelItem(AEItems.MATTER_CANNON.asItem());
+        itemModels.declareCustomModelItem(AEItems.NETWORK_TOOL.asItem());
+    }
+
+    private void memoryCard() {
+        // Create the base models
+        var baseModel = ModelTemplates.TWO_LAYERED_ITEM.create(
+                ModelLocationUtils.getModelLocation(AEItems.MEMORY_CARD.asItem(), "_base"),
+                TextureMapping.layered(makeId("item/memory_card_base"), makeId("item/memory_card_led")),
+                modelOutput);
+        itemModels.itemModelOutput.accept(
+                AEItems.MEMORY_CARD.asItem(),
+                new MemoryCardItemModel.Unbaked(
+                        baseModel,
+                        makeId("item/memory_card_hash"))
+
+        );
     }
 
     private void storageCell(ItemDefinition<?> item, String background) {
-        String id = item.id().getPath();
-        singleTexture(
-                id,
-                mcLoc("item/generated"),
-                "layer0",
-                makeId(background))
-                .texture("layer1", "item/storage_cell_led");
+        var model = itemModels.generateLayeredItem(
+                item.asItem(),
+                makeId(background),
+                makeId("item/storage_cell_led"));
+        itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.tintedModel(
+                model,
+                new Constant(-1),
+                new StorageCellStateTintSource()));
     }
 
+    public static final TextureSlot LAYER3 = TextureSlot.create("layer3");
+    private static final ModelTemplate FOUR_LAYERED_ITEM = ModelTemplates.createItem("generated", TextureSlot.LAYER0,
+            TextureSlot.LAYER1, TextureSlot.LAYER2, LAYER3);
+
     private void portableCell(ItemDefinition<?> item, String housingType, String tier) {
-        String id = item.id().getPath();
-        singleTexture(
-                id,
-                mcLoc("item/generated"),
-                "layer0",
-                makeId("item/portable_cell_%s_housing".formatted(housingType)))
-                .texture("layer1", "item/portable_cell_led")
-                .texture("layer2", "item/portable_cell_screen")
-                .texture("layer3", "item/portable_cell_side_%s".formatted(tier));
+
+        var model = FOUR_LAYERED_ITEM.create(
+                item.asItem(),
+                TextureMapping.layered(
+                        makeId("item/portable_cell_%s_housing".formatted(housingType)),
+                        makeId("item/portable_cell_led"),
+                        makeId("item/portable_cell_screen"))
+                        .put(LAYER3, makeId("item/portable_cell_side_%s".formatted(tier))),
+                itemModels.modelOutput);
+        itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.tintedModel(
+                model,
+                new Constant(-1),
+                new StorageCellStateTintSource(),
+                new PortableCellColorTintSource()));
     }
 
     private void registerHandheld() {
@@ -176,56 +211,60 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
     }
 
     private void handheld(ItemDefinition<?> item) {
-        singleTexture(
-                item.id().getPath(),
-                ResourceLocation.parse("item/handheld"),
-                "layer0",
-                makeId("item/" + item.id().getPath()));
+        itemModels.generateFlatItem(item.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
     }
 
     private void registerEmptyModel(ItemDefinition<?> item) {
-        this.getBuilder(item.id().getPath());
+        itemModels.itemModelOutput.accept(item.asItem(), new EmptyModel.Unbaked());
     }
 
     /**
      * Note that color is applied to the textures in {@link appeng.init.client.InitItemColors}.
      */
     private void registerPaintballs() {
-        for (AEColor value : AEColor.values()) {
-            var id = AEItems.COLORED_PAINT_BALL.id(value);
-            if (id != null) {
-                flatSingleLayer(id, "item/paint_ball");
+        var baseModel = ModelTemplates.FLAT_ITEM.create(AppEng.makeId("item/paint_ball"),
+                TextureMapping.layer0(AppEng.makeId("item/paint_ball")), this.modelOutput);
+        var lumenModel = ModelTemplates.FLAT_ITEM.create(AppEng.makeId("item/paint_ball_shimmer"),
+                TextureMapping.layer0(AppEng.makeId("item/paint_ball_shimmer")), this.modelOutput);
+
+        for (var color : AEColor.values()) {
+            if (color == AEColor.TRANSPARENT) {
+                continue;
             }
+
+            itemModels.itemModelOutput.accept(
+                    AEItems.COLORED_PAINT_BALL.item(color),
+                    ItemModelUtils.tintedModel(baseModel, new Constant(color.mediumVariant)));
+            var lumenColor = getLumenTintColor(color);
+            itemModels.itemModelOutput.accept(
+                    AEItems.COLORED_LUMEN_PAINT_BALL.item(color),
+                    ItemModelUtils.tintedModel(lumenModel, new Constant(lumenColor)));
         }
-
-        for (AEColor value : AEColor.values()) {
-            var id = AEItems.COLORED_LUMEN_PAINT_BALL.id(value);
-            if (id != null) {
-                flatSingleLayer(id, "item/paint_ball_shimmer");
-            }
-        }
     }
 
-    private ItemModelBuilder flatSingleLayer(ItemDefinition<?> item, String texture) {
-        String id = item.id().getPath();
-        return singleTexture(
-                id,
-                mcLoc("item/generated"),
-                "layer0",
-                makeId(texture));
+    private static int getLumenTintColor(AEColor color) {
+        // We use a white base item icon for paint balls. This applies the correct color to it.
+        final int colorValue = color.mediumVariant;
+        final int r = ARGB.red(colorValue);
+        final int g = ARGB.green(colorValue);
+        final int b = ARGB.blue(colorValue);
+        float fail = 0.7f;
+        int full = (int) (255 * 0.3);
+        return ARGB.color(
+                (int) (full + r * fail),
+                (int) (full + g * fail),
+                (int) (full + b * fail));
     }
 
-    private ItemModelBuilder flatSingleLayer(ResourceLocation id, String texture) {
-        return singleTexture(
-                id.getPath(),
-                mcLoc("item/generated"),
-                "layer0",
-                makeId(texture));
+    private void flatSingleLayer(ItemLike item, String texture) {
+        var model = ModelTemplates.FLAT_ITEM.create(item.asItem(), TextureMapping.layer0(makeId(texture)),
+                itemModels.modelOutput);
+        itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.plainModel(model));
     }
 
-    private ItemModelBuilder builtInItemModel(String name) {
-        var model = getBuilder("item/" + name);
-        return model;
+    private void builtInItemModel(ItemLike item) {
+        var model = createBuiltInModel(ModelLocationUtils.getModelLocation(item.asItem()));
+        blockModels.registerSimpleItemModel(item.asItem(), model);
     }
 
     private static ResourceLocation makeId(String id) {

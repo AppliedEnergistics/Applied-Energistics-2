@@ -22,21 +22,23 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.ChunkRenderTypeSet;
@@ -84,14 +86,14 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     private final TextureAtlasSprite lightTexture;
     private final TextureAtlasSprite lightCornerTexture;
 
-    public QnbFormedBakedModel(BakedModel baseModel, Function<Material, TextureAtlasSprite> bakedTextureGetter) {
+    public QnbFormedBakedModel(BakedModel baseModel, SpriteGetter bakedTextureGetter) {
         this.baseModel = baseModel;
-        this.linkTexture = bakedTextureGetter.apply(TEXTURE_LINK);
-        this.ringTexture = bakedTextureGetter.apply(TEXTURE_RING);
-        this.glassCableTexture = bakedTextureGetter.apply(TEXTURE_CABLE_GLASS);
-        this.coveredCableTexture = bakedTextureGetter.apply(TEXTURE_COVERED_CABLE);
-        this.lightTexture = bakedTextureGetter.apply(TEXTURE_RING_LIGHT);
-        this.lightCornerTexture = bakedTextureGetter.apply(TEXTURE_RING_LIGHT_CORNER);
+        this.linkTexture = bakedTextureGetter.get(TEXTURE_LINK);
+        this.ringTexture = bakedTextureGetter.get(TEXTURE_RING);
+        this.glassCableTexture = bakedTextureGetter.get(TEXTURE_CABLE_GLASS);
+        this.coveredCableTexture = bakedTextureGetter.get(TEXTURE_COVERED_CABLE);
+        this.lightTexture = bakedTextureGetter.get(TEXTURE_RING_LIGHT);
+        this.lightCornerTexture = bakedTextureGetter.get(TEXTURE_RING_LIGHT_CORNER);
         this.linkBlock = AEBlocks.QUANTUM_LINK.block();
     }
 
@@ -224,18 +226,8 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isCustomRenderer() {
-        return false;
-    }
-
-    @Override
     public TextureAtlasSprite getParticleIcon() {
         return this.baseModel.getParticleIcon();
-    }
-
-    @Override
-    public ItemOverrides getOverrides() {
-        return this.baseModel.getOverrides();
     }
 
     public static List<Material> getRequiredTextures() {
@@ -246,5 +238,16 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
         return RENDER_TYPES;
+    }
+
+    @Override
+    public void applyTransform(ItemDisplayContext transformType, PoseStack poseStack, boolean applyLeftHandTransform) {
+        baseModel.applyTransform(transformType, poseStack, applyLeftHandTransform);
+    }
+
+    @Deprecated
+    @Override
+    public ItemTransforms getTransforms() {
+        return baseModel.getTransforms();
     }
 }

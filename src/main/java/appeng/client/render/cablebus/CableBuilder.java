@@ -22,12 +22,12 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Function;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.Direction;
 
 import appeng.api.util.AECableType;
@@ -47,14 +47,14 @@ class CableBuilder {
 
     private final SmartCableTextures smartCableTextures;
 
-    CableBuilder(Function<Material, TextureAtlasSprite> bakedTextureGetter) {
+    CableBuilder(SpriteGetter bakedTextureGetter) {
         this.coreTextures = new EnumMap<>(CableCoreType.class);
 
         for (CableCoreType type : CableCoreType.values()) {
             EnumMap<AEColor, TextureAtlasSprite> colorTextures = new EnumMap<>(AEColor.class);
 
             for (AEColor color : AEColor.values()) {
-                colorTextures.put(color, bakedTextureGetter.apply(type.getTexture(color)));
+                colorTextures.put(color, bakedTextureGetter.get(type.getTexture(color)));
             }
 
             this.coreTextures.put(type, colorTextures);
@@ -66,7 +66,7 @@ class CableBuilder {
             EnumMap<AEColor, TextureAtlasSprite> colorTextures = new EnumMap<>(AEColor.class);
 
             for (AEColor color : AEColor.values()) {
-                colorTextures.put(color, bakedTextureGetter.apply(getConnectionTexture(type, color)));
+                colorTextures.put(color, bakedTextureGetter.get(getConnectionTexture(type, color)));
             }
 
             this.connectionTextures.put(type, colorTextures);

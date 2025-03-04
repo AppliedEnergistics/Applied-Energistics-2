@@ -107,7 +107,7 @@ public class UpgradeCardItem extends AEBaseItem {
                 }
 
                 player.setItemInHand(hand, upgrades.addItems(heldStack));
-                return InteractionResult.sidedSuccess(player.getCommandSenderWorld().isClientSide());
+                return InteractionResult.SUCCESS;
             }
         }
 

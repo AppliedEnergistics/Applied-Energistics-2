@@ -66,6 +66,6 @@ final class AEItemKeys extends AEKeyType {
 
     @Override
     public Stream<TagKey<?>> getTagNames() {
-        return BuiltInRegistries.ITEM.getTagNames().map(t -> t);
+        return BuiltInRegistries.ITEM.listTagIds().map(t -> t);
     }
 }

@@ -20,19 +20,19 @@ class EmiInscriberRecipe extends BasicEmiRecipe {
     private final InscriberRecipe recipe;
 
     public EmiInscriberRecipe(RecipeHolder<InscriberRecipe> holder) {
-        super(CATEGORY, holder.id(), 105, 54);
+        super(CATEGORY, holder.id().location(), 105, 54);
 
         recipe = holder.value();
 
-        if (!recipe.getTopOptional().isEmpty()) {
-            var top = EmiIngredient.of(recipe.getTopOptional());
+        if (recipe.getTopOptional().isPresent()) {
+            var top = EmiIngredient.of(recipe.getTopOptional().get());
             if (recipe.getProcessType() == InscriberProcessType.INSCRIBE) {
                 top.getEmiStacks().forEach(s -> s.setRemainder(s));
             }
             inputs.add(top);
         }
-        if (!recipe.getBottomOptional().isEmpty()) {
-            var bottom = EmiIngredient.of(recipe.getBottomOptional());
+        if (recipe.getBottomOptional().isPresent()) {
+            var bottom = EmiIngredient.of(recipe.getBottomOptional().get());
             if (recipe.getProcessType() == InscriberProcessType.INSCRIBE) {
                 bottom.getEmiStacks().forEach(s -> s.setRemainder(s));
             }
@@ -51,12 +51,12 @@ class EmiInscriberRecipe extends BasicEmiRecipe {
         widgets.addAnimatedTexture(background, 100, 19, 6, 18, 177, 0,
                 2000, false, true, false);
 
-        widgets.addSlot(EmiIngredient.of(recipe.getTopOptional()), 2, 2)
-                .drawBack(false);
-        widgets.addSlot(EmiIngredient.of(recipe.getMiddleInput()), 26, 18)
-                .drawBack(false);
-        widgets.addSlot(EmiIngredient.of(recipe.getBottomOptional()), 2, 34)
-                .drawBack(false);
+        // TODO 1.21.4 widgets.addSlot(EmiIngredient.of(recipe.getTopOptional()), 2, 2)
+        // TODO 1.21.4 .drawBack(false);
+        // TODO 1.21.4 widgets.addSlot(EmiIngredient.of(recipe.getMiddleInput()), 26, 18)
+        // TODO 1.21.4 .drawBack(false);
+        // TODO 1.21.4 widgets.addSlot(EmiIngredient.of(recipe.getBottomOptional()), 2, 34)
+        // TODO 1.21.4 .drawBack(false);
         widgets.addSlot(EmiStack.of(recipe.getResultItem()), 76, 19)
                 .drawBack(false);
     }

@@ -22,7 +22,6 @@ import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import appeng.api.ids.AETags;
 import appeng.core.AppEng;
@@ -30,9 +29,8 @@ import appeng.datagen.providers.IAE2DataProvider;
 
 public class FluidTagsProvider extends net.minecraft.data.tags.FluidTagsProvider implements IAE2DataProvider {
 
-    public FluidTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries,
-            ExistingFileHelper existingFileHelper) {
-        super(output, registries, AppEng.MOD_ID, existingFileHelper);
+    public FluidTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+        super(output, registries, AppEng.MOD_ID);
     }
 
     @Override

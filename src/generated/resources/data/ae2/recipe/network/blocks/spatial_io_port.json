@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "c:glass_blocks/cheap"
-    },
-    "b": {
-      "item": "ae2:fluix_glass_cable"
-    },
-    "c": {
-      "item": "ae2:io_port"
-    },
-    "d": {
-      "tag": "c:ingots/iron"
-    },
-    "e": {
-      "item": "ae2:engineering_processor"
-    }
+    "a": "#c:glass_blocks",
+    "b": "ae2:fluix_glass_cable",
+    "c": "ae2:io_port",
+    "d": "#c:ingots/iron",
+    "e": "ae2:engineering_processor"
   },
   "pattern": [
     "aaa",

@@ -1,11 +1,10 @@
 package appeng.client.render.crafting;
 
 import java.util.List;
-import java.util.function.Function;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.SpriteGetter;
 
 import appeng.block.crafting.ICraftingUnitType;
 
@@ -28,5 +27,5 @@ public abstract class AbstractCraftingUnitModelProvider<T extends ICraftingUnitT
      */
     public abstract List<Material> getMaterials();
 
-    public abstract BakedModel getBakedModel(Function<Material, TextureAtlasSprite> spriteGetter);
+    public abstract BakedModel getBakedModel(SpriteGetter spriteGetter);
 }

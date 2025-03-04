@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -46,9 +46,11 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
     private static final ChunkRenderTypeSet RENDER_TYPES = ChunkRenderTypeSet.of(RenderType.CUTOUT);
 
     private final Map<SpatialPylonTextureType, TextureAtlasSprite> textures;
+    private final ItemTransforms transforms;
 
-    SpatialPylonBakedModel(Map<SpatialPylonTextureType, TextureAtlasSprite> textures) {
+    SpatialPylonBakedModel(Map<SpatialPylonTextureType, TextureAtlasSprite> textures, ItemTransforms transforms) {
         this.textures = ImmutableMap.copyOf(textures);
+        this.transforms = transforms;
     }
 
     @Override
@@ -188,22 +190,17 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isCustomRenderer() {
-        return false;
-    }
-
-    @Override
     public TextureAtlasSprite getParticleIcon() {
         return this.textures.get(SpatialPylonTextureType.DIM);
     }
 
     @Override
-    public ItemOverrides getOverrides() {
-        return ItemOverrides.EMPTY;
+    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
+        return RENDER_TYPES;
     }
 
     @Override
-    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-        return RENDER_TYPES;
+    public ItemTransforms getTransforms() {
+        return transforms;
     }
 }

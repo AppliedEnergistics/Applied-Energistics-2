@@ -85,9 +85,9 @@ public class SpatialPylonBlockEntity extends AENetworkedBlockEntity implements I
         this.disconnect(false);
     }
 
-    public void neighborChanged(BlockPos changedPos) {
+    public void updateMultiBlock(BlockPos changedPos) {
         if (level instanceof ServerLevel serverLevel) {
-            this.calc.updateMultiblockAfterNeighborUpdate(serverLevel, worldPosition, changedPos);
+            this.calc.updateMultiblockAfterNeighborChange(serverLevel, worldPosition, changedPos);
         }
     }
 

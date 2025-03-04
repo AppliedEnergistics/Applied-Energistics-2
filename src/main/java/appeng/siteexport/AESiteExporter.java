@@ -98,7 +98,7 @@ public class AESiteExporter extends SiteExporter {
         }
 
         return Map.of(
-                "resultItem", recipe.getResultItem(null),
+                "resultItem", recipe.getResultItem(),
                 "ingredients", recipe.getIngredients(),
                 "circumstance", circumstanceJson);
     }

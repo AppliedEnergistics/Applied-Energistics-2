@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:paper"
-    },
-    {
-      "tag": "c:gems/fluix"
-    }
+    "minecraft:paper",
+    "#c:gems/fluix"
   ],
   "result": {
     "count": 1,

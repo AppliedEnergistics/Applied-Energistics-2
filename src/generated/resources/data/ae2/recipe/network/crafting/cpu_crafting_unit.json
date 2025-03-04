@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "c:ingots/iron"
-    },
-    "b": {
-      "item": "ae2:calculation_processor"
-    },
-    "c": {
-      "item": "ae2:fluix_glass_cable"
-    },
-    "d": {
-      "item": "ae2:logic_processor"
-    }
+    "a": "#c:ingots/iron",
+    "b": "ae2:calculation_processor",
+    "c": "ae2:fluix_glass_cable",
+    "d": "ae2:logic_processor"
   },
   "pattern": [
     "aba",

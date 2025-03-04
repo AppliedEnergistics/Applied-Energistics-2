@@ -1,15 +1,9 @@
 {
   "type": "ae2:inscriber",
   "ingredients": {
-    "bottom": {
-      "item": "ae2:printed_silicon"
-    },
-    "middle": {
-      "item": "minecraft:redstone"
-    },
-    "top": {
-      "item": "ae2:printed_calculation_processor"
-    }
+    "bottom": "ae2:printed_silicon",
+    "middle": "minecraft:redstone",
+    "top": "ae2:printed_calculation_processor"
   },
   "mode": "press",
   "result": {

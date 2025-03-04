@@ -41,10 +41,10 @@ public class PartAnnotationStrategy implements ImplicitAnnotationStrategy {
             Component description = Component.empty();
             if (part != null) {
                 aabb = getAABB(partResult.side, partResult.part::getBoxes);
-                description = partResult.part.getPartItem().asItem().getDescription();
+                description = partResult.part.getPartItem().asItem().getName();
             } else if (facade != null) {
                 aabb = getAABB(partResult.side, bch -> partResult.facade.getBoxes(bch, false));
-                description = GuiText.Facade.text(partResult.facade.getItem().getDescription());
+                description = GuiText.Facade.text(partResult.facade.getItem().getName());
             }
 
             if (aabb != null) {

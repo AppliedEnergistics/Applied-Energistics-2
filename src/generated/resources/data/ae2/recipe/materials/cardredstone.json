@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:redstone_torch"
-    },
-    {
-      "item": "ae2:basic_card"
-    }
+    "minecraft:redstone_torch",
+    "ae2:basic_card"
   ],
   "result": {
     "count": 1,

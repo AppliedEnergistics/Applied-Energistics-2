@@ -25,19 +25,21 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.MilkBucketItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -80,7 +82,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     @SuppressWarnings("unchecked")
     private final Map<Item, Boolean>[] isValidCache = new Map[9];
 
-    public AECraftingPattern(AEItemKey definition, Level level) {
+    public AECraftingPattern(AEItemKey definition, ServerLevel level) {
         this.definition = definition;
         var encodedPattern = definition.get(AEComponents.ENCODED_CRAFTING_PATTERN);
         if (encodedPattern == null) {
@@ -94,7 +96,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         this.sparseInputs = getCraftingInputs(encodedPattern.inputs());
 
         // Find recipe
-        this.recipeHolder = level.getRecipeManager().byKey(encodedPattern.recipeId()).orElse(null);
+        this.recipeHolder = level.recipeAccess().byKey(encodedPattern.recipeId()).orElse(null);
         if (recipeHolder == null || !(recipeHolder.value() instanceof CraftingRecipe)) {
             throw new IllegalArgumentException("Pattern references unknown recipe " + encodedPattern.recipeId());
         }
@@ -165,7 +167,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
      * ingredient list will be condensed to the actual recipe's grid size. In addition, in our 3x3 grid, the user can
      * shift the actual recipe input to the right and down.
      */
-    private Ingredient getRecipeIngredient(int slot) {
+    private Optional<Ingredient> getRecipeIngredient(int slot) {
 
         if (recipe instanceof ShapedRecipe shapedRecipe) {
 
@@ -175,7 +177,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         }
     }
 
-    private Ingredient getShapedRecipeIngredient(int slot, int recipeWidth) {
+    private Optional<Ingredient> getShapedRecipeIngredient(int slot, int recipeWidth) {
         // Compute the offset of the user's input vs. crafting grid origin
         // Which is >0 if they have empty rows above or to the left of their input
         int topOffset = 0;
@@ -200,16 +202,21 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         // Compute the index into the recipe's ingredient list now
         int ingredientIndex = slotY * recipeWidth + slotX;
 
-        NonNullList<Ingredient> ingredients = recipe.getIngredients();
-
-        if (ingredientIndex < 0 || ingredientIndex > ingredients.size()) {
-            return Ingredient.EMPTY;
+        var placement = recipe.placementInfo();
+        if (placement.isImpossibleToPlace()) {
+            return Optional.empty();
         }
 
-        return ingredients.get(ingredientIndex);
+        var indexMap = placement.slotsToIngredientIndex();
+
+        if (ingredientIndex < 0 || ingredientIndex > indexMap.size()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(placement.ingredients().get(indexMap.getInt(ingredientIndex)));
     }
 
-    private Ingredient getShapelessRecipeIngredient(int slot) {
+    private Optional<Ingredient> getShapelessRecipeIngredient(int slot) {
         // We map the list of *filled* sparse inputs to the shapeless (ergo unordered)
         // ingredients. While these do not actually correspond to each other,
         // since both lists have the same length, the mapping is at least stable.
@@ -220,12 +227,16 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             }
         }
 
-        NonNullList<Ingredient> ingredients = recipe.getIngredients();
-        if (ingredientIndex < ingredients.size()) {
-            return ingredients.get(ingredientIndex);
+        var placement = recipe.placementInfo();
+        if (placement.isImpossibleToPlace()) {
+            return Optional.empty();
         }
 
-        return Ingredient.EMPTY;
+        if (ingredientIndex < placement.slotsToIngredientIndex().getInt(ingredientIndex)) {
+            return Optional.of(placement.ingredients().get(placement.slotsToIngredientIndex().getInt(ingredientIndex)));
+        }
+
+        return Optional.empty();
     }
 
     /**
@@ -487,7 +498,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
 
         var containedFluid = ContainerItemStrategies.getContainedStack(itemKey.toStack(), AEKeyType.fluids());
         // Milk is not natively a fluid container, but it might be made one by other mods
-        var isBucket = itemKey.getItem() instanceof BucketItem || itemKey.getItem() instanceof MilkBucketItem;
+        var isBucket = itemKey.getItem() instanceof BucketItem || itemKey.is(Items.MILK_BUCKET);
 
         if (canSubstituteFluids && containedFluid != null && isBucket) {
             // We only support buckets since we can't predict the behavior of other kinds of containers (ender tanks...)
@@ -593,7 +604,14 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             if (!canSubstitute) {
                 this.possibleInputs = new GenericStack[] { itemOrFluidInput };
             } else {
-                ItemStack[] matchingStacks = getRecipeIngredient(slot).getItems();
+                ItemStack[] matchingStacks;
+                var recipeIngredient = getRecipeIngredient(slot).orElse(null);
+                if (recipeIngredient == null) {
+                    matchingStacks = new ItemStack[0];
+                } else {
+                    matchingStacks = recipeIngredient.items().map(Holder::value).map(Item::getDefaultInstance)
+                            .toArray(ItemStack[]::new); // TODO 1.21.4 can't stay like this
+                }
                 this.possibleInputs = new GenericStack[matchingStacks.length + 1];
                 // Ensure that the stack chosen by the user gets precedence.
                 this.possibleInputs[0] = itemOrFluidInput;

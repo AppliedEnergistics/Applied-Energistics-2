@@ -24,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
@@ -35,7 +34,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
-import net.minecraft.world.level.BlockGetter;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.api.behaviors.PickupStrategy;
@@ -102,7 +100,7 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
         super.addToWorld();
 
         var host = getBlockEntity();
-        var buildHeight = host.getLevel().getMaxBuildHeight();
+        var buildHeight = host.getLevel().getMaxY();
 
         continuousGenerationTicks = 0;
         continuousGeneration = null;
@@ -198,15 +196,6 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
      */
     public PlaneConnections getConnections() {
         return connectionHelper.getConnections();
-    }
-
-    @Override
-    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
-        if (pos.relative(this.getSide()).equals(neighbor)) {
-            if (!isClientSide()) {
-                this.refresh();
-            }
-        }
     }
 
     @Override

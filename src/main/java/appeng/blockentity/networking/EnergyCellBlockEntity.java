@@ -125,7 +125,7 @@ public class EnergyCellBlockEntity extends AENetworkedBlockEntity implements IAE
         );
         // The chunk might be null, for example if it has a ticket level of 46 (i.e. about to be unloaded).
         if (chunk != null) {
-            chunk.setUnsaved(true);
+            chunk.markUnsaved();
         }
     }
 

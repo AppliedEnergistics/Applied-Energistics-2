@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:white_paint_ball"
-    },
-    "b": {
-      "tag": "c:dusts/glowstone"
-    }
+    "a": "ae2:white_paint_ball",
+    "b": "#c:dusts/glowstone"
   },
   "pattern": [
     "aaa",

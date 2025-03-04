@@ -21,12 +21,11 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 
 import appeng.core.AppEng;
-import appeng.core.worlddata.AESavedData;
 
 /**
  * Implementation detail of {@link ChunkLoadingService} on Fabric, as {@code ForgeChunkManager} is not available there.
  */
-class ChunkLoadState extends AESavedData {
+class ChunkLoadState extends SavedData {
 
     public static final String NAME = AppEng.MOD_ID + "_chunk_load_state";
 

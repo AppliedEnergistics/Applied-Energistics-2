@@ -35,8 +35,8 @@ import appeng.menu.locator.MenuLocators;
 
 public class CellWorkbenchBlock extends AEBaseEntityBlock<CellWorkbenchBlockEntity> {
 
-    public CellWorkbenchBlock() {
-        super(metalProps());
+    public CellWorkbenchBlock(Properties p) {
+        super(metalProps(p));
     }
 
     @Override
@@ -47,7 +47,7 @@ public class CellWorkbenchBlock extends AEBaseEntityBlock<CellWorkbenchBlockEnti
             if (!level.isClientSide()) {
                 MenuOpener.open(CellWorkbenchMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

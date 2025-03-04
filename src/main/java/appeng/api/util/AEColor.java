@@ -37,7 +37,7 @@ import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 /**
  * List of all colors supported by AE, their names, and various colors for display.
- *
+ * <p>
  * Should be the same order as Dyes, excluding Transparent.
  */
 
@@ -161,7 +161,6 @@ public enum AEColor implements StringRepresentable {
     /**
      * Will return a variant of this color based on the given tint index.
      *
-     * @param tintIndex A tint index as it can be used for {@link BakedQuad#getTintIndex()}.
      * @return The appropriate color variant, or -1.
      */
     public int getVariantByTintIndex(int tintIndex) {
@@ -187,6 +186,26 @@ public enum AEColor implements StringRepresentable {
             default:
                 return -1;
         }
+    }
+
+    /**
+     * Will return a variant of this color based on the given tint index.
+     *
+     * @return The appropriate color variant, or -1.
+     */
+    public int getVariant(AEColorVariant tint) {
+        return switch (tint) {
+            case DARK -> this.blackVariant;
+            case MEDIUM -> this.mediumVariant;
+            case BRIGHT -> this.whiteVariant;
+            case MEDIUM_BRIGHT -> {
+                final int light = this.whiteVariant;
+                final int dark = this.mediumVariant;
+                yield ((light >> 16 & 0xff) + (dark >> 16 & 0xff)) / 2 << 16
+                        | ((light >> 8 & 0xff) + (dark >> 8 & 0xff)) / 2 << 8
+                        | ((light & 0xff) + (dark & 0xff)) / 2;
+            }
+        };
     }
 
     public String getEnglishName() {

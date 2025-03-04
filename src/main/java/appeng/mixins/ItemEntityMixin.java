@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -39,9 +40,9 @@ public abstract class ItemEntityMixin extends Entity {
     private int ae2_transformTime = 0;
     private int ae2_delay = 0;
 
-    @Inject(at = @At("HEAD"), method = "hurt", cancellable = true)
-    void handleExplosion(DamageSource src, float dmg, CallbackInfoReturnable<Boolean> ci) {
-        if (!level().isClientSide && src.is(DamageTypeTags.IS_EXPLOSION) && !isRemoved()) {
+    @Inject(at = @At("HEAD"), method = "hurtServer", cancellable = true)
+    void handleExplosion(ServerLevel level, DamageSource src, float dmg, CallbackInfoReturnable<Boolean> ci) {
+        if (src.is(DamageTypeTags.IS_EXPLOSION) && !isRemoved()) {
             var self = (ItemEntity) (Object) this;
             // Just a hashmap lookup - short-circuit to not cause perf issues by iterating entities / recipes
             // unnecessarily.

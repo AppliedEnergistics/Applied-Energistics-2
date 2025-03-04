@@ -18,8 +18,8 @@
 
 package appeng.parts.automation;
 
-import java.util.function.Function;
-
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -27,6 +27,7 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.context.ContextMap;
 
 import appeng.client.render.BasicUnbakedModel;
 
@@ -46,13 +47,13 @@ public class PlaneModel implements BasicUnbakedModel {
     }
 
     @Override
-    public BakedModel bake(ModelBaker bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform) {
-        TextureAtlasSprite frontSprite = spriteGetter.apply(this.frontTexture);
-        TextureAtlasSprite sidesSprite = spriteGetter.apply(this.sidesTexture);
-        TextureAtlasSprite backSprite = spriteGetter.apply(this.backTexture);
+    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion,
+            boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
+        TextureAtlasSprite frontSprite = baker.sprites().get(this.frontTexture);
+        TextureAtlasSprite sidesSprite = baker.sprites().get(this.sidesTexture);
+        TextureAtlasSprite backSprite = baker.sprites().get(this.backTexture);
 
-        return new PlaneBakedModel(frontSprite, sidesSprite, backSprite);
+        return new PlaneBakedModel(frontSprite, sidesSprite, backSprite, itemTransforms);
     }
 
 }

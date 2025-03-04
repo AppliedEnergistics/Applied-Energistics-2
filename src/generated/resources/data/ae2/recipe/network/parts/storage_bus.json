@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:piston"
-    },
-    {
-      "tag": "ae2:interface"
-    },
-    {
-      "item": "minecraft:piston"
-    }
+    "minecraft:piston",
+    "#ae2:interface",
+    "minecraft:piston"
   ],
   "result": {
     "count": 1,

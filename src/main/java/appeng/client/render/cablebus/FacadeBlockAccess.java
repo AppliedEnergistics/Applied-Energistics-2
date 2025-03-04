@@ -90,7 +90,7 @@ public class FacadeBlockAccess implements BlockAndTintGetter {
     }
 
     @Override
-    public int getMinBuildHeight() {
-        return level.getMinBuildHeight();
+    public int getMinY() {
+        return level.getMinY();
     }
 }

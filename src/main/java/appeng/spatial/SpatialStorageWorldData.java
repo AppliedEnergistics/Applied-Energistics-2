@@ -27,16 +27,16 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.saveddata.SavedData;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import appeng.core.AELog;
-import appeng.core.worlddata.AESavedData;
 
 /**
  * Extra data attached to the spatial storage level.
  */
-public class SpatialStorageWorldData extends AESavedData {
+public class SpatialStorageWorldData extends SavedData {
 
     /**
      * ID of this data when it is attached to a level.

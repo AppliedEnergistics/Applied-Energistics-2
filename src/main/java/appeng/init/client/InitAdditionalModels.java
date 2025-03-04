@@ -18,7 +18,6 @@
 
 package appeng.init.client;
 
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.ModelEvent;
@@ -39,7 +38,7 @@ public class InitAdditionalModels {
         event.register(CrankRenderer.HANDLE_MODEL);
 
         PartModelsInternal.freeze();
-        PartModelsInternal.getModels().stream().map(ModelResourceLocation::standalone).forEach(event::register);
+        PartModelsInternal.getModels().forEach(event::register);
     }
 
 }

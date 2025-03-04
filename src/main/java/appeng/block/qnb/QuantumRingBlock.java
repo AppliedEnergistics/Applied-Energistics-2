@@ -38,8 +38,8 @@ public class QuantumRingBlock extends QuantumBaseBlock {
     private static final double DEFAULT_MODEL_MIN = 2.0 / 16.0;
     private static final double DEFAULT_MODEL_MAX = 14.0 / 16.0;
 
-    public QuantumRingBlock() {
-        super(metalProps());
+    public QuantumRingBlock(Properties p) {
+        super(metalProps(p));
     }
 
     @Override

@@ -3,9 +3,7 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.35,
-  "ingredient": {
-    "tag": "c:dusts/certus_quartz"
-  },
+  "ingredient": "#c:dusts/certus_quartz",
   "result": {
     "count": 1,
     "id": "ae2:silicon"

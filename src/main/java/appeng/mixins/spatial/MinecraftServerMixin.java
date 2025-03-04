@@ -61,8 +61,8 @@ public abstract class MinecraftServerMixin {
         var registryHolder = registries.compositeAccess();
 
         var levelStem = new LevelStem(
-                registryHolder.registryOrThrow(Registries.DIMENSION_TYPE)
-                        .getHolderOrThrow(SpatialStorageDimensionIds.DIMENSION_TYPE_ID),
+                registryHolder.lookupOrThrow(Registries.DIMENSION_TYPE)
+                        .getOrThrow(SpatialStorageDimensionIds.DIMENSION_TYPE_ID),
                 new SpatialStorageChunkGenerator(
                         registryHolder.lookupOrThrow(Registries.BIOME)));
 

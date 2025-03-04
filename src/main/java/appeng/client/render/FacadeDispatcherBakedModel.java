@@ -42,7 +42,7 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel {
     }
 
     @Override
-    public synchronized List<BakedModel> getRenderPasses(ItemStack stack, boolean fabulous) {
+    public synchronized List<BakedModel> getRenderPasses(ItemStack stack) {
         if (!(stack.getItem() instanceof FacadeItem itemFacade)) {
             return List.of(this);
         }

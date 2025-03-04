@@ -1,9 +1,7 @@
 {
   "type": "ae2:inscriber",
   "ingredients": {
-    "middle": {
-      "tag": "c:gems/fluix"
-    }
+    "middle": "#c:gems/fluix"
   },
   "mode": "inscribe",
   "result": {

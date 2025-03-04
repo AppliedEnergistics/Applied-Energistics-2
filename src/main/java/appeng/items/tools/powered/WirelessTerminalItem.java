@@ -32,7 +32,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -111,16 +110,16 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      * Opens a wireless terminal when activated by the player while held in hand.
      */
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         var is = player.getItemInHand(hand);
 
         if (!player.level().isClientSide() && checkPreconditions(is)) {
             if (MenuOpener.open(getMenuType(), player, MenuLocators.forHand(player, hand))) {
-                return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()), is);
+                return InteractionResult.SUCCESS;
             }
         }
 
-        return new InteractionResultHolder<>(InteractionResult.FAIL, is);
+        return InteractionResult.FAIL;
     }
 
     @Override

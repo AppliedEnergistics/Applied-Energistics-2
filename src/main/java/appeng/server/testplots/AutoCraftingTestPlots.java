@@ -20,7 +20,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.blockentity.misc.InscriberBlockEntity;
-import appeng.blockentity.storage.SkyChestBlockEntity;
+import appeng.blockentity.storage.SkyStoneChestBlockEntity;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -346,7 +346,7 @@ public final class AutoCraftingTestPlots {
                     .thenWaitUntil(craftingJob::tickUntilStarted)
                     .thenIdle(1) // give time to push out job
                     .thenExecute(() -> {
-                        var chest = (SkyChestBlockEntity) helper.getBlockEntity(chestPos);
+                        var chest = (SkyStoneChestBlockEntity) helper.getBlockEntity(chestPos);
                         var inv = chest.getInternalInventory();
                         for (int i = 0; i < 4; ++i) {
                             helper.check(inv.getStackInSlot(i).getCount() == 1,

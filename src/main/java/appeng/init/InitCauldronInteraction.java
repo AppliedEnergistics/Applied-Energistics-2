@@ -11,7 +11,7 @@ public class InitCauldronInteraction {
         // Undye all dyeable items
         for (var def : AEItems.getItems()) {
             if (def.asItem() instanceof AbstractPortableCell || def.asItem() instanceof MemoryCardItem) {
-                CauldronInteraction.WATER.map().put(def.asItem(), CauldronInteraction.DYED_ITEM);
+                CauldronInteraction.WATER.map().put(def.asItem(), CauldronInteraction::dyedItemIteration);
             }
         }
     }

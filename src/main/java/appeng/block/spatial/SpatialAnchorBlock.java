@@ -43,8 +43,8 @@ public class SpatialAnchorBlock extends AEBaseEntityBlock<SpatialAnchorBlockEnti
 
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public SpatialAnchorBlock() {
-        super(metalProps());
+    public SpatialAnchorBlock(Properties p) {
+        super(metalProps(p));
         this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 
@@ -66,7 +66,7 @@ public class SpatialAnchorBlock extends AEBaseEntityBlock<SpatialAnchorBlockEnti
             if (!level.isClientSide()) {
                 MenuOpener.open(SpatialAnchorMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

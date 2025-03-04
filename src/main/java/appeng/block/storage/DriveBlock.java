@@ -34,8 +34,8 @@ import appeng.blockentity.storage.DriveBlockEntity;
 
 public class DriveBlock extends AEBaseEntityBlock<DriveBlockEntity> {
 
-    public DriveBlock() {
-        super(metalProps());
+    public DriveBlock(Properties p) {
+        super(metalProps(p));
     }
 
     @Override
@@ -50,7 +50,7 @@ public class DriveBlock extends AEBaseEntityBlock<DriveBlockEntity> {
             if (!level.isClientSide) {
                 be.openMenu(player);
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

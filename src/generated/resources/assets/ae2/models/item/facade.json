@@ -1,1 +1,7 @@
-{}
+{
+  "ae2:model": "ae2:item/facade",
+  "loader": "ae2:builtin",
+  "textures": {
+    "particle": "ae2:block/transparent"
+  }
+}

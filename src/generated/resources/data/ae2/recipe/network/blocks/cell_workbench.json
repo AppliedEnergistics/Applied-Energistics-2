@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "minecraft:wool"
-    },
-    "b": {
-      "item": "ae2:calculation_processor"
-    },
-    "c": {
-      "tag": "c:ingots/iron"
-    },
-    "d": {
-      "tag": "c:chests/wooden"
-    }
+    "a": "#minecraft:wool",
+    "b": "ae2:calculation_processor",
+    "c": "#c:ingots/iron",
+    "d": "#c:chests/wooden"
   },
   "pattern": [
     "aba",

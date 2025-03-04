@@ -28,9 +28,9 @@ import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.advancements.AdvancementProvider;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
@@ -40,23 +40,12 @@ import appeng.datagen.providers.advancements.AdvancementGenerator;
 import appeng.datagen.providers.datamaps.RaidHeroGiftsProvider;
 import appeng.datagen.providers.localization.LocalizationProvider;
 import appeng.datagen.providers.loot.AE2LootTableProvider;
+import appeng.datagen.providers.models.AE2ModelProvider;
 import appeng.datagen.providers.models.BlockModelProvider;
-import appeng.datagen.providers.models.CableModelProvider;
 import appeng.datagen.providers.models.DecorationModelProvider;
 import appeng.datagen.providers.models.ItemModelProvider;
 import appeng.datagen.providers.models.PartModelProvider;
-import appeng.datagen.providers.recipes.ChargerRecipes;
-import appeng.datagen.providers.recipes.CraftingRecipes;
-import appeng.datagen.providers.recipes.DecorationBlockRecipes;
-import appeng.datagen.providers.recipes.DecorationRecipes;
-import appeng.datagen.providers.recipes.EntropyRecipes;
-import appeng.datagen.providers.recipes.InscriberRecipes;
-import appeng.datagen.providers.recipes.MatterCannonAmmoProvider;
-import appeng.datagen.providers.recipes.QuartzCuttingRecipesProvider;
-import appeng.datagen.providers.recipes.SmeltingRecipes;
-import appeng.datagen.providers.recipes.SmithingRecipes;
-import appeng.datagen.providers.recipes.TransformRecipes;
-import appeng.datagen.providers.recipes.UpgradeRecipes;
+import appeng.datagen.providers.recipes.AE2RecipeProvider;
 import appeng.datagen.providers.tags.BiomeTagsProvider;
 import appeng.datagen.providers.tags.BlockTagsProvider;
 import appeng.datagen.providers.tags.DataComponentTypeTagProvider;
@@ -71,12 +60,11 @@ import appeng.init.worldgen.InitStructures;
 public class AE2DataGenerators {
 
     @SubscribeEvent
-    public static void onGatherData(GatherDataEvent event) {
+    public static void onGatherData(GatherDataEvent.Client event) {
         var generator = event.getGenerator();
         var registries = event.getLookupProvider();
         var localization = new LocalizationProvider(generator);
         var pack = generator.getVanillaPack(true);
-        var existingFileHelper = event.getExistingFileHelper();
 
         // Worldgen et al
         pack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, registries,
@@ -87,40 +75,29 @@ public class AE2DataGenerators {
 
         // Tags
         var blockTagsProvider = pack
-                .addProvider(packOutput -> new BlockTagsProvider(packOutput, registries, existingFileHelper));
+                .addProvider(packOutput -> new BlockTagsProvider(packOutput, registries));
         pack.addProvider(
-                packOutput -> new ItemTagsProvider(packOutput, registries, blockTagsProvider.contentsGetter(),
-                        existingFileHelper));
-        pack.addProvider(packOutput -> new FluidTagsProvider(packOutput, registries, existingFileHelper));
-        pack.addProvider(packOutput -> new BiomeTagsProvider(packOutput, registries, existingFileHelper));
-        pack.addProvider(packOutput -> new PoiTypeTagsProvider(packOutput, registries, existingFileHelper));
-        pack.addProvider(packOutput -> new DataComponentTypeTagProvider(packOutput, registries, existingFileHelper,
+                packOutput -> new ItemTagsProvider(packOutput, registries, blockTagsProvider.contentsGetter()));
+        pack.addProvider(packOutput -> new FluidTagsProvider(packOutput, registries));
+        pack.addProvider(packOutput -> new BiomeTagsProvider(packOutput, registries));
+        pack.addProvider(packOutput -> new PoiTypeTagsProvider(packOutput, registries));
+        pack.addProvider(packOutput -> new DataComponentTypeTagProvider(packOutput, registries,
                 localization));
 
         // Models
-        pack.addProvider(packOutput -> new BlockModelProvider(packOutput, existingFileHelper));
-        pack.addProvider(packOutput -> new DecorationModelProvider(packOutput, existingFileHelper));
-        pack.addProvider(packOutput -> new ItemModelProvider(packOutput, existingFileHelper));
-        pack.addProvider(packOutput -> new CableModelProvider(packOutput, existingFileHelper));
-        pack.addProvider(packOutput -> new PartModelProvider(packOutput, existingFileHelper));
+        pack.addProvider(AE2ModelProvider.create(
+                AppEng.MOD_ID,
+                BlockModelProvider::new,
+                DecorationModelProvider::new,
+                ItemModelProvider::new,
+                PartModelProvider::new));
 
         // Misc
-        pack.addProvider(packOutput -> new AdvancementProvider(packOutput, registries, existingFileHelper, List.of(
+        pack.addProvider(packOutput -> new AdvancementProvider(packOutput, registries, List.of(
                 new AdvancementGenerator(localization))));
 
         // Recipes
-        pack.addProvider(bindRegistries(DecorationRecipes::new, registries));
-        pack.addProvider(bindRegistries(DecorationBlockRecipes::new, registries));
-        pack.addProvider(bindRegistries(MatterCannonAmmoProvider::new, registries));
-        pack.addProvider(bindRegistries(EntropyRecipes::new, registries));
-        pack.addProvider(bindRegistries(InscriberRecipes::new, registries));
-        pack.addProvider(bindRegistries(SmeltingRecipes::new, registries));
-        pack.addProvider(bindRegistries(CraftingRecipes::new, registries));
-        pack.addProvider(bindRegistries(SmithingRecipes::new, registries));
-        pack.addProvider(bindRegistries(TransformRecipes::new, registries));
-        pack.addProvider(bindRegistries(ChargerRecipes::new, registries));
-        pack.addProvider(bindRegistries(QuartzCuttingRecipesProvider::new, registries));
-        pack.addProvider(bindRegistries(UpgradeRecipes::new, registries));
+        pack.addProvider(bindRegistries(AE2RecipeProvider.Runner::new, registries));
 
         // DataMaps
         pack.addProvider(bindRegistries(RaidHeroGiftsProvider::new, registries));

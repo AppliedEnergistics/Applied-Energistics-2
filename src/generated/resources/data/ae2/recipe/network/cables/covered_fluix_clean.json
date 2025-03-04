@@ -3,17 +3,11 @@
   "category": "misc",
   "ingredients": [
     {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "ae2:covered_cable"
-      },
-      "subtracted": {
-        "item": "ae2:fluix_covered_cable"
-      }
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#ae2:covered_cable",
+      "subtracted": "ae2:fluix_covered_cable"
     },
-    {
-      "tag": "ae2:can_remove_color"
-    }
+    "#ae2:can_remove_color"
   ],
   "result": {
     "count": 1,

@@ -2,12 +2,14 @@ package appeng.datagen.providers.recipes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 
 import appeng.core.AppEng;
@@ -23,8 +25,8 @@ import appeng.recipes.game.StorageCellDisassemblyRecipe;
 import appeng.recipes.game.StorageCellUpgradeRecipe;
 
 public class UpgradeRecipes extends AE2RecipeProvider {
-    public UpgradeRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    public UpgradeRecipes(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
     }
 
     // Defaults will always be Cell Component for upgrade/disassembly. Additional options are for modpack developers.
@@ -38,11 +40,11 @@ public class UpgradeRecipes extends AE2RecipeProvider {
     }
 
     @Override
-    public void buildRecipes(RecipeOutput consumer) {
-        itemUpgradeRecipe(consumer);
+    public void buildRecipes() {
+        itemUpgradeRecipe(output);
 
         // Crafting Unit Transformation
-        craftingUnitTransform(consumer, List.of(
+        craftingUnitTransform(output, List.of(
                 new UnitTransformTier(AEBlocks.CRAFTING_STORAGE_1K, AEItems.CELL_COMPONENT_1K),
                 new UnitTransformTier(AEBlocks.CRAFTING_STORAGE_4K, AEItems.CELL_COMPONENT_4K),
                 new UnitTransformTier(AEBlocks.CRAFTING_STORAGE_16K, AEItems.CELL_COMPONENT_16K),
@@ -51,7 +53,7 @@ public class UpgradeRecipes extends AE2RecipeProvider {
                 new UnitTransformTier(AEBlocks.CRAFTING_ACCELERATOR, AEItems.ENGINEERING_PROCESSOR),
                 new UnitTransformTier(AEBlocks.CRAFTING_MONITOR, AEParts.STORAGE_MONITOR)));
 
-        storageCellUpgradeRecipes(consumer);
+        storageCellUpgradeRecipes(output);
     }
 
     private void storageCellUpgradeRecipes(RecipeOutput output) {
@@ -112,7 +114,7 @@ public class UpgradeRecipes extends AE2RecipeProvider {
                 var recipeId = inputId.withPath(path -> "upgrade/" + path + "_to_" + toTier.suffix);
 
                 output.accept(
-                        recipeId,
+                        key(recipeId),
                         new StorageCellUpgradeRecipe(
                                 inputCell, inputComponent,
                                 resultCell, resultComponent),
@@ -122,29 +124,29 @@ public class UpgradeRecipes extends AE2RecipeProvider {
     }
 
     private void itemUpgradeRecipe(RecipeOutput output) {
-        output.accept(AppEng.makeId("add_item_upgrade"), AddItemUpgradeRecipe.INSTANCE, null);
-        output.accept(AppEng.makeId("remove_item_upgrade"), RemoveItemUpgradeRecipe.INSTANCE, null);
+        output.accept(key(AppEng.makeId("add_item_upgrade")), AddItemUpgradeRecipe.INSTANCE, null);
+        output.accept(key(AppEng.makeId("remove_item_upgrade")), RemoveItemUpgradeRecipe.INSTANCE, null);
     }
 
-    private void cellDisassembly(RecipeOutput consumer, List<ItemLike> additionalReturn, CellUpgradeTier tier) {
+    private void cellDisassembly(RecipeOutput output, List<ItemLike> additionalReturn, CellUpgradeTier tier) {
         List<ItemStack> results = new ArrayList<>();
         for (var itemLike : additionalReturn) {
             results.add(itemLike.asItem().getDefaultInstance());
         }
         results.add(tier.component.asItem().getDefaultInstance());
 
-        consumer.accept(
-                tier.cell.id().withPrefix("cell_upgrade/"),
+        output.accept(
+                key(tier.cell.id().withPrefix("cell_upgrade/")),
                 new StorageCellDisassemblyRecipe(
                         tier.cell.asItem(),
                         results),
                 null);
     }
 
-    private void craftingUnitTransform(RecipeOutput consumer, List<UnitTransformTier> tiers) {
+    private void craftingUnitTransform(RecipeOutput output, List<UnitTransformTier> tiers) {
         for (UnitTransformTier tier : tiers) {
-            consumer.accept(
-                    tier.baseBlock.id().withPrefix("crafting_unit_upgrade/"),
+            output.accept(
+                    key(tier.baseBlock.id().withPrefix("crafting_unit_upgrade/")),
                     new CraftingUnitTransformRecipe(
                             tier.baseBlock.block(),
                             tier.upgradeItem.asItem()),
@@ -152,8 +154,7 @@ public class UpgradeRecipes extends AE2RecipeProvider {
         }
     }
 
-    @Override
-    public String getName() {
-        return "AE2 Storage Upgrade/Disassembly Recipes";
+    private static ResourceKey<Recipe<?>> key(ResourceLocation id) {
+        return ResourceKey.create(Registries.RECIPE, id);
     }
 }

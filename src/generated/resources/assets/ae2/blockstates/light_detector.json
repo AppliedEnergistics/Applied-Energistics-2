@@ -1,0 +1,48 @@
+{
+  "variants": {
+    "facing=down,odd=false": {
+      "model": "ae2:block/quartz_fixture_standing",
+      "x": 180
+    },
+    "facing=down,odd=true": {
+      "model": "ae2:block/quartz_fixture_standing_odd",
+      "x": 180
+    },
+    "facing=east,odd=false": {
+      "model": "ae2:block/quartz_fixture_wall",
+      "y": 90
+    },
+    "facing=east,odd=true": {
+      "model": "ae2:block/quartz_fixture_wall_odd",
+      "y": 90
+    },
+    "facing=north,odd=false": {
+      "model": "ae2:block/quartz_fixture_wall"
+    },
+    "facing=north,odd=true": {
+      "model": "ae2:block/quartz_fixture_wall_odd"
+    },
+    "facing=south,odd=false": {
+      "model": "ae2:block/quartz_fixture_wall",
+      "y": 180
+    },
+    "facing=south,odd=true": {
+      "model": "ae2:block/quartz_fixture_wall_odd",
+      "y": 180
+    },
+    "facing=up,odd=false": {
+      "model": "ae2:block/quartz_fixture_standing"
+    },
+    "facing=up,odd=true": {
+      "model": "ae2:block/quartz_fixture_standing_odd"
+    },
+    "facing=west,odd=false": {
+      "model": "ae2:block/quartz_fixture_wall",
+      "y": 270
+    },
+    "facing=west,odd=true": {
+      "model": "ae2:block/quartz_fixture_wall_odd",
+      "y": 270
+    }
+  }
+}

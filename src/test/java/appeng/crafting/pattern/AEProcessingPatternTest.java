@@ -21,6 +21,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -137,7 +138,7 @@ class AEProcessingPatternTest {
     private AEProcessingPattern decode(CompoundTag tag) {
         var stack = ItemStack.parseOptional(registryAccess, tag);
 
-        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(stack), mock(Level.class));
+        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(stack), mock(ServerLevel.class));
         if (details == null) {
             return null;
         }

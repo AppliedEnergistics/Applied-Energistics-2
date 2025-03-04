@@ -1,7 +1,8 @@
 {
   "textures": {
     "lightsBright": "ae2:part/storage_monitor_bright",
-    "lightsMedium": "ae2:part/storage_monitor_medium"
+    "lightsMedium": "ae2:part/storage_monitor_medium",
+    "particle": "#lightsMedium"
   },
   "elements": [
     {

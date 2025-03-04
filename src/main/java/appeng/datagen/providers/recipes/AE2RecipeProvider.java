@@ -18,15 +18,76 @@
 
 package appeng.datagen.providers.recipes;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
 
-import appeng.datagen.providers.IAE2DataProvider;
+import appeng.core.AppEng;
 
-public abstract class AE2RecipeProvider extends net.minecraft.data.recipes.RecipeProvider implements IAE2DataProvider {
-    public AE2RecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+public abstract class AE2RecipeProvider extends RecipeProvider {
+    protected final HolderGetter<Item> items;
+
+    public AE2RecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
+        this.items = registries.lookupOrThrow(Registries.ITEM);
+    }
+
+    protected final String makeId(String path) {
+        return AppEng.makeId(path).toString();
+    }
+
+    protected static ResourceKey<Recipe<?>> makeKey(String path) {
+        return ResourceKey.create(Registries.RECIPE, AppEng.makeId(path));
+    }
+
+    @FunctionalInterface
+    public interface RecipeProviderFactory {
+        AE2RecipeProvider create(HolderLookup.Provider registries, RecipeOutput output);
+    }
+
+    public static final class Runner extends RecipeProvider.Runner {
+        private static final List<RecipeProviderFactory> PROVIDERS = List.of(
+                DecorationRecipes::new,
+                DecorationBlockRecipes::new,
+                MatterCannonAmmoProvider::new,
+                EntropyRecipes::new,
+                InscriberRecipes::new,
+                SmeltingRecipes::new,
+                CraftingRecipes::new,
+                SmithingRecipes::new,
+                TransformRecipes::new,
+                ChargerRecipes::new,
+                QuartzCuttingRecipesProvider::new,
+                UpgradeRecipes::new);
+
+        public Runner(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
+            super(packOutput, registries);
+        }
+
+        @Override
+        protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+            return new RecipeProvider(registries, output) {
+                @Override
+                protected void buildRecipes() {
+                    for (var provider : PROVIDERS) {
+                        provider.create(registries, output).buildRecipes();
+                    }
+                }
+            };
+        }
+
+        @Override
+        public String getName() {
+            return "AE2 Recipes";
+        }
     }
 }

@@ -18,7 +18,6 @@
 
 package appeng.client.render.tesr;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -30,16 +29,14 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.misc.InscriberBlockEntity;
@@ -54,7 +51,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
-    private static final Material TEXTURE_INSIDE = new Material(InventoryMenu.BLOCK_ATLAS,
+    private static final Material TEXTURE_INSIDE = new Material(TextureAtlas.LOCATION_BLOCKS,
             AppEng.makeId("block/inscriber_inside"));
 
     public InscriberTESR(BlockEntityRendererProvider.Context context) {
@@ -255,14 +252,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
             // the assumption here is that the generated item models will return their faces
             // for direction=null, while a block-model will have their faces for
             // cull-faces, but not direction=null
-            var model = itemRenderer.getItemModelShaper().getItemModel(stack);
-            var quads = model.getQuads(null, null, RandomSource.create(), ModelData.EMPTY, null);
-            // Note: quads may be null for mods implementing FabricBakedModel without caring about getQuads.
-            if (quads != null && !quads.isEmpty()) {
-                ms.scale(0.5f, 0.5f, 0.5f);
-            }
-
-            RenderSystem.applyModelViewMatrix();
+            ms.scale(0.5f, 0.5f, 0.5f);
             itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, combinedLight, combinedOverlay, ms,
                     buffers, level, 0);
             ms.popPose();

@@ -48,7 +48,7 @@ import appeng.client.gui.implementations.PatternProviderScreen;
 import appeng.client.gui.implementations.PriorityScreen;
 import appeng.client.gui.implementations.QNBScreen;
 import appeng.client.gui.implementations.QuartzKnifeScreen;
-import appeng.client.gui.implementations.SkyChestScreen;
+import appeng.client.gui.implementations.SkyStoneChestScreen;
 import appeng.client.gui.implementations.SpatialAnchorScreen;
 import appeng.client.gui.implementations.SpatialIOPortScreen;
 import appeng.client.gui.implementations.StorageBusScreen;
@@ -86,7 +86,7 @@ import appeng.menu.implementations.PriorityMenu;
 import appeng.menu.implementations.QNBMenu;
 import appeng.menu.implementations.QuartzKnifeMenu;
 import appeng.menu.implementations.SetStockAmountMenu;
-import appeng.menu.implementations.SkyChestMenu;
+import appeng.menu.implementations.SkyStonechestMenu;
 import appeng.menu.implementations.SpatialAnchorMenu;
 import appeng.menu.implementations.SpatialIOPortMenu;
 import appeng.menu.implementations.StorageBusMenu;
@@ -120,7 +120,7 @@ public final class InitScreens {
     public static void init(RegisterMenuScreensEvent event) {
         // spotless:off
         register(event, QNBMenu.TYPE, QNBScreen::new, "/screens/qnb.json");
-        register(event, SkyChestMenu.TYPE, SkyChestScreen::new, "/screens/sky_chest.json");
+        register(event, SkyStonechestMenu.TYPE, SkyStoneChestScreen::new, "/screens/sky_chest.json");
         register(event, MEChestMenu.TYPE, MEChestScreen::new, "/screens/me_chest.json");
         register(event, WirelessAccessPointMenu.TYPE, WirelessAccessPointScreen::new, "/screens/wireless_access_point.json");
         register(event, NetworkStatusMenu.NETWORK_TOOL_TYPE, NetworkStatusScreen::new, "/screens/network_status.json");

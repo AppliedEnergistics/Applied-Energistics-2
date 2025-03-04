@@ -47,6 +47,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ISubMenuHost;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.network.clientbound.CraftConfirmPlanPacket;
 import appeng.crafting.execution.CraftingSubmitResult;
 import appeng.helpers.ICraftingGridMenu;
@@ -230,7 +231,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
                 sendPacketToClient(new CraftConfirmPlanPacket(plan));
             } catch (Throwable e) {
-                this.getPlayerInventory().player.sendSystemMessage(Component.literal("Error: " + e));
+                AppEng.instance().sendSystemMessage(this.getPlayerInventory().player, Component.literal("Error: " + e));
                 AELog.warn("Failed to start crafting job.", e);
                 this.setValidMenu(false);
                 this.result = null;

@@ -37,11 +37,11 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
@@ -248,18 +248,27 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         this.updatePatterns();
     }
 
+    @Nullable
+    private ServerLevel getServerLevel() {
+        return this.host.getBlockEntity().getLevel() instanceof ServerLevel serverLevel ? serverLevel : null;
+    }
+
     @Override
     public boolean isClientSide() {
-        Level level = this.host.getBlockEntity().getLevel();
-        return level == null || level.isClientSide();
+        return getServerLevel() == null;
     }
 
     public void updatePatterns() {
+        var serverLevel = getServerLevel();
+        if (serverLevel == null) {
+            return;
+        }
+
         patterns.clear();
         patternInputs.clear();
 
         for (var stack : this.patternInventory) {
-            var details = PatternDetailsHelper.decodePattern(stack, this.host.getBlockEntity().getLevel());
+            var details = PatternDetailsHelper.decodePattern(stack, serverLevel);
 
             if (details != null) {
                 patterns.add(details);
@@ -593,7 +602,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     public void importSettings(DataComponentMap input, @Nullable Player player) {
         var patterns = input.getOrDefault(AEComponents.EXPORTED_PATTERNS, ItemContainerContents.EMPTY);
 
-        if (player != null && !player.level().isClientSide) {
+        if (player instanceof ServerPlayer serverPlayer) {
             clearPatternInventory(player);
 
             var desiredPatterns = new AppEngInternalInventory(patternInventory.size());
@@ -611,7 +620,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
                 // Don't restore junk
                 var pattern = PatternDetailsHelper.decodePattern(desiredPatterns.getStackInSlot(i),
-                        host.getBlockEntity().getLevel());
+                        serverPlayer.serverLevel());
                 if (pattern == null) {
                     continue; // Skip junk / broken recipes
                 }
@@ -634,7 +643,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
             // Warn about not being able to restore all patterns due to lack of blank patterns
             if (blankPatternsUsed > blankPatternsAvailable) {
-                player.sendSystemMessage(
+                serverPlayer.sendSystemMessage(
                         PlayerMessages.MissingBlankPatterns.text(blankPatternsUsed - blankPatternsAvailable));
             }
         }

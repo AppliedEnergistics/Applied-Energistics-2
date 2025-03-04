@@ -18,6 +18,7 @@
 
 package appeng.client.render;
 
+import com.mojang.blaze3d.buffers.BufferUsage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -29,7 +30,8 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
@@ -41,8 +43,30 @@ public class SpatialSkyRender {
     private final VertexBuffer sparkleBuffer;
     private long cycle = 0;
 
+    private static final RenderType RENDER_TYPE_SKYBOX = RenderType.CompositeRenderType.create(
+            "ae2_spatial_sky_skybox",
+            DefaultVertexFormat.POSITION_COLOR,
+            VertexFormat.Mode.QUADS,
+            8192,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
+                    .setTransparencyState(RenderStateShard.TransparencyStateShard.NO_TRANSPARENCY)
+                    .setWriteMaskState(RenderStateShard.WriteMaskStateShard.COLOR_WRITE)
+                    .createCompositeState(false));
+
+    private static final RenderType RENDER_TYPE_SPARKLES = RenderType.CompositeRenderType.create(
+            "ae2_spatial_sky_sparkles",
+            DefaultVertexFormat.POSITION_COLOR,
+            VertexFormat.Mode.QUADS,
+            8192,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
+                    .setTransparencyState(RenderStateShard.TransparencyStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setWriteMaskState(RenderStateShard.WriteMaskStateShard.COLOR_WRITE)
+                    .createCompositeState(false));
+
     public SpatialSkyRender() {
-        sparkleBuffer = new VertexBuffer(VertexBuffer.Usage.DYNAMIC);
+        sparkleBuffer = new VertexBuffer(BufferUsage.DYNAMIC_WRITE);
     }
 
     public static SpatialSkyRender getInstance() {
@@ -62,12 +86,10 @@ public class SpatialSkyRender {
             this.rebuildSparkles();
         }
 
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        RenderSystem.disableBlend();
-        RenderSystem.depthMask(false);
-
         var poseStack = new PoseStack();
         poseStack.mulPose(modelViewMatrix);
+
+        RENDER_TYPE_SKYBOX.setupRenderState();
 
         // This renders a skybox around the player at a far, fixed distance from them.
         // The skybox is pitch black and untextured
@@ -86,25 +108,26 @@ public class SpatialSkyRender {
             poseStack.popPose();
         }
 
+        RENDER_TYPE_SKYBOX.clearRenderState();
+
         // Cycle the sparkles between 0 and 0.25 color value over 2 seconds
         float fade = now - this.cycle;
         fade /= 1000;
         fade = 0.25f * (1.0f - Math.abs((fade - 1.0f) * (fade - 1.0f)));
 
         if (fade > 0.0f) {
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-
             RenderSystem.setShaderColor(fade, fade, fade, 1.0f);
+
+            RenderSystem.getModelViewStack().pushMatrix();
+            RenderSystem.getModelViewStack().set(modelViewMatrix);
+
             sparkleBuffer.bind();
-            sparkleBuffer.drawWithShader(poseStack.last().pose(), projectionMatrix,
-                    GameRenderer.getPositionColorShader());
+            sparkleBuffer.drawWithRenderType(RENDER_TYPE_SPARKLES);
             VertexBuffer.unbind();
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        }
 
-        RenderSystem.depthMask(true);
-        RenderSystem.enableBlend();
+            RenderSystem.getModelViewStack().popMatrix();
+        }
     }
 
     private void rebuildSparkles() {

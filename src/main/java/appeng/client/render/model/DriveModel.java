@@ -21,18 +21,21 @@ package appeng.client.render.model;
 import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableSet;
 
-import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.SharedConstants;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
@@ -41,29 +44,35 @@ import appeng.client.render.BasicUnbakedModel;
 import appeng.init.internal.InitStorageCells;
 
 public class DriveModel implements BasicUnbakedModel {
+    private static final Logger LOG = LoggerFactory.getLogger(DriveModel.class);
 
-    private static final ResourceLocation MODEL_BASE = ResourceLocation.parse(
-            "ae2:block/drive/drive_base");
-    private static final ResourceLocation MODEL_CELL_EMPTY = ResourceLocation.parse(
-            "ae2:block/drive/drive_cell_empty");
+    private static final ResourceLocation MODEL_BASE = ResourceLocation.parse("ae2:block/drive_base");
+    private static final ResourceLocation MODEL_CELL_EMPTY = ResourceLocation.parse("ae2:block/drive_cell_empty");
 
-    @Nullable
     @Override
-    public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelTransform) {
+    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion,
+            boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
         final Map<Item, BakedModel> cellModels = new IdentityHashMap<>();
 
         // Load the base model and the model for each cell model.
         for (var entry : StorageCellModels.models().entrySet()) {
-            var cellModel = baker.bake(entry.getValue(), modelTransform);
+            var location = entry.getValue();
+            if (SharedConstants.IS_RUNNING_IN_IDE) {
+                var slots = UnbakedModel.getTopTextureSlots(baker.getModel(location), location::toString);
+                if (slots.getMaterial("particle") == null) {
+                    LOG.error("Storage cell model {} is missing a 'particle' texture", location);
+                }
+            }
+
+            var cellModel = baker.bake(location, modelState);
             cellModels.put(entry.getKey(), cellModel);
         }
 
-        final BakedModel baseModel = baker.bake(MODEL_BASE, modelTransform);
-        final BakedModel defaultCell = baker.bake(StorageCellModels.getDefaultModel(), modelTransform);
-        cellModels.put(Items.AIR, baker.bake(MODEL_CELL_EMPTY, modelTransform));
+        final BakedModel baseModel = baker.bake(MODEL_BASE, modelState);
+        final BakedModel defaultCell = baker.bake(StorageCellModels.getDefaultModel(), modelState);
+        cellModels.put(Items.AIR, baker.bake(MODEL_CELL_EMPTY, modelState));
 
-        return new DriveBakedModel(modelTransform.getRotation(), baseModel, cellModels, defaultCell);
+        return new DriveBakedModel(modelState.getRotation(), baseModel, cellModels, defaultCell);
     }
 
     @Override

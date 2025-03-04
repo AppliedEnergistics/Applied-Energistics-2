@@ -55,7 +55,7 @@ item_ids:
 </Column>
 
 Storage Cells are one of the primary methods of storage in Applied Energistics. They go in <ItemLink id="drive" />s
-or <ItemLink id="chest" />s.
+or <ItemLink id="me_chest" />s.
 
 See [Bytes and Types](../ae2-mechanics/bytes-and-types.md) for an explanation of their capacities in bytes and types.
 
@@ -163,7 +163,7 @@ Item storage cells can hold up to 63 distinct types of items, and are available 
 
 ## Portable Item Storage
 
-These act as a tiny <ItemLink id="chest" /> in your pocket, or like a form of backpack. They can be charged in a <ItemLink id="charger" />
+These act as a tiny <ItemLink id="me_chest" /> in your pocket, or like a form of backpack. They can be charged in a <ItemLink id="charger" />
 
 Unlike standard storage cells, these actually *reduce* in type capacity as their byte capacity increases, and have half the
 total byte capacity.
@@ -208,7 +208,7 @@ Fluid storage cells can hold up to 5 distinct types of fluids, and are available
 
 ## Portable Fluid Storage
 
-These act as a tiny <ItemLink id="chest" /> in your pocket, or like a form of backpack. They can be charged in a <ItemLink id="charger" />
+These act as a tiny <ItemLink id="me_chest" /> in your pocket, or like a form of backpack. They can be charged in a <ItemLink id="charger" />
 
 Unlike standard storage cells, these actually *reduce* in type capacity as their byte capacity increases, and have half the
 total byte capacity.

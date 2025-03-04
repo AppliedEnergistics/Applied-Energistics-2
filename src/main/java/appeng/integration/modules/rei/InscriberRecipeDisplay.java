@@ -18,6 +18,7 @@
 
 package appeng.integration.modules.rei;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,10 +42,10 @@ class InscriberRecipeDisplay implements Display {
     public InscriberRecipeDisplay(RecipeHolder<InscriberRecipe> holder) {
         this.holder = holder;
         var recipe = holder.value();
-        this.inputs = ImmutableList.of(
-                EntryIngredients.ofIngredient(recipe.getTopOptional()),
-                EntryIngredients.ofIngredient(recipe.getMiddleInput()),
-                EntryIngredients.ofIngredient(recipe.getBottomOptional()));
+        this.inputs = new ArrayList<>();
+        recipe.getTopOptional().map(EntryIngredients::ofIngredient).ifPresent(this.inputs::add);
+        EntryIngredients.ofIngredient(recipe.getMiddleInput());
+        recipe.getBottomOptional().map(EntryIngredients::ofIngredient).ifPresent(this.inputs::add);
         this.outputs = ImmutableList.of(EntryIngredients.of(recipe.getResultItem()));
     }
 
@@ -65,6 +66,6 @@ class InscriberRecipeDisplay implements Display {
 
     @Override
     public Optional<ResourceLocation> getDisplayLocation() {
-        return Optional.of(holder.id());
+        return Optional.of(holder.id().location());
     }
 }

@@ -4,12 +4,8 @@
     "type": "explosion"
   },
   "ingredients": [
-    {
-      "item": "ae2:singularity"
-    },
-    {
-      "tag": "c:ender_pearls"
-    }
+    "ae2:singularity",
+    "#c:ender_pearls"
   ],
   "result": {
     "count": 2,

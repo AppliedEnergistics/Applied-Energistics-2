@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "c:gems/certus_quartz"
-    }
+    "a": "#c:gems/certus_quartz"
   },
   "pattern": [
     "a a",

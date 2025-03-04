@@ -2,7 +2,8 @@
   "textures": {
     "lightsBright": "ae2:part/terminal_bright",
     "lightsMedium": "ae2:part/terminal_medium",
-    "lightsDark": "ae2:part/terminal_dark"
+    "lightsDark": "ae2:part/terminal_dark",
+    "particle": "#lightsMedium"
   },
   "elements": [
     {

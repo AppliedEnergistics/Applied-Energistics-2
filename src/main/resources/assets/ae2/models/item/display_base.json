@@ -8,7 +8,8 @@
     "front_bright": "_bright_",
     "front_medium": "_medium_",
     "front_dark": "_dark_",
-    "front_medium_bright": "ae2:part/monitor_colored"
+    "front_medium_bright": "ae2:part/monitor_colored",
+    "particle": "#front_medium"
   },
   "elements": [
     {

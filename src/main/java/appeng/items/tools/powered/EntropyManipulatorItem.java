@@ -34,7 +34,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -60,6 +59,7 @@ import appeng.block.misc.TinyTNTBlock;
 import appeng.core.AEConfig;
 import appeng.hooks.IBlockTool;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
+import appeng.recipes.AERecipeTypes;
 import appeng.recipes.entropy.EntropyMode;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.util.InteractionUtil;
@@ -93,11 +93,11 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
     // Overridden to allow use of the item on WATER and LAVA which are otherwise not considered for onItemUse
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player p, InteractionHand hand) {
+    public InteractionResult use(Level level, Player p, InteractionHand hand) {
         final BlockHitResult target = getPlayerPOVHitResult(level, p, Fluid.ANY);
 
         if (target.getType() != Type.BLOCK) {
-            return new InteractionResultHolder<>(InteractionResult.FAIL, p.getItemInHand(hand));
+            return InteractionResult.FAIL;
         } else {
             BlockPos pos = target.getBlockPos();
             final BlockState state = level.getBlockState(pos);
@@ -107,8 +107,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             }
         }
 
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                p.getItemInHand(hand));
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -119,12 +118,13 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         Direction side = context.getClickedFace();
         Player p = context.getPlayer();
 
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return InteractionResult.SUCCESS_SERVER;
+        }
+
         boolean tryBoth = false;
         if (p == null) {
-            if (level.isClientSide) {
-                return InteractionResult.FAIL;
-            }
-            p = Platform.getFakePlayer((ServerLevel) level, null);
+            p = Platform.getFakePlayer(serverLevel, null);
             // Fake players cannot crouch and we cannot communicate whether they want to heat or cool
             tryBoth = true;
         }
@@ -141,17 +141,17 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             }
 
             // Delegate to the server from here on
-            if (!level.isClientSide() && !tryApplyEffect(level, item, pos, side, p, tryBoth)) {
+            if (!level.isClientSide() && !tryApplyEffect(serverLevel, item, pos, side, p, tryBoth)) {
                 return InteractionResult.FAIL;
             }
 
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.PASS;
     }
 
-    private boolean tryApplyEffect(Level level, ItemStack item, BlockPos pos, Direction side, Player p,
+    private boolean tryApplyEffect(ServerLevel level, ItemStack item, BlockPos pos, Direction side, Player p,
             boolean tryBoth) {
         final BlockState blockState = level.getBlockState(pos);
         final Block block = blockState.getBlock();
@@ -218,13 +218,11 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
      * The entropy manipulator in heat-mode can directly smelt in-level blocks and drop the smelted results, but only if
      * all drops of the block have smelting recipes.
      */
-    private boolean performInWorldSmelting(ItemStack item, Level level, Player p, BlockPos pos, Block block) {
+    private boolean performInWorldSmelting(ItemStack item, ServerLevel level, Player p, BlockPos pos, Block block) {
         var state = level.getBlockState(pos);
         List<ItemStack> drops = Collections.emptyList();
-        if (level instanceof ServerLevel serverLevel) {
-            var be = level.getBlockEntity(pos);
-            drops = Block.getDrops(state, serverLevel, pos, be, p, item);
-        }
+        var be = level.getBlockEntity(pos);
+        drops = Block.getDrops(state, level, pos, be, p, item);
 
         // Results of the operation
         BlockState smeltedBlockState = null;
@@ -232,7 +230,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
         for (ItemStack i : drops) {
             var tempInv = new SingleRecipeInput(i);
-            Optional<SmeltingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, tempInv,
+            Optional<SmeltingRecipe> recipe = level.recipeAccess().getRecipeFor(RecipeType.SMELTING, tempInv,
                     level).map(RecipeHolder::value);
 
             if (recipe.isEmpty()) {
@@ -280,9 +278,9 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     }
 
     @Nullable
-    private static EntropyRecipe findRecipe(Level level, EntropyMode mode, BlockState blockState,
+    private static EntropyRecipe findRecipe(ServerLevel level, EntropyMode mode, BlockState blockState,
             FluidState fluidState) {
-        for (var holder : level.getRecipeManager().byType(EntropyRecipe.TYPE)) {
+        for (var holder : level.recipeAccess().recipeMap().byType(AERecipeTypes.ENTROPY)) {
             var recipe = holder.value();
             if (recipe.matches(mode, blockState, fluidState)) {
                 return recipe;

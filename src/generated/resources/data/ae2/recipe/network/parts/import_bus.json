@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:annihilation_core"
-    },
-    "b": {
-      "tag": "c:ingots/iron"
-    },
-    "c": {
-      "item": "minecraft:piston"
-    }
+    "a": "ae2:annihilation_core",
+    "b": "#c:ingots/iron",
+    "c": "minecraft:piston"
   },
   "pattern": [
     " a ",
