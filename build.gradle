@@ -158,7 +158,7 @@ neoForge {
             server()
         }
         data {
-            data()
+            clientData()
             programArguments = [
                     '--mod', 'ae2',
                     '--all',
