@@ -48,6 +48,6 @@ public class CondenserBlock extends AEBaseEntityBlock<CondenserBlockEntity> {
             }
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 }

@@ -58,13 +58,13 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
             BlockHitResult hitResult) {
         if (player instanceof FakePlayer) {
             this.dropCrank(level, pos);
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         var crank = this.getBlockEntity(level, pos);
         if (crank != null) {
             crank.power();
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

@@ -107,7 +107,7 @@ public class WirelessAccessPointBlock extends AEBaseEntityBlock<WirelessAccessPo
             if (!level.isClientSide()) {
                 MenuOpener.open(WirelessAccessPointMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

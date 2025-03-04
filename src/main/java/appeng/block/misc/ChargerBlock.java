@@ -28,7 +28,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -72,7 +72,7 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
+    protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
         if (level.getBlockEntity(pos) instanceof ChargerBlockEntity charger) {
             var inv = charger.getInternalInventory();
@@ -81,7 +81,7 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
                 if (ChargerRecipes.findRecipe(level, heldItem) != null || Platform.isChargeable(heldItem)) {
                     var toInsert = heldItem.split(1);
                     inv.setItemDirect(0, toInsert);
-                    return ItemInteractionResult.sidedSuccess(level.isClientSide);
+                    return InteractionResult.sidedSuccess(level.isClientSide);
                 }
             }
         }

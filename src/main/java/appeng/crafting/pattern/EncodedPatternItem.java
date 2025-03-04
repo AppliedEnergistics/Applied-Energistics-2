@@ -29,7 +29,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -82,11 +82,10 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         this.clearPattern(player.getItemInHand(hand), player);
 
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                player.getItemInHand(hand));
+        return InteractionResult.SUCCESS;
     }
 
     @Override

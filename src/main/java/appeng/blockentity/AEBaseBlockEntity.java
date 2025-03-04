@@ -479,7 +479,7 @@ public class AEBaseBlockEntity extends BlockEntity
         level.removeBlock(pos, false);
         block.destroy(level, pos, getBlockState());
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     public byte getQueuedForReady() {

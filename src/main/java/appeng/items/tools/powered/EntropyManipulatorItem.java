@@ -34,7 +34,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -93,11 +93,11 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
     // Overridden to allow use of the item on WATER and LAVA which are otherwise not considered for onItemUse
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player p, InteractionHand hand) {
+    public InteractionResult use(Level level, Player p, InteractionHand hand) {
         final BlockHitResult target = getPlayerPOVHitResult(level, p, Fluid.ANY);
 
         if (target.getType() != Type.BLOCK) {
-            return new InteractionResultHolder<>(InteractionResult.FAIL, p.getItemInHand(hand));
+            return InteractionResult.FAIL;
         } else {
             BlockPos pos = target.getBlockPos();
             final BlockState state = level.getBlockState(pos);
@@ -107,8 +107,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             }
         }
 
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                p.getItemInHand(hand));
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -145,7 +144,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                 return InteractionResult.FAIL;
             }
 
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.PASS;

@@ -25,7 +25,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -54,9 +54,9 @@ public class MeteoritePlacerItem extends AEBaseItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (level.isClientSide()) {
-            return InteractionResultHolder.pass(player.getItemInHand(hand));
+            return InteractionResult.PASS;
         }
 
         if (InteractionUtil.isInAlternateUseMode(player)) {
@@ -74,7 +74,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
             player.sendSystemMessage(Component.literal(craterType.name()));
 
-            return InteractionResultHolder.success(itemStack);
+            return InteractionResult.SUCCESS;
         }
 
         return super.use(level, player, hand);
@@ -133,7 +133,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
             player.connection.send(Platform.getFullChunkPacket(c));
         });
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     @Override

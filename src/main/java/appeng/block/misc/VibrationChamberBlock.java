@@ -72,7 +72,7 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
             if (!level.isClientSide) {
                 MenuOpener.open(VibrationChamberMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

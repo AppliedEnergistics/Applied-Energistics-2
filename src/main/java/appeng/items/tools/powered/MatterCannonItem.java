@@ -31,7 +31,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Sheep;
@@ -118,16 +118,15 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player p, InteractionHand hand) {
+    public InteractionResult use(Level level, Player p, InteractionHand hand) {
         var stack = p.getItemInHand(hand);
 
         var direction = InteractionUtil.getPlayerRay(p, 255);
 
         if (fireCannon(level, stack, p, direction)) {
-            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                    stack);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
         } else {
-            return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+            return InteractionResult.FAIL;
         }
     }
 

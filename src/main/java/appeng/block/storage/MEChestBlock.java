@@ -80,7 +80,7 @@ public class MEChestBlock extends AEBaseEntityBlock<MEChestBlockEntity> {
                 }
             }
 
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

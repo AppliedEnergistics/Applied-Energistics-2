@@ -66,7 +66,7 @@ public class SpatialAnchorBlock extends AEBaseEntityBlock<SpatialAnchorBlockEnti
             if (!level.isClientSide()) {
                 MenuOpener.open(SpatialAnchorMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

@@ -26,7 +26,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -69,7 +69,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
+    protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
         if (heldItem.is(Items.FLINT_AND_STEEL) || heldItem.is(Items.FIRE_CHARGE)) {
             onCaughtFire(state, level, pos, hit.getDirection(), player);
@@ -84,7 +84,7 @@ public class TinyTNTBlock extends AEBaseBlock {
             }
 
             player.awardStat(Stats.ITEM_USED.get(item));
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide);
         }
         return super.useItemOn(heldItem, state, level, pos, player, hand, hit);
     }

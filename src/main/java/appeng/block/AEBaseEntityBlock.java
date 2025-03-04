@@ -28,7 +28,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -191,14 +191,14 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
+    protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player,
             InteractionHand hand, BlockHitResult hit) {
         if (heldItem.getItem() instanceof IMemoryCard memoryCard && !(this instanceof CableBusBlock)) {
             final AEBaseBlockEntity blockEntity = this.getBlockEntity(level, pos);
 
             if (blockEntity == null) {
-                return ItemInteractionResult.FAIL;
+                return InteractionResult.FAIL;
             }
 
             if (InteractionUtil.isInAlternateUseMode(player)) {
@@ -221,7 +221,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
                 }
             }
 
-            return ItemInteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useItemOn(heldItem, state, level, pos, player, hand, hit);

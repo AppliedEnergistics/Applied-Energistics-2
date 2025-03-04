@@ -106,7 +106,7 @@ public class EraserItem extends AEBaseItem {
 
         AELog.info("Delete " + blocks + " blocks");
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     private boolean isInsideBox(BlockPos pos, BlockPos origin) {

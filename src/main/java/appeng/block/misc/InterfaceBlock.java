@@ -41,7 +41,7 @@ public class InterfaceBlock extends AEBaseEntityBlock<InterfaceBlockEntity> {
             if (!level.isClientSide()) {
                 be.openMenu(player, MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return super.useWithoutItem(state, level, pos, player, hitResult);
     }

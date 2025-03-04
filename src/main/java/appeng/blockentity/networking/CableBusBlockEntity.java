@@ -375,7 +375,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
             }
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
 
     }
 

@@ -34,7 +34,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -319,7 +319,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
             if (!level.isClientSide()) {
                 this.clearCard(context.getPlayer(), context.getLevel(), context.getHand());
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         } else {
             return super.useOn(context);
         }
@@ -331,7 +331,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (InteractionUtil.isInAlternateUseMode(player) && !level.isClientSide) {
             this.clearCard(player, level, hand);
         }

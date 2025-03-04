@@ -30,7 +30,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -64,7 +64,7 @@ public class DebugCardItem extends AEBaseItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         if (InteractionUtil.isInAlternateUseMode(player) && !level.isClientSide) {
             int grids = 0;
 
@@ -91,7 +91,7 @@ public class DebugCardItem extends AEBaseItem {
             }
         }
 
-        return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -252,7 +252,7 @@ public class DebugCardItem extends AEBaseItem {
             outputSecondaryMessage(player, "ReadyInvoked", "" + be.getReadyInvoked());
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     private void divider(Player player) {

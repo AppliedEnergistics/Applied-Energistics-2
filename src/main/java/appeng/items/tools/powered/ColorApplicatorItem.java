@@ -42,7 +42,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.player.Player;
@@ -139,14 +139,15 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         var stack = player.getItemInHand(usedHand);
 
-        cycleColors(stack, getColor(stack), 1);
+        var newStack = stack.copy();
+        cycleColors(newStack, getColor(stack), 1);
         if (level.isClientSide) {
             player.displayClientMessage(stack.getHoverName(), true);
         }
-        return InteractionResultHolder.fail(stack);
+        return InteractionResult.CONSUME.heldItemTransformedTo(stack);
     }
 
     @Override
@@ -185,7 +186,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                             && colorableBlockEntity.getColor() != AEColor.TRANSPARENT) {
                         if (colorableBlockEntity.recolourBlock(side, AEColor.TRANSPARENT, p)) {
                             consumeColor(is, color, false);
-                            return InteractionResult.sidedSuccess(level.isClientSide());
+                            return InteractionResult.SUCCESS;
                         }
                     }
 
@@ -196,14 +197,14 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                             && painted instanceof PaintSplotchesBlockEntity) {
                         consumeColor(is, color, false);
                         ((PaintSplotchesBlockEntity) painted).cleanSide(side.getOpposite());
-                        return InteractionResult.sidedSuccess(level.isClientSide());
+                        return InteractionResult.SUCCESS;
                     }
                 }
 
                 if (this.getAECurrentPower(is) > POWER_PER_USE
                         && this.recolourBlock(blk, side, level, pos, color, p)) {
                     consumeColor(is, color, false);
-                    return InteractionResult.sidedSuccess(level.isClientSide());
+                    return InteractionResult.SUCCESS;
                 }
             }
         }

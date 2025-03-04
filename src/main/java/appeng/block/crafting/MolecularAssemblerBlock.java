@@ -63,7 +63,7 @@ public class MolecularAssemblerBlock extends AEBaseEntityBlock<MolecularAssemble
                 MenuOpener.open(MolecularAssemblerMenu.TYPE, player,
                         MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.PASS;

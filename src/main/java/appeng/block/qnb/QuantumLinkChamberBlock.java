@@ -73,7 +73,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
             if (!level.isClientSide()) {
                 MenuOpener.open(QNBMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -27,15 +27,15 @@ public class SkyStoneTankBlock extends AEBaseEntityBlock<SkyStoneTankBlockEntity
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
+    protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
         if (super.useItemOn(heldItem, state, level, pos, player, hand, hit).result() == InteractionResult.PASS) {
             if (level.getBlockEntity(pos) instanceof SkyStoneTankBlockEntity tank && tank.onPlayerUse(player, hand)) {
-                return ItemInteractionResult.sidedSuccess(level.isClientSide());
+                return InteractionResult.SUCCESS;
             }
 
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override

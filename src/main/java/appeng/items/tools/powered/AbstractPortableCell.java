@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -93,15 +93,14 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (!InteractionUtil.isInAlternateUseMode(player)
                 || !disassembleDrive(player.getItemInHand(hand), level, player)) {
             if (!level.isClientSide()) {
                 MenuOpener.open(this.menuType, player, MenuLocators.forHand(player, hand));
             }
         }
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                player.getItemInHand(hand));
+        return InteractionResult.SUCCESS;
     }
 
     private boolean disassembleDrive(ItemStack stack, Level level, Player player) {

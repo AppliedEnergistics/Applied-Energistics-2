@@ -37,7 +37,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -224,14 +224,14 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
+    protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
         // Transform from world into block space
         Vec3 hitVec = hit.getLocation();
         Vec3 hitInBlock = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
         return this.cb(level, pos).useItemOn(heldItem, player, hand, hitInBlock)
-                ? ItemInteractionResult.sidedSuccess(level.isClientSide())
-                : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                ? InteractionResult.SUCCESS
+                : InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override
@@ -241,7 +241,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         Vec3 hitVec = hitResult.getLocation();
         Vec3 hitInBlock = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
         return this.cb(level, pos).useWithoutItem(player, hitInBlock)
-                ? InteractionResult.sidedSuccess(level.isClientSide())
+                ? InteractionResult.SUCCESS
                 : InteractionResult.PASS;
     }
 

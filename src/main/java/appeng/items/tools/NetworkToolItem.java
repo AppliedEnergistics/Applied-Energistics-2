@@ -30,7 +30,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
@@ -82,13 +82,12 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player p, InteractionHand hand) {
+    public InteractionResult use(Level level, Player p, InteractionHand hand) {
         if (!level.isClientSide()) {
             MenuOpener.open(NetworkToolMenu.TYPE, p, MenuLocators.forHand(p, hand));
         }
 
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                p.getItemInHand(hand));
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -121,7 +120,7 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem {
             }
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     private boolean showNetworkToolGui(UseOnContext useContext) {

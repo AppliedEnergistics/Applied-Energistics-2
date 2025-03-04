@@ -19,7 +19,7 @@
 package appeng.block.crafting;
 
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -39,7 +39,7 @@ public class CraftingBlockItem extends AEBaseBlockItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             ItemStack stack = player.getItemInHand(hand);
 
@@ -56,7 +56,7 @@ public class CraftingBlockItem extends AEBaseBlockItem {
             // This is hard-coded, as this is always a base block.
             inv.placeItemBackInInventory(AEBlocks.CRAFTING_UNIT.stack(itemCount));
 
-            return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return super.use(level, player, hand);
     }
