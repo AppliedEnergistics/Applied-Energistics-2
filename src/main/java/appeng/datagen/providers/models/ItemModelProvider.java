@@ -3,7 +3,7 @@ package appeng.datagen.providers.models;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+
 
 import appeng.api.ids.AEItemIds;
 import appeng.api.util.AEColor;
@@ -16,8 +16,8 @@ import appeng.datagen.providers.IAE2DataProvider;
 
 public class ItemModelProvider extends net.neoforged.neoforge.client.model.generators.ItemModelProvider
         implements IAE2DataProvider {
-    public ItemModelProvider(PackOutput packOutput, ExistingFileHelper existingFileHelper) {
-        super(packOutput, AppEng.MOD_ID, existingFileHelper);
+    public ItemModelProvider(PackOutput packOutput) {
+        super(packOutput, AppEng.MOD_ID);
     }
 
     @Override

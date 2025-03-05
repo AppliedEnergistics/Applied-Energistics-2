@@ -37,8 +37,8 @@ public class SmeltingRecipes extends AE2RecipeProvider {
     // This is from the default recipe serializer for smelting
     private static final int DEFAULT_SMELTING_TIME = 200;
 
-    public SmeltingRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    public SmeltingRecipes(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
     }
 
     @Override
@@ -47,30 +47,30 @@ public class SmeltingRecipes extends AE2RecipeProvider {
     }
 
     @Override
-    public void buildRecipes(RecipeOutput consumer) {
+    public void buildRecipes() {
 
         SimpleCookingRecipeBuilder
                 .smelting(Ingredient.of(ConventionTags.CERTUS_QUARTZ_DUST), RecipeCategory.MISC, AEItems.SILICON, .35f,
                         DEFAULT_SMELTING_TIME)
                 .unlockedBy("has_certus_quartz_dust", has(ConventionTags.CERTUS_QUARTZ_DUST))
-                .save(consumer, AppEng.makeId("smelting/silicon_from_certus_quartz_dust"));
+                .save(output, makeId("smelting/silicon_from_certus_quartz_dust"));
         SimpleCookingRecipeBuilder
                 .blasting(Ingredient.of(ConventionTags.CERTUS_QUARTZ_DUST), RecipeCategory.MISC, AEItems.SILICON, .35f,
                         DEFAULT_SMELTING_TIME / 2)
                 .unlockedBy("has_certus_quartz_dust", has(ConventionTags.CERTUS_QUARTZ_DUST))
-                .save(consumer, AppEng.makeId("blasting/silicon_from_certus_quartz_dust"));
+                .save(output, makeId("blasting/silicon_from_certus_quartz_dust"));
 
         SimpleCookingRecipeBuilder
                 .smelting(Ingredient.of(AEBlocks.SKY_STONE_BLOCK), RecipeCategory.MISC, AEBlocks.SMOOTH_SKY_STONE_BLOCK,
                         0.35f,
                         DEFAULT_SMELTING_TIME)
                 .unlockedBy("has_sky_stone_block", has(AEBlocks.SKY_STONE_BLOCK))
-                .save(consumer, AppEng.makeId("smelting/smooth_sky_stone_block"));
+                .save(output, makeId("smelting/smooth_sky_stone_block"));
 
         SimpleCookingRecipeBuilder
                 .smelting(Ingredient.of(AEItems.SKY_DUST), RecipeCategory.MISC, AEBlocks.SKY_STONE_BLOCK, 0,
                         DEFAULT_SMELTING_TIME)
                 .unlockedBy("has_sky_stone_dust", has(AEItems.SKY_DUST))
-                .save(consumer, AppEng.makeId("blasting/sky_stone_block"));
+                .save(output, makeId("blasting/sky_stone_block"));
     }
 }

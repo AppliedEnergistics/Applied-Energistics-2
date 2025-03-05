@@ -14,7 +14,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceKey;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+
 
 import appeng.api.ids.AEComponents;
 import appeng.core.AppEng;
@@ -26,9 +26,8 @@ public class DataComponentTypeTagProvider extends TagsProvider<DataComponentType
 
     public DataComponentTypeTagProvider(PackOutput output,
             CompletableFuture<HolderLookup.Provider> registries,
-            @Nullable ExistingFileHelper existingFileHelper,
             LocalizationProvider localization) {
-        super(output, Registries.DATA_COMPONENT_TYPE, registries, AppEng.MOD_ID, existingFileHelper);
+        super(output, Registries.DATA_COMPONENT_TYPE, registries, AppEng.MOD_ID);
         this.localization = localization;
     }
 

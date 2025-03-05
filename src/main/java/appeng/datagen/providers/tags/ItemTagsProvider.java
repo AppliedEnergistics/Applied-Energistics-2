@@ -30,7 +30,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+
 
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.ids.AETags;
@@ -44,8 +44,8 @@ import appeng.datagen.providers.IAE2DataProvider;
 public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider implements IAE2DataProvider {
 
     public ItemTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries,
-            CompletableFuture<TagLookup<Block>> blockTagsProvider, ExistingFileHelper existingFileHelper) {
-        super(packOutput, registries, blockTagsProvider, AppEng.MOD_ID, existingFileHelper);
+            CompletableFuture<TagLookup<Block>> blockTagsProvider) {
+        super(packOutput, registries, blockTagsProvider, AppEng.MOD_ID);
     }
 
     @Override

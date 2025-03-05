@@ -3,13 +3,13 @@ package appeng.datagen.providers.models;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ModelProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+
 
 import appeng.core.AppEng;
 
 public class PartModelProvider extends ModelProvider<BlockModelBuilder> {
-    public PartModelProvider(PackOutput packOutput, ExistingFileHelper existingFileHelper) {
-        super(packOutput, AppEng.MOD_ID, "part", BlockModelBuilder::new, existingFileHelper);
+    public PartModelProvider(PackOutput packOutput) {
+        super(packOutput, AppEng.MOD_ID, "part", BlockModelBuilder::new);
     }
 
     @Override

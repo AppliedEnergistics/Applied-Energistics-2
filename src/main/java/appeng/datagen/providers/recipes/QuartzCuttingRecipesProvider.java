@@ -15,13 +15,13 @@ import appeng.datagen.providers.tags.ConventionTags;
 import appeng.recipes.quartzcutting.QuartzCuttingRecipe;
 
 public class QuartzCuttingRecipesProvider extends AE2RecipeProvider {
-    public QuartzCuttingRecipesProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    public QuartzCuttingRecipesProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
     }
 
     @Override
-    protected void buildRecipes(RecipeOutput recipeOutput) {
-        recipeOutput.accept(
+    protected void buildRecipes() {
+        output.accept(
                 AppEng.makeId("network/parts/cable_anchor"),
                 new QuartzCuttingRecipe(
                         AEParts.CABLE_ANCHOR.stack(4),
@@ -29,10 +29,5 @@ public class QuartzCuttingRecipesProvider extends AE2RecipeProvider {
                                 Ingredient.of(ConventionTags.QUARTZ_KNIFE),
                                 Ingredient.of(AETags.METAL_INGOTS))),
                 null);
-    }
-
-    @Override
-    public String getName() {
-        return "AE2 Quartz Cutting Recipes";
     }
 }

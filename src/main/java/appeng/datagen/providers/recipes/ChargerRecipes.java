@@ -12,25 +12,21 @@ import appeng.core.definitions.AEItems;
 import appeng.recipes.handlers.ChargerRecipeBuilder;
 
 public class ChargerRecipes extends AE2RecipeProvider {
-    public ChargerRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    public ChargerRecipes(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
     }
 
     @Override
-    public void buildRecipes(RecipeOutput consumer) {
-        ChargerRecipeBuilder.charge(consumer,
+    public void buildRecipes() {
+        ChargerRecipeBuilder.charge(output,
                 AppEng.makeId("charger/charged_certus_quartz_crystal"),
                 AEItems.CERTUS_QUARTZ_CRYSTAL, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED);
-        ChargerRecipeBuilder.charge(consumer,
+        ChargerRecipeBuilder.charge(output,
                 AppEng.makeId("charger/meteorite_compass"),
                 Items.COMPASS, AEItems.METEORITE_COMPASS);
-        ChargerRecipeBuilder.charge(consumer,
+        ChargerRecipeBuilder.charge(output,
                 AppEng.makeId("charger/guide"),
                 Items.BOOK, AEItems.TABLET);
     }
 
-    @Override
-    public String getName() {
-        return "AE2 Charger Recipes";
-    }
 }

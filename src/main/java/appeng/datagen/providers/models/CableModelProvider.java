@@ -5,7 +5,7 @@ import static appeng.core.AppEng.makeId;
 import java.util.Locale;
 
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+
 
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
@@ -13,8 +13,8 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ColoredItemDefinition;
 
 public class CableModelProvider extends AE2BlockStateProvider {
-    public CableModelProvider(PackOutput packOutput, ExistingFileHelper existingFileHelper) {
-        super(packOutput, AppEng.MOD_ID, existingFileHelper);
+    public CableModelProvider(PackOutput packOutput) {
+        super(packOutput, AppEng.MOD_ID);
     }
 
     @Override

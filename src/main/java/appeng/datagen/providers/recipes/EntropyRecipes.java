@@ -18,7 +18,6 @@
 
 package appeng.datagen.providers.recipes;
 
-import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -32,76 +31,71 @@ import appeng.core.AppEng;
 import appeng.recipes.entropy.EntropyRecipeBuilder;
 
 public class EntropyRecipes extends AE2RecipeProvider {
-    public EntropyRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    public EntropyRecipes(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
     }
 
     @Override
-    public void buildRecipes(RecipeOutput consumer) {
-        buildCoolRecipes(consumer);
-        buildHeatRecipes(consumer);
+    public void buildRecipes() {
+        buildCoolRecipes();
+        buildHeatRecipes();
     }
 
-    private void buildCoolRecipes(RecipeOutput consumer) {
+    private void buildCoolRecipes() {
 
         EntropyRecipeBuilder.cool()
                 .setInputFluid(Fluids.FLOWING_WATER)
                 .setDrops(new ItemStack(Items.SNOWBALL))
-                .save(consumer, AppEng.makeId("entropy/cool/flowing_water_snowball"));
+                .save(output, AppEng.makeId("entropy/cool/flowing_water_snowball"));
 
         EntropyRecipeBuilder.cool()
                 .setInputBlock(Blocks.GRASS_BLOCK)
                 .setOutputBlock(Blocks.DIRT)
-                .save(consumer, AppEng.makeId("entropy/cool/grass_block_dirt"));
+                .save(output, AppEng.makeId("entropy/cool/grass_block_dirt"));
 
         EntropyRecipeBuilder.cool()
                 .setInputFluid(Fluids.LAVA)
                 .setOutputBlock(Blocks.OBSIDIAN)
-                .save(consumer, AppEng.makeId("entropy/cool/lava_obsidian"));
+                .save(output, AppEng.makeId("entropy/cool/lava_obsidian"));
 
         EntropyRecipeBuilder.cool()
                 .setInputBlock(Blocks.STONE_BRICKS)
                 .setOutputBlock(Blocks.CRACKED_STONE_BRICKS)
-                .save(consumer, AppEng.makeId("entropy/cool/stone_bricks_cracked_stone_bricks"));
+                .save(output, AppEng.makeId("entropy/cool/stone_bricks_cracked_stone_bricks"));
 
         EntropyRecipeBuilder.cool()
                 .setInputBlock(Blocks.STONE)
                 .setOutputBlock(Blocks.COBBLESTONE)
-                .save(consumer, AppEng.makeId("entropy/cool/stone_cobblestone"));
+                .save(output, AppEng.makeId("entropy/cool/stone_cobblestone"));
 
         EntropyRecipeBuilder.cool()
                 .setInputFluid(Fluids.WATER)
                 .setOutputBlock(Blocks.ICE)
-                .save(consumer, AppEng.makeId("entropy/cool/water_ice"));
+                .save(output, AppEng.makeId("entropy/cool/water_ice"));
 
     }
 
-    private void buildHeatRecipes(RecipeOutput consumer) {
+    private void buildHeatRecipes() {
 
         EntropyRecipeBuilder.heat()
                 .setInputBlock(Blocks.COBBLESTONE)
                 .setOutputBlock(Blocks.STONE)
-                .save(consumer, AppEng.makeId("entropy/heat/cobblestone_stone"));
+                .save(output, AppEng.makeId("entropy/heat/cobblestone_stone"));
 
         EntropyRecipeBuilder.heat()
                 .setInputBlock(Blocks.ICE)
                 .setOutputFluid(Fluids.WATER)
-                .save(consumer, AppEng.makeId("entropy/heat/ice_water"));
+                .save(output, AppEng.makeId("entropy/heat/ice_water"));
 
         EntropyRecipeBuilder.heat()
                 .setInputBlock(Blocks.SNOW)
                 .setOutputFluid(Fluids.FLOWING_WATER)
-                .save(consumer, AppEng.makeId("entropy/heat/snow_water"));
+                .save(output, AppEng.makeId("entropy/heat/snow_water"));
 
         EntropyRecipeBuilder.heat()
                 .setInputFluid(Fluids.WATER)
                 .setOutputBlock(Blocks.AIR)
-                .save(consumer, AppEng.makeId("entropy/heat/water_air"));
+                .save(output, AppEng.makeId("entropy/heat/water_air"));
 
-    }
-
-    @Override
-    public String getName() {
-        return "AE2 Entropy Manipualator Recipes";
     }
 }
