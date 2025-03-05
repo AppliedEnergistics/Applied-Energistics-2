@@ -18,6 +18,7 @@
 
 package appeng.datagen.providers.models;
 
+import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -26,8 +27,8 @@ import appeng.core.definitions.AEBlocks;
 
 public class DecorationModelProvider extends AE2BlockStateProvider {
 
-    public DecorationModelProvider(PackOutput packOutput, ExistingFileHelper exFileHelper) {
-        super(packOutput, AppEng.MOD_ID, exFileHelper);
+    public DecorationModelProvider(PackOutput packOutput) {
+        super(packOutput, AppEng.MOD_ID);
     }
 
     @Override

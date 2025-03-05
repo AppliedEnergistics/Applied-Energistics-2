@@ -4,25 +4,30 @@ import java.util.function.Supplier;
 
 import com.google.gson.JsonPrimitive;
 
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.client.data.models.blockstates.Condition;
+import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
+import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.client.data.models.blockstates.PropertyDispatch;
+import net.minecraft.client.data.models.blockstates.Variant;
+import net.minecraft.client.data.models.blockstates.VariantProperties;
+import net.minecraft.client.data.models.blockstates.VariantProperty;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.models.blockstates.Condition;
-import net.minecraft.data.models.blockstates.MultiPartGenerator;
-import net.minecraft.data.models.blockstates.MultiVariantGenerator;
-import net.minecraft.data.models.blockstates.PropertyDispatch;
-import net.minecraft.data.models.blockstates.Variant;
-import net.minecraft.data.models.blockstates.VariantProperties;
-import net.minecraft.data.models.blockstates.VariantProperty;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.IOrientationStrategy;
@@ -30,42 +35,56 @@ import appeng.core.AppEng;
 import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 
-public abstract class AE2BlockStateProvider extends BlockStateProvider implements IAE2DataProvider {
+public abstract class AE2BlockStateProvider extends ModelProvider implements IAE2DataProvider {
     private static final VariantProperty<VariantProperties.Rotation> Z_ROT = new VariantProperty<>("ae2:z",
             r -> new JsonPrimitive(r.ordinal() * 90));
 
-    public AE2BlockStateProvider(PackOutput packOutput, String modid, ExistingFileHelper exFileHelper) {
-        super(packOutput, modid, exFileHelper);
+    private BlockModelGenerators blockModels;
+    private ItemModelGenerators itemModels;
+
+    public AE2BlockStateProvider(PackOutput packOutput, String modid) {
+        super(packOutput, modid);
     }
+
+    @Override
+    protected final void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+        // At least stub out the parent call to run
+        this.blockModels = blockModels;
+        this.itemModels = itemModels;
+    }
+
+    protected abstract void register(BlockModelGenerators blockModels, ItemModelGenerators itemModels);
 
     /**
      * Define a block model that is a simple textured cube, and uses the same model for its item. The texture path is
      * derived from the block's id.
      */
     protected void simpleBlockAndItem(BlockDefinition<?> block) {
-        var model = cubeAll(block.block());
-        simpleBlock(block.block(), model);
-        simpleBlockItem(block.block(), model);
+        blockModels.createTrivialCube(block.block());
+        // item falls back automatically to the block model
     }
 
-    protected void simpleBlockAndItem(BlockDefinition<?> block, ModelFile model) {
-        simpleBlock(block.block(), model);
-        simpleBlockItem(block.block(), model);
+    protected void simpleBlockAndItem(BlockDefinition<?> block, TexturedModel.Provider model) {
+        blockModels.createTrivialBlock(block.block(), model);
+        // item falls back automatically to the block model
     }
 
     /**
      * Define a block model that is a simple textured cube, and uses the same model for its item.
      */
     protected void simpleBlockAndItem(BlockDefinition<?> block, String textureName) {
-        var model = models().cubeAll(block.id().getPath(), AppEng.makeId(textureName));
-        simpleBlock(block.block(), model);
-        simpleBlockItem(block.block(), model);
+        blockModels.createTrivialBlock(
+                block.block(),
+                TexturedModel.CUBE.updateTexture(mapping -> mapping.put(TextureSlot.ALL, AppEng.makeId(textureName)))
+        );
+        // item falls back automatically to the block model
     }
 
     /**
      * Defines a standard wall blockstate, the necessary block models and item model.
      */
     protected void wall(BlockDefinition<WallBlock> block, String texture) {
+
         wallBlock(block.block(), AppEng.makeId(texture));
         itemModels().wallInventory(block.id().getPath(), AppEng.makeId(texture));
     }

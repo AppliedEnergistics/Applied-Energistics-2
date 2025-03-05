@@ -34,6 +34,9 @@ neoForge.version = project.neoforge_version
 
 sourceSets {
     main {
+        java {
+            exclude '**/datagen/**'
+        }
         resources {
             srcDir 'src/generated/resources'
         }

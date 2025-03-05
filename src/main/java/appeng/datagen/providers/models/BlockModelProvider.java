@@ -37,8 +37,8 @@ import appeng.init.client.InitItemModelsProperties;
 
 public class BlockModelProvider extends AE2BlockStateProvider {
 
-    public BlockModelProvider(PackOutput packOutput, ExistingFileHelper exFileHelper) {
-        super(packOutput, AppEng.MOD_ID, exFileHelper);
+    public BlockModelProvider(PackOutput packOutput) {
+        super(packOutput, AppEng.MOD_ID);
     }
 
     @Override
