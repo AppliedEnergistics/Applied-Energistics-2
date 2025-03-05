@@ -38,7 +38,7 @@ import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
-    public QuartzCuttingKnifeItem(Properties props, QuartzToolType type) {
+    public QuartzCuttingKnifeItem(Properties props) {
         super(props);
     }
 

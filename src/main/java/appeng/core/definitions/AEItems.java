@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import appeng.datagen.providers.tags.ConventionTags;
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
@@ -91,7 +92,6 @@ import appeng.items.tools.quartz.QuartzHoeItem;
 import appeng.items.tools.quartz.QuartzPickaxeItem;
 import appeng.items.tools.quartz.QuartzSpadeItem;
 import appeng.items.tools.quartz.QuartzSwordItem;
-import appeng.items.tools.quartz.QuartzToolType;
 import appeng.items.tools.quartz.QuartzWrenchItem;
 import appeng.menu.me.common.MEStorageMenu;
 
@@ -108,25 +108,25 @@ public final class AEItems {
     /// CERTUS QUARTZ TOOLS
     ///
 
-    public static final ItemDefinition<QuartzAxeItem> CERTUS_QUARTZ_AXE = item("Certus Quartz Axe", AEItemIds.CERTUS_QUARTZ_AXE, p -> new QuartzAxeItem(p, QuartzToolType.CERTUS), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzHoeItem> CERTUS_QUARTZ_HOE = item("Certus Quartz Hoe", AEItemIds.CERTUS_QUARTZ_HOE, p -> new QuartzHoeItem(p, QuartzToolType.CERTUS), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzSpadeItem> CERTUS_QUARTZ_SHOVEL = item("Certus Quartz Shovel", AEItemIds.CERTUS_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p, QuartzToolType.CERTUS), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzPickaxeItem> CERTUS_QUARTZ_PICK = item("Certus Quartz Pickaxe", AEItemIds.CERTUS_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, QuartzToolType.CERTUS), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzSwordItem> CERTUS_QUARTZ_SWORD = item("Certus Quartz Sword", AEItemIds.CERTUS_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.CERTUS), CreativeModeTabs.COMBAT);
+    public static final ItemDefinition<QuartzAxeItem> CERTUS_QUARTZ_AXE = item("Certus Quartz Axe", AEItemIds.CERTUS_QUARTZ_AXE, p -> new QuartzAxeItem(p.repairable(ConventionTags.CERTUS_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzHoeItem> CERTUS_QUARTZ_HOE = item("Certus Quartz Hoe", AEItemIds.CERTUS_QUARTZ_HOE, p -> new QuartzHoeItem(p.repairable(ConventionTags.CERTUS_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzSpadeItem> CERTUS_QUARTZ_SHOVEL = item("Certus Quartz Shovel", AEItemIds.CERTUS_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p.repairable(ConventionTags.CERTUS_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzPickaxeItem> CERTUS_QUARTZ_PICK = item("Certus Quartz Pickaxe", AEItemIds.CERTUS_QUARTZ_PICK, p -> new QuartzPickaxeItem(p.repairable(ConventionTags.CERTUS_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzSwordItem> CERTUS_QUARTZ_SWORD = item("Certus Quartz Sword", AEItemIds.CERTUS_QUARTZ_SWORD, p -> new QuartzSwordItem(p.repairable(ConventionTags.CERTUS_QUARTZ)), CreativeModeTabs.COMBAT);
     public static final ItemDefinition<QuartzWrenchItem> CERTUS_QUARTZ_WRENCH = item("Certus Quartz Wrench", AEItemIds.CERTUS_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.stacksTo(1)), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzCuttingKnifeItem> CERTUS_QUARTZ_KNIFE = item("Certus Quartz Cutting Knife", AEItemIds.CERTUS_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.durability(50), QuartzToolType.CERTUS), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzCuttingKnifeItem> CERTUS_QUARTZ_KNIFE = item("Certus Quartz Cutting Knife", AEItemIds.CERTUS_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.durability(50).repairable(ConventionTags.CERTUS_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
 
     ///
     /// NETHER QUARTZ TOOLS
     ///
 
-    public static final ItemDefinition<QuartzAxeItem> NETHER_QUARTZ_AXE = item("Nether Quartz Axe", AEItemIds.NETHER_QUARTZ_AXE, p -> new QuartzAxeItem(p, QuartzToolType.NETHER), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzHoeItem> NETHER_QUARTZ_HOE = item("Nether Quartz Hoe", AEItemIds.NETHER_QUARTZ_HOE, p -> new QuartzHoeItem(p, QuartzToolType.NETHER), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzSpadeItem> NETHER_QUARTZ_SHOVEL = item("Nether Quartz Shovel", AEItemIds.NETHER_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p, QuartzToolType.NETHER), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzPickaxeItem> NETHER_QUARTZ_PICK = item("Nether Quartz Pickaxe", AEItemIds.NETHER_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, QuartzToolType.NETHER), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzSwordItem> NETHER_QUARTZ_SWORD = item("Nether Quartz Sword", AEItemIds.NETHER_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.NETHER), CreativeModeTabs.COMBAT);
+    public static final ItemDefinition<QuartzAxeItem> NETHER_QUARTZ_AXE = item("Nether Quartz Axe", AEItemIds.NETHER_QUARTZ_AXE, p -> new QuartzAxeItem(p.repairable(ConventionTags.NETHER_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzHoeItem> NETHER_QUARTZ_HOE = item("Nether Quartz Hoe", AEItemIds.NETHER_QUARTZ_HOE, p -> new QuartzHoeItem(p.repairable(ConventionTags.NETHER_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzSpadeItem> NETHER_QUARTZ_SHOVEL = item("Nether Quartz Shovel", AEItemIds.NETHER_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p.repairable(ConventionTags.NETHER_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzPickaxeItem> NETHER_QUARTZ_PICK = item("Nether Quartz Pickaxe", AEItemIds.NETHER_QUARTZ_PICK, p -> new QuartzPickaxeItem(p.repairable(ConventionTags.NETHER_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzSwordItem> NETHER_QUARTZ_SWORD = item("Nether Quartz Sword", AEItemIds.NETHER_QUARTZ_SWORD, p -> new QuartzSwordItem(p.repairable(ConventionTags.NETHER_QUARTZ)), CreativeModeTabs.COMBAT);
     public static final ItemDefinition<QuartzWrenchItem> NETHER_QUARTZ_WRENCH = item("Nether Quartz Wrench", AEItemIds.NETHER_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.stacksTo(1)), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzCuttingKnifeItem> NETHER_QUARTZ_KNIFE = item("Nether Quartz Cutting Knife", AEItemIds.NETHER_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.stacksTo(1).durability(50), QuartzToolType.NETHER), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzCuttingKnifeItem> NETHER_QUARTZ_KNIFE = item("Nether Quartz Cutting Knife", AEItemIds.NETHER_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.stacksTo(1).durability(50).repairable(ConventionTags.NETHER_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
 
     ///
     /// FLUIX TOOLS
