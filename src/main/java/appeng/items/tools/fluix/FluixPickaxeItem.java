@@ -17,8 +17,7 @@ public class FluixPickaxeItem extends PickaxeItem implements IntrinsicEnchantIte
     private final IntrinsicEnchantment intrinsicEnchantment = new IntrinsicEnchantment(Enchantments.FORTUNE, 1);
 
     public FluixPickaxeItem(Properties props) {
-        super(FluixToolType.FLUIX.getToolTier(),
-                props.attributes(createAttributes(FluixToolType.FLUIX.getToolTier(), 1, -2.8F)));
+        super(FluixToolType.FLUIX.getMaterial(), 1, -2.8F, props.repairable(FluixToolType.FLUIX.getRepairIngredient()));
     }
 
     @Override

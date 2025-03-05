@@ -17,8 +17,7 @@ public class FluixAxeItem extends AxeItem implements IntrinsicEnchantItem {
     private final IntrinsicEnchantment intrinsicEnchantment = new IntrinsicEnchantment(Enchantments.FORTUNE, 1);
 
     public FluixAxeItem(Properties props) {
-        super(FluixToolType.FLUIX.getToolTier(),
-                props.attributes(createAttributes(FluixToolType.FLUIX.getToolTier(), 6.0F, -3.1F)));
+        super(FluixToolType.FLUIX.getMaterial(), 6.0F, -3.1F, props.repairable(FluixToolType.FLUIX.getRepairIngredient()));
     }
 
     @Override

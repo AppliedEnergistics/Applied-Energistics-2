@@ -17,8 +17,7 @@ public class FluixHoeItem extends HoeItem implements IntrinsicEnchantItem {
     private final IntrinsicEnchantment intrinsicEnchantment = new IntrinsicEnchantment(Enchantments.FORTUNE, 1);
 
     public FluixHoeItem(Properties props) {
-        super(FluixToolType.FLUIX.getToolTier(),
-                props.attributes(createAttributes(FluixToolType.FLUIX.getToolTier(), -2, -1.0F)));
+        super(FluixToolType.FLUIX.getMaterial(), -2, -1.0F, props.repairable(FluixToolType.FLUIX.getRepairIngredient()));
     }
 
     @Override
