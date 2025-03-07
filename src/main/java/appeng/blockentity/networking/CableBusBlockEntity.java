@@ -291,7 +291,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
             var targetState = this.level.getBlockState(targetPos);
             if (!targetState.isAir()) {
                 NeighborUpdater.executeUpdate(level, targetState, targetPos,
-                        getBlockState().getBlock(), getBlockPos(), false);
+                        getBlockState().getBlock(), null, false);
             }
         }
     }

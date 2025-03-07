@@ -22,9 +22,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
+import appeng.block.networking.CableBusBlockClientExtensions;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
+import net.neoforged.bus.api.Event;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +57,6 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.event.ModelEvent.RegisterGeometryLoaders;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
@@ -66,8 +70,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import guideme.Guide;
-import guideme.GuidesCommon;
-import guideme.PageAnchor;
 import guideme.compiler.TagCompiler;
 import guideme.scene.ImplicitAnnotationStrategy;
 
@@ -117,7 +119,6 @@ import appeng.init.client.InitBlockColors;
 import appeng.init.client.InitBuiltInModels;
 import appeng.init.client.InitEntityLayerDefinitions;
 import appeng.init.client.InitItemColors;
-import appeng.init.client.InitItemModelsProperties;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
 import appeng.items.storage.StorageCellTooltipComponent;
@@ -163,7 +164,6 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerClientTooltipComponents);
         modEventBus.addListener(this::registerParticleFactories);
         modEventBus.addListener(this::modelRegistryEventAdditionalModels);
-        modEventBus.addListener(this::modelRegistryEvent);
         modEventBus.addListener(this::registerBlockColors);
         modEventBus.addListener(this::registerItemColors);
         modEventBus.addListener(this::registerEntityRenderers);
@@ -172,6 +172,7 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerDimensionSpecialEffects);
         modEventBus.addListener(InitScreens::init);
         modEventBus.addListener(this::enqueueImcMessages);
+        modEventBus.addListener(this::registerClientExtensions);
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
@@ -197,6 +198,11 @@ public class AppEngClient extends AppEngBase {
 
         container.registerExtensionPoint(IConfigScreenFactory.class,
                 (mc, parent) -> new ConfigurationScreen(container, parent));
+    }
+
+    private void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        event.registerBlock(new CableBusBlockClientExtensions(AEBlocks.CABLE_BUS.block()), AEBlocks.CABLE_BUS.block());
+
     }
 
     private void enqueueImcMessages(InterModEnqueueEvent event) {
@@ -274,7 +280,7 @@ public class AppEngClient extends AppEngBase {
         InitBlockColors.init(event.getBlockColors());
     }
 
-    public void registerItemColors(RegisterColorHandlersEvent.Item event) {
+    public void registerItemColors(RegisterColorHandlersEvent.ItemTintSources event) {
         InitItemColors.init(event);
     }
 
@@ -341,10 +347,6 @@ public class AppEngClient extends AppEngBase {
 
     public void modelRegistryEventAdditionalModels(ModelEvent.RegisterAdditional event) {
         InitAdditionalModels.init(event);
-    }
-
-    public void modelRegistryEvent(RegisterGeometryLoaders event) {
-        InitItemModelsProperties.init();
     }
 
     private void wheelEvent(final InputEvent.MouseScrollingEvent me) {
@@ -490,12 +492,15 @@ public class AppEngClient extends AppEngBase {
         return this.getCableRenderModeForPlayer(mc.player);
     }
 
-    @Override
-    public void openGuideAtAnchor(PageAnchor anchor) {
-        GuidesCommon.openGuide(Minecraft.getInstance().player, guide.getId(), anchor);
-    }
-
     public Guide getGuide() {
         return guide;
+    }
+
+    @Override
+    public void sendSystemMessage(Player player, Component text) {
+        if (player == Minecraft.getInstance().player) {
+            Minecraft.getInstance().gui.getChat().addMessage(text);
+        }
+        super.sendSystemMessage(player, text);
     }
 }

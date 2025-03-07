@@ -112,7 +112,7 @@ public enum BlockOrientation {
         for (var direction : Direction.values()) {
             var normal = direction.step();
             normal.rotate(quaternion);
-            var rotatedTo = Direction.getNearest(normal.x(), normal.y(), normal.z());
+            var rotatedTo = Direction.getApproximateNearest(normal.x(), normal.y(), normal.z());
             rotatedSideTo[direction.ordinal()] = rotatedTo;
             rotatedSideFrom[rotatedTo.ordinal()] = direction;
         }

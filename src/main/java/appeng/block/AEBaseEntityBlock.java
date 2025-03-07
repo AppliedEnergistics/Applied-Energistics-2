@@ -21,6 +21,7 @@ package appeng.block;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.world.level.storage.loot.LootContext;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -265,11 +266,10 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
         var drops = super.getDrops(state, builder);
         for (var drop : drops) {
             if (drop.getItem() instanceof BlockItem blockItem && blockItem.getBlock() == this) {
-                var lootContext = builder.withParameter(LootContextParams.BLOCK_STATE, state)
-                        .create(LootContextParamSets.BLOCK);
-                var be = lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY);
+                builder = builder.withParameter(LootContextParams.BLOCK_STATE, state);
+                var be = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
                 if (be instanceof AEBaseBlockEntity aeBaseBlockEntity) {
-                    var looter = lootContext.getParamOrNull(LootContextParams.THIS_ENTITY);
+                    var looter = builder.getOptionalParameter(LootContextParams.THIS_ENTITY);
                     Player player = null;
                     if (looter instanceof Player) {
                         player = (Player) looter;

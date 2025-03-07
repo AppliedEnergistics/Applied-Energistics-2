@@ -40,11 +40,7 @@ import appeng.core.definitions.AEDamageTypes;
 import appeng.datagen.providers.advancements.AdvancementGenerator;
 import appeng.datagen.providers.localization.LocalizationProvider;
 import appeng.datagen.providers.loot.AE2LootTableProvider;
-import appeng.datagen.providers.models.BlockModelProvider;
-import appeng.datagen.providers.models.CableModelProvider;
-import appeng.datagen.providers.models.DecorationModelProvider;
-import appeng.datagen.providers.models.ItemModelProvider;
-import appeng.datagen.providers.models.PartModelProvider;
+
 import appeng.datagen.providers.recipes.ChargerRecipes;
 import appeng.datagen.providers.recipes.CraftingRecipes;
 import appeng.datagen.providers.recipes.DecorationBlockRecipes;
@@ -96,11 +92,11 @@ public class AE2DataGenerators {
                 localization));
 
         // Models
-        pack.addProvider(packOutput -> new BlockModelProvider(packOutput));
-        pack.addProvider(packOutput -> new DecorationModelProvider(packOutput));
-        pack.addProvider(packOutput -> new ItemModelProvider(packOutput));
-        pack.addProvider(packOutput -> new CableModelProvider(packOutput));
-        pack.addProvider(packOutput -> new PartModelProvider(packOutput));
+// TODO 1.21.4       pack.addProvider(packOutput -> new BlockModelProvider(packOutput));
+// TODO 1.21.4       pack.addProvider(packOutput -> new DecorationModelProvider(packOutput));
+// TODO 1.21.4       pack.addProvider(packOutput -> new ItemModelProvider(packOutput));
+// TODO 1.21.4       pack.addProvider(packOutput -> new CableModelProvider(packOutput));
+// TODO 1.21.4       pack.addProvider(packOutput -> new PartModelProvider(packOutput));
 
         // Misc
         pack.addProvider(packOutput -> new AdvancementProvider(packOutput, registries, List.of(

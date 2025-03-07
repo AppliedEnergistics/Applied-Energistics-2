@@ -326,7 +326,7 @@ public abstract class AEBasePart
 
         if (mode == SettingsFrom.MEMORY_CARD) {
             MemoryCardItem.exportGenericSettings(this, builder);
-            builder.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getPartItem().asItem().getDescription());
+            builder.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getPartItem().asItem().getName());
         }
     }
 
@@ -354,7 +354,7 @@ public abstract class AEBasePart
             partItem = AEBlocks.PATTERN_PROVIDER.asItem();
         }
 
-        var name = partItem.getDescription();
+        var name = partItem.getName();
 
         if (InteractionUtil.isInAlternateUseMode(player)) {
             var settings = exportSettings(SettingsFrom.MEMORY_CARD);

@@ -168,7 +168,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             }
         }
 
-        return level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, level).orElse(null);
+        return level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, ic, level).orElse(null);
     }
 
     // TODO: This is really hacky and NEEDS to be solved with a full menu/gui

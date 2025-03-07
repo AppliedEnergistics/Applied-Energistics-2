@@ -264,7 +264,7 @@ public record FillCraftingGridFromRecipePacket(
         }
 
         // If the recipe is unavailable for any reason, use the templates provided by the client
-        var ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
+        var ingredients = NonNullList.withSize(9, Ingredient.of());
         Preconditions.checkArgument(ingredients.size() == this.ingredientTemplates.size(),
                 "Got %d ingredient templates from client, expected %d",
                 ingredientTemplates.size(), ingredients.size());

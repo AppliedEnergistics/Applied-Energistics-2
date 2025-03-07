@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -187,20 +187,12 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
         return false;
     }
 
-    @Override
-    public boolean isCustomRenderer() {
-        return false;
-    }
 
     @Override
     public TextureAtlasSprite getParticleIcon() {
         return this.textures.get(SpatialPylonTextureType.DIM);
     }
 
-    @Override
-    public ItemOverrides getOverrides() {
-        return ItemOverrides.EMPTY;
-    }
 
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {

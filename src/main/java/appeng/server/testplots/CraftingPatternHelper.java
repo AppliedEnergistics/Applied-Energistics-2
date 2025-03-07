@@ -45,7 +45,7 @@ public class CraftingPatternHelper {
         }
         var recipeInput = CraftingInput.of(3, 3, c);
 
-        var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, recipeInput, level).orElseThrow();
+        var recipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, recipeInput, level).orElseThrow();
 
         var result = recipe.value().assemble(recipeInput, level.registryAccess());
 
@@ -65,7 +65,7 @@ public class CraftingPatternHelper {
         }
         var recipeInput = CraftingInput.of(3, 3, items);
 
-        var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, recipeInput, level)
+        var recipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, recipeInput, level)
                 .orElseThrow(() -> new RuntimeException("Couldn't get a shapeless recipe for the provided input."));
 
         var actualInputs = new ItemStack[9];
@@ -87,7 +87,7 @@ public class CraftingPatternHelper {
         var input = new SingleRecipeInput(new ItemStack(inputItem));
 
         RecipeHolder<StonecutterRecipe> foundRecipe = null;
-        for (var holder : level.getRecipeManager().getRecipesFor(RecipeType.STONECUTTING, input, level)) {
+        for (var holder : level.recipeAccess().getRecipesFor(RecipeType.STONECUTTING, input, level)) {
             StonecutterRecipe recipe = holder.value();
             if (recipe.getResultItem(level.registryAccess()).is(outputItem.asItem())) {
                 foundRecipe = holder;
@@ -112,7 +112,7 @@ public class CraftingPatternHelper {
 
         var input = new SmithingRecipeInput(new ItemStack(template), new ItemStack(base), new ItemStack(addition));
 
-        var foundRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMITHING, input, level).orElse(null);
+        var foundRecipe = level.recipeAccess().getRecipeFor(RecipeType.SMITHING, input, level).orElse(null);
         if (foundRecipe == null) {
             throw new RuntimeException(
                     "No stonecutter recipe found for template=" + template + " and base=" + base + " and addition="

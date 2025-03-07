@@ -27,13 +27,14 @@ import java.util.stream.IntStream;
 
 import com.google.common.base.Strings;
 
+import net.minecraft.client.resources.model.SpriteGetter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
@@ -85,16 +86,16 @@ public class GlassBakedModel implements IDynamicBakedModel {
 
     private final TextureAtlasSprite[] frameTextures;
 
-    public GlassBakedModel(Function<Material, TextureAtlasSprite> bakedTextureGetter) {
-        this.glassTextures = new TextureAtlasSprite[] { bakedTextureGetter.apply(TEXTURE_A),
-                bakedTextureGetter.apply(TEXTURE_B), bakedTextureGetter.apply(TEXTURE_C),
-                bakedTextureGetter.apply(TEXTURE_D) };
+    public GlassBakedModel(SpriteGetter bakedTextureGetter) {
+        this.glassTextures = new TextureAtlasSprite[] { bakedTextureGetter.get(TEXTURE_A),
+                bakedTextureGetter.get(TEXTURE_B), bakedTextureGetter.get(TEXTURE_C),
+                bakedTextureGetter.get(TEXTURE_D) };
 
         // The first frame texture would be empty, so we simply leave it set to null
         // here
         this.frameTextures = new TextureAtlasSprite[16];
         for (int i = 0; i < TEXTURES_FRAME.length; i++) {
-            this.frameTextures[1 + i] = bakedTextureGetter.apply(TEXTURES_FRAME[i]);
+            this.frameTextures[1 + i] = bakedTextureGetter.get(TEXTURES_FRAME[i]);
         }
     }
 
@@ -201,8 +202,7 @@ public class GlassBakedModel implements IDynamicBakedModel {
 
     private BakedQuad createQuad(Direction side, Vector3f c1, Vector3f c2, Vector3f c3, Vector3f c4,
             TextureAtlasSprite sprite, float uOffset, float vOffset) {
-        Vec3 normal = new Vec3(side.getNormal().getX(), side.getNormal().getY(),
-                side.getNormal().getZ());
+        Vec3 normal = side.getUnitVec3();
 
         // Apply the u,v shift.
         // This mirrors the logic from OffsetIcon from 1.7
@@ -235,10 +235,6 @@ public class GlassBakedModel implements IDynamicBakedModel {
         builder.setUv(u, v);
     }
 
-    @Override
-    public ItemOverrides getOverrides() {
-        return ItemOverrides.EMPTY;
-    }
 
     @Override
     public boolean useAmbientOcclusion() {
@@ -250,10 +246,6 @@ public class GlassBakedModel implements IDynamicBakedModel {
         return false;
     }
 
-    @Override
-    public boolean isCustomRenderer() {
-        return false;
-    }
 
     @Override
     public TextureAtlasSprite getParticleIcon() {

@@ -22,6 +22,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
 
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.util.context.ContextMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -56,15 +59,13 @@ public class ColorApplicatorModel implements BasicUnbakedModel {
         return Collections.singleton(MODEL_BASE);
     }
 
-    @Nullable
     @Override
-    public BakedModel bake(ModelBaker bakery, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelTransform) {
-        BakedModel baseModel = bakery.bake(MODEL_BASE, modelTransform);
+    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion, boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
+        BakedModel baseModel = baker.bake(MODEL_BASE, modelState);
 
-        TextureAtlasSprite texDark = spriteGetter.apply(TEXTURE_DARK);
-        TextureAtlasSprite texMedium = spriteGetter.apply(TEXTURE_MEDIUM);
-        TextureAtlasSprite texBright = spriteGetter.apply(TEXTURE_BRIGHT);
+        TextureAtlasSprite texDark = baker.sprites().get(TEXTURE_DARK);
+        TextureAtlasSprite texMedium = baker.sprites().get(TEXTURE_MEDIUM);
+        TextureAtlasSprite texBright = baker.sprites().get(TEXTURE_BRIGHT);
 
         return new ColorApplicatorBakedModel(baseModel, texDark, texMedium, texBright);
     }

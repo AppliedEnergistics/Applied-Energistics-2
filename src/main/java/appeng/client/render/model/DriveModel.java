@@ -25,6 +25,9 @@ import java.util.function.Function;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.util.context.ContextMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -47,23 +50,21 @@ public class DriveModel implements BasicUnbakedModel {
     private static final ResourceLocation MODEL_CELL_EMPTY = ResourceLocation.parse(
             "ae2:block/drive/drive_cell_empty");
 
-    @Nullable
     @Override
-    public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelTransform) {
+    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion, boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
         final Map<Item, BakedModel> cellModels = new IdentityHashMap<>();
 
         // Load the base model and the model for each cell model.
         for (var entry : StorageCellModels.models().entrySet()) {
-            var cellModel = baker.bake(entry.getValue(), modelTransform);
+            var cellModel = baker.bake(entry.getValue(), modelState);
             cellModels.put(entry.getKey(), cellModel);
         }
 
-        final BakedModel baseModel = baker.bake(MODEL_BASE, modelTransform);
-        final BakedModel defaultCell = baker.bake(StorageCellModels.getDefaultModel(), modelTransform);
-        cellModels.put(Items.AIR, baker.bake(MODEL_CELL_EMPTY, modelTransform));
+        final BakedModel baseModel = baker.bake(MODEL_BASE, modelState);
+        final BakedModel defaultCell = baker.bake(StorageCellModels.getDefaultModel(), modelState);
+        cellModels.put(Items.AIR, baker.bake(MODEL_CELL_EMPTY, modelState));
 
-        return new DriveBakedModel(modelTransform.getRotation(), baseModel, cellModels, defaultCell);
+        return new DriveBakedModel(modelState.getRotation(), baseModel, cellModels, defaultCell);
     }
 
     @Override

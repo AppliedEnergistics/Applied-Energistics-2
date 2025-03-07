@@ -85,7 +85,7 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
                 menu.getSmithingTableAdditionSlot().getItem());
 
         var level = menu.getPlayer().level();
-        var recipe = level.getRecipeManager()
+        var recipe = level.recipeAccess()
                 .getRecipeFor(RecipeType.SMITHING, recipeInput, level)
                 .orElse(null);
         if (recipe == null) {

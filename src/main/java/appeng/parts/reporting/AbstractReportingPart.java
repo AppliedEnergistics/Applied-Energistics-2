@@ -76,8 +76,8 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
-        if (pos.relative(this.getSide()).equals(neighbor)) {
+    public void onUpdateShape(Direction side) {
+        if (side.equals(getSide())) {
             this.opacity = -1;
             this.getHost().markForUpdate();
         }
@@ -146,7 +146,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
             var te = getHost().getBlockEntity();
             Level level = te.getLevel();
             var pos = te.getBlockPos().relative(this.getSide());
-            this.opacity = level.getBlockState(pos).getLightBlock(level, pos);
+            this.opacity = level.getBlockState(pos).getLightBlock();
         }
 
         return Math.max(0, emit - opacity);

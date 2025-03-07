@@ -21,6 +21,7 @@ package appeng.block.misc;
 import java.util.EnumMap;
 import java.util.Map;
 
+import net.minecraft.world.level.ScheduledTickAccess;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -119,13 +120,12 @@ public class QuartzFixtureBlock extends AEBaseBlock implements SimpleWaterlogged
     // Break the fixture if the block it is attached to is changed so that it could
     // no longer be placed
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState facingState, LevelAccessor level,
-            BlockPos currentPos, BlockPos facingPos) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
         if (state.getValue(WATERLOGGED).booleanValue()) {
-            level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            scheduledTickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
-        if (direction.getOpposite() == state.getValue(FACING) && !state.canSurvive(level, currentPos)) {
+        if (direction.getOpposite() == state.getValue(FACING) && !state.canSurvive(level, pos)) {
             return Blocks.AIR.defaultBlockState();
         }
 

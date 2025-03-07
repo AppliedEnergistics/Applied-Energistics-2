@@ -86,7 +86,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
 
         // Find recipe
         this.recipeId = encodedPattern.recipeId();
-        this.recipe = level.getRecipeManager().byKey(recipeId).map(holder -> (SmithingRecipe) holder.value())
+        this.recipe = level.recipeAccess().byKey(recipeId).map(holder -> (SmithingRecipe) holder.value())
                 .orElse(null);
         if (recipe == null) {
             throw new IllegalStateException("Smithing pattern references unknown recipe " + recipeId);

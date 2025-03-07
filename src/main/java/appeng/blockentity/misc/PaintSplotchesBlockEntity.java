@@ -32,6 +32,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -113,9 +114,9 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         return true;
     }
 
-    public void neighborChanged() {
+    public BlockState updateShape() {
         if (this.dots == null) {
-            return;
+            return Blocks.AIR.defaultBlockState();
         }
 
         for (Direction side : Direction.values()) {
@@ -124,7 +125,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
             }
         }
 
-        this.updateData();
+        return calculateBlockState();
     }
 
     public boolean isSideValid(Direction side) {
@@ -140,13 +141,13 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         this.saveChanges();
     }
 
-    private void updateData() {
+    private BlockState calculateBlockState() {
         if (this.dots.isEmpty()) {
             this.dots = null;
         }
 
         if (this.dots == null) {
-            this.level.removeBlock(this.worldPosition, false);
+            return Blocks.AIR.defaultBlockState();
         } else {
             var lumenCount = 0;
             for (Splotch dot : dots) {
@@ -157,8 +158,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
                     }
                 }
             }
-            this.level.setBlockAndUpdate(getBlockPos(),
-                    getBlockState().setValue(PaintSplotchesBlock.LIGHT_LEVEL, lumenCount));
+            return getBlockState().setValue(PaintSplotchesBlock.LIGHT_LEVEL, lumenCount);
         }
     }
 
@@ -168,7 +168,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         }
 
         this.removeSide(side);
-        this.updateData();
+        level.setBlockAndUpdate(getBlockPos(), calculateBlockState());
     }
 
     public void addBlot(ItemStack type, Direction side, Vec3 hitVec) {
@@ -190,7 +190,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
 
             this.dots.add(new Splotch(color, lit, side, hitVec));
 
-            updateData();
+            level.setBlockAndUpdate(getBlockPos(), calculateBlockState());
             this.markForUpdate();
             this.saveChanges();
         }

@@ -27,7 +27,6 @@ public class RemoveItemUpgradeRecipe extends CustomRecipe {
     public static final RemoveItemUpgradeRecipe INSTANCE = new RemoveItemUpgradeRecipe();
 
     public static final ResourceLocation SERIALIZER_ID = AppEng.makeId("remove_item_upgrade");
-    private static final NonNullList<Ingredient> INGREDIENTS = NonNullList.create();
 
     private RemoveItemUpgradeRecipe() {
         super(CraftingBookCategory.MISC);
@@ -37,11 +36,6 @@ public class RemoveItemUpgradeRecipe extends CustomRecipe {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RemoveItemUpgradeRecipe> STREAM_CODEC = StreamCodec
             .unit(INSTANCE);
-
-    @Override
-    public NonNullList<Ingredient> getIngredients() {
-        return INGREDIENTS;
-    }
 
     record RemovalResult(ItemStack upgradableItem, ItemStack upgrade) {
     }
@@ -74,11 +68,6 @@ public class RemoveItemUpgradeRecipe extends CustomRecipe {
         return attemptRemoval(input) != null;
     }
 
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return ItemStack.EMPTY;
-    }
-
     /**
      * Assemble returns the extracted upgrade.
      */
@@ -99,12 +88,7 @@ public class RemoveItemUpgradeRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width * height >= 1;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<RemoveItemUpgradeRecipe> getSerializer() {
         return RemoveItemUpgradeRecipeSerializer.INSTANCE;
     }
 

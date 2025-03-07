@@ -46,7 +46,7 @@ public final class InscriberRecipes {
      * Returns an unmodifiable view of all registered inscriber recipes.
      */
     public static Iterable<RecipeHolder<InscriberRecipe>> getRecipes(Level level) {
-        return level.getRecipeManager().byType(AERecipeTypes.INSCRIBER);
+        return level.recipeAccess().byType(AERecipeTypes.INSCRIBER);
     }
 
     @Nullable
@@ -110,8 +110,8 @@ public final class InscriberRecipes {
         final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
         return new InscriberRecipe(startingItem, renamedItem,
-                plateA.isEmpty() ? Ingredient.EMPTY : Ingredient.of(plateA),
-                plateB.isEmpty() ? Ingredient.EMPTY : Ingredient.of(plateB), type);
+                plateA.isEmpty() ? Ingredient.of() : Ingredient.of(plateA),
+                plateB.isEmpty() ? Ingredient.of() : Ingredient.of(plateB), type);
     }
 
     /**

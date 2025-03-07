@@ -45,7 +45,7 @@ public class EntropyRecipeCategory implements DisplayCategory<EntropyRecipeDispl
 
     @Override
     public Component getTitle() {
-        return AEItems.ENTROPY_MANIPULATOR.asItem().getDescription();
+        return AEItems.ENTROPY_MANIPULATOR.asItem().getName();
     }
 
     @Override

@@ -18,11 +18,9 @@
 
 package appeng.datagen.providers.recipes;
 
-import java.util.concurrent.CompletableFuture;
-
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -31,10 +29,14 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.tags.ConventionTags;
 import appeng.recipes.mattercannon.MatterCannonAmmo;
+import net.minecraft.world.item.Item;
 
 public class MatterCannonAmmoProvider extends AE2RecipeProvider {
+    private final HolderGetter<Item> items;
+
     public MatterCannonAmmoProvider(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
+        items = registries.lookupOrThrow(Registries.ITEM);
     }
 
     @Override
@@ -48,10 +50,10 @@ public class MatterCannonAmmoProvider extends AE2RecipeProvider {
         tag(output, "nuggets/fish", "c:nuggets/fish", 32);
 
         // derived from real world atomic mass...
-        MatterCannonAmmo.ammo(output, AppEng.makeId("matter_cannon/nuggets/iron"), ConventionTags.IRON_NUGGET,
-                55.845f);
-        MatterCannonAmmo.ammo(output, AppEng.makeId("matter_cannon/nuggets/gold"), ConventionTags.GOLD_NUGGET,
-                196.96655f);
+        MatterCannonAmmo.ammo(items, output, AppEng.makeId("matter_cannon/nuggets/iron"),
+                ConventionTags.IRON_NUGGET, 55.845f);
+        MatterCannonAmmo.ammo(items, output, AppEng.makeId("matter_cannon/nuggets/gold"),
+                ConventionTags.GOLD_NUGGET, 196.96655f);
         tag(output, "nuggets/lithium", "c:nuggets/lithium", 6.941f);
         tag(output, "nuggets/beryllium", "c:nuggets/beryllium", 9.0122f);
         tag(output, "nuggets/boron", "c:nuggets/boron", 10.811f);
@@ -116,8 +118,8 @@ public class MatterCannonAmmoProvider extends AE2RecipeProvider {
         MatterCannonAmmo.ammo(output, AppEng.makeId("matter_cannon/matter_ball"), AEItems.MATTER_BALL, 32.0f);
     }
 
-    private static void tag(RecipeOutput output, String recipeId, String tagId, float weight) {
-        MatterCannonAmmo.ammo(output, AppEng.makeId("matter_cannon/" + recipeId),
-                TagKey.create(Registries.ITEM, ResourceLocation.parse(tagId)), weight);
+    private void tag(RecipeOutput output, String recipeId, String tagId, float weight) {
+        MatterCannonAmmo.ammo(items, output,
+                AppEng.makeId("matter_cannon/" + recipeId), TagKey.create(Registries.ITEM, ResourceLocation.parse(tagId)), weight);
     }
 }

@@ -201,15 +201,6 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
-        if (pos.relative(this.getSide()).equals(neighbor)) {
-            if (!isClientSide()) {
-                this.refresh();
-            }
-        }
-    }
-
-    @Override
     public void onUpdateShape(Direction side) {
         var ourSide = getSide();
         // A block might have been placed in front of us

@@ -22,12 +22,15 @@ import java.util.Arrays;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -75,21 +78,21 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
         level.sendBlockUpdated(pos, defaultBlockState(), level.getBlockState(pos), 3);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
-    }
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        var crank = level.getBlockEntity(pos);
+        if (crank != null) {
+            return Blocks.AIR.defaultBlockState();
+        }
 
-    @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
         // Does the change originate from the block we're attached to?
-        if (getAttachedToPos(state, pos).equals(fromPos)) {
-            if (getCrankable(state, level, pos) == null) {
-                dropCrank(level, pos);
+        if (getAttachedToPos(state, pos).equals(neighborPos)) {
+            if (getCrankable(state, crank.getLevel(), pos) == null) {
+                return Blocks.AIR.defaultBlockState();
             }
         }
+
+        return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
     }
 
     @Override

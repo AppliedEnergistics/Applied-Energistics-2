@@ -861,7 +861,7 @@ public final class TestPlots {
             var input = CraftingInput.of(3, 3, items);
 
             var level = molecularAssembler.getLevel();
-            var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level).get();
+            var recipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, level).get();
 
             // Encode pattern
             var sparseInputs = new ItemStack[9];

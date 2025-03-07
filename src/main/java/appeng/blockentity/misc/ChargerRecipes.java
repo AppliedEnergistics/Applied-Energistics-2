@@ -12,7 +12,7 @@ import appeng.recipes.handlers.ChargerRecipe;
 public class ChargerRecipes {
 
     public static Iterable<RecipeHolder<ChargerRecipe>> getRecipes(Level level) {
-        return level.getRecipeManager().byType(AERecipeTypes.CHARGER);
+        return level.recipeAccess().byType(AERecipeTypes.CHARGER);
     }
 
     @Nullable

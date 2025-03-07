@@ -123,7 +123,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
         if (hasCustomName()) {
             name = getCustomName();
         } else {
-            name = AEBlocks.MOLECULAR_ASSEMBLER.asItem().getDescription();
+            name = AEBlocks.MOLECULAR_ASSEMBLER.asItem().getName();
         }
         var icon = AEItemKey.of(AEBlocks.MOLECULAR_ASSEMBLER);
 
@@ -135,7 +135,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
         } else {
             tooltip = List.of(
                     GuiText.CompatibleUpgrade.text(
-                            Tooltips.of(AEItems.SPEED_CARD.asItem().getDescription()),
+                            Tooltips.of(AEItems.SPEED_CARD.asItem().getName()),
                             Tooltips.ofUnformattedNumber(accelerationCards)));
         }
 

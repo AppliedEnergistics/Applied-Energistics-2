@@ -103,7 +103,7 @@ public class Platform {
     public static RecipeManager getClientRecipeManager() {
         var minecraft = Minecraft.getInstance();
         if (minecraft.level != null) {
-            return minecraft.level.getRecipeManager();
+            return minecraft.level.recipeAccess();
         }
 
         return fallbackClientRecipeManager;

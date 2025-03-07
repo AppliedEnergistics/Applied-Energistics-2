@@ -2,6 +2,8 @@ package appeng.decorative.solid;
 
 import java.util.List;
 
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ScheduledTickAccess;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -79,15 +81,15 @@ public class CertusQuartzClusterBlock extends AEBaseBlock implements SimpleWater
         return level.getBlockState(blockPos).isFaceSturdy(level, blockPos, direction);
     }
 
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level,
-            BlockPos currentPos, BlockPos neighborPos) {
+    @Override
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
         if (state.getValue(WATERLOGGED)) {
-            level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            scheduledTickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
-        return direction == state.getValue(FACING).getOpposite() && !state.canSurvive(level, currentPos)
+        return direction == state.getValue(FACING).getOpposite() && !state.canSurvive(level, pos)
                 ? Blocks.AIR.defaultBlockState()
-                : super.updateShape(state, direction, neighborState, level, currentPos, neighborPos);
+                : super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);;
     }
 
     @Nullable

@@ -103,7 +103,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Serve
                     this.size = 64;
                 }
 
-                player.sendSystemMessage(Component.literal("Size: " + this.size));
+                AppEng.instance().sendSystemMessage(player, Component.literal("Size: " + this.size));
             } else {
                 this.countdown = 20 * 10;
                 this.is = hand;

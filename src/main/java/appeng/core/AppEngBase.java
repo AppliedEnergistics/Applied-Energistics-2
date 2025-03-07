@@ -21,6 +21,7 @@ package appeng.core;
 import java.util.Collection;
 import java.util.Collections;
 
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Registry;
@@ -281,6 +282,13 @@ public abstract class AppEngBase implements AppEng {
     @Override
     public MinecraftServer getCurrentServer() {
         return ServerLifecycleHooks.getCurrentServer();
+    }
+
+    @Override
+    public void sendSystemMessage(Player player, Component text) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.sendSystemMessage(text);
+        }
     }
 
     protected final CableRenderMode getCableRenderModeForPlayer(@Nullable Player player) {

@@ -100,7 +100,7 @@ public class QuantumBridgeBlockEntity extends AENetworkedInvBlockEntity
 
             // big hack: markForUpdate will generally send a block update that will cause the cluster to initialize
             // correctly after it's been unloaded, however sometimes it doesn't so we manually rescan...
-            neighborUpdate(getBlockPos());
+            neighborChanged(getBlockPos());
         }
     }
 
@@ -267,9 +267,9 @@ public class QuantumBridgeBlockEntity extends AENetworkedInvBlockEntity
         return AECableType.DENSE_SMART;
     }
 
-    public void neighborUpdate(BlockPos fromPos) {
+    public void neighborChanged(BlockPos fromPos) {
         if (level instanceof ServerLevel serverLevel) {
-            this.calc.updateMultiblockAfterNeighborUpdate(serverLevel, this.worldPosition, fromPos);
+            this.calc.updateMultiblockAfterNeighborChange(serverLevel, this.worldPosition, fromPos);
         }
     }
 

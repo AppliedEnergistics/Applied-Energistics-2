@@ -105,7 +105,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
 
     private Recipe<?> createFakeRecipe(Display display) {
         var ingredients = NonNullList.withSize(CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT,
-                Ingredient.EMPTY);
+                Ingredient.of());
 
         for (int i = 0; i < Math.min(display.getInputEntries().size(), ingredients.size()); i++) {
             var ingredient = Ingredient.of(display.getInputEntries().get(i).stream()

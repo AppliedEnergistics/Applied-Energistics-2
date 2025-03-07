@@ -18,7 +18,6 @@
 
 package appeng.init.client;
 
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
@@ -42,32 +41,34 @@ public final class InitItemModelsProperties {
     private InitItemModelsProperties() {
     }
 
-    public static void init() {
-        ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.get();
-        ItemProperties.register(colorApplicatorItem, COLORED_PREDICATE_ID,
-                (itemStack, level, entity, seed) -> {
-                    // If the stack has no color, don't use the colored model since the impact of
-                    // calling getColor for every quad is extremely high, if the stack tries to
-                    // re-search its
-                    // inventory for a new paintball everytime
-                    AEColor col = colorApplicatorItem.getActiveColor(itemStack);
-                    return col != null ? 1 : 0;
-                });
-
-        // Register the client-only item model property for energy cells
-        BuiltInRegistries.ITEM.forEach(item -> {
-            if (!(item instanceof EnergyCellBlockItem energyCell)) {
-                return;
-            }
-
-            ItemProperties.register(energyCell, ENERGY_FILL_LEVEL_ID,
-                    (is, level, entity, seed) -> {
-                        double curPower = energyCell.getAECurrentPower(is);
-                        double maxPower = energyCell.getAEMaxPower(is);
-
-                        return (float) (curPower / maxPower);
-                    });
-        });
-    }
+    // TODO 1.21.4
+//
+//    public static void init() {
+//        ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.get();
+//        ItemProperties.register(colorApplicatorItem, COLORED_PREDICATE_ID,
+//                (itemStack, level, entity, seed) -> {
+//                    // If the stack has no color, don't use the colored model since the impact of
+//                    // calling getColor for every quad is extremely high, if the stack tries to
+//                    // re-search its
+//                    // inventory for a new paintball everytime
+//                    AEColor col = colorApplicatorItem.getActiveColor(itemStack);
+//                    return col != null ? 1 : 0;
+//                });
+//
+//        // Register the client-only item model property for energy cells
+//        BuiltInRegistries.ITEM.forEach(item -> {
+//            if (!(item instanceof EnergyCellBlockItem energyCell)) {
+//                return;
+//            }
+//
+//            ItemProperties.register(energyCell, ENERGY_FILL_LEVEL_ID,
+//                    (is, level, entity, seed) -> {
+//                        double curPower = energyCell.getAECurrentPower(is);
+//                        double maxPower = energyCell.getAEMaxPower(is);
+//
+//                        return (float) (curPower / maxPower);
+//                    });
+//        });
+//    }
 
 }

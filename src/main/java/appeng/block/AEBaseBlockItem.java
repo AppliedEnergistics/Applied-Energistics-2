@@ -30,7 +30,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 public class AEBaseBlockItem extends BlockItem {
-
     private final AEBaseBlock blockType;
 
     public AEBaseBlockItem(Block id, Properties props) {
@@ -57,8 +56,7 @@ public class AEBaseBlockItem extends BlockItem {
     }
 
     @Override
-    public String getDescriptionId(ItemStack is) {
-        return this.blockType.getDescriptionId();
+    public Component getName(ItemStack stack) {
+        return super.getName(stack);
     }
-
 }

@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -409,10 +409,6 @@ public class CableBusBakedModel implements IDynamicBakedModel {
         return false; // This model is never used in an UI
     }
 
-    @Override
-    public boolean isCustomRenderer() {
-        return false;
-    }
 
     @Override
     public TextureAtlasSprite getParticleIcon() {
@@ -424,10 +420,6 @@ public class CableBusBakedModel implements IDynamicBakedModel {
         return ItemTransforms.NO_TRANSFORMS;
     }
 
-    @Override
-    public ItemOverrides getOverrides() {
-        return ItemOverrides.EMPTY;
-    }
 
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {

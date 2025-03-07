@@ -24,6 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -592,7 +593,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     public void importSettings(DataComponentMap input, @Nullable Player player) {
         var patterns = input.getOrDefault(AEComponents.EXPORTED_PATTERNS, ItemContainerContents.EMPTY);
 
-        if (player != null && !player.level().isClientSide) {
+        if (player instanceof ServerPlayer serverPlayer) {
             clearPatternInventory(player);
 
             var desiredPatterns = new AppEngInternalInventory(patternInventory.size());
@@ -633,7 +634,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
             // Warn about not being able to restore all patterns due to lack of blank patterns
             if (blankPatternsUsed > blankPatternsAvailable) {
-                player.sendSystemMessage(
+                serverPlayer.sendSystemMessage(
                         PlayerMessages.MissingBlankPatterns.text(blankPatternsUsed - blankPatternsAvailable));
             }
         }

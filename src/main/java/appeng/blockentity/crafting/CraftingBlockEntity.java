@@ -112,7 +112,7 @@ public class CraftingBlockEntity extends AENetworkedBlockEntity
 
     public void updateMultiBlock(BlockPos changedPos) {
         if (level instanceof ServerLevel serverLevel) {
-            this.calc.updateMultiblockAfterNeighborUpdate(serverLevel, worldPosition, changedPos);
+            this.calc.updateMultiblockAfterNeighborChange(serverLevel, worldPosition, changedPos);
         }
     }
 

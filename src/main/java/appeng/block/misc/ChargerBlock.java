@@ -67,7 +67,7 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
     }
 
     @Override
-    public int getLightBlock(BlockState state, BlockGetter level, BlockPos pos) {
+    public int getLightBlock(BlockState state) {
         return 2; // FIXME Double check this (esp. value range)
     }
 
@@ -81,7 +81,7 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
                 if (ChargerRecipes.findRecipe(level, heldItem) != null || Platform.isChargeable(heldItem)) {
                     var toInsert = heldItem.split(1);
                     inv.setItemDirect(0, toInsert);
-                    return InteractionResult.sidedSuccess(level.isClientSide);
+                    return InteractionResult.SUCCESS;
                 }
             }
         }
@@ -99,7 +99,7 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
                 inv.setItemDirect(0, ItemStack.EMPTY);
                 Platform.spawnDrops(player.level(), charger.getBlockPos().relative(charger.getFront()),
                         List.of(chargingItem));
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.SUCCESS;
             }
         }
 

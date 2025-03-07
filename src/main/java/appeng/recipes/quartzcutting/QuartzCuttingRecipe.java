@@ -6,6 +6,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.world.item.crafting.PlacementInfo;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import net.minecraft.core.HolderLookup;
@@ -31,7 +32,7 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
     static final int MAX_WIDTH = 3;
     public static final MapCodec<QuartzCuttingRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
             ItemStack.STRICT_CODEC.fieldOf("result").forGetter(QuartzCuttingRecipe::getResult),
-            Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap((r) -> {
+            Ingredient.CODEC.listOf().fieldOf("ingredients").flatXmap((r) -> {
                 var ingredients = r.toArray(Ingredient[]::new);
                 if (ingredients.length == 0) {
                     return DataResult.error(() -> "No ingredients for quartz cutting recipe");
@@ -39,7 +40,7 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
                     return ingredients.length > MAX_HEIGHT * MAX_WIDTH ? DataResult.error(() -> {
                         return "Too many ingredients for quartz cutting recipe. The maximum is: %s"
                                 .formatted(MAX_HEIGHT * MAX_WIDTH);
-                    }) : DataResult.success(NonNullList.of(Ingredient.EMPTY, ingredients));
+                    }) : DataResult.success(NonNullList.of(Ingredient.of(), ingredients));
                 }
             }, DataResult::success).forGetter(QuartzCuttingRecipe::getIngredients))
             .apply(builder, QuartzCuttingRecipe::new));
@@ -55,7 +56,7 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
                     },
                     buffer -> {
                         int count = buffer.readVarInt();
-                        NonNullList<Ingredient> ingredients = NonNullList.withSize(count, Ingredient.EMPTY);
+                        NonNullList<Ingredient> ingredients = NonNullList.withSize(count, Ingredient.of());
                         ingredients.replaceAll(ignored -> Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
                         return ingredients;
                     }),
@@ -72,7 +73,7 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
         this.isSimple = ingredients.stream().allMatch(Ingredient::isSimple);
     }
 
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<QuartzCuttingRecipe> getSerializer() {
         return QuartzCuttingRecipeSerializer.INSTANCE;
     }
 
@@ -112,12 +113,13 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
         return this.result.copy();
     }
 
-    public boolean canCraftInDimensions(int width, int height) {
-        return width * height >= this.ingredients.size();
-    }
-
     private ItemStack getResult() {
         return result;
+    }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
     }
 
     @Override
@@ -143,8 +145,8 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
                     }
                 }
                 remainingItems.set(i, broken.getValue() ? ItemStack.EMPTY : result);
-            } else if (item.hasCraftingRemainingItem()) {
-                remainingItems.set(i, item.getCraftingRemainingItem());
+            } else if (!item.getCraftingRemainder().isEmpty()) {
+                remainingItems.set(i, item.getCraftingRemainder());
             }
         }
 

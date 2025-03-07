@@ -30,12 +30,11 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
 
 import appeng.core.AELog;
-import appeng.core.worlddata.AESavedData;
 
 /**
  * A compass region stores information about the occurrence of skystone blocks in a region of 1024x1024 chunks.
  */
-final class CompassRegion extends AESavedData {
+final class CompassRegion extends SavedData {
     private static final SavedData.Factory<CompassRegion> FACTORY = new Factory<>(
             CompassRegion::new,
             CompassRegion::load,

@@ -18,6 +18,7 @@
 
 package appeng.debug;
 
+import appeng.core.AppEng;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -77,7 +78,7 @@ public class ReplicatorCardItem extends AEBaseItem {
             });
 
             var replications = getReplications(stack);
-            playerIn.sendSystemMessage(Component.literal(replications + 1 + "³ Replications"));
+            AppEng.instance().sendSystemMessage(playerIn, Component.literal(replications + 1 + "³ Replications"));
         }
 
         return super.use(level, playerIn, handIn);
@@ -223,8 +224,8 @@ public class ReplicatorCardItem extends AEBaseItem {
         return InteractionResult.SUCCESS;
     }
 
-    private void outputMsg(Entity player, String string) {
-        player.sendSystemMessage(Component.literal(string));
+    private void outputMsg(Player player, String string) {
+        AppEng.instance().sendSystemMessage(player, Component.literal(string));
     }
 
     @Override

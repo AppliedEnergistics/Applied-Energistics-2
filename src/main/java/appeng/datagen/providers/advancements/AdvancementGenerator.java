@@ -45,9 +45,11 @@ import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.common.data.AdvancementProvider;
 
 
 import appeng.api.util.AEColor;
@@ -59,7 +61,7 @@ import appeng.core.stats.AdvancementTriggers;
 import appeng.datagen.providers.localization.LocalizationProvider;
 import appeng.datagen.providers.tags.ConventionTags;
 
-public class AdvancementGenerator implements AdvancementProvider.AdvancementGenerator {
+public class AdvancementGenerator implements AdvancementSubProvider {
     private final LocalizationProvider localization;
 
     public AdvancementGenerator(LocalizationProvider localization) {
@@ -260,6 +262,7 @@ public class AdvancementGenerator implements AdvancementProvider.AdvancementGene
                 .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.FLUIX_CRYSTAL))
                 .save(consumer, "ae2:main/fluix");
 
+        var items = registries.lookupOrThrow(Registries.ITEM);
         var glassCable = Advancement.Builder.advancement()
                 .display(
                         AEParts.GLASS_CABLE.item(AEColor.TRANSPARENT),
@@ -274,7 +277,7 @@ public class AdvancementGenerator implements AdvancementProvider.AdvancementGene
                 .parent(fluix)
                 .addCriterion("certus",
                         InventoryChangeTrigger.TriggerInstance
-                                .hasItems(ItemPredicate.Builder.item().of(ConventionTags.GLASS_CABLE).build()))
+                                .hasItems(ItemPredicate.Builder.item().of(items, ConventionTags.GLASS_CABLE).build()))
                 .save(consumer, "ae2:main/glass_cable");
 
         var facade = Advancement.Builder.advancement()

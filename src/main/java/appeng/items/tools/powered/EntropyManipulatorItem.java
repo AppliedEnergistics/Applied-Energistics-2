@@ -231,7 +231,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
         for (ItemStack i : drops) {
             var tempInv = new SingleRecipeInput(i);
-            Optional<SmeltingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, tempInv,
+            Optional<SmeltingRecipe> recipe = level.recipeAccess().getRecipeFor(RecipeType.SMELTING, tempInv,
                     level).map(RecipeHolder::value);
 
             if (recipe.isEmpty()) {
@@ -281,7 +281,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     @Nullable
     private static EntropyRecipe findRecipe(Level level, EntropyMode mode, BlockState blockState,
             FluidState fluidState) {
-        for (var holder : level.getRecipeManager().byType(EntropyRecipe.TYPE)) {
+        for (var holder : level.recipeAccess().byType(EntropyRecipe.TYPE)) {
             var recipe = holder.value();
             if (recipe.matches(mode, blockState, fluidState)) {
                 return recipe;

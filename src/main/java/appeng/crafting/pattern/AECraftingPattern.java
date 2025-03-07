@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
@@ -37,7 +38,6 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.MilkBucketItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -80,7 +80,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     @SuppressWarnings("unchecked")
     private final Map<Item, Boolean>[] isValidCache = new Map[9];
 
-    public AECraftingPattern(AEItemKey definition, Level level) {
+    public AECraftingPattern(AEItemKey definition, ServerLevel level) {
         this.definition = definition;
         var encodedPattern = definition.get(AEComponents.ENCODED_CRAFTING_PATTERN);
         if (encodedPattern == null) {
@@ -94,7 +94,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         this.sparseInputs = getCraftingInputs(encodedPattern.inputs());
 
         // Find recipe
-        this.recipeHolder = level.getRecipeManager().byKey(encodedPattern.recipeId()).orElse(null);
+        this.recipeHolder = level.recipeAccess().byKey(encodedPattern.recipeId()).orElse(null);
         if (recipeHolder == null || !(recipeHolder.value() instanceof CraftingRecipe)) {
             throw new IllegalArgumentException("Pattern references unknown recipe " + encodedPattern.recipeId());
         }
@@ -203,7 +203,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
 
         if (ingredientIndex < 0 || ingredientIndex > ingredients.size()) {
-            return Ingredient.EMPTY;
+            return Ingredient.of();
         }
 
         return ingredients.get(ingredientIndex);
@@ -225,7 +225,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             return ingredients.get(ingredientIndex);
         }
 
-        return Ingredient.EMPTY;
+        return Ingredient.of();
     }
 
     /**
@@ -487,7 +487,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
 
         var containedFluid = ContainerItemStrategies.getContainedStack(itemKey.toStack(), AEKeyType.fluids());
         // Milk is not natively a fluid container, but it might be made one by other mods
-        var isBucket = itemKey.getItem() instanceof BucketItem || itemKey.getItem() instanceof MilkBucketItem;
+        var isBucket = itemKey.getItem() instanceof BucketItem || itemKey.is(Items.MILK_BUCKET);
 
         if (canSubstituteFluids && containedFluid != null && isBucket) {
             // We only support buckets since we can't predict the behavior of other kinds of containers (ender tanks...)

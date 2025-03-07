@@ -155,7 +155,7 @@ public class AppEngCraftingSlot extends AppEngSlot implements RecipeCraftingHold
     // TODO: This is really hacky and NEEDS to be solved with a full menu/gui
     // refactoring.
     protected NonNullList<ItemStack> getRemainingItems(CraftingInput ic, Level level) {
-        return level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, level)
+        return level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, ic, level)
                 .map(recipe -> recipe.value().getRemainingItems(ic))
                 .orElse(NonNullList.withSize(9, ItemStack.EMPTY));
     }

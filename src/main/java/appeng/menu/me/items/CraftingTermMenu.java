@@ -135,7 +135,7 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
         }
 
         var level = getPlayer().level();
-        this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, testInput, level)
+        this.currentRecipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, testInput, level)
                 .orElse(null);
         this.lastTestedInput = testInput;
 

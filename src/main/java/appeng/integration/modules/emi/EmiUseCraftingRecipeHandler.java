@@ -86,7 +86,7 @@ public class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends Abs
 
     private Recipe<?> createFakeRecipe(EmiRecipe display) {
         var ingredients = NonNullList.withSize(CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT,
-                Ingredient.EMPTY);
+                Ingredient.of());
 
         for (int i = 0; i < Math.min(display.getInputs().size(), ingredients.size()); i++) {
             var ingredient = Ingredient.of(display.getInputs().get(i).getEmiStacks().stream()

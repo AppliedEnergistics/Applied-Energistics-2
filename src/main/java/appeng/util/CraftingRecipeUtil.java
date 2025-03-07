@@ -21,7 +21,7 @@ public final class CraftingRecipeUtil {
      */
     public static NonNullList<Ingredient> ensure3by3CraftingMatrix(Recipe<?> recipe) {
         var ingredients = getIngredients(recipe);
-        var expandedIngredients = NonNullList.withSize(9, Ingredient.EMPTY);
+        var expandedIngredients = NonNullList.withSize(9, Ingredient.of());
 
         Preconditions.checkArgument(ingredients.size() <= 9);
 
@@ -54,7 +54,7 @@ public final class CraftingRecipeUtil {
     public static NonNullList<Ingredient> getIngredients(Recipe<?> recipe) {
         // Special handling for upgrade recipes since those do not override getIngredients
         if (recipe instanceof SmithingTrimRecipe trimRecipe) {
-            var ingredients = NonNullList.withSize(3, Ingredient.EMPTY);
+            var ingredients = NonNullList.withSize(3, Ingredient.of());
             ingredients.set(0, trimRecipe.template);
             ingredients.set(1, trimRecipe.base);
             ingredients.set(2, trimRecipe.addition);
@@ -62,7 +62,7 @@ public final class CraftingRecipeUtil {
         }
 
         if (recipe instanceof SmithingTransformRecipe transformRecipe) {
-            var ingredients = NonNullList.withSize(3, Ingredient.EMPTY);
+            var ingredients = NonNullList.withSize(3, Ingredient.of());
             ingredients.set(0, transformRecipe.template);
             ingredients.set(1, transformRecipe.base);
             ingredients.set(2, transformRecipe.addition);

@@ -43,7 +43,7 @@ public class ItemGenBlock extends AEBaseEntityBlock<ItemGenBlockEntity> {
         if (!heldItem.isEmpty() && level.getBlockEntity(pos) instanceof ItemGenBlockEntity itemGen) {
             itemGen.setItem(heldItem.getItem());
 
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
 
         return super.useItemOn(heldItem, state, level, pos, player, hand, hit);

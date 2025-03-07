@@ -107,7 +107,7 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
     }
 
     private DefaultShapedDisplay make(ItemStack textureItem, ItemStack result) {
-        var ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
+        var ingredients = NonNullList.withSize(9, Ingredient.of());
         ingredients.set(1, cableAnchor);
         ingredients.set(3, cableAnchor);
         ingredients.set(5, cableAnchor);

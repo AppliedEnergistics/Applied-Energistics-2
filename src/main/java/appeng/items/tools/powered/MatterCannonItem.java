@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,7 +162,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
 
         extractAEPower(stack, ENERGY_PER_SHOT * shotPower, Actionable.MODULATE);
 
-        if (level.isClientSide()) {
+        if (!(level instanceof ServerLevel serverLevel)) {
             // Up until this point, we can simulate on the client, after this,
             // we need to run the server-side version
             return true;
@@ -189,7 +190,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                 return true;
             }
         } else {
-            standardAmmo(penetration, level, player, rayFrom, rayTo, direction, x, y, z);
+            standardAmmo(penetration, serverLevel, player, rayFrom, rayTo, direction, x, y, z);
         }
 
         return true;
@@ -276,7 +277,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         }
     }
 
-    private void standardAmmo(float penetration, Level level, Player p, Vec3 Vector3d,
+    private void standardAmmo(float penetration, ServerLevel level, Player p, Vec3 Vector3d,
             Vec3 Vector3d1, Vec3 direction, double d0, double d1, double d2) {
         boolean hasDestroyed = true;
         while (penetration > 0 && hasDestroyed) {
@@ -347,7 +348,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                     } else if (entityHit instanceof ItemEntity) {
                         hasDestroyed = true;
                         entityHit.discard();
-                    } else if (entityHit.hurt(dmgSrc, dmg)) {
+                    } else if (entityHit.hurtServer(level, dmgSrc, dmg)) {
                         hasDestroyed = !entityHit.isAlive();
                     }
                 } else if (pos instanceof BlockHitResult blockResult) {
@@ -439,7 +440,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
             return 0;
         }
 
-        var recipes = server.getRecipeManager().byType(AERecipeTypes.MATTER_CANNON_AMMO);
+        var recipes = server.getRecipeManager().recipeMap().byType(AERecipeTypes.MATTER_CANNON_AMMO);
         for (var holder : recipes) {
             var ammoRecipe = holder.value();
             if (what.matches(ammoRecipe.getAmmo())) {

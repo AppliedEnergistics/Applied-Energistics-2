@@ -31,7 +31,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -126,11 +126,6 @@ class MemoryCardBakedModel implements BakedModel {
     }
 
     @Override
-    public boolean isCustomRenderer() {
-        return this.baseModel.isCustomRenderer();
-    }
-
-    @Override
     public TextureAtlasSprite getParticleIcon() {
         return this.baseModel.getParticleIcon();
     }
@@ -141,34 +136,27 @@ class MemoryCardBakedModel implements BakedModel {
     }
 
     @Override
-    public ItemOverrides getOverrides() {
-        return new ItemOverrides() {
-            @Override
-            public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel level,
-                    LivingEntity entity, int seed) {
-                try {
-                    if (stack.getItem() instanceof IMemoryCard memoryCard) {
-                        var colors = stack.getOrDefault(AEComponents.MEMORY_CARD_COLORS, MemoryCardColors.DEFAULT);
+    public List<BakedModel> getRenderPasses(ItemStack stack) {
+        try {
+            if (stack.getItem() instanceof IMemoryCard memoryCard) {
+                var colors = stack.getOrDefault(AEComponents.MEMORY_CARD_COLORS, MemoryCardColors.DEFAULT);
 
-                        return MemoryCardBakedModel.this.modelCache.get(colors,
-                                () -> new MemoryCardBakedModel(MemoryCardBakedModel.this.baseModel,
-                                        MemoryCardBakedModel.this.texture, colors,
-                                        MemoryCardBakedModel.this.modelCache));
-                    }
-                } catch (ExecutionException e) {
-                    AELog.error(e);
-                }
-
-                return MemoryCardBakedModel.this;
+                return List.of(MemoryCardBakedModel.this.modelCache.get(colors,
+                        () -> new MemoryCardBakedModel(MemoryCardBakedModel.this.baseModel,
+                                MemoryCardBakedModel.this.texture, colors,
+                                MemoryCardBakedModel.this.modelCache)));
             }
-        };
+        } catch (ExecutionException e) {
+            AELog.error(e);
+        }
+
+        return List.of(MemoryCardBakedModel.this);
     }
 
     @Override
-    public BakedModel applyTransform(ItemDisplayContext transformType, PoseStack poseStack,
+    public void applyTransform(ItemDisplayContext transformType, PoseStack poseStack,
             boolean applyLeftHandTransform) {
         baseModel.applyTransform(transformType, poseStack, applyLeftHandTransform);
-        return this;
     }
 
 }

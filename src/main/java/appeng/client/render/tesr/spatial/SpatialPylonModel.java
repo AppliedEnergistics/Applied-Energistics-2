@@ -23,6 +23,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -32,19 +34,19 @@ import net.minecraft.client.resources.model.ModelState;
 
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
+import net.minecraft.util.context.ContextMap;
 
 public class SpatialPylonModel implements BasicUnbakedModel {
 
     @Override
-    public BakedModel bake(ModelBaker bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform) {
-        Map<SpatialPylonTextureType, TextureAtlasSprite> textures = new EnumMap<>(SpatialPylonTextureType.class);
+    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion, boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
+        Map<SpatialPylonTextureType, TextureAtlasSprite> pylonTextures = new EnumMap<>(SpatialPylonTextureType.class);
 
         for (SpatialPylonTextureType type : SpatialPylonTextureType.values()) {
-            textures.put(type, spriteGetter.apply(getTexturePath(type)));
+            pylonTextures.put(type, baker.sprites().get(getTexturePath(type)));
         }
 
-        return new SpatialPylonBakedModel(textures);
+        return new SpatialPylonBakedModel(pylonTextures);
     }
 
     private static Material getTexturePath(SpatialPylonTextureType type) {

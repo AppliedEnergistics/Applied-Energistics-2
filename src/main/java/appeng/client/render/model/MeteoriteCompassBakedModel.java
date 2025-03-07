@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.resources.model.DelegateBakedModel;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -32,7 +33,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -46,7 +47,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.BakedModelWrapper;
 import net.neoforged.neoforge.client.model.IDynamicBakedModel;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
@@ -128,10 +128,6 @@ public class MeteoriteCompassBakedModel implements IDynamicBakedModel {
         return false;
     }
 
-    @Override
-    public boolean isCustomRenderer() {
-        return false;
-    }
 
     @Override
     public TextureAtlasSprite getParticleIcon() {
@@ -143,29 +139,23 @@ public class MeteoriteCompassBakedModel implements IDynamicBakedModel {
         return this.base.getTransforms();
     }
 
-    @Override
-    public ItemOverrides getOverrides() {
-        /*
-         * The entity is given when an item rendered on the hotbar, or when held in hand.
-         */
-        return new ItemOverrides() {
-            @Override
-            public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel level,
-                    @Nullable LivingEntity entity, int seed) {
-                float rotation;
-                if (level != null && entity != null) {
-                    rotation = getAnimatedRotation(entity.position(), true, 0);
-                } else {
-                    rotation = getAnimatedRotation(null, false, 0);
-                }
-
-                return new FixedRotationModel(rotation);
-            }
-        };
-    }
+    /*
+     * The entity is given when an item rendered on the hotbar, or when held in hand.
+     */
+// TODO 1.21.4    @Override
+// TODO 1.21.4    public List<BakedModel> getRenderPasses(ItemStack itemStack) {
+// TODO 1.21.4        float rotation;
+// TODO 1.21.4        if (level != null && entity != null) {
+// TODO 1.21.4            rotation = getAnimatedRotation(entity.position(), true, 0);
+// TODO 1.21.4        } else {
+// TODO 1.21.4            rotation = getAnimatedRotation(null, false, 0);
+// TODO 1.21.4        }
+// TODO 1.21.4
+// TODO 1.21.4        return new FixedRotationModel(rotation);
+// TODO 1.21.4    }
 
     // Model wrapper that allows us to pass a rotation along to the baked model
-    class FixedRotationModel extends BakedModelWrapper<MeteoriteCompassBakedModel> {
+    class FixedRotationModel extends DelegateBakedModel {
         private final float rotation;
 
         public FixedRotationModel(float rotation) {
@@ -176,11 +166,11 @@ public class MeteoriteCompassBakedModel implements IDynamicBakedModel {
         @Override
         public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
             var modelData = ModelData.builder().with(ROTATION, rotation).build();
-            return originalModel.getQuads(state, side, rand, modelData, null);
+            return parent.getQuads(state, side, rand, modelData, null);
         }
 
         @Override
-        public BakedModel applyTransform(ItemDisplayContext cameraTransformType, PoseStack poseStack,
+        public void applyTransform(ItemDisplayContext cameraTransformType, PoseStack poseStack,
                 boolean applyLeftHandTransform) {
             super.applyTransform(cameraTransformType, poseStack, applyLeftHandTransform);
 
@@ -202,12 +192,7 @@ public class MeteoriteCompassBakedModel implements IDynamicBakedModel {
                 }
             }
 
-            return new FixedRotationModel((float) d + rotation);
-        }
-
-        @Override
-        public List<BakedModel> getRenderPasses(ItemStack itemStack, boolean fabulous) {
-            return List.of(this);
+            // TODO 1.21.4 return new FixedRotationModel((float) d + rotation);
         }
     }
 

@@ -8,6 +8,8 @@ import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import appeng.core.AppEng;
+import appeng.util.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +81,7 @@ public record ExportedGridContent(int serialNumber,
         try (var out = Files.newOutputStream(tempPath, openOptions)) {
             out.write(compressedData);
         } catch (IOException e) {
-            player.sendSystemMessage(
+            AppEng.instance().sendSystemMessage(player,
                     Component.literal("Failed to write exported grid data to " + tempPath)
                             .withStyle(ChatFormatting.RED));
             LOG.error("Failed to write exported grid data to {}", tempPath, e);
@@ -93,7 +95,7 @@ public record ExportedGridContent(int serialNumber,
                 LOG.error("Failed to move grid export {} into place", finalPath, e);
             }
 
-            player.sendSystemMessage(Component.literal("Saved grid data for grid #" + serialNumber + " from server to ")
+            AppEng.instance().sendSystemMessage(player, Component.literal("Saved grid data for grid #" + serialNumber + " from server to ")
                     .append(Component.literal(finalPath.toString()).withStyle(style -> {
                         return style.withUnderlined(true)
                                 .withClickEvent(new ClickEvent(

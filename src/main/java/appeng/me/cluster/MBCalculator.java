@@ -56,7 +56,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
         return modificationInProgress.get() != null;
     }
 
-    public void updateMultiblockAfterNeighborUpdate(ServerLevel level, BlockPos loc, BlockPos changedPos) {
+    public void updateMultiblockAfterNeighborChange(ServerLevel level, BlockPos loc, BlockPos changedPos) {
         boolean recheck;
 
         TCluster cluster = target.getCluster();

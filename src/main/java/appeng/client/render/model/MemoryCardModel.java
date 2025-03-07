@@ -22,6 +22,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
 
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.util.context.ContextMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -49,13 +52,11 @@ public class MemoryCardModel implements BasicUnbakedModel {
         return Collections.singleton(MODEL_BASE);
     }
 
-    @Nullable
     @Override
-    public BakedModel bake(ModelBaker loader, Function<Material, TextureAtlasSprite> textureGetter,
-            ModelState rotationContainer) {
-        TextureAtlasSprite texture = textureGetter.apply(TEXTURE);
+    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion, boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
+        TextureAtlasSprite texture = baker.sprites().get(TEXTURE);
 
-        BakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
+        BakedModel baseModel = baker.bake(MODEL_BASE, modelState);
 
         return new MemoryCardBakedModel(baseModel, texture);
     }

@@ -18,6 +18,7 @@
 
 package appeng.debug;
 
+import appeng.core.AppEng;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -72,7 +73,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
             var craterType = getCraterType(itemStack);
 
-            player.sendSystemMessage(Component.literal(craterType.name()));
+            AppEng.instance().sendSystemMessage(player, Component.literal(craterType.name()));
 
             return InteractionResult.SUCCESS;
         }
@@ -110,7 +111,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
                 pureCrater);
 
         if (spawned == null) {
-            player.sendSystemMessage(Component.literal("Un-suitable Location."));
+            AppEng.instance().sendSystemMessage(player, Component.literal("Un-suitable Location."));
             return InteractionResult.FAIL;
         }
 

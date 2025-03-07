@@ -170,7 +170,7 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements StandardRe
         }
         if (recipe.getId() != null) {
             // TODO: This can produce false positives...
-            return level.getRecipeManager().byKey(recipe.getId()).orElse(null);
+            return level.recipeAccess().byKey(recipe.getId()).orElse(null);
         }
         return null;
     }

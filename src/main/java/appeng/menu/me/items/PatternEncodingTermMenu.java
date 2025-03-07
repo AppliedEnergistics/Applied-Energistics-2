@@ -228,7 +228,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
             if (invalidIngredients) {
                 this.currentRecipe = null;
             } else {
-                this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level)
+                this.currentRecipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, level)
                         .orElse(null);
             }
             this.currentMode = this.mode;
@@ -391,7 +391,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
                 addition.toStack());
 
         var level = getPlayer().level();
-        var recipe = level.getRecipeManager()
+        var recipe = level.recipeAccess()
                 .getRecipeFor(RecipeType.SMITHING, input, level)
                 .orElse(null);
         if (recipe == null) {
@@ -418,7 +418,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         var recipeInput = new SingleRecipeInput(input.toStack());
 
         var level = getPlayer().level();
-        var recipe = level.getRecipeManager()
+        var recipe = level.recipeAccess()
                 .getRecipeFor(RecipeType.STONECUTTING, recipeInput, level, stonecuttingRecipeId)
                 .orElse(null);
         if (recipe == null) {
@@ -507,7 +507,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         stonecuttingRecipes.clear();
         if (encodedInputsInv.getKey(0) instanceof AEItemKey itemKey) {
             var level = getPlayer().level();
-            var recipeManager = level.getRecipeManager();
+            var recipeManager = level.recipeAccess();
             var recipeInput = new SingleRecipeInput(itemKey.toStack());
             stonecuttingRecipes.addAll(
                     recipeManager.getRecipesFor(RecipeType.STONECUTTING, recipeInput, level));

@@ -1,30 +1,31 @@
 package appeng.recipes.game;
 
-import java.util.List;
-
+import appeng.recipes.AERecipeTypes;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.PlacementInfo;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
-import appeng.recipes.AERecipeTypes;
+import java.util.List;
 
 /**
  * Used to handle disassembly of the (Portable) Storage Cells.
  */
-public class StorageCellDisassemblyRecipe extends CustomRecipe {
+public class StorageCellDisassemblyRecipe implements Recipe<SingleRecipeInput> {
     public static final MapCodec<StorageCellDisassemblyRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder
             .group(
                     BuiltInRegistries.ITEM.byNameCodec().fieldOf("cell")
@@ -45,7 +46,6 @@ public class StorageCellDisassemblyRecipe extends CustomRecipe {
     private final Item storageCell;
 
     public StorageCellDisassemblyRecipe(Item storageCell, List<ItemStack> disassemblyItems) {
-        super(CraftingBookCategory.MISC);
         this.storageCell = storageCell;
         this.disassemblyItems = disassemblyItems;
     }
@@ -70,12 +70,12 @@ public class StorageCellDisassemblyRecipe extends CustomRecipe {
      *
      * @param cell The cell item being disassembled.
      * @return An empty list to indicate the cell cannot be disassembled. Note that stacks in the list must be copied by
-     *         the caller.
+     * the caller.
      */
-    public static List<ItemStack> getDisassemblyResult(Level level, Item cell) {
-        var recipeManager = level.getRecipeManager();
+    public static List<ItemStack> getDisassemblyResult(ServerLevel level, Item cell) {
+        var recipeManager = level.recipeAccess();
 
-        for (var holder : recipeManager.byType(AERecipeTypes.CELL_DISASSEMBLY)) {
+        for (var holder : recipeManager.recipeMap().byType(AERecipeTypes.CELL_DISASSEMBLY)) {
             if (holder.value().storageCell == cell) {
                 return holder.value().getCellDisassemblyItems();
             }
@@ -85,32 +85,32 @@ public class StorageCellDisassemblyRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean matches(CraftingInput input, Level level) {
+    public boolean matches(SingleRecipeInput input, Level level) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
+    public ItemStack assemble(SingleRecipeInput input, HolderLookup.Provider registries) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return false;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<StorageCellDisassemblyRecipe> getSerializer() {
         return StorageCellDisassemblyRecipeSerializer.INSTANCE;
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<StorageCellDisassemblyRecipe> getType() {
         return AERecipeTypes.CELL_DISASSEMBLY;
+    }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 }

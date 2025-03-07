@@ -18,6 +18,7 @@
 
 package appeng.block.crafting;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -43,20 +44,22 @@ public class CraftingBlockItem extends AEBaseBlockItem {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             ItemStack stack = player.getItemInHand(hand);
 
-            var removedUpgrade = CraftingUnitTransformRecipe.getRemovedUpgrade(level, getBlock());
-            if (removedUpgrade.isEmpty()) {
-                return super.use(level, player, hand);
+            if (level instanceof ServerLevel serverLevel) {
+                var removedUpgrade = CraftingUnitTransformRecipe.getRemovedUpgrade(serverLevel, getBlock());
+                if (removedUpgrade.isEmpty()) {
+                    return super.use(level, player, hand);
+                }
+
+
+                int itemCount = stack.getCount();
+                player.setItemInHand(hand, ItemStack.EMPTY);
+
+                var inv = player.getInventory();
+                inv.placeItemBackInInventory(removedUpgrade.copyWithCount(removedUpgrade.getCount() * itemCount));
+                // This is hard-coded, as this is always a base block.
+                inv.placeItemBackInInventory(AEBlocks.CRAFTING_UNIT.stack(itemCount));
             }
-
-            int itemCount = stack.getCount();
-            player.setItemInHand(hand, ItemStack.EMPTY);
-
-            var inv = player.getInventory();
-            inv.placeItemBackInInventory(removedUpgrade.copyWithCount(removedUpgrade.getCount() * itemCount));
-            // This is hard-coded, as this is always a base block.
-            inv.placeItemBackInInventory(AEBlocks.CRAFTING_UNIT.stack(itemCount));
-
-            return InteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS_SERVER;
         }
         return super.use(level, player, hand);
     }

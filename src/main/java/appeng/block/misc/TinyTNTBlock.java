@@ -18,6 +18,8 @@
 
 package appeng.block.misc;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.redstone.Orientation;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -59,7 +61,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public int getLightBlock(BlockState state, BlockGetter level, BlockPos pos) {
+    protected int getLightBlock(BlockState state) {
         return 2; // FIXME: Validate that this is the correct value range
     }
 
@@ -84,7 +86,7 @@ public class TinyTNTBlock extends AEBaseBlock {
             }
 
             player.awardStat(Stats.ITEM_USED.get(item));
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
         return super.useItemOn(heldItem, state, level, pos, player, hand, hit);
     }
@@ -106,8 +108,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, @Nullable Orientation orientation, boolean movedByPiston) {
         if (level.getBestNeighborSignal(pos) > 0) {
             this.startFuse(level, pos, null);
             level.removeBlock(pos, false);
@@ -147,11 +148,11 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public void wasExploded(Level level, BlockPos pos, Explosion exp) {
-        super.wasExploded(level, pos, exp);
+    public void wasExploded(ServerLevel level, BlockPos pos, Explosion explosion) {
+        super.wasExploded(level, pos, explosion);
         if (!level.isClientSide) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F,
-                    pos.getY(), pos.getZ() + 0.5F, exp.getIndirectSourceEntity());
+                    pos.getY(), pos.getZ() + 0.5F, explosion.getIndirectSourceEntity());
             primedTinyTNTEntity
                     .setFuse(level.random.nextInt(primedTinyTNTEntity.getFuse() / 4)
                             + primedTinyTNTEntity.getFuse() / 8);

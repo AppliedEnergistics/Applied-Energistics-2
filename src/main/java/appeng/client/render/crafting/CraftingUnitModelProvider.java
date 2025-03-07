@@ -12,6 +12,7 @@ import net.minecraft.client.resources.model.Material;
 
 import appeng.block.crafting.CraftingUnitType;
 import appeng.core.AppEng;
+import net.minecraft.client.resources.model.SpriteGetter;
 
 public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider<CraftingUnitType> {
 
@@ -42,36 +43,36 @@ public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider
         return Collections.unmodifiableList(MATERIALS);
     }
 
-    public TextureAtlasSprite getLightMaterial(Function<Material, TextureAtlasSprite> textureGetter) {
+    public TextureAtlasSprite getLightMaterial(SpriteGetter textureGetter) {
         return switch (this.type) {
-            case ACCELERATOR -> textureGetter.apply(ACCELERATOR_LIGHT);
-            case STORAGE_1K -> textureGetter.apply(STORAGE_1K_LIGHT);
-            case STORAGE_4K -> textureGetter.apply(STORAGE_4K_LIGHT);
-            case STORAGE_16K -> textureGetter.apply(STORAGE_16K_LIGHT);
-            case STORAGE_64K -> textureGetter.apply(STORAGE_64K_LIGHT);
-            case STORAGE_256K -> textureGetter.apply(STORAGE_256K_LIGHT);
+            case ACCELERATOR -> textureGetter.get(ACCELERATOR_LIGHT);
+            case STORAGE_1K -> textureGetter.get(STORAGE_1K_LIGHT);
+            case STORAGE_4K -> textureGetter.get(STORAGE_4K_LIGHT);
+            case STORAGE_16K -> textureGetter.get(STORAGE_16K_LIGHT);
+            case STORAGE_64K -> textureGetter.get(STORAGE_64K_LIGHT);
+            case STORAGE_256K -> textureGetter.get(STORAGE_256K_LIGHT);
             default -> throw new IllegalArgumentException(
                     "Crafting unit type " + this.type + " does not use a light texture.");
         };
     }
 
     @Override
-    public BakedModel getBakedModel(Function<Material, TextureAtlasSprite> spriteGetter) {
-        TextureAtlasSprite ringCorner = spriteGetter.apply(RING_CORNER);
-        TextureAtlasSprite ringSideHor = spriteGetter.apply(RING_SIDE_HOR);
-        TextureAtlasSprite ringSideVer = spriteGetter.apply(RING_SIDE_VER);
+    public BakedModel getBakedModel(SpriteGetter spriteGetter) {
+        TextureAtlasSprite ringCorner = spriteGetter.get(RING_CORNER);
+        TextureAtlasSprite ringSideHor = spriteGetter.get(RING_SIDE_HOR);
+        TextureAtlasSprite ringSideVer = spriteGetter.get(RING_SIDE_VER);
 
         return switch (type) {
             case UNIT -> new UnitBakedModel(ringCorner, ringSideHor, ringSideVer,
-                    spriteGetter.apply(UNIT_BASE));
+                    spriteGetter.get(UNIT_BASE));
             case ACCELERATOR, STORAGE_1K, STORAGE_4K, STORAGE_16K, STORAGE_64K, STORAGE_256K -> new LightBakedModel(
-                    ringCorner, ringSideHor, ringSideVer, spriteGetter.apply(LIGHT_BASE),
+                    ringCorner, ringSideHor, ringSideVer, spriteGetter.get(LIGHT_BASE),
                     this.getLightMaterial(spriteGetter));
             case MONITOR -> new MonitorBakedModel(ringCorner, ringSideHor, ringSideVer,
-                    spriteGetter.apply(UNIT_BASE), spriteGetter.apply(MONITOR_BASE),
-                    spriteGetter.apply(MONITOR_LIGHT_DARK),
-                    spriteGetter.apply(MONITOR_LIGHT_MEDIUM),
-                    spriteGetter.apply(MONITOR_LIGHT_BRIGHT));
+                    spriteGetter.get(UNIT_BASE), spriteGetter.get(MONITOR_BASE),
+                    spriteGetter.get(MONITOR_LIGHT_DARK),
+                    spriteGetter.get(MONITOR_LIGHT_MEDIUM),
+                    spriteGetter.get(MONITOR_LIGHT_BRIGHT));
         };
     }
 

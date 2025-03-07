@@ -9,8 +9,8 @@ import net.minecraft.world.level.ItemLike;
 
 public class InscriberRecipeBuilder {
     private final Ingredient middleInput;
-    private Ingredient topOptional = Ingredient.EMPTY;
-    private Ingredient bottomOptional = Ingredient.EMPTY;
+    private Ingredient topOptional = Ingredient.of();
+    private Ingredient bottomOptional = Ingredient.of();
     private final ItemLike output;
     private final int count;
     private InscriberProcessType mode = InscriberProcessType.INSCRIBE;

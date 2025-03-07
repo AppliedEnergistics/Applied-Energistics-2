@@ -18,6 +18,12 @@
 
 package appeng.block.crafting;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.redstone.Orientation;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,22 +78,16 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor level,
-            BlockPos currentPos, BlockPos facingPos) {
-        BlockEntity te = level.getBlockEntity(currentPos);
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        BlockEntity te = level.getBlockEntity(pos);
         if (te != null) {
             te.requestModelDataUpdate();
         }
-        return super.updateShape(stateIn, facing, facingState, level, currentPos, facingPos);
-    }
-
-    @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn,
-            BlockPos fromPos, boolean isMoving) {
-        final CraftingBlockEntity cp = this.getBlockEntity(level, pos);
+        var cp = this.getBlockEntity(level, pos);
         if (cp != null) {
-            cp.updateMultiBlock(fromPos);
+            cp.updateMultiBlock(neighborPos);
         }
+        return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
     }
 
     @Override
@@ -127,12 +127,15 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     @Override
     protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
-        if (this.upgrade(heldItem, state, level, pos, player, hit))
-            return InteractionResult.SUCCESS;
+        if (level instanceof ServerLevel serverLevel) {
+            if (this.upgrade(heldItem, state, serverLevel, pos, player, hit)) {
+                return InteractionResult.SUCCESS_SERVER;
+            }
+        }
         return super.useItemOn(heldItem, state, level, pos, player, hand, hit);
     }
 
-    public boolean upgrade(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player,
+    public boolean upgrade(ItemStack heldItem, BlockState state, ServerLevel level, BlockPos pos, Player player,
             BlockHitResult hit) {
         if (heldItem.isEmpty()) {
             return false;
@@ -178,10 +181,10 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     }
 
     public InteractionResult removeUpgrade(Level level, Player player, BlockPos pos, BlockState newState) {
-        if (this.type == CraftingUnitType.UNIT || level.isClientSide())
+        if (this.type == CraftingUnitType.UNIT || !(level instanceof ServerLevel serverLevel))
             return InteractionResult.FAIL;
 
-        var removedUpgrade = CraftingUnitTransformRecipe.getRemovedUpgrade(level, this);
+        var removedUpgrade = CraftingUnitTransformRecipe.getRemovedUpgrade(serverLevel, this);
         if (removedUpgrade.isEmpty()) {
             return InteractionResult.FAIL;
         }

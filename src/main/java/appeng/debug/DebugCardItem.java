@@ -21,6 +21,7 @@ package appeng.debug;
 import java.util.HashSet;
 import java.util.Set;
 
+import appeng.core.AppEng;
 import com.google.common.collect.Iterables;
 import com.google.common.math.StatsAccumulator;
 
@@ -87,7 +88,7 @@ public class DebugCardItem extends AEBaseItem {
             this.outputSecondaryMessage(player, "Current Tick: ",
                     Long.toString(TickHandler.instance().getCurrentTick()));
             for (var line : TickHandler.instance().getBlockEntityReport()) {
-                player.sendSystemMessage(line);
+                AppEng.instance().sendSystemMessage(player, line);
             }
         }
 
@@ -226,7 +227,7 @@ public class DebugCardItem extends AEBaseItem {
                     msg.append(Component.literal(v.name().substring(0, 1))
                             .withStyle(cablePart.isConnected(v) ? ChatFormatting.GREEN : ChatFormatting.DARK_GRAY));
                 }
-                player.sendSystemMessage(Component.literal("Connected Sides: ")
+                AppEng.instance().sendSystemMessage(player, Component.literal("Connected Sides: ")
                         .withStyle(ChatFormatting.GRAY)
                         .append(msg));
             }
@@ -260,25 +261,25 @@ public class DebugCardItem extends AEBaseItem {
                 ChatFormatting.DARK_PURPLE);
     }
 
-    private void outputMessage(Entity player, String string, ChatFormatting... chatFormattings) {
-        player.sendSystemMessage(Component.literal(string).withStyle(chatFormattings));
+    private void outputMessage(Player player, String string, ChatFormatting... chatFormattings) {
+        AppEng.instance().sendSystemMessage(player, Component.literal(string).withStyle(chatFormattings));
     }
 
-    private void outputMessage(Entity player, String string) {
-        player.sendSystemMessage(Component.literal(string));
+    private void outputMessage(Player player, String string) {
+        AppEng.instance().sendSystemMessage(player, Component.literal(string));
     }
 
-    private void outputPrimaryMessage(Entity player, String label, String value) {
+    private void outputPrimaryMessage(Player player, String label, String value) {
         this.outputLabeledMessage(player, label, value, ChatFormatting.BOLD, ChatFormatting.LIGHT_PURPLE);
     }
 
-    private void outputSecondaryMessage(Entity player, String label, String value) {
+    private void outputSecondaryMessage(Player player, String label, String value) {
         this.outputLabeledMessage(player, label, value, ChatFormatting.GRAY);
     }
 
-    private void outputLabeledMessage(Entity player, String label, String value,
+    private void outputLabeledMessage(Player player, String label, String value,
             ChatFormatting... chatFormattings) {
-        player.sendSystemMessage(Component.literal("")
+        AppEng.instance().sendSystemMessage(player, Component.literal("")
                 .append(Component.literal(label + ": ").withStyle(chatFormattings))
                 .append(value));
     }

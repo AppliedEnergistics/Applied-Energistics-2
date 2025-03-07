@@ -28,7 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -53,7 +53,7 @@ public interface ICableBusContainer {
 
     void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor);
 
-    void onUpdateShape(LevelAccessor level, BlockPos pos, Direction side);
+    void onUpdateShape(LevelReader level, BlockPos pos, Direction side);
 
     boolean isEmpty();
 

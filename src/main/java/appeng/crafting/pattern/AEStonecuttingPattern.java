@@ -86,7 +86,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
 
         // Find recipe
         this.recipeId = encodedPattern.recipeId();
-        this.recipe = level.getRecipeManager().byKey(recipeId).map(holder -> (StonecutterRecipe) holder.value())
+        this.recipe = level.recipeAccess().byKey(recipeId).map(holder -> (StonecutterRecipe) holder.value())
                 .orElse(null);
         if (recipe == null) {
             throw new IllegalStateException("Stonecutting pattern references unknown recipe " + recipeId);

@@ -18,6 +18,9 @@
 
 package appeng.block.networking;
 
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -100,12 +103,11 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
      * This is called when an adjacent block is changed.
      */
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level,
-            BlockPos pos, BlockPos facingPos) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
         return getControllerType(state, level, pos);
     }
 
-    private BlockState getControllerType(BlockState baseState, LevelAccessor level, BlockPos pos) {
+    private BlockState getControllerType(BlockState baseState, LevelReader level, BlockPos pos) {
         // Only used for columns, really
         ControllerRenderType type = ControllerRenderType.block;
 
@@ -139,7 +141,7 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
         return baseState.setValue(CONTROLLER_TYPE, type);
     }
 
-    private static boolean isController(LevelAccessor level, int x, int y, int z) {
+    private static boolean isController(LevelReader level, int x, int y, int z) {
         // Do NOT query block entity:
         // - in Spatial IO movement, block entity might have been removed but block might still be there
         // - if we call getBlockEntity a new block entity will be loaded even though it has already been removed (bad!)
@@ -153,7 +155,7 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
             if (!level.isClientSide) {
                 MenuOpener.open(NetworkStatusMenu.CONTROLLER_TYPE, player, MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

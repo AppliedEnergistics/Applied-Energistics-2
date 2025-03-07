@@ -27,6 +27,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.world.item.crafting.PlacementInfo;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
@@ -103,28 +106,23 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return false;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<EntropyRecipe> getSerializer() {
         return EntropyRecipeSerializer.INSTANCE;
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<EntropyRecipe> getType() {
         return TYPE;
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients() {
-        return NonNullList.create();
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     public EntropyMode getMode() {
@@ -258,7 +256,7 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
                 Output::block,
                 FluidOutput.STREAM_CODEC.apply(ByteBufCodecs::optional),
                 Output::fluid,
-                ItemStack.LIST_STREAM_CODEC,
+                ItemStack.OPTIONAL_LIST_STREAM_CODEC,
                 Output::drops,
                 Output::new);
     }
