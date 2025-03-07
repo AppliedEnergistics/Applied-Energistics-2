@@ -1,5 +1,6 @@
 package appeng.items.tools.powered;
 
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.ResourceLocation;
@@ -88,7 +89,7 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         return context.isSecondaryUseActive()
                 && this.disassembleDrive(stack, context.getLevel(), context.getPlayer())
-                        ? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
+                        ? InteractionResult.SUCCESS
                         : InteractionResult.PASS;
     }
 
@@ -104,8 +105,12 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
     }
 
     private boolean disassembleDrive(ItemStack stack, Level level, Player player) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return false;
+        }
+
         var playerInventory = player.getInventory();
-        var disassemblyItems = StorageCellDisassemblyRecipe.getDisassemblyResult(level, stack.getItem());
+        var disassemblyItems = StorageCellDisassemblyRecipe.getDisassemblyResult(serverLevel, stack.getItem());
         if (disassemblyItems.isEmpty() || playerInventory.getSelected() != stack || stack.getCount() != 1) {
             return false;
         }

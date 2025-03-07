@@ -331,7 +331,7 @@ public class CachedPlane {
                 for (int z = 0; z < this.cz_size; z++) {
                     final LevelChunk c = this.myChunks[x][z];
                     serverLightManager.lightChunk(c, false);
-                    c.setUnsaved(true);
+                    c.markUnsaved();
                 }
             }
         }

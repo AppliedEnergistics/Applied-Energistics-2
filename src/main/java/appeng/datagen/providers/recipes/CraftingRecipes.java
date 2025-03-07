@@ -3,17 +3,23 @@ package appeng.datagen.providers.recipes;
 
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
 
@@ -28,8 +34,12 @@ import appeng.datagen.providers.tags.ConventionTags;
 import appeng.items.tools.powered.PortableCellItem;
 
 public class CraftingRecipes extends AE2RecipeProvider {
+
+    private final HolderGetter<Item> items;
+
     public CraftingRecipes(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
+        this.items = registries.lookupOrThrow(Registries.ITEM);
     }
 
     @Override
@@ -907,7 +917,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .requires(housing)
                 .unlockedBy("has_" + housing.id().getPath(), has(housing))
                 .unlockedBy("has_energy_cell", has(AEBlocks.ENERGY_CELL))
-                .save(output, cell.get().getRecipeId());
+                .save(output, key(cell.get().getRecipeId()));
     }
 
     private void addSpatialCells(RecipeOutput output) {
@@ -1498,7 +1508,11 @@ public class CraftingRecipes extends AE2RecipeProvider {
         }
     }
 
-    private static Ingredient tagExcept(TagKey<Item> tag, ItemLike exception) {
-        return DifferenceIngredient.of(Ingredient.of(tag), Ingredient.of(exception));
+    private static ResourceKey<Recipe<?>> key(ResourceLocation id) {
+        return ResourceKey.create(Registries.RECIPE, id);
+    }
+
+    private Ingredient tagExcept(TagKey<Item> tag, ItemLike exception) {
+        return DifferenceIngredient.of(Ingredient.of(items.getOrThrow(tag)), Ingredient.of(exception));
     }
 }

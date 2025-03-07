@@ -41,7 +41,7 @@ public class P2PTunnelFrequencyModel implements BasicUnbakedModel {
     @Override
     public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion, boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
         final TextureAtlasSprite texture = baker.sprites().get(TEXTURE);
-        return new P2PTunnelFrequencyBakedModel(texture);
+        return new P2PTunnelFrequencyBakedModel(texture, itemTransforms);
     }
 
 }

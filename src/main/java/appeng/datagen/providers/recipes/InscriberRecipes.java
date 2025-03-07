@@ -20,9 +20,12 @@ package appeng.datagen.providers.recipes;
 
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -35,8 +38,11 @@ import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipeBuilder;
 
 public class InscriberRecipes extends AE2RecipeProvider {
+    private final HolderGetter<Item> items;
+
     public InscriberRecipes(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
+        this.items = registries.lookupOrThrow(Registries.ITEM);
     }
 
     @Override
@@ -47,7 +53,7 @@ public class InscriberRecipes extends AE2RecipeProvider {
                 .setTop(Ingredient.of(AEItems.SILICON_PRESS))
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(output, AppEng.makeId("inscriber/silicon_press"));
-        InscriberRecipeBuilder.inscribe(ConventionTags.SILICON, AEItems.SILICON_PRINT, 1)
+        InscriberRecipeBuilder.inscribe(items.getOrThrow(ConventionTags.SILICON), AEItems.SILICON_PRINT, 1)
                 .setTop(Ingredient.of(AEItems.SILICON_PRESS))
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(output, AppEng.makeId("inscriber/silicon_print"));
@@ -62,19 +68,19 @@ public class InscriberRecipes extends AE2RecipeProvider {
                 AEItems.ENGINEERING_PROCESSOR_PRESS,
                 AEItems.ENGINEERING_PROCESSOR_PRINT,
                 AEItems.ENGINEERING_PROCESSOR,
-                Ingredient.of(ConventionTags.DIAMOND));
+                Ingredient.of(items.getOrThrow(ConventionTags.DIAMOND)));
 
         processor(output, "logic_processor",
                 AEItems.LOGIC_PROCESSOR_PRESS,
                 AEItems.LOGIC_PROCESSOR_PRINT,
                 AEItems.LOGIC_PROCESSOR,
-                Ingredient.of(ConventionTags.GOLD_INGOT));
+                Ingredient.of(items.getOrThrow(ConventionTags.GOLD_INGOT)));
 
         // Crystal -> Dust Recipes
-        InscriberRecipeBuilder.inscribe(ConventionTags.FLUIX_CRYSTAL, AEItems.FLUIX_DUST, 1)
+        InscriberRecipeBuilder.inscribe(items.getOrThrow(ConventionTags.FLUIX_CRYSTAL), AEItems.FLUIX_DUST, 1)
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(output, AppEng.makeId("inscriber/fluix_dust"));
-        InscriberRecipeBuilder.inscribe(ConventionTags.CERTUS_QUARTZ, AEItems.CERTUS_QUARTZ_DUST, 1)
+        InscriberRecipeBuilder.inscribe(items.getOrThrow(ConventionTags.CERTUS_QUARTZ), AEItems.CERTUS_QUARTZ_DUST, 1)
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(output, AppEng.makeId("inscriber/certus_quartz_dust"));
         InscriberRecipeBuilder.inscribe(AEBlocks.SKY_STONE_BLOCK, AEItems.SKY_DUST, 1)

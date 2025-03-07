@@ -8,7 +8,9 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 
@@ -29,12 +31,17 @@ public class AE2Button extends Button {
     @Override
     protected void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         Minecraft minecraft = Minecraft.getInstance();
-        pGuiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        pGuiGraphics.blitSprite(SPRITES.get(this.active, this.isHovered()), this.getX(), this.getY(), this.getWidth(),
-                this.getHeight());
-        pGuiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        pGuiGraphics.blitSprite(
+                RenderType::guiTextured,
+                SPRITES.get(this.active, this.isHovered()),
+                this.getX(),
+                this.getY(),
+                this.getWidth(),
+                this.getHeight(),
+                ARGB.white(alpha)
+        );
         if (!this.active) {
             this.renderButtonText(pGuiGraphics, minecraft.font, 2, 0x413f54 | Mth.ceil(this.alpha * 255.0F) << 24, -1);
         } else if (this.isHovered()) {

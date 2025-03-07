@@ -28,6 +28,7 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.InputConstants;
 
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -491,7 +492,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
             if (slot instanceof RepoSlot repoSlot) {
                 var entry = repoSlot.getEntry();
                 if (entry != null && PendingCraftingJobs.hasPendingJob(entry.getWhat())) {
-                    var sprite = minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                    var sprite = minecraft.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
                             .apply(AppEng.makeId("block/molecular_assembler_lights"));
                     Blitter.sprite(sprite)
                             .src(sprite.getX() + 2, sprite.getY() + 2, sprite.contents().width() - 4,
@@ -514,7 +515,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         // handler for middle mouse button crafting in survival mode
         if (Minecraft.getInstance().options.keyPickItem.matchesMouse(btn)) {
-            Slot slot = this.findSlot(xCoord, yCoord);
+            Slot slot = this.getHoveredSlot(xCoord, yCoord);
             if (slot instanceof RepoSlot repoSlot && repoSlot.isCraftable()) {
                 handleGridInventoryEntryMouseClick(repoSlot.getEntry(), btn, ClickType.CLONE);
                 return true;
@@ -527,7 +528,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     @Override
     public boolean mouseScrolled(double x, double y, double deltaX, double deltaY) {
         if (deltaY != 0 && hasShiftDown()) {
-            if (this.findSlot(x, y) instanceof RepoSlot repoSlot) {
+            if (this.getHoveredSlot(x, y) instanceof RepoSlot repoSlot) {
                 GridInventoryEntry entry = repoSlot.getEntry();
                 long serial = entry != null ? entry.getSerial() : -1;
                 final InventoryAction direction = deltaY > 0 ? InventoryAction.ROLL_DOWN

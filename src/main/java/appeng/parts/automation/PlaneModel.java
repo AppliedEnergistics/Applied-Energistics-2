@@ -54,7 +54,7 @@ public class PlaneModel implements BasicUnbakedModel {
         TextureAtlasSprite sidesSprite = baker.sprites().get(this.sidesTexture);
         TextureAtlasSprite backSprite = baker.sprites().get(this.backTexture);
 
-        return new PlaneBakedModel(frontSprite, sidesSprite, backSprite);
+        return new PlaneBakedModel(frontSprite, sidesSprite, backSprite, itemTransforms);
     }
 
 }

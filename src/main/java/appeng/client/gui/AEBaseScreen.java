@@ -597,7 +597,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
-        final Slot slot = this.findSlot(mouseX, mouseY);
+        final Slot slot = this.getHoveredSlot(mouseX, mouseY);
         var itemstack = getMenu().getCarried();
 
         Point mousePos = new Point((int) Math.round(mouseX - leftPos), (int) Math.round(mouseY - topPos));

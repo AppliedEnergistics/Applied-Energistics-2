@@ -18,14 +18,19 @@
 
 package appeng.datagen.providers.recipes;
 
+import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 
+import appeng.recipes.transform.TransformRecipe;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -35,6 +40,7 @@ import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.tags.ConventionTags;
 import appeng.recipes.transform.TransformCircumstance;
 import appeng.recipes.transform.TransformRecipeBuilder;
+import net.minecraft.world.level.ItemLike;
 
 public class TransformRecipes extends AE2RecipeProvider {
     public TransformRecipes(HolderLookup.Provider registries, RecipeOutput output) {
@@ -71,9 +77,15 @@ public class TransformRecipes extends AE2RecipeProvider {
         // Entangled Singularities
         TransformRecipeBuilder.transform(output, AppEng.makeId("transform/entangled_singularity"),
                 AEItems.QUANTUM_ENTANGLED_SINGULARITY, 2, TransformCircumstance.EXPLOSION,
-                Ingredient.of(AEItems.SINGULARITY), Ingredient.of(ConventionTags.ENDER_PEARL_DUST));
+                Ingredient.of(AEItems.SINGULARITY), Ingredient.of(items.getOrThrow(ConventionTags.ENDER_PEARL_DUST)));
         TransformRecipeBuilder.transform(output, AppEng.makeId("transform/entangled_singularity_from_pearl"),
                 AEItems.QUANTUM_ENTANGLED_SINGULARITY, 2, TransformCircumstance.EXPLOSION,
-                Ingredient.of(AEItems.SINGULARITY), Ingredient.of(ConventionTags.ENDER_PEARL));
+                Ingredient.of(AEItems.SINGULARITY), Ingredient.of(items.getOrThrow(ConventionTags.ENDER_PEARL)));
+    }
+
+    private static ItemStack toStack(ItemLike item, int count) {
+        var stack = item.asItem().getDefaultInstance();
+        stack.setCount(count);
+        return stack;
     }
 }

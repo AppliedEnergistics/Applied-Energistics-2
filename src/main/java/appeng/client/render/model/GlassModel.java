@@ -39,7 +39,7 @@ import appeng.client.render.BasicUnbakedModel;
 public class GlassModel implements BasicUnbakedModel {
     @Override
     public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion, boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
-        return new GlassBakedModel(baker.sprites());
+        return new GlassBakedModel(itemTransforms, baker.sprites());
     }
 
 }

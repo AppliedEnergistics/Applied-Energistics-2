@@ -19,22 +19,34 @@
 package appeng.datagen.providers.recipes;
 
 import appeng.core.AppEng;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class AE2RecipeProvider extends RecipeProvider {
+    protected final HolderGetter<Item> items;
+
     public AE2RecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
+        this.items = registries.lookupOrThrow(Registries.ITEM);
     }
 
     protected final String makeId(String path) {
         return AppEng.makeId(path).toString();
+    }
+
+    protected static ResourceKey<Recipe<?>> makeKey(String path) {
+        return ResourceKey.create(Registries.RECIPE, AppEng.makeId(path));
     }
 
     @FunctionalInterface

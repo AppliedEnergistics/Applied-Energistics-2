@@ -229,7 +229,7 @@ public final class AEBlockEntities {
                     .map(BlockDefinition::block)
                     .toArray(AEBaseEntityBlock[]::new);
 
-            var type = BlockEntityType.Builder.of(supplier, blocks).build(null);
+            var type = new BlockEntityType<>(supplier, blocks);
             typeHolder.setPlain(type); // Makes it available to the supplier used above
 
             AEBaseBlockEntity.registerBlockEntityItem(type, blockDefinitions[0].asItem());

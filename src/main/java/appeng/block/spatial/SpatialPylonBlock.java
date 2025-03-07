@@ -19,7 +19,10 @@
 package appeng.block.spatial;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -51,14 +54,14 @@ public class SpatialPylonBlock extends AEBaseEntityBlock<SpatialPylonBlockEntity
         return currentState.setValue(SpatialPylonBlock.POWERED_ON, state.powered());
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
         var tsp = this.getBlockEntity(level, pos);
         if (tsp != null) {
-            tsp.neighborChanged(fromPos);
+            tsp.updateMultiBlock(neighborPos);
         }
+
+        return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
     }
 
 }

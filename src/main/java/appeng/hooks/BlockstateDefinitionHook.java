@@ -51,10 +51,10 @@ public final class BlockstateDefinitionHook {
         var idx = indexFromAngles(xRot, yRot, zRot);
 
         return new Variant(
-                variant.getModelLocation(),
+                variant.modelLocation(),
                 TRANSFORMS[idx],
                 variant.isUvLocked(),
-                variant.getWeight());
+                variant.weight());
     }
 
     private static int indexFromAngles(int xRot, int yRot, int zRot) {

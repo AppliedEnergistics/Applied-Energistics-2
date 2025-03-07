@@ -20,6 +20,7 @@ package appeng.block.misc;
 
 import java.util.List;
 
+import net.minecraft.server.level.ServerLevel;
 import org.joml.Vector3f;
 
 import net.minecraft.client.Minecraft;
@@ -74,11 +75,11 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
     @Override
     protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level.getBlockEntity(pos) instanceof ChargerBlockEntity charger) {
+        if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof ChargerBlockEntity charger) {
             var inv = charger.getInternalInventory();
             var chargingItem = inv.getStackInSlot(0);
             if (chargingItem.isEmpty()) {
-                if (ChargerRecipes.findRecipe(level, heldItem) != null || Platform.isChargeable(heldItem)) {
+                if (ChargerRecipes.findRecipe(serverLevel, heldItem) != null || Platform.isChargeable(heldItem)) {
                     var toInsert = heldItem.split(1);
                     inv.setItemDirect(0, toInsert);
                     return InteractionResult.SUCCESS;

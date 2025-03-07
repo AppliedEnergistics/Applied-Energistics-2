@@ -34,7 +34,7 @@ public class SmithingRecipes extends AE2RecipeProvider {
     private void fluixSmithing(RecipeOutput output, TagKey<Item> quartzTool,
             ItemDefinition<?> fluixTool) {
         SmithingTransformRecipeBuilder
-                .smithing(Ingredient.of(AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE), Ingredient.of(quartzTool),
+                .smithing(Ingredient.of(AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE), Ingredient.of(items.getOrThrow(quartzTool)),
                         Ingredient.of(AEBlocks.FLUIX_BLOCK), RecipeCategory.MISC, fluixTool.asItem())
                 .unlocks("has_crystals/fluix", has(ConventionTags.ALL_FLUIX))
                 .save(output, makeId("tools/" + getItemName(fluixTool)));

@@ -20,6 +20,7 @@ package appeng.debug;
 
 import java.util.ArrayDeque;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
@@ -144,11 +145,11 @@ public class EraserItem extends AEBaseItem {
             COMMON_BLOCKS.add(Blocks.LAVA);
 
             COMMON_BLOCKS.addAll(
-                    BuiltInRegistries.BLOCK.getOrCreateTag(BlockTags.LEAVES).stream().map(Holder::value).toList());
+                    BuiltInRegistries.BLOCK.get(BlockTags.LEAVES).map(n -> n.stream().map(Holder::value).toList()).orElse(List.of()));
             COMMON_BLOCKS.addAll(
-                    BuiltInRegistries.BLOCK.getOrCreateTag(BlockTags.SAND).stream().map(Holder::value).toList());
+                    BuiltInRegistries.BLOCK.get(BlockTags.SAND).map(n -> n.stream().map(Holder::value).toList()).orElse(List.of()));
             COMMON_BLOCKS.addAll(
-                    BuiltInRegistries.BLOCK.getOrCreateTag(BlockTags.LOGS).stream().map(Holder::value).toList());
+                    BuiltInRegistries.BLOCK.get(BlockTags.LOGS).map(n -> n.stream().map(Holder::value).toList()).orElse(List.of()));
         }
 
         return COMMON_BLOCKS;

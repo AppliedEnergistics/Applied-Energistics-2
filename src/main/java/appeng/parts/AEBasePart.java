@@ -151,7 +151,7 @@ public abstract class AEBasePart
 
     @Override
     public Component getName() {
-        return Objects.requireNonNullElse(this.customName, partItem.asItem().getDescription());
+        return Objects.requireNonNullElse(this.customName, partItem.asItem().getName());
     }
 
     @Override

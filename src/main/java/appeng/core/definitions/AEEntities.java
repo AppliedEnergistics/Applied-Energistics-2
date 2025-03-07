@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityType.Builder;
@@ -61,7 +62,7 @@ public final class AEEntities {
             // Temporarily disable the data fixer check to avoid the annoying "no data fixer registered for ae2:xxx".
             boolean prev = SharedConstants.CHECK_DATA_FIXER_SCHEMA;
             SharedConstants.CHECK_DATA_FIXER_SCHEMA = false;
-            EntityType<T> result = builder.build(id);
+            EntityType<T> result = builder.build(ResourceKey.create(Registries.ENTITY_TYPE, AppEng.makeId(id)));
             SharedConstants.CHECK_DATA_FIXER_SCHEMA = prev;
             return result;
         });

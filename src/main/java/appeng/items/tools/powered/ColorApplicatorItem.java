@@ -233,7 +233,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                     this.consumeColor(is, paintBallColor, false);
                 }
 
-                return InteractionResult.sidedSuccess(player.level().isClientSide);
+                return InteractionResult.SUCCESS;
             }
         }
 

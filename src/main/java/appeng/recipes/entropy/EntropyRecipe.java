@@ -33,7 +33,6 @@ import net.minecraft.world.item.crafting.RecipeBookCategory;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -42,7 +41,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -82,9 +80,6 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
     @Deprecated(forRemoval = true, since = "1.21.1")
     public static final ResourceLocation TYPE_ID = AppEng.makeId("entropy");
 
-    @Deprecated(forRemoval = true, since = "1.21.1")
-    public static final RecipeType<EntropyRecipe> TYPE = AERecipeTypes.ENTROPY;
-
     private final EntropyMode mode;
     private final Input input;
     private final Output output;
@@ -112,7 +107,7 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
 
     @Override
     public RecipeType<EntropyRecipe> getType() {
-        return TYPE;
+        return AERecipeTypes.ENTROPY;
     }
 
     @Override

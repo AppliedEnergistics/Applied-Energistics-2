@@ -140,7 +140,7 @@ public class ChestBlockEntityRenderer implements BlockEntityRenderer<MEChestBloc
             for (int i = 0; i < quads.size(); i++) {
                 BakedQuad quad = quads.get(i);
                 quads.set(i, new BakedQuad(quad.getVertices(), quad.getTintIndex(), r.rotate(quad.getDirection()),
-                        quad.getSprite(), quad.isShade()));
+                        quad.getSprite(), quad.isShade(), 0));
             }
 
             return quads;

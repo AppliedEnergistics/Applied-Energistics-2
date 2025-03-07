@@ -91,7 +91,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         return this.clearPattern(stack, context.getPlayer())
-                ? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
+                ? InteractionResult.SUCCESS
                 : InteractionResult.PASS;
     }
 
@@ -132,10 +132,10 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
             return; // Showing pattern details will only work reliably client-side
         }
 
-        PatternDetailsTooltip tooltip;
+        PatternDetailsTooltip tooltip = null;
         try {
-            var details = Objects.requireNonNull(decoder.decode(what, clientLevel), "decoder returned null");
-            tooltip = details.getTooltip(clientLevel, flags);
+            // TODO 1.21.4 var details = Objects.requireNonNull(decoder.decode(what, clientLevel), "decoder returned null");
+            // TODO 1.21.4 tooltip = details.getTooltip(clientLevel, flags);
         } catch (Exception e) {
             lines.add(GuiText.InvalidPattern.text().copy().withStyle(ChatFormatting.RED));
             if (invalidPatternTooltip != null) {
@@ -240,7 +240,8 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
 
         var what = AEItemKey.of(stack);
         try {
-            return Objects.requireNonNull(decoder.decode(what, level), "decoder returned null");
+            // TODO 1.21.4 return Objects.requireNonNull(decoder.decode(what, level), "decoder returned null");
+            return null;
         } catch (Exception e) {
             return null;
         }
@@ -253,7 +254,8 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
         }
 
         try {
-            return decoder.decode(what, level);
+            // TODO 1.21.4 return decoder.decode(what, level);
+            return null;
         } catch (Exception e) {
             return null;
         }

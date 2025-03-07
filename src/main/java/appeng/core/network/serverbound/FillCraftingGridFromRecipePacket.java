@@ -1,29 +1,6 @@
 
 package appeng.core.network.serverbound;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import com.google.common.base.Preconditions;
-import com.google.common.primitives.Ints;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.core.NonNullList;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.storage.IStorageService;
@@ -38,6 +15,25 @@ import appeng.items.storage.ViewCellItem;
 import appeng.me.storage.NullInventory;
 import appeng.util.CraftingRecipeUtil;
 import appeng.util.prioritylist.IPartitionList;
+import com.google.common.base.Preconditions;
+import com.google.common.primitives.Ints;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import net.minecraft.core.Holder;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * This packet will attempt to fill a crafting grid with real items based on a crafting recipe for the purposes of
@@ -71,8 +67,8 @@ public record FillCraftingGridFromRecipePacket(
     }
 
     public FillCraftingGridFromRecipePacket(@Nullable ResourceLocation recipeId,
-            NonNullList<ItemStack> ingredientTemplates,
-            boolean craftMissing) {
+                                            NonNullList<ItemStack> ingredientTemplates,
+                                            boolean craftMissing) {
         this.recipeId = recipeId;
         this.ingredientTemplates = NonNullList.copyOf(ingredientTemplates.stream().map(ItemStack::copy).toList());
         this.craftMissing = craftMissing;
@@ -254,10 +250,10 @@ public record FillCraftingGridFromRecipePacket(
         return ItemStack.EMPTY;
     }
 
-    private NonNullList<Ingredient> getDesiredIngredients(Player player) {
+    private NonNullList<Ingredient> getDesiredIngredients(ServerPlayer player) {
         // Try to retrieve the real recipe on the server-side
         if (this.recipeId != null) {
-            var recipe = player.level().getRecipeManager().byKey(this.recipeId).orElse(null);
+            var recipe = player.serverLevel().recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, this.recipeId)).orElse(null);
             if (recipe != null) {
                 return CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe.value());
             }
@@ -271,7 +267,7 @@ public record FillCraftingGridFromRecipePacket(
         for (int i = 0; i < ingredients.size(); i++) {
             var template = ingredientTemplates.get(i);
             if (!template.isEmpty()) {
-                ingredients.set(i, Ingredient.of(template));
+                ingredients.set(i, Ingredient.of(template.getItem()));
             }
         }
 
@@ -294,27 +290,38 @@ public record FillCraftingGridFromRecipePacket(
      * </pre>
      */
     private List<AEItemKey> findBestMatchingItemStack(Ingredient ingredient, IPartitionList filter,
-            KeyCounter storage) {
-        return Arrays.stream(ingredient.getItems())//
-                .map(AEItemKey::of) //
-                .filter(r -> r != null && (filter == null || filter.isListed(r)))
-                .flatMap(s -> storage.findFuzzy(s, FuzzyMode.IGNORE_ALL).stream())//
-                // While FuzzyMode.IGNORE_ALL will retrieve all stacks of the same Item which matches
-                // standard Vanilla Ingredient matching, there are NBT-matching Ingredient subclasses on Forge,
-                // and Mods might actually have mixed into Ingredient
-                .filter(e -> ((AEItemKey) e.getKey()).matches(ingredient))
-                // Sort in descending order of availability
-                .sorted((a, b) -> Long.compare(b.getLongValue(), a.getLongValue()))//
-                .map(e -> (AEItemKey) e.getKey())//
-                .toList();
+                                                      KeyCounter storage) {
+        if (!ingredient.isCustom()) {
+            return ingredient.getValues().stream()
+                    .map(Holder::value)
+                    .map(AEItemKey::of)
+                    .filter(r -> r != null && (filter == null || filter.isListed(r)))
+                    .flatMap(s -> storage.findFuzzy(s, FuzzyMode.IGNORE_ALL).stream())
+                    // While FuzzyMode.IGNORE_ALL will retrieve all stacks of the same Item which matches
+                    // standard Vanilla Ingredient matching, there are NBT-matching Ingredient subclasses on Forge,
+                    // and Mods might actually have mixed into Ingredient
+                    .filter(e -> ((AEItemKey) e.getKey()).matches(ingredient))
+                    // Sort in descending order of availability
+                    .sorted((a, b) -> Long.compare(b.getLongValue(), a.getLongValue()))
+                    .map(e -> (AEItemKey) e.getKey())
+                    .toList();
+        } else {
+            return storage.keySet().stream()
+                    .map(k -> {
+                        return k instanceof AEItemKey itemKey ? itemKey : null;
+                    })
+                    .filter(r -> r != null && (filter == null || filter.isListed(r)) && ingredient.test(r.getReadOnlyStack()))
+                    // Sort in descending order of availability
+                    .sorted((a, b) -> Long.compare(storage.get(b), storage.get(a)))
+                    .toList();
+        }
+
     }
 
     private Optional<AEItemKey> findCraftableKey(Ingredient ingredient, ICraftingService craftingService) {
-        return Arrays.stream(ingredient.getItems())//
-                .map(AEItemKey::of)//
-                .map(s -> (AEItemKey) craftingService.getFuzzyCraftable(s,
-                        key -> ((AEItemKey) key).matches(ingredient)))//
-                .filter(Objects::nonNull)//
-                .findAny();//
+        return craftingService.getCraftables(AEItemKey.filter()).stream()
+                .map(k -> (AEItemKey) k)
+                .filter(k -> ingredient.test(k.getReadOnlyStack()))
+                .findFirst();
     }
 }

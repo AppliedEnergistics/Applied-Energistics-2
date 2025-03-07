@@ -107,7 +107,7 @@ public class QuadRotator implements RenderContext.QuadTransform {
         // in a specific order for each cardinal direction.
         var data = new int[FaceBakery.VERTEX_INT_SIZE * 4];
         quad.toVanilla(data, 0);
-        BlockModel.FACE_BAKERY.recalculateWinding(data, rotatedNominalFace);
+        FaceBakery.recalculateWinding(data, rotatedNominalFace);
         quad.fromVanilla(data, 0);
 
         return true;

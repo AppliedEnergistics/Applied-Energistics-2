@@ -1,6 +1,9 @@
 package appeng.recipes.handlers;
 
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -25,7 +28,7 @@ public class InscriberRecipeBuilder {
         return new InscriberRecipeBuilder(Ingredient.of(middle), output, count);
     }
 
-    public static InscriberRecipeBuilder inscribe(TagKey<Item> middle, ItemLike output, int count) {
+    public static InscriberRecipeBuilder inscribe(HolderSet<Item> middle, ItemLike output, int count) {
         return new InscriberRecipeBuilder(Ingredient.of(middle), output, count);
     }
 
@@ -55,6 +58,6 @@ public class InscriberRecipeBuilder {
         var recipe = new InscriberRecipe(
                 middleInput, result, topOptional, bottomOptional, mode);
 
-        consumer.accept(id, recipe, null);
+        consumer.accept(ResourceKey.create(Registries.RECIPE, id), recipe, null);
     }
 }

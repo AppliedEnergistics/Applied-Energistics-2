@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import appeng.recipes.AERecipeTypes;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -33,7 +34,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -118,12 +118,13 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         Direction side = context.getClickedFace();
         Player p = context.getPlayer();
 
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return InteractionResult.SUCCESS_SERVER;
+        }
+
         boolean tryBoth = false;
         if (p == null) {
-            if (level.isClientSide) {
-                return InteractionResult.FAIL;
-            }
-            p = Platform.getFakePlayer((ServerLevel) level, null);
+            p = Platform.getFakePlayer(serverLevel, null);
             // Fake players cannot crouch and we cannot communicate whether they want to heat or cool
             tryBoth = true;
         }
@@ -140,7 +141,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             }
 
             // Delegate to the server from here on
-            if (!level.isClientSide() && !tryApplyEffect(level, item, pos, side, p, tryBoth)) {
+            if (!level.isClientSide() && !tryApplyEffect(serverLevel, item, pos, side, p, tryBoth)) {
                 return InteractionResult.FAIL;
             }
 
@@ -150,7 +151,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         return InteractionResult.PASS;
     }
 
-    private boolean tryApplyEffect(Level level, ItemStack item, BlockPos pos, Direction side, Player p,
+    private boolean tryApplyEffect(ServerLevel level, ItemStack item, BlockPos pos, Direction side, Player p,
             boolean tryBoth) {
         final BlockState blockState = level.getBlockState(pos);
         final Block block = blockState.getBlock();
@@ -217,13 +218,11 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
      * The entropy manipulator in heat-mode can directly smelt in-level blocks and drop the smelted results, but only if
      * all drops of the block have smelting recipes.
      */
-    private boolean performInWorldSmelting(ItemStack item, Level level, Player p, BlockPos pos, Block block) {
+    private boolean performInWorldSmelting(ItemStack item, ServerLevel level, Player p, BlockPos pos, Block block) {
         var state = level.getBlockState(pos);
         List<ItemStack> drops = Collections.emptyList();
-        if (level instanceof ServerLevel serverLevel) {
-            var be = level.getBlockEntity(pos);
-            drops = Block.getDrops(state, serverLevel, pos, be, p, item);
-        }
+        var be = level.getBlockEntity(pos);
+        drops = Block.getDrops(state, level, pos, be, p, item);
 
         // Results of the operation
         BlockState smeltedBlockState = null;
@@ -279,9 +278,9 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     }
 
     @Nullable
-    private static EntropyRecipe findRecipe(Level level, EntropyMode mode, BlockState blockState,
+    private static EntropyRecipe findRecipe(ServerLevel level, EntropyMode mode, BlockState blockState,
             FluidState fluidState) {
-        for (var holder : level.recipeAccess().byType(EntropyRecipe.TYPE)) {
+        for (var holder : level.recipeAccess().recipeMap().byType(AERecipeTypes.ENTROPY)) {
             var recipe = holder.value();
             if (recipe.matches(mode, blockState, fluidState)) {
                 return recipe;

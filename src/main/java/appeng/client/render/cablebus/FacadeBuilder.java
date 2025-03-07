@@ -350,48 +350,48 @@ public class FacadeBuilder {
 
         MeshBuilder meshBuilder = renderer.meshBuilder();
         QuadEmitter emitter = meshBuilder.getEmitter();
-
-        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(textureItem, null,
-                null, 0);
-
-        QuadReInterpolator interpolator = new QuadReInterpolator();
-
-        var itemColors = Minecraft.getInstance().getItemColors();
-        QuadClamper clamper = new QuadClamper(THIN_FACADE_BOXES[side.ordinal()]);
-
-        for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
-            Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
-            List<BakedQuad> quads = model.getQuads(null, cullFace, RandomSource.create());
-
-            for (BakedQuad quad : quads) {
-                QuadTinter quadTinter = null;
-
-                // Prebake the color tint into the quad
-                if (quad.getTintIndex() != -1) {
-                    quadTinter = new QuadTinter(itemColors.getColor(textureItem, quad.getTintIndex()));
-                }
-
-                emitter.fromVanilla(quad.getVertices(), 0);
-                emitter.cullFace(cullFace);
-                emitter.nominalFace(quad.getDirection());
-                emitter.shade(quad.isShade());
-                emitter.ambientOcclusion(quad.hasAmbientOcclusion());
-                interpolator.setInputQuad(emitter);
-
-                if (!clamper.transform(emitter)) {
-                    continue;
-                }
-
-                interpolator.transform(emitter);
-
-                // Tints the quad if we need it to. Disabled by default.
-                if (quadTinter != null) {
-                    quadTinter.transform(emitter);
-                }
-
-                emitter.emit();
-            }
-        }
+// TODO 1.21.4
+//        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(textureItem, null,
+//                null, 0);
+//
+//        QuadReInterpolator interpolator = new QuadReInterpolator();
+//
+//        var itemColors = Minecraft.getInstance().getItemColors();
+//        QuadClamper clamper = new QuadClamper(THIN_FACADE_BOXES[side.ordinal()]);
+//
+//        for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
+//            Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
+//            List<BakedQuad> quads = model.getQuads(null, cullFace, RandomSource.create());
+//
+//            for (BakedQuad quad : quads) {
+//                QuadTinter quadTinter = null;
+//
+//                // Prebake the color tint into the quad
+//                if (quad.getTintIndex() != -1) {
+//                    quadTinter = new QuadTinter(itemColors.getColor(textureItem, quad.getTintIndex()));
+//                }
+//
+//                emitter.fromVanilla(quad.getVertices(), 0);
+//                emitter.cullFace(cullFace);
+//                emitter.nominalFace(quad.getDirection());
+//                emitter.shade(quad.isShade());
+//                emitter.ambientOcclusion(quad.hasAmbientOcclusion());
+//                interpolator.setInputQuad(emitter);
+//
+//                if (!clamper.transform(emitter)) {
+//                    continue;
+//                }
+//
+//                interpolator.transform(emitter);
+//
+//                // Tints the quad if we need it to. Disabled by default.
+//                if (quadTinter != null) {
+//                    quadTinter.transform(emitter);
+//                }
+//
+//                emitter.emit();
+//            }
+//        }
 
         return meshBuilder.build();
     }

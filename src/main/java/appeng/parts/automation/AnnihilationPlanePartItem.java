@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.Enchantable;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 
@@ -27,17 +28,7 @@ public class AnnihilationPlanePartItem extends PartItem<AnnihilationPlanePart> {
     public static final ThreadLocal<Object> CALLING_DAMAGEABLE_FROM_ANVIL = ThreadLocal.withInitial(() -> null);
 
     public AnnihilationPlanePartItem(Properties properties) {
-        super(properties, AnnihilationPlanePart.class, AnnihilationPlanePart::new);
-    }
-
-    @Override
-    public boolean isEnchantable(ItemStack stack) {
-        return true;
-    }
-
-    @Override
-    public int getEnchantmentValue() {
-        return 10;
+        super(properties.component(DataComponents.ENCHANTABLE, new Enchantable(10)), AnnihilationPlanePart.class, AnnihilationPlanePart::new);
     }
 
     @Override

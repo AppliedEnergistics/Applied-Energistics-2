@@ -27,6 +27,7 @@ import java.util.stream.IntStream;
 
 import com.google.common.base.Strings;
 
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.SpriteGetter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -74,6 +75,7 @@ public class GlassBakedModel implements IDynamicBakedModel {
 
     // Frame texture
     static final Material[] TEXTURES_FRAME = generateTexturesFrame();
+    private final ItemTransforms transforms;
 
     // Generates the required textures for the frame
     private static Material[] generateTexturesFrame() {
@@ -86,7 +88,8 @@ public class GlassBakedModel implements IDynamicBakedModel {
 
     private final TextureAtlasSprite[] frameTextures;
 
-    public GlassBakedModel(SpriteGetter bakedTextureGetter) {
+    public GlassBakedModel(ItemTransforms transforms, SpriteGetter bakedTextureGetter) {
+        this.transforms = transforms;
         this.glassTextures = new TextureAtlasSprite[] { bakedTextureGetter.get(TEXTURE_A),
                 bakedTextureGetter.get(TEXTURE_B), bakedTextureGetter.get(TEXTURE_C),
                 bakedTextureGetter.get(TEXTURE_D) };
@@ -299,5 +302,10 @@ public class GlassBakedModel implements IDynamicBakedModel {
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
         return RENDER_TYPES;
+    }
+
+    @Override
+    public ItemTransforms getTransforms() {
+        return transforms;
     }
 }

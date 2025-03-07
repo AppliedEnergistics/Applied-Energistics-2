@@ -20,6 +20,7 @@ package appeng.client.render.tesr;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.resources.ResourceLocation;
 import org.joml.Quaternionf;
 
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -41,10 +42,8 @@ import appeng.core.AppEng;
 @OnlyIn(Dist.CLIENT)
 public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {
 
-    public static final ModelResourceLocation BASE_MODEL = ModelResourceLocation
-            .standalone(AppEng.makeId("block/crank_base"));
-    public static final ModelResourceLocation HANDLE_MODEL = ModelResourceLocation
-            .standalone(AppEng.makeId("block/crank_handle"));
+    public static final ResourceLocation BASE_MODEL = AppEng.makeId("block/crank_base");
+    public static final ResourceLocation HANDLE_MODEL = AppEng.makeId("block/crank_handle");
 
     private final BlockRenderDispatcher blockRenderer;
 
@@ -59,8 +58,8 @@ public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {
     public void render(CrankBlockEntity crank, float partialTick, PoseStack stack, MultiBufferSource buffers,
             int packedLight, int packedOverlay) {
 
-        var baseModel = modelManager.getModel(BASE_MODEL);
-        var handleModel = modelManager.getModel(HANDLE_MODEL);
+        var baseModel = modelManager.getStandaloneModel(BASE_MODEL);
+        var handleModel = modelManager.getStandaloneModel(HANDLE_MODEL);
 
         var blockState = crank.getBlockState();
         var buffer = buffers.getBuffer(RenderType.cutout());

@@ -31,6 +31,7 @@ import java.util.WeakHashMap;
 
 import com.google.common.collect.HashMultimap;
 
+import net.minecraft.client.renderer.RenderType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -610,13 +611,21 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
     /**
      * A version of blit that lets us pass a source rectangle
-     *
-     * @see GuiGraphics#blit(ResourceLocation, int, int, int, int, int, int)
      */
     private void blit(GuiGraphics guiGraphics, int offsetX, int offsetY, Rect2i srcRect) {
         var texture = AppEng.makeId("textures/guis/patternaccessterminal.png");
-        guiGraphics.blit(texture, offsetX, offsetY, srcRect.getX(), srcRect.getY(), srcRect.getWidth(),
-                srcRect.getHeight());
+        guiGraphics.blit(
+                RenderType::guiTextured,
+                texture,
+                offsetX,
+                offsetY,
+                0,
+                0,
+                srcRect.getX(),
+                srcRect.getY(),
+                srcRect.getWidth(),
+                srcRect.getHeight()
+        );
     }
 
     protected int getVisibleRows() {

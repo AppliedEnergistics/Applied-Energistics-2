@@ -46,7 +46,7 @@ public class SpatialPylonModel implements BasicUnbakedModel {
             pylonTextures.put(type, baker.sprites().get(getTexturePath(type)));
         }
 
-        return new SpatialPylonBakedModel(pylonTextures);
+        return new SpatialPylonBakedModel(pylonTextures, itemTransforms);
     }
 
     private static Material getTexturePath(SpatialPylonTextureType type) {

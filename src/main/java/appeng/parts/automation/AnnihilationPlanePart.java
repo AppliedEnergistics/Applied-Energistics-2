@@ -102,7 +102,7 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
         super.addToWorld();
 
         var host = getBlockEntity();
-        var buildHeight = host.getLevel().getMaxBuildHeight();
+        var buildHeight = host.getLevel().getMaxY();
 
         continuousGenerationTicks = 0;
         continuousGeneration = null;

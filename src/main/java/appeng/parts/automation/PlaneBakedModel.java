@@ -26,6 +26,7 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.RenderType;
@@ -51,8 +52,11 @@ public class PlaneBakedModel implements IDynamicBakedModel {
 
     private final Map<PlaneConnections, List<BakedQuad>> quads;
 
-    PlaneBakedModel(TextureAtlasSprite frontTexture, TextureAtlasSprite sidesTexture, TextureAtlasSprite backTexture) {
+    private final ItemTransforms transforms;
+
+    PlaneBakedModel(TextureAtlasSprite frontTexture, TextureAtlasSprite sidesTexture, TextureAtlasSprite backTexture, ItemTransforms transforms) {
         this.frontTexture = frontTexture;
+        this.transforms = transforms;
 
         quads = new HashMap<>(PlaneConnections.PERMUTATIONS.size());
         // Create all possible permutations (16)
@@ -112,4 +116,8 @@ public class PlaneBakedModel implements IDynamicBakedModel {
         return this.frontTexture;
     }
 
+    @Override
+    public ItemTransforms getTransforms() {
+        return transforms;
+    }
 }

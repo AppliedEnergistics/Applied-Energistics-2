@@ -31,6 +31,7 @@ import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.ICompositeWidget;
 import appeng.core.AppEng;
+import net.minecraft.client.renderer.RenderType;
 
 /**
  * A stacked button panel on the left or right side of our UIs.
@@ -123,6 +124,7 @@ public class VerticalButtonBar implements ICompositeWidget {
     @Override
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
         guiGraphics.blitSprite(
+                RenderType::guiTextured,
                 AppEng.makeId("vertical_buttons_bg"),
                 bounds.getX() + this.bounds.getX() - 2,
                 bounds.getY() + this.bounds.getY() - 1,

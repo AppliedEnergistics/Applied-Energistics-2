@@ -415,14 +415,14 @@ public class Repo implements IClientRepo {
     @Override
     public List<GridInventoryEntry> getByIngredient(Ingredient ingredient) {
         var entries = new ArrayList<GridInventoryEntry>();
-        for (int i = 0; i < ingredient.getStackingIds().size(); i++) {
-            var itemId = ingredient.getStackingIds().getInt(i);
-            for (var entry : getByItemId(itemId)) {
-                if (((AEItemKey) entry.getWhat()).matches(ingredient)) {
-                    entries.add(entry);
-                }
-            }
-        }
+        // TODO 1.21.4 for (int i = 0; i < ingredient.getStackingIds().size(); i++) {
+        // TODO 1.21.4     var itemId = ingredient.getStackingIds().getInt(i);
+        // TODO 1.21.4     for (var entry : getByItemId(itemId)) {
+        // TODO 1.21.4         if (((AEItemKey) entry.getWhat()).matches(ingredient)) {
+        // TODO 1.21.4             entries.add(entry);
+        // TODO 1.21.4         }
+        // TODO 1.21.4     }
+        // TODO 1.21.4 }
         return entries;
     }
 

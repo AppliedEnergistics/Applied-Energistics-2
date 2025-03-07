@@ -177,7 +177,7 @@ public class TransformCircumstance {
 
         @Override
         public List<Fluid> getFluidsForRendering() {
-            return BuiltInRegistries.FLUID.getTag(fluidTag).map(t -> t.stream().map(Holder::value).toList())
+            return BuiltInRegistries.FLUID.get(fluidTag).map(t -> t.stream().map(Holder::value).toList())
                     .orElse(List.of());
         }
     }

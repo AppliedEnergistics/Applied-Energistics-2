@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.RenderType;
@@ -46,9 +47,11 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
     private static final ChunkRenderTypeSet RENDER_TYPES = ChunkRenderTypeSet.of(RenderType.CUTOUT);
 
     private final Map<SpatialPylonTextureType, TextureAtlasSprite> textures;
+    private final ItemTransforms transforms;
 
-    SpatialPylonBakedModel(Map<SpatialPylonTextureType, TextureAtlasSprite> textures) {
+    SpatialPylonBakedModel(Map<SpatialPylonTextureType, TextureAtlasSprite> textures, ItemTransforms transforms) {
         this.textures = ImmutableMap.copyOf(textures);
+        this.transforms = transforms;
     }
 
     @Override
@@ -197,5 +200,10 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
         return RENDER_TYPES;
+    }
+
+    @Override
+    public ItemTransforms getTransforms() {
+        return transforms;
     }
 }

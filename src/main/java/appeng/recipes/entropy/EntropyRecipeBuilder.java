@@ -28,7 +28,9 @@ import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -211,7 +213,7 @@ public class EntropyRecipeBuilder {
     }
 
     public void save(RecipeOutput consumer, ResourceLocation id) {
-        consumer.accept(id, build(), null);
+        consumer.accept(ResourceKey.create(Registries.RECIPE, id), build(), null);
     }
 
 }

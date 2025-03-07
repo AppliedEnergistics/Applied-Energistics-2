@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -293,7 +294,7 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
 
     @Nullable
     public InscriberRecipe getTask() {
-        if (this.cachedTask == null && level != null) {
+        if (this.cachedTask == null && level instanceof ServerLevel serverLevel) {
             ItemStack input = this.sideItemHandler.getStackInSlot(0);
             ItemStack plateA = this.topItemHandler.getStackInSlot(0);
             ItemStack plateB = this.bottomItemHandler.getStackInSlot(0);
@@ -301,7 +302,7 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
                 return null; // No input to handle
             }
 
-            this.cachedTask = InscriberRecipes.findRecipe(level, input, plateA, plateB, true);
+            this.cachedTask = InscriberRecipes.findRecipe(serverLevel, input, plateA, plateB, true);
         }
         return this.cachedTask;
     }
@@ -526,6 +527,10 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
     public class BaseFilter implements IAEItemFilter {
         @Override
         public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
+            if (!(level instanceof ServerLevel serverLevel)) {
+                return false;
+            }
+
             // output slot
             if (slot == 1) {
                 // slots and automation prevent insertion into the output,
@@ -558,7 +563,7 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
             if (inv == topItemHandler)
                 top = stack;
 
-            for (var holder : InscriberRecipes.getRecipes(level)) {
+            for (var holder : InscriberRecipes.getRecipes(serverLevel)) {
                 var recipe = holder.value();
                 if (!middle.isEmpty() && !recipe.getMiddleInput().test(middle)) {
                     continue;

@@ -68,8 +68,8 @@ public class OverlayRenderer {
         // Render around a whole chunk
         float x1 = 0f;
         float x2 = 16f;
-        float y1 = source.getOverlaySourceLocation().getLevel().getMinBuildHeight();
-        float y2 = source.getOverlaySourceLocation().getLevel().getMaxBuildHeight();
+        float y1 = source.getOverlaySourceLocation().getLevel().getMinY();
+        float y2 = source.getOverlaySourceLocation().getLevel().getMaxY();
         float z1 = 0f;
         float z2 = 16f;
 

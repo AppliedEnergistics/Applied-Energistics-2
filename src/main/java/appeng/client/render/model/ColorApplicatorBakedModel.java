@@ -76,7 +76,7 @@ class ColorApplicatorBakedModel implements BakedModel {
             }
 
             BakedQuad newQuad = new BakedQuad(quad.getVertices(), tint, quad.getDirection(), quad.getSprite(),
-                    quad.isShade());
+                    quad.isShade(), 0);
             result.add(newQuad);
         }
 

@@ -3,6 +3,7 @@ package appeng.util;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -55,7 +56,7 @@ public final class CraftingRecipeUtil {
         // Special handling for upgrade recipes since those do not override getIngredients
         if (recipe instanceof SmithingTrimRecipe trimRecipe) {
             var ingredients = NonNullList.withSize(3, Ingredient.of());
-            ingredients.set(0, trimRecipe.template);
+            ingredients.set(0, trimRecipe.template.orElse(Ingredient.of()));
             ingredients.set(1, trimRecipe.base);
             ingredients.set(2, trimRecipe.addition);
             return ingredients;

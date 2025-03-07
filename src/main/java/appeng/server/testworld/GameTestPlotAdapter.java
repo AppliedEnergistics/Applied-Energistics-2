@@ -78,7 +78,7 @@ public class GameTestPlotAdapter {
             sizeList.add(IntTag.valueOf(bounds.getYSpan()));
             sizeList.add(IntTag.valueOf(bounds.getZSpan()));
             tag.put(StructureTemplate.SIZE_TAG, sizeList);
-            template.load(BuiltInRegistries.BLOCK.asLookup(), tag);
+            template.load(BuiltInRegistries.BLOCK, tag);
             return template;
         }
 

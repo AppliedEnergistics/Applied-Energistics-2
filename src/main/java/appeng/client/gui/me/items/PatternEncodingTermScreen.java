@@ -97,7 +97,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
     public boolean mouseClicked(double xCoord, double yCoord, int btn) {
         // handler for middle mouse button crafting in survival mode
         if (this.minecraft.options.keyPickItem.matchesMouse(btn)) {
-            var slot = this.findSlot(xCoord, yCoord);
+            var slot = this.getHoveredSlot(xCoord, yCoord);
             if (menu.canModifyAmountForSlot(slot)) {
                 var currentStack = GenericStack.fromItemStack(slot.getItem());
                 if (currentStack != null) {

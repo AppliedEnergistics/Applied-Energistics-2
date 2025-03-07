@@ -36,6 +36,8 @@ sourceSets {
     main {
         java {
             exclude '**/datagen/providers/models/*'
+            exclude '**/integration/modules/emi/**'
+            exclude '**/integration/modules/rei/**'
         }
         resources {
             srcDir 'src/generated/resources'

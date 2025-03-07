@@ -42,20 +42,15 @@ public class SmeltingRecipes extends AE2RecipeProvider {
     }
 
     @Override
-    public String getName() {
-        return "AE2 Smelting Recipes";
-    }
-
-    @Override
     public void buildRecipes() {
 
         SimpleCookingRecipeBuilder
-                .smelting(Ingredient.of(ConventionTags.CERTUS_QUARTZ_DUST), RecipeCategory.MISC, AEItems.SILICON, .35f,
+                .smelting(Ingredient.of(items.getOrThrow(ConventionTags.CERTUS_QUARTZ_DUST)), RecipeCategory.MISC, AEItems.SILICON, .35f,
                         DEFAULT_SMELTING_TIME)
                 .unlockedBy("has_certus_quartz_dust", has(ConventionTags.CERTUS_QUARTZ_DUST))
                 .save(output, makeId("smelting/silicon_from_certus_quartz_dust"));
         SimpleCookingRecipeBuilder
-                .blasting(Ingredient.of(ConventionTags.CERTUS_QUARTZ_DUST), RecipeCategory.MISC, AEItems.SILICON, .35f,
+                .blasting(Ingredient.of(items.getOrThrow(ConventionTags.CERTUS_QUARTZ_DUST)), RecipeCategory.MISC, AEItems.SILICON, .35f,
                         DEFAULT_SMELTING_TIME / 2)
                 .unlockedBy("has_certus_quartz_dust", has(ConventionTags.CERTUS_QUARTZ_DUST))
                 .save(output, makeId("blasting/silicon_from_certus_quartz_dust"));

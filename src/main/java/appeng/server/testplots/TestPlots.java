@@ -16,6 +16,7 @@ import java.util.function.Consumer;
 
 import com.google.common.collect.Sets;
 
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -217,10 +218,10 @@ public final class TestPlots {
     }
 
     private static AEItemKey createEnchantedPickaxe(Level level) {
-        var enchantmentRegistry = level.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+        var enchantmentRegistry = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
 
         var enchantedPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
-        enchantedPickaxe.enchant(enchantmentRegistry.getHolderOrThrow(Enchantments.FORTUNE), 3);
+        enchantedPickaxe.enchant(enchantmentRegistry.getOrThrow(Enchantments.FORTUNE), 3);
         return AEItemKey.of(enchantedPickaxe);
     }
 
@@ -663,7 +664,7 @@ public final class TestPlots {
 
             var patternProviders = grid.getMachines(PatternProviderPart.class).iterator();
             PatternProviderPart current = patternProviders.next();
-            var craftingRecipes = node.getLevel().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING);
+            var craftingRecipes = node.getLevel().recipeAccess().recipeMap().byType(RecipeType.CRAFTING);
 
             Set<AEItemKey> neededIngredients = new HashSet<>();
             Set<AEItemKey> providedResults = new HashSet<>();
@@ -681,15 +682,15 @@ public final class TestPlots {
                                 if (i.isEmpty()) {
                                     return ItemStack.EMPTY;
                                 } else {
-                                    return i.getItems()[0];
+                                    return i.getValues().get(0).value();
                                 }
                             }).toArray(ItemStack[]::new);
-                    craftingPattern = PatternDetailsHelper.encodeCraftingPattern(
-                            holder,
-                            ingredients,
-                            recipe.getResultItem(node.getLevel().registryAccess()),
-                            false,
-                            false);
+                    // TODO 1.21.4 craftingPattern = PatternDetailsHelper.encodeCraftingPattern(
+                    // TODO 1.21.4         holder,
+                    // TODO 1.21.4         ingredients,
+                    // TODO 1.21.4         recipe.getResultItem(node.getLevel().registryAccess()),
+                    // TODO 1.21.4         false,
+                    // TODO 1.21.4         false);
 
                     for (ItemStack ingredient : ingredients) {
                         var key = AEItemKey.of(ingredient);
@@ -697,21 +698,21 @@ public final class TestPlots {
                             neededIngredients.add(key);
                         }
                     }
-                    if (!recipe.getResultItem(node.getLevel().registryAccess()).isEmpty()) {
-                        providedResults.add(AEItemKey.of(recipe.getResultItem(node.getLevel().registryAccess())));
-                    }
+                    // TODO 1.21.4 if (!recipe.getResultItem(node.getLevel().registryAccess()).isEmpty()) {
+                    // TODO 1.21.4     providedResults.add(AEItemKey.of(recipe.getResultItem(node.getLevel().registryAccess())));
+                    // TODO 1.21.4 }
                 } catch (Exception e) {
                     AELog.warn(e);
                     continue;
                 }
 
-                if (!current.getLogic().getPatternInv().addItems(craftingPattern).isEmpty()) {
-                    if (!patternProviders.hasNext()) {
-                        break;
-                    }
-                    current = patternProviders.next();
-                    current.getLogic().getPatternInv().addItems(craftingPattern);
-                }
+                // TODO 1.21.4 if (!current.getLogic().getPatternInv().addItems(craftingPattern).isEmpty()) {
+                // TODO 1.21.4     if (!patternProviders.hasNext()) {
+                // TODO 1.21.4         break;
+                // TODO 1.21.4     }
+                // TODO 1.21.4     current = patternProviders.next();
+                // TODO 1.21.4     current.getLogic().getPatternInv().addItems(craftingPattern);
+                // TODO 1.21.4 }
             }
 
             // Add creative cells for anything that's not provided as a recipe result
@@ -860,7 +861,7 @@ public final class TestPlots {
             items.set(1, undamaged.toStack());
             var input = CraftingInput.of(3, 3, items);
 
-            var level = molecularAssembler.getLevel();
+            var level = (ServerLevel) molecularAssembler.getLevel();
             var recipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, level).get();
 
             // Encode pattern

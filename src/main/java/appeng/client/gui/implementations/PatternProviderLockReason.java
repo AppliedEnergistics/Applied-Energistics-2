@@ -1,5 +1,6 @@
 package appeng.client.gui.implementations;
 
+import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -63,11 +64,11 @@ public class PatternProviderLockReason implements ICompositeWidget {
         if (menu.getCraftingLockedReason() == LockCraftingMode.NONE) {
             icon = Icon.UNLOCKED;
             lockStatusText = GuiText.CraftingLockIsUnlocked.text()
-                    .setStyle(Style.EMPTY.withColor(Mth.color(125 / 255f, 169 / 255f, 210 / 255f)));
+                    .setStyle(Style.EMPTY.withColor(ARGB.color(125, 169, 210)));
         } else {
             icon = Icon.LOCKED;
             lockStatusText = GuiText.CraftingLockIsLocked.text()
-                    .setStyle(Style.EMPTY.withColor(Mth.color(193 / 255f, 66 / 255f, 75 / 255f)));
+                    .setStyle(Style.EMPTY.withColor(ARGB.color(193, 66, 75)));
         }
 
         icon.getBlitter().dest(x, y).blit(guiGraphics);
