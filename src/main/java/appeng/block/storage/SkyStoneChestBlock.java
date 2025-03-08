@@ -34,9 +34,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -53,13 +51,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
-import appeng.blockentity.storage.SkyChestBlockEntity;
+import appeng.blockentity.storage.SkyStoneChestBlockEntity;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.menu.MenuOpener;
-import appeng.menu.implementations.SkyChestMenu;
+import appeng.menu.implementations.SkyStonechestMenu;
 import appeng.menu.locator.MenuLocators;
 
-public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implements SimpleWaterloggedBlock {
+public class SkyStoneChestBlock extends AEBaseEntityBlock<SkyStoneChestBlockEntity> implements SimpleWaterloggedBlock {
 
     private static final double AABB_OFFSET_BOTTOM = 0.00;
     private static final double AABB_OFFSET_SIDES = 0.06;
@@ -78,13 +76,13 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
         }
     }
 
-    public enum SkyChestType {
+    public enum Type {
         STONE, BLOCK
     }
 
-    public final SkyChestType type;
+    public final Type type;
 
-    public SkyChestBlock(SkyChestType type, Properties props) {
+    public SkyStoneChestBlock(Type type, Properties props) {
         super(props);
         this.type = type;
         registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false));
@@ -109,9 +107,9 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
             BlockHitResult hitResult) {
-        if (level.getBlockEntity(pos) instanceof SkyChestBlockEntity be) {
+        if (level.getBlockEntity(pos) instanceof SkyStoneChestBlockEntity be) {
             if (!level.isClientSide()) {
-                MenuOpener.open(SkyChestMenu.TYPE, player, MenuLocators.forBlockEntity(be));
+                MenuOpener.open(SkyStonechestMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
             return InteractionResult.SUCCESS;
         }
@@ -129,7 +127,7 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        final SkyChestBlockEntity sk = this.getBlockEntity(level, pos);
+        final SkyStoneChestBlockEntity sk = this.getBlockEntity(level, pos);
         Direction up = sk != null ? sk.getTop() : Direction.UP;
         return SHAPES.get(up);
     }

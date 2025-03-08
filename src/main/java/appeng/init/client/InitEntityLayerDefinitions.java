@@ -23,7 +23,7 @@ import java.util.function.BiConsumer;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 
-import appeng.client.render.tesr.SkyChestTESR;
+import appeng.client.render.tesr.SkyStoneChestRenderer;
 import appeng.core.definitions.AEEntities;
 
 /**
@@ -35,7 +35,7 @@ public final class InitEntityLayerDefinitions {
     }
 
     public static void init(BiConsumer<ModelLayerLocation, LayerDefinition> consumer) {
-        consumer.accept(SkyChestTESR.MODEL_LAYER, SkyChestTESR.createSingleBodyLayer());
+        consumer.accept(SkyStoneChestRenderer.MODEL_LAYER, SkyStoneChestRenderer.createSingleBodyLayer());
     }
 
 }

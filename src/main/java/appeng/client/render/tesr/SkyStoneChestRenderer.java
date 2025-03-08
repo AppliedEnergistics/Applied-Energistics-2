@@ -43,14 +43,14 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import appeng.block.storage.SkyChestBlock;
-import appeng.block.storage.SkyChestBlock.SkyChestType;
-import appeng.blockentity.storage.SkyChestBlockEntity;
+import appeng.block.storage.SkyStoneChestBlock;
+import appeng.block.storage.SkyStoneChestBlock.Type;
+import appeng.blockentity.storage.SkyStoneChestBlockEntity;
 import appeng.core.AppEng;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
 @OnlyIn(Dist.CLIENT)
-public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
+public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestBlockEntity> {
 
     public static ModelLayerLocation MODEL_LAYER = new ModelLayerLocation(AppEng.makeId("sky_chest"), "main");
 
@@ -64,7 +64,7 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
     private final ModelPart bottom;
     private final ModelPart lock;
 
-    public SkyChestTESR(BlockEntityRendererProvider.Context context) {
+    public SkyStoneChestRenderer(BlockEntityRendererProvider.Context context) {
         var modelpart = context.bakeLayer(MODEL_LAYER);
         this.bottom = modelpart.getChild("bottom");
         this.lid = modelpart.getChild("lid");
@@ -72,7 +72,7 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
     }
 
     @Override
-    public AABB getRenderBoundingBox(SkyChestBlockEntity blockEntity) {
+    public AABB getRenderBoundingBox(SkyStoneChestBlockEntity blockEntity) {
         BlockPos pos = blockEntity.getBlockPos();
         return AABB.encapsulatingFullBlocks(pos.offset(-1, 0, -1), pos.offset(1, 1, 1));
     }
@@ -92,8 +92,8 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
     }
 
     @Override
-    public void render(SkyChestBlockEntity blockEntity, float partialTicks, PoseStack matrixStackIn,
-            MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(SkyStoneChestBlockEntity blockEntity, float partialTicks, PoseStack matrixStackIn,
+                       MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.pushPose();
         float f = blockEntity.getFront().toYRot();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);
@@ -121,13 +121,13 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
         chestBottom.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
     }
 
-    protected Material getRenderMaterial(SkyChestBlockEntity blockEntity) {
-        SkyChestType type = SkyChestType.BLOCK;
+    protected Material getRenderMaterial(SkyStoneChestBlockEntity blockEntity) {
+        Type type = Type.BLOCK;
         if (blockEntity.getLevel() != null) {
             Block blockType = blockEntity.getBlockState().getBlock();
 
-            if (blockType instanceof SkyChestBlock) {
-                type = ((SkyChestBlock) blockType).type;
+            if (blockType instanceof SkyStoneChestBlock) {
+                type = ((SkyStoneChestBlock) blockType).type;
             }
         }
 

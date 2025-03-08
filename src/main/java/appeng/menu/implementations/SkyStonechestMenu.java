@@ -18,27 +18,28 @@
 
 package appeng.menu.implementations;
 
+import appeng.client.gui.implementations.SkyStoneChestScreen;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.blockentity.storage.SkyChestBlockEntity;
+import appeng.blockentity.storage.SkyStoneChestBlockEntity;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.slot.AppEngSlot;
 
 /**
- * @see appeng.client.gui.implementations.SkyChestScreen
+ * @see SkyStoneChestScreen
  */
-public class SkyChestMenu extends AEBaseMenu {
+public class SkyStonechestMenu extends AEBaseMenu {
 
-    public static final MenuType<SkyChestMenu> TYPE = MenuTypeBuilder
-            .create(SkyChestMenu::new, SkyChestBlockEntity.class)
-            .build("skychest");
+    public static final MenuType<SkyStonechestMenu> TYPE = MenuTypeBuilder
+            .create(SkyStonechestMenu::new, SkyStoneChestBlockEntity.class)
+            .build("skystone_chest");
 
-    private final SkyChestBlockEntity chest;
+    private final SkyStoneChestBlockEntity chest;
 
-    public SkyChestMenu(int id, Inventory ip, SkyChestBlockEntity chest) {
+    public SkyStonechestMenu(int id, Inventory ip, SkyStoneChestBlockEntity chest) {
         super(TYPE, id, ip, chest);
 
         this.chest = chest;
@@ -57,7 +58,7 @@ public class SkyChestMenu extends AEBaseMenu {
         this.chest.stopOpen(player);
     }
 
-    public SkyChestBlockEntity getChest() {
+    public SkyStoneChestBlockEntity getChest() {
         return chest;
     }
 }

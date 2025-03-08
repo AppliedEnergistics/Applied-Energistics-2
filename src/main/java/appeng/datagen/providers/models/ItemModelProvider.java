@@ -4,7 +4,10 @@ import appeng.api.util.AEColor;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
+import appeng.core.definitions.ColoredItemDefinition;
 import appeng.core.definitions.ItemDefinition;
+import com.google.gson.JsonObject;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.ItemModelUtils;
@@ -13,17 +16,16 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.renderer.item.EmptyModel;
-import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 
-public class ItemModelProvider extends AE2BlockStateProvider {
-    public ItemModelProvider(PackOutput packOutput) {
-        super(packOutput, AppEng.MOD_ID);
+public class ItemModelProvider extends ModelSubProvider {
+    public ItemModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+        super(blockModels, itemModels);
     }
 
     @Override
-    protected void register(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+    protected void register() {
         registerPaintballs();
 
         flatSingleLayer(AEItems.MISSING_CONTENT, "minecraft:item/barrier");
@@ -125,14 +127,19 @@ public class ItemModelProvider extends AE2BlockStateProvider {
         registerEmptyModel(AEItems.WRAPPED_GENERIC_STACK);
         registerEmptyModel(AEBlocks.CABLE_BUS.item());
         registerHandheld();
+
+        itemModels.declareCustomModelItem(AEItems.COLOR_APPLICATOR.asItem());
+        itemModels.declareCustomModelItem(AEItems.MATTER_CANNON.asItem());
+        itemModels.declareCustomModelItem(AEItems.NETWORK_TOOL.asItem());
     }
 
     private void storageCell(ItemDefinition<?> item, String background) {
-        itemModels.generateLayeredItem(
+        var model = itemModels.generateLayeredItem(
                 item.asItem(),
                 makeId(background),
                 makeId("item/storage_cell_led")
         );
+        itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.plainModel(model));
     }
 
     public static final TextureSlot LAYER3 = TextureSlot.create("layer3");
@@ -203,7 +210,8 @@ public class ItemModelProvider extends AE2BlockStateProvider {
     }
 
     private void flatSingleLayer(ItemLike item, String texture) {
-        ModelTemplates.FLAT_ITEM.create(item.asItem(), TextureMapping.layer0(makeId(texture)), itemModels.modelOutput);
+        var model = ModelTemplates.FLAT_ITEM.create(item.asItem(), TextureMapping.layer0(makeId(texture)), itemModels.modelOutput);
+        itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.plainModel(model));
     }
 
     private void builtInItemModel(ItemLike item) {

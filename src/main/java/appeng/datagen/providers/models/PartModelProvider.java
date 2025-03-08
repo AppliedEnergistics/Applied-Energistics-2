@@ -1,25 +1,32 @@
 package appeng.datagen.providers.models;
 
+import appeng.api.util.AEColor;
 import appeng.core.AppEng;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import appeng.core.definitions.AEParts;
+import appeng.core.definitions.ColoredItemDefinition;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.data.models.model.ModelInstance;
-import net.minecraft.data.PackOutput;
+import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelTemplate;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.renderer.block.model.TextureSlots;
 
-public class PartModelProvider extends AE2BlockStateProvider {
-    public PartModelProvider(PackOutput packOutput) {
-        super(packOutput, AppEng.MOD_ID);
+import java.util.Locale;
+
+public class PartModelProvider extends ModelSubProvider {
+
+    public static final TextureSlot BASE = TextureSlot.create("base");
+
+    public PartModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+        super(blockModels, itemModels);
     }
 
     @Override
-    public String getName() {
-        return "AE2 Part Models";
-    }
+    protected void register() {
+        registerCables();
 
-    @Override
-    protected void register(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         addBuiltInModel("part/annihilation_plane");
         addBuiltInModel("part/annihilation_plane_on");
         addBuiltInModel("part/identity_annihilation_plane");
@@ -27,6 +34,61 @@ public class PartModelProvider extends AE2BlockStateProvider {
         addBuiltInModel("part/formation_plane");
         addBuiltInModel("part/formation_plane_on");
         addBuiltInModel("part/p2p/p2p_tunnel_frequency");
+
+//        itemModels.declareCustomModelItem(AEParts.SMART_CABLE.asItem());
+//        itemModels.declareCustomModelItem(AEParts.COVERED_CABLE.asItem());
+//        itemModels.declareCustomModelItem(AEParts.GLASS_CABLE.asItem());
+//        itemModels.declareCustomModelItem(AEParts.COVERED_DENSE_CABLE.asItem());
+//        itemModels.declareCustomModelItem(AEParts.SMART_DENSE_CABLE.asItem());
+        itemModels.declareCustomModelItem(AEParts.QUARTZ_FIBER.asItem());
+        itemModels.declareCustomModelItem(AEParts.TOGGLE_BUS.asItem());
+        itemModels.declareCustomModelItem(AEParts.INVERTED_TOGGLE_BUS.asItem());
+        itemModels.declareCustomModelItem(AEParts.CABLE_ANCHOR.asItem());
+        itemModels.declareCustomModelItem(AEParts.MONITOR.asItem());
+        itemModels.declareCustomModelItem(AEParts.SEMI_DARK_MONITOR.asItem());
+        itemModels.declareCustomModelItem(AEParts.DARK_MONITOR.asItem());
+        itemModels.declareCustomModelItem(AEParts.STORAGE_BUS.asItem());
+        itemModels.declareCustomModelItem(AEParts.IMPORT_BUS.asItem());
+        itemModels.declareCustomModelItem(AEParts.EXPORT_BUS.asItem());
+        itemModels.declareCustomModelItem(AEParts.LEVEL_EMITTER.asItem());
+        itemModels.declareCustomModelItem(AEParts.ENERGY_LEVEL_EMITTER.asItem());
+        itemModels.declareCustomModelItem(AEParts.ANNIHILATION_PLANE.asItem());
+        itemModels.declareCustomModelItem(AEParts.FORMATION_PLANE.asItem());
+        itemModels.declareCustomModelItem(AEParts.PATTERN_ENCODING_TERMINAL.asItem());
+        itemModels.declareCustomModelItem(AEParts.CRAFTING_TERMINAL.asItem());
+        itemModels.declareCustomModelItem(AEParts.TERMINAL.asItem());
+        itemModels.declareCustomModelItem(AEParts.STORAGE_MONITOR.asItem());
+        itemModels.declareCustomModelItem(AEParts.CONVERSION_MONITOR.asItem());
+        itemModels.declareCustomModelItem(AEParts.PATTERN_PROVIDER.asItem());
+        itemModels.declareCustomModelItem(AEParts.INTERFACE.asItem());
+        itemModels.declareCustomModelItem(AEParts.PATTERN_ACCESS_TERMINAL.asItem());
+        itemModels.declareCustomModelItem(AEParts.ENERGY_ACCEPTOR.asItem());
+        itemModels.declareCustomModelItem(AEParts.ME_P2P_TUNNEL.asItem());
+        itemModels.declareCustomModelItem(AEParts.REDSTONE_P2P_TUNNEL.asItem());
+        itemModels.declareCustomModelItem(AEParts.ITEM_P2P_TUNNEL.asItem());
+        itemModels.declareCustomModelItem(AEParts.FLUID_P2P_TUNNEL.asItem());
+        itemModels.declareCustomModelItem(AEParts.FE_P2P_TUNNEL.asItem());
+        itemModels.declareCustomModelItem(AEParts.LIGHT_P2P_TUNNEL.asItem());
+    }
+
+    private void registerCables() {
+        buildCableItems(AEParts.GLASS_CABLE, "item/glass_cable_base", "part/cable/glass/");
+        buildCableItems(AEParts.COVERED_CABLE, "item/covered_cable_base", "part/cable/covered/");
+        buildCableItems(AEParts.COVERED_DENSE_CABLE, "item/covered_dense_cable_base", "part/cable/dense_covered/");
+        buildCableItems(AEParts.SMART_CABLE, "item/smart_cable_base", "part/cable/smart/");
+        buildCableItems(AEParts.SMART_DENSE_CABLE, "item/smart_dense_cable_base", "part/cable/dense_smart/");
+    }
+
+    private void buildCableItems(ColoredItemDefinition<?> cable, String baseModel, String textureBase) {
+        for (var color : AEColor.values()) {
+            var item = cable.item(color);
+            var model = ModelTemplates.create(baseModel, BASE).create(
+                    item,
+                    new TextureMapping().put(BASE, AppEng.makeId(textureBase + color.name().toLowerCase(Locale.ROOT))),
+                    modelOutput
+            );
+            itemModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(model));
+        }
     }
 
     /**
@@ -34,6 +96,6 @@ public class PartModelProvider extends AE2BlockStateProvider {
      * set the loader name, since it'll be used there.
      */
     private void addBuiltInModel(String name) {
-        blockModels.modelOutput.accept(AppEng.makeId(name), () -> new JsonObject());
+        var modelId = EMPTY_MODEL.create(AppEng.makeId(name), new TextureMapping(), modelOutput);
     }
 }

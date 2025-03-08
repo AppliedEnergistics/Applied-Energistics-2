@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.ids.AEComponents;
-import appeng.blockentity.storage.SkyChestBlockEntity;
+import appeng.blockentity.storage.SkyStoneChestBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.crafting.pattern.EncodedCraftingPattern;
 import appeng.server.testworld.PlotBuilder;
@@ -36,7 +36,7 @@ public class InvalidPatternTestPlot {
         });
 
         builder.test(helper -> {
-            var chest = (SkyChestBlockEntity) helper.getBlockEntity(BlockPos.ZERO);
+            var chest = (SkyStoneChestBlockEntity) helper.getBlockEntity(BlockPos.ZERO);
             var pattern = chest.getInternalInventory().getStackInSlot(0);
             helper.check(!pattern.isEmpty(), "pattern should be present");
 

@@ -57,7 +57,7 @@ import appeng.block.spatial.SpatialPylonBlock;
 import appeng.block.storage.DriveBlock;
 import appeng.block.storage.IOPortBlock;
 import appeng.block.storage.MEChestBlock;
-import appeng.block.storage.SkyChestBlock;
+import appeng.block.storage.SkyStoneChestBlock;
 import appeng.block.storage.SkyStoneTankBlock;
 import appeng.core.AppEng;
 import appeng.core.MainCreativeTab;
@@ -96,7 +96,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static appeng.block.AEBaseBlock.defaultProps;
 import static appeng.block.AEBaseBlock.glassProps;
@@ -150,8 +149,8 @@ public final class AEBlocks {
     public static final BlockDefinition<AEDecorativeBlock> SKY_STONE_BRICK = block("Sky Stone Brick", AEBlockIds.SKY_STONE_BRICK, p -> new AEDecorativeBlock(skystoneProperties(p)));
     public static final BlockDefinition<AEDecorativeBlock> SKY_STONE_SMALL_BRICK = block("Sky Stone Small Brick", AEBlockIds.SKY_STONE_SMALL_BRICK, p -> new AEDecorativeBlock(skystoneProperties(p)));
 
-    public static final BlockDefinition<SkyChestBlock> SKY_STONE_CHEST = block("Sky Stone Chest", AEBlockIds.SKY_STONE_CHEST, p -> new SkyChestBlock(SkyChestBlock.SkyChestType.STONE, skyStoneChestProperties(p)));
-    public static final BlockDefinition<SkyChestBlock> SMOOTH_SKY_STONE_CHEST = block("Sky Stone Block Chest", AEBlockIds.SMOOTH_SKY_STONE_CHEST, p -> new SkyChestBlock(SkyChestBlock.SkyChestType.BLOCK, skyStoneChestProperties(p)));
+    public static final BlockDefinition<SkyStoneChestBlock> SKY_STONE_CHEST = block("Sky Stone Chest", AEBlockIds.SKY_STONE_CHEST, p -> new SkyStoneChestBlock(SkyStoneChestBlock.Type.STONE, skyStoneChestProperties(p)));
+    public static final BlockDefinition<SkyStoneChestBlock> SMOOTH_SKY_STONE_CHEST = block("Sky Stone Block Chest", AEBlockIds.SMOOTH_SKY_STONE_CHEST, p -> new SkyStoneChestBlock(SkyStoneChestBlock.Type.BLOCK, skyStoneChestProperties(p)));
 
     public static final BlockDefinition<SkyStoneTankBlock> SKY_STONE_TANK = block("Sky Stone Tank", AEBlockIds.SKY_STONE_TANK, p -> new SkyStoneTankBlock(skyStoneChestProperties(p)));
     public static final BlockDefinition<MysteriousCubeBlock> MYSTERIOUS_CUBE = block("Mysterious Cube", AEBlockIds.MYSTERIOUS_CUBE, MysteriousCubeBlock::new);
@@ -273,7 +272,7 @@ public final class AEBlocks {
         var deferredBlock = DR.registerBlock(id.getPath(), blockSupplier);
         var deferredItem = AEItems.DR.register(id.getPath(), () -> {
             var block = deferredBlock.get();
-            var itemProperties = new Item.Properties().setId(ResourceKey.create(Registries.ITEM, id));
+            var itemProperties = new Item.Properties().setId(ResourceKey.create(Registries.ITEM, id)).useBlockDescriptionPrefix();
             if (itemFactory != null) {
                 var item = itemFactory.apply(block, itemProperties);
                 if (item == null) {

@@ -18,17 +18,26 @@
 
 package appeng.datagen;
 
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
-
+import appeng.core.AppEng;
+import appeng.core.definitions.AEDamageTypes;
+import appeng.datagen.providers.advancements.AdvancementGenerator;
+import appeng.datagen.providers.localization.LocalizationProvider;
+import appeng.datagen.providers.loot.AE2LootTableProvider;
+import appeng.datagen.providers.models.AE2ModelProvider;
 import appeng.datagen.providers.models.BlockModelProvider;
-import appeng.datagen.providers.models.CableModelProvider;
 import appeng.datagen.providers.models.DecorationModelProvider;
 import appeng.datagen.providers.models.ItemModelProvider;
 import appeng.datagen.providers.models.PartModelProvider;
 import appeng.datagen.providers.recipes.AE2RecipeProvider;
+import appeng.datagen.providers.tags.BiomeTagsProvider;
+import appeng.datagen.providers.tags.BlockTagsProvider;
+import appeng.datagen.providers.tags.DataComponentTypeTagProvider;
+import appeng.datagen.providers.tags.FluidTagsProvider;
+import appeng.datagen.providers.tags.ItemTagsProvider;
+import appeng.datagen.providers.tags.PoiTypeTagsProvider;
+import appeng.init.worldgen.InitBiomes;
+import appeng.init.worldgen.InitDimensionTypes;
+import appeng.init.worldgen.InitStructures;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -40,33 +49,10 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-import appeng.core.AppEng;
-import appeng.core.definitions.AEDamageTypes;
-import appeng.datagen.providers.advancements.AdvancementGenerator;
-import appeng.datagen.providers.localization.LocalizationProvider;
-import appeng.datagen.providers.loot.AE2LootTableProvider;
-
-import appeng.datagen.providers.recipes.ChargerRecipes;
-import appeng.datagen.providers.recipes.CraftingRecipes;
-import appeng.datagen.providers.recipes.DecorationBlockRecipes;
-import appeng.datagen.providers.recipes.DecorationRecipes;
-import appeng.datagen.providers.recipes.EntropyRecipes;
-import appeng.datagen.providers.recipes.InscriberRecipes;
-import appeng.datagen.providers.recipes.MatterCannonAmmoProvider;
-import appeng.datagen.providers.recipes.QuartzCuttingRecipesProvider;
-import appeng.datagen.providers.recipes.SmeltingRecipes;
-import appeng.datagen.providers.recipes.SmithingRecipes;
-import appeng.datagen.providers.recipes.TransformRecipes;
-import appeng.datagen.providers.recipes.UpgradeRecipes;
-import appeng.datagen.providers.tags.BiomeTagsProvider;
-import appeng.datagen.providers.tags.BlockTagsProvider;
-import appeng.datagen.providers.tags.DataComponentTypeTagProvider;
-import appeng.datagen.providers.tags.FluidTagsProvider;
-import appeng.datagen.providers.tags.ItemTagsProvider;
-import appeng.datagen.providers.tags.PoiTypeTagsProvider;
-import appeng.init.worldgen.InitBiomes;
-import appeng.init.worldgen.InitDimensionTypes;
-import appeng.init.worldgen.InitStructures;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
 
 @EventBusSubscriber(modid = AppEng.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class AE2DataGenerators {
@@ -97,11 +83,13 @@ public class AE2DataGenerators {
                 localization));
 
         // Models
-        pack.addProvider(BlockModelProvider::new);
-        pack.addProvider(DecorationModelProvider::new);
-        pack.addProvider(ItemModelProvider::new);
-        pack.addProvider(CableModelProvider::new);
-        pack.addProvider(PartModelProvider::new);
+        pack.addProvider(AE2ModelProvider.create(
+                AppEng.MOD_ID,
+                BlockModelProvider::new,
+                DecorationModelProvider::new,
+                ItemModelProvider::new,
+                PartModelProvider::new
+        ));
 
         // Misc
         pack.addProvider(packOutput -> new AdvancementProvider(packOutput, registries, List.of(

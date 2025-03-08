@@ -32,18 +32,15 @@ import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.blockentity.ClientTickingBlockEntity;
-import appeng.menu.implementations.SkyChestMenu;
+import appeng.menu.implementations.SkyStonechestMenu;
 import appeng.util.inv.AppEngInternalInventory;
 
 @SuppressWarnings("JavadocReference")
-@OnlyIn(value = Dist.CLIENT, _interface = LidBlockEntity.class)
-public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientTickingBlockEntity, LidBlockEntity {
+public class SkyStoneChestBlockEntity extends AEBaseInvBlockEntity implements ClientTickingBlockEntity, LidBlockEntity {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 9 * 4);
 
@@ -71,16 +68,16 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
         }
 
         protected boolean isOwnContainer(Player player) {
-            if (player.containerMenu instanceof SkyChestMenu menu) {
-                return menu.getChest() == SkyChestBlockEntity.this;
+            if (player.containerMenu instanceof SkyStonechestMenu menu) {
+                return menu.getChest() == SkyStoneChestBlockEntity.this;
             } else {
                 return false;
             }
         }
     };
 
-    public SkyChestBlockEntity(BlockEntityType<? extends SkyChestBlockEntity> type, BlockPos pos,
-            BlockState blockState) {
+    public SkyStoneChestBlockEntity(BlockEntityType<? extends SkyStoneChestBlockEntity> type, BlockPos pos,
+                                    BlockState blockState) {
         super(type, pos, blockState);
     }
 

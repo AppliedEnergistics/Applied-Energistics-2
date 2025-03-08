@@ -5,13 +5,17 @@ import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.misc.GrowthAcceleratorBlock;
 import appeng.block.misc.VibrationChamberBlock;
+import appeng.block.networking.ControllerBlock;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.block.networking.WirelessAccessPointBlock;
+import appeng.block.qnb.QuantumLinkChamberBlock;
+import appeng.block.qnb.QuantumRingBlock;
 import appeng.block.spatial.SpatialAnchorBlock;
 import appeng.block.spatial.SpatialIOPortBlock;
 import appeng.block.storage.IOPortBlock;
 import appeng.block.storage.MEChestBlock;
 import appeng.client.render.model.BuiltInModelLoaderBuilder;
+import appeng.client.render.tesr.SkyStoneChestRenderer;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
@@ -30,36 +34,43 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
+import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.EmptyModel;
 import net.minecraft.core.Direction;
-import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplate;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import static appeng.core.AppEng.makeId;
+import static net.minecraft.client.data.models.BlockModelGenerators.createSimpleBlock;
 
-public class BlockModelProvider extends AE2BlockStateProvider {
+public class BlockModelProvider extends ModelSubProvider {
 
-    public static final ModelTemplate EMPTY_MODEL = new ModelTemplate(Optional.empty(), Optional.empty());
-
-    public BlockModelProvider(PackOutput packOutput) {
-        super(packOutput, AppEng.MOD_ID);
+    public BlockModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+        super(blockModels, itemModels);
     }
 
     @Override
-    protected void register(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+    protected void register() {
         blockModels.createTrivialBlock(
                 AEBlocks.MATRIX_FRAME.block(),
                 TexturedModel.createDefault(block -> new TextureMapping(), EMPTY_MODEL));
 
         // These models will be overwritten in code
         builtInModel(AEBlocks.QUARTZ_GLASS, true);
-        builtInModel(AEBlocks.CABLE_BUS);
+        blockModels.registerSimpleItemModel(
+                AEBlocks.QUARTZ_GLASS.asItem(),
+                ModelTemplates.CUBE_ALL.create(
+                        AEBlocks.QUARTZ_GLASS.asItem(),
+                        TextureMapping.cube(TextureMapping.getBlockTexture(AEBlocks.QUARTZ_GLASS.block(), "_item")),
+                        modelOutput
+                )
+            );
+        blockModels.copyModel(AEBlocks.QUARTZ_GLASS.block(), AEBlocks.QUARTZ_VIBRANT_GLASS.block());
+        builtInModel(AEBlocks.CABLE_BUS, true);
         builtInModel(AEBlocks.PAINT);
 
         var driveModel = builtInModel("drive");
@@ -75,6 +86,13 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                 Variant.variant().with(VariantProperties.MODEL, inscriber))
                 .with(createFacingSpinDispatch());
 
+        multiVariantGenerator(AEBlocks.SKY_STONE_TANK, Variant.variant().with(VariantProperties.MODEL, makeId("block/sky_stone_tank")));
+        multiVariantGenerator(AEBlocks.TINY_TNT, Variant.variant().with(VariantProperties.MODEL, makeId("block/tiny_tnt")));
+        multiVariantGenerator(AEBlocks.MOLECULAR_ASSEMBLER, Variant.variant().with(VariantProperties.MODEL, makeId("block/molecular_assembler")));
+
+        // Generate an empty block model for the crank, since the base model and shaft will be used by the dynamic renderer
+        multiVariantGenerator(AEBlocks.CRANK, Variant.variant().with(VariantProperties.MODEL, makeId("block/crank")));
+
         crystalResonanceGenerator();
         wirelessAccessPoint();
         craftingMonitor();
@@ -87,7 +105,11 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         spatialIoPort();
         spatialPylon();
 
-        builtInModel("qnb/qnb_formed");
+        blockModels.createChest(AEBlocks.SKY_STONE_CHEST.block(), AEBlocks.SKY_STONE_BLOCK.block(), SkyStoneChestRenderer.TEXTURE_STONE.texture(), false);
+        blockModels.createChest(AEBlocks.SMOOTH_SKY_STONE_CHEST.block(), AEBlocks.SMOOTH_SKY_STONE_BLOCK.block(), SkyStoneChestRenderer.TEXTURE_BLOCK.texture(), false);
+
+        quantumBridge();
+        controller();
 
         simpleBlockAndItem(AEBlocks.FLAWLESS_BUDDING_QUARTZ);
         simpleBlockAndItem(AEBlocks.FLAWED_BUDDING_QUARTZ);
@@ -128,8 +150,101 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         simpleBlockAndItem(AEBlocks.CREATIVE_ENERGY_CELL, "block/creative_energy_cell");
 
         // Both use the same mysterious cube model
-        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(AEBlocks.MYSTERIOUS_CUBE.block(), makeId("block/mysterious_cube")));
-        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(AEBlocks.NOT_SO_MYSTERIOUS_CUBE.block(), makeId("block/mysterious_cube")));
+        blockModels.blockStateOutput.accept(createSimpleBlock(AEBlocks.MYSTERIOUS_CUBE.block(), makeId("block/mysterious_cube")));
+        blockModels.blockStateOutput.accept(createSimpleBlock(AEBlocks.NOT_SO_MYSTERIOUS_CUBE.block(), makeId("block/mysterious_cube")));
+    }
+
+    private void controller() {
+        var block = AEBlocks.CONTROLLER.block();
+
+        var offlineBlock = ModelLocationUtils.getModelLocation(block, "_block_offline");
+        var onlineBlock = ModelLocationUtils.getModelLocation(block, "_block_online");
+        var conflictedBlock = ModelLocationUtils.getModelLocation(block, "_block_conflicted");
+
+        var offlineColumn = ModelLocationUtils.getModelLocation(block, "_column_offline");
+        var onlineColumn = ModelLocationUtils.getModelLocation(block, "_column_online");
+        var conflictedColumn = ModelLocationUtils.getModelLocation(block, "_column_conflicted");
+
+        var insideA = ModelLocationUtils.getModelLocation(block, "_inside_a");
+        var insideB = ModelLocationUtils.getModelLocation(block, "_inside_b");
+        var insideAConflicted = ModelLocationUtils.getModelLocation(block, "_inside_a_conflicted");
+        var insideBConflicted = ModelLocationUtils.getModelLocation(block, "_inside_b_conflicted");
+
+        // Alias the enums since the following becomes very noisy otherwise
+        // Static import would be possible but conflicts with local variables
+        var state = ControllerBlock.CONTROLLER_STATE;
+        var s_type = ControllerBlock.CONTROLLER_TYPE;
+        var s_offline = ControllerBlock.ControllerBlockState.offline;
+        var s_online = ControllerBlock.ControllerBlockState.online;
+        var s_conflicted = ControllerBlock.ControllerBlockState.conflicted;
+        var t_block = ControllerBlock.ControllerRenderType.block;
+        var t_column_x = ControllerBlock.ControllerRenderType.column_x;
+        var t_column_y = ControllerBlock.ControllerRenderType.column_y;
+        var t_column_z = ControllerBlock.ControllerRenderType.column_z;
+        var t_inside_a = ControllerBlock.ControllerRenderType.inside_a;
+        var t_inside_b = ControllerBlock.ControllerRenderType.inside_b;
+
+        blockModels.blockStateOutput.accept(
+                MultiPartGenerator.multiPart(block)
+                        .with(Condition.condition().term(state, s_offline).term(s_type, t_block),
+                                Variant.variant().with(VariantProperties.MODEL, offlineBlock))
+                        .with(Condition.condition().term(state, s_online).term(s_type, t_block),
+                                Variant.variant().with(VariantProperties.MODEL, onlineBlock))
+                        .with(Condition.condition().term(state, s_conflicted).term(s_type, t_block),
+                                Variant.variant().with(VariantProperties.MODEL, conflictedBlock))
+                        .with(Condition.condition().term(state, s_offline).term(s_type, t_column_x),
+                                Variant.variant().with(VariantProperties.MODEL, offlineColumn)
+                                        .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
+                                        .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
+                        .with(Condition.condition().term(state, s_offline).term(s_type, t_column_y),
+                                Variant.variant().with(VariantProperties.MODEL, offlineColumn))
+                        .with(Condition.condition().term(state, s_offline).term(s_type, t_column_z),
+                                Variant.variant().with(VariantProperties.MODEL, offlineColumn)
+                                        .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90))
+                        .with(Condition.condition().term(state, s_online).term(s_type, t_column_x),
+                                Variant.variant().with(VariantProperties.MODEL, onlineColumn)
+                                        .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
+                                        .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
+                        .with(Condition.condition().term(state, s_online).term(s_type, t_column_y),
+                                Variant.variant().with(VariantProperties.MODEL, onlineColumn))
+                        .with(Condition.condition().term(state, s_online).term(s_type, t_column_z),
+                                Variant.variant().with(VariantProperties.MODEL, onlineColumn)
+                                        .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90))
+                        .with(Condition.condition().term(state, s_conflicted).term(s_type, t_column_x),
+                                Variant.variant().with(VariantProperties.MODEL, conflictedColumn)
+                                        .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
+                                        .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
+                        .with(Condition.condition().term(state, s_conflicted).term(s_type, t_column_y),
+                                Variant.variant().with(VariantProperties.MODEL, conflictedColumn))
+                        .with(Condition.condition().term(state, s_conflicted).term(s_type, t_column_z),
+                                Variant.variant().with(VariantProperties.MODEL, conflictedColumn)
+                                        .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90))
+                        .with(Condition.condition().term(state, s_offline, s_online).term(s_type, t_inside_a),
+                                Variant.variant().with(VariantProperties.MODEL, insideA))
+                        .with(Condition.condition().term(state, s_offline, s_online).term(s_type, t_inside_b),
+                                Variant.variant().with(VariantProperties.MODEL, insideB))
+                        .with(Condition.condition().term(state, s_conflicted).term(s_type, t_inside_a),
+                                Variant.variant().with(VariantProperties.MODEL, insideAConflicted))
+                        .with(Condition.condition().term(state, s_conflicted).term(s_type, t_inside_b),
+                                Variant.variant().with(VariantProperties.MODEL, insideBConflicted))
+        );
+
+    }
+
+    private void quantumBridge() {
+        var formedModel = builtInModel("qnb/qnb_formed");
+
+        var unformedRingModel = AppEng.makeId("block/qnb/ring");
+        var ringDispatch = PropertyDispatch.property(QuantumRingBlock.FORMED);
+        ringDispatch.select(false, Variant.variant().with(VariantProperties.MODEL, unformedRingModel));
+        ringDispatch.select(true, Variant.variant().with(VariantProperties.MODEL, formedModel));
+        multiVariantGenerator(AEBlocks.QUANTUM_RING).with(ringDispatch);
+
+        var unformedLinkModel = AppEng.makeId("block/qnb/link");
+        var linkDispatch = PropertyDispatch.property(QuantumLinkChamberBlock.FORMED);
+        linkDispatch.select(false, Variant.variant().with(VariantProperties.MODEL, unformedLinkModel));
+        linkDispatch.select(true, Variant.variant().with(VariantProperties.MODEL, formedModel));
+        multiVariantGenerator(AEBlocks.QUANTUM_LINK).with(linkDispatch);
     }
 
     private void spatialPylon() {
@@ -362,7 +477,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
 
     private void builtInModel(BlockDefinition<?> block, boolean skipItem) {
         blockModels.blockStateOutput.accept(
-                BlockModelGenerators.createSimpleBlock(block.block(), createBuiltInModel(block.block()))
+                createSimpleBlock(block.block(), createBuiltInModel(block.block()))
         );
 
         if (!skipItem) {

@@ -52,13 +52,13 @@ import appeng.core.definitions.AEBlocks;
  * The block entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the
  * LED.
  */
-public class ChestBlockEntityRenderer implements BlockEntityRenderer<MEChestBlockEntity> {
+public class MEChestBlockEntityRenderer implements BlockEntityRenderer<MEChestBlockEntity> {
 
     private final ModelManager modelManager;
 
     private final ModelBlockRenderer blockRenderer;
 
-    public ChestBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+    public MEChestBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         Minecraft client = Minecraft.getInstance();
         modelManager = client.getModelManager();
         blockRenderer = client.getBlockRenderer().getModelRenderer();

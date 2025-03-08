@@ -27,9 +27,7 @@ import appeng.client.render.model.BuiltInModelLoader;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.neoforged.bus.api.Event;
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import org.slf4j.Logger;
@@ -99,11 +97,11 @@ import appeng.client.render.effects.VibrantFX;
 import appeng.client.render.model.GlassBakedModel;
 import appeng.client.render.overlay.OverlayManager;
 import appeng.client.render.tesr.ChargerBlockEntityRenderer;
-import appeng.client.render.tesr.ChestBlockEntityRenderer;
+import appeng.client.render.tesr.MEChestBlockEntityRenderer;
 import appeng.client.render.tesr.CrankRenderer;
 import appeng.client.render.tesr.DriveLedBlockEntityRenderer;
 import appeng.client.render.tesr.InscriberTESR;
-import appeng.client.render.tesr.SkyChestTESR;
+import appeng.client.render.tesr.SkyStoneChestRenderer;
 import appeng.client.render.tesr.SkyStoneTankBlockEntityRenderer;
 import appeng.core.definitions.AEAttachmentTypes;
 import appeng.core.definitions.AEBlockEntities;
@@ -316,10 +314,10 @@ public class AppEngClient extends AppEngBase {
 
         event.registerBlockEntityRenderer(AEBlockEntities.CRANK.get(), CrankRenderer::new);
         event.registerBlockEntityRenderer(AEBlockEntities.INSCRIBER.get(), InscriberTESR::new);
-        event.registerBlockEntityRenderer(AEBlockEntities.SKY_CHEST.get(), SkyChestTESR::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.SKY_CHEST.get(), SkyStoneChestRenderer::new);
         event.registerBlockEntityRenderer(AEBlockEntities.CHARGER.get(), ChargerBlockEntityRenderer.FACTORY);
         event.registerBlockEntityRenderer(AEBlockEntities.DRIVE.get(), DriveLedBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(AEBlockEntities.ME_CHEST.get(), ChestBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.ME_CHEST.get(), MEChestBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(AEBlockEntities.CRAFTING_MONITOR.get(), CraftingMonitorRenderer::new);
         event.registerBlockEntityRenderer(AEBlockEntities.MOLECULAR_ASSEMBLER.get(), MolecularAssemblerRenderer::new);
         event.registerBlockEntityRenderer(AEBlockEntities.CABLE_BUS.get(), CableBusTESR::new);

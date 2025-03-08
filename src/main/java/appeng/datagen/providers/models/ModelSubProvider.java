@@ -4,13 +4,9 @@ import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.IOrientationStrategy;
 import appeng.core.AppEng;
 import appeng.core.definitions.BlockDefinition;
-import appeng.datagen.providers.IAE2DataProvider;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.data.models.ModelProvider;
-import net.minecraft.client.data.models.blockstates.BlockStateGenerator;
 import net.minecraft.client.data.models.blockstates.Condition;
 import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
@@ -19,55 +15,36 @@ import net.minecraft.client.data.models.blockstates.Variant;
 import net.minecraft.client.data.models.blockstates.VariantProperties;
 import net.minecraft.client.data.models.blockstates.VariantProperty;
 import net.minecraft.client.data.models.model.ModelInstance;
+import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
-public abstract class AE2BlockStateProvider extends ModelProvider implements IAE2DataProvider {
-    private static final VariantProperty<VariantProperties.Rotation> Z_ROT = new VariantProperty<>("ae2:z",
+public abstract class ModelSubProvider {
+    protected static final VariantProperty<VariantProperties.Rotation> Z_ROT = new VariantProperty<>("ae2:z",
             r -> new JsonPrimitive(r.ordinal() * 90));
 
-    protected BlockModelGenerators blockModels;
-    protected ItemModelGenerators itemModels;
-    protected BiConsumer<ResourceLocation, ModelInstance> modelOutput;
+    public static final ModelTemplate EMPTY_MODEL = new ModelTemplate(Optional.empty(), Optional.empty());
 
-    public AE2BlockStateProvider(PackOutput packOutput, String modid) {
-        super(packOutput, modid);
-    }
+    protected final BlockModelGenerators blockModels;
+    protected final ItemModelGenerators itemModels;
+    protected final BiConsumer<ResourceLocation, ModelInstance> modelOutput;
 
-    @Override
-    protected Stream<? extends Holder<Block>> getKnownBlocks() {
-        return Stream.empty();
-    }
-
-    @Override
-    protected Stream<? extends Holder<Item>> getKnownItems() {
-        return Stream.empty();
-    }
-
-    @Override
-    protected final void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
-        // At least stub out the parent call to run
+    public ModelSubProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         this.blockModels = blockModels;
         this.itemModels = itemModels;
         this.modelOutput = blockModels.modelOutput;
-
-        register(blockModels, itemModels);
     }
 
-    protected abstract void register(BlockModelGenerators blockModels, ItemModelGenerators itemModels);
+    protected abstract void register();
 
     /**
      * Define a block model that is a simple textured cube, and uses the same model for its item. The texture path is
@@ -92,23 +69,6 @@ public abstract class AE2BlockStateProvider extends ModelProvider implements IAE
                 TexturedModel.CUBE.updateTexture(mapping -> mapping.put(TextureSlot.ALL, AppEng.makeId(textureName)))
         );
         // item falls back automatically to the block model
-    }
-
-    protected VariantsBuilder rotatedVariants(BlockDefinition<?> blockDef) {
-        Block block = blockDef.block();
-        var builder = new VariantsBuilder(block);
-        blockModels.blockStateOutput.accept(new BlockStateGenerator() {
-            @Override
-            public Block getBlock() {
-                return blockDef.block();
-            }
-
-            @Override
-            public JsonElement get() {
-                return builder.toJson();
-            }
-        });
-        return builder;
     }
 
     protected final MultiVariantGenerator multiVariantGenerator(BlockDefinition<?> blockDef, Variant... variants) {
@@ -215,10 +175,5 @@ public abstract class AE2BlockStateProvider extends ModelProvider implements IAE
                                                                         BlockState blockState,
                                                                         Property<T> property) {
         return condition.term(property, blockState.getValue(property));
-    }
-
-    @Override
-    public String getName() {
-        return super.getName() + " " + getClass().getName();
     }
 }
