@@ -15,8 +15,6 @@ import appeng.client.render.model.BuiltInModelLoaderBuilder;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
-import appeng.init.client.InitItemModelsProperties;
-import com.google.gson.JsonObject;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.blockstates.Condition;
@@ -25,8 +23,8 @@ import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.blockstates.Variant;
 import net.minecraft.client.data.models.blockstates.VariantProperties;
-import net.minecraft.client.data.models.blockstates.VariantProperty;
 import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
@@ -38,7 +36,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.client.model.generators.loaders.CompositeModelBuilder;
+import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplate;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -180,8 +178,19 @@ public class BlockModelProvider extends AE2BlockStateProvider {
     }
 
     private void craftingMonitor() {
-        var formedModel = makeId("block/crafting/monitor_formed");
-        var unformedModel = makeId("block/crafting/monitor");
+        var formedModel = createBuiltInModel(makeId("block/crafting/monitor_formed"));
+        var unformedModel = ModelTemplates.CUBE.create(
+                makeId("block/crafting/monitor"),
+                new TextureMapping()
+                        .put(TextureSlot.PARTICLE, makeId("block/crafting/monitor"))
+                        .put(TextureSlot.DOWN, MACHINE_BOTTOM)
+                        .put(TextureSlot.UP, makeId("block/crafting/unit"))
+                        .put(TextureSlot.NORTH, makeId("block/crafting/monitor"))
+                        .put(TextureSlot.EAST, makeId("block/crafting/unit"))
+                        .put(TextureSlot.SOUTH, makeId("block/crafting/unit"))
+                        .put(TextureSlot.WEST, makeId("block/crafting/unit")),
+                modelOutput
+        );
 
         multiVariantGenerator(AEBlocks.CRAFTING_MONITOR)
                 .with(PropertyDispatch.properties(AbstractCraftingUnitBlock.FORMED, BlockStateProperties.FACING)
@@ -344,11 +353,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
 
     private ResourceLocation builtInModel(String blockId) {
         ResourceLocation modelId = makeId(blockId).withPrefix("block/");
-        return EMPTY_MODEL
-                .extend()
-                .customLoader(BuiltInModelLoaderBuilder::new, builder -> builder.id(modelId))
-                .build()
-                .create(modelId, new TextureMapping(), modelOutput);
+        return createBuiltInModel(modelId);
     }
 
     private void builtInModel(BlockDefinition<?> block) {
@@ -356,12 +361,8 @@ public class BlockModelProvider extends AE2BlockStateProvider {
     }
 
     private void builtInModel(BlockDefinition<?> block, boolean skipItem) {
-
-        blockModels.createTrivialBlock(block.block(), TexturedModel
-                .createDefault(ignored -> new TextureMapping(), EMPTY_MODEL
-                        .extend()
-                        .customLoader(BuiltInModelLoaderBuilder::new, builder -> builder.id(block.id().withPrefix("block/")))
-                        .build())
+        blockModels.blockStateOutput.accept(
+                BlockModelGenerators.createSimpleBlock(block.block(), createBuiltInModel(block.block()))
         );
 
         if (!skipItem) {
@@ -370,50 +371,66 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         }
     }
 
-   private void energyCell(
-           BlockDefinition<?> blockDef,
-           String baseTexture) {
+    private ResourceLocation createBuiltInModel(Block block) {
+        return createBuiltInModel(block, "");
+    }
+
+    private ResourceLocation createBuiltInModel(Block block, String suffix) {
+        return createBuiltInModel(ModelLocationUtils.getModelLocation(block, suffix));
+    }
+
+    private ResourceLocation createBuiltInModel(ResourceLocation id) {
+        return EMPTY_MODEL
+                .extend()
+                .customLoader(BuiltInModelLoaderBuilder::new, builder -> builder.id(id))
+                .build()
+                .create(id, new TextureMapping(), modelOutput);
+    }
+
+    private void energyCell(
+            BlockDefinition<?> blockDef,
+            String baseTexture) {
 
         var block = blockDef.block();
 
-       var energyLevelDispatch = PropertyDispatch.property(EnergyCellBlock.ENERGY_STORAGE);
+        var energyLevelDispatch = PropertyDispatch.property(EnergyCellBlock.ENERGY_STORAGE);
 
-       for (var i = 0; i < 5; i++) {
-           var textures = TextureMapping.cube(TextureMapping.getBlockTexture(block, "_" + i));
-           var model = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_" + i, textures, modelOutput);
-           energyLevelDispatch.select(i, Variant.variant().with(VariantProperties.MODEL, model));
-       }
-       blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block).with(energyLevelDispatch));
+        for (var i = 0; i < 5; i++) {
+            var textures = TextureMapping.cube(TextureMapping.getBlockTexture(block, "_" + i));
+            var model = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_" + i, textures, modelOutput);
+            energyLevelDispatch.select(i, Variant.variant().with(VariantProperties.MODEL, model));
+        }
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block).with(energyLevelDispatch));
 
 
-       //  TODO 1.21.4 var item = itemModels().withExistingParent(modelPath(block), models.get(0));
-       //  TODO 1.21.4 for (var i = 1; i < models.size(); i++) {
-       //  TODO 1.21.4     // The predicate matches "greater than", meaning for fill-level > 0 the first non-empty texture is used
-       //  TODO 1.21.4     float fillFactor = i / (float) models.size();
-       //  TODO 1.21.4     item.override()
-       //  TODO 1.21.4             .predicate(InitItemModelsProperties.ENERGY_FILL_LEVEL_ID, fillFactor)
-       //  TODO 1.21.4             .model(models.get(i));
-       //  TODO 1.21.4 }
-   }
+        //  TODO 1.21.4 var item = itemModels().withExistingParent(modelPath(block), models.get(0));
+        //  TODO 1.21.4 for (var i = 1; i < models.size(); i++) {
+        //  TODO 1.21.4     // The predicate matches "greater than", meaning for fill-level > 0 the first non-empty texture is used
+        //  TODO 1.21.4     float fillFactor = i / (float) models.size();
+        //  TODO 1.21.4     item.override()
+        //  TODO 1.21.4             .predicate(InitItemModelsProperties.ENERGY_FILL_LEVEL_ID, fillFactor)
+        //  TODO 1.21.4             .model(models.get(i));
+        //  TODO 1.21.4 }
+    }
 
-   private void craftingModel(BlockDefinition<?> block, String name) {
-       var unformedModel = ModelTemplates.CUBE_ALL.create(
-               makeId("block/crafting/" + name), TextureMapping.cube(makeId("block/crafting/" + name)), modelOutput
-       );
-       var formedModel = builtInModel("crafting/" + name + "_formed");
+    private void craftingModel(BlockDefinition<?> block, String name) {
+        var unformedModel = ModelTemplates.CUBE_ALL.create(
+                makeId("block/crafting/" + name), TextureMapping.cube(makeId("block/crafting/" + name)), modelOutput
+        );
+        var formedModel = builtInModel("crafting/" + name + "_formed");
 
-       blockModels.blockStateOutput
-               .accept(
-                       MultiVariantGenerator.multiVariant(block.block())
-                               .with(
-                                       PropertyDispatch.property(AbstractCraftingUnitBlock.FORMED)
-                                               .select(false, Variant.variant().with(VariantProperties.MODEL, unformedModel))
-                                               .select(true, Variant.variant().with(VariantProperties.MODEL, formedModel))
-                               )
-               );
+        blockModels.blockStateOutput
+                .accept(
+                        MultiVariantGenerator.multiVariant(block.block())
+                                .with(
+                                        PropertyDispatch.property(AbstractCraftingUnitBlock.FORMED)
+                                                .select(false, Variant.variant().with(VariantProperties.MODEL, unformedModel))
+                                                .select(true, Variant.variant().with(VariantProperties.MODEL, formedModel))
+                                )
+                );
 
-       // TODO simpleBlockItem(block.block(), blockModel);
-   }
+        // TODO simpleBlockItem(block.block(), blockModel);
+    }
 
     private void generateQuartzCluster(BlockDefinition<?> quartz) {
         Block block = quartz.block();

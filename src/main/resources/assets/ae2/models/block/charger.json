@@ -4,7 +4,10 @@
   "texture_size": [64, 64],
   "textures": {
     "particle": "ae2:block/charger",
-    "base": "ae2:block/charger"
+    "base": "ae2:block/charger",
+    "front": "#base",
+    "top": "#base",
+    "side": "#base"
   },
   "elements": [
     {
