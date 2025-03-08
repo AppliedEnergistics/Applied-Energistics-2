@@ -52,8 +52,8 @@ public class PaintSplotchesBlock extends AEBaseEntityBlock<PaintSplotchesBlockEn
      */
     public static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 2);
 
-    public PaintSplotchesBlock() {
-        super(defaultProps(MapColor.NONE, SoundType.WET_GRASS).noOcclusion().air().lightLevel(state -> {
+    public PaintSplotchesBlock(Properties p) {
+        super(defaultProps(p, MapColor.NONE, SoundType.WET_GRASS).noOcclusion().air().lightLevel(state -> {
             var lightLevel = state.getValue(LIGHT_LEVEL);
             return switch (lightLevel) {
                 default -> 0;

@@ -42,8 +42,8 @@ public class GrowthAcceleratorBlock extends AEBaseEntityBlock<GrowthAcceleratorB
 
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public GrowthAcceleratorBlock() {
-        super(metalProps());
+    public GrowthAcceleratorBlock(Properties p) {
+        super(metalProps(p));
         this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 

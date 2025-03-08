@@ -29,6 +29,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.neoforged.bus.api.Event;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -173,6 +174,7 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(InitScreens::init);
         modEventBus.addListener(this::enqueueImcMessages);
         modEventBus.addListener(this::registerClientExtensions);
+        modEventBus.addListener(this::registerReloadListeners);
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
@@ -325,11 +327,14 @@ public class AppEngClient extends AppEngBase {
         });
     }
 
+    private void registerReloadListeners(AddClientReloadListenersEvent event) {
+        event.addListener(AppEng.makeId("styles"), StyleManager.getReloadListener());
+    }
+
     /**
      * Called when other mods have finished initializing and the client is now available.
      */
     private void postClientSetup(Minecraft minecraft) {
-        StyleManager.initialize(minecraft.getResourceManager());
         InitStackRenderHandlers.init();
 
         // Only activate the site exporter when we're not running a release version, since it'll

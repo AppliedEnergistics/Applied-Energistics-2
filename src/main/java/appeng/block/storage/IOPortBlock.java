@@ -43,8 +43,8 @@ public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
 
     public final static BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public IOPortBlock() {
-        super(metalProps());
+    public IOPortBlock(Properties p) {
+        super(metalProps(p));
         this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 

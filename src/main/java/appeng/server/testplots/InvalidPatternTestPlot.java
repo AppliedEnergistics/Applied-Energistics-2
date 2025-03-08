@@ -1,7 +1,10 @@
 package appeng.server.testplots;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 
 import appeng.api.crafting.PatternDetailsHelper;
@@ -21,12 +24,12 @@ public class InvalidPatternTestPlot {
     public static void patternInvalidRecipeId(PlotBuilder builder) {
         builder.blockEntity(BlockPos.ZERO, AEBlocks.SMOOTH_SKY_STONE_CHEST, chest -> {
             var oakLog = Blocks.OAK_LOG.asItem().getDefaultInstance();
-            var pattern = CraftingPatternHelper.encodeShapelessCraftingRecipe(chest.getLevel(), oakLog);
+            var pattern = CraftingPatternHelper.encodeShapelessCraftingRecipe((ServerLevel) chest.getLevel(), oakLog);
             var encodedPattern = pattern.get(AEComponents.ENCODED_CRAFTING_PATTERN);
             pattern.set(AEComponents.ENCODED_CRAFTING_PATTERN, new EncodedCraftingPattern(
                     encodedPattern.inputs(),
                     encodedPattern.result(),
-                    ResourceLocation.parse("invalid"),
+                    ResourceKey.create(Registries.RECIPE, ResourceLocation.parse("invalid")),
                     encodedPattern.canSubstitute(),
                     encodedPattern.canSubstituteFluids()));
             chest.getInternalInventory().addItems(pattern);

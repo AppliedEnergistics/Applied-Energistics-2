@@ -14,7 +14,7 @@ import appeng.hooks.BuiltInModelHooks;
 /**
  * Replicates the part of the Fabric API for adding built-in models that we actually use.
  */
-@Mixin(ModelBakery.class)
+@Mixin(targets = "net.minecraft.client.resources.model.ModelBakery$ModelBakery")
 public class ModelBakeryMixin {
     @Inject(at = @At("HEAD"), method = "getModel", cancellable = true)
     private void getModelHook(ResourceLocation id, CallbackInfoReturnable<UnbakedModel> cir) {

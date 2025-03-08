@@ -91,7 +91,7 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
             var renderX = bounds.getX() + slotBounds.getX() - 7;
             var renderY = bounds.getY() + slotBounds.getY() + 5;
             blitter.dest(renderX, renderY).blit(guiGraphics);
-            ItemStack resultItem = recipe.value().getResultItem(getRegistryAccess());
+            ItemStack resultItem = recipe.value().result();
             if (selected || mouse.isIn(slotBounds)) {
                 guiGraphics.renderItem(resultItem, renderX + 2, renderY + 3);
                 guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 3);
@@ -119,7 +119,7 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     public Tooltip getTooltip(int mouseX, int mouseY) {
         var recipe = getRecipeAt(new Point(mouseX, mouseY));
         if (recipe != null) {
-            var lines = screen.getTooltipFromContainerItem(recipe.value().getResultItem(getRegistryAccess()));
+            var lines = screen.getTooltipFromContainerItem(recipe.value().result());
             return new Tooltip(lines);
         }
         return null;

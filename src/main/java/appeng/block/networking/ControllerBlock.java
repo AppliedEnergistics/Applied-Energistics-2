@@ -77,8 +77,8 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
     public static final EnumProperty<ControllerRenderType> CONTROLLER_TYPE = EnumProperty.create("type",
             ControllerRenderType.class);
 
-    public ControllerBlock() {
-        super(metalProps().strength(6));
+    public ControllerBlock(Properties p) {
+        super(metalProps(p).strength(6));
         this.registerDefaultState(this.defaultBlockState().setValue(CONTROLLER_STATE, ControllerBlockState.offline)
                 .setValue(CONTROLLER_TYPE, ControllerRenderType.block));
     }

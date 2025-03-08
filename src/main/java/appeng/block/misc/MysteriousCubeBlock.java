@@ -20,10 +20,12 @@ import appeng.server.services.compass.ServerCompassService;
 
 public class MysteriousCubeBlock extends AEBaseEntityBlock<MysteriousCubeBlockEntity> {
     // Not a redstone conductor to prevent using it as a facade.
-    public static final Properties PROPERTIES = metalProps().strength(10, 1000).isRedstoneConductor(Blocks::never);
+    public static Properties properties(Properties p) {
+        return metalProps(p).strength(10, 1000).isRedstoneConductor(Blocks::never);
+    }
 
-    public MysteriousCubeBlock() {
-        super(PROPERTIES);
+    public MysteriousCubeBlock(Properties p) {
+        super(properties(p));
     }
 
     @Override

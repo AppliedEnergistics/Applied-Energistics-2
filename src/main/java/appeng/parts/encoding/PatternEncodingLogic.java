@@ -20,6 +20,9 @@ package appeng.parts.encoding;
 
 import java.util.List;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
@@ -64,7 +67,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
     private boolean substituteFluids = true;
     private boolean isLoading = false;
     @Nullable
-    private ResourceLocation stonecuttingRecipeId;
+    private ResourceKey<Recipe<?>> stonecuttingRecipeId;
 
     public PatternEncodingLogic(IPatternTerminalLogicHost host) {
         this.host = host;
@@ -204,11 +207,11 @@ public class PatternEncodingLogic implements InternalInventoryHost {
         this.saveChanges();
     }
 
-    public @Nullable ResourceLocation getStonecuttingRecipeId() {
+    public @Nullable ResourceKey<Recipe<?>> getStonecuttingRecipeId() {
         return stonecuttingRecipeId;
     }
 
-    public void setStonecuttingRecipeId(ResourceLocation stonecuttingRecipeId) {
+    public void setStonecuttingRecipeId(ResourceKey<Recipe<?>> stonecuttingRecipeId) {
         this.stonecuttingRecipeId = stonecuttingRecipeId;
         this.saveChanges();
     }
@@ -258,7 +261,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             this.setFluidSubstitution(data.getBoolean("substituteFluids"));
 
             if (data.contains("stonecuttingRecipeId", Tag.TAG_STRING)) {
-                this.stonecuttingRecipeId = ResourceLocation.parse(data.getString("stonecuttingRecipeId"));
+                this.stonecuttingRecipeId = ResourceKey.create(Registries.RECIPE, ResourceLocation.parse(data.getString("stonecuttingRecipeId")));
             } else {
                 this.stonecuttingRecipeId = null;
             }

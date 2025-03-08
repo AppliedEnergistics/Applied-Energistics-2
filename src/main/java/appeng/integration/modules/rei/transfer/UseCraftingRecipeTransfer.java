@@ -96,7 +96,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
                 return result;
             }
         } else {
-            CraftingHelper.performTransfer(menu, recipeId, recipe, craftMissing);
+            CraftingHelper.performTransfer(menu, recipes, recipeId, recipe, craftMissing);
         }
 
         // No error

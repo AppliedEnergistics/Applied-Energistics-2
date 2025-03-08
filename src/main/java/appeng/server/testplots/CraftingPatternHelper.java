@@ -57,7 +57,7 @@ public class CraftingPatternHelper {
                 allowFluidSubstitutions);
     }
 
-    public static ItemStack encodeShapelessCraftingRecipe(Level level, ItemStack... inputs) {
+    public static ItemStack encodeShapelessCraftingRecipe(ServerLevel level, ItemStack... inputs) {
         // Pad out the list to 3x3
         var items = NonNullList.withSize(3 * 3, ItemStack.EMPTY);
         for (int i = 0; i < inputs.length; i++) {
@@ -73,23 +73,27 @@ public class CraftingPatternHelper {
             actualInputs[i] = i < inputs.length ? inputs[i] : ItemStack.EMPTY;
         }
 
+        var result = recipe.value().assemble(recipeInput, level.registryAccess());
+
         return PatternDetailsHelper.encodeCraftingPattern(
                 recipe,
                 actualInputs,
-                recipe.value().getResultItem(level.registryAccess()),
+                result,
                 false,
                 false);
     }
 
-    public static ItemStack encodeStoneCutterPattern(Level level, ItemLike inputItem, ItemLike outputItem,
+    public static ItemStack encodeStoneCutterPattern(ServerLevel level, ItemLike inputItem, ItemLike outputItem,
             boolean allowSubstitutes) {
 
         var input = new SingleRecipeInput(new ItemStack(inputItem));
 
         RecipeHolder<StonecutterRecipe> foundRecipe = null;
-        for (var holder : level.recipeAccess().getRecipesFor(RecipeType.STONECUTTING, input, level)) {
+        var it = level.recipeAccess().recipeMap().getRecipesFor(RecipeType.STONECUTTING, input, level).iterator();
+        while (it.hasNext()) {
+            var holder = it.next();
             StonecutterRecipe recipe = holder.value();
-            if (recipe.getResultItem(level.registryAccess()).is(outputItem.asItem())) {
+            if (recipe.assemble(input, level.registryAccess()).is(outputItem.asItem())) {
                 foundRecipe = holder;
                 break;
             }
@@ -107,7 +111,7 @@ public class CraftingPatternHelper {
                 allowSubstitutes);
     }
 
-    public static ItemStack encodeSmithingPattern(Level level, ItemLike template, ItemLike base, ItemLike addition,
+    public static ItemStack encodeSmithingPattern(ServerLevel level, ItemLike template, ItemLike base, ItemLike addition,
             boolean allowSubstitutes) {
 
         var input = new SmithingRecipeInput(new ItemStack(template), new ItemStack(base), new ItemStack(addition));

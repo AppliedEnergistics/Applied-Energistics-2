@@ -33,8 +33,8 @@ import appeng.core.AEConfig;
 
 public class ItemGenBlock extends AEBaseEntityBlock<ItemGenBlockEntity> {
 
-    public ItemGenBlock() {
-        super(metalProps());
+    public ItemGenBlock(Properties p) {
+        super(metalProps(p));
     }
 
     @Override

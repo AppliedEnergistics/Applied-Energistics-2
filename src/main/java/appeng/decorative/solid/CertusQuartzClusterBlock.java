@@ -89,7 +89,7 @@ public class CertusQuartzClusterBlock extends AEBaseBlock implements SimpleWater
 
         return direction == state.getValue(FACING).getOpposite() && !state.canSurvive(level, pos)
                 ? Blocks.AIR.defaultBlockState()
-                : super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);;
+                : super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
     }
 
     @Nullable

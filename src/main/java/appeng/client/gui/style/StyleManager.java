@@ -195,11 +195,8 @@ public final class StyleManager {
         return style;
     }
 
-    public static void initialize(ResourceManager resourceManager) {
-        if (resourceManager instanceof ReloadableResourceManager) {
-            ((ReloadableResourceManager) resourceManager).registerReloadListener(new ReloadListener());
-        }
-        setResourceManager(resourceManager);
+    public static ResourceManagerReloadListener getReloadListener() {
+        return new ReloadListener();
     }
 
     private static void setResourceManager(ResourceManager resourceManager) {

@@ -34,8 +34,8 @@ import appeng.blockentity.storage.DriveBlockEntity;
 
 public class DriveBlock extends AEBaseEntityBlock<DriveBlockEntity> {
 
-    public DriveBlock() {
-        super(metalProps());
+    public DriveBlock(Properties p) {
+        super(metalProps(p));
     }
 
     @Override

@@ -46,8 +46,8 @@ public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlock
     public static final EnumProperty<PushDirection> PUSH_DIRECTION = EnumProperty.create("push_direction",
             PushDirection.class);
 
-    public PatternProviderBlock() {
-        super(metalProps());
+    public PatternProviderBlock(Properties p) {
+        super(metalProps(p));
         registerDefaultState(defaultBlockState().setValue(PUSH_DIRECTION, PushDirection.ALL));
     }
 

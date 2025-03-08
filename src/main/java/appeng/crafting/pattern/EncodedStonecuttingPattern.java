@@ -3,25 +3,28 @@ package appeng.crafting.pattern;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.core.definitions.AEItems;
+import net.minecraft.world.item.crafting.Recipe;
 
 public record EncodedStonecuttingPattern(
         ItemStack input,
         ItemStack output,
         boolean canSubstitute,
-        ResourceLocation recipeId) {
+        ResourceKey<Recipe<?>> recipeId) {
 
     public static final Codec<EncodedStonecuttingPattern> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             ItemStack.CODEC.fieldOf("input").forGetter(EncodedStonecuttingPattern::input),
             ItemStack.CODEC.fieldOf("output").forGetter(EncodedStonecuttingPattern::output),
             Codec.BOOL.fieldOf("canSubstitute").forGetter(EncodedStonecuttingPattern::canSubstitute),
-            ResourceLocation.CODEC.fieldOf("recipeId").forGetter(EncodedStonecuttingPattern::recipeId))
+            ResourceKey.codec(Registries.RECIPE).fieldOf("recipeId").forGetter(EncodedStonecuttingPattern::recipeId))
             .apply(builder, EncodedStonecuttingPattern::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, EncodedStonecuttingPattern> STREAM_CODEC = StreamCodec
@@ -32,7 +35,7 @@ public record EncodedStonecuttingPattern(
                     EncodedStonecuttingPattern::output,
                     ByteBufCodecs.BOOL,
                     EncodedStonecuttingPattern::canSubstitute,
-                    ResourceLocation.STREAM_CODEC,
+                    ResourceKey.streamCodec(Registries.RECIPE),
                     EncodedStonecuttingPattern::recipeId,
                     EncodedStonecuttingPattern::new);
 

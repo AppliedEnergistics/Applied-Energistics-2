@@ -41,8 +41,8 @@ public class SpatialIOPortBlock extends AEBaseEntityBlock<SpatialIOPortBlockEnti
 
     public final static BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public SpatialIOPortBlock() {
-        super(metalProps());
+    public SpatialIOPortBlock(Properties p) {
+        super(metalProps(p));
         this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 

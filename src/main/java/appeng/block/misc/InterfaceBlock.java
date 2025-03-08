@@ -30,8 +30,8 @@ import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.menu.locator.MenuLocators;
 
 public class InterfaceBlock extends AEBaseEntityBlock<InterfaceBlockEntity> {
-    public InterfaceBlock() {
-        super(metalProps());
+    public InterfaceBlock(Properties p) {
+        super(metalProps(p));
     }
 
     @Override

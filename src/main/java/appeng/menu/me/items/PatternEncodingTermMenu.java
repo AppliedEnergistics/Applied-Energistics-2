@@ -22,6 +22,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.SelectableRecipe;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
@@ -114,7 +120,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
     public boolean substituteFluids = true;
     @GuiSync(94)
     @Nullable
-    public ResourceLocation stonecuttingRecipeId;
+    public ResourceKey<Recipe<?>> stonecuttingRecipeId;
 
     private final List<RecipeHolder<StonecutterRecipe>> stonecuttingRecipes = new ArrayList<>();
 
@@ -185,7 +191,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         this.encodedPatternSlot.setStackLimit(1);
 
         registerClientAction(ACTION_ENCODE, this::encode);
-        registerClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, ResourceLocation.class,
+        registerClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, ResourceKey.class,
                 encodingLogic::setStonecuttingRecipeId);
         registerClientAction(ACTION_CLEAR, this::clear);
         registerClientAction(ACTION_SET_MODE, EncodingMode.class, encodingLogic::setMode);
@@ -196,21 +202,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         updateStonecuttingRecipes();
     }
 
-    @Override
-    public void setItem(int slotID, int stateId, ItemStack stack) {
-        super.setItem(slotID, stateId, stack);
-        this.getAndUpdateOutput();
-    }
-
-    @Override
-    public void initializeContents(int stateId, List<ItemStack> items, ItemStack carried) {
-        super.initializeContents(stateId, items, carried);
-        this.getAndUpdateOutput();
-    }
-
-    private ItemStack getAndUpdateOutput() {
-        var level = this.getPlayerInventory().player.level();
-
+    private ItemStack getAndUpdateOutput(ServerLevel level) {
         var items = NonNullList.withSize(CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT, ItemStack.EMPTY);
         boolean invalidIngredients = false;
         for (int x = 0; x < items.size(); x++) {
@@ -232,7 +224,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
                         .orElse(null);
             }
             this.currentMode = this.mode;
-            checkFluidSubstitutionSupport();
+            checkFluidSubstitutionSupport(level);
         }
 
         final ItemStack is;
@@ -247,14 +239,14 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         return is;
     }
 
-    private void checkFluidSubstitutionSupport() {
+    private void checkFluidSubstitutionSupport(ServerLevel level) {
         this.slotsSupportingFluidSubstitution.clear();
 
         if (this.currentRecipe == null) {
             return; // No recipe -> no substitution
         }
 
-        var encodedPattern = encodePattern();
+        var encodedPattern = encodePattern(level);
         if (encodedPattern != null) {
             var decodedPattern = PatternDetailsHelper.decodePattern(encodedPattern,
                     this.getPlayerInventory().player.level());
@@ -269,12 +261,13 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
     }
 
     public void encode() {
-        if (isClientSide()) {
+        var level = getServerLevel();
+        if (level == null) {
             sendClientAction(ACTION_ENCODE);
             return;
         }
 
-        ItemStack encodedPattern = encodePattern();
+        ItemStack encodedPattern = encodePattern(level);
         if (encodedPattern != null) {
             var encodeOutput = this.encodedPatternSlot.getItem();
 
@@ -315,17 +308,17 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
     }
 
     @Nullable
-    private ItemStack encodePattern() {
+    private ItemStack encodePattern(ServerLevel level) {
         return switch (this.mode) {
-            case CRAFTING -> encodeCraftingPattern();
+            case CRAFTING -> encodeCraftingPattern(level);
             case PROCESSING -> encodeProcessingPattern();
-            case SMITHING_TABLE -> encodeSmithingTablePattern();
-            case STONECUTTING -> encodeStonecuttingPattern();
+            case SMITHING_TABLE -> encodeSmithingTablePattern(level);
+            case STONECUTTING -> encodeStonecuttingPattern(level);
         };
     }
 
     @Nullable
-    private ItemStack encodeCraftingPattern() {
+    private ItemStack encodeCraftingPattern(ServerLevel level) {
         var ingredients = new ItemStack[CRAFTING_GRID_SLOTS];
         boolean valid = false;
         for (int x = 0; x < ingredients.length; x++) {
@@ -341,7 +334,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
             return null;
         }
 
-        var result = this.getAndUpdateOutput();
+        var result = this.getAndUpdateOutput(level);
         if (result.isEmpty() || currentRecipe == null) {
             return null;
         }
@@ -378,7 +371,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
     }
 
     @Nullable
-    private ItemStack encodeSmithingTablePattern() {
+    private ItemStack encodeSmithingTablePattern(ServerLevel level) {
         if (!(encodedInputsInv.getKey(0) instanceof AEItemKey template)
                 || !(encodedInputsInv.getKey(1) instanceof AEItemKey base)
                 || !(encodedInputsInv.getKey(2) instanceof AEItemKey addition)) {
@@ -390,7 +383,6 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
                 base.toStack(),
                 addition.toStack());
 
-        var level = getPlayer().level();
         var recipe = level.recipeAccess()
                 .getRecipeFor(RecipeType.SMITHING, input, level)
                 .orElse(null);
@@ -405,7 +397,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
     }
 
     @Nullable
-    private ItemStack encodeStonecuttingPattern() {
+    private ItemStack encodeStonecuttingPattern(ServerLevel level) {
         // Find the selected recipe
         if (stonecuttingRecipeId == null) {
             return null;
@@ -417,15 +409,14 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
 
         var recipeInput = new SingleRecipeInput(input.toStack());
 
-        var level = getPlayer().level();
-        var recipe = level.recipeAccess()
+        RecipeHolder<StonecutterRecipe> recipe = level.recipeAccess()
                 .getRecipeFor(RecipeType.STONECUTTING, recipeInput, level, stonecuttingRecipeId)
                 .orElse(null);
         if (recipe == null) {
             return null;
         }
 
-        var output = AEItemKey.of(recipe.value().getResultItem(level.registryAccess()));
+        var output = AEItemKey.of(recipe.value().result());
 
         return PatternDetailsHelper.encodeStonecuttingPattern(recipe, input, output, encodingLogic.isSubstitution());
     }
@@ -487,7 +478,6 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
 
         if (this.currentMode != this.mode) {
             this.encodingLogic.setMode(this.mode);
-            this.getAndUpdateOutput();
             this.updateStonecuttingRecipes();
         }
     }
@@ -507,10 +497,10 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         stonecuttingRecipes.clear();
         if (encodedInputsInv.getKey(0) instanceof AEItemKey itemKey) {
             var level = getPlayer().level();
-            var recipeManager = level.recipeAccess();
-            var recipeInput = new SingleRecipeInput(itemKey.toStack());
-            stonecuttingRecipes.addAll(
-                    recipeManager.getRecipesFor(RecipeType.STONECUTTING, recipeInput, level));
+            for (var entry : level.recipeAccess().stonecutterRecipes().selectByInput(itemKey.toStack()).entries()) {
+                // TODO 1.21.4 no idea if this works
+                entry.recipe().recipe().ifPresent(stonecuttingRecipes::add);
+            }
         }
 
         // Deselect a recipe that is now unavailable
@@ -521,7 +511,8 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
     }
 
     public void clear() {
-        if (isClientSide()) {
+        var serverLevel = getServerLevel();
+        if (serverLevel == null) {
             sendClientAction(ACTION_CLEAR);
             return;
         }
@@ -529,8 +520,8 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         encodedInputsInv.clear();
         encodedOutputsInv.clear();
 
+        this.getAndUpdateOutput(serverLevel);
         this.broadcastChanges();
-        this.getAndUpdateOutput();
     }
 
     public EncodingMode getMode() {
@@ -573,11 +564,11 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         }
     }
 
-    public @Nullable ResourceLocation getStonecuttingRecipeId() {
+    public @Nullable ResourceKey<Recipe<?>> getStonecuttingRecipeId() {
         return stonecuttingRecipeId;
     }
 
-    public void setStonecuttingRecipeId(ResourceLocation id) {
+    public void setStonecuttingRecipeId(ResourceKey<Recipe<?>> id) {
         if (isClientSide()) {
             sendClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, id);
         } else {
@@ -698,4 +689,11 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         return stonecuttingRecipes;
     }
 
+    class ServerLogic {
+        private final ServerLevel level;
+
+        public ServerLogic(ServerLevel level) {
+            this.level = level;
+        }
+    }
 }

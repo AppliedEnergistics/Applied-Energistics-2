@@ -18,6 +18,8 @@
 
 package appeng.block;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -61,28 +63,28 @@ public abstract class AEBaseBlock extends Block implements IOrientableBlock {
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static Properties defaultProps(MapColor mapColor, SoundType soundType) {
-        return Properties.of()
+    public static Properties defaultProps(Properties p, MapColor mapColor, SoundType soundType) {
+        return p
                 // These values previously were encoded in AEBaseBlock
                 .strength(2.2f, 11.f)
                 .mapColor(mapColor)
                 .sound(soundType);
     }
 
-    public static Properties stoneProps() {
-        return defaultProps(MapColor.STONE, SoundType.STONE).forceSolidOn();
+    public static Properties stoneProps(Properties p) {
+        return defaultProps(p, MapColor.STONE, SoundType.STONE).forceSolidOn();
     }
 
-    public static Properties metalProps() {
-        return defaultProps(MapColor.METAL, SoundType.METAL).forceSolidOn();
+    public static Properties metalProps(Properties p) {
+        return defaultProps(p, MapColor.METAL, SoundType.METAL).forceSolidOn();
     }
 
-    public static Properties glassProps() {
-        return defaultProps(MapColor.NONE, SoundType.GLASS);
+    public static Properties glassProps(Properties p) {
+        return defaultProps(p, MapColor.NONE, SoundType.GLASS);
     }
 
-    public static Properties fixtureProps() {
-        return defaultProps(MapColor.METAL, SoundType.GLASS)
+    public static Properties fixtureProps(Properties p) {
+        return defaultProps(p, MapColor.METAL, SoundType.GLASS)
                 .noCollission()
                 .noOcclusion()
                 .pushReaction(PushReaction.DESTROY);

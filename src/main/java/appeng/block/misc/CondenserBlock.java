@@ -34,8 +34,8 @@ import appeng.util.InteractionUtil;
 
 public class CondenserBlock extends AEBaseEntityBlock<CondenserBlockEntity> {
 
-    public CondenserBlock() {
-        super(metalProps());
+    public CondenserBlock(Properties p) {
+        super(metalProps(p));
     }
 
     @Override

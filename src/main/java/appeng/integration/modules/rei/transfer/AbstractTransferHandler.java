@@ -1,5 +1,6 @@
 package appeng.integration.modules.rei.transfer;
 
+import net.minecraft.world.item.crafting.RecipeManager;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.crafting.Recipe;

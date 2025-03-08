@@ -19,6 +19,9 @@
 package appeng.block.spatial;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.CreativeModeTab;
@@ -41,8 +44,8 @@ import appeng.block.AEBaseBlock;
  */
 public class MatrixFrameBlock extends AEBaseBlock {
 
-    public MatrixFrameBlock() {
-        super(Properties.of().strength(-1.0F, 6000000.0F).noOcclusion().noLootTable());
+    public MatrixFrameBlock(Properties properties) {
+        super(properties.strength(-1.0F, 6000000.0F).noOcclusion().noLootTable());
     }
 
     @Override

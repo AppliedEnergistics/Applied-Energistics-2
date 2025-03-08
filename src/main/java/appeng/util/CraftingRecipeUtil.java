@@ -2,11 +2,14 @@ package appeng.util;
 
 import com.google.common.base.Preconditions;
 
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 
@@ -57,19 +60,29 @@ public final class CraftingRecipeUtil {
         if (recipe instanceof SmithingTrimRecipe trimRecipe) {
             var ingredients = NonNullList.withSize(3, Ingredient.of());
             ingredients.set(0, trimRecipe.template.orElse(Ingredient.of()));
-            ingredients.set(1, trimRecipe.base);
-            ingredients.set(2, trimRecipe.addition);
+            ingredients.set(1, trimRecipe.base.orElse(Ingredient.of()));
+            ingredients.set(2, trimRecipe.addition.orElse(Ingredient.of()));
             return ingredients;
         }
 
         if (recipe instanceof SmithingTransformRecipe transformRecipe) {
             var ingredients = NonNullList.withSize(3, Ingredient.of());
-            ingredients.set(0, transformRecipe.template);
-            ingredients.set(1, transformRecipe.base);
-            ingredients.set(2, transformRecipe.addition);
+            ingredients.set(0, transformRecipe.template.orElse(Ingredient.of()));
+            ingredients.set(1, transformRecipe.base.orElse(Ingredient.of()));
+            ingredients.set(2, transformRecipe.addition.orElse(Ingredient.of()));
             return ingredients;
         }
 
-        return recipe.getIngredients();
+        var placementInfo = recipe.placementInfo();
+        if (!placementInfo.isImpossibleToPlace()) {
+            var slotsToIngredient = placementInfo.slotsToIngredientIndex();
+            var ingredients = NonNullList.withSize(slotsToIngredient.size(), Ingredient.of());
+            for (int i = 0; i < slotsToIngredient.size(); i++) {
+                ingredients.set(i, placementInfo.ingredients().get(i));
+            }
+        }
+
+        // TODO 1.21.4 hack around with displays?
+        return NonNullList.create();
     }
 }

@@ -35,8 +35,8 @@ public class SpatialPylonBlock extends AEBaseEntityBlock<SpatialPylonBlockEntity
 
     public static final BooleanProperty POWERED_ON = BooleanProperty.create("powered_on");
 
-    public SpatialPylonBlock() {
-        super(glassProps().lightLevel(state -> {
+    public SpatialPylonBlock(Properties p) {
+        super(glassProps(p).lightLevel(state -> {
             return state.getValue(POWERED_ON) ? 8 : 0;
         }));
         registerDefaultState(defaultBlockState().setValue(POWERED_ON, false));

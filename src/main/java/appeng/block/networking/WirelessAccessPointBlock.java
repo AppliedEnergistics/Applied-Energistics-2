@@ -75,8 +75,8 @@ public class WirelessAccessPointBlock extends AEBaseEntityBlock<WirelessAccessPo
 
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    public WirelessAccessPointBlock() {
-        super(glassProps().noOcclusion().forceSolidOn());
+    public WirelessAccessPointBlock(Properties p) {
+        super(glassProps(p).noOcclusion().forceSolidOn());
         this.registerDefaultState(this.defaultBlockState().setValue(STATE, State.OFF)
                 .setValue(WATERLOGGED, false));
     }

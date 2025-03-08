@@ -18,11 +18,11 @@
 
 package appeng.menu.slot;
 
+import appeng.api.inventories.InternalInventory;
+import appeng.util.inv.AppEngInternalInventory;
 import com.google.common.collect.Lists;
-
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.RecipeCraftingHolder;
 import net.minecraft.world.item.ItemStack;
@@ -31,9 +31,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.CommonHooks;
-
-import appeng.api.inventories.InternalInventory;
-import appeng.util.inv.AppEngInternalInventory;
+import org.jetbrains.annotations.Nullable;
 
 public class AppEngCraftingSlot extends AppEngSlot implements RecipeCraftingHolder {
 
@@ -97,6 +95,10 @@ public class AppEngCraftingSlot extends AppEngSlot implements RecipeCraftingHold
 
     @Override
     public void onTake(Player player, ItemStack stack) {
+        if (!(player.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
         this.amountCrafted += stack.getCount();
         this.checkTakeAchievements(stack);
 
@@ -107,7 +109,7 @@ public class AppEngCraftingSlot extends AppEngSlot implements RecipeCraftingHold
         var positioned = CraftingInput.ofPositioned(3, 3, items);
 
         CommonHooks.setCraftingPlayer(player);
-        var remainingItems = this.getRemainingItems(positioned.input(), player.level());
+        var remainingItems = this.getRemainingItems(positioned.input(), serverLevel);
         CommonHooks.setCraftingPlayer(null);
 
         for (var y = 0; y < 3; y++) {
@@ -154,7 +156,7 @@ public class AppEngCraftingSlot extends AppEngSlot implements RecipeCraftingHold
 
     // TODO: This is really hacky and NEEDS to be solved with a full menu/gui
     // refactoring.
-    protected NonNullList<ItemStack> getRemainingItems(CraftingInput ic, Level level) {
+    protected NonNullList<ItemStack> getRemainingItems(CraftingInput ic, ServerLevel level) {
         return level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, ic, level)
                 .map(recipe -> recipe.value().getRemainingItems(ic))
                 .orElse(NonNullList.withSize(9, ItemStack.EMPTY));

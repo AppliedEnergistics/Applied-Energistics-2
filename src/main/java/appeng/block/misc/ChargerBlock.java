@@ -58,8 +58,8 @@ import appeng.util.Platform;
 
 public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
 
-    public ChargerBlock() {
-        super(metalProps().noOcclusion());
+    public ChargerBlock(Properties p) {
+        super(metalProps(p).noOcclusion());
     }
 
     @Override

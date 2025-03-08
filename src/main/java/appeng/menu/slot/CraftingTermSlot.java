@@ -24,6 +24,7 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -159,7 +160,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
     // TODO: This is really hacky and NEEDS to be solved with a full menu/gui
     // refactoring.
-    protected RecipeHolder<CraftingRecipe> findRecipe(CraftingInput ic, Level level) {
+    protected RecipeHolder<CraftingRecipe> findRecipe(CraftingInput ic, ServerLevel level) {
         if (this.menu instanceof CraftingTermMenu terminalMenu) {
             var recipe = terminalMenu.getCurrentRecipe();
 
@@ -174,7 +175,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     // TODO: This is really hacky and NEEDS to be solved with a full menu/gui
     // refactoring.
     @Override
-    protected NonNullList<ItemStack> getRemainingItems(CraftingInput ic, Level level) {
+    protected NonNullList<ItemStack> getRemainingItems(CraftingInput ic, ServerLevel level) {
         if (this.menu instanceof CraftingTermMenu terminalMenu) {
             var recipe = terminalMenu.getCurrentRecipe();
 
@@ -200,14 +201,14 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
         // add one of each item to the items on the board...
         var level = p.level();
-        if (!level.isClientSide()) {
+        if (level instanceof ServerLevel serverLevel) {
             final var ic = NonNullList.withSize(9, ItemStack.EMPTY);
             for (var x = 0; x < 9; x++) {
                 ic.set(x, this.getPattern().getStackInSlot(x));
             }
             var recipeInput = CraftingInput.of(3, 3, ic);
 
-            final var r = this.findRecipe(recipeInput, level);
+            final var r = this.findRecipe(recipeInput, serverLevel);
             setRecipeUsed(r);
 
             if (r == null) {

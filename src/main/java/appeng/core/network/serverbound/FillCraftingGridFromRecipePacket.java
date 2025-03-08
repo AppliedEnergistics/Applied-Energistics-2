@@ -29,6 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
@@ -49,7 +50,7 @@ import java.util.Optional;
  * @param craftMissing        True if missing entries should be queued for autocrafting instead.
  */
 public record FillCraftingGridFromRecipePacket(
-        @Nullable ResourceLocation recipeId,
+        @Nullable ResourceKey<Recipe<?>> recipeId,
         NonNullList<ItemStack> ingredientTemplates,
         boolean craftMissing) implements ServerboundPacket {
 
@@ -66,7 +67,7 @@ public record FillCraftingGridFromRecipePacket(
         return TYPE;
     }
 
-    public FillCraftingGridFromRecipePacket(@Nullable ResourceLocation recipeId,
+    public FillCraftingGridFromRecipePacket(@Nullable ResourceKey<Recipe<?>> recipeId,
                                             NonNullList<ItemStack> ingredientTemplates,
                                             boolean craftMissing) {
         this.recipeId = recipeId;
@@ -75,9 +76,9 @@ public record FillCraftingGridFromRecipePacket(
     }
 
     public static FillCraftingGridFromRecipePacket decode(RegistryFriendlyByteBuf stream) {
-        ResourceLocation recipeId = null;
+        ResourceKey<Recipe<?>> recipeId = null;
         if (stream.readBoolean()) {
-            recipeId = stream.readResourceLocation();
+            recipeId = stream.readResourceKey(Registries.RECIPE);
         }
 
         var ingredientTemplates = NonNullList.withSize(stream.readInt(), ItemStack.EMPTY);
@@ -92,7 +93,7 @@ public record FillCraftingGridFromRecipePacket(
     public void write(RegistryFriendlyByteBuf data) {
         if (recipeId != null) {
             data.writeBoolean(true);
-            data.writeResourceLocation(recipeId);
+            data.writeResourceKey(recipeId);
         } else {
             data.writeBoolean(false);
         }
@@ -253,7 +254,7 @@ public record FillCraftingGridFromRecipePacket(
     private NonNullList<Ingredient> getDesiredIngredients(ServerPlayer player) {
         // Try to retrieve the real recipe on the server-side
         if (this.recipeId != null) {
-            var recipe = player.serverLevel().recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, this.recipeId)).orElse(null);
+            var recipe = player.serverLevel().recipeAccess().byKey(this.recipeId).orElse(null);
             if (recipe != null) {
                 return CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe.value());
             }

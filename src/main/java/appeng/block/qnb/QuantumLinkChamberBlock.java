@@ -51,8 +51,8 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
                 new AABB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
     }
 
-    public QuantumLinkChamberBlock() {
-        super(glassProps());
+    public QuantumLinkChamberBlock(Properties p) {
+        super(glassProps(p));
     }
 
     @Override

@@ -31,8 +31,8 @@ import appeng.core.AEConfig;
 
 public class CubeGeneratorBlock extends AEBaseEntityBlock<CubeGeneratorBlockEntity> {
 
-    public CubeGeneratorBlock() {
-        super(metalProps());
+    public CubeGeneratorBlock(Properties p) {
+        super(metalProps(p));
     }
 
     @Override

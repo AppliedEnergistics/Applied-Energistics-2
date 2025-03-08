@@ -24,6 +24,11 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
@@ -60,7 +65,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
 
     private final AEItemKey definition;
     public final boolean canSubstitute;
-    private final ResourceLocation recipeId;
+    private final ResourceKey<Recipe<?>> recipeId;
     private final SmithingRecipe recipe;
     private final ItemStack output;
     private final AEItemKey template;
@@ -69,7 +74,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
     private final IInput[] inputs;
     private final List<GenericStack> outputs;
 
-    public AESmithingTablePattern(AEItemKey definition, Level level) {
+    public AESmithingTablePattern(AEItemKey definition, ServerLevel level) {
         this.definition = definition;
 
         var encodedPattern = definition.get(AEComponents.ENCODED_SMITHING_TABLE_PATTERN);
@@ -110,13 +115,13 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         // Find ingredients
         Ingredient templateIngredient, baseIngredient, additionIngredient;
         if (this.recipe instanceof SmithingTransformRecipe r) {
-            templateIngredient = r.template;
-            baseIngredient = r.base;
-            additionIngredient = r.addition;
+            templateIngredient = r.template.orElse(Ingredient.of());
+            baseIngredient = r.base.orElse(Ingredient.of());
+            additionIngredient = r.addition.orElse(Ingredient.of());
         } else if (this.recipe instanceof SmithingTrimRecipe r) {
-            templateIngredient = r.template;
-            baseIngredient = r.base;
-            additionIngredient = r.addition;
+            templateIngredient = r.template.orElse(Ingredient.of());
+            baseIngredient = r.base.orElse(Ingredient.of());
+            additionIngredient = r.addition.orElse(Ingredient.of());
         } else {
             throw new IllegalStateException(
                     "Don't know how to process non-vanilla smithing recipe: " + this.recipe.getClass());
@@ -130,7 +135,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         this.outputs = Collections.singletonList(GenericStack.fromItemStack(this.output));
     }
 
-    public ResourceLocation getRecipeId() {
+    public ResourceKey<Recipe<?>> getRecipeId() {
         return recipeId;
     }
 
@@ -318,7 +323,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
             if (!canSubstitute) {
                 this.possibleInputs = new GenericStack[] { new GenericStack(what, 1) };
             } else {
-                ItemStack[] matchingStacks = recipeIngredient.getItems();
+                ItemStack[] matchingStacks = recipeIngredient.items().map(Holder::value).map(Item::getDefaultInstance).toArray(ItemStack[]::new); // TODO 1.21.4 can't stay like this
                 this.possibleInputs = new GenericStack[matchingStacks.length + 1];
                 // Ensure that the stack chosen by the user gets precedence.
                 this.possibleInputs[0] = new GenericStack(what, 1);

@@ -71,8 +71,8 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    public LightDetectorBlock() {
-        super(fixtureProps());
+    public LightDetectorBlock(Properties p) {
+        super(fixtureProps(p));
 
         this.registerDefaultState(
                 this.defaultBlockState().setValue(BlockStateProperties.FACING, Direction.UP).setValue(ODD, false)

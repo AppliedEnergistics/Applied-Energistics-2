@@ -32,6 +32,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
@@ -807,6 +808,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
         a.set(testA);
         b.set(testB);
+    }
+
+    @Nullable
+    protected final ServerLevel getServerLevel() {
+        return getPlayer().level() instanceof ServerLevel serverLevel ? serverLevel : null;
     }
 
     /**

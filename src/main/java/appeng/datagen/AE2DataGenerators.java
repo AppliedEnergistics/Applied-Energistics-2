@@ -67,7 +67,7 @@ import appeng.init.worldgen.InitStructures;
 public class AE2DataGenerators {
 
     @SubscribeEvent
-    public static void onGatherData(GatherDataEvent event) {
+    public static void onGatherData(GatherDataEvent.Client event) {
         var generator = event.getGenerator();
         var registries = event.getLookupProvider();
         var localization = new LocalizationProvider(generator);

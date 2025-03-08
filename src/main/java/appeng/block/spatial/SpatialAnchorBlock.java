@@ -43,8 +43,8 @@ public class SpatialAnchorBlock extends AEBaseEntityBlock<SpatialAnchorBlockEnti
 
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public SpatialAnchorBlock() {
-        super(metalProps());
+    public SpatialAnchorBlock(Properties p) {
+        super(metalProps(p));
         this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 

@@ -84,15 +84,15 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
                 menu.getSmithingTableBaseSlot().getItem(),
                 menu.getSmithingTableAdditionSlot().getItem());
 
-        var level = menu.getPlayer().level();
-        var recipe = level.recipeAccess()
-                .getRecipeFor(RecipeType.SMITHING, recipeInput, level)
-                .orElse(null);
-        if (recipe == null) {
-            resultSlot.set(ItemStack.EMPTY);
-        } else {
-            resultSlot.set(recipe.value().assemble(recipeInput, level.registryAccess()));
-        }
+        // TODO 1.21.4 var level = menu.getPlayer().level();
+        // TODO 1.21.4 var recipe = level.recipeAccess()
+        // TODO 1.21.4         .getRecipeFor(RecipeType.SMITHING, recipeInput, level)
+        // TODO 1.21.4         .orElse(null);
+        // TODO 1.21.4 if (recipe == null) {
+        // TODO 1.21.4     resultSlot.set(ItemStack.EMPTY);
+        // TODO 1.21.4 } else {
+        // TODO 1.21.4     resultSlot.set(recipe.value().assemble(recipeInput, level.registryAccess()));
+        // TODO 1.21.4 }
     }
 
     @Override

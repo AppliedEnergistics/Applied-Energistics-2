@@ -71,6 +71,13 @@ dependencyResolutionManagement {
                 includeModule('org.appliedenergistics', 'guideme')
             }
         }
+        maven {
+            name = 'GuideME Snapshots'
+            url = 'https://central.sonatype.com/repository/maven-snapshots/'
+            content {
+                includeModule('org.appliedenergistics', 'guideme')
+            }
+        }
         mavenCentral()
     }
 }

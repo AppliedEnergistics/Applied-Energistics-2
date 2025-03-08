@@ -44,8 +44,8 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
     // Indicates that the vibration chamber is currently working
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-    public VibrationChamberBlock() {
-        super(metalProps().strength(4.2F));
+    public VibrationChamberBlock(Properties p) {
+        super(metalProps(p).strength(4.2F));
         this.registerDefaultState(this.defaultBlockState().setValue(ACTIVE, false));
     }
 

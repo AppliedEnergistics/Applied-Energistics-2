@@ -65,8 +65,8 @@ public class CrystalResonanceGeneratorBlock extends AEBaseEntityBlock<CrystalRes
 
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    public CrystalResonanceGeneratorBlock() {
-        super(glassProps().noOcclusion().forceSolidOn());
+    public CrystalResonanceGeneratorBlock(Properties p) {
+        super(glassProps(p).noOcclusion().forceSolidOn());
         this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false));
     }
 

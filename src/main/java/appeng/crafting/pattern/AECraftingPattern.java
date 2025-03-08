@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
@@ -200,13 +201,18 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         // Compute the index into the recipe's ingredient list now
         int ingredientIndex = slotY * recipeWidth + slotX;
 
-        NonNullList<Ingredient> ingredients = recipe.getIngredients();
+        var placement = recipe.placementInfo();
+        if (placement.isImpossibleToPlace()) {
+            return Ingredient.of(); // TODO 1.21.4 cannot stay like this either
+        }
 
-        if (ingredientIndex < 0 || ingredientIndex > ingredients.size()) {
+        var indexMap = placement.slotsToIngredientIndex();
+
+        if (ingredientIndex < 0 || ingredientIndex > indexMap.size()) {
             return Ingredient.of();
         }
 
-        return ingredients.get(ingredientIndex);
+        return placement.ingredients().get(indexMap.getInt(ingredientIndex));
     }
 
     private Ingredient getShapelessRecipeIngredient(int slot) {
@@ -220,9 +226,13 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             }
         }
 
-        NonNullList<Ingredient> ingredients = recipe.getIngredients();
-        if (ingredientIndex < ingredients.size()) {
-            return ingredients.get(ingredientIndex);
+        var placement = recipe.placementInfo();
+        if (placement.isImpossibleToPlace()) {
+            return Ingredient.of(); // TODO 1.21.4 cannot stay like this either
+        }
+
+        if (ingredientIndex < placement.slotsToIngredientIndex().getInt(ingredientIndex)) {
+            return placement.ingredients().get(placement.slotsToIngredientIndex().getInt(ingredientIndex));
         }
 
         return Ingredient.of();
@@ -593,7 +603,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             if (!canSubstitute) {
                 this.possibleInputs = new GenericStack[] { itemOrFluidInput };
             } else {
-                ItemStack[] matchingStacks = getRecipeIngredient(slot).getItems();
+                ItemStack[] matchingStacks = getRecipeIngredient(slot).items().map(Holder::value).map(Item::getDefaultInstance).toArray(ItemStack[]::new); // TODO 1.21.4 can't stay like this
                 this.possibleInputs = new GenericStack[matchingStacks.length + 1];
                 // Ensure that the stack chosen by the user gets precedence.
                 this.possibleInputs[0] = itemOrFluidInput;

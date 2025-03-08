@@ -35,8 +35,8 @@ import appeng.menu.locator.MenuLocators;
 
 public class CellWorkbenchBlock extends AEBaseEntityBlock<CellWorkbenchBlockEntity> {
 
-    public CellWorkbenchBlock() {
-        super(metalProps());
+    public CellWorkbenchBlock(Properties p) {
+        super(metalProps(p));
     }
 
     @Override

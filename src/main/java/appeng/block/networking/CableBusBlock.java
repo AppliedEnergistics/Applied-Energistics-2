@@ -93,8 +93,8 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     private static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 15);
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    public CableBusBlock() {
-        super(glassProps().noOcclusion().noLootTable().dynamicShape().forceSolidOn()
+    public CableBusBlock(Properties p) {
+        super(glassProps(p).noOcclusion().noLootTable().dynamicShape().forceSolidOn()
                 .lightLevel(state -> state.getValue(LIGHT_LEVEL)));
         registerDefaultState(defaultBlockState().setValue(LIGHT_LEVEL, 0).setValue(WATERLOGGED, false));
     }

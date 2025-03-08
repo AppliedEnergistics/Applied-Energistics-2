@@ -24,7 +24,7 @@ public class FluixSmithingTemplateItem extends SmithingTemplateItem {
 
     private static final ResourceLocation EMPTY_SLOT_BLOCK = AppEng.makeId("item/empty_slot_block");
 
-    public FluixSmithingTemplateItem() {
+    public FluixSmithingTemplateItem(Properties p) {
         super(
                 GuiText.QuartzTools.text().withStyle(DESCRIPTION_FORMAT),
                 Component.translatable(Util.makeDescriptionId("item", AEItemIds.FLUIX_UPGRADE_SMITHING_TEMPLATE))
@@ -33,7 +33,7 @@ public class FluixSmithingTemplateItem extends SmithingTemplateItem {
                 GuiText.PutAFluixBlock.text(),
                 List.of(EMPTY_SLOT_SWORD, EMPTY_SLOT_PICKAXE, EMPTY_SLOT_AXE, EMPTY_SLOT_HOE, EMPTY_SLOT_SHOVEL),
                 List.of(EMPTY_SLOT_BLOCK),
-                new Properties()
+                p
         );
     }
 }

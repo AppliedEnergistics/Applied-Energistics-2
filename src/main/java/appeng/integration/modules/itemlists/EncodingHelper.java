@@ -7,9 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import com.google.common.math.LongMath;
 
+import net.minecraft.core.Holder;
+import net.minecraft.world.item.Item;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
@@ -139,12 +142,13 @@ public final class EncodingHelper {
                 // To avoid encoding hidden entries, we'll cycle through the ingredient and try to find a visible
                 // stack, otherwise we'll use the first entry.
                 var bestIngredient = bestNetworkIngredient.orElseGet(() -> {
-                    for (var stack : ingredient.getItems()) {
-                        if (visiblePredicate.test(stack)) {
-                            return stack;
-                        }
-                    }
-                    return ingredient.getItems()[0];
+                    // TODO 1.21.4 SHIT
+                    var ingredientStacks = ingredient.items()
+                            .map(Holder::value)
+                            .map(Item::getDefaultInstance);
+
+                    return ingredientStacks.filter(visiblePredicate).findFirst()
+                            .orElse(ingredientStacks.findFirst().orElse(ItemStack.EMPTY));
                 });
 
                 encodedInputs.set(slot, bestIngredient);

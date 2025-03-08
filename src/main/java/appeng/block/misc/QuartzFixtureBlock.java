@@ -80,8 +80,8 @@ public class QuartzFixtureBlock extends AEBaseBlock implements SimpleWaterlogged
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    public QuartzFixtureBlock() {
-        super(fixtureProps().lightLevel(b -> 15));
+    public QuartzFixtureBlock(Properties p) {
+        super(fixtureProps(p).lightLevel(b -> 15));
 
         this.registerDefaultState(
                 defaultBlockState().setValue(FACING, Direction.UP).setValue(ODD, false).setValue(WATERLOGGED, false));
