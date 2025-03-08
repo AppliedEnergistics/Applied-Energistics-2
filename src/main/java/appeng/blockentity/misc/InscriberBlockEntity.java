@@ -22,9 +22,11 @@ import java.util.EnumSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -572,22 +574,26 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
                 if (bot.isEmpty() && top.isEmpty()) {
                     return true;
                 } else if (bot.isEmpty()) {
-                    if (recipe.getTopOptional().test(top) || recipe.getBottomOptional().test(top)) {
+                    if (testIngredient(recipe.getTopOptional(), top) || testIngredient(recipe.getBottomOptional(), top)) {
                         return true;
                     }
                 } else if (top.isEmpty()) {
-                    if (recipe.getBottomOptional().test(bot) || recipe.getTopOptional().test(bot)) {
+                    if (testIngredient(recipe.getBottomOptional(), bot) || testIngredient(recipe.getTopOptional(), bot)) {
                         return true;
                     }
                 } else {
-                    if ((recipe.getTopOptional().test(top) && recipe.getBottomOptional().test(bot))
-                            || (recipe.getBottomOptional().test(top) && recipe.getTopOptional().test(bot))) {
+                    if ((testIngredient(recipe.getTopOptional(), top) && testIngredient(recipe.getBottomOptional(), bot))
+                            || (testIngredient(recipe.getBottomOptional(), top) && testIngredient(recipe.getTopOptional(), bot))) {
                         return true;
                     }
                 }
             }
             return false;
         }
+    }
+
+    private static boolean testIngredient(Optional<Ingredient> ingredient, ItemStack stack) {
+        return ingredient.map(value -> value.test(stack)).orElseGet(stack::isEmpty);
     }
 
     public class AutomationFilter implements IAEItemFilter {

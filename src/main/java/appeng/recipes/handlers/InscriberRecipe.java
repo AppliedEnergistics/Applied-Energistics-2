@@ -44,6 +44,7 @@ import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class InscriberRecipe implements Recipe<RecipeInput> {
 
@@ -82,8 +83,8 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
     public static final RecipeType<InscriberRecipe> TYPE = AERecipeTypes.INSCRIBER;
 
     private final Ingredient middleInput;
-    private final Ingredient topOptional;
-    private final Ingredient bottomOptional;
+    private final Optional<Ingredient> topOptional;
+    private final Optional<Ingredient> bottomOptional;
     private final ItemStack output;
     private final InscriberProcessType processType;
 
@@ -92,7 +93,7 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
     }
 
     public InscriberRecipe(Ingredient middleInput, ItemStack output,
-                           Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
+                           Optional<Ingredient> topOptional, Optional<Ingredient> bottomOptional, InscriberProcessType processType) {
         this.middleInput = Objects.requireNonNull(middleInput, "middleInput");
         this.output = Objects.requireNonNull(output, "output");
         this.topOptional = Objects.requireNonNull(topOptional, "topOptional");
@@ -129,8 +130,8 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
         return List.of(
                 new InscriberRecipeDisplay(
                         middleInput.display(),
-                        topOptional.display(),
-                        bottomOptional.display(),
+                        topOptional.map(Ingredient::display).orElse(SlotDisplay.Empty.INSTANCE),
+                        bottomOptional.map(Ingredient::display).orElse(SlotDisplay.Empty.INSTANCE),
                         processType,
                         new SlotDisplay.ItemStackSlotDisplay(output),
                         new SlotDisplay.ItemSlotDisplay(AEBlocks.INSCRIBER.asItem())
@@ -152,11 +153,11 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
         return middleInput;
     }
 
-    public Ingredient getTopOptional() {
+    public Optional<Ingredient> getTopOptional() {
         return topOptional;
     }
 
-    public Ingredient getBottomOptional() {
+    public Optional<Ingredient> getBottomOptional() {
         return bottomOptional;
     }
 
@@ -177,24 +178,24 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
     }
 
     private record Ingredients(
-            Ingredient top,
+            Optional<Ingredient> top,
             Ingredient middle,
-            Ingredient bottom) {
+            Optional<Ingredient> bottom) {
         public static final Codec<Ingredients> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                        Ingredient.CODEC.optionalFieldOf("top", Ingredient.of())
+                        Ingredient.CODEC.optionalFieldOf("top")
                                 .forGetter(Ingredients::top),
                         Ingredient.CODEC.fieldOf("middle")
                                 .forGetter(Ingredients::middle),
-                        Ingredient.CODEC.optionalFieldOf("bottom", Ingredient.of())
+                        Ingredient.CODEC.optionalFieldOf("bottom")
                                 .forGetter(Ingredients::bottom))
                 .apply(builder, Ingredients::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, Ingredients> STREAM_CODEC = StreamCodec.composite(
-                Ingredient.CONTENTS_STREAM_CODEC,
+                Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC,
                 Ingredients::top,
                 Ingredient.CONTENTS_STREAM_CODEC,
                 Ingredients::middle,
-                Ingredient.CONTENTS_STREAM_CODEC,
+                Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC,
                 Ingredients::bottom,
                 Ingredients::new);
     }

@@ -32,7 +32,6 @@ public class ChargerRecipe implements Recipe<RecipeInput> {
     public static final RecipeType<ChargerRecipe> TYPE = AERecipeTypes.CHARGER;
 
     public final Ingredient ingredient;
-    public final NonNullList<Ingredient> ingredients;
     public final ItemStack result;
 
     public static final MapCodec<ChargerRecipe> CODEC = RecordCodecBuilder.mapCodec(
@@ -52,7 +51,6 @@ public class ChargerRecipe implements Recipe<RecipeInput> {
     public ChargerRecipe(Ingredient ingredient, ItemStack result) {
         this.ingredient = ingredient;
         this.result = result;
-        this.ingredients = NonNullList.of(Ingredient.of(), ingredient);
     }
 
     @Override

@@ -84,7 +84,10 @@ public class BlockDropProvider extends BlockLootSubProvider {
     protected Iterable<Block> getKnownBlocks() {
         return BuiltInRegistries.BLOCK
                 .stream()
-                .filter(entry -> entry.getLootTable().get().location().getNamespace().equals(AppEng.MOD_ID))
+                .filter(entry -> {
+                    var lootTable = entry.getLootTable().orElse(null);
+                    return lootTable != null && lootTable.location().getNamespace().equals(AppEng.MOD_ID);
+                })
                 .toList();
     }
 

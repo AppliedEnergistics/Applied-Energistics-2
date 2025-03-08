@@ -33,6 +33,8 @@ import appeng.recipes.AERecipeTypes;
 import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipe;
 
+import java.util.Optional;
+
 /**
  * This class indexes all inscriber recipes to find valid inputs for the top and bottom optional slots. This speeds up
  * checks whether inputs for those two slots are valid.
@@ -66,8 +68,8 @@ public final class InscriberRecipes {
         for (var holder : getRecipes(level)) {
             var recipe = holder.value();
             // The recipe can be flipped at will
-            final boolean matchA = recipe.getTopOptional().test(plateA) && recipe.getBottomOptional().test(plateB);
-            final boolean matchB = recipe.getTopOptional().test(plateB) && recipe.getBottomOptional().test(plateA);
+            final boolean matchA = testIngredient(recipe.getTopOptional(), plateA) && testIngredient(recipe.getBottomOptional(), plateB);
+            final boolean matchB = testIngredient(recipe.getTopOptional(), plateB) && testIngredient(recipe.getBottomOptional(), plateA);
 
             if ((matchA || matchB) && recipe.getMiddleInput().test(input)) {
                 return recipe;
@@ -110,8 +112,8 @@ public final class InscriberRecipes {
         final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
         return new InscriberRecipe(startingItem, renamedItem,
-                plateA.isEmpty() ? Ingredient.of() : Ingredient.of(plateA.getItem()),
-                plateB.isEmpty() ? Ingredient.of() : Ingredient.of(plateB.getItem()), type);
+                plateA.isEmpty() ? Optional.empty() : Optional.of(Ingredient.of(plateA.getItem())),
+                plateB.isEmpty() ? Optional.empty() : Optional.of(Ingredient.of(plateB.getItem())), type);
     }
 
     /**
@@ -121,8 +123,8 @@ public final class InscriberRecipes {
     public static boolean isValidOptionalIngredientCombination(ServerLevel level, ItemStack pressA, ItemStack pressB) {
         for (var holder : getRecipes(level)) {
             var recipe = holder.value();
-            if (recipe.getTopOptional().test(pressA) && recipe.getBottomOptional().test(pressB)
-                    || recipe.getTopOptional().test(pressB) && recipe.getBottomOptional().test(pressA)) {
+            if (testIngredient(recipe.getTopOptional(), pressA) && testIngredient(recipe.getBottomOptional(), pressB)
+                    || testIngredient(recipe.getTopOptional(), pressB) && testIngredient(recipe.getBottomOptional(), pressA)) {
                 return true;
             }
         }
@@ -137,12 +139,16 @@ public final class InscriberRecipes {
     public static boolean isValidOptionalIngredient(ServerLevel level, ItemStack is) {
         for (var holder : getRecipes(level)) {
             var recipe = holder.value();
-            if (recipe.getTopOptional().test(is) || recipe.getBottomOptional().test(is)) {
+            if (testIngredient(recipe.getTopOptional(), is) || testIngredient(recipe.getBottomOptional(), is)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    private static boolean testIngredient(Optional<Ingredient> ingredient, ItemStack stack) {
+        return ingredient.map(value -> value.test(stack)).orElseGet(stack::isEmpty);
     }
 
 }

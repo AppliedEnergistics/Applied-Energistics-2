@@ -10,10 +10,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
+import java.util.Optional;
+
 public class InscriberRecipeBuilder {
     private final Ingredient middleInput;
-    private Ingredient topOptional = Ingredient.of();
-    private Ingredient bottomOptional = Ingredient.of();
+    private Optional<Ingredient> topOptional = Optional.empty();
+    private Optional<Ingredient> bottomOptional = Optional.empty();
     private final ItemLike output;
     private final int count;
     private InscriberProcessType mode = InscriberProcessType.INSCRIBE;
@@ -37,12 +39,12 @@ public class InscriberRecipeBuilder {
     }
 
     public InscriberRecipeBuilder setTop(Ingredient topOptional) {
-        this.topOptional = topOptional;
+        this.topOptional = Optional.of(topOptional);
         return this;
     }
 
     public InscriberRecipeBuilder setBottom(Ingredient bottomOptional) {
-        this.bottomOptional = bottomOptional;
+        this.bottomOptional = Optional.of(bottomOptional);
         return this;
     }
 

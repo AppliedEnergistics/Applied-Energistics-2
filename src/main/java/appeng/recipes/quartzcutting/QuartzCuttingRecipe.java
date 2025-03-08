@@ -1,11 +1,13 @@
 package appeng.recipes.quartzcutting;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
@@ -28,46 +30,21 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import appeng.datagen.providers.tags.ConventionTags;
 
 public class QuartzCuttingRecipe implements CraftingRecipe {
-    static final int MAX_HEIGHT = 3;
-    static final int MAX_WIDTH = 3;
     public static final MapCodec<QuartzCuttingRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
             ItemStack.STRICT_CODEC.fieldOf("result").forGetter(QuartzCuttingRecipe::getResult),
-            Ingredient.CODEC.listOf().fieldOf("ingredients").flatXmap((r) -> {
-                var ingredients = r.toArray(Ingredient[]::new);
-                if (ingredients.length == 0) {
-                    return DataResult.error(() -> "No ingredients for quartz cutting recipe");
-                } else {
-                    return ingredients.length > MAX_HEIGHT * MAX_WIDTH ? DataResult.error(() -> {
-                        return "Too many ingredients for quartz cutting recipe. The maximum is: %s"
-                                .formatted(MAX_HEIGHT * MAX_WIDTH);
-                    }) : DataResult.success(NonNullList.of(Ingredient.of(), ingredients));
-                }
-            }, DataResult::success).forGetter(QuartzCuttingRecipe::getIngredients))
+            Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(QuartzCuttingRecipe::getIngredients))
             .apply(builder, QuartzCuttingRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, QuartzCuttingRecipe> STREAM_CODEC = StreamCodec.composite(
             ItemStack.STREAM_CODEC, QuartzCuttingRecipe::getResult,
-            StreamCodec.of(
-                    (buffer, value) -> {
-                        buffer.writeVarInt(value.size());
-                        for (var ingredient : value) {
-                            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient);
-                        }
-                    },
-                    buffer -> {
-                        int count = buffer.readVarInt();
-                        NonNullList<Ingredient> ingredients = NonNullList.withSize(count, Ingredient.of());
-                        ingredients.replaceAll(ignored -> Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
-                        return ingredients;
-                    }),
-            QuartzCuttingRecipe::getIngredients,
+            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), QuartzCuttingRecipe::getIngredients,
             QuartzCuttingRecipe::new);
 
     final ItemStack result;
-    final NonNullList<Ingredient> ingredients;
+    final List<Ingredient> ingredients;
     private final boolean isSimple;
 
-    public QuartzCuttingRecipe(ItemStack result, NonNullList<Ingredient> ingredients) {
+    public QuartzCuttingRecipe(ItemStack result, List<Ingredient> ingredients) {
         this.result = result;
         this.ingredients = ingredients;
         this.isSimple = ingredients.stream().allMatch(Ingredient::isSimple);
@@ -85,7 +62,7 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
         return this.result;
     }
 
-    public NonNullList<Ingredient> getIngredients() {
+    public List<Ingredient> getIngredients() {
         return this.ingredients;
     }
 

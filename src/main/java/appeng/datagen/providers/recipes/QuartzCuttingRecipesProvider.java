@@ -21,8 +21,7 @@ public class QuartzCuttingRecipesProvider extends AE2RecipeProvider {
                 makeKey("network/parts/cable_anchor"),
                 new QuartzCuttingRecipe(
                         AEParts.CABLE_ANCHOR.stack(4),
-                        NonNullList.of(Ingredient.of(),
-                                Ingredient.of(items.getOrThrow(ConventionTags.QUARTZ_KNIFE)),
+                        NonNullList.of(Ingredient.of(items.getOrThrow(ConventionTags.QUARTZ_KNIFE)),
                                 Ingredient.of(items.getOrThrow(AETags.METAL_INGOTS)))),
                 null);
     }
