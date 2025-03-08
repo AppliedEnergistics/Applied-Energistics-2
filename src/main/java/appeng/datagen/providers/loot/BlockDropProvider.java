@@ -131,7 +131,7 @@ public class BlockDropProvider extends BlockLootSubProvider {
                 .when(ExplosionCondition.survivesExplosion()))
                 .withPool(
                         LootPool.lootPool().when(doesNotHaveSilkTouch()).setRolls(ConstantValue.exactly(1.0F))
-                                .add(LootItem.lootTableItem(AEItems.TABLET)));
+                                .add(LootItem.lootTableItem(AEItems.GUIDE)));
     }
 
     protected final Holder<Enchantment> getEnchantment(ResourceKey<Enchantment> key) {

@@ -1,20 +1,21 @@
 package appeng.datagen.providers.models;
 
-import net.minecraft.client.data.models.BlockModelGenerators;
-import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.renderer.item.EmptyModel;
-import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.ItemLike;
-
-
-import appeng.api.ids.AEItemIds;
 import appeng.api.util.AEColor;
-import appeng.client.render.model.MemoryCardModel;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelTemplate;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.renderer.item.EmptyModel;
+import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
 
 public class ItemModelProvider extends AE2BlockStateProvider {
     public ItemModelProvider(PackOutput packOutput) {
@@ -27,8 +28,8 @@ public class ItemModelProvider extends AE2BlockStateProvider {
 
         flatSingleLayer(AEItems.MISSING_CONTENT, "minecraft:item/barrier");
 
-       // TODO flatSingleLayer(MemoryCardModel.MODEL_BASE, "item/memory_card_base")
-       // TODO         .texture("layer1", "item/memory_card_led");
+        // TODO flatSingleLayer(MemoryCardModel.MODEL_BASE, "item/memory_card_base")
+        // TODO         .texture("layer1", "item/memory_card_led");
         builtInItemModel(AEItems.MEMORY_CARD);
 
         builtInItemModel(AEItems.FACADE);
@@ -51,8 +52,6 @@ public class ItemModelProvider extends AE2BlockStateProvider {
         flatSingleLayer(AEItems.CERTUS_QUARTZ_CRYSTAL, "item/certus_quartz_crystal");
         flatSingleLayer(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, "item/certus_quartz_crystal_charged");
         flatSingleLayer(AEItems.CERTUS_QUARTZ_DUST, "item/certus_quartz_dust");
-        flatSingleLayer(AEItems.CERTUS_QUARTZ_KNIFE, "item/certus_quartz_cutting_knife");
-        flatSingleLayer(AEItems.CERTUS_QUARTZ_WRENCH, "item/certus_quartz_wrench");
         flatSingleLayer(AEItems.CRAFTING_CARD, "item/card_crafting");
         flatSingleLayer(AEItems.CRAFTING_PATTERN, "item/crafting_pattern");
         flatSingleLayer(AEItems.DEBUG_CARD, "item/debug_card");
@@ -90,8 +89,6 @@ public class ItemModelProvider extends AE2BlockStateProvider {
         flatSingleLayer(AEItems.LOGIC_PROCESSOR_PRINT, "item/printed_logic_processor");
         flatSingleLayer(AEItems.MATTER_BALL, "item/matter_ball");
         flatSingleLayer(AEItems.NAME_PRESS, "item/name_press");
-        flatSingleLayer(AEItems.NETHER_QUARTZ_KNIFE, "item/nether_quartz_cutting_knife");
-        flatSingleLayer(AEItems.NETHER_QUARTZ_WRENCH, "item/nether_quartz_wrench");
         portableCell(AEItems.PORTABLE_ITEM_CELL1K, "item", "1k");
         portableCell(AEItems.PORTABLE_ITEM_CELL4K, "item", "4k");
         portableCell(AEItems.PORTABLE_ITEM_CELL16K, "item", "16k");
@@ -119,7 +116,7 @@ public class ItemModelProvider extends AE2BlockStateProvider {
         flatSingleLayer(AEItems.SPEED_CARD, "item/card_speed");
         flatSingleLayer(AEItems.SMITHING_TABLE_PATTERN, "item/smithing_table_pattern");
         flatSingleLayer(AEItems.STONECUTTING_PATTERN, "item/stonecutting_pattern");
-        flatSingleLayer(AEItemIds.GUIDE, "item/guide");
+        flatSingleLayer(AEItems.GUIDE, "item/guide");
         flatSingleLayer(AEItems.VIEW_CELL, "item/view_cell");
         flatSingleLayer(AEItems.WIRELESS_BOOSTER, "item/wireless_booster");
         flatSingleLayer(AEItems.WIRELESS_CRAFTING_TERMINAL, "item/wireless_crafting_terminal");
@@ -131,25 +128,29 @@ public class ItemModelProvider extends AE2BlockStateProvider {
     }
 
     private void storageCell(ItemDefinition<?> item, String background) {
-     // TODO  String id = item.id().getPath();
-     // TODO  singleTexture(
-     // TODO          id,
-     // TODO          mcLoc("item/generated"),
-     // TODO          "layer0",
-     // TODO          makeId(background))
-     // TODO          .texture("layer1", "item/storage_cell_led");
+        itemModels.generateLayeredItem(
+                item.asItem(),
+                makeId(background),
+                makeId("item/storage_cell_led")
+        );
     }
 
+    public static final TextureSlot LAYER3 = TextureSlot.create("layer3");
+    private static final ModelTemplate FOUR_LAYERED_ITEM = ModelTemplates.createItem("generated", TextureSlot.LAYER0, TextureSlot.LAYER1, TextureSlot.LAYER2, LAYER3);
+
     private void portableCell(ItemDefinition<?> item, String housingType, String tier) {
-       // TODO String id = item.id().getPath();
-       // TODO singleTexture(
-       // TODO         id,
-       // TODO         mcLoc("item/generated"),
-       // TODO         "layer0",
-       // TODO         makeId("item/portable_cell_%s_housing".formatted(housingType)))
-       // TODO         .texture("layer1", "item/portable_cell_led")
-       // TODO         .texture("layer2", "item/portable_cell_screen")
-       // TODO         .texture("layer3", "item/portable_cell_side_%s".formatted(tier));
+
+        var model = FOUR_LAYERED_ITEM.create(
+                item.asItem(),
+                TextureMapping.layered(
+                                makeId("item/portable_cell_%s_housing".formatted(housingType)),
+                                makeId("item/portable_cell_led"),
+                                makeId("item/portable_cell_screen")
+                        )
+                        .put(LAYER3, makeId("item/portable_cell_side_%s".formatted(tier))),
+                itemModels.modelOutput
+        );
+        itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.plainModel(model));
     }
 
     private void registerHandheld() {
@@ -177,11 +178,7 @@ public class ItemModelProvider extends AE2BlockStateProvider {
     }
 
     private void handheld(ItemDefinition<?> item) {
-     // TODO   singleTexture(
-     // TODO           item.id().getPath(),
-     // TODO           ResourceLocation.parse("item/handheld"),
-     // TODO           "layer0",
-     // TODO           makeId("item/" + item.id().getPath()));
+        itemModels.generateFlatItem(item.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
     }
 
     private void registerEmptyModel(ItemDefinition<?> item) {
@@ -193,35 +190,20 @@ public class ItemModelProvider extends AE2BlockStateProvider {
      */
     private void registerPaintballs() {
         for (AEColor value : AEColor.values()) {
-            var id = AEItems.COLORED_PAINT_BALL.id(value);
-            if (id != null) {
-                flatSingleLayer(id, "item/paint_ball");
+            if (value == AEColor.TRANSPARENT) {
+                continue;
             }
-        }
 
-        for (AEColor value : AEColor.values()) {
-            var id = AEItems.COLORED_LUMEN_PAINT_BALL.id(value);
-            if (id != null) {
-                flatSingleLayer(id, "item/paint_ball_shimmer");
-            }
+            var item = AEItems.COLORED_PAINT_BALL.item(value);
+            flatSingleLayer(item, "item/paint_ball");
+
+            item = AEItems.COLORED_LUMEN_PAINT_BALL.item(value);
+            flatSingleLayer(item, "item/paint_ball_shimmer");
         }
     }
 
-    private void flatSingleLayer(ItemDefinition<?> item, String texture) {
-        String id = item.id().getPath();
-        // TODO return singleTexture(
-        // TODO         id,
-        // TODO         mcLoc("item/generated"),
-        // TODO         "layer0",
-        // TODO         makeId(texture));
-    }
-
-    private void flatSingleLayer(ResourceLocation id, String texture) {
-               // TODO return singleTexture(
-       // TODO         id.getPath(),
-       // TODO         mcLoc("item/generated"),
-       // TODO         "layer0",
-       // TODO         makeId(texture));
+    private void flatSingleLayer(ItemLike item, String texture) {
+        ModelTemplates.FLAT_ITEM.create(item.asItem(), TextureMapping.layer0(makeId(texture)), itemModels.modelOutput);
     }
 
     private void builtInItemModel(ItemLike item) {

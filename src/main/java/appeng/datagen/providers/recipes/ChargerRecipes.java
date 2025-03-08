@@ -26,7 +26,7 @@ public class ChargerRecipes extends AE2RecipeProvider {
                 Items.COMPASS, AEItems.METEORITE_COMPASS);
         ChargerRecipeBuilder.charge(output,
                 AppEng.makeId("charger/guide"),
-                Items.BOOK, AEItems.TABLET);
+                Items.BOOK, AEItems.GUIDE);
     }
 
 }
