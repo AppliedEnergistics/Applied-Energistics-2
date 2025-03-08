@@ -1,12 +1,12 @@
 package appeng.datagen.providers.models;
 
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.core.AppEng;
+import appeng.core.definitions.BlockDefinition;
+import appeng.datagen.providers.IAE2DataProvider;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
@@ -19,29 +19,21 @@ import net.minecraft.client.data.models.blockstates.Variant;
 import net.minecraft.client.data.models.blockstates.VariantProperties;
 import net.minecraft.client.data.models.blockstates.VariantProperty;
 import net.minecraft.client.data.models.model.ModelInstance;
-import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.StairBlock;
-import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 
-import appeng.api.orientation.BlockOrientation;
-import appeng.api.orientation.IOrientationStrategy;
-import appeng.core.AppEng;
-import appeng.core.definitions.BlockDefinition;
-import appeng.datagen.providers.IAE2DataProvider;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public abstract class AE2BlockStateProvider extends ModelProvider implements IAE2DataProvider {
     private static final VariantProperty<VariantProperties.Rotation> Z_ROT = new VariantProperty<>("ae2:z",
@@ -102,56 +94,6 @@ public abstract class AE2BlockStateProvider extends ModelProvider implements IAE
         // item falls back automatically to the block model
     }
 
-//    /**
-//     * Defines a standard wall blockstate, the necessary block models and item model.
-//     */
-//    protected void wall(BlockDefinition<WallBlock> block, String texture) {
-//
-//        wallBlock(block.block(), AppEng.makeId(texture));
-//        itemModels().wallInventory(block.id().getPath(), AppEng.makeId(texture));
-//    }
-//
-//    protected void slabBlock(BlockDefinition<SlabBlock> slab, BlockDefinition<?> base) {
-//        var texture = blockTexture(base.block()).getPath();
-//        slabBlock(slab, base, texture, texture, texture);
-//    }
-//
-//    protected void slabBlock(BlockDefinition<SlabBlock> slab, BlockDefinition<?> base, String bottomTexture,
-//            String sideTexture, String topTexture) {
-//        var side = AppEng.makeId(sideTexture);
-//        var bottom = AppEng.makeId(bottomTexture);
-//        var top = AppEng.makeId(topTexture);
-//
-//        var bottomModel = models().slab(slab.id().getPath(), side, bottom, top);
-//        simpleBlockItem(slab.block(), bottomModel);
-//        slabBlock(
-//                slab.block(),
-//                bottomModel,
-//                models().slabTop(slab.id().getPath() + "_top", side, bottom, top),
-//                models().getExistingFile(base.id()));
-//    }
-//
-//    protected void stairsBlock(BlockDefinition<StairBlock> stairs, BlockDefinition<?> base) {
-//        var texture = "block/" + base.id().getPath();
-//
-//        stairsBlock(stairs, texture, texture, texture);
-//    }
-//
-//    protected void stairsBlock(BlockDefinition<StairBlock> stairs, String bottomTexture, String sideTexture,
-//            String topTexture) {
-//        var baseName = stairs.id().getPath();
-//
-//        var side = AppEng.makeId(sideTexture);
-//        var bottom = AppEng.makeId(bottomTexture);
-//        var top = AppEng.makeId(topTexture);
-//
-//        ModelFile stairsModel = models().stairs(baseName, side, bottom, top);
-//        ModelFile stairsInner = models().stairsInner(baseName + "_inner", side, bottom, top);
-//        ModelFile stairsOuter = models().stairsOuter(baseName + "_outer", side, bottom, top);
-//        stairsBlock(stairs.block(), stairsModel, stairsInner, stairsOuter);
-//        simpleBlockItem(stairs.block(), stairsModel);
-//    }
-//
     protected VariantsBuilder rotatedVariants(BlockDefinition<?> blockDef) {
         Block block = blockDef.block();
         var builder = new VariantsBuilder(block);
@@ -171,7 +113,7 @@ public abstract class AE2BlockStateProvider extends ModelProvider implements IAE
 
     protected final MultiVariantGenerator multiVariantGenerator(BlockDefinition<?> blockDef, Variant... variants) {
         if (variants.length == 0) {
-            variants = new Variant[] { Variant.variant() };
+            variants = new Variant[]{Variant.variant()};
         }
         var builder = MultiVariantGenerator.multiVariant(blockDef.block(), variants);
         blockModels.blockStateOutput.accept(builder);
@@ -188,17 +130,17 @@ public abstract class AE2BlockStateProvider extends ModelProvider implements IAE
                 .select(Direction.EAST, applyRotation(Variant.variant(), baseRotX, baseRotY + 90, 0));
     }
 
-   protected static PropertyDispatch createFacingSpinDispatch(int baseRotX, int baseRotY) {
-       return PropertyDispatch.properties(BlockStateProperties.FACING, IOrientationStrategy.SPIN)
-               .generate((facing, spin) -> {
-                   var orientation = BlockOrientation.get(facing, spin);
-                   return applyRotation(
-                           Variant.variant(),
-                           orientation.getAngleX() + baseRotX,
-                           orientation.getAngleY() + baseRotY,
-                           orientation.getAngleZ());
-               });
-   }
+    protected static PropertyDispatch createFacingSpinDispatch(int baseRotX, int baseRotY) {
+        return PropertyDispatch.properties(BlockStateProperties.FACING, IOrientationStrategy.SPIN)
+                .generate((facing, spin) -> {
+                    var orientation = BlockOrientation.get(facing, spin);
+                    return applyRotation(
+                            Variant.variant(),
+                            orientation.getAngleX() + baseRotX,
+                            orientation.getAngleY() + baseRotY,
+                            orientation.getAngleZ());
+                });
+    }
 
     protected static PropertyDispatch createFacingSpinDispatch() {
         return createFacingSpinDispatch(0, 0);
@@ -209,7 +151,7 @@ public abstract class AE2BlockStateProvider extends ModelProvider implements IAE
     }
 
     protected static void withOrientations(MultiPartGenerator multipart,
-            Supplier<Condition.TerminalCondition> baseCondition, Variant baseVariant) {
+                                           Supplier<Condition.TerminalCondition> baseCondition, Variant baseVariant) {
         var defaultState = multipart.getBlock().defaultBlockState();
         var strategy = IOrientationStrategy.get(defaultState);
 
@@ -232,21 +174,21 @@ public abstract class AE2BlockStateProvider extends ModelProvider implements IAE
                 orientation.getAngleZ());
     }
 
-   protected static Variant applyRotation(Variant variant, int angleX, int angleY, int angleZ) {
-       angleX = normalizeAngle(angleX);
-       angleY = normalizeAngle(angleY);
-       angleZ = normalizeAngle(angleZ);
+    protected static Variant applyRotation(Variant variant, int angleX, int angleY, int angleZ) {
+        angleX = normalizeAngle(angleX);
+        angleY = normalizeAngle(angleY);
+        angleZ = normalizeAngle(angleZ);
 
-       if (angleX != 0) {
-           variant = variant.with(VariantProperties.X_ROT, rotationByAngle(angleX));
-       }
-       if (angleY != 0) {
-           variant = variant.with(VariantProperties.Y_ROT, rotationByAngle(angleY));
-       }
-       if (angleZ != 0) {
-           variant = variant.with(Z_ROT, rotationByAngle(angleZ));
-       }
-       return variant;
+        if (angleX != 0) {
+            variant = variant.with(VariantProperties.X_ROT, rotationByAngle(angleX));
+        }
+        if (angleY != 0) {
+            variant = variant.with(VariantProperties.Y_ROT, rotationByAngle(angleY));
+        }
+        if (angleZ != 0) {
+            variant = variant.with(Z_ROT, rotationByAngle(angleZ));
+        }
+        return variant;
     }
 
     private static int normalizeAngle(int angle) {
@@ -270,8 +212,8 @@ public abstract class AE2BlockStateProvider extends ModelProvider implements IAE
     }
 
     private static <T extends Comparable<T>> Condition addConditionTerm(Condition.TerminalCondition condition,
-            BlockState blockState,
-            Property<T> property) {
+                                                                        BlockState blockState,
+                                                                        Property<T> property) {
         return condition.term(property, blockState.getValue(property));
     }
 

@@ -5,6 +5,7 @@ import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.misc.GrowthAcceleratorBlock;
 import appeng.block.misc.VibrationChamberBlock;
+import appeng.block.networking.EnergyCellBlock;
 import appeng.block.networking.WirelessAccessPointBlock;
 import appeng.block.spatial.SpatialAnchorBlock;
 import appeng.block.spatial.SpatialIOPortBlock;
@@ -13,6 +14,7 @@ import appeng.block.storage.MEChestBlock;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
+import appeng.init.client.InitItemModelsProperties;
 import com.google.gson.JsonObject;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -22,19 +24,22 @@ import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.blockstates.Variant;
 import net.minecraft.client.data.models.blockstates.VariantProperties;
+import net.minecraft.client.data.models.blockstates.VariantProperty;
 import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelTemplate;
+import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.client.renderer.item.EmptyModel;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 import static appeng.core.AppEng.makeId;
 
@@ -78,61 +83,62 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         patternProvider();
         ioPort();
         spatialIoPort();
+        spatialPylon();
 
-        builtInModel("spatial_pylon");
         builtInModel("qnb/qnb_formed");
-        builtInModel("crafting/unit_formed");
-        builtInModel("crafting/accelerator_formed");
-        builtInModel("crafting/1k_storage_formed");
-        builtInModel("crafting/4k_storage_formed");
-        builtInModel("crafting/16k_storage_formed");
-        builtInModel("crafting/64k_storage_formed");
-        builtInModel("crafting/256k_storage_formed");
 
-//       // Spatial pylon uses a normal model for the item, special model for block
-//       simpleBlock(AEBlocks.SPATIAL_PYLON.block(), models().getBuilder(modelPath(AEBlocks.SPATIAL_PYLON)));
-//       itemModels().cubeAll(modelPath(AEBlocks.SPATIAL_PYLON), makeId("block/spatial_pylon/spatial_pylon_item"));
+        simpleBlockAndItem(AEBlocks.FLAWLESS_BUDDING_QUARTZ);
+        simpleBlockAndItem(AEBlocks.FLAWED_BUDDING_QUARTZ);
+        simpleBlockAndItem(AEBlocks.CHIPPED_BUDDING_QUARTZ);
+        simpleBlockAndItem(AEBlocks.DAMAGED_BUDDING_QUARTZ);
 
-//       simpleBlockAndItem(AEBlocks.FLAWLESS_BUDDING_QUARTZ);
-//       simpleBlockAndItem(AEBlocks.FLAWED_BUDDING_QUARTZ);
-//       simpleBlockAndItem(AEBlocks.CHIPPED_BUDDING_QUARTZ);
-//       simpleBlockAndItem(AEBlocks.DAMAGED_BUDDING_QUARTZ);
+        generateQuartzCluster(AEBlocks.SMALL_QUARTZ_BUD);
+        generateQuartzCluster(AEBlocks.MEDIUM_QUARTZ_BUD);
+        generateQuartzCluster(AEBlocks.LARGE_QUARTZ_BUD);
+        generateQuartzCluster(AEBlocks.QUARTZ_CLUSTER);
 
-//       generateQuartzCluster(AEBlocks.SMALL_QUARTZ_BUD);
-//       generateQuartzCluster(AEBlocks.MEDIUM_QUARTZ_BUD);
-//       generateQuartzCluster(AEBlocks.LARGE_QUARTZ_BUD);
-//       generateQuartzCluster(AEBlocks.QUARTZ_CLUSTER);
+        simpleBlockAndItem(AEBlocks.CONDENSER);
+        simpleBlockAndItem(AEBlocks.ENERGY_ACCEPTOR);
+        simpleBlockAndItem(AEBlocks.INTERFACE);
 
-//       simpleBlockAndItem(AEBlocks.CONDENSER);
-//       simpleBlockAndItem(AEBlocks.ENERGY_ACCEPTOR);
-//       simpleBlockAndItem(AEBlocks.INTERFACE);
+        simpleBlockAndItem(AEBlocks.DEBUG_ITEM_GEN, "block/debug/item_gen");
+        simpleBlockAndItem(AEBlocks.DEBUG_PHANTOM_NODE, "block/debug/phantom_node");
+        simpleBlockAndItem(AEBlocks.DEBUG_CUBE_GEN, "block/debug/cube_gen");
+        simpleBlockAndItem(AEBlocks.DEBUG_ENERGY_GEN, "block/debug/energy_gen");
 
-//       simpleBlockAndItem(AEBlocks.DEBUG_ITEM_GEN, "block/debug/item_gen");
-//       simpleBlockAndItem(AEBlocks.DEBUG_PHANTOM_NODE, "block/debug/phantom_node");
-//       simpleBlockAndItem(AEBlocks.DEBUG_CUBE_GEN, "block/debug/cube_gen");
-//       simpleBlockAndItem(AEBlocks.DEBUG_ENERGY_GEN, "block/debug/energy_gen");
+        craftingModel(AEBlocks.CRAFTING_ACCELERATOR, "accelerator");
+        craftingModel(AEBlocks.CRAFTING_UNIT, "unit");
+        craftingModel(AEBlocks.CRAFTING_STORAGE_1K, "1k_storage");
+        craftingModel(AEBlocks.CRAFTING_STORAGE_4K, "4k_storage");
+        craftingModel(AEBlocks.CRAFTING_STORAGE_16K, "16k_storage");
+        craftingModel(AEBlocks.CRAFTING_STORAGE_64K, "64k_storage");
+        craftingModel(AEBlocks.CRAFTING_STORAGE_256K, "256k_storage");
 
-//       craftingModel(AEBlocks.CRAFTING_ACCELERATOR, "accelerator");
-//       craftingModel(AEBlocks.CRAFTING_UNIT, "unit");
-//       craftingModel(AEBlocks.CRAFTING_STORAGE_1K, "1k_storage");
-//       craftingModel(AEBlocks.CRAFTING_STORAGE_4K, "4k_storage");
-//       craftingModel(AEBlocks.CRAFTING_STORAGE_16K, "16k_storage");
-//       craftingModel(AEBlocks.CRAFTING_STORAGE_64K, "64k_storage");
-//       craftingModel(AEBlocks.CRAFTING_STORAGE_256K, "256k_storage");
+        simpleBlockAndItem(AEBlocks.CELL_WORKBENCH, TexturedModel.CUBE_TOP_BOTTOM
+                .updateTexture(textures -> textures
+                        .put(TextureSlot.TOP, makeId("block/cell_workbench_top"))
+                        .put(TextureSlot.BOTTOM, MACHINE_BOTTOM)
+                        .put(TextureSlot.PARTICLE, makeId("block/cell_workbench_top"))
+                ));
 
-//       simpleBlockAndItem(AEBlocks.CELL_WORKBENCH, models().cubeBottomTop(
-//               modelPath(AEBlocks.CELL_WORKBENCH),
-//               makeId("block/cell_workbench_side"),
-//               makeId("block/generics/bottom"),
-//               makeId("block/cell_workbench_top")));
+        energyCell(AEBlocks.ENERGY_CELL, "block/energy_cell");
+        energyCell(AEBlocks.DENSE_ENERGY_CELL, "block/dense_energy_cell");
+        simpleBlockAndItem(AEBlocks.CREATIVE_ENERGY_CELL, "block/creative_energy_cell");
 
-//       energyCell(AEBlocks.ENERGY_CELL, "block/energy_cell");
-//       energyCell(AEBlocks.DENSE_ENERGY_CELL, "block/dense_energy_cell");
-//       simpleBlockAndItem(AEBlocks.CREATIVE_ENERGY_CELL, "block/creative_energy_cell");
+        // Both use the same mysterious cube model
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(AEBlocks.MYSTERIOUS_CUBE.block(), makeId("block/mysterious_cube")));
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(AEBlocks.NOT_SO_MYSTERIOUS_CUBE.block(), makeId("block/mysterious_cube")));
+    }
 
-//       // Both use the same mysterious cube model
-//       simpleBlockAndItem(AEBlocks.MYSTERIOUS_CUBE, (makeId("block/mysterious_cube")));
-//       simpleBlockAndItem(AEBlocks.NOT_SO_MYSTERIOUS_CUBE, (makeId("block/mysterious_cube")));
+    private void spatialPylon() {
+        // Spatial pylon uses a normal model for the item, special model for block
+        itemModels.itemModelOutput.accept(
+                AEBlocks.SPATIAL_PYLON.asItem(),
+                ItemModelUtils.plainModel(
+                        ModelTemplates.CUBE_ALL.create(AEBlocks.SPATIAL_PYLON.asItem(), TextureMapping.cube(AEBlocks.SPATIAL_PYLON.block()), modelOutput)
+                )
+        );
+        builtInModel(AEBlocks.SPATIAL_PYLON, true);
     }
 
     private void meChest() {
@@ -151,9 +157,14 @@ public class BlockModelProvider extends AE2BlockStateProvider {
     }
 
     private void quartzGrowthAccelerator() {
-        var unpoweredModel = TexturedModel.CUBE_TOP_BOTTOM.create(AEBlocks.GROWTH_ACCELERATOR.block(), modelOutput);
+        var block = AEBlocks.GROWTH_ACCELERATOR.block();
+        var unpoweredModel = TexturedModel.CUBE_TOP_BOTTOM.create(block, modelOutput);
         var poweredModel = TexturedModel.CUBE_TOP_BOTTOM
-                .createWithSuffix(AEBlocks.GROWTH_ACCELERATOR.block(), "_on", modelOutput);
+                .updateTexture(textures -> textures
+                        .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block, "_side_on"))
+                        .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block, "_top_on"))
+                )
+                .createWithSuffix(block, "_on", modelOutput);
 
         multiVariantGenerator(AEBlocks.GROWTH_ACCELERATOR)
                 .with(createFacingDispatch(90, 0))
@@ -189,28 +200,13 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         var facingVariants = PropertyDispatch.property(BlockStateProperties.FACING);
         builder.with(facingVariants);
         for (var facing : Direction.values()) {
-            var rotation = BlockOrientation.get(facing, 0);
-
-            facingVariants.select(facing, Variant.variant()
-                    .with(VariantProperties.MODEL, modelFile)
-                    // The original is facing "up" while we generally assume models are facing north
-                    // but this looks better as an item model
-                    .with(VariantProperties.X_ROT, ofDegrees(rotation.getAngleX() + 90))
-                    .with(VariantProperties.Y_ROT, ofDegrees(rotation.getAngleY())));
+            var variant = Variant.variant().with(VariantProperties.MODEL, modelFile);
+            facingVariants.select(facing, applyOrientation(variant, BlockOrientation.get(facing, 0)));
         }
 
-        blockModels.registerSimpleItemModel(AEBlocks.CRYSTAL_RESONANCE_GENERATOR.block(), modelFile);
-    }
+        blockModels.blockStateOutput.accept(builder);
 
-    private VariantProperties.Rotation ofDegrees(int degrees) {
-        degrees %= 360;
-        return switch (degrees) {
-            case 0 -> VariantProperties.Rotation.R0;
-            case 90 -> VariantProperties.Rotation.R90;
-            case 180 -> VariantProperties.Rotation.R180;
-            case 270 -> VariantProperties.Rotation.R270;
-            default -> throw new IllegalStateException("Unexpected value: " + degrees);
-        };
+        blockModels.registerSimpleItemModel(AEBlocks.CRYSTAL_RESONANCE_GENERATOR.block(), modelFile);
     }
 
     private void wirelessAccessPoint() {
@@ -227,17 +223,13 @@ public class BlockModelProvider extends AE2BlockStateProvider {
 
             builder.with(
                     Condition.condition().term(BlockStateProperties.FACING, facing),
-                    Variant.variant().with(VariantProperties.MODEL, chassis)
-                            .with(VariantProperties.X_ROT, ofDegrees(rotation.getAngleX()))
-                            .with(VariantProperties.Y_ROT, ofDegrees(rotation.getAngleY()))
+                    applyOrientation(Variant.variant().with(VariantProperties.MODEL, chassis), rotation)
             );
 
             BiConsumer<ResourceLocation, WirelessAccessPointBlock.State> addModel = (modelFile, state) -> builder.with(
                     Condition.condition().term(BlockStateProperties.FACING, facing)
                             .term(WirelessAccessPointBlock.STATE, state),
-                    Variant.variant().with(VariantProperties.MODEL, modelFile)
-                            .with(VariantProperties.X_ROT, ofDegrees(rotation.getAngleX()))
-                            .with(VariantProperties.Y_ROT, ofDegrees(rotation.getAngleY()))
+                    applyOrientation(Variant.variant().with(VariantProperties.MODEL, modelFile), rotation)
             );
             addModel.accept(antennaOff, WirelessAccessPointBlock.State.OFF);
             addModel.accept(statusOff, WirelessAccessPointBlock.State.OFF);
@@ -246,28 +238,31 @@ public class BlockModelProvider extends AE2BlockStateProvider {
             addModel.accept(antennaOn, WirelessAccessPointBlock.State.HAS_CHANNEL);
             addModel.accept(statusOn, WirelessAccessPointBlock.State.HAS_CHANNEL);
         }
+
+        blockModels.blockStateOutput.accept(builder);
     }
 
+    private static final ResourceLocation MACHINE_BOTTOM = AppEng.makeId("block/generics/bottom");
+
     private void vibrationChamber() {
-        var offModel = TexturedModel.CUBE.create(AEBlocks.VIBRATION_CHAMBER.block(), modelOutput);
-        var onModel = TexturedModel.CUBE.createWithSuffix(AEBlocks.VIBRATION_CHAMBER.block(), "_on", modelOutput);
-       // TODO  var offModel = models().cube(
-       // TODO          modelPath(AEBlocks.VIBRATION_CHAMBER),
-       // TODO          makeId("block/generics/bottom"),
-       // TODO          makeId("block/vibration_chamber_top"),
-       // TODO          makeId("block/vibration_chamber_front"),
-       // TODO          makeId("block/vibration_chamber_back"),
-       // TODO          makeId("block/vibration_chamber_side"),
-       // TODO          makeId("block/vibration_chamber_side"))
-       // TODO          .texture("particle", makeId("block/vibration_chamber_front"));
-       // TODO  var onModel = models().cube(
-       // TODO          modelPath(AEBlocks.VIBRATION_CHAMBER) + "_on",
-       // TODO          makeId("block/generics/bottom"),
-       // TODO          makeId("block/vibration_chamber_top_on"),
-       // TODO          makeId("block/vibration_chamber_front_on"),
-       // TODO          makeId("block/vibration_chamber_back_on"),
-       // TODO          makeId("block/vibration_chamber_side"),
-       // TODO          makeId("block/vibration_chamber_side")).texture("particle", makeId("block/vibration_chamber_front_on"));
+        var block = AEBlocks.VIBRATION_CHAMBER.block();
+
+        var textureMapping = TextureMapping.cube(block)
+                .put(TextureSlot.PARTICLE, TextureMapping.getBlockTexture(block, "_front"))
+                .put(TextureSlot.DOWN, MACHINE_BOTTOM)
+                .put(TextureSlot.UP, TextureMapping.getBlockTexture(block, "_top"))
+                .put(TextureSlot.NORTH, TextureMapping.getBlockTexture(block, "_front"))
+                .put(TextureSlot.EAST, TextureMapping.getBlockTexture(block, "_side"))
+                .put(TextureSlot.SOUTH, TextureMapping.getBlockTexture(block, "_back"))
+                .put(TextureSlot.WEST, TextureMapping.getBlockTexture(block, "_side"));
+        var offModel = ModelTemplates.CUBE.create(block, textureMapping, modelOutput);
+
+        var textureMappingOn = textureMapping.copy()
+                .put(TextureSlot.UP, TextureMapping.getBlockTexture(block, "_top_on"))
+                .put(TextureSlot.NORTH, TextureMapping.getBlockTexture(block, "_front_on"))
+                .put(TextureSlot.SOUTH, TextureMapping.getBlockTexture(block, "_back_on"))
+                .put(TextureSlot.PARTICLE, TextureMapping.getBlockTexture(block, "_front_on"));
+        var onModel = ModelTemplates.CUBE.createWithSuffix(block, "_on", textureMappingOn, modelOutput);
 
         multiVariantGenerator(AEBlocks.VIBRATION_CHAMBER)
                 .with(createFacingSpinDispatch())
@@ -293,7 +288,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
 
     private void patternProvider() {
         var def = AEBlocks.PATTERN_PROVIDER;
-         var normalModel = TexturedModel.CUBE.create(def.block(), modelOutput);
+        var normalModel = TexturedModel.CUBE.create(def.block(), modelOutput);
         // TODO simpleBlockItem(def.block(), normalModel);
         // the block state and the oriented model are in manually written json files
 
@@ -345,7 +340,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
 
     private ResourceLocation builtInModel(String blockId) {
         ResourceLocation modelId = makeId(blockId).withPrefix("block/");
-        blockModels.modelOutput.accept(modelId, JsonObject::new);
+        modelOutput.accept(modelId, JsonObject::new);
         return modelId;
     }
 
@@ -363,44 +358,61 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         }
     }
 
-//   private void energyCell(
-//           BlockDefinition<?> block,
-//           String baseTexture) {
+   private void energyCell(
+           BlockDefinition<?> blockDef,
+           String baseTexture) {
 
-//       var blockBuilder = getVariantBuilder(block.block());
-//       var models = new ArrayList<ModelFile>();
-//       for (var i = 0; i < 5; i++) {
-//           var model = models().cubeAll(modelPath(block) + "_" + i, makeId(baseTexture + "_" + i));
-//           blockBuilder.partialState().with(EnergyCellBlock.ENERGY_STORAGE, i).setModels(new ConfiguredModel(model));
-//           models.add(model);
-//       }
+        var block = blockDef.block();
 
-//       var item = itemModels().withExistingParent(modelPath(block), models.get(0));
-//       for (var i = 1; i < models.size(); i++) {
-//           // The predicate matches "greater than", meaning for fill-level > 0 the first non-empty texture is used
-//           float fillFactor = i / (float) models.size();
-//           item.override()
-//                   .predicate(InitItemModelsProperties.ENERGY_FILL_LEVEL_ID, fillFactor)
-//                   .model(models.get(i));
-//       }
-//   }
+       var energyLevelDispatch = PropertyDispatch.property(EnergyCellBlock.ENERGY_STORAGE);
 
-//   private void craftingModel(BlockDefinition<?> block, String name) {
-//       var blockModel = models().cubeAll("block/crafting/" + name, makeId("block/crafting/" + name));
-//       getVariantBuilder(block.block())
-//               .partialState().with(AbstractCraftingUnitBlock.FORMED, false).setModels(
-//                       new ConfiguredModel(blockModel))
-//               .partialState().with(AbstractCraftingUnitBlock.FORMED, true).setModels(
-//                       // Empty model, will be replaced dynamically
-//                       new ConfiguredModel(models().getBuilder("block/crafting/" + name + "_formed")));
-//       simpleBlockItem(block.block(), blockModel);
-//   }
+       for (var i = 0; i < 5; i++) {
+           var textures = TextureMapping.cube(TextureMapping.getBlockTexture(block, "_" + i));
+           var model = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_" + i, textures, modelOutput);
+           energyLevelDispatch.select(i, Variant.variant().with(VariantProperties.MODEL, model));
+       }
+       blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block).with(energyLevelDispatch));
 
-//   private void generateQuartzCluster(BlockDefinition<?> quartz) {
-//       var name = quartz.id().getPath();
-//       var texture = makeId("block/" + name);
-//       var model = models().cross(name, texture).renderType("cutout");
-//       directionalBlock(quartz.block(), model);
-//       itemModels().withExistingParent(name, mcLoc("item/generated")).texture("layer0", texture);
-//   }
+
+       //  TODO 1.21.4 var item = itemModels().withExistingParent(modelPath(block), models.get(0));
+       //  TODO 1.21.4 for (var i = 1; i < models.size(); i++) {
+       //  TODO 1.21.4     // The predicate matches "greater than", meaning for fill-level > 0 the first non-empty texture is used
+       //  TODO 1.21.4     float fillFactor = i / (float) models.size();
+       //  TODO 1.21.4     item.override()
+       //  TODO 1.21.4             .predicate(InitItemModelsProperties.ENERGY_FILL_LEVEL_ID, fillFactor)
+       //  TODO 1.21.4             .model(models.get(i));
+       //  TODO 1.21.4 }
+   }
+
+   private void craftingModel(BlockDefinition<?> block, String name) {
+       var unformedModel = ModelTemplates.CUBE_ALL.create(
+               makeId("block/crafting/" + name), TextureMapping.cube(makeId("block/crafting/" + name)), modelOutput
+       );
+       var formedModel = builtInModel("crafting/" + name + "_formed");
+
+       blockModels.blockStateOutput
+               .accept(
+                       MultiVariantGenerator.multiVariant(block.block())
+                               .with(
+                                       PropertyDispatch.property(AbstractCraftingUnitBlock.FORMED)
+                                               .select(false, Variant.variant().with(VariantProperties.MODEL, unformedModel))
+                                               .select(true, Variant.variant().with(VariantProperties.MODEL, formedModel))
+                               )
+               );
+
+       // TODO simpleBlockItem(block.block(), blockModel);
+   }
+
+    private void generateQuartzCluster(BlockDefinition<?> quartz) {
+        Block block = quartz.block();
+        blockModels.blockStateOutput
+                .accept(
+                        MultiVariantGenerator.multiVariant(
+                                        block,
+                                        Variant.variant()
+                                                .with(VariantProperties.MODEL, ModelTemplates.CROSS.create(block, TextureMapping.cross(block), modelOutput))
+                                )
+                                .with(blockModels.createColumnWithFacing())
+                );
+    }
 }

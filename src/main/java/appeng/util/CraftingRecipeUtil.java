@@ -13,6 +13,8 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 
+import java.util.Optional;
+
 public final class CraftingRecipeUtil {
     private CraftingRecipeUtil() {
     }
@@ -23,9 +25,9 @@ public final class CraftingRecipeUtil {
      * Will throw an {@link IllegalArgumentException} in case it has more than 9 or a shaped recipe is either wider or
      * higher than 3. ingredients.
      */
-    public static NonNullList<Ingredient> ensure3by3CraftingMatrix(Recipe<?> recipe) {
+    public static NonNullList<Optional<Ingredient>> ensure3by3CraftingMatrix(Recipe<?> recipe) {
         var ingredients = getIngredients(recipe);
-        var expandedIngredients = NonNullList.withSize(9, Ingredient.of());
+        var expandedIngredients = NonNullList.<Optional<Ingredient>>withSize(9, Optional.empty());
 
         Preconditions.checkArgument(ingredients.size() <= 9);
 
@@ -55,31 +57,32 @@ public final class CraftingRecipeUtil {
         return expandedIngredients;
     }
 
-    public static NonNullList<Ingredient> getIngredients(Recipe<?> recipe) {
+    public static NonNullList<Optional<Ingredient>> getIngredients(Recipe<?> recipe) {
         // Special handling for upgrade recipes since those do not override getIngredients
         if (recipe instanceof SmithingTrimRecipe trimRecipe) {
-            var ingredients = NonNullList.withSize(3, Ingredient.of());
-            ingredients.set(0, trimRecipe.template.orElse(Ingredient.of()));
-            ingredients.set(1, trimRecipe.base.orElse(Ingredient.of()));
-            ingredients.set(2, trimRecipe.addition.orElse(Ingredient.of()));
+            var ingredients = NonNullList.<Optional<Ingredient>>withSize(3, Optional.empty());
+            ingredients.set(0, trimRecipe.template);
+            ingredients.set(1, trimRecipe.base);
+            ingredients.set(2, trimRecipe.addition);
             return ingredients;
         }
 
         if (recipe instanceof SmithingTransformRecipe transformRecipe) {
-            var ingredients = NonNullList.withSize(3, Ingredient.of());
-            ingredients.set(0, transformRecipe.template.orElse(Ingredient.of()));
-            ingredients.set(1, transformRecipe.base.orElse(Ingredient.of()));
-            ingredients.set(2, transformRecipe.addition.orElse(Ingredient.of()));
+            var ingredients = NonNullList.<Optional<Ingredient>>withSize(3, Optional.empty());
+            ingredients.set(0, transformRecipe.template);
+            ingredients.set(1, transformRecipe.base);
+            ingredients.set(2, transformRecipe.addition);
             return ingredients;
         }
 
         var placementInfo = recipe.placementInfo();
         if (!placementInfo.isImpossibleToPlace()) {
             var slotsToIngredient = placementInfo.slotsToIngredientIndex();
-            var ingredients = NonNullList.withSize(slotsToIngredient.size(), Ingredient.of());
+            var ingredients = NonNullList.<Optional<Ingredient>>withSize(slotsToIngredient.size(), Optional.empty());
             for (int i = 0; i < slotsToIngredient.size(); i++) {
-                ingredients.set(i, placementInfo.ingredients().get(i));
+                ingredients.set(i, Optional.of(placementInfo.ingredients().get(i)));
             }
+            return ingredients;
         }
 
         // TODO 1.21.4 hack around with displays?

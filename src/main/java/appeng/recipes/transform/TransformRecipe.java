@@ -39,10 +39,6 @@ public final class TransformRecipe implements Recipe<TransformRecipeInput> {
                         Ingredient.CODEC
                                 .listOf()
                                 .fieldOf("ingredients")
-                                .flatXmap(ingredients -> {
-                                    return DataResult
-                                            .success(NonNullList.of(Ingredient.of(), ingredients.toArray(Ingredient[]::new)));
-                                }, DataResult::success)
                                 .forGetter(r -> r.ingredients),
                         ItemStack.CODEC.fieldOf("result").forGetter(r -> r.output),
                         TransformCircumstance.CODEC
@@ -52,7 +48,7 @@ public final class TransformRecipe implements Recipe<TransformRecipeInput> {
     });
 
     public static final StreamCodec<RegistryFriendlyByteBuf, TransformRecipe> STREAM_CODEC = StreamCodec.composite(
-            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.collection(NonNullList::createWithCapacity)),
+            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()),
             TransformRecipe::getIngredients,
             ItemStack.STREAM_CODEC,
             TransformRecipe::getResultItem,
@@ -60,18 +56,17 @@ public final class TransformRecipe implements Recipe<TransformRecipeInput> {
             TransformRecipe::getCircumstance,
             TransformRecipe::new);
 
-    public final NonNullList<Ingredient> ingredients;
+    public final List<Ingredient> ingredients;
     public final ItemStack output;
     public final TransformCircumstance circumstance;
 
-    public TransformRecipe(NonNullList<Ingredient> ingredients, ItemStack output,
-                           TransformCircumstance circumstance) {
+    public TransformRecipe(List<Ingredient> ingredients, ItemStack output, TransformCircumstance circumstance) {
         this.ingredients = ingredients;
         this.output = output;
         this.circumstance = circumstance;
     }
 
-    public NonNullList<Ingredient> getIngredients() {
+    public List<Ingredient> getIngredients() {
         return ingredients;
     }
 

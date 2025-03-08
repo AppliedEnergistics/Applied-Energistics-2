@@ -25,6 +25,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.google.common.base.Preconditions;
@@ -166,7 +167,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
      * ingredient list will be condensed to the actual recipe's grid size. In addition, in our 3x3 grid, the user can
      * shift the actual recipe input to the right and down.
      */
-    private Ingredient getRecipeIngredient(int slot) {
+    private Optional<Ingredient> getRecipeIngredient(int slot) {
 
         if (recipe instanceof ShapedRecipe shapedRecipe) {
 
@@ -176,7 +177,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         }
     }
 
-    private Ingredient getShapedRecipeIngredient(int slot, int recipeWidth) {
+    private Optional<Ingredient> getShapedRecipeIngredient(int slot, int recipeWidth) {
         // Compute the offset of the user's input vs. crafting grid origin
         // Which is >0 if they have empty rows above or to the left of their input
         int topOffset = 0;
@@ -203,19 +204,19 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
 
         var placement = recipe.placementInfo();
         if (placement.isImpossibleToPlace()) {
-            return Ingredient.of(); // TODO 1.21.4 cannot stay like this either
+            return Optional.empty();
         }
 
         var indexMap = placement.slotsToIngredientIndex();
 
         if (ingredientIndex < 0 || ingredientIndex > indexMap.size()) {
-            return Ingredient.of();
+            return Optional.empty();
         }
 
-        return placement.ingredients().get(indexMap.getInt(ingredientIndex));
+        return Optional.of(placement.ingredients().get(indexMap.getInt(ingredientIndex)));
     }
 
-    private Ingredient getShapelessRecipeIngredient(int slot) {
+    private Optional<Ingredient> getShapelessRecipeIngredient(int slot) {
         // We map the list of *filled* sparse inputs to the shapeless (ergo unordered)
         // ingredients. While these do not actually correspond to each other,
         // since both lists have the same length, the mapping is at least stable.
@@ -228,14 +229,14 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
 
         var placement = recipe.placementInfo();
         if (placement.isImpossibleToPlace()) {
-            return Ingredient.of(); // TODO 1.21.4 cannot stay like this either
+            return Optional.empty();
         }
 
         if (ingredientIndex < placement.slotsToIngredientIndex().getInt(ingredientIndex)) {
-            return placement.ingredients().get(placement.slotsToIngredientIndex().getInt(ingredientIndex));
+            return Optional.of(placement.ingredients().get(placement.slotsToIngredientIndex().getInt(ingredientIndex)));
         }
 
-        return Ingredient.of();
+        return Optional.empty();
     }
 
     /**
@@ -603,7 +604,13 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             if (!canSubstitute) {
                 this.possibleInputs = new GenericStack[] { itemOrFluidInput };
             } else {
-                ItemStack[] matchingStacks = getRecipeIngredient(slot).items().map(Holder::value).map(Item::getDefaultInstance).toArray(ItemStack[]::new); // TODO 1.21.4 can't stay like this
+                ItemStack[] matchingStacks;
+                var recipeIngredient = getRecipeIngredient(slot).orElse(null);
+                if (recipeIngredient == null) {
+                    matchingStacks = new ItemStack[0];
+                } else {
+                    matchingStacks = recipeIngredient.items().map(Holder::value).map(Item::getDefaultInstance).toArray(ItemStack[]::new); // TODO 1.21.4 can't stay like this
+                }
                 this.possibleInputs = new GenericStack[matchingStacks.length + 1];
                 // Ensure that the stack chosen by the user gets precedence.
                 this.possibleInputs[0] = itemOrFluidInput;

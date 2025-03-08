@@ -44,8 +44,8 @@ public final class CraftingHelper {
         var templateItems = NonNullList.withSize(9, ItemStack.EMPTY);
         var ingredients = CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe);
         for (int i = 0; i < ingredients.size(); i++) {
-            var ingredient = ingredients.get(i);
-            if (!ingredient.isEmpty()) {
+            var ingredient = ingredients.get(i).orElse(null);
+            if (ingredient != null) {
                 // Try to find the best item. In case the ingredient is a tag, it might contain versions the
                 // player doesn't actually have
                 var stack = ingredientPriorities.entrySet()

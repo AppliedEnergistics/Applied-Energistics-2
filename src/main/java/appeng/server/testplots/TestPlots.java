@@ -682,7 +682,7 @@ public final class TestPlots {
                                 if (i.isEmpty()) {
                                     return ItemStack.EMPTY;
                                 } else {
-                                    return i.getValues().get(0).value();
+                                    return i.get().getValues().get(0).value();
                                 }
                             }).toArray(ItemStack[]::new);
                     // TODO 1.21.4 craftingPattern = PatternDetailsHelper.encodeCraftingPattern(

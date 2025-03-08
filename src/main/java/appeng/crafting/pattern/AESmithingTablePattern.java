@@ -21,6 +21,7 @@ package appeng.crafting.pattern;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 
@@ -71,7 +72,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
     private final AEItemKey template;
     private final AEItemKey base;
     private final AEItemKey addition;
-    private final IInput[] inputs;
+    private final @Nullable IInput[] inputs;
     private final List<GenericStack> outputs;
 
     public AESmithingTablePattern(AEItemKey definition, ServerLevel level) {
@@ -113,24 +114,24 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         }
 
         // Find ingredients
-        Ingredient templateIngredient, baseIngredient, additionIngredient;
+        Optional<Ingredient> templateIngredient, baseIngredient, additionIngredient;
         if (this.recipe instanceof SmithingTransformRecipe r) {
-            templateIngredient = r.template.orElse(Ingredient.of());
-            baseIngredient = r.base.orElse(Ingredient.of());
-            additionIngredient = r.addition.orElse(Ingredient.of());
+            templateIngredient = r.template;
+            baseIngredient = r.base;
+            additionIngredient = r.addition;
         } else if (this.recipe instanceof SmithingTrimRecipe r) {
-            templateIngredient = r.template.orElse(Ingredient.of());
-            baseIngredient = r.base.orElse(Ingredient.of());
-            additionIngredient = r.addition.orElse(Ingredient.of());
+            templateIngredient = r.template;
+            baseIngredient = r.base;
+            additionIngredient = r.addition;
         } else {
             throw new IllegalStateException(
                     "Don't know how to process non-vanilla smithing recipe: " + this.recipe.getClass());
         }
 
         this.inputs = new IInput[] {
-                new Input(template, templateIngredient, TEMPLATE_CRAFTING_GRID_SLOT),
-                new Input(base, baseIngredient, BASE_CRAFTING_GRID_SLOT),
-                new Input(addition, additionIngredient, ADDITION_CRAFTING_GRID_SLOT)
+                templateIngredient.map(i -> new Input(template, i, TEMPLATE_CRAFTING_GRID_SLOT)).orElse(null),
+                baseIngredient.map(i -> new Input(base, i, BASE_CRAFTING_GRID_SLOT)).orElse(null),
+                additionIngredient.map(i -> new Input(addition, i, ADDITION_CRAFTING_GRID_SLOT)).orElse(null)
         };
         this.outputs = Collections.singletonList(GenericStack.fromItemStack(this.output));
     }

@@ -152,12 +152,12 @@ public record FillCraftingGridFromRecipePacket(
         // Handle each slot
         for (var x = 0; x < craftMatrix.size(); x++) {
             var currentItem = craftMatrix.getStackInSlot(x);
-            var ingredient = ingredients.get(x);
+            var ingredient = ingredients.get(x).orElse(null);
 
             // Move out items blocking the grid
             if (!currentItem.isEmpty()) {
                 // Put away old item, if not correct
-                if (ingredient.test(currentItem)) {
+                if (ingredient != null && ingredient.test(currentItem)) {
                     // Grid already has an item that matches the ingredient
                     continue;
                 } else {
@@ -181,7 +181,7 @@ public record FillCraftingGridFromRecipePacket(
                 }
             }
 
-            if (ingredient.isEmpty()) {
+            if (ingredient == null) {
                 continue;
             }
 
@@ -251,7 +251,7 @@ public record FillCraftingGridFromRecipePacket(
         return ItemStack.EMPTY;
     }
 
-    private NonNullList<Ingredient> getDesiredIngredients(ServerPlayer player) {
+    private NonNullList<Optional<Ingredient>> getDesiredIngredients(ServerPlayer player) {
         // Try to retrieve the real recipe on the server-side
         if (this.recipeId != null) {
             var recipe = player.serverLevel().recipeAccess().byKey(this.recipeId).orElse(null);
@@ -261,14 +261,14 @@ public record FillCraftingGridFromRecipePacket(
         }
 
         // If the recipe is unavailable for any reason, use the templates provided by the client
-        var ingredients = NonNullList.withSize(9, Ingredient.of());
+        var ingredients = NonNullList.<Optional<Ingredient>>withSize(9, Optional.empty());
         Preconditions.checkArgument(ingredients.size() == this.ingredientTemplates.size(),
                 "Got %d ingredient templates from client, expected %d",
                 ingredientTemplates.size(), ingredients.size());
         for (int i = 0; i < ingredients.size(); i++) {
             var template = ingredientTemplates.get(i);
             if (!template.isEmpty()) {
-                ingredients.set(i, Ingredient.of(template.getItem()));
+                ingredients.set(i, Optional.of(Ingredient.of(template.getItem())));
             }
         }
 

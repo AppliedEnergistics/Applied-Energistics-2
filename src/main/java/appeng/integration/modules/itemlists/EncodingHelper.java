@@ -126,8 +126,8 @@ public final class EncodingHelper {
 
             // Find a good match for every ingredient
             for (int slot = 0; slot < ingredients3x3.size(); slot++) {
-                var ingredient = ingredients3x3.get(slot);
-                if (ingredient.isEmpty()) {
+                var ingredient = ingredients3x3.get(slot).orElse(null);
+                if (ingredient == null) {
                     continue; // Skip empty slots
                 }
 
