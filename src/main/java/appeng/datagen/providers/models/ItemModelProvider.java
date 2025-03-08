@@ -7,17 +7,22 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ColoredItemDefinition;
 import appeng.core.definitions.ItemDefinition;
+import appeng.items.misc.PaintBallItem;
 import com.google.gson.JsonObject;
+import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.renderer.item.EmptyModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.ItemLike;
+import org.checkerframework.common.returnsreceiver.qual.This;
 
 public class ItemModelProvider extends ModelSubProvider {
     public ItemModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
@@ -196,17 +201,39 @@ public class ItemModelProvider extends ModelSubProvider {
      * Note that color is applied to the textures in {@link appeng.init.client.InitItemColors}.
      */
     private void registerPaintballs() {
-        for (AEColor value : AEColor.values()) {
-            if (value == AEColor.TRANSPARENT) {
+        var baseModel = ModelTemplates.FLAT_ITEM.create(AppEng.makeId("item/paint_ball"), TextureMapping.layer0(AppEng.makeId("item/paint_ball")), this.modelOutput);
+        var lumenModel = ModelTemplates.FLAT_ITEM.create(AppEng.makeId("item/paint_ball_shimmer"), TextureMapping.layer0(AppEng.makeId("item/paint_ball_shimmer")), this.modelOutput);
+
+        for (var color : AEColor.values()) {
+            if (color == AEColor.TRANSPARENT) {
                 continue;
             }
 
-            var item = AEItems.COLORED_PAINT_BALL.item(value);
-            flatSingleLayer(item, "item/paint_ball");
-
-            item = AEItems.COLORED_LUMEN_PAINT_BALL.item(value);
-            flatSingleLayer(item, "item/paint_ball_shimmer");
+            itemModels.itemModelOutput.accept(
+                    AEItems.COLORED_PAINT_BALL.item(color),
+                    ItemModelUtils.tintedModel(baseModel, new Constant(color.mediumVariant))
+            );
+            var lumenColor = getLumenTintColor(color);
+            itemModels.itemModelOutput.accept(
+                    AEItems.COLORED_LUMEN_PAINT_BALL.item(color),
+                    ItemModelUtils.tintedModel(lumenModel, new Constant(lumenColor))
+            );
         }
+    }
+
+    private static int getLumenTintColor(AEColor color) {
+        // We use a white base item icon for paint balls. This applies the correct color to it.
+        final int colorValue = color.mediumVariant;
+        final int r = ARGB.red(colorValue);
+        final int g = ARGB.green(colorValue);
+        final int b = ARGB.blue(colorValue);
+        float fail = 0.7f;
+        int full = (int) (255 * 0.3);
+        return ARGB.color(
+                (int) (full + r * fail),
+                (int) (full + g * fail),
+                (int) (full + b * fail)
+        );
     }
 
     private void flatSingleLayer(ItemLike item, String texture) {

@@ -34,14 +34,12 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
-import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.EmptyModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import static appeng.core.AppEng.makeId;
@@ -154,21 +152,42 @@ public class BlockModelProvider extends ModelSubProvider {
         blockModels.blockStateOutput.accept(createSimpleBlock(AEBlocks.NOT_SO_MYSTERIOUS_CUBE.block(), makeId("block/mysterious_cube")));
     }
 
+    private static final TextureSlot BLOCK = TextureSlot.create("block");
+    private static final TextureSlot LIGHTS = TextureSlot.create("lights");
+    private static final ModelTemplate CONTROLLER_BLOCK_LIGHTS = ModelTemplates.create("ae2:controller/controller_block_lights", BLOCK, LIGHTS);
+    private static final ModelTemplate CONTROLLER_COLUMN_LIGHTS = ModelTemplates.create("ae2:controller/controller_column_lights", BLOCK, LIGHTS);
+
     private void controller() {
         var block = AEBlocks.CONTROLLER.block();
 
-        var offlineBlock = ModelLocationUtils.getModelLocation(block, "_block_offline");
-        var onlineBlock = ModelLocationUtils.getModelLocation(block, "_block_online");
-        var conflictedBlock = ModelLocationUtils.getModelLocation(block, "_block_conflicted");
+        var texturesBlock = new TextureMapping()
+                .put(TextureSlot.ALL, AppEng.makeId("block/controller"))
+                .put(TextureSlot.SIDE, AppEng.makeId("block/controller_column"))
+                .put(TextureSlot.END, AppEng.makeId("block/controller"))
+                .put(BLOCK, AppEng.makeId("block/controller_powered"))
+                .put(LIGHTS, AppEng.makeId("block/controller_lights"));
+        var offlineBlock = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_block_offline", texturesBlock, modelOutput);
+        var onlineBlock = CONTROLLER_BLOCK_LIGHTS.createWithSuffix(block, "_block_online", texturesBlock, modelOutput);
+        var conflictedBlock = CONTROLLER_BLOCK_LIGHTS.createWithSuffix(block, "_block_conflicted", texturesBlock.copy().put(LIGHTS, AppEng.makeId("block/controller_conflict")), modelOutput);
 
-        var offlineColumn = ModelLocationUtils.getModelLocation(block, "_column_offline");
-        var onlineColumn = ModelLocationUtils.getModelLocation(block, "_column_online");
-        var conflictedColumn = ModelLocationUtils.getModelLocation(block, "_column_conflicted");
+        var texturesColumn = new TextureMapping()
+                .put(TextureSlot.ALL, AppEng.makeId("block/controller"))
+                .put(TextureSlot.SIDE, AppEng.makeId("block/controller_column"))
+                .put(TextureSlot.END, AppEng.makeId("block/controller"))
+                .put(BLOCK, AppEng.makeId("block/controller_column_powered"))
+                .put(LIGHTS, AppEng.makeId("block/controller_column_lights"));
+        var offlineColumn = ModelTemplates.CUBE_COLUMN.createWithSuffix(block, "_column_offline", texturesColumn, modelOutput);
+        var onlineColumn = CONTROLLER_COLUMN_LIGHTS.createWithSuffix(block, "_column_online", texturesColumn, modelOutput);
+        var conflictedColumn = CONTROLLER_COLUMN_LIGHTS.createWithSuffix(block, "_column_conflicted", texturesColumn.copy().put(LIGHTS, AppEng.makeId("block/controller_column_conflict")), modelOutput);
 
-        var insideA = ModelLocationUtils.getModelLocation(block, "_inside_a");
-        var insideB = ModelLocationUtils.getModelLocation(block, "_inside_b");
-        var insideAConflicted = ModelLocationUtils.getModelLocation(block, "_inside_a_conflicted");
-        var insideBConflicted = ModelLocationUtils.getModelLocation(block, "_inside_b_conflicted");
+        var insideA = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_inside_a", TextureMapping.cube(AppEng.makeId("block/controller_inside_a")), modelOutput);
+        var insideB = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_inside_b", TextureMapping.cube(AppEng.makeId("block/controller_inside_b")), modelOutput);
+        var insideAConflicted = CONTROLLER_BLOCK_LIGHTS.createWithSuffix(block, "inside_a_conflicted", new TextureMapping()
+                .put(BLOCK, AppEng.makeId("block/controller_inside_a_powered"))
+                .put(LIGHTS, AppEng.makeId("block/controller_conflict")), modelOutput);
+        var insideBConflicted = CONTROLLER_BLOCK_LIGHTS.createWithSuffix(block, "inside_b_conflicted", new TextureMapping()
+                .put(BLOCK, AppEng.makeId("block/controller_inside_b_powered"))
+                .put(LIGHTS, AppEng.makeId("block/controller_conflict")), modelOutput);
 
         // Alias the enums since the following becomes very noisy otherwise
         // Static import would be possible but conflicts with local variables
@@ -329,7 +348,13 @@ public class BlockModelProvider extends ModelSubProvider {
         builder.with(facingVariants);
         for (var facing : Direction.values()) {
             var variant = Variant.variant().with(VariantProperties.MODEL, modelFile);
-            facingVariants.select(facing, applyOrientation(variant, BlockOrientation.get(facing, 0)));
+            var orientation = BlockOrientation.get(facing, 0);
+            // The original is facing "up" while we generally assume models are facing north
+            // but this looks better as an item model
+            facingVariants.select(facing, applyRotation(variant,
+                    orientation.getAngleX() + 90,
+                    orientation.getAngleY(),
+                    0));
         }
 
         blockModels.blockStateOutput.accept(builder);
