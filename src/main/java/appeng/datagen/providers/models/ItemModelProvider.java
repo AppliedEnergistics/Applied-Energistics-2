@@ -1,6 +1,7 @@
 package appeng.datagen.providers.models;
 
 import appeng.api.util.AEColor;
+import appeng.client.render.model.MemoryCardModel;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -35,8 +36,9 @@ public class ItemModelProvider extends ModelSubProvider {
 
         flatSingleLayer(AEItems.MISSING_CONTENT, "minecraft:item/barrier");
 
-        // TODO flatSingleLayer(MemoryCardModel.MODEL_BASE, "item/memory_card_base")
-        // TODO         .texture("layer1", "item/memory_card_led");
+        ModelTemplates.FLAT_ITEM.create(MemoryCardModel.MODEL_BASE,
+                TextureMapping.layered(makeId("item/memory_card_base"), makeId("item/memory_card_led")),
+                modelOutput);
         builtInItemModel(AEItems.MEMORY_CARD);
 
         builtInItemModel(AEItems.FACADE);
@@ -242,7 +244,8 @@ public class ItemModelProvider extends ModelSubProvider {
     }
 
     private void builtInItemModel(ItemLike item) {
-        itemModels.declareCustomModelItem(item.asItem());
+        var model = createBuiltInModel(ModelLocationUtils.getModelLocation(item.asItem()));
+        blockModels.registerSimpleItemModel(item.asItem(), model);
     }
 
     private static ResourceLocation makeId(String id) {

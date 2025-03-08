@@ -189,7 +189,6 @@ public class DecorationModelProvider extends ModelSubProvider {
         wall(AEBlocks.SMOOTH_SKY_STONE_WALL, "block/smooth_sky_stone_block");
 
         quartzFixture();
-        blockModels.copyModel(AEBlocks.QUARTZ_FIXTURE.block(), AEBlocks.LIGHT_DETECTOR.block());
     }
 
     private void quartzFixture() {
@@ -247,10 +246,15 @@ public class DecorationModelProvider extends ModelSubProvider {
                 .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270));
 
         multiVariantGenerator(AEBlocks.QUARTZ_FIXTURE).with(dispatch);
+        multiVariantGenerator(AEBlocks.LIGHT_DETECTOR).with(dispatch);
 
         // Special item model
         blockModels.registerSimpleItemModel(
                 AEBlocks.QUARTZ_FIXTURE.asItem(),
+                ModelLocationUtils.getModelLocation(AEBlocks.QUARTZ_FIXTURE.asItem())
+        );
+        blockModels.registerSimpleItemModel(
+                AEBlocks.LIGHT_DETECTOR.asItem(),
                 ModelLocationUtils.getModelLocation(AEBlocks.QUARTZ_FIXTURE.asItem())
         );
     }

@@ -72,17 +72,17 @@ public class PartModelProvider extends ModelSubProvider {
     }
 
     private void registerCables() {
-        buildCableItems(AEParts.GLASS_CABLE, "item/glass_cable_base", "part/cable/glass/");
-        buildCableItems(AEParts.COVERED_CABLE, "item/covered_cable_base", "part/cable/covered/");
-        buildCableItems(AEParts.COVERED_DENSE_CABLE, "item/covered_dense_cable_base", "part/cable/dense_covered/");
-        buildCableItems(AEParts.SMART_CABLE, "item/smart_cable_base", "part/cable/smart/");
-        buildCableItems(AEParts.SMART_DENSE_CABLE, "item/smart_dense_cable_base", "part/cable/dense_smart/");
+        buildCableItems(AEParts.GLASS_CABLE, "ae2:glass_cable_base", "part/cable/glass/");
+        buildCableItems(AEParts.COVERED_CABLE, "ae2:covered_cable_base", "part/cable/covered/");
+        buildCableItems(AEParts.COVERED_DENSE_CABLE, "ae2:covered_dense_cable_base", "part/cable/dense_covered/");
+        buildCableItems(AEParts.SMART_CABLE, "ae2:smart_cable_base", "part/cable/smart/");
+        buildCableItems(AEParts.SMART_DENSE_CABLE, "ae2:smart_dense_cable_base", "part/cable/dense_smart/");
     }
 
     private void buildCableItems(ColoredItemDefinition<?> cable, String baseModel, String textureBase) {
         for (var color : AEColor.values()) {
             var item = cable.item(color);
-            var model = ModelTemplates.create(baseModel, BASE).create(
+            var model = ModelTemplates.createItem(baseModel, BASE).create(
                     item,
                     new TextureMapping().put(BASE, AppEng.makeId(textureBase + color.name().toLowerCase(Locale.ROOT))),
                     modelOutput
@@ -96,6 +96,6 @@ public class PartModelProvider extends ModelSubProvider {
      * set the loader name, since it'll be used there.
      */
     private void addBuiltInModel(String name) {
-        var modelId = EMPTY_MODEL.create(AppEng.makeId(name), new TextureMapping(), modelOutput);
+        EMPTY_MODEL.create(AppEng.makeId(name), TRANSPARENT_PARTICLE, modelOutput);
     }
 }

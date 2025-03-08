@@ -2,6 +2,7 @@ package appeng.datagen.providers.models;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.IOrientationStrategy;
+import appeng.client.render.model.BuiltInModelLoaderBuilder;
 import appeng.core.AppEng;
 import appeng.core.definitions.BlockDefinition;
 import com.google.gson.JsonPrimitive;
@@ -16,6 +17,7 @@ import net.minecraft.client.data.models.blockstates.VariantProperties;
 import net.minecraft.client.data.models.blockstates.VariantProperty;
 import net.minecraft.client.data.models.model.ModelInstance;
 import net.minecraft.client.data.models.model.ModelTemplate;
+import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.core.Direction;
@@ -32,7 +34,9 @@ public abstract class ModelSubProvider {
     protected static final VariantProperty<VariantProperties.Rotation> Z_ROT = new VariantProperty<>("ae2:z",
             r -> new JsonPrimitive(r.ordinal() * 90));
 
-    public static final ModelTemplate EMPTY_MODEL = new ModelTemplate(Optional.empty(), Optional.empty());
+    public static final TextureMapping TRANSPARENT_PARTICLE = TextureMapping.particle(AppEng.makeId("block/transparent"));
+
+    public static final ModelTemplate EMPTY_MODEL = new ModelTemplate(Optional.empty(), Optional.empty(), TextureSlot.PARTICLE);
 
     protected final BlockModelGenerators blockModels;
     protected final ItemModelGenerators itemModels;
@@ -175,5 +179,13 @@ public abstract class ModelSubProvider {
                                                                         BlockState blockState,
                                                                         Property<T> property) {
         return condition.term(property, blockState.getValue(property));
+    }
+
+    protected final ResourceLocation createBuiltInModel(ResourceLocation id) {
+        return EMPTY_MODEL
+                .extend()
+                .customLoader(BuiltInModelLoaderBuilder::new, builder -> builder.id(id))
+                .build()
+                .create(id, TRANSPARENT_PARTICLE, modelOutput);
     }
 }

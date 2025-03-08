@@ -67,7 +67,7 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 
     // Used to alternate between two variants of the fixture on adjacent blocks
-    public static final BooleanProperty ODD = BooleanProperty.create("odd");
+    public static final BooleanProperty ODD = QuartzFixtureBlock.ODD;
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -75,14 +75,14 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
         super(fixtureProps(p));
 
         this.registerDefaultState(
-                this.defaultBlockState().setValue(BlockStateProperties.FACING, Direction.UP).setValue(ODD, false)
+                this.defaultBlockState().setValue(FACING, Direction.UP).setValue(ODD, false)
                         .setValue(WATERLOGGED, false));
     }
 
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(BlockStateProperties.FACING, ODD, WATERLOGGED);
+        builder.add(FACING, ODD, WATERLOGGED);
     }
 
     @Override

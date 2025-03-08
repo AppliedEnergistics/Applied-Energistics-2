@@ -55,7 +55,7 @@ public class BlockModelProvider extends ModelSubProvider {
     protected void register() {
         blockModels.createTrivialBlock(
                 AEBlocks.MATRIX_FRAME.block(),
-                TexturedModel.createDefault(block -> new TextureMapping(), EMPTY_MODEL));
+                TexturedModel.createDefault(block -> TRANSPARENT_PARTICLE, EMPTY_MODEL));
 
         // These models will be overwritten in code
         builtInModel(AEBlocks.QUARTZ_GLASS, true);
@@ -248,6 +248,7 @@ public class BlockModelProvider extends ModelSubProvider {
                                 Variant.variant().with(VariantProperties.MODEL, insideBConflicted))
         );
 
+        blockModels.registerSimpleItemModel(block.asItem(), offlineBlock);
     }
 
     private void quantumBridge() {
@@ -517,14 +518,6 @@ public class BlockModelProvider extends ModelSubProvider {
 
     private ResourceLocation createBuiltInModel(Block block, String suffix) {
         return createBuiltInModel(ModelLocationUtils.getModelLocation(block, suffix));
-    }
-
-    private ResourceLocation createBuiltInModel(ResourceLocation id) {
-        return EMPTY_MODEL
-                .extend()
-                .customLoader(BuiltInModelLoaderBuilder::new, builder -> builder.id(id))
-                .build()
-                .create(id, new TextureMapping(), modelOutput);
     }
 
     private void energyCell(
