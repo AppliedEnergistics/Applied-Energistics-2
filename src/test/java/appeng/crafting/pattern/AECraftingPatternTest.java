@@ -6,17 +6,22 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
@@ -60,7 +65,7 @@ import appeng.util.RecursiveTagReplace;
 class AECraftingPatternTest {
     private final RegistryAccess registries = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
 
-    private static final ResourceLocation TEST_RECIPE_ID = AppEng.makeId("test_recipe");
+    private static final ResourceKey<Recipe<?>> TEST_RECIPE_ID = ResourceKey.create(Registries.RECIPE, AppEng.makeId("test_recipe"));
 
     @Mock
     MockedStatic<AppEng> appEngMock;
@@ -74,7 +79,7 @@ class AECraftingPatternTest {
     }
 
     private final RecipeHolder<CraftingRecipe> TEST_RECIPE = buildRecipe(
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Items.STICK)
+            ShapedRecipeBuilder.shaped(BuiltInRegistries.ITEM, RecipeCategory.MISC, Items.STICK)
                     .pattern("xy")
                     .define('x', Items.TORCH)
                     .define('y', Items.DIAMOND));
@@ -89,9 +94,13 @@ class AECraftingPatternTest {
             }
 
             @Override
-            public void accept(ResourceLocation id, Recipe<?> recipe, @Nullable AdvancementHolder advancement,
+            public void accept(ResourceKey<Recipe<?>> id, Recipe<?> recipe, @Nullable AdvancementHolder advancement,
                     ICondition... conditions) {
                 result.set((ShapedRecipe) recipe);
+            }
+
+            @Override
+            public void includeRootAdvancement() {
             }
         }, TEST_RECIPE_ID);
         return new RecipeHolder<>(TEST_RECIPE_ID, Objects.requireNonNull(result.get()));
@@ -154,10 +163,10 @@ class AECraftingPatternTest {
     }
 
     private AECraftingPattern decode(CompoundTag tag) {
-        var level = mock(Level.class);
+        var level = mock(ServerLevel.class, Mockito.RETURNS_DEEP_STUBS);
         var recipeManager = mock(RecipeManager.class);
-        when(level.getRecipeManager()).thenReturn(recipeManager);
-        when(recipeManager.byType(RecipeType.CRAFTING)).thenReturn(List.of(TEST_RECIPE));
+        when(level.recipeAccess()).thenReturn(recipeManager);
+        when(recipeManager.recipeMap().byType(RecipeType.CRAFTING)).thenReturn(List.of(TEST_RECIPE));
 
         var pattern = ItemStack.parseOptional(registries, tag);
         var details = PatternDetailsHelper.decodePattern(AEItemKey.of(pattern), level);

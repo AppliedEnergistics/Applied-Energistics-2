@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.client.renderer.RenderType;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -84,7 +85,7 @@ public class EntropyRecipeDisplay implements Display {
                     int mouseY, float delta) {
                 var baseRenderer = entry.getDefinition().getRenderer();
                 baseRenderer.render(entry, graphics, bounds, mouseX, mouseY, delta);
-                graphics.blit(ReiPlugin.TEXTURE, bounds.x, bounds.y,
+                graphics.blit(RenderType::guiTextured, ReiPlugin.TEXTURE, bounds.x, bounds.y, 0, 0,
                         0, 52, 16, 16);
             }
 
@@ -131,7 +132,7 @@ public class EntropyRecipeDisplay implements Display {
 
     @Override
     public Optional<ResourceLocation> getDisplayLocation() {
-        return Optional.of(holder.id());
+        return Optional.of(holder.id().location());
     }
 
     private static EntryStack<?> createIngredient(Block block, Fluid fluid) {

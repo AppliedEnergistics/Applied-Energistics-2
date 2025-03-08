@@ -1,8 +1,11 @@
 package appeng.datagen.providers.models;
 
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.renderer.item.EmptyModel;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
+import net.minecraft.world.level.ItemLike;
 
 
 import appeng.api.ids.AEItemIds;
@@ -12,26 +15,24 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
-import appeng.datagen.providers.IAE2DataProvider;
 
-public class ItemModelProvider extends net.neoforged.neoforge.client.model.generators.ItemModelProvider
-        implements IAE2DataProvider {
+public class ItemModelProvider extends AE2BlockStateProvider {
     public ItemModelProvider(PackOutput packOutput) {
         super(packOutput, AppEng.MOD_ID);
     }
 
     @Override
-    protected void registerModels() {
+    protected void register(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         registerPaintballs();
 
         flatSingleLayer(AEItems.MISSING_CONTENT, "minecraft:item/barrier");
 
-        flatSingleLayer(MemoryCardModel.MODEL_BASE, "item/memory_card_base")
-                .texture("layer1", "item/memory_card_led");
-        builtInItemModel("memory_card");
+       // TODO flatSingleLayer(MemoryCardModel.MODEL_BASE, "item/memory_card_base")
+       // TODO         .texture("layer1", "item/memory_card_led");
+        builtInItemModel(AEItems.MEMORY_CARD);
 
-        builtInItemModel("facade");
-        builtInItemModel("meteorite_compass");
+        builtInItemModel(AEItems.FACADE);
+        builtInItemModel(AEItems.METEORITE_COMPASS);
 
         flatSingleLayer(AEItems.ADVANCED_CARD, "item/advanced_card");
         flatSingleLayer(AEItems.VOID_CARD, "item/card_void");
@@ -130,25 +131,25 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
     }
 
     private void storageCell(ItemDefinition<?> item, String background) {
-        String id = item.id().getPath();
-        singleTexture(
-                id,
-                mcLoc("item/generated"),
-                "layer0",
-                makeId(background))
-                .texture("layer1", "item/storage_cell_led");
+     // TODO  String id = item.id().getPath();
+     // TODO  singleTexture(
+     // TODO          id,
+     // TODO          mcLoc("item/generated"),
+     // TODO          "layer0",
+     // TODO          makeId(background))
+     // TODO          .texture("layer1", "item/storage_cell_led");
     }
 
     private void portableCell(ItemDefinition<?> item, String housingType, String tier) {
-        String id = item.id().getPath();
-        singleTexture(
-                id,
-                mcLoc("item/generated"),
-                "layer0",
-                makeId("item/portable_cell_%s_housing".formatted(housingType)))
-                .texture("layer1", "item/portable_cell_led")
-                .texture("layer2", "item/portable_cell_screen")
-                .texture("layer3", "item/portable_cell_side_%s".formatted(tier));
+       // TODO String id = item.id().getPath();
+       // TODO singleTexture(
+       // TODO         id,
+       // TODO         mcLoc("item/generated"),
+       // TODO         "layer0",
+       // TODO         makeId("item/portable_cell_%s_housing".formatted(housingType)))
+       // TODO         .texture("layer1", "item/portable_cell_led")
+       // TODO         .texture("layer2", "item/portable_cell_screen")
+       // TODO         .texture("layer3", "item/portable_cell_side_%s".formatted(tier));
     }
 
     private void registerHandheld() {
@@ -176,15 +177,15 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
     }
 
     private void handheld(ItemDefinition<?> item) {
-        singleTexture(
-                item.id().getPath(),
-                ResourceLocation.parse("item/handheld"),
-                "layer0",
-                makeId("item/" + item.id().getPath()));
+     // TODO   singleTexture(
+     // TODO           item.id().getPath(),
+     // TODO           ResourceLocation.parse("item/handheld"),
+     // TODO           "layer0",
+     // TODO           makeId("item/" + item.id().getPath()));
     }
 
     private void registerEmptyModel(ItemDefinition<?> item) {
-        this.getBuilder(item.id().getPath());
+        itemModels.itemModelOutput.accept(item.asItem(), new EmptyModel.Unbaked());
     }
 
     /**
@@ -206,26 +207,25 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         }
     }
 
-    private ItemModelBuilder flatSingleLayer(ItemDefinition<?> item, String texture) {
+    private void flatSingleLayer(ItemDefinition<?> item, String texture) {
         String id = item.id().getPath();
-        return singleTexture(
-                id,
-                mcLoc("item/generated"),
-                "layer0",
-                makeId(texture));
+        // TODO return singleTexture(
+        // TODO         id,
+        // TODO         mcLoc("item/generated"),
+        // TODO         "layer0",
+        // TODO         makeId(texture));
     }
 
-    private ItemModelBuilder flatSingleLayer(ResourceLocation id, String texture) {
-        return singleTexture(
-                id.getPath(),
-                mcLoc("item/generated"),
-                "layer0",
-                makeId(texture));
+    private void flatSingleLayer(ResourceLocation id, String texture) {
+               // TODO return singleTexture(
+       // TODO         id.getPath(),
+       // TODO         mcLoc("item/generated"),
+       // TODO         "layer0",
+       // TODO         makeId(texture));
     }
 
-    private ItemModelBuilder builtInItemModel(String name) {
-        var model = getBuilder("item/" + name);
-        return model;
+    private void builtInItemModel(ItemLike item) {
+        itemModels.declareCustomModelItem(item.asItem());
     }
 
     private static ResourceLocation makeId(String id) {

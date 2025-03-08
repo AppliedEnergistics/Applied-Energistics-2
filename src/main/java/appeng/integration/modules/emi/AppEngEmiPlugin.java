@@ -135,7 +135,7 @@ public class AppEngEmiPlugin implements EmiPlugin {
         return new EmiCraftingRecipe(
                 List.of(cellStack, EmiStack.of(recipe.getInputComponent())),
                 EmiStack.of(recipe.getResultCell()),
-                holder.id(),
+                holder.id().location(),
                 true) {
             @Override
             public boolean supportsRecipeTree() {
@@ -182,20 +182,20 @@ public class AppEngEmiPlugin implements EmiPlugin {
     private static <C extends RecipeInput, T extends Recipe<C>> void adaptRecipeType(EmiRegistry registry,
             RecipeType<T> recipeType,
             Function<RecipeHolder<T>, ? extends EmiRecipe> adapter) {
-        registry.getRecipeManager().getAllRecipesFor(recipeType)
-                .stream()
-                .map(adapter)
-                .forEach(registry::addRecipe);
+        // TODO 1.21.4 registry.getRecipeManager().getAllRecipesFor(recipeType)
+        // TODO 1.21.4         .stream()
+        // TODO 1.21.4         .map(adapter)
+        // TODO 1.21.4         .forEach(registry::addRecipe);
     }
 
     private static <T extends Recipe<?>> void adaptSpecialRecipes(EmiRegistry registry,
             Class<T> recipeClass,
             Function<RecipeHolder<T>, ? extends EmiRecipe> adapter) {
-        registry.getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING)
-                .stream()
-                .filter(r -> recipeClass.isInstance(r.value()))
-                .map(r -> adapter.apply(new RecipeHolder<>(r.id(), recipeClass.cast(r.value()))))
-                .forEach(registry::addRecipe);
+      // TODO 1.21.4 registry.getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING)
+      // TODO 1.21.4         .stream()
+      // TODO 1.21.4         .filter(r -> recipeClass.isInstance(r.value()))
+      // TODO 1.21.4         .map(r -> adapter.apply(new RecipeHolder<>(r.id(), recipeClass.cast(r.value()))))
+      // TODO 1.21.4         .forEach(registry::addRecipe);
     }
 
     private void registerP2PAttunements(Consumer<EmiRecipe> recipeConsumer) {

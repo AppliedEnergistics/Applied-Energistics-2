@@ -96,7 +96,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
                 return result;
             }
         } else {
-            CraftingHelper.performTransfer(menu, recipes, recipeId, recipe, craftMissing);
+            // TODO 1.21.4 CraftingHelper.performTransfer(menu, recipes, recipeId, recipe, craftMissing);
         }
 
         // No error
@@ -104,14 +104,14 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
     }
 
     private Recipe<?> createFakeRecipe(Display display) {
-        var ingredients = NonNullList.withSize(CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT,
-                Ingredient.of());
+        var ingredients = NonNullList.<Optional<Ingredient>>withSize(CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT,
+                Optional.empty());
 
         for (int i = 0; i < Math.min(display.getInputEntries().size(), ingredients.size()); i++) {
-            var ingredient = Ingredient.of(display.getInputEntries().get(i).stream()
-                    .filter(es -> es.getType() == VanillaEntryTypes.ITEM)
-                    .map(es -> (ItemStack) es.castValue()));
-            ingredients.set(i, ingredient);
+          // TODO 1.21.4    var ingredient = Ingredient.of(display.getInputEntries().get(i).stream()
+          // TODO 1.21.4            .filter(es -> es.getType() == VanillaEntryTypes.ITEM)
+          // TODO 1.21.4            .map(es -> (ItemStack) es.castValue()));
+          // TODO 1.21.4    ingredients.set(i, ingredient);
         }
 
         var pattern = new ShapedRecipePattern(CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT, ingredients, Optional.empty());
@@ -119,7 +119,10 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
     }
 
     public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(Recipe<?> recipe) {
-        var ingredients = recipe.getIngredients();
+        var placement = recipe.placementInfo();
+        if (placement.isImpossibleToPlace()) {
+            return Map.of();
+        }
 
         // JEI will align non-shaped recipes smaller than 3x3 in the grid. It'll center them horizontally, and
         // some will be aligned to the bottom. (i.e. slab recipes).
@@ -130,13 +133,11 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
             width = CRAFTING_GRID_WIDTH;
         }
 
-        var result = new HashMap<Integer, Ingredient>(ingredients.size());
-        for (int i = 0; i < ingredients.size(); i++) {
+        var result = new HashMap<Integer, Ingredient>(placement.slotsToIngredientIndex().size());
+        for (int i = 0; i < placement.slotsToIngredientIndex().size(); i++) {
             var guiSlot = (i / width) * CRAFTING_GRID_WIDTH + (i % width);
-            var ingredient = ingredients.get(i);
-            if (!ingredient.isEmpty()) {
-                result.put(guiSlot, ingredient);
-            }
+            var ingredient = placement.ingredients().get(placement.slotsToIngredientIndex().getInt(i));
+            result.put(guiSlot, ingredient);
         }
         return result;
     }

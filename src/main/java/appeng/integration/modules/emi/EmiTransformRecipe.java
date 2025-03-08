@@ -26,7 +26,7 @@ class EmiTransformRecipe extends BasicEmiRecipe {
     private final TransformRecipe recipe;
 
     public EmiTransformRecipe(RecipeHolder<TransformRecipe> holder) {
-        super(CATEGORY, holder.id(), 150, 72);
+        super(CATEGORY, holder.id().location(), 150, 72);
         recipe = holder.value();
 
         for (var ingredient : recipe.getIngredients()) {

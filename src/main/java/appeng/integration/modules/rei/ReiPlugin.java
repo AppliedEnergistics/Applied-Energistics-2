@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -275,7 +277,7 @@ public class ReiPlugin implements REIClientPlugin {
         }
 
         for (var entry : P2PTunnelAttunementInternal.getTagTunnels().entrySet()) {
-            var ingredient = Ingredient.of(entry.getKey());
+            var ingredient = Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(entry.getKey()));
             if (ingredient.isEmpty()) {
                 continue;
             }
@@ -301,7 +303,7 @@ public class ReiPlugin implements REIClientPlugin {
 
     private static void addDescription(DisplayRegistry registry, ItemDefinition<?> itemDefinition, String... message) {
         DefaultInformationDisplay info = DefaultInformationDisplay.createFromEntry(EntryStacks.of(itemDefinition),
-                itemDefinition.get().getDescription());
+                itemDefinition.get().getName());
         info.lines(Arrays.stream(message).map(Component::translatable).collect(Collectors.toList()));
         registry.add(info);
     }

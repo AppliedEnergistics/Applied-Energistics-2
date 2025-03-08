@@ -18,6 +18,8 @@
 
 package appeng.datagen.providers.models;
 
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
 
@@ -32,58 +34,58 @@ public class DecorationModelProvider extends AE2BlockStateProvider {
     }
 
     @Override
-    protected void registerStatesAndModels() {
-        stairsBlock(AEBlocks.CHISELED_QUARTZ_STAIRS, "block/chiseled_quartz_block_top",
-                "block/chiseled_quartz_block_side", "block/chiseled_quartz_block_top");
-        slabBlock(AEBlocks.CHISELED_QUARTZ_SLAB, AEBlocks.CHISELED_QUARTZ_BLOCK, "block/chiseled_quartz_block_top",
-                "block/chiseled_quartz_block_side", "block/chiseled_quartz_block_top");
-        wall(AEBlocks.CHISELED_QUARTZ_WALL, "block/chiseled_quartz_block_side");
+    protected void register(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+   // TODO    stairsBlock(AEBlocks.CHISELED_QUARTZ_STAIRS, "block/chiseled_quartz_block_top",
+   // TODO            "block/chiseled_quartz_block_side", "block/chiseled_quartz_block_top");
+   // TODO    slabBlock(AEBlocks.CHISELED_QUARTZ_SLAB, AEBlocks.CHISELED_QUARTZ_BLOCK, "block/chiseled_quartz_block_top",
+   // TODO            "block/chiseled_quartz_block_side", "block/chiseled_quartz_block_top");
+   // TODO    wall(AEBlocks.CHISELED_QUARTZ_WALL, "block/chiseled_quartz_block_side");
 
-        stairsBlock(AEBlocks.FLUIX_STAIRS, AEBlocks.FLUIX_BLOCK);
-        slabBlock(AEBlocks.FLUIX_SLAB, AEBlocks.FLUIX_BLOCK);
-        wall(AEBlocks.FLUIX_WALL, "block/fluix_block");
+   // TODO    stairsBlock(AEBlocks.FLUIX_STAIRS, AEBlocks.FLUIX_BLOCK);
+   // TODO    slabBlock(AEBlocks.FLUIX_SLAB, AEBlocks.FLUIX_BLOCK);
+   // TODO    wall(AEBlocks.FLUIX_WALL, "block/fluix_block");
 
-        stairsBlock(AEBlocks.QUARTZ_STAIRS, AEBlocks.QUARTZ_BLOCK);
-        slabBlock(AEBlocks.QUARTZ_SLAB, AEBlocks.QUARTZ_BLOCK);
-        wall(AEBlocks.QUARTZ_WALL, "block/quartz_block");
+   // TODO    stairsBlock(AEBlocks.QUARTZ_STAIRS, AEBlocks.QUARTZ_BLOCK);
+   // TODO    slabBlock(AEBlocks.QUARTZ_SLAB, AEBlocks.QUARTZ_BLOCK);
+   // TODO    wall(AEBlocks.QUARTZ_WALL, "block/quartz_block");
 
-        stairsBlock(AEBlocks.CUT_QUARTZ_STAIRS, AEBlocks.CUT_QUARTZ_BLOCK);
-        slabBlock(AEBlocks.CUT_QUARTZ_SLAB, AEBlocks.CUT_QUARTZ_BLOCK);
-        wall(AEBlocks.CUT_QUARTZ_WALL, "block/cut_quartz_block");
+   // TODO    stairsBlock(AEBlocks.CUT_QUARTZ_STAIRS, AEBlocks.CUT_QUARTZ_BLOCK);
+   // TODO    slabBlock(AEBlocks.CUT_QUARTZ_SLAB, AEBlocks.CUT_QUARTZ_BLOCK);
+   // TODO    wall(AEBlocks.CUT_QUARTZ_WALL, "block/cut_quartz_block");
 
-        simpleBlockAndItem(AEBlocks.SMOOTH_QUARTZ_BLOCK);
-        stairsBlock(AEBlocks.SMOOTH_QUARTZ_STAIRS, AEBlocks.SMOOTH_QUARTZ_BLOCK);
-        slabBlock(AEBlocks.SMOOTH_QUARTZ_SLAB, AEBlocks.SMOOTH_QUARTZ_BLOCK);
-        wall(AEBlocks.SMOOTH_QUARTZ_WALL, "block/smooth_quartz_block");
+   // TODO    simpleBlockAndItem(AEBlocks.SMOOTH_QUARTZ_BLOCK);
+   // TODO    stairsBlock(AEBlocks.SMOOTH_QUARTZ_STAIRS, AEBlocks.SMOOTH_QUARTZ_BLOCK);
+   // TODO    slabBlock(AEBlocks.SMOOTH_QUARTZ_SLAB, AEBlocks.SMOOTH_QUARTZ_BLOCK);
+   // TODO    wall(AEBlocks.SMOOTH_QUARTZ_WALL, "block/smooth_quartz_block");
 
-        simpleBlockAndItem(AEBlocks.QUARTZ_BRICKS);
-        stairsBlock(AEBlocks.QUARTZ_BRICK_STAIRS, AEBlocks.QUARTZ_BRICKS);
-        slabBlock(AEBlocks.QUARTZ_BRICK_SLAB, AEBlocks.QUARTZ_BRICKS);
-        wall(AEBlocks.QUARTZ_BRICK_WALL, "block/quartz_bricks");
+   // TODO    simpleBlockAndItem(AEBlocks.QUARTZ_BRICKS);
+   // TODO    stairsBlock(AEBlocks.QUARTZ_BRICK_STAIRS, AEBlocks.QUARTZ_BRICKS);
+   // TODO    slabBlock(AEBlocks.QUARTZ_BRICK_SLAB, AEBlocks.QUARTZ_BRICKS);
+   // TODO    wall(AEBlocks.QUARTZ_BRICK_WALL, "block/quartz_bricks");
 
-        stairsBlock(AEBlocks.QUARTZ_PILLAR_STAIRS, "block/quartz_pillar_top", "block/quartz_pillar_side",
-                "block/quartz_pillar_top");
-        slabBlock(AEBlocks.QUARTZ_PILLAR_SLAB, AEBlocks.QUARTZ_PILLAR, "block/quartz_pillar_top",
-                "block/quartz_pillar_side", "block/quartz_pillar_top");
-        wall(AEBlocks.QUARTZ_PILLAR_WALL, "block/quartz_pillar_side");
+   // TODO    stairsBlock(AEBlocks.QUARTZ_PILLAR_STAIRS, "block/quartz_pillar_top", "block/quartz_pillar_side",
+   // TODO            "block/quartz_pillar_top");
+   // TODO    slabBlock(AEBlocks.QUARTZ_PILLAR_SLAB, AEBlocks.QUARTZ_PILLAR, "block/quartz_pillar_top",
+   // TODO            "block/quartz_pillar_side", "block/quartz_pillar_top");
+   // TODO    wall(AEBlocks.QUARTZ_PILLAR_WALL, "block/quartz_pillar_side");
 
-        simpleBlockAndItem(AEBlocks.SKY_STONE_BLOCK);
-        stairsBlock(AEBlocks.SKY_STONE_STAIRS, AEBlocks.SKY_STONE_BLOCK);
-        slabBlock(AEBlocks.SKY_STONE_SLAB, AEBlocks.SKY_STONE_BLOCK);
-        wall(AEBlocks.SKY_STONE_WALL, "block/sky_stone_block");
+   // TODO    simpleBlockAndItem(AEBlocks.SKY_STONE_BLOCK);
+   // TODO    stairsBlock(AEBlocks.SKY_STONE_STAIRS, AEBlocks.SKY_STONE_BLOCK);
+   // TODO    slabBlock(AEBlocks.SKY_STONE_SLAB, AEBlocks.SKY_STONE_BLOCK);
+   // TODO    wall(AEBlocks.SKY_STONE_WALL, "block/sky_stone_block");
 
-        simpleBlockAndItem(AEBlocks.SKY_STONE_SMALL_BRICK);
-        stairsBlock(AEBlocks.SKY_STONE_SMALL_BRICK_STAIRS, AEBlocks.SKY_STONE_SMALL_BRICK);
-        slabBlock(AEBlocks.SKY_STONE_SMALL_BRICK_SLAB, AEBlocks.SKY_STONE_SMALL_BRICK);
-        wall(AEBlocks.SKY_STONE_SMALL_BRICK_WALL, "block/sky_stone_small_brick");
+   // TODO    simpleBlockAndItem(AEBlocks.SKY_STONE_SMALL_BRICK);
+   // TODO    stairsBlock(AEBlocks.SKY_STONE_SMALL_BRICK_STAIRS, AEBlocks.SKY_STONE_SMALL_BRICK);
+   // TODO    slabBlock(AEBlocks.SKY_STONE_SMALL_BRICK_SLAB, AEBlocks.SKY_STONE_SMALL_BRICK);
+   // TODO    wall(AEBlocks.SKY_STONE_SMALL_BRICK_WALL, "block/sky_stone_small_brick");
 
-        simpleBlockAndItem(AEBlocks.SKY_STONE_BRICK);
-        stairsBlock(AEBlocks.SKY_STONE_BRICK_STAIRS, AEBlocks.SKY_STONE_BRICK);
-        slabBlock(AEBlocks.SKY_STONE_BRICK_SLAB, AEBlocks.SKY_STONE_BRICK);
-        wall(AEBlocks.SKY_STONE_BRICK_WALL, "block/sky_stone_brick");
+   // TODO    simpleBlockAndItem(AEBlocks.SKY_STONE_BRICK);
+   // TODO    stairsBlock(AEBlocks.SKY_STONE_BRICK_STAIRS, AEBlocks.SKY_STONE_BRICK);
+   // TODO    slabBlock(AEBlocks.SKY_STONE_BRICK_SLAB, AEBlocks.SKY_STONE_BRICK);
+   // TODO    wall(AEBlocks.SKY_STONE_BRICK_WALL, "block/sky_stone_brick");
 
-        stairsBlock(AEBlocks.SMOOTH_SKY_STONE_STAIRS, AEBlocks.SMOOTH_SKY_STONE_BLOCK);
-        slabBlock(AEBlocks.SMOOTH_SKY_STONE_SLAB, AEBlocks.SMOOTH_SKY_STONE_BLOCK);
-        wall(AEBlocks.SMOOTH_SKY_STONE_WALL, "block/smooth_sky_stone_block");
+   // TODO    stairsBlock(AEBlocks.SMOOTH_SKY_STONE_STAIRS, AEBlocks.SMOOTH_SKY_STONE_BLOCK);
+   // TODO    slabBlock(AEBlocks.SMOOTH_SKY_STONE_SLAB, AEBlocks.SMOOTH_SKY_STONE_BLOCK);
+   // TODO    wall(AEBlocks.SMOOTH_SKY_STONE_WALL, "block/smooth_sky_stone_block");
     }
 }

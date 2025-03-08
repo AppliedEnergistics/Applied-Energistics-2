@@ -24,6 +24,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -54,7 +56,7 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
 
     FacadeRegistryGenerator() {
         this.itemFacade = AEItems.FACADE.get();
-        this.cableAnchor = Ingredient.of(AEParts.CABLE_ANCHOR.stack());
+        this.cableAnchor = Ingredient.of(AEParts.CABLE_ANCHOR);
     }
 
     @Override
@@ -107,12 +109,12 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
     }
 
     private DefaultShapedDisplay make(ItemStack textureItem, ItemStack result) {
-        var ingredients = NonNullList.withSize(9, Ingredient.of());
-        ingredients.set(1, cableAnchor);
-        ingredients.set(3, cableAnchor);
-        ingredients.set(5, cableAnchor);
-        ingredients.set(7, cableAnchor);
-        ingredients.set(4, Ingredient.of(textureItem));
+        var ingredients = NonNullList.<Optional<Ingredient>>withSize(9, Optional.empty());
+        ingredients.set(1, Optional.of(cableAnchor));
+        ingredients.set(3, Optional.of(cableAnchor));
+        ingredients.set(5, Optional.of(cableAnchor));
+        ingredients.set(7, Optional.of(cableAnchor));
+        ingredients.set(4, Optional.of(Ingredient.of(textureItem.getItem())));
         var pattern = new ShapedRecipePattern(3, 3, ingredients, Optional.empty());
 
         result.setCount(4);
@@ -121,7 +123,7 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
         ResourceLocation id = AppEng.makeId("facade/" + Item.getId(textureItem.getItem()));
         return new DefaultShapedDisplay(
                 new RecipeHolder<>(
-                        id,
+                        ResourceKey.create(Registries.RECIPE, id),
                         new ShapedRecipe("", CraftingBookCategory.MISC, pattern, result)));
     }
 

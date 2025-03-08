@@ -4,6 +4,8 @@ import static appeng.core.AppEng.makeId;
 
 import java.util.Locale;
 
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.data.PackOutput;
 
 
@@ -18,7 +20,7 @@ public class CableModelProvider extends AE2BlockStateProvider {
     }
 
     @Override
-    protected void registerStatesAndModels() {
+    protected void register(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
 
         buildCableItems(AEParts.GLASS_CABLE, "item/glass_cable_base", "part/cable/glass/");
         buildCableItems(AEParts.COVERED_CABLE, "item/covered_cable_base", "part/cable/covered/");
@@ -30,9 +32,10 @@ public class CableModelProvider extends AE2BlockStateProvider {
 
     private void buildCableItems(ColoredItemDefinition cable, String baseModel, String textureBase) {
         for (AEColor color : AEColor.values()) {
-            itemModels().withExistingParent(
-                    cable.id(color).getPath(),
-                    makeId(baseModel)).texture("base", makeId(textureBase + color.name().toLowerCase(Locale.ROOT)));
+
+            // TODO itemModels.withExistingParent(
+            // TODO         cable.id(color).getPath(),
+            // TODO         makeId(baseModel)).texture("base", makeId(textureBase + color.name().toLowerCase(Locale.ROOT)));
         }
     }
 }

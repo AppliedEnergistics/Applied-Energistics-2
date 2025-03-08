@@ -43,19 +43,8 @@ class StyleManagerTest {
     ArgumentCaptor<PreparableReloadListener> reloadCaptor;
 
     @Test
-    void testInitialize() throws IOException {
-        ReloadableResourceManager resourceManager = MockResourceManager.create();
-        StyleManager.initialize(resourceManager);
-        verify(resourceManager).registerReloadListener(reloadCaptor.capture());
-        assertThat(reloadCaptor.getValue())
-                .isNotNull()
-                .isInstanceOf(ResourceManagerReloadListener.class);
-        ((ResourceManagerReloadListener) reloadCaptor.getValue()).onResourceManagerReload(resourceManager);
-    }
-
-    @Test
     void testLoadStyleDoc() throws IOException {
-        StyleManager.initialize(MockResourceManager.create());
+        StyleManager.getReloadListener().onResourceManagerReload(MockResourceManager.create());
 
         ScreenStyle style = StyleManager.loadStyleDoc("/screens/cell_workbench.json");
 

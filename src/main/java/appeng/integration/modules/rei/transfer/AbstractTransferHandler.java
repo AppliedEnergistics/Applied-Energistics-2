@@ -61,7 +61,8 @@ public abstract class AbstractTransferHandler<T extends AEBaseMenu> implements T
 
     protected final boolean fitsIn3x3Grid(Recipe<?> recipe, Display display) {
         if (recipe != null) {
-            return recipe.canCraftInDimensions(CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT);
+            // TODO 1.21.4 return recipe.canCraftInDimensions(CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT);
+            return false;
         } else if (display instanceof SimpleGridMenuDisplay gridDisplay) {
             return gridDisplay.getWidth() <= CRAFTING_GRID_WIDTH && gridDisplay.getHeight() <= CRAFTING_GRID_HEIGHT;
         } else {

@@ -3,6 +3,7 @@ package appeng.integration.modules.rei;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 
 import me.shedaniel.math.Point;
@@ -33,6 +34,7 @@ public class EntropyRecipeCategory implements DisplayCategory<EntropyRecipeDispl
     @Override
     public Renderer getIcon() {
         return (graphics, bounds, mouseX, mouseY, delta) -> graphics.blit(
+                RenderType::guiTextured,
                 AppEng.makeId("textures/item/entropy_manipulator.png"),
                 bounds.getX(),
                 bounds.getY(),

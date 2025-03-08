@@ -23,6 +23,11 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
+import appeng.datagen.providers.models.BlockModelProvider;
+import appeng.datagen.providers.models.CableModelProvider;
+import appeng.datagen.providers.models.DecorationModelProvider;
+import appeng.datagen.providers.models.ItemModelProvider;
+import appeng.datagen.providers.models.PartModelProvider;
 import appeng.datagen.providers.recipes.AE2RecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
@@ -92,11 +97,11 @@ public class AE2DataGenerators {
                 localization));
 
         // Models
-// TODO 1.21.4       pack.addProvider(packOutput -> new BlockModelProvider(packOutput));
-// TODO 1.21.4       pack.addProvider(packOutput -> new DecorationModelProvider(packOutput));
-// TODO 1.21.4       pack.addProvider(packOutput -> new ItemModelProvider(packOutput));
-// TODO 1.21.4       pack.addProvider(packOutput -> new CableModelProvider(packOutput));
-// TODO 1.21.4       pack.addProvider(packOutput -> new PartModelProvider(packOutput));
+        pack.addProvider(BlockModelProvider::new);
+        pack.addProvider(DecorationModelProvider::new);
+        pack.addProvider(ItemModelProvider::new);
+        pack.addProvider(CableModelProvider::new);
+        pack.addProvider(PartModelProvider::new);
 
         // Misc
         pack.addProvider(packOutput -> new AdvancementProvider(packOutput, registries, List.of(
