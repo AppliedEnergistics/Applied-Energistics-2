@@ -24,6 +24,7 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
+import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -38,6 +39,7 @@ import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import net.minecraft.util.context.ContextMap;
+import net.neoforged.neoforge.client.model.SimpleModelState;
 
 /**
  * The built-in model for the cable bus block.
@@ -73,11 +75,11 @@ public class CableBusModel implements BasicUnbakedModel {
         return new CableBusBakedModel(cableBuilder, facadeBuilder, partModels, particleTexture);
     }
 
-    private Map<ResourceLocation, BakedModel> loadPartModels(ModelBaker baker, ModelState transformIn) {
+    private Map<ResourceLocation, BakedModel> loadPartModels(ModelBaker baker, ModelState state) {
         ImmutableMap.Builder<ResourceLocation, BakedModel> result = ImmutableMap.builder();
 
         for (ResourceLocation location : PartModelsInternal.getModels()) {
-            BakedModel bakedModel = baker.bake(location, transformIn);
+            BakedModel bakedModel = baker.bake(location, new SimpleModelState(Transformation.identity()));
             if (bakedModel == null) {
                 AELog.warn("Failed to bake part model {}", location);
             } else {

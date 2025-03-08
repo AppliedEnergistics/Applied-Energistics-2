@@ -11,6 +11,7 @@ import appeng.block.spatial.SpatialAnchorBlock;
 import appeng.block.spatial.SpatialIOPortBlock;
 import appeng.block.storage.IOPortBlock;
 import appeng.block.storage.MEChestBlock;
+import appeng.client.render.model.BuiltInModelLoaderBuilder;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
@@ -37,6 +38,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.neoforged.neoforge.client.model.generators.loaders.CompositeModelBuilder;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -53,7 +55,9 @@ public class BlockModelProvider extends AE2BlockStateProvider {
 
     @Override
     protected void register(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
-        blockModels.createTrivialBlock(AEBlocks.MATRIX_FRAME.block(), TexturedModel.createDefault(block -> new TextureMapping(), EMPTY_MODEL));
+        blockModels.createTrivialBlock(
+                AEBlocks.MATRIX_FRAME.block(),
+                TexturedModel.createDefault(block -> new TextureMapping(), EMPTY_MODEL));
 
         // These models will be overwritten in code
         builtInModel(AEBlocks.QUARTZ_GLASS, true);
@@ -340,8 +344,11 @@ public class BlockModelProvider extends AE2BlockStateProvider {
 
     private ResourceLocation builtInModel(String blockId) {
         ResourceLocation modelId = makeId(blockId).withPrefix("block/");
-        modelOutput.accept(modelId, JsonObject::new);
-        return modelId;
+        return EMPTY_MODEL
+                .extend()
+                .customLoader(BuiltInModelLoaderBuilder::new, builder -> builder.id(modelId))
+                .build()
+                .create(modelId, new TextureMapping(), modelOutput);
     }
 
     private void builtInModel(BlockDefinition<?> block) {
@@ -350,7 +357,12 @@ public class BlockModelProvider extends AE2BlockStateProvider {
 
     private void builtInModel(BlockDefinition<?> block, boolean skipItem) {
 
-        blockModels.createTrivialBlock(block.block(), TexturedModel.createDefault(ignored -> new TextureMapping(), EMPTY_MODEL));
+        blockModels.createTrivialBlock(block.block(), TexturedModel
+                .createDefault(ignored -> new TextureMapping(), EMPTY_MODEL
+                        .extend()
+                        .customLoader(BuiltInModelLoaderBuilder::new, builder -> builder.id(block.id().withPrefix("block/")))
+                        .build())
+        );
 
         if (!skipItem) {
             // The item model should not reference the block model since that will be replaced in-code

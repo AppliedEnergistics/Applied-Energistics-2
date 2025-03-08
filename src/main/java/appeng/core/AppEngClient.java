@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.util.Objects;
 
 import appeng.block.networking.CableBusBlockClientExtensions;
+import appeng.client.render.model.BuiltInModelLoader;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
@@ -165,6 +166,7 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerClientTooltipComponents);
         modEventBus.addListener(this::registerParticleFactories);
         modEventBus.addListener(this::modelRegistryEventAdditionalModels);
+        modEventBus.addListener(this::registerModelLoader);
         modEventBus.addListener(this::registerBlockColors);
         modEventBus.addListener(this::registerItemColors);
         modEventBus.addListener(this::registerEntityRenderers);
@@ -202,9 +204,12 @@ public class AppEngClient extends AppEngBase {
                 (mc, parent) -> new ConfigurationScreen(container, parent));
     }
 
+    private void registerModelLoader(ModelEvent.RegisterLoaders event) {
+        event.register(BuiltInModelLoader.ID, new BuiltInModelLoader());
+    }
+
     private void registerClientExtensions(RegisterClientExtensionsEvent event) {
         event.registerBlock(new CableBusBlockClientExtensions(AEBlocks.CABLE_BUS.block()), AEBlocks.CABLE_BUS.block());
-
     }
 
     private void enqueueImcMessages(InterModEnqueueEvent event) {

@@ -206,7 +206,7 @@ public final class StyleManager {
 
     private static class ReloadListener implements ResourceManagerReloadListener {
         @Override
-        public void onResourceManagerReload(ResourceManager p_10758_) {
+        public void onResourceManagerReload(ResourceManager resourceManager) {
             setResourceManager(resourceManager);
         }
     }
