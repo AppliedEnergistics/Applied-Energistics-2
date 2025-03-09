@@ -23,7 +23,6 @@ import appeng.recipes.game.CraftingUnitTransformRecipe;
 import appeng.recipes.game.RemoveItemUpgradeRecipe;
 import appeng.recipes.game.StorageCellDisassemblyRecipe;
 import appeng.recipes.game.StorageCellUpgradeRecipe;
-import org.jetbrains.annotations.NotNull;
 
 public class UpgradeRecipes extends AE2RecipeProvider {
     public UpgradeRecipes(HolderLookup.Provider registries, RecipeOutput output) {

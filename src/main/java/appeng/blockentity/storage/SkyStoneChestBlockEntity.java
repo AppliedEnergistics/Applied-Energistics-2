@@ -77,7 +77,7 @@ public class SkyStoneChestBlockEntity extends AEBaseInvBlockEntity implements Cl
     };
 
     public SkyStoneChestBlockEntity(BlockEntityType<? extends SkyStoneChestBlockEntity> type, BlockPos pos,
-                                    BlockState blockState) {
+            BlockState blockState) {
         super(type, pos, blockState);
     }
 

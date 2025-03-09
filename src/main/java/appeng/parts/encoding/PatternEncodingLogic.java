@@ -20,16 +20,16 @@ package appeng.parts.encoding;
 
 import java.util.List;
 
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.InternalInventory;
@@ -261,7 +261,8 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             this.setFluidSubstitution(data.getBoolean("substituteFluids"));
 
             if (data.contains("stonecuttingRecipeId", Tag.TAG_STRING)) {
-                this.stonecuttingRecipeId = ResourceKey.create(Registries.RECIPE, ResourceLocation.parse(data.getString("stonecuttingRecipeId")));
+                this.stonecuttingRecipeId = ResourceKey.create(Registries.RECIPE,
+                        ResourceLocation.parse(data.getString("stonecuttingRecipeId")));
             } else {
                 this.stonecuttingRecipeId = null;
             }

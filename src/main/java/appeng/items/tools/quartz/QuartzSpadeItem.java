@@ -18,12 +18,11 @@
 
 package appeng.items.tools.quartz;
 
-import appeng.datagen.providers.tags.ConventionTags;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.ToolMaterial;
 
 public class QuartzSpadeItem extends ShovelItem {
     public QuartzSpadeItem(Properties props) {
-        super(ToolMaterial.IRON,  1.5F, -3.0F, props);
+        super(ToolMaterial.IRON, 1.5F, -3.0F, props);
     }
 }

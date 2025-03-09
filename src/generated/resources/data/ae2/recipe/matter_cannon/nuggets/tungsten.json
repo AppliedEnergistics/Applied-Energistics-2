@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/tungsten"
-  },
+  "ammo": "#c:nuggets/tungsten",
   "weight": 183.84
 }

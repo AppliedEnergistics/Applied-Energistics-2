@@ -2,6 +2,7 @@ package appeng.client.render.model;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
+
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.generators.template.CustomLoaderBuilder;
 

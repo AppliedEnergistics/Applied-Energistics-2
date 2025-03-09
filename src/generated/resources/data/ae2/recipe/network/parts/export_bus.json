@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "c:ingots/iron"
-    },
-    "b": {
-      "item": "ae2:formation_core"
-    },
-    "c": {
-      "item": "minecraft:piston"
-    }
+    "a": "#c:ingots/iron",
+    "b": "ae2:formation_core",
+    "c": "minecraft:piston"
   },
   "pattern": [
     "aba",

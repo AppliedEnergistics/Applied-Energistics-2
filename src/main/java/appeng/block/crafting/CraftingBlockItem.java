@@ -50,7 +50,6 @@ public class CraftingBlockItem extends AEBaseBlockItem {
                     return super.use(level, player, hand);
                 }
 
-
                 int itemCount = stack.getCount();
                 player.setItemInHand(hand, ItemStack.EMPTY);
 

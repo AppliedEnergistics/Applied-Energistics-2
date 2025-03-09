@@ -18,9 +18,6 @@
 
 package appeng.spatial;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import net.minecraft.client.Camera;
@@ -55,13 +52,15 @@ public class SpatialStorageSkyProperties {
         }
 
         @Override
-        public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, Runnable setupFog) {
+        public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix,
+                Camera camera, Matrix4f projectionMatrix, Runnable setupFog) {
             SpatialSkyRender.getInstance().render(modelViewMatrix, projectionMatrix);
             return true;
         }
 
         @Override
-        public boolean renderClouds(ClientLevel level, int ticks, float partialTick, double camX, double camY, double camZ, Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {
+        public boolean renderClouds(ClientLevel level, int ticks, float partialTick, double camX, double camY,
+                double camZ, Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {
             return true; // Disable clouds
         }
     };

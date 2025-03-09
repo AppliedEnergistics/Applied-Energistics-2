@@ -57,7 +57,7 @@ public final class InitBuiltInModels {
         addBuiltInModel("color_applicator", ColorApplicatorModel::new);
         addBuiltInModel("block/spatial_pylon", SpatialPylonModel::new);
         addBuiltInModel("block/paint", PaintSplotchesModel::new);
-        addBuiltInModel("block/qnb/qnb_formed", QnbFormedModel::new);
+        addBuiltInModel("block/qnb_formed", QnbFormedModel::new);
         addBuiltInModel("part/p2p/p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);
         addBuiltInModel("item/facade", FacadeItemModel::new);
 

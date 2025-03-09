@@ -86,7 +86,6 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
         }
     }
 
-
     @Override
     public void renderImage(Font font, int x, int y, int width, int height, GuiGraphics guiGraphics) {
         var content = tooltipComponent.content();

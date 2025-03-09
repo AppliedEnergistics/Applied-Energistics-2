@@ -25,19 +25,18 @@ import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.Recipe;
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
@@ -324,7 +323,8 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
             if (!canSubstitute) {
                 this.possibleInputs = new GenericStack[] { new GenericStack(what, 1) };
             } else {
-                ItemStack[] matchingStacks = recipeIngredient.items().map(Holder::value).map(Item::getDefaultInstance).toArray(ItemStack[]::new); // TODO 1.21.4 can't stay like this
+                ItemStack[] matchingStacks = recipeIngredient.items().map(Holder::value).map(Item::getDefaultInstance)
+                        .toArray(ItemStack[]::new); // TODO 1.21.4 can't stay like this
                 this.possibleInputs = new GenericStack[matchingStacks.length + 1];
                 // Ensure that the stack chosen by the user gets precedence.
                 this.possibleInputs[0] = new GenericStack(what, 1);

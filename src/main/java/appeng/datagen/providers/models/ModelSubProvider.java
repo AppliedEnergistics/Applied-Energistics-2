@@ -1,11 +1,11 @@
 package appeng.datagen.providers.models;
 
-import appeng.api.orientation.BlockOrientation;
-import appeng.api.orientation.IOrientationStrategy;
-import appeng.client.render.model.BuiltInModelLoaderBuilder;
-import appeng.core.AppEng;
-import appeng.core.definitions.BlockDefinition;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+
 import com.google.gson.JsonPrimitive;
+
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.blockstates.Condition;
@@ -22,21 +22,26 @@ import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.client.render.model.BuiltInModelLoaderBuilder;
+import appeng.core.AppEng;
+import appeng.core.definitions.BlockDefinition;
 
 public abstract class ModelSubProvider {
     protected static final VariantProperty<VariantProperties.Rotation> Z_ROT = new VariantProperty<>("ae2:z",
             r -> new JsonPrimitive(r.ordinal() * 90));
 
-    public static final TextureMapping TRANSPARENT_PARTICLE = TextureMapping.particle(AppEng.makeId("block/transparent"));
+    public static final TextureMapping TRANSPARENT_PARTICLE = TextureMapping
+            .particle(AppEng.makeId("block/transparent"));
 
-    public static final ModelTemplate EMPTY_MODEL = new ModelTemplate(Optional.empty(), Optional.empty(), TextureSlot.PARTICLE);
+    public static final ModelTemplate EMPTY_MODEL = new ModelTemplate(Optional.empty(), Optional.empty(),
+            TextureSlot.PARTICLE);
 
     protected final BlockModelGenerators blockModels;
     protected final ItemModelGenerators itemModels;
@@ -70,14 +75,13 @@ public abstract class ModelSubProvider {
     protected void simpleBlockAndItem(BlockDefinition<?> block, String textureName) {
         blockModels.createTrivialBlock(
                 block.block(),
-                TexturedModel.CUBE.updateTexture(mapping -> mapping.put(TextureSlot.ALL, AppEng.makeId(textureName)))
-        );
+                TexturedModel.CUBE.updateTexture(mapping -> mapping.put(TextureSlot.ALL, AppEng.makeId(textureName))));
         // item falls back automatically to the block model
     }
 
     protected final MultiVariantGenerator multiVariantGenerator(BlockDefinition<?> blockDef, Variant... variants) {
         if (variants.length == 0) {
-            variants = new Variant[]{Variant.variant()};
+            variants = new Variant[] { Variant.variant() };
         }
         var builder = MultiVariantGenerator.multiVariant(blockDef.block(), variants);
         blockModels.blockStateOutput.accept(builder);
@@ -115,7 +119,7 @@ public abstract class ModelSubProvider {
     }
 
     protected static void withOrientations(MultiPartGenerator multipart,
-                                           Supplier<Condition.TerminalCondition> baseCondition, Variant baseVariant) {
+            Supplier<Condition.TerminalCondition> baseCondition, Variant baseVariant) {
         var defaultState = multipart.getBlock().defaultBlockState();
         var strategy = IOrientationStrategy.get(defaultState);
 
@@ -176,8 +180,8 @@ public abstract class ModelSubProvider {
     }
 
     private static <T extends Comparable<T>> Condition addConditionTerm(Condition.TerminalCondition condition,
-                                                                        BlockState blockState,
-                                                                        Property<T> property) {
+            BlockState blockState,
+            Property<T> property) {
         return condition.term(property, blockState.getValue(property));
     }
 
@@ -187,5 +191,21 @@ public abstract class ModelSubProvider {
                 .customLoader(BuiltInModelLoaderBuilder::new, builder -> builder.id(id))
                 .build()
                 .create(id, TRANSPARENT_PARTICLE, modelOutput);
+    }
+
+    protected static ResourceLocation getBlockTexture(BlockDefinition<?> block) {
+        return TextureMapping.getBlockTexture(block.block());
+    }
+
+    protected static ResourceLocation getBlockTexture(Block block) {
+        return TextureMapping.getBlockTexture(block);
+    }
+
+    protected static ResourceLocation getBlockTexture(Block block, String suffix) {
+        return TextureMapping.getBlockTexture(block, suffix);
+    }
+
+    protected static ResourceLocation getBlockTexture(BlockDefinition<?> block, String suffix) {
+        return TextureMapping.getBlockTexture(block.block(), suffix);
     }
 }

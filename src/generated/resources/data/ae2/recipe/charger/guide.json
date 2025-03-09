@@ -1,8 +1,6 @@
 {
   "type": "ae2:charger",
-  "ingredient": {
-    "item": "minecraft:book"
-  },
+  "ingredient": "minecraft:book",
   "result": {
     "count": 1,
     "id": "ae2:guide"

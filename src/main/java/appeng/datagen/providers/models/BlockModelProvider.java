@@ -1,24 +1,11 @@
 package appeng.datagen.providers.models;
 
-import appeng.api.orientation.BlockOrientation;
-import appeng.block.crafting.AbstractCraftingUnitBlock;
-import appeng.block.crafting.PatternProviderBlock;
-import appeng.block.misc.GrowthAcceleratorBlock;
-import appeng.block.misc.VibrationChamberBlock;
-import appeng.block.networking.ControllerBlock;
-import appeng.block.networking.EnergyCellBlock;
-import appeng.block.networking.WirelessAccessPointBlock;
-import appeng.block.qnb.QuantumLinkChamberBlock;
-import appeng.block.qnb.QuantumRingBlock;
-import appeng.block.spatial.SpatialAnchorBlock;
-import appeng.block.spatial.SpatialIOPortBlock;
-import appeng.block.storage.IOPortBlock;
-import appeng.block.storage.MEChestBlock;
-import appeng.client.render.model.BuiltInModelLoaderBuilder;
-import appeng.client.render.tesr.SkyStoneChestRenderer;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.BlockDefinition;
+import static appeng.core.AppEng.makeId;
+import static net.minecraft.client.data.models.BlockModelGenerators.createSimpleBlock;
+
+import java.util.ArrayList;
+import java.util.function.BiConsumer;
+
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.blockstates.Condition;
@@ -35,15 +22,30 @@ import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.client.renderer.item.EmptyModel;
+import net.minecraft.client.renderer.item.RangeSelectItemModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import java.util.function.BiConsumer;
-
-import static appeng.core.AppEng.makeId;
-import static net.minecraft.client.data.models.BlockModelGenerators.createSimpleBlock;
+import appeng.api.orientation.BlockOrientation;
+import appeng.block.crafting.AbstractCraftingUnitBlock;
+import appeng.block.crafting.PatternProviderBlock;
+import appeng.block.misc.GrowthAcceleratorBlock;
+import appeng.block.misc.VibrationChamberBlock;
+import appeng.block.networking.ControllerBlock;
+import appeng.block.networking.EnergyCellBlock;
+import appeng.block.networking.WirelessAccessPointBlock;
+import appeng.block.qnb.QuantumLinkChamberBlock;
+import appeng.block.qnb.QuantumRingBlock;
+import appeng.block.spatial.SpatialAnchorBlock;
+import appeng.block.spatial.SpatialIOPortBlock;
+import appeng.block.storage.IOPortBlock;
+import appeng.block.storage.MEChestBlock;
+import appeng.client.item.EnergyFillLevelProperty;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.BlockDefinition;
 
 public class BlockModelProvider extends ModelSubProvider {
 
@@ -63,10 +65,8 @@ public class BlockModelProvider extends ModelSubProvider {
                 AEBlocks.QUARTZ_GLASS.asItem(),
                 ModelTemplates.CUBE_ALL.create(
                         AEBlocks.QUARTZ_GLASS.asItem(),
-                        TextureMapping.cube(TextureMapping.getBlockTexture(AEBlocks.QUARTZ_GLASS.block(), "_item")),
-                        modelOutput
-                )
-            );
+                        TextureMapping.cube(AppEng.makeId("block/glass/quartz_glass_item")),
+                        modelOutput));
         blockModels.copyModel(AEBlocks.QUARTZ_GLASS.block(), AEBlocks.QUARTZ_VIBRANT_GLASS.block());
         builtInModel(AEBlocks.CABLE_BUS, true);
         builtInModel(AEBlocks.PAINT);
@@ -84,11 +84,15 @@ public class BlockModelProvider extends ModelSubProvider {
                 Variant.variant().with(VariantProperties.MODEL, inscriber))
                 .with(createFacingSpinDispatch());
 
-        multiVariantGenerator(AEBlocks.SKY_STONE_TANK, Variant.variant().with(VariantProperties.MODEL, makeId("block/sky_stone_tank")));
-        multiVariantGenerator(AEBlocks.TINY_TNT, Variant.variant().with(VariantProperties.MODEL, makeId("block/tiny_tnt")));
-        multiVariantGenerator(AEBlocks.MOLECULAR_ASSEMBLER, Variant.variant().with(VariantProperties.MODEL, makeId("block/molecular_assembler")));
+        multiVariantGenerator(AEBlocks.SKY_STONE_TANK,
+                Variant.variant().with(VariantProperties.MODEL, makeId("block/sky_stone_tank")));
+        multiVariantGenerator(AEBlocks.TINY_TNT,
+                Variant.variant().with(VariantProperties.MODEL, makeId("block/tiny_tnt")));
+        multiVariantGenerator(AEBlocks.MOLECULAR_ASSEMBLER,
+                Variant.variant().with(VariantProperties.MODEL, makeId("block/molecular_assembler")));
 
-        // Generate an empty block model for the crank, since the base model and shaft will be used by the dynamic renderer
+        // Generate an empty block model for the crank, since the base model and shaft will be used by the dynamic
+        // renderer
         multiVariantGenerator(AEBlocks.CRANK, Variant.variant().with(VariantProperties.MODEL, makeId("block/crank")));
 
         crystalResonanceGenerator();
@@ -103,8 +107,11 @@ public class BlockModelProvider extends ModelSubProvider {
         spatialIoPort();
         spatialPylon();
 
-        blockModels.createChest(AEBlocks.SKY_STONE_CHEST.block(), AEBlocks.SKY_STONE_BLOCK.block(), SkyStoneChestRenderer.TEXTURE_STONE.texture(), false);
-        blockModels.createChest(AEBlocks.SMOOTH_SKY_STONE_CHEST.block(), AEBlocks.SMOOTH_SKY_STONE_BLOCK.block(), SkyStoneChestRenderer.TEXTURE_BLOCK.texture(), false);
+        blockModels.createParticleOnlyBlock(AEBlocks.SKY_STONE_CHEST.block(), AEBlocks.SKY_STONE_BLOCK.block());
+        itemModels.declareCustomModelItem(AEBlocks.SKY_STONE_CHEST.asItem());
+        blockModels.createParticleOnlyBlock(AEBlocks.SMOOTH_SKY_STONE_CHEST.block(),
+                AEBlocks.SMOOTH_SKY_STONE_BLOCK.block());
+        itemModels.declareCustomModelItem(AEBlocks.SMOOTH_SKY_STONE_CHEST.asItem());
 
         quantumBridge();
         controller();
@@ -140,22 +147,26 @@ public class BlockModelProvider extends ModelSubProvider {
                 .updateTexture(textures -> textures
                         .put(TextureSlot.TOP, makeId("block/cell_workbench_top"))
                         .put(TextureSlot.BOTTOM, MACHINE_BOTTOM)
-                        .put(TextureSlot.PARTICLE, makeId("block/cell_workbench_top"))
-                ));
+                        .put(TextureSlot.PARTICLE, makeId("block/cell_workbench_top"))));
 
         energyCell(AEBlocks.ENERGY_CELL, "block/energy_cell");
         energyCell(AEBlocks.DENSE_ENERGY_CELL, "block/dense_energy_cell");
         simpleBlockAndItem(AEBlocks.CREATIVE_ENERGY_CELL, "block/creative_energy_cell");
 
         // Both use the same mysterious cube model
-        blockModels.blockStateOutput.accept(createSimpleBlock(AEBlocks.MYSTERIOUS_CUBE.block(), makeId("block/mysterious_cube")));
-        blockModels.blockStateOutput.accept(createSimpleBlock(AEBlocks.NOT_SO_MYSTERIOUS_CUBE.block(), makeId("block/mysterious_cube")));
+        blockModels.blockStateOutput
+                .accept(createSimpleBlock(AEBlocks.MYSTERIOUS_CUBE.block(), makeId("block/mysterious_cube")));
+        blockModels.blockStateOutput
+                .accept(createSimpleBlock(AEBlocks.NOT_SO_MYSTERIOUS_CUBE.block(), makeId("block/mysterious_cube")));
+        blockModels.registerSimpleItemModel(AEBlocks.NOT_SO_MYSTERIOUS_CUBE.asItem(), makeId("block/mysterious_cube"));
     }
 
     private static final TextureSlot BLOCK = TextureSlot.create("block");
     private static final TextureSlot LIGHTS = TextureSlot.create("lights");
-    private static final ModelTemplate CONTROLLER_BLOCK_LIGHTS = ModelTemplates.create("ae2:controller/controller_block_lights", BLOCK, LIGHTS);
-    private static final ModelTemplate CONTROLLER_COLUMN_LIGHTS = ModelTemplates.create("ae2:controller/controller_column_lights", BLOCK, LIGHTS);
+    private static final ModelTemplate CONTROLLER_BLOCK_LIGHTS = ModelTemplates.create("ae2:controller_block_lights",
+            BLOCK, LIGHTS);
+    private static final ModelTemplate CONTROLLER_COLUMN_LIGHTS = ModelTemplates.create("ae2:controller_column_lights",
+            BLOCK, LIGHTS);
 
     private void controller() {
         var block = AEBlocks.CONTROLLER.block();
@@ -166,9 +177,11 @@ public class BlockModelProvider extends ModelSubProvider {
                 .put(TextureSlot.END, AppEng.makeId("block/controller"))
                 .put(BLOCK, AppEng.makeId("block/controller_powered"))
                 .put(LIGHTS, AppEng.makeId("block/controller_lights"));
-        var offlineBlock = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_block_offline", texturesBlock, modelOutput);
+        var offlineBlock = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_block_offline", texturesBlock,
+                modelOutput);
         var onlineBlock = CONTROLLER_BLOCK_LIGHTS.createWithSuffix(block, "_block_online", texturesBlock, modelOutput);
-        var conflictedBlock = CONTROLLER_BLOCK_LIGHTS.createWithSuffix(block, "_block_conflicted", texturesBlock.copy().put(LIGHTS, AppEng.makeId("block/controller_conflict")), modelOutput);
+        var conflictedBlock = CONTROLLER_BLOCK_LIGHTS.createWithSuffix(block, "_block_conflicted",
+                texturesBlock.copy().put(LIGHTS, AppEng.makeId("block/controller_conflict")), modelOutput);
 
         var texturesColumn = new TextureMapping()
                 .put(TextureSlot.ALL, AppEng.makeId("block/controller"))
@@ -176,18 +189,27 @@ public class BlockModelProvider extends ModelSubProvider {
                 .put(TextureSlot.END, AppEng.makeId("block/controller"))
                 .put(BLOCK, AppEng.makeId("block/controller_column_powered"))
                 .put(LIGHTS, AppEng.makeId("block/controller_column_lights"));
-        var offlineColumn = ModelTemplates.CUBE_COLUMN.createWithSuffix(block, "_column_offline", texturesColumn, modelOutput);
-        var onlineColumn = CONTROLLER_COLUMN_LIGHTS.createWithSuffix(block, "_column_online", texturesColumn, modelOutput);
-        var conflictedColumn = CONTROLLER_COLUMN_LIGHTS.createWithSuffix(block, "_column_conflicted", texturesColumn.copy().put(LIGHTS, AppEng.makeId("block/controller_column_conflict")), modelOutput);
+        var offlineColumn = ModelTemplates.CUBE_COLUMN.createWithSuffix(block, "_column_offline", texturesColumn,
+                modelOutput);
+        var onlineColumn = CONTROLLER_COLUMN_LIGHTS.createWithSuffix(block, "_column_online", texturesColumn,
+                modelOutput);
+        var conflictedColumn = CONTROLLER_COLUMN_LIGHTS.createWithSuffix(block, "_column_conflicted",
+                texturesColumn.copy().put(LIGHTS, AppEng.makeId("block/controller_column_conflict")), modelOutput);
 
-        var insideA = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_inside_a", TextureMapping.cube(AppEng.makeId("block/controller_inside_a")), modelOutput);
-        var insideB = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_inside_b", TextureMapping.cube(AppEng.makeId("block/controller_inside_b")), modelOutput);
-        var insideAConflicted = CONTROLLER_BLOCK_LIGHTS.createWithSuffix(block, "inside_a_conflicted", new TextureMapping()
-                .put(BLOCK, AppEng.makeId("block/controller_inside_a_powered"))
-                .put(LIGHTS, AppEng.makeId("block/controller_conflict")), modelOutput);
-        var insideBConflicted = CONTROLLER_BLOCK_LIGHTS.createWithSuffix(block, "inside_b_conflicted", new TextureMapping()
-                .put(BLOCK, AppEng.makeId("block/controller_inside_b_powered"))
-                .put(LIGHTS, AppEng.makeId("block/controller_conflict")), modelOutput);
+        var insideA = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_inside_a",
+                TextureMapping.cube(AppEng.makeId("block/controller_inside_a")), modelOutput);
+        var insideB = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_inside_b",
+                TextureMapping.cube(AppEng.makeId("block/controller_inside_b")), modelOutput);
+        var insideAConflicted = CONTROLLER_BLOCK_LIGHTS.createWithSuffix(block, "inside_a_conflicted",
+                new TextureMapping()
+                        .put(BLOCK, AppEng.makeId("block/controller_inside_a_powered"))
+                        .put(LIGHTS, AppEng.makeId("block/controller_conflict")),
+                modelOutput);
+        var insideBConflicted = CONTROLLER_BLOCK_LIGHTS.createWithSuffix(block, "inside_b_conflicted",
+                new TextureMapping()
+                        .put(BLOCK, AppEng.makeId("block/controller_inside_b_powered"))
+                        .put(LIGHTS, AppEng.makeId("block/controller_conflict")),
+                modelOutput);
 
         // Alias the enums since the following becomes very noisy otherwise
         // Static import would be possible but conflicts with local variables
@@ -245,26 +267,26 @@ public class BlockModelProvider extends ModelSubProvider {
                         .with(Condition.condition().term(state, s_conflicted).term(s_type, t_inside_a),
                                 Variant.variant().with(VariantProperties.MODEL, insideAConflicted))
                         .with(Condition.condition().term(state, s_conflicted).term(s_type, t_inside_b),
-                                Variant.variant().with(VariantProperties.MODEL, insideBConflicted))
-        );
+                                Variant.variant().with(VariantProperties.MODEL, insideBConflicted)));
 
         blockModels.registerSimpleItemModel(block.asItem(), offlineBlock);
     }
 
     private void quantumBridge() {
-        var formedModel = builtInModel("qnb/qnb_formed");
-
-        var unformedRingModel = AppEng.makeId("block/qnb/ring");
+        var formedModel = builtInModel("qnb_formed");
+        var unformedRingModel = ModelLocationUtils.getModelLocation(AEBlocks.QUANTUM_RING.block());
         var ringDispatch = PropertyDispatch.property(QuantumRingBlock.FORMED);
         ringDispatch.select(false, Variant.variant().with(VariantProperties.MODEL, unformedRingModel));
         ringDispatch.select(true, Variant.variant().with(VariantProperties.MODEL, formedModel));
         multiVariantGenerator(AEBlocks.QUANTUM_RING).with(ringDispatch);
+        blockModels.registerSimpleItemModel(AEBlocks.QUANTUM_RING.asItem(), unformedRingModel);
 
-        var unformedLinkModel = AppEng.makeId("block/qnb/link");
+        var unformedLinkModel = ModelLocationUtils.getModelLocation(AEBlocks.QUANTUM_LINK.block());
         var linkDispatch = PropertyDispatch.property(QuantumLinkChamberBlock.FORMED);
         linkDispatch.select(false, Variant.variant().with(VariantProperties.MODEL, unformedLinkModel));
         linkDispatch.select(true, Variant.variant().with(VariantProperties.MODEL, formedModel));
         multiVariantGenerator(AEBlocks.QUANTUM_LINK).with(linkDispatch);
+        blockModels.registerSimpleItemModel(AEBlocks.QUANTUM_LINK.asItem(), unformedLinkModel);
     }
 
     private void spatialPylon() {
@@ -272,25 +294,28 @@ public class BlockModelProvider extends ModelSubProvider {
         itemModels.itemModelOutput.accept(
                 AEBlocks.SPATIAL_PYLON.asItem(),
                 ItemModelUtils.plainModel(
-                        ModelTemplates.CUBE_ALL.create(AEBlocks.SPATIAL_PYLON.asItem(), TextureMapping.cube(AEBlocks.SPATIAL_PYLON.block()), modelOutput)
-                )
-        );
+                        ModelTemplates.CUBE_ALL.create(AEBlocks.SPATIAL_PYLON.asItem(),
+                                TextureMapping.cube(AppEng.makeId("item/spatial_pylon")), modelOutput)));
         builtInModel(AEBlocks.SPATIAL_PYLON, true);
     }
 
     private void meChest() {
         var multipart = multiPartGenerator(AEBlocks.ME_CHEST);
+        var baseModel = ModelLocationUtils.getModelLocation(AEBlocks.ME_CHEST.block(), "_base");
+        var lightsOffModel = ModelLocationUtils.getModelLocation(AEBlocks.ME_CHEST.block(), "_lights_off");
+        var lightsOnModel = ModelLocationUtils.getModelLocation(AEBlocks.ME_CHEST.block(), "_lights_on");
         withOrientations(
                 multipart,
-                Variant.variant().with(VariantProperties.MODEL, makeId("block/chest/base")));
+                Variant.variant().with(VariantProperties.MODEL, baseModel));
         withOrientations(
                 multipart,
                 () -> Condition.condition().term(MEChestBlock.LIGHTS_ON, false),
-                Variant.variant().with(VariantProperties.MODEL, makeId("block/chest/lights_off")));
+                Variant.variant().with(VariantProperties.MODEL, lightsOffModel));
         withOrientations(
                 multipart,
                 () -> Condition.condition().term(MEChestBlock.LIGHTS_ON, true),
-                Variant.variant().with(VariantProperties.MODEL, makeId("block/chest/lights_on")));
+                Variant.variant().with(VariantProperties.MODEL, lightsOnModel));
+        itemModels.declareCustomModelItem(AEBlocks.ME_CHEST.asItem());
     }
 
     private void quartzGrowthAccelerator() {
@@ -298,9 +323,8 @@ public class BlockModelProvider extends ModelSubProvider {
         var unpoweredModel = TexturedModel.CUBE_TOP_BOTTOM.create(block, modelOutput);
         var poweredModel = TexturedModel.CUBE_TOP_BOTTOM
                 .updateTexture(textures -> textures
-                        .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block, "_side_on"))
-                        .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block, "_top_on"))
-                )
+                        .put(TextureSlot.SIDE, getBlockTexture(block, "_side_on"))
+                        .put(TextureSlot.TOP, getBlockTexture(block, "_top_on")))
                 .createWithSuffix(block, "_on", modelOutput);
 
         multiVariantGenerator(AEBlocks.GROWTH_ACCELERATOR)
@@ -309,7 +333,8 @@ public class BlockModelProvider extends ModelSubProvider {
                         .select(false, Variant.variant().with(VariantProperties.MODEL, unpoweredModel))
                         .select(true, Variant.variant().with(VariantProperties.MODEL, poweredModel)));
 
-        itemModels.itemModelOutput.accept(AEBlocks.GROWTH_ACCELERATOR.asItem(), ItemModelUtils.plainModel(unpoweredModel));
+        itemModels.itemModelOutput.accept(AEBlocks.GROWTH_ACCELERATOR.asItem(),
+                ItemModelUtils.plainModel(unpoweredModel));
     }
 
     private void craftingMonitor() {
@@ -324,8 +349,7 @@ public class BlockModelProvider extends ModelSubProvider {
                         .put(TextureSlot.EAST, makeId("block/crafting/unit"))
                         .put(TextureSlot.SOUTH, makeId("block/crafting/unit"))
                         .put(TextureSlot.WEST, makeId("block/crafting/unit")),
-                modelOutput
-        );
+                modelOutput);
 
         multiVariantGenerator(AEBlocks.CRAFTING_MONITOR)
                 .with(PropertyDispatch.properties(AbstractCraftingUnitBlock.FORMED, BlockStateProperties.FACING)
@@ -338,6 +362,7 @@ public class BlockModelProvider extends ModelSubProvider {
                                         BlockOrientation.get(facing));
                             }
                         }));
+        blockModels.registerSimpleItemModel(AEBlocks.CRAFTING_MONITOR.asItem(), unformedModel);
     }
 
     private void crystalResonanceGenerator() {
@@ -377,14 +402,12 @@ public class BlockModelProvider extends ModelSubProvider {
 
             builder.with(
                     Condition.condition().term(BlockStateProperties.FACING, facing),
-                    applyOrientation(Variant.variant().with(VariantProperties.MODEL, chassis), rotation)
-            );
+                    applyOrientation(Variant.variant().with(VariantProperties.MODEL, chassis), rotation));
 
             BiConsumer<ResourceLocation, WirelessAccessPointBlock.State> addModel = (modelFile, state) -> builder.with(
                     Condition.condition().term(BlockStateProperties.FACING, facing)
                             .term(WirelessAccessPointBlock.STATE, state),
-                    applyOrientation(Variant.variant().with(VariantProperties.MODEL, modelFile), rotation)
-            );
+                    applyOrientation(Variant.variant().with(VariantProperties.MODEL, modelFile), rotation));
             addModel.accept(antennaOff, WirelessAccessPointBlock.State.OFF);
             addModel.accept(statusOff, WirelessAccessPointBlock.State.OFF);
             addModel.accept(antennaOff, WirelessAccessPointBlock.State.ON);
@@ -394,6 +417,8 @@ public class BlockModelProvider extends ModelSubProvider {
         }
 
         blockModels.blockStateOutput.accept(builder);
+
+        itemModels.declareCustomModelItem(AEBlocks.WIRELESS_ACCESS_POINT.asItem());
     }
 
     private static final ResourceLocation MACHINE_BOTTOM = AppEng.makeId("block/generics/bottom");
@@ -402,20 +427,20 @@ public class BlockModelProvider extends ModelSubProvider {
         var block = AEBlocks.VIBRATION_CHAMBER.block();
 
         var textureMapping = TextureMapping.cube(block)
-                .put(TextureSlot.PARTICLE, TextureMapping.getBlockTexture(block, "_front"))
+                .put(TextureSlot.PARTICLE, getBlockTexture(block, "_front"))
                 .put(TextureSlot.DOWN, MACHINE_BOTTOM)
-                .put(TextureSlot.UP, TextureMapping.getBlockTexture(block, "_top"))
-                .put(TextureSlot.NORTH, TextureMapping.getBlockTexture(block, "_front"))
-                .put(TextureSlot.EAST, TextureMapping.getBlockTexture(block, "_side"))
-                .put(TextureSlot.SOUTH, TextureMapping.getBlockTexture(block, "_back"))
-                .put(TextureSlot.WEST, TextureMapping.getBlockTexture(block, "_side"));
+                .put(TextureSlot.UP, getBlockTexture(block, "_top"))
+                .put(TextureSlot.NORTH, getBlockTexture(block, "_front"))
+                .put(TextureSlot.EAST, getBlockTexture(block, "_side"))
+                .put(TextureSlot.SOUTH, getBlockTexture(block, "_back"))
+                .put(TextureSlot.WEST, getBlockTexture(block, "_side"));
         var offModel = ModelTemplates.CUBE.create(block, textureMapping, modelOutput);
 
         var textureMappingOn = textureMapping.copy()
-                .put(TextureSlot.UP, TextureMapping.getBlockTexture(block, "_top_on"))
-                .put(TextureSlot.NORTH, TextureMapping.getBlockTexture(block, "_front_on"))
-                .put(TextureSlot.SOUTH, TextureMapping.getBlockTexture(block, "_back_on"))
-                .put(TextureSlot.PARTICLE, TextureMapping.getBlockTexture(block, "_front_on"));
+                .put(TextureSlot.UP, getBlockTexture(block, "_top_on"))
+                .put(TextureSlot.NORTH, getBlockTexture(block, "_front_on"))
+                .put(TextureSlot.SOUTH, getBlockTexture(block, "_back_on"))
+                .put(TextureSlot.PARTICLE, getBlockTexture(block, "_front_on"));
         var onModel = ModelTemplates.CUBE.createWithSuffix(block, "_on", textureMappingOn, modelOutput);
 
         multiVariantGenerator(AEBlocks.VIBRATION_CHAMBER)
@@ -424,7 +449,7 @@ public class BlockModelProvider extends ModelSubProvider {
                         .select(false, Variant.variant().with(VariantProperties.MODEL, offModel))
                         .select(true, Variant.variant().with(VariantProperties.MODEL, onModel)));
 
-        // TODO  itemModels().withExistingParent(modelPath(AEBlocks.VIBRATION_CHAMBER), offModel);
+        // TODO itemModels().withExistingParent(modelPath(AEBlocks.VIBRATION_CHAMBER), offModel);
     }
 
     private void spatialAnchor() {
@@ -437,7 +462,7 @@ public class BlockModelProvider extends ModelSubProvider {
                         .select(false, Variant.variant().with(VariantProperties.MODEL, offModel))
                         .select(true, Variant.variant().with(VariantProperties.MODEL, onModel)));
 
-        // TODO  itemModels().withExistingParent(modelPath(AEBlocks.SPATIAL_ANCHOR), offModel);
+        // TODO itemModels().withExistingParent(modelPath(AEBlocks.SPATIAL_ANCHOR), offModel);
     }
 
     private void patternProvider() {
@@ -503,8 +528,7 @@ public class BlockModelProvider extends ModelSubProvider {
 
     private void builtInModel(BlockDefinition<?> block, boolean skipItem) {
         blockModels.blockStateOutput.accept(
-                createSimpleBlock(block.block(), createBuiltInModel(block.block()))
-        );
+                createSimpleBlock(block.block(), createBuiltInModel(block.block())));
 
         if (!skipItem) {
             // The item model should not reference the block model since that will be replaced in-code
@@ -528,28 +552,32 @@ public class BlockModelProvider extends ModelSubProvider {
 
         var energyLevelDispatch = PropertyDispatch.property(EnergyCellBlock.ENERGY_STORAGE);
 
+        var models = new ArrayList<ResourceLocation>();
         for (var i = 0; i < 5; i++) {
-            var textures = TextureMapping.cube(TextureMapping.getBlockTexture(block, "_" + i));
+            var textures = TextureMapping.cube(getBlockTexture(block, "_" + i));
             var model = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_" + i, textures, modelOutput);
+            models.add(model);
             energyLevelDispatch.select(i, Variant.variant().with(VariantProperties.MODEL, model));
         }
         blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block).with(energyLevelDispatch));
 
+        var itemLevelEntries = new ArrayList<RangeSelectItemModel.Entry>();
+        for (var i = 1; i < models.size(); i++) {
+            // The predicate matches "greater than", meaning for fill-level > 0 the first non-empty texture is used
+            float fillFactor = i / (float) models.size();
+            itemLevelEntries.add(new RangeSelectItemModel.Entry(fillFactor, ItemModelUtils.plainModel(models.get(i))));
+        }
 
-        //  TODO 1.21.4 var item = itemModels().withExistingParent(modelPath(block), models.get(0));
-        //  TODO 1.21.4 for (var i = 1; i < models.size(); i++) {
-        //  TODO 1.21.4     // The predicate matches "greater than", meaning for fill-level > 0 the first non-empty texture is used
-        //  TODO 1.21.4     float fillFactor = i / (float) models.size();
-        //  TODO 1.21.4     item.override()
-        //  TODO 1.21.4             .predicate(InitItemModelsProperties.ENERGY_FILL_LEVEL_ID, fillFactor)
-        //  TODO 1.21.4             .model(models.get(i));
-        //  TODO 1.21.4 }
+        itemModels.itemModelOutput.accept(
+                blockDef.asItem(),
+                ItemModelUtils.rangeSelect(
+                        new EnergyFillLevelProperty(), ItemModelUtils.plainModel(models.getFirst()), itemLevelEntries));
+
     }
 
     private void craftingModel(BlockDefinition<?> block, String name) {
         var unformedModel = ModelTemplates.CUBE_ALL.create(
-                makeId("block/crafting/" + name), TextureMapping.cube(makeId("block/crafting/" + name)), modelOutput
-        );
+                makeId("block/crafting/" + name), TextureMapping.cube(makeId("block/crafting/" + name)), modelOutput);
         var formedModel = builtInModel("crafting/" + name + "_formed");
 
         blockModels.blockStateOutput
@@ -557,12 +585,12 @@ public class BlockModelProvider extends ModelSubProvider {
                         MultiVariantGenerator.multiVariant(block.block())
                                 .with(
                                         PropertyDispatch.property(AbstractCraftingUnitBlock.FORMED)
-                                                .select(false, Variant.variant().with(VariantProperties.MODEL, unformedModel))
-                                                .select(true, Variant.variant().with(VariantProperties.MODEL, formedModel))
-                                )
-                );
+                                                .select(false,
+                                                        Variant.variant().with(VariantProperties.MODEL, unformedModel))
+                                                .select(true,
+                                                        Variant.variant().with(VariantProperties.MODEL, formedModel))));
 
-        // TODO simpleBlockItem(block.block(), blockModel);
+        blockModels.registerSimpleItemModel(block.asItem(), unformedModel);
     }
 
     private void generateQuartzCluster(BlockDefinition<?> quartz) {
@@ -570,11 +598,11 @@ public class BlockModelProvider extends ModelSubProvider {
         blockModels.blockStateOutput
                 .accept(
                         MultiVariantGenerator.multiVariant(
-                                        block,
-                                        Variant.variant()
-                                                .with(VariantProperties.MODEL, ModelTemplates.CROSS.create(block, TextureMapping.cross(block), modelOutput))
-                                )
-                                .with(blockModels.createColumnWithFacing())
-                );
+                                block,
+                                Variant.variant()
+                                        .with(VariantProperties.MODEL,
+                                                ModelTemplates.CROSS.create(block, TextureMapping.cross(block),
+                                                        modelOutput)))
+                                .with(blockModels.createColumnWithFacing()));
     }
 }

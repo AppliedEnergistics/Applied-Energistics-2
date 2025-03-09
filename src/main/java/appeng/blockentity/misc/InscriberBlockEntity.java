@@ -25,8 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -35,7 +33,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -574,16 +574,20 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
                 if (bot.isEmpty() && top.isEmpty()) {
                     return true;
                 } else if (bot.isEmpty()) {
-                    if (testIngredient(recipe.getTopOptional(), top) || testIngredient(recipe.getBottomOptional(), top)) {
+                    if (testIngredient(recipe.getTopOptional(), top)
+                            || testIngredient(recipe.getBottomOptional(), top)) {
                         return true;
                     }
                 } else if (top.isEmpty()) {
-                    if (testIngredient(recipe.getBottomOptional(), bot) || testIngredient(recipe.getTopOptional(), bot)) {
+                    if (testIngredient(recipe.getBottomOptional(), bot)
+                            || testIngredient(recipe.getTopOptional(), bot)) {
                         return true;
                     }
                 } else {
-                    if ((testIngredient(recipe.getTopOptional(), top) && testIngredient(recipe.getBottomOptional(), bot))
-                            || (testIngredient(recipe.getBottomOptional(), top) && testIngredient(recipe.getTopOptional(), bot))) {
+                    if ((testIngredient(recipe.getTopOptional(), top)
+                            && testIngredient(recipe.getBottomOptional(), bot))
+                            || (testIngredient(recipe.getBottomOptional(), top)
+                                    && testIngredient(recipe.getTopOptional(), bot))) {
                         return true;
                     }
                 }

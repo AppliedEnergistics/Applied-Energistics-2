@@ -26,7 +26,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
@@ -176,7 +175,8 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        if (context.getLevel() instanceof ServerLevel serverLevel && this.disassembleDrive(stack, serverLevel, context.getPlayer())) {
+        if (context.getLevel() instanceof ServerLevel serverLevel
+                && this.disassembleDrive(stack, serverLevel, context.getPlayer())) {
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Future;
 
-import appeng.core.AppEng;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -48,6 +47,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ISubMenuHost;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.network.clientbound.CraftConfirmPlanPacket;
 import appeng.crafting.execution.CraftingSubmitResult;
 import appeng.helpers.ICraftingGridMenu;

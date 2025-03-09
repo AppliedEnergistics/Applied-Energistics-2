@@ -1,14 +1,11 @@
 package appeng.recipes.transform;
 
-import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEItems;
-import appeng.recipes.AERecipeTypes;
-import com.mojang.serialization.DataResult;
+import java.util.List;
+
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -26,7 +23,10 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 
-import java.util.List;
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEItems;
+import appeng.recipes.AERecipeTypes;
 
 public final class TransformRecipe implements Recipe<TransformRecipeInput> {
     @Deprecated(forRemoval = true, since = "1.21.1")
@@ -36,14 +36,14 @@ public final class TransformRecipe implements Recipe<TransformRecipeInput> {
 
     public static final MapCodec<TransformRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> {
         return builder.group(
-                        Ingredient.CODEC
-                                .listOf()
-                                .fieldOf("ingredients")
-                                .forGetter(r -> r.ingredients),
-                        ItemStack.CODEC.fieldOf("result").forGetter(r -> r.output),
-                        TransformCircumstance.CODEC
-                                .optionalFieldOf("circumstance", TransformCircumstance.fluid(FluidTags.WATER))
-                                .forGetter(t -> t.circumstance))
+                Ingredient.CODEC
+                        .listOf()
+                        .fieldOf("ingredients")
+                        .forGetter(r -> r.ingredients),
+                ItemStack.CODEC.fieldOf("result").forGetter(r -> r.output),
+                TransformCircumstance.CODEC
+                        .optionalFieldOf("circumstance", TransformCircumstance.fluid(FluidTags.WATER))
+                        .forGetter(t -> t.circumstance))
                 .apply(builder, TransformRecipe::new);
     });
 
@@ -94,9 +94,7 @@ public final class TransformRecipe implements Recipe<TransformRecipeInput> {
                 new TransformRecipeDisplay(
                         ingredients.stream().map(Ingredient::display).toList(),
                         circumstance,
-                        new SlotDisplay.ItemStackSlotDisplay(output)
-                )
-        );
+                        new SlotDisplay.ItemStackSlotDisplay(output)));
     }
 
     public ItemStack getResultItem() {

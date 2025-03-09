@@ -8,8 +8,6 @@ import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import appeng.core.AppEng;
-import appeng.util.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +22,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
+import appeng.core.AppEng;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
 
@@ -95,13 +94,14 @@ public record ExportedGridContent(int serialNumber,
                 LOG.error("Failed to move grid export {} into place", finalPath, e);
             }
 
-            AppEng.instance().sendSystemMessage(player, Component.literal("Saved grid data for grid #" + serialNumber + " from server to ")
-                    .append(Component.literal(finalPath.toString()).withStyle(style -> {
-                        return style.withUnderlined(true)
-                                .withClickEvent(new ClickEvent(
-                                        ClickEvent.Action.OPEN_FILE,
-                                        finalPath.getParent().toString()));
-                    })));
+            AppEng.instance().sendSystemMessage(player,
+                    Component.literal("Saved grid data for grid #" + serialNumber + " from server to ")
+                            .append(Component.literal(finalPath.toString()).withStyle(style -> {
+                                return style.withUnderlined(true)
+                                        .withClickEvent(new ClickEvent(
+                                                ClickEvent.Action.OPEN_FILE,
+                                                finalPath.getParent().toString()));
+                            })));
         }
     }
 

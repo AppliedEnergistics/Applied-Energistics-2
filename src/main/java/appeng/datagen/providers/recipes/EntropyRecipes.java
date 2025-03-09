@@ -18,15 +18,15 @@
 
 package appeng.datagen.providers.recipes;
 
-
-import appeng.core.AppEng;
-import appeng.recipes.entropy.EntropyRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
+
+import appeng.core.AppEng;
+import appeng.recipes.entropy.EntropyRecipeBuilder;
 
 public class EntropyRecipes extends AE2RecipeProvider {
     public EntropyRecipes(HolderLookup.Provider registries, RecipeOutput output) {

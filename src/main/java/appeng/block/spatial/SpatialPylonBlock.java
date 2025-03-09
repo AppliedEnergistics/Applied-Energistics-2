@@ -55,7 +55,8 @@ public class SpatialPylonBlock extends AEBaseEntityBlock<SpatialPylonBlockEntity
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess,
+            BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
         var tsp = this.getBlockEntity(level, pos);
         if (tsp != null) {
             tsp.updateMultiBlock(neighborPos);

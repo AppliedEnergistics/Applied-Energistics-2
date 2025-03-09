@@ -18,7 +18,6 @@
 
 package appeng.items.tools.quartz;
 
-import appeng.datagen.providers.tags.ConventionTags;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.ToolMaterial;
 

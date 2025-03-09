@@ -18,10 +18,11 @@
 
 package appeng.block.crafting;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -39,7 +40,6 @@ import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
-import org.jetbrains.annotations.Nullable;
 
 public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlockEntity> {
 
@@ -63,7 +63,8 @@ public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlock
     }
 
     @Override
-    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, @Nullable Orientation orientation, boolean movedByPiston) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock,
+            @Nullable Orientation orientation, boolean movedByPiston) {
         var be = this.getBlockEntity(level, pos);
         if (be != null) {
             be.getLogic().updateRedstoneState();

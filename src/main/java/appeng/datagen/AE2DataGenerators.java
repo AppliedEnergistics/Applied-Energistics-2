@@ -18,6 +18,22 @@
 
 package appeng.datagen;
 
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
+
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.advancements.AdvancementProvider;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+
 import appeng.core.AppEng;
 import appeng.core.definitions.AEDamageTypes;
 import appeng.datagen.providers.advancements.AdvancementGenerator;
@@ -38,21 +54,6 @@ import appeng.datagen.providers.tags.PoiTypeTagsProvider;
 import appeng.init.worldgen.InitBiomes;
 import appeng.init.worldgen.InitDimensionTypes;
 import appeng.init.worldgen.InitStructures;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.advancements.AdvancementProvider;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
-import net.neoforged.neoforge.data.event.GatherDataEvent;
-
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
 
 @EventBusSubscriber(modid = AppEng.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class AE2DataGenerators {
@@ -88,8 +89,7 @@ public class AE2DataGenerators {
                 BlockModelProvider::new,
                 DecorationModelProvider::new,
                 ItemModelProvider::new,
-                PartModelProvider::new
-        ));
+                PartModelProvider::new));
 
         // Misc
         pack.addProvider(packOutput -> new AdvancementProvider(packOutput, registries, List.of(

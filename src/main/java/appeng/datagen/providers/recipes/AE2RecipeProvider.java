@@ -18,7 +18,9 @@
 
 package appeng.datagen.providers.recipes;
 
-import appeng.core.AppEng;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -26,12 +28,10 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import appeng.core.AppEng;
 
 public abstract class AE2RecipeProvider extends RecipeProvider {
     protected final HolderGetter<Item> items;
@@ -67,8 +67,7 @@ public abstract class AE2RecipeProvider extends RecipeProvider {
                 TransformRecipes::new,
                 ChargerRecipes::new,
                 QuartzCuttingRecipesProvider::new,
-                UpgradeRecipes::new
-        );
+                UpgradeRecipes::new);
 
         public Runner(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
             super(packOutput, registries);

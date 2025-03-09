@@ -1,9 +1,7 @@
 package appeng.block.networking;
 
-import appeng.client.render.cablebus.CableBusBakedModel;
-import appeng.client.render.cablebus.CableBusBreakingParticle;
-import appeng.client.render.cablebus.CableBusRenderState;
-import appeng.parts.ICableBusContainer;
+import java.util.List;
+
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -17,7 +15,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
 
-import java.util.List;
+import appeng.client.render.cablebus.CableBusBakedModel;
+import appeng.client.render.cablebus.CableBusBreakingParticle;
+import appeng.client.render.cablebus.CableBusRenderState;
+import appeng.parts.ICableBusContainer;
 
 public class CableBusBlockClientExtensions implements IClientBlockExtensions {
 
@@ -29,7 +30,7 @@ public class CableBusBlockClientExtensions implements IClientBlockExtensions {
 
     @Override
     public boolean addHitEffects(BlockState state, Level level, HitResult target,
-                                 ParticleEngine effectRenderer) {
+            ParticleEngine effectRenderer) {
 
         // Half the particle rate. Since we're spawning concentrated on a specific spot,
         // our particle effect otherwise looks too strong
@@ -74,7 +75,7 @@ public class CableBusBlockClientExtensions implements IClientBlockExtensions {
 
     @Override
     public boolean addDestroyEffects(BlockState state, Level level, BlockPos pos,
-                                     ParticleEngine effectRenderer) {
+            ParticleEngine effectRenderer) {
         ICableBusContainer cb = block.cb(level, pos);
 
         // Our built-in model has the actual baked sprites we need

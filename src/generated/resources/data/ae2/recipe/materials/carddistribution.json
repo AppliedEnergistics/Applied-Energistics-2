@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "ae2:advanced_card"
-    },
-    {
-      "item": "ae2:calculation_processor"
-    }
+    "ae2:advanced_card",
+    "ae2:calculation_processor"
   ],
   "result": {
     "count": 1,

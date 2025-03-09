@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "minecraft:wool"
-    },
-    {
-      "item": "ae2:fluix_glass_cable"
-    }
+    "#minecraft:wool",
+    "ae2:fluix_glass_cable"
   ],
   "result": {
     "count": 1,

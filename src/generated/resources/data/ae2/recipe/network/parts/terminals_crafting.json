@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "ae2:terminal"
-    },
-    {
-      "item": "minecraft:crafting_table"
-    },
-    {
-      "item": "ae2:calculation_processor"
-    }
+    "ae2:terminal",
+    "minecraft:crafting_table",
+    "ae2:calculation_processor"
   ],
   "result": {
     "count": 1,

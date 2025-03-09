@@ -23,7 +23,6 @@ import java.util.EnumMap;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.FaceBakery;
 import net.minecraft.core.Direction;
 

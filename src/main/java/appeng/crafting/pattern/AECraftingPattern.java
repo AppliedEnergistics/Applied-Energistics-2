@@ -30,12 +30,12 @@ import java.util.stream.Stream;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.core.Holder;
-import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -609,7 +609,8 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
                 if (recipeIngredient == null) {
                     matchingStacks = new ItemStack[0];
                 } else {
-                    matchingStacks = recipeIngredient.items().map(Holder::value).map(Item::getDefaultInstance).toArray(ItemStack[]::new); // TODO 1.21.4 can't stay like this
+                    matchingStacks = recipeIngredient.items().map(Holder::value).map(Item::getDefaultInstance)
+                            .toArray(ItemStack[]::new); // TODO 1.21.4 can't stay like this
                 }
                 this.possibleInputs = new GenericStack[matchingStacks.length + 1];
                 // Ensure that the stack chosen by the user gets precedence.

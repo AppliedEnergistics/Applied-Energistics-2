@@ -1,6 +1,29 @@
 
 package appeng.core.network.serverbound;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
+
+import com.google.common.base.Preconditions;
+import com.google.common.primitives.Ints;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.Holder;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.storage.IStorageService;
@@ -15,26 +38,6 @@ import appeng.items.storage.ViewCellItem;
 import appeng.me.storage.NullInventory;
 import appeng.util.CraftingRecipeUtil;
 import appeng.util.prioritylist.IPartitionList;
-import com.google.common.base.Preconditions;
-import com.google.common.primitives.Ints;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.core.Holder;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * This packet will attempt to fill a crafting grid with real items based on a crafting recipe for the purposes of
@@ -68,8 +71,8 @@ public record FillCraftingGridFromRecipePacket(
     }
 
     public FillCraftingGridFromRecipePacket(@Nullable ResourceKey<Recipe<?>> recipeId,
-                                            NonNullList<ItemStack> ingredientTemplates,
-                                            boolean craftMissing) {
+            NonNullList<ItemStack> ingredientTemplates,
+            boolean craftMissing) {
         this.recipeId = recipeId;
         this.ingredientTemplates = NonNullList.copyOf(ingredientTemplates.stream().map(ItemStack::copy).toList());
         this.craftMissing = craftMissing;
@@ -291,7 +294,7 @@ public record FillCraftingGridFromRecipePacket(
      * </pre>
      */
     private List<AEItemKey> findBestMatchingItemStack(Ingredient ingredient, IPartitionList filter,
-                                                      KeyCounter storage) {
+            KeyCounter storage) {
         if (!ingredient.isCustom()) {
             return ingredient.getValues().stream()
                     .map(Holder::value)
@@ -311,7 +314,8 @@ public record FillCraftingGridFromRecipePacket(
                     .map(k -> {
                         return k instanceof AEItemKey itemKey ? itemKey : null;
                     })
-                    .filter(r -> r != null && (filter == null || filter.isListed(r)) && ingredient.test(r.getReadOnlyStack()))
+                    .filter(r -> r != null && (filter == null || filter.isListed(r))
+                            && ingredient.test(r.getReadOnlyStack()))
                     // Sort in descending order of availability
                     .sorted((a, b) -> Long.compare(storage.get(b), storage.get(a)))
                     .toList();

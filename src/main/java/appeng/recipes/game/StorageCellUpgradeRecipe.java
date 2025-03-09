@@ -1,5 +1,7 @@
 package appeng.recipes.game;
 
+import java.util.List;
+
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -10,21 +12,15 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
-
-import appeng.core.AppEng;
-
-import java.util.List;
 
 /**
  * Allows swapping out the storage component of a cell without having to empty it first.
@@ -163,8 +159,6 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
                         new SlotDisplay.ItemSlotDisplay(inputCell),
                         new SlotDisplay.ItemSlotDisplay(inputComponent),
                         new SlotDisplay.ItemSlotDisplay(resultCell),
-                        new SlotDisplay.ItemSlotDisplay(resultComponent)
-                )
-        );
+                        new SlotDisplay.ItemSlotDisplay(resultComponent)));
     }
 }

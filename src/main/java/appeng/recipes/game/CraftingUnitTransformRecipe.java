@@ -1,8 +1,10 @@
 package appeng.recipes.game;
 
-import appeng.recipes.AERecipeTypes;
+import java.util.List;
+
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -23,7 +25,7 @@ import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
-import java.util.List;
+import appeng.recipes.AERecipeTypes;
 
 /**
  * Used to handle upgrading and removal of upgrades for crafting units (in-world).
@@ -113,8 +115,7 @@ public class CraftingUnitTransformRecipe implements Recipe<RecipeInput> {
     @Override
     public List<RecipeDisplay> display() {
         return List.of(
-                new CraftingUnitTransformDisplay(upgradedBlock, new SlotDisplay.ItemSlotDisplay(upgradeItem))
-        );
+                new CraftingUnitTransformDisplay(upgradedBlock, new SlotDisplay.ItemSlotDisplay(upgradeItem)));
     }
 
     @Override

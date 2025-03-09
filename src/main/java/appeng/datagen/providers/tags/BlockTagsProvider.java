@@ -33,7 +33,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
-
 import appeng.api.ids.AETags;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;

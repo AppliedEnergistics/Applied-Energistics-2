@@ -1,15 +1,5 @@
 package appeng.datagen.providers.models;
 
-import appeng.api.util.AEColor;
-import appeng.client.render.model.MemoryCardModel;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
-import appeng.core.definitions.ColoredItemDefinition;
-import appeng.core.definitions.ItemDefinition;
-import appeng.items.misc.PaintBallItem;
-import com.google.gson.JsonObject;
 import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -23,7 +13,13 @@ import net.minecraft.client.renderer.item.EmptyModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.ItemLike;
-import org.checkerframework.common.returnsreceiver.qual.This;
+
+import appeng.api.util.AEColor;
+import appeng.client.render.model.MemoryCardModel;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.ItemDefinition;
 
 public class ItemModelProvider extends ModelSubProvider {
     public ItemModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
@@ -144,26 +140,24 @@ public class ItemModelProvider extends ModelSubProvider {
         var model = itemModels.generateLayeredItem(
                 item.asItem(),
                 makeId(background),
-                makeId("item/storage_cell_led")
-        );
+                makeId("item/storage_cell_led"));
         itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.plainModel(model));
     }
 
     public static final TextureSlot LAYER3 = TextureSlot.create("layer3");
-    private static final ModelTemplate FOUR_LAYERED_ITEM = ModelTemplates.createItem("generated", TextureSlot.LAYER0, TextureSlot.LAYER1, TextureSlot.LAYER2, LAYER3);
+    private static final ModelTemplate FOUR_LAYERED_ITEM = ModelTemplates.createItem("generated", TextureSlot.LAYER0,
+            TextureSlot.LAYER1, TextureSlot.LAYER2, LAYER3);
 
     private void portableCell(ItemDefinition<?> item, String housingType, String tier) {
 
         var model = FOUR_LAYERED_ITEM.create(
                 item.asItem(),
                 TextureMapping.layered(
-                                makeId("item/portable_cell_%s_housing".formatted(housingType)),
-                                makeId("item/portable_cell_led"),
-                                makeId("item/portable_cell_screen")
-                        )
+                        makeId("item/portable_cell_%s_housing".formatted(housingType)),
+                        makeId("item/portable_cell_led"),
+                        makeId("item/portable_cell_screen"))
                         .put(LAYER3, makeId("item/portable_cell_side_%s".formatted(tier))),
-                itemModels.modelOutput
-        );
+                itemModels.modelOutput);
         itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.plainModel(model));
     }
 
@@ -203,8 +197,10 @@ public class ItemModelProvider extends ModelSubProvider {
      * Note that color is applied to the textures in {@link appeng.init.client.InitItemColors}.
      */
     private void registerPaintballs() {
-        var baseModel = ModelTemplates.FLAT_ITEM.create(AppEng.makeId("item/paint_ball"), TextureMapping.layer0(AppEng.makeId("item/paint_ball")), this.modelOutput);
-        var lumenModel = ModelTemplates.FLAT_ITEM.create(AppEng.makeId("item/paint_ball_shimmer"), TextureMapping.layer0(AppEng.makeId("item/paint_ball_shimmer")), this.modelOutput);
+        var baseModel = ModelTemplates.FLAT_ITEM.create(AppEng.makeId("item/paint_ball"),
+                TextureMapping.layer0(AppEng.makeId("item/paint_ball")), this.modelOutput);
+        var lumenModel = ModelTemplates.FLAT_ITEM.create(AppEng.makeId("item/paint_ball_shimmer"),
+                TextureMapping.layer0(AppEng.makeId("item/paint_ball_shimmer")), this.modelOutput);
 
         for (var color : AEColor.values()) {
             if (color == AEColor.TRANSPARENT) {
@@ -213,13 +209,11 @@ public class ItemModelProvider extends ModelSubProvider {
 
             itemModels.itemModelOutput.accept(
                     AEItems.COLORED_PAINT_BALL.item(color),
-                    ItemModelUtils.tintedModel(baseModel, new Constant(color.mediumVariant))
-            );
+                    ItemModelUtils.tintedModel(baseModel, new Constant(color.mediumVariant)));
             var lumenColor = getLumenTintColor(color);
             itemModels.itemModelOutput.accept(
                     AEItems.COLORED_LUMEN_PAINT_BALL.item(color),
-                    ItemModelUtils.tintedModel(lumenModel, new Constant(lumenColor))
-            );
+                    ItemModelUtils.tintedModel(lumenModel, new Constant(lumenColor)));
         }
     }
 
@@ -234,12 +228,12 @@ public class ItemModelProvider extends ModelSubProvider {
         return ARGB.color(
                 (int) (full + r * fail),
                 (int) (full + g * fail),
-                (int) (full + b * fail)
-        );
+                (int) (full + b * fail));
     }
 
     private void flatSingleLayer(ItemLike item, String texture) {
-        var model = ModelTemplates.FLAT_ITEM.create(item.asItem(), TextureMapping.layer0(makeId(texture)), itemModels.modelOutput);
+        var model = ModelTemplates.FLAT_ITEM.create(item.asItem(), TextureMapping.layer0(makeId(texture)),
+                itemModels.modelOutput);
         itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.plainModel(model));
     }
 

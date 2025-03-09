@@ -1,9 +1,6 @@
 package appeng.datagen.providers.recipes;
 
-import java.util.concurrent.CompletableFuture;
-
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SmithingTransformRecipeBuilder;
@@ -11,7 +8,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 
-import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
@@ -34,7 +30,8 @@ public class SmithingRecipes extends AE2RecipeProvider {
     private void fluixSmithing(RecipeOutput output, TagKey<Item> quartzTool,
             ItemDefinition<?> fluixTool) {
         SmithingTransformRecipeBuilder
-                .smithing(Ingredient.of(AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE), Ingredient.of(items.getOrThrow(quartzTool)),
+                .smithing(Ingredient.of(AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE),
+                        Ingredient.of(items.getOrThrow(quartzTool)),
                         Ingredient.of(AEBlocks.FLUIX_BLOCK), RecipeCategory.MISC, fluixTool.asItem())
                 .unlocks("has_crystals/fluix", has(ConventionTags.ALL_FLUIX))
                 .save(output, makeId("tools/" + getItemName(fluixTool)));

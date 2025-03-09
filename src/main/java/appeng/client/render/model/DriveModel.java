@@ -21,21 +21,16 @@ package appeng.client.render.model;
 import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.TextureSlots;
-import net.minecraft.util.context.ContextMap;
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
@@ -45,13 +40,12 @@ import appeng.init.internal.InitStorageCells;
 
 public class DriveModel implements BasicUnbakedModel {
 
-    private static final ResourceLocation MODEL_BASE = ResourceLocation.parse(
-            "ae2:block/drive/drive_base");
-    private static final ResourceLocation MODEL_CELL_EMPTY = ResourceLocation.parse(
-            "ae2:block/drive/drive_cell_empty");
+    private static final ResourceLocation MODEL_BASE = ResourceLocation.parse("ae2:block/drive_base");
+    private static final ResourceLocation MODEL_CELL_EMPTY = ResourceLocation.parse("ae2:block/drive_cell_empty");
 
     @Override
-    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion, boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
+    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion,
+            boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
         final Map<Item, BakedModel> cellModels = new IdentityHashMap<>();
 
         // Load the base model and the model for each cell model.

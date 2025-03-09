@@ -31,17 +31,16 @@ import java.util.WeakHashMap;
 
 import com.google.common.collect.HashMultimap;
 
-import net.minecraft.client.renderer.RenderType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -624,8 +623,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                 srcRect.getX(),
                 srcRect.getY(),
                 srcRect.getWidth(),
-                srcRect.getHeight()
-        );
+                srcRect.getHeight());
     }
 
     protected int getVisibleRows() {

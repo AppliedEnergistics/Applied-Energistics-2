@@ -1,13 +1,14 @@
 package appeng.datagen.providers.models;
 
-import appeng.datagen.providers.IAE2DataProvider;
+import java.util.List;
+
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 
-import java.util.List;
+import appeng.datagen.providers.IAE2DataProvider;
 
 public final class AE2ModelProvider extends ModelProvider implements IAE2DataProvider {
     public static Factory<DataProvider> create(String modId, ModelSubProviderFactory... subProviders) {

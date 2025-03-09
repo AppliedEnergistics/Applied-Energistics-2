@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import appeng.recipes.AERecipeTypes;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -60,6 +59,7 @@ import appeng.block.misc.TinyTNTBlock;
 import appeng.core.AEConfig;
 import appeng.hooks.IBlockTool;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
+import appeng.recipes.AERecipeTypes;
 import appeng.recipes.entropy.EntropyMode;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.util.InteractionUtil;

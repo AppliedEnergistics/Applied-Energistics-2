@@ -20,15 +20,14 @@ package appeng.block.misc;
 
 import java.util.List;
 
-import net.minecraft.server.level.ServerLevel;
 import org.joml.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -75,7 +74,8 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
     @Override
     protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof ChargerBlockEntity charger) {
+        if (level instanceof ServerLevel serverLevel
+                && level.getBlockEntity(pos) instanceof ChargerBlockEntity charger) {
             var inv = charger.getInternalInventory();
             var chargingItem = inv.getStackInSlot(0);
             if (chargingItem.isEmpty()) {

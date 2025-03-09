@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "ae2:dark_monitor"
-    }
+    "ae2:dark_monitor"
   ],
   "result": {
     "count": 1,

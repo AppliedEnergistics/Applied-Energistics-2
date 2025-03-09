@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "c:dusts/glowstone"
-    },
-    "b": {
-      "item": "ae2:spatial_cell_component_2"
-    },
-    "c": {
-      "item": "ae2:engineering_processor"
-    }
+    "a": "#c:dusts/glowstone",
+    "b": "ae2:spatial_cell_component_2",
+    "c": "ae2:engineering_processor"
   },
   "pattern": [
     "aba",

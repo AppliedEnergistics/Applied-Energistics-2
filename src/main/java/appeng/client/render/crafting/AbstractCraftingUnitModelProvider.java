@@ -4,9 +4,9 @@ import java.util.List;
 
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.SpriteGetter;
 
 import appeng.block.crafting.ICraftingUnitType;
-import net.minecraft.client.resources.model.SpriteGetter;
 
 /**
  * Provides material and model information for custom crafting CPU blocks for use with {@link CraftingCubeModel}.

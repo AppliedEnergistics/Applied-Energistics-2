@@ -89,7 +89,8 @@ public class SetupTestWorldCommand implements ISubCommand {
             // Only teleport the player if they're not within the bounds already
             if (!generator.isWithinBounds(player.blockPosition())) {
                 var goodStartPos = generator.getSuitableStartPos();
-                player.teleportTo(level, goodStartPos.getX(), goodStartPos.getY(), goodStartPos.getZ(), Set.of(), 0, 0, true);
+                player.teleportTo(level, goodStartPos.getX(), goodStartPos.getY(), goodStartPos.getZ(), Set.of(), 0, 0,
+                        true);
             }
 
             sender.sendSuccess(() -> PlayerMessages.TestWorldSetupComplete.text(sw.toString()), true);

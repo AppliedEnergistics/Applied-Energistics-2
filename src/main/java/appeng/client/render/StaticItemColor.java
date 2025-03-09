@@ -18,15 +18,18 @@
 
 package appeng.client.render;
 
-import appeng.api.util.AEColor;
-import appeng.api.util.AEColorVariant;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+
+import appeng.api.util.AEColor;
+import appeng.api.util.AEColorVariant;
 
 /**
  * Returns the shades of a single AE color for tint indices 0, 1, and 2.
@@ -35,9 +38,8 @@ public record StaticItemColor(AEColor color, AEColorVariant variant) implements 
     public static final MapCodec<StaticItemColor> MAP_CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder.group(
                     AEColor.CODEC.fieldOf("color").forGetter(StaticItemColor::color),
-                    AEColorVariant.CODEC.fieldOf("variant").forGetter(StaticItemColor::variant)
-            ).apply(builder, StaticItemColor::new)
-    );
+                    AEColorVariant.CODEC.fieldOf("variant").forGetter(StaticItemColor::variant))
+                    .apply(builder, StaticItemColor::new));
 
     @Override
     public int calculate(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity) {

@@ -274,7 +274,8 @@ public class Platform {
             return forward;
         }
         var newForward = forward.getUnitVec3i().cross(axis.getUnitVec3i());
-        return Objects.requireNonNull(Direction.getNearest(newForward.getX(), newForward.getY(), newForward.getZ(), null));
+        return Objects
+                .requireNonNull(Direction.getNearest(newForward.getX(), newForward.getY(), newForward.getZ(), null));
     }
 
     public static void configurePlayer(Player player, Direction side, BlockEntity blockEntity) {

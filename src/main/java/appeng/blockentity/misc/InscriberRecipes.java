@@ -18,11 +18,13 @@
 
 package appeng.blockentity.misc;
 
-import net.minecraft.server.level.ServerLevel;
+import java.util.Optional;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -32,8 +34,6 @@ import appeng.core.definitions.AEItems;
 import appeng.recipes.AERecipeTypes;
 import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipe;
-
-import java.util.Optional;
 
 /**
  * This class indexes all inscriber recipes to find valid inputs for the top and bottom optional slots. This speeds up
@@ -68,8 +68,10 @@ public final class InscriberRecipes {
         for (var holder : getRecipes(level)) {
             var recipe = holder.value();
             // The recipe can be flipped at will
-            final boolean matchA = testIngredient(recipe.getTopOptional(), plateA) && testIngredient(recipe.getBottomOptional(), plateB);
-            final boolean matchB = testIngredient(recipe.getTopOptional(), plateB) && testIngredient(recipe.getBottomOptional(), plateA);
+            final boolean matchA = testIngredient(recipe.getTopOptional(), plateA)
+                    && testIngredient(recipe.getBottomOptional(), plateB);
+            final boolean matchB = testIngredient(recipe.getTopOptional(), plateB)
+                    && testIngredient(recipe.getBottomOptional(), plateA);
 
             if ((matchA || matchB) && recipe.getMiddleInput().test(input)) {
                 return recipe;
@@ -124,7 +126,8 @@ public final class InscriberRecipes {
         for (var holder : getRecipes(level)) {
             var recipe = holder.value();
             if (testIngredient(recipe.getTopOptional(), pressA) && testIngredient(recipe.getBottomOptional(), pressB)
-                    || testIngredient(recipe.getTopOptional(), pressB) && testIngredient(recipe.getBottomOptional(), pressA)) {
+                    || testIngredient(recipe.getTopOptional(), pressB)
+                            && testIngredient(recipe.getBottomOptional(), pressA)) {
                 return true;
             }
         }

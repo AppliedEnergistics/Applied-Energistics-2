@@ -23,8 +23,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
-
 import com.mojang.math.Transformation;
+
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -32,14 +32,14 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.context.ContextMap;
+import net.neoforged.neoforge.client.model.SimpleModelState;
 
 import appeng.api.parts.PartModelsInternal;
 import appeng.api.util.AEColor;
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AELog;
 import appeng.core.AppEng;
-import net.minecraft.util.context.ContextMap;
-import net.neoforged.neoforge.client.model.SimpleModelState;
 
 /**
  * The built-in model for the cable bus block.
@@ -57,7 +57,8 @@ public class CableBusModel implements BasicUnbakedModel {
     }
 
     @Override
-    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion, boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
+    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion,
+            boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
         var spriteGetter = baker.sprites();
         Map<ResourceLocation, BakedModel> partModels = this.loadPartModels(baker, modelState);
 

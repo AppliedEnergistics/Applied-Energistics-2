@@ -19,8 +19,7 @@
       "y": 180
     },
     "facing=up": {
-      "model": "ae2:block/crystal_resonance_generator",
-      "x": 360
+      "model": "ae2:block/crystal_resonance_generator"
     },
     "facing=west": {
       "model": "ae2:block/crystal_resonance_generator",

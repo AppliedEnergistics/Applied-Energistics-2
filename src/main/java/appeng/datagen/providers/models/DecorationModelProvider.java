@@ -18,12 +18,11 @@
 
 package appeng.datagen.providers.models;
 
-import appeng.block.misc.QuartzFixtureBlock;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.BlockDefinition;
+import java.util.Map;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.blockstates.BlockStateGenerator;
@@ -41,7 +40,10 @@ import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.WallBlock;
 
-import java.util.Map;
+import appeng.block.misc.QuartzFixtureBlock;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.BlockDefinition;
 
 public class DecorationModelProvider extends ModelSubProvider {
     public DecorationModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
@@ -50,145 +52,174 @@ public class DecorationModelProvider extends ModelSubProvider {
 
     @Override
     protected void register() {
+        chiseledQuartz();
+        fluix();
+        quartz();
+        cutQuartz();
+        smoothQuartz();
+        quartzBrick();
+        quartzPillar();
+        skyStone();
+        skyStoneSmallBrick();
+        skyStoneBrick();
+        smoothSkyStone();
 
-        blockModels.blockStateOutput.accept(applyAthena(
-                BlockModelGenerators.createSimpleBlock(
-                        AEBlocks.CHISELED_QUARTZ_BLOCK.block(),
-                        ModelTemplates.CUBE_ALL.create(AEBlocks.CHISELED_QUARTZ_BLOCK.block(), TextureMapping.cube(AEBlocks.CHISELED_QUARTZ_BLOCK.block()), modelOutput)
-                ),
-                "athena:limited_pillar",
-                Map.of(
-                        "bottom", AppEng.makeId("block/chiseled_quartz_block_bottom"),
-                        "center", AppEng.makeId("block/chiseled_quartz_block_side"),
-                        "self", AppEng.makeId("block/chiseled_quartz_block_side"),
-                        "top", AppEng.makeId("block/chiseled_quartz_block_top"),
-                        "particle", AppEng.makeId("block/cut_quartz_block")
-                )
-        ));
-        stairsBlock(AEBlocks.CHISELED_QUARTZ_STAIRS, "block/chiseled_quartz_block_top",
-                "block/chiseled_quartz_block_side", "block/chiseled_quartz_block_top");
-        slabBlock(AEBlocks.CHISELED_QUARTZ_SLAB, AEBlocks.CHISELED_QUARTZ_BLOCK, "block/chiseled_quartz_block_top",
-                "block/chiseled_quartz_block_side", "block/chiseled_quartz_block_top");
-        wall(AEBlocks.CHISELED_QUARTZ_WALL, "block/chiseled_quartz_block_side");
+        quartzFixture();
+    }
 
-        blockModels.blockStateOutput.accept(applyAthena(
-                BlockModelGenerators.createSimpleBlock(
-                        AEBlocks.FLUIX_BLOCK.block(),
-                        ModelTemplates.CUBE_ALL.create(AEBlocks.FLUIX_BLOCK.block(), TextureMapping.cube(AEBlocks.FLUIX_BLOCK.block()), modelOutput)
-                ),
-                "athena:ctm",
-                Map.of(
-                        "center", AppEng.makeId("block/fluix_block_center"),
-                        "empty", AppEng.makeId("block/fluix_block_empty"),
-                        "horizontal", AppEng.makeId("block/fluix_block_h"),
-                        "vertical", AppEng.makeId("block/fluix_block_v"),
-                        "particle", AppEng.makeId("block/fluix_block")
-                )
-        ));
-        stairsBlock(AEBlocks.FLUIX_STAIRS, AEBlocks.FLUIX_BLOCK);
-        slabBlock(AEBlocks.FLUIX_SLAB, AEBlocks.FLUIX_BLOCK);
-        wall(AEBlocks.FLUIX_WALL, "block/fluix_block");
-
-        blockModels.blockStateOutput.accept(applyAthena(
-                BlockModelGenerators.createSimpleBlock(
-                        AEBlocks.QUARTZ_BLOCK.block(),
-                        ModelTemplates.CUBE_ALL.create(AEBlocks.QUARTZ_BLOCK.block(), TextureMapping.cube(AEBlocks.QUARTZ_BLOCK.block()), modelOutput)
-                ),
-                "athena:ctm",
-                Map.of(
-                        "center", AppEng.makeId("block/quartz_block_center"),
-                        "empty", AppEng.makeId("block/quartz_block_empty"),
-                        "horizontal", AppEng.makeId("block/quartz_block_h"),
-                        "vertical", AppEng.makeId("block/quartz_block_v"),
-                        "particle", AppEng.makeId("block/quartz_block")
-                )
-        ));
-        stairsBlock(AEBlocks.QUARTZ_STAIRS, AEBlocks.QUARTZ_BLOCK);
-        slabBlock(AEBlocks.QUARTZ_SLAB, AEBlocks.QUARTZ_BLOCK);
-        wall(AEBlocks.QUARTZ_WALL, "block/quartz_block");
-
-        blockModels.blockStateOutput.accept(applyAthena(
-                BlockModelGenerators.createSimpleBlock(
-                        AEBlocks.CUT_QUARTZ_BLOCK.block(),
-                        ModelTemplates.CUBE_ALL.create(AEBlocks.CUT_QUARTZ_BLOCK.block(), TextureMapping.cube(AEBlocks.CUT_QUARTZ_BLOCK.block()), modelOutput)
-                ),
-                "athena:ctm",
-                Map.of(
-                        "center", AppEng.makeId("block/cut_quartz_block_center"),
-                        "empty", AppEng.makeId("block/smooth_quartz_block"),
-                        "horizontal", AppEng.makeId("block/cut_quartz_block_h"),
-                        "vertical", AppEng.makeId("block/cut_quartz_block_v"),
-                        "particle", AppEng.makeId("block/cut_quartz_block")
-                )
-        ));
-        stairsBlock(AEBlocks.CUT_QUARTZ_STAIRS, AEBlocks.CUT_QUARTZ_BLOCK);
-        slabBlock(AEBlocks.CUT_QUARTZ_SLAB, AEBlocks.CUT_QUARTZ_BLOCK);
-        wall(AEBlocks.CUT_QUARTZ_WALL, "block/cut_quartz_block");
-
-        simpleBlockAndItem(AEBlocks.SMOOTH_QUARTZ_BLOCK);
-        stairsBlock(AEBlocks.SMOOTH_QUARTZ_STAIRS, AEBlocks.SMOOTH_QUARTZ_BLOCK);
-        slabBlock(AEBlocks.SMOOTH_QUARTZ_SLAB, AEBlocks.SMOOTH_QUARTZ_BLOCK);
-        wall(AEBlocks.SMOOTH_QUARTZ_WALL, "block/smooth_quartz_block");
-
-        simpleBlockAndItem(AEBlocks.QUARTZ_BRICKS);
-        stairsBlock(AEBlocks.QUARTZ_BRICK_STAIRS, AEBlocks.QUARTZ_BRICKS);
-        slabBlock(AEBlocks.QUARTZ_BRICK_SLAB, AEBlocks.QUARTZ_BRICKS);
-        wall(AEBlocks.QUARTZ_BRICK_WALL, "block/quartz_bricks");
-
-        blockModels.blockStateOutput.accept(applyAthena(
-                BlockModelGenerators.createAxisAlignedPillarBlock(
-                        AEBlocks.QUARTZ_PILLAR.block(),
-                        ModelTemplates.CUBE_COLUMN.create(AEBlocks.QUARTZ_PILLAR.block(), TextureMapping.cube(AEBlocks.QUARTZ_PILLAR.block()), modelOutput)
-                ),
-                "athena:pillar",
-                Map.of(
-                        "bottom", AppEng.makeId("block/quartz_pillar_bottom"),
-                        "center", AppEng.makeId("block/quartz_pillar_side"),
-                        "self", AppEng.makeId("block/quartz_pillar_side"),
-                        "top", AppEng.makeId("block/quartz_pillar_top"),
-                        "particle", AppEng.makeId("block/cut_quartz_block")
-                )
-        ));
-        stairsBlock(AEBlocks.QUARTZ_PILLAR_STAIRS, "block/quartz_pillar_top", "block/quartz_pillar_side",
-                "block/quartz_pillar_top");
-        slabBlock(AEBlocks.QUARTZ_PILLAR_SLAB, AEBlocks.QUARTZ_PILLAR, "block/quartz_pillar_top",
-                "block/quartz_pillar_side", "block/quartz_pillar_top");
-        wall(AEBlocks.QUARTZ_PILLAR_WALL, "block/quartz_pillar_side");
-
-        simpleBlockAndItem(AEBlocks.SKY_STONE_BLOCK);
-        stairsBlock(AEBlocks.SKY_STONE_STAIRS, AEBlocks.SKY_STONE_BLOCK);
-        slabBlock(AEBlocks.SKY_STONE_SLAB, AEBlocks.SKY_STONE_BLOCK);
-        wall(AEBlocks.SKY_STONE_WALL, "block/sky_stone_block");
-
-        simpleBlockAndItem(AEBlocks.SKY_STONE_SMALL_BRICK);
-        stairsBlock(AEBlocks.SKY_STONE_SMALL_BRICK_STAIRS, AEBlocks.SKY_STONE_SMALL_BRICK);
-        slabBlock(AEBlocks.SKY_STONE_SMALL_BRICK_SLAB, AEBlocks.SKY_STONE_SMALL_BRICK);
-        wall(AEBlocks.SKY_STONE_SMALL_BRICK_WALL, "block/sky_stone_small_brick");
-
-        simpleBlockAndItem(AEBlocks.SKY_STONE_BRICK);
-        stairsBlock(AEBlocks.SKY_STONE_BRICK_STAIRS, AEBlocks.SKY_STONE_BRICK);
-        slabBlock(AEBlocks.SKY_STONE_BRICK_SLAB, AEBlocks.SKY_STONE_BRICK);
-        wall(AEBlocks.SKY_STONE_BRICK_WALL, "block/sky_stone_brick");
-
+    private void smoothSkyStone() {
         blockModels.blockStateOutput.accept(applyAthena(
                 BlockModelGenerators.createSimpleBlock(
                         AEBlocks.SMOOTH_SKY_STONE_BLOCK.block(),
-                        ModelTemplates.CUBE_ALL.create(AEBlocks.SMOOTH_SKY_STONE_BLOCK.block(), TextureMapping.cube(AEBlocks.SMOOTH_SKY_STONE_BLOCK.block()), modelOutput)
-                ),
+                        ModelTemplates.CUBE_ALL.create(AEBlocks.SMOOTH_SKY_STONE_BLOCK.block(),
+                                TextureMapping.cube(AEBlocks.SMOOTH_SKY_STONE_BLOCK.block()), modelOutput)),
                 "athena:ctm",
                 Map.of(
                         "center", AppEng.makeId("block/smooth_sky_stone_block_center"),
                         "empty", AppEng.makeId("block/smooth_sky_stone_block_empty"),
                         "horizontal", AppEng.makeId("block/smooth_sky_stone_block_h"),
                         "vertical", AppEng.makeId("block/smooth_sky_stone_block_v"),
-                        "particle", AppEng.makeId("block/smooth_sky_stone_block")
-                )
-        ));
+                        "particle", AppEng.makeId("block/smooth_sky_stone_block"))));
         stairsBlock(AEBlocks.SMOOTH_SKY_STONE_STAIRS, AEBlocks.SMOOTH_SKY_STONE_BLOCK);
         slabBlock(AEBlocks.SMOOTH_SKY_STONE_SLAB, AEBlocks.SMOOTH_SKY_STONE_BLOCK);
-        wall(AEBlocks.SMOOTH_SKY_STONE_WALL, "block/smooth_sky_stone_block");
+        wall(AEBlocks.SMOOTH_SKY_STONE_WALL, getBlockTexture(AEBlocks.SMOOTH_SKY_STONE_BLOCK));
+    }
 
-        quartzFixture();
+    private void skyStoneBrick() {
+        simpleBlockAndItem(AEBlocks.SKY_STONE_BRICK);
+        stairsBlock(AEBlocks.SKY_STONE_BRICK_STAIRS, AEBlocks.SKY_STONE_BRICK);
+        slabBlock(AEBlocks.SKY_STONE_BRICK_SLAB, AEBlocks.SKY_STONE_BRICK);
+        wall(AEBlocks.SKY_STONE_BRICK_WALL, getBlockTexture(AEBlocks.SKY_STONE_BRICK));
+    }
+
+    private void skyStoneSmallBrick() {
+        simpleBlockAndItem(AEBlocks.SKY_STONE_SMALL_BRICK);
+        stairsBlock(AEBlocks.SKY_STONE_SMALL_BRICK_STAIRS, AEBlocks.SKY_STONE_SMALL_BRICK);
+        slabBlock(AEBlocks.SKY_STONE_SMALL_BRICK_SLAB, AEBlocks.SKY_STONE_SMALL_BRICK);
+        wall(AEBlocks.SKY_STONE_SMALL_BRICK_WALL, getBlockTexture(AEBlocks.SKY_STONE_SMALL_BRICK));
+    }
+
+    private void skyStone() {
+        simpleBlockAndItem(AEBlocks.SKY_STONE_BLOCK);
+        stairsBlock(AEBlocks.SKY_STONE_STAIRS, AEBlocks.SKY_STONE_BLOCK);
+        slabBlock(AEBlocks.SKY_STONE_SLAB, AEBlocks.SKY_STONE_BLOCK);
+        wall(AEBlocks.SKY_STONE_WALL, getBlockTexture(AEBlocks.SKY_STONE_BLOCK));
+    }
+
+    private void quartzPillar() {
+        var topTexture = getBlockTexture(AEBlocks.QUARTZ_PILLAR, "_top");
+        var sideTexture = getBlockTexture(AEBlocks.QUARTZ_PILLAR, "_side");
+
+        blockModels.blockStateOutput.accept(applyAthena(
+                BlockModelGenerators.createAxisAlignedPillarBlock(
+                        AEBlocks.QUARTZ_PILLAR.block(),
+                        ModelTemplates.CUBE_COLUMN.create(
+                                AEBlocks.QUARTZ_PILLAR.block(),
+                                TextureMapping.column(sideTexture, getBlockTexture(AEBlocks.CUT_QUARTZ_BLOCK)),
+                                modelOutput)),
+                "athena:pillar",
+                Map.of(
+                        "bottom", AppEng.makeId("block/quartz_pillar_bottom"),
+                        "center", sideTexture,
+                        "self", sideTexture,
+                        "top", topTexture,
+                        "particle", getBlockTexture(AEBlocks.CUT_QUARTZ_BLOCK))));
+        stairsBlock(AEBlocks.QUARTZ_PILLAR_STAIRS, topTexture, sideTexture, topTexture);
+        slabBlock(AEBlocks.QUARTZ_PILLAR_SLAB, AEBlocks.QUARTZ_PILLAR, topTexture, sideTexture, topTexture);
+        wall(AEBlocks.QUARTZ_PILLAR_WALL, sideTexture);
+    }
+
+    private void quartzBrick() {
+        simpleBlockAndItem(AEBlocks.QUARTZ_BRICKS);
+        stairsBlock(AEBlocks.QUARTZ_BRICK_STAIRS, AEBlocks.QUARTZ_BRICKS);
+        slabBlock(AEBlocks.QUARTZ_BRICK_SLAB, AEBlocks.QUARTZ_BRICKS);
+        wall(AEBlocks.QUARTZ_BRICK_WALL, getBlockTexture(AEBlocks.QUARTZ_BRICKS));
+    }
+
+    private void smoothQuartz() {
+        simpleBlockAndItem(AEBlocks.SMOOTH_QUARTZ_BLOCK);
+        stairsBlock(AEBlocks.SMOOTH_QUARTZ_STAIRS, AEBlocks.SMOOTH_QUARTZ_BLOCK);
+        slabBlock(AEBlocks.SMOOTH_QUARTZ_SLAB, AEBlocks.SMOOTH_QUARTZ_BLOCK);
+        wall(AEBlocks.SMOOTH_QUARTZ_WALL, getBlockTexture(AEBlocks.SMOOTH_QUARTZ_BLOCK));
+    }
+
+    private void cutQuartz() {
+        blockModels.blockStateOutput.accept(applyAthena(
+                BlockModelGenerators.createSimpleBlock(
+                        AEBlocks.CUT_QUARTZ_BLOCK.block(),
+                        ModelTemplates.CUBE_ALL.create(AEBlocks.CUT_QUARTZ_BLOCK.block(),
+                                TextureMapping.cube(AEBlocks.CUT_QUARTZ_BLOCK.block()), modelOutput)),
+                "athena:ctm",
+                Map.of(
+                        "center", AppEng.makeId("block/cut_quartz_block_center"),
+                        "empty", AppEng.makeId("block/smooth_quartz_block"),
+                        "horizontal", AppEng.makeId("block/cut_quartz_block_h"),
+                        "vertical", AppEng.makeId("block/cut_quartz_block_v"),
+                        "particle", AppEng.makeId("block/cut_quartz_block"))));
+        stairsBlock(AEBlocks.CUT_QUARTZ_STAIRS, AEBlocks.CUT_QUARTZ_BLOCK);
+        slabBlock(AEBlocks.CUT_QUARTZ_SLAB, AEBlocks.CUT_QUARTZ_BLOCK);
+        wall(AEBlocks.CUT_QUARTZ_WALL, getBlockTexture(AEBlocks.CUT_QUARTZ_BLOCK));
+    }
+
+    private void quartz() {
+        blockModels.blockStateOutput.accept(applyAthena(
+                BlockModelGenerators.createSimpleBlock(
+                        AEBlocks.QUARTZ_BLOCK.block(),
+                        ModelTemplates.CUBE_ALL.create(AEBlocks.QUARTZ_BLOCK.block(),
+                                TextureMapping.cube(AEBlocks.QUARTZ_BLOCK.block()), modelOutput)),
+                "athena:ctm",
+                Map.of(
+                        "center", AppEng.makeId("block/quartz_block_center"),
+                        "empty", AppEng.makeId("block/quartz_block_empty"),
+                        "horizontal", AppEng.makeId("block/quartz_block_h"),
+                        "vertical", AppEng.makeId("block/quartz_block_v"),
+                        "particle", AppEng.makeId("block/quartz_block"))));
+        stairsBlock(AEBlocks.QUARTZ_STAIRS, AEBlocks.QUARTZ_BLOCK);
+        slabBlock(AEBlocks.QUARTZ_SLAB, AEBlocks.QUARTZ_BLOCK);
+        wall(AEBlocks.QUARTZ_WALL, getBlockTexture(AEBlocks.QUARTZ_BLOCK));
+    }
+
+    private void fluix() {
+        var blockTexture = getBlockTexture(AEBlocks.FLUIX_BLOCK);
+
+        blockModels.blockStateOutput.accept(applyAthena(
+                BlockModelGenerators.createSimpleBlock(
+                        AEBlocks.FLUIX_BLOCK.block(),
+                        ModelTemplates.CUBE_ALL.create(AEBlocks.FLUIX_BLOCK.block(), TextureMapping.cube(blockTexture),
+                                modelOutput)),
+                "athena:ctm",
+                Map.of(
+                        "center", getBlockTexture(AEBlocks.FLUIX_BLOCK, "_center"),
+                        "empty", getBlockTexture(AEBlocks.FLUIX_BLOCK, "_empty"),
+                        "horizontal", getBlockTexture(AEBlocks.FLUIX_BLOCK, "_h"),
+                        "vertical", getBlockTexture(AEBlocks.FLUIX_BLOCK, "_v"),
+                        "particle", blockTexture)));
+        stairsBlock(AEBlocks.FLUIX_STAIRS, AEBlocks.FLUIX_BLOCK);
+        slabBlock(AEBlocks.FLUIX_SLAB, AEBlocks.FLUIX_BLOCK);
+        wall(AEBlocks.FLUIX_WALL, blockTexture);
+    }
+
+    private void chiseledQuartz() {
+        var topTexture = getBlockTexture(AEBlocks.CHISELED_QUARTZ_BLOCK, "_top");
+        var bottomTexture = getBlockTexture(AEBlocks.CHISELED_QUARTZ_BLOCK, "_bottom");
+        var sideTexture = getBlockTexture(AEBlocks.CHISELED_QUARTZ_BLOCK, "_side");
+
+        blockModels.blockStateOutput.accept(applyAthena(
+                BlockModelGenerators.createSimpleBlock(
+                        AEBlocks.CHISELED_QUARTZ_BLOCK.block(),
+                        ModelTemplates.CUBE_COLUMN.create(AEBlocks.CHISELED_QUARTZ_BLOCK.block(),
+                                TextureMapping.column(sideTexture, getBlockTexture(AEBlocks.CUT_QUARTZ_BLOCK)),
+                                modelOutput)),
+                "athena:limited_pillar",
+                Map.of(
+                        "bottom", bottomTexture,
+                        "center", sideTexture,
+                        "self", sideTexture,
+                        "top", topTexture,
+                        "particle", getBlockTexture(AEBlocks.CUT_QUARTZ_BLOCK))));
+        stairsBlock(AEBlocks.CHISELED_QUARTZ_STAIRS, topTexture, sideTexture, topTexture);
+        slabBlock(AEBlocks.CHISELED_QUARTZ_SLAB, AEBlocks.CHISELED_QUARTZ_BLOCK, topTexture, sideTexture, topTexture);
+        wall(AEBlocks.CHISELED_QUARTZ_WALL, sideTexture);
     }
 
     private void quartzFixture() {
@@ -251,15 +282,14 @@ public class DecorationModelProvider extends ModelSubProvider {
         // Special item model
         blockModels.registerSimpleItemModel(
                 AEBlocks.QUARTZ_FIXTURE.asItem(),
-                ModelLocationUtils.getModelLocation(AEBlocks.QUARTZ_FIXTURE.asItem())
-        );
+                ModelLocationUtils.getModelLocation(AEBlocks.QUARTZ_FIXTURE.asItem()));
         blockModels.registerSimpleItemModel(
                 AEBlocks.LIGHT_DETECTOR.asItem(),
-                ModelLocationUtils.getModelLocation(AEBlocks.QUARTZ_FIXTURE.asItem())
-        );
+                ModelLocationUtils.getModelLocation(AEBlocks.QUARTZ_FIXTURE.asItem()));
     }
 
-    private BlockStateGenerator applyAthena(BlockStateGenerator delegate, String loader, Map<String, ResourceLocation> ctmTextures) {
+    private BlockStateGenerator applyAthena(BlockStateGenerator delegate, String loader,
+            Map<String, ResourceLocation> ctmTextures) {
         return new BlockStateGenerator() {
             @Override
             public Block getBlock() {
@@ -282,10 +312,10 @@ public class DecorationModelProvider extends ModelSubProvider {
         };
     }
 
-    private void wall(BlockDefinition<? extends WallBlock> blockDef, String texture) {
+    private void wall(BlockDefinition<? extends WallBlock> blockDef, ResourceLocation texture) {
         var block = blockDef.block();
 
-        var textures = new TextureMapping().put(TextureSlot.WALL, AppEng.makeId(texture));
+        var textures = new TextureMapping().put(TextureSlot.WALL, texture);
 
         var lowSideModel = ModelTemplates.WALL_LOW_SIDE.create(block, textures, modelOutput);
         var postModel = ModelTemplates.WALL_POST.create(block, textures, modelOutput);
@@ -295,25 +325,25 @@ public class DecorationModelProvider extends ModelSubProvider {
                 block,
                 postModel,
                 lowSideModel,
-                tallSideModel
-        ));
+                tallSideModel));
 
         var invModel = ModelTemplates.WALL_INVENTORY.create(block, textures, modelOutput);
         blockModels.registerSimpleItemModel(block, invModel);
     }
 
     private void slabBlock(BlockDefinition<? extends SlabBlock> blockDef, BlockDefinition<?> baseBlock) {
-        var texture = TextureMapping.getBlockTexture(baseBlock.block()).getPath();
+        var texture = getBlockTexture(baseBlock);
         slabBlock(blockDef, baseBlock, texture, texture, texture);
     }
 
-    private void slabBlock(BlockDefinition<? extends SlabBlock> blockDef, BlockDefinition<?> baseBlock, String topTexture, String sideTexture, String bottomTexture) {
+    private void slabBlock(BlockDefinition<? extends SlabBlock> blockDef, BlockDefinition<?> doubleModelDonor,
+            ResourceLocation topTexture, ResourceLocation sideTexture, ResourceLocation bottomTexture) {
         var block = blockDef.block();
 
         var textures = new TextureMapping()
-                .put(TextureSlot.TOP, AppEng.makeId(topTexture))
-                .put(TextureSlot.BOTTOM, AppEng.makeId(bottomTexture))
-                .put(TextureSlot.SIDE, AppEng.makeId(sideTexture));
+                .put(TextureSlot.TOP, topTexture)
+                .put(TextureSlot.BOTTOM, bottomTexture)
+                .put(TextureSlot.SIDE, sideTexture);
 
         var topModel = ModelTemplates.SLAB_TOP.create(block, textures, modelOutput);
         var bottomModel = ModelTemplates.SLAB_BOTTOM.create(block, textures, modelOutput);
@@ -322,24 +352,24 @@ public class DecorationModelProvider extends ModelSubProvider {
                 block,
                 bottomModel,
                 topModel,
-                ModelLocationUtils.getModelLocation(baseBlock.block())
-        ));
+                ModelLocationUtils.getModelLocation(doubleModelDonor.block())));
 
         blockModels.registerSimpleItemModel(block, bottomModel);
     }
 
     private void stairsBlock(BlockDefinition<? extends StairBlock> stairsBlock, BlockDefinition<?> templateBlock) {
-        var blockTexture = TextureMapping.getBlockTexture(templateBlock.block());
-        stairsBlock(stairsBlock, blockTexture.getPath(), blockTexture.getPath(), blockTexture.getPath());
+        var blockTexture = getBlockTexture(templateBlock);
+        stairsBlock(stairsBlock, blockTexture, blockTexture, blockTexture);
     }
 
-    private void stairsBlock(BlockDefinition<? extends StairBlock> blockDef, String topTexture, String sideTexture, String bottomTexture) {
+    private void stairsBlock(BlockDefinition<? extends StairBlock> blockDef, ResourceLocation topTexture,
+            ResourceLocation sideTexture, ResourceLocation bottomTexture) {
         var block = blockDef.block();
 
         var textures = new TextureMapping()
-                .put(TextureSlot.TOP, AppEng.makeId(topTexture))
-                .put(TextureSlot.BOTTOM, AppEng.makeId(bottomTexture))
-                .put(TextureSlot.SIDE, AppEng.makeId(sideTexture));
+                .put(TextureSlot.TOP, topTexture)
+                .put(TextureSlot.BOTTOM, bottomTexture)
+                .put(TextureSlot.SIDE, sideTexture);
 
         var straightModel = ModelTemplates.STAIRS_STRAIGHT.create(block, textures, modelOutput);
         var innerModel = ModelTemplates.STAIRS_INNER.create(block, textures, modelOutput);
@@ -349,8 +379,7 @@ public class DecorationModelProvider extends ModelSubProvider {
                 block,
                 innerModel,
                 straightModel,
-                outerModel
-        ));
+                outerModel));
         blockModels.registerSimpleItemModel(block, straightModel);
     }
 }

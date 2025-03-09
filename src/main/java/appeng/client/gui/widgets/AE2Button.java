@@ -40,8 +40,7 @@ public class AE2Button extends Button {
                 this.getY(),
                 this.getWidth(),
                 this.getHeight(),
-                ARGB.white(alpha)
-        );
+                ARGB.white(alpha));
         if (!this.active) {
             this.renderButtonText(pGuiGraphics, minecraft.font, 2, 0x413f54 | Mth.ceil(this.alpha * 255.0F) << 24, -1);
         } else if (this.isHovered()) {

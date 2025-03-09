@@ -145,11 +145,14 @@ public class EraserItem extends AEBaseItem {
             COMMON_BLOCKS.add(Blocks.LAVA);
 
             COMMON_BLOCKS.addAll(
-                    BuiltInRegistries.BLOCK.get(BlockTags.LEAVES).map(n -> n.stream().map(Holder::value).toList()).orElse(List.of()));
+                    BuiltInRegistries.BLOCK.get(BlockTags.LEAVES).map(n -> n.stream().map(Holder::value).toList())
+                            .orElse(List.of()));
             COMMON_BLOCKS.addAll(
-                    BuiltInRegistries.BLOCK.get(BlockTags.SAND).map(n -> n.stream().map(Holder::value).toList()).orElse(List.of()));
+                    BuiltInRegistries.BLOCK.get(BlockTags.SAND).map(n -> n.stream().map(Holder::value).toList())
+                            .orElse(List.of()));
             COMMON_BLOCKS.addAll(
-                    BuiltInRegistries.BLOCK.get(BlockTags.LOGS).map(n -> n.stream().map(Holder::value).toList()).orElse(List.of()));
+                    BuiltInRegistries.BLOCK.get(BlockTags.LOGS).map(n -> n.stream().map(Holder::value).toList())
+                            .orElse(List.of()));
         }
 
         return COMMON_BLOCKS;

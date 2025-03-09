@@ -18,12 +18,12 @@
 
 package appeng.menu.implementations;
 
-import appeng.client.gui.implementations.SkyStoneChestScreen;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.blockentity.storage.SkyStoneChestBlockEntity;
+import appeng.client.gui.implementations.SkyStoneChestScreen;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.slot.AppEngSlot;

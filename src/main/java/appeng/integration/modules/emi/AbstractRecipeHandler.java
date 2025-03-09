@@ -170,7 +170,7 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements StandardRe
         }
         if (recipe.getId() != null) {
             // TODO: This can produce false positives...
-           // TODO 1.21.4 return level.recipeAccess().byKey(recipe.getId()).orElse(null);
+            // TODO 1.21.4 return level.recipeAccess().byKey(recipe.getId()).orElse(null);
         }
         return null;
     }
@@ -182,9 +182,9 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements StandardRe
 
     protected final boolean fitsIn3x3Grid(Recipe<?> recipe, EmiRecipe emiRecipe) {
         // TODO 1.21.4if (recipe != null) {
-        // TODO 1.21.4    return recipe.canCraftInDimensions(CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT);
+        // TODO 1.21.4 return recipe.canCraftInDimensions(CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT);
         // TODO 1.21.4} else {
-            return true;
+        return true;
         // TODO 1.21.4 }
     }
 

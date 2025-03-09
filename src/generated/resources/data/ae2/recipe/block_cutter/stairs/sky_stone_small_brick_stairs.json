@@ -1,8 +1,6 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "ae2:sky_stone_small_brick"
-  },
+  "ingredient": "ae2:sky_stone_small_brick",
   "result": {
     "count": 1,
     "id": "ae2:sky_stone_small_brick_stairs"

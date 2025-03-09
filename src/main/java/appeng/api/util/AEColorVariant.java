@@ -1,6 +1,7 @@
 package appeng.api.util;
 
 import com.mojang.serialization.Codec;
+
 import net.minecraft.util.StringRepresentable;
 
 public enum AEColorVariant implements StringRepresentable {

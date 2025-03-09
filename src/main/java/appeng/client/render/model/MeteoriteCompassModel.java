@@ -19,21 +19,16 @@
 package appeng.client.render.model;
 
 import java.util.Collection;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.TextureSlots;
-import net.minecraft.util.context.ContextMap;
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.context.ContextMap;
 
 import appeng.client.render.BasicUnbakedModel;
 
@@ -49,7 +44,8 @@ public class MeteoriteCompassModel implements BasicUnbakedModel {
             "ae2:item/meteorite_compass_pointer");
 
     @Override
-    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion, boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
+    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion,
+            boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
         BakedModel baseModel = baker.bake(MODEL_BASE, modelState);
         BakedModel pointerModel = baker.bake(MODEL_POINTER, modelState);
         return new MeteoriteCompassBakedModel(baseModel, pointerModel);

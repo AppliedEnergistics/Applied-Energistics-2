@@ -18,6 +18,32 @@
 
 package appeng.menu.me.items;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import com.google.common.base.Preconditions;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.neoforge.network.PacketDistributor;
+
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.energy.IEnergySource;
@@ -35,28 +61,6 @@ import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.util.inv.PlayerInternalInventory;
-import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * Can only be used with a host that implements {@link ISegmentedInventory} and exposes an inventory named "crafting" to
@@ -84,7 +88,7 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
     }
 
     public CraftingTermMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host,
-                            boolean bindInventory) {
+            boolean bindInventory) {
         super(menuType, id, ip, host, bindInventory);
         this.craftingInventoryHost = (ISegmentedInventory) host;
 
@@ -98,7 +102,7 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
 
         var linkStatusInventory = new LinkStatusRespectingInventory(host.getInventory(), this::getLinkStatus);
         this.addSlot(this.outputSlot = new CraftingTermSlot(this.getPlayerInventory().player, this.getActionSource(),
-                        this.energySource, linkStatusInventory, craftingGridInv, craftingGridInv, this),
+                this.energySource, linkStatusInventory, craftingGridInv, craftingGridInv, this),
                 SlotSemantics.CRAFTING_RESULT);
 
         var serverLevel = getServerLevel();
@@ -196,7 +200,7 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
      * terminal or player inventory.
      *
      * @return The keys of the given slot-map for which no stored ingredients could be found, separated in craftable and
-     * missing items.
+     *         missing items.
      */
     public MissingIngredientSlots findMissingIngredients(Map<Integer, Ingredient> ingredients) {
 
@@ -246,7 +250,8 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
 
                 if (clientRepo != null) {
                     for (var stack : clientRepo.getAllEntries()) {
-                        if (stack.isCraftable() && stack.getWhat() instanceof AEItemKey itemKey && ingredient.test(itemKey.getReadOnlyStack())) {
+                        if (stack.isCraftable() && stack.getWhat() instanceof AEItemKey itemKey
+                                && ingredient.test(itemKey.getReadOnlyStack())) {
                             craftableSlots.add(entry.getKey());
                             found = true;
                             break;
@@ -310,7 +315,7 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
 
                 // Hotbar first
                 final int HOTBAR_SIZE = 9;
-                for (int j = HOTBAR_SIZE; j-- > 0; ) {
+                for (int j = HOTBAR_SIZE; j-- > 0;) {
                     if (playerInv.getStackInSlot(j).isEmpty() == allowEmpty) {
                         craftingGridInv.setItemDirect(i,
                                 playerInv.getSlotInv(j).addItems(craftingGridInv.getStackInSlot(i)));

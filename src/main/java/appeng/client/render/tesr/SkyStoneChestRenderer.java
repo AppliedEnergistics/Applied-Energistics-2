@@ -93,7 +93,7 @@ public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestB
 
     @Override
     public void render(SkyStoneChestBlockEntity blockEntity, float partialTicks, PoseStack matrixStackIn,
-                       MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+            MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.pushPose();
         float f = blockEntity.getFront().toYRot();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);

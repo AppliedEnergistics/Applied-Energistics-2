@@ -1,11 +1,10 @@
 package appeng.blockentity.misc;
 
-import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.Level;
 
 import appeng.recipes.AERecipeTypes;
 import appeng.recipes.handlers.ChargerRecipe;

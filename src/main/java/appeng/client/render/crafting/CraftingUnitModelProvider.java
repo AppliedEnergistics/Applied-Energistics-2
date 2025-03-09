@@ -3,16 +3,15 @@ package appeng.client.render.crafting;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.SpriteGetter;
 
 import appeng.block.crafting.CraftingUnitType;
 import appeng.core.AppEng;
-import net.minecraft.client.resources.model.SpriteGetter;
 
 public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider<CraftingUnitType> {
 

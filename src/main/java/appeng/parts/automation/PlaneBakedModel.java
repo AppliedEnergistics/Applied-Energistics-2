@@ -26,12 +26,11 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -54,7 +53,8 @@ public class PlaneBakedModel implements IDynamicBakedModel {
 
     private final ItemTransforms transforms;
 
-    PlaneBakedModel(TextureAtlasSprite frontTexture, TextureAtlasSprite sidesTexture, TextureAtlasSprite backTexture, ItemTransforms transforms) {
+    PlaneBakedModel(TextureAtlasSprite frontTexture, TextureAtlasSprite sidesTexture, TextureAtlasSprite backTexture,
+            ItemTransforms transforms) {
         this.frontTexture = frontTexture;
         this.transforms = transforms;
 
@@ -109,7 +109,6 @@ public class PlaneBakedModel implements IDynamicBakedModel {
     public boolean usesBlockLight() {
         return false;// TODO
     }
-
 
     @Override
     public TextureAtlasSprite getParticleIcon() {

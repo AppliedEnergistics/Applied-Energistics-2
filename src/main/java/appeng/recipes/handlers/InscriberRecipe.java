@@ -18,12 +18,14 @@
 
 package appeng.recipes.handlers;
 
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.recipes.AERecipeTypes;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -42,9 +44,9 @@ import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.recipes.AERecipeTypes;
 
 public class InscriberRecipe implements Recipe<RecipeInput> {
 
@@ -93,7 +95,7 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
     }
 
     public InscriberRecipe(Ingredient middleInput, ItemStack output,
-                           Optional<Ingredient> topOptional, Optional<Ingredient> bottomOptional, InscriberProcessType processType) {
+            Optional<Ingredient> topOptional, Optional<Ingredient> bottomOptional, InscriberProcessType processType) {
         this.middleInput = Objects.requireNonNull(middleInput, "middleInput");
         this.output = Objects.requireNonNull(output, "output");
         this.topOptional = Objects.requireNonNull(topOptional, "topOptional");
@@ -134,9 +136,7 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
                         bottomOptional.map(Ingredient::display).orElse(SlotDisplay.Empty.INSTANCE),
                         processType,
                         new SlotDisplay.ItemStackSlotDisplay(output),
-                        new SlotDisplay.ItemSlotDisplay(AEBlocks.INSCRIBER.asItem())
-                )
-        );
+                        new SlotDisplay.ItemSlotDisplay(AEBlocks.INSCRIBER.asItem())));
     }
 
     @Override
@@ -182,12 +182,12 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
             Ingredient middle,
             Optional<Ingredient> bottom) {
         public static final Codec<Ingredients> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                        Ingredient.CODEC.optionalFieldOf("top")
-                                .forGetter(Ingredients::top),
-                        Ingredient.CODEC.fieldOf("middle")
-                                .forGetter(Ingredients::middle),
-                        Ingredient.CODEC.optionalFieldOf("bottom")
-                                .forGetter(Ingredients::bottom))
+                Ingredient.CODEC.optionalFieldOf("top")
+                        .forGetter(Ingredients::top),
+                Ingredient.CODEC.fieldOf("middle")
+                        .forGetter(Ingredients::middle),
+                Ingredient.CODEC.optionalFieldOf("bottom")
+                        .forGetter(Ingredients::bottom))
                 .apply(builder, Ingredients::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, Ingredients> STREAM_CODEC = StreamCodec.composite(

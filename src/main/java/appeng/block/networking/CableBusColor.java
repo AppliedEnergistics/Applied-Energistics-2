@@ -18,7 +18,6 @@
 
 package appeng.block.networking;
 
-import appeng.api.util.AEColorVariant;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.color.block.BlockColor;

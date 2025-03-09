@@ -106,14 +106,14 @@ space, and multiple access terminals are just the tip of the iceberg of what bec
 ### What do I need to know to get started?
 
 First, ME Stores items inside of other items, called [Storage cells](items-blocks-machines/storage_cells.md); there are 5 tiers with ever increasing amounts of
-storage. In order to use a Storage Cell it must be placed inside either an <ItemLink id="chest" />,
+storage. In order to use a Storage Cell it must be placed inside either an <ItemLink id="me_chest" />,
 or an <ItemLink id="drive" />.
 
-The <ItemLink id="chest" /> shows you the contents of the Cell as soon as its placed inside, and you
+The <ItemLink id="me_chest" /> shows you the contents of the Cell as soon as its placed inside, and you
 can add and remove items from it as if it were a <ItemLink id="minecraft:chest" />, with the exception that the items are
-actually stored in the Storage cells, and not the <ItemLink id="chest" /> itself.
+actually stored in the Storage cells, and not the <ItemLink id="me_chest" /> itself.
 
-The <ItemLink id="chest" /> is quite situational and limited in utility. To really
+The <ItemLink id="me_chest" /> is quite situational and limited in utility. To really
 take advantage of AE2, you need to set up an [ME Network](ae2-mechanics/me-network-connections.md).
 
 ## Your Very First ME System

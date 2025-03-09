@@ -19,9 +19,8 @@
 package appeng.recipes.handlers;
 
 import com.mojang.serialization.Codec;
-import io.netty.buffer.ByteBuf;
+
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
@@ -41,7 +40,8 @@ public enum InscriberProcessType implements StringRepresentable {
 
     public static Codec<InscriberProcessType> CODEC = StringRepresentable.fromEnum(InscriberProcessType::values);
 
-    public static StreamCodec<FriendlyByteBuf, InscriberProcessType> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(InscriberProcessType.class);
+    public static StreamCodec<FriendlyByteBuf, InscriberProcessType> STREAM_CODEC = NeoForgeStreamCodecs
+            .enumCodec(InscriberProcessType.class);
 
     InscriberProcessType(String serializedName) {
         this.serializedName = serializedName;

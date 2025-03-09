@@ -18,21 +18,13 @@
 
 package appeng.datagen.providers.recipes;
 
-import java.util.Collections;
-import java.util.concurrent.CompletableFuture;
-
-import appeng.recipes.transform.TransformRecipe;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
-import net.minecraft.data.BlockFamily;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -40,7 +32,6 @@ import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.tags.ConventionTags;
 import appeng.recipes.transform.TransformCircumstance;
 import appeng.recipes.transform.TransformRecipeBuilder;
-import net.minecraft.world.level.ItemLike;
 
 public class TransformRecipes extends AE2RecipeProvider {
     public TransformRecipes(HolderLookup.Provider registries, RecipeOutput output) {

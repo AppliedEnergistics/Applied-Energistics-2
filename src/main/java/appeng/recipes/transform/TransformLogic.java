@@ -1,11 +1,16 @@
 package appeng.recipes.transform;
 
-import appeng.core.AppEng;
-import appeng.recipes.AERecipeTypes;
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+
 import com.google.common.collect.Lists;
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
-import net.minecraft.core.Holder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.core.HolderSet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -21,18 +26,13 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
-import net.neoforged.neoforge.registries.holdersets.CompositeHolderSet;
 import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Predicate;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+
+import appeng.core.AppEng;
+import appeng.recipes.AERecipeTypes;
 
 public final class TransformLogic {
     private static final Logger LOG = LoggerFactory.getLogger(TransformLogic.class);
@@ -90,7 +90,7 @@ public final class TransformLogic {
             for (var itemEntity : itemEntities) {
                 var other = itemEntity.getItem();
                 if (!other.isEmpty()) {
-                    for (var it = missingIngredients.iterator(); it.hasNext(); ) {
+                    for (var it = missingIngredients.iterator(); it.hasNext();) {
                         Ingredient ing = it.next();
                         var alreadyClaimed = consumedItems.getInt(itemEntity);
                         if (ing.test(other) && other.getCount() - alreadyClaimed > 0) {
@@ -199,7 +199,8 @@ public final class TransformLogic {
                     if (!ingredient.isCustom()) {
                         holderSets.add(ingredient.getValues());
                     } else {
-                        LOG.warn("Custom ingredient {} does not work in explosion transform recipe {}", ingredient, holder.id());
+                        LOG.warn("Custom ingredient {} does not work in explosion transform recipe {}", ingredient,
+                                holder.id());
                     }
                     // ingredients that aren't processed may be destroyed in the explosion, so process all of them.
                 }

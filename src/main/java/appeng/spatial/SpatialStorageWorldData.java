@@ -27,11 +27,11 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.saveddata.SavedData;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import appeng.core.AELog;
-import net.minecraft.world.level.saveddata.SavedData;
 
 /**
  * Extra data attached to the spatial storage level.

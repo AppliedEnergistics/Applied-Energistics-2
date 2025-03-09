@@ -25,7 +25,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 
-import net.minecraft.world.level.chunk.storage.SerializableChunkData;
 import org.apache.commons.io.output.CloseShieldOutputStream;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -42,6 +41,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.storage.SerializableChunkData;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.networking.GridHelper;

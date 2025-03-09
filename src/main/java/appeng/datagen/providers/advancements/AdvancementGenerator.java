@@ -45,12 +45,10 @@ import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-
 
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;

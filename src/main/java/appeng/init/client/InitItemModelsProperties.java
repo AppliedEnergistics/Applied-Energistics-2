@@ -18,13 +18,12 @@
 
 package appeng.init.client;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
 
-import appeng.api.util.AEColor;
-import appeng.block.networking.EnergyCellBlockItem;
+import appeng.client.item.EnergyFillLevelProperty;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.items.tools.powered.ColorApplicatorItem;
@@ -36,16 +35,13 @@ import appeng.items.tools.powered.ColorApplicatorItem;
 public final class InitItemModelsProperties {
 
     public static final ResourceLocation COLORED_PREDICATE_ID = AppEng.makeId("colored");
-    public static final ResourceLocation ENERGY_FILL_LEVEL_ID = AppEng.makeId("fill_level");
 
     private InitItemModelsProperties() {
     }
 
-    // TODO 1.21.4
-//
-//    public static void init() {
-//        ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.get();
-//        ItemProperties.register(colorApplicatorItem, COLORED_PREDICATE_ID,
+    public static void init(RegisterRangeSelectItemModelPropertyEvent event) {
+        ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.get();
+//  TODO 1.20.4      ItemProperties.register(colorApplicatorItem, COLORED_PREDICATE_ID,
 //                (itemStack, level, entity, seed) -> {
 //                    // If the stack has no color, don't use the colored model since the impact of
 //                    // calling getColor for every quad is extremely high, if the stack tries to
@@ -54,21 +50,8 @@ public final class InitItemModelsProperties {
 //                    AEColor col = colorApplicatorItem.getActiveColor(itemStack);
 //                    return col != null ? 1 : 0;
 //                });
-//
-//        // Register the client-only item model property for energy cells
-//        BuiltInRegistries.ITEM.forEach(item -> {
-//            if (!(item instanceof EnergyCellBlockItem energyCell)) {
-//                return;
-//            }
-//
-//            ItemProperties.register(energyCell, ENERGY_FILL_LEVEL_ID,
-//                    (is, level, entity, seed) -> {
-//                        double curPower = energyCell.getAECurrentPower(is);
-//                        double maxPower = energyCell.getAEMaxPower(is);
-//
-//                        return (float) (curPower / maxPower);
-//                    });
-//        });
-//    }
+
+        event.register(EnergyFillLevelProperty.ID, EnergyFillLevelProperty.CODEC);
+    }
 
 }

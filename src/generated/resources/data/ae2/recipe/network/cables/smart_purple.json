@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:fluix_smart_cable"
-    },
-    "b": {
-      "tag": "c:dyes/purple"
-    }
+    "a": "ae2:fluix_smart_cable",
+    "b": "#c:dyes/purple"
   },
   "pattern": [
     "aaa",

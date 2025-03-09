@@ -20,9 +20,7 @@ package appeng.client.render;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.function.Function;
 
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.ExtendedUnbakedModel;
 

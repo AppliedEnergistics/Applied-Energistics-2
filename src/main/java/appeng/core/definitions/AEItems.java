@@ -26,7 +26,6 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import appeng.datagen.providers.tags.ConventionTags;
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
@@ -52,6 +51,7 @@ import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.AEProcessingPattern;
 import appeng.crafting.pattern.AESmithingTablePattern;
 import appeng.crafting.pattern.AEStonecuttingPattern;
+import appeng.datagen.providers.tags.ConventionTags;
 import appeng.debug.DebugCardItem;
 import appeng.debug.EraserItem;
 import appeng.debug.MeteoritePlacerItem;

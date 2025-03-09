@@ -21,20 +21,18 @@ package appeng.block.paint;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.resources.model.SpriteGetter;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
@@ -170,12 +168,10 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
         return true;
     }
 
-
     @Override
     public TextureAtlasSprite getParticleIcon() {
         return this.textures[0];
     }
-
 
     @Override
     public boolean usesBlockLight() {

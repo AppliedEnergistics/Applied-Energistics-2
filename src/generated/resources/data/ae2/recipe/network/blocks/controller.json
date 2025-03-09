@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:smooth_sky_stone_block"
-    },
-    "b": {
-      "item": "ae2:fluix_crystal"
-    },
-    "c": {
-      "item": "ae2:engineering_processor"
-    }
+    "a": "ae2:smooth_sky_stone_block",
+    "b": "ae2:fluix_crystal",
+    "c": "ae2:engineering_processor"
   },
   "pattern": [
     "aba",

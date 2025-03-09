@@ -1,12 +1,8 @@
 {
   "type": "ae2:transform",
   "ingredients": [
-    {
-      "item": "ae2:charged_certus_quartz_crystal"
-    },
-    {
-      "item": "ae2:chipped_budding_quartz"
-    }
+    "ae2:charged_certus_quartz_crystal",
+    "ae2:chipped_budding_quartz"
   ],
   "result": {
     "count": 1,

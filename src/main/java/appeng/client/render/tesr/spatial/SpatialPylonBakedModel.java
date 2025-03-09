@@ -23,12 +23,11 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -190,12 +189,10 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
         return false;
     }
 
-
     @Override
     public TextureAtlasSprite getParticleIcon() {
         return this.textures.get(SpatialPylonTextureType.DIM);
     }
-
 
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {

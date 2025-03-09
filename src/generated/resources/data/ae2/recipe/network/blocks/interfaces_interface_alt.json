@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "ae2:cable_interface"
-    }
+    "ae2:cable_interface"
   ],
   "result": {
     "count": 1,

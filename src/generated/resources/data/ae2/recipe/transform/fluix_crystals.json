@@ -1,15 +1,9 @@
 {
   "type": "ae2:transform",
   "ingredients": [
-    {
-      "item": "ae2:charged_certus_quartz_crystal"
-    },
-    {
-      "item": "minecraft:redstone"
-    },
-    {
-      "item": "minecraft:quartz"
-    }
+    "ae2:charged_certus_quartz_crystal",
+    "minecraft:redstone",
+    "minecraft:quartz"
   ],
   "result": {
     "count": 2,

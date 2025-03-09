@@ -18,16 +18,12 @@
 
 package appeng.datagen.providers.recipes;
 
-import java.util.concurrent.CompletableFuture;
-
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.crafting.Ingredient;
 
-import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.tags.ConventionTags;
@@ -45,12 +41,14 @@ public class SmeltingRecipes extends AE2RecipeProvider {
     public void buildRecipes() {
 
         SimpleCookingRecipeBuilder
-                .smelting(Ingredient.of(items.getOrThrow(ConventionTags.CERTUS_QUARTZ_DUST)), RecipeCategory.MISC, AEItems.SILICON, .35f,
+                .smelting(Ingredient.of(items.getOrThrow(ConventionTags.CERTUS_QUARTZ_DUST)), RecipeCategory.MISC,
+                        AEItems.SILICON, .35f,
                         DEFAULT_SMELTING_TIME)
                 .unlockedBy("has_certus_quartz_dust", has(ConventionTags.CERTUS_QUARTZ_DUST))
                 .save(output, makeId("smelting/silicon_from_certus_quartz_dust"));
         SimpleCookingRecipeBuilder
-                .blasting(Ingredient.of(items.getOrThrow(ConventionTags.CERTUS_QUARTZ_DUST)), RecipeCategory.MISC, AEItems.SILICON, .35f,
+                .blasting(Ingredient.of(items.getOrThrow(ConventionTags.CERTUS_QUARTZ_DUST)), RecipeCategory.MISC,
+                        AEItems.SILICON, .35f,
                         DEFAULT_SMELTING_TIME / 2)
                 .unlockedBy("has_certus_quartz_dust", has(ConventionTags.CERTUS_QUARTZ_DUST))
                 .save(output, makeId("blasting/silicon_from_certus_quartz_dust"));

@@ -28,7 +28,8 @@ public class AnnihilationPlanePartItem extends PartItem<AnnihilationPlanePart> {
     public static final ThreadLocal<Object> CALLING_DAMAGEABLE_FROM_ANVIL = ThreadLocal.withInitial(() -> null);
 
     public AnnihilationPlanePartItem(Properties properties) {
-        super(properties.component(DataComponents.ENCHANTABLE, new Enchantable(10)), AnnihilationPlanePart.class, AnnihilationPlanePart::new);
+        super(properties.component(DataComponents.ENCHANTABLE, new Enchantable(10)), AnnihilationPlanePart.class,
+                AnnihilationPlanePart::new);
     }
 
     @Override

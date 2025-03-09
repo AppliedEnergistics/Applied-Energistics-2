@@ -20,8 +20,6 @@ package appeng.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.entity.state.TntRenderState;
 import org.joml.Quaternionf;
 
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -29,8 +27,7 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.TntMinecartRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.TntRenderState;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -41,7 +38,8 @@ import appeng.core.definitions.AEBlocks;
 public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity, TntRenderState> {
     private final BlockRenderDispatcher blockRenderer;
 
-    record State() {}
+    record State() {
+    }
 
     public TinyTNTPrimedRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -61,7 +59,8 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity, T
     }
 
     @Override
-    public void render(TntRenderState renderState, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+    public void render(TntRenderState renderState, PoseStack poseStack, MultiBufferSource bufferSource,
+            int packedLight) {
         poseStack.pushPose();
         poseStack.translate(0, 0.5F, 0);
         float f2;
@@ -93,6 +92,6 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity, T
         poseStack.popPose();
 
         super.render(renderState, poseStack, bufferSource, packedLight);
-    }   
-    
+    }
+
 }

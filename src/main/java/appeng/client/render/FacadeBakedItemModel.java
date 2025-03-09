@@ -26,7 +26,6 @@ import javax.annotation.Nullable;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -83,6 +82,5 @@ public class FacadeBakedItemModel extends DelegateBakedModel {
     public boolean usesBlockLight() {
         return false;
     }
-
 
 }

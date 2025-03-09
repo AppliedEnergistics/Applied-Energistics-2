@@ -19,7 +19,6 @@
 package appeng.client.gui.style;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
@@ -30,8 +29,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 import appeng.client.gui.MockResourceManager;
 import appeng.menu.SlotSemantics;

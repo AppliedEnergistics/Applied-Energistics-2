@@ -3,9 +3,7 @@
   "category": "blocks",
   "cookingtime": 200,
   "experience": 0.35,
-  "ingredient": {
-    "item": "ae2:sky_stone_block"
-  },
+  "ingredient": "ae2:sky_stone_block",
   "result": {
     "count": 1,
     "id": "ae2:smooth_sky_stone_block"

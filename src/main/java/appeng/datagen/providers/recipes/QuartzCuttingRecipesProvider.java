@@ -1,13 +1,14 @@
 package appeng.datagen.providers.recipes;
 
-import appeng.api.ids.AETags;
-import appeng.core.definitions.AEParts;
-import appeng.datagen.providers.tags.ConventionTags;
-import appeng.recipes.quartzcutting.QuartzCuttingRecipe;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import appeng.api.ids.AETags;
+import appeng.core.definitions.AEParts;
+import appeng.datagen.providers.tags.ConventionTags;
+import appeng.recipes.quartzcutting.QuartzCuttingRecipe;
 
 public class QuartzCuttingRecipesProvider extends AE2RecipeProvider {
 

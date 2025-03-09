@@ -17,7 +17,8 @@ public class FluixSpadeItem extends ShovelItem implements IntrinsicEnchantItem {
     private final IntrinsicEnchantment intrinsicEnchantment = new IntrinsicEnchantment(Enchantments.FORTUNE, 1);
 
     public FluixSpadeItem(Properties props) {
-        super(FluixToolType.FLUIX.getMaterial(), 1.5F, -3.0F, props.repairable(FluixToolType.FLUIX.getRepairIngredient()));
+        super(FluixToolType.FLUIX.getMaterial(), 1.5F, -3.0F,
+                props.repairable(FluixToolType.FLUIX.getRepairIngredient()));
     }
 
     @Override

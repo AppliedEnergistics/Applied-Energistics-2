@@ -24,7 +24,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BiomeTags;
 
-
 import appeng.core.AppEng;
 import appeng.datagen.providers.IAE2DataProvider;
 import appeng.worldgen.meteorite.MeteoriteStructure;

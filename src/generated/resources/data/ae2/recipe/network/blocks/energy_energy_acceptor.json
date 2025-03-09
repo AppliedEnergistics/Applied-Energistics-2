@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "c:ingots/iron"
-    },
-    "b": {
-      "item": "ae2:quartz_glass"
-    },
-    "c": {
-      "tag": "c:ingots/copper"
-    }
+    "a": "#c:ingots/iron",
+    "b": "ae2:quartz_glass",
+    "c": "#c:ingots/copper"
   },
   "pattern": [
     "aba",

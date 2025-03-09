@@ -1,19 +1,15 @@
 package appeng.util;
 
+import java.util.Optional;
+
 import com.google.common.base.Preconditions;
 
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.item.crafting.SmithingTrimRecipe;
-
-import java.util.Optional;
 
 public final class CraftingRecipeUtil {
     private CraftingRecipeUtil() {

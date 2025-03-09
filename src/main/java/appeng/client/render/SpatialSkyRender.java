@@ -26,13 +26,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.CoreShaders;
+
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 
 public class SpatialSkyRender {
 
@@ -51,8 +52,7 @@ public class SpatialSkyRender {
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
                     .setTransparencyState(RenderStateShard.TransparencyStateShard.NO_TRANSPARENCY)
                     .setWriteMaskState(RenderStateShard.WriteMaskStateShard.COLOR_WRITE)
-                    .createCompositeState(false)
-    );
+                    .createCompositeState(false));
 
     private static final RenderType RENDER_TYPE_SPARKLES = RenderType.CompositeRenderType.create(
             "ae2_spatial_sky_sparkles",
@@ -63,8 +63,7 @@ public class SpatialSkyRender {
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
                     .setTransparencyState(RenderStateShard.TransparencyStateShard.TRANSLUCENT_TRANSPARENCY)
                     .setWriteMaskState(RenderStateShard.WriteMaskStateShard.COLOR_WRITE)
-                    .createCompositeState(false)
-    );
+                    .createCompositeState(false));
 
     public SpatialSkyRender() {
         sparkleBuffer = new VertexBuffer(BufferUsage.DYNAMIC_WRITE);
@@ -74,11 +73,11 @@ public class SpatialSkyRender {
         return INSTANCE;
     }
 
-    private static final Quaternionf[] SKYBOX_SIDE_ROTATIONS = {new Quaternionf(),
+    private static final Quaternionf[] SKYBOX_SIDE_ROTATIONS = { new Quaternionf(),
             new Quaternionf().rotationX(Mth.DEG_TO_RAD * 90.0F),
             new Quaternionf().rotationX(Mth.DEG_TO_RAD * -90.0F), new Quaternionf().rotationX(Mth.DEG_TO_RAD * 180.0F),
             new Quaternionf().rotationZ(Mth.DEG_TO_RAD * 90.0F),
-            new Quaternionf().rotationZ(Mth.DEG_TO_RAD * -90.0F),};
+            new Quaternionf().rotationZ(Mth.DEG_TO_RAD * -90.0F), };
 
     public void render(Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {
         final long now = System.currentTimeMillis();

@@ -1,19 +1,18 @@
 package appeng.datagen.providers.models;
 
+import java.util.Locale;
+
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
+
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ColoredItemDefinition;
-import net.minecraft.client.data.models.BlockModelGenerators;
-import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.data.models.model.ItemModelUtils;
-import net.minecraft.client.data.models.model.ModelTemplate;
-import net.minecraft.client.data.models.model.ModelTemplates;
-import net.minecraft.client.data.models.model.TextureMapping;
-import net.minecraft.client.data.models.model.TextureSlot;
-import net.minecraft.client.renderer.block.model.TextureSlots;
-
-import java.util.Locale;
 
 public class PartModelProvider extends ModelSubProvider {
 
@@ -85,8 +84,7 @@ public class PartModelProvider extends ModelSubProvider {
             var model = ModelTemplates.createItem(baseModel, BASE).create(
                     item,
                     new TextureMapping().put(BASE, AppEng.makeId(textureBase + color.name().toLowerCase(Locale.ROOT))),
-                    modelOutput
-            );
+                    modelOutput);
             itemModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(model));
         }
     }

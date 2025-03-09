@@ -15,7 +15,6 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 import dev.emi.emi.api.recipe.EmiRecipe;
-import dev.emi.emi.api.stack.EmiStack;
 
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.itemlists.CraftingHelper;
@@ -89,10 +88,10 @@ public class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends Abs
                 Optional.empty());
 
         for (int i = 0; i < Math.min(display.getInputs().size(), ingredients.size()); i++) {
-          // TODO 1.21.4  var ingredient = Ingredient.of(display.getInputs().get(i).getEmiStacks().stream()
-          // TODO 1.21.4          .map(EmiStack::getItemStack)
-          // TODO 1.21.4          .filter(is -> !is.isEmpty()));
-          // TODO 1.21.4  ingredients.set(i, ingredient);
+            // TODO 1.21.4 var ingredient = Ingredient.of(display.getInputs().get(i).getEmiStacks().stream()
+            // TODO 1.21.4 .map(EmiStack::getItemStack)
+            // TODO 1.21.4 .filter(is -> !is.isEmpty()));
+            // TODO 1.21.4 ingredients.set(i, ingredient);
         }
 
         var pattern = new ShapedRecipePattern(CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT, ingredients, Optional.empty());

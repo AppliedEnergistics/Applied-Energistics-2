@@ -125,7 +125,8 @@ public class MeteoriteStructure extends Structure {
 
         BlockPos actualPos = new BlockPos(centerX, centerY, centerZ);
         boolean craterLake = locateWaterAroundTheCrater(actualPos, meteoriteRadius, context);
-        CraterType craterType = determineCraterType(actualPos, spawnBiome, random, context.chunkGenerator().getSeaLevel());
+        CraterType craterType = determineCraterType(actualPos, spawnBiome, random,
+                context.chunkGenerator().getSeaLevel());
         boolean pureCrater = random.nextFloat() > .9f;
 
         var fallout = FalloutMode.fromBiome(spawnBiome);
@@ -172,7 +173,8 @@ public class MeteoriteStructure extends Structure {
         return false;
     }
 
-    private static CraterType determineCraterType(BlockPos pos, Holder<Biome> biomeHolder, WorldgenRandom random, int seaLevel) {
+    private static CraterType determineCraterType(BlockPos pos, Holder<Biome> biomeHolder, WorldgenRandom random,
+            int seaLevel) {
         // The temperature thresholds below are taken from older Vanilla code
         // (temperature categories)
         var biome = biomeHolder.value();

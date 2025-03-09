@@ -18,26 +18,19 @@
 
 package appeng.block.paint;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.function.Function;
-
-import appeng.client.render.BasicUnbakedModel;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.TextureSlots;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.context.ContextMap;
-import net.neoforged.neoforge.client.model.ExtendedUnbakedModel;
+
+import appeng.client.render.BasicUnbakedModel;
 
 public class PaintSplotchesModel implements BasicUnbakedModel {
     @Override
-    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion, boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
+    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion,
+            boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
         return new PaintSplotchesBakedModel(baker.sprites());
     }
 }

@@ -1,12 +1,8 @@
 {
   "type": "ae2:inscriber",
   "ingredients": {
-    "middle": {
-      "item": "minecraft:iron_block"
-    },
-    "top": {
-      "item": "ae2:logic_processor_press"
-    }
+    "middle": "minecraft:iron_block",
+    "top": "ae2:logic_processor_press"
   },
   "mode": "inscribe",
   "result": {

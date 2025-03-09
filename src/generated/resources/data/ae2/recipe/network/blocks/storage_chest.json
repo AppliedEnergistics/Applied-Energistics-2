@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "c:glass_blocks"
-    },
-    "b": {
-      "item": "ae2:terminal"
-    },
-    "c": {
-      "item": "ae2:fluix_glass_cable"
-    },
-    "d": {
-      "tag": "c:ingots/iron"
-    },
-    "e": {
-      "tag": "c:ingots/copper"
-    }
+    "a": "#c:glass_blocks",
+    "b": "ae2:terminal",
+    "c": "ae2:fluix_glass_cable",
+    "d": "#c:ingots/iron",
+    "e": "#c:ingots/copper"
   },
   "pattern": [
     "aba",
@@ -25,6 +15,6 @@
   ],
   "result": {
     "count": 1,
-    "id": "ae2:chest"
+    "id": "ae2:me_chest"
   }
 }

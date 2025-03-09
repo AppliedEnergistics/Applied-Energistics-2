@@ -23,12 +23,11 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -250,7 +249,6 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
         return false;
     }
 
-
     @Override
     public TextureAtlasSprite getParticleIcon() {
         return this.ringCorner;
@@ -260,7 +258,6 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
     public boolean usesBlockLight() {
         return false;
     }
-
 
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {

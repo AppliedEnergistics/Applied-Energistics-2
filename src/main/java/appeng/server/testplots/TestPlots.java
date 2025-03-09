@@ -16,7 +16,6 @@ import java.util.function.Consumer;
 
 import com.google.common.collect.Sets;
 
-import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +28,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -686,11 +686,11 @@ public final class TestPlots {
                                 }
                             }).toArray(ItemStack[]::new);
                     // TODO 1.21.4 craftingPattern = PatternDetailsHelper.encodeCraftingPattern(
-                    // TODO 1.21.4         holder,
-                    // TODO 1.21.4         ingredients,
-                    // TODO 1.21.4         recipe.getResultItem(node.getLevel().registryAccess()),
-                    // TODO 1.21.4         false,
-                    // TODO 1.21.4         false);
+                    // TODO 1.21.4 holder,
+                    // TODO 1.21.4 ingredients,
+                    // TODO 1.21.4 recipe.getResultItem(node.getLevel().registryAccess()),
+                    // TODO 1.21.4 false,
+                    // TODO 1.21.4 false);
 
                     for (ItemStack ingredient : ingredients) {
                         var key = AEItemKey.of(ingredient);
@@ -699,7 +699,8 @@ public final class TestPlots {
                         }
                     }
                     // TODO 1.21.4 if (!recipe.getResultItem(node.getLevel().registryAccess()).isEmpty()) {
-                    // TODO 1.21.4     providedResults.add(AEItemKey.of(recipe.getResultItem(node.getLevel().registryAccess())));
+                    // TODO 1.21.4
+                    // providedResults.add(AEItemKey.of(recipe.getResultItem(node.getLevel().registryAccess())));
                     // TODO 1.21.4 }
                 } catch (Exception e) {
                     AELog.warn(e);
@@ -707,11 +708,11 @@ public final class TestPlots {
                 }
 
                 // TODO 1.21.4 if (!current.getLogic().getPatternInv().addItems(craftingPattern).isEmpty()) {
-                // TODO 1.21.4     if (!patternProviders.hasNext()) {
-                // TODO 1.21.4         break;
-                // TODO 1.21.4     }
-                // TODO 1.21.4     current = patternProviders.next();
-                // TODO 1.21.4     current.getLogic().getPatternInv().addItems(craftingPattern);
+                // TODO 1.21.4 if (!patternProviders.hasNext()) {
+                // TODO 1.21.4 break;
+                // TODO 1.21.4 }
+                // TODO 1.21.4 current = patternProviders.next();
+                // TODO 1.21.4 current.getLogic().getPatternInv().addItems(craftingPattern);
                 // TODO 1.21.4 }
             }
 

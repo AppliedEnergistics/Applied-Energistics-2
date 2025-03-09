@@ -18,25 +18,7 @@
 
 package appeng.init.client;
 
-import net.minecraft.client.color.item.ItemTintSource;
-import net.minecraft.util.ARGB;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-
-import appeng.api.util.AEColor;
-import appeng.client.render.StaticItemColor;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.ItemDefinition;
-import appeng.items.misc.PaintBallItem;
-import appeng.items.parts.ColoredPartItem;
-import appeng.items.parts.PartItem;
-import appeng.items.storage.BasicStorageCell;
-import appeng.items.tools.MemoryCardItem;
-import appeng.items.tools.powered.ColorApplicatorItem;
-import appeng.items.tools.powered.PortableCellItem;
 
 public final class InitItemColors {
     private InitItemColors() {
@@ -45,7 +27,7 @@ public final class InitItemColors {
     public static void init(RegisterColorHandlersEvent.ItemTintSources event) {
 //        // Automatically make all registered itemcolors create opaque colors
 // // TODO 1.21.4       init((itemColor, items) -> event.register(makeOpaque(itemColor), items));
-  }
+    }
 // // TODO 1.21.4
 //    private static void init(ItemColorRegistrar registrar) {
 //        // I checked, the ME chest doesn't keep its color in item form

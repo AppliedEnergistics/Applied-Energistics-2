@@ -18,8 +18,6 @@
 
 package appeng.client.render.cablebus;
 
-import java.util.function.Function;
-
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -28,10 +26,10 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.util.context.ContextMap;
 
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
-import net.minecraft.util.context.ContextMap;
 
 public class P2PTunnelFrequencyModel implements BasicUnbakedModel {
 
@@ -39,7 +37,8 @@ public class P2PTunnelFrequencyModel implements BasicUnbakedModel {
             AppEng.makeId("part/p2p_tunnel_frequency"));
 
     @Override
-    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion, boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
+    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion,
+            boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
         final TextureAtlasSprite texture = baker.sprites().get(TEXTURE);
         return new P2PTunnelFrequencyBakedModel(texture, itemTransforms);
     }

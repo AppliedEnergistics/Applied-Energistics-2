@@ -151,7 +151,8 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void applyCarvers(WorldGenRegion level, long seed, RandomState random, BiomeManager biomeManager, StructureManager structureManager, ChunkAccess chunk) {
+    public void applyCarvers(WorldGenRegion level, long seed, RandomState random, BiomeManager biomeManager,
+            StructureManager structureManager, ChunkAccess chunk) {
     }
 
     @Override

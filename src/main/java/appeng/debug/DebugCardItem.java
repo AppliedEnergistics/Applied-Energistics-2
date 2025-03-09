@@ -21,7 +21,6 @@ package appeng.debug;
 import java.util.HashSet;
 import java.util.Set;
 
-import appeng.core.AppEng;
 import com.google.common.collect.Iterables;
 import com.google.common.math.StatsAccumulator;
 
@@ -31,8 +30,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -47,6 +44,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.networking.ControllerBlockEntity;
+import appeng.core.AppEng;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.AEBaseItem;
 import appeng.me.Grid;

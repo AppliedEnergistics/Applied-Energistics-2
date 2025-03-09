@@ -1,12 +1,11 @@
 package appeng.recipes.handlers;
 
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.recipes.AERecipeTypes;
+import java.util.List;
+
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -23,7 +22,9 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 
-import java.util.List;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.recipes.AERecipeTypes;
 
 public class ChargerRecipe implements Recipe<RecipeInput> {
     @Deprecated(forRemoval = true, since = "1.21.1")
@@ -87,9 +88,7 @@ public class ChargerRecipe implements Recipe<RecipeInput> {
                 new ChargerRecipeDisplay(
                         ingredient.display(),
                         new SlotDisplay.ItemStackSlotDisplay(result),
-                        new SlotDisplay.ItemSlotDisplay(AEBlocks.CHARGER.asItem())
-                )
-        );
+                        new SlotDisplay.ItemSlotDisplay(AEBlocks.CHARGER.asItem())));
     }
 
     @Override

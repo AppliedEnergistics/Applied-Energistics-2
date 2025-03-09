@@ -8,12 +8,10 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 
 import appeng.core.definitions.AEItems;
-import net.minecraft.world.item.crafting.Recipe;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 
 public record EncodedSmithingTablePattern(
         ItemStack template,

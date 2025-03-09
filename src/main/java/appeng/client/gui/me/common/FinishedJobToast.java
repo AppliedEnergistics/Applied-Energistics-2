@@ -51,9 +51,10 @@ public class FinishedJobToast implements Toast {
 
     @Override
     public void update(ToastManager toastManager, long visibilityTime) {
-        this.wantedVisibility = (double)visibilityTime >= TIME_VISIBLE * toastManager.getNotificationDisplayTimeMultiplier()
-                ? Toast.Visibility.HIDE
-                : Toast.Visibility.SHOW;
+        this.wantedVisibility = (double) visibilityTime >= TIME_VISIBLE
+                * toastManager.getNotificationDisplayTimeMultiplier()
+                        ? Toast.Visibility.HIDE
+                        : Toast.Visibility.SHOW;
     }
 
     @Override
@@ -65,9 +66,11 @@ public class FinishedJobToast implements Toast {
         int middleHeight = height - 16;
         for (var middleY = 0; middleY < middleHeight; middleY += 16) {
             var tileHeight = Math.min(middleHeight - middleY, 16);
-            guiGraphics.blitSprite(RenderType::guiTextured, BACKGROUND_SPRITE, 160, 32, 0, 8, 0, 8 + middleY, this.width(), tileHeight);
+            guiGraphics.blitSprite(RenderType::guiTextured, BACKGROUND_SPRITE, 160, 32, 0, 8, 0, 8 + middleY,
+                    this.width(), tileHeight);
         }
-        guiGraphics.blitSprite(RenderType::guiTextured, BACKGROUND_SPRITE, 160, 32, 0, 32 - 8, 0, height - 8, this.width(), 8);
+        guiGraphics.blitSprite(RenderType::guiTextured, BACKGROUND_SPRITE, 160, 32, 0, 32 - 8, 0, height - 8,
+                this.width(), 8);
         guiGraphics.drawString(font, GuiText.ToastCraftingJobFinishedTitle.text(), 30, 7,
                 TITLE_COLOR, false);
         var lineY = 18;

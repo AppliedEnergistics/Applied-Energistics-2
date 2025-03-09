@@ -18,7 +18,6 @@
 
 package appeng.debug;
 
-import appeng.core.AppEng;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -30,8 +29,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -46,6 +43,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.spatial.ISpatialService;
 import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 

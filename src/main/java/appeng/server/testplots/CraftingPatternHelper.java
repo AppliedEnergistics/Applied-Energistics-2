@@ -12,7 +12,6 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.stacks.AEItemKey;
@@ -111,7 +110,8 @@ public class CraftingPatternHelper {
                 allowSubstitutes);
     }
 
-    public static ItemStack encodeSmithingPattern(ServerLevel level, ItemLike template, ItemLike base, ItemLike addition,
+    public static ItemStack encodeSmithingPattern(ServerLevel level, ItemLike template, ItemLike base,
+            ItemLike addition,
             boolean allowSubstitutes) {
 
         var input = new SmithingRecipeInput(new ItemStack(template), new ItemStack(base), new ItemStack(addition));

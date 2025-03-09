@@ -18,6 +18,39 @@
 
 package appeng.core.definitions;
 
+import static appeng.block.AEBaseBlock.defaultProps;
+import static appeng.block.AEBaseBlock.glassProps;
+import static appeng.block.AEBaseBlock.metalProps;
+import static appeng.block.AEBaseBlock.stoneProps;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+import com.google.common.base.Preconditions;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WallBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.StateArgumentPredicate;
+import net.minecraft.world.level.material.MapColor;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
 import appeng.api.ids.AEBlockIds;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseBlockItem;
@@ -71,36 +104,6 @@ import appeng.decorative.solid.CertusQuartzClusterBlock;
 import appeng.decorative.solid.NotSoMysteriousCubeBlock;
 import appeng.decorative.solid.QuartzGlassBlock;
 import appeng.decorative.solid.QuartzLampBlock;
-import com.google.common.base.Preconditions;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.RotatedPillarBlock;
-import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.StairBlock;
-import net.minecraft.world.level.block.WallBlock;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-import net.minecraft.world.level.block.state.BlockBehaviour.StateArgumentPredicate;
-import net.minecraft.world.level.material.MapColor;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
-import static appeng.block.AEBaseBlock.defaultProps;
-import static appeng.block.AEBaseBlock.glassProps;
-import static appeng.block.AEBaseBlock.metalProps;
-import static appeng.block.AEBaseBlock.stoneProps;
 
 /**
  * Internal implementation for the API blocks
@@ -110,7 +113,7 @@ public final class AEBlocks {
 
     private static final List<BlockDefinition<?>> BLOCKS = new ArrayList<>();
     private static final StateArgumentPredicate<EntityType<?>> NEVER_ALLOW_SPAWN = (p1, p2, p3,
-                                                                                    p4) -> false;
+            p4) -> false;
 
     // spotless:off
     public static final BlockDefinition<BuddingCertusQuartzBlock> FLAWLESS_BUDDING_QUARTZ = block("Flawless Budding Certus Quartz", AEBlockIds.FLAWLESS_BUDDING_QUARTZ, p -> new BuddingCertusQuartzBlock(quartzProperties(p).randomTicks()));
@@ -257,7 +260,7 @@ public final class AEBlocks {
     }
 
     private static <T extends Block> BlockDefinition<T> block(String englishName, ResourceLocation id,
-                                                              Function<Properties, T> blockSupplier) {
+            Function<Properties, T> blockSupplier) {
         return block(englishName, id, blockSupplier, null);
     }
 
@@ -272,7 +275,8 @@ public final class AEBlocks {
         var deferredBlock = DR.registerBlock(id.getPath(), blockSupplier);
         var deferredItem = AEItems.DR.register(id.getPath(), () -> {
             var block = deferredBlock.get();
-            var itemProperties = new Item.Properties().setId(ResourceKey.create(Registries.ITEM, id)).useBlockDescriptionPrefix();
+            var itemProperties = new Item.Properties().setId(ResourceKey.create(Registries.ITEM, id))
+                    .useBlockDescriptionPrefix();
             if (itemFactory != null) {
                 var item = itemFactory.apply(block, itemProperties);
                 if (item == null) {

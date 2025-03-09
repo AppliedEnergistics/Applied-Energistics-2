@@ -20,7 +20,6 @@ package appeng.crafting.pattern;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.WeakHashMap;
 
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -134,7 +132,8 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
 
         PatternDetailsTooltip tooltip = null;
         try {
-            // TODO 1.21.4 var details = Objects.requireNonNull(decoder.decode(what, clientLevel), "decoder returned null");
+            // TODO 1.21.4 var details = Objects.requireNonNull(decoder.decode(what, clientLevel), "decoder returned
+            // null");
             // TODO 1.21.4 tooltip = details.getTooltip(clientLevel, flags);
         } catch (Exception e) {
             lines.add(GuiText.InvalidPattern.text().copy().withStyle(ChatFormatting.RED));

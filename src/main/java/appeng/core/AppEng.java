@@ -20,9 +20,9 @@ package appeng.core;
 
 import java.util.Collection;
 
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "c:dusts/fluix"
-    },
-    "b": {
-      "tag": "ae2:all_fluix"
-    },
-    "c": {
-      "tag": "c:ender_pearls"
-    }
+    "a": "#c:dusts/fluix",
+    "b": "#ae2:all_fluix",
+    "c": "#c:ender_pearls"
   },
   "pattern": [
     "aba",

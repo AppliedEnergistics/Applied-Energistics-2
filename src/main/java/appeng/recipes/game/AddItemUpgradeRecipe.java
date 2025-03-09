@@ -1,18 +1,18 @@
 package appeng.recipes.game;
 
-import appeng.api.upgrades.IUpgradeableItem;
-import appeng.core.AppEng;
 import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+
+import appeng.api.upgrades.IUpgradeableItem;
 
 /**
  * Allows adding upgrades to upgradable items.

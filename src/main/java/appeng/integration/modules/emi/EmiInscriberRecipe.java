@@ -52,11 +52,11 @@ class EmiInscriberRecipe extends BasicEmiRecipe {
                 2000, false, true, false);
 
         // TODO 1.21.4 widgets.addSlot(EmiIngredient.of(recipe.getTopOptional()), 2, 2)
-        // TODO 1.21.4         .drawBack(false);
+        // TODO 1.21.4 .drawBack(false);
         // TODO 1.21.4 widgets.addSlot(EmiIngredient.of(recipe.getMiddleInput()), 26, 18)
-        // TODO 1.21.4         .drawBack(false);
+        // TODO 1.21.4 .drawBack(false);
         // TODO 1.21.4 widgets.addSlot(EmiIngredient.of(recipe.getBottomOptional()), 2, 34)
-        // TODO 1.21.4         .drawBack(false);
+        // TODO 1.21.4 .drawBack(false);
         widgets.addSlot(EmiStack.of(recipe.getResultItem()), 76, 19)
                 .drawBack(false);
     }

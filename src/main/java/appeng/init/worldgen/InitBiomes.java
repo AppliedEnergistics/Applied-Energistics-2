@@ -18,10 +18,8 @@
 
 package appeng.init.worldgen;
 
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
 import net.minecraft.world.level.biome.AmbientMoodSettings;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
@@ -29,9 +27,6 @@ import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 
 import appeng.spatial.SpatialStorageDimensionIds;
-import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 public final class InitBiomes {
 
@@ -64,6 +59,5 @@ public final class InitBiomes {
 
         context.register(SpatialStorageDimensionIds.BIOME_KEY, biome);
     }
-
 
 }

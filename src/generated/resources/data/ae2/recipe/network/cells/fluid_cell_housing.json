@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:quartz_glass"
-    },
-    "b": {
-      "tag": "c:dusts/redstone"
-    },
-    "c": {
-      "tag": "c:ingots/copper"
-    }
+    "a": "ae2:quartz_glass",
+    "b": "#c:dusts/redstone",
+    "c": "#c:ingots/copper"
   },
   "pattern": [
     "aba",

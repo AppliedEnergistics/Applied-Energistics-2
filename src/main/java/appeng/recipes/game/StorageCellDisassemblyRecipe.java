@@ -1,8 +1,10 @@
 package appeng.recipes.game;
 
-import appeng.recipes.AERecipeTypes;
+import java.util.List;
+
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -20,7 +22,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
-import java.util.List;
+import appeng.recipes.AERecipeTypes;
 
 /**
  * Used to handle disassembly of the (Portable) Storage Cells.
@@ -70,7 +72,7 @@ public class StorageCellDisassemblyRecipe implements Recipe<SingleRecipeInput> {
      *
      * @param cell The cell item being disassembled.
      * @return An empty list to indicate the cell cannot be disassembled. Note that stacks in the list must be copied by
-     * the caller.
+     *         the caller.
      */
     public static List<ItemStack> getDisassemblyResult(ServerLevel level, Item cell) {
         var recipeManager = level.recipeAccess();

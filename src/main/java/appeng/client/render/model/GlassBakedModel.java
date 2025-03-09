@@ -22,23 +22,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import com.google.common.base.Strings;
 
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.resources.model.SpriteGetter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -238,7 +236,6 @@ public class GlassBakedModel implements IDynamicBakedModel {
         builder.setUv(u, v);
     }
 
-
     @Override
     public boolean useAmbientOcclusion() {
         return false;
@@ -248,7 +245,6 @@ public class GlassBakedModel implements IDynamicBakedModel {
     public boolean isGui3d() {
         return false;
     }
-
 
     @Override
     public TextureAtlasSprite getParticleIcon() {
