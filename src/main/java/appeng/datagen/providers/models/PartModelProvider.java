@@ -13,6 +13,7 @@ import appeng.api.util.AEColor;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ColoredItemDefinition;
+import appeng.core.definitions.ItemDefinition;
 
 public class PartModelProvider extends ModelSubProvider {
 
@@ -42,7 +43,7 @@ public class PartModelProvider extends ModelSubProvider {
         itemModels.declareCustomModelItem(AEParts.QUARTZ_FIBER.asItem());
         itemModels.declareCustomModelItem(AEParts.TOGGLE_BUS.asItem());
         itemModels.declareCustomModelItem(AEParts.INVERTED_TOGGLE_BUS.asItem());
-        itemModels.declareCustomModelItem(AEParts.CABLE_ANCHOR.asItem());
+        usePartModelAsItemModel(AEParts.CABLE_ANCHOR);
         itemModels.declareCustomModelItem(AEParts.MONITOR.asItem());
         itemModels.declareCustomModelItem(AEParts.SEMI_DARK_MONITOR.asItem());
         itemModels.declareCustomModelItem(AEParts.DARK_MONITOR.asItem());
@@ -68,6 +69,10 @@ public class PartModelProvider extends ModelSubProvider {
         itemModels.declareCustomModelItem(AEParts.FLUID_P2P_TUNNEL.asItem());
         itemModels.declareCustomModelItem(AEParts.FE_P2P_TUNNEL.asItem());
         itemModels.declareCustomModelItem(AEParts.LIGHT_P2P_TUNNEL.asItem());
+    }
+
+    private void usePartModelAsItemModel(ItemDefinition<?> partItem) {
+        blockModels.registerSimpleItemModel(partItem.asItem(), partItem.id().withPrefix("part/"));
     }
 
     private void registerCables() {
