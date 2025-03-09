@@ -1,7 +1,8 @@
 {
   "textures": {
     "lightsBright": "ae2:part/conversion_monitor_bright",
-    "lightsMedium": "ae2:part/conversion_monitor_medium"
+    "lightsMedium": "ae2:part/conversion_monitor_medium",
+    "particle": "#lightsMedium"
   },
   "elements": [
     {
