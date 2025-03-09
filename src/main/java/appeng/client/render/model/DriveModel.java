@@ -24,11 +24,16 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.SharedConstants;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
@@ -39,6 +44,7 @@ import appeng.client.render.BasicUnbakedModel;
 import appeng.init.internal.InitStorageCells;
 
 public class DriveModel implements BasicUnbakedModel {
+    private static final Logger LOG = LoggerFactory.getLogger(DriveModel.class);
 
     private static final ResourceLocation MODEL_BASE = ResourceLocation.parse("ae2:block/drive_base");
     private static final ResourceLocation MODEL_CELL_EMPTY = ResourceLocation.parse("ae2:block/drive_cell_empty");
@@ -50,7 +56,15 @@ public class DriveModel implements BasicUnbakedModel {
 
         // Load the base model and the model for each cell model.
         for (var entry : StorageCellModels.models().entrySet()) {
-            var cellModel = baker.bake(entry.getValue(), modelState);
+            var location = entry.getValue();
+            if (SharedConstants.IS_RUNNING_IN_IDE) {
+                var slots = UnbakedModel.getTopTextureSlots(baker.getModel(location), location::toString);
+                if (slots.getMaterial("particle") == null) {
+                    LOG.error("Storage cell model {} is missing a 'particle' texture", location);
+                }
+            }
+
+            var cellModel = baker.bake(location, modelState);
             cellModels.put(entry.getKey(), cellModel);
         }
 

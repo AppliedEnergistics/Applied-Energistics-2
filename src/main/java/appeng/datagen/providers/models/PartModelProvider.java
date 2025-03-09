@@ -1,10 +1,8 @@
 package appeng.datagen.providers.models;
 
-import appeng.api.util.AEColor;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEParts;
-import appeng.core.definitions.ColoredItemDefinition;
-import appeng.core.definitions.ItemDefinition;
+import java.util.Locale;
+import java.util.Map;
+
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.ItemModelUtils;
@@ -12,8 +10,11 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 
-import java.util.Locale;
-import java.util.Map;
+import appeng.api.util.AEColor;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEParts;
+import appeng.core.definitions.ColoredItemDefinition;
+import appeng.core.definitions.ItemDefinition;
 
 public class PartModelProvider extends ModelSubProvider {
 
@@ -70,8 +71,7 @@ public class PartModelProvider extends ModelSubProvider {
                 AEParts.ITEM_P2P_TUNNEL, "part/p2p_tunnel_item",
                 AEParts.FLUID_P2P_TUNNEL, "part/p2p_tunnel_fluid",
                 AEParts.FE_P2P_TUNNEL, "part/p2p_tunnel_energy",
-                AEParts.LIGHT_P2P_TUNNEL, "part/p2p_tunnel_light"
-        );
+                AEParts.LIGHT_P2P_TUNNEL, "part/p2p_tunnel_light");
 
         for (var entry : tunnels.entrySet()) {
             var model = ModelTemplates.createItem("ae2:p2p_tunnel_base", TYPE).create(

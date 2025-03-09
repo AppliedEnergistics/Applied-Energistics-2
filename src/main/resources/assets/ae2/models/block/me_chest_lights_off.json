@@ -1,7 +1,8 @@
 {
   "credit": "Made with Blockbench",
   "textures": {
-    "lights": "ae2:block/chest/lights_off"
+    "lights": "ae2:block/chest/lights_off",
+    "particle": "ae2:block/chest/lights_off"
   },
   "render_type": "cutout",
   "elements": [

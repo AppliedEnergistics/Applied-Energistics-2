@@ -18,12 +18,16 @@
 
 package appeng.client.render.cablebus;
 
-import appeng.api.parts.PartModelsInternal;
-import appeng.api.util.AEColor;
-import appeng.client.render.BasicUnbakedModel;
-import appeng.core.AppEng;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+
 import com.google.common.collect.ImmutableMap;
 import com.mojang.math.Transformation;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.SharedConstants;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.TextureSlots;
@@ -35,12 +39,11 @@ import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.context.ContextMap;
 import net.neoforged.neoforge.client.model.SimpleModelState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
+import appeng.api.parts.PartModelsInternal;
+import appeng.api.util.AEColor;
+import appeng.client.render.BasicUnbakedModel;
+import appeng.core.AppEng;
 
 /**
  * The built-in model for the cable bus block.
@@ -60,13 +63,14 @@ public class CableBusModel implements BasicUnbakedModel {
 
     @Override
     public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion,
-                           boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
+            boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
         var spriteGetter = baker.sprites();
         Map<ResourceLocation, BakedModel> partModels = this.loadPartModels(baker);
 
         CableBuilder cableBuilder = new CableBuilder(spriteGetter);
 
-        BakedModel translucentFacadeModel = baker.bake(TRANSLUCENT_FACADE_MODEL, new SimpleModelState(Transformation.identity()));
+        BakedModel translucentFacadeModel = baker.bake(TRANSLUCENT_FACADE_MODEL,
+                new SimpleModelState(Transformation.identity()));
 
         FacadeBuilder facadeBuilder = new FacadeBuilder(baker, translucentFacadeModel);
 

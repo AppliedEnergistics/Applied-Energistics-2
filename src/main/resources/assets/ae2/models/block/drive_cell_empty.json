@@ -1,4 +1,6 @@
 {
-  "textures": {},
+  "textures": {
+    "particle": "ae2:block/transparent"
+  },
   "elements": []
 }
