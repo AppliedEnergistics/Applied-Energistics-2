@@ -1,7 +1,10 @@
 package appeng.datagen.providers.models;
 
-import java.util.Locale;
-
+import appeng.api.util.AEColor;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEParts;
+import appeng.core.definitions.ColoredItemDefinition;
+import appeng.core.definitions.ItemDefinition;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.ItemModelUtils;
@@ -9,15 +12,13 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 
-import appeng.api.util.AEColor;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEParts;
-import appeng.core.definitions.ColoredItemDefinition;
-import appeng.core.definitions.ItemDefinition;
+import java.util.Locale;
+import java.util.Map;
 
 public class PartModelProvider extends ModelSubProvider {
 
     public static final TextureSlot BASE = TextureSlot.create("base");
+    public static final TextureSlot TYPE = TextureSlot.create("type");
 
     public PartModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         super(blockModels, itemModels);
@@ -26,6 +27,7 @@ public class PartModelProvider extends ModelSubProvider {
     @Override
     protected void register() {
         registerCables();
+        registerP2PTunnels();
 
         addBuiltInModel("part/annihilation_plane");
         addBuiltInModel("part/annihilation_plane_on");
@@ -33,13 +35,7 @@ public class PartModelProvider extends ModelSubProvider {
         addBuiltInModel("part/identity_annihilation_plane_on");
         addBuiltInModel("part/formation_plane");
         addBuiltInModel("part/formation_plane_on");
-        addBuiltInModel("part/p2p/p2p_tunnel_frequency");
 
-//        itemModels.declareCustomModelItem(AEParts.SMART_CABLE.asItem());
-//        itemModels.declareCustomModelItem(AEParts.COVERED_CABLE.asItem());
-//        itemModels.declareCustomModelItem(AEParts.GLASS_CABLE.asItem());
-//        itemModels.declareCustomModelItem(AEParts.COVERED_DENSE_CABLE.asItem());
-//        itemModels.declareCustomModelItem(AEParts.SMART_DENSE_CABLE.asItem());
         itemModels.declareCustomModelItem(AEParts.QUARTZ_FIBER.asItem());
         itemModels.declareCustomModelItem(AEParts.TOGGLE_BUS.asItem());
         itemModels.declareCustomModelItem(AEParts.INVERTED_TOGGLE_BUS.asItem());
@@ -63,12 +59,27 @@ public class PartModelProvider extends ModelSubProvider {
         itemModels.declareCustomModelItem(AEParts.INTERFACE.asItem());
         itemModels.declareCustomModelItem(AEParts.PATTERN_ACCESS_TERMINAL.asItem());
         itemModels.declareCustomModelItem(AEParts.ENERGY_ACCEPTOR.asItem());
-        itemModels.declareCustomModelItem(AEParts.ME_P2P_TUNNEL.asItem());
-        itemModels.declareCustomModelItem(AEParts.REDSTONE_P2P_TUNNEL.asItem());
-        itemModels.declareCustomModelItem(AEParts.ITEM_P2P_TUNNEL.asItem());
-        itemModels.declareCustomModelItem(AEParts.FLUID_P2P_TUNNEL.asItem());
-        itemModels.declareCustomModelItem(AEParts.FE_P2P_TUNNEL.asItem());
-        itemModels.declareCustomModelItem(AEParts.LIGHT_P2P_TUNNEL.asItem());
+    }
+
+    private void registerP2PTunnels() {
+        addBuiltInModel("part/p2p/p2p_tunnel_frequency");
+
+        var tunnels = Map.of(
+                AEParts.ME_P2P_TUNNEL, "part/p2p_tunnel_me",
+                AEParts.REDSTONE_P2P_TUNNEL, "part/p2p_tunnel_redstone",
+                AEParts.ITEM_P2P_TUNNEL, "part/p2p_tunnel_item",
+                AEParts.FLUID_P2P_TUNNEL, "part/p2p_tunnel_fluid",
+                AEParts.FE_P2P_TUNNEL, "part/p2p_tunnel_energy",
+                AEParts.LIGHT_P2P_TUNNEL, "part/p2p_tunnel_light"
+        );
+
+        for (var entry : tunnels.entrySet()) {
+            var model = ModelTemplates.createItem("ae2:p2p_tunnel_base", TYPE).create(
+                    entry.getKey().asItem(),
+                    new TextureMapping().put(TYPE, AppEng.makeId(entry.getValue())),
+                    modelOutput);
+            blockModels.registerSimpleItemModel(entry.getKey().asItem(), model);
+        }
     }
 
     private void usePartModelAsItemModel(ItemDefinition<?> partItem) {
@@ -86,9 +97,10 @@ public class PartModelProvider extends ModelSubProvider {
     private void buildCableItems(ColoredItemDefinition<?> cable, String baseModel, String textureBase) {
         for (var color : AEColor.values()) {
             var item = cable.item(color);
+            var cableTexture = AppEng.makeId(textureBase + color.name().toLowerCase(Locale.ROOT));
             var model = ModelTemplates.createItem(baseModel, BASE).create(
                     item,
-                    new TextureMapping().put(BASE, AppEng.makeId(textureBase + color.name().toLowerCase(Locale.ROOT))),
+                    new TextureMapping().put(BASE, cableTexture),
                     modelOutput);
             itemModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(model));
         }
