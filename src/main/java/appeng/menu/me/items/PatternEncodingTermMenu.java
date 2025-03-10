@@ -244,8 +244,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
 
         var encodedPattern = encodePattern(level);
         if (encodedPattern != null) {
-            var decodedPattern = PatternDetailsHelper.decodePattern(encodedPattern,
-                    this.getPlayerInventory().player.level());
+            var decodedPattern = PatternDetailsHelper.decodePattern(encodedPattern, level);
             if (decodedPattern instanceof AECraftingPattern craftingPattern) {
                 for (int i = 0; i < craftingPattern.getSparseInputs().size(); i++) {
                     if (craftingPattern.getValidFluid(i) != null) {

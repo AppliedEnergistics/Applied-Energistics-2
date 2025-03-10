@@ -21,7 +21,8 @@
     "PickColorMixin",
     "TextureAtlasMixin",
     "PonderWorldMixin",
-    "VariantDeserializerMixin"
+    "VariantDeserializerMixin",
+    "RecipeUpdateMixin"
   ],
   "server": [],
   "injectors": {

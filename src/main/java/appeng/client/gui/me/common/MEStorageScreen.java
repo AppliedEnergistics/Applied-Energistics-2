@@ -574,6 +574,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
     public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY, float partialTicks) {
 
+        guiGraphics.flush();
+
         style.getHeader()
                 .dest(offsetX, offsetY)
                 .blit(guiGraphics);

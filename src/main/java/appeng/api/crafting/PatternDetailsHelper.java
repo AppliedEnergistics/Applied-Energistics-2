@@ -29,6 +29,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.google.common.base.Function;
 
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +37,6 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
-import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
@@ -90,7 +90,7 @@ public final class PatternDetailsHelper {
     }
 
     @Nullable
-    public static IPatternDetails decodePattern(AEItemKey what, Level level) {
+    public static IPatternDetails decodePattern(AEItemKey what, ServerLevel level) {
         for (var decoder : DECODERS) {
             var decoded = decoder.decodePattern(what, level);
             if (decoded != null) {
@@ -101,7 +101,7 @@ public final class PatternDetailsHelper {
     }
 
     @Nullable
-    public static IPatternDetails decodePattern(ItemStack stack, Level level) {
+    public static IPatternDetails decodePattern(ItemStack stack, ServerLevel level) {
         for (var decoder : DECODERS) {
             var decoded = decoder.decodePattern(stack, level);
             if (decoded != null) {

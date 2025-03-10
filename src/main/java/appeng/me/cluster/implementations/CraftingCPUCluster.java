@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -297,8 +298,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         }
     }
 
-    public Level getLevel() {
-        return this.getCore().getLevel();
+    public ServerLevel getLevel() {
+        return (ServerLevel) this.getCore().getLevel();
     }
 
     public void breakCluster() {

@@ -103,8 +103,11 @@ public class RestrictedInputSlot extends AppEngSlot {
         // TODO: might need to check for our own patterns in some cases
         switch (this.which) {
             case MOLECULAR_ASSEMBLER_PATTERN:
-                return PatternDetailsHelper.decodePattern(stack,
-                        getLevel()) instanceof IMolecularAssemblerSupportedPattern;
+                if (getLevel() instanceof ServerLevel serverLevel) {
+                    return PatternDetailsHelper.decodePattern(stack, serverLevel) instanceof IMolecularAssemblerSupportedPattern;
+                } else {
+                    return true;
+                }
             case ENCODED_PATTERN, PROVIDER_PATTERN:
                 return PatternDetailsHelper.isEncodedPattern(stack);
             case ENCODED_AE_PATTERN:

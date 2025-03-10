@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -457,7 +458,10 @@ public final class PatternProviderLockModePlots {
     }
 
     private static boolean pushPattern(PatternProviderLogicHost host) {
-        var details = createPatternDetails(host);
+        if (!(host.getBlockEntity().getLevel() instanceof ServerLevel level)) {
+            return false;
+        }
+        var details = createPatternDetails(level);
         var inputs = new KeyCounter[1];
         inputs[0] = new KeyCounter();
         inputs[0].add(AEItemKey.of(Blocks.OAK_LOG), 1);
@@ -505,9 +509,7 @@ public final class PatternProviderLockModePlots {
                 List.of(TWO_PLANK));
     }
 
-    private static IPatternDetails createPatternDetails(PatternProviderLogicHost host) {
-        return PatternDetailsHelper.decodePattern(
-                createPattern(),
-                host.getBlockEntity().getLevel());
+    private static IPatternDetails createPatternDetails(ServerLevel level) {
+        return PatternDetailsHelper.decodePattern(createPattern(), level);
     }
 }

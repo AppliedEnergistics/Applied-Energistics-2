@@ -20,6 +20,7 @@ package appeng.blockentity.crafting;
 
 import java.util.List;
 
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -265,6 +266,10 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
     }
 
     private void recalculatePlan() {
+        if (!(getLevel() instanceof ServerLevel level)) {
+            return;
+        }
+
         this.reboot = true;
 
         if (this.forcePlan) {
@@ -273,8 +278,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
             // didn't have a chance to decode it yet
             if (getLevel() != null && myPlan == null) {
                 if (!myPattern.isEmpty()) {
-                    if (PatternDetailsHelper.decodePattern(myPattern,
-                            getLevel()) instanceof IMolecularAssemblerSupportedPattern supportedPlan) {
+                    if (PatternDetailsHelper.decodePattern(myPattern, level) instanceof IMolecularAssemblerSupportedPattern supportedPlan) {
                         this.myPlan = supportedPlan;
                     }
                 }
@@ -299,8 +303,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
         if (!is.isEmpty()) {
             if (ItemStack.isSameItemSameComponents(is, this.myPattern)) {
                 reset = false;
-            } else if (PatternDetailsHelper.decodePattern(is,
-                    getLevel()) instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
+            } else if (PatternDetailsHelper.decodePattern(is, level) instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
                 reset = false;
                 this.progress = 0;
                 this.myPattern = is;
@@ -590,16 +593,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
 
     @Nullable
     public IMolecularAssemblerSupportedPattern getCurrentPattern() {
-        if (isClientSide()) {
-            var patternItem = patternInv.getStackInSlot(0);
-            var pattern = PatternDetailsHelper.decodePattern(patternItem, level);
-            if (pattern instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
-                return supportedPattern;
-            }
-            return null;
-        } else {
-            return myPlan;
-        }
+        return myPlan;
     }
 
     private class CraftingGridFilter implements IAEItemFilter {

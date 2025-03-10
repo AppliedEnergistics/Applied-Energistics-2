@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.server.level.ServerLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -137,7 +138,7 @@ class AEProcessingPatternTest {
     private AEProcessingPattern decode(CompoundTag tag) {
         var stack = ItemStack.parseOptional(registryAccess, tag);
 
-        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(stack), mock(Level.class));
+        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(stack), mock(ServerLevel.class));
         if (details == null) {
             return null;
         }

@@ -18,31 +18,30 @@
 
 package appeng.menu.slot;
 
-import net.minecraft.world.item.ItemStack;
-
 import appeng.api.inventories.InternalInventory;
 import appeng.client.Point;
 import appeng.menu.implementations.MolecularAssemblerMenu;
+import net.minecraft.world.item.ItemStack;
 
 public class MolecularAssemblerPatternSlot extends AppEngSlot implements IOptionalSlot {
 
-    private final MolecularAssemblerMenu mac;
+    private final MolecularAssemblerMenu menu;
 
-    public MolecularAssemblerPatternSlot(MolecularAssemblerMenu mac, InternalInventory inv,
-            int invSlot) {
+    public MolecularAssemblerPatternSlot(MolecularAssemblerMenu menu, InternalInventory inv,
+                                         int invSlot) {
         super(inv, invSlot);
-        this.mac = mac;
+        this.menu = menu;
     }
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        return super.mayPlace(stack) && this.mac.isValidItemForSlot(this.getSlotIndex(), stack);
+        return super.mayPlace(stack) && this.menu.isValidItemForSlot(this.getSlotIndex(), stack);
     }
 
     @Override
     protected boolean getCurrentValidationState() {
-        ItemStack stack = getItem();
-        return stack.isEmpty() || mayPlace(stack);
+        var stack = getItem();
+        return stack.isEmpty() || this.menu.isSlotValid(getSlotIndex());
     }
 
     @Override
@@ -57,8 +56,7 @@ public class MolecularAssemblerPatternSlot extends AppEngSlot implements IOption
             return true;
         }
 
-        var pattern = mac.getHost().getCurrentPattern();
-        return slot >= 0 && slot < 9 && pattern != null && pattern.isSlotEnabled(slot);
+        return slot >= 0 && slot < 9 && menu.isInputSlotEnabled(slot);
     }
 
     @Override

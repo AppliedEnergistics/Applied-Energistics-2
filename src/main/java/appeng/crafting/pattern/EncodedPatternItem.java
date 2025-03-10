@@ -20,8 +20,10 @@ package appeng.crafting.pattern;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -135,6 +137,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
             // TODO 1.21.4 var details = Objects.requireNonNull(decoder.decode(what, clientLevel), "decoder returned
             // null");
             // TODO 1.21.4 tooltip = details.getTooltip(clientLevel, flags);
+            tooltip = ClientPatternCache.getTooltip(stack);
         } catch (Exception e) {
             lines.add(GuiText.InvalidPattern.text().copy().withStyle(ChatFormatting.RED));
             if (invalidPatternTooltip != null) {
@@ -213,48 +216,46 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
             return ItemStack.EMPTY;
         }
 
-        var details = decode(item, level);
         out = ItemStack.EMPTY;
-
-        if (details != null) {
-            var output = details.getPrimaryOutput();
-
-            // Can only be an item or fluid stack.
-            if (output.what() instanceof AEItemKey itemKey) {
-                out = itemKey.toStack();
-            } else {
-                out = WrappedGenericStack.wrap(output.what(), 0);
-            }
-        }
+// TODO 1.21.4        var details = decode(item, level);
+//
+//        if (details != null) {
+//            var output = details.getPrimaryOutput();
+//
+//            // Can only be an item or fluid stack.
+//            if (output.what() instanceof AEItemKey itemKey) {
+//                out = itemKey.toStack();
+//            } else {
+//                out = WrappedGenericStack.wrap(output.what(), 0);
+//            }
+//        }
 
         SIMPLE_CACHE.put(item, out);
         return out;
     }
 
     @Nullable
-    public IPatternDetails decode(ItemStack stack, Level level) {
+    public IPatternDetails decode(ItemStack stack, ServerLevel level) {
         if (stack.getItem() != this || level == null) {
             return null;
         }
 
         var what = AEItemKey.of(stack);
         try {
-            // TODO 1.21.4 return Objects.requireNonNull(decoder.decode(what, level), "decoder returned null");
-            return null;
+            return Objects.requireNonNull(decoder.decode(what, level), "decoder returned null");
         } catch (Exception e) {
             return null;
         }
     }
 
     @Nullable
-    public IPatternDetails decode(AEItemKey what, Level level) {
+    public IPatternDetails decode(AEItemKey what, ServerLevel level) {
         if (what == null) {
             return null;
         }
 
         try {
-            // TODO 1.21.4 return decoder.decode(what, level);
-            return null;
+            return decoder.decode(what, level);
         } catch (Exception e) {
             return null;
         }

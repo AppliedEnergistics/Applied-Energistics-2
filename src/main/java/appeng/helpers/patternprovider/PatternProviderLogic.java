@@ -249,18 +249,27 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         this.updatePatterns();
     }
 
+    @Nullable
+    private ServerLevel getServerLevel() {
+        return this.host.getBlockEntity().getLevel() instanceof ServerLevel serverLevel ? serverLevel : null;
+    }
+
     @Override
     public boolean isClientSide() {
-        Level level = this.host.getBlockEntity().getLevel();
-        return level == null || level.isClientSide();
+        return getServerLevel() == null;
     }
 
     public void updatePatterns() {
+        var serverLevel = getServerLevel();
+        if (serverLevel == null) {
+            return;
+        }
+
         patterns.clear();
         patternInputs.clear();
 
         for (var stack : this.patternInventory) {
-            var details = PatternDetailsHelper.decodePattern(stack, this.host.getBlockEntity().getLevel());
+            var details = PatternDetailsHelper.decodePattern(stack, serverLevel);
 
             if (details != null) {
                 patterns.add(details);
@@ -610,8 +619,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                 }
 
                 // Don't restore junk
-                var pattern = PatternDetailsHelper.decodePattern(desiredPatterns.getStackInSlot(i),
-                        host.getBlockEntity().getLevel());
+                var pattern = PatternDetailsHelper.decodePattern(desiredPatterns.getStackInSlot(i), serverPlayer.serverLevel());
                 if (pattern == null) {
                     continue; // Skip junk / broken recipes
                 }

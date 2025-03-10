@@ -18,11 +18,6 @@
 
 package appeng.menu.implementations;
 
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-
 import appeng.api.stacks.AEItemKey;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.menu.SlotSemantics;
@@ -32,6 +27,10 @@ import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.MolecularAssemblerPatternSlot;
 import appeng.menu.slot.OutputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * @see appeng.client.gui.implementations.MolecularAssemblerScreen
@@ -45,8 +44,14 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
 
     private static final int MAX_CRAFT_PROGRESS = 100;
     private final MolecularAssemblerBlockEntity molecularAssembler;
-    @GuiSync(4)
+    @GuiSync(10)
     public int craftProgress = 0;
+
+    @GuiSync(11)
+    public int enabledSlots;
+
+    @GuiSync(12)
+    public int invalidSlots;
 
     private Slot encodedPatternSlot;
 
@@ -83,6 +88,31 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
     public void broadcastChanges() {
         this.craftProgress = this.molecularAssembler.getCraftingProgress();
 
+        var serverLevel = getServerLevel();
+        if (serverLevel != null) {
+            var pattern = getHost().getCurrentPattern();
+            enabledSlots = 0;
+            invalidSlots = 0;
+
+            if (pattern != null) {
+                for (var slot : slots) {
+                    if (!(slot instanceof MolecularAssemblerPatternSlot patternSlot)) {
+                        continue;
+                    }
+
+                    var mask = 1 << patternSlot.getSlotIndex();
+                    if (pattern.isSlotEnabled(patternSlot.getSlotIndex())) {
+                        enabledSlots |= mask;
+
+                        var currentItem = slot.getItem();
+                        if (!currentItem.isEmpty() && !isValidItemForSlot(slot.getSlotIndex(), currentItem)) {
+                            invalidSlots |= mask;
+                        }
+                    }
+                }
+            }
+        }
+
         this.standardDetectAndSendChanges();
     }
 
@@ -98,7 +128,6 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
 
     @Override
     public void onSlotChange(Slot s) {
-
         // If the pattern changes, the crafting grid slots have to be revalidated
         if (s == encodedPatternSlot) {
             for (Slot otherSlot : slots) {
@@ -107,7 +136,13 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
                 }
             }
         }
-
     }
 
+    public boolean isInputSlotEnabled(int slot) {
+        return (enabledSlots & (1 << slot)) != 0;
+    }
+
+    public boolean isSlotValid(int slotIndex) {
+        return (invalidSlots & (1 << slotIndex)) == 0;
+    }
 }

@@ -163,7 +163,7 @@ class AECraftingPatternTest {
 
     private AECraftingPattern decode(CompoundTag tag) {
         var level = mock(ServerLevel.class, Mockito.RETURNS_DEEP_STUBS);
-        var recipeManager = mock(RecipeManager.class);
+        var recipeManager = mock(RecipeManager.class, Mockito.RETURNS_DEEP_STUBS);
         when(level.recipeAccess()).thenReturn(recipeManager);
         when(recipeManager.recipeMap().byType(RecipeType.CRAFTING)).thenReturn(List.of(TEST_RECIPE));
 

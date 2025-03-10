@@ -23,6 +23,7 @@ import java.util.List;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -36,6 +37,7 @@ import appeng.items.parts.PartModels;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.parts.PartModel;
 import appeng.parts.reporting.AbstractTerminalPart;
+import org.jetbrains.annotations.Nullable;
 
 public class PatternEncodingTerminalPart extends AbstractTerminalPart
         implements IPatternTerminalLogicHost, IPatternTerminalMenuHost {
@@ -106,5 +108,10 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart
     @Override
     public void markForSave() {
         getHost().markForSave();
+    }
+
+    @Override
+    public @Nullable ServerLevel getServerLevel() {
+        return getLevel() instanceof ServerLevel serverLevel ? serverLevel : null;
     }
 }
