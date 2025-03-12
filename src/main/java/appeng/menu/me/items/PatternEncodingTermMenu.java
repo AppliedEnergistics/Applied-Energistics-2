@@ -18,33 +18,6 @@
 
 package appeng.menu.me.items;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.item.crafting.SmithingRecipeInput;
-import net.minecraft.world.item.crafting.StonecutterRecipe;
-
-import it.unimi.dsi.fastutil.ints.IntArraySet;
-import it.unimi.dsi.fastutil.ints.IntSet;
-import it.unimi.dsi.fastutil.shorts.ShortSet;
-
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
@@ -64,6 +37,32 @@ import appeng.menu.slot.RestrictedInputSlot;
 import appeng.parts.encoding.EncodingMode;
 import appeng.parts.encoding.PatternEncodingLogic;
 import appeng.util.ConfigInventory;
+import it.unimi.dsi.fastutil.ints.IntArraySet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.shorts.ShortSet;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SelectableRecipe;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.SmithingRecipeInput;
+import net.minecraft.world.item.crafting.StonecutterRecipe;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Can only be used with a host that implements {@link PatternEncodingLogic}.
@@ -81,7 +80,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
     private static final String ACTION_CLEAR = "clear";
     private static final String ACTION_SET_SUBSTITUTION = "setSubstitution";
     private static final String ACTION_SET_FLUID_SUBSTITUTION = "setFluidSubstitution";
-    private static final String ACTION_SET_STONECUTTING_RECIPE_ID = "setStonecuttingRecipeId";
+    private static final String ACTION_SET_STONECUTTING_RECIPE_INDEX = "setStonecuttingRecipeIndex";
     private static final String ACTION_CYCLE_PROCESSING_OUTPUT = "cycleProcessingOutput";
 
     public static final MenuType<PatternEncodingTermMenu> TYPE = MenuTypeBuilder
@@ -108,17 +107,16 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
     // The current mode is essentially the last-known client-side version of mode
     private EncodingMode currentMode;
 
-    @GuiSync(97)
+    @GuiSync(200)
     public EncodingMode mode = EncodingMode.CRAFTING;
-    @GuiSync(96)
+    @GuiSync(201)
     public boolean substitute = false;
-    @GuiSync(95)
+    @GuiSync(202)
     public boolean substituteFluids = true;
-    @GuiSync(94)
-    @Nullable
-    public ResourceKey<Recipe<?>> stonecuttingRecipeId;
+    @GuiSync(203)
+    private int stonecuttingRecipeIndex = -1;
 
-    private final List<RecipeHolder<StonecutterRecipe>> stonecuttingRecipes = new ArrayList<>();
+    private final List<SelectableRecipe<StonecutterRecipe>> stonecuttingRecipes = new ArrayList<>();
 
     /**
      * Whether fluids can be substituted or not depends on the recipe. This set contains the slots of the crafting
@@ -131,7 +129,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
     }
 
     public PatternEncodingTermMenu(MenuType<?> menuType, int id, Inventory ip, IPatternTerminalMenuHost host,
-            boolean bindInventory) {
+                                   boolean bindInventory) {
         super(menuType, id, ip, host, bindInventory);
         this.encodingLogic = host.getLogic();
         this.encodedInputsInv = encodingLogic.getEncodedInputInv();
@@ -187,8 +185,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         this.encodedPatternSlot.setStackLimit(1);
 
         registerClientAction(ACTION_ENCODE, this::encode);
-        registerClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, ResourceKey.class,
-                encodingLogic::setStonecuttingRecipeId);
+        registerClientAction(ACTION_SET_STONECUTTING_RECIPE_INDEX, Integer.class, this::setStonecuttingRecipeIndex);
         registerClientAction(ACTION_CLEAR, this::clear);
         registerClientAction(ACTION_SET_MODE, EncodingMode.class, encodingLogic::setMode);
         registerClientAction(ACTION_SET_SUBSTITUTION, Boolean.class, encodingLogic::setSubstitution);
@@ -394,6 +391,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
     @Nullable
     private ItemStack encodeStonecuttingPattern(ServerLevel level) {
         // Find the selected recipe
+        var stonecuttingRecipeId = getSelectedStonecuttingRecipeId(stonecuttingRecipeIndex);
         if (stonecuttingRecipeId == null) {
             return null;
         }
@@ -451,7 +449,20 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
 
             this.substitute = encodingLogic.isSubstitution();
             this.substituteFluids = encodingLogic.isFluidSubstitution();
-            this.stonecuttingRecipeId = encodingLogic.getStonecuttingRecipeId();
+
+            var currentStonecuttingId = getSelectedStonecuttingRecipeId(stonecuttingRecipeIndex);
+            var savedStonecuttingId = encodingLogic.getStonecuttingRecipeId();
+            if (!Objects.equals(currentStonecuttingId, savedStonecuttingId)) {
+                stonecuttingRecipeIndex = -1;
+                if (savedStonecuttingId != null) {
+                    for (int i = 0; i < stonecuttingRecipes.size(); i++) {
+                        if (savedStonecuttingId.equals(getSelectedStonecuttingRecipeId(i))) {
+                            stonecuttingRecipeIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -473,6 +484,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
 
         if (this.currentMode != this.mode) {
             this.encodingLogic.setMode(this.mode);
+            this.currentMode = this.mode;
             this.updateStonecuttingRecipes();
         }
     }
@@ -489,19 +501,28 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
     }
 
     private void updateStonecuttingRecipes() {
+        var previousRecipe = getSelectedStonecuttingRecipeId(stonecuttingRecipeIndex);
+
         stonecuttingRecipes.clear();
         if (encodedInputsInv.getKey(0) instanceof AEItemKey itemKey) {
             var level = getPlayer().level();
             for (var entry : level.recipeAccess().stonecutterRecipes().selectByInput(itemKey.toStack()).entries()) {
-                // TODO 1.21.4 no idea if this works
-                entry.recipe().recipe().ifPresent(stonecuttingRecipes::add);
+                stonecuttingRecipes.add(entry.recipe());
             }
         }
 
-        // Deselect a recipe that is now unavailable
-        if (stonecuttingRecipeId != null
-                && stonecuttingRecipes.stream().noneMatch(r -> r.id().equals(stonecuttingRecipeId))) {
-            stonecuttingRecipeId = null;
+        // Move the selection or deselect
+        if (isServerSide()) {
+            stonecuttingRecipeIndex = -1;
+            if (previousRecipe != null) {
+                for (int i = 0; i < stonecuttingRecipes.size(); i++) {
+                    var recipeId = getSelectedStonecuttingRecipeId(i);
+                    if (previousRecipe.equals(recipeId)) {
+                        stonecuttingRecipeIndex = i;
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -559,15 +580,26 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         }
     }
 
-    public @Nullable ResourceKey<Recipe<?>> getStonecuttingRecipeId() {
-        return stonecuttingRecipeId;
+    public int getStonecuttingRecipeIndex() {
+        return stonecuttingRecipeIndex;
     }
 
-    public void setStonecuttingRecipeId(ResourceKey<Recipe<?>> id) {
+    public void setStonecuttingRecipeIndex(int index) {
         if (isClientSide()) {
-            sendClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, id);
+            sendClientAction(ACTION_SET_STONECUTTING_RECIPE_INDEX, index);
         } else {
-            this.encodingLogic.setStonecuttingRecipeId(id);
+            stonecuttingRecipeIndex = index;
+            encodingLogic.setStonecuttingRecipeId(getSelectedStonecuttingRecipeId(stonecuttingRecipeIndex));
+        }
+    }
+
+    @Nullable
+    private ResourceKey<Recipe<?>> getSelectedStonecuttingRecipeId(int index) {
+        if (index >= 0 && index < stonecuttingRecipes.size()) {
+            var recipe = stonecuttingRecipes.get(index);
+            return recipe.recipe().map(RecipeHolder::id).orElse(null);
+        } else {
+            return null;
         }
     }
 
@@ -680,15 +712,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
                 && Arrays.stream(processingOutputSlots).filter(s -> !s.getItem().isEmpty()).count() > 1;
     }
 
-    public List<RecipeHolder<StonecutterRecipe>> getStonecuttingRecipes() {
+    public List<SelectableRecipe<StonecutterRecipe>> getStonecuttingRecipes() {
         return stonecuttingRecipes;
-    }
-
-    class ServerLogic {
-        private final ServerLevel level;
-
-        public ServerLogic(ServerLevel level) {
-            this.level = level;
-        }
     }
 }

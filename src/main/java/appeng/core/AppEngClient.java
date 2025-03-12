@@ -23,6 +23,8 @@ import java.nio.file.Paths;
 import java.util.Objects;
 
 import appeng.crafting.pattern.ClientPatternCache;
+import appeng.init.client.InitItemModels;
+import appeng.init.client.InitSpecialRenderers;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
@@ -178,6 +180,8 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerClientExtensions);
         modEventBus.addListener(this::registerReloadListeners);
         modEventBus.addListener(InitItemModelsProperties::init);
+        modEventBus.addListener(InitItemModels::init);
+        modEventBus.addListener(InitSpecialRenderers::init);
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();

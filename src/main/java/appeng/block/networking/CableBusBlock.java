@@ -169,7 +169,6 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
             Player player) {
         var playerRay = InteractionUtil.getPlayerRay(player, 100);
 
-        // TODO 1.21.4 bad emulation of client-side hit result
         var collisionShape = state.getCollisionShape(level, pos);
         var hitResult = collisionShape.clip(playerRay.getA(), playerRay.getB(), pos);
         if (hitResult == null) {

@@ -1,6 +1,7 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "ae2:item/color_applicator"
+    "type": "ae2:color_applicator",
+    "colored_model": "ae2:item/color_applicator_colored",
+    "uncolored_model": "ae2:item/color_applicator"
   }
 }

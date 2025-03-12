@@ -1,5 +1,12 @@
 package appeng.datagen.providers.models;
 
+import appeng.api.util.AEColor;
+import appeng.client.item.ColorApplicatorItemModel;
+import appeng.client.render.model.MemoryCardItemModel;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.ItemDefinition;
 import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -14,13 +21,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.ItemLike;
 
-import appeng.api.util.AEColor;
-import appeng.client.render.model.MemoryCardModel;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.ItemDefinition;
-
 public class ItemModelProvider extends ModelSubProvider {
     public ItemModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         super(blockModels, itemModels);
@@ -31,11 +31,6 @@ public class ItemModelProvider extends ModelSubProvider {
         registerPaintballs();
 
         flatSingleLayer(AEItems.MISSING_CONTENT, "minecraft:item/barrier");
-
-        ModelTemplates.FLAT_ITEM.create(MemoryCardModel.MODEL_BASE,
-                TextureMapping.layered(makeId("item/memory_card_base"), makeId("item/memory_card_led")),
-                modelOutput);
-        builtInItemModel(AEItems.MEMORY_CARD);
 
         builtInItemModel(AEItems.FACADE);
         builtInItemModel(AEItems.METEORITE_COMPASS);
@@ -131,9 +126,32 @@ public class ItemModelProvider extends ModelSubProvider {
         registerEmptyModel(AEBlocks.CABLE_BUS.item());
         registerHandheld();
 
-        itemModels.declareCustomModelItem(AEItems.COLOR_APPLICATOR.asItem());
+        memoryCard();
+        itemModels.itemModelOutput.accept(
+                AEItems.COLOR_APPLICATOR.asItem(),
+                new ColorApplicatorItemModel.Unbaked(
+                        ModelLocationUtils.getModelLocation(AEItems.COLOR_APPLICATOR.asItem()),
+                        ModelLocationUtils.getModelLocation(AEItems.COLOR_APPLICATOR.asItem(), "_colored")
+                )
+        );
         itemModels.declareCustomModelItem(AEItems.MATTER_CANNON.asItem());
         itemModels.declareCustomModelItem(AEItems.NETWORK_TOOL.asItem());
+    }
+
+    private void memoryCard() {
+        // Create the base models
+        var baseModel = ModelTemplates.TWO_LAYERED_ITEM.create(
+                ModelLocationUtils.getModelLocation(AEItems.MEMORY_CARD.asItem(), "_base"),
+                TextureMapping.layered(makeId("item/memory_card_base"), makeId("item/memory_card_led")),
+                modelOutput);
+        itemModels.itemModelOutput.accept(
+                AEItems.MEMORY_CARD.asItem(),
+                new MemoryCardItemModel.Unbaked(
+                        baseModel,
+                        makeId("item/memory_card_hash")
+                )
+
+        );
     }
 
     private void storageCell(ItemDefinition<?> item, String background) {
@@ -153,9 +171,9 @@ public class ItemModelProvider extends ModelSubProvider {
         var model = FOUR_LAYERED_ITEM.create(
                 item.asItem(),
                 TextureMapping.layered(
-                        makeId("item/portable_cell_%s_housing".formatted(housingType)),
-                        makeId("item/portable_cell_led"),
-                        makeId("item/portable_cell_screen"))
+                                makeId("item/portable_cell_%s_housing".formatted(housingType)),
+                                makeId("item/portable_cell_led"),
+                                makeId("item/portable_cell_screen"))
                         .put(LAYER3, makeId("item/portable_cell_side_%s".formatted(tier))),
                 itemModels.modelOutput);
         itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.plainModel(model));

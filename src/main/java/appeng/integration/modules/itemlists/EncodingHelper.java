@@ -106,7 +106,7 @@ public final class EncodingHelper {
             Predicate<ItemStack> visiblePredicate) {
         if (recipe != null && recipe.value().getType().equals(RecipeType.STONECUTTING)) {
             menu.setMode(EncodingMode.STONECUTTING);
-            menu.setStonecuttingRecipeId(recipe.id());
+            // TODO 1.21.4 menu.setStonecuttingRecipeId(recipe.id());
         } else if (recipe != null && recipe.value().getType().equals(RecipeType.SMITHING)) {
             menu.setMode(EncodingMode.SMITHING_TABLE);
         } else {

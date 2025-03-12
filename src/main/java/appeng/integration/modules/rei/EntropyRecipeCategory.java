@@ -40,7 +40,6 @@ public class EntropyRecipeCategory implements DisplayCategory<EntropyRecipeDispl
                 bounds.getY(),
                 0,
                 0,
-                0,
                 16, 16,
                 16, 16);
     }

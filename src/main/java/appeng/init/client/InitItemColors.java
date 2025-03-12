@@ -25,13 +25,10 @@ public final class InitItemColors {
     }
 
     public static void init(RegisterColorHandlersEvent.ItemTintSources event) {
-//        // Automatically make all registered itemcolors create opaque colors
-// // TODO 1.21.4       init((itemColor, items) -> event.register(makeOpaque(itemColor), items));
+
     }
+//        // Automatically make all registered itemcolors create opaque colors
 // // TODO 1.21.4
-//    private static void init(ItemColorRegistrar registrar) {
-//        // I checked, the ME chest doesn't keep its color in item form
-//        registrar.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.ME_CHEST.asItem());
 //
 //        registrar.register(MemoryCardItem::getTintColor, AEItems.MEMORY_CARD);
 //
@@ -64,26 +61,6 @@ public final class InitItemColors {
 //        }
 //    }
 //
-
-//
-//    private static int getColorApplicatorColor(ItemStack itemStack, int idx) {
-//        if (idx == 0) {
-//            return -1;
-//        }
-//
-//        final AEColor col = ((ColorApplicatorItem) itemStack.getItem()).getActiveColor(itemStack);
-//
-//        if (col == null) {
-//            return -1;
-//        }
-//
-//        return switch (idx) {
-//            case 1 -> col.blackVariant;
-//            case 2 -> col.mediumVariant;
-//            case 3 -> col.whiteVariant;
-//            default -> -1;
-//        };
-//    }
 //
 //    private static ItemTintSource makeOpaque(ItemTintSource itemColor) {
 //        return (stack, tintIndex) -> ARGB.opaque(itemColor.getColor(stack, tintIndex));

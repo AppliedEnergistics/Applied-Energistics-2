@@ -18,35 +18,55 @@
 
 package appeng.menu.guisync;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
-
-import com.google.common.base.Preconditions;
-
+import appeng.api.stacks.GenericStack;
+import appeng.util.AECodecs;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
-import appeng.api.stacks.GenericStack;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class is responsible for synchronizing menu-fields from server to client.
  */
-public abstract class SynchronizedField<T> {
+public class SynchronizedField<T> {
+    private static final Map<Class<?>, StreamCodec<? super RegistryFriendlyByteBuf, ?>> CODECS = new HashMap<>();
+    private static final Map<Class<? extends PacketWritable>, StreamCodec<? super RegistryFriendlyByteBuf, ? extends PacketWritable>> PACKET_WRITABLE_CODECS = new HashMap<>();
+
+    static {
+        CODECS.put(String.class, ByteBufCodecs.STRING_UTF8.apply(AECodecs::nullable));
+        CODECS.put(Component.class, ComponentSerialization.TRUSTED_STREAM_CODEC.apply(AECodecs::nullable));
+        CODECS.put(GenericStack.class, GenericStack.STREAM_CODEC.apply(AECodecs::nullable));
+        CODECS.put(ResourceLocation.class, ResourceLocation.STREAM_CODEC.apply(AECodecs::nullable));
+        CODECS.put(int.class, ByteBufCodecs.INT);
+        CODECS.put(Integer.class, ByteBufCodecs.INT.apply(AECodecs::nullable));
+        CODECS.put(long.class, ByteBufCodecs.LONG);
+        CODECS.put(Long.class, ByteBufCodecs.LONG.apply(AECodecs::nullable));
+        CODECS.put(double.class, ByteBufCodecs.DOUBLE);
+        CODECS.put(Double.class, ByteBufCodecs.DOUBLE.apply(AECodecs::nullable));
+        CODECS.put(float.class, ByteBufCodecs.FLOAT);
+        CODECS.put(Float.class, ByteBufCodecs.FLOAT.apply(AECodecs::nullable));
+        CODECS.put(boolean.class, ByteBufCodecs.BOOL);
+        CODECS.put(Boolean.class, ByteBufCodecs.BOOL.apply(AECodecs::nullable));
+    }
 
     private final Object source;
     protected final MethodHandle getter;
     protected final MethodHandle setter;
     protected T clientVersion;
+    private final StreamCodec<? super RegistryFriendlyByteBuf, T> codec;
 
-    private SynchronizedField(Object source, Field field) {
+    private SynchronizedField(Object source, Field field, StreamCodec<? super RegistryFriendlyByteBuf, T> codec) {
+        this.codec = codec;
         this.clientVersion = null;
         this.source = source;
         field.setAccessible(true);
@@ -75,11 +95,11 @@ public abstract class SynchronizedField<T> {
     public final void write(RegistryFriendlyByteBuf data) {
         T currentValue = getCurrentValue();
         this.clientVersion = currentValue;
-        this.writeValue(data, currentValue);
+        codec.encode(data, currentValue);
     }
 
     public final void read(RegistryFriendlyByteBuf data) {
-        T value = readValue(data);
+        T value = codec.decode(data);
         try {
             setter.invoke(source, value);
         } catch (Throwable throwable) {
@@ -87,255 +107,29 @@ public abstract class SynchronizedField<T> {
         }
     }
 
-    protected abstract void writeValue(RegistryFriendlyByteBuf data, T value);
-
-    protected abstract T readValue(RegistryFriendlyByteBuf data);
+    public StreamCodec<? super RegistryFriendlyByteBuf, T> codec() {
+        return codec;
+    }
 
     public static SynchronizedField<?> create(Object source, Field field) {
         Class<?> fieldType = field.getType();
 
-        if (PacketWritable.class.isAssignableFrom(fieldType)) {
-            return new CustomField(source, field);
-        } else if (fieldType.isAssignableFrom(Component.class)) {
-            return new TextComponentField(source, field);
-        } else if (fieldType.isAssignableFrom(GenericStack.class)) {
-            return new GenericStackField(source, field);
-        } else if (fieldType.isAssignableFrom(ResourceLocation.class)) {
-            return new ResourceLocationField(source, field);
-        } else if (fieldType == String.class) {
-            return new StringField(source, field);
-        } else if (fieldType == int.class || fieldType == Integer.class) {
-            return new IntegerField(source, field);
-        } else if (fieldType == long.class || fieldType == Long.class) {
-            return new LongField(source, field);
-        } else if (fieldType == double.class) {
-            return new DoubleField(source, field);
-        } else if (fieldType == boolean.class || fieldType == Boolean.class) {
-            return new BooleanField(source, field);
-        } else if (fieldType.isEnum()) {
-            return createEnumField(source, field, fieldType.asSubclass(Enum.class));
-        } else {
-            throw new IllegalArgumentException("Cannot synchronize field " + field);
-        }
-    }
+        var codec = CODECS.get(fieldType);
+        if (codec == null) {
+            if (PacketWritable.class.isAssignableFrom(fieldType)) {
+                if (!fieldType.isRecord()) {
+                    throw new RuntimeException("Use records to synchronize custom class on " + field
+                            + " to enable easier equals comparisons");
+                }
 
-    private static <T extends Enum<T>> EnumField<T> createEnumField(Object source, Field field, Class<T> fieldType) {
-        return new EnumField<>(source, field, fieldType.getEnumConstants());
-    }
-
-    private static class StringField extends SynchronizedField<String> {
-        private StringField(Object source, Field field) {
-            super(source, field);
-        }
-
-        @Override
-        protected void writeValue(RegistryFriendlyByteBuf data, String value) {
-            data.writeUtf(value);
-        }
-
-        @Override
-        protected String readValue(RegistryFriendlyByteBuf data) {
-            return data.readUtf();
-        }
-    }
-
-    private static class IntegerField extends SynchronizedField<Integer> {
-        private IntegerField(Object source, Field field) {
-            super(source, field);
-        }
-
-        @Override
-        protected void writeValue(RegistryFriendlyByteBuf data, Integer value) {
-            data.writeInt(value);
-        }
-
-        @Override
-        protected Integer readValue(RegistryFriendlyByteBuf data) {
-            return data.readInt();
-        }
-    }
-
-    private static class LongField extends SynchronizedField<Long> {
-        private LongField(Object source, Field field) {
-            super(source, field);
-        }
-
-        @Override
-        protected void writeValue(RegistryFriendlyByteBuf data, Long value) {
-            data.writeLong(value);
-        }
-
-        @Override
-        protected Long readValue(RegistryFriendlyByteBuf data) {
-            return data.readLong();
-        }
-    }
-
-    private static class DoubleField extends SynchronizedField<Double> {
-        private DoubleField(Object source, Field field) {
-            super(source, field);
-        }
-
-        @Override
-        protected void writeValue(RegistryFriendlyByteBuf data, Double value) {
-            data.writeDouble(value);
-        }
-
-        @Override
-        protected Double readValue(RegistryFriendlyByteBuf data) {
-            return data.readDouble();
-        }
-    }
-
-    private static class BooleanField extends SynchronizedField<Boolean> {
-        private BooleanField(Object source, Field field) {
-            super(source, field);
-        }
-
-        @Override
-        protected void writeValue(RegistryFriendlyByteBuf data, Boolean value) {
-            data.writeBoolean(value);
-        }
-
-        @Override
-        protected Boolean readValue(RegistryFriendlyByteBuf data) {
-            return data.readBoolean();
-        }
-    }
-
-    private static class EnumField<T extends Enum<T>> extends SynchronizedField<T> {
-        private final T[] values;
-
-        private EnumField(Object source, Field field, T[] values) {
-            super(source, field);
-            this.values = values;
-        }
-
-        @Override
-        protected void writeValue(RegistryFriendlyByteBuf data, T value) {
-            if (value == null) {
-                data.writeShort(-1);
+                codec = PACKET_WRITABLE_CODECS.computeIfAbsent(fieldType.asSubclass(PacketWritable.class), PacketWritable::streamCodec);
+            } else if (fieldType.isEnum()) {
+                codec = NeoForgeStreamCodecs.enumCodec(fieldType.asSubclass(Enum.class));
             } else {
-                data.writeShort((short) value.ordinal());
+                throw new IllegalArgumentException("Cannot synchronize field " + field);
             }
         }
 
-        @Override
-        protected T readValue(RegistryFriendlyByteBuf data) {
-            int ordinal = data.readShort();
-            if (ordinal == -1) {
-                return null;
-            } else {
-                return values[ordinal];
-            }
-        }
+        return new SynchronizedField<>(source, field, codec);
     }
-
-    private static class TextComponentField extends SynchronizedField<Component> {
-        private TextComponentField(Object source, Field field) {
-            super(source, field);
-        }
-
-        @Override
-        protected void writeValue(RegistryFriendlyByteBuf data, Component value) {
-            if (value == null) {
-                data.writeBoolean(false);
-            } else {
-                data.writeBoolean(true);
-                ComponentSerialization.TRUSTED_STREAM_CODEC.encode(data, value);
-            }
-        }
-
-        @Override
-        protected Component readValue(RegistryFriendlyByteBuf data) {
-            if (data.readBoolean()) {
-                return ComponentSerialization.TRUSTED_STREAM_CODEC.decode(data);
-            } else {
-                return null;
-            }
-        }
-    }
-
-    private static class GenericStackField extends SynchronizedField<GenericStack> {
-        private GenericStackField(Object source, Field field) {
-            super(source, field);
-        }
-
-        @Override
-        protected void writeValue(RegistryFriendlyByteBuf data, GenericStack value) {
-            GenericStack.writeBuffer(value, data);
-        }
-
-        @Override
-        protected GenericStack readValue(RegistryFriendlyByteBuf data) {
-            return GenericStack.readBuffer(data);
-        }
-    }
-
-    private static class ResourceLocationField extends SynchronizedField<ResourceLocation> {
-        private ResourceLocationField(Object source, Field field) {
-            super(source, field);
-        }
-
-        @Override
-        protected void writeValue(RegistryFriendlyByteBuf data, ResourceLocation value) {
-            if (value == null) {
-                data.writeBoolean(false);
-            } else {
-                data.writeBoolean(true);
-                data.writeResourceLocation(value);
-            }
-        }
-
-        @Override
-        protected ResourceLocation readValue(RegistryFriendlyByteBuf data) {
-            if (data.readBoolean()) {
-                return data.readResourceLocation();
-            } else {
-                return null;
-            }
-        }
-    }
-
-    private static class CustomField extends SynchronizedField<Object> {
-        private static final Map<Class<?>, Function<RegistryFriendlyByteBuf, Object>> factories = new HashMap<>();
-        private final Class<?> fieldType;
-
-        private CustomField(Object source, Field field) {
-            super(source, field);
-            this.fieldType = field.getType();
-            Preconditions.checkArgument(PacketWritable.class.isAssignableFrom(fieldType));
-            if (!fieldType.isRecord()) {
-                throw new RuntimeException("Use records to synchronize custom class on " + field
-                        + " to enable easier equals comparisons");
-            }
-        }
-
-        @Override
-        protected void writeValue(RegistryFriendlyByteBuf data, Object value) {
-            ((PacketWritable) value).writeToPacket(data);
-        }
-
-        @Override
-        protected Object readValue(RegistryFriendlyByteBuf data) {
-            var factory = factories.computeIfAbsent(fieldType, CustomField::getFactory);
-            return factory.apply(data);
-        }
-
-        private static Function<RegistryFriendlyByteBuf, Object> getFactory(Class<?> clazz) {
-            try {
-                var constructor = clazz.getConstructor(RegistryFriendlyByteBuf.class);
-                return buffer -> {
-                    try {
-                        return constructor.newInstance(buffer);
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException("Failed to deserialize " + clazz, e);
-                    }
-                };
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException("No constructor taking RegistryFriendlyByteBuf on " + clazz);
-            }
-        }
-    }
-
 }
