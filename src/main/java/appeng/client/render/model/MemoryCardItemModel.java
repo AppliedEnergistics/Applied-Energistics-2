@@ -1,14 +1,13 @@
 package appeng.client.render.model;
 
-import appeng.api.ids.AEComponents;
-import appeng.api.implementations.items.MemoryCardColors;
-import appeng.core.AppEng;
-import appeng.items.tools.MemoryCardItem;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
@@ -22,7 +21,11 @@ import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+
+import appeng.api.ids.AEComponents;
+import appeng.api.implementations.items.MemoryCardColors;
+import appeng.core.AppEng;
+import appeng.items.tools.MemoryCardItem;
 
 public class MemoryCardItemModel implements ItemModel {
     private final BakedModel baseModel;
@@ -42,12 +45,12 @@ public class MemoryCardItemModel implements ItemModel {
 
     @Override
     public void update(ItemStackRenderState renderState,
-                       ItemStack stack,
-                       ItemModelResolver itemModelResolver,
-                       ItemDisplayContext displayContext,
-                       @Nullable ClientLevel level,
-                       @Nullable LivingEntity entity,
-                       int seed) {
+            ItemStack stack,
+            ItemModelResolver itemModelResolver,
+            ItemDisplayContext displayContext,
+            @Nullable ClientLevel level,
+            @Nullable LivingEntity entity,
+            int seed) {
 
         if (!(stack.getItem() instanceof MemoryCardItem item)) {
             return;
@@ -64,16 +67,14 @@ public class MemoryCardItemModel implements ItemModel {
     }
 
     public record Unbaked(ResourceLocation baseModel,
-                          ResourceLocation colorOverlaySprite) implements ItemModel.Unbaked {
+            ResourceLocation colorOverlaySprite) implements ItemModel.Unbaked {
         public static final ResourceLocation ID = AppEng.makeId("memory_card_identity");
 
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(
                 builder -> builder.group(
-                                ResourceLocation.CODEC.fieldOf("base_model").forGetter(Unbaked::baseModel),
-                                ResourceLocation.CODEC.fieldOf("color_overlay_sprite").forGetter(Unbaked::colorOverlaySprite)
-                        )
-                        .apply(builder, Unbaked::new)
-        );
+                        ResourceLocation.CODEC.fieldOf("base_model").forGetter(Unbaked::baseModel),
+                        ResourceLocation.CODEC.fieldOf("color_overlay_sprite").forGetter(Unbaked::colorOverlaySprite))
+                        .apply(builder, Unbaked::new));
 
         @Override
         public MemoryCardItemModel bake(BakingContext context) {

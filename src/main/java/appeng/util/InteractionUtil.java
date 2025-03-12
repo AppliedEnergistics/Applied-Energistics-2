@@ -18,10 +18,11 @@
 
 package appeng.util;
 
-import appeng.datagen.providers.tags.ConventionTags;
-import appeng.items.tools.NetworkToolItem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+
+import appeng.datagen.providers.tags.ConventionTags;
+import appeng.items.tools.NetworkToolItem;
 
 /**
  * Utility functions revolving around using or placing items.
@@ -62,7 +63,8 @@ public final class InteractionUtil {
     public static LookDirection getPlayerRay(Player playerIn, double reachDistance) {
         var eyePosition = playerIn.getEyePosition(1);
         var viewVector = playerIn.getViewVector(1);
-        var rayEnd = eyePosition.add(viewVector.x * reachDistance, viewVector.y * reachDistance, viewVector.z * reachDistance);
+        var rayEnd = eyePosition.add(viewVector.x * reachDistance, viewVector.y * reachDistance,
+                viewVector.z * reachDistance);
         return new LookDirection(eyePosition, rayEnd);
     }
 }

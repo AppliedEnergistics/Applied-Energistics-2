@@ -23,9 +23,9 @@
 
 package appeng.api.crafting;
 
-import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.stacks.AEItemKey;

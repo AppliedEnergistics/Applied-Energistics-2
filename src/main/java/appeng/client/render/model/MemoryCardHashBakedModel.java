@@ -1,7 +1,9 @@
 package appeng.client.render.model;
 
-import appeng.api.implementations.items.MemoryCardColors;
-import appeng.client.render.cablebus.CubeBuilder;
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -9,9 +11,9 @@ import net.minecraft.client.resources.model.DelegateBakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import appeng.api.implementations.items.MemoryCardColors;
+import appeng.client.render.cablebus.CubeBuilder;
 
 final class MemoryCardHashBakedModel extends DelegateBakedModel {
     private final List<BakedQuad> generalQuads;

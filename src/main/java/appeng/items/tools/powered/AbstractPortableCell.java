@@ -17,7 +17,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.storage.StorageCells;
-import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.UpgradeInventories;
@@ -152,24 +151,5 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
         // The energy card is crafted with a dense energy cell, while the base portable just uses a normal energy cell.
         // Since the dense cells capacity is 8x the normal capacity, the result should be 9x normal.
         setAEMaxPowerMultiplier(stack, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8);
-    }
-
-    public static int getColor(ItemStack stack, int tintIndex) {
-        if (tintIndex == 1 && stack.getItem() instanceof AbstractPortableCell portableCell) {
-            // If the cell is out of power, always display empty
-            if (portableCell.getAECurrentPower(stack) <= 0) {
-                return CellState.ABSENT.getStateColor();
-            }
-
-            // Determine LED color
-            var cellInv = StorageCells.getCellInventory(stack, null);
-            var cellStatus = cellInv != null ? cellInv.getStatus() : CellState.EMPTY;
-            return cellStatus.getStateColor();
-        } else if (tintIndex == 2 && stack.getItem() instanceof AbstractPortableCell portableCell) {
-            return portableCell.getColor(stack);
-        } else {
-            // White
-            return 0xFFFFFF;
-        }
     }
 }

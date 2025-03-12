@@ -1,25 +1,26 @@
 package appeng.core.network.request;
 
-import appeng.crafting.pattern.EncodedPatternItem;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeoutException;
+import java.util.function.BiConsumer;
+
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeoutException;
-import java.util.function.BiConsumer;
+import appeng.crafting.pattern.EncodedPatternItem;
 
 public class RequestManager {
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(15);
@@ -58,7 +59,7 @@ public class RequestManager {
     }
 
     private <T> CompletableFuture<T> sendRequest(CustomPacketPayload requestPayload, UUID id,
-                                                 Class<T> expectedReplyType) {
+            Class<T> expectedReplyType) {
         if (pendingRequests.containsKey(id)) {
             throw new IllegalStateException("Duplicate request id: " + id);
         }
@@ -89,10 +90,12 @@ public class RequestManager {
 
                 PacketDistributor.sendToPlayer(player, new DecodePatternReply(payload.requestId(), tooltip, null));
             } catch (Exception e) {
-                PacketDistributor.sendToPlayer(player, new DecodePatternReply(payload.requestId(), null, Component.literal(e.toString())));
+                PacketDistributor.sendToPlayer(player,
+                        new DecodePatternReply(payload.requestId(), null, Component.literal(e.toString())));
             }
         } else {
-            PacketDistributor.sendToPlayer(player, new DecodePatternReply(payload.requestId(), null, Component.literal("not a pattern")));
+            PacketDistributor.sendToPlayer(player,
+                    new DecodePatternReply(payload.requestId(), null, Component.literal("not a pattern")));
         }
     }
 
@@ -124,8 +127,8 @@ public class RequestManager {
     }
 
     record PendingRequest<T>(UUID id,
-                             Instant deadline,
-                             Class<T> expectedPayloadType,
-                             BiConsumer<@Nullable T, @Nullable Throwable> handler) {
+            Instant deadline,
+            Class<T> expectedPayloadType,
+            BiConsumer<@Nullable T, @Nullable Throwable> handler) {
     }
 }

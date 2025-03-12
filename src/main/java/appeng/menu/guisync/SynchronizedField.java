@@ -18,8 +18,13 @@
 
 package appeng.menu.guisync;
 
-import appeng.api.stacks.GenericStack;
-import appeng.util.AECodecs;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -28,12 +33,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import appeng.api.stacks.GenericStack;
+import appeng.util.AECodecs;
 
 /**
  * This class is responsible for synchronizing menu-fields from server to client.
@@ -122,7 +123,8 @@ public class SynchronizedField<T> {
                             + " to enable easier equals comparisons");
                 }
 
-                codec = PACKET_WRITABLE_CODECS.computeIfAbsent(fieldType.asSubclass(PacketWritable.class), PacketWritable::streamCodec);
+                codec = PACKET_WRITABLE_CODECS.computeIfAbsent(fieldType.asSubclass(PacketWritable.class),
+                        PacketWritable::streamCodec);
             } else if (fieldType.isEnum()) {
                 codec = NeoForgeStreamCodecs.enumCodec(fieldType.asSubclass(Enum.class));
             } else {

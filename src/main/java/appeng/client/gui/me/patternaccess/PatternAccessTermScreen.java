@@ -18,6 +18,39 @@
 
 package appeng.client.gui.me.patternaccess;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.WeakHashMap;
+
+import com.google.common.collect.HashMultimap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
+
+import guideme.color.ConstantColor;
+import guideme.document.LytRect;
+import guideme.render.SimpleRenderContext;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
 import appeng.api.config.Settings;
 import appeng.api.config.ShowPatternProviders;
 import appeng.api.config.TerminalStyle;
@@ -36,35 +69,6 @@ import appeng.core.localization.GuiText;
 import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.implementations.PatternAccessTermMenu;
-import com.google.common.collect.HashMultimap;
-import guideme.color.ConstantColor;
-import guideme.document.LytRect;
-import guideme.render.SimpleRenderContext;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.locale.Language;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.PacketDistributor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.WeakHashMap;
 
 public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AEBaseScreen<C> {
     private static final Logger LOG = LoggerFactory.getLogger(PatternAccessTermScreen.class);
@@ -136,7 +140,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     private final ServerSettingToggleButton<ShowPatternProviders> showPatternProviders;
 
     public PatternAccessTermScreen(C menu, Inventory playerInventory,
-                                   Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
         this.scrollbar = widgets.addScrollBar("scrollbar", Scrollbar.BIG);
         this.imageWidth = GUI_WIDTH;
@@ -174,7 +178,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
     @Override
     public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
-                       int mouseY) {
+            int mouseY) {
 
         this.menu.slots.removeIf(slot -> slot instanceof PatternSlot);
 
@@ -197,14 +201,15 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
                         // Indicate invalid patterns
                         var pattern = container.getInventory().getStackInSlot(offset + col);
-                        // TODO 1.21.4  Server needs to tell us which are invalid
-                        // TODO 1.21.4 if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level) == null) {
-                        // TODO 1.21.4     guiGraphics.fill(
-                        // TODO 1.21.4             slot.x,
-                        // TODO 1.21.4             slot.y,
-                        // TODO 1.21.4             slot.x + 16,
-                        // TODO 1.21.4             slot.y + 16,
-                        // TODO 1.21.4             0x7fff0000);
+                        // TODO 1.21.4 Server needs to tell us which are invalid
+                        // TODO 1.21.4 if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level) ==
+                        // null) {
+                        // TODO 1.21.4 guiGraphics.fill(
+                        // TODO 1.21.4 slot.x,
+                        // TODO 1.21.4 slot.y,
+                        // TODO 1.21.4 slot.x + 16,
+                        // TODO 1.21.4 slot.y + 16,
+                        // TODO 1.21.4 0x7fff0000);
                         // TODO 1.21.4 }
                     }
                 } else if (row instanceof GroupHeaderRow(PatternContainerGroup group)) {
@@ -346,7 +351,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
     @Override
     public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
-                       int mouseY, float partialTicks) {
+            int mouseY, float partialTicks) {
         // Draw the top of the dialog
         blit(guiGraphics, offsetX, offsetY, HEADER_BBOX);
 
@@ -416,10 +421,10 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     }
 
     public void postFullUpdate(long inventoryId,
-                               long sortBy,
-                               PatternContainerGroup group,
-                               int inventorySize,
-                               Int2ObjectMap<ItemStack> slots) {
+            long sortBy,
+            PatternContainerGroup group,
+            int inventorySize,
+            Int2ObjectMap<ItemStack> slots) {
         var record = new PatternContainerRecord(inventoryId, inventorySize, sortBy, group);
         this.byId.put(inventoryId, record);
 
@@ -434,7 +439,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     }
 
     public void postIncrementalUpdate(long inventoryId,
-                                      Int2ObjectMap<ItemStack> slots) {
+            Int2ObjectMap<ItemStack> slots) {
         var record = byId.get(inventoryId);
         if (record == null) {
             LOG.warn("Ignoring incremental update for unknown inventory id {}", inventoryId);

@@ -1,10 +1,10 @@
 package appeng.client.item;
 
-import appeng.api.util.AEColor;
-import appeng.core.AppEng;
-import appeng.items.tools.powered.ColorApplicatorItem;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
@@ -18,7 +18,9 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
+
+import appeng.core.AppEng;
+import appeng.items.tools.powered.ColorApplicatorItem;
 
 public class ColorApplicatorItemModel implements ItemModel {
     private final BakedModel uncoloredBakedModel;
@@ -31,12 +33,12 @@ public class ColorApplicatorItemModel implements ItemModel {
 
     @Override
     public void update(ItemStackRenderState renderState,
-                       ItemStack stack,
-                       ItemModelResolver itemModelResolver,
-                       ItemDisplayContext displayContext,
-                       @Nullable ClientLevel level,
-                       @Nullable LivingEntity entity,
-                       int seed) {
+            ItemStack stack,
+            ItemModelResolver itemModelResolver,
+            ItemDisplayContext displayContext,
+            @Nullable ClientLevel level,
+            @Nullable LivingEntity entity,
+            int seed) {
         if (!(stack.getItem() instanceof ColorApplicatorItem colorApplicator)) {
             return;
         }
@@ -62,11 +64,9 @@ public class ColorApplicatorItemModel implements ItemModel {
 
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(
                 builder -> builder.group(
-                                ResourceLocation.CODEC.fieldOf("uncolored_model").forGetter(Unbaked::uncoloredModel),
-                                ResourceLocation.CODEC.fieldOf("colored_model").forGetter(Unbaked::coloredModel)
-                        )
-                        .apply(builder, Unbaked::new)
-        );
+                        ResourceLocation.CODEC.fieldOf("uncolored_model").forGetter(Unbaked::uncoloredModel),
+                        ResourceLocation.CODEC.fieldOf("colored_model").forGetter(Unbaked::coloredModel))
+                        .apply(builder, Unbaked::new));
 
         @Override
         public void resolveDependencies(ResolvableModel.Resolver resolver) {

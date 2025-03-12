@@ -18,12 +18,11 @@
 
 package appeng.init.client;
 
-import appeng.client.item.EnergyFillLevelProperty;
-import appeng.core.AppEng;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
+
+import appeng.client.item.EnergyFillLevelProperty;
 
 /**
  * Registers custom properties that can be used in item model JSON files.

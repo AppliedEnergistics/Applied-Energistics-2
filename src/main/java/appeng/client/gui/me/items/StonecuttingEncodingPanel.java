@@ -2,8 +2,6 @@ package appeng.client.gui.me.items;
 
 import java.util.Objects;
 
-import net.minecraft.world.item.crafting.display.SlotDisplay;
-import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -14,6 +12,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 
 import appeng.client.Point;
 import appeng.client.gui.Icon;
@@ -122,7 +121,8 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
         if (recipeIndex != -1) {
             var display = menu.getStonecuttingRecipes().get(recipeIndex);
             var displayContext = SlotDisplayContext.fromLevel(screen.getMinecraft().level);
-            var lines = screen.getTooltipFromContainerItem(display.optionDisplay().resolveForFirstStack(displayContext));
+            var lines = screen
+                    .getTooltipFromContainerItem(display.optionDisplay().resolveForFirstStack(displayContext));
             return new Tooltip(lines);
         }
         return null;

@@ -1,7 +1,5 @@
 package appeng.core.network;
 
-import appeng.core.network.request.DecodePatternReply;
-import appeng.core.network.request.DecodePatternRequest;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -27,6 +25,8 @@ import appeng.core.network.clientbound.MockExplosionPacket;
 import appeng.core.network.clientbound.NetworkStatusPacket;
 import appeng.core.network.clientbound.PatternAccessTerminalPacket;
 import appeng.core.network.clientbound.SetLinkStatusPacket;
+import appeng.core.network.request.DecodePatternReply;
+import appeng.core.network.request.DecodePatternRequest;
 import appeng.core.network.serverbound.ColorApplicatorSelectColorPacket;
 import appeng.core.network.serverbound.ConfigButtonPacket;
 import appeng.core.network.serverbound.ConfirmAutoCraftPacket;

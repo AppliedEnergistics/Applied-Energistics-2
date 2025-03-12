@@ -18,17 +18,18 @@
 
 package appeng.menu.slot;
 
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.inventories.InternalInventory;
 import appeng.client.Point;
 import appeng.menu.implementations.MolecularAssemblerMenu;
-import net.minecraft.world.item.ItemStack;
 
 public class MolecularAssemblerPatternSlot extends AppEngSlot implements IOptionalSlot {
 
     private final MolecularAssemblerMenu menu;
 
     public MolecularAssemblerPatternSlot(MolecularAssemblerMenu menu, InternalInventory inv,
-                                         int invSlot) {
+            int invSlot) {
         super(inv, invSlot);
         this.menu = menu;
     }

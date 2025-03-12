@@ -1,8 +1,9 @@
 package appeng.init.client;
 
+import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
+
 import appeng.client.item.ColorApplicatorItemModel;
 import appeng.client.render.model.MemoryCardItemModel;
-import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 
 public class InitItemModels {
     private InitItemModels() {

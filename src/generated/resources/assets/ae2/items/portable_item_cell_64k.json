@@ -1,6 +1,18 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "ae2:item/portable_item_cell_64k"
+    "model": "ae2:item/portable_item_cell_64k",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -1
+      },
+      {
+        "type": "ae2:storage_cell_state"
+      },
+      {
+        "type": "ae2:portable_cell_color"
+      }
+    ]
   }
 }

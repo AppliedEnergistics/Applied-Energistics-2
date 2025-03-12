@@ -355,13 +355,4 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     public int getColor(ItemStack stack) {
         return DyedItemColor.getOrDefault(stack, DEFAULT_BASE_COLOR);
     }
-
-    public static int getTintColor(ItemStack stack, int tintIndex) {
-        if (tintIndex == 1 && stack.getItem() instanceof MemoryCardItem memoryCard) {
-            return memoryCard.getColor(stack);
-        } else {
-            // White
-            return 0xFFFFFF;
-        }
-    }
 }

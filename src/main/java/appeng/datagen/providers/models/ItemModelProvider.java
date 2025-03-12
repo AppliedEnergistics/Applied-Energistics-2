@@ -1,12 +1,5 @@
 package appeng.datagen.providers.models;
 
-import appeng.api.util.AEColor;
-import appeng.client.item.ColorApplicatorItemModel;
-import appeng.client.render.model.MemoryCardItemModel;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.ItemDefinition;
 import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -20,6 +13,16 @@ import net.minecraft.client.renderer.item.EmptyModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.ItemLike;
+
+import appeng.api.util.AEColor;
+import appeng.client.item.ColorApplicatorItemModel;
+import appeng.client.item.PortableCellColorTintSource;
+import appeng.client.item.StorageCellStateTintSource;
+import appeng.client.render.model.MemoryCardItemModel;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.ItemDefinition;
 
 public class ItemModelProvider extends ModelSubProvider {
     public ItemModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
@@ -131,9 +134,7 @@ public class ItemModelProvider extends ModelSubProvider {
                 AEItems.COLOR_APPLICATOR.asItem(),
                 new ColorApplicatorItemModel.Unbaked(
                         ModelLocationUtils.getModelLocation(AEItems.COLOR_APPLICATOR.asItem()),
-                        ModelLocationUtils.getModelLocation(AEItems.COLOR_APPLICATOR.asItem(), "_colored")
-                )
-        );
+                        ModelLocationUtils.getModelLocation(AEItems.COLOR_APPLICATOR.asItem(), "_colored")));
         itemModels.declareCustomModelItem(AEItems.MATTER_CANNON.asItem());
         itemModels.declareCustomModelItem(AEItems.NETWORK_TOOL.asItem());
     }
@@ -148,8 +149,7 @@ public class ItemModelProvider extends ModelSubProvider {
                 AEItems.MEMORY_CARD.asItem(),
                 new MemoryCardItemModel.Unbaked(
                         baseModel,
-                        makeId("item/memory_card_hash")
-                )
+                        makeId("item/memory_card_hash"))
 
         );
     }
@@ -159,7 +159,10 @@ public class ItemModelProvider extends ModelSubProvider {
                 item.asItem(),
                 makeId(background),
                 makeId("item/storage_cell_led"));
-        itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.plainModel(model));
+        itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.tintedModel(
+                model,
+                new Constant(-1),
+                new StorageCellStateTintSource()));
     }
 
     public static final TextureSlot LAYER3 = TextureSlot.create("layer3");
@@ -171,12 +174,16 @@ public class ItemModelProvider extends ModelSubProvider {
         var model = FOUR_LAYERED_ITEM.create(
                 item.asItem(),
                 TextureMapping.layered(
-                                makeId("item/portable_cell_%s_housing".formatted(housingType)),
-                                makeId("item/portable_cell_led"),
-                                makeId("item/portable_cell_screen"))
+                        makeId("item/portable_cell_%s_housing".formatted(housingType)),
+                        makeId("item/portable_cell_led"),
+                        makeId("item/portable_cell_screen"))
                         .put(LAYER3, makeId("item/portable_cell_side_%s".formatted(tier))),
                 itemModels.modelOutput);
-        itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.plainModel(model));
+        itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.tintedModel(
+                model,
+                new Constant(-1),
+                new StorageCellStateTintSource(),
+                new PortableCellColorTintSource()));
     }
 
     private void registerHandheld() {

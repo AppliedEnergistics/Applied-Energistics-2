@@ -22,9 +22,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-import appeng.crafting.pattern.ClientPatternCache;
-import appeng.init.client.InitItemModels;
-import appeng.init.client.InitSpecialRenderers;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
@@ -122,8 +119,10 @@ import appeng.init.client.InitBlockColors;
 import appeng.init.client.InitBuiltInModels;
 import appeng.init.client.InitEntityLayerDefinitions;
 import appeng.init.client.InitItemColors;
+import appeng.init.client.InitItemModels;
 import appeng.init.client.InitItemModelsProperties;
 import appeng.init.client.InitScreens;
+import appeng.init.client.InitSpecialRenderers;
 import appeng.init.client.InitStackRenderHandlers;
 import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.siteexport.AESiteExporter;

@@ -18,6 +18,42 @@
 
 package appeng.menu;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.network.PacketDistributor;
+
+import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
+import it.unimi.dsi.fastutil.shorts.ShortSet;
+
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -45,38 +81,6 @@ import appeng.menu.slot.DisabledSlot;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigMenuInventory;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
-import it.unimi.dsi.fastutil.shorts.ShortSet;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.MustBeInvokedByOverriders;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public abstract class AEBaseMenu extends AbstractContainerMenu {
     private static final int MAX_STRING_LENGTH = 32767;
@@ -107,7 +111,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private boolean returnedFromSubScreen;
 
     public AEBaseMenu(MenuType<?> menuType, int id, Inventory playerInventory,
-                      Object host) {
+            Object host) {
         super(menuType, id);
         this.playerInventory = playerInventory;
         this.blockEntity = host instanceof BlockEntity ? (BlockEntity) host : null;
@@ -469,7 +473,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
      * Check if a given candidate slot is a valid destination for {@link #quickMoveStack}.
      */
     protected boolean isValidQuickMoveDestination(Slot candidateSlot, ItemStack stackToMove,
-                                                  boolean fromPlayerSide) {
+            boolean fromPlayerSide) {
         return isPlayerSideSlot(candidateSlot) != fromPlayerSide
                 && !(candidateSlot instanceof FakeSlot)
                 && !(candidateSlot instanceof CraftingMatrixSlot)
@@ -726,7 +730,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                     fakeSlot.set(GenericStack.wrapInItemStack(emptyingAction.what(), emptyingAction.maxAmount()));
                 }
             }
-            break;
+                break;
             default:
                 break;
         }
@@ -1009,9 +1013,9 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     protected final <T> void syncField(int id,
-                                       Supplier<T> getter,
-                                       Consumer<T> setter,
-                                       StreamCodec<? super RegistryFriendlyByteBuf, T> codec) {
+            Supplier<T> getter,
+            Consumer<T> setter,
+            StreamCodec<? super RegistryFriendlyByteBuf, T> codec) {
 
     }
 }

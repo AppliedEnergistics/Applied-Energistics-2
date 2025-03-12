@@ -23,14 +23,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.CpuSelectionMode;

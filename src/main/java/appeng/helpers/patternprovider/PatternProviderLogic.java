@@ -42,7 +42,6 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
@@ -619,7 +618,8 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                 }
 
                 // Don't restore junk
-                var pattern = PatternDetailsHelper.decodePattern(desiredPatterns.getStackInSlot(i), serverPlayer.serverLevel());
+                var pattern = PatternDetailsHelper.decodePattern(desiredPatterns.getStackInSlot(i),
+                        serverPlayer.serverLevel());
                 if (pattern == null) {
                     continue; // Skip junk / broken recipes
                 }

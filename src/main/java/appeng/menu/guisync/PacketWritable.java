@@ -1,11 +1,11 @@
 package appeng.menu.guisync;
 
+import java.lang.reflect.InvocationTargetException;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.codec.StreamDecoder;
-
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Implement on classes to signal they can be synchronized to the client using {@link GuiSync}. For this to work fully,

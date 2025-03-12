@@ -20,7 +20,6 @@ package appeng.blockentity.crafting;
 
 import java.util.List;
 
-import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -30,6 +29,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -278,7 +278,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
             // didn't have a chance to decode it yet
             if (getLevel() != null && myPlan == null) {
                 if (!myPattern.isEmpty()) {
-                    if (PatternDetailsHelper.decodePattern(myPattern, level) instanceof IMolecularAssemblerSupportedPattern supportedPlan) {
+                    if (PatternDetailsHelper.decodePattern(myPattern,
+                            level) instanceof IMolecularAssemblerSupportedPattern supportedPlan) {
                         this.myPlan = supportedPlan;
                     }
                 }
@@ -303,7 +304,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
         if (!is.isEmpty()) {
             if (ItemStack.isSameItemSameComponents(is, this.myPattern)) {
                 reset = false;
-            } else if (PatternDetailsHelper.decodePattern(is, level) instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
+            } else if (PatternDetailsHelper.decodePattern(is,
+                    level) instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
                 reset = false;
                 this.progress = 0;
                 this.myPattern = is;

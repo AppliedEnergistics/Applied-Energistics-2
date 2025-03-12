@@ -23,11 +23,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
 
-import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
@@ -51,7 +51,6 @@ import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.items.misc.MissingContentItem;
-import appeng.items.misc.WrappedGenericStack;
 import appeng.util.InteractionUtil;
 
 /**
