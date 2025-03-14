@@ -31,6 +31,10 @@ import java.util.Set;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import net.minecraft.core.Holder;
+import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -82,8 +86,8 @@ public class Repo implements IClientRepo {
     /**
      * Entries by item ID to speed up ingredient matching.
      */
-    private final Int2ObjectOpenHashMap<List<GridInventoryEntry>> entriesByItemId = new Int2ObjectOpenHashMap<>();
-    private boolean entriesByItemIdNeedsUpdate = true;
+    private final Object2ObjectOpenHashMap<Holder<Item>, List<GridInventoryEntry>> entriesByItem = new Object2ObjectOpenHashMap<>();
+    private boolean entriesByItemNeedsUpdate = true;
     private final RepoSearch search = new RepoSearch();
     private IPartitionList partitionList;
     private Runnable updateViewListener;
@@ -118,7 +122,7 @@ public class Repo implements IClientRepo {
     }
 
     private void handleUpdate(GridInventoryEntry serverEntry) {
-        entriesByItemIdNeedsUpdate = true;
+        entriesByItemNeedsUpdate = true;
 
         var localEntry = entries.get(serverEntry.getSerial());
         if (localEntry == null) {
@@ -357,8 +361,8 @@ public class Repo implements IClientRepo {
         this.entries.clear();
         this.view.clear();
         this.pinnedRow.clear();
-        this.entriesByItemId.clear();
-        this.entriesByItemIdNeedsUpdate = true;
+        this.entriesByItem.clear();
+        this.entriesByItemNeedsUpdate = true;
     }
 
     public final boolean hasPinnedRow() {
@@ -415,41 +419,38 @@ public class Repo implements IClientRepo {
     @Override
     public List<GridInventoryEntry> getByIngredient(Ingredient ingredient) {
         var entries = new ArrayList<GridInventoryEntry>();
-        // TODO 1.21.4 for (int i = 0; i < ingredient.getStackingIds().size(); i++) {
-        // TODO 1.21.4 var itemId = ingredient.getStackingIds().getInt(i);
-        // TODO 1.21.4 for (var entry : getByItemId(itemId)) {
-        // TODO 1.21.4 if (((AEItemKey) entry.getWhat()).matches(ingredient)) {
-        // TODO 1.21.4 entries.add(entry);
-        // TODO 1.21.4 }
-        // TODO 1.21.4 }
-        // TODO 1.21.4 }
+        var it = ingredient.items().iterator();
+        while (it.hasNext()) {
+            entries.addAll(getByItem(it.next()));
+        }
+
         return entries;
     }
 
-    private Collection<GridInventoryEntry> getByItemId(int itemId) {
+    private Collection<GridInventoryEntry> getByItem(Holder<Item> item) {
         // Build the itemid->entry map if needed
-        if (entriesByItemIdNeedsUpdate) {
+        if (entriesByItemNeedsUpdate) {
             rebuildItemIdToEntries();
-            entriesByItemIdNeedsUpdate = false;
+            entriesByItemNeedsUpdate = false;
         }
-        return entriesByItemId.getOrDefault(itemId, List.of());
+        return entriesByItem.getOrDefault(item, List.of());
     }
 
     private void rebuildItemIdToEntries() {
-        entriesByItemId.clear();
+        entriesByItem.clear();
         for (var entry : getAllEntries()) {
             if (entry.getWhat() instanceof AEItemKey itemKey) {
-                var itemId = BuiltInRegistries.ITEM.getId(itemKey.getItem());
-                var currentList = entriesByItemId.get(itemId);
+                var itemHolder = BuiltInRegistries.ITEM.wrapAsHolder(itemKey.getItem());
+                var currentList = entriesByItem.get(itemHolder);
                 if (currentList == null) {
                     // For many items without NBT, this list will only ever have one entry
-                    entriesByItemId.put(itemId, List.of(entry));
+                    entriesByItem.put(itemHolder, List.of(entry));
                 } else if (currentList.size() == 1) {
                     // Convert the list from an immutable single-entry list to a mutable normal arraylist
                     var mutableList = new ArrayList<GridInventoryEntry>(10);
                     mutableList.addAll(currentList);
                     mutableList.add(entry);
-                    entriesByItemId.put(itemId, mutableList);
+                    entriesByItem.put(itemHolder, mutableList);
                 } else {
                     // If it had more than 1 item, it must have been mutable already
                     currentList.add(entry);
