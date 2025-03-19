@@ -393,9 +393,26 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             return ItemStack.EMPTY;
         }
 
+        boolean fromPlayerSide = isPlayerSideSlot(clickSlot);
+
+        // Allow moving items from player-side slots into some "remote" inventory that is not slot-based
+        // This is used to move items into the network inventory
+        if (fromPlayerSide) {
+            // With a Storage Bus on a Just Dire Things player accessor, the stack to move might be modified during the
+            // transfer. So keep track of how much was transferred and only subtract it at the end.
+            int transferred = transferStackToMenu(stackToMove.copy());
+            if (transferred > 0) {
+                clickSlot.remove(transferred);
+            }
+        }
+        stackToMove = clickSlot.getItem();
+        if (stackToMove.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+
         var originalStackToMove = stackToMove.copy();
 
-        stackToMove = performQuickMoveStack(stackToMove, isPlayerSideSlot(clickSlot));
+        stackToMove = quickMoveToOtherSlots(stackToMove, isPlayerSideSlot(clickSlot));
 
         // While we did modify stackToMove in-place, this causes the container to be notified of the change
         if (!ItemStack.matches(originalStackToMove, stackToMove)) {
@@ -405,16 +422,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         return ItemStack.EMPTY;
     }
 
-    protected ItemStack performQuickMoveStack(ItemStack stackToMove, boolean fromPlayerSide) {
-        // Allow moving items from player-side slots into some "remote" inventory that is not slot-based
-        // This is used to move items into the network inventory
-        if (fromPlayerSide) {
-            stackToMove = this.transferStackToMenu(stackToMove);
-            if (stackToMove.isEmpty()) {
-                return stackToMove;
-            }
-        }
-
+    private ItemStack quickMoveToOtherSlots(ItemStack stackToMove, boolean fromPlayerSide) {
         var destinationSlots = getQuickMoveDestinationSlots(stackToMove, fromPlayerSide);
 
         // If no actual targets were available, allow moving into filter slots too
@@ -734,10 +742,10 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     /**
-     * @return Returns the remainder.
+     * @return Returns how many items were transfered.
      */
-    protected ItemStack transferStackToMenu(ItemStack input) {
-        return input;
+    protected int transferStackToMenu(ItemStack input) {
+        return 0;
     }
 
     public void swapSlotContents(int slotA, int slotB) {

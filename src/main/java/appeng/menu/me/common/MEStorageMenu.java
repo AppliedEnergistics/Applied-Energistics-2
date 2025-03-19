@@ -670,7 +670,7 @@ public class MEStorageMenu extends AEBaseMenu
      * Try to transfer an item stack into the grid.
      */
     @Override
-    protected ItemStack transferStackToMenu(ItemStack input) {
+    protected int transferStackToMenu(ItemStack input) {
         if (!canInteractWithGrid()) {
             // Allow non-grid slots to be use
             return super.transferStackToMenu(input);
@@ -678,13 +678,12 @@ public class MEStorageMenu extends AEBaseMenu
 
         var key = AEItemKey.of(input);
         if (key == null || !isKeyVisible(key)) {
-            return input;
+            return 0;
         }
 
-        var inserted = StorageHelper.poweredInsert(energySource, storage,
+        return (int) StorageHelper.poweredInsert(energySource, storage,
                 key, input.getCount(),
                 this.getActionSource());
-        return Platform.getInsertionRemainder(input, inserted);
     }
 
     /**
