@@ -511,6 +511,7 @@
   "gui.ae2.ToCraft": "Створити: %s",
   "gui.ae2.ToastCraftingJobFinishedText": "%d %s",
   "gui.ae2.ToastCraftingJobFinishedTitle": "Автомайстрування завершено",
+  "gui.ae2.TransformTypeExplode": "Вибух",
   "gui.ae2.TransparentFacades": "Прозорі фасади",
   "gui.ae2.TransparentFacadesHint": "Керує видимістю фасадів, коли мережевий інструмент знаходиться на панелі інструментів.",
   "gui.ae2.Types": "Типів",

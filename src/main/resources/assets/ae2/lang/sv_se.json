@@ -511,6 +511,8 @@
   "gui.ae2.ToCraft": "Att tillverka: %s",
   "gui.ae2.ToastCraftingJobFinishedText": "%d %s",
   "gui.ae2.ToastCraftingJobFinishedTitle": "Auto-tillverkning slutförd",
+  "gui.ae2.TransformTypeExplode": "Explodera",
+  "gui.ae2.TransformTypeThrowInFluid": "Kasta i %s",
   "gui.ae2.TransparentFacades": "Genomskinliga fasader",
   "gui.ae2.TransparentFacadesHint": "Kontrollerar synligheten för fasader när nätverksverktyget är inuti din föremålsmeny.",
   "gui.ae2.Types": "typer",

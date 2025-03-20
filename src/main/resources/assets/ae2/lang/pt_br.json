@@ -511,6 +511,8 @@
   "gui.ae2.ToCraft": "Para Fabricar: %s",
   "gui.ae2.ToastCraftingJobFinishedText": "%d %s",
   "gui.ae2.ToastCraftingJobFinishedTitle": "Fabricação Automática Completa",
+  "gui.ae2.TransformTypeExplode": "Explodir",
+  "gui.ae2.TransformTypeThrowInFluid": "Jogue em %s",
   "gui.ae2.TransparentFacades": "Fachadas Transparentes",
   "gui.ae2.TransparentFacadesHint": "Controla a visibilidade de fachadas quando a ferramenta de rede estiver na sua hotbar.",
   "gui.ae2.Types": "Tipos",

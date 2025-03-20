@@ -511,6 +511,8 @@
   "gui.ae2.ToCraft": "Zu fertigen: %s",
   "gui.ae2.ToastCraftingJobFinishedText": "%d %s",
   "gui.ae2.ToastCraftingJobFinishedTitle": "Automatische Herstellung abgeschlossen",
+  "gui.ae2.TransformTypeExplode": "Explodieren",
+  "gui.ae2.TransformTypeThrowInFluid": "Werfen Sie %s",
   "gui.ae2.TransparentFacades": "Transparente Fassaden",
   "gui.ae2.TransparentFacadesHint": "Kontrolliert Sichtbarkeit von Fassaden, währen sich die Netzwerksonde in deiner Hotbar befindet.",
   "gui.ae2.Types": "Typen",
