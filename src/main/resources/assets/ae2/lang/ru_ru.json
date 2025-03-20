@@ -511,6 +511,8 @@
   "gui.ae2.ToCraft": "Изготовить: %s",
   "gui.ae2.ToastCraftingJobFinishedText": "%d %s",
   "gui.ae2.ToastCraftingJobFinishedTitle": "Автоматическое создание завершено",
+  "gui.ae2.TransformTypeExplode": "Взрывать",
+  "gui.ae2.TransformTypeThrowInFluid": "Бросить в %s",
   "gui.ae2.TransparentFacades": "Прозрачные фасады",
   "gui.ae2.TransparentFacadesHint": "Управляет видимостью фасадов, пока сетевой инструмент находится у тебя в горячей панели.",
   "gui.ae2.Types": "Видов",

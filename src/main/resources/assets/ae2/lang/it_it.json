@@ -511,6 +511,8 @@
   "gui.ae2.ToCraft": "a essere fabbricato: %s",
   "gui.ae2.ToastCraftingJobFinishedText": "%d %s",
   "gui.ae2.ToastCraftingJobFinishedTitle": "Auto-Creazione Completata",
+  "gui.ae2.TransformTypeExplode": "Esplode",
+  "gui.ae2.TransformTypeThrowInFluid": "Lancia in %s",
   "gui.ae2.TransparentFacades": "Facciate trasparenti",
   "gui.ae2.TransparentFacadesHint": "Controlla la visibilità della facciata con un Attrezzo per sistema a portata di mano.",
   "gui.ae2.Types": "Tipi",

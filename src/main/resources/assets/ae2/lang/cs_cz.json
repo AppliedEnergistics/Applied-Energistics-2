@@ -488,6 +488,8 @@
   "gui.ae2.ToCraft": "Na výrobu: %s",
   "gui.ae2.ToastCraftingJobFinishedText": "%d %s",
   "gui.ae2.ToastCraftingJobFinishedTitle": "Automatická výroba dokončena",
+  "gui.ae2.TransformTypeExplode": "Rozbít",
+  "gui.ae2.TransformTypeThrowInFluid": "Hodit %s",
   "gui.ae2.TransparentFacades": "Průhledné fasády",
   "gui.ae2.TransparentFacadesHint": "Nastavuje viditelnost fasád když máš síťový nástroj ve svém panelu nástrojů.",
   "gui.ae2.Types": "Typy",
