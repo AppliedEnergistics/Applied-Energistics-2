@@ -490,6 +490,8 @@
   "gui.ae2.ToCraft": "Pentru a meșteșugi: %s",
   "gui.ae2.ToastCraftingJobFinishedText": "%d %s",
   "gui.ae2.ToastCraftingJobFinishedTitle": "Auto-Fabricare finalizată",
+  "gui.ae2.TransformTypeExplode": "Explodare",
+  "gui.ae2.TransformTypeThrowInFluid": "Aruncă în %s",
   "gui.ae2.TransparentFacades": "Facade transparente",
   "gui.ae2.TransparentFacadesHint": "Controlează vizibilitatea fațadelor în timp ce instrumentul de rețea este pe bara de instrumente.",
   "gui.ae2.Types": "Tipuri",
