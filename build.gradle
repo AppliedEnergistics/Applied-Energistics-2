@@ -111,30 +111,6 @@ dependencies {
     testImplementation("net.neoforged:testframework:${project.neoforge_version}")
 }
 
-///////////////////
-// Version Number
-ext.tag = System.getenv('TAG') ?: ""
-if (ext.tag) {
-    if (!ext.tag.startsWith("neoforge/v")) {
-        throw new GradleException("Tags for the neoforge version should start with neoforge/: ${ext.tag}")
-    }
-
-    project.version = ext.tag.substring("neoforge/v".length())
-} else {
-    // This essentially tries to implement delay expansion of the project version based on a value source to
-    // still support configuration caching.
-    project.version = providers.gradleProperty("version").orElse("").flatMap(version -> {
-        if (!version.isBlank()) {
-            return providers.provider { version }
-        }
-        return providers.of(ProjectVersionSource.class, spec -> {
-            spec.getParameters().getDefaultBranches().addAll("main", "neoforge/" + project.minecraft_version)
-        });
-    }).get()
-}
-
-tasks.register("printProjectVersion", PrintProjectVersion.class);
-
 test {
     useJUnitPlatform()
 
@@ -380,8 +356,4 @@ signing {
         useInMemoryPgpKeys(signingKey, signingPassword)
         sign publishing.publications.maven
     }
-}
-
-afterEvaluate {
-    println('Version: ' + project.version)
 }

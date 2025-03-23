@@ -586,12 +586,14 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
     }
 
     @Override
-    protected ItemStack transferStackToMenu(ItemStack input) {
+    protected int transferStackToMenu(ItemStack input) {
+        int initialCount = input.getCount();
+
         // try refilling the blank pattern slot
         if (blankPatternSlot.mayPlace(input)) {
             input = blankPatternSlot.safeInsert(input);
             if (input.isEmpty()) {
-                return ItemStack.EMPTY;
+                return initialCount;
             }
         }
 
@@ -599,11 +601,12 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         if (encodedPatternSlot.mayPlace(input)) {
             input = encodedPatternSlot.safeInsert(input);
             if (input.isEmpty()) {
-                return ItemStack.EMPTY;
+                return initialCount;
             }
         }
 
-        return super.transferStackToMenu(input);
+        int transferred = initialCount - input.getCount();
+        return transferred + super.transferStackToMenu(input);
     }
 
     @Contract("null -> false")
