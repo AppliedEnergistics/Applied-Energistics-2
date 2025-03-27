@@ -1,6 +1,32 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "ae2:item/dark_monitor"
+    "model": "ae2:item/dark_monitor",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -1
+      },
+      {
+        "type": "ae2:color",
+        "color": "fluix",
+        "variant": "dark"
+      },
+      {
+        "type": "ae2:color",
+        "color": "fluix",
+        "variant": "medium"
+      },
+      {
+        "type": "ae2:color",
+        "color": "fluix",
+        "variant": "bright"
+      },
+      {
+        "type": "ae2:color",
+        "color": "fluix",
+        "variant": "medium_bright"
+      }
+    ]
   }
 }

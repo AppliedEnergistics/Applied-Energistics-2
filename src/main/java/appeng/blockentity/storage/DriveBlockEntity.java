@@ -30,7 +30,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -39,7 +38,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.implementations.blockentities.IChestOrDrive;
 import appeng.api.inventories.InternalInventory;
@@ -54,9 +53,9 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
 import appeng.api.util.AECableType;
+import appeng.block.storage.DriveModelData;
 import appeng.blockentity.grid.AENetworkedInvBlockEntity;
 import appeng.blockentity.inventory.AppEngCellInventory;
-import appeng.client.render.model.DriveModelData;
 import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
@@ -175,17 +174,17 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
     protected void loadVisualState(CompoundTag data) {
         super.loadVisualState(data);
 
-        clientSideOnline = data.getBoolean("online");
+        clientSideOnline = data.getBooleanOr("online", false);
 
         for (int i = 0; i < getCellCount(); i++) {
             this.clientSideCellItems[i] = null;
             this.clientSideCellState[i] = CellState.ABSENT;
 
             var tagName = "cell" + i;
-            if (data.contains(tagName, Tag.TAG_COMPOUND)) {
-                var cellData = data.getCompound(tagName);
-                var id = ResourceLocation.parse(cellData.getString("id"));
-                var cellStateName = cellData.getString("state");
+            var cellData = data.getCompound(tagName).orElse(null);
+            if (cellData != null) {
+                var id = ResourceLocation.parse(cellData.getStringOr("id", ""));
+                var cellStateName = cellData.getStringOr("state", "");
 
                 clientSideCellItems[i] = BuiltInRegistries.ITEM.getOptional(id).orElse(null);
                 try {
@@ -264,7 +263,7 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
         this.isCached = false;
-        this.priority = data.getInt("priority");
+        this.priority = data.getIntOr("priority", 0);
     }
 
     @Override

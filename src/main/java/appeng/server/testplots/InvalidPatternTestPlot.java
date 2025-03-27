@@ -36,7 +36,7 @@ public class InvalidPatternTestPlot {
         });
 
         builder.test(helper -> {
-            var chest = (SkyStoneChestBlockEntity) helper.getBlockEntity(BlockPos.ZERO);
+            var chest = helper.getBlockEntity(BlockPos.ZERO, SkyStoneChestBlockEntity.class);
             var pattern = chest.getInternalInventory().getStackInSlot(0);
             helper.check(!pattern.isEmpty(), "pattern should be present");
 

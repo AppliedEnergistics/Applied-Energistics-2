@@ -1,19 +1,20 @@
 package appeng.server.services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.LongArrayTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -27,15 +28,23 @@ import appeng.core.AppEng;
  */
 class ChunkLoadState extends SavedData {
 
-    public static final String NAME = AppEng.MOD_ID + "_chunk_load_state";
+    private record ForcedChunk(int cx, int cz, List<BlockPos> blocks) {
+        public static final Codec<ForcedChunk> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+                Codec.INT.fieldOf("cx").forGetter(ForcedChunk::cx),
+                Codec.INT.fieldOf("cz").forGetter(ForcedChunk::cz),
+                BlockPos.CODEC.listOf().fieldOf("blocks").forGetter(ForcedChunk::blocks))
+                .apply(builder, ForcedChunk::new));
+    }
+
+    private static final SavedDataType<ChunkLoadState> TYPE = new SavedDataType<>(
+            AppEng.MOD_ID + "_chunk_load_state",
+            context -> new ChunkLoadState(context.levelOrThrow()),
+            context -> RecordCodecBuilder.create(builder -> builder.group(
+                    ForcedChunk.CODEC.listOf().fieldOf("forcedChunks").forGetter(ChunkLoadState::getForcedChunks))
+                    .apply(builder, data -> new ChunkLoadState(context.levelOrThrow(), data))));
 
     public static ChunkLoadState get(ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(
-                new SavedData.Factory<>(
-                        () -> new ChunkLoadState(level),
-                        (tag, provider) -> new ChunkLoadState(level, tag),
-                        null),
-                NAME);
+        return level.getDataStorage().computeIfAbsent(TYPE);
     }
 
     private final ServerLevel level;
@@ -45,39 +54,24 @@ class ChunkLoadState extends SavedData {
         this.level = level;
     }
 
-    private ChunkLoadState(ServerLevel level, CompoundTag tag) {
+    private ChunkLoadState(ServerLevel level, List<ForcedChunk> forcedChunks) {
         this(level);
-        var forcedChunks = tag.getList("forcedChunks", Tag.TAG_COMPOUND);
-        for (int i = 0; i < forcedChunks.size(); ++i) {
-            var forcedChunk = forcedChunks.getCompound(i);
-            var chunkPos = new ChunkPos(forcedChunk.getInt("cx"), forcedChunk.getInt("cz"));
 
-            var blockSet = new HashSet<BlockPos>();
-            for (long blockPos : forcedChunk.getLongArray("blocks")) {
-                blockSet.add(BlockPos.of(blockPos));
-            }
-
+        for (var forcedChunk : forcedChunks) {
+            var chunkPos = new ChunkPos(forcedChunk.cx, forcedChunk.cz);
+            var blockSet = new HashSet<>(forcedChunk.blocks);
             forceLoadedChunks.put(chunkPos.toLong(), blockSet);
         }
     }
 
-    @Override
-    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
-        var forcedChunks = new ListTag();
+    private List<ForcedChunk> getForcedChunks() {
+        var result = new ArrayList<ForcedChunk>(forceLoadedChunks.size());
         for (var entry : forceLoadedChunks.long2ObjectEntrySet()) {
-            var chunkPos = new ChunkPos(entry.getLongKey());
-
-            var forcedChunk = new CompoundTag();
-            forcedChunk.putInt("cx", chunkPos.x);
-            forcedChunk.putInt("cz", chunkPos.z);
-
-            var list = new LongArrayTag(entry.getValue().stream().map(BlockPos::asLong).toList());
-            forcedChunk.put("blocks", list);
-
-            forcedChunks.add(forcedChunk);
+            var cx = ChunkPos.getX(entry.getLongKey());
+            var cz = ChunkPos.getZ(entry.getLongKey());
+            result.add(new ForcedChunk(cx, cz, List.copyOf(entry.getValue())));
         }
-        tag.put("forcedChunks", forcedChunks);
-        return tag;
+        return result;
     }
 
     /**

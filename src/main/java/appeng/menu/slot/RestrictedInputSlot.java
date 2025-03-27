@@ -18,7 +18,6 @@
 
 package appeng.menu.slot;
 
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -38,9 +37,9 @@ import appeng.api.upgrades.Upgrades;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 import appeng.blockentity.misc.InscriberRecipes;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
-import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.EncodedPatternItem;
+import appeng.util.Icon;
 import appeng.util.Platform;
 
 /**
@@ -103,12 +102,8 @@ public class RestrictedInputSlot extends AppEngSlot {
         // TODO: might need to check for our own patterns in some cases
         switch (this.which) {
             case MOLECULAR_ASSEMBLER_PATTERN:
-                if (getLevel() instanceof ServerLevel serverLevel) {
-                    return PatternDetailsHelper.decodePattern(stack,
-                            serverLevel) instanceof IMolecularAssemblerSupportedPattern;
-                } else {
-                    return true;
-                }
+                return PatternDetailsHelper.decodePattern(stack,
+                        getLevel()) instanceof IMolecularAssemblerSupportedPattern;
             case ENCODED_PATTERN, PROVIDER_PATTERN:
                 return PatternDetailsHelper.isEncodedPattern(stack);
             case ENCODED_AE_PATTERN:
@@ -124,11 +119,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                     return true;
                 }
 
-                if (getLevel() instanceof ServerLevel serverLevel) {
-                    return InscriberRecipes.isValidOptionalIngredient(serverLevel, stack);
-                } else {
-                    return false;
-                }
+                return InscriberRecipes.isValidOptionalIngredient(getLevel(), stack);
 
             case INSCRIBER_INPUT:
                 return true;/*

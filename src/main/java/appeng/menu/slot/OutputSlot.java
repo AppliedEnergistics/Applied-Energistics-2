@@ -21,7 +21,7 @@ package appeng.menu.slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
-import appeng.client.gui.Icon;
+import appeng.util.Icon;
 
 public class OutputSlot extends AppEngSlot {
 

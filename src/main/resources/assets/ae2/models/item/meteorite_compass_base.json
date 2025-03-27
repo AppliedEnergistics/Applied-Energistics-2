@@ -3,7 +3,7 @@
   "parent": "block/block",
   "textures": {
     "0": "ae2:item/meteorite_compass",
-    "particle": "ae2:item/meteorite_compass"
+    "particle": "#0"
   },
   "elements": [
     {

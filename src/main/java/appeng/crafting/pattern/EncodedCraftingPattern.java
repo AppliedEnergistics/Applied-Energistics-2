@@ -23,6 +23,12 @@ public record EncodedCraftingPattern(
         boolean canSubstitute,
         boolean canSubstituteFluids) {
 
+    public EncodedCraftingPattern {
+        if (result.isEmpty()) {
+            throw new IllegalArgumentException("Cannot create an encoded crafting pattern with no output");
+        }
+    }
+
     public static final Codec<EncodedCraftingPattern> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             AECodecs.FAULT_TOLERANT_OPTIONAL_ITEMSTACK_CODEC.listOf().fieldOf("inputs")
                     .forGetter(EncodedCraftingPattern::inputs),

@@ -34,7 +34,7 @@ import me.shedaniel.rei.api.common.util.EntryIngredients;
 
 import appeng.recipes.handlers.InscriberRecipe;
 
-class InscriberRecipeDisplay implements Display {
+public class InscriberRecipeDisplay implements Display {
     private final RecipeHolder<InscriberRecipe> holder;
     private final List<EntryIngredient> inputs;
     private final List<EntryIngredient> outputs;
@@ -61,7 +61,7 @@ class InscriberRecipeDisplay implements Display {
 
     @Override
     public CategoryIdentifier<?> getCategoryIdentifier() {
-        return InscriberRecipeCategory.ID;
+        return CategoryIds.INSCRIBER;
     }
 
     @Override

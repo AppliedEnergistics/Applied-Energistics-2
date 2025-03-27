@@ -35,6 +35,7 @@ import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.core.network.clientbound.CraftingStatusPacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.menu.AEBaseMenu;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.IncrementalUpdateHelper;
@@ -44,7 +45,7 @@ import appeng.menu.me.common.IncrementalUpdateHelper;
  */
 public class CraftingCPUMenu extends AEBaseMenu {
 
-    private static final String ACTION_CANCEL_CRAFTING = "cancelCrafting";
+    private static final ClientActionKey<Void> ACTION_CANCEL_CRAFTING = new ClientActionKey<>("cancelCrafting");
     private static final String ACTION_TOGGLE_SCHEDULING = "toggleScheduling";
 
     public static final MenuType<CraftingCPUMenu> TYPE = MenuTypeBuilder

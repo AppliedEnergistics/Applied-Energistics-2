@@ -18,23 +18,9 @@
 
 package appeng.parts.misc;
 
-import net.minecraft.resources.ResourceLocation;
-
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
-import appeng.parts.PartModel;
 
 public class InvertedToggleBusPart extends ToggleBusPart {
-    @PartModels
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId(
-            "part/inverted_toggle_bus_base");
-
-    public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_STATUS_OFF);
-    public static final PartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_STATUS_ON);
-    public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_STATUS_HAS_CHANNEL);
-
     public InvertedToggleBusPart(IPartItem<?> partItem) {
         super(partItem);
         this.getMainNode().setIdlePowerUsage(0.0);
@@ -47,16 +33,4 @@ public class InvertedToggleBusPart extends ToggleBusPart {
     protected boolean isEnabled() {
         return !super.isEnabled();
     }
-
-    @Override
-    public IPartModel getStaticModels() {
-        if (isEnabled() && this.isActive() && this.isPowered()) {
-            return MODELS_HAS_CHANNEL;
-        } else if (isEnabled() && this.isPowered()) {
-            return MODELS_ON;
-        } else {
-            return MODELS_OFF;
-        }
-    }
-
 }

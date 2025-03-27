@@ -28,7 +28,6 @@ import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -40,6 +39,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -89,7 +89,7 @@ class AECraftingPatternTest {
         builder.save(new RecipeOutput() {
             @Override
             public Advancement.Builder advancement() {
-                return Advancement.Builder.recipeAdvancement().parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT);
+                return Advancement.Builder.recipeAdvancement();
             }
 
             @Override
@@ -123,7 +123,7 @@ class AECraftingPatternTest {
 
         // Replace the diamond ID string with an unknown ID string
         assertEquals(1, RecursiveTagReplace.replace(encodedTag, "minecraft:torch", "minecraft:does_not_exist"));
-        var brokenPatternStack = ItemStack.parseOptional(registries, encodedTag);
+        var brokenPatternStack = ItemStack.parse(registries, encodedTag).get();
 
         assertNull(decode(encodedTag));
         assertThat(getExtraTooltip(brokenPatternStack)).containsExactly(
@@ -138,7 +138,8 @@ class AECraftingPatternTest {
 
     private List<String> getExtraTooltip(ItemStack stack) {
         var lines = new ArrayList<Component>();
-        stack.getItem().appendHoverText(stack, Item.TooltipContext.EMPTY, lines, TooltipFlag.ADVANCED);
+        stack.getItem().appendHoverText(stack, Item.TooltipContext.EMPTY, TooltipDisplay.DEFAULT, lines::add,
+                TooltipFlag.ADVANCED);
         return lines.stream().map(Component::getString).toList();
     }
 
@@ -167,7 +168,7 @@ class AECraftingPatternTest {
         when(level.recipeAccess()).thenReturn(recipeManager);
         when(recipeManager.recipeMap().byType(RecipeType.CRAFTING)).thenReturn(List.of(TEST_RECIPE));
 
-        var pattern = ItemStack.parseOptional(registries, tag);
+        var pattern = ItemStack.parse(registries, tag).get();
         var details = PatternDetailsHelper.decodePattern(AEItemKey.of(pattern), level);
         if (details == null) {
             return null;

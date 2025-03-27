@@ -33,9 +33,8 @@ import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.GrowthAcceleratorBlockEntity;
-import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
-import appeng.core.AppEngClient;
+import appeng.core.particles.ParticleTypes;
 import appeng.util.Platform;
 
 public class GrowthAcceleratorBlock extends AEBaseEntityBlock<GrowthAcceleratorBlockEntity> {
@@ -73,7 +72,7 @@ public class GrowthAcceleratorBlock extends AEBaseEntityBlock<GrowthAcceleratorB
 
         final GrowthAcceleratorBlockEntity cga = this.getBlockEntity(level, pos);
 
-        if (cga != null && cga.isPowered() && AppEngClient.instance().shouldAddParticles(r)) {
+        if (cga != null && cga.isPowered()) {
             final double d0 = r.nextFloat() - 0.5F;
             final double d1 = r.nextFloat() - 0.5F;
 

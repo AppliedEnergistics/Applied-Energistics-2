@@ -34,8 +34,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -45,6 +43,7 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 
@@ -60,6 +59,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 import appeng.core.localization.GuiText;
+import appeng.crafting.RecipeAccess;
 
 public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSupportedPattern {
     public static final int CRAFTING_GRID_DIMENSION = 3;
@@ -82,7 +82,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     @SuppressWarnings("unchecked")
     private final Map<Item, Boolean>[] isValidCache = new Map[9];
 
-    public AECraftingPattern(AEItemKey definition, ServerLevel level) {
+    public AECraftingPattern(AEItemKey definition, Level level) {
         this.definition = definition;
         var encodedPattern = definition.get(AEComponents.ENCODED_CRAFTING_PATTERN);
         if (encodedPattern == null) {
@@ -96,8 +96,8 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         this.sparseInputs = getCraftingInputs(encodedPattern.inputs());
 
         // Find recipe
-        this.recipeHolder = level.recipeAccess().byKey(encodedPattern.recipeId()).orElse(null);
-        if (recipeHolder == null || !(recipeHolder.value() instanceof CraftingRecipe)) {
+        this.recipeHolder = RecipeAccess.byKey(level, RecipeType.CRAFTING, encodedPattern.recipeId());
+        if (recipeHolder == null) {
             throw new IllegalArgumentException("Pattern references unknown recipe " + encodedPattern.recipeId());
         }
         this.recipe = (CraftingRecipe) recipeHolder.value();
@@ -554,7 +554,9 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         }
 
         if (flags.isAdvanced()) {
-            tooltip.addProperty(Component.literal("Recipe"), Component.literal(recipeHolder.id().toString()));
+            if (flags.isAdvanced()) {
+                tooltip.addRecipeId(recipeHolder.id());
+            }
         }
 
         return tooltip;
@@ -582,8 +584,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             }
 
             if (flags.isAdvanced()) {
-                tooltip.addProperty(Component.literal("Recipe"),
-                        Component.literal(encodedPattern.recipeId().toString()));
+                tooltip.addRecipeId(encodedPattern.recipeId());
             }
         }
 

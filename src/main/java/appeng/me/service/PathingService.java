@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.GridFlags;
@@ -191,8 +190,8 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         // Adding a node to the grid will restore its saved channel mode to the grid
         // in case of conflict (i.e. merging two grids with conflicting modes),
         // the more relaxed mode will win.
-        if (savedData.contains(TAG_CHANNEL_MODE, Tag.TAG_STRING)) {
-            var channelModeName = savedData.getString(TAG_CHANNEL_MODE);
+        if (savedData.contains(TAG_CHANNEL_MODE)) {
+            var channelModeName = savedData.getStringOr(TAG_CHANNEL_MODE, "");
             try {
                 var nodeChannelMode = ChannelMode.valueOf(channelModeName);
                 if (!this.channelModeLocked

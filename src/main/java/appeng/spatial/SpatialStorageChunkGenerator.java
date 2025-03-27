@@ -118,7 +118,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
                 mutPos.setZ(cz);
                 for (int cy = 0; cy < HEIGHT; cy++) {
                     mutPos.setY(cy);
-                    chunk.setBlockState(mutPos, defaultBlockState, false);
+                    chunk.setBlockState(mutPos, defaultBlockState);
                 }
             }
         }

@@ -3,32 +3,29 @@
   "parent": "block/block",
   "textures": {
     "wood": "ae2:block/crank",
-    "particle": "ae2:block/crank"
+    "particle": "#wood"
   },
   "elements": [
     {
-      "name": "Crank Shaft",
-      "from": [7, 7, 7],
-      "to": [9, 9, 13],
+      "from": [7, 3, 7],
+      "to": [9, 9, 9],
       "faces": {
-        "east": { "uv": [2, 8, 0, 14], "rotation": 90, "texture": "#wood" },
-        "south": { "uv": [12, 4, 14, 6], "texture": "#wood" },
-        "west": { "uv": [6, 8, 4, 14], "rotation": 270, "texture": "#wood" },
-        "up": { "uv": [4, 8, 2, 14], "texture": "#wood" },
-        "down": { "uv": [8, 8, 6, 14], "rotation": 180, "texture": "#wood" }
+        "north": { "uv": [2, 8, 4, 14], "texture": "#wood" },
+        "east": { "uv": [0, 8, 2, 14], "texture": "#wood" },
+        "south": { "uv": [6, 8, 8, 14], "texture": "#wood" },
+        "west": { "uv": [4, 8, 6, 14], "texture": "#wood" }
       }
     },
     {
-      "name": "Crank Handle",
-      "from": [7, 7, 5],
-      "to": [14, 9, 7],
+      "from": [7, 9, 7],
+      "to": [14, 11, 9],
       "faces": {
-        "north": { "uv": [3, 6, 10, 8], "rotation": 180, "texture": "#wood" },
-        "east": { "uv": [10, 4, 12, 6], "rotation": 90, "texture": "#wood" },
-        "south": { "uv": [8, 10, 15, 12], "texture": "#wood" },
-        "west": { "uv": [10, 6, 12, 8], "rotation": 270, "texture": "#wood" },
-        "up": { "uv": [3, 4, 10, 6], "texture": "#wood" },
-        "down": { "uv": [8, 8, 15, 10], "rotation": 180, "texture": "#wood" }
+        "north": { "uv": [8, 8, 15, 10], "texture": "#wood" },
+        "east": { "uv": [10, 4, 12, 6], "texture": "#wood" },
+        "south": { "uv": [3, 4, 10, 6], "texture": "#wood" },
+        "west": { "uv": [10, 6, 12, 8], "texture": "#wood" },
+        "up": { "uv": [3, 6, 10, 8], "texture": "#wood" },
+        "down": { "uv": [8, 10, 15, 12], "texture": "#wood" }
       }
     }
   ]

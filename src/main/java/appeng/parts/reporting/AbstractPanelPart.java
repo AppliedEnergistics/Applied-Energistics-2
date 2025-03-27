@@ -23,7 +23,6 @@ import net.minecraft.resources.ResourceLocation;
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
 
 /**
  * A very simple part for emitting light.
@@ -37,7 +36,6 @@ import appeng.items.parts.PartModels;
  */
 public abstract class AbstractPanelPart extends AbstractReportingPart {
 
-    @PartModels
     public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/monitor_base");
 
     public AbstractPanelPart(IPartItem<?> partItem) {

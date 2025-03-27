@@ -18,7 +18,6 @@
 
 package appeng.block;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
@@ -51,7 +50,6 @@ import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.items.tools.MemoryCardItem;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 /**
@@ -118,22 +116,6 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState,
             BlockEntityType<T> type) {
         return (BlockEntityTicker<T>) (level.isClientSide() ? clientTicker : serverTicker);
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        // Drop internal BE content
-        if (!level.isClientSide() && !newState.is(state.getBlock())) {
-            var be = this.getBlockEntity(level, pos);
-            if (be != null) {
-                var drops = new ArrayList<ItemStack>();
-                be.addAdditionalDrops(level, pos, drops);
-                Platform.spawnDrops(level, pos, drops);
-            }
-        }
-
-        // super will remove the TE, as it is not an instance of BlockContainer
-        super.onRemove(state, level, pos, newState, isMoving);
     }
 
     @Override

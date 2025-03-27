@@ -164,7 +164,7 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
         this.upgrades.readFromNBT(data, "upgrades", registries);
         this.configManager.readFromNBT(data, registries);
         // TODO 1.22: Remove compat with old format.
-        if ("NO".equals(data.getString("inscriber_buffer_size"))) {
+        if ("NO".equals(data.getStringOr("inscriber_buffer_size", ""))) {
             this.configManager.putSetting(Settings.INSCRIBER_INPUT_CAPACITY, InscriberInputCapacity.FOUR);
         }
 
@@ -214,7 +214,7 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
     protected void loadVisualState(CompoundTag data) {
         super.loadVisualState(data);
 
-        setSmash(data.getBoolean("smash"));
+        setSmash(data.getBooleanOr("smash", false));
     }
 
     @Override

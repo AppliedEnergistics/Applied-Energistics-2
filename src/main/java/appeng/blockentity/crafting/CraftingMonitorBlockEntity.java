@@ -30,7 +30,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.stacks.GenericStack;
@@ -67,9 +67,8 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
     @Override
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
-        if (data.contains("paintedColor")) {
-            this.paintedColor = AEColor.values()[data.getByte("paintedColor")];
-        }
+        int colorIndex = data.getByte("paintedColor").orElse((byte) 0);
+        this.paintedColor = AEColor.fromOrdinal(colorIndex);
     }
 
     @Override

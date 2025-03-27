@@ -33,7 +33,7 @@ import net.minecraft.world.phys.Vec3;
 
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
-import appeng.client.render.cablebus.CableBusRenderState;
+import appeng.block.networking.CableBusRenderState;
 
 public class NullCableBusContainer implements ICableBusContainer {
 
@@ -69,6 +69,10 @@ public class NullCableBusContainer implements ICableBusContainer {
 
     @Override
     public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
+    }
+
+    @Override
+    public void onRedstoneLevelMayHaveChanged() {
     }
 
     @Override

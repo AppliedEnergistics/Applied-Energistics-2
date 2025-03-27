@@ -38,6 +38,14 @@ sourceSets {
             srcDir 'src/generated/resources'
         }
     }
+    client {
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+    }
+    test {
+        compileClasspath += client.output
+        runtimeClasspath += client.output
+    }
     buildtools
 }
 
@@ -50,6 +58,7 @@ configurations {
     configurations.runtimeClasspath.extendsFrom(guideExportOnly)
 
     runtimeClasspath.extendsFrom localRuntimeOnly
+    clientRuntimeClasspath.extendsFrom localRuntimeOnly
 }
 
 import appengbuild.*
@@ -59,10 +68,12 @@ dependencies {
     // Used for the guide export
     guideExportOnly("org.bytedeco:ffmpeg-platform:${ffmpeg_version}")
 
-    implementation("org.appliedenergistics:guideme:${guideme_version}")
+    implementation("org.appliedenergistics:guideme:${guideme_version}") // TODO: TEMP
+    clientImplementation("org.appliedenergistics:guideme:${guideme_version}")
 
     // compile against provided APIs
-    compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
+    clientCompileOnly "dev.emi:emi-neoforge:${emi_version}:api"
+    clientCompileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     compileOnly "mcp.mobius.waila:wthit-api:neo-${project.wthit_version}"
     compileOnly "curse.maven:jade-324717:${project.jade_file_id}"
@@ -126,9 +137,12 @@ dependencies {
 neoForge {
     validateAccessTransformers = true
 
+    addModdingDependenciesTo sourceSets.client
+
     mods {
         ae2 {
             sourceSet sourceSets.main
+            sourceSet sourceSets.client
         }
     }
 
@@ -143,6 +157,7 @@ neoForge {
         client {
             client()
             systemProperty('appeng.tests', 'true')
+            sourceSet = sourceSets.client
         }
         gametestWorld {
             client()
@@ -150,11 +165,13 @@ neoForge {
                     '--username', 'AE2Dev', '--quickPlaySingleplayer', 'GametestWorld'
             ]
             systemProperty('appeng.tests', 'true')
+            sourceSet = sourceSets.client
         }
         guide {
             client()
 
             systemProperty('guideme.showOnStartup', 'ae2:guide')
+            sourceSet = sourceSets.client
         }
         server {
             server()
@@ -167,11 +184,14 @@ neoForge {
                     '--output', file('src/generated/resources/').absolutePath,
                     '--existing', file('src/main/resources').absolutePath
             ]
+            sourceSet = sourceSets.client
         }
         guideexport {
             client()
-            systemProperty('appeng.runGuideExportAndExit', 'true')
-            systemProperty('appeng.guideExportFolder', file('build/guide').absolutePath)
+            systemProperty('guideme.exportOnStartupAndExit', 'ae2:guide')
+            systemProperty('guideme.exportDestination.ae2.guide', file('build/guide').absolutePath)
+            systemProperty('guideme.exportModVersion.ae2.guide', project.version)
+            sourceSet = sourceSets.client
         }
         // Use to run the tests
         gametest {
@@ -215,6 +235,7 @@ sourceSets.main.resources.srcDir generateModMetadata
 neoForge.ideSyncTask generateModMetadata
 
 tasks.named('jar', Jar) {
+    from(sourceSets.client.output)
     exclude '/.cache'
     from('guidebook') {
         into 'assets/ae2/ae2guide'
@@ -225,6 +246,7 @@ static void publicApiIncludePatterns(PatternFilterable spec) {
     spec.exclude "**/*Internal.*"
     spec.exclude "**/*Internal\$*.*"
     spec.include "appeng/api/**"
+    spec.include "appeng/client/api/**"
 }
 
 tasks.named('javadoc', Javadoc) {

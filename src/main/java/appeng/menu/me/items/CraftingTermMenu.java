@@ -54,6 +54,7 @@ import appeng.helpers.ICraftingGridMenu;
 import appeng.helpers.InventoryAction;
 import appeng.me.storage.LinkStatusRespectingInventory;
 import appeng.menu.SlotSemantics;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
@@ -74,7 +75,7 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
             .create(CraftingTermMenu::new, ITerminalHost.class)
             .build("craftingterm");
 
-    private static final String ACTION_CLEAR_TO_PLAYER = "clearToPlayer";
+    private static final ClientActionKey<Void> ACTION_CLEAR_TO_PLAYER = new ClientActionKey<>("clearToPlayer");
 
     private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots = new CraftingMatrixSlot[9];
@@ -213,7 +214,7 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
         // Otherwise recipes that need 4x<item> will not correctly show missing items if at least 1 of <item> is in
         // the grid.
         var reservedGridAmounts = new Object2IntOpenHashMap<>();
-        var playerItems = getPlayerInventory().items;
+        var playerItems = getPlayerInventory().getNonEquipmentItems();
         var reservedPlayerItems = new int[playerItems.size()];
 
         for (var entry : ingredients.entrySet()) {

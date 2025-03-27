@@ -49,6 +49,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.config.YesNo;
 import appeng.api.implementations.parts.ICablePart;
@@ -66,9 +67,9 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
-import appeng.client.render.cablebus.CableBusRenderState;
-import appeng.client.render.cablebus.CableCoreType;
-import appeng.client.render.cablebus.FacadeRenderState;
+import appeng.block.networking.CableBusRenderState;
+import appeng.block.networking.CableCoreType;
+import appeng.block.networking.PartRenderState;
 import appeng.core.AELog;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiBlockEntity;
@@ -93,7 +94,6 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     private final CableBusStorage storage = new CableBusStorage();
     private YesNo hasRedstone = YesNo.UNDECIDED;
     private IPartHost tcb;
-    private boolean requiresDynamicRender = false;
     private boolean inWorld = false;
     // Cached collision shape for living entities
     private VoxelShape cachedCollisionShapeLiving;
@@ -102,6 +102,9 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     private VoxelShape cachedShape;
     // For which cable render mode the cached shape was created
     private CableRenderMode cachedShapeCableRenderMode;
+    // Used only on the client-side
+    @Nullable
+    private Object partRendererCache;
 
     public CableBusContainer(IPartHost host) {
         this.tcb = host;
@@ -291,13 +294,12 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
     private void updateAfterPartChange(Direction side) {
         this.invalidateShapes();
-        this.updateDynamicRender();
         this.updateConnections();
         this.markForUpdate();
         this.markForSave();
         this.partChanged();
         getBlockEntity().invalidateCapabilities();
-
+        this.partRendererCache = null;
         updateNeighborShapeOnSide(side);
     }
 
@@ -342,11 +344,6 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     @Override
     public void clearContainer() {
         throw new UnsupportedOperationException("Now that is silly!");
-    }
-
-    @Override
-    public boolean isBlocked(Direction side) {
-        return this.tcb.isBlocked(side);
     }
 
     @Override
@@ -481,23 +478,13 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         this.hasRedstone = te.getLevel().hasNeighborSignal(te.getBlockPos()) ? YesNo.YES : YesNo.NO;
     }
 
-    private void updateDynamicRender() {
-        this.requiresDynamicRender = false;
-        for (Direction s : Direction.values()) {
-            final IPart p = this.getPart(s);
-            if (p != null) {
-                this.setRequiresDynamicRender(this.isRequiresDynamicRender() || p.requireDynamicRender());
-            }
-        }
-    }
-
     public void updateConnections() {
         var center = this.storage.getCenter();
         if (center != null) {
             var sides = EnumSet.allOf(Direction.class);
 
             for (var s : Direction.values()) {
-                if (this.getPart(s) != null || this.isBlocked(s)) {
+                if (this.getPart(s) != null) {
                     sides.remove(s);
                 }
             }
@@ -660,9 +647,18 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
+    public void onRedstoneLevelMayHaveChanged() {
         this.hasRedstone = YesNo.UNDECIDED;
+        for (var s : Platform.DIRECTIONS_WITH_NULL) {
+            var part = this.getPart(s);
+            if (part != null) {
+                part.onRedstoneLevelMayHaveChanged();
+            }
+        }
+    }
 
+    @Override
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         for (var s : Platform.DIRECTIONS_WITH_NULL) {
             var part = this.getPart(s);
             if (part != null) {
@@ -823,7 +819,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         invalidateShapes();
 
         if (data.contains("hasRedstone")) {
-            this.hasRedstone = YesNo.values()[data.getInt("hasRedstone")];
+            this.hasRedstone = YesNo.values()[data.getIntOr("hasRedstone", 0)];
         }
 
         for (var side : Platform.DIRECTIONS_WITH_NULL) {
@@ -843,7 +839,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     private boolean loadPart(Direction side, CompoundTag data, HolderLookup.Provider registries) {
-        var itemId = ResourceLocation.parse(data.getString("id"));
+        var itemId = ResourceLocation.parse(data.getStringOr("id", ""));
         var partItem = IPartItem.byId(itemId);
         if (partItem == null) {
             AELog.warn("Ignoring persisted part with non-part-item %s", itemId);
@@ -911,14 +907,6 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return false;
     }
 
-    public boolean isRequiresDynamicRender() {
-        return this.requiresDynamicRender;
-    }
-
-    private void setRequiresDynamicRender(boolean requiresDynamicRender) {
-        this.requiresDynamicRender = requiresDynamicRender;
-    }
-
     @Override
     public CableBusRenderState getRenderState() {
         final CablePart cable = (CablePart) this.storage.getCenter();
@@ -971,20 +959,20 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         }
 
         // Determine attachments and facades
-        for (var side : Direction.values()) {
-            final FacadeRenderState facadeState = this.getFacadeRenderState(side);
+        for (var side : IPart.ATTACHMENT_POINTS) {
+            renderState.setFacade(side, getFacadeRenderState(side));
 
-            if (facadeState != null) {
-                renderState.getFacades().put(side, facadeState);
-            }
-
-            final IPart part = this.getPart(side);
+            var part = this.getPart(side);
 
             if (part == null) {
                 continue;
             }
 
-            renderState.getPartModelData().put(side, part.getModelData());
+            var builder = ModelData.builder();
+            part.collectModelData(builder);
+            var partModelData = builder.build();
+
+            renderState.getAttachments().put(side, new PartRenderState(part.getPartItem(), partModelData));
 
             // This will add the part's bounding boxes to the render state, which is
             // required for facades
@@ -1002,25 +990,18 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             if (length > 0 && length <= 8) {
                 renderState.getAttachmentConnections().put(side, length);
             }
-
-            renderState.getAttachments().put(side, part.getStaticModels());
         }
 
         return renderState;
     }
 
-    private FacadeRenderState getFacadeRenderState(Direction side) {
+    @Nullable
+    private BlockState getFacadeRenderState(Direction side) {
         // Store the "masqueraded" itemstack for the given side, if there is a facade
-        final IFacadePart facade = this.storage.getFacade(side);
+        var facade = this.storage.getFacade(side);
 
         if (facade != null) {
-            final BlockState blockState = facade.getBlockState();
-
-            Level level = getBlockEntity().getLevel();
-            if (blockState != null && level != null) {
-                return new FacadeRenderState(blockState,
-                        !facade.getBlockState().isSolidRender());
-            }
+            return facade.getBlockState();
         }
 
         return null;
@@ -1110,5 +1091,18 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                 }
             });
         }
+    }
+
+    @Nullable
+    public <T> T getPartRendererCache(Class<T> cacheClass) {
+        try {
+            return cacheClass.cast(partRendererCache);
+        } catch (ClassCastException ignored) {
+            return null;
+        }
+    }
+
+    public void setPartRendererCache(Object partRendererCache) {
+        this.partRendererCache = partRendererCache;
     }
 }

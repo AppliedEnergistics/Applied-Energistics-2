@@ -21,14 +21,13 @@ public final class RecursiveTagReplace {
 
     public static int replace(CompoundTag compoundTag, String from, String to) {
         int found = 0;
-        for (var key : compoundTag.getAllKeys()) {
-            var child = compoundTag.get(key);
-            if (child instanceof StringTag stringChild && stringChild.getAsString().equals(from)) {
-                compoundTag.put(key, StringTag.valueOf(to));
+        for (var entry : compoundTag.entrySet()) {
+            if (entry.getValue() instanceof StringTag(String value) && value.equals(from)) {
+                compoundTag.put(entry.getKey(), StringTag.valueOf(to));
                 found++;
-            } else if (child instanceof CompoundTag compoundChild) {
+            } else if (entry.getValue() instanceof CompoundTag compoundChild) {
                 found += replace(compoundChild, from, to);
-            } else if (child instanceof ListTag listChild) {
+            } else if (entry.getValue() instanceof ListTag listChild) {
                 found += replace(listChild, from, to);
             }
         }
@@ -39,7 +38,7 @@ public final class RecursiveTagReplace {
         int found = 0;
         for (int i = 0; i < listTag.size(); i++) {
             var child = listTag.get(i);
-            if (child instanceof StringTag stringChild && stringChild.getAsString().equals(from)) {
+            if (child instanceof StringTag(String value) && value.equals(from)) {
                 listTag.set(i, StringTag.valueOf(to));
                 found++;
             } else if (child instanceof CompoundTag compoundChild) {

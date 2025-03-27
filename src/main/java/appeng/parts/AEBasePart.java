@@ -35,7 +35,6 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -47,6 +46,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 
@@ -71,6 +71,7 @@ import appeng.api.util.AEColor;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.items.tools.MemoryCardItem;
+import appeng.parts.automation.PartModelData;
 import appeng.util.IDebugExportable;
 import appeng.util.InteractionUtil;
 import appeng.util.JsonStreamUtil;
@@ -125,7 +126,7 @@ public abstract class AEBasePart
         return this.host;
     }
 
-    protected AEColor getColor() {
+    public AEColor getColor() {
         if (this.host == null) {
             return AEColor.TRANSPARENT;
         }
@@ -195,14 +196,12 @@ public abstract class AEBasePart
 
         if (data.contains("customName")) {
             try {
-                this.customName = Component.Serializer.fromJson(data.getString("customName"), registries);
+                this.customName = Component.Serializer.fromJson(data.getStringOr("customName", ""), registries);
             } catch (Exception ignored) {
             }
         }
 
-        if (data.contains("visual", Tag.TAG_COMPOUND)) {
-            readVisualStateFromNBT(data.getCompound("visual"));
-        }
+        data.getCompound("visual").ifPresent(this::readVisualStateFromNBT);
     }
 
     @Override
@@ -265,8 +264,8 @@ public abstract class AEBasePart
     @MustBeInvokedByOverriders
     @Override
     public void readVisualStateFromNBT(CompoundTag data) {
-        this.clientSidePowered = data.getBoolean("powered");
-        this.clientSideMissingChannel = data.getBoolean("missingChannel");
+        this.clientSidePowered = data.getBooleanOr("powered", false);
+        this.clientSideMissingChannel = data.getBooleanOr("missingChannel", false);
     }
 
     @Override
@@ -481,6 +480,21 @@ public abstract class AEBasePart
      */
     protected boolean shouldSendMissingChannelStateToClient() {
         return true;
+    }
+
+    @Nullable
+    @Override
+    public void collectModelData(ModelData.Builder builder) {
+        PartModelData.StatusIndicatorState state;
+        if (isActive() && isPowered()) {
+            state = PartModelData.StatusIndicatorState.ACTIVE;
+        } else if (isPowered()) {
+            state = PartModelData.StatusIndicatorState.POWERED;
+        } else {
+            state = PartModelData.StatusIndicatorState.UNPOWERED;
+        }
+
+        builder.with(PartModelData.STATUS_INDICATOR, state);
     }
 
     @Override

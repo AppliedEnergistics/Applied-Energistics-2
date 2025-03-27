@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
@@ -92,31 +91,27 @@ public class ExecutingCraftingJob {
 
     ExecutingCraftingJob(CompoundTag data, HolderLookup.Provider registries,
             CraftingDifferenceListener postCraftingDifference, CraftingCpuLogic cpu) {
-        this.link = new CraftingLink(data.getCompound(NBT_LINK), cpu.cluster);
+        this.link = new CraftingLink(data.getCompoundOrEmpty(NBT_LINK), cpu.cluster);
         IGrid grid = cpu.cluster.getGrid();
         if (grid != null) {
             ((CraftingService) grid.getCraftingService()).addLink(link);
         }
 
-        this.finalOutput = GenericStack.readTag(registries, data.getCompound(NBT_FINAL_OUTPUT));
-        this.remainingAmount = data.getLong(NBT_REMAINING_AMOUNT);
+        this.finalOutput = GenericStack.readTag(registries, data.getCompoundOrEmpty(NBT_FINAL_OUTPUT));
+        this.remainingAmount = data.getLongOr(NBT_REMAINING_AMOUNT, 0);
         this.waitingFor = new ListCraftingInventory(postCraftingDifference::onCraftingDifference);
-        this.waitingFor.readFromNBT(data.getList(NBT_WAITING_FOR, Tag.TAG_COMPOUND), registries);
-        this.timeTracker = new ElapsedTimeTracker(data.getCompound(NBT_TIME_TRACKER));
-        if (data.contains(NBT_PLAYER_ID, Tag.TAG_INT)) {
-            this.playerId = data.getInt(NBT_PLAYER_ID);
-        } else {
-            this.playerId = null;
-        }
+        this.waitingFor.readFromNBT(data.getListOrEmpty(NBT_WAITING_FOR), registries);
+        this.timeTracker = new ElapsedTimeTracker(data.getCompoundOrEmpty(NBT_TIME_TRACKER));
+        this.playerId = data.getInt(NBT_PLAYER_ID).orElse(null);
 
-        ListTag tasksTag = data.getList(NBT_TASKS, Tag.TAG_COMPOUND);
+        ListTag tasksTag = data.getListOrEmpty(NBT_TASKS);
         for (int i = 0; i < tasksTag.size(); ++i) {
-            final CompoundTag item = tasksTag.getCompound(i);
+            final CompoundTag item = tasksTag.getCompoundOrEmpty(i);
             var pattern = AEItemKey.fromTag(registries, item);
             var details = PatternDetailsHelper.decodePattern(pattern, cpu.cluster.getLevel());
             if (details != null) {
                 final TaskProgress tp = new TaskProgress();
-                tp.value = item.getLong(NBT_CRAFTING_PROGRESS);
+                tp.value = item.getLongOr(NBT_CRAFTING_PROGRESS, 0);
                 this.tasks.put(details, tp);
             }
         }

@@ -25,7 +25,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
@@ -81,20 +80,6 @@ public abstract class QuantumBaseBlock extends AEBaseEntityBlock<QuantumBridgeBl
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (newState.getBlock() == state.getBlock()) {
-            return; // Just a block state change
-        }
-
-        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(level, pos);
-        if (bridge != null) {
-            bridge.breakClusterOnRemove();
-        }
-
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
-
-    @Override
     @Nullable
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         var fluidState = context.getLevel().getFluidState(context.getClickedPos());
@@ -119,6 +104,7 @@ public abstract class QuantumBaseBlock extends AEBaseEntityBlock<QuantumBridgeBl
         var bridge = this.getBlockEntity(level, pos);
         if (bridge != null) {
             bridge.updateMultiBlock(neighborPos);
+            bridge.requestModelDataUpdate(); // Adjacency is encoded in model data
         }
 
         return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);

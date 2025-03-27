@@ -10,19 +10,18 @@
     "AnvilMenuMixin",
     "EnchantmentHelperMixin",
     "ItemEntityMixin",
-    "tests.StructureUtilsMixin",
+    "tests.TestInstanceBlockEntityMixin",
     "tests.TestCommandMixin",
     "StructureTemplateMixin"
   ],
   "client": [
-    "AbstractContainerScreenMixin",
-    "GuiGraphicsMixin",
-    "WrappedGenericStackTooltipModIdMixin",
-    "PickColorMixin",
-    "TextureAtlasMixin",
-    "PonderWorldMixin",
-    "VariantDeserializerMixin",
-    "RecipeUpdateMixin"
+    "client.AbstractContainerScreenMixin",
+    "client.GuiGraphicsMixin",
+    "client.WrappedGenericStackTooltipModIdMixin",
+    "client.PickColorMixin",
+    "client.TextureAtlasMixin",
+    "client.PonderWorldMixin",
+    "client.PartModelLoaderMixin"
   ],
   "server": [],
   "injectors": {

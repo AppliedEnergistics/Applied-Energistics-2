@@ -1,6 +1,6 @@
 package appeng.items.tools.fluix;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -8,6 +8,7 @@ import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
@@ -27,7 +28,8 @@ public class FluixHoeItem extends HoeItem implements IntrinsicEnchantItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> tooltipComponents,
             TooltipFlag isAdvanced) {
         intrinsicEnchantment.appendHoverText(context, tooltipComponents);
     }

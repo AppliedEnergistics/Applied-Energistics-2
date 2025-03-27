@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.MenuType;
 
@@ -44,16 +43,12 @@ import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
 import appeng.api.util.IConfigManagerBuilder;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.helpers.MultiCraftingTracker;
-import appeng.items.parts.PartModels;
 import appeng.menu.implementations.IOBusMenu;
-import appeng.parts.PartModel;
 import appeng.util.prioritylist.DefaultPriorityList;
 
 /**
@@ -61,21 +56,6 @@ import appeng.util.prioritylist.DefaultPriorityList;
  * API.
  */
 public class ExportBusPart extends IOBusPart implements ICraftingRequester {
-
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/export_bus_base");
-
-    @PartModels
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/export_bus_off"));
-
-    @PartModels
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/export_bus_on"));
-
-    @PartModels
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/export_bus_has_channel"));
-
     private final MultiCraftingTracker craftingTracker;
     private int nextSlot = 0;
     @Nullable
@@ -98,7 +78,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
     public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
         super.readFromNBT(extra, registries);
         this.craftingTracker.readFromNBT(extra);
-        this.nextSlot = extra.getInt("nextSlot");
+        this.nextSlot = extra.getIntOr("nextSlot", 0);
     }
 
     @Override
@@ -262,16 +242,5 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
         bch.addBox(5, 5, 14, 11, 11, 15);
         bch.addBox(6, 6, 15, 10, 10, 16);
         bch.addBox(6, 6, 11, 10, 10, 12);
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        if (this.isActive() && this.isPowered()) {
-            return MODELS_HAS_CHANNEL;
-        } else if (this.isPowered()) {
-            return MODELS_ON;
-        } else {
-            return MODELS_OFF;
-        }
     }
 }

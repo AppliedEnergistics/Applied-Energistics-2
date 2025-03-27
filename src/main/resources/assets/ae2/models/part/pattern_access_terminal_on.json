@@ -5,6 +5,7 @@
     "lightsDark": "ae2:part/pattern_access_terminal_dark",
     "particle": "#lightsMedium"
   },
+  "render_type": "minecraft:cutout",
   "elements": [
     {
       "from": [2, 2, 0],

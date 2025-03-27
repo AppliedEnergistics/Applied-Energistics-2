@@ -45,7 +45,7 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
     @Override
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
-        tank.readFromNBT(registries, data.getCompound("tank"));
+        tank.readFromNBT(registries, data.getCompoundOrEmpty("tank"));
     }
 
     public boolean onPlayerUse(Player player, InteractionHand hand) {

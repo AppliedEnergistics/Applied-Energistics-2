@@ -4,7 +4,8 @@
       "model": "ae2:block/crafting/unit"
     },
     "formed=true": {
-      "model": "ae2:block/crafting/unit_formed"
+      "type": "ae2:crafting_cube",
+      "unit_type": "unit"
     }
   }
 }

@@ -31,7 +31,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -47,11 +47,11 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.util.AECableType;
-import appeng.client.render.cablebus.P2PTunnelFrequencyModelData;
 import appeng.core.AEConfig;
 import appeng.items.tools.MemoryCardItem;
 import appeng.me.service.P2PService;
 import appeng.parts.AEBasePart;
+import appeng.parts.automation.PartModelData;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
@@ -110,8 +110,8 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
     @Override
     public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.readFromNBT(data, registries);
-        this.setOutput(data.getBoolean("output"));
-        this.freq = data.getShort("freq");
+        this.setOutput(data.getBooleanOr("output", false));
+        this.freq = data.getShortOr("freq", (short) 0);
     }
 
     @Override
@@ -341,15 +341,15 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
     }
 
     @Override
-    public ModelData getModelData() {
+    public void collectModelData(ModelData.Builder builder) {
+        super.collectModelData(builder);
+
         long ret = Short.toUnsignedLong(this.getFrequency());
 
         if (this.isActive() && this.isPowered()) {
             ret |= 0x10000L;
         }
 
-        return ModelData.builder()
-                .with(P2PTunnelFrequencyModelData.FREQUENCY, ret)
-                .build();
+        builder.with(PartModelData.P2P_FREQUENCY, ret);
     }
 }

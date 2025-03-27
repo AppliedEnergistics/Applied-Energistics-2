@@ -1,7 +1,0 @@
-{
-  "ae2:model": "ae2:block/crafting/16k_storage_formed",
-  "loader": "ae2:builtin",
-  "textures": {
-    "particle": "ae2:block/transparent"
-  }
-}

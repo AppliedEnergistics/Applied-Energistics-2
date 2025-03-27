@@ -1,114 +1,138 @@
 {
   "variants": {
     "facing=down,spin=0": {
-      "model": "ae2:block/drive",
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
       "x": 90
     },
     "facing=down,spin=1": {
-      "ae2:z": 270,
-      "model": "ae2:block/drive",
-      "x": 90
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "x": 90,
+      "z": 270
     },
     "facing=down,spin=2": {
-      "ae2:z": 180,
-      "model": "ae2:block/drive",
-      "x": 90
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "x": 90,
+      "z": 180
     },
     "facing=down,spin=3": {
-      "ae2:z": 90,
-      "model": "ae2:block/drive",
-      "x": 90
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "x": 90,
+      "z": 90
     },
     "facing=east,spin=0": {
-      "model": "ae2:block/drive",
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
       "y": 90
     },
     "facing=east,spin=1": {
-      "ae2:z": 270,
-      "model": "ae2:block/drive",
-      "y": 90
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "y": 90,
+      "z": 270
     },
     "facing=east,spin=2": {
-      "ae2:z": 180,
-      "model": "ae2:block/drive",
-      "y": 90
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "y": 90,
+      "z": 180
     },
     "facing=east,spin=3": {
-      "ae2:z": 90,
-      "model": "ae2:block/drive",
-      "y": 90
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "y": 90,
+      "z": 90
     },
     "facing=north,spin=0": {
-      "model": "ae2:block/drive"
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=north,spin=1": {
-      "ae2:z": 270,
-      "model": "ae2:block/drive"
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "z": 270
     },
     "facing=north,spin=2": {
-      "ae2:z": 180,
-      "model": "ae2:block/drive"
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "z": 180
     },
     "facing=north,spin=3": {
-      "ae2:z": 90,
-      "model": "ae2:block/drive"
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "z": 90
     },
     "facing=south,spin=0": {
-      "model": "ae2:block/drive",
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
       "y": 180
     },
     "facing=south,spin=1": {
-      "ae2:z": 90,
-      "model": "ae2:block/drive",
-      "y": 180
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "y": 180,
+      "z": 90
     },
     "facing=south,spin=2": {
-      "ae2:z": 180,
-      "model": "ae2:block/drive",
-      "y": 180
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "y": 180,
+      "z": 180
     },
     "facing=south,spin=3": {
-      "ae2:z": 270,
-      "model": "ae2:block/drive",
-      "y": 180
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "y": 180,
+      "z": 270
     },
     "facing=up,spin=0": {
-      "ae2:z": 180,
-      "model": "ae2:block/drive",
-      "x": 270
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "x": 270,
+      "z": 180
     },
     "facing=up,spin=1": {
-      "ae2:z": 90,
-      "model": "ae2:block/drive",
-      "x": 270
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "x": 270,
+      "z": 90
     },
     "facing=up,spin=2": {
-      "model": "ae2:block/drive",
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
       "x": 270
     },
     "facing=up,spin=3": {
-      "ae2:z": 270,
-      "model": "ae2:block/drive",
-      "x": 270
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "x": 270,
+      "z": 270
     },
     "facing=west,spin=0": {
-      "model": "ae2:block/drive",
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
       "y": 270
     },
     "facing=west,spin=1": {
-      "ae2:z": 270,
-      "model": "ae2:block/drive",
-      "y": 270
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "y": 270,
+      "z": 270
     },
     "facing=west,spin=2": {
-      "ae2:z": 180,
-      "model": "ae2:block/drive",
-      "y": 270
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "y": 270,
+      "z": 180
     },
     "facing=west,spin=3": {
-      "ae2:z": 90,
-      "model": "ae2:block/drive",
-      "y": 270
+      "type": "ae2:drive",
+      "model": "ae2:drive_base",
+      "y": 270,
+      "z": 90
     }
   }
 }

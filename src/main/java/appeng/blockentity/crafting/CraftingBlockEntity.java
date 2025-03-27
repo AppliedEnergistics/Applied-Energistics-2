@@ -36,7 +36,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
@@ -181,7 +181,7 @@ public class CraftingBlockEntity extends AENetworkedBlockEntity
     @Override
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
-        this.setCoreBlock(data.getBoolean("core"));
+        this.setCoreBlock(data.getBooleanOr("core", false));
         if (this.isCoreBlock()) {
             if (this.cluster != null) {
                 this.cluster.readFromNBT(data, registries);
@@ -353,5 +353,12 @@ public class CraftingBlockEntity extends AENetworkedBlockEntity
         } else {
             return NullConfigManager.INSTANCE;
         }
+    }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos blockPos, BlockState blockState) {
+        super.preRemoveSideEffects(blockPos, blockState);
+
+        breakCluster();
     }
 }

@@ -89,7 +89,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
         this.cm.readFromNBT(data, registries);
-        this.setStoredPower(data.getDouble("storedPower"));
+        this.setStoredPower(data.getDoubleOr("storedPower", 0.0));
     }
 
     public double getStorage() {

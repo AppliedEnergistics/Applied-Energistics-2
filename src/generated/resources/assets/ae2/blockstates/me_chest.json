@@ -2,6 +2,7 @@
   "multipart": [
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base"
       },
       "when": {
@@ -11,8 +12,9 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
-        "model": "ae2:block/me_chest_base"
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "z": 270
       },
       "when": {
         "facing": "north",
@@ -21,8 +23,9 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
-        "model": "ae2:block/me_chest_base"
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "z": 180
       },
       "when": {
         "facing": "north",
@@ -31,8 +34,9 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
-        "model": "ae2:block/me_chest_base"
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "z": 90
       },
       "when": {
         "facing": "north",
@@ -41,6 +45,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
         "y": 90
       },
@@ -51,9 +56,10 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
-        "y": 90
+        "y": 90,
+        "z": 270
       },
       "when": {
         "facing": "east",
@@ -62,9 +68,10 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
-        "y": 90
+        "y": 90,
+        "z": 180
       },
       "when": {
         "facing": "east",
@@ -73,9 +80,10 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
-        "y": 90
+        "y": 90,
+        "z": 90
       },
       "when": {
         "facing": "east",
@@ -84,6 +92,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
         "y": 180
       },
@@ -94,9 +103,10 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
-        "y": 180
+        "y": 180,
+        "z": 90
       },
       "when": {
         "facing": "south",
@@ -105,9 +115,10 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
-        "y": 180
+        "y": 180,
+        "z": 180
       },
       "when": {
         "facing": "south",
@@ -116,9 +127,10 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
-        "y": 180
+        "y": 180,
+        "z": 270
       },
       "when": {
         "facing": "south",
@@ -127,6 +139,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
         "y": 270
       },
@@ -137,9 +150,10 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
-        "y": 270
+        "y": 270,
+        "z": 270
       },
       "when": {
         "facing": "west",
@@ -148,9 +162,10 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
-        "y": 270
+        "y": 270,
+        "z": 180
       },
       "when": {
         "facing": "west",
@@ -159,9 +174,10 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
-        "y": 270
+        "y": 270,
+        "z": 90
       },
       "when": {
         "facing": "west",
@@ -170,9 +186,10 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
-        "x": 270
+        "x": 270,
+        "z": 180
       },
       "when": {
         "facing": "up",
@@ -181,9 +198,10 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
-        "x": 270
+        "x": 270,
+        "z": 90
       },
       "when": {
         "facing": "up",
@@ -192,6 +210,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
         "x": 270
       },
@@ -202,9 +221,10 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
-        "x": 270
+        "x": 270,
+        "z": 270
       },
       "when": {
         "facing": "up",
@@ -213,6 +233,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
         "x": 90
       },
@@ -223,9 +244,10 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
-        "x": 90
+        "x": 90,
+        "z": 270
       },
       "when": {
         "facing": "down",
@@ -234,9 +256,10 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
-        "x": 90
+        "x": 90,
+        "z": 180
       },
       "when": {
         "facing": "down",
@@ -245,9 +268,10 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_base",
-        "x": 90
+        "x": 90,
+        "z": 90
       },
       "when": {
         "facing": "down",
@@ -256,6 +280,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off"
       },
       "when": {
@@ -266,8 +291,9 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
-        "model": "ae2:block/me_chest_lights_off"
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "z": 270
       },
       "when": {
         "facing": "north",
@@ -277,8 +303,9 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
-        "model": "ae2:block/me_chest_lights_off"
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "z": 180
       },
       "when": {
         "facing": "north",
@@ -288,8 +315,9 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
-        "model": "ae2:block/me_chest_lights_off"
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "z": 90
       },
       "when": {
         "facing": "north",
@@ -299,6 +327,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
         "y": 90
       },
@@ -310,9 +339,10 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
-        "y": 90
+        "y": 90,
+        "z": 270
       },
       "when": {
         "facing": "east",
@@ -322,9 +352,10 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
-        "y": 90
+        "y": 90,
+        "z": 180
       },
       "when": {
         "facing": "east",
@@ -334,9 +365,10 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
-        "y": 90
+        "y": 90,
+        "z": 90
       },
       "when": {
         "facing": "east",
@@ -346,6 +378,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
         "y": 180
       },
@@ -357,9 +390,10 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
-        "y": 180
+        "y": 180,
+        "z": 90
       },
       "when": {
         "facing": "south",
@@ -369,9 +403,10 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
-        "y": 180
+        "y": 180,
+        "z": 180
       },
       "when": {
         "facing": "south",
@@ -381,9 +416,10 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
-        "y": 180
+        "y": 180,
+        "z": 270
       },
       "when": {
         "facing": "south",
@@ -393,6 +429,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
         "y": 270
       },
@@ -404,9 +441,10 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
-        "y": 270
+        "y": 270,
+        "z": 270
       },
       "when": {
         "facing": "west",
@@ -416,9 +454,10 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
-        "y": 270
+        "y": 270,
+        "z": 180
       },
       "when": {
         "facing": "west",
@@ -428,9 +467,10 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
-        "y": 270
+        "y": 270,
+        "z": 90
       },
       "when": {
         "facing": "west",
@@ -440,9 +480,10 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
-        "x": 270
+        "x": 270,
+        "z": 180
       },
       "when": {
         "facing": "up",
@@ -452,9 +493,10 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
-        "x": 270
+        "x": 270,
+        "z": 90
       },
       "when": {
         "facing": "up",
@@ -464,6 +506,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
         "x": 270
       },
@@ -475,9 +518,10 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
-        "x": 270
+        "x": 270,
+        "z": 270
       },
       "when": {
         "facing": "up",
@@ -487,6 +531,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
         "x": 90
       },
@@ -498,9 +543,10 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
-        "x": 90
+        "x": 90,
+        "z": 270
       },
       "when": {
         "facing": "down",
@@ -510,9 +556,10 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
-        "x": 90
+        "x": 90,
+        "z": 180
       },
       "when": {
         "facing": "down",
@@ -522,9 +569,10 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_off",
-        "x": 90
+        "x": 90,
+        "z": 90
       },
       "when": {
         "facing": "down",
@@ -534,6 +582,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on"
       },
       "when": {
@@ -544,8 +593,9 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
-        "model": "ae2:block/me_chest_lights_on"
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "z": 270
       },
       "when": {
         "facing": "north",
@@ -555,8 +605,9 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
-        "model": "ae2:block/me_chest_lights_on"
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "z": 180
       },
       "when": {
         "facing": "north",
@@ -566,8 +617,9 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
-        "model": "ae2:block/me_chest_lights_on"
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "z": 90
       },
       "when": {
         "facing": "north",
@@ -577,6 +629,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
         "y": 90
       },
@@ -588,9 +641,10 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
-        "y": 90
+        "y": 90,
+        "z": 270
       },
       "when": {
         "facing": "east",
@@ -600,9 +654,10 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
-        "y": 90
+        "y": 90,
+        "z": 180
       },
       "when": {
         "facing": "east",
@@ -612,9 +667,10 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
-        "y": 90
+        "y": 90,
+        "z": 90
       },
       "when": {
         "facing": "east",
@@ -624,6 +680,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
         "y": 180
       },
@@ -635,9 +692,10 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
-        "y": 180
+        "y": 180,
+        "z": 90
       },
       "when": {
         "facing": "south",
@@ -647,9 +705,10 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
-        "y": 180
+        "y": 180,
+        "z": 180
       },
       "when": {
         "facing": "south",
@@ -659,9 +718,10 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
-        "y": 180
+        "y": 180,
+        "z": 270
       },
       "when": {
         "facing": "south",
@@ -671,6 +731,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
         "y": 270
       },
@@ -682,9 +743,10 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
-        "y": 270
+        "y": 270,
+        "z": 270
       },
       "when": {
         "facing": "west",
@@ -694,9 +756,10 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
-        "y": 270
+        "y": 270,
+        "z": 180
       },
       "when": {
         "facing": "west",
@@ -706,9 +769,10 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
-        "y": 270
+        "y": 270,
+        "z": 90
       },
       "when": {
         "facing": "west",
@@ -718,9 +782,10 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
-        "x": 270
+        "x": 270,
+        "z": 180
       },
       "when": {
         "facing": "up",
@@ -730,9 +795,10 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
-        "x": 270
+        "x": 270,
+        "z": 90
       },
       "when": {
         "facing": "up",
@@ -742,6 +808,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
         "x": 270
       },
@@ -753,9 +820,10 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
-        "x": 270
+        "x": 270,
+        "z": 270
       },
       "when": {
         "facing": "up",
@@ -765,6 +833,7 @@
     },
     {
       "apply": {
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
         "x": 90
       },
@@ -776,9 +845,10 @@
     },
     {
       "apply": {
-        "ae2:z": 270,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
-        "x": 90
+        "x": 90,
+        "z": 270
       },
       "when": {
         "facing": "down",
@@ -788,9 +858,10 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
-        "x": 90
+        "x": 90,
+        "z": 180
       },
       "when": {
         "facing": "down",
@@ -800,9 +871,10 @@
     },
     {
       "apply": {
-        "ae2:z": 90,
+        "type": "ae2:spinnable_variant",
         "model": "ae2:block/me_chest_lights_on",
-        "x": 90
+        "x": 90,
+        "z": 90
       },
       "when": {
         "facing": "down",

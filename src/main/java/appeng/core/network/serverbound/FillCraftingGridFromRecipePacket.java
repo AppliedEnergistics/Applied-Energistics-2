@@ -237,7 +237,7 @@ public record FillCraftingGridFromRecipePacket(
 
     private ItemStack takeIngredientFromPlayer(ICraftingGridMenu cct, ServerPlayer player, Ingredient ingredient) {
         var playerInv = player.getInventory();
-        for (int i = 0; i < playerInv.items.size(); i++) {
+        for (int i = 0; i < playerInv.getNonEquipmentItems().size(); i++) {
             // Do not take ingredients out of locked slots
             if (cct.isPlayerInventorySlotLocked(i)) {
                 continue;
@@ -254,7 +254,7 @@ public record FillCraftingGridFromRecipePacket(
         return ItemStack.EMPTY;
     }
 
-    private NonNullList<Optional<Ingredient>> getDesiredIngredients(ServerPlayer player) {
+    private List<Optional<Ingredient>> getDesiredIngredients(ServerPlayer player) {
         // Try to retrieve the real recipe on the server-side
         if (this.recipeId != null) {
             var recipe = player.serverLevel().recipeAccess().byKey(this.recipeId).orElse(null);

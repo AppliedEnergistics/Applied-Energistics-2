@@ -4,11 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
@@ -16,10 +11,7 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
-import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.client.entry.renderer.EntryRenderer;
 import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
-import me.shedaniel.rei.api.client.gui.widgets.TooltipContext;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
@@ -77,25 +69,6 @@ public class EntropyRecipeDisplay implements Display {
 
     private static <T> EntryStack<T> makeConsumed(EntryStack<T> entryStack) {
         entryStack = entryStack.copy();
-
-        entryStack.tooltip(ItemModText.CONSUMED.text().withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
-        entryStack.withRenderer(new EntryRenderer<>() {
-            @Override
-            public void render(EntryStack<T> entry, GuiGraphics graphics, Rectangle bounds, int mouseX,
-                    int mouseY, float delta) {
-                var baseRenderer = entry.getDefinition().getRenderer();
-                baseRenderer.render(entry, graphics, bounds, mouseX, mouseY, delta);
-                graphics.blit(RenderType::guiTextured, ReiPlugin.TEXTURE, bounds.x, bounds.y, 0, 0,
-                        0, 52, 16, 16);
-            }
-
-            @Override
-            public @Nullable Tooltip getTooltip(EntryStack<T> entry, TooltipContext context) {
-                var baseRenderer = entry.getDefinition().getRenderer();
-                return baseRenderer.getTooltip(entry, context);
-            }
-        });
-
         return entryStack;
     }
 
@@ -127,7 +100,7 @@ public class EntropyRecipeDisplay implements Display {
 
     @Override
     public CategoryIdentifier<?> getCategoryIdentifier() {
-        return EntropyRecipeCategory.ID;
+        return CategoryIds.ENTROPY_MANIPULATOR;
     }
 
     @Override

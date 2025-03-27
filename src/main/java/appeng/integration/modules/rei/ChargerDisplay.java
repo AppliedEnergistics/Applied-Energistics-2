@@ -11,11 +11,9 @@ import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 
-import appeng.core.AppEng;
 import appeng.recipes.handlers.ChargerRecipe;
 
 public record ChargerDisplay(RecipeHolder<ChargerRecipe> holder) implements Display {
-    public static CategoryIdentifier<ChargerDisplay> ID = CategoryIdentifier.of(AppEng.makeId("charger"));
 
     @Override
     public List<EntryIngredient> getInputEntries() {
@@ -29,7 +27,7 @@ public record ChargerDisplay(RecipeHolder<ChargerRecipe> holder) implements Disp
 
     @Override
     public CategoryIdentifier<?> getCategoryIdentifier() {
-        return ID;
+        return CategoryIds.CHARGER;
     }
 
     @Override

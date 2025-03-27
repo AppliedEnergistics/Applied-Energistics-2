@@ -3,12 +3,7 @@ package appeng.core.network.clientbound;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-import appeng.client.render.effects.ParticleTypes;
-import appeng.core.AEConfig;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
 
@@ -39,17 +34,5 @@ public record LightningPacket(
         data.writeFloat((float) x);
         data.writeFloat((float) y);
         data.writeFloat((float) z);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void handleOnClient(Player player) {
-        try {
-            if (AEConfig.instance().isEnableEffects()) {
-                player.getCommandSenderWorld().addParticle(ParticleTypes.LIGHTNING, this.x, this.y, this.z, 0.0f, 0.0f,
-                        0.0f);
-            }
-        } catch (Exception ignored) {
-        }
     }
 }

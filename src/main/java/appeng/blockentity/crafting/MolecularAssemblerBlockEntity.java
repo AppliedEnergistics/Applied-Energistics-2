@@ -36,8 +36,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.config.Actionable;
@@ -61,14 +59,13 @@ import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkedInvBlockEntity;
-import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
-import appeng.core.network.clientbound.AssemblerAnimationPacket;
+import appeng.core.network.clientbound.MolecularAssemblerAnimationPacket;
 import appeng.crafting.CraftingEvent;
 import appeng.menu.AutoCraftingMenu;
 import appeng.util.inv.AppEngInternalInventory;
@@ -99,8 +96,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
     private boolean forcePlan = false;
     private boolean reboot = true;
 
-    @OnlyIn(Dist.CLIENT)
-    private AssemblerAnimationStatus animationStatus;
+    private MolecularAssemblerAnimationStatus animationStatus;
 
     public MolecularAssemblerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -247,18 +243,15 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
 
-        // Reset current state back to defaults
-        this.forcePlan = false;
-        this.myPattern = ItemStack.EMPTY;
         this.myPlan = null;
-
-        if (data.contains("myPlan")) {
-            var pattern = ItemStack.parseOptional(registries, data.getCompound("myPlan"));
-            if (!pattern.isEmpty()) {
-                this.forcePlan = true;
-                this.myPattern = pattern;
-                this.pushDirection = Direction.values()[data.getInt("pushDirection")];
-            }
+        this.myPattern = data.getCompound("myPlan")
+                .flatMap(t -> ItemStack.parse(registries, t))
+                .orElse(ItemStack.EMPTY);
+        if (!this.myPattern.isEmpty()) {
+            this.forcePlan = true;
+            this.pushDirection = Direction.values()[data.getIntOr("pushDirection", 0)];
+        } else {
+            this.forcePlan = false;
         }
 
         this.upgrades.readFromNBT(data, "upgrades", registries);
@@ -474,7 +467,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
                     PacketDistributor.sendToPlayersNear(node.getLevel(), null, worldPosition.getX(),
                             worldPosition.getY(),
                             worldPosition.getZ(), 32,
-                            new AssemblerAnimationPacket(this.worldPosition, (byte) speed, item));
+                            new MolecularAssemblerAnimationPacket(this.worldPosition, (byte) speed, item));
                 }
 
                 this.saveChanges();
@@ -577,14 +570,14 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
         return this.isPowered;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public void setAnimationStatus(@Nullable AssemblerAnimationStatus status) {
+    // Only used on client
+    public void setAnimationStatus(@Nullable MolecularAssemblerAnimationStatus status) {
         this.animationStatus = status;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    // Only used on client
     @Nullable
-    public AssemblerAnimationStatus getAnimationStatus() {
+    public MolecularAssemblerAnimationStatus getAnimationStatus() {
         return this.animationStatus;
     }
 

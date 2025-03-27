@@ -84,7 +84,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Serve
 
     void click(Player player) {
         if (!isClientSide()) {
-            final ItemStack hand = player.getInventory().getSelected();
+            final ItemStack hand = player.getInventory().getSelectedItem();
             this.who = player;
 
             if (hand.isEmpty()) {

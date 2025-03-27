@@ -58,7 +58,7 @@ public class ReplicatorCardItem extends AEBaseItem {
     }
 
     private int getReplications(ItemStack stack) {
-        return getTag(stack).getInt("r");
+        return getTag(stack).getIntOr("r", 0);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class ReplicatorCardItem extends AEBaseItem {
             CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> {
                 final int replications;
                 if (tag.contains("r")) {
-                    replications = (tag.getInt("r") + 1) % 4;
+                    replications = (tag.getIntOr("r", 0) + 1) % 4;
                 } else {
                     replications = 0;
                 }
@@ -123,14 +123,14 @@ public class ReplicatorCardItem extends AEBaseItem {
         } else {
             var ish = getTag(player.getItemInHand(hand));
             if (!ish.isEmpty()) {
-                final int src_x = ish.getInt("x");
-                final int src_y = ish.getInt("y");
-                final int src_z = ish.getInt("z");
-                final int src_side = ish.getInt("side");
-                final String worldId = ish.getString("w");
+                final int src_x = ish.getIntOr("x", 0);
+                final int src_y = ish.getIntOr("y", 0);
+                final int src_z = ish.getIntOr("z", 0);
+                final int src_side = ish.getIntOr("side", 0);
+                final String worldId = ish.getStringOr("w", "");
                 final Level src_w = level.getServer()
                         .getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(worldId)));
-                final int replications = ish.getInt("r") + 1;
+                final int replications = ish.getIntOr("r", 0) + 1;
 
                 var gh = GridHelper.getNodeHost(src_w, new BlockPos(src_x, src_y, src_z));
 

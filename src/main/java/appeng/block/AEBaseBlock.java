@@ -18,13 +18,19 @@
 
 package appeng.block;
 
+import java.util.function.Consumer;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -116,5 +122,9 @@ public abstract class AEBaseBlock extends Block implements IOrientableBlock {
         if (!WrenchHook.isDisassembling()) {
             super.spawnDestroyParticles(level, player, pos, state);
         }
+    }
+
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, Consumer<Component> tooltip,
+            TooltipFlag flag) {
     }
 }

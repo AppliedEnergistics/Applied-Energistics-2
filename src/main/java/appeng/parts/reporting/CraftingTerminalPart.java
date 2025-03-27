@@ -29,11 +29,8 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
 import appeng.menu.me.items.CraftingTermMenu;
-import appeng.parts.PartModel;
 import appeng.util.inv.AppEngInternalInventory;
 
 public class CraftingTerminalPart extends AbstractTerminalPart {
@@ -42,15 +39,6 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
      * A sub-inventory that contains crafting ingredients used in the crafting grid.
      */
     public static final ResourceLocation INV_CRAFTING = AppEng.makeId("crafting_terminal_crafting");
-
-    @PartModels
-    public static final ResourceLocation MODEL_OFF = AppEng.makeId("part/crafting_terminal_off");
-    @PartModels
-    public static final ResourceLocation MODEL_ON = AppEng.makeId("part/crafting_terminal_on");
-
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
 
     private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory(this, 9);
 
@@ -98,11 +86,6 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
         } else {
             return super.getSubInventory(id);
         }
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return this.selectModel(MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL);
     }
 
 }

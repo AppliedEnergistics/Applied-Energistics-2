@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "ae2:block/quartz_glass"
+      "type": "ae2:quartz_glass"
     }
   }
 }

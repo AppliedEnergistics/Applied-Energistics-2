@@ -153,8 +153,8 @@ public class EnergyCellBlockEntity extends AENetworkedBlockEntity implements IAE
     @Override
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
-        this.stored.setStored(data.getDouble("internalCurrentPower"));
-        this.neighborChangePending = data.getBoolean("neighborChangePending");
+        this.stored.setStored(data.getDoubleOr("internalCurrentPower", 0.0));
+        this.neighborChangePending = data.getBooleanOr("neighborChangePending", false);
     }
 
     @Override

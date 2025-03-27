@@ -30,12 +30,10 @@ import net.minecraft.world.item.Item;
 import appeng.api.ids.AEPartIds;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.PartModels;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.PartItem;
-import appeng.items.parts.PartModelsHelper;
 import appeng.parts.automation.AnnihilationPlanePart;
 import appeng.parts.automation.AnnihilationPlanePartItem;
 import appeng.parts.automation.EnergyLevelEmitterPart;
@@ -65,11 +63,11 @@ import appeng.parts.p2p.RedstoneP2PTunnelPart;
 import appeng.parts.reporting.ConversionMonitorPart;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.DarkPanelPart;
-import appeng.parts.reporting.ItemTerminalPart;
 import appeng.parts.reporting.PanelPart;
 import appeng.parts.reporting.PatternAccessTerminalPart;
 import appeng.parts.reporting.SemiDarkPanelPart;
 import appeng.parts.reporting.StorageMonitorPart;
+import appeng.parts.reporting.TerminalPart;
 import appeng.parts.storagebus.StorageBusPart;
 
 /**
@@ -100,7 +98,7 @@ public final class AEParts {
     public static final ItemDefinition<PartItem<FormationPlanePart>> FORMATION_PLANE = createPart("ME Formation Plane", AEPartIds.FORMATION_PLANE, FormationPlanePart.class, FormationPlanePart::new);
     public static final ItemDefinition<PartItem<PatternEncodingTerminalPart>> PATTERN_ENCODING_TERMINAL = createPart("ME Pattern Encoding Terminal", AEPartIds.PATTERN_ENCODING_TERMINAL, PatternEncodingTerminalPart.class, PatternEncodingTerminalPart::new);
     public static final ItemDefinition<PartItem<CraftingTerminalPart>> CRAFTING_TERMINAL = createPart("ME Crafting Terminal", AEPartIds.CRAFTING_TERMINAL, CraftingTerminalPart.class, CraftingTerminalPart::new);
-    public static final ItemDefinition<PartItem<ItemTerminalPart>> TERMINAL = createPart("ME Terminal", AEPartIds.TERMINAL, ItemTerminalPart.class, ItemTerminalPart::new);
+    public static final ItemDefinition<PartItem<TerminalPart>> TERMINAL = createPart("ME Terminal", AEPartIds.TERMINAL, TerminalPart.class, TerminalPart::new);
     public static final ItemDefinition<PartItem<StorageMonitorPart>> STORAGE_MONITOR = createPart("ME Storage Monitor", AEPartIds.STORAGE_MONITOR, StorageMonitorPart.class, StorageMonitorPart::new);
     public static final ItemDefinition<PartItem<ConversionMonitorPart>> CONVERSION_MONITOR = createPart("ME Conversion Monitor", AEPartIds.CONVERSION_MONITOR, ConversionMonitorPart.class, ConversionMonitorPart::new);
     public static final ItemDefinition<PartItem<PatternProviderPart>> PATTERN_PROVIDER = createPart("ME Pattern Provider", AEPartIds.PATTERN_PROVIDER, PatternProviderPart.class, PatternProviderPart::new);
@@ -121,7 +119,6 @@ public final class AEParts {
             Class<T> partClass,
             Function<IPartItem<T>, T> factory) {
 
-        PartModels.registerModels(PartModelsHelper.createModels(partClass));
         return item(englishName, id, props -> new PartItem<>(props, partClass, factory));
     }
 
@@ -131,7 +128,6 @@ public final class AEParts {
             Class<T> partClass,
             Function<Item.Properties, PartItem<T>> factory) {
 
-        PartModels.registerModels(PartModelsHelper.createModels(partClass));
         return item(englishName, id, factory);
     }
 
@@ -140,8 +136,6 @@ public final class AEParts {
             String idSuffix,
             Class<T> partClass,
             Function<ColoredPartItem<T>, T> factory) {
-
-        PartModels.registerModels(PartModelsHelper.createModels(partClass));
 
         var definition = new ColoredItemDefinition<ColoredPartItem<T>>();
         for (AEColor color : AEColor.values()) {

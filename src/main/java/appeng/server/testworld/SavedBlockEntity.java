@@ -22,10 +22,9 @@ public class SavedBlockEntity {
     public void save(BlockPos pos) {
         this.pos = pos;
         blockState = helper.getBlockState(pos);
-        var be = helper.getBlockEntity(pos);
+        var be = helper.getBlockEntity(pos, BlockEntity.class);
         if (be == null) {
-            helper.fail("No BlockEntity", pos);
-            return;
+            throw helper.assertionException(pos, "No BlockEntity");
         }
         data = be.saveWithId(helper.getLevel().registryAccess());
     }
@@ -37,8 +36,7 @@ public class SavedBlockEntity {
 
     public BlockEntity restore() {
         if (pos == null) {
-            helper.fail("No block entity was saved");
-            return null;
+            throw helper.assertionException("No block entity was saved");
         }
 
         helper.setBlock(BlockPos.ZERO, blockState);
@@ -48,8 +46,7 @@ public class SavedBlockEntity {
                 data,
                 helper.getLevel().registryAccess());
         if (be == null) {
-            helper.fail("Blockentity could not be restored", pos);
-            return null;
+            throw helper.assertionException(pos, "Blockentity could not be restored");
         }
         helper.getLevel().setBlockEntity(be);
         return be;

@@ -19,8 +19,8 @@
 package appeng.items.storage;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +31,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -57,12 +58,13 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
             TooltipFlag advancedTooltips) {
         var plotInfo = stack.get(AEComponents.SPATIAL_PLOT_INFO);
         if (plotInfo == null) {
-            lines.add(Tooltips.of(GuiText.Unformatted).withStyle(ChatFormatting.ITALIC));
-            lines.add(Tooltips.of(GuiText.SpatialCapacity, maxRegion, maxRegion, maxRegion));
+            lines.accept(Tooltips.of(GuiText.Unformatted).withStyle(ChatFormatting.ITALIC));
+            lines.accept(Tooltips.of(GuiText.SpatialCapacity, maxRegion, maxRegion, maxRegion));
             return;
         }
 
@@ -70,8 +72,8 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         // Try to make this a little more flavorful.
         String serialNumber = String.format(Locale.ROOT, "SP-%04d", plotInfo.id());
         var size = plotInfo.size();
-        lines.add(Tooltips.of(GuiText.SerialNumber, serialNumber));
-        lines.add(Tooltips.of(GuiText.StoredSize, size.getX(), size.getY(), size.getZ()));
+        lines.accept(Tooltips.of(GuiText.SerialNumber, serialNumber));
+        lines.accept(Tooltips.of(GuiText.StoredSize, size.getX(), size.getY(), size.getZ()));
     }
 
     @Override

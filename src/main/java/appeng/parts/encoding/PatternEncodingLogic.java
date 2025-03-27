@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -98,7 +97,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
 
     @Override
     public boolean isClientSide() {
-        return host.getServerLevel() == null;
+        return host.getLevel().isClientSide();
     }
 
     private void onEncodedInputChanged() {
@@ -111,11 +110,11 @@ public class PatternEncodingLogic implements InternalInventoryHost {
     }
 
     private void loadEncodedPattern(ItemStack pattern) {
-        if (pattern.isEmpty() || host.getServerLevel() == null) {
+        if (pattern.isEmpty()) {
             return;
         }
 
-        var details = PatternDetailsHelper.decodePattern(pattern, host.getServerLevel());
+        var details = PatternDetailsHelper.decodePattern(pattern, host.getLevel());
 
         if (details instanceof AECraftingPattern craftingPattern) {
             loadCraftingPattern(craftingPattern);
@@ -253,16 +252,16 @@ public class PatternEncodingLogic implements InternalInventoryHost {
         isLoading = true;
         try {
             try {
-                this.mode = EncodingMode.valueOf(data.getString("mode"));
+                this.mode = EncodingMode.valueOf(data.getStringOr("mode", ""));
             } catch (IllegalArgumentException ignored) {
                 this.mode = EncodingMode.CRAFTING;
             }
-            this.setSubstitution(data.getBoolean("substitute"));
-            this.setFluidSubstitution(data.getBoolean("substituteFluids"));
+            this.setSubstitution(data.getBooleanOr("substitute", false));
+            this.setFluidSubstitution(data.getBooleanOr("substituteFluids", false));
 
-            if (data.contains("stonecuttingRecipeId", Tag.TAG_STRING)) {
+            if (data.contains("stonecuttingRecipeId")) {
                 this.stonecuttingRecipeId = ResourceKey.create(Registries.RECIPE,
-                        ResourceLocation.parse(data.getString("stonecuttingRecipeId")));
+                        ResourceLocation.parse(data.getStringOr("stonecuttingRecipeId", "")));
             } else {
                 this.stonecuttingRecipeId = null;
             }
@@ -282,7 +281,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
         data.putBoolean("substitute", this.substitute);
         data.putBoolean("substituteFluids", this.substituteFluids);
         if (this.stonecuttingRecipeId != null) {
-            data.putString("stonecuttingRecipeId", this.stonecuttingRecipeId.toString());
+            data.putString("stonecuttingRecipeId", this.stonecuttingRecipeId.location().toString());
         }
         blankPatternInv.writeToNBT(data, "blankPattern", registries);
         encodedPatternInv.writeToNBT(data, "encodedPattern", registries);
@@ -292,7 +291,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
 
     private void fixCraftingRecipes() {
         // Do not do this on the client since the server will always sync the correct state to us anyway
-        if (isClientSide()) {
+        if (host.getLevel() == null || host.getLevel().isClientSide()) {
             return;
         }
 

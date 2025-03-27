@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -32,11 +33,14 @@ public class InitVillager {
 
     public static final ResourceLocation ID = AppEng.makeId("fluix_researcher");
 
+    public static final String NAME = "entity.minecraft.villager.ae2.fluix_researcher";
+
     public static PoiType POI_TYPE = new PoiType(
             Set.copyOf(AEBlocks.CHARGER.block().getStateDefinition().getPossibleStates()), 1, 1);
     public static final ResourceKey<PoiType> POI_KEY = ResourceKey.create(Registries.POINT_OF_INTEREST_TYPE, ID);
 
-    public static final VillagerProfession PROFESSION = new VillagerProfession(ID.toString(), e -> e.is(POI_KEY),
+    public static final VillagerProfession PROFESSION = new VillagerProfession(Component.translatable(NAME),
+            e -> e.is(POI_KEY),
             e -> e.is(POI_KEY), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_LIBRARIAN);
 
     public static final ResourceKey<LootTable> LOOT_TABLE_KEY = ResourceKey.create(Registries.LOOT_TABLE,
@@ -51,7 +55,7 @@ public class InitVillager {
     }
 
     public static void initTrades(VillagerTradesEvent event) {
-        if (!event.getType().name().equals(PROFESSION.name())) {
+        if (!event.getType().location().equals(ID)) {
             return;
         }
 

@@ -11,6 +11,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.Recipe;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -108,6 +110,11 @@ public class PatternDetailsTooltip {
 
     public void addProperty(Component name, Component value) {
         this.additionalProperties.add(new Property(name, value));
+    }
+
+    public void addRecipeId(ResourceKey<Recipe<?>> recipeId) {
+        this.additionalProperties.add(
+                new Property(GuiText.PatternTooltipRecipeId.text(), Component.literal(recipeId.location().toString())));
     }
 
     public void addProperty(Component description) {

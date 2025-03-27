@@ -20,8 +20,6 @@ package appeng.menu.slot;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.client.gui.me.common.ClientReadOnlySlot;
-
 /**
  * The crafting result slot in a pattern terminal.
  */

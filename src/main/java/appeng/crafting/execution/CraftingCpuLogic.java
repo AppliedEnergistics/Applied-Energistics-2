@@ -427,9 +427,9 @@ public class CraftingCpuLogic {
     }
 
     public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        this.inventory.readFromNBT(data.getList("inventory", 10), registries);
+        this.inventory.readFromNBT(data.getListOrEmpty("inventory"), registries);
         if (data.contains("job")) {
-            this.job = new ExecutingCraftingJob(data.getCompound("job"), registries, this::postChange, this);
+            this.job = new ExecutingCraftingJob(data.getCompoundOrEmpty("job"), registries, this::postChange, this);
             if (this.job.finalOutput == null) {
                 finishJob(false);
             } else {

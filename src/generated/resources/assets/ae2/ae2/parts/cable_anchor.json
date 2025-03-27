@@ -1,0 +1,7 @@
+{
+  "model": {
+    "type": "ae2:cable_anchor",
+    "model": "ae2:part/cable_anchor",
+    "short_model": "ae2:part/cable_anchor_short"
+  }
+}

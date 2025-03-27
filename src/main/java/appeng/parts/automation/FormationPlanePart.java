@@ -18,8 +18,6 @@
 
 package appeng.parts.automation;
 
-import java.util.List;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
@@ -31,7 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.behaviors.PlacementStrategy;
 import appeng.api.config.Actionable;
@@ -44,7 +42,6 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
@@ -55,7 +52,6 @@ import appeng.api.util.IConfigManagerBuilder;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IPriorityHost;
-import appeng.items.parts.PartModels;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.FormationPlaneMenu;
@@ -64,9 +60,6 @@ import appeng.util.ConfigInventory;
 import appeng.util.prioritylist.IPartitionList;
 
 public class FormationPlanePart extends UpgradeablePart implements IStorageProvider, IPriorityHost, IConfigInvHost {
-
-    private static final PlaneModels MODELS = new PlaneModels("part/formation_plane",
-            "part/formation_plane_on");
 
     private boolean wasOnline = false;
     private int priority = 0;
@@ -190,7 +183,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
     @Override
     public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.readFromNBT(data, registries);
-        this.priority = data.getInt("priority");
+        this.priority = data.getIntOr("priority", 0);
         this.config.readFromChildTag(data, "config", registries);
         remountStorage();
     }
@@ -290,21 +283,10 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
         return config;
     }
 
-    @PartModels
-    public static List<IPartModel> getModels() {
-        return MODELS.getModels();
-    }
-
     @Override
-    public IPartModel getStaticModels() {
-        return MODELS.getModel(this.isPowered(), this.isActive());
-    }
-
-    @Override
-    public ModelData getModelData() {
-        return ModelData.builder()
-                .with(PlaneModelData.CONNECTIONS, getConnections())
-                .build();
+    public void collectModelData(ModelData.Builder builder) {
+        super.collectModelData(builder);
+        builder.with(PartModelData.CONNECTIONS, getConnections());
     }
 
 }

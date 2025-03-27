@@ -63,7 +63,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
             final ItemStack itemStack = player.getItemInHand(hand);
             CustomData.update(DataComponents.CUSTOM_DATA, itemStack, tag -> {
                 if (tag.contains(MODE_TAG)) {
-                    final byte mode = tag.getByte("mode");
+                    final byte mode = tag.getByteOr("mode", (byte) 0);
                     tag.putByte(MODE_TAG, (byte) ((mode + 1) % CraterType.values().length));
                 } else {
                     tag.putByte(MODE_TAG, (byte) CraterType.NORMAL.ordinal());
@@ -83,7 +83,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
     private CraterType getCraterType(ItemStack stack) {
         var customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
         var tag = customData.copyTag();
-        return CraterType.values()[tag.getByte(MODE_TAG)];
+        return CraterType.values()[tag.getByteOr(MODE_TAG, (byte) 0)];
     }
 
     @Override

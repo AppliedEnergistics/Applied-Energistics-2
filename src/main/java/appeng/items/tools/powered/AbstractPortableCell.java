@@ -109,7 +109,7 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
 
         var playerInventory = player.getInventory();
         var disassemblyItems = StorageCellDisassemblyRecipe.getDisassemblyResult(serverLevel, stack.getItem());
-        if (disassemblyItems.isEmpty() || playerInventory.getSelected() != stack || stack.getCount() != 1) {
+        if (disassemblyItems.isEmpty() || playerInventory.getSelectedItem() != stack || stack.getCount() != 1) {
             return false;
         }
 
@@ -123,7 +123,7 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
             return true; // Prevents the UI from opening and overlaying the error message
         }
 
-        playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
+        playerInventory.setItem(playerInventory.getSelectedSlot(), ItemStack.EMPTY);
 
         double remainingEnergy = getAECurrentPower(stack);
         for (var recipeStack : disassemblyItems) {

@@ -92,9 +92,10 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public void onCaughtFire(BlockState state, Level level, BlockPos pos, @Nullable Direction direction,
+    public boolean onCaughtFire(BlockState state, Level level, BlockPos pos, @Nullable Direction direction,
             @Nullable LivingEntity igniter) {
         this.startFuse(level, pos, igniter);
+        return true;
     }
 
     public void startFuse(Level level, BlockPos pos, LivingEntity igniter) {

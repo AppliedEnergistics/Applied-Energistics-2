@@ -50,8 +50,7 @@ public class MultiCraftingTracker {
 
     public void readFromNBT(CompoundTag extra) {
         for (int x = 0; x < this.size; x++) {
-            final CompoundTag link = extra.getCompound("links-" + x);
-
+            var link = extra.getCompound("links-" + x).orElse(null);
             if (link != null && !link.isEmpty()) {
                 this.setLink(x, StorageHelper.loadCraftingLink(link, this.owner));
             }

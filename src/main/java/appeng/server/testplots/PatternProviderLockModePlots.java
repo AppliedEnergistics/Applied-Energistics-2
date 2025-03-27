@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.LockCraftingMode;
@@ -470,7 +471,7 @@ public final class PatternProviderLockModePlots {
     }
 
     private static PatternProviderLogicHost getHost(PlotTestHelper plotTestHelper) {
-        var be = plotTestHelper.getBlockEntity(BlockPos.ZERO);
+        var be = plotTestHelper.getBlockEntity(BlockPos.ZERO, BlockEntity.class);
         if (be instanceof PatternProviderBlockEntity host) {
             return host;
         }

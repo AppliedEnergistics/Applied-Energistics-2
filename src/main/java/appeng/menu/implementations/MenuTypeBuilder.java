@@ -132,13 +132,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
         return menu;
     }
 
-    private boolean open(Player player, MenuHostLocator locator, boolean fromSubMenu) {
-        if (!(player instanceof ServerPlayer)) {
-            // Cannot open menus on the client or for non-players
-            // FIXME logging?
-            return false;
-        }
-
+    private boolean open(ServerPlayer player, MenuHostLocator locator, boolean fromSubMenu) {
         var accessInterface = locator.locate(player, hostInterface);
 
         if (accessInterface == null) {
@@ -173,6 +167,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
         player.openMenu(new AppEngMenuProvider(), buffer -> {
             MenuLocators.writeToPacket(buffer, locator);
             buffer.writeBoolean(fromSubMenu);
+
             if (initialDataSerializer != null) {
                 initialDataSerializer.serializeInitialData(accessInterface, buffer);
             }

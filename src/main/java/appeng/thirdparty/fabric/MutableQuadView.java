@@ -235,8 +235,8 @@ public interface MutableQuadView extends QuadView {
     MutableQuadView nominalFace(@Nullable Direction face);
 
     /**
-     * Value functions identically to {@link BakedQuad#getTintIndex()} and is used by renderer / model builder in same
-     * way. Default value is -1.
+     * Value functions identically to {@link BakedQuad#tintIndex()} and is used by renderer / model builder in same way.
+     * Default value is -1.
      */
     MutableQuadView colorIndex(int colorIndex);
 

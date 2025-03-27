@@ -29,7 +29,6 @@ import appeng.api.behaviors.StackImportStrategy;
 import appeng.api.networking.IGrid;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.util.KeyTypeSelection;
 import appeng.api.util.KeyTypeSelectionHost;
 import appeng.core.definitions.AEItems;
@@ -86,17 +85,6 @@ public class ImportBusPart extends IOBusPart implements KeyTypeSelectionHost {
         bch.addBox(6, 6, 11, 10, 10, 13);
         bch.addBox(5, 5, 13, 11, 11, 14);
         bch.addBox(4, 4, 14, 12, 12, 16);
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        if (this.isActive() && this.isPowered()) {
-            return MODELS_HAS_CHANNEL;
-        } else if (this.isPowered()) {
-            return MODELS_ON;
-        } else {
-            return MODELS_OFF;
-        }
     }
 
     @Override

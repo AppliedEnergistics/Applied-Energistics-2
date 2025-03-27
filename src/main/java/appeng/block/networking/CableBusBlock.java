@@ -30,6 +30,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -52,6 +53,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
@@ -59,14 +61,13 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.networking.CableBusBlockEntity;
-import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
@@ -124,8 +125,9 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entityIn) {
-        this.cb(level, pos).onEntityCollision(entityIn);
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity,
+            InsideBlockEffectApplier effectApplier) {
+        this.cb(level, pos).onEntityCollision(entity);
     }
 
     @Override
@@ -168,8 +170,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData,
             Player player) {
         var playerRay = InteractionUtil.getPlayerRay(player, 100);
-
-        var collisionShape = state.getCollisionShape(level, pos);
+        var collisionShape = state.getShape(level, pos);
         var hitResult = collisionShape.clip(playerRay.getA(), playerRay.getB(), pos);
         if (hitResult == null) {
             return ItemStack.EMPTY;
@@ -187,7 +188,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         return ItemStack.EMPTY;
     }
 
-    ICableBusContainer cb(BlockGetter level, BlockPos pos) {
+    public ICableBusContainer cb(BlockGetter level, BlockPos pos) {
         final BlockEntity te = level.getBlockEntity(pos);
         ICableBusContainer out = null;
 
@@ -319,6 +320,14 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock,
+            @Nullable Orientation orientation, boolean movedByPiston) {
+        if (!level.isClientSide()) {
+            this.cb(level, pos).onRedstoneLevelMayHaveChanged();
+        }
+    }
+
+    @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
         this.cb(level, pos).onNeighborChanged(level, pos, neighbor);
     }
@@ -342,7 +351,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     public BlockState getAppearance(BlockState state, BlockAndTintGetter renderView, BlockPos pos, Direction side,
             @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         ModelData modelData;
-        if (renderView instanceof ServerLevel serverLevel) {
+        if (renderView instanceof ServerLevel) {
             // We're on the server, use BE directly
             BlockEntity be = renderView.getBlockEntity(pos);
             modelData = be != null ? be.getModelData() : ModelData.EMPTY;
@@ -350,20 +359,22 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
             modelData = renderView.getModelData(pos);
         }
 
-        CableBusRenderState cableBusRenderState = modelData.get(CableBusRenderState.PROPERTY);
+        var cableBusRenderState = modelData.get(CableBusRenderState.PROPERTY);
         if (cableBusRenderState != null) {
             var renderingFacadeDir = RENDERING_FACADE_DIRECTION.get();
-            var facades = cableBusRenderState.getFacades();
 
             if (side.getOpposite() != renderingFacadeDir) {
-                var facadeState = facades.get(side);
+                var facadeState = cableBusRenderState.getFacade(side);
                 if (facadeState != null) {
-                    return facadeState.getSourceBlock();
+                    return facadeState;
                 }
             }
 
-            if (renderingFacadeDir != null && facades.containsKey(renderingFacadeDir)) {
-                return facades.get(renderingFacadeDir).getSourceBlock();
+            if (renderingFacadeDir != null) {
+                var facadeState = cableBusRenderState.getFacade(renderingFacadeDir);
+                if (facadeState != null) {
+                    return facadeState;
+                }
             }
         }
         return state;

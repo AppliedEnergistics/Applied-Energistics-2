@@ -3,7 +3,6 @@
   "addition": "ae2:fluix_block",
   "base": "#ae2:quartz_shovel",
   "result": {
-    "count": 1,
     "id": "ae2:fluix_shovel"
   },
   "template": "ae2:fluix_upgrade_smithing_template"

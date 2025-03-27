@@ -64,7 +64,7 @@ import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
 /**
- * @see PatternAccessTermScreen
+ * @see appeng.client.gui.me.patternaccess.PatternAccessTermScreen
  */
 public class PatternAccessTermMenu extends AEBaseMenu implements LinkStatusAwareMenu {
 

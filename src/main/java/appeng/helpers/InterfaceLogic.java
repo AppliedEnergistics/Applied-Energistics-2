@@ -170,7 +170,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         this.storage.readFromChildTag(tag, "storage", registries);
         this.cm.readFromNBT(tag, registries);
         this.readConfig();
-        this.priority = tag.getInt("priority");
+        this.priority = tag.getIntOr("priority", 0);
     }
 
     private class Ticker implements IGridTickable {

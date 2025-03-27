@@ -2,7 +2,6 @@ package appeng.integration.modules.igtooltip.parts;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -22,16 +21,16 @@ public class AnnihilationPlaneDataProvider
     @Override
     public void buildTooltip(AnnihilationPlanePart plane, TooltipContext context, TooltipBuilder tooltip) {
         var serverData = context.serverData();
-        if (serverData.contains(TAG_ENCHANTMENTS, Tag.TAG_COMPOUND)) {
+        if (serverData.contains(TAG_ENCHANTMENTS)) {
             tooltip.addLine(InGameTooltip.EnchantedWith.text());
 
-            var enchantments = serverData.getCompound(TAG_ENCHANTMENTS);
+            var enchantments = serverData.getCompoundOrEmpty(TAG_ENCHANTMENTS);
             var enchantmentRegistry = context.registries().lookupOrThrow(Registries.ENCHANTMENT);
-            for (var enchantmentId : enchantments.getAllKeys()) {
+            for (var enchantmentId : enchantments.keySet()) {
                 var enchantment = enchantmentRegistry.get(ResourceKey.create(
                         Registries.ENCHANTMENT,
                         ResourceLocation.parse(enchantmentId)));
-                var level = enchantments.getInt(enchantmentId);
+                var level = enchantments.getIntOr(enchantmentId, 0);
                 enchantment.ifPresent(holder -> {
                     tooltip.addLine(Enchantment.getFullname(holder, level));
                 });

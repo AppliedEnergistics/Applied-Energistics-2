@@ -38,7 +38,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
@@ -151,7 +150,7 @@ public class SpatialStorageCommand implements ISubCommand {
             throw NO_LAST_TRANSITION.create();
         }
 
-        String command = getTeleportCommand(lastTransition.getWorldId(), lastTransition.getMin().offset(0, 1, 0));
+        String command = getTeleportCommand(lastTransition.worldId(), lastTransition.min().offset(0, 1, 0));
         runCommandFor(source, command);
     }
 
@@ -207,14 +206,14 @@ public class SpatialStorageCommand implements ISubCommand {
                     () -> PlayerMessages.LastTransition.text().withStyle(ChatFormatting.UNDERLINE, ChatFormatting.BOLD),
                     true);
 
-            String sourceWorldId = lastTransition.getWorldId().toString();
+            String sourceWorldId = lastTransition.worldId().toString();
             MutableComponent sourceLink = PlayerMessages.SourceLink.text(sourceWorldId,
-                    formatBlockPos(lastTransition.getMin(), ","), formatBlockPos(lastTransition.getMax(), ","));
-            String tpCommand = getTeleportCommand(lastTransition.getWorldId(), lastTransition.getMin().offset(0, 1, 0));
+                    formatBlockPos(lastTransition.min(), ","), formatBlockPos(lastTransition.max(), ","));
+            String tpCommand = getTeleportCommand(lastTransition.worldId(), lastTransition.min().offset(0, 1, 0));
             sourceLink.withStyle(makeCommandLink(tpCommand, PlayerMessages.ClickToTeleport.text()));
 
             sendKeyValuePair(source, PlayerMessages.Source.text(), sourceLink);
-            sendKeyValuePair(source, PlayerMessages.When.text(), lastTransition.getTimestamp().toString());
+            sendKeyValuePair(source, PlayerMessages.When.text(), lastTransition.timestamp().toString());
         } else {
             source.sendSuccess(() -> PlayerMessages.LastTransitionUnknown.text(), true);
         }
@@ -281,7 +280,7 @@ public class SpatialStorageCommand implements ISubCommand {
         plots.sort(Comparator.comparing((SpatialStoragePlot plot) -> {
             TransitionInfo lastTransition = plot.getLastTransition();
             if (lastTransition != null) {
-                return lastTransition.getTimestamp();
+                return lastTransition.timestamp();
             } else {
                 return Instant.MIN;
             }
@@ -312,8 +311,8 @@ public class SpatialStorageCommand implements ISubCommand {
 
     private static UnaryOperator<Style> makeCommandLink(String command, MutableComponent tooltip) {
         return style -> style.applyFormat(ChatFormatting.UNDERLINE)
-                .withClickEvent(new ClickEvent(Action.RUN_COMMAND, command))
-                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip));
+                .withClickEvent(new ClickEvent.RunCommand(command))
+                .withHoverEvent(new HoverEvent.ShowText(tooltip));
 
     }
 

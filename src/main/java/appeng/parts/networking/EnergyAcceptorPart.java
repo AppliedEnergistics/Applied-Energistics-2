@@ -26,19 +26,12 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnit;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.blockentity.powersink.IExternalPowerSink;
-import appeng.core.AppEng;
 import appeng.helpers.ForgeEnergyAdapter;
-import appeng.items.parts.PartModels;
 import appeng.parts.AEBasePart;
-import appeng.parts.PartModel;
 
 public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink {
-
-    @PartModels
-    private static final IPartModel MODELS = new PartModel(AppEng.makeId("part/energy_acceptor"));
     private ForgeEnergyAdapter forgeEnergyAdapter;
 
     public EnergyAcceptorPart(IPartItem<?> partItem) {
@@ -60,11 +53,6 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
     @Override
     public float getCableConnectionLength(AECableType cable) {
         return 2;
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return MODELS;
     }
 
     @Override

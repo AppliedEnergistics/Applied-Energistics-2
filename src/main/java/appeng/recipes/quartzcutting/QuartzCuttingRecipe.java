@@ -21,12 +21,16 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.util.RecipeMatcher;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
-import appeng.datagen.providers.tags.ConventionTags;
+import appeng.core.ConventionTags;
+import appeng.core.definitions.AEItems;
 
 public class QuartzCuttingRecipe implements CraftingRecipe {
     public static final MapCodec<QuartzCuttingRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
@@ -94,8 +98,17 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
     }
 
     @Override
+    public List<RecipeDisplay> display() {
+        return List.of(
+                new ShapelessCraftingRecipeDisplay(
+                        this.ingredients.stream().map(Ingredient::display).toList(),
+                        new SlotDisplay.ItemStackSlotDisplay(this.result),
+                        new SlotDisplay.ItemSlotDisplay(AEItems.CERTUS_QUARTZ_KNIFE.asItem())));
+    }
+
+    @Override
     public PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
+        return PlacementInfo.create(ingredients);
     }
 
     @Override

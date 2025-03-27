@@ -74,7 +74,8 @@ class GenericStackInvTest {
 
     @Test
     void testWritingAnEmptyInventoryProducesAnEmptyTag() {
-        assertEquals(0, inv.writeToTag(registryAccess).size());
+        var serializedTag = inv.writeToTag(registryAccess);
+        assertEquals(0, serializedTag.size());
     }
 
     /**
@@ -95,7 +96,7 @@ class GenericStackInvTest {
         var tag = new CompoundTag();
         inv.setStack(0, ONE_STICK);
         inv.writeToChildTag(tag, "child", registryAccess);
-        assertThat(tag.getAllKeys()).containsOnly("child");
+        assertThat(tag.keySet()).containsOnly("child");
     }
 
     /**

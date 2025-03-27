@@ -44,7 +44,7 @@ public class CondenserOutputDisplay implements Display {
 
     @Override
     public CategoryIdentifier<?> getCategoryIdentifier() {
-        return CondenserCategory.ID;
+        return CategoryIds.CONDENSER;
     }
 
     public CondenserOutput getType() {

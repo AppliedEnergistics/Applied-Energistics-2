@@ -71,7 +71,6 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
         "model": "ae2:block/wireless_access_point_chassis",
         "x": 270
       },
@@ -81,7 +80,6 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
         "model": "ae2:block/wireless_access_point_off",
         "x": 270
       },
@@ -92,7 +90,6 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
         "model": "ae2:block/wireless_access_point_status_off",
         "x": 270
       },
@@ -103,7 +100,6 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
         "model": "ae2:block/wireless_access_point_off",
         "x": 270
       },
@@ -114,7 +110,6 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
         "model": "ae2:block/wireless_access_point_status_has_channel",
         "x": 270
       },
@@ -125,7 +120,6 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
         "model": "ae2:block/wireless_access_point_on",
         "x": 270
       },
@@ -136,7 +130,6 @@
     },
     {
       "apply": {
-        "ae2:z": 180,
         "model": "ae2:block/wireless_access_point_status_has_channel",
         "x": 270
       },

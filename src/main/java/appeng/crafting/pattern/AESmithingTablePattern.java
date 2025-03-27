@@ -21,16 +21,13 @@ package appeng.crafting.pattern;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Holder;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -38,10 +35,9 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
-import net.minecraft.world.item.crafting.SmithingTransformRecipe;
-import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
@@ -53,6 +49,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 import appeng.core.localization.GuiText;
+import appeng.crafting.RecipeAccess;
 
 /**
  * Encodes patterns for the {@link net.minecraft.world.level.block.SmithingTableBlock}.
@@ -74,7 +71,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
     private final @Nullable IInput[] inputs;
     private final List<GenericStack> outputs;
 
-    public AESmithingTablePattern(AEItemKey definition, ServerLevel level) {
+    public AESmithingTablePattern(AEItemKey definition, Level level) {
         this.definition = definition;
 
         var encodedPattern = definition.get(AEComponents.ENCODED_SMITHING_TABLE_PATTERN);
@@ -91,11 +88,11 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
 
         // Find recipe
         this.recipeId = encodedPattern.recipeId();
-        this.recipe = level.recipeAccess().byKey(recipeId).map(holder -> (SmithingRecipe) holder.value())
-                .orElse(null);
-        if (recipe == null) {
+        var holder = RecipeAccess.byKey(level, RecipeType.SMITHING, recipeId);
+        if (holder == null) {
             throw new IllegalStateException("Smithing pattern references unknown recipe " + recipeId);
         }
+        this.recipe = holder.value();
 
         // Build frame and find output
         var testFrame = new SmithingRecipeInput(
@@ -113,23 +110,13 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         }
 
         // Find ingredients
-        Optional<Ingredient> templateIngredient, baseIngredient, additionIngredient;
-        if (this.recipe instanceof SmithingTransformRecipe r) {
-            templateIngredient = r.template;
-            baseIngredient = r.base;
-            additionIngredient = r.addition;
-        } else if (this.recipe instanceof SmithingTrimRecipe r) {
-            templateIngredient = r.template;
-            baseIngredient = r.base;
-            additionIngredient = r.addition;
-        } else {
-            throw new IllegalStateException(
-                    "Don't know how to process non-vanilla smithing recipe: " + this.recipe.getClass());
-        }
+        var templateIngredient = recipe.templateIngredient();
+        var baseIngredient = recipe.baseIngredient();
+        var additionIngredient = recipe.additionIngredient();
 
         this.inputs = new IInput[] {
                 templateIngredient.map(i -> new Input(template, i, TEMPLATE_CRAFTING_GRID_SLOT)).orElse(null),
-                baseIngredient.map(i -> new Input(base, i, BASE_CRAFTING_GRID_SLOT)).orElse(null),
+                new Input(base, baseIngredient, BASE_CRAFTING_GRID_SLOT),
                 additionIngredient.map(i -> new Input(addition, i, ADDITION_CRAFTING_GRID_SLOT)).orElse(null)
         };
         this.outputs = Collections.singletonList(GenericStack.fromItemStack(this.output));
@@ -287,8 +274,11 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
     public PatternDetailsTooltip getTooltip(Level level, TooltipFlag flags) {
         var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_CRAFTS);
         tooltip.addInputsAndOutputs(this);
+        if (canSubstitute) {
+            tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
+        }
         if (flags.isAdvanced()) {
-            tooltip.addProperty(Component.literal("Recipe"), Component.literal(recipeId.toString()));
+            tooltip.addRecipeId(recipeId);
         }
         return tooltip;
     }
@@ -307,8 +297,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
                 tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
             }
             if (flags.isAdvanced()) {
-                tooltip.addProperty(Component.literal("Recipe"),
-                        Component.literal(encodedPattern.recipeId().toString()));
+                tooltip.addRecipeId(encodedPattern.recipeId());
             }
         }
         return tooltip;

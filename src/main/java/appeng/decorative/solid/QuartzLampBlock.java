@@ -25,9 +25,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
-import appeng.core.AppEngClient;
+import appeng.core.particles.ParticleTypes;
 
 public class QuartzLampBlock extends QuartzGlassBlock {
 
@@ -42,14 +41,12 @@ public class QuartzLampBlock extends QuartzGlassBlock {
             return;
         }
 
-        if (AppEngClient.instance().shouldAddParticles(r)) {
-            final double d0 = (r.nextFloat() - 0.5F) * 0.96D;
-            final double d1 = (r.nextFloat() - 0.5F) * 0.96D;
-            final double d2 = (r.nextFloat() - 0.5F) * 0.96D;
+        final double d0 = (r.nextFloat() - 0.5F) * 0.96D;
+        final double d1 = (r.nextFloat() - 0.5F) * 0.96D;
+        final double d2 = (r.nextFloat() - 0.5F) * 0.96D;
 
-            level.addParticle(ParticleTypes.VIBRANT, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1,
-                    0.5 + pos.getZ() + d2, 0,
-                    0, 0);
-        }
+        level.addParticle(ParticleTypes.VIBRANT, false, true, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1,
+                0.5 + pos.getZ() + d2, 0,
+                0, 0);
     }
 }

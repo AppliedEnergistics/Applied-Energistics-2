@@ -18,9 +18,9 @@
 
 package appeng.items.storage;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -30,6 +30,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
@@ -73,7 +74,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     @Override
     public void appendHoverText(ItemStack stack,
             TooltipContext context,
-            List<Component> lines,
+            TooltipDisplay tooltipDisplay, Consumer<Component> lines,
             TooltipFlag advancedTooltips) {
         if (Platform.isClient()) {
             addCellInformationToTooltip(stack, lines);
@@ -149,7 +150,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
         }
 
         var playerInventory = player.getInventory();
-        if (playerInventory.getSelected() != stack) {
+        if (playerInventory.getSelectedItem() != stack) {
             return false;
         }
 
@@ -159,7 +160,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
             return false;
         }
 
-        playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
+        playerInventory.setItem(playerInventory.getSelectedSlot(), ItemStack.EMPTY);
 
         // Drop items from the recipe.
         for (var disassembledStack : disassembledStacks) {

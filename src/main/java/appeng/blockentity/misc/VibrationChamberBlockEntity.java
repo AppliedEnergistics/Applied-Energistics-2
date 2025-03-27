@@ -138,9 +138,9 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
         this.upgrades.readFromNBT(data, "upgrades", registries);
-        this.setRemainingFuelTicks(data.getDouble("burnTime"));
-        this.setFuelItemFuelTicks(data.getDouble("maxBurnTime"));
-        this.setCurrentFuelTicksPerTick(data.getInt("burnSpeed") * maxFuelTicksPerTick / 100.0);
+        this.setRemainingFuelTicks(data.getDoubleOr("burnTime", 0.0));
+        this.setFuelItemFuelTicks(data.getDoubleOr("maxBurnTime", 0.0));
+        this.setCurrentFuelTicksPerTick(data.getIntOr("burnSpeed", 0) * maxFuelTicksPerTick / 100.0);
     }
 
     @Override

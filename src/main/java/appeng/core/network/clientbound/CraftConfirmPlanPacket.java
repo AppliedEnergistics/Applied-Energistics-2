@@ -3,9 +3,6 @@ package appeng.core.network.clientbound;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
@@ -34,13 +31,5 @@ public record CraftConfirmPlanPacket(CraftingPlanSummary plan) implements Client
 
     public void write(RegistryFriendlyByteBuf data) {
         plan.write(data);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void handleOnClient(Player player) {
-        if (player.containerMenu instanceof CraftConfirmMenu menu) {
-            menu.setPlan(plan);
-        }
     }
 }

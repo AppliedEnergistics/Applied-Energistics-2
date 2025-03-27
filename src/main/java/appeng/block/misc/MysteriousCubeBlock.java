@@ -1,6 +1,6 @@
 package appeng.block.misc;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -36,21 +36,13 @@ public class MysteriousCubeBlock extends AEBaseEntityBlock<MysteriousCubeBlockEn
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (newState.getBlock() == state.getBlock()) {
-            return; // Just a block state change
-        }
-
-        super.onRemove(state, level, pos, newState, isMoving);
-
-        if (level instanceof ServerLevel serverLevel) {
-            ServerCompassService.notifyBlockChange(serverLevel, pos);
-        }
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean p_394545_) {
+        ServerCompassService.notifyBlockChange(level, pos);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip,
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, Consumer<Component> tooltip,
             TooltipFlag flag) {
-        tooltip.add(Tooltips.of(GuiText.MysteriousQuote, Tooltips.QUOTE_TEXT));
+        tooltip.accept(Tooltips.of(GuiText.MysteriousQuote, Tooltips.QUOTE_TEXT));
     }
 }

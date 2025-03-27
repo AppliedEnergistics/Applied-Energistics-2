@@ -293,7 +293,7 @@ public final class AutoCraftingTestPlots {
                     .thenIdle(1) // give time to push out job
                     .thenExecute(() -> {
                         for (var pos : inscriberPos) {
-                            var inscriber = (InscriberBlockEntity) helper.getBlockEntity(pos);
+                            var inscriber = helper.getBlockEntity(pos, InscriberBlockEntity.class);
                             helper.check(inscriber.getInternalInventory().getStackInSlot(2).getCount() == 5,
                                     "Inscriber should have 5 = 10/2 items", pos);
                         }
@@ -346,7 +346,7 @@ public final class AutoCraftingTestPlots {
                     .thenWaitUntil(craftingJob::tickUntilStarted)
                     .thenIdle(1) // give time to push out job
                     .thenExecute(() -> {
-                        var chest = (SkyStoneChestBlockEntity) helper.getBlockEntity(chestPos);
+                        var chest = helper.getBlockEntity(chestPos, SkyStoneChestBlockEntity.class);
                         var inv = chest.getInternalInventory();
                         for (int i = 0; i < 4; ++i) {
                             helper.check(inv.getStackInSlot(i).getCount() == 1,

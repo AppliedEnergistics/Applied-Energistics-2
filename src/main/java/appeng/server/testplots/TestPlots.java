@@ -165,7 +165,7 @@ public final class TestPlots {
                 }
             }
         } catch (Exception e) {
-            AELog.error("Failed to scan for plots: %s", e);
+            LOG.error("Failed to scan for plots.", e);
         }
 
         return plots;
@@ -511,7 +511,7 @@ public final class TestPlots {
 
         plot.test(helper -> {
             // Import bus should import nothing on its own
-            var inputChest = (ChestBlockEntity) helper.getBlockEntity(inputPos);
+            var inputChest = helper.getBlockEntity(inputPos, ChestBlockEntity.class);
             var grid = helper.getGrid(origin);
             Runnable assertNothingMoved = () -> {
                 helper.assertContainerContains(inputPos, Items.OAK_PLANKS);
@@ -648,7 +648,7 @@ public final class TestPlots {
         plot.creativeEnergyCell(origin.east().north().below());
 
         plot.test(helper -> helper.succeedWhen(() -> {
-            var meChest = (MEChestBlockEntity) helper.getBlockEntity(origin);
+            var meChest = helper.getBlockEntity(origin, MEChestBlockEntity.class);
             helper.assertContains(meChest.getInventory(), AEFluidKey.of(Fluids.WATER));
         }));
     }
@@ -669,7 +669,7 @@ public final class TestPlots {
         plot.hopper(origin.above(), Direction.DOWN, Items.STICK, Items.REDSTONE);
 
         plot.test(helper -> helper.succeedWhen(() -> {
-            var meChest = (MEChestBlockEntity) helper.getBlockEntity(origin);
+            var meChest = helper.getBlockEntity(origin, MEChestBlockEntity.class);
             helper.assertContains(meChest.getInventory(), AEItemKey.of(Items.REDSTONE));
             // The stick should still be in the hopper
             helper.assertContainerContains(origin.above(), Items.STICK);
@@ -711,43 +711,44 @@ public final class TestPlots {
 
                 ItemStack craftingPattern;
                 try {
+                    var resultItem = CraftingRecipeUtil.getResult(recipe);
                     var ingredients = CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe).stream()
                             .map(i -> {
                                 if (i.isEmpty()) {
                                     return ItemStack.EMPTY;
                                 } else {
-                                    return i.get().getValues().get(0).value();
+                                    return i.get().items().map(Holder::value).map(Item::getDefaultInstance).findFirst()
+                                            .orElse(ItemStack.EMPTY);
                                 }
                             }).toArray(ItemStack[]::new);
-                    // TODO 1.21.4 craftingPattern = PatternDetailsHelper.encodeCraftingPattern(
-                    // TODO 1.21.4 holder,
-                    // TODO 1.21.4 ingredients,
-                    // TODO 1.21.4 recipe.getResultItem(node.getLevel().registryAccess()),
-                    // TODO 1.21.4 false,
-                    // TODO 1.21.4 false);
 
-                    for (ItemStack ingredient : ingredients) {
+                    craftingPattern = PatternDetailsHelper.encodeCraftingPattern(
+                            holder,
+                            ingredients,
+                            resultItem,
+                            false,
+                            false);
+
+                    for (var ingredient : ingredients) {
                         var key = AEItemKey.of(ingredient);
                         if (key != null) {
                             neededIngredients.add(key);
                         }
                     }
-                    // TODO 1.21.4 if (!recipe.getResultItem(node.getLevel().registryAccess()).isEmpty()) {
-                    // TODO 1.21.4
-                    // providedResults.add(AEItemKey.of(recipe.getResultItem(node.getLevel().registryAccess())));
-                    // TODO 1.21.4 }
+                    if (!resultItem.isEmpty()) {
+                        providedResults.add(AEItemKey.of(resultItem));
+                    }
                 } catch (Exception e) {
-                    AELog.warn(e);
-                    continue;
+                    throw new RuntimeException(e);
                 }
 
-                // TODO 1.21.4 if (!current.getLogic().getPatternInv().addItems(craftingPattern).isEmpty()) {
-                // TODO 1.21.4 if (!patternProviders.hasNext()) {
-                // TODO 1.21.4 break;
-                // TODO 1.21.4 }
-                // TODO 1.21.4 current = patternProviders.next();
-                // TODO 1.21.4 current.getLogic().getPatternInv().addItems(craftingPattern);
-                // TODO 1.21.4 }
+                if (!current.getLogic().getPatternInv().addItems(craftingPattern).isEmpty()) {
+                    if (!patternProviders.hasNext()) {
+                        break;
+                    }
+                    current = patternProviders.next();
+                    current.getLogic().getPatternInv().addItems(craftingPattern);
+                }
             }
 
             // Add creative cells for anything that's not provided as a recipe result
@@ -813,7 +814,7 @@ public final class TestPlots {
                         var requesting = grid.getCraftingService().getRequestedAmount(output.what());
                         helper.check(requesting > 0, "not yet requesting items");
                         if (requesting != 1) {
-                            helper.fail("blocking mode failed, requesting: " + requesting);
+                            throw helper.assertionException("blocking mode failed, requesting: " + requesting);
                         }
                     })
                     .thenSucceed();
@@ -858,7 +859,7 @@ public final class TestPlots {
         plot.test(helper -> {
             helper.succeedWhen(() -> {
                 helper.assertBlockPresent(Blocks.CAULDRON, origin.east());
-                var tank = (SkyStoneTankBlockEntity) helper.getBlockEntity(origin.west());
+                var tank = helper.getBlockEntity(origin.west(), SkyStoneTankBlockEntity.class);
                 helper.check(tank.getTank().getFluidAmount() == AEFluidKey.AMOUNT_BUCKET,
                         "Less than a bucket stored");
                 helper.check(tank.getTank().getFluid().getFluid() == Fluids.LAVA,
@@ -917,12 +918,13 @@ public final class TestPlots {
 
         plot.test(helper -> {
             helper.runAfterDelay(40, () -> {
-                var molecularAssembler = (MolecularAssemblerBlockEntity) helper.getBlockEntity(molecularAssemblerPos);
+                var molecularAssembler = helper.getBlockEntity(molecularAssemblerPos,
+                        MolecularAssemblerBlockEntity.class);
                 var outputItem = molecularAssembler.getInternalInventory().getStackInSlot(9);
                 if (correctResult.matches(outputItem)) {
                     helper.succeed();
                 } else if (undamaged.matches(outputItem)) {
-                    helper.fail("created undamaged item");
+                    throw helper.assertionException("created undamaged item");
                 }
             });
         });

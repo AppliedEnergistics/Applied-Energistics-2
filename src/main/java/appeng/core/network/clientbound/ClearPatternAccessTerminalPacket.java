@@ -1,14 +1,9 @@
 
 package appeng.core.network.clientbound;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
 
@@ -34,13 +29,5 @@ public record ClearPatternAccessTerminalPacket() implements ClientboundPacket {
     }
 
     public void write(RegistryFriendlyByteBuf data) {
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void handleOnClient(Player player) {
-        if (Minecraft.getInstance().screen instanceof PatternAccessTermScreen<?> patternAccessTerminal) {
-            patternAccessTerminal.clear();
-        }
     }
 }

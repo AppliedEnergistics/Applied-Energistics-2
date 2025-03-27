@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.block.model.FaceBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 
+import appeng.client.render.CubeBuilder;
 import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
@@ -36,19 +37,19 @@ class CubeBuilderTest {
     void testFaceVertexOrdering(Direction side) {
         try (var mockedStatic = Mockito.mockStatic(RenderSystem.class)) {
             var output = new ArrayList<BakedQuad>();
-            var cb = new CubeBuilder(output);
+            var cb = new CubeBuilder(output::add);
             cb.setTexture(mock(TextureAtlasSprite.class));
             cb.addQuad(side, 0, 0, 0, 1, 1, 1);
 
             assertEquals(1, output.size());
             var quad = output.get(0);
-            assertEquals(side, quad.getDirection());
+            assertEquals(side, quad.direction());
 
             var fb = new FaceBakery();
-            var rewinded = quad.getVertices().clone();
+            var rewinded = quad.vertices().clone();
             fb.recalculateWinding(rewinded, side);
 
-            assertThat(getVertexOrder(rewinded, quad.getVertices()))
+            assertThat(getVertexOrder(rewinded, quad.vertices()))
                     .containsExactly(0, 1, 2, 3);
         }
     }

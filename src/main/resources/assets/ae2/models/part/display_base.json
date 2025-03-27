@@ -6,6 +6,7 @@
     "front": "ae2:part/monitor_front",
     "particle": "#front"
   },
+  "render_type": "minecraft:cutout",
   "elements": [
     {
       "from": [2, 2, 0],

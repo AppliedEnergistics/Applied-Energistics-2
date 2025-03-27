@@ -34,7 +34,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -193,9 +192,9 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
         this.configManager.readFromNBT(tag, registries);
         this.patternInventory.readFromNBT(tag, NBT_MEMORY_CARD_PATTERNS, registries);
-        this.priority = tag.getInt(NBT_PRIORITY);
+        this.priority = tag.getIntOr(NBT_PRIORITY, 0);
 
-        var unlockEventType = tag.getByte(NBT_UNLOCK_EVENT);
+        var unlockEventType = tag.getByteOr(NBT_UNLOCK_EVENT, (byte) 0);
         this.unlockEvent = switch (unlockEventType) {
             case 0 -> null;
             case 1 -> UnlockCraftingEvent.REDSTONE_POWER;
@@ -207,7 +206,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
             }
         };
         if (this.unlockEvent == UnlockCraftingEvent.RESULT) {
-            this.unlockStack = GenericStack.readTag(registries, tag.getCompound(NBT_UNLOCK_STACK));
+            this.unlockStack = GenericStack.readTag(registries, tag.getCompoundOrEmpty(NBT_UNLOCK_STACK));
             if (this.unlockStack == null) {
                 LOG.error("Could not load unlock stack for pattern provider from NBT: {}", tag);
             }
@@ -215,18 +214,18 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
             this.unlockStack = null;
         }
 
-        var sendListTag = tag.getList("sendList", Tag.TAG_COMPOUND);
+        var sendListTag = tag.getListOrEmpty("sendList");
         for (int i = 0; i < sendListTag.size(); ++i) {
-            var stack = GenericStack.readTag(registries, sendListTag.getCompound(i));
+            var stack = GenericStack.readTag(registries, sendListTag.getCompoundOrEmpty(i));
             if (stack != null) {
                 this.addToSendList(stack.what(), stack.amount());
             }
         }
         if (tag.contains("sendDirection")) {
-            sendDirection = Direction.from3DDataValue(tag.getByte("sendDirection"));
+            sendDirection = Direction.from3DDataValue(tag.getByteOr("sendDirection", (byte) 0));
         }
 
-        this.returnInv.readFromTag(tag.getList("returnInv", Tag.TAG_COMPOUND), registries);
+        this.returnInv.readFromTag(tag.getListOrEmpty("returnInv"), registries);
     }
 
     public IConfigManager getConfigManager() {

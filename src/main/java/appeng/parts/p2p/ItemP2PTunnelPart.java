@@ -18,39 +18,23 @@
 
 package appeng.parts.p2p;
 
-import java.util.List;
-
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKeyType;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
 
 public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart, IItemHandler> {
 
-    private static final P2PModels MODELS = new P2PModels(AppEng.makeId("part/p2p/p2p_tunnel_items"));
     private static final IItemHandler NULL_ITEM_HANDLER = new NullItemHandler();
-
-    @PartModels
-    public static List<IPartModel> getModels() {
-        return MODELS.getModels();
-    }
 
     public ItemP2PTunnelPart(IPartItem<?> partItem) {
         super(partItem, Capabilities.ItemHandler.BLOCK);
         inputHandler = new InputItemHandler();
         outputHandler = new OutputItemHandler();
         emptyHandler = NULL_ITEM_HANDLER;
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return MODELS.getModel(this.isPowered(), this.isActive());
     }
 
     private class InputItemHandler implements IItemHandler {

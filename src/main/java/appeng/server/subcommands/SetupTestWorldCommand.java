@@ -12,6 +12,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +27,6 @@ import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.neoforged.neoforge.common.NeoForge;
 
-import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.tools.powered.ColorApplicatorItem;
@@ -39,6 +40,8 @@ import appeng.server.testworld.TestWorldGenerator;
  * setting up a testing world for AE2.
  */
 public class SetupTestWorldCommand implements ISubCommand {
+    private static final Logger LOG = LoggerFactory.getLogger(SetupTestWorldCommand.class);
+
     @Override
     public void addArguments(LiteralArgumentBuilder<CommandSourceStack> builder) {
         for (var plotId : TestPlots.getPlotIds()) {
@@ -95,7 +98,7 @@ public class SetupTestWorldCommand implements ISubCommand {
 
             sender.sendSuccess(() -> PlayerMessages.TestWorldSetupComplete.text(sw.toString()), true);
         } catch (RuntimeException | CommandSyntaxException e) {
-            AELog.error(e);
+            LOG.error("Failed to setup testworld", e);
             sender.sendFailure(PlayerMessages.TestWorldSetupFailed.text(e.toString()));
         }
     }

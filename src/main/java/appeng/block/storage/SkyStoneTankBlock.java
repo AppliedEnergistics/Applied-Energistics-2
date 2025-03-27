@@ -1,6 +1,6 @@
 package appeng.block.storage;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -28,7 +28,7 @@ public class SkyStoneTankBlock extends AEBaseEntityBlock<SkyStoneTankBlockEntity
     @Override
     protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
-        if (super.useItemOn(heldItem, state, level, pos, player, hand, hit) == InteractionResult.PASS) {
+        if (super.useItemOn(heldItem, state, level, pos, player, hand, hit) == InteractionResult.TRY_WITH_EMPTY_HAND) {
             if (level.getBlockEntity(pos) instanceof SkyStoneTankBlockEntity tank && tank.onPlayerUse(player, hand)) {
                 return InteractionResult.SUCCESS;
             }
@@ -38,9 +38,9 @@ public class SkyStoneTankBlock extends AEBaseEntityBlock<SkyStoneTankBlockEntity
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip,
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, Consumer<Component> tooltip,
             TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
-        tooltip.add(Tooltips.of(GuiText.TankBucketCapacity, SkyStoneTankBlockEntity.BUCKET_CAPACITY));
+        tooltip.accept(Tooltips.of(GuiText.TankBucketCapacity, SkyStoneTankBlockEntity.BUCKET_CAPACITY));
     }
 }

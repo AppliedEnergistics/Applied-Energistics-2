@@ -21,7 +21,7 @@ package appeng.util;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.datagen.providers.tags.ConventionTags;
+import appeng.core.ConventionTags;
 import appeng.items.tools.NetworkToolItem;
 
 /**

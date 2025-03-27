@@ -35,7 +35,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
-import appeng.client.render.cablebus.CableBusRenderState;
+import appeng.block.networking.CableBusRenderState;
 
 public interface ICableBusContainer {
 
@@ -52,6 +52,8 @@ public interface ICableBusContainer {
     boolean useWithoutItem(Player player, Vec3 localPos);
 
     void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor);
+
+    void onRedstoneLevelMayHaveChanged();
 
     void onUpdateShape(LevelReader level, BlockPos pos, Direction side);
 

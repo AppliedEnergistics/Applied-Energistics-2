@@ -28,7 +28,7 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.implementations.blockentities.ICraftingMachine;
@@ -125,7 +125,7 @@ public interface IPatternDetails {
 
         /**
          * Optionally return a remaining key. This will generally be null for processing patterns, and return the
-         * corresponding slot of {@link Recipe#getRemainingItems} for crafting patterns.
+         * corresponding slot of {@link CraftingRecipe#getRemainingItems} for crafting patterns.
          */
         @Nullable
         AEKey getRemainingKey(AEKey template);
