@@ -282,8 +282,6 @@
   "gui.ae2.SearchTooltip": "使用名稱搜尋",
   "gui.ae2.SearchTooltipItemId": "使用「*」以ID搜尋（*cell）",
   "gui.ae2.SearchTooltipModId": "使用「@」以模組搜尋（@ae2）",
-  "gui.ae2.SearchTooltipTag": "使用「$」以標籤搜尋（$ingot）",
-  "gui.ae2.SearchTooltipToolTips": "使用「#」以提示工具搜尋（#looting）",
   "gui.ae2.SelectAmount": "選擇數量",
   "gui.ae2.SelectedCraftingCPU": "合成CPU: %s",
   "gui.ae2.SerialNumber": "序列化的號碼： %s",
