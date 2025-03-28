@@ -80,8 +80,8 @@ public abstract class AEKey {
                         var originalData = input.get(AEComponents.MISSING_CONTENT_AEKEY_DATA);
                         if (originalData != null) {
                             var originalDataMap = originalData.getUnsafe();
-                            for (var key : originalDataMap.getAllKeys()) {
-                                t.add(key, NbtOps.INSTANCE.convertTo(ops, originalDataMap.get(key)));
+                            for (var entry : originalDataMap.entrySet()) {
+                                t.add(entry.getKey(), NbtOps.INSTANCE.convertTo(ops, entry.getValue()));
                             }
                         }
                     }

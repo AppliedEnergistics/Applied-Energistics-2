@@ -19,9 +19,10 @@
 package appeng.items.storage;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,24 +58,24 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
-            TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> lines,
+                                TooltipFlag advancedTooltips) {
         int plotId = this.getAllocatedPlotId(stack);
         if (plotId == -1) {
-            lines.add(Tooltips.of(GuiText.Unformatted).withStyle(ChatFormatting.ITALIC));
-            lines.add(Tooltips.of(GuiText.SpatialCapacity, maxRegion, maxRegion, maxRegion));
+            lines.accept(Tooltips.of(GuiText.Unformatted).withStyle(ChatFormatting.ITALIC));
+            lines.accept(Tooltips.of(GuiText.SpatialCapacity, maxRegion, maxRegion, maxRegion));
             return;
         }
 
         // Add a serial number to allows players to keep different cells apart
         // Try to make this a little more flavorful.
         String serialNumber = String.format(Locale.ROOT, "SP-%04d", plotId);
-        lines.add(Tooltips.of(GuiText.SerialNumber, serialNumber));
+        lines.accept(Tooltips.of(GuiText.SerialNumber, serialNumber));
 
         var plotInfo = stack.get(AEComponents.SPATIAL_PLOT_INFO);
         if (plotInfo != null) {
             var size = plotInfo.size();
-            lines.add(Tooltips.of(GuiText.StoredSize, size.getX(), size.getY(), size.getZ()));
+            lines.accept(Tooltips.of(GuiText.StoredSize, size.getX(), size.getY(), size.getZ()));
         }
     }
 

@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import appeng.core.areaoverlay.IAreaOverlayDataSource;
+import appeng.core.areaoverlay.AreaOverlayManager;
 import com.google.common.collect.Multiset;
 
 import net.minecraft.core.BlockPos;
@@ -56,13 +58,11 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.grid.AENetworkedBlockEntity;
-import appeng.client.render.overlay.IOverlayDataSource;
-import appeng.client.render.overlay.OverlayManager;
 import appeng.me.service.StatisticsService;
 import appeng.server.services.ChunkLoadingService;
 
 public class SpatialAnchorBlockEntity extends AENetworkedBlockEntity
-        implements IGridTickable, IConfigurableObject, IOverlayDataSource {
+        implements IGridTickable, IConfigurableObject, IAreaOverlayDataSource {
 
     static {
         GridHelper.addNodeOwnerEventHandler(GridChunkAdded.class, SpatialAnchorBlockEntity.class,
@@ -131,13 +131,13 @@ public class SpatialAnchorBlockEntity extends AENetworkedBlockEntity
 
         // Cleanup old data and remove it from the overlay manager as safeguard
         this.chunks.clear();
-        OverlayManager.getInstance().removeHandlers(this);
+        AreaOverlayManager.getInstance().removeArea(this);
 
         if (this.displayOverlay) {
             this.chunks.addAll(Arrays.stream(data.readLongArray(null)).mapToObj(ChunkPos::new)
                     .collect(Collectors.toSet()));
             // Register it again to render the overlay
-            OverlayManager.getInstance().showArea(this);
+            AreaOverlayManager.getInstance().showArea(this);
         }
 
         return ret;
@@ -203,7 +203,7 @@ public class SpatialAnchorBlockEntity extends AENetworkedBlockEntity
     public void setRemoved() {
         super.setRemoved();
         if (isClientSide()) {
-            OverlayManager.getInstance().removeHandlers(this);
+            AreaOverlayManager.getInstance().removeArea(this);
         } else {
             this.releaseAll();
         }

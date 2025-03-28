@@ -105,7 +105,7 @@ public class ToggleBusPart extends AEBasePart {
     @Override
     public void readVisualStateFromNBT(CompoundTag data) {
         super.readVisualStateFromNBT(data);
-        this.clientSideEnabled = data.getBoolean("on");
+        this.clientSideEnabled = data.getBooleanOr("on", false);
     }
 
     protected boolean isEnabled() {

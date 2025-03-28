@@ -85,7 +85,7 @@ public class AppEngCraftingSlot extends AppEngSlot implements RecipeCraftingHold
         var craftContainer = craftingGrid.toContainer();
 
         if (amountCrafted > 0) {
-            stack.onCraftedBy(this.player.level(), this.player, this.amountCrafted);
+            stack.onCraftedBy(this.player, this.amountCrafted);
             net.neoforged.neoforge.event.EventHooks.firePlayerCraftingEvent(this.player, stack, craftContainer);
         }
 

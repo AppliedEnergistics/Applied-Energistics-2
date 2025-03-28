@@ -18,7 +18,7 @@
 
 package appeng.parts.automation;
 
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.model.data.ModelProperty;
 
 public final class PlaneModelData {
 

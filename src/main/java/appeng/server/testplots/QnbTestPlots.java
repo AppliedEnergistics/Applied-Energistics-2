@@ -11,6 +11,7 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 @TestPlotClass
 public final class QnbTestPlots {
@@ -59,8 +60,7 @@ public final class QnbTestPlots {
                         var gridA = helper.getGrid(qnbA);
                         var gridB = helper.getGrid(qnbB);
                         if (gridA != gridB) {
-                            helper.fail("not same grid", qnbA);
-                            helper.fail("not same grid", qnbB);
+                            throw helper.assertionException(qnbA, "not same grid");
                         }
                     })
                     // Wait until linked (-> same grid). This should now happen without power!
@@ -68,8 +68,7 @@ public final class QnbTestPlots {
                         var gridA = helper.getGrid(qnbA);
                         var gridB = helper.getGrid(qnbB);
                         if (gridA != gridB) {
-                            helper.fail("not same grid", qnbA);
-                            helper.fail("not same grid", qnbB);
+                            throw helper.assertionException(qnbA, "not same grid");
                         }
                     })
                     // Remove singularity on one end
@@ -88,7 +87,7 @@ public final class QnbTestPlots {
     }
 
     private static QuantumBridgeBlockEntity getCore(PlotTestHelper helper, BlockPos pos) {
-        var be = helper.getBlockEntity(pos);
+        var be = helper.getBlockEntity(pos, BlockEntity.class);
         helper.check(be instanceof QuantumBridgeBlockEntity, "is not a QNB", pos);
         var qnb = (QuantumBridgeBlockEntity) be;
         helper.check(qnb.isFormed(), "not formed", pos);

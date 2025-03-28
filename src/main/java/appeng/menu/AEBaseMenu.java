@@ -201,7 +201,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 getSlots(SlotSemantics.PLAYER_INVENTORY).isEmpty(),
                 "Player inventory was already created");
 
-        for (int i = 0; i < playerInventory.items.size(); i++) {
+        for (int i = 0; i < playerInventory.getNonEquipmentItems().size(); i++) {
             Slot slot;
             if (this.lockedPlayerInventorySlots.contains(i)) {
                 slot = new DisabledSlot(playerInventory, i);

@@ -18,6 +18,10 @@
 
 package appeng.block;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -38,6 +42,8 @@ import appeng.api.orientation.IOrientableBlock;
 import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.OrientationStrategies;
 import appeng.hooks.WrenchHook;
+
+import java.util.function.Consumer;
 
 public abstract class AEBaseBlock extends Block implements IOrientableBlock {
 
@@ -116,5 +122,9 @@ public abstract class AEBaseBlock extends Block implements IOrientableBlock {
         if (!WrenchHook.isDisassembling()) {
             super.spawnDestroyParticles(level, player, pos, state);
         }
+    }
+
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, Consumer<Component> tooltip,
+                                TooltipFlag flag) {
     }
 }

@@ -1,6 +1,6 @@
 package appeng.parts.automation;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.Enchantable;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
@@ -43,15 +44,15 @@ public class AnnihilationPlanePartItem extends PartItem<AnnihilationPlanePart> {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
-            TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, context, lines, isAdvanced);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> lines,
+                                TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, context, tooltipDisplay, lines, isAdvanced);
 
         var enchantments = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
         if (enchantments.isEmpty()) {
-            lines.add(Tooltips.of(GuiText.CanBeEnchanted));
+            lines.accept(Tooltips.of(GuiText.CanBeEnchanted));
         } else {
-            lines.add(Tooltips.of(GuiText.IncreasedEnergyUseFromEnchants));
+            lines.accept(Tooltips.of(GuiText.IncreasedEnergyUseFromEnchants));
         }
     }
 

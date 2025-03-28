@@ -477,7 +477,7 @@ public final class TestPlots {
 
         plot.test(helper -> {
             // Import bus should import nothing on its own
-            var inputChest = (ChestBlockEntity) helper.getBlockEntity(inputPos);
+            var inputChest = helper.getBlockEntity(inputPos, ChestBlockEntity.class);
             var grid = helper.getGrid(origin);
             Runnable assertNothingMoved = () -> {
                 helper.assertContainerContains(inputPos, Items.OAK_PLANKS);
@@ -614,7 +614,7 @@ public final class TestPlots {
         plot.creativeEnergyCell(origin.east().north().below());
 
         plot.test(helper -> helper.succeedWhen(() -> {
-            var meChest = (MEChestBlockEntity) helper.getBlockEntity(origin);
+            var meChest = helper.getBlockEntity(origin, MEChestBlockEntity.class);
             helper.assertContains(meChest.getInventory(), AEFluidKey.of(Fluids.WATER));
         }));
     }
@@ -635,7 +635,7 @@ public final class TestPlots {
         plot.hopper(origin.above(), Direction.DOWN, Items.STICK, Items.REDSTONE);
 
         plot.test(helper -> helper.succeedWhen(() -> {
-            var meChest = (MEChestBlockEntity) helper.getBlockEntity(origin);
+            var meChest = helper.getBlockEntity(origin, MEChestBlockEntity.class);
             helper.assertContains(meChest.getInventory(), AEItemKey.of(Items.REDSTONE));
             // The stick should still be in the hopper
             helper.assertContainerContains(origin.above(), Items.STICK);
@@ -779,7 +779,7 @@ public final class TestPlots {
                         var requesting = grid.getCraftingService().getRequestedAmount(output.what());
                         helper.check(requesting > 0, "not yet requesting items");
                         if (requesting != 1) {
-                            helper.fail("blocking mode failed, requesting: " + requesting);
+                            throw helper.assertionException("blocking mode failed, requesting: " + requesting);
                         }
                     })
                     .thenSucceed();
@@ -824,7 +824,7 @@ public final class TestPlots {
         plot.test(helper -> {
             helper.succeedWhen(() -> {
                 helper.assertBlockPresent(Blocks.CAULDRON, origin.east());
-                var tank = (SkyStoneTankBlockEntity) helper.getBlockEntity(origin.west());
+                var tank = helper.getBlockEntity(origin.west(), SkyStoneTankBlockEntity.class);
                 helper.check(tank.getTank().getFluidAmount() == AEFluidKey.AMOUNT_BUCKET,
                         "Less than a bucket stored");
                 helper.check(tank.getTank().getFluid().getFluid() == Fluids.LAVA,
@@ -883,12 +883,12 @@ public final class TestPlots {
 
         plot.test(helper -> {
             helper.runAfterDelay(40, () -> {
-                var molecularAssembler = (MolecularAssemblerBlockEntity) helper.getBlockEntity(molecularAssemblerPos);
+                var molecularAssembler = helper.getBlockEntity(molecularAssemblerPos, MolecularAssemblerBlockEntity.class);
                 var outputItem = molecularAssembler.getInternalInventory().getStackInSlot(9);
                 if (correctResult.matches(outputItem)) {
                     helper.succeed();
                 } else if (undamaged.matches(outputItem)) {
-                    helper.fail("created undamaged item");
+                    throw helper.assertionException("created undamaged item");
                 }
             });
         });

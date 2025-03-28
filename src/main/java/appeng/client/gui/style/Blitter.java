@@ -19,19 +19,25 @@
 package appeng.client.gui.style;
 
 import java.util.Objects;
+import java.util.function.Function;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
+import guideme.internal.GuideME;
+import net.minecraft.Util;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.util.TriState;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -48,6 +54,19 @@ import appeng.core.AppEng;
  */
 @OnlyIn(Dist.CLIENT)
 public final class Blitter {
+    public static final RenderPipeline GUI_TEXTURED_OPAQUE = RenderPipelines.GUI_TEXTURED.toBuilder()
+            .withLocation(AppEng.makeId("pipeline/gui_textured_opaque"))
+            .withoutBlend()
+            .build();
+
+    public static final Function<ResourceLocation, RenderType> GUI_TEXTURED_OPAQUE_TYPE = Util.memoize(
+            textureId -> RenderType.create(
+                    "ae2:gui_textured_opaque",
+                    1536,
+                    GUI_TEXTURED_OPAQUE,
+                    RenderType.CompositeState.builder()
+                            .setTextureState(new RenderStateShard.TextureStateShard(textureId, TriState.DEFAULT, false))
+                            .createCompositeState(false)));
 
     // This assumption is obviously bogus, but currently all textures are this size,
     // and it's impossible to get the texture size from an already loaded texture.
@@ -268,9 +287,6 @@ public final class Blitter {
     }
 
     public void blit(GuiGraphics guiGraphics) {
-        RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
-        RenderSystem.setShaderTexture(0, this.texture);
-
         // With no source rectangle, we'll use the entirety of the texture. This happens rarely though.
         float minU, minV, maxU, maxV;
         if (srcRect == null) {
@@ -328,12 +344,10 @@ public final class Blitter {
                 .setColor(r, g, b, a);
 
         if (blending) {
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            RenderType.guiTextured(texture).draw(bufferbuilder.buildOrThrow());
         } else {
-            RenderSystem.disableBlend();
+            GUI_TEXTURED_OPAQUE_TYPE.apply(texture).draw(bufferbuilder.buildOrThrow());
         }
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
     }
 
 }

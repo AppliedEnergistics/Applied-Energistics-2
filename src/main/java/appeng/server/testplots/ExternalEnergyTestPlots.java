@@ -66,7 +66,7 @@ public class ExternalEnergyTestPlots {
         plot.test(helper -> helper.startSequence()
                 .thenWaitUntil(helper::checkAllInitialized)
                 .thenWaitUntil(() -> {
-                    var chest = (MEChestBlockEntity) helper.getBlockEntity(ORIGIN);
+                    var chest = helper.getBlockEntity(ORIGIN, MEChestBlockEntity.class);
                     helper.check(chest.isPowered(), "should be powered", ORIGIN);
                     var linkStatus = chest.getLinkStatus();
                     helper.check(linkStatus.connected(), "link status should be connected: "
@@ -105,7 +105,7 @@ public class ExternalEnergyTestPlots {
         plot.test(helper -> helper.startSequence()
                 .thenWaitUntil(helper::checkAllInitialized)
                 .thenWaitUntil(() -> {
-                    var accel = (GrowthAcceleratorBlockEntity) helper.getBlockEntity(ORIGIN);
+                    var accel = helper.getBlockEntity(ORIGIN, GrowthAcceleratorBlockEntity.class);
                     helper.check(accel.isPowered(), "should be powered", ORIGIN);
                 })
                 .thenWaitUntil(() -> helper.assertBlockProperty(ORIGIN, GrowthAcceleratorBlock.POWERED, true))

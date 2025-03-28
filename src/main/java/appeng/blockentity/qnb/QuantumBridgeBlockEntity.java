@@ -29,8 +29,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelProperty;
 
 import appeng.api.ids.AEComponents;
 import appeng.api.inventories.InternalInventory;
@@ -280,7 +280,10 @@ public class QuantumBridgeBlockEntity extends AENetworkedInvBlockEntity
         return (this.constructed & this.hasSingularity) == this.hasSingularity;
     }
 
-    public void breakClusterOnRemove() {
+    @Override
+    public void preRemoveSideEffects(BlockPos blockPos, BlockState blockState) {
+        super.preRemoveSideEffects(blockPos, blockState);
+
         if (this.cluster != null) {
             // Prevents cluster.destroy() from changing the block state back to an unformed QNB,
             // because that would undo the removal.

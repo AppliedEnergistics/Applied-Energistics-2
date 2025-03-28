@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import appeng.block.networking.CableBusRenderState;
 import com.google.gson.stream.JsonWriter;
 
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +44,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 
@@ -56,7 +57,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.AEBaseBlockEntity;
-import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.core.AppEng;
 import appeng.helpers.AEMultiBlockEntity;
 import appeng.parts.CableBusContainer;
@@ -321,7 +321,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
             return ModelData.EMPTY;
         }
 
-        CableBusRenderState renderState = this.cb.getRenderState();
+        var renderState = this.cb.getRenderState();
         renderState.setPos(worldPosition);
         return ModelData.builder().with(CableBusRenderState.PROPERTY, renderState).build();
 

@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -128,15 +129,15 @@ class AEProcessingPatternTest {
     }
 
     private List<String> getExtraTooltip(CompoundTag tag) {
-        var stack = ItemStack.parseOptional(registryAccess, tag);
+        var stack = ItemStack.parse(registryAccess, tag).orElseThrow();
 
         var lines = new ArrayList<Component>();
-        stack.getItem().appendHoverText(stack, Item.TooltipContext.EMPTY, lines, TooltipFlag.ADVANCED);
+        stack.getItem().appendHoverText(stack, Item.TooltipContext.EMPTY, TooltipDisplay.DEFAULT, lines::add, TooltipFlag.ADVANCED);
         return lines.stream().map(Component::getString).toList();
     }
 
     private AEProcessingPattern decode(CompoundTag tag) {
-        var stack = ItemStack.parseOptional(registryAccess, tag);
+        var stack = ItemStack.parse(registryAccess, tag).orElseThrow();
 
         var details = PatternDetailsHelper.decodePattern(AEItemKey.of(stack), mock(ServerLevel.class));
         if (details == null) {

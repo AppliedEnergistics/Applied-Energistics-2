@@ -34,7 +34,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.behaviors.PickupStrategy;
 import appeng.api.config.Actionable;
@@ -120,10 +120,14 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
 
         var enchantmentsTag = data.getCompound("enchantments");
         var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        this.enchantments = ItemEnchantments.CODEC.decode(ops, enchantmentsTag)
-                .ifError(err -> LOG.warn("Failed to load enchantments for part {}: {}", this, err.message()))
-                .getOrThrow()
-                .getFirst();
+        if (enchantmentsTag.isPresent()) {
+            this.enchantments = ItemEnchantments.CODEC.decode(ops, enchantmentsTag.get())
+                    .ifError(err -> LOG.warn("Failed to load enchantments for part {}: {}", this, err.message()))
+                    .getOrThrow()
+                    .getFirst();
+        } else {
+            this.enchantments = ItemEnchantments.EMPTY;
+        }
     }
 
     @Override

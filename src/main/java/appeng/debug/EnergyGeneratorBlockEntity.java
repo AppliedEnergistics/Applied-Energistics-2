@@ -80,9 +80,7 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Ser
     @Override
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
-        if (data.contains("generationRate", Tag.TAG_INT)) {
-            generationRate = data.getInt("generationRate");
-        }
+        generationRate = data.getIntOr("generationRate", generationRate);
     }
 
     @Override

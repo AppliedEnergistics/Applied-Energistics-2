@@ -98,9 +98,7 @@ public record ExportedGridContent(int serialNumber,
                     Component.literal("Saved grid data for grid #" + serialNumber + " from server to ")
                             .append(Component.literal(finalPath.toString()).withStyle(style -> {
                                 return style.withUnderlined(true)
-                                        .withClickEvent(new ClickEvent(
-                                                ClickEvent.Action.OPEN_FILE,
-                                                finalPath.getParent().toString()));
+                                        .withClickEvent(new ClickEvent.OpenFile(finalPath.getParent().toString()));
                             })));
         }
     }

@@ -123,9 +123,7 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
         super.loadTag(data, registries);
         this.manager.readFromNBT(data, registries);
         this.upgrades.readFromNBT(data, "upgrades", registries);
-        if (data.contains("lastRedstoneState")) {
-            this.lastRedstoneState = YesNo.values()[data.getInt("lastRedstoneState")];
-        }
+        this.lastRedstoneState = YesNo.values()[data.getIntOr("lastRedstoneState", YesNo.UNDECIDED.ordinal())];
     }
 
     @Override

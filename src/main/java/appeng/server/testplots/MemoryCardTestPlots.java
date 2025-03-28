@@ -86,7 +86,7 @@ public final class MemoryCardTestPlots {
             if (!toPart.getConfig().keySet().equals(Set.of(
                     AEItemKey.of(Items.STICK),
                     AEFluidKey.of(Fluids.WATER)))) {
-                helper.fail("wrong filter", origin);
+                throw helper.assertionException(origin, "wrong filter");
             }
 
             helper.succeed();
@@ -100,7 +100,7 @@ public final class MemoryCardTestPlots {
         plot.block(origin.east(), AEBlocks.INTERFACE);
 
         plot.test(helper -> {
-            var from = (InterfaceBlockEntity) helper.getBlockEntity(BlockPos.ZERO.east());
+            var from = helper.getBlockEntity(BlockPos.ZERO.east(), InterfaceBlockEntity.class);
             var to = helper.getPart(BlockPos.ZERO, Direction.WEST, InterfacePart.class);
 
             var player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -128,10 +128,10 @@ public final class MemoryCardTestPlots {
 
             // Check configured config inventory of part we copied to
             if (!Objects.equals(to.getConfig().getKey(0), AEItemKey.of(Items.STICK))) {
-                helper.fail("missing stick in filter", origin);
+                throw helper.assertionException(origin, "missing stick in filter");
             }
             if (!Objects.equals(to.getConfig().getKey(1), AEFluidKey.of(Fluids.WATER))) {
-                helper.fail("missing water in filter", origin);
+                throw helper.assertionException(origin, "missing water in filter");
             }
 
             helper.succeed();
@@ -155,7 +155,7 @@ public final class MemoryCardTestPlots {
             var differentCraftingPattern = CraftingPatternHelper.encodeShapelessCraftingRecipe(
                     helper.getLevel(), Items.SPRUCE_LOG.getDefaultInstance());
 
-            var from = (PatternProviderBlockEntity) helper.getBlockEntity(BlockPos.ZERO.east());
+            var from = helper.getBlockEntity(BlockPos.ZERO.east(), PatternProviderBlockEntity.class);
             var to = helper.getPart(BlockPos.ZERO, Direction.WEST, PatternProviderPart.class);
 
             var player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -189,7 +189,7 @@ public final class MemoryCardTestPlots {
                 var fromItem = fromPatternInv.getStackInSlot(i);
                 var toItem = toPatternInv.getStackInSlot(i);
                 if (!ItemStack.isSameItemSameComponents(fromItem, toItem)) {
-                    helper.fail("Mismatch in slot " + i, origin.east());
+                    throw helper.assertionException(origin.east(), "Mismatch in slot " + i);
                 }
             }
 
@@ -210,7 +210,7 @@ public final class MemoryCardTestPlots {
             for (var upgrade : upgradableFrom.getUpgrades()) {
                 if (upgradableFrom.getInstalledUpgrades(upgrade.getItem()) != upgradeableTo
                         .getInstalledUpgrades(upgrade.getItem())) {
-                    helper.fail(upgrade.getHoverName().getString() + " mismatch", origin);
+                    throw helper.assertionException(origin, upgrade.getHoverName().getString() + " mismatch");
                 }
             }
         }
@@ -226,7 +226,7 @@ public final class MemoryCardTestPlots {
             // Any setting that from supports should be on to and be equal
             for (var setting : fromConfig.getSettings()) {
                 if (!fromConfig.getSetting(setting).equals(toConfig.getSetting(setting))) {
-                    helper.fail("Setting " + setting + " mismatch", origin);
+                    throw helper.assertionException(origin, "Setting " + setting + " mismatch");
                 }
             }
         }

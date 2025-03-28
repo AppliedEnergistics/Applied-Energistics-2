@@ -21,6 +21,7 @@ package appeng.block.networking;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -59,14 +60,13 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.networking.CableBusBlockEntity;
-import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
@@ -124,8 +124,8 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entityIn) {
-        this.cb(level, pos).onEntityCollision(entityIn);
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier) {
+        this.cb(level, pos).onEntityCollision(entity);
     }
 
     @Override
@@ -358,12 +358,12 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
             if (side.getOpposite() != renderingFacadeDir) {
                 var facadeState = facades.get(side);
                 if (facadeState != null) {
-                    return facadeState.getSourceBlock();
+                    return facadeState.sourceBlock();
                 }
             }
 
             if (renderingFacadeDir != null && facades.containsKey(renderingFacadeDir)) {
-                return facades.get(renderingFacadeDir).getSourceBlock();
+                return facades.get(renderingFacadeDir).sourceBlock();
             }
         }
         return state;

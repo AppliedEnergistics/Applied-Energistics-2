@@ -61,9 +61,9 @@ public class TestCraftingJob {
                 plan = planFuture.get(0, TimeUnit.MILLISECONDS);
             } catch (InterruptedException | ExecutionException e) {
                 AELog.error(e);
-                throw new GameTestAssertException("Crafting job planning failed: " + e);
+                throw helper.assertionException("Crafting job planning failed: " + e);
             } catch (TimeoutException e) {
-                throw new GameTestAssertException("Crafting job planning did not complete");
+                throw helper.assertionException("Crafting job planning did not complete");
             }
         }
         if (!submitted) {

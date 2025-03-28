@@ -1,6 +1,7 @@
 
 package appeng.core.network.clientbound;
 
+import appeng.core.particles.EnergyParticleData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -9,7 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AppEngClient;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;

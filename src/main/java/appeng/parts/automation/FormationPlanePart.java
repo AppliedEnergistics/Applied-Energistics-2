@@ -31,7 +31,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.behaviors.PlacementStrategy;
 import appeng.api.config.Actionable;
@@ -190,7 +190,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
     @Override
     public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.readFromNBT(data, registries);
-        this.priority = data.getInt("priority");
+        this.priority = data.getIntOr("priority", 0);
         this.config.readFromChildTag(data, "config", registries);
         remountStorage();
     }

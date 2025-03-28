@@ -86,12 +86,12 @@ public final class DebugProvider {
     }
 
     private static void addToTooltip(CompoundTag serverData, TooltipBuilder tooltip) {
-        var nodes = serverData.getList(TAG_NODES, Tag.TAG_COMPOUND);
+        var nodes = serverData.getListOrEmpty(TAG_NODES);
 
         for (var node : nodes) {
             var nodeCompound = (CompoundTag) node;
             if (nodes.size() > 1) {
-                var nodeName = ((CompoundTag) node).getString(TAG_NODE_NAME);
+                var nodeName = ((CompoundTag) node).getStringOr(TAG_NODE_NAME, "");
                 tooltip.addLine(Component.literal(nodeName).withStyle(ChatFormatting.ITALIC));
             }
             addNodeToTooltip(nodeCompound, tooltip);
@@ -99,8 +99,8 @@ public final class DebugProvider {
     }
 
     private static void addNodeToTooltip(CompoundTag tag, TooltipBuilder tooltip) {
-        if (tag.contains(TAG_TICK_TIME, Tag.TAG_LONG_ARRAY)) {
-            long[] tickTimes = tag.getLongArray(TAG_TICK_TIME);
+        var tickTimes = tag.getLongArray(TAG_TICK_TIME).orElse(null);
+        if (tickTimes != null) {
             if (tickTimes.length == 3) {
                 var avg = tickTimes[0];
                 var max = tickTimes[1];
@@ -123,16 +123,16 @@ public final class DebugProvider {
 
         if (tag.contains(TAG_TICK_QUEUED)) {
             var status = new ArrayList<String>();
-            if (tag.getBoolean(TAG_TICK_SLEEPING)) {
+            if (tag.getBooleanOr(TAG_TICK_SLEEPING, false)) {
                 status.add("Sleeping");
             }
-            if (tag.getBoolean(TAG_TICK_ALERTABLE)) {
+            if (tag.getBooleanOr(TAG_TICK_ALERTABLE, false)) {
                 status.add("Alertable");
             }
-            if (tag.getBoolean(TAG_TICK_AWAKE)) {
+            if (tag.getBooleanOr(TAG_TICK_AWAKE, false)) {
                 status.add("Awake");
             }
-            if (tag.getBoolean(TAG_TICK_QUEUED)) {
+            if (tag.getBooleanOr(TAG_TICK_QUEUED, false)) {
                 status.add("Queued");
             }
 
@@ -143,13 +143,13 @@ public final class DebugProvider {
             tooltip.addLine(
                     Component.literal("")
                             .append(Component.literal("Tick Rate: ").withStyle(ChatFormatting.WHITE))
-                            .append(String.valueOf(tag.getInt(TAG_TICK_CURRENT_RATE)))
+                            .append(String.valueOf(tag.getIntOr(TAG_TICK_CURRENT_RATE, 0)))
                             .append(Component.literal(" Last: ").withStyle(ChatFormatting.WHITE))
-                            .append(tag.getInt(TAG_TICK_LAST_TICK) + " ticks ago"));
+                            .append(tag.getIntOr(TAG_TICK_LAST_TICK, 0) + " ticks ago"));
         }
 
-        if (tag.contains(TAG_NODE_EXPOSED, Tag.TAG_INT)) {
-            var exposedSides = tag.getInt(TAG_NODE_EXPOSED);
+        if (tag.contains(TAG_NODE_EXPOSED)) {
+            var exposedSides = tag.getIntOr(TAG_NODE_EXPOSED, 0);
             var line = Component.literal("Node Exposed: ").withStyle(ChatFormatting.WHITE);
             for (Direction value : Direction.values()) {
                 var sideText = Component.literal(value.name().substring(0, 1));

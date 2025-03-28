@@ -20,12 +20,12 @@ package appeng.spatial;
 
 import java.util.List;
 
+import net.minecraft.world.level.saveddata.SavedDataType;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.saveddata.SavedData;
 
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -36,9 +36,10 @@ import appeng.core.definitions.AEBlocks;
  */
 public final class SpatialStoragePlotManager {
 
-    private static final SavedData.Factory<SpatialStorageWorldData> FACTORY = new SavedData.Factory<>(
+    private static final SavedDataType<SpatialStorageWorldData> TYPE = new SavedDataType<>(
+            SpatialStorageWorldData.ID,
             SpatialStorageWorldData::new,
-            SpatialStorageWorldData::load,
+            SpatialStorageWorldData.CODEC,
             null);
 
     public static final SpatialStoragePlotManager INSTANCE = new SpatialStoragePlotManager();
@@ -62,9 +63,7 @@ public final class SpatialStoragePlotManager {
     }
 
     private SpatialStorageWorldData getWorldData() {
-        return getLevel().getChunkSource().getDataStorage().computeIfAbsent(
-                FACTORY,
-                SpatialStorageWorldData.ID);
+        return getLevel().getChunkSource().getDataStorage().computeIfAbsent(TYPE);
     }
 
     @Nullable

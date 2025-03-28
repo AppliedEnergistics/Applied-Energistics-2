@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import com.google.common.collect.Iterables;
 
+import net.minecraft.core.UUIDUtil;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
@@ -75,7 +76,7 @@ public class CraftingCpuHelper {
     public static CompoundTag generateLinkData(UUID craftId, boolean standalone, boolean req) {
         final CompoundTag tag = new CompoundTag();
 
-        tag.putUUID("craftId", craftId);
+        tag.store("craftId", UUIDUtil.CODEC, craftId);
         tag.putBoolean("canceled", false);
         tag.putBoolean("done", false);
         tag.putBoolean("standalone", standalone);

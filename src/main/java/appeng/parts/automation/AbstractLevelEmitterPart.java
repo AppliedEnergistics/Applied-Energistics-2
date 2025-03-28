@@ -104,7 +104,7 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     public void readVisualStateFromNBT(CompoundTag data) {
         super.readVisualStateFromNBT(data);
 
-        this.clientSideOn = data.getBoolean("on");
+        this.clientSideOn = data.getBooleanOr("on", false);
     }
 
     protected void updateState() {
@@ -182,9 +182,9 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     @Override
     public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.readFromNBT(data, registries);
-        this.lastReportedValue = data.getLong("lastReportedValue");
-        this.reportingValue = data.getLong("reportingValue");
-        this.prevState = data.getBoolean("prevState");
+        this.lastReportedValue = data.getLongOr("lastReportedValue", 0);
+        this.reportingValue = data.getLongOr("reportingValue", 0);
+        this.prevState = data.getBooleanOr("prevState", false);
     }
 
     @Override

@@ -1,0 +1,69 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
+package appeng.datagen.providers.recipes;
+
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.world.item.crafting.Ingredient;
+
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.ConventionTags;
+
+public class SmeltingRecipes extends AE2RecipeProvider {
+
+    // This is from the default recipe serializer for smelting
+    private static final int DEFAULT_SMELTING_TIME = 200;
+
+    public SmeltingRecipes(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
+    }
+
+    @Override
+    public void buildRecipes() {
+
+        SimpleCookingRecipeBuilder
+                .smelting(Ingredient.of(items.getOrThrow(ConventionTags.CERTUS_QUARTZ_DUST)), RecipeCategory.MISC,
+                        AEItems.SILICON, .35f,
+                        DEFAULT_SMELTING_TIME)
+                .unlockedBy("has_certus_quartz_dust", has(ConventionTags.CERTUS_QUARTZ_DUST))
+                .save(output, makeId("smelting/silicon_from_certus_quartz_dust"));
+        SimpleCookingRecipeBuilder
+                .blasting(Ingredient.of(items.getOrThrow(ConventionTags.CERTUS_QUARTZ_DUST)), RecipeCategory.MISC,
+                        AEItems.SILICON, .35f,
+                        DEFAULT_SMELTING_TIME / 2)
+                .unlockedBy("has_certus_quartz_dust", has(ConventionTags.CERTUS_QUARTZ_DUST))
+                .save(output, makeId("blasting/silicon_from_certus_quartz_dust"));
+
+        SimpleCookingRecipeBuilder
+                .smelting(Ingredient.of(AEBlocks.SKY_STONE_BLOCK), RecipeCategory.MISC, AEBlocks.SMOOTH_SKY_STONE_BLOCK,
+                        0.35f,
+                        DEFAULT_SMELTING_TIME)
+                .unlockedBy("has_sky_stone_block", has(AEBlocks.SKY_STONE_BLOCK))
+                .save(output, makeId("smelting/smooth_sky_stone_block"));
+
+        SimpleCookingRecipeBuilder
+                .smelting(Ingredient.of(AEItems.SKY_DUST), RecipeCategory.MISC, AEBlocks.SKY_STONE_BLOCK, 0,
+                        DEFAULT_SMELTING_TIME)
+                .unlockedBy("has_sky_stone_dust", has(AEItems.SKY_DUST))
+                .save(output, makeId("blasting/sky_stone_block"));
+    }
+}

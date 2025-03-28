@@ -98,7 +98,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
     public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
         super.readFromNBT(extra, registries);
         this.craftingTracker.readFromNBT(extra);
-        this.nextSlot = extra.getInt("nextSlot");
+        this.nextSlot = extra.getIntOr("nextSlot", 0);
     }
 
     @Override

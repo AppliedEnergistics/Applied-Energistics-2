@@ -210,7 +210,7 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.readFromNBT(data, registries);
-        this.priority = data.getInt("priority");
+        this.priority = data.getIntOr("priority", 0);
         config.readFromChildTag(data, "config", registries);
     }
 

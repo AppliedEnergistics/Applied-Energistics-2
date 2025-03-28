@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
+import appeng.block.networking.CableCoreType;
+import appeng.block.networking.FacadeRenderState;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -66,9 +68,7 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
-import appeng.client.render.cablebus.CableBusRenderState;
-import appeng.client.render.cablebus.CableCoreType;
-import appeng.client.render.cablebus.FacadeRenderState;
+import appeng.block.networking.CableBusRenderState;
 import appeng.core.AELog;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiBlockEntity;
@@ -823,7 +823,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         invalidateShapes();
 
         if (data.contains("hasRedstone")) {
-            this.hasRedstone = YesNo.values()[data.getInt("hasRedstone")];
+            this.hasRedstone = YesNo.values()[data.getIntOr("hasRedstone", 0)];
         }
 
         for (var side : Platform.DIRECTIONS_WITH_NULL) {
@@ -843,7 +843,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     private boolean loadPart(Direction side, CompoundTag data, HolderLookup.Provider registries) {
-        var itemId = ResourceLocation.parse(data.getString("id"));
+        var itemId = ResourceLocation.parse(data.getStringOr("id", ""));
         var partItem = IPartItem.byId(itemId);
         if (partItem == null) {
             AELog.warn("Ignoring persisted part with non-part-item %s", itemId);

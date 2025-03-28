@@ -66,7 +66,10 @@ public class ChunkLoadingService implements LoadingValidationCallback {
             // Add all persisted chunks to the list of handled ones by each anchor.
             // Or remove all in case the anchor no longer exists.
             if (blockEntity instanceof SpatialAnchorBlockEntity anchor) {
-                for (Long chunk : chunks.ticking()) {
+                for (Long chunk : chunks.normal()) {
+                    anchor.registerChunk(new ChunkPos(chunk));
+                }
+                for (Long chunk : chunks.naturalSpawning()) {
                     anchor.registerChunk(new ChunkPos(chunk));
                 }
             } else {

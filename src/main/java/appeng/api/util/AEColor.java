@@ -73,6 +73,8 @@ public enum AEColor implements StringRepresentable {
     public static final List<AEColor> VALID_COLORS = Arrays.asList(WHITE, LIGHT_GRAY, GRAY, BLACK, LIME, YELLOW,
             ORANGE, BROWN, RED, PINK, MAGENTA, PURPLE, BLUE, LIGHT_BLUE, CYAN, GREEN);
 
+    private static final AEColor[] BY_ORDINAL = values();
+
     /**
      * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #blackVariant dark
      * variant} of the apprioriate AE color.
@@ -220,5 +222,9 @@ public enum AEColor implements StringRepresentable {
     @Override
     public String getSerializedName() {
         return registryPrefix;
+    }
+
+    public static AEColor fromOrdinal(int ordinal) {
+        return ordinal >= 0 && ordinal < BY_ORDINAL.length ? BY_ORDINAL[ordinal] : TRANSPARENT;
     }
 }

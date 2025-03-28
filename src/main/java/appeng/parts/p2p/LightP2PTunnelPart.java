@@ -143,7 +143,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     @Override
     public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
         super.readFromNBT(tag, registries);
-        this.lastValue = tag.getInt("lastValue");
+        this.lastValue = tag.getIntOr("lastValue", 0);
     }
 
     @Override

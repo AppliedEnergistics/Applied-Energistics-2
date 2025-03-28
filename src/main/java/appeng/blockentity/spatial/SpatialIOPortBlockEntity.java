@@ -68,9 +68,8 @@ public class SpatialIOPortBlockEntity extends AENetworkedInvBlockEntity {
     @Override
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
-        if (data.contains("lastRedstoneState")) {
-            this.lastRedstoneState = YesNo.values()[data.getInt("lastRedstoneState")];
-        }
+        int lastRedstoneState = data.getIntOr("lastRedstoneState", YesNo.UNDECIDED.ordinal());
+        this.lastRedstoneState = YesNo.values()[lastRedstoneState];
     }
 
     @Override

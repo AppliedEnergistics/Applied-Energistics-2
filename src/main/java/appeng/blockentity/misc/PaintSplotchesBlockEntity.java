@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import io.netty.buffer.Unpooled;
 
@@ -36,8 +37,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelProperty;
 
 import appeng.api.util.AEColor;
 import appeng.block.paint.PaintSplotches;
@@ -82,12 +83,16 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     @Override
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
-        if (data.contains("dots")) {
-            this.readBuffer(new FriendlyByteBuf(Unpooled.copiedBuffer(data.getByteArray("dots"))));
-        }
+        byte[] dotsBuffer = data.getByteArray("dots").orElse(new byte[0]);
+        this.readBuffer(new FriendlyByteBuf(Unpooled.copiedBuffer(dotsBuffer)));
     }
 
     private void readBuffer(FriendlyByteBuf in) {
+        if (in.readableBytes() == 0) {
+            this.dots = null;
+            return;
+        }
+
         final byte howMany = in.readByte();
 
         if (howMany == 0) {

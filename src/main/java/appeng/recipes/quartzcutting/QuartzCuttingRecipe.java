@@ -26,7 +26,7 @@ import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.util.RecipeMatcher;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
-import appeng.datagen.providers.tags.ConventionTags;
+import appeng.core.ConventionTags;
 
 public class QuartzCuttingRecipe implements CraftingRecipe {
     public static final MapCodec<QuartzCuttingRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(

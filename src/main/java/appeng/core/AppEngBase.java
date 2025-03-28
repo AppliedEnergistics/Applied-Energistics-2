@@ -18,11 +18,46 @@
 
 package appeng.core;
 
-import java.util.Collection;
-import java.util.Collections;
-
-import org.jetbrains.annotations.Nullable;
-
+import appeng.api.ids.AEComponents;
+import appeng.api.parts.CableRenderMode;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEKeyTypesInternal;
+import appeng.core.definitions.AEAttachmentTypes;
+import appeng.core.definitions.AEBlockEntities;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEEntities;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
+import appeng.core.network.ClientboundPacket;
+import appeng.core.network.InitNetwork;
+import appeng.core.particles.InitParticleTypes;
+import appeng.hooks.SkyStoneBreakSpeed;
+import appeng.hooks.WrenchHook;
+import appeng.hooks.ticking.TickHandler;
+import appeng.hotkeys.HotkeyActions;
+import appeng.init.InitAdvancementTriggers;
+import appeng.init.InitCapabilityProviders;
+import appeng.init.InitCauldronInteraction;
+import appeng.init.InitDispenserBehavior;
+import appeng.init.InitMenuTypes;
+import appeng.init.InitStats;
+import appeng.init.InitVillager;
+import appeng.init.internal.InitBlockEntityMoveStrategies;
+import appeng.init.internal.InitGridLinkables;
+import appeng.init.internal.InitGridServices;
+import appeng.init.internal.InitP2PAttunements;
+import appeng.init.internal.InitStorageCells;
+import appeng.init.internal.InitUpgrades;
+import appeng.init.worldgen.InitStructures;
+import appeng.integration.Integrations;
+import appeng.recipes.AERecipeSerializers;
+import appeng.recipes.AERecipeTypes;
+import appeng.server.AECommand;
+import appeng.server.services.ChunkLoadingService;
+import appeng.server.testworld.GameTestPlotAdapter;
+import appeng.sounds.AppEngSounds;
+import appeng.spatial.SpatialStorageChunkGenerator;
+import appeng.spatial.SpatialStorageDimensionIds;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -50,47 +85,10 @@ import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.api.ids.AEComponents;
-import appeng.api.parts.CableRenderMode;
-import appeng.api.stacks.AEKeyType;
-import appeng.api.stacks.AEKeyTypesInternal;
-import appeng.core.definitions.AEAttachmentTypes;
-import appeng.core.definitions.AEBlockEntities;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEEntities;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
-import appeng.core.network.ClientboundPacket;
-import appeng.core.network.InitNetwork;
-import appeng.hooks.SkyStoneBreakSpeed;
-import appeng.hooks.WrenchHook;
-import appeng.hooks.ticking.TickHandler;
-import appeng.hotkeys.HotkeyActions;
-import appeng.init.InitAdvancementTriggers;
-import appeng.init.InitCapabilityProviders;
-import appeng.init.InitCauldronInteraction;
-import appeng.init.InitDispenserBehavior;
-import appeng.init.InitMenuTypes;
-import appeng.init.InitStats;
-import appeng.init.InitVillager;
-import appeng.init.client.InitParticleTypes;
-import appeng.init.internal.InitBlockEntityMoveStrategies;
-import appeng.init.internal.InitGridLinkables;
-import appeng.init.internal.InitGridServices;
-import appeng.init.internal.InitP2PAttunements;
-import appeng.init.internal.InitStorageCells;
-import appeng.init.internal.InitUpgrades;
-import appeng.init.worldgen.InitStructures;
-import appeng.integration.Integrations;
-import appeng.recipes.AERecipeSerializers;
-import appeng.recipes.AERecipeTypes;
-import appeng.server.AECommand;
-import appeng.server.services.ChunkLoadingService;
-import appeng.server.testworld.GameTestPlotAdapter;
-import appeng.sounds.AppEngSounds;
-import appeng.spatial.SpatialStorageChunkGenerator;
-import appeng.spatial.SpatialStorageDimensionIds;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Mod functionality that is common to both dedicated server and client.
@@ -161,6 +159,8 @@ public abstract class AppEngBase implements AppEng {
                 InitVillager.initPointOfInterestType(event.getRegistry(Registries.POINT_OF_INTEREST_TYPE));
             } else if (event.getRegistryKey() == AEKeyType.REGISTRY_KEY) {
                 registerKeyTypes(event.getRegistry(AEKeyType.REGISTRY_KEY));
+            } else if (event.getRegistryKey() == Registries.TEST_INSTANCE_TYPE) {
+                event.register(Registries.TEST_INSTANCE_TYPE, AppEng.makeId("plot_adapter"), () -> GameTestPlotAdapter.CODEC);
             }
         });
 
@@ -258,7 +258,7 @@ public abstract class AppEngBase implements AppEng {
 
     @Override
     public void sendToAllNearExcept(Player p, double x, double y, double z,
-            double dist, Level level, ClientboundPacket packet) {
+                                    double dist, Level level, ClientboundPacket packet) {
         if (level instanceof ServerLevel serverLevel) {
             ServerPlayer except = null;
             if (p instanceof ServerPlayer) {
@@ -304,7 +304,7 @@ public abstract class AppEngBase implements AppEng {
 
     private void registerTests(RegisterGameTestsEvent e) {
         if ("true".equals(System.getProperty("appeng.tests"))) {
-            e.register(GameTestPlotAdapter.class);
+            GameTestPlotAdapter.registerAll(e::registerTest);
         }
     }
 }

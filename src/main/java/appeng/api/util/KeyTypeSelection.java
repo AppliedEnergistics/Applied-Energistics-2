@@ -101,10 +101,10 @@ public class KeyTypeSelection {
         for (var entry : keyTypes.entrySet()) {
             entry.setValue(false);
         }
-        ListTag enabledKeyTypesTag = tag.getList("enabledKeyTypes", 8);
+        ListTag enabledKeyTypesTag = tag.getListOrEmpty("enabledKeyTypes");
         for (int i = 0; i < enabledKeyTypesTag.size(); i++) {
             try {
-                var keyType = AEKeyTypes.get(ResourceLocation.parse(enabledKeyTypesTag.getString(i)));
+                var keyType = AEKeyTypes.get(ResourceLocation.parse(enabledKeyTypesTag.getStringOr(i, "")));
                 if (keyTypes.containsKey(keyType)) {
                     keyTypes.put(keyType, true);
                 }

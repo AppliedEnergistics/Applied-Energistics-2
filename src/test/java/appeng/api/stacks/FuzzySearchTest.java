@@ -24,13 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.Arrays;
 
+import net.minecraft.util.Unit;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.Unbreakable;
 
 import appeng.api.config.FuzzyMode;
 import appeng.util.BootstrapMinecraft;
@@ -48,7 +48,7 @@ public class FuzzySearchTest {
         ItemStack unbreakableSword = new ItemStack(
                 Items.DIAMOND_SWORD);
         unbreakableSword.setDamageValue(unbreakableSword.getMaxDamage() / 2);
-        unbreakableSword.set(DataComponents.UNBREAKABLE, new Unbreakable(true));
+        unbreakableSword.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
         assertFalse(unbreakableSword.isDamageableItem());
         AEItemKey unbreakableStack = AEItemKey.of(unbreakableSword);
 
@@ -89,7 +89,7 @@ public class FuzzySearchTest {
         @Test
         void test99PercentDurabilityWithUnbreakable() {
             ItemStack unbreakableStack = damagedStack.toStack();
-            unbreakableStack.set(DataComponents.UNBREAKABLE, new Unbreakable(true));
+            unbreakableStack.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
             assertFalse(unbreakableStack.isDamageableItem());
 
             DamageBounds bounds = new DamageBounds(AEItemKey.of(unbreakableStack), FuzzyMode.PERCENT_99);

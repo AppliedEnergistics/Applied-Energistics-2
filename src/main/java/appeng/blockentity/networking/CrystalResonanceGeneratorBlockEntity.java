@@ -91,7 +91,7 @@ public class CrystalResonanceGeneratorBlockEntity extends AENetworkedBlockEntity
     @Override
     protected void loadVisualState(CompoundTag data) {
         super.loadVisualState(data);
-        this.suppressed = data.getBoolean("suppressed");
+        this.suppressed = data.getBooleanOr("suppressed", false);
     }
 
     @Override

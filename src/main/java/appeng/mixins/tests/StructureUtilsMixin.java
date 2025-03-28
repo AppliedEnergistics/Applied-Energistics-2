@@ -21,16 +21,16 @@ public abstract class StructureUtilsMixin {
     @Inject(method = "prepareTestStructure", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplateManager;get(Lnet/minecraft/resources/ResourceLocation;)Ljava/util/Optional;"), cancellable = true)
     private static void prepareTestStructure(GameTestInfo testInfo, BlockPos pos, Rotation rotation, ServerLevel level,
             CallbackInfoReturnable<StructureBlockEntity> cri) {
-        var id = ResourceLocation.tryParse(testInfo.getStructureName());
-        if (id == null) {
-            return;
-        }
+//    TODO 1.21.5    var id = ResourceLocation.tryParse(testInfo.getStructureName());
+//        if (id == null) {
+//            return;
+//        }
 
-        var testPlot = TestPlots.getById(id);
-        if (testPlot == null) {
-            return;
-        }
+//        var testPlot = TestPlots.getById(id);
+//        if (testPlot == null) {
+//            return;
+//        }
 
-        cri.setReturnValue(GameTestPlotAdapter.createStructure(testPlot, testInfo, pos, level));
+//        cri.setReturnValue(GameTestPlotAdapter.createStructure(testPlot, testInfo, pos, level));
     }
 }

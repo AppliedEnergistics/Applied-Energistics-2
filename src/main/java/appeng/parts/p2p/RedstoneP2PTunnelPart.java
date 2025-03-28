@@ -105,7 +105,7 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     @Override
     public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
         super.readFromNBT(tag, registries);
-        this.power = tag.getInt("power");
+        this.power = tag.getIntOr("power", 0);
     }
 
     @Override

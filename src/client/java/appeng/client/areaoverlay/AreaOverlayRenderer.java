@@ -1,0 +1,214 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
+package appeng.client.areaoverlay;
+
+import appeng.client.render.overlay.OverlayRenderType;
+import appeng.core.areaoverlay.AreaOverlayManager;
+import appeng.core.areaoverlay.IAreaOverlayDataSource;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+
+import java.util.Collection;
+
+/**
+ * This is based on the area render of https://github.com/TeamPneumatic/pnc-repressurized/
+ */
+public class AreaOverlayRenderer {
+
+    @SubscribeEvent
+    public void renderWorldLastEvent(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) {
+            return;
+        }
+
+        var visibleAreas = AreaOverlayManager.getInstance().getVisible();
+
+        Minecraft minecraft = Minecraft.getInstance();
+        MultiBufferSource.BufferSource buffer = minecraft.renderBuffers().bufferSource();
+        PoseStack poseStack = event.getPoseStack();
+
+        poseStack.pushPose();
+
+        Vec3 projectedView = minecraft.gameRenderer.getMainCamera().getPosition();
+        Quaternionf rotation = new Quaternionf(minecraft.gameRenderer.getMainCamera().rotation());
+        rotation.invert();
+        poseStack.mulPose(rotation);
+        poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
+
+        for (var visibleArea : visibleAreas) {
+            if (visibleArea.getOverlaySourceLocation().getLevel() != event.getLevel()) {
+                continue;
+            }
+
+            render(visibleArea, poseStack, buffer);
+        }
+
+        poseStack.popPose();
+
+        buffer.endBatch(OverlayRenderType.getBlockHilightLineOccluded());
+        buffer.endBatch(OverlayRenderType.getBlockHilightFace());
+        buffer.endBatch(OverlayRenderType.getBlockHilightLine());
+    }
+
+    public void render(IAreaOverlayDataSource area, PoseStack poseStack, MultiBufferSource buffer) {
+        Level level = area.getOverlaySourceLocation().getLevel();
+        Collection<ChunkPos> allChunks = area.getOverlayChunks();
+
+        RenderType typeLinesOccluded = OverlayRenderType.getBlockHilightLineOccluded();
+        render(level, allChunks, poseStack, buffer.getBuffer(typeLinesOccluded), true, 0x30ffffff);
+
+        RenderType typeFaces = OverlayRenderType.getBlockHilightFace();
+        render(level, allChunks, poseStack, buffer.getBuffer(typeFaces), false, area.getOverlayColor());
+
+        RenderType typeLines = OverlayRenderType.getBlockHilightLine();
+        render(level, allChunks, poseStack, buffer.getBuffer(typeLines), true, area.getOverlayColor());
+    }
+
+    private void render(Level level, Collection<ChunkPos> allChunks, PoseStack poseStack, VertexConsumer builder, boolean renderLines, int color) {
+        int[] cols = OverlayRenderType.decomposeColor(color);
+        for (ChunkPos pos : allChunks) {
+            poseStack.pushPose();
+            poseStack.translate(pos.getMinBlockX(), 0, pos.getMinBlockZ());
+            Matrix4f posMat = poseStack.last().pose();
+            addVertices(level, allChunks, builder, posMat, pos, cols, renderLines);
+            poseStack.popPose();
+        }
+    }
+
+    private void addVertices(Level level, Collection<ChunkPos> allChunks, VertexConsumer wr, Matrix4f posMat, ChunkPos pos, int[] cols, boolean renderLines) {
+        // Render around a whole chunk
+        float x1 = 0f;
+        float x2 = 16f;
+        float y1 = level.getMinY();
+        float y2 = level.getMaxY();
+        float z1 = 0f;
+        float z2 = 16f;
+
+        boolean noNorth = !allChunks.contains(new ChunkPos(pos.x, pos.z - 1));
+        boolean noSouth = !allChunks.contains(new ChunkPos(pos.x, pos.z + 1));
+        boolean noWest = !allChunks.contains(new ChunkPos(pos.x - 1, pos.z));
+        boolean noEast = !allChunks.contains(new ChunkPos(pos.x + 1, pos.z));
+
+        if (noNorth) {
+            // Face North, Edge Bottom
+            wr.addVertex(posMat, x1, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(1, 0, 0);
+            wr.addVertex(posMat, x2, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(1, 0, 0);
+            // Face North, Edge Top
+            wr.addVertex(posMat, x2, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(-1, 0, 0);
+            wr.addVertex(posMat, x1, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(-1, 0, 0);
+        }
+
+        if (noSouth) {
+            // Face South, Edge Bottom
+            wr.addVertex(posMat, x2, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(-1, 0, 0);
+            wr.addVertex(posMat, x1, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(-1, 0, 0);
+            // Face South, Edge Top
+            wr.addVertex(posMat, x1, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(1, 0, 0);
+            wr.addVertex(posMat, x2, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(1, 0, 0);
+        }
+
+        if (noWest) {
+            // Face West, Edge Bottom
+            wr.addVertex(posMat, x1, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(0, 0, 1);
+            wr.addVertex(posMat, x1, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(0, 0, 1);
+            // Face West, Edge Top
+            wr.addVertex(posMat, x1, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(0, 0, -1);
+            wr.addVertex(posMat, x1, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(0, 0, -1);
+        }
+
+        if (noEast) {
+            // Face East, Edge Bottom
+            wr.addVertex(posMat, x2, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(0, 0, -1);
+            wr.addVertex(posMat, x2, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(0, 0, -1);
+            // Face East, Edge Top
+            wr.addVertex(posMat, x2, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(0, 0, 1);
+            wr.addVertex(posMat, x2, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(0, 0, 1);
+        }
+
+        if (renderLines) {
+            if (noNorth || noWest) {
+                // Face North, Edge West
+                wr.addVertex(posMat, x1, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
+                        .setNormal(0, 1, 0);
+                wr.addVertex(posMat, x1, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
+                        .setNormal(0, 1, 0);
+            }
+
+            if (noNorth || noEast) {
+                // Face North, Edge East
+                wr.addVertex(posMat, x2, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
+                        .setNormal(0, -1, 0);
+                wr.addVertex(posMat, x2, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
+                        .setNormal(0, -1, 0);
+            }
+
+            if (noSouth || noEast) {
+                // Face South, Edge East
+                wr.addVertex(posMat, x2, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
+                        .setNormal(0, 1, 0);
+                wr.addVertex(posMat, x2, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
+                        .setNormal(0, 1, 0);
+            }
+            if (noSouth || noWest) {
+                // Face South, Edge West
+                wr.addVertex(posMat, x1, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
+                        .setNormal(0, -1, 0);
+                wr.addVertex(posMat, x1, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
+                        .setNormal(0, -1, 0);
+            }
+        } else {
+            // Bottom Face
+            wr.addVertex(posMat, x1, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(1, 0, 0);
+            wr.addVertex(posMat, x2, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(1, 0, 0);
+            wr.addVertex(posMat, x2, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(-1, 0, 0);
+            wr.addVertex(posMat, x1, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
+                    .setNormal(-1, 0, 0);
+        }
+
+    }
+}

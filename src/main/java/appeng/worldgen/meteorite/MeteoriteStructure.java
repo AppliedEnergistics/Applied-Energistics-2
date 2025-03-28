@@ -39,7 +39,7 @@ import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 
 import appeng.core.AppEng;
-import appeng.datagen.providers.tags.ConventionTags;
+import appeng.core.ConventionTags;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructure extends Structure {

@@ -38,6 +38,10 @@ sourceSets {
             srcDir 'src/generated/resources'
         }
     }
+    client {
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+    }
     buildtools
 }
 
@@ -124,6 +128,8 @@ dependencies {
 }
 
 neoForge {
+    addModdingDependenciesTo sourceSets.client
+
     mods {
         ae2 {
             sourceSet sourceSets.main

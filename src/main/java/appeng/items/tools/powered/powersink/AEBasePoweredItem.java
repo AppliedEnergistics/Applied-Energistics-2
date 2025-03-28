@@ -18,7 +18,7 @@
 
 package appeng.items.tools.powered.powersink;
 
-import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 
 import net.minecraft.network.chat.Component;
@@ -26,6 +26,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -48,11 +49,11 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
-            TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> lines,
+                                TooltipFlag advancedTooltips) {
         var storedEnergy = getAECurrentPower(stack);
         var energyCapacity = getAEMaxPower(stack);
-        lines.add(Tooltips.energyStorageComponent(storedEnergy, energyCapacity));
+        lines.accept(Tooltips.energyStorageComponent(storedEnergy, energyCapacity));
     }
 
     @Override

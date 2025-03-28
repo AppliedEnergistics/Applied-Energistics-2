@@ -82,13 +82,11 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack item, LivingEntity target, LivingEntity hitter) {
+    public void hurtEnemy(ItemStack item, LivingEntity target, LivingEntity hitter) {
         if (this.getAECurrentPower(item) > ENERGY_PER_USE) {
             this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
             target.igniteForSeconds(8);
         }
-
-        return false;
     }
 
     // Overridden to allow use of the item on WATER and LAVA which are otherwise not considered for onItemUse

@@ -31,8 +31,6 @@ public class AE2Button extends Button {
     @Override
     protected void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         Minecraft minecraft = Minecraft.getInstance();
-        RenderSystem.enableBlend();
-        RenderSystem.enableDepthTest();
         pGuiGraphics.blitSprite(
                 RenderType::guiTextured,
                 SPRITES.get(this.active, this.isHovered()),

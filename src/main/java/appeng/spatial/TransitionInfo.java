@@ -18,30 +18,24 @@
 
 package appeng.spatial;
 
-import java.time.Instant;
-
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
+
+import java.time.Instant;
 
 /**
  * Defines the source level and area of a transition into the spatial storage plot.
  */
-public final class TransitionInfo {
-
-    public static final String TAG_WORLD_ID = "world_id";
-    public static final String TAG_MIN = "min";
-    public static final String TAG_MAX = "max";
-    public static final String TAG_TIMESTAMP = "timestamp";
-
-    private final ResourceLocation worldId;
-
-    private final BlockPos min;
-
-    private final BlockPos max;
-
-    private final Instant timestamp;
+public record TransitionInfo(ResourceLocation worldId, BlockPos min, BlockPos max, Instant timestamp) {
+    public static final Codec<TransitionInfo> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            ResourceLocation.CODEC.fieldOf("world_id").forGetter(TransitionInfo::worldId),
+            BlockPos.CODEC.fieldOf("min").forGetter(TransitionInfo::min),
+            BlockPos.CODEC.fieldOf("max").forGetter(TransitionInfo::max),
+            ExtraCodecs.INSTANT_ISO8601.fieldOf("timestamp").forGetter(TransitionInfo::timestamp)
+    ).apply(builder, TransitionInfo::new));
 
     public TransitionInfo(ResourceLocation worldId, BlockPos min, BlockPos max, Instant timestamp) {
         this.worldId = worldId;
@@ -49,38 +43,4 @@ public final class TransitionInfo {
         this.max = max.immutable();
         this.timestamp = timestamp;
     }
-
-    public ResourceLocation getWorldId() {
-        return worldId;
-    }
-
-    public BlockPos getMin() {
-        return min;
-    }
-
-    public BlockPos getMax() {
-        return max;
-    }
-
-    public Instant getTimestamp() {
-        return timestamp;
-    }
-
-    public CompoundTag toTag() {
-        CompoundTag tag = new CompoundTag();
-        tag.putString(TAG_WORLD_ID, worldId.toString());
-        tag.put(TAG_MIN, NbtUtils.writeBlockPos(min));
-        tag.put(TAG_MAX, NbtUtils.writeBlockPos(max));
-        tag.putLong(TAG_TIMESTAMP, timestamp.toEpochMilli());
-        return tag;
-    }
-
-    public static TransitionInfo fromTag(CompoundTag tag) {
-        ResourceLocation worldId = ResourceLocation.parse(tag.getString(TAG_WORLD_ID));
-        BlockPos min = NbtUtils.readBlockPos(tag, TAG_MIN).orElseThrow();
-        BlockPos max = NbtUtils.readBlockPos(tag, TAG_MAX).orElseThrow();
-        Instant timestamp = Instant.ofEpochMilli(tag.getLong(TAG_TIMESTAMP));
-        return new TransitionInfo(worldId, min, max, timestamp);
-    }
-
 }

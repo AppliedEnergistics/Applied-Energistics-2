@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
+import java.util.function.Consumer;
 
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -117,7 +119,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> lines,
             TooltipFlag flags) {
         var what = AEItemKey.of(stack);
         if (what == null) {
@@ -138,7 +140,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
             // TODO 1.21.4 tooltip = details.getTooltip(clientLevel, flags);
             tooltip = ClientPatternCache.getTooltip(stack);
         } catch (Exception e) {
-            lines.add(GuiText.InvalidPattern.text().copy().withStyle(ChatFormatting.RED));
+            lines.accept(GuiText.InvalidPattern.text().copy().withStyle(ChatFormatting.RED));
             if (invalidPatternTooltip != null) {
                 tooltip = invalidPatternTooltip.getTooltip(stack, clientLevel, e, flags);
             } else {
@@ -155,23 +157,23 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
 
             boolean first = true;
             for (var output : tooltip.getOutputs()) {
-                lines.add(Component.empty().append(first ? label : and).append(getTooltipEntryLine(output)));
+                lines.accept(Component.empty().append(first ? label : and).append(getTooltipEntryLine(output)));
                 first = false;
             }
 
             first = true;
             for (var input : tooltip.getInputs()) {
-                lines.add(Component.empty().append(first ? with : and).append(getTooltipEntryLine(input)));
+                lines.accept(Component.empty().append(first ? with : and).append(getTooltipEntryLine(input)));
                 first = false;
             }
 
             for (var property : tooltip.getProperties()) {
                 if (property.value() != null) {
-                    lines.add(Component.empty().append(property.name())
+                    lines.accept(Component.empty().append(property.name())
                             .append(Component.literal(": ").withStyle(ChatFormatting.GRAY))
                             .append(property.value()));
                 } else {
-                    lines.add(Component.empty().withStyle(ChatFormatting.GRAY).append(property.name()));
+                    lines.accept(Component.empty().withStyle(ChatFormatting.GRAY).append(property.name()));
                 }
             }
         }

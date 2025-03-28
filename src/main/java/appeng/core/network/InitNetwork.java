@@ -8,7 +8,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 import appeng.core.AppEng;
 import appeng.core.network.bidirectional.ConfigValuePacket;
-import appeng.core.network.clientbound.AssemblerAnimationPacket;
+import appeng.core.network.clientbound.MolecularAssemblerAnimationPacket;
 import appeng.core.network.clientbound.BlockTransitionEffectPacket;
 import appeng.core.network.clientbound.ClearPatternAccessTerminalPacket;
 import appeng.core.network.clientbound.CompassResponsePacket;
@@ -48,7 +48,7 @@ public class InitNetwork {
         var registrar = event.registrar(AppEng.MOD_ID);
 
         // Clientbound
-        clientbound(registrar, AssemblerAnimationPacket.TYPE, AssemblerAnimationPacket.STREAM_CODEC);
+        clientbound(registrar, MolecularAssemblerAnimationPacket.TYPE, MolecularAssemblerAnimationPacket.STREAM_CODEC);
         clientbound(registrar, BlockTransitionEffectPacket.TYPE, BlockTransitionEffectPacket.STREAM_CODEC);
         clientbound(registrar, ClearPatternAccessTerminalPacket.TYPE, ClearPatternAccessTerminalPacket.STREAM_CODEC);
         clientbound(registrar, CompassResponsePacket.TYPE, CompassResponsePacket.STREAM_CODEC);

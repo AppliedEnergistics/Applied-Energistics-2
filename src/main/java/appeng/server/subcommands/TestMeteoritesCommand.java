@@ -181,7 +181,7 @@ public class TestMeteoritesCommand implements ISubCommand {
             String biomeId = level.getBiome(pos).unwrapKey().map(bk -> bk.location().toString()).orElse("unknown");
             Component tooltip = Component.literal(settings + "\nBiome: ").copy()
                     .append(biomeId);
-            msg.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
+            msg.withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(tooltip)));
 
             sender.sendSuccess(() -> msg, true);
         }
@@ -200,7 +200,7 @@ public class TestMeteoritesCommand implements ISubCommand {
         String tpCommand = String.format(Locale.ROOT, "/tp @s %d %d %d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
 
         return Component.literal(displayText).withStyle(ChatFormatting.UNDERLINE)
-                .withStyle(style -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, tpCommand)));
+                .withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand(tpCommand)));
     }
 
     private static MeteoriteStructurePiece getMeteoritePieceFromChunk(ChunkAccess chunk,

@@ -239,7 +239,7 @@ public final class EncodingHelper {
         }
 
         // Also consider the player inventory, but only as the last resort
-        for (var item : menu.getPlayerInventory().items) {
+        for (var item : menu.getPlayerInventory().getNonEquipmentItems()) {
             var key = AEItemKey.of(item);
             if (key != null) {
                 // Use -1 as lower priority than the lowest network entry (which start at 0)

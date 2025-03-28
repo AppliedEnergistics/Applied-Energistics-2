@@ -253,16 +253,16 @@ public class PatternEncodingLogic implements InternalInventoryHost {
         isLoading = true;
         try {
             try {
-                this.mode = EncodingMode.valueOf(data.getString("mode"));
+                this.mode = EncodingMode.valueOf(data.getStringOr("mode", ""));
             } catch (IllegalArgumentException ignored) {
                 this.mode = EncodingMode.CRAFTING;
             }
-            this.setSubstitution(data.getBoolean("substitute"));
-            this.setFluidSubstitution(data.getBoolean("substituteFluids"));
+            this.setSubstitution(data.getBooleanOr("substitute", false));
+            this.setFluidSubstitution(data.getBooleanOr("substituteFluids", false));
 
-            if (data.contains("stonecuttingRecipeId", Tag.TAG_STRING)) {
+            if (data.contains("stonecuttingRecipeId")) {
                 this.stonecuttingRecipeId = ResourceKey.create(Registries.RECIPE,
-                        ResourceLocation.parse(data.getString("stonecuttingRecipeId")));
+                        ResourceLocation.parse(data.getStringOr("stonecuttingRecipeId", "")));
             } else {
                 this.stonecuttingRecipeId = null;
             }

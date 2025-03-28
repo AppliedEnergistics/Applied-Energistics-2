@@ -18,11 +18,11 @@
 
 package appeng.items.tools.powered;
 
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,14 +124,14 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
-            TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, context, lines, advancedTooltips);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> lines,
+                                TooltipFlag advancedTooltips) {
+        super.appendHoverText(stack, context, tooltipDisplay, lines, advancedTooltips);
 
         if (getLinkedPosition(stack) == null) {
-            lines.add(Tooltips.of(GuiText.Unlinked, Tooltips.RED));
+            lines.accept(Tooltips.of(GuiText.Unlinked, Tooltips.RED));
         } else {
-            lines.add(Tooltips.of(GuiText.Linked, Tooltips.GREEN));
+            lines.accept(Tooltips.of(GuiText.Linked, Tooltips.GREEN));
         }
     }
 

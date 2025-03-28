@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2025, TeamAppliedEnergistics, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,37 +18,56 @@
 
 package appeng.api.features;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
-
+import appeng.core.AELog;
+import appeng.core.AppEng;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-
-import org.jetbrains.annotations.Nullable;
-
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.core.AELog;
-import appeng.core.AppEng;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Handles the matching between UUIDs and internal IDs for security systems. This whole system could be replaced by
  * storing directly the UUID, using a lot more traffic though
- *
- * @author thatsIch
- * @version rv3 - 30.05.2015
- * @since rv3 30.05.2015
  */
 final class PlayerRegistryInternal extends SavedData implements IPlayerRegistry {
 
     private static final String NAME = AppEng.MOD_ID + "_players";
-    private static final String TAG_PLAYER_IDS = "playerIds";
-    private static final String TAG_PROFILE_IDS = "profileIds";
+
+    private record PlayerRegistryData(List<Integer> playerIds, List<UUID> profileIds) {
+    }
+
+    private static final Codec<PlayerRegistryData> PLAYER_REGISTRY_DATA_CODEC = RecordCodecBuilder.create(
+            builder -> builder.group(
+                    Codec.INT.listOf().fieldOf("player_ids").forGetter(PlayerRegistryData::playerIds),
+                    UUIDUtil.CODEC.listOf().fieldOf("profile_ids").forGetter(PlayerRegistryData::profileIds)
+            ).apply(builder, PlayerRegistryData::new)
+    );
+
+    private static final SavedDataType<PlayerRegistryInternal> TYPE = new SavedDataType<>(
+            NAME,
+            context -> new PlayerRegistryInternal(context.levelOrThrow().getServer()),
+            context -> RecordCodecBuilder.create(builder -> builder.group(
+                            PLAYER_REGISTRY_DATA_CODEC.fieldOf("players").forGetter(PlayerRegistryInternal::getData)
+                    )
+                    .apply(builder, data -> new PlayerRegistryInternal(context.levelOrThrow().getServer(), data))
+            )
+    );
 
     private final BiMap<UUID, Integer> mapping = HashBiMap.create();
 
@@ -61,17 +80,28 @@ final class PlayerRegistryInternal extends SavedData implements IPlayerRegistry 
         this.server = server;
     }
 
+    private PlayerRegistryInternal(MinecraftServer server, PlayerRegistryData data) {
+        this.server = server;
+        load(data);
+    }
+
+    private PlayerRegistryData getData() {
+        List<Integer> playerIds = new ArrayList<>(mapping.size());
+        List<UUID> profileIds = new ArrayList<>(mapping.size());
+        for (var entry : mapping.entrySet()) {
+            playerIds.add(entry.getValue());
+            profileIds.add(entry.getKey());
+        }
+
+        return new PlayerRegistryData(playerIds, profileIds);
+    }
+
     static PlayerRegistryInternal get(MinecraftServer server) {
         var overworld = server.getLevel(ServerLevel.OVERWORLD);
         if (overworld == null) {
             throw new IllegalStateException("Cannot retrieve player data for a server that has no overworld.");
         }
-        return overworld.getDataStorage().computeIfAbsent(
-                new Factory<>(
-                        () -> new PlayerRegistryInternal(server),
-                        (nbt, provider) -> PlayerRegistryInternal.load(server, nbt),
-                        null),
-                PlayerRegistryInternal.NAME);
+        return overworld.getDataStorage().computeIfAbsent(TYPE);
     }
 
     @Nullable
@@ -99,43 +129,24 @@ final class PlayerRegistryInternal extends SavedData implements IPlayerRegistry 
         return playerId;
     }
 
-    private static PlayerRegistryInternal load(MinecraftServer server, CompoundTag nbt) {
-        int[] playerIds = nbt.getIntArray(TAG_PLAYER_IDS);
-        long[] profileIds = nbt.getLongArray(TAG_PROFILE_IDS);
+    private void load(PlayerRegistryData data) {
+        var playerIds = data.playerIds();
+        var profileIds = data.profileIds();
 
-        if (playerIds.length * 2 != profileIds.length) {
-            throw new IllegalStateException("Player ID mapping is corrupted. " + playerIds.length + " player IDs vs. "
-                    + profileIds.length + " profile IDs (latter must be 2 * the former)");
+        if (playerIds.size() != profileIds.size()) {
+            throw new IllegalStateException("Player ID mapping is corrupted. " + playerIds.size() + " player IDs vs. "
+                    + profileIds.size() + " profile IDs");
         }
 
-        var result = new PlayerRegistryInternal(server);
         int highestPlayerId = -1;
-        for (int i = 0; i < playerIds.length; i++) {
-            int playerId = playerIds[i];
-            UUID profileId = new UUID(profileIds[i * 2], profileIds[i * 2 + 1]);
+        for (int i = 0; i < playerIds.size(); i++) {
+            int playerId = playerIds.get(i);
+            UUID profileId = profileIds.get(i);
             highestPlayerId = Math.max(playerId, highestPlayerId);
-            result.mapping.put(profileId, playerId);
+            mapping.put(profileId, playerId);
             AELog.debug("AE player ID %s is assigned to profile ID %s", playerId, profileId);
         }
-        result.nextPlayerId = highestPlayerId + 1;
-        return result;
-    }
-
-    @Override
-    public CompoundTag save(CompoundTag compound, HolderLookup.Provider registries) {
-        int index = 0;
-        int[] playerIds = new int[mapping.size()];
-        long[] profileIds = new long[mapping.size() * 2];
-        for (Map.Entry<UUID, Integer> entry : mapping.entrySet()) {
-            profileIds[index * 2] = entry.getKey().getMostSignificantBits();
-            profileIds[index * 2 + 1] = entry.getKey().getLeastSignificantBits();
-            playerIds[index++] = entry.getValue();
-        }
-
-        compound.putIntArray(TAG_PLAYER_IDS, playerIds);
-        compound.putLongArray(TAG_PROFILE_IDS, profileIds);
-
-        return compound;
+        nextPlayerId = highestPlayerId + 1;
     }
 
 }

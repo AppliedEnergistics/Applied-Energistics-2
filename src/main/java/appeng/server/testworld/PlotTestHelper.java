@@ -2,6 +2,7 @@ package appeng.server.testworld;
 
 import java.util.Objects;
 
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,19 +64,18 @@ public class PlotTestHelper extends GameTestHelper {
     }
 
     public <T extends AEBasePart> T getPart(BlockPos pos, @Nullable Direction side, Class<T> partClass) {
-        var be = getBlockEntity(pos);
+        var be = getBlockEntity(pos, BlockEntity.class);
         if (!(be instanceof IPartHost partHost)) {
-            fail("not a part host", pos);
-            return null;
+            throw assertionException("not a part host", pos);
         }
 
         var part = partHost.getPart(side);
         if (part == null) {
-            fail("part missing", pos);
+            throw assertionException("part missing", pos);
         }
 
         if (!partClass.isInstance(part)) {
-            fail("wrong part", pos);
+            throw assertionException("wrong part", pos);
         }
 
         return partClass.cast(part);
@@ -101,8 +101,7 @@ public class PlotTestHelper extends GameTestHelper {
                 }
             }
         }
-        fail("no node", pos);
-        return null;
+        throw assertionException("no node", pos);
     }
 
     /**
@@ -142,7 +141,7 @@ public class PlotTestHelper extends GameTestHelper {
     public void assertContains(MEStorage storage, AEKey key) {
         var count = storage.getAvailableStacks().get(key);
         if (count <= 0) {
-            throw new GameTestAssertException("Network storage does not contain " + key + ". Available keys: "
+            throw assertionException("Network storage does not contain " + key + ". Available keys: "
                     + storage.getAvailableStacks().keySet());
         }
     }
@@ -150,7 +149,7 @@ public class PlotTestHelper extends GameTestHelper {
     public void assertContainsNot(MEStorage storage, AEKey key) {
         var count = storage.getAvailableStacks().get(key);
         if (count > 0) {
-            throw new GameTestAssertException("Network storage does contains " + key + ".");
+            throw assertionException("Network storage does contains " + key + ".");
         }
     }
 
@@ -172,19 +171,19 @@ public class PlotTestHelper extends GameTestHelper {
     public void assertEquals(BlockPos ref, Object expected, Object actual) {
         if (!Objects.equals(expected, actual)) {
             String message = actual + " was not " + expected;
-            fail(message, ref);
+            throw assertionException(message, ref);
         }
     }
 
     public void check(boolean test, String errorMessage) throws GameTestAssertException {
         if (!test) {
-            fail(errorMessage);
+            throw assertionException(errorMessage);
         }
     }
 
     public void check(boolean test, String errorMessage, BlockPos pos) throws GameTestAssertException {
         if (!test) {
-            fail(errorMessage, pos);
+            throw assertionException(errorMessage, pos);
         }
     }
 
@@ -195,7 +194,7 @@ public class PlotTestHelper extends GameTestHelper {
     }
 
     public void countContainerContentAt(BlockPos pos, KeyCounter counter) {
-        var be = getBlockEntity(pos);
+        var be = getBlockEntity(pos, BlockEntity.class);
         if (be instanceof BaseContainerBlockEntity container) {
             for (int i = 0; i < container.getContainerSize(); i++) {
                 var item = container.getItem(i);
@@ -209,7 +208,7 @@ public class PlotTestHelper extends GameTestHelper {
                 counter.add(AEItemKey.of(item), item.getCount());
             }
         } else {
-            throw new RuntimeException("Unsupported BE: " + be);
+            throw assertionException("Unsupported BE: " + be, pos);
         }
     }
 

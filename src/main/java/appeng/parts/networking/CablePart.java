@@ -384,19 +384,19 @@ public abstract class CablePart extends AEBasePart implements ICablePart {
         // Restore channels per side for smart cables and also support as
         // a convenience to set them for all sides at once
         if (data.contains("channels")) {
-            Arrays.fill(this.channelsOnSide, data.getInt("channels"));
+            Arrays.fill(this.channelsOnSide, data.getIntOr("channels", 0));
         } else {
             for (var side : Direction.values()) {
                 var sideName = "channels" + StringUtils.capitalize(side.getSerializedName());
-                channelsOnSide[side.ordinal()] = data.getInt(sideName);
+                channelsOnSide[side.ordinal()] = data.getIntOr(sideName, 0);
             }
         }
 
         // Restore adjacent connections
         var connections = EnumSet.noneOf(Direction.class);
-        var connectionsTag = data.getList("connections", Tag.TAG_STRING);
+        var connectionsTag = data.getListOrEmpty("connections");
         for (var connectionTag : connectionsTag) {
-            var side = Direction.byName(connectionTag.getAsString());
+            var side = Direction.byName(connectionTag.asString().get());
             if (side != null) {
                 connections.add(side);
             }

@@ -130,24 +130,24 @@ public class ChannelTests {
         private void checkNode(BlockPos pos, IGridNode node, int expectedChannelCount) {
             if (nodes.contains(node)) {
                 if (node.getUsedChannels() != expectedChannelCount) {
-                    helper.fail("Node has wrong channel count. Expected %d. Got %d.".formatted(expectedChannelCount,
-                            node.getUsedChannels()), pos);
+                    throw helper.assertionException(pos, "Node has wrong channel count. Expected %d. Got %d.".formatted(expectedChannelCount,
+                            node.getUsedChannels()));
                 }
                 nodes.remove(node);
             } else {
-                helper.fail("Node is not in the grid or it was already checked", pos);
+                throw helper.assertionException(pos, "Node is not in the grid or it was already checked");
             }
         }
 
         private void checkConnection(BlockPos pos, IGridConnection connection, int expectedChannelCount) {
             if (connections.contains(connection)) {
                 if (connection.getUsedChannels() != expectedChannelCount) {
-                    helper.fail("Connection has wrong channel count. Expected %d. Got %d."
-                            .formatted(expectedChannelCount, connection.getUsedChannels()), pos);
+                    throw helper.assertionException(pos, "Connection has wrong channel count. Expected %d. Got %d."
+                            .formatted(expectedChannelCount, connection.getUsedChannels()));
                 }
                 connections.remove(connection);
             } else {
-                helper.fail("Connection is not in the grid or it was already checked", pos);
+                throw helper.assertionException(pos, "Connection is not in the grid or it was already checked");
             }
         }
 
@@ -188,7 +188,7 @@ public class ChannelTests {
             });
 
             if (!foundAny.getPlain()) {
-                helper.fail("Connection spec " + bb + " and " + bb2 + " did not find any connections.");
+                throw helper.assertionException("Connection spec " + bb + " and " + bb2 + " did not find any connections.");
             }
         }
 

@@ -173,7 +173,7 @@ public class TestWorldGenerator {
                     pos.setZ(chunkPos.getMinBlockZ() + z);
                     for (var y = -3; y <= -1; y++) {
                         pos.setY(origin.getY() + y);
-                        chunk.setBlockState(pos, state, false);
+                        chunk.setBlockState(pos, state);
                     }
                 }
             }

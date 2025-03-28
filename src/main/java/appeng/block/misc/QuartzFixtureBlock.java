@@ -21,6 +21,7 @@ package appeng.block.misc;
 import java.util.EnumMap;
 import java.util.Map;
 
+import appeng.core.particles.ParticleTypes;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -50,7 +51,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.orientation.RelativeSide;
 import appeng.block.AEBaseBlock;
-import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
 

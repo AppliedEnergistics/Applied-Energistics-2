@@ -18,28 +18,29 @@
 
 package appeng.spatial;
 
-import java.util.Locale;
-
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.level.ChunkPos;
+import java.util.Locale;
+import java.util.Optional;
 
 /**
  * A plot inside the storage cell level that is assigned to a specific storage cell.
  */
 public class SpatialStoragePlot {
 
-    private static final String TAG_ID = "id";
-
-    private static final String TAG_SIZE = "size";
-
-    private static final String TAG_OWNER = "owner";
-
-    private static final String TAG_LAST_TRANSITION = "last_transition";
+    public static final Codec<SpatialStoragePlot> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            Codec.INT.fieldOf("id").forGetter(SpatialStoragePlot::getId),
+            BlockPos.CODEC.fieldOf("size").forGetter(SpatialStoragePlot::getSize),
+            Codec.INT.fieldOf("owner").forGetter(SpatialStoragePlot::getOwner),
+            TransitionInfo.CODEC.optionalFieldOf("last_transition").xmap(
+                    transitionInfo -> transitionInfo.orElse(null),
+                    Optional::ofNullable
+            ).forGetter(SpatialStoragePlot::getLastTransition)
+    ).apply(builder, SpatialStoragePlot::new));
 
     private static final int REGION_SIZE = 512;
 
@@ -68,6 +69,10 @@ public class SpatialStoragePlot {
     private TransitionInfo lastTransition;
 
     public SpatialStoragePlot(int id, BlockPos size, int owner) {
+        this(id, size, owner, null);
+    }
+
+    public SpatialStoragePlot(int id, BlockPos size, int owner, @Nullable TransitionInfo lastTransition) {
         this.id = id;
         this.size = size;
         this.owner = owner;
@@ -77,6 +82,7 @@ public class SpatialStoragePlot {
         if (size.getX() > MAX_SIZE || size.getY() > MAX_SIZE || size.getZ() > MAX_SIZE) {
             throw new IllegalArgumentException("Plot size " + size + " exceeds maximum size of " + MAX_SIZE);
         }
+        this.lastTransition = lastTransition;
     }
 
     public int getId() {
@@ -95,7 +101,7 @@ public class SpatialStoragePlot {
     /**
      * Returns the AE player id of the owner of this plot, or -1 if unknown.
      *
-     * @see appeng.core.worlddata.IWorldPlayerData
+     * @see appeng.api.features.IPlayerRegistry
      */
     public int getOwner() {
         return owner;
@@ -174,29 +180,6 @@ public class SpatialStoragePlot {
         ChunkPos originChunk = new ChunkPos(origin);
 
         return String.format(Locale.ROOT, "r.%d.%d.mca", originChunk.getRegionX(), originChunk.getRegionZ());
-    }
-
-    public CompoundTag toTag() {
-        CompoundTag tag = new CompoundTag();
-        tag.putInt(TAG_ID, id);
-        tag.put(TAG_SIZE, NbtUtils.writeBlockPos(size));
-        tag.putInt(TAG_OWNER, owner);
-        if (lastTransition != null) {
-            tag.put(TAG_LAST_TRANSITION, lastTransition.toTag());
-        }
-        return tag;
-    }
-
-    public static SpatialStoragePlot fromTag(CompoundTag tag) {
-        int id = tag.getInt(TAG_ID);
-        BlockPos size = NbtUtils.readBlockPos(tag, TAG_SIZE).orElseThrow();
-        int ownerId = tag.getInt(TAG_OWNER);
-        SpatialStoragePlot plot = new SpatialStoragePlot(id, size, ownerId);
-
-        if (tag.contains(TAG_LAST_TRANSITION, Tag.TAG_COMPOUND)) {
-            plot.lastTransition = TransitionInfo.fromTag(tag.getCompound(TAG_LAST_TRANSITION));
-        }
-        return plot;
     }
 
 }

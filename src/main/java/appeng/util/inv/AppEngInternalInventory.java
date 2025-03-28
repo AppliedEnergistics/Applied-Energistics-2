@@ -179,14 +179,14 @@ public class AppEngInternalInventory extends BaseInternalInventory {
     }
 
     public void readFromNBT(CompoundTag data, String name, HolderLookup.Provider registries) {
-        if (data.contains(name, Tag.TAG_LIST)) {
-            var tagList = data.getList(name, Tag.TAG_COMPOUND);
+        if (data.contains(name)) {
+            var tagList = data.getListOrEmpty(name);
             for (var itemTag : tagList) {
                 var itemCompound = (CompoundTag) itemTag;
-                int slot = itemCompound.getInt("Slot");
+                int slot = itemCompound.getIntOr("Slot", 0);
 
                 if (slot >= 0 && slot < stacks.size()) {
-                    stacks.set(slot, ItemStack.parseOptional(registries, itemCompound));
+                    stacks.set(slot, ItemStack.parse(registries, itemCompound).orElse(ItemStack.EMPTY));
                 }
             }
         }

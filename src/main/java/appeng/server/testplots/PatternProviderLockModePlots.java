@@ -25,6 +25,7 @@ import appeng.parts.crafting.PatternProviderPart;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
 import appeng.server.testworld.SavedBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * All plots are essentially the same: PP on Chest, powered by Creative Energy Cell. Use of the PP is via API, not
@@ -470,7 +471,7 @@ public final class PatternProviderLockModePlots {
     }
 
     private static PatternProviderLogicHost getHost(PlotTestHelper plotTestHelper) {
-        var be = plotTestHelper.getBlockEntity(BlockPos.ZERO);
+        var be = plotTestHelper.getBlockEntity(BlockPos.ZERO, BlockEntity.class);
         if (be instanceof PatternProviderBlockEntity host) {
             return host;
         }

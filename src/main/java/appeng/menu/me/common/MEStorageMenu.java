@@ -537,7 +537,7 @@ public class MEStorageMenu extends AEBaseMenu
                 }
             }
             case MOVE_REGION -> {
-                final int playerInv = player.getInventory().items.size();
+                final int playerInv = player.getInventory().getNonEquipmentItems().size();
                 for (int slotNum = 0; slotNum < playerInv; slotNum++) {
                     if (!moveOneStackToPlayer(clickedItem)) {
                         break;

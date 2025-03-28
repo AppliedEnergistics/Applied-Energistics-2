@@ -213,7 +213,7 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
         // Otherwise recipes that need 4x<item> will not correctly show missing items if at least 1 of <item> is in
         // the grid.
         var reservedGridAmounts = new Object2IntOpenHashMap<>();
-        var playerItems = getPlayerInventory().items;
+        var playerItems = getPlayerInventory().getNonEquipmentItems();
         var reservedPlayerItems = new int[playerItems.size()];
 
         for (var entry : ingredients.entrySet()) {

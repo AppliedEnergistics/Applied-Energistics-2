@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -13,57 +14,59 @@ import guideme.document.LytRect;
 import guideme.document.block.LytBlock;
 import guideme.document.block.LytSlotGrid;
 import guideme.document.block.recipes.LytStandardRecipeBox;
-import guideme.document.block.recipes.RecipeDisplayHolder;
 import guideme.layout.LayoutContext;
 import guideme.render.RenderContext;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.localization.GuiText;
-import appeng.recipes.handlers.ChargerRecipeDisplay;
-import appeng.recipes.handlers.InscriberRecipeDisplay;
-import appeng.recipes.transform.TransformRecipeDisplay;
+import appeng.recipes.AERecipeTypes;
+import appeng.recipes.handlers.ChargerRecipe;
+import appeng.recipes.handlers.InscriberRecipe;
+import appeng.recipes.transform.TransformRecipe;
 import appeng.util.Platform;
 
 public class RecipeTypeContributions implements RecipeTypeMappingSupplier {
     @Override
     public void collect(RecipeTypeMappings mappings) {
-        mappings.add(InscriberRecipeDisplay.class, RecipeTypeContributions::inscribing);
-        mappings.add(ChargerRecipeDisplay.class, RecipeTypeContributions::charging);
-        mappings.add(TransformRecipeDisplay.class, RecipeTypeContributions::transform);
+        mappings.add(AERecipeTypes.INSCRIBER, RecipeTypeContributions::inscribing);
+        mappings.add(AERecipeTypes.CHARGER, RecipeTypeContributions::charging);
+        mappings.add(AERecipeTypes.TRANSFORM, RecipeTypeContributions::transform);
     }
 
-    private static LytStandardRecipeBox<ChargerRecipeDisplay> charging(ChargerRecipeDisplay recipe) {
+    private static LytStandardRecipeBox<ChargerRecipe> charging(RecipeHolder<ChargerRecipe> holder) {
         return LytStandardRecipeBox.builder()
                 .icon(AEBlocks.CHARGER)
                 .title(AEBlocks.CHARGER.asItem().getName().getString())
-                .input(recipe.ingredient())
-                .outputFromResultOf(recipe)
-                .build(new RecipeDisplayHolder<>(null, recipe));
+                .input(holder.value().getIngredient())
+                .outputFromResultOf(holder)
+                .build(holder);
     }
 
-    private static LytStandardRecipeBox<InscriberRecipeDisplay> inscribing(InscriberRecipeDisplay recipe) {
+    private static LytStandardRecipeBox<InscriberRecipe> inscribing(RecipeHolder<InscriberRecipe> holder) {
         return LytStandardRecipeBox.builder()
                 .icon(AEBlocks.INSCRIBER)
                 .title(AEBlocks.INSCRIBER.asItem().getName().getString())
-                .customBody(new LytInscriberRecipe(recipe))
-                .build(new RecipeDisplayHolder<>(null, recipe));
+                .customBody(new LytInscriberRecipe(holder.value()))
+                .build(holder);
     }
 
-    private static LytStandardRecipeBox<TransformRecipeDisplay> transform(TransformRecipeDisplay recipe) {
-        var builder = LytStandardRecipeBox.builder()
-                .input(LytSlotGrid.column(recipe.ingredients(), true))
-                .output(LytSlotGrid.column(List.of(recipe.result()), true));
+    private static LytStandardRecipeBox<TransformRecipe> transform(RecipeHolder<TransformRecipe> holder) {
+        var recipe = holder.value();
 
-        if (recipe.circumstance().isExplosion()) {
+        var builder = LytStandardRecipeBox.builder()
+                .input(LytSlotGrid.columnFromIngredients(recipe.getIngredients(), true))
+                .output(LytSlotGrid.columnFromStacks(List.of(recipe.getResultItem()), true));
+
+        if (recipe.circumstance.isExplosion()) {
             builder.icon(Blocks.TNT);
             builder.title(GuiText.TransformTypeExplode.text().getString());
-        } else if (recipe.circumstance().isFluid()) {
+        } else if (recipe.circumstance.isFluid()) {
             Fluid fluid = Fluids.EMPTY;
             // Special-case water since a lot of mods add their fluids to the tag
-            if (recipe.circumstance().isFluidTag(FluidTags.WATER)) {
+            if (recipe.circumstance.isFluidTag(FluidTags.WATER)) {
                 fluid = Fluids.WATER;
             } else {
-                var fluidsForRendering = recipe.circumstance().getFluidsForRendering();
+                var fluidsForRendering = recipe.circumstance.getFluidsForRendering();
                 if (!fluidsForRendering.isEmpty()) {
                     var cycle = System.currentTimeMillis() / 1500;
                     fluid = fluidsForRendering.get((int) (cycle % fluidsForRendering.size()));
@@ -74,7 +77,7 @@ public class RecipeTypeContributions implements RecipeTypeMappingSupplier {
             builder.title(GuiText.TransformTypeThrowInFluid.text(Platform.getFluidDisplayName(fluid)).getString());
         }
 
-        return builder.build(new RecipeDisplayHolder<>(null, recipe));
+        return builder.build(holder);
     }
 
     static class FluidIcon extends LytBlock {

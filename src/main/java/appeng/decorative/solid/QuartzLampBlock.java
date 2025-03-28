@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import appeng.client.render.effects.ParticleTypes;
+import appeng.core.particles.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
 

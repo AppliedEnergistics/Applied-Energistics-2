@@ -1,7 +1,6 @@
 package appeng.integration.modules.itemlists;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.Tesselator;
 
 import org.joml.Matrix4fStack;
@@ -36,8 +35,7 @@ public final class FluidBlockRendering {
 
         var renderType = ItemBlockRenderTypes.getRenderLayer(fluidState);
 
-        renderType.setupRenderState();
-        RenderSystem.disableDepthTest();
+        // TODO 1.21.5 RenderSystem.disableDepthTest();
 
         var worldMatStack = RenderSystem.getModelViewStack();
         worldMatStack.pushMatrix();
@@ -62,7 +60,7 @@ public final class FluidBlockRendering {
                 fluidState);
         var meshData = builder.build();
         if (meshData != null) {
-            BufferUploader.drawWithShader(meshData);
+            renderType.draw(meshData);
         }
 
         // Reset the render state and return to the previous modelview matrix

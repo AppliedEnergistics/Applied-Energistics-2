@@ -88,20 +88,6 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (newState.getBlock() == state.getBlock()) {
-            return; // Just a block state change
-        }
-
-        final CraftingBlockEntity cp = this.getBlockEntity(level, pos);
-        if (cp != null) {
-            cp.breakCluster();
-        }
-
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
-
-    @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
             BlockHitResult hitResult) {
         if (InteractionUtil.isInAlternateUseMode(player)) {

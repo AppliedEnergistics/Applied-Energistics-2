@@ -26,12 +26,12 @@ public final class PatternProviderDataProvider
 
     @Override
     public void buildTooltip(PatternProviderLogicHost host, TooltipContext context, TooltipBuilder tooltip) {
-        var lockReason = context.serverData().getString(NBT_LOCK_REASON);
+        var lockReason = context.serverData().getStringOr(NBT_LOCK_REASON, "");
         if (!lockReason.isEmpty()) {
             tooltip.addLine(Component.Serializer.fromJson(lockReason, context.registries()));
         }
-        var stack = context.serverData().getCompound(NBT_LOCK_UNTIL_RESULT_STACK);
-        if (!stack.isEmpty()) {
+        var stack = context.serverData().getCompound(NBT_LOCK_UNTIL_RESULT_STACK).orElse(null);
+        if (stack != null) {
             var genericStack = GenericStack.readTag(context.registries(), stack);
             Component stackName;
             Component stackAmount;

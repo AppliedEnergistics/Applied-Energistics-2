@@ -1,6 +1,7 @@
 
 package appeng.core.network.clientbound;
 
+import appeng.core.particles.EnergyParticleData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -23,7 +24,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.registries.GameData;
 
-import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AELog;
 import appeng.core.AppEngClient;
 import appeng.core.network.ClientboundPacket;

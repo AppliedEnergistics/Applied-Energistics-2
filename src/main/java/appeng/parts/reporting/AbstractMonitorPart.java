@@ -122,13 +122,11 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.readFromNBT(data, registries);
 
-        this.isLocked = data.getBoolean("isLocked");
+        this.isLocked = data.getBooleanOr("isLocked", false);
 
-        if (data.contains("configuredItem", Tag.TAG_COMPOUND)) {
-            this.configuredItem = AEKey.fromTagGeneric(registries, data.getCompound("configuredItem"));
-        } else {
-            this.configuredItem = null;
-        }
+        this.configuredItem = data.getCompound("configuredItem")
+                .map(tag -> AEKey.fromTagGeneric(registries, tag))
+                .orElse(null);
     }
 
     @Override
@@ -188,8 +186,8 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     @Override
     public void readVisualStateFromNBT(CompoundTag data) {
         super.readVisualStateFromNBT(data);
-        this.amount = data.getLong("amount");
-        this.canCraft = data.getBoolean("canCraft");
+        this.amount = data.getLongOr("amount", 0);
+        this.canCraft = data.getBooleanOr("canCraft", false);
     }
 
     @Override

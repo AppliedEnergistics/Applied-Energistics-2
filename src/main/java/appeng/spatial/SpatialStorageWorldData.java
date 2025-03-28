@@ -18,20 +18,13 @@
 
 package appeng.spatial;
 
-import java.util.List;
-
-import com.google.common.collect.ImmutableList;
-
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.saveddata.SavedData;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-
-import appeng.core.AELog;
+import java.util.List;
 
 /**
  * Extra data attached to the spatial storage level.
@@ -43,21 +36,27 @@ public class SpatialStorageWorldData extends SavedData {
      */
     public static final String ID = "ae2_spatial_storage";
 
-    // Used to allow forward compatibility
-    private static final int CURRENT_FORMAT = 2;
-
-    private static final String TAG_FORMAT = "format";
-
-    private static final String TAG_PLOTS = "plots";
+    public static final Codec<SpatialStorageWorldData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            SpatialStoragePlot.CODEC.listOf().fieldOf("plots").forGetter(SpatialStorageWorldData::getPlots)
+    ).apply(builder, SpatialStorageWorldData::new));
 
     private final Int2ObjectOpenHashMap<SpatialStoragePlot> plots = new Int2ObjectOpenHashMap<>();
+
+    public SpatialStorageWorldData() {
+    }
+
+    public SpatialStorageWorldData(List<SpatialStoragePlot> plots) {
+        for (var plot : plots) {
+            this.plots.put(plot.getId(), plot);
+        }
+    }
 
     public SpatialStoragePlot getPlotById(int id) {
         return plots.get(id);
     }
 
     public List<SpatialStoragePlot> getPlots() {
-        return ImmutableList.copyOf(plots.values());
+        return List.copyOf(plots.values());
     }
 
     public SpatialStoragePlot allocatePlot(BlockPos size, int owner) {
@@ -87,39 +86,4 @@ public class SpatialStorageWorldData extends SavedData {
         }
         setDirty();
     }
-
-    public static SpatialStorageWorldData load(CompoundTag tag, HolderLookup.Provider registries) {
-        SpatialStorageWorldData result = new SpatialStorageWorldData();
-        int version = tag.getInt(TAG_FORMAT);
-        if (version != CURRENT_FORMAT) {
-            // Currently no new format has been defined, as such anything but the current
-            // version is invalid
-            throw new IllegalStateException("Invalid AE2 spatial info version: " + version);
-        }
-
-        ListTag plotsTag = tag.getList(TAG_PLOTS, Tag.TAG_COMPOUND);
-        for (Tag plotTag : plotsTag) {
-            SpatialStoragePlot plot = SpatialStoragePlot.fromTag((CompoundTag) plotTag);
-
-            if (result.plots.containsKey(plot.getId())) {
-                AELog.warn("Overwriting duplicate plot id %s", plot.getId());
-            }
-            result.plots.put(plot.getId(), plot);
-        }
-        return result;
-    }
-
-    @Override
-    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.putInt(TAG_FORMAT, CURRENT_FORMAT);
-
-        ListTag plotTags = new ListTag();
-        for (SpatialStoragePlot plot : plots.values()) {
-            plotTags.add(plot.toTag());
-        }
-        tag.put(TAG_PLOTS, plotTags);
-
-        return tag;
-    }
-
 }

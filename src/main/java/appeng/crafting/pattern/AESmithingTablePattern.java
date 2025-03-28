@@ -113,23 +113,13 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         }
 
         // Find ingredients
-        Optional<Ingredient> templateIngredient, baseIngredient, additionIngredient;
-        if (this.recipe instanceof SmithingTransformRecipe r) {
-            templateIngredient = r.template;
-            baseIngredient = r.base;
-            additionIngredient = r.addition;
-        } else if (this.recipe instanceof SmithingTrimRecipe r) {
-            templateIngredient = r.template;
-            baseIngredient = r.base;
-            additionIngredient = r.addition;
-        } else {
-            throw new IllegalStateException(
-                    "Don't know how to process non-vanilla smithing recipe: " + this.recipe.getClass());
-        }
+        var templateIngredient = recipe.templateIngredient();
+        var baseIngredient = recipe.baseIngredient();
+        var additionIngredient = recipe.additionIngredient();
 
         this.inputs = new IInput[] {
                 templateIngredient.map(i -> new Input(template, i, TEMPLATE_CRAFTING_GRID_SLOT)).orElse(null),
-                baseIngredient.map(i -> new Input(base, i, BASE_CRAFTING_GRID_SLOT)).orElse(null),
+                new Input(base, baseIngredient, BASE_CRAFTING_GRID_SLOT),
                 additionIngredient.map(i -> new Input(addition, i, ADDITION_CRAFTING_GRID_SLOT)).orElse(null)
         };
         this.outputs = Collections.singletonList(GenericStack.fromItemStack(this.output));

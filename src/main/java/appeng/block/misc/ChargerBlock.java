@@ -20,6 +20,7 @@ package appeng.block.misc;
 
 import java.util.List;
 
+import appeng.core.particles.LightningArcParticleData;
 import org.joml.Vector3f;
 
 import net.minecraft.client.Minecraft;
@@ -50,7 +51,6 @@ import appeng.api.util.AEAxisAlignedBB;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.misc.ChargerRecipes;
-import appeng.client.render.effects.LightningArcParticleData;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
 import appeng.util.Platform;

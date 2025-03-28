@@ -1,5 +1,6 @@
 package appeng.util;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.google.common.base.Preconditions;
@@ -8,6 +9,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 
@@ -21,7 +23,7 @@ public final class CraftingRecipeUtil {
      * Will throw an {@link IllegalArgumentException} in case it has more than 9 or a shaped recipe is either wider or
      * higher than 3. ingredients.
      */
-    public static NonNullList<Optional<Ingredient>> ensure3by3CraftingMatrix(Recipe<?> recipe) {
+    public static List<Optional<Ingredient>> ensure3by3CraftingMatrix(Recipe<?> recipe) {
         var ingredients = getIngredients(recipe);
         var expandedIngredients = NonNullList.<Optional<Ingredient>>withSize(9, Optional.empty());
 
@@ -53,22 +55,14 @@ public final class CraftingRecipeUtil {
         return expandedIngredients;
     }
 
-    public static NonNullList<Optional<Ingredient>> getIngredients(Recipe<?> recipe) {
+    public static List<Optional<Ingredient>> getIngredients(Recipe<?> recipe) {
         // Special handling for upgrade recipes since those do not override getIngredients
-        if (recipe instanceof SmithingTrimRecipe trimRecipe) {
-            var ingredients = NonNullList.<Optional<Ingredient>>withSize(3, Optional.empty());
-            ingredients.set(0, trimRecipe.template);
-            ingredients.set(1, trimRecipe.base);
-            ingredients.set(2, trimRecipe.addition);
-            return ingredients;
-        }
-
-        if (recipe instanceof SmithingTransformRecipe transformRecipe) {
-            var ingredients = NonNullList.<Optional<Ingredient>>withSize(3, Optional.empty());
-            ingredients.set(0, transformRecipe.template);
-            ingredients.set(1, transformRecipe.base);
-            ingredients.set(2, transformRecipe.addition);
-            return ingredients;
+        if (recipe instanceof SmithingRecipe trimRecipe) {
+            return List.of(
+                trimRecipe.templateIngredient(),
+                Optional.of(trimRecipe.baseIngredient()),
+                trimRecipe.additionIngredient()
+            );
         }
 
         var placementInfo = recipe.placementInfo();

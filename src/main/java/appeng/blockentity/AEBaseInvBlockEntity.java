@@ -48,10 +48,16 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
         super.loadTag(data, registries);
         var inv = this.getInternalInventory();
         if (inv != InternalInventory.empty()) {
-            var opt = data.getCompound("inv");
+            var opt = data.getCompound("inv").orElse(null);
             for (int x = 0; x < inv.size(); x++) {
-                var item = opt.getCompound("item" + x);
-                inv.setItemDirect(x, ItemStack.parseOptional(registries, item));
+                ItemStack item = ItemStack.EMPTY;
+                if (opt != null) {
+                    var itemTag = opt.getCompound("item" + x).orElse(null);
+                    if (itemTag != null) {
+                        item = ItemStack.parse(registries, itemTag).orElse(ItemStack.EMPTY);
+                    }
+                }
+                inv.setItemDirect(x, item);
             }
         }
     }
@@ -66,7 +72,9 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
             final CompoundTag opt = new CompoundTag();
             for (int x = 0; x < inv.size(); x++) {
                 var is = inv.getStackInSlot(x);
-                opt.put("item" + x, is.saveOptional(registries));
+                if (!is.isEmpty()) {
+                    opt.put("item" + x, is.save(registries));
+                }
             }
             data.put("inv", opt);
         }

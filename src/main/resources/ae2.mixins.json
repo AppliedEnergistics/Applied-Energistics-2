@@ -21,7 +21,6 @@
     "PickColorMixin",
     "TextureAtlasMixin",
     "PonderWorldMixin",
-    "VariantDeserializerMixin",
     "RecipeUpdateMixin"
   ],
   "server": [],

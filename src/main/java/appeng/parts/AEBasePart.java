@@ -195,14 +195,12 @@ public abstract class AEBasePart
 
         if (data.contains("customName")) {
             try {
-                this.customName = Component.Serializer.fromJson(data.getString("customName"), registries);
+                this.customName = Component.Serializer.fromJson(data.getStringOr("customName", ""), registries);
             } catch (Exception ignored) {
             }
         }
 
-        if (data.contains("visual", Tag.TAG_COMPOUND)) {
-            readVisualStateFromNBT(data.getCompound("visual"));
-        }
+        data.getCompound("visual").ifPresent(this::readVisualStateFromNBT);
     }
 
     @Override
@@ -265,8 +263,8 @@ public abstract class AEBasePart
     @MustBeInvokedByOverriders
     @Override
     public void readVisualStateFromNBT(CompoundTag data) {
-        this.clientSidePowered = data.getBoolean("powered");
-        this.clientSideMissingChannel = data.getBoolean("missingChannel");
+        this.clientSidePowered = data.getBooleanOr("powered", false);
+        this.clientSideMissingChannel = data.getBooleanOr("missingChannel", false);
     }
 
     @Override

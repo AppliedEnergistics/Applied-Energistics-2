@@ -140,7 +140,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
         config.readFromChildTag(extra, "config", registries);
         // Ensure the filter is rebuilt
         filter = null;
-        pendingPulse = isInPulseMode() && extra.getBoolean("pendingPulse");
+        pendingPulse = isInPulseMode() && extra.getBooleanOr("pendingPulse", false);
     }
 
     @Override

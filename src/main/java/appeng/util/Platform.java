@@ -291,7 +291,7 @@ public class Platform {
             }
         }
 
-        player.moveTo(blockEntity.getBlockPos().getX() + 0.5, blockEntity.getBlockPos().getY() + 0.5,
+        player.snapTo(blockEntity.getBlockPos().getX() + 0.5, blockEntity.getBlockPos().getY() + 0.5,
                 blockEntity.getBlockPos().getZ() + 0.5,
                 yaw, pitch);
     }
