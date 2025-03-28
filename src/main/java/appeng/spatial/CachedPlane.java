@@ -47,8 +47,12 @@ import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
 import appeng.server.services.compass.ServerCompassService;
 import appeng.util.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CachedPlane {
+    private static final Logger LOG = LoggerFactory.getLogger(CachedPlane.class);
+
     private final int x_size;
     private final int z_size;
     private final int cx_size;
@@ -291,7 +295,7 @@ public class CachedPlane {
                         this.level,
                         newPosition);
             } catch (Throwable e) {
-                AELog.warn(e);
+                LOG.warn("Failed to complete move for block entity {}", moveRecord.blockEntity, e);
                 success = false;
             }
 
@@ -299,7 +303,7 @@ public class CachedPlane {
                 attemptRecovery(x, y, z, moveRecord, c);
             }
         } catch (Throwable e) {
-            AELog.warn(e);
+            LOG.warn("Failed to add block entity {} @ {},{},{}", moveRecord.blockEntity, x, y, z, e);
         }
     }
 

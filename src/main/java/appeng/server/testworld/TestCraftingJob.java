@@ -17,8 +17,11 @@ import appeng.api.stacks.AEKey;
 import appeng.core.AELog;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.MachineSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestCraftingJob {
+    private static final Logger LOG = LoggerFactory.getLogger(TestCraftingJob.class);
     private final PlotTestHelper helper;
     private final BlockPos gridOrigin;
     private final AEKey what;
@@ -60,7 +63,7 @@ public class TestCraftingJob {
             try {
                 plan = planFuture.get(0, TimeUnit.MILLISECONDS);
             } catch (InterruptedException | ExecutionException e) {
-                AELog.error(e);
+                LOG.error("Crafting job planning failed", e);
                 throw helper.assertionException("Crafting job planning failed: " + e);
             } catch (TimeoutException e) {
                 throw helper.assertionException("Crafting job planning did not complete");

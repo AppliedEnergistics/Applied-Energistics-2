@@ -88,6 +88,8 @@ import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @see MEStorageScreen
@@ -95,6 +97,7 @@ import appeng.util.Platform;
 public class MEStorageMenu extends AEBaseMenu
         implements IConfigurableObject, IMEInteractionHandler, LinkStatusAwareMenu,
         KeyTypeSelectionMenu {
+    private static final Logger LOG = LoggerFactory.getLogger(MEStorageMenu.class);
 
     public static final MenuType<MEStorageMenu> TYPE = MenuTypeBuilder
             .<MEStorageMenu, ITerminalHost>create(MEStorageMenu::new, ITerminalHost.class)
@@ -278,7 +281,7 @@ public class MEStorageMenu extends AEBaseMenu
                 }
 
             } catch (Exception e) {
-                AELog.warn(e, "Failed to send incremental inventory update to client");
+                LOG.warn("Failed to send incremental inventory update to client", e);
             }
 
             previousCraftables = ImmutableSet.copyOf(craftables);

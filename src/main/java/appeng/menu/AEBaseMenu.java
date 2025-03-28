@@ -81,8 +81,12 @@ import appeng.menu.slot.DisabledSlot;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigMenuInventory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AEBaseMenu extends AbstractContainerMenu {
+    private static final Logger LOG = LoggerFactory.getLogger(AEBaseMenu.class);
+
     private static final int MAX_STRING_LENGTH = 32767;
     private static final int MAX_CONTAINER_TRANSFER_ITERATIONS = 256;
     private static final String HIDE_SLOT = "HideSlot";
@@ -621,7 +625,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             var extracted = source.extract(amountAllowed, Actionable.MODULATE);
             if (extracted <= 0) {
                 // Something went wrong
-                AELog.error("Unable to pull fluid out of the ME system even though the simulation said yes ");
+                LOG.error("Unable to pull fluid out of the ME system even though the simulation said yes ");
                 break;
             }
 
@@ -677,15 +681,15 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             // Actually drain
             var extracted = ctx.extract(what, amountAllowed, Actionable.MODULATE);
             if (extracted != amountAllowed) {
-                AELog.error(
-                        "Fluid item [%s] reported a different possible amount to drain than it actually provided.",
+                LOG.error(
+                        "Fluid item [{}] reported a different possible amount to drain than it actually provided.",
                         getCarried());
                 break;
             }
 
             // Actually push into the system
             if (sink.insert(what, extracted, Actionable.MODULATE) != extracted) {
-                AELog.error("Failed to insert previously simulated %s into ME system", what);
+                LOG.error("Failed to insert previously simulated {} into ME system", what);
                 break;
             }
 

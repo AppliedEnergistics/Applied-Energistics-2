@@ -25,8 +25,12 @@ import appeng.core.definitions.AEAttachmentTypes;
 import appeng.parts.networking.CablePart;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PartPlacement {
+    private static final Logger LOG = LoggerFactory.getLogger(PartPlacement.class);
+
     public static InteractionResult place(UseOnContext context) {
 
         var player = context.getPlayer();
@@ -108,7 +112,7 @@ public class PartPlacement {
             try {
                 addedPart.importSettings(SettingsFrom.DISMANTLE_ITEM, configData, player);
             } catch (Exception e) {
-                AELog.warn(e, "Failed to import part settings during placement.");
+                LOG.warn("Failed to import part settings during placement", e);
             }
         }
 

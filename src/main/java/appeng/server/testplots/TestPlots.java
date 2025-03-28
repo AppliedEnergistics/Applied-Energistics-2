@@ -165,7 +165,7 @@ public final class TestPlots {
                 }
             }
         } catch (Exception e) {
-            AELog.error("Failed to scan for plots: %s", e);
+            LOG.error("Failed to scan for plots.", e);
         }
 
         return plots;
@@ -703,8 +703,7 @@ public final class TestPlots {
                     // providedResults.add(AEItemKey.of(recipe.getResultItem(node.getLevel().registryAccess())));
                     // TODO 1.21.4 }
                 } catch (Exception e) {
-                    AELog.warn(e);
-                    continue;
+                    throw new RuntimeException(e);
                 }
 
                 // TODO 1.21.4 if (!current.getLogic().getPatternInv().addItems(craftingPattern).isEmpty()) {

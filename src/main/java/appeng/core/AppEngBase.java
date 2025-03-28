@@ -86,6 +86,8 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -96,6 +98,8 @@ import java.util.Collections;
  * Note that a client will still have zero or more embedded servers (although only one at a time).
  */
 public abstract class AppEngBase implements AppEng {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AppEngBase.class);
 
     /**
      * While we process a player-specific part placement/cable interaction packet, we need to use that player's
@@ -187,7 +191,7 @@ public abstract class AppEngBase implements AppEng {
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(this::postRegistrationInitialization).whenComplete((res, err) -> {
             if (err != null) {
-                AELog.warn(err);
+                LOG.error("Common setup failed", err);
             }
         });
     }

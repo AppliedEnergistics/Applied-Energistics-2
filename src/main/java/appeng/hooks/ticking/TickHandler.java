@@ -59,8 +59,11 @@ import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.util.ILevelRunnable;
 import appeng.util.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TickHandler {
+    private static final Logger LOG = LoggerFactory.getLogger(TickHandler.class);
 
     /**
      * Time limit for process queues with respect to the 50ms of a minecraft tick.
@@ -423,7 +426,7 @@ public class TickHandler {
                     break;
                 }
             } catch (Exception e) {
-                AELog.warn(e);
+                LOG.warn("Uncaught exception when running delay action", e);
             }
         }
 

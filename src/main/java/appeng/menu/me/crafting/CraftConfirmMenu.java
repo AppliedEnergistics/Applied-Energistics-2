@@ -59,11 +59,15 @@ import appeng.menu.guisync.GuiSync;
 import appeng.menu.guisync.PacketWritable;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.locator.MenuHostLocator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftConfirmScreen
  */
 public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CraftConfirmMenu.class);
 
     private static final String ACTION_BACK = "back";
     private static final String ACTION_CYCLE_CPU = "cycleCpu";
@@ -160,7 +164,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
                 ccc.broadcastChanges();
             }
         } catch (Throwable e) {
-            AELog.info(e);
+            LOG.info("Failed to open craft confirm menu.", e);
         }
     }
 

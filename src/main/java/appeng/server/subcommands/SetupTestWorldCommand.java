@@ -33,12 +33,16 @@ import appeng.server.ISubCommand;
 import appeng.server.testplots.KitOutPlayerEvent;
 import appeng.server.testplots.TestPlots;
 import appeng.server.testworld.TestWorldGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This command will verify the user is in creative mode, the world is a flat world with void preset, and then start
  * setting up a testing world for AE2.
  */
 public class SetupTestWorldCommand implements ISubCommand {
+    private static final Logger LOG = LoggerFactory.getLogger(SetupTestWorldCommand.class);
+
     @Override
     public void addArguments(LiteralArgumentBuilder<CommandSourceStack> builder) {
         for (var plotId : TestPlots.getPlotIds()) {
@@ -95,7 +99,7 @@ public class SetupTestWorldCommand implements ISubCommand {
 
             sender.sendSuccess(() -> PlayerMessages.TestWorldSetupComplete.text(sw.toString()), true);
         } catch (RuntimeException | CommandSyntaxException e) {
-            AELog.error(e);
+            LOG.error("Failed to setup testworld", e);
             sender.sendFailure(PlayerMessages.TestWorldSetupFailed.text(e.toString()));
         }
     }

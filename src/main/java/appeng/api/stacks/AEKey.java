@@ -132,7 +132,7 @@ public abstract class AEKey {
         var id = buffer.readVarInt();
         var type = AEKeyType.fromRawId(id);
         if (type == null) {
-            AELog.error("Received unknown key space id %d", id);
+            LOG.error("Received unknown key type id {}", id);
             return null;
         }
         return type.readFromPacket(buffer);

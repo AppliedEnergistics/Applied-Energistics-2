@@ -226,7 +226,7 @@ public class AEBaseBlockEntity extends BlockEntity
         try {
             output = this.readFromStream(stream);
         } catch (Throwable t) {
-            AELog.warn(t);
+            LOG.warn("Failed to read block entity update data for {}@{}", getClass(), getBlockPos(), t);
         }
 
         return output;

@@ -30,11 +30,14 @@ import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AELog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helps with the reflection magic needed to gather all models for AE2 cable bus parts.
  */
 public class PartModelsHelper {
+    private static final Logger LOG = LoggerFactory.getLogger(PartModelsHelper.class);
 
     public static List<ResourceLocation> createModels(Class<?> clazz) {
         List<ResourceLocation> locations = new ArrayList<>();
@@ -47,8 +50,7 @@ public class PartModelsHelper {
             }
 
             if (!Modifier.isStatic(field.getModifiers())) {
-                AELog.error("The @PartModels annotation can only be used on static fields or methods. Was seen on: "
-                        + field);
+                LOG.error("The @PartModels annotation can only be used on static fields or methods. Was seen on: {}", field);
                 continue;
             }
 
@@ -57,7 +59,7 @@ public class PartModelsHelper {
                 field.setAccessible(true);
                 value = field.get(null);
             } catch (IllegalAccessException e) {
-                AELog.error(e, "Cannot access field annotated with @PartModels: " + field);
+                LOG.error("Cannot access field annotated with @PartModels: {}", field, e);
                 continue;
             }
 
@@ -71,16 +73,13 @@ public class PartModelsHelper {
             }
 
             if (!Modifier.isStatic(method.getModifiers())) {
-                AELog.error("The @PartModels annotation can only be used on static fields or methods. Was seen on: "
-                        + method);
+                LOG.error("The @PartModels annotation can only be used on static fields or methods. Was seen on: {}", method);
                 continue;
             }
 
             // Check for parameter count
             if (method.getParameters().length != 0) {
-                AELog.error(
-                        "The @PartModels annotation can only be used on static methods without parameters. Was seen on: "
-                                + method);
+                LOG.error("The @PartModels annotation can only be used on static methods without parameters. Was seen on: {}", method);
                 continue;
             }
 
@@ -88,9 +87,7 @@ public class PartModelsHelper {
             Class<?> returnType = method.getReturnType();
             if (!ResourceLocation.class.isAssignableFrom(returnType)
                     && !Collection.class.isAssignableFrom(returnType)) {
-                AELog.error(
-                        "The @PartModels annotation can only be used on static methods that return a ResourceLocation or Collection of "
-                                + "ResourceLocations. Was seen on: " + method);
+                LOG.error("The @PartModels annotation can only be used on static methods that return a ResourceLocation or Collection of ResourceLocations. Was seen on: {}", method);
                 continue;
             }
 
@@ -99,7 +96,7 @@ public class PartModelsHelper {
                 method.setAccessible(true);
                 value = method.invoke(null);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                AELog.error(e, "Failed to invoke the @PartModels annotated method " + method);
+                LOG.error("Failed to invoke the @PartModels annotated method {}", method, e);
                 continue;
             }
 
@@ -126,7 +123,7 @@ public class PartModelsHelper {
             // Check that each object is an IPartModel
             for (Object candidate : values) {
                 if (!(candidate instanceof IPartModel)) {
-                    AELog.error("List of locations obtained from {} contains a non resource location: {}", source,
+                    LOG.error("List of locations obtained from {} contains a non resource location: {}", source,
                             candidate);
                     continue;
                 }
