@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -74,8 +75,7 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity> 
 
         // Try to get the right cell chassis model from the drive model since it already
         // loads them all
-        var driveModel = getDriveModel();
-        if (driveModel == null) {
+        if (!(getDriveModel() instanceof DriveModel driveModel)) {
             return;
         }
         var cellModel = driveModel.getCellChassisModel(cellItem);
@@ -103,8 +103,8 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity> 
         poseStack.popPose();
     }
 
-    private DriveModel getDriveModel() {
-        return (DriveModel) modelManager.getBlockModelShaper()
+    private BlockStateModel getDriveModel() {
+        return modelManager.getBlockModelShaper()
                 .getBlockModel(AEBlocks.DRIVE.block().defaultBlockState());
     }
 

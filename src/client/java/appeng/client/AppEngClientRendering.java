@@ -93,6 +93,7 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,8 +115,6 @@ public class AppEngClientRendering {
     public AppEngClientRendering(IEventBus modEventBus, ModContainer container) {
         // TODO InitBuiltInModels.init();
 
-        var areaOverlayRenderer = new AreaOverlayRenderer();
-        modEventBus.register(areaOverlayRenderer);
         modEventBus.addListener(this::registerEntityRenderers);
         modEventBus.addListener(this::registerEntityLayerDefinitions);
         modEventBus.addListener(this::registerModelLoader);
@@ -132,6 +131,9 @@ public class AppEngClientRendering {
         modEventBus.addListener(this::registerBlockColors);
 
         RenderBlockOutlineHook.install();
+
+        var areaOverlayRenderer = new AreaOverlayRenderer();
+        NeoForge.EVENT_BUS.register(areaOverlayRenderer);
     }
 
     private void registerRenderPipelines(RegisterRenderPipelinesEvent event) {

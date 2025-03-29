@@ -123,11 +123,6 @@ public class AppEngClient extends AppEngBase {
 
         this.registerClientCommands();
 
-        // TODO 1.21.5 TEMPORARY
-        modEventBus.addListener((RegisterBlockStateModels e) -> {
-            e.registerModel(QnbFormedModel.Unbaked.ID, QnbFormedModel.Unbaked.MAP_CODEC);
-        });
-
         modEventBus.addListener(this::registerClientTooltipComponents);
         modEventBus.addListener(this::registerHotkeys);
         modEventBus.addListener(InitScreens::init);

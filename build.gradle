@@ -54,6 +54,7 @@ configurations {
     configurations.runtimeClasspath.extendsFrom(guideExportOnly)
 
     runtimeClasspath.extendsFrom localRuntimeOnly
+    clientRuntimeClasspath.extendsFrom localRuntimeOnly
 }
 
 import appengbuild.*
@@ -63,7 +64,8 @@ dependencies {
     // Used for the guide export
     guideExportOnly("org.bytedeco:ffmpeg-platform:${ffmpeg_version}")
 
-    implementation("org.appliedenergistics:guideme:${guideme_version}")
+    implementation("org.appliedenergistics:guideme:${guideme_version}") // TODO: TEMP
+    clientImplementation("org.appliedenergistics:guideme:${guideme_version}")
 
     // compile against provided APIs
     compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
@@ -133,6 +135,7 @@ neoForge {
     mods {
         ae2 {
             sourceSet sourceSets.main
+            sourceSet sourceSets.client
         }
     }
 
