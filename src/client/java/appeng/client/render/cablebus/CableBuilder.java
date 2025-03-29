@@ -22,12 +22,15 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 import appeng.block.networking.CableCoreType;
+import appeng.client.render.CubeBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.Direction;
 
@@ -49,13 +52,15 @@ class CableBuilder {
     private final SmartCableTextures smartCableTextures;
 
     CableBuilder(SpriteGetter bakedTextureGetter) {
+        ModelDebugName debugName = getClass()::toString;
+
         this.coreTextures = new EnumMap<>(CableCoreType.class);
 
         for (CableCoreType type : CableCoreType.values()) {
             EnumMap<AEColor, TextureAtlasSprite> colorTextures = new EnumMap<>(AEColor.class);
 
             for (AEColor color : AEColor.values()) {
-                colorTextures.put(color, bakedTextureGetter.get(type.getTexture(color)));
+                colorTextures.put(color, bakedTextureGetter.get(type.getTexture(color), debugName));
             }
 
             this.coreTextures.put(type, colorTextures);
@@ -67,7 +72,7 @@ class CableBuilder {
             EnumMap<AEColor, TextureAtlasSprite> colorTextures = new EnumMap<>(AEColor.class);
 
             for (AEColor color : AEColor.values()) {
-                colorTextures.put(color, bakedTextureGetter.get(getConnectionTexture(type, color)));
+                colorTextures.put(color, bakedTextureGetter.get(getConnectionTexture(type, color), debugName));
             }
 
             this.connectionTextures.put(type, colorTextures);
@@ -95,7 +100,7 @@ class CableBuilder {
      * <p>
      * The type of cable core is automatically deduced from the given cable type.
      */
-    public void addCableCore(AECableType cableType, AEColor color, List<BakedQuad> quadsOut) {
+    public void addCableCore(AECableType cableType, AEColor color, Consumer<BakedQuad> quadsOut) {
         switch (cableType) {
             case GLASS:
                 this.addCableCore(CableCoreType.GLASS, color, quadsOut);
@@ -112,7 +117,7 @@ class CableBuilder {
         }
     }
 
-    public void addCableCore(CableCoreType coreType, AEColor color, List<BakedQuad> quadsOut) {
+    public void addCableCore(CableCoreType coreType, AEColor color, Consumer<BakedQuad> quadsOut) {
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
         TextureAtlasSprite texture = this.coreTextures.get(coreType).get(color);
@@ -126,7 +131,7 @@ class CableBuilder {
     }
 
     public void addGlassConnection(Direction facing, AEColor cableColor, AECableType connectionType,
-            boolean cableBusAdjacent, List<BakedQuad> quadsOut) {
+            boolean cableBusAdjacent, Consumer<BakedQuad> quadsOut) {
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
         // We render all faces except the one on the connection side
@@ -153,7 +158,7 @@ class CableBuilder {
         }
     }
 
-    public void addStraightGlassConnection(Direction facing, AEColor cableColor, List<BakedQuad> quadsOut) {
+    public void addStraightGlassConnection(Direction facing, AEColor cableColor, Consumer<BakedQuad> quadsOut) {
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
         // We render all faces except the connection caps. We can do this because the
@@ -172,7 +177,7 @@ class CableBuilder {
     }
 
     public void addConstrainedGlassConnection(Direction facing, AEColor cableColor, int distanceFromEdge,
-            List<BakedQuad> quadsOut) {
+            Consumer<BakedQuad> quadsOut) {
 
         // Glass connections reach only 6 voxels from the edge
         if (distanceFromEdge >= 6) {
@@ -195,7 +200,7 @@ class CableBuilder {
     }
 
     public void addCoveredConnection(Direction facing, AEColor cableColor, AECableType connectionType,
-            boolean cableBusAdjacent, List<BakedQuad> quadsOut) {
+            boolean cableBusAdjacent, Consumer<BakedQuad> quadsOut) {
 
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
@@ -213,7 +218,7 @@ class CableBuilder {
         addCoveredCableSizedCube(facing, cubeBuilder);
     }
 
-    public void addStraightCoveredConnection(Direction facing, AEColor cableColor, List<BakedQuad> quadsOut) {
+    public void addStraightCoveredConnection(Direction facing, AEColor cableColor, Consumer<BakedQuad> quadsOut) {
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
         TextureAtlasSprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
@@ -248,7 +253,7 @@ class CableBuilder {
     }
 
     public void addConstrainedCoveredConnection(Direction facing, AEColor cableColor, int distanceFromEdge,
-            List<BakedQuad> quadsOut) {
+            Consumer<BakedQuad> quadsOut) {
         // The core of a covered cable reaches up to 5 voxels from the block edge, so
         // drawing a connection can only occur from there onwards
         if (distanceFromEdge >= 5) {
@@ -264,7 +269,7 @@ class CableBuilder {
     }
 
     public void addSmartConnection(Direction facing, AEColor cableColor, AECableType connectionType,
-            boolean cableBusAdjacent, int channels, List<BakedQuad> quadsOut) {
+            boolean cableBusAdjacent, int channels, Consumer<BakedQuad> quadsOut) {
         if (connectionType == AECableType.COVERED || connectionType == AECableType.GLASS) {
             this.addCoveredConnection(facing, cableColor, connectionType, cableBusAdjacent, quadsOut);
             return;
@@ -338,7 +343,7 @@ class CableBuilder {
     }
 
     public void addStraightSmartConnection(Direction facing, AEColor cableColor, int channels,
-            List<BakedQuad> quadsOut) {
+            Consumer<BakedQuad> quadsOut) {
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
         // Flip side texture as needed depending on direction
@@ -373,7 +378,7 @@ class CableBuilder {
     }
 
     public void addConstrainedSmartConnection(Direction facing, AEColor cableColor, int distanceFromEdge, int channels,
-            List<BakedQuad> quadsOut) {
+            Consumer<BakedQuad> quadsOut) {
         // Same as with covered cables, the smart cable's core extends up to 5 voxels
         // away from the edge.
         // Drawing a connection to any point before that point is fruitless
@@ -418,7 +423,7 @@ class CableBuilder {
     }
 
     public void addDenseCoveredConnection(Direction facing, AEColor cableColor, AECableType connectionType,
-            boolean cableBusAdjacent, List<BakedQuad> quadsOut) {
+            boolean cableBusAdjacent, Consumer<BakedQuad> quadsOut) {
         // Dense cables only render their connections as dense if the adjacent blocks
         // actually wants that
         if (connectionType == AECableType.COVERED || connectionType == AECableType.SMART
@@ -443,7 +448,7 @@ class CableBuilder {
     }
 
     public void addDenseSmartConnection(Direction facing, AEColor cableColor, AECableType connectionType,
-            boolean cableBusAdjacent, int channels, List<BakedQuad> quadsOut) {
+            boolean cableBusAdjacent, int channels, Consumer<BakedQuad> quadsOut) {
         // Dense cables only render their connections as dense if the adjacent blocks
         // actually wants that
         if (connectionType == AECableType.SMART) {
@@ -498,7 +503,7 @@ class CableBuilder {
         cubeBuilder.setTexture(texture);
     }
 
-    public void addStraightDenseCoveredConnection(Direction facing, AEColor cableColor, List<BakedQuad> quadsOut) {
+    public void addStraightDenseCoveredConnection(Direction facing, AEColor cableColor, Consumer<BakedQuad> quadsOut) {
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
         TextureAtlasSprite texture = this.connectionTextures.get(AECableType.DENSE_COVERED).get(cableColor);
@@ -510,7 +515,7 @@ class CableBuilder {
     }
 
     public void addStraightDenseSmartConnection(Direction facing, AEColor cableColor, int channels,
-            List<BakedQuad> quadsOut) {
+            Consumer<BakedQuad> quadsOut) {
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
         // Flip end or side texture as needed depending on direction

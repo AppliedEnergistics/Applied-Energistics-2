@@ -41,7 +41,7 @@ public class PlotTestHelper extends GameTestHelper {
 
     @Override
     public BlockPos absolutePos(BlockPos pos) {
-        return super.absolutePos(pos.offset(plotTranslation).offset(0, 1, 0));
+        return super.absolutePos(pos.offset(plotTranslation));
     }
 
     @Override
@@ -50,8 +50,7 @@ public class PlotTestHelper extends GameTestHelper {
                 .offset(
                         -plotTranslation.getX(),
                         -plotTranslation.getY(),
-                        -plotTranslation.getZ())
-                .offset(0, -1, 0);
+                        -plotTranslation.getZ());
     }
 
     @Override

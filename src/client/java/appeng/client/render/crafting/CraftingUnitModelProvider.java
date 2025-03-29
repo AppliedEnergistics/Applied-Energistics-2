@@ -4,16 +4,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.SpriteGetter;
 
 import appeng.block.crafting.CraftingUnitType;
 import appeng.core.AppEng;
 
-public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider<CraftingUnitType> {
+public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider<CraftingUnitType> implements  ModelDebugName {
 
     private static final List<Material> MATERIALS = new ArrayList<>();
 
@@ -44,34 +46,34 @@ public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider
 
     public TextureAtlasSprite getLightMaterial(SpriteGetter textureGetter) {
         return switch (this.type) {
-            case ACCELERATOR -> textureGetter.get(ACCELERATOR_LIGHT);
-            case STORAGE_1K -> textureGetter.get(STORAGE_1K_LIGHT);
-            case STORAGE_4K -> textureGetter.get(STORAGE_4K_LIGHT);
-            case STORAGE_16K -> textureGetter.get(STORAGE_16K_LIGHT);
-            case STORAGE_64K -> textureGetter.get(STORAGE_64K_LIGHT);
-            case STORAGE_256K -> textureGetter.get(STORAGE_256K_LIGHT);
+            case ACCELERATOR -> textureGetter.get(ACCELERATOR_LIGHT, this);
+            case STORAGE_1K -> textureGetter.get(STORAGE_1K_LIGHT, this);
+            case STORAGE_4K -> textureGetter.get(STORAGE_4K_LIGHT, this);
+            case STORAGE_16K -> textureGetter.get(STORAGE_16K_LIGHT, this);
+            case STORAGE_64K -> textureGetter.get(STORAGE_64K_LIGHT, this);
+            case STORAGE_256K -> textureGetter.get(STORAGE_256K_LIGHT, this);
             default -> throw new IllegalArgumentException(
                     "Crafting unit type " + this.type + " does not use a light texture.");
         };
     }
 
     @Override
-    public BakedModel getBakedModel(SpriteGetter spriteGetter) {
-        TextureAtlasSprite ringCorner = spriteGetter.get(RING_CORNER);
-        TextureAtlasSprite ringSideHor = spriteGetter.get(RING_SIDE_HOR);
-        TextureAtlasSprite ringSideVer = spriteGetter.get(RING_SIDE_VER);
+    public BlockStateModel bake(SpriteGetter spriteGetter) {
+        TextureAtlasSprite ringCorner = spriteGetter.get(RING_CORNER, this);
+        TextureAtlasSprite ringSideHor = spriteGetter.get(RING_SIDE_HOR, this);
+        TextureAtlasSprite ringSideVer = spriteGetter.get(RING_SIDE_VER, this);
 
         return switch (type) {
             case UNIT -> new UnitBakedModel(ringCorner, ringSideHor, ringSideVer,
-                    spriteGetter.get(UNIT_BASE));
+                    spriteGetter.get(UNIT_BASE, this));
             case ACCELERATOR, STORAGE_1K, STORAGE_4K, STORAGE_16K, STORAGE_64K, STORAGE_256K -> new LightBakedModel(
-                    ringCorner, ringSideHor, ringSideVer, spriteGetter.get(LIGHT_BASE),
+                    ringCorner, ringSideHor, ringSideVer, spriteGetter.get(LIGHT_BASE, this),
                     this.getLightMaterial(spriteGetter));
             case MONITOR -> new MonitorBakedModel(ringCorner, ringSideHor, ringSideVer,
-                    spriteGetter.get(UNIT_BASE), spriteGetter.get(MONITOR_BASE),
-                    spriteGetter.get(MONITOR_LIGHT_DARK),
-                    spriteGetter.get(MONITOR_LIGHT_MEDIUM),
-                    spriteGetter.get(MONITOR_LIGHT_BRIGHT));
+                    spriteGetter.get(UNIT_BASE, this), spriteGetter.get(MONITOR_BASE, this),
+                    spriteGetter.get(MONITOR_LIGHT_DARK, this),
+                    spriteGetter.get(MONITOR_LIGHT_MEDIUM, this),
+                    spriteGetter.get(MONITOR_LIGHT_BRIGHT, this));
         };
     }
 
@@ -80,5 +82,10 @@ public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider
                 AppEng.makeId("block/crafting/" + name));
         MATERIALS.add(mat);
         return mat;
+    }
+
+    @Override
+    public String debugName() {
+        return getClass().toString();
     }
 }

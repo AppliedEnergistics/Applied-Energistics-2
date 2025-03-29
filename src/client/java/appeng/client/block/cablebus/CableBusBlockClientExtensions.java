@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
 
-import appeng.client.render.cablebus.CableBusBakedModel;
+import appeng.client.render.cablebus.CableBusModel;
 import appeng.client.render.cablebus.CableBusBreakingParticle;
 import appeng.parts.ICableBusContainer;
 
@@ -52,7 +52,7 @@ public class CableBusBlockClientExtensions implements IClientBlockExtensions {
                 .getBlockModel(block.defaultBlockState());
 
         // We cannot add the effect if we don't have the model
-        if (!(model instanceof CableBusBakedModel cableBusModel)) {
+        if (!(model instanceof CableBusModel cableBusModel)) {
             return true;
         }
 
@@ -84,7 +84,7 @@ public class CableBusBlockClientExtensions implements IClientBlockExtensions {
                 .getBlockModel(block.defaultBlockState());
 
         // We cannot add the effect if we dont have the model
-        if (!(model instanceof CableBusBakedModel cableBusModel)) {
+        if (!(model instanceof CableBusModel cableBusModel)) {
             return true;
         }
 

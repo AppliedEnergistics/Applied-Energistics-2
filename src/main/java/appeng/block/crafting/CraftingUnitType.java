@@ -1,10 +1,14 @@
 package appeng.block.crafting;
 
+import com.mojang.serialization.Codec;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 
 import appeng.core.definitions.AEBlocks;
 
-public enum CraftingUnitType implements ICraftingUnitType {
+import java.util.Locale;
+
+public enum CraftingUnitType implements ICraftingUnitType, StringRepresentable {
     UNIT(0),
     ACCELERATOR(0),
     STORAGE_1K(1),
@@ -13,6 +17,8 @@ public enum CraftingUnitType implements ICraftingUnitType {
     STORAGE_64K(64),
     STORAGE_256K(256),
     MONITOR(0);
+
+    public static final Codec<CraftingUnitType> CODEC = StringRepresentable.fromValues(CraftingUnitType::values);
 
     private final int storageKb;
 
@@ -43,5 +49,10 @@ public enum CraftingUnitType implements ICraftingUnitType {
             case MONITOR -> AEBlocks.CRAFTING_MONITOR;
         };
         return definition.asItem();
+    }
+
+    @Override
+    public String getSerializedName() {
+        return name().toLowerCase(Locale.ROOT);
     }
 }

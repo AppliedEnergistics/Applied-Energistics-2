@@ -18,7 +18,7 @@
 
 package appeng.client.areaoverlay;
 
-import appeng.client.render.overlay.OverlayRenderType;
+import appeng.client.render.AERenderTypes;
 import appeng.core.areaoverlay.AreaOverlayManager;
 import appeng.core.areaoverlay.IAreaOverlayDataSource;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -71,27 +71,27 @@ public class AreaOverlayRenderer {
 
         poseStack.popPose();
 
-        buffer.endBatch(OverlayRenderType.getBlockHilightLineOccluded());
-        buffer.endBatch(OverlayRenderType.getBlockHilightFace());
-        buffer.endBatch(OverlayRenderType.getBlockHilightLine());
+        buffer.endBatch(AERenderTypes.AREA_OVERLAY_LINE_OCCLUDED);
+        buffer.endBatch(AERenderTypes.AREA_OVERLAY_FACE);
+        buffer.endBatch(AERenderTypes.AREA_OVERLAY_LINE);
     }
 
     public void render(IAreaOverlayDataSource area, PoseStack poseStack, MultiBufferSource buffer) {
         Level level = area.getOverlaySourceLocation().getLevel();
         Collection<ChunkPos> allChunks = area.getOverlayChunks();
 
-        RenderType typeLinesOccluded = OverlayRenderType.getBlockHilightLineOccluded();
+        RenderType typeLinesOccluded = AERenderTypes.AREA_OVERLAY_LINE_OCCLUDED;
         render(level, allChunks, poseStack, buffer.getBuffer(typeLinesOccluded), true, 0x30ffffff);
 
-        RenderType typeFaces = OverlayRenderType.getBlockHilightFace();
+        RenderType typeFaces = AERenderTypes.AREA_OVERLAY_FACE;
         render(level, allChunks, poseStack, buffer.getBuffer(typeFaces), false, area.getOverlayColor());
 
-        RenderType typeLines = OverlayRenderType.getBlockHilightLine();
+        RenderType typeLines = AERenderTypes.AREA_OVERLAY_LINE;
         render(level, allChunks, poseStack, buffer.getBuffer(typeLines), true, area.getOverlayColor());
     }
 
     private void render(Level level, Collection<ChunkPos> allChunks, PoseStack poseStack, VertexConsumer builder, boolean renderLines, int color) {
-        int[] cols = OverlayRenderType.decomposeColor(color);
+        int[] cols = decomposeColor(color);
         for (ChunkPos pos : allChunks) {
             poseStack.pushPose();
             poseStack.translate(pos.getMinBlockX(), 0, pos.getMinBlockZ());
@@ -100,7 +100,16 @@ public class AreaOverlayRenderer {
             poseStack.popPose();
         }
     }
-
+    
+    private static int[] decomposeColor(int color) {
+        int[] res = new int[4];
+        res[0] = color >> 24 & 0xff;
+        res[1] = color >> 16 & 0xff;
+        res[2] = color >> 8 & 0xff;
+        res[3] = color & 0xff;
+        return res;
+    }
+    
     private void addVertices(Level level, Collection<ChunkPos> allChunks, VertexConsumer wr, Matrix4f posMat, ChunkPos pos, int[] cols, boolean renderLines) {
         // Render around a whole chunk
         float x1 = 0f;

@@ -187,7 +187,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         return ItemStack.EMPTY;
     }
 
-    ICableBusContainer cb(BlockGetter level, BlockPos pos) {
+    public ICableBusContainer cb(BlockGetter level, BlockPos pos) {
         final BlockEntity te = level.getBlockEntity(pos);
         ICableBusContainer out = null;
 

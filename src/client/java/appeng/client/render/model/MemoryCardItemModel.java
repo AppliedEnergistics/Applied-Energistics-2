@@ -1,11 +1,15 @@
 package appeng.client.render.model;
 
+import appeng.client.render.CubeBuilder;
+import appeng.client.render.ItemBaseModelWrapper;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.ModelDebugName;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -14,7 +18,6 @@ import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
@@ -27,18 +30,21 @@ import appeng.api.implementations.items.MemoryCardColors;
 import appeng.core.AppEng;
 import appeng.items.tools.MemoryCardItem;
 
-public class MemoryCardItemModel implements ItemModel {
-    private final BakedModel baseModel;
-    private final LoadingCache<MemoryCardColors, MemoryCardHashBakedModel> hashModelCache;
+import java.util.ArrayList;
+import java.util.List;
 
-    public MemoryCardItemModel(BakedModel baseModel, TextureAtlasSprite hashSprite) {
+public class MemoryCardItemModel implements ItemModel {
+    private final ItemBaseModelWrapper baseModel;
+    private final LoadingCache<MemoryCardColors, List<BakedQuad>> hashModelCache;
+
+    public MemoryCardItemModel(ItemBaseModelWrapper baseModel, TextureAtlasSprite hashSprite) {
         this.baseModel = baseModel;
         this.hashModelCache = CacheBuilder.newBuilder()
                 .maximumSize(100)
                 .build(new CacheLoader<>() {
                     @Override
-                    public MemoryCardHashBakedModel load(MemoryCardColors colors) {
-                        return new MemoryCardHashBakedModel(baseModel, hashSprite, colors);
+                    public List<BakedQuad> load(MemoryCardColors colors) {
+                        return buildColorQuads(hashSprite, colors);
                     }
                 });
     }
@@ -60,10 +66,27 @@ public class MemoryCardItemModel implements ItemModel {
         var tint = baseLayer.prepareTintLayers(2);
         tint[0] = -1;
         tint[1] = ARGB.opaque(item.getColor(stack));
-        baseLayer.setupBlockModel(baseModel, baseModel.getRenderType(stack));
+        baseModel.applyToLayer(baseLayer, displayContext);
 
         var colors = stack.getOrDefault(AEComponents.MEMORY_CARD_COLORS, MemoryCardColors.DEFAULT);
-        renderState.newLayer().setupBlockModel(hashModelCache.getUnchecked(colors), baseModel.getRenderType(stack));
+        renderState.newLayer().prepareQuadList().addAll(hashModelCache.getUnchecked(colors));
+    }
+
+    private static List<BakedQuad> buildColorQuads(TextureAtlasSprite texture, MemoryCardColors colors) {
+        var quads = new ArrayList<BakedQuad>(2 * 4 * 6);
+        CubeBuilder builder = new CubeBuilder(quads::add);
+
+        builder.setTexture(texture);
+
+        for (int x = 0; x < 4; x++) {
+            for (int y = 0; y < 2; y++) {
+                var color = colors.get(x, y);
+                builder.setColorRGB(color.mediumVariant);
+                builder.addCube(8 + x, 8 + 1 - y, 7.5f, 8 + x + 1, 8 + 1 - y + 1, 8.5f);
+            }
+        }
+
+        return quads;
     }
 
     public record Unbaked(ResourceLocation baseModel,
@@ -79,16 +102,17 @@ public class MemoryCardItemModel implements ItemModel {
         @Override
         public MemoryCardItemModel bake(BakingContext context) {
 
+            ModelDebugName debugName = getClass()::toString;
             var colorOverlayMaterial = new Material(TextureAtlas.LOCATION_BLOCKS, colorOverlaySprite);
-            var hashSprite = context.blockModelBaker().sprites().get(colorOverlayMaterial);
+            var hashSprite = context.blockModelBaker().sprites().get(colorOverlayMaterial, debugName);
 
-            var baseModel = context.bake(this.baseModel);
+            var baseModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), this.baseModel);
             return new MemoryCardItemModel(baseModel, hashSprite);
         }
 
         @Override
         public void resolveDependencies(Resolver resolver) {
-            resolver.resolve(baseModel);
+            resolver.markDependency(baseModel);
         }
 
         public MapCodec<Unbaked> type() {

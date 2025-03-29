@@ -22,8 +22,15 @@ import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.PartModelsInternal;
 import appeng.api.util.AEColor;
 import appeng.block.networking.CableBusColor;
-import appeng.block.paint.PaintSplotchesModel;
-import appeng.blockentity.networking.CableBusTESR;
+import appeng.block.qnb.QnbFormedModel;
+import appeng.client.model.PaintSplotchesModel;
+import appeng.client.model.SpatialPylonModel;
+import appeng.client.render.FacadeItemModel;
+import appeng.client.render.cablebus.CableBusModel;
+import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
+import appeng.client.render.model.DriveModel;
+import appeng.client.render.model.MeteoriteCompassModel;
+import appeng.client.renderer.blockentity.CableBusRenderer;
 import appeng.client.areaoverlay.AreaOverlayRenderer;
 import appeng.client.block.cablebus.CableBusBlockClientExtensions;
 import appeng.client.hooks.RenderBlockOutlineHook;
@@ -34,7 +41,11 @@ import appeng.client.item.StorageCellStateTintSource;
 import appeng.client.render.AERenderPipelines;
 import appeng.client.render.ColorableBlockEntityBlockColor;
 import appeng.client.render.StaticBlockColor;
-import appeng.client.render.crafting.MolecularAssemblerRenderer;
+import appeng.client.renderer.blockentity.CraftingMonitorRenderer;
+import appeng.client.renderer.blockentity.DriveLedRenderer;
+import appeng.client.renderer.blockentity.InscriberRenderer;
+import appeng.client.renderer.blockentity.MEChestRenderer;
+import appeng.client.renderer.blockentity.MolecularAssemblerRenderer;
 import appeng.client.render.effects.CraftingFx;
 import appeng.client.render.effects.EnergyFx;
 import appeng.client.render.effects.LightningArcFX;
@@ -42,12 +53,13 @@ import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.MatterCannonFX;
 import appeng.client.render.effects.VibrantFX;
 import appeng.client.render.model.BuiltInModelLoader;
-import appeng.client.render.model.GlassBakedModel;
+import appeng.client.render.model.QuartzGlassModel;
 import appeng.client.render.model.MemoryCardItemModel;
-import appeng.client.render.tesr.ChargerBlockEntityRenderer;
-import appeng.client.render.tesr.CrankRenderer;
-import appeng.client.render.tesr.SkyStoneChestRenderer;
-import appeng.client.spatial.SpatialStorageSkyProperties;
+import appeng.client.renderer.blockentity.ChargerRenderer;
+import appeng.client.renderer.blockentity.CrankRenderer;
+import appeng.client.renderer.blockentity.SkyStoneChestRenderer;
+import appeng.client.renderer.SpatialStorageSkyProperties;
+import appeng.client.renderer.blockentity.SkyStoneTankRenderer;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
@@ -55,10 +67,16 @@ import appeng.core.definitions.AEEntities;
 import appeng.core.particles.ParticleTypes;
 import appeng.entity.TinyTNTPrimedRenderer;
 import appeng.hooks.BuiltInModelHooks;
-import appeng.client.parts.automation.PlaneModel;
+import appeng.client.model.PlaneModel;
 import appeng.spatial.SpatialStorageDimensionIds;
+import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
@@ -122,23 +140,22 @@ public class AppEngClientRendering {
 
     private void registerBlockStateModels(RegisterBlockStateModels event) {
         event.registerModel(AppEng.makeId("block/cable_bus"), CableBusModel.Unbaked.MAP_CODEC);
-        event.registerModel(AppEng.makeId("block/quartz_glass"), GlassModel.Unbaked.MAP_CODEC);
-        event.registerModel(AppEng.makeId("item/meteorite_compass"), MeteoriteCompassModel.Unbaked.MAP_CODEC);
+        event.registerModel(QuartzGlassModel.Unbaked.ID, QuartzGlassModel.Unbaked.MAP_CODEC);
         event.registerModel(AppEng.makeId("block/drive"), DriveModel.Unbaked.MAP_CODEC);
         event.registerModel(AppEng.makeId("block/spatial_pylon"), SpatialPylonModel.Unbaked.MAP_CODEC);
         event.registerModel(AppEng.makeId("block/paint"), PaintSplotchesModel.Unbaked.MAP_CODEC);
         event.registerModel(AppEng.makeId("block/qnb_formed"), QnbFormedModel.Unbaked.MAP_CODEC);
         event.registerModel(AppEng.makeId("part/p2p/p2p_tunnel_frequency"), P2PTunnelFrequencyModel.Unbaked.MAP_CODEC);
-        event.registerModel(AppEng.makeId("item/facade"), FacadeItemModel.Unbaked.MAP_CODEC);
+        event.registerModel(AppEng.makeId("plane"), PlaneModel.Unbaked.MAP_CODEC);
 
-//  TODO 1.21.5       // Fabric doesn't have model-loaders, so we register the models by hand instead
-//  TODO 1.21.5       addPlaneModel("part/annihilation_plane", "part/annihilation_plane");
-//  TODO 1.21.5       addPlaneModel("part/annihilation_plane_on", "part/annihilation_plane_on");
-//  TODO 1.21.5       addPlaneModel("part/identity_annihilation_plane", "part/identity_annihilation_plane");
-//  TODO 1.21.5       addPlaneModel("part/identity_annihilation_plane_on", "part/identity_annihilation_plane_on");
-//  TODO 1.21.5       addPlaneModel("part/formation_plane", "part/formation_plane");
-//  TODO 1.21.5       addPlaneModel("part/formation_plane_on", "part/formation_plane_on");
-// TODO 1.21.5
+        // Fabric doesn't have model-loaders, so we register the models by hand instead
+ //  TODO 1.21.5 Datagen       addPlaneModel("part/annihilation_plane", "part/annihilation_plane");
+ //  TODO 1.21.5 Datagen       addPlaneModel("part/annihilation_plane_on", "part/annihilation_plane_on");
+ //  TODO 1.21.5 Datagen       addPlaneModel("part/identity_annihilation_plane", "part/identity_annihilation_plane");
+ //  TODO 1.21.5 Datagen       addPlaneModel("part/identity_annihilation_plane_on", "part/identity_annihilation_plane_on");
+ //  TODO 1.21.5 Datagen       addPlaneModel("part/formation_plane", "part/formation_plane");
+ //  TODO 1.21.5 Datagen       addPlaneModel("part/formation_plane_on", "part/formation_plane_on");
+
 //  TODO 1.21.5       addBuiltInModel("block/crafting/1k_storage_formed",
 //  TODO 1.21.5               () -> new CraftingCubeModel(new CraftingUnitModelProvider(CraftingUnitType.STORAGE_1K)));
 //  TODO 1.21.5       addBuiltInModel("block/crafting/4k_storage_formed",
@@ -157,13 +174,13 @@ public class AppEngClientRendering {
 //  TODO 1.21.5               () -> new CraftingCubeModel(new CraftingUnitModelProvider(CraftingUnitType.UNIT)));
     }
 
-    private static void addPlaneModel(String planeName,
-                                      String frontTexture) {
-        ResourceLocation frontTextureId = AppEng.makeId(frontTexture);
-        ResourceLocation sidesTextureId = AppEng.makeId("part/plane_sides");
-        ResourceLocation backTextureId = AppEng.makeId("part/transition_plane_back");
-        addBuiltInModel(planeName, () -> new PlaneModel(frontTextureId, sidesTextureId, backTextureId));
-    }
+// TODO 1.21.5 -> Move to datagen   private static void addPlaneModel(String planeName,
+// TODO 1.21.5 -> Move to datagen                                     String frontTexture) {
+// TODO 1.21.5 -> Move to datagen       ResourceLocation frontTextureId = AppEng.makeId(frontTexture);
+// TODO 1.21.5 -> Move to datagen       ResourceLocation sidesTextureId = AppEng.makeId("part/plane_sides");
+// TODO 1.21.5 -> Move to datagen       ResourceLocation backTextureId = AppEng.makeId("part/transition_plane_back");
+// TODO 1.21.5 -> Move to datagen       addBuiltInModel(planeName, () -> new PlaneModel(frontTextureId, sidesTextureId, backTextureId));
+// TODO 1.21.5 -> Move to datagen   }
 
     private static <T extends UnbakedModel> void addBuiltInModel(String id,
                                                                  Supplier<T> modelFactory) {
@@ -182,15 +199,15 @@ public class AppEngClientRendering {
         event.registerEntityRenderer(AEEntities.TINY_TNT_PRIMED.get(), TinyTNTPrimedRenderer::new);
 
         event.registerBlockEntityRenderer(AEBlockEntities.CRANK.get(), CrankRenderer::new);
-        event.registerBlockEntityRenderer(AEBlockEntities.INSCRIBER.get(), InscriberTESR::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.INSCRIBER.get(), InscriberRenderer::new);
         event.registerBlockEntityRenderer(AEBlockEntities.SKY_CHEST.get(), SkyStoneChestRenderer::new);
-        event.registerBlockEntityRenderer(AEBlockEntities.CHARGER.get(), ChargerBlockEntityRenderer.FACTORY);
-        event.registerBlockEntityRenderer(AEBlockEntities.DRIVE.get(), DriveLedBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(AEBlockEntities.ME_CHEST.get(), MEChestBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.CHARGER.get(), ChargerRenderer.FACTORY);
+        event.registerBlockEntityRenderer(AEBlockEntities.DRIVE.get(), DriveLedRenderer::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.ME_CHEST.get(), MEChestRenderer::new);
         event.registerBlockEntityRenderer(AEBlockEntities.CRAFTING_MONITOR.get(), CraftingMonitorRenderer::new);
         event.registerBlockEntityRenderer(AEBlockEntities.MOLECULAR_ASSEMBLER.get(), MolecularAssemblerRenderer::new);
-        event.registerBlockEntityRenderer(AEBlockEntities.CABLE_BUS.get(), CableBusTESR::new);
-        event.registerBlockEntityRenderer(AEBlockEntities.SKY_STONE_TANK.get(), SkyStoneTankBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.CABLE_BUS.get(), CableBusRenderer::new);
+        event.registerBlockEntityRenderer(AEBlockEntities.SKY_STONE_TANK.get(), SkyStoneTankRenderer::new);
     }
 
     private void registerEntityLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
@@ -209,16 +226,24 @@ public class AppEngClientRendering {
     private void enqueueImcMessages(InterModEnqueueEvent event) {
         // Our new light-mode UI doesn't play nice with darkmodeeverywhere
         InterModComms.sendTo("darkmodeeverywhere", "dme-shaderblacklist", () -> "appeng.");
-        InterModComms.sendTo("framedblocks", "add_ct_property", () -> GlassBakedModel.GLASS_STATE);
+        InterModComms.sendTo("framedblocks", "add_ct_property", () -> QuartzGlassModel.GLASS_STATE);
+    }
+
+    private SimpleModelWrapper bakeSimpleWrapper(ResolvedModel resolvedmodel, ModelBaker baker) {
+        var modelState = BlockModelRotation.X0_Y0;
+        TextureSlots textureslots = resolvedmodel.getTopTextureSlots();
+        boolean flag = resolvedmodel.getTopAmbientOcclusion();
+        TextureAtlasSprite textureatlassprite = resolvedmodel.resolveParticleSprite(textureslots, baker);
+        QuadCollection quadcollection = resolvedmodel.bakeTopGeometry(textureslots, baker, modelState);
+        var renderTypeGroup = resolvedmodel.getTopAdditionalProperties().getOptional(net.neoforged.neoforge.client.model.NeoForgeModelProperties.RENDER_TYPE);
+        var renderTypes = renderTypeGroup == null || renderTypeGroup.isEmpty() ? null : renderTypeGroup.block();
+        return new SimpleModelWrapper(quadcollection, flag, textureatlassprite, renderTypes);
     }
 
     private void registerStandaloneModels(ModelEvent.RegisterStandalone event) {
-        event.register(MolecularAssemblerRenderer.LIGHTS_MODEL);
-        event.register(CrankRenderer.BASE_MODEL);
-        event.register(CrankRenderer.HANDLE_MODEL);
-
-        PartModelsInternal.freeze();
-        PartModelsInternal.getModels().forEach(event::register);
+        event.register(MolecularAssemblerRenderer.LIGHTS_MODEL, this::bakeSimpleWrapper);
+        event.register(CrankRenderer.BASE_MODEL, this::bakeSimpleWrapper);
+        event.register(CrankRenderer.HANDLE_MODEL, this::bakeSimpleWrapper);
     }
 
     private void registerItemModelProperties(RegisterRangeSelectItemModelPropertyEvent event) {
@@ -228,6 +253,8 @@ public class AppEngClientRendering {
     private void registerItemModels(RegisterItemModelsEvent event) {
         event.register(ColorApplicatorItemModel.Unbaked.ID, ColorApplicatorItemModel.Unbaked.MAP_CODEC);
         event.register(MemoryCardItemModel.Unbaked.ID, MemoryCardItemModel.Unbaked.MAP_CODEC);
+        event.register(FacadeItemModel.Unbaked.ID, FacadeItemModel.Unbaked.MAP_CODEC);
+        event.register(MeteoriteCompassModel.Unbaked.ID, MeteoriteCompassModel.Unbaked.MAP_CODEC);
     }
 
     private void registerDimensionSpecialEffects(RegisterDimensionSpecialEffectsEvent event) {

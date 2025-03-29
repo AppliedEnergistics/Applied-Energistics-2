@@ -212,6 +212,6 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     @Override
     public ModelData getModelData() {
         // FIXME update trigger
-        return ModelData.builder().with(SPLOTCHES, new PaintSplotches(getDots())).build();
+        return ModelData.builder().with(SPLOTCHES, new PaintSplotches(this.dots)).build();
     }
 }

@@ -2,7 +2,7 @@ package appeng.client.render.crafting;
 
 import java.util.List;
 
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.SpriteGetter;
 
@@ -27,5 +27,5 @@ public abstract class AbstractCraftingUnitModelProvider<T extends ICraftingUnitT
      */
     public abstract List<Material> getMaterials();
 
-    public abstract BakedModel getBakedModel(SpriteGetter spriteGetter);
+    public abstract BlockStateModel bake(SpriteGetter spriteGetter);
 }

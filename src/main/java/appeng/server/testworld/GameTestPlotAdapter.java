@@ -9,7 +9,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.gametest.framework.GameTestInstance;
 import net.minecraft.gametest.framework.StructureUtils;
 import net.minecraft.gametest.framework.TestData;
@@ -21,13 +20,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.entity.StructureBlockEntity;
-import net.minecraft.world.level.block.state.properties.StructureMode;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
 public class GameTestPlotAdapter extends GameTestInstance {
@@ -45,6 +42,25 @@ public class GameTestPlotAdapter extends GameTestInstance {
                                   ResourceLocation plotId) {
         super(testData);
         this.plotId = plotId;
+    }
+
+    public static void placeStructure(ServerLevel level, BlockPos pos, Plot plot) {
+
+        var plotBounds = plot.getBounds();
+        Vec3i size = new Vec3i(plotBounds.getXSpan(), plotBounds.getYSpan(), plotBounds.getZSpan());
+
+        var boundingbox = StructureUtils.getStructureBoundingBox(pos, size, Rotation.NONE);
+        boundingbox.intersectingChunks().forEach(cp -> {
+            level.setChunkForced(cp.x, cp.z, true);
+        });
+
+        var bounds = plot.getBounds();
+        var origin = pos
+                .offset(getPlotTranslation(bounds));
+        plot.build(
+                level,
+                Platform.getFakePlayer(level, null),
+                origin);
     }
 
     public ResourceLocation plotId() {
@@ -104,65 +120,17 @@ public class GameTestPlotAdapter extends GameTestInstance {
         return Component.literal("AE2 Plot " + plotId);
     }
 
-    /**
-     * Create a fake structure template that has the right bounding box size for our test setup.
-     */
-    public static StructureTemplate getStructureTemplate(String structureName) {
-        var id = ResourceLocation.tryParse(structureName);
-        if (id == null) {
-            return null;
-        }
-
-        var plot = TestPlots.getById(id);
-        if (plot != null) {
-            var template = new StructureTemplate();
-            var tag = new CompoundTag();
-            var sizeList = new ListTag();
-            var bounds = plot.getBounds();
-            sizeList.add(IntTag.valueOf(bounds.getXSpan()));
-            sizeList.add(IntTag.valueOf(bounds.getYSpan()));
-            sizeList.add(IntTag.valueOf(bounds.getZSpan()));
-            tag.put(StructureTemplate.SIZE_TAG, sizeList);
-            template.load(BuiltInRegistries.BLOCK, tag);
-            return template;
-        }
-
-        return null;
-    }
-
-    /**
-     * Place our test plot when a structure block using a fake plot ID is being spawned.
-     */
-    public static StructureBlockEntity createStructure(Plot plot, GameTestInfo info, BlockPos pos, ServerLevel level) {
-
-        var plotBounds = plot.getBounds();
-        Vec3i size = new Vec3i(plotBounds.getXSpan(), plotBounds.getYSpan(), plotBounds.getZSpan());
-
-        var boundingbox = StructureUtils.getStructureBoundingBox(pos, size, Rotation.NONE);
-        boundingbox.intersectingChunks().forEach(cp -> {
-            level.setChunkForced(cp.x, cp.z, true);
-        });
-
-        StructureUtils.clearSpaceForStructure(boundingbox, level);
-
-        level.setBlockAndUpdate(pos, Blocks.STRUCTURE_BLOCK.defaultBlockState());
-        var structureBlock = (StructureBlockEntity) level.getBlockEntity(pos);
-        structureBlock.setMode(StructureMode.LOAD);
-        structureBlock.setIgnoreEntities(false);
-        // TODO 1.21.5 structureBlock.setStructureName(ResourceLocation.parse(info.getStructureName()));
-        // TODO 1.21.5 structureBlock.setMetaData(info.getTestName());
-        structureBlock.setStructureSize(size);
-
+    public static Optional<StructureTemplate> createStructure(ServerLevel level, Plot plot) {
+        var template = new StructureTemplate();
+        var tag = new CompoundTag();
+        var sizeList = new ListTag();
         var bounds = plot.getBounds();
-        var origin = pos
-                .offset(structureBlock.getStructurePos())
-                .offset(getPlotTranslation(bounds));
-        plot.build(
-                level,
-                Platform.getFakePlayer(level, null),
-                origin);
-
-        return structureBlock;
+        sizeList.add(IntTag.valueOf(bounds.getXSpan()));
+        sizeList.add(IntTag.valueOf(bounds.getYSpan()));
+        sizeList.add(IntTag.valueOf(bounds.getZSpan()));
+        tag.put(StructureTemplate.SIZE_TAG, sizeList);
+        template.load(BuiltInRegistries.BLOCK, tag);
+        return Optional.of(template);
     }
 
     private static BlockPos getPlotTranslation(BoundingBox bounds) {

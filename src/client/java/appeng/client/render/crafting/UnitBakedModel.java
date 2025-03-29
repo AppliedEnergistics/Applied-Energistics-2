@@ -23,12 +23,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.model.data.ModelData;
 
-import appeng.client.render.cablebus.CubeBuilder;
+import appeng.client.render.CubeBuilder;
 
 /**
  * A simple crafting unit model that uses an un-lit texture for the inner block.
  */
-public class UnitBakedModel extends CraftingCubeBakedModel {
+public class UnitBakedModel extends CraftingCubeModel {
 
     private final TextureAtlasSprite unitTexture;
 

@@ -10,7 +10,7 @@
     "AnvilMenuMixin",
     "EnchantmentHelperMixin",
     "ItemEntityMixin",
-    "tests.StructureUtilsMixin",
+    "tests.TestInstanceBlockEntityMixin",
     "tests.TestCommandMixin",
     "StructureTemplateMixin"
   ],

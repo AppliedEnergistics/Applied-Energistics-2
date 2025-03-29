@@ -23,6 +23,7 @@ import java.util.Arrays;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.resources.ResourceLocation;
 
@@ -69,13 +70,13 @@ public class SmartCableTextures {
     // one of each set are composed together to get even/odd colored channels
     private final TextureAtlasSprite[] densetextures;
 
-    public SmartCableTextures(SpriteGetter bakedTextureGetter) {
+    public SmartCableTextures(SpriteGetter sprites) {
         this.textures = Arrays.stream(SMART_CHANNELS_TEXTURES)
-                .map(bakedTextureGetter::get)
+                .map(l -> sprites.get(l, getClass()::toString))
                 .toArray(TextureAtlasSprite[]::new);
 
         this.densetextures = Arrays.stream(DENSE_SMART_CHANNELS_TEXTURES)
-                .map(bakedTextureGetter::get)
+                .map(l -> sprites.get(l, getClass()::toString))
                 .toArray(TextureAtlasSprite[]::new);
     }
 

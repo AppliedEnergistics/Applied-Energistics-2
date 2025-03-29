@@ -24,13 +24,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.block.crafting.AbstractCraftingUnitBlock;
-import appeng.client.render.cablebus.CubeBuilder;
+import appeng.client.render.CubeBuilder;
 
 /**
  * Crafting cube baked model that adds a full-bright light texture on top of a normal base texture onto the inner cube.
  * The light texture is only drawn fullbright if the multiblock is currently powered.
  */
-public class LightBakedModel extends CraftingCubeBakedModel {
+public class LightBakedModel extends CraftingCubeModel {
 
     private final TextureAtlasSprite baseTexture;
 

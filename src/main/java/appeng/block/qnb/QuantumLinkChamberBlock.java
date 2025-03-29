@@ -56,7 +56,6 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
         final QuantumBridgeBlockEntity bridge = this.getBlockEntity(level, pos);
         if (bridge != null && bridge.hasQES() && AppEngClient.instance().shouldAddParticles(rand)) {

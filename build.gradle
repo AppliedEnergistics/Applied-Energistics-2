@@ -147,6 +147,7 @@ neoForge {
         client {
             client()
             systemProperty('appeng.tests', 'true')
+            sourceSet = sourceSets.client
         }
         gametestWorld {
             client()
@@ -154,11 +155,13 @@ neoForge {
                     '--username', 'AE2Dev', '--quickPlaySingleplayer', 'GametestWorld'
             ]
             systemProperty('appeng.tests', 'true')
+            sourceSet = sourceSets.client
         }
         guide {
             client()
 
             systemProperty('guideme.showOnStartup', 'ae2:guide')
+            sourceSet = sourceSets.client
         }
         server {
             server()
@@ -171,11 +174,13 @@ neoForge {
                     '--output', file('src/generated/resources/').absolutePath,
                     '--existing', file('src/main/resources').absolutePath
             ]
+            sourceSet = sourceSets.client
         }
         guideexport {
             client()
             systemProperty('appeng.runGuideExportAndExit', 'true')
             systemProperty('appeng.guideExportFolder', file('build/guide').absolutePath)
+            sourceSet = sourceSets.client
         }
         // Use to run the tests
         gametest {
@@ -219,6 +224,7 @@ sourceSets.main.resources.srcDir generateModMetadata
 neoForge.ideSyncTask generateModMetadata
 
 tasks.named('jar', Jar) {
+    from(sourceSets.client.output)
     exclude '/.cache'
     from('guidebook') {
         into 'assets/ae2/ae2guide'

@@ -22,11 +22,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
+import appeng.block.qnb.QnbFormedModel;
 import appeng.core.particles.EnergyParticleData;
 import appeng.core.particles.ParticleTypes;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
+import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,6 +122,11 @@ public class AppEngClient extends AppEngBase {
         super(modEventBus, container);
 
         this.registerClientCommands();
+
+        // TODO 1.21.5 TEMPORARY
+        modEventBus.addListener((RegisterBlockStateModels e) -> {
+            e.registerModel(QnbFormedModel.Unbaked.ID, QnbFormedModel.Unbaked.MAP_CODEC);
+        });
 
         modEventBus.addListener(this::registerClientTooltipComponents);
         modEventBus.addListener(this::registerHotkeys);

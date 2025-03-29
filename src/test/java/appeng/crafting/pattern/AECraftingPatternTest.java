@@ -124,7 +124,7 @@ class AECraftingPatternTest {
 
         // Replace the diamond ID string with an unknown ID string
         assertEquals(1, RecursiveTagReplace.replace(encodedTag, "minecraft:torch", "minecraft:does_not_exist"));
-        var brokenPatternStack = ItemStack.parseOptional(registries, encodedTag);
+        var brokenPatternStack = ItemStack.parse(registries, encodedTag).get();
 
         assertNull(decode(encodedTag));
         assertThat(getExtraTooltip(brokenPatternStack)).containsExactly(
@@ -168,7 +168,7 @@ class AECraftingPatternTest {
         when(level.recipeAccess()).thenReturn(recipeManager);
         when(recipeManager.recipeMap().byType(RecipeType.CRAFTING)).thenReturn(List.of(TEST_RECIPE));
 
-        var pattern = ItemStack.parseOptional(registries, tag);
+        var pattern = ItemStack.parse(registries, tag).get();
         var details = PatternDetailsHelper.decodePattern(AEItemKey.of(pattern), level);
         if (details == null) {
             return null;

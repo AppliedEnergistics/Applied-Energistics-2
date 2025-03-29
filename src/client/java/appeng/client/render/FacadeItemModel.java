@@ -18,40 +18,99 @@
 
 package appeng.client.render;
 
-import java.util.Collection;
-import java.util.Collections;
-
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.block.model.TextureSlots;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.context.ContextMap;
-
 import appeng.client.render.cablebus.FacadeBuilder;
 import appeng.core.AppEng;
+import appeng.items.parts.FacadeItem;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ResolvableModel;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.util.ItemStackMap;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * The model class for facades. Since facades wrap existing models, they don't declare any dependencies here other than
  * the cable anchor.
  */
-public class FacadeItemModel implements BasicUnbakedModel {
+public class FacadeItemModel implements ItemModel {
 
     // We use this to get the default item transforms and make our lives easier
     private static final ResourceLocation MODEL_BASE = AppEng.makeId("item/facade_base");
 
-    @Override
-    public BakedModel bake(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion,
-            boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
-        BakedModel bakedBaseModel = baker.bake(MODEL_BASE, modelState);
-        FacadeBuilder facadeBuilder = new FacadeBuilder(baker, null);
+    private final Map<ItemStack, Collection<BakedQuad>> cache = ItemStackMap.createTypeAndTagMap();
+    private final ItemBaseModelWrapper baseModel;
+    private final ItemModel missingItemModel;
+    private final FacadeBuilder facadeBuilder;
 
-        return new FacadeDispatcherBakedModel(bakedBaseModel, facadeBuilder);
+    public FacadeItemModel(ItemBaseModelWrapper baseModel, ModelBaker modelBaker, ItemModel missingItemModel) {
+        this.baseModel = baseModel;
+        this.missingItemModel = missingItemModel;
+        this.facadeBuilder = modelBaker.compute(FacadeBuilder.SHARED_KEY);
     }
 
     @Override
-    public Collection<ResourceLocation> getDependencies() {
-        return Collections.singleton(MODEL_BASE);
+    public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver itemModelResolver, ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
+
+        if (!(stack.getItem() instanceof FacadeItem itemFacade)) {
+            missingItemModel.update(renderState, stack, itemModelResolver, displayContext, level, entity, seed);
+            return;
+        }
+
+        var textureItem = itemFacade.getTextureItem(stack);
+        if (textureItem.isEmpty()) {
+            missingItemModel.update(renderState, stack, itemModelResolver, displayContext, level, entity, seed);
+            return;
+        }
+
+        var layer = renderState.newLayer();
+        baseModel.renderProperties().applyToLayer(layer, displayContext);
+        var quadList = layer.prepareQuadList();
+        quadList.addAll(baseModel.quads());
+
+        var facadeQuads = cache.get(textureItem);
+        if (facadeQuads == null) {
+            facadeQuads = facadeBuilder.buildFacadeItemQuads(textureItem, Direction.NORTH).toBakedBlockQuads();
+            cache.put(textureItem, facadeQuads);
+        }
+        quadList.addAll(facadeQuads);
+    }
+
+    public record Unbaked() implements ItemModel.Unbaked {
+        public static final ResourceLocation ID = AppEng.makeId("facade");
+
+        public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);
+
+        @Override
+        public void resolveDependencies(ResolvableModel.Resolver resolver) {
+            resolver.markDependency(MODEL_BASE);
+            FacadeBuilder.resolveDependencies(resolver);
+        }
+
+        @Override
+        public ItemModel bake(ItemModel.BakingContext context) {
+
+            return new FacadeItemModel(
+                    ItemBaseModelWrapper.bake(context.blockModelBaker(), MODEL_BASE),
+                    context.blockModelBaker(),
+                    context.missingItemModel()
+            );
+        }
+
+        @Override
+        public MapCodec<Unbaked> type() {
+            return MAP_CODEC;
+        }
     }
 }

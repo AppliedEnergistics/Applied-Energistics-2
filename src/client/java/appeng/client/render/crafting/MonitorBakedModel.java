@@ -28,14 +28,14 @@ import appeng.api.orientation.RelativeSide;
 import appeng.api.util.AEColor;
 import appeng.block.crafting.CraftingMonitorBlock;
 import appeng.blockentity.crafting.CraftingMonitorModelData;
-import appeng.client.render.cablebus.CubeBuilder;
+import appeng.client.render.CubeBuilder;
 
 /**
  * The baked model for the crafting monitor. Please note that this model doesn't handle the item being displayed. That
  * is handled by a BER. Instead, this model adds 3 layered light textures using the [dark|medium|bright] color variants
  * of the attached bus color. The textures are full-bright if the cube is powered.
  */
-public class MonitorBakedModel extends CraftingCubeBakedModel {
+public class MonitorBakedModel extends CraftingCubeModel {
 
     private final TextureAtlasSprite chassisTexture;
 
