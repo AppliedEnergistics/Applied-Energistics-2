@@ -1,12 +1,4 @@
 {
-  "athena:loader": "athena:pillar",
-  "ctm_textures": {
-    "bottom": "ae2:block/quartz_pillar_bottom",
-    "center": "ae2:block/quartz_pillar_side",
-    "particle": "ae2:block/cut_quartz_block",
-    "self": "ae2:block/quartz_pillar_side",
-    "top": "ae2:block/quartz_pillar_top"
-  },
   "variants": {
     "axis=x": {
       "model": "ae2:block/quartz_pillar",

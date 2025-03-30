@@ -40,17 +40,6 @@ import appeng.parts.PartModel;
 
 public class PatternAccessTerminalPart extends AbstractDisplayPart implements IPatternAccessTermMenuHost {
 
-    @PartModels
-    public static final ResourceLocation MODEL_OFF = AppEng.makeId(
-            "part/pattern_access_terminal_off");
-    @PartModels
-    public static final ResourceLocation MODEL_ON = AppEng.makeId(
-            "part/pattern_access_terminal_on");
-
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
-
     private final IConfigManager configManager = IConfigManager.builder(() -> {
         this.getHost().markForSave();
     })
@@ -67,11 +56,6 @@ public class PatternAccessTerminalPart extends AbstractDisplayPart implements IP
             MenuOpener.open(PatternAccessTermMenu.TYPE, player, MenuLocators.forPart(this));
         }
         return true;
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return this.selectModel(MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL);
     }
 
     @Override

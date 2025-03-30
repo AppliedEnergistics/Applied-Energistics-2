@@ -21,7 +21,8 @@
     "PickColorMixin",
     "TextureAtlasMixin",
     "PonderWorldMixin",
-    "RecipeUpdateMixin"
+    "RecipeUpdateMixin",
+    "client.PartModelLoaderMixin"
   ],
   "server": [],
   "injectors": {

@@ -36,9 +36,6 @@ import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
 
 public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink {
-
-    @PartModels
-    private static final IPartModel MODELS = new PartModel(AppEng.makeId("part/energy_acceptor"));
     private ForgeEnergyAdapter forgeEnergyAdapter;
 
     public EnergyAcceptorPart(IPartItem<?> partItem) {
@@ -60,11 +57,6 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
     @Override
     public float getCableConnectionLength(AECableType cable) {
         return 2;
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return MODELS;
     }
 
     @Override

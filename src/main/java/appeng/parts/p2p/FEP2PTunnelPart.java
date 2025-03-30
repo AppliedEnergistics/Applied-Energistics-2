@@ -30,24 +30,13 @@ import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 
 public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IEnergyStorage> {
-    private static final P2PModels MODELS = new P2PModels(AppEng.makeId("part/p2p/p2p_tunnel_fe"));
     private static final IEnergyStorage NULL_ENERGY_STORAGE = new NullEnergyStorage();
-
-    @PartModels
-    public static List<IPartModel> getModels() {
-        return MODELS.getModels();
-    }
 
     public FEP2PTunnelPart(IPartItem<?> partItem) {
         super(partItem, Capabilities.EnergyStorage.BLOCK);
         inputHandler = new InputEnergyStorage();
         outputHandler = new OutputEnergyStorage();
         emptyHandler = NULL_ENERGY_STORAGE;
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return MODELS.getModel(this.isPowered(), this.isActive());
     }
 
     private class InputEnergyStorage implements IEnergyStorage {

@@ -18,15 +18,14 @@
 
 package appeng.client.renderer.blockentity;
 
+import appeng.api.parts.IPart;
 import appeng.blockentity.networking.CableBusBlockEntity;
+import appeng.client.AppEngClientRendering;
+import appeng.client.renderer.parts.PartRendererDispatcher;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.Direction;
-
-import appeng.api.parts.IPart;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -34,21 +33,56 @@ import net.minecraft.world.phys.Vec3;
  */
 public class CableBusRenderer implements BlockEntityRenderer<CableBusBlockEntity> {
 
+    private final PartRendererDispatcher partRendererDispatcher;
+
     public CableBusRenderer(BlockEntityRendererProvider.Context context) {
+        partRendererDispatcher = AppEngClientRendering.getInstance().getPartRendererDispatcher();
     }
 
     @Override
-    public void render(CableBusBlockEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffers,
-            int combinedLightIn, int combinedOverlayIn, Vec3 cameraPosition) {
-        if (!te.getCableBus().isRequiresDynamicRender()) {
-            return;
+    public void render(CableBusBlockEntity be, float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
+                       int packedLight, int packedOverlay, Vec3 cameraPosition) {
+
+
+        var hasDynamicRenderers = be.getPartRendererCache(Boolean.class);
+
+        // Determine if there are any renderers for us
+        if (hasDynamicRenderers == null) {
+            hasDynamicRenderers = false;
+            for (var facing : IPart.ATTACHMENT_POINTS) {
+                var part = be.getPart(facing);
+                if (part != null) {
+                    var renderer = partRendererDispatcher.getRenderer(part);
+                    if (renderer != null) {
+                        hasDynamicRenderers = true;
+                        break;
+                    }
+                }
+            }
+            be.setPartRendererCache(hasDynamicRenderers);
         }
 
-        for (Direction facing : Direction.values()) {
-            IPart part = te.getPart(facing);
-            if (part != null && part.requireDynamicRender()) {
-                part.renderDynamic(partialTicks, ms, buffers, combinedLightIn, combinedOverlayIn);
+        if (hasDynamicRenderers) {
+            for (var facing : IPart.ATTACHMENT_POINTS) {
+                var part = be.getPart(facing);
+                if (part != null) {
+                    renderPart(part, partialTicks, poseStack, buffers, packedLight, packedOverlay, cameraPosition);
+                }
             }
+        }
+
+    }
+
+    private <T extends IPart> void renderPart(T part,
+                                              float partialTicks,
+                                              PoseStack poseStack,
+                                              MultiBufferSource buffers,
+                                              int packedLight,
+                                              int packedOverlay,
+                                              Vec3 cameraPosition) {
+        var renderer = partRendererDispatcher.getRenderer(part);
+        if (renderer != null) {
+            renderer.renderDynamic(part, partialTicks, poseStack, buffers, packedLight, packedOverlay, cameraPosition);
         }
     }
 

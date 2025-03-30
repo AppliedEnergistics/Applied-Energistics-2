@@ -20,6 +20,7 @@ package appeng.parts.misc;
 
 import java.util.EnumSet;
 
+import appeng.parts.automation.PartModelData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -44,25 +45,10 @@ import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
+import net.neoforged.neoforge.model.data.ModelData;
+import org.jetbrains.annotations.Nullable;
 
 public class ToggleBusPart extends AEBasePart {
-
-    @PartModels
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/toggle_bus_base");
-    @PartModels
-    public static final ResourceLocation MODEL_STATUS_OFF = AppEng.makeId(
-            "part/toggle_bus_status_off");
-    @PartModels
-    public static final ResourceLocation MODEL_STATUS_ON = AppEng.makeId(
-            "part/toggle_bus_status_on");
-    @PartModels
-    public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = AppEng.makeId(
-            "part/toggle_bus_status_has_channel");
-
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_STATUS_OFF);
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_STATUS_ON);
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_STATUS_HAS_CHANNEL);
-
     private final IManagedGridNode outerNode = GridHelper
             .createManagedNode(this, NodeListener.INSTANCE)
             .setTagName("outer")
@@ -199,13 +185,16 @@ public class ToggleBusPart extends AEBasePart {
     }
 
     @Override
-    public IPartModel getStaticModels() {
+    public void collectModelData(ModelData.Builder builder) {
+        super.collectModelData(builder);
+
+        // Overwrite the original state
         if (isEnabled() && this.isActive() && this.isPowered()) {
-            return MODELS_HAS_CHANNEL;
+            builder.with(PartModelData.STATUS_INDICATOR, PartModelData.StatusIndicatorState.ACTIVE);
         } else if (isEnabled() && this.isPowered()) {
-            return MODELS_ON;
+            builder.with(PartModelData.STATUS_INDICATOR, PartModelData.StatusIndicatorState.POWERED);
         } else {
-            return MODELS_OFF;
+            builder.with(PartModelData.STATUS_INDICATOR, PartModelData.StatusIndicatorState.UNPOWERED);
         }
     }
 }

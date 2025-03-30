@@ -47,14 +47,6 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
 
 public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements IGridTickable {
-
-    private static final P2PModels MODELS = new P2PModels(AppEng.makeId("part/p2p/p2p_tunnel_me"));
-
-    @PartModels
-    public static List<IPartModel> getModels() {
-        return MODELS.getModels();
-    }
-
     /**
      * Updates to ME tunnel connections are always delayed until the end of the tick. This field stores which operation
      * should be performed. Even if multiple updates are queued, only the most recently queued will be performed.
@@ -212,11 +204,6 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
                 connections.put(output, connection);
             }
         }
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return MODELS.getModel(this.isPowered(), this.isActive());
     }
 
     private enum ConnectionUpdate {

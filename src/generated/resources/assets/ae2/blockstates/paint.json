@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "type": "ae2:paint_splotches"
+      "type": "ae2:paint"
     }
   }
 }

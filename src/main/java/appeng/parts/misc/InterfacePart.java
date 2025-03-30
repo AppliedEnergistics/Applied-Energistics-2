@@ -49,8 +49,6 @@ import appeng.parts.PartModel;
 
 public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
 
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/interface_base");
-
     private static final IGridNodeListener<InterfacePart> NODE_LISTENER = new NodeListener<>() {
         @Override
         public void onGridChanged(InterfacePart nodeOwner, IGridNode node) {
@@ -58,18 +56,6 @@ public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
             nodeOwner.getInterfaceLogic().gridChanged();
         }
     };
-
-    @PartModels
-    public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/interface_off"));
-
-    @PartModels
-    public static final PartModel MODELS_ON = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/interface_on"));
-
-    @PartModels
-    public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/interface_has_channel"));
 
     private final InterfaceLogic logic = createLogic();
 
@@ -160,17 +146,6 @@ public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
     @Override
     public void setPriority(int newValue) {
         this.logic.setPriority(newValue);
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        if (this.isActive() && this.isPowered()) {
-            return MODELS_HAS_CHANNEL;
-        } else if (this.isPowered()) {
-            return MODELS_ON;
-        } else {
-            return MODELS_OFF;
-        }
     }
 
     @Nullable

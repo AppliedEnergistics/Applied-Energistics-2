@@ -1,12 +1,4 @@
 {
-  "athena:loader": "athena:ctm",
-  "ctm_textures": {
-    "center": "ae2:block/quartz_block_center",
-    "empty": "ae2:block/quartz_block_empty",
-    "horizontal": "ae2:block/quartz_block_h",
-    "particle": "ae2:block/quartz_block",
-    "vertical": "ae2:block/quartz_block_v"
-  },
   "variants": {
     "": {
       "model": "ae2:block/quartz_block"

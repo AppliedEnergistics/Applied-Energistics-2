@@ -19,18 +19,17 @@
 package appeng.client;
 
 import appeng.api.parts.CableRenderMode;
-import appeng.api.parts.PartModelsInternal;
 import appeng.api.util.AEColor;
 import appeng.block.networking.CableBusColor;
 import appeng.block.qnb.QnbFormedModel;
-import appeng.client.model.PaintSplotchesModel;
-import appeng.client.model.SpatialPylonModel;
-import appeng.client.render.FacadeItemModel;
-import appeng.client.render.cablebus.CableBusModel;
-import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
-import appeng.client.render.model.DriveModel;
-import appeng.client.render.model.MeteoriteCompassModel;
-import appeng.client.renderer.blockentity.CableBusRenderer;
+import appeng.client.model.CableAnchorPartModel;
+import appeng.client.model.LevelEmitterPartModel;
+import appeng.client.model.LockableMonitorPartModel;
+import appeng.client.model.P2PFrequencyPartModel;
+import appeng.client.api.model.parts.StaticPartModel;
+import appeng.client.api.model.parts.CompositePartModel;
+import appeng.client.api.model.parts.RegisterPartModelsEvent;
+import appeng.client.api.renderer.parts.RegisterPartRendererEvent;
 import appeng.client.areaoverlay.AreaOverlayRenderer;
 import appeng.client.block.cablebus.CableBusBlockClientExtensions;
 import appeng.client.hooks.RenderBlockOutlineHook;
@@ -38,36 +37,47 @@ import appeng.client.item.ColorApplicatorItemModel;
 import appeng.client.item.EnergyFillLevelProperty;
 import appeng.client.item.PortableCellColorTintSource;
 import appeng.client.item.StorageCellStateTintSource;
+import appeng.client.model.PaintSplotchesModel;
+import appeng.client.model.PartModels;
+import appeng.client.model.PlanePartModel;
+import appeng.client.model.SpatialPylonModel;
+import appeng.client.model.StatusIndicatorPartModel;
 import appeng.client.render.AERenderPipelines;
 import appeng.client.render.ColorableBlockEntityBlockColor;
+import appeng.client.render.FacadeItemModel;
 import appeng.client.render.StaticBlockColor;
-import appeng.client.renderer.blockentity.CraftingMonitorRenderer;
-import appeng.client.renderer.blockentity.DriveLedRenderer;
-import appeng.client.renderer.blockentity.InscriberRenderer;
-import appeng.client.renderer.blockentity.MEChestRenderer;
-import appeng.client.renderer.blockentity.MolecularAssemblerRenderer;
+import appeng.client.render.cablebus.CableBusModel;
+import appeng.client.render.crafting.CraftingCubeModel;
 import appeng.client.render.effects.CraftingFx;
 import appeng.client.render.effects.EnergyFx;
 import appeng.client.render.effects.LightningArcFX;
 import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.MatterCannonFX;
 import appeng.client.render.effects.VibrantFX;
-import appeng.client.render.model.BuiltInModelLoader;
-import appeng.client.render.model.QuartzGlassModel;
+import appeng.client.render.model.DriveModel;
 import appeng.client.render.model.MemoryCardItemModel;
-import appeng.client.renderer.blockentity.ChargerRenderer;
-import appeng.client.renderer.blockentity.CrankRenderer;
-import appeng.client.renderer.blockentity.SkyStoneChestRenderer;
+import appeng.client.render.model.MeteoriteCompassModel;
+import appeng.client.render.model.QuartzGlassModel;
 import appeng.client.renderer.SpatialStorageSkyProperties;
+import appeng.client.renderer.blockentity.CableBusRenderer;
+import appeng.client.renderer.blockentity.ChargerRenderer;
+import appeng.client.renderer.blockentity.CraftingMonitorRenderer;
+import appeng.client.renderer.blockentity.CrankRenderer;
+import appeng.client.renderer.blockentity.DriveLedRenderer;
+import appeng.client.renderer.blockentity.InscriberRenderer;
+import appeng.client.renderer.blockentity.MEChestRenderer;
+import appeng.client.renderer.blockentity.MolecularAssemblerRenderer;
+import appeng.client.renderer.blockentity.SkyStoneChestRenderer;
 import appeng.client.renderer.blockentity.SkyStoneTankRenderer;
+import appeng.client.renderer.part.MonitorRenderer;
+import appeng.client.renderer.parts.PartRendererDispatcher;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
 import appeng.core.particles.ParticleTypes;
 import appeng.entity.TinyTNTPrimedRenderer;
-import appeng.hooks.BuiltInModelHooks;
-import appeng.client.model.PlaneModel;
+import appeng.parts.reporting.ConversionMonitorPart;
 import appeng.spatial.SpatialStorageDimensionIds;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.block.model.TextureSlots;
@@ -76,14 +86,15 @@ import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.resources.model.ResolvedModel;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.InitializeClientRegistriesEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
@@ -94,17 +105,15 @@ import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyE
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.function.Supplier;
+import java.util.Objects;
 
 /**
  * Client-specific functionality.
  */
 @Mod(value = AppEng.MOD_ID, dist = Dist.CLIENT)
 public class AppEngClientRendering {
-    private static final Logger LOG = LoggerFactory.getLogger(AppEngClientRendering.class);
+    private static AppEngClientRendering instance;
 
     /**
      * Last known cable render mode. Used to update all rendered blocks once at the end of the tick when the mode is
@@ -112,12 +121,19 @@ public class AppEngClientRendering {
      */
     private CableRenderMode prevCableRenderMode = CableRenderMode.STANDARD;
 
+    private final PartRendererDispatcher partRendererDispatcher = new PartRendererDispatcher();
+
+    private PartModels partModels;
+
+    public static AppEngClientRendering getInstance() {
+        return Objects.requireNonNull(instance);
+    }
+
     public AppEngClientRendering(IEventBus modEventBus, ModContainer container) {
-        // TODO InitBuiltInModels.init();
+        instance = this;
 
         modEventBus.addListener(this::registerEntityRenderers);
         modEventBus.addListener(this::registerEntityLayerDefinitions);
-        modEventBus.addListener(this::registerModelLoader);
         modEventBus.addListener(this::registerClientExtensions);
         modEventBus.addListener(this::enqueueImcMessages);
         modEventBus.addListener(this::registerParticleFactories);
@@ -134,6 +150,46 @@ public class AppEngClientRendering {
 
         var areaOverlayRenderer = new AreaOverlayRenderer();
         NeoForge.EVENT_BUS.register(areaOverlayRenderer);
+
+        modEventBus.addListener(this::registerReloadListener);
+        modEventBus.addListener(this::registerPartRenderers);
+        modEventBus.addListener(this::registerPartModelTypes);
+        modEventBus.addListener(this::initCustomClientRegistries);
+    }
+
+    private void registerPartModelTypes(RegisterPartModelsEvent event) {
+        event.registerModelType(StaticPartModel.Unbaked.ID, StaticPartModel.Unbaked.MAP_CODEC);
+        event.registerModelType(CompositePartModel.Unbaked.ID, CompositePartModel.Unbaked.MAP_CODEC);
+        event.registerModelType(P2PFrequencyPartModel.Unbaked.ID, P2PFrequencyPartModel.Unbaked.MAP_CODEC);
+        event.registerModelType(StatusIndicatorPartModel.Unbaked.ID, StatusIndicatorPartModel.Unbaked.MAP_CODEC);
+        event.registerModelType(LevelEmitterPartModel.Unbaked.ID, LevelEmitterPartModel.Unbaked.MAP_CODEC);
+        event.registerModelType(CableAnchorPartModel.Unbaked.ID, CableAnchorPartModel.Unbaked.MAP_CODEC);
+        event.registerModelType(LockableMonitorPartModel.Unbaked.ID, LockableMonitorPartModel.Unbaked.MAP_CODEC);
+        event.registerModelType(PlanePartModel.Unbaked.ID, PlanePartModel.Unbaked.MAP_CODEC);
+    }
+
+    private void initCustomClientRegistries(InitializeClientRegistriesEvent event) {
+        partModels = new PartModels();
+    }
+
+    private void registerPartRenderers(RegisterPartRendererEvent event) {
+        event.register(ConversionMonitorPart.class, new MonitorRenderer());
+        event.register(ConversionMonitorPart.class, new MonitorRenderer());
+    }
+
+    public PartModels getPartModels() {
+        if (partModels == null) {
+            throw new IllegalStateException("Client registries have not been initialized yet");
+        }
+        return partModels;
+    }
+
+    public PartRendererDispatcher getPartRendererDispatcher() {
+        return partRendererDispatcher;
+    }
+
+    private void registerReloadListener(AddClientReloadListenersEvent event) {
+        event.addListener(AppEng.makeId("part_renderer_dispatcher"), partRendererDispatcher);
     }
 
     private void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
@@ -141,22 +197,21 @@ public class AppEngClientRendering {
     }
 
     private void registerBlockStateModels(RegisterBlockStateModels event) {
-        event.registerModel(AppEng.makeId("block/cable_bus"), CableBusModel.Unbaked.MAP_CODEC);
+        event.registerModel(CableBusModel.Unbaked.ID, CableBusModel.Unbaked.MAP_CODEC);
         event.registerModel(QuartzGlassModel.Unbaked.ID, QuartzGlassModel.Unbaked.MAP_CODEC);
-        event.registerModel(AppEng.makeId("block/drive"), DriveModel.Unbaked.MAP_CODEC);
-        event.registerModel(AppEng.makeId("block/spatial_pylon"), SpatialPylonModel.Unbaked.MAP_CODEC);
-        event.registerModel(AppEng.makeId("block/paint"), PaintSplotchesModel.Unbaked.MAP_CODEC);
-        event.registerModel(AppEng.makeId("block/qnb_formed"), QnbFormedModel.Unbaked.MAP_CODEC);
-        event.registerModel(AppEng.makeId("part/p2p/p2p_tunnel_frequency"), P2PTunnelFrequencyModel.Unbaked.MAP_CODEC);
-        event.registerModel(AppEng.makeId("plane"), PlaneModel.Unbaked.MAP_CODEC);
+        event.registerModel(AppEng.makeId("drive"), DriveModel.Unbaked.MAP_CODEC);
+        event.registerModel(AppEng.makeId("spatial_pylon"), SpatialPylonModel.Unbaked.MAP_CODEC);
+        event.registerModel(AppEng.makeId("paint"), PaintSplotchesModel.Unbaked.MAP_CODEC);
+        event.registerModel(AppEng.makeId("qnb_formed"), QnbFormedModel.Unbaked.MAP_CODEC);
+        event.registerModel(CraftingCubeModel.Unbaked.ID, CraftingCubeModel.Unbaked.MAP_CODEC);
 
         // Fabric doesn't have model-loaders, so we register the models by hand instead
- //  TODO 1.21.5 Datagen       addPlaneModel("part/annihilation_plane", "part/annihilation_plane");
- //  TODO 1.21.5 Datagen       addPlaneModel("part/annihilation_plane_on", "part/annihilation_plane_on");
- //  TODO 1.21.5 Datagen       addPlaneModel("part/identity_annihilation_plane", "part/identity_annihilation_plane");
- //  TODO 1.21.5 Datagen       addPlaneModel("part/identity_annihilation_plane_on", "part/identity_annihilation_plane_on");
- //  TODO 1.21.5 Datagen       addPlaneModel("part/formation_plane", "part/formation_plane");
- //  TODO 1.21.5 Datagen       addPlaneModel("part/formation_plane_on", "part/formation_plane_on");
+        //  TODO 1.21.5 Datagen       addPlaneModel("part/annihilation_plane", "part/annihilation_plane");
+        //  TODO 1.21.5 Datagen       addPlaneModel("part/annihilation_plane_on", "part/annihilation_plane_on");
+        //  TODO 1.21.5 Datagen       addPlaneModel("part/identity_annihilation_plane", "part/identity_annihilation_plane");
+        //  TODO 1.21.5 Datagen       addPlaneModel("part/identity_annihilation_plane_on", "part/identity_annihilation_plane_on");
+        //  TODO 1.21.5 Datagen       addPlaneModel("part/formation_plane", "part/formation_plane");
+        //  TODO 1.21.5 Datagen       addPlaneModel("part/formation_plane_on", "part/formation_plane_on");
 
 //  TODO 1.21.5       addBuiltInModel("block/crafting/1k_storage_formed",
 //  TODO 1.21.5               () -> new CraftingCubeModel(new CraftingUnitModelProvider(CraftingUnitType.STORAGE_1K)));
@@ -183,15 +238,6 @@ public class AppEngClientRendering {
 // TODO 1.21.5 -> Move to datagen       ResourceLocation backTextureId = AppEng.makeId("part/transition_plane_back");
 // TODO 1.21.5 -> Move to datagen       addBuiltInModel(planeName, () -> new PlaneModel(frontTextureId, sidesTextureId, backTextureId));
 // TODO 1.21.5 -> Move to datagen   }
-
-    private static <T extends UnbakedModel> void addBuiltInModel(String id,
-                                                                 Supplier<T> modelFactory) {
-        BuiltInModelHooks.addBuiltInModel(AppEng.makeId(id), modelFactory.get());
-    }
-
-    private void registerModelLoader(ModelEvent.RegisterLoaders event) {
-        event.register(BuiltInModelLoader.ID, new BuiltInModelLoader());
-    }
 
     private void registerClientExtensions(RegisterClientExtensionsEvent event) {
         event.registerBlock(new CableBusBlockClientExtensions(AEBlocks.CABLE_BUS.block()), AEBlocks.CABLE_BUS.block());

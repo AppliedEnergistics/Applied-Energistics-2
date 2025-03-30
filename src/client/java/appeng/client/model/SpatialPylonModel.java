@@ -145,7 +145,7 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
         // Reset back to default
         builder.setEmissiveMaterial(false);
 
-        parts.add(new SimpleModelWrapper(quadCollection.build(), true, particleIcon(), RenderType.solid()));
+        parts.add(new SimpleModelWrapper(quadCollection.build(), true, particleIcon(), RenderType.cutout()));
     }
 
     private static SpatialPylonTextureType getTextureTypeFromSideOutside(SpatialPylonBlockEntity.ClientState state,

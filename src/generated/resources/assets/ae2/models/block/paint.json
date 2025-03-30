@@ -1,7 +1,0 @@
-{
-  "ae2:model": "ae2:block/paint",
-  "loader": "ae2:builtin",
-  "textures": {
-    "particle": "ae2:block/transparent"
-  }
-}

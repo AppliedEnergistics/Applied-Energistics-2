@@ -1,6 +1,5 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "ae2:item/meteorite_compass"
+    "type": "ae2:meteorite_compass"
   }
 }

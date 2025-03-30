@@ -242,12 +242,6 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public boolean isBlocked(Direction side) {
-        // TODO 1.10.2-R - Stuff.
-        return false;
-    }
-
-    @Override
     public SelectedPart selectPartLocal(Vec3 pos) {
         return this.getCableBus().selectPartLocal(pos);
     }
@@ -404,5 +398,14 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
             }
         }
         writer.endObject();
+    }
+
+    @Nullable
+    public <T> T getPartRendererCache(Class<T> cacheClass) {
+        return cb.getPartRendererCache(cacheClass);
+    }
+
+    public void setPartRendererCache(Object partRendererCache) {
+        cb.setPartRendererCache(partRendererCache);
     }
 }

@@ -18,6 +18,7 @@
 
 package appeng.parts.automation;
 
+import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -242,5 +243,12 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     @Override
     protected boolean shouldSendMissingChannelStateToClient() {
         return false; // We handle this completely in our enabled flag
+    }
+
+    @Nullable
+    @Override
+    public void collectModelData(ModelData.Builder builder) {
+        super.collectModelData(builder);
+        builder.with(PartModelData.LEVEL_EMITTER_ON, isLevelEmitterOn());
     }
 }

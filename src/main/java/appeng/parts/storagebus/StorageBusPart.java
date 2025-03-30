@@ -95,20 +95,6 @@ import appeng.util.prioritylist.IPartitionList;
 public class StorageBusPart extends UpgradeablePart
         implements IGridTickable, IStorageProvider, IPriorityHost, IConfigInvHost {
 
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/storage_bus_base");
-
-    @PartModels
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/storage_bus_off"));
-
-    @PartModels
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/storage_bus_on"));
-
-    @PartModels
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/storage_bus_has_channel"));
-
     protected final IActionSource source;
     private final ConfigInventory config = ConfigInventory.configTypes(63).changeListener(this::onConfigurationChanged)
             .build();
@@ -533,17 +519,6 @@ public class StorageBusPart extends UpgradeablePart
 
         if (mode == SettingsFrom.MEMORY_CARD) {
             builder.set(AEComponents.EXPORTED_CONFIG_INV, config.toList());
-        }
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        if (this.isActive() && this.isPowered()) {
-            return MODELS_HAS_CHANNEL;
-        } else if (this.isPowered()) {
-            return MODELS_ON;
-        } else {
-            return MODELS_OFF;
         }
     }
 

@@ -21,6 +21,7 @@ package appeng.client.render.crafting;
 import appeng.block.crafting.CraftingUnitType;
 import appeng.blockentity.crafting.CraftingCubeModelData;
 import appeng.client.render.CubeBuilder;
+import appeng.core.AppEng;
 import appeng.thirdparty.fabric.ModelHelper;
 import appeng.util.Platform;
 import com.mojang.serialization.MapCodec;
@@ -35,6 +36,7 @@ import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -50,7 +52,7 @@ import java.util.List;
  * this base class handles adding the "ring" that frames the multi-block structure and delegates rendering of the
  * "inner" part of each block to the subclasses of this class.
  */
-abstract class CraftingCubeModel implements DynamicBlockStateModel {
+public abstract class CraftingCubeModel implements DynamicBlockStateModel {
     private final TextureAtlasSprite ringCorner;
 
     private final TextureAtlasSprite ringHor;
@@ -250,8 +252,9 @@ abstract class CraftingCubeModel implements DynamicBlockStateModel {
     }
 
     public record Unbaked(CraftingUnitType type) implements CustomUnbakedBlockStateModel {
+        public static final ResourceLocation ID = AppEng.makeId("crafting_cube");
         public static final MapCodec<CraftingCubeModel.Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                        CraftingUnitType.CODEC.fieldOf("type").forGetter(Unbaked::type)
+                        CraftingUnitType.CODEC.fieldOf("unit_type").forGetter(Unbaked::type)
                 )
                 .apply(instance, CraftingCubeModel.Unbaked::new));
 

@@ -64,14 +64,6 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
 
     private static final Logger LOG = LoggerFactory.getLogger(AnnihilationPlanePart.class);
 
-    private static final PlaneModels MODELS = new PlaneModels("part/annihilation_plane",
-            "part/annihilation_plane_on");
-
-    @PartModels
-    public static List<IPartModel> getModels() {
-        return MODELS.getModels();
-    }
-
     private final IActionSource actionSource = new MachineSource(this);
 
     private final PlaneConnectionHelper connectionHelper = new PlaneConnectionHelper(this);
@@ -345,16 +337,11 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
                 what, amount, this.actionSource, mode);
     }
 
+    @Nullable
     @Override
-    public IPartModel getStaticModels() {
-        return MODELS.getModel(this.isPowered(), this.isActive());
-    }
-
-    @Override
-    public ModelData getModelData() {
-        return ModelData.builder()
-                .with(PlaneModelData.CONNECTIONS, getConnections())
-                .build();
+    public void collectModelData(ModelData.Builder builder) {
+        super.collectModelData(builder);
+        builder.with(PartModelData.CONNECTIONS, getConnections());
     }
 
     private record ContinuousGeneration(

@@ -27,10 +27,8 @@ import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
 
-import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 
@@ -68,14 +66,14 @@ public class CableBusRenderState {
     // connections contains a corresponding entry.
     private EnumMap<Direction, Integer> channelsOnSide = new EnumMap<>(Direction.class);
 
-    private EnumMap<Direction, IPartModel> attachments = new EnumMap<>(Direction.class);
+    private final EnumMap<Direction, PartRenderState> attachments = new EnumMap<>(Direction.class);
 
     // For each attachment, this contains the distance from the edge until which a
     // cable connection should be drawn
-    private EnumMap<Direction, Integer> attachmentConnections = new EnumMap<>(Direction.class);
+    private final EnumMap<Direction, Integer> attachmentConnections = new EnumMap<>(Direction.class);
 
     // Contains the facade to use for each side that has a facade attached
-    private EnumMap<Direction, FacadeRenderState> facades = new EnumMap<>(Direction.class);
+    private final EnumMap<Direction, FacadeRenderState> facades = new EnumMap<>(Direction.class);
 
     // Used for Facades.
     private BlockPos pos;
@@ -84,10 +82,7 @@ public class CableBusRenderState {
     // cut out holes for the parts. This
     // list is only populated if there are
     // facades on this cable bus
-    private List<AABB> boundingBoxes = new ArrayList<>();
-
-    // Additional model data passed to the part models
-    private EnumMap<Direction, ModelData> partModelData = new EnumMap<>(Direction.class);
+    private final List<AABB> boundingBoxes = new ArrayList<>();
 
     public CableCoreType getCoreType() {
         return this.coreType;
@@ -137,7 +132,7 @@ public class CableBusRenderState {
         this.cableBusAdjacent = cableBusAdjacent;
     }
 
-    public EnumMap<Direction, IPartModel> getAttachments() {
+    public EnumMap<Direction, PartRenderState> getAttachments() {
         return this.attachments;
     }
 
@@ -161,45 +156,15 @@ public class CableBusRenderState {
         return this.boundingBoxes;
     }
 
-    public EnumMap<Direction, ModelData> getPartModelData() {
-        return this.partModelData;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        CableBusRenderState that = (CableBusRenderState) o;
+        return cableType == that.cableType && coreType == that.coreType && cableColor == that.cableColor && Objects.equals(connectionTypes, that.connectionTypes) && Objects.equals(cableBusAdjacent, that.cableBusAdjacent) && Objects.equals(channelsOnSide, that.channelsOnSide) && Objects.equals(attachments, that.attachments) && Objects.equals(attachmentConnections, that.attachmentConnections) && Objects.equals(facades, that.facades) && Objects.equals(pos, that.pos) && Objects.equals(boundingBoxes, that.boundingBoxes);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (this.attachmentConnections == null ? 0 : this.attachmentConnections.hashCode());
-        result = prime * result + (this.cableBusAdjacent == null ? 0 : this.cableBusAdjacent.hashCode());
-        result = prime * result + (this.cableColor == null ? 0 : this.cableColor.hashCode());
-        result = prime * result + (this.cableType == null ? 0 : this.cableType.hashCode());
-        result = prime * result + (this.channelsOnSide == null ? 0 : this.channelsOnSide.hashCode());
-        result = prime * result + (this.connectionTypes == null ? 0 : this.connectionTypes.hashCode());
-        result = prime * result + (this.coreType == null ? 0 : this.coreType.hashCode());
-        result = prime * result + (this.partModelData == null ? 0 : this.partModelData.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (this.getClass() != obj.getClass()) {
-            return false;
-        }
-
-        final CableBusRenderState other = (CableBusRenderState) obj;
-
-        return this.cableColor == other.cableColor && this.cableType == other.cableType
-                && this.coreType == other.coreType
-                && Objects.equals(this.attachmentConnections, other.attachmentConnections)
-                && Objects.equals(this.cableBusAdjacent, other.cableBusAdjacent)
-                && Objects.equals(this.channelsOnSide, other.channelsOnSide)
-                && Objects.equals(this.connectionTypes, other.connectionTypes)
-                && Objects.equals(this.partModelData, other.partModelData);
+        return Objects.hash(cableType, coreType, cableColor, connectionTypes, cableBusAdjacent, channelsOnSide, attachments, attachmentConnections, facades, pos, boundingBoxes);
     }
 }

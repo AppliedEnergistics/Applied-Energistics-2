@@ -2,10 +2,8 @@ package appeng.datagen.providers.models;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.IOrientationStrategy;
-import appeng.client.render.model.BuiltInModelLoaderBuilder;
 import appeng.core.AppEng;
 import appeng.core.definitions.BlockDefinition;
-import com.google.gson.JsonPrimitive;
 import com.mojang.math.Quadrant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -21,15 +19,16 @@ import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.client.renderer.block.model.Variant;
 import net.minecraft.client.renderer.block.model.VariantMutator;
-import net.minecraft.client.renderer.block.model.multipart.Condition;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
+import net.neoforged.neoforge.client.model.generators.blockstate.CustomBlockStateModelBuilder;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -49,10 +48,12 @@ public abstract class ModelSubProvider {
     protected final BlockModelGenerators blockModels;
     protected final ItemModelGenerators itemModels;
     protected final BiConsumer<ResourceLocation, ModelInstance> modelOutput;
+    protected final PartModelOutput partModels;
 
-    public ModelSubProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+    public ModelSubProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels, PartModelOutput partModels) {
         this.blockModels = blockModels;
         this.itemModels = itemModels;
+        this.partModels = partModels;
         this.modelOutput = blockModels.modelOutput;
     }
 
@@ -198,17 +199,9 @@ public abstract class ModelSubProvider {
     }
 
     private static <T extends Comparable<T>> ConditionBuilder addConditionTerm(ConditionBuilder conditionBuilder,
-                                                                        BlockState blockState,
-                                                                        Property<T> property) {
+                                                                               BlockState blockState,
+                                                                               Property<T> property) {
         return conditionBuilder.term(property, blockState.getValue(property));
-    }
-
-    protected final ResourceLocation createBuiltInModel(ResourceLocation id) {
-        return EMPTY_MODEL
-                .extend()
-                .customLoader(BuiltInModelLoaderBuilder::new, builder -> builder.id(id))
-                .build()
-                .create(id, TRANSPARENT_PARTICLE, modelOutput);
     }
 
     protected static ResourceLocation getBlockTexture(BlockDefinition<?> block) {
@@ -225,5 +218,9 @@ public abstract class ModelSubProvider {
 
     protected static ResourceLocation getBlockTexture(BlockDefinition<?> block, String suffix) {
         return TextureMapping.getBlockTexture(block.block(), suffix);
+    }
+
+    protected static MultiVariant customBlockStateModel(CustomUnbakedBlockStateModel model) {
+        return new MultiVariant(WeightedList.of(), new CustomBlockStateModelBuilder.Simple(model));
     }
 }

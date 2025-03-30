@@ -18,22 +18,18 @@
 
 package appeng.parts.reporting;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import appeng.parts.automation.PartModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.implementations.parts.IStorageMonitorPart;
@@ -41,13 +37,10 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IStackWatcher;
 import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.networking.storage.IStorageWatcherNode;
-import appeng.api.orientation.BlockOrientation;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
-import appeng.client.render.BlockEntityRenderHelper;
 import appeng.core.localization.PlayerMessages;
 import appeng.util.InteractionUtil;
 
@@ -55,12 +48,6 @@ import appeng.util.InteractionUtil;
  * A basic subclass for any item monitor like display with an item icon and an amount.
  * <p>
  * It can also be used to extract items from somewhere and spawned into the level.
- *
- * @author AlgorithmX2
- * @author thatsIch
- * @author yueh
- * @version rv3
- * @since rv3
  */
 public abstract class AbstractMonitorPart extends AbstractDisplayPart
         implements IStorageMonitorPart {
@@ -276,39 +263,6 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         getHost().markForUpdate();
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void renderDynamic(float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
-            int combinedLightIn, int combinedOverlayIn) {
-
-        if (!isActive()) {
-            return;
-        }
-
-        if (configuredItem == null) {
-            return;
-        }
-
-        poseStack.pushPose();
-
-        var orientation = BlockOrientation.get(getSide(), getSpin());
-
-        poseStack.translate(0.5, 0.5, 0.5); // Move into the center of the block
-        BlockEntityRenderHelper.rotateToFace(poseStack, orientation);
-        poseStack.translate(0, 0.05, 0.5);
-
-        BlockEntityRenderHelper.renderItem2dWithAmount(poseStack, buffers, getDisplayed(), amount, canCraft,
-                0.4f, -0.23f, getColor().contrastTextColor, getLevel());
-
-        poseStack.popPose();
-
-    }
-
-    @Override
-    public boolean requireDynamicRender() {
-        return true;
-    }
-
     @Nullable
     @Override
     public AEKey getDisplayed() {
@@ -344,25 +298,10 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         return false;
     }
 
-    protected IPartModel selectModel(IPartModel off, IPartModel on, IPartModel hasChannel, IPartModel lockedOff,
-            IPartModel lockedOn, IPartModel lockedHasChannel) {
-        if (this.isActive()) {
-            if (this.isLocked()) {
-                return lockedHasChannel;
-            } else {
-                return hasChannel;
-            }
-        } else if (this.isPowered()) {
-            if (this.isLocked()) {
-                return lockedOn;
-            } else {
-                return on;
-            }
-        } else if (this.isLocked()) {
-            return lockedOff;
-        } else {
-            return off;
-        }
+    @Nullable
+    @Override
+    public void collectModelData(ModelData.Builder builder) {
+        super.collectModelData(builder);
+        builder.with(PartModelData.MONITOR_LOCKED, isLocked());
     }
-
 }

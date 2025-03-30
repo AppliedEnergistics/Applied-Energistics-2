@@ -1,0 +1,13 @@
+{
+  "model": {
+    "type": "ae2:composite",
+    "models": [
+      {
+        "type": "ae2:plane",
+        "back": "ae2:part/formation_plane",
+        "front": "ae2:part/formation_plane",
+        "sides": "ae2:part/formation_plane"
+      }
+    ]
+  }
+}

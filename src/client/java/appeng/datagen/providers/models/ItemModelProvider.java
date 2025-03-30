@@ -1,5 +1,7 @@
 package appeng.datagen.providers.models;
 
+import appeng.client.render.FacadeItemModel;
+import appeng.client.render.model.MeteoriteCompassModel;
 import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -10,6 +12,7 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.renderer.item.EmptyModel;
+import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.ItemLike;
@@ -25,8 +28,8 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 
 public class ItemModelProvider extends ModelSubProvider {
-    public ItemModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
-        super(blockModels, itemModels);
+    public ItemModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels, PartModelOutput partModels) {
+        super(blockModels, itemModels, partModels);
     }
 
     @Override
@@ -35,8 +38,8 @@ public class ItemModelProvider extends ModelSubProvider {
 
         flatSingleLayer(AEItems.MISSING_CONTENT, "minecraft:item/barrier");
 
-        builtInItemModel(AEItems.FACADE);
-        builtInItemModel(AEItems.METEORITE_COMPASS);
+        builtInItemModel(AEItems.FACADE, new FacadeItemModel.Unbaked());
+        builtInItemModel(AEItems.METEORITE_COMPASS, new MeteoriteCompassModel.Unbaked());
 
         flatSingleLayer(AEItems.ADVANCED_CARD, "item/advanced_card");
         flatSingleLayer(AEItems.VOID_CARD, "item/card_void");
@@ -262,9 +265,8 @@ public class ItemModelProvider extends ModelSubProvider {
         itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.plainModel(model));
     }
 
-    private void builtInItemModel(ItemLike item) {
-        var model = createBuiltInModel(ModelLocationUtils.getModelLocation(item.asItem()));
-        blockModels.registerSimpleItemModel(item.asItem(), model);
+    private void builtInItemModel(ItemLike item, ItemModel.Unbaked unbaked) {
+        blockModels.itemModelOutput.accept(item.asItem(), unbaked);
     }
 
     private static ResourceLocation makeId(String id) {

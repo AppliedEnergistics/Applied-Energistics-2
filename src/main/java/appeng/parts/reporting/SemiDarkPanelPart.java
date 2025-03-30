@@ -27,14 +27,6 @@ import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 
 public class SemiDarkPanelPart extends AbstractPanelPart {
-    @PartModels
-    public static final ResourceLocation MODEL_OFF = AppEng.makeId("part/monitor_medium_off");
-    @PartModels
-    public static final ResourceLocation MODEL_ON = AppEng.makeId("part/monitor_medium_on");
-
-    public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF);
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON);
-
     public SemiDarkPanelPart(IPartItem<?> partItem) {
         super(partItem);
     }
@@ -47,10 +39,4 @@ public class SemiDarkPanelPart extends AbstractPanelPart {
                 | ((light >> 8 & 0xff) + (dark >> 8 & 0xff)) / 2 << 8
                 | ((light & 0xff) + (dark & 0xff)) / 2;
     }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return this.isPowered() ? MODELS_ON : MODELS_OFF;
-    }
-
 }

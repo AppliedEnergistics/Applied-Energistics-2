@@ -31,21 +31,18 @@ import java.util.function.Supplier;
 
 import appeng.block.networking.CableBusRenderState;
 import appeng.block.networking.FacadeRenderState;
-import appeng.block.qnb.QuantumLinkChamberBlock;
+import appeng.client.model.FacingModelState;
 import appeng.core.AppEng;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.util.TriState;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -60,7 +57,6 @@ import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.parts.PartHelper;
 import appeng.api.util.AEAxisAlignedBB;
-import appeng.parts.misc.CableAnchorPart;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadClamper;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadCornerKicker;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadFaceStripper;
@@ -68,10 +64,8 @@ import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadReInter
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadTinter;
 import appeng.thirdparty.fabric.Mesh;
 import appeng.thirdparty.fabric.MeshBuilder;
-import appeng.thirdparty.fabric.MeshBuilderImpl;
 import appeng.thirdparty.fabric.ModelHelper;
 import appeng.thirdparty.fabric.QuadEmitter;
-import appeng.thirdparty.fabric.RenderContext;
 import appeng.thirdparty.fabric.Renderer;
 
 /**
@@ -83,6 +77,7 @@ public class FacadeBuilder {
 
     public static final ModelBaker.SharedOperationKey<FacadeBuilder> SHARED_KEY = FacadeBuilder::new;
 
+    private static final ResourceLocation ANCHOR_STILT = AppEng.makeId("part/cable_anchor_short");;
     private static final ResourceLocation TRANSLUCENT_FACADE_MODEL = AppEng.makeId("part/translucent_facade");
 
     private final Renderer renderer = Renderer.getInstance();
@@ -104,94 +99,12 @@ public class FacadeBuilder {
     private final Map<Direction, SimpleModelWrapper> cableAnchorStilts;
 
     public FacadeBuilder(ModelBaker baker) {
-        cableAnchorStilts = buildCableAnchorStems(baker);
-
-        // TODO: Pre-bake it for all 6 faces, assuming facing north as the default
-        var translucentFacadeModel = SimpleModelWrapper.bake(baker, TRANSLUCENT_FACADE_MODEL, BlockModelRotation.X0_Y0);
-        // Pre-rotate the transparent facade model to all possible sides so that we can
-        // add it quicker later.
-        this.transparentFacadeModels = new EnumMap<>(Direction.class);
-        // This can be null for item models.
-        for (Direction facing : Direction.values()) {
-            MeshBuilder meshBuilder = new MeshBuilderImpl();
-            QuadEmitter emitter = meshBuilder.getEmitter();
-
-            // Rotate quads accordingly
-            RenderContext.QuadTransform rotator = QuadRotator.get(facing, 0);
-
-            for (BakedQuad quad : translucentFacadeModel.quads().getAll()) {
-                emitter.fromVanilla(quad.vertices(), 0);
-                emitter.cullFace(null);
-                emitter.nominalFace(quad.direction());
-                emitter.shade(quad.shade());
-                emitter.ambientOcclusion(quad.hasAmbientOcclusion());
-                if (!rotator.transform(emitter)) {
-                    continue;
-                }
-                emitter.emit();
-            }
-
-            var rotatedQuads = new QuadCollection.Builder();
-            meshBuilder.build().forEach(q -> rotatedQuads.addUnculledFace(q.toBlockBakedQuad()));
-
-            this.transparentFacadeModels.put(facing, new SimpleModelWrapper(
-                    rotatedQuads.build(), translucentFacadeModel.useAmbientOcclusion(), translucentFacadeModel.particleIcon() , translucentFacadeModel.renderType()
-            ));
+        cableAnchorStilts = new EnumMap<>(Direction.class);
+        transparentFacadeModels = new EnumMap<>(Direction.class);
+        for (var facing : Direction.values()) {
+            cableAnchorStilts.put(facing, SimpleModelWrapper.bake(baker, ANCHOR_STILT, FacingModelState.fromFacing(facing)));
+            transparentFacadeModels.put(facing, SimpleModelWrapper.bake(baker, TRANSLUCENT_FACADE_MODEL, FacingModelState.fromFacing(facing)));
         }
-    }
-
-    /**
-     * Build a map of pre-rotated cable anchor stilts, which are the shortened cable anchors that will still be visible
-     * for facades attached to a cable.
-     */
-    private Map<Direction, SimpleModelWrapper> buildCableAnchorStems(ModelBaker modelLoader) {
-        Map<Direction, SimpleModelWrapper> stems = new EnumMap<>(Direction.class);
-
-        // TODO: Instead of this entire stuff, just bake it with the correct rotations to begin with
-        List<SimpleModelWrapper> cableAnchorParts = new ArrayList<>();
-        for (ResourceLocation model : CableAnchorPart.FACADE_MODELS.getModels()) {
-            SimpleModelWrapper cableAnchor = SimpleModelWrapper.bake(modelLoader, model, BlockModelRotation.X0_Y0);
-            cableAnchorParts.add(cableAnchor);
-        }
-
-        // Create pre-rotated variants of the cable anchor stems
-        for (Direction side : Direction.values()) {
-            RenderContext.QuadTransform rotator = QuadRotator.get(side, 0);
-
-            MeshBuilder meshBuilder = renderer.meshBuilder();
-            QuadEmitter emitter = meshBuilder.getEmitter();
-
-            // TODO: We know this is just one anchor stilt, so the entire list acrobatics should go
-            var particleIcon = cableAnchorParts.getFirst().particleIcon();
-
-            for (var model : cableAnchorParts) {
-                for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
-                    Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
-                    List<BakedQuad> quads = model.getQuads(cullFace);
-                    for (BakedQuad quad : quads) {
-                        emitter.fromVanilla(quad.vertices(), 0);
-                        emitter.cullFace(cullFace);
-                        emitter.nominalFace(quad.direction());
-                        emitter.shade(quad.shade());
-                        emitter.ambientOcclusion(quad.hasAmbientOcclusion());
-                        if (!rotator.transform(emitter)) {
-                            continue;
-                        }
-                        emitter.emit();
-                    }
-                }
-            }
-
-            var quadCollectionBuilder = new QuadCollection.Builder();
-            for (var quad : meshBuilder.build().toBakedBlockQuads()) {
-                quadCollectionBuilder.addUnculledFace(quad);
-            }
-
-            // TODO: use ambient occlusion from original model
-            stems.put(side, new SimpleModelWrapper(quadCollectionBuilder.build(), true, particleIcon, RenderType.solid()));
-        }
-
-        return stems;
     }
 
     public void collectFacadeParts(CableBusRenderState renderState,
@@ -226,7 +139,7 @@ public class FacadeBuilder {
             BlockState blockState = facadeRenderState.sourceBlock();
             var dispatcher = Minecraft.getInstance().getBlockRenderer();
             var model = dispatcher.getBlockModel(blockState);
-            var modelData = Objects.requireNonNullElse(facadeModelData.get(side), ModelData.EMPTY);
+            var modelData = Objects.requireNonNullElse(facadeModelData.get(side), ModelData.EMPTY); // TODO 1.21.5
 
             AABB fullBounds = THIN_FACADE_BOXES[sideIndex];
             AABB facadeBox = fullBounds;
@@ -509,5 +422,6 @@ public class FacadeBuilder {
 
     public static void resolveDependencies(ResolvableModel.Resolver resolver) {
         resolver.markDependency(TRANSLUCENT_FACADE_MODEL);
+        resolver.markDependency(ANCHOR_STILT);
     }
 }

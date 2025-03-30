@@ -1,0 +1,13 @@
+{
+  "model": {
+    "type": "ae2:composite",
+    "models": [
+      {
+        "type": "ae2:plane",
+        "back": "ae2:part/annihilation_plane",
+        "front": "ae2:part/annihilation_plane",
+        "sides": "ae2:part/annihilation_plane"
+      }
+    ]
+  }
+}

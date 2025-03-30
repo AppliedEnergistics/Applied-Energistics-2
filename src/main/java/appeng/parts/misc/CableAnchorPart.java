@@ -18,6 +18,7 @@
 
 package appeng.parts.misc;
 
+import appeng.parts.automation.PartModelData;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -33,17 +34,10 @@ import appeng.api.util.AECableType;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
+import net.neoforged.neoforge.model.data.ModelData;
+import org.jetbrains.annotations.Nullable;
 
 public class CableAnchorPart implements IPart {
-
-    @PartModels
-    public static final PartModel DEFAULT_MODELS = new PartModel(false,
-            AppEng.makeId("part/cable_anchor"));
-
-    @PartModels
-    public static final PartModel FACADE_MODELS = new PartModel(false,
-            AppEng.makeId("part/cable_anchor_short"));
-
     private final IPartItem<CableAnchorPart> partItem;
     private IPartHost host = null;
     private Direction mySide = Direction.UP;
@@ -92,13 +86,11 @@ public class CableAnchorPart implements IPart {
         return what == BusSupport.CABLE || what == BusSupport.DENSE_CABLE;
     }
 
+    @Nullable
     @Override
-    public IPartModel getStaticModels() {
+    public void collectModelData(ModelData.Builder builder) {
         if (this.host != null && this.host.getFacadeContainer().getFacade(this.mySide) != null) {
-            return FACADE_MODELS;
-        } else {
-            return DEFAULT_MODELS;
+            builder.with(PartModelData.CABLE_ANCHOR_SHORT, true);
         }
     }
-
 }

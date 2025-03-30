@@ -23,8 +23,10 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Objects;
 
+import appeng.parts.automation.PartModelData;
 import com.google.gson.stream.JsonWriter;
 
+import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
@@ -125,7 +127,7 @@ public abstract class AEBasePart
         return this.host;
     }
 
-    protected AEColor getColor() {
+    public AEColor getColor() {
         if (this.host == null) {
             return AEColor.TRANSPARENT;
         }
@@ -479,6 +481,21 @@ public abstract class AEBasePart
      */
     protected boolean shouldSendMissingChannelStateToClient() {
         return true;
+    }
+
+    @Nullable
+    @Override
+    public void collectModelData(ModelData.Builder builder) {
+        PartModelData.StatusIndicatorState state;
+        if (isActive() && isPowered()) {
+            state = PartModelData.StatusIndicatorState.ACTIVE;
+        } else if (isPowered()) {
+            state = PartModelData.StatusIndicatorState.POWERED;
+        } else {
+            state = PartModelData.StatusIndicatorState.UNPOWERED;
+        }
+
+        builder.with(PartModelData.STATUS_INDICATOR, state);
     }
 
     @Override

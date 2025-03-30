@@ -2,12 +2,14 @@ package appeng.datagen.providers.models;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
+import appeng.block.crafting.CraftingUnitType;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.misc.GrowthAcceleratorBlock;
 import appeng.block.misc.VibrationChamberBlock;
 import appeng.block.networking.ControllerBlock;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.block.networking.WirelessAccessPointBlock;
+import appeng.block.qnb.QnbFormedModel;
 import appeng.block.qnb.QuantumLinkChamberBlock;
 import appeng.block.qnb.QuantumRingBlock;
 import appeng.block.spatial.SpatialAnchorBlock;
@@ -15,12 +17,20 @@ import appeng.block.spatial.SpatialIOPortBlock;
 import appeng.block.storage.IOPortBlock;
 import appeng.block.storage.MEChestBlock;
 import appeng.client.item.EnergyFillLevelProperty;
+import appeng.client.model.PaintSplotchesModel;
+import appeng.client.model.SpatialPylonModel;
+import appeng.client.model.SpinnableVariant;
+import appeng.client.render.cablebus.CableBusModel;
+import appeng.client.render.crafting.CraftingCubeModel;
+import appeng.client.render.model.DriveModel;
+import appeng.client.render.model.QuartzGlassModel;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 import com.mojang.math.Quadrant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.ConditionBuilder;
 import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
@@ -37,8 +47,11 @@ import net.minecraft.client.renderer.item.EmptyModel;
 import net.minecraft.client.renderer.item.RangeSelectItemModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
+import net.neoforged.neoforge.client.model.generators.blockstate.CustomBlockStateModelBuilder;
 
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
@@ -52,8 +65,8 @@ import static net.minecraft.client.data.models.BlockModelGenerators.variant;
 
 public class BlockModelProvider extends ModelSubProvider {
 
-    public BlockModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
-        super(blockModels, itemModels);
+    public BlockModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels, PartModelOutput partModels) {
+        super(blockModels, itemModels, partModels);
     }
 
     @Override
@@ -63,7 +76,7 @@ public class BlockModelProvider extends ModelSubProvider {
                 TexturedModel.createDefault(block -> TRANSPARENT_PARTICLE, EMPTY_MODEL));
 
         // These models will be overwritten in code
-        builtInModel(AEBlocks.QUARTZ_GLASS, true);
+        builtInModel(AEBlocks.QUARTZ_GLASS, new QuartzGlassModel.Unbaked(), true);
         blockModels.registerSimpleItemModel(
                 AEBlocks.QUARTZ_GLASS.asItem(),
                 ModelTemplates.CUBE_ALL.create(
@@ -71,11 +84,17 @@ public class BlockModelProvider extends ModelSubProvider {
                         TextureMapping.cube(AppEng.makeId("block/glass/quartz_glass_item")),
                         modelOutput));
         blockModels.copyModel(AEBlocks.QUARTZ_GLASS.block(), AEBlocks.QUARTZ_VIBRANT_GLASS.block());
-        builtInModel(AEBlocks.CABLE_BUS, true);
-        builtInModel(AEBlocks.PAINT);
 
-        var driveModel = builtInModel("drive");
-        multiVariantGenerator(AEBlocks.DRIVE, plainVariant(driveModel), createFacingSpinDispatch());
+        multiVariantGenerator(AEBlocks.CABLE_BUS, new MultiVariant(
+                WeightedList.of(),
+                new CustomBlockStateModelBuilder.Simple(new CableBusModel.Unbaked())
+        ));
+
+        builtInModel(AEBlocks.PAINT, new PaintSplotchesModel.Unbaked());
+
+        var driveUnbaked = new DriveModel.Unbaked(new SpinnableVariant(makeId("drive_base")));
+        var driveModel = customBlockStateModel(driveUnbaked);
+        multiVariantGenerator(AEBlocks.DRIVE, driveModel, createFacingSpinDispatch());
 
         var charger = makeId("block/charger");
         multiVariantGenerator(AEBlocks.CHARGER, plainVariant(charger), createFacingSpinDispatch());
@@ -134,13 +153,13 @@ public class BlockModelProvider extends ModelSubProvider {
         simpleBlockAndItem(AEBlocks.DEBUG_CUBE_GEN, "block/debug/cube_gen");
         simpleBlockAndItem(AEBlocks.DEBUG_ENERGY_GEN, "block/debug/energy_gen");
 
-        craftingModel(AEBlocks.CRAFTING_ACCELERATOR, "accelerator");
-        craftingModel(AEBlocks.CRAFTING_UNIT, "unit");
-        craftingModel(AEBlocks.CRAFTING_STORAGE_1K, "1k_storage");
-        craftingModel(AEBlocks.CRAFTING_STORAGE_4K, "4k_storage");
-        craftingModel(AEBlocks.CRAFTING_STORAGE_16K, "16k_storage");
-        craftingModel(AEBlocks.CRAFTING_STORAGE_64K, "64k_storage");
-        craftingModel(AEBlocks.CRAFTING_STORAGE_256K, "256k_storage");
+        craftingModel(AEBlocks.CRAFTING_ACCELERATOR, "accelerator", CraftingUnitType.ACCELERATOR);
+        craftingModel(AEBlocks.CRAFTING_UNIT, "unit", CraftingUnitType.UNIT);
+        craftingModel(AEBlocks.CRAFTING_STORAGE_1K, "1k_storage", CraftingUnitType.STORAGE_1K);
+        craftingModel(AEBlocks.CRAFTING_STORAGE_4K, "4k_storage", CraftingUnitType.STORAGE_4K);
+        craftingModel(AEBlocks.CRAFTING_STORAGE_16K, "16k_storage", CraftingUnitType.STORAGE_16K);
+        craftingModel(AEBlocks.CRAFTING_STORAGE_64K, "64k_storage", CraftingUnitType.STORAGE_64K);
+        craftingModel(AEBlocks.CRAFTING_STORAGE_256K, "256k_storage", CraftingUnitType.STORAGE_256K);
 
         simpleBlockAndItem(AEBlocks.CELL_WORKBENCH, TexturedModel.CUBE_TOP_BOTTOM
                 .updateTexture(textures -> textures
@@ -269,18 +288,18 @@ public class BlockModelProvider extends ModelSubProvider {
     }
 
     private void quantumBridge() {
-        var formedModel = builtInModel("qnb_formed");
+        var formedVariant = customBlockStateModel(new QnbFormedModel.Unbaked());
         var unformedRingModel = ModelLocationUtils.getModelLocation(AEBlocks.QUANTUM_RING.block());
         var ringDispatch = PropertyDispatch.initial(QuantumRingBlock.FORMED);
         ringDispatch.select(false, plainVariant(unformedRingModel));
-        ringDispatch.select(true, plainVariant(formedModel));
+        ringDispatch.select(true, formedVariant);
         multiVariantGenerator(AEBlocks.QUANTUM_RING, ringDispatch);
         blockModels.registerSimpleItemModel(AEBlocks.QUANTUM_RING.asItem(), unformedRingModel);
 
         var unformedLinkModel = ModelLocationUtils.getModelLocation(AEBlocks.QUANTUM_LINK.block());
         var linkDispatch = PropertyDispatch.initial(QuantumLinkChamberBlock.FORMED);
         linkDispatch.select(false, plainVariant(unformedLinkModel));
-        linkDispatch.select(true, plainVariant(formedModel));
+        linkDispatch.select(true, formedVariant);
         multiVariantGenerator(AEBlocks.QUANTUM_LINK, linkDispatch);
         blockModels.registerSimpleItemModel(AEBlocks.QUANTUM_LINK.asItem(), unformedLinkModel);
     }
@@ -292,7 +311,7 @@ public class BlockModelProvider extends ModelSubProvider {
                 ItemModelUtils.plainModel(
                         ModelTemplates.CUBE_ALL.create(AEBlocks.SPATIAL_PYLON.asItem(),
                                 TextureMapping.cube(AppEng.makeId("item/spatial_pylon")), modelOutput)));
-        builtInModel(AEBlocks.SPATIAL_PYLON, true);
+        builtInModel(AEBlocks.SPATIAL_PYLON, new SpatialPylonModel.Unbaked(), true);
     }
 
     private void meChest() {
@@ -336,7 +355,6 @@ public class BlockModelProvider extends ModelSubProvider {
     }
 
     private void craftingMonitor() {
-        var formedModel = createBuiltInModel(makeId("block/crafting/monitor_formed"));
         var unformedModel = ModelTemplates.CUBE.create(
                 makeId("block/crafting/monitor"),
                 new TextureMapping()
@@ -352,7 +370,7 @@ public class BlockModelProvider extends ModelSubProvider {
         multiVariantGenerator(AEBlocks.CRAFTING_MONITOR, PropertyDispatch.initial(AbstractCraftingUnitBlock.FORMED, BlockStateProperties.FACING)
                 .generate((formed, facing) -> {
                     if (formed) {
-                        return plainVariant(formedModel);
+                        return customBlockStateModel(new CraftingCubeModel.Unbaked(CraftingUnitType.MONITOR));
                     } else {
                         return variant(applyOrientation(
                                 plainModel(unformedModel),
@@ -515,31 +533,18 @@ public class BlockModelProvider extends ModelSubProvider {
         return block.id().getPath();
     }
 
-    private ResourceLocation builtInModel(String blockId) {
-        ResourceLocation modelId = makeId(blockId).withPrefix("block/");
-        return createBuiltInModel(modelId);
+    private void builtInModel(BlockDefinition<?> block, CustomUnbakedBlockStateModel model) {
+        builtInModel(block, model, false);
     }
 
-    private void builtInModel(BlockDefinition<?> block) {
-        builtInModel(block, false);
-    }
-
-    private void builtInModel(BlockDefinition<?> block, boolean skipItem) {
+    private void builtInModel(BlockDefinition<?> block, CustomUnbakedBlockStateModel model, boolean skipItem) {
         blockModels.blockStateOutput.accept(
-                createSimpleBlock(block.block(), plainVariant(createBuiltInModel(block.block()))));
+                createSimpleBlock(block.block(), customBlockStateModel(model)));
 
         if (!skipItem) {
             // The item model should not reference the block model since that will be replaced in-code
             blockModels.itemModelOutput.accept(block.item().asItem(), new EmptyModel.Unbaked());
         }
-    }
-
-    private ResourceLocation createBuiltInModel(Block block) {
-        return createBuiltInModel(block, "");
-    }
-
-    private ResourceLocation createBuiltInModel(Block block, String suffix) {
-        return createBuiltInModel(ModelLocationUtils.getModelLocation(block, suffix));
     }
 
     private void energyCell(
@@ -573,10 +578,10 @@ public class BlockModelProvider extends ModelSubProvider {
 
     }
 
-    private void craftingModel(BlockDefinition<?> block, String name) {
+    private void craftingModel(BlockDefinition<?> block, String name, CraftingUnitType type) {
         var unformedModel = ModelTemplates.CUBE_ALL.create(
                 makeId("block/crafting/" + name), TextureMapping.cube(makeId("block/crafting/" + name)), modelOutput);
-        var formedModel = builtInModel("crafting/" + name + "_formed");
+        var formedModel = customBlockStateModel(new CraftingCubeModel.Unbaked(type));
 
         blockModels.blockStateOutput
                 .accept(
@@ -586,7 +591,7 @@ public class BlockModelProvider extends ModelSubProvider {
                                                 .select(false,
                                                         plainVariant(unformedModel))
                                                 .select(true,
-                                                        plainVariant(formedModel))));
+                                                        formedModel)));
 
         blockModels.registerSimpleItemModel(block.asItem(), unformedModel);
     }

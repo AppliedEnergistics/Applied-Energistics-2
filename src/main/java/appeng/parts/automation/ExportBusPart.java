@@ -61,21 +61,6 @@ import appeng.util.prioritylist.DefaultPriorityList;
  * API.
  */
 public class ExportBusPart extends IOBusPart implements ICraftingRequester {
-
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/export_bus_base");
-
-    @PartModels
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/export_bus_off"));
-
-    @PartModels
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/export_bus_on"));
-
-    @PartModels
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/export_bus_has_channel"));
-
     private final MultiCraftingTracker craftingTracker;
     private int nextSlot = 0;
     @Nullable
@@ -262,16 +247,5 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
         bch.addBox(5, 5, 14, 11, 11, 15);
         bch.addBox(6, 6, 15, 10, 10, 16);
         bch.addBox(6, 6, 11, 10, 10, 12);
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        if (this.isActive() && this.isPowered()) {
-            return MODELS_HAS_CHANNEL;
-        } else if (this.isPowered()) {
-            return MODELS_ON;
-        } else {
-            return MODELS_OFF;
-        }
     }
 }

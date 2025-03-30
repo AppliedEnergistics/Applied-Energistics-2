@@ -59,28 +59,6 @@ import appeng.util.ConfigInventory;
  */
 public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
         implements IConfigInvHost, ICraftingProvider {
-    @PartModels
-    public static final ResourceLocation MODEL_BASE_OFF = AppEng.makeId(
-            "part/level_emitter_base_off");
-    @PartModels
-    public static final ResourceLocation MODEL_BASE_ON = AppEng.makeId(
-            "part/level_emitter_base_on");
-    @PartModels
-    public static final ResourceLocation MODEL_STATUS_OFF = AppEng.makeId(
-            "part/level_emitter_status_off");
-    @PartModels
-    public static final ResourceLocation MODEL_STATUS_ON = AppEng.makeId(
-            "part/level_emitter_status_on");
-    @PartModels
-    public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = AppEng.makeId(
-            "part/level_emitter_status_has_channel");
-    public static final PartModel MODEL_OFF_OFF = new PartModel(MODEL_BASE_OFF, MODEL_STATUS_OFF);
-    public static final PartModel MODEL_OFF_ON = new PartModel(MODEL_BASE_OFF, MODEL_STATUS_ON);
-    public static final PartModel MODEL_OFF_HAS_CHANNEL = new PartModel(MODEL_BASE_OFF, MODEL_STATUS_HAS_CHANNEL);
-    public static final PartModel MODEL_ON_OFF = new PartModel(MODEL_BASE_ON, MODEL_STATUS_OFF);
-    public static final PartModel MODEL_ON_ON = new PartModel(MODEL_BASE_ON, MODEL_STATUS_ON);
-    public static final PartModel MODEL_ON_HAS_CHANNEL = new PartModel(MODEL_BASE_ON, MODEL_STATUS_HAS_CHANNEL);
-
     private final ConfigInventory config = ConfigInventory.configTypes(1).changeListener(this::configureWatchers)
             .build();
     private IStackWatcher storageWatcher;
@@ -299,16 +277,5 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
 
     public ConfigInventory getConfig() {
         return config;
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        if (this.isActive() && this.isPowered()) {
-            return this.isLevelEmitterOn() ? MODEL_ON_HAS_CHANNEL : MODEL_OFF_HAS_CHANNEL;
-        } else if (this.isPowered()) {
-            return this.isLevelEmitterOn() ? MODEL_ON_ON : MODEL_OFF_ON;
-        } else {
-            return this.isLevelEmitterOn() ? MODEL_ON_OFF : MODEL_OFF_OFF;
-        }
     }
 }

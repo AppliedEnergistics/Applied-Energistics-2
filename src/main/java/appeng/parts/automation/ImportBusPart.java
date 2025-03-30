@@ -89,17 +89,6 @@ public class ImportBusPart extends IOBusPart implements KeyTypeSelectionHost {
     }
 
     @Override
-    public IPartModel getStaticModels() {
-        if (this.isActive() && this.isPowered()) {
-            return MODELS_HAS_CHANNEL;
-        } else if (this.isPowered()) {
-            return MODELS_ON;
-        } else {
-            return MODELS_OFF;
-        }
-    }
-
-    @Override
     public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
         super.readFromNBT(extra, registries);
         keyTypeSelection.readFromNBT(extra, registries);
