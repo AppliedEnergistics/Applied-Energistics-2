@@ -25,11 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import appeng.util.Platform;
 import com.google.gson.stream.JsonWriter;
 import com.mojang.serialization.JsonOps;
 
-import net.neoforged.neoforge.network.connection.ConnectionType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +44,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -68,6 +65,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.network.connection.ConnectionType;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 
@@ -85,6 +83,7 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.items.tools.MemoryCardItem;
 import appeng.util.IDebugExportable;
 import appeng.util.JsonStreamUtil;
+import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 import appeng.util.helpers.ItemComparisonHelper;
 
@@ -150,7 +149,8 @@ public class AEBaseBlockEntity extends BlockEntity
                 if (registryAccess == null) {
                     LOG.warn("Ignoring  update packet for {} since no registry is available.", this);
                 } else if (readUpdateData(
-                        new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(updateData.get()), registryAccess, ConnectionType.NEOFORGE))) {
+                        new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(updateData.get()), registryAccess,
+                                ConnectionType.NEOFORGE))) {
                     // Triggers a chunk re-render if the level is already loaded
                     if (level != null) {
                         requestModelDataUpdate();

@@ -18,18 +18,13 @@
 
 package appeng.parts.p2p;
 
-import java.util.List;
-
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKeyType;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
 
 public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart, IItemHandler> {
 

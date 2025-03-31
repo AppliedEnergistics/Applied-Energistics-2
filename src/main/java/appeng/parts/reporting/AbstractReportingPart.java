@@ -18,14 +18,8 @@
 
 package appeng.parts.reporting;
 
-import appeng.api.implementations.parts.IMonitorPart;
-import appeng.api.networking.GridFlags;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
-import appeng.blockentity.AEModelData;
-import appeng.parts.AEBasePart;
-import appeng.util.InteractionUtil;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -35,7 +29,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.model.data.ModelData;
-import org.jetbrains.annotations.Nullable;
+
+import appeng.api.implementations.parts.IMonitorPart;
+import appeng.api.networking.GridFlags;
+import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartItem;
+import appeng.blockentity.AEModelData;
+import appeng.parts.AEBasePart;
+import appeng.util.InteractionUtil;
 
 /**
  * The most basic class for any part reporting information, like terminals or monitors. This can also include basic

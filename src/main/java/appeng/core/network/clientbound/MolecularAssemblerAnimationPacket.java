@@ -1,6 +1,5 @@
 package appeng.core.network.clientbound;
 
-import appeng.blockentity.crafting.MolecularAssemblerAnimationStatus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -10,6 +9,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.AEKey;
+import appeng.blockentity.crafting.MolecularAssemblerAnimationStatus;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
@@ -21,7 +21,8 @@ public record MolecularAssemblerAnimationPacket(BlockPos pos, byte rate, AEKey w
                     MolecularAssemblerAnimationPacket::write,
                     MolecularAssemblerAnimationPacket::decode);
 
-    public static final Type<MolecularAssemblerAnimationPacket> TYPE = CustomAppEngPayload.createType("assembler_animation");
+    public static final Type<MolecularAssemblerAnimationPacket> TYPE = CustomAppEngPayload
+            .createType("assembler_animation");
 
     @Override
     public Type<MolecularAssemblerAnimationPacket> type() {

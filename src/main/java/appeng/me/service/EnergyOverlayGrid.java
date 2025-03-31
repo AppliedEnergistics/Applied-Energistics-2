@@ -5,14 +5,13 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 import appeng.api.networking.energy.IPassiveEnergyGenerator;
-import appeng.core.AELog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class caches all energy services that are part of the overlay energy grid. This overlay grid can span multiple

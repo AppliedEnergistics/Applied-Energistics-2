@@ -24,11 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.Arrays;
 
-import net.minecraft.util.Unit;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 

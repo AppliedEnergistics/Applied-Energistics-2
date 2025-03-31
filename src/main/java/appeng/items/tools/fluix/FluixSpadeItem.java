@@ -1,6 +1,5 @@
 package appeng.items.tools.fluix;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.core.Holder;
@@ -29,8 +28,9 @@ public class FluixSpadeItem extends ShovelItem implements IntrinsicEnchantItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipComponents,
-                                TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> tooltipComponents,
+            TooltipFlag isAdvanced) {
         intrinsicEnchantment.appendHoverText(context, tooltipComponents);
     }
 

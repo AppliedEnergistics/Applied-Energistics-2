@@ -18,24 +18,26 @@
 
 package appeng.spatial;
 
+import java.time.Instant;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
-
-import java.time.Instant;
 
 /**
  * Defines the source level and area of a transition into the spatial storage plot.
  */
 public record TransitionInfo(ResourceLocation worldId, BlockPos min, BlockPos max, Instant timestamp) {
+
     public static final Codec<TransitionInfo> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             ResourceLocation.CODEC.fieldOf("world_id").forGetter(TransitionInfo::worldId),
             BlockPos.CODEC.fieldOf("min").forGetter(TransitionInfo::min),
             BlockPos.CODEC.fieldOf("max").forGetter(TransitionInfo::max),
-            ExtraCodecs.INSTANT_ISO8601.fieldOf("timestamp").forGetter(TransitionInfo::timestamp)
-    ).apply(builder, TransitionInfo::new));
+            ExtraCodecs.INSTANT_ISO8601.fieldOf("timestamp").forGetter(TransitionInfo::timestamp))
+            .apply(builder, TransitionInfo::new));
 
     public TransitionInfo(ResourceLocation worldId, BlockPos min, BlockPos max, Instant timestamp) {
         this.worldId = worldId;

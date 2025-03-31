@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.LockCraftingMode;
@@ -25,7 +26,6 @@ import appeng.parts.crafting.PatternProviderPart;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
 import appeng.server.testworld.SavedBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * All plots are essentially the same: PP on Chest, powered by Creative Energy Cell. Use of the PP is via API, not

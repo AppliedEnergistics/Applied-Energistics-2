@@ -20,7 +20,6 @@ package appeng.datagen.providers.tags;
 
 import java.util.concurrent.CompletableFuture;
 
-import appeng.core.ConventionTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -36,6 +35,7 @@ import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.ids.AETags;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
+import appeng.core.ConventionTags;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;

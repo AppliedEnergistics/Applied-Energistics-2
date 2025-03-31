@@ -8,16 +8,10 @@ import com.google.common.base.Preconditions;
 import net.minecraft.core.NonNullList;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.item.crafting.SmithingRecipe;
-import net.minecraft.world.item.crafting.SmithingTransformRecipe;
-import net.minecraft.world.item.crafting.SmithingTrimRecipe;
-import net.minecraft.world.item.crafting.display.RecipeDisplay;
-import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 public final class CraftingRecipeUtil {
     private CraftingRecipeUtil() {
@@ -76,10 +70,9 @@ public final class CraftingRecipeUtil {
         // Special handling for upgrade recipes since those do not override getIngredients
         if (recipe instanceof SmithingRecipe trimRecipe) {
             return List.of(
-                trimRecipe.templateIngredient(),
-                Optional.of(trimRecipe.baseIngredient()),
-                trimRecipe.additionIngredient()
-            );
+                    trimRecipe.templateIngredient(),
+                    Optional.of(trimRecipe.baseIngredient()),
+                    trimRecipe.additionIngredient());
         } else if (recipe instanceof ShapedRecipe shapedRecipe) {
             return shapedRecipe.getIngredients();
         }

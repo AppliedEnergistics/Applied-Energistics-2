@@ -18,9 +18,9 @@
 
 package appeng.block.paint;
 
-import appeng.helpers.Splotch;
-
 import java.util.List;
+
+import appeng.helpers.Splotch;
 
 /**
  * Used to transfer the state about paint splotches from the game thread to the render thread.

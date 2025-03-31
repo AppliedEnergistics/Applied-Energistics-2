@@ -18,12 +18,12 @@
 
 package appeng.client.model;
 
-import appeng.block.paint.PaintSplotches;
-import appeng.blockentity.misc.PaintSplotchesBlockEntity;
-import appeng.client.render.CubeBuilder;
-import appeng.core.AppEng;
-import appeng.helpers.Splotch;
+import java.util.List;
+
 import com.mojang.serialization.MapCodec;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
@@ -43,9 +43,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.model.data.ModelData;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import appeng.block.paint.PaintSplotches;
+import appeng.blockentity.misc.PaintSplotchesBlockEntity;
+import appeng.client.render.CubeBuilder;
+import appeng.core.AppEng;
+import appeng.helpers.Splotch;
 
 public class PaintSplotchesModel implements DynamicBlockStateModel {
     private static final Material TEXTURE_PAINT1 = new Material(TextureAtlas.LOCATION_BLOCKS,
@@ -59,12 +62,13 @@ public class PaintSplotchesModel implements DynamicBlockStateModel {
 
     public PaintSplotchesModel(SpriteGetter sprites) {
         ModelDebugName debugName = getClass()::toString;
-        this.textures = new TextureAtlasSprite[]{sprites.get(TEXTURE_PAINT1, debugName),
-                sprites.get(TEXTURE_PAINT2, debugName), sprites.get(TEXTURE_PAINT3, debugName)};
+        this.textures = new TextureAtlasSprite[] { sprites.get(TEXTURE_PAINT1, debugName),
+                sprites.get(TEXTURE_PAINT2, debugName), sprites.get(TEXTURE_PAINT3, debugName) };
     }
 
     @Override
-    public void collectParts(BlockAndTintGetter blockAndTintGetter, BlockPos blockPos, BlockState blockState, RandomSource randomSource, List<BlockModelPart> list) {
+    public void collectParts(BlockAndTintGetter blockAndTintGetter, BlockPos blockPos, BlockState blockState,
+            RandomSource randomSource, List<BlockModelPart> list) {
         var modelData = blockAndTintGetter.getModelData(blockPos);
         var quadListBuilder = new QuadCollection.Builder();
         getQuads(quadListBuilder, modelData);
@@ -72,8 +76,7 @@ public class PaintSplotchesModel implements DynamicBlockStateModel {
                 quadListBuilder.build(),
                 false,
                 textures[0],
-                RenderType.CUTOUT
-        ));
+                RenderType.CUTOUT));
     }
 
     @Override
@@ -82,7 +85,8 @@ public class PaintSplotchesModel implements DynamicBlockStateModel {
     }
 
     @Override
-    public @Nullable Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
+    public @Nullable Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state,
+            RandomSource random) {
         return level.getModelData(pos);
     }
 

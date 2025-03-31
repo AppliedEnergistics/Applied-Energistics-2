@@ -21,7 +21,6 @@ package appeng.crafting.pattern;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 
@@ -40,8 +39,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
-import net.minecraft.world.item.crafting.SmithingTransformRecipe;
-import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;

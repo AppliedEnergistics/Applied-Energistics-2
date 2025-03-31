@@ -18,14 +18,11 @@
 
 package appeng.client.renderer.blockentity;
 
-import appeng.api.orientation.BlockOrientation;
-import appeng.blockentity.storage.MEChestBlockEntity;
-import appeng.client.render.AERenderTypes;
-import appeng.client.render.model.DriveModel;
-import appeng.core.definitions.AEBlocks;
-import appeng.thirdparty.fabric.ModelHelper;
+import java.util.List;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
@@ -41,7 +38,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.List;
+import appeng.api.orientation.BlockOrientation;
+import appeng.blockentity.storage.MEChestBlockEntity;
+import appeng.client.render.AERenderTypes;
+import appeng.client.render.model.DriveModel;
+import appeng.core.definitions.AEBlocks;
+import appeng.thirdparty.fabric.ModelHelper;
 
 /**
  * The block entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the
@@ -61,7 +63,7 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity> 
 
     @Override
     public void render(MEChestBlockEntity chest, float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
-                       int combinedLight, int packedOverlay, Vec3 cameraPosition) {
+            int combinedLight, int packedOverlay, Vec3 cameraPosition) {
 
         Level level = chest.getLevel();
         if (level == null) {
@@ -91,10 +93,12 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity> 
         poseStack.translate(5 / 16.0, 4 / 16.0, 0);
 
         var rotatedModelQuads = rotateQuadCullFaces(cellModel.quads(), rotation);
-        List<BlockModelPart> parts = List.of(new SimpleModelWrapper(rotatedModelQuads, cellModel.useAmbientOcclusion(), cellModel.particleIcon(), cellModel.renderType()));
+        List<BlockModelPart> parts = List.of(new SimpleModelWrapper(rotatedModelQuads, cellModel.useAmbientOcclusion(),
+                cellModel.particleIcon(), cellModel.renderType()));
 
         // We "fake" the position here to make it use the light-value in front of the drive
-        blockRenderer.tesselateBlock(level, parts, chest.getBlockState(), chest.getBlockPos(), poseStack, buffers::getBuffer,
+        blockRenderer.tesselateBlock(level, parts, chest.getBlockState(), chest.getBlockPos(), poseStack,
+                buffers::getBuffer,
                 false, packedOverlay);
 
         VertexConsumer ledBuffer = buffers.getBuffer(AERenderTypes.STORAGE_CELL_LEDS);

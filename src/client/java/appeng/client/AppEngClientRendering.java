@@ -18,17 +18,42 @@
 
 package appeng.client;
 
+import java.util.Objects;
+
+import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.client.resources.model.ResolvedModel;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.InterModComms;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.InitializeClientRegistriesEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
+import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
+import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.common.NeoForge;
+
 import appeng.api.parts.CableRenderMode;
 import appeng.api.util.AEColor;
 import appeng.block.networking.CableBusColor;
 import appeng.block.qnb.QnbFormedModel;
-import appeng.client.model.CableAnchorPartModel;
-import appeng.client.model.LevelEmitterPartModel;
-import appeng.client.model.LockableMonitorPartModel;
-import appeng.client.model.P2PFrequencyPartModel;
-import appeng.client.api.model.parts.StaticPartModel;
 import appeng.client.api.model.parts.CompositePartModel;
 import appeng.client.api.model.parts.RegisterPartModelsEvent;
+import appeng.client.api.model.parts.StaticPartModel;
 import appeng.client.api.renderer.parts.RegisterPartRendererEvent;
 import appeng.client.areaoverlay.AreaOverlayRenderer;
 import appeng.client.block.cablebus.CableBusBlockClientExtensions;
@@ -37,6 +62,10 @@ import appeng.client.item.ColorApplicatorItemModel;
 import appeng.client.item.EnergyFillLevelProperty;
 import appeng.client.item.PortableCellColorTintSource;
 import appeng.client.item.StorageCellStateTintSource;
+import appeng.client.model.CableAnchorPartModel;
+import appeng.client.model.LevelEmitterPartModel;
+import appeng.client.model.LockableMonitorPartModel;
+import appeng.client.model.P2PFrequencyPartModel;
 import appeng.client.model.PaintSplotchesModel;
 import appeng.client.model.PartModels;
 import appeng.client.model.PlanePartModel;
@@ -80,34 +109,6 @@ import appeng.entity.TinyTNTPrimedRenderer;
 import appeng.parts.reporting.ConversionMonitorPart;
 import appeng.parts.reporting.StorageMonitorPart;
 import appeng.spatial.SpatialStorageDimensionIds;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.block.model.TextureSlots;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.QuadCollection;
-import net.minecraft.client.resources.model.ResolvedModel;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.InterModComms;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
-import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.InitializeClientRegistriesEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
-import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
-import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
-import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import net.neoforged.neoforge.common.NeoForge;
-
-import java.util.Objects;
 
 /**
  * Client-specific functionality.
@@ -207,12 +208,13 @@ public class AppEngClientRendering {
         event.registerModel(CraftingCubeModel.Unbaked.ID, CraftingCubeModel.Unbaked.MAP_CODEC);
 
         // Fabric doesn't have model-loaders, so we register the models by hand instead
-        //  TODO 1.21.5 Datagen       addPlaneModel("part/annihilation_plane", "part/annihilation_plane");
-        //  TODO 1.21.5 Datagen       addPlaneModel("part/annihilation_plane_on", "part/annihilation_plane_on");
-        //  TODO 1.21.5 Datagen       addPlaneModel("part/identity_annihilation_plane", "part/identity_annihilation_plane");
-        //  TODO 1.21.5 Datagen       addPlaneModel("part/identity_annihilation_plane_on", "part/identity_annihilation_plane_on");
-        //  TODO 1.21.5 Datagen       addPlaneModel("part/formation_plane", "part/formation_plane");
-        //  TODO 1.21.5 Datagen       addPlaneModel("part/formation_plane_on", "part/formation_plane_on");
+        // TODO 1.21.5 Datagen addPlaneModel("part/annihilation_plane", "part/annihilation_plane");
+        // TODO 1.21.5 Datagen addPlaneModel("part/annihilation_plane_on", "part/annihilation_plane_on");
+        // TODO 1.21.5 Datagen addPlaneModel("part/identity_annihilation_plane", "part/identity_annihilation_plane");
+        // TODO 1.21.5 Datagen addPlaneModel("part/identity_annihilation_plane_on",
+        // "part/identity_annihilation_plane_on");
+        // TODO 1.21.5 Datagen addPlaneModel("part/formation_plane", "part/formation_plane");
+        // TODO 1.21.5 Datagen addPlaneModel("part/formation_plane_on", "part/formation_plane_on");
 
 //  TODO 1.21.5       addBuiltInModel("block/crafting/1k_storage_formed",
 //  TODO 1.21.5               () -> new CraftingCubeModel(new CraftingUnitModelProvider(CraftingUnitType.STORAGE_1K)));
@@ -284,7 +286,8 @@ public class AppEngClientRendering {
         boolean flag = resolvedmodel.getTopAmbientOcclusion();
         TextureAtlasSprite textureatlassprite = resolvedmodel.resolveParticleSprite(textureslots, baker);
         QuadCollection quadcollection = resolvedmodel.bakeTopGeometry(textureslots, baker, modelState);
-        var renderTypeGroup = resolvedmodel.getTopAdditionalProperties().getOptional(net.neoforged.neoforge.client.model.NeoForgeModelProperties.RENDER_TYPE);
+        var renderTypeGroup = resolvedmodel.getTopAdditionalProperties()
+                .getOptional(net.neoforged.neoforge.client.model.NeoForgeModelProperties.RENDER_TYPE);
         var renderTypes = renderTypeGroup == null || renderTypeGroup.isEmpty() ? null : renderTypeGroup.block();
         return new SimpleModelWrapper(quadcollection, flag, textureatlassprite, renderTypes);
     }

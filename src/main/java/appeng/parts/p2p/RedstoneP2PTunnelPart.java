@@ -18,8 +18,6 @@
 
 package appeng.parts.p2p;
 
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -32,9 +30,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
 import appeng.util.Platform;
 
 public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> {

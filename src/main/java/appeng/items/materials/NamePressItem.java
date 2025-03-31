@@ -18,7 +18,6 @@
 
 package appeng.items.materials;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.network.chat.Component;
@@ -38,8 +37,9 @@ public class NamePressItem extends AEBaseItem {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> lines,
-                                TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
+            TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, context, tooltipDisplay, lines, advancedTooltips);
 
         var inscribedName = stack.get(AEComponents.NAME_PRESS_NAME);

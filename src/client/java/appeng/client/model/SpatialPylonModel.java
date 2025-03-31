@@ -24,32 +24,31 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-import appeng.core.AppEng;
 import com.google.common.collect.ImmutableMap;
-
 import com.mojang.serialization.MapCodec;
+
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
-
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
+import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 
 import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 import appeng.client.render.CubeBuilder;
+import appeng.core.AppEng;
 
 /**
  * The baked model that will be used for rendering the spatial pylon.
@@ -62,11 +61,11 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
     }
 
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState blockState, RandomSource random, List<BlockModelPart> parts) {
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState blockState, RandomSource random,
+            List<BlockModelPart> parts) {
         var state = Objects.requireNonNullElse(
                 level.getModelData(pos).get(SpatialPylonBlockEntity.STATE),
-                SpatialPylonBlockEntity.ClientState.DEFAULT
-        );
+                SpatialPylonBlockEntity.ClientState.DEFAULT);
 
         var quadCollection = new QuadCollection.Builder();
 
@@ -194,7 +193,8 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
         @Override
         public BlockStateModel bake(ModelBaker baker) {
             ModelDebugName debugName = getClass()::toString;
-            Map<SpatialPylonTextureType, TextureAtlasSprite> pylonTextures = new EnumMap<>(SpatialPylonTextureType.class);
+            Map<SpatialPylonTextureType, TextureAtlasSprite> pylonTextures = new EnumMap<>(
+                    SpatialPylonTextureType.class);
 
             for (SpatialPylonTextureType type : SpatialPylonTextureType.values()) {
                 pylonTextures.put(type, baker.sprites().get(getTexturePath(type), debugName));
@@ -216,5 +216,5 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
         public MapCodec<SpatialPylonModel.Unbaked> codec() {
             return MAP_CODEC;
         }
-    }    
+    }
 }

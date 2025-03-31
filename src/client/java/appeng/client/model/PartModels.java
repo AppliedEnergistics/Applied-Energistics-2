@@ -1,13 +1,19 @@
 package appeng.client.model;
 
-import appeng.api.implementations.parts.ICablePart;
-import appeng.api.parts.IPartItem;
-import appeng.client.api.model.parts.ClientPart;
-import appeng.client.api.model.parts.PartModel;
-import appeng.client.api.model.parts.RegisterPartModelsEvent;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.MapCodec;
+
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.FileToIdConverter;
@@ -16,15 +22,12 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.fml.ModLoader;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
+import appeng.api.implementations.parts.ICablePart;
+import appeng.api.parts.IPartItem;
+import appeng.client.api.model.parts.ClientPart;
+import appeng.client.api.model.parts.PartModel;
+import appeng.client.api.model.parts.RegisterPartModelsEvent;
 
 public final class PartModels {
     private static final Logger LOG = LoggerFactory.getLogger(PartModels.class);
@@ -43,16 +46,15 @@ public final class PartModels {
     public CompletableFuture<Void> reload(ResourceManager resourceManager, Executor executor) {
         var fileToIdConverter = FileToIdConverter.json("ae2/parts");
         return CompletableFuture.supplyAsync(() -> {
-                    var clientParts = new HashMap<ResourceLocation, ClientPart>();
-                    SimpleJsonResourceReloadListener.scanDirectory(
-                            resourceManager,
-                            fileToIdConverter,
-                            JsonOps.INSTANCE,
-                            ClientPart.CODEC,
-                            clientParts
-                    );
-                    return clientParts;
-                }, executor)
+            var clientParts = new HashMap<ResourceLocation, ClientPart>();
+            SimpleJsonResourceReloadListener.scanDirectory(
+                    resourceManager,
+                    fileToIdConverter,
+                    JsonOps.INSTANCE,
+                    ClientPart.CODEC,
+                    clientParts);
+            return clientParts;
+        }, executor)
                 .thenAccept(clientParts -> {
                     this.clientParts = clientParts;
 

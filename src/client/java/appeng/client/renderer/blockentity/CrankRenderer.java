@@ -18,10 +18,13 @@
 
 package appeng.client.renderer.blockentity;
 
-import appeng.api.orientation.BlockOrientation;
-import appeng.blockentity.misc.CrankBlockEntity;
-import appeng.core.AppEng;
+import java.util.List;
+import java.util.Objects;
+
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import org.joml.Quaternionf;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
@@ -33,16 +36,18 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
-import org.joml.Quaternionf;
 
-import java.util.List;
-import java.util.Objects;
+import appeng.api.orientation.BlockOrientation;
+import appeng.blockentity.misc.CrankBlockEntity;
+import appeng.core.AppEng;
 
 @OnlyIn(Dist.CLIENT)
 public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {
 
-    public static final StandaloneModelKey<SimpleModelWrapper> BASE_MODEL = new StandaloneModelKey<>(AppEng.makeId("block/crank_base"));
-    public static final StandaloneModelKey<SimpleModelWrapper> HANDLE_MODEL = new StandaloneModelKey<>(AppEng.makeId("block/crank_handle"));
+    public static final StandaloneModelKey<SimpleModelWrapper> BASE_MODEL = new StandaloneModelKey<>(
+            AppEng.makeId("block/crank_base"));
+    public static final StandaloneModelKey<SimpleModelWrapper> HANDLE_MODEL = new StandaloneModelKey<>(
+            AppEng.makeId("block/crank_handle"));
 
     private final BlockRenderDispatcher blockRenderer;
 
@@ -55,7 +60,7 @@ public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {
 
     @Override
     public void render(CrankBlockEntity crank, float partialTick, PoseStack stack, MultiBufferSource buffers,
-                       int packedLight, int packedOverlay, Vec3 cameraPosition) {
+            int packedLight, int packedOverlay, Vec3 cameraPosition) {
 
         var baseModel = Objects.requireNonNull(modelManager.getStandaloneModel(BASE_MODEL));
         var handleModel = Objects.requireNonNull(modelManager.getStandaloneModel(HANDLE_MODEL));
@@ -80,8 +85,7 @@ public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {
                 stack,
                 buffers::getBuffer,
                 false,
-                packedOverlay
-        );
+                packedOverlay);
 
         // The unrotated cranks orientation is towards NORTH (negative Z axis)
         stack.translate(0.5, 0.5, 0.5);
@@ -96,8 +100,7 @@ public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {
                 stack,
                 buffers::getBuffer,
                 false,
-                packedOverlay
-        );
+                packedOverlay);
         stack.popPose();
     }
 

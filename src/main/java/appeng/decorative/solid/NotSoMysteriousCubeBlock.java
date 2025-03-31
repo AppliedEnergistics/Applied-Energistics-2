@@ -1,6 +1,5 @@
 package appeng.decorative.solid;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.network.chat.Component;

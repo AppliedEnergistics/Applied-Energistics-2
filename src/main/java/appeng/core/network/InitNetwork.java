@@ -8,7 +8,6 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 import appeng.core.AppEng;
 import appeng.core.network.bidirectional.ConfigValuePacket;
-import appeng.core.network.clientbound.MolecularAssemblerAnimationPacket;
 import appeng.core.network.clientbound.BlockTransitionEffectPacket;
 import appeng.core.network.clientbound.ClearPatternAccessTerminalPacket;
 import appeng.core.network.clientbound.CompassResponsePacket;
@@ -22,6 +21,7 @@ import appeng.core.network.clientbound.LightningPacket;
 import appeng.core.network.clientbound.MEInventoryUpdatePacket;
 import appeng.core.network.clientbound.MatterCannonPacket;
 import appeng.core.network.clientbound.MockExplosionPacket;
+import appeng.core.network.clientbound.MolecularAssemblerAnimationPacket;
 import appeng.core.network.clientbound.NetworkStatusPacket;
 import appeng.core.network.clientbound.PatternAccessTerminalPacket;
 import appeng.core.network.clientbound.SetLinkStatusPacket;

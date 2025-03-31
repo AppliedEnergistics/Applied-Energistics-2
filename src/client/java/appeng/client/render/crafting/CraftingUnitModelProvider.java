@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
@@ -15,7 +14,8 @@ import net.minecraft.client.resources.model.SpriteGetter;
 import appeng.block.crafting.CraftingUnitType;
 import appeng.core.AppEng;
 
-public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider<CraftingUnitType> implements  ModelDebugName {
+public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider<CraftingUnitType>
+        implements ModelDebugName {
 
     private static final List<Material> MATERIALS = new ArrayList<>();
 

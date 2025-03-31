@@ -1,12 +1,13 @@
 package appeng.block.crafting;
 
+import java.util.Locale;
+
 import com.mojang.serialization.Codec;
+
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 
 import appeng.core.definitions.AEBlocks;
-
-import java.util.Locale;
 
 public enum CraftingUnitType implements ICraftingUnitType, StringRepresentable {
     UNIT(0),

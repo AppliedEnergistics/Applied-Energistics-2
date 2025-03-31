@@ -21,7 +21,6 @@ package appeng.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
 import net.minecraft.client.Minecraft;
@@ -38,6 +37,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.misc.InscriberBlockEntity;

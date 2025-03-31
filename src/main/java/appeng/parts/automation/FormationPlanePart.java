@@ -18,6 +18,19 @@
 
 package appeng.parts.automation;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.model.data.ModelData;
+
 import appeng.api.behaviors.PlacementStrategy;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -29,7 +42,6 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
@@ -40,26 +52,12 @@ import appeng.api.util.IConfigManagerBuilder;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IPriorityHost;
-import appeng.items.parts.PartModels;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.FormationPlaneMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.ConfigInventory;
 import appeng.util.prioritylist.IPartitionList;
-import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.model.data.ModelData;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class FormationPlanePart extends UpgradeablePart implements IStorageProvider, IPriorityHost, IConfigInvHost {
 

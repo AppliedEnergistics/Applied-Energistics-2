@@ -18,35 +18,25 @@
 
 package appeng.client.render.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.IntStream;
 
-import appeng.block.qnb.QuantumLinkChamberBlock;
-import appeng.core.AppEng;
 import com.google.common.base.Strings;
-
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelDebugName;
-import net.minecraft.client.resources.model.QuadCollection;
-import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
 import org.joml.Vector3f;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelDebugName;
+import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -57,10 +47,11 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
-import net.neoforged.neoforge.model.data.ModelData;
-import net.neoforged.neoforge.model.data.ModelProperty;
+import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
+import net.neoforged.neoforge.model.data.ModelProperty;
 
+import appeng.core.AppEng;
 import appeng.decorative.solid.GlassState;
 import appeng.decorative.solid.QuartzGlassBlock;
 
@@ -111,7 +102,8 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
     }
 
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockModelPart> parts) {
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random,
+            List<BlockModelPart> parts) {
         var glassState = getGlassState(level, state, pos);
 
         var quads = new QuadCollection.Builder();
@@ -295,5 +287,5 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
         public MapCodec<QuartzGlassModel.Unbaked> codec() {
             return MAP_CODEC;
         }
-    }    
+    }
 }

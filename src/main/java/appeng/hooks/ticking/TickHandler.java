@@ -36,6 +36,9 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.network.chat.Component;
@@ -59,8 +62,6 @@ import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.util.ILevelRunnable;
 import appeng.util.Platform;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TickHandler {
     private static final Logger LOG = LoggerFactory.getLogger(TickHandler.class);

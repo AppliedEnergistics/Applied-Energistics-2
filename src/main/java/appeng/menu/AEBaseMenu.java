@@ -35,6 +35,8 @@ import com.google.gson.GsonBuilder;
 
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -81,8 +83,6 @@ import appeng.menu.slot.DisabledSlot;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigMenuInventory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AEBaseMenu extends AbstractContainerMenu {
     private static final Logger LOG = LoggerFactory.getLogger(AEBaseMenu.class);

@@ -5,7 +5,6 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import appeng.core.ConventionTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,6 +15,7 @@ import net.minecraft.resources.ResourceKey;
 
 import appeng.api.ids.AEComponents;
 import appeng.core.AppEng;
+import appeng.core.ConventionTags;
 import appeng.datagen.providers.localization.LocalizationProvider;
 import appeng.items.tools.MemoryCardItem;
 

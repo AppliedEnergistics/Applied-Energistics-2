@@ -18,34 +18,28 @@
 
 package appeng.client.renderer.blockentity;
 
-import appeng.blockentity.crafting.MolecularAssemblerAnimationStatus;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
-import net.neoforged.neoforge.model.data.ModelData;
 
+import appeng.blockentity.crafting.MolecularAssemblerAnimationStatus;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
-import appeng.core.particles.ParticleTypes;
 import appeng.core.AppEng;
 import appeng.core.AppEngClient;
+import appeng.core.particles.ParticleTypes;
 
 /**
  * Renders the item currently being crafted by the molecular assembler, as well as the light strip when it's powered.
@@ -53,8 +47,7 @@ import appeng.core.AppEngClient;
 public class MolecularAssemblerRenderer implements BlockEntityRenderer<MolecularAssemblerBlockEntity> {
 
     public static final StandaloneModelKey<SimpleModelWrapper> LIGHTS_MODEL = new StandaloneModelKey<>(
-            AppEng.makeId("block/molecular_assembler_lights")
-    );
+            AppEng.makeId("block/molecular_assembler_lights"));
 
     private final RandomSource particleRandom = RandomSource.create();
 

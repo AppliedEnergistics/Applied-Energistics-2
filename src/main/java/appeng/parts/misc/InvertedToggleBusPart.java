@@ -18,13 +18,7 @@
 
 package appeng.parts.misc;
 
-import net.minecraft.resources.ResourceLocation;
-
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
-import appeng.parts.PartModel;
 
 public class InvertedToggleBusPart extends ToggleBusPart {
     public InvertedToggleBusPart(IPartItem<?> partItem) {

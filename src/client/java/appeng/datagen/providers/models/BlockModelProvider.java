@@ -1,5 +1,42 @@
 package appeng.datagen.providers.models;
 
+import static appeng.core.AppEng.makeId;
+import static net.minecraft.client.data.models.BlockModelGenerators.ROTATIONS_COLUMN_WITH_FACING;
+import static net.minecraft.client.data.models.BlockModelGenerators.createSimpleBlock;
+import static net.minecraft.client.data.models.BlockModelGenerators.plainModel;
+import static net.minecraft.client.data.models.BlockModelGenerators.plainVariant;
+import static net.minecraft.client.data.models.BlockModelGenerators.variant;
+
+import java.util.ArrayList;
+import java.util.function.BiConsumer;
+
+import com.mojang.math.Quadrant;
+
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.MultiVariant;
+import net.minecraft.client.data.models.blockstates.ConditionBuilder;
+import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
+import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.client.data.models.blockstates.PropertyDispatch;
+import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
+import net.minecraft.client.data.models.model.ModelTemplate;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.data.models.model.TexturedModel;
+import net.minecraft.client.renderer.block.model.VariantMutator;
+import net.minecraft.client.renderer.item.EmptyModel;
+import net.minecraft.client.renderer.item.RangeSelectItemModel;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.random.WeightedList;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
+import net.neoforged.neoforge.client.model.generators.blockstate.CustomBlockStateModelBuilder;
+
 import appeng.api.orientation.BlockOrientation;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.CraftingUnitType;
@@ -27,45 +64,11 @@ import appeng.client.render.model.QuartzGlassModel;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
-import com.mojang.math.Quadrant;
-import net.minecraft.client.data.models.BlockModelGenerators;
-import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.data.models.MultiVariant;
-import net.minecraft.client.data.models.blockstates.ConditionBuilder;
-import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
-import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
-import net.minecraft.client.data.models.blockstates.PropertyDispatch;
-import net.minecraft.client.data.models.model.ItemModelUtils;
-import net.minecraft.client.data.models.model.ModelLocationUtils;
-import net.minecraft.client.data.models.model.ModelTemplate;
-import net.minecraft.client.data.models.model.ModelTemplates;
-import net.minecraft.client.data.models.model.TextureMapping;
-import net.minecraft.client.data.models.model.TextureSlot;
-import net.minecraft.client.data.models.model.TexturedModel;
-import net.minecraft.client.renderer.block.model.VariantMutator;
-import net.minecraft.client.renderer.item.EmptyModel;
-import net.minecraft.client.renderer.item.RangeSelectItemModel;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.random.WeightedList;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
-import net.neoforged.neoforge.client.model.generators.blockstate.CustomBlockStateModelBuilder;
-
-import java.util.ArrayList;
-import java.util.function.BiConsumer;
-
-import static appeng.core.AppEng.makeId;
-import static net.minecraft.client.data.models.BlockModelGenerators.ROTATIONS_COLUMN_WITH_FACING;
-import static net.minecraft.client.data.models.BlockModelGenerators.createSimpleBlock;
-import static net.minecraft.client.data.models.BlockModelGenerators.plainModel;
-import static net.minecraft.client.data.models.BlockModelGenerators.plainVariant;
-import static net.minecraft.client.data.models.BlockModelGenerators.variant;
 
 public class BlockModelProvider extends ModelSubProvider {
 
-    public BlockModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels, PartModelOutput partModels) {
+    public BlockModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels,
+            PartModelOutput partModels) {
         super(blockModels, itemModels, partModels);
     }
 
@@ -87,8 +90,7 @@ public class BlockModelProvider extends ModelSubProvider {
 
         multiVariantGenerator(AEBlocks.CABLE_BUS, new MultiVariant(
                 WeightedList.of(),
-                new CustomBlockStateModelBuilder.Simple(new CableBusModel.Unbaked())
-        ));
+                new CustomBlockStateModelBuilder.Simple(new CableBusModel.Unbaked())));
 
         builtInModel(AEBlocks.PAINT, new PaintSplotchesModel.Unbaked());
 
@@ -172,8 +174,10 @@ public class BlockModelProvider extends ModelSubProvider {
         simpleBlockAndItem(AEBlocks.CREATIVE_ENERGY_CELL, "block/creative_energy_cell");
 
         // Both use the same mysterious cube model
-        blockModels.blockStateOutput.accept(createSimpleBlock(AEBlocks.MYSTERIOUS_CUBE.block(), plainVariant(makeId("block/mysterious_cube"))));
-        blockModels.blockStateOutput.accept(createSimpleBlock(AEBlocks.NOT_SO_MYSTERIOUS_CUBE.block(), plainVariant(makeId("block/mysterious_cube"))));
+        blockModels.blockStateOutput.accept(
+                createSimpleBlock(AEBlocks.MYSTERIOUS_CUBE.block(), plainVariant(makeId("block/mysterious_cube"))));
+        blockModels.blockStateOutput.accept(createSimpleBlock(AEBlocks.NOT_SO_MYSTERIOUS_CUBE.block(),
+                plainVariant(makeId("block/mysterious_cube"))));
         blockModels.registerSimpleItemModel(AEBlocks.NOT_SO_MYSTERIOUS_CUBE.asItem(), makeId("block/mysterious_cube"));
     }
 
@@ -241,7 +245,6 @@ public class BlockModelProvider extends ModelSubProvider {
         var t_inside_a = ControllerBlock.ControllerRenderType.inside_a;
         var t_inside_b = ControllerBlock.ControllerRenderType.inside_b;
 
-
         blockModels.blockStateOutput.accept(
                 MultiPartGenerator.multiPart(block)
                         .with(new ConditionBuilder().term(state, s_offline).term(s_type, t_block),
@@ -261,7 +264,8 @@ public class BlockModelProvider extends ModelSubProvider {
                                         .with(VariantMutator.X_ROT.withValue(Quadrant.R90)))
                         .with(new ConditionBuilder().term(state, s_online).term(s_type, t_column_x),
                                 plainVariant(onlineColumn)
-                                        .with(VariantMutator.X_ROT.withValue(Quadrant.R90)).with(VariantMutator.Y_ROT.withValue(Quadrant.R90)))
+                                        .with(VariantMutator.X_ROT.withValue(Quadrant.R90))
+                                        .with(VariantMutator.Y_ROT.withValue(Quadrant.R90)))
                         .with(new ConditionBuilder().term(state, s_online).term(s_type, t_column_y),
                                 plainVariant(onlineColumn))
                         .with(new ConditionBuilder().term(state, s_online).term(s_type, t_column_z),
@@ -269,7 +273,8 @@ public class BlockModelProvider extends ModelSubProvider {
                                         .with(VariantMutator.X_ROT.withValue(Quadrant.R90)))
                         .with(new ConditionBuilder().term(state, s_conflicted).term(s_type, t_column_x),
                                 plainVariant(conflictedColumn)
-                                        .with(VariantMutator.X_ROT.withValue(Quadrant.R90)).with(VariantMutator.Y_ROT.withValue(Quadrant.R90)))
+                                        .with(VariantMutator.X_ROT.withValue(Quadrant.R90))
+                                        .with(VariantMutator.Y_ROT.withValue(Quadrant.R90)))
                         .with(new ConditionBuilder().term(state, s_conflicted).term(s_type, t_column_y),
                                 plainVariant(conflictedColumn))
                         .with(new ConditionBuilder().term(state, s_conflicted).term(s_type, t_column_z),
@@ -347,8 +352,7 @@ public class BlockModelProvider extends ModelSubProvider {
                 PropertyDispatch.initial(GrowthAcceleratorBlock.POWERED)
                         .select(false, plainVariant(unpoweredModel))
                         .select(true, plainVariant(poweredModel)),
-                createFacingDispatch(90, 0)
-        );
+                createFacingDispatch(90, 0));
 
         itemModels.itemModelOutput.accept(AEBlocks.GROWTH_ACCELERATOR.asItem(),
                 ItemModelUtils.plainModel(unpoweredModel));
@@ -367,22 +371,24 @@ public class BlockModelProvider extends ModelSubProvider {
                         .put(TextureSlot.WEST, makeId("block/crafting/unit")),
                 modelOutput);
 
-        multiVariantGenerator(AEBlocks.CRAFTING_MONITOR, PropertyDispatch.initial(AbstractCraftingUnitBlock.FORMED, BlockStateProperties.FACING)
-                .generate((formed, facing) -> {
-                    if (formed) {
-                        return customBlockStateModel(new CraftingCubeModel.Unbaked(CraftingUnitType.MONITOR));
-                    } else {
-                        return variant(applyOrientation(
-                                plainModel(unformedModel),
-                                BlockOrientation.get(facing)));
-                    }
-                }));
+        multiVariantGenerator(AEBlocks.CRAFTING_MONITOR,
+                PropertyDispatch.initial(AbstractCraftingUnitBlock.FORMED, BlockStateProperties.FACING)
+                        .generate((formed, facing) -> {
+                            if (formed) {
+                                return customBlockStateModel(new CraftingCubeModel.Unbaked(CraftingUnitType.MONITOR));
+                            } else {
+                                return variant(applyOrientation(
+                                        plainModel(unformedModel),
+                                        BlockOrientation.get(facing)));
+                            }
+                        }));
         blockModels.registerSimpleItemModel(AEBlocks.CRAFTING_MONITOR.asItem(), unformedModel);
     }
 
     private void crystalResonanceGenerator() {
         var modelFile = makeId("block/crystal_resonance_generator");
-        var builder = MultiVariantGenerator.dispatch(AEBlocks.CRYSTAL_RESONANCE_GENERATOR.block(), plainVariant(modelFile));
+        var builder = MultiVariantGenerator.dispatch(AEBlocks.CRYSTAL_RESONANCE_GENERATOR.block(),
+                plainVariant(modelFile));
 
         var facingVariants = PropertyDispatch.modify(BlockStateProperties.FACING);
         for (var facing : Direction.values()) {
@@ -461,8 +467,7 @@ public class BlockModelProvider extends ModelSubProvider {
                 PropertyDispatch.initial(VibrationChamberBlock.ACTIVE)
                         .select(false, plainVariant(offModel))
                         .select(true, plainVariant(onModel)),
-                createFacingSpinDispatch()
-        );
+                createFacingSpinDispatch());
 
         // TODO itemModels().withExistingParent(modelPath(AEBlocks.VIBRATION_CHAMBER), offModel);
     }
@@ -476,8 +481,7 @@ public class BlockModelProvider extends ModelSubProvider {
                 PropertyDispatch.initial(SpatialAnchorBlock.POWERED)
                         .select(false, plainVariant(offModel))
                         .select(true, plainVariant(onModel)),
-                createFacingDispatch(90, 0)
-        );
+                createFacingDispatch(90, 0));
 
         // TODO itemModels().withExistingParent(modelPath(AEBlocks.SPATIAL_ANCHOR), offModel);
     }
@@ -490,19 +494,19 @@ public class BlockModelProvider extends ModelSubProvider {
 
         var orientedModel = makeId("block/pattern_provider_oriented");
 
-        multiVariantGenerator(AEBlocks.PATTERN_PROVIDER, PropertyDispatch.initial(PatternProviderBlock.PUSH_DIRECTION).generate(pushDirection -> {
-            var forward = pushDirection.getDirection();
-            if (forward == null) {
-                return plainVariant(normalModel);
-            } else {
-                var orientation = BlockOrientation.get(forward);
-                return plainVariant(orientedModel).with(applyRotation(
-                        // + 90 because the default model is oriented UP, while block orientation assumes NORTH
-                        orientation.getAngleX() + 90,
-                        orientation.getAngleY()
-                ));
-            }
-        }));
+        multiVariantGenerator(AEBlocks.PATTERN_PROVIDER,
+                PropertyDispatch.initial(PatternProviderBlock.PUSH_DIRECTION).generate(pushDirection -> {
+                    var forward = pushDirection.getDirection();
+                    if (forward == null) {
+                        return plainVariant(normalModel);
+                    } else {
+                        var orientation = BlockOrientation.get(forward);
+                        return plainVariant(orientedModel).with(applyRotation(
+                                // + 90 because the default model is oriented UP, while block orientation assumes NORTH
+                                orientation.getAngleX() + 90,
+                                orientation.getAngleY()));
+                    }
+                }));
     }
 
     private void ioPort() {
@@ -524,8 +528,7 @@ public class BlockModelProvider extends ModelSubProvider {
                 PropertyDispatch.initial(SpatialIOPortBlock.POWERED)
                         .select(false, plainVariant(offModel))
                         .select(true, plainVariant(onModel)),
-                createFacingSpinDispatch()
-        );
+                createFacingSpinDispatch());
         // TODO itemModels().withExistingParent(modelPath(AEBlocks.SPATIAL_IO_PORT), offModel);
     }
 
@@ -601,9 +604,9 @@ public class BlockModelProvider extends ModelSubProvider {
         blockModels.blockStateOutput
                 .accept(
                         MultiVariantGenerator.dispatch(
-                                        block,
-                                        plainVariant(ModelTemplates.CROSS.create(block, TextureMapping.cross(block),
-                                                modelOutput)))
+                                block,
+                                plainVariant(ModelTemplates.CROSS.create(block, TextureMapping.cross(block),
+                                        modelOutput)))
                                 .with(ROTATIONS_COLUMN_WITH_FACING));
     }
 }

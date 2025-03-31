@@ -1,13 +1,14 @@
 package appeng.client.model;
 
-import appeng.client.api.model.parts.PartModel;
-import appeng.client.render.CubeBuilder;
-import appeng.core.AppEng;
-import appeng.parts.automation.PartModelData;
-import appeng.parts.automation.PlaneConnections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
@@ -26,12 +27,12 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.client.model.IQuadTransformer;
 import net.neoforged.neoforge.client.model.QuadTransformers;
 import net.neoforged.neoforge.model.data.ModelData;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import appeng.client.api.model.parts.PartModel;
+import appeng.client.render.CubeBuilder;
+import appeng.core.AppEng;
+import appeng.parts.automation.PartModelData;
+import appeng.parts.automation.PlaneConnections;
 
 public class PlanePartModel implements PartModel {
 
@@ -44,10 +45,10 @@ public class PlanePartModel implements PartModel {
     private final TextureAtlasSprite frontOffSprite;
 
     public PlanePartModel(TextureAtlasSprite frontOnSprite,
-                          TextureAtlasSprite frontOffSprite,
-                          TextureAtlasSprite sidesSprite,
-                          TextureAtlasSprite backSprite,
-                          Transformation transformation) {
+            TextureAtlasSprite frontOffSprite,
+            TextureAtlasSprite sidesSprite,
+            TextureAtlasSprite backSprite,
+            Transformation transformation) {
         this.frontOnSprite = frontOnSprite;
         this.frontOffSprite = frontOffSprite;
 
@@ -61,22 +62,20 @@ public class PlanePartModel implements PartModel {
                     buildQuads(frontOnSprite, sidesSprite, backSprite, permutation, quadTransformer),
                     true,
                     frontOnSprite,
-                    RenderType.solid()
-            ));
+                    RenderType.solid()));
             this.offParts.put(permutation, new SimpleModelWrapper(
                     buildQuads(frontOffSprite, sidesSprite, backSprite, permutation, quadTransformer),
                     true,
                     frontOffSprite,
-                    RenderType.solid()
-            ));
+                    RenderType.solid()));
         }
     }
 
     private static QuadCollection buildQuads(TextureAtlasSprite frontSprite,
-                                             TextureAtlasSprite sidesSprite,
-                                             TextureAtlasSprite backSprite,
-                                             PlaneConnections permutation,
-                                             IQuadTransformer quadTransformer) {
+            TextureAtlasSprite sidesSprite,
+            TextureAtlasSprite backSprite,
+            PlaneConnections permutation,
+            IQuadTransformer quadTransformer) {
         var quads = new QuadCollection.Builder();
 
         var builder = new CubeBuilder(quad -> {
@@ -99,12 +98,14 @@ public class PlanePartModel implements PartModel {
     }
 
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random, List<BlockModelPart> parts) {
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random,
+            List<BlockModelPart> parts) {
         var connections = partModelData.get(PartModelData.CONNECTIONS);
         if (connections == null) {
             connections = DEFAULT_PERMUTATION;
         }
-        var indicatorState = Objects.requireNonNullElse(partModelData.get(PartModelData.STATUS_INDICATOR), PartModelData.StatusIndicatorState.UNPOWERED);
+        var indicatorState = Objects.requireNonNullElse(partModelData.get(PartModelData.STATUS_INDICATOR),
+                PartModelData.StatusIndicatorState.UNPOWERED);
         if (indicatorState == PartModelData.StatusIndicatorState.ACTIVE) {
             parts.add(this.onParts.get(connections));
         } else {
@@ -121,16 +122,15 @@ public class PlanePartModel implements PartModel {
             ResourceLocation frontOnTexture,
             ResourceLocation frontOffTexture,
             ResourceLocation sidesTexture,
-            ResourceLocation backTexture
-    ) implements PartModel.Unbaked {
+            ResourceLocation backTexture) implements PartModel.Unbaked {
+
         public static final ResourceLocation ID = AppEng.makeId("plane");
 
         public static MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
                 ResourceLocation.CODEC.fieldOf("front_on").forGetter(Unbaked::frontOnTexture),
                 ResourceLocation.CODEC.fieldOf("front_off").forGetter(Unbaked::frontOffTexture),
                 ResourceLocation.CODEC.fieldOf("sides").forGetter(Unbaked::sidesTexture),
-                ResourceLocation.CODEC.fieldOf("back").forGetter(Unbaked::backTexture)
-        ).apply(builder, Unbaked::new));
+                ResourceLocation.CODEC.fieldOf("back").forGetter(Unbaked::backTexture)).apply(builder, Unbaked::new));
 
         @Override
         public MapCodec<? extends PartModel.Unbaked> codec() {
@@ -141,8 +141,10 @@ public class PlanePartModel implements PartModel {
         public PartModel bake(ModelBaker baker, ModelState modelState) {
             ModelDebugName debugName = getClass()::toString;
 
-            var frontOnSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, frontOnTexture), debugName);
-            var frontOffSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, frontOffTexture), debugName);
+            var frontOnSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, frontOnTexture),
+                    debugName);
+            var frontOffSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, frontOffTexture),
+                    debugName);
             var sidesSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, sidesTexture), debugName);
             var backSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, backTexture), debugName);
 
@@ -151,8 +153,7 @@ public class PlanePartModel implements PartModel {
                     frontOffSprite,
                     sidesSprite,
                     backSprite,
-                    modelState.transformation()
-            );
+                    modelState.transformation());
         }
 
         @Override

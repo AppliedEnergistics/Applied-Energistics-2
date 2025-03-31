@@ -18,14 +18,6 @@
 
 package appeng.server.services.compass;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.Util;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
-
 import java.nio.ByteBuffer;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -33,6 +25,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.Util;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 /**
  * A compass region stores information about the occurrence of skystone blocks in a region of 1024x1024 chunks.
@@ -44,24 +45,22 @@ final class CompassRegion extends SavedData {
 
     private static final Codec<Section> SECTION_CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.INT.fieldOf("index").forGetter(Section::index),
-            Codec.BYTE_BUFFER.fieldOf("index").forGetter(Section::bits)
-    ).apply(builder, Section::new));
+            Codec.BYTE_BUFFER.fieldOf("index").forGetter(Section::bits)).apply(builder, Section::new));
 
     private static final Codec<CompassRegion> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            SECTION_CODEC.listOf().fieldOf("sections").forGetter(CompassRegion::sections)
-    ).apply(builder, CompassRegion::new));
+            SECTION_CODEC.listOf().fieldOf("sections").forGetter(CompassRegion::sections))
+            .apply(builder, CompassRegion::new));
 
     private List<Section> sections() {
         return sections.entrySet().stream().map(
-                entry -> new Section(entry.getKey(), ByteBuffer.wrap(entry.getValue().toByteArray()))
-        ).toList();
+                entry -> new Section(entry.getKey(), ByteBuffer.wrap(entry.getValue().toByteArray()))).toList();
     }
 
-    private static final BiFunction<Integer, Integer, SavedDataType<CompassRegion>> TYPE = Util.memoize((regionX, regionZ) -> new SavedDataType<>(
-            "ae2_compass_" + regionX + "_" + regionZ,
-            CompassRegion::new,
-            CODEC
-    ));
+    private static final BiFunction<Integer, Integer, SavedDataType<CompassRegion>> TYPE = Util
+            .memoize((regionX, regionZ) -> new SavedDataType<>(
+                    "ae2_compass_" + regionX + "_" + regionZ,
+                    CompassRegion::new,
+                    CODEC));
 
     /**
      * The number of chunks that get saved in a region on each axis.
@@ -93,8 +92,7 @@ final class CompassRegion extends SavedData {
         var regionZ = chunkPos.z / CHUNKS_PER_REGION;
 
         return level.getDataStorage().computeIfAbsent(
-                TYPE.apply(regionX, regionZ)
-        );
+                TYPE.apply(regionX, regionZ));
     }
 
     boolean hasCompassTarget(int cx, int cz) {

@@ -18,10 +18,13 @@
 
 package appeng.client.render;
 
-import appeng.client.render.cablebus.FacadeBuilder;
-import appeng.core.AppEng;
-import appeng.items.parts.FacadeItem;
+import java.util.Collection;
+import java.util.Map;
+
 import com.mojang.serialization.MapCodec;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.item.ItemModel;
@@ -35,10 +38,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.ItemStackMap;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Map;
+import appeng.client.render.cablebus.FacadeBuilder;
+import appeng.core.AppEng;
+import appeng.items.parts.FacadeItem;
 
 /**
  * The model class for facades. Since facades wrap existing models, they don't declare any dependencies here other than
@@ -61,7 +64,8 @@ public class FacadeItemModel implements ItemModel {
     }
 
     @Override
-    public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver itemModelResolver, ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
+    public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver itemModelResolver,
+            ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
 
         if (!(stack.getItem() instanceof FacadeItem itemFacade)) {
             missingItemModel.update(renderState, stack, itemModelResolver, displayContext, level, entity, seed);
@@ -104,8 +108,7 @@ public class FacadeItemModel implements ItemModel {
             return new FacadeItemModel(
                     ItemBaseModelWrapper.bake(context.blockModelBaker(), MODEL_BASE),
                     context.blockModelBaker(),
-                    context.missingItemModel()
-            );
+                    context.missingItemModel());
         }
 
         @Override

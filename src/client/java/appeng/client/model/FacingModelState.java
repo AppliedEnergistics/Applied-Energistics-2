@@ -6,8 +6,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 /**
- * Modelstate to use for rotating AE2 models from their default north-facing
- * orientation to the desired facing (corresponding to {@link BlockStateProperties#FACING}.
+ * Modelstate to use for rotating AE2 models from their default north-facing orientation to the desired facing
+ * (corresponding to {@link BlockStateProperties#FACING}.
  */
 public final class FacingModelState {
     private FacingModelState() {

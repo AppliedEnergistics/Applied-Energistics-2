@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.world.item.component.TooltipDisplay;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -27,6 +26,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.PatternDetailsHelper;
@@ -132,7 +132,8 @@ class AEProcessingPatternTest {
         var stack = ItemStack.parse(registryAccess, tag).orElseThrow();
 
         var lines = new ArrayList<Component>();
-        stack.getItem().appendHoverText(stack, Item.TooltipContext.EMPTY, TooltipDisplay.DEFAULT, lines::add, TooltipFlag.ADVANCED);
+        stack.getItem().appendHoverText(stack, Item.TooltipContext.EMPTY, TooltipDisplay.DEFAULT, lines::add,
+                TooltipFlag.ADVANCED);
         return lines.stream().map(Component::getString).toList();
     }
 

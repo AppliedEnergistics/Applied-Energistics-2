@@ -28,7 +28,6 @@ import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.stacks.AEKey;
-import net.minecraft.nbt.NbtUtils;
 
 public class CraftingLink implements ICraftingLink {
 

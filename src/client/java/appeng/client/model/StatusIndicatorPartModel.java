@@ -1,11 +1,12 @@
 package appeng.client.model;
 
-import appeng.client.api.model.parts.PartModel;
-import appeng.core.AppEng;
-import appeng.parts.automation.PartModelData;
+import java.util.List;
+import java.util.Objects;
+
 import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -17,8 +18,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.model.data.ModelData;
 
-import java.util.List;
-import java.util.Objects;
+import appeng.client.api.model.parts.PartModel;
+import appeng.core.AppEng;
+import appeng.parts.automation.PartModelData;
 
 /**
  * Adds model parts based on the status of the parts main grid node.
@@ -27,12 +29,13 @@ public record StatusIndicatorPartModel(
         SimpleModelWrapper activeBaked,
         SimpleModelWrapper poweredBaked,
         SimpleModelWrapper unpoweredBaked,
-        Transformation transformation
-) implements PartModel {
+        Transformation transformation) implements PartModel {
 
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random, List<BlockModelPart> parts) {
-        var state = Objects.requireNonNullElse(partModelData.get(PartModelData.STATUS_INDICATOR), PartModelData.StatusIndicatorState.UNPOWERED);
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random,
+            List<BlockModelPart> parts) {
+        var state = Objects.requireNonNullElse(partModelData.get(PartModelData.STATUS_INDICATOR),
+                PartModelData.StatusIndicatorState.UNPOWERED);
 
         var model = switch (state) {
             case ACTIVE -> activeBaked;
@@ -48,15 +51,15 @@ public record StatusIndicatorPartModel(
     }
 
     public record Unbaked(ResourceLocation active, ResourceLocation powered,
-                          ResourceLocation unpowered) implements PartModel.Unbaked {
+            ResourceLocation unpowered) implements PartModel.Unbaked {
+
         public static final ResourceLocation ID = AppEng.makeId("status_indicator");
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(
                 builder -> builder.group(
                         ResourceLocation.CODEC.fieldOf("active").forGetter(Unbaked::active),
                         ResourceLocation.CODEC.fieldOf("powered").forGetter(Unbaked::powered),
-                        ResourceLocation.CODEC.fieldOf("unpowered").forGetter(Unbaked::unpowered)
-                ).apply(builder, Unbaked::new)
-        );
+                        ResourceLocation.CODEC.fieldOf("unpowered").forGetter(Unbaked::unpowered))
+                        .apply(builder, Unbaked::new));
 
         @Override
         public MapCodec<? extends PartModel.Unbaked> codec() {
@@ -73,8 +76,7 @@ public record StatusIndicatorPartModel(
                     activeBaked,
                     poweredBaked,
                     unpoweredBaked,
-                    modelState.transformation()
-            );
+                    modelState.transformation());
         }
 
         @Override

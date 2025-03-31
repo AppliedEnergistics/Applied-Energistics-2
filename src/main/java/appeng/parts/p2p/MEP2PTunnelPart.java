@@ -20,7 +20,6 @@ package appeng.parts.p2p;
 
 import java.util.EnumSet;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.minecraft.core.Direction;
@@ -39,12 +38,9 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
-import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.hooks.ticking.TickHandler;
-import appeng.items.parts.PartModels;
 
 public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements IGridTickable {
     /**

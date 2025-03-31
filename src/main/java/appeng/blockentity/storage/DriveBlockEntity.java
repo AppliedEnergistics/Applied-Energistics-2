@@ -23,7 +23,6 @@ import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Set;
 
-import appeng.block.storage.DriveModelData;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -31,7 +30,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -55,6 +53,7 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
 import appeng.api.util.AECableType;
+import appeng.block.storage.DriveModelData;
 import appeng.blockentity.grid.AENetworkedInvBlockEntity;
 import appeng.blockentity.inventory.AppEngCellInventory;
 import appeng.core.AELog;

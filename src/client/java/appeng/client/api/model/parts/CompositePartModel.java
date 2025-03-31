@@ -1,9 +1,10 @@
 package appeng.client.api.model.parts;
 
-import appeng.client.model.PartModels;
-import appeng.core.AppEng;
+import java.util.List;
+
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
@@ -14,14 +15,17 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.model.data.ModelData;
 
-import java.util.List;
+import appeng.client.model.PartModels;
+import appeng.core.AppEng;
 
 /**
  * Combines multiple part models into one.
  */
 public record CompositePartModel(List<PartModel> models) implements PartModel {
+
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random, List<BlockModelPart> parts) {
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random,
+            List<BlockModelPart> parts) {
         for (var model : models) {
             model.collectParts(level, pos, partModelData, random, parts);
         }
@@ -35,8 +39,7 @@ public record CompositePartModel(List<PartModel> models) implements PartModel {
     public record Unbaked(List<PartModel.Unbaked> models) implements PartModel.Unbaked {
         public static final ResourceLocation ID = AppEng.makeId("composite");
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-                PartModels.CODEC.listOf().fieldOf("models").forGetter(Unbaked::models)
-        ).apply(builder, Unbaked::new));
+                PartModels.CODEC.listOf().fieldOf("models").forGetter(Unbaked::models)).apply(builder, Unbaked::new));
 
         public Unbaked {
             if (models.isEmpty()) {

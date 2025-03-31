@@ -18,18 +18,12 @@
 
 package appeng.items;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-
-import java.util.function.Consumer;
 
 public abstract class AEBaseItem extends Item {
 
@@ -42,7 +36,7 @@ public abstract class AEBaseItem extends Item {
         var id = BuiltInRegistries.ITEM.getKey(this);
         return id != BuiltInRegistries.ITEM.getDefaultKey() ? id : null;
     }
-    
+
     public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
         output.accept(this);
     }

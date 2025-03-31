@@ -36,16 +36,12 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
-import appeng.core.AppEng;
 import appeng.helpers.InterfaceLogic;
 import appeng.helpers.InterfaceLogicHost;
-import appeng.items.parts.PartModels;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.AEBasePart;
-import appeng.parts.PartModel;
 
 public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
 

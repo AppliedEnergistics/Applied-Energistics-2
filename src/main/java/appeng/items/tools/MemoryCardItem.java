@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -41,6 +40,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackLinkedSet;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -58,11 +58,11 @@ import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigurableObject;
+import appeng.core.ConventionTags;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.InGameTooltip;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.localization.Tooltips;
-import appeng.core.ConventionTags;
 import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.AEBaseItem;
@@ -278,8 +278,9 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> lines,
-                                TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
+            TooltipFlag advancedTooltips) {
 
         var settingsSource = stack.get(AEComponents.EXPORTED_SETTINGS_SOURCE);
         if (settingsSource != null) {
@@ -291,7 +292,8 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
         var p2pFreq = stack.get(AEComponents.EXPORTED_P2P_FREQUENCY);
         if (p2pFreq != null) {
             var freqTooltip = Platform.p2p().toColoredHexString(p2pFreq).withStyle(ChatFormatting.BOLD);
-            lines.accept(Tooltips.of(Component.translatable(InGameTooltip.P2PFrequency.getTranslationKey(), freqTooltip)));
+            lines.accept(
+                    Tooltips.of(Component.translatable(InGameTooltip.P2PFrequency.getTranslationKey(), freqTooltip)));
         }
     }
 

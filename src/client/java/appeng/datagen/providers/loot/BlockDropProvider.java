@@ -48,10 +48,10 @@ import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 import appeng.core.AppEng;
+import appeng.core.ConventionTags;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.BlockDefinition;
-import appeng.core.ConventionTags;
 
 public class BlockDropProvider extends BlockLootSubProvider {
     private final Map<Block, Function<Block, LootTable.Builder>> overrides = createOverrides();

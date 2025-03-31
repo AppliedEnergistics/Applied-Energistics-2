@@ -67,8 +67,9 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> lines,
-                                TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
+            TooltipFlag advancedTooltips) {
         var inventory = StorageCells.getCellInventory(stack, null);
 
         if (inventory != null) {

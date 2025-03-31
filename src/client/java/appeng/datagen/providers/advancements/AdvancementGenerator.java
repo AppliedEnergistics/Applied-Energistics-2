@@ -52,12 +52,12 @@ import net.minecraft.world.item.Items;
 
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
+import appeng.core.ConventionTags;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.datagen.providers.localization.LocalizationProvider;
-import appeng.core.ConventionTags;
 
 public class AdvancementGenerator implements AdvancementSubProvider {
     private final LocalizationProvider localization;

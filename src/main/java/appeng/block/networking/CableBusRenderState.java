@@ -158,13 +158,21 @@ public class CableBusRenderState {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass())
+            return false;
         CableBusRenderState that = (CableBusRenderState) o;
-        return cableType == that.cableType && coreType == that.coreType && cableColor == that.cableColor && Objects.equals(connectionTypes, that.connectionTypes) && Objects.equals(cableBusAdjacent, that.cableBusAdjacent) && Objects.equals(channelsOnSide, that.channelsOnSide) && Objects.equals(attachments, that.attachments) && Objects.equals(attachmentConnections, that.attachmentConnections) && Objects.equals(facades, that.facades) && Objects.equals(pos, that.pos) && Objects.equals(boundingBoxes, that.boundingBoxes);
+        return cableType == that.cableType && coreType == that.coreType && cableColor == that.cableColor
+                && Objects.equals(connectionTypes, that.connectionTypes)
+                && Objects.equals(cableBusAdjacent, that.cableBusAdjacent)
+                && Objects.equals(channelsOnSide, that.channelsOnSide) && Objects.equals(attachments, that.attachments)
+                && Objects.equals(attachmentConnections, that.attachmentConnections)
+                && Objects.equals(facades, that.facades) && Objects.equals(pos, that.pos)
+                && Objects.equals(boundingBoxes, that.boundingBoxes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(cableType, coreType, cableColor, connectionTypes, cableBusAdjacent, channelsOnSide, attachments, attachmentConnections, facades, pos, boundingBoxes);
+        return Objects.hash(cableType, coreType, cableColor, connectionTypes, cableBusAdjacent, channelsOnSide,
+                attachments, attachmentConnections, facades, pos, boundingBoxes);
     }
 }

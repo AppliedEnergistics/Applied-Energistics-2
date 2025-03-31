@@ -43,7 +43,7 @@ public class EnergyCellBlockItem extends AEBaseBlockItem implements IAEItemPower
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addCheckedInformation(ItemStack stack, TooltipContext context, Consumer<Component> lines,
-                                      TooltipFlag advancedTooltips) {
+            TooltipFlag advancedTooltips) {
         var storedEnergy = getAECurrentPower(stack);
         var maxEnergy = getAEMaxPower(stack);
         lines.accept(Tooltips.energyStorageComponent(storedEnergy, maxEnergy));

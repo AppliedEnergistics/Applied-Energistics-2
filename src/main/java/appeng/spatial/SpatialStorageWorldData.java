@@ -18,13 +18,15 @@
 
 package appeng.spatial;
 
+import java.util.List;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.saveddata.SavedData;
 
-import java.util.List;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 /**
  * Extra data attached to the spatial storage level.
@@ -37,8 +39,8 @@ public class SpatialStorageWorldData extends SavedData {
     public static final String ID = "ae2_spatial_storage";
 
     public static final Codec<SpatialStorageWorldData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            SpatialStoragePlot.CODEC.listOf().fieldOf("plots").forGetter(SpatialStorageWorldData::getPlots)
-    ).apply(builder, SpatialStorageWorldData::new));
+            SpatialStoragePlot.CODEC.listOf().fieldOf("plots").forGetter(SpatialStorageWorldData::getPlots))
+            .apply(builder, SpatialStorageWorldData::new));
 
     private final Int2ObjectOpenHashMap<SpatialStoragePlot> plots = new Int2ObjectOpenHashMap<>();
 

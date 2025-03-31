@@ -19,11 +19,11 @@ import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
 
 import appeng.api.stacks.AEKeyType;
 import appeng.api.util.AEColor;
+import appeng.core.ConventionTags;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
-import appeng.core.ConventionTags;
 import appeng.items.tools.powered.PortableCellItem;
 
 public class CraftingRecipes extends AE2RecipeProvider {

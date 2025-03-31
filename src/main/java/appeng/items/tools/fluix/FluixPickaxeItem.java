@@ -1,6 +1,5 @@
 package appeng.items.tools.fluix;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.core.Holder;
@@ -18,7 +17,8 @@ public class FluixPickaxeItem extends Item implements IntrinsicEnchantItem {
     private final IntrinsicEnchantment intrinsicEnchantment = new IntrinsicEnchantment(Enchantments.FORTUNE, 1);
 
     public FluixPickaxeItem(Properties props) {
-        super(props.pickaxe(FluixToolType.FLUIX.getMaterial(), 1, -2.8F).repairable(FluixToolType.FLUIX.getRepairIngredient()));
+        super(props.pickaxe(FluixToolType.FLUIX.getMaterial(), 1, -2.8F)
+                .repairable(FluixToolType.FLUIX.getRepairIngredient()));
     }
 
     @Override
@@ -27,8 +27,9 @@ public class FluixPickaxeItem extends Item implements IntrinsicEnchantItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipComponents,
-                                TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> tooltipComponents,
+            TooltipFlag isAdvanced) {
         intrinsicEnchantment.appendHoverText(context, tooltipComponents);
     }
 

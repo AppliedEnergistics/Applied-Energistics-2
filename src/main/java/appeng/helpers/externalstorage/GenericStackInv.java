@@ -30,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 
 import it.unimi.dsi.fastutil.objects.Reference2LongArrayMap;

@@ -27,8 +27,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import appeng.core.AppEng;
-import appeng.core.definitions.AEItems;
 import appeng.core.ConventionTags;
+import appeng.core.definitions.AEItems;
 import appeng.recipes.mattercannon.MatterCannonAmmo;
 
 public class MatterCannonAmmoProvider extends AE2RecipeProvider {

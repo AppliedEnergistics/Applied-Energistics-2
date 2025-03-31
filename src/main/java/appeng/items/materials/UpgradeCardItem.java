@@ -18,7 +18,6 @@
 
 package appeng.items.materials;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.network.chat.Component;
@@ -30,8 +29,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
@@ -50,8 +47,9 @@ public class UpgradeCardItem extends AEBaseItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> lines,
-                                TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
+            TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, context, tooltipDisplay, lines, advancedTooltips);
 
         var supportedBy = Upgrades.getTooltipLinesForCard(this);

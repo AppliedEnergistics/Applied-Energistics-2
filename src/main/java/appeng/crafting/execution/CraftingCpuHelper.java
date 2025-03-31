@@ -23,9 +23,9 @@ import java.util.UUID;
 
 import com.google.common.collect.Iterables;
 
-import net.minecraft.core.UUIDUtil;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 

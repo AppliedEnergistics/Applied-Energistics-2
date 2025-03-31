@@ -1,6 +1,5 @@
 package appeng.block.storage;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.core.BlockPos;

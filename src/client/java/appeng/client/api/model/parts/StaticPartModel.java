@@ -1,9 +1,10 @@
 package appeng.client.api.model.parts;
 
-import appeng.api.util.AEColor;
-import appeng.core.AppEng;
+import java.util.List;
+
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -15,7 +16,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.model.data.ModelData;
 
-import java.util.List;
+import appeng.api.util.AEColor;
+import appeng.core.AppEng;
 
 /**
  * <dl>
@@ -38,7 +40,8 @@ public class StaticPartModel implements PartModel {
     }
 
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random, List<BlockModelPart> parts) {
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random,
+            List<BlockModelPart> parts) {
         parts.add(model);
     }
 
@@ -50,8 +53,7 @@ public class StaticPartModel implements PartModel {
     public record Unbaked(ResourceLocation model) implements PartModel.Unbaked {
         public static final ResourceLocation ID = AppEng.makeId("model");
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-                ResourceLocation.CODEC.fieldOf("model").forGetter(Unbaked::model)
-        ).apply(builder, Unbaked::new));
+                ResourceLocation.CODEC.fieldOf("model").forGetter(Unbaked::model)).apply(builder, Unbaked::new));
 
         @Override
         public MapCodec<? extends PartModel.Unbaked> codec() {

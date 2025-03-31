@@ -1,10 +1,19 @@
 package appeng.client.model;
 
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
+
 import com.mojang.math.Quadrant;
 import com.mojang.math.Transformation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
+import org.joml.Quaternionf;
+
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.resources.model.BlockModelRotation;
@@ -17,26 +26,18 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.joml.Matrix4f;
-import org.joml.Matrix4fc;
-import org.joml.Quaternionf;
-
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.Map;
 
 /**
  * Extends Vanillas {@link net.minecraft.client.renderer.block.model.Variant} with rotation around the Z-axis.
  */
 public record SpinnableVariant(ResourceLocation modelLocation,
-                               SimpleModelState modelState) implements BlockModelPart.Unbaked {
+        SimpleModelState modelState) implements BlockModelPart.Unbaked {
+
     public static final MapCodec<SpinnableVariant> MAP_CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder.group(
-                            ResourceLocation.CODEC.fieldOf("model").forGetter(SpinnableVariant::modelLocation),
-                            SimpleModelState.MAP_CODEC.forGetter(SpinnableVariant::modelState)
-                    )
-                    .apply(builder, SpinnableVariant::new)
-    );
+                    ResourceLocation.CODEC.fieldOf("model").forGetter(SpinnableVariant::modelLocation),
+                    SimpleModelState.MAP_CODEC.forGetter(SpinnableVariant::modelState))
+                    .apply(builder, SpinnableVariant::new));
     public static final Codec<SpinnableVariant> CODEC = MAP_CODEC.codec();
 
     public SpinnableVariant(ResourceLocation model) {
@@ -79,23 +80,23 @@ public record SpinnableVariant(ResourceLocation modelLocation,
 
     @OnlyIn(Dist.CLIENT)
     public record SimpleModelState(Quadrant x, Quadrant y, Quadrant z, boolean uvLock) {
+
         public static final MapCodec<SimpleModelState> MAP_CODEC = RecordCodecBuilder.mapCodec(
                 builder -> builder.group(
-                                Quadrant.CODEC.optionalFieldOf("x", Quadrant.R0).forGetter(SimpleModelState::x),
-                                Quadrant.CODEC.optionalFieldOf("y", Quadrant.R0).forGetter(SimpleModelState::y),
-                                Quadrant.CODEC.optionalFieldOf("z", Quadrant.R0).forGetter(SimpleModelState::z),
-                                Codec.BOOL.optionalFieldOf("uvlock", false).forGetter(SimpleModelState::uvLock)
-                        )
-                        .apply(builder, SimpleModelState::new)
-        );
-        public static final SimpleModelState DEFAULT = new SimpleModelState(Quadrant.R0, Quadrant.R0, Quadrant.R0, false);
+                        Quadrant.CODEC.optionalFieldOf("x", Quadrant.R0).forGetter(SimpleModelState::x),
+                        Quadrant.CODEC.optionalFieldOf("y", Quadrant.R0).forGetter(SimpleModelState::y),
+                        Quadrant.CODEC.optionalFieldOf("z", Quadrant.R0).forGetter(SimpleModelState::z),
+                        Codec.BOOL.optionalFieldOf("uvlock", false).forGetter(SimpleModelState::uvLock))
+                        .apply(builder, SimpleModelState::new));
+        public static final SimpleModelState DEFAULT = new SimpleModelState(Quadrant.R0, Quadrant.R0, Quadrant.R0,
+                false);
         private static final ModelState[] STATES = createTransformations(false);
         private static final ModelState[] UV_LOCKED_STATES = createTransformations(true);
 
         private static ModelState[] createTransformations(boolean uvLocked) {
             var result = new ModelState[4 * 4 * 4];
             var quadrants = Quadrant.values();
-            var angles = new float[]{0, 90, 180, 270};
+            var angles = new float[] { 0, 90, 180, 270 };
 
             for (var xRot : quadrants) {
                 for (var yRot : quadrants) {
@@ -129,13 +130,15 @@ public record SpinnableVariant(ResourceLocation modelLocation,
                             var faceMapping = new EnumMap<Direction, Matrix4fc>(Direction.class);
                             var inverseFaceMapping = new EnumMap<Direction, Matrix4fc>(Direction.class);
                             for (Direction direction : Direction.values()) {
-                                Matrix4fc matrix4fc = BlockMath.getFaceTransformation(transformation, direction).getMatrix();
+                                Matrix4fc matrix4fc = BlockMath.getFaceTransformation(transformation, direction)
+                                        .getMatrix();
                                 faceMapping.put(direction, matrix4fc);
                                 inverseFaceMapping.put(direction, matrix4fc.invertAffine(new Matrix4f()));
                             }
                             result[idx] = new SpinnableModelState(transformation, faceMapping, inverseFaceMapping);
                         } else {
-                            result[idx] = new SpinnableModelState(transformation, Collections.emptyMap(), Collections.emptyMap());
+                            result[idx] = new SpinnableModelState(transformation, Collections.emptyMap(),
+                                    Collections.emptyMap());
                         }
                     }
                 }
@@ -170,9 +173,8 @@ public record SpinnableVariant(ResourceLocation modelLocation,
         }
 
         private record SpinnableModelState(Transformation transformation,
-                                           Map<Direction, Matrix4fc> faceTransformations,
-                                           Map<Direction, Matrix4fc> inverseFaceTransformations
-        ) implements ModelState {
+                Map<Direction, Matrix4fc> faceTransformations,
+                Map<Direction, Matrix4fc> inverseFaceTransformations) implements ModelState {
             @Override
             public Matrix4fc faceTransformation(Direction face) {
                 return faceTransformations.getOrDefault(face, NO_TRANSFORM);

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -20,13 +22,10 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartHelper;
-import appeng.core.AELog;
 import appeng.core.definitions.AEAttachmentTypes;
 import appeng.parts.networking.CablePart;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PartPlacement {
     private static final Logger LOG = LoggerFactory.getLogger(PartPlacement.class);

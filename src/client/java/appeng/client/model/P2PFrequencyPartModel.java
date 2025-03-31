@@ -1,15 +1,17 @@
 package appeng.client.model;
 
-import appeng.api.util.AEColor;
-import appeng.client.api.model.parts.PartModel;
-import appeng.client.render.CubeBuilder;
-import appeng.core.AppEng;
-import appeng.parts.automation.PartModelData;
-import appeng.util.Platform;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -25,16 +27,18 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.client.model.QuadTransformers;
 import net.neoforged.neoforge.model.data.ModelData;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
+import appeng.api.util.AEColor;
+import appeng.client.api.model.parts.PartModel;
+import appeng.client.render.CubeBuilder;
+import appeng.core.AppEng;
+import appeng.parts.automation.PartModelData;
+import appeng.util.Platform;
 
 public final class P2PFrequencyPartModel implements PartModel {
-    private static final Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, AppEng.makeId("part/p2p_tunnel_frequency"));
-    private static final int[][] QUAD_OFFSETS = new int[][]{{3, 11, 2}, {11, 11, 2}, {3, 3, 2}, {11, 3, 2}};
+    private static final Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS,
+            AppEng.makeId("part/p2p_tunnel_frequency"));
+    private static final int[][] QUAD_OFFSETS = new int[][] { { 3, 11, 2 }, { 11, 11, 2 }, { 3, 3, 2 }, { 11, 3, 2 } };
     private final TextureAtlasSprite texture;
     private final Transformation transformation;
     private final Cache<Long, BlockModelPart> modelCache = CacheBuilder.newBuilder().maximumSize(100).build();
@@ -45,7 +49,8 @@ public final class P2PFrequencyPartModel implements PartModel {
     }
 
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random, List<BlockModelPart> parts) {
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random,
+            List<BlockModelPart> parts) {
         var frequency = partModelData.get(PartModelData.P2P_FREQUENCY);
         frequency = Objects.requireNonNullElse(frequency, 0L);
         parts.add(getFrequencyPart(frequency));

@@ -1,7 +1,6 @@
 
 package appeng.core.network.clientbound;
 
-import appeng.core.particles.EnergyParticleData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -28,6 +27,7 @@ import appeng.core.AELog;
 import appeng.core.AppEngClient;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
+import appeng.core.particles.EnergyParticleData;
 
 /**
  * Plays the block breaking or fluid pickup sound and a transition particle effect into the supplied direction. Used

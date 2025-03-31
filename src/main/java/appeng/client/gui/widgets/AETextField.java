@@ -22,9 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.renderer.RenderType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -34,6 +31,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
@@ -41,7 +39,6 @@ import appeng.client.Point;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
-import org.lwjgl.opengl.GL32C;
 
 /**
  * A modified version of the Minecraft text field. You can initialize it over the full element span. The mouse click

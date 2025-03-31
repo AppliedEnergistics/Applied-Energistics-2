@@ -130,8 +130,9 @@ public class ChannelTests {
         private void checkNode(BlockPos pos, IGridNode node, int expectedChannelCount) {
             if (nodes.contains(node)) {
                 if (node.getUsedChannels() != expectedChannelCount) {
-                    throw helper.assertionException(pos, "Node has wrong channel count. Expected %d. Got %d.".formatted(expectedChannelCount,
-                            node.getUsedChannels()));
+                    throw helper.assertionException(pos,
+                            "Node has wrong channel count. Expected %d. Got %d.".formatted(expectedChannelCount,
+                                    node.getUsedChannels()));
                 }
                 nodes.remove(node);
             } else {
@@ -188,7 +189,8 @@ public class ChannelTests {
             });
 
             if (!foundAny.getPlain()) {
-                throw helper.assertionException("Connection spec " + bb + " and " + bb2 + " did not find any connections.");
+                throw helper
+                        .assertionException("Connection spec " + bb + " and " + bb2 + " did not find any connections.");
             }
         }
 

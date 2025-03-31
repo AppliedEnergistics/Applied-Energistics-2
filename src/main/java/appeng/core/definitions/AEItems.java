@@ -27,12 +27,8 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import appeng.items.tools.quartz.QuartzAxeItem;
-import appeng.items.tools.quartz.QuartzHoeItem;
-import appeng.items.tools.quartz.QuartzSpadeItem;
 import com.google.common.base.Preconditions;
 
-import net.minecraft.world.item.ToolMaterial;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.ResourceKey;
@@ -41,6 +37,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.ToolMaterial;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import appeng.api.crafting.PatternDetailsHelper;
@@ -51,12 +48,12 @@ import appeng.api.upgrades.Upgrades;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
+import appeng.core.ConventionTags;
 import appeng.core.MainCreativeTab;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.AEProcessingPattern;
 import appeng.crafting.pattern.AESmithingTablePattern;
 import appeng.crafting.pattern.AEStonecuttingPattern;
-import appeng.core.ConventionTags;
 import appeng.debug.DebugCardItem;
 import appeng.debug.EraserItem;
 import appeng.debug.MeteoritePlacerItem;
@@ -91,7 +88,10 @@ import appeng.items.tools.powered.MatterCannonItem;
 import appeng.items.tools.powered.PortableCellItem;
 import appeng.items.tools.powered.WirelessCraftingTerminalItem;
 import appeng.items.tools.powered.WirelessTerminalItem;
+import appeng.items.tools.quartz.QuartzAxeItem;
 import appeng.items.tools.quartz.QuartzCuttingKnifeItem;
+import appeng.items.tools.quartz.QuartzHoeItem;
+import appeng.items.tools.quartz.QuartzSpadeItem;
 import appeng.items.tools.quartz.QuartzWrenchItem;
 import appeng.menu.me.common.MEStorageMenu;
 

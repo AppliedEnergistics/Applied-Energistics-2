@@ -18,9 +18,17 @@
 
 package appeng.datagen.providers.models;
 
+import static net.minecraft.client.data.models.BlockModelGenerators.createAxisAlignedPillarBlock;
+import static net.minecraft.client.data.models.BlockModelGenerators.createSimpleBlock;
+import static net.minecraft.client.data.models.BlockModelGenerators.createSlab;
+import static net.minecraft.client.data.models.BlockModelGenerators.createStairs;
+import static net.minecraft.client.data.models.BlockModelGenerators.createWall;
+import static net.minecraft.client.data.models.BlockModelGenerators.plainVariant;
+
 import java.util.Map;
 
 import com.mojang.math.Quadrant;
+
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.MultiVariant;
@@ -41,10 +49,9 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 
-import static net.minecraft.client.data.models.BlockModelGenerators.*;
-
 public class DecorationModelProvider extends ModelSubProvider {
-    public DecorationModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels, PartModelOutput partModels) {
+    public DecorationModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels,
+            PartModelOutput partModels) {
         super(blockModels, itemModels, partModels);
     }
 
@@ -72,14 +79,15 @@ public class DecorationModelProvider extends ModelSubProvider {
                         applyAthena(
                                 plainVariant(
                                         ModelTemplates.CUBE_ALL.create(AEBlocks.SMOOTH_SKY_STONE_BLOCK.block(),
-                                TextureMapping.cube(AEBlocks.SMOOTH_SKY_STONE_BLOCK.block()), modelOutput)),
-                "athena:ctm",
-                Map.of(
-                        "center", AppEng.makeId("block/smooth_sky_stone_block_center"),
-                        "empty", AppEng.makeId("block/smooth_sky_stone_block_empty"),
-                        "horizontal", AppEng.makeId("block/smooth_sky_stone_block_h"),
-                        "vertical", AppEng.makeId("block/smooth_sky_stone_block_v"),
-                        "particle", AppEng.makeId("block/smooth_sky_stone_block")))));
+                                                TextureMapping.cube(AEBlocks.SMOOTH_SKY_STONE_BLOCK.block()),
+                                                modelOutput)),
+                                "athena:ctm",
+                                Map.of(
+                                        "center", AppEng.makeId("block/smooth_sky_stone_block_center"),
+                                        "empty", AppEng.makeId("block/smooth_sky_stone_block_empty"),
+                                        "horizontal", AppEng.makeId("block/smooth_sky_stone_block_h"),
+                                        "vertical", AppEng.makeId("block/smooth_sky_stone_block_v"),
+                                        "particle", AppEng.makeId("block/smooth_sky_stone_block")))));
         stairsBlock(AEBlocks.SMOOTH_SKY_STONE_STAIRS, AEBlocks.SMOOTH_SKY_STONE_BLOCK);
         slabBlock(AEBlocks.SMOOTH_SKY_STONE_SLAB, AEBlocks.SMOOTH_SKY_STONE_BLOCK);
         wall(AEBlocks.SMOOTH_SKY_STONE_WALL, getBlockTexture(AEBlocks.SMOOTH_SKY_STONE_BLOCK));
@@ -114,17 +122,16 @@ public class DecorationModelProvider extends ModelSubProvider {
                 createAxisAlignedPillarBlock(
                         AEBlocks.QUARTZ_PILLAR.block(),
                         applyAthena(plainVariant(ModelTemplates.CUBE_COLUMN.create(
-                                        AEBlocks.QUARTZ_PILLAR.block(),
-                                        TextureMapping.column(sideTexture, getBlockTexture(AEBlocks.CUT_QUARTZ_BLOCK)),
-                                        modelOutput)),
+                                AEBlocks.QUARTZ_PILLAR.block(),
+                                TextureMapping.column(sideTexture, getBlockTexture(AEBlocks.CUT_QUARTZ_BLOCK)),
+                                modelOutput)),
                                 "athena:pillar",
                                 Map.of(
                                         "bottom", AppEng.makeId("block/quartz_pillar_bottom"),
                                         "center", sideTexture,
                                         "self", sideTexture,
                                         "top", topTexture,
-                                        "particle", getBlockTexture(AEBlocks.CUT_QUARTZ_BLOCK))))
-        );
+                                        "particle", getBlockTexture(AEBlocks.CUT_QUARTZ_BLOCK)))));
         stairsBlock(AEBlocks.QUARTZ_PILLAR_STAIRS, topTexture, sideTexture, topTexture);
         slabBlock(AEBlocks.QUARTZ_PILLAR_SLAB, AEBlocks.QUARTZ_PILLAR, topTexture, sideTexture, topTexture);
         wall(AEBlocks.QUARTZ_PILLAR_WALL, sideTexture);
@@ -150,13 +157,13 @@ public class DecorationModelProvider extends ModelSubProvider {
                         AEBlocks.CUT_QUARTZ_BLOCK.block(),
                         applyAthena(plainVariant(ModelTemplates.CUBE_ALL.create(AEBlocks.CUT_QUARTZ_BLOCK.block(),
                                 TextureMapping.cube(AEBlocks.CUT_QUARTZ_BLOCK.block()), modelOutput)),
-                "athena:ctm",
-                Map.of(
-                        "center", AppEng.makeId("block/cut_quartz_block_center"),
-                        "empty", AppEng.makeId("block/smooth_quartz_block"),
-                        "horizontal", AppEng.makeId("block/cut_quartz_block_h"),
-                        "vertical", AppEng.makeId("block/cut_quartz_block_v"),
-                        "particle", AppEng.makeId("block/cut_quartz_block")))));
+                                "athena:ctm",
+                                Map.of(
+                                        "center", AppEng.makeId("block/cut_quartz_block_center"),
+                                        "empty", AppEng.makeId("block/smooth_quartz_block"),
+                                        "horizontal", AppEng.makeId("block/cut_quartz_block_h"),
+                                        "vertical", AppEng.makeId("block/cut_quartz_block_v"),
+                                        "particle", AppEng.makeId("block/cut_quartz_block")))));
         stairsBlock(AEBlocks.CUT_QUARTZ_STAIRS, AEBlocks.CUT_QUARTZ_BLOCK);
         slabBlock(AEBlocks.CUT_QUARTZ_SLAB, AEBlocks.CUT_QUARTZ_BLOCK);
         wall(AEBlocks.CUT_QUARTZ_WALL, getBlockTexture(AEBlocks.CUT_QUARTZ_BLOCK));
@@ -168,13 +175,13 @@ public class DecorationModelProvider extends ModelSubProvider {
                         AEBlocks.QUARTZ_BLOCK.block(),
                         applyAthena(plainVariant(ModelTemplates.CUBE_ALL.create(AEBlocks.QUARTZ_BLOCK.block(),
                                 TextureMapping.cube(AEBlocks.QUARTZ_BLOCK.block()), modelOutput)),
-                "athena:ctm",
-                Map.of(
-                        "center", AppEng.makeId("block/quartz_block_center"),
-                        "empty", AppEng.makeId("block/quartz_block_empty"),
-                        "horizontal", AppEng.makeId("block/quartz_block_h"),
-                        "vertical", AppEng.makeId("block/quartz_block_v"),
-                        "particle", AppEng.makeId("block/quartz_block")))));
+                                "athena:ctm",
+                                Map.of(
+                                        "center", AppEng.makeId("block/quartz_block_center"),
+                                        "empty", AppEng.makeId("block/quartz_block_empty"),
+                                        "horizontal", AppEng.makeId("block/quartz_block_h"),
+                                        "vertical", AppEng.makeId("block/quartz_block_v"),
+                                        "particle", AppEng.makeId("block/quartz_block")))));
         stairsBlock(AEBlocks.QUARTZ_STAIRS, AEBlocks.QUARTZ_BLOCK);
         slabBlock(AEBlocks.QUARTZ_SLAB, AEBlocks.QUARTZ_BLOCK);
         wall(AEBlocks.QUARTZ_WALL, getBlockTexture(AEBlocks.QUARTZ_BLOCK));
@@ -186,15 +193,17 @@ public class DecorationModelProvider extends ModelSubProvider {
         blockModels.blockStateOutput.accept(
                 createSimpleBlock(
                         AEBlocks.FLUIX_BLOCK.block(),
-                        applyAthena(plainVariant(ModelTemplates.CUBE_ALL.create(AEBlocks.FLUIX_BLOCK.block(), TextureMapping.cube(blockTexture),
-                                modelOutput)),
-                "athena:ctm",
-                Map.of(
-                        "center", getBlockTexture(AEBlocks.FLUIX_BLOCK, "_center"),
-                        "empty", getBlockTexture(AEBlocks.FLUIX_BLOCK, "_empty"),
-                        "horizontal", getBlockTexture(AEBlocks.FLUIX_BLOCK, "_h"),
-                        "vertical", getBlockTexture(AEBlocks.FLUIX_BLOCK, "_v"),
-                        "particle", blockTexture))));
+                        applyAthena(
+                                plainVariant(ModelTemplates.CUBE_ALL.create(AEBlocks.FLUIX_BLOCK.block(),
+                                        TextureMapping.cube(blockTexture),
+                                        modelOutput)),
+                                "athena:ctm",
+                                Map.of(
+                                        "center", getBlockTexture(AEBlocks.FLUIX_BLOCK, "_center"),
+                                        "empty", getBlockTexture(AEBlocks.FLUIX_BLOCK, "_empty"),
+                                        "horizontal", getBlockTexture(AEBlocks.FLUIX_BLOCK, "_h"),
+                                        "vertical", getBlockTexture(AEBlocks.FLUIX_BLOCK, "_v"),
+                                        "particle", blockTexture))));
         stairsBlock(AEBlocks.FLUIX_STAIRS, AEBlocks.FLUIX_BLOCK);
         slabBlock(AEBlocks.FLUIX_SLAB, AEBlocks.FLUIX_BLOCK);
         wall(AEBlocks.FLUIX_WALL, blockTexture);
@@ -208,16 +217,17 @@ public class DecorationModelProvider extends ModelSubProvider {
         blockModels.blockStateOutput.accept(
                 createSimpleBlock(
                         AEBlocks.CHISELED_QUARTZ_BLOCK.block(),
-                        applyAthena(plainVariant(ModelTemplates.CUBE_COLUMN.create(AEBlocks.CHISELED_QUARTZ_BLOCK.block(),
-                                TextureMapping.column(sideTexture, getBlockTexture(AEBlocks.CUT_QUARTZ_BLOCK)),
-                                modelOutput)),
-                "athena:limited_pillar",
-                Map.of(
-                        "bottom", bottomTexture,
-                        "center", sideTexture,
-                        "self", sideTexture,
-                        "top", topTexture,
-                        "particle", getBlockTexture(AEBlocks.CUT_QUARTZ_BLOCK)))));
+                        applyAthena(
+                                plainVariant(ModelTemplates.CUBE_COLUMN.create(AEBlocks.CHISELED_QUARTZ_BLOCK.block(),
+                                        TextureMapping.column(sideTexture, getBlockTexture(AEBlocks.CUT_QUARTZ_BLOCK)),
+                                        modelOutput)),
+                                "athena:limited_pillar",
+                                Map.of(
+                                        "bottom", bottomTexture,
+                                        "center", sideTexture,
+                                        "self", sideTexture,
+                                        "top", topTexture,
+                                        "particle", getBlockTexture(AEBlocks.CUT_QUARTZ_BLOCK)))));
         stairsBlock(AEBlocks.CHISELED_QUARTZ_STAIRS, topTexture, sideTexture, topTexture);
         slabBlock(AEBlocks.CHISELED_QUARTZ_SLAB, AEBlocks.CHISELED_QUARTZ_BLOCK, topTexture, sideTexture, topTexture);
         wall(AEBlocks.CHISELED_QUARTZ_WALL, sideTexture);
@@ -232,18 +242,22 @@ public class DecorationModelProvider extends ModelSubProvider {
         var wallOdd = ModelLocationUtils.getModelLocation(block, "_wall_odd");
 
         var dispatch = PropertyDispatch.initial(QuartzFixtureBlock.FACING, QuartzFixtureBlock.ODD);
-        dispatch.select(Direction.DOWN, false, plainVariant(standing).with(VariantMutator.X_ROT.withValue(Quadrant.R180)));
-        dispatch.select(Direction.DOWN, true, plainVariant(standingOdd).with(VariantMutator.X_ROT.withValue(Quadrant.R180)));
+        dispatch.select(Direction.DOWN, false,
+                plainVariant(standing).with(VariantMutator.X_ROT.withValue(Quadrant.R180)));
+        dispatch.select(Direction.DOWN, true,
+                plainVariant(standingOdd).with(VariantMutator.X_ROT.withValue(Quadrant.R180)));
         dispatch.select(Direction.EAST, false, plainVariant(wall).with(VariantMutator.Y_ROT.withValue(Quadrant.R90)));
         dispatch.select(Direction.EAST, true, plainVariant(wallOdd).with(VariantMutator.Y_ROT.withValue(Quadrant.R90)));
         dispatch.select(Direction.NORTH, false, plainVariant(wall));
         dispatch.select(Direction.NORTH, true, plainVariant(wallOdd));
         dispatch.select(Direction.SOUTH, false, plainVariant(wall).with(VariantMutator.Y_ROT.withValue(Quadrant.R180)));
-        dispatch.select(Direction.SOUTH, true, plainVariant(wallOdd).with(VariantMutator.Y_ROT.withValue(Quadrant.R180)));
+        dispatch.select(Direction.SOUTH, true,
+                plainVariant(wallOdd).with(VariantMutator.Y_ROT.withValue(Quadrant.R180)));
         dispatch.select(Direction.UP, false, plainVariant(standing));
         dispatch.select(Direction.UP, true, plainVariant(standingOdd));
         dispatch.select(Direction.WEST, false, plainVariant(wall).with(VariantMutator.Y_ROT.withValue(Quadrant.R270)));
-        dispatch.select(Direction.WEST, true, plainVariant(wallOdd).with(VariantMutator.Y_ROT.withValue(Quadrant.R270)));
+        dispatch.select(Direction.WEST, true,
+                plainVariant(wallOdd).with(VariantMutator.Y_ROT.withValue(Quadrant.R270)));
 
         multiVariantGenerator(AEBlocks.QUARTZ_FIXTURE, dispatch);
         multiVariantGenerator(AEBlocks.LIGHT_DETECTOR, dispatch);
@@ -258,23 +272,17 @@ public class DecorationModelProvider extends ModelSubProvider {
     }
 
     private MultiVariant applyAthena(MultiVariant delegate, String loader,
-                                                      Map<String, ResourceLocation> ctmTextures) {
+            Map<String, ResourceLocation> ctmTextures) {
         /*
-         {
-            @Override
-            public JsonElement get() {
-                var root = (JsonObject) delegate.get();
-
-                var ctmTexturesObj = new JsonObject();
-                for (var entry : ctmTextures.entrySet()) {
-                    ctmTexturesObj.addProperty(entry.getKey(), entry.getValue().toString());
-                }
-
-                root.addProperty("athena:loader", loader);
-                root.add("ctm_textures", ctmTexturesObj);
-                return root;
-            }
-        };*/
+         * {
+         * 
+         * @Override public JsonElement get() { var root = (JsonObject) delegate.get();
+         * 
+         * var ctmTexturesObj = new JsonObject(); for (var entry : ctmTextures.entrySet()) {
+         * ctmTexturesObj.addProperty(entry.getKey(), entry.getValue().toString()); }
+         * 
+         * root.addProperty("athena:loader", loader); root.add("ctm_textures", ctmTexturesObj); return root; } };
+         */
 
         // TODO 1.21.5: Once Athena ports, we need to check how to apply CTM again
         return delegate;

@@ -6,8 +6,8 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import appeng.api.ids.AETags;
-import appeng.core.definitions.AEParts;
 import appeng.core.ConventionTags;
+import appeng.core.definitions.AEParts;
 import appeng.recipes.quartzcutting.QuartzCuttingRecipe;
 
 public class QuartzCuttingRecipesProvider extends AE2RecipeProvider {

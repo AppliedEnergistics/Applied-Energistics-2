@@ -1,9 +1,11 @@
 package appeng.server.testworld;
 
-import appeng.server.testplots.TestPlots;
-import appeng.util.Platform;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
@@ -24,8 +26,8 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
-import java.util.Optional;
-import java.util.function.BiConsumer;
+import appeng.server.testplots.TestPlots;
+import appeng.util.Platform;
 
 public class GameTestPlotAdapter extends GameTestInstance {
 
@@ -34,12 +36,11 @@ public class GameTestPlotAdapter extends GameTestInstance {
     public static final MapCodec<GameTestPlotAdapter> CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder.group(
                     TestData.CODEC.fieldOf("testData").forGetter(i -> i.info()),
-                    ResourceLocation.CODEC.fieldOf("plotId").forGetter(GameTestPlotAdapter::plotId)
-            ).apply(builder, GameTestPlotAdapter::new)
-    );
+                    ResourceLocation.CODEC.fieldOf("plotId").forGetter(GameTestPlotAdapter::plotId))
+                    .apply(builder, GameTestPlotAdapter::new));
 
     protected GameTestPlotAdapter(TestData<Holder<TestEnvironmentDefinition>> testData,
-                                  ResourceLocation plotId) {
+            ResourceLocation plotId) {
         super(testData);
         this.plotId = plotId;
     }
@@ -85,8 +86,7 @@ public class GameTestPlotAdapter extends GameTestInstance {
                     false,
                     1,
                     1,
-                    test.skyAccess
-            );
+                    test.skyAccess);
 
             var instance = new GameTestPlotAdapter(testData, plot.getId());
 

@@ -24,20 +24,15 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
-import appeng.core.AppEng;
 import appeng.helpers.IPatternTerminalLogicHost;
 import appeng.helpers.IPatternTerminalMenuHost;
-import appeng.items.parts.PartModels;
 import appeng.menu.me.items.PatternEncodingTermMenu;
-import appeng.parts.PartModel;
 import appeng.parts.reporting.AbstractTerminalPart;
 
 public class PatternEncodingTerminalPart extends AbstractTerminalPart

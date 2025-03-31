@@ -18,13 +18,13 @@
 
 package appeng.core.areaoverlay;
 
-import appeng.api.util.DimensionalBlockPos;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import appeng.api.util.DimensionalBlockPos;
 
 /**
  * This is based on the area render of https://github.com/TeamPneumatic/pnc-repressurized/

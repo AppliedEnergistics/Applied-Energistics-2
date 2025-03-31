@@ -18,15 +18,17 @@
 
 package appeng.client.renderer.blockentity;
 
-import appeng.api.parts.IPart;
-import appeng.blockentity.networking.CableBusBlockEntity;
-import appeng.client.AppEngClientRendering;
-import appeng.client.renderer.parts.PartRendererDispatcher;
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.phys.Vec3;
+
+import appeng.api.parts.IPart;
+import appeng.blockentity.networking.CableBusBlockEntity;
+import appeng.client.AppEngClientRendering;
+import appeng.client.renderer.parts.PartRendererDispatcher;
 
 /**
  * Renders dynamic aspects of parts attached to a cable bus.
@@ -41,8 +43,7 @@ public class CableBusRenderer implements BlockEntityRenderer<CableBusBlockEntity
 
     @Override
     public void render(CableBusBlockEntity be, float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
-                       int packedLight, int packedOverlay, Vec3 cameraPosition) {
-
+            int packedLight, int packedOverlay, Vec3 cameraPosition) {
 
         var hasDynamicRenderers = be.getPartRendererCache(Boolean.class);
 
@@ -74,12 +75,12 @@ public class CableBusRenderer implements BlockEntityRenderer<CableBusBlockEntity
     }
 
     private <T extends IPart> void renderPart(T part,
-                                              float partialTicks,
-                                              PoseStack poseStack,
-                                              MultiBufferSource buffers,
-                                              int packedLight,
-                                              int packedOverlay,
-                                              Vec3 cameraPosition) {
+            float partialTicks,
+            PoseStack poseStack,
+            MultiBufferSource buffers,
+            int packedLight,
+            int packedOverlay,
+            Vec3 cameraPosition) {
         var renderer = partRendererDispatcher.getRenderer(part);
         if (renderer != null) {
             renderer.renderDynamic(part, partialTicks, poseStack, buffers, packedLight, packedOverlay, cameraPosition);

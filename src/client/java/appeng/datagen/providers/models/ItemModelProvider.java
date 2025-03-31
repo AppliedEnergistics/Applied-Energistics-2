@@ -1,7 +1,5 @@
 package appeng.datagen.providers.models;
 
-import appeng.client.render.FacadeItemModel;
-import appeng.client.render.model.MeteoriteCompassModel;
 import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -21,14 +19,17 @@ import appeng.api.util.AEColor;
 import appeng.client.item.ColorApplicatorItemModel;
 import appeng.client.item.PortableCellColorTintSource;
 import appeng.client.item.StorageCellStateTintSource;
+import appeng.client.render.FacadeItemModel;
 import appeng.client.render.model.MemoryCardItemModel;
+import appeng.client.render.model.MeteoriteCompassModel;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 
 public class ItemModelProvider extends ModelSubProvider {
-    public ItemModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels, PartModelOutput partModels) {
+    public ItemModelProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels,
+            PartModelOutput partModels) {
         super(blockModels, itemModels, partModels);
     }
 

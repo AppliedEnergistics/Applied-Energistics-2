@@ -1,12 +1,13 @@
 
 package appeng.client.model;
 
-import appeng.client.api.model.parts.PartModel;
-import appeng.core.AppEng;
-import appeng.parts.automation.PartModelData;
+import java.util.List;
+import java.util.Objects;
+
 import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -18,8 +19,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.model.data.ModelData;
 
-import java.util.List;
-import java.util.Objects;
+import appeng.client.api.model.parts.PartModel;
+import appeng.core.AppEng;
+import appeng.parts.automation.PartModelData;
 
 /**
  * Adds model parts based on the status of the level emitter.
@@ -27,11 +29,11 @@ import java.util.Objects;
 public record LevelEmitterPartModel(
         SimpleModelWrapper onBaked,
         SimpleModelWrapper offBaked,
-        Transformation transformation
-) implements PartModel {
+        Transformation transformation) implements PartModel {
 
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random, List<BlockModelPart> parts) {
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random,
+            List<BlockModelPart> parts) {
         var on = Objects.requireNonNullElse(partModelData.get(PartModelData.LEVEL_EMITTER_ON), false);
 
         if (on) {
@@ -51,9 +53,7 @@ public record LevelEmitterPartModel(
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(
                 builder -> builder.group(
                         ResourceLocation.CODEC.fieldOf("on").forGetter(Unbaked::on),
-                        ResourceLocation.CODEC.fieldOf("off").forGetter(Unbaked::off)
-                ).apply(builder, Unbaked::new)
-        );
+                        ResourceLocation.CODEC.fieldOf("off").forGetter(Unbaked::off)).apply(builder, Unbaked::new));
 
         @Override
         public MapCodec<? extends PartModel.Unbaked> codec() {
@@ -68,8 +68,7 @@ public record LevelEmitterPartModel(
             return new LevelEmitterPartModel(
                     onBaked,
                     offBaked,
-                    modelState.transformation()
-            );
+                    modelState.transformation());
         }
 
         @Override

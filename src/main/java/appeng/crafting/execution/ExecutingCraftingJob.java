@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;

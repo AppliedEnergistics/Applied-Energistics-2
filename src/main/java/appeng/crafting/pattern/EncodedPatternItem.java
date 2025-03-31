@@ -18,13 +18,11 @@
 
 package appeng.crafting.pattern;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
 
-import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -37,6 +35,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
@@ -119,7 +118,8 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> lines,
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
             TooltipFlag flags) {
         var what = AEItemKey.of(stack);
         if (what == null) {

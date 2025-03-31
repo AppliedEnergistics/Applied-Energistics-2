@@ -7,7 +7,6 @@ import static org.mockito.Mockito.mock;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import appeng.client.render.CubeBuilder;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,6 +18,7 @@ import net.minecraft.client.renderer.block.model.FaceBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 
+import appeng.client.render.CubeBuilder;
 import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft

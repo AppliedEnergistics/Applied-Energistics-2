@@ -6,19 +6,17 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTestAssertException;
 
 import appeng.api.networking.crafting.CalculationStrategy;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.ICraftingSimulationRequester;
 import appeng.api.stacks.AEKey;
-import appeng.core.AELog;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.MachineSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TestCraftingJob {
     private static final Logger LOG = LoggerFactory.getLogger(TestCraftingJob.class);

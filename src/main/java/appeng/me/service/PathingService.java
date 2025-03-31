@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.GridFlags;

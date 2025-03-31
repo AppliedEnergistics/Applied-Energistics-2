@@ -1,6 +1,5 @@
 package appeng.block.misc;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.core.BlockPos;
@@ -9,7 +8,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -52,7 +50,7 @@ public class MysteriousCubeBlock extends AEBaseEntityBlock<MysteriousCubeBlockEn
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, Consumer<Component> tooltip,
-                                TooltipFlag flag) {
+            TooltipFlag flag) {
         tooltip.accept(Tooltips.of(GuiText.MysteriousQuote, Tooltips.QUOTE_TEXT));
     }
 }

@@ -18,6 +18,41 @@
 
 package appeng.core;
 
+import java.util.Collection;
+import java.util.Collections;
+
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.RegisterGameTestsEvent;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.registries.RegistryBuilder;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
+
 import appeng.api.ids.AEComponents;
 import appeng.api.parts.CableRenderMode;
 import appeng.api.stacks.AEKeyType;
@@ -58,39 +93,6 @@ import appeng.server.testworld.GameTestPlotAdapter;
 import appeng.sounds.AppEngSounds;
 import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.RegisterGameTestsEvent;
-import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
-import net.neoforged.neoforge.event.server.ServerStoppedEvent;
-import net.neoforged.neoforge.event.server.ServerStoppingEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.registries.NewRegistryEvent;
-import net.neoforged.neoforge.registries.RegisterEvent;
-import net.neoforged.neoforge.registries.RegistryBuilder;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.Collections;
 
 /**
  * Mod functionality that is common to both dedicated server and client.
@@ -164,7 +166,8 @@ public abstract class AppEngBase implements AppEng {
             } else if (event.getRegistryKey() == AEKeyType.REGISTRY_KEY) {
                 registerKeyTypes(event.getRegistry(AEKeyType.REGISTRY_KEY));
             } else if (event.getRegistryKey() == Registries.TEST_INSTANCE_TYPE) {
-                event.register(Registries.TEST_INSTANCE_TYPE, AppEng.makeId("plot_adapter"), () -> GameTestPlotAdapter.CODEC);
+                event.register(Registries.TEST_INSTANCE_TYPE, AppEng.makeId("plot_adapter"),
+                        () -> GameTestPlotAdapter.CODEC);
             }
         });
 
@@ -262,7 +265,7 @@ public abstract class AppEngBase implements AppEng {
 
     @Override
     public void sendToAllNearExcept(Player p, double x, double y, double z,
-                                    double dist, Level level, ClientboundPacket packet) {
+            double dist, Level level, ClientboundPacket packet) {
         if (level instanceof ServerLevel serverLevel) {
             ServerPlayer except = null;
             if (p instanceof ServerPlayer) {

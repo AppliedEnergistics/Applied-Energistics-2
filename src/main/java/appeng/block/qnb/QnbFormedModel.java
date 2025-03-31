@@ -18,11 +18,12 @@
 
 package appeng.block.qnb;
 
-import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
-import appeng.client.render.CubeBuilder;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+
 import com.mojang.serialization.MapCodec;
+
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
@@ -45,9 +46,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
+import appeng.client.render.CubeBuilder;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
 
 public class QnbFormedModel implements DynamicBlockStateModel {
     private static final ResourceLocation MODEL_RING = AppEng.makeId("block/quantum_ring");
@@ -100,7 +102,8 @@ public class QnbFormedModel implements DynamicBlockStateModel {
     }
 
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockModelPart> parts) {
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random,
+            List<BlockModelPart> parts) {
         var modelData = level.getModelData(pos);
         var formedState = modelData.get(QuantumBridgeBlockEntity.FORMED_STATE);
 
@@ -114,8 +117,7 @@ public class QnbFormedModel implements DynamicBlockStateModel {
                 getQuads(formedState, state),
                 true,
                 particleIcon(),
-                renderType
-        ));
+                renderType));
     }
 
     private QuadCollection getQuads(QnbFormedState formedState, BlockState state) {
@@ -188,7 +190,7 @@ public class QnbFormedModel implements DynamicBlockStateModel {
     }
 
     private void renderCableAt(CubeBuilder builder, float thickness, TextureAtlasSprite texture, float pull,
-                               Set<Direction> connections) {
+            Set<Direction> connections) {
         builder.setTexture(texture);
 
         if (connections.contains(Direction.WEST)) {

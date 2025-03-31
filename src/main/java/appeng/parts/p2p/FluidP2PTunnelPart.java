@@ -18,17 +18,12 @@
 
 package appeng.parts.p2p;
 
-import java.util.List;
-
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKeyType;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
 
 public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPart, IFluidHandler> {
     private static final IFluidHandler NULL_FLUID_HANDLER = new NullFluidHandler();

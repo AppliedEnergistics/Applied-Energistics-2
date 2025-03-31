@@ -1,10 +1,11 @@
 package appeng.client.model;
 
-import appeng.client.api.model.parts.PartModel;
-import appeng.core.AppEng;
-import appeng.parts.automation.PartModelData;
+import java.util.List;
+import java.util.Objects;
+
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -16,8 +17,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.model.data.ModelData;
 
-import java.util.List;
-import java.util.Objects;
+import appeng.client.api.model.parts.PartModel;
+import appeng.core.AppEng;
+import appeng.parts.automation.PartModelData;
 
 public class CableAnchorPartModel implements PartModel {
     private final SimpleModelWrapper model;
@@ -29,7 +31,8 @@ public class CableAnchorPartModel implements PartModel {
     }
 
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random, List<BlockModelPart> parts) {
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random,
+            List<BlockModelPart> parts) {
         var shortVersion = Objects.requireNonNullElse(partModelData.get(PartModelData.CABLE_ANCHOR_SHORT), false);
 
         if (shortVersion) {
@@ -48,8 +51,8 @@ public class CableAnchorPartModel implements PartModel {
         public static final ResourceLocation ID = AppEng.makeId("cable_anchor");
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
                 ResourceLocation.CODEC.fieldOf("model").forGetter(Unbaked::model),
-                ResourceLocation.CODEC.fieldOf("short_model").forGetter(Unbaked::shortModel)
-        ).apply(builder, Unbaked::new));
+                ResourceLocation.CODEC.fieldOf("short_model").forGetter(Unbaked::shortModel))
+                .apply(builder, Unbaked::new));
 
         @Override
         public MapCodec<? extends PartModel.Unbaked> codec() {

@@ -1,6 +1,5 @@
 package appeng.items.tools.fluix;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.core.Holder;

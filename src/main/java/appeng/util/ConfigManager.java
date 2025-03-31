@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 
 import appeng.api.config.Setting;
 import appeng.api.util.IConfigManager;

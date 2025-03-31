@@ -22,7 +22,6 @@ import java.time.Instant;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-import net.minecraft.world.item.component.TooltipDisplay;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +31,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -58,8 +58,9 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> lines,
-                                TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
+            TooltipFlag advancedTooltips) {
         int plotId = this.getAllocatedPlotId(stack);
         if (plotId == -1) {
             lines.accept(Tooltips.of(GuiText.Unformatted).withStyle(ChatFormatting.ITALIC));

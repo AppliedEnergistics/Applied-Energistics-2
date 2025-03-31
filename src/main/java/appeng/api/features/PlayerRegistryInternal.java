@@ -18,28 +18,26 @@
 
 package appeng.api.features;
 
-import appeng.core.AELog;
-import appeng.core.AppEng;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.Util;
-import net.minecraft.core.HolderLookup;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import appeng.core.AELog;
+import appeng.core.AppEng;
 
 /**
  * Handles the matching between UUIDs and internal IDs for security systems. This whole system could be replaced by
@@ -55,19 +53,15 @@ final class PlayerRegistryInternal extends SavedData implements IPlayerRegistry 
     private static final Codec<PlayerRegistryData> PLAYER_REGISTRY_DATA_CODEC = RecordCodecBuilder.create(
             builder -> builder.group(
                     Codec.INT.listOf().fieldOf("player_ids").forGetter(PlayerRegistryData::playerIds),
-                    UUIDUtil.CODEC.listOf().fieldOf("profile_ids").forGetter(PlayerRegistryData::profileIds)
-            ).apply(builder, PlayerRegistryData::new)
-    );
+                    UUIDUtil.CODEC.listOf().fieldOf("profile_ids").forGetter(PlayerRegistryData::profileIds))
+                    .apply(builder, PlayerRegistryData::new));
 
     private static final SavedDataType<PlayerRegistryInternal> TYPE = new SavedDataType<>(
             NAME,
             context -> new PlayerRegistryInternal(context.levelOrThrow().getServer()),
             context -> RecordCodecBuilder.create(builder -> builder.group(
-                            PLAYER_REGISTRY_DATA_CODEC.fieldOf("players").forGetter(PlayerRegistryInternal::getData)
-                    )
-                    .apply(builder, data -> new PlayerRegistryInternal(context.levelOrThrow().getServer(), data))
-            )
-    );
+                    PLAYER_REGISTRY_DATA_CODEC.fieldOf("players").forGetter(PlayerRegistryInternal::getData))
+                    .apply(builder, data -> new PlayerRegistryInternal(context.levelOrThrow().getServer(), data))));
 
     private final BiMap<UUID, Integer> mapping = HashBiMap.create();
 

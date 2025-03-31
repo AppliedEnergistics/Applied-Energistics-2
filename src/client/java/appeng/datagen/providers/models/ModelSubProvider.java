@@ -1,10 +1,13 @@
 package appeng.datagen.providers.models;
 
-import appeng.api.orientation.BlockOrientation;
-import appeng.api.orientation.IOrientationStrategy;
-import appeng.core.AppEng;
-import appeng.core.definitions.BlockDefinition;
+import static net.minecraft.client.data.models.BlockModelGenerators.variant;
+
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+
 import com.mojang.math.Quadrant;
+
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.MultiVariant;
@@ -29,15 +32,15 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.client.model.generators.blockstate.CustomBlockStateModelBuilder;
 
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-
-import static net.minecraft.client.data.models.BlockModelGenerators.variant;
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.core.AppEng;
+import appeng.core.definitions.BlockDefinition;
 
 public abstract class ModelSubProvider {
-    // TODO 1.21.5 protected static final VariantProperty<VariantProperties.Rotation> Z_ROT = new VariantProperty<>("ae2:z",
-    // TODO 1.21.5         r -> new JsonPrimitive(r.ordinal() * 90));
+    // TODO 1.21.5 protected static final VariantProperty<VariantProperties.Rotation> Z_ROT = new
+    // VariantProperty<>("ae2:z",
+    // TODO 1.21.5 r -> new JsonPrimitive(r.ordinal() * 90));
 
     public static final TextureMapping TRANSPARENT_PARTICLE = TextureMapping
             .particle(AppEng.makeId("block/transparent"));
@@ -50,7 +53,8 @@ public abstract class ModelSubProvider {
     protected final BiConsumer<ResourceLocation, ModelInstance> modelOutput;
     protected final PartModelOutput partModels;
 
-    public ModelSubProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels, PartModelOutput partModels) {
+    public ModelSubProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels,
+            PartModelOutput partModels) {
         this.blockModels = blockModels;
         this.itemModels = itemModels;
         this.partModels = partModels;
@@ -85,8 +89,8 @@ public abstract class ModelSubProvider {
 
     @SafeVarargs
     protected final void multiVariantGenerator(BlockDefinition<?> blockDef,
-                                               PropertyDispatch<MultiVariant> dispatch,
-                                               PropertyDispatch<VariantMutator>... dispatchMutators) {
+            PropertyDispatch<MultiVariant> dispatch,
+            PropertyDispatch<VariantMutator>... dispatchMutators) {
         var generator = MultiVariantGenerator.dispatch(blockDef.block()).with(dispatch);
         for (var dispatchMutator : dispatchMutators) {
             generator = generator.with(dispatchMutator);
@@ -96,8 +100,8 @@ public abstract class ModelSubProvider {
 
     @SafeVarargs
     protected final void multiVariantGenerator(BlockDefinition<?> blockDef,
-                                               MultiVariant baseVariant,
-                                               PropertyDispatch<VariantMutator>... dispatchMutators) {
+            MultiVariant baseVariant,
+            PropertyDispatch<VariantMutator>... dispatchMutators) {
         var generator = MultiVariantGenerator.dispatch(blockDef.block(), baseVariant);
         for (var dispatchMutator : dispatchMutators) {
             generator = generator.with(dispatchMutator);
@@ -135,7 +139,7 @@ public abstract class ModelSubProvider {
     }
 
     protected static void withOrientations(MultiPartGenerator multipart,
-                                           Supplier<ConditionBuilder> baseCondition, Variant baseVariant) {
+            Supplier<ConditionBuilder> baseCondition, Variant baseVariant) {
         var defaultState = multipart.block().defaultBlockState();
         var strategy = IOrientationStrategy.get(defaultState);
 
@@ -199,8 +203,8 @@ public abstract class ModelSubProvider {
     }
 
     private static <T extends Comparable<T>> ConditionBuilder addConditionTerm(ConditionBuilder conditionBuilder,
-                                                                               BlockState blockState,
-                                                                               Property<T> property) {
+            BlockState blockState,
+            Property<T> property) {
         return conditionBuilder.term(property, blockState.getValue(property));
     }
 

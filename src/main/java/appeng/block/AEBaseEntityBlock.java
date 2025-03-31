@@ -18,7 +18,6 @@
 
 package appeng.block;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
@@ -51,7 +50,6 @@ import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.items.tools.MemoryCardItem;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 /**

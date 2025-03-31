@@ -18,13 +18,15 @@
 
 package appeng.client.renderer.blockentity;
 
-import appeng.api.implementations.blockentities.IChestOrDrive;
-import appeng.api.storage.cells.CellState;
+import java.util.EnumMap;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import org.joml.Vector3f;
 
-import java.util.EnumMap;
+import appeng.api.implementations.blockentities.IChestOrDrive;
+import appeng.api.storage.cells.CellState;
 
 /**
  * Utility class to render LEDs for storage cells from a Block entity Renderer.
@@ -71,10 +73,10 @@ public class CellLedRenderer {
             // Top Face
             R, T, BA, L, T, BA, L, T, FR, R, T, FR,
             // Bottom Face
-            R, B, FR, L, B, FR, L, B, BA, R, B, BA,};
+            R, B, FR, L, B, FR, L, B, BA, R, B, BA, };
 
     public static void renderLed(IChestOrDrive drive, int slot, VertexConsumer buffer, PoseStack ms,
-                                 float partialTicks) {
+            float partialTicks) {
 
         Vector3f color = getColorForSlot(drive, slot, partialTicks);
         if (color == null) {

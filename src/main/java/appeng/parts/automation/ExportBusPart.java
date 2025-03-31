@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.MenuType;
 
@@ -44,16 +43,12 @@ import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
 import appeng.api.util.IConfigManagerBuilder;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.helpers.MultiCraftingTracker;
-import appeng.items.parts.PartModels;
 import appeng.menu.implementations.IOBusMenu;
-import appeng.parts.PartModel;
 import appeng.util.prioritylist.DefaultPriorityList;
 
 /**

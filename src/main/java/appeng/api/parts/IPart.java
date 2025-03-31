@@ -23,10 +23,13 @@
 
 package appeng.api.parts;
 
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IManagedGridNode;
-import appeng.api.util.AECableType;
-import appeng.util.SettingsFrom;
+import java.util.List;
+import java.util.Set;
+
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -46,12 +49,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.model.data.ModelData;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.MustBeInvokedByOverriders;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Set;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IManagedGridNode;
+import appeng.api.util.AECableType;
+import appeng.util.SettingsFrom;
 
 public interface IPart extends ICustomCableConnection, Clearable {
 
@@ -250,8 +252,8 @@ public interface IPart extends ICustomCableConnection, Clearable {
      * used for tunnels.
      *
      * @return a grid node that represents the external facing side and allows external connections. this nodes
-     * {@link IManagedGridNode#setExposedOnSides(Set)} will be automatically updated with the side the part is
-     * placed on.
+     *         {@link IManagedGridNode#setExposedOnSides(Set)} will be automatically updated with the side the part is
+     *         placed on.
      */
     @Nullable
     default IGridNode getExternalFacingNode() {
@@ -353,7 +355,7 @@ public interface IPart extends ICustomCableConnection, Clearable {
 
     /**
      * @return 0 - 8, reasonable default 3-4, this controls the cable connection to the node. -1 to render connection
-     * yourself.
+     *         yourself.
      */
     @Override
     float getCableConnectionLength(AECableType cable);

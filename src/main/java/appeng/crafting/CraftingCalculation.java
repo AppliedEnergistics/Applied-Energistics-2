@@ -26,6 +26,8 @@ import com.google.common.base.Stopwatch;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.world.level.Level;
 
@@ -41,8 +43,6 @@ import appeng.crafting.inv.ChildCraftingSimulationState;
 import appeng.crafting.inv.CraftingSimulationState;
 import appeng.crafting.inv.NetworkCraftingSimulationState;
 import appeng.hooks.ticking.TickHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CraftingCalculation {
     private static final Logger LOG = LoggerFactory.getLogger(CraftingCalculation.class);

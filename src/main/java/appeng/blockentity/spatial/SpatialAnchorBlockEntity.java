@@ -24,8 +24,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import appeng.core.areaoverlay.IAreaOverlayDataSource;
-import appeng.core.areaoverlay.AreaOverlayManager;
 import com.google.common.collect.Multiset;
 
 import net.minecraft.core.BlockPos;
@@ -58,6 +56,8 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.grid.AENetworkedBlockEntity;
+import appeng.core.areaoverlay.AreaOverlayManager;
+import appeng.core.areaoverlay.IAreaOverlayDataSource;
 import appeng.me.service.StatisticsService;
 import appeng.server.services.ChunkLoadingService;
 

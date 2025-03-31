@@ -28,10 +28,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
+import appeng.core.ConventionTags;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.BlockDefinition;
-import appeng.core.ConventionTags;
 
 public class DecorationRecipes extends AE2RecipeProvider {
 

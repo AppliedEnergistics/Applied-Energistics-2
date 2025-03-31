@@ -8,10 +8,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import appeng.core.ConventionTags;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
-import appeng.core.ConventionTags;
 
 public class SmithingRecipes extends AE2RecipeProvider {
     public SmithingRecipes(HolderLookup.Provider registries, RecipeOutput output) {

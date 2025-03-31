@@ -31,6 +31,8 @@ import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -88,8 +90,6 @@ import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.Platform;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @see MEStorageScreen

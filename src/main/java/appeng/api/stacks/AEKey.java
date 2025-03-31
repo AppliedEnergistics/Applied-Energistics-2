@@ -31,7 +31,6 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.ids.AEComponents;
-import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
 
 /**

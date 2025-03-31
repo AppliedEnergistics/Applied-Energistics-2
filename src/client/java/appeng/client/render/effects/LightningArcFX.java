@@ -18,7 +18,6 @@
 
 package appeng.client.render.effects;
 
-import appeng.core.particles.LightningArcParticleData;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -28,6 +27,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import appeng.core.particles.LightningArcParticleData;
 
 @OnlyIn(Dist.CLIENT)
 public class LightningArcFX extends LightningFX {

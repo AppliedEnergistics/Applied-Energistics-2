@@ -39,7 +39,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 
 import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 

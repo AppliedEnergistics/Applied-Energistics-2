@@ -22,13 +22,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-import appeng.block.qnb.QnbFormedModel;
-import appeng.core.particles.EnergyParticleData;
-import appeng.core.particles.ParticleTypes;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,6 +78,8 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.MouseWheelPacket;
 import appeng.core.network.serverbound.UpdateHoldingCtrlPacket;
+import appeng.core.particles.EnergyParticleData;
+import appeng.core.particles.ParticleTypes;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.BlockAttackHook;
 import appeng.init.client.InitScreens;

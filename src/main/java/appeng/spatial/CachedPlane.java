@@ -21,6 +21,9 @@ package appeng.spatial;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
@@ -47,8 +50,6 @@ import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
 import appeng.server.services.compass.ServerCompassService;
 import appeng.util.Platform;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CachedPlane {
     private static final Logger LOG = LoggerFactory.getLogger(CachedPlane.class);

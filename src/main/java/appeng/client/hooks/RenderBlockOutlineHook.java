@@ -1,17 +1,10 @@
 package appeng.client.hooks;
 
-import appeng.api.implementations.items.IFacadeItem;
-import appeng.api.parts.IFacadePart;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartItem;
-import appeng.client.render.AERenderTypes;
-import appeng.core.AEConfig;
-import appeng.core.definitions.AEParts;
-import appeng.items.parts.FacadeItem;
-import appeng.parts.BusCollisionHelper;
-import appeng.parts.PartPlacement;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -31,8 +24,17 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
-import java.util.ArrayList;
-import java.util.List;
+import appeng.api.implementations.items.IFacadeItem;
+import appeng.api.parts.IFacadePart;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartItem;
+import appeng.client.render.AERenderTypes;
+import appeng.core.AEConfig;
+import appeng.core.definitions.AEParts;
+import appeng.items.parts.FacadeItem;
+import appeng.parts.BusCollisionHelper;
+import appeng.parts.PartPlacement;
 
 public class RenderBlockOutlineHook {
     private RenderBlockOutlineHook() {
@@ -65,10 +67,10 @@ public class RenderBlockOutlineHook {
      * Changes block outline rendering such that it renders only for individual parts, not for the entire part host.
      */
     private static boolean replaceBlockOutline(ClientLevel level,
-                                               PoseStack poseStack,
-                                               MultiBufferSource buffers,
-                                               Camera camera,
-                                               BlockHitResult hitResult) {
+            PoseStack poseStack,
+            MultiBufferSource buffers,
+            Camera camera,
+            BlockHitResult hitResult) {
 
         var player = Minecraft.getInstance().player;
         if (player == null) {
@@ -110,12 +112,12 @@ public class RenderBlockOutlineHook {
     }
 
     private static boolean showFacadePlacementPreview(PoseStack poseStack,
-                                                      MultiBufferSource buffers,
-                                                      Camera camera,
-                                                      BlockHitResult blockHitResult,
-                                                      IPartHost partHost,
-                                                      ItemStack itemInHand,
-                                                      boolean insideBlock) {
+            MultiBufferSource buffers,
+            Camera camera,
+            BlockHitResult blockHitResult,
+            IPartHost partHost,
+            ItemStack itemInHand,
+            boolean insideBlock) {
         var pos = blockHitResult.getBlockPos();
 
         if (itemInHand.getItem() instanceof IFacadeItem facadeItem) {
@@ -160,13 +162,13 @@ public class RenderBlockOutlineHook {
     }
 
     private static void renderPart(PoseStack poseStack,
-                                   MultiBufferSource buffers,
-                                   Camera camera,
-                                   BlockPos pos,
-                                   IPart part,
-                                   Direction side,
-                                   boolean preview,
-                                   boolean insideBlock) {
+            MultiBufferSource buffers,
+            Camera camera,
+            BlockPos pos,
+            IPart part,
+            Direction side,
+            boolean preview,
+            boolean insideBlock) {
         var boxes = new ArrayList<AABB>();
         var helper = new BusCollisionHelper(boxes, side, true);
         part.getBoxes(helper);
@@ -174,13 +176,13 @@ public class RenderBlockOutlineHook {
     }
 
     private static void renderFacade(PoseStack poseStack,
-                                     MultiBufferSource buffers,
-                                     Camera camera,
-                                     BlockPos pos,
-                                     IFacadePart facade,
-                                     Direction side,
-                                     boolean preview,
-                                     boolean insideBlock) {
+            MultiBufferSource buffers,
+            Camera camera,
+            BlockPos pos,
+            IFacadePart facade,
+            Direction side,
+            boolean preview,
+            boolean insideBlock) {
         var boxes = new ArrayList<AABB>();
         var helper = new BusCollisionHelper(boxes, side, true);
         facade.getBoxes(helper, false);
@@ -188,12 +190,12 @@ public class RenderBlockOutlineHook {
     }
 
     private static void renderBoxes(PoseStack poseStack,
-                                    MultiBufferSource buffers,
-                                    Camera camera,
-                                    BlockPos pos,
-                                    List<AABB> boxes,
-                                    boolean preview,
-                                    boolean insideBlock) {
+            MultiBufferSource buffers,
+            Camera camera,
+            BlockPos pos,
+            List<AABB> boxes,
+            boolean preview,
+            boolean insideBlock) {
         RenderType renderType = insideBlock ? AERenderTypes.LINES_BEHIND_BLOCK : RenderType.lines();
         var buffer = buffers.getBuffer(renderType);
         float alpha = insideBlock ? 0.2f : preview ? 0.6f : 0.4f;

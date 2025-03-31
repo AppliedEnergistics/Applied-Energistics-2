@@ -23,10 +23,8 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Objects;
 
-import appeng.parts.automation.PartModelData;
 import com.google.gson.stream.JsonWriter;
 
-import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +35,6 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -49,6 +46,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 
@@ -73,6 +71,7 @@ import appeng.api.util.AEColor;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.items.tools.MemoryCardItem;
+import appeng.parts.automation.PartModelData;
 import appeng.util.IDebugExportable;
 import appeng.util.InteractionUtil;
 import appeng.util.JsonStreamUtil;

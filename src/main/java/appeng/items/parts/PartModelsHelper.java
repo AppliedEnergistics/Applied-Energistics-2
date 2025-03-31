@@ -26,12 +26,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
-import appeng.core.AELog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Helps with the reflection magic needed to gather all models for AE2 cable bus parts.
@@ -50,7 +50,8 @@ public class PartModelsHelper {
             }
 
             if (!Modifier.isStatic(field.getModifiers())) {
-                LOG.error("The @PartModels annotation can only be used on static fields or methods. Was seen on: {}", field);
+                LOG.error("The @PartModels annotation can only be used on static fields or methods. Was seen on: {}",
+                        field);
                 continue;
             }
 
@@ -73,13 +74,16 @@ public class PartModelsHelper {
             }
 
             if (!Modifier.isStatic(method.getModifiers())) {
-                LOG.error("The @PartModels annotation can only be used on static fields or methods. Was seen on: {}", method);
+                LOG.error("The @PartModels annotation can only be used on static fields or methods. Was seen on: {}",
+                        method);
                 continue;
             }
 
             // Check for parameter count
             if (method.getParameters().length != 0) {
-                LOG.error("The @PartModels annotation can only be used on static methods without parameters. Was seen on: {}", method);
+                LOG.error(
+                        "The @PartModels annotation can only be used on static methods without parameters. Was seen on: {}",
+                        method);
                 continue;
             }
 
@@ -87,7 +91,9 @@ public class PartModelsHelper {
             Class<?> returnType = method.getReturnType();
             if (!ResourceLocation.class.isAssignableFrom(returnType)
                     && !Collection.class.isAssignableFrom(returnType)) {
-                LOG.error("The @PartModels annotation can only be used on static methods that return a ResourceLocation or Collection of ResourceLocations. Was seen on: {}", method);
+                LOG.error(
+                        "The @PartModels annotation can only be used on static methods that return a ResourceLocation or Collection of ResourceLocations. Was seen on: {}",
+                        method);
                 continue;
             }
 

@@ -38,7 +38,8 @@ public class InitVillager {
             Set.copyOf(AEBlocks.CHARGER.block().getStateDefinition().getPossibleStates()), 1, 1);
     public static final ResourceKey<PoiType> POI_KEY = ResourceKey.create(Registries.POINT_OF_INTEREST_TYPE, ID);
 
-    public static final VillagerProfession PROFESSION = new VillagerProfession(Component.translatable(NAME), e -> e.is(POI_KEY),
+    public static final VillagerProfession PROFESSION = new VillagerProfession(Component.translatable(NAME),
+            e -> e.is(POI_KEY),
             e -> e.is(POI_KEY), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_LIBRARIAN);
 
     public static void initProfession(Registry<VillagerProfession> registry) {

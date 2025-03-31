@@ -18,8 +18,9 @@
 
 package appeng.client.renderer;
 
-import appeng.client.render.AERenderPipelines;
-import appeng.client.render.AERenderTypes;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+
 import com.mojang.blaze3d.buffers.BufferType;
 import com.mojang.blaze3d.buffers.BufferUsage;
 import com.mojang.blaze3d.buffers.GpuBuffer;
@@ -30,14 +31,16 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
+
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+
+import appeng.client.render.AERenderPipelines;
+import appeng.client.render.AERenderTypes;
 
 public class SpatialSkyRender implements AutoCloseable {
 
@@ -57,11 +60,11 @@ public class SpatialSkyRender implements AutoCloseable {
         return INSTANCE;
     }
 
-    private static final Quaternionf[] SKYBOX_SIDE_ROTATIONS = {new Quaternionf(),
+    private static final Quaternionf[] SKYBOX_SIDE_ROTATIONS = { new Quaternionf(),
             new Quaternionf().rotationX(Mth.DEG_TO_RAD * 90.0F),
             new Quaternionf().rotationX(Mth.DEG_TO_RAD * -90.0F), new Quaternionf().rotationX(Mth.DEG_TO_RAD * 180.0F),
             new Quaternionf().rotationZ(Mth.DEG_TO_RAD * 90.0F),
-            new Quaternionf().rotationZ(Mth.DEG_TO_RAD * -90.0F),};
+            new Quaternionf().rotationZ(Mth.DEG_TO_RAD * -90.0F), };
 
     public void render(Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {
         var poseStack = new PoseStack();
@@ -129,7 +132,8 @@ public class SpatialSkyRender implements AutoCloseable {
         }
         sparklesQuads = 0;
 
-        try (var bytebufferbuilder = new ByteBufferBuilder(MAX_SPARKLE_QUADS * 4 * DefaultVertexFormat.POSITION_COLOR.getVertexSize())) {
+        try (var bytebufferbuilder = new ByteBufferBuilder(
+                MAX_SPARKLE_QUADS * 4 * DefaultVertexFormat.POSITION_COLOR.getVertexSize())) {
             var vb = new BufferBuilder(bytebufferbuilder, VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
             for (int i = 0; i < MAX_SPARKLE_QUADS; ++i) {
@@ -175,7 +179,8 @@ public class SpatialSkyRender implements AutoCloseable {
 
             try (var meshdata = vb.buildOrThrow()) {
                 sparklesVertices = RenderSystem.getDevice()
-                        .createBuffer(() -> "Spatial sky sparkles vertex buffer", BufferType.VERTICES, BufferUsage.STATIC_WRITE, meshdata.vertexBuffer());
+                        .createBuffer(() -> "Spatial sky sparkles vertex buffer", BufferType.VERTICES,
+                                BufferUsage.STATIC_WRITE, meshdata.vertexBuffer());
             }
         }
     }

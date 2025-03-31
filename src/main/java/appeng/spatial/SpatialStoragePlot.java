@@ -18,14 +18,16 @@
 
 package appeng.spatial;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.ChunkPos;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Locale;
 import java.util.Optional;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
 
 /**
  * A plot inside the storage cell level that is assigned to a specific storage cell.
@@ -38,9 +40,8 @@ public class SpatialStoragePlot {
             Codec.INT.fieldOf("owner").forGetter(SpatialStoragePlot::getOwner),
             TransitionInfo.CODEC.optionalFieldOf("last_transition").xmap(
                     transitionInfo -> transitionInfo.orElse(null),
-                    Optional::ofNullable
-            ).forGetter(SpatialStoragePlot::getLastTransition)
-    ).apply(builder, SpatialStoragePlot::new));
+                    Optional::ofNullable).forGetter(SpatialStoragePlot::getLastTransition))
+            .apply(builder, SpatialStoragePlot::new));
 
     private static final int REGION_SIZE = 512;
 

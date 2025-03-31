@@ -1,7 +1,9 @@
 package appeng.client.api.model.parts;
 
-import appeng.api.parts.IPart;
+import java.util.List;
+
 import com.mojang.serialization.MapCodec;
+
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
@@ -12,7 +14,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.model.data.ModelData;
 
-import java.util.List;
+import appeng.api.parts.IPart;
 
 public interface PartModel {
     /**
@@ -23,16 +25,16 @@ public interface PartModel {
      * @param partModelData Any part model state previously collected from {@link IPart#getModelData()}.
      */
     void collectParts(BlockAndTintGetter level,
-                      BlockPos pos,
-                      ModelData partModelData,
-                      RandomSource random,
-                      List<BlockModelPart> parts);
+            BlockPos pos,
+            ModelData partModelData,
+            RandomSource random,
+            List<BlockModelPart> parts);
 
     TextureAtlasSprite particleIcon();
 
     /**
-     * An unbaked {@link PartModel} which is what is deserialized from the JSON file and ultimately used
-     * to produce a {@link PartModel} and its dependencies.
+     * An unbaked {@link PartModel} which is what is deserialized from the JSON file and ultimately used to produce a
+     * {@link PartModel} and its dependencies.
      */
     interface Unbaked extends ResolvableModel {
         MapCodec<? extends Unbaked> codec();

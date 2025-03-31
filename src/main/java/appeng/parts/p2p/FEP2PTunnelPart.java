@@ -18,16 +18,11 @@
 
 package appeng.parts.p2p;
 
-import java.util.List;
-
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import appeng.api.config.PowerUnit;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
 
 public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IEnergyStorage> {
     private static final IEnergyStorage NULL_ENERGY_STORAGE = new NullEnergyStorage();

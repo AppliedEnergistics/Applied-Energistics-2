@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
@@ -39,19 +38,15 @@ import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.util.IConfigManagerBuilder;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.IConfigInvHost;
 import appeng.hooks.ticking.TickHandler;
-import appeng.items.parts.PartModels;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.StorageLevelEmitterMenu;
 import appeng.menu.locator.MenuLocators;
-import appeng.parts.PartModel;
 import appeng.util.ConfigInventory;
 
 /**

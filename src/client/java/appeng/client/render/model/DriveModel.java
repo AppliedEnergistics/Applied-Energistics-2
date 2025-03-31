@@ -19,58 +19,43 @@
 package appeng.client.render.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import appeng.block.storage.DriveModelData;
-import appeng.client.model.SpinnableVariant;
-import appeng.core.AppEng;
-import appeng.thirdparty.fabric.ModelHelper;
-import appeng.thirdparty.fabric.MutableQuadView;
-import appeng.thirdparty.fabric.RenderContext;
-import com.google.common.collect.ImmutableSet;
-
 import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.block.model.SingleVariant;
-import net.minecraft.client.renderer.block.model.Variant;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.resources.model.QuadCollection;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
-import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
-import net.neoforged.neoforge.model.data.ModelData;
+
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.context.ContextMap;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
+import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 
 import appeng.api.client.StorageCellModels;
-import appeng.client.render.BasicUnbakedModel;
+import appeng.block.storage.DriveModelData;
+import appeng.client.model.SpinnableVariant;
+import appeng.core.AppEng;
 import appeng.init.internal.InitStorageCells;
+import appeng.thirdparty.fabric.MutableQuadView;
+import appeng.thirdparty.fabric.RenderContext;
 
 public class DriveModel implements DynamicBlockStateModel {
     private static final Logger LOG = LoggerFactory.getLogger(DriveModel.class);
@@ -85,7 +70,7 @@ public class DriveModel implements DynamicBlockStateModel {
     private final RenderContext.QuadTransform[] slotTransforms;
 
     public DriveModel(Transformation rotation, SimpleModelWrapper baseModel, Map<Item, SimpleModelWrapper> cellModels,
-                           SimpleModelWrapper defaultCell) {
+            SimpleModelWrapper defaultCell) {
         this.baseModel = baseModel;
         this.defaultCellModel = defaultCell;
         this.slotTransforms = buildSlotTransforms(rotation);
@@ -106,7 +91,8 @@ public class DriveModel implements DynamicBlockStateModel {
     }
 
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockModelPart> parts) {
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random,
+            List<BlockModelPart> parts) {
         parts.add(baseModel);
 
         var cells = level.getModelData(pos).get(DriveModelData.STATE);
@@ -152,10 +138,12 @@ public class DriveModel implements DynamicBlockStateModel {
 
     // TODO 1.21.5 shuld be in the base model @Override
     // TODO 1.21.5 shuld be in the base model public boolean useAmbientOcclusion() {
-    // TODO 1.21.5 shuld be in the base model     // We have faces inside the chassis that are facing east, but should not receive
-    // TODO 1.21.5 shuld be in the base model     // ambient occlusion from the east-side, but sadly this cannot be fine-tuned on
-    // TODO 1.21.5 shuld be in the base model     // a face-by-face basis.
-    // TODO 1.21.5 shuld be in the base model     return false;
+    // TODO 1.21.5 shuld be in the base model // We have faces inside the chassis that are facing east, but should not
+    // receive
+    // TODO 1.21.5 shuld be in the base model // ambient occlusion from the east-side, but sadly this cannot be
+    // fine-tuned on
+    // TODO 1.21.5 shuld be in the base model // a face-by-face basis.
+    // TODO 1.21.5 shuld be in the base model return false;
     // TODO 1.21.5 shuld be in the base model }
 
     @Override

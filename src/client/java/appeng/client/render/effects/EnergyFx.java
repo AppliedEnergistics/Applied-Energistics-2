@@ -18,7 +18,6 @@
 
 package appeng.client.render.effects;
 
-import appeng.core.particles.EnergyParticleData;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Camera;
@@ -31,6 +30,8 @@ import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import appeng.core.particles.EnergyParticleData;
 
 @OnlyIn(Dist.CLIENT)
 public class EnergyFx extends TextureSheetParticle {

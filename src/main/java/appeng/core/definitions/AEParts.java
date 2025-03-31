@@ -65,11 +65,11 @@ import appeng.parts.p2p.RedstoneP2PTunnelPart;
 import appeng.parts.reporting.ConversionMonitorPart;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.DarkPanelPart;
-import appeng.parts.reporting.TerminalPart;
 import appeng.parts.reporting.PanelPart;
 import appeng.parts.reporting.PatternAccessTerminalPart;
 import appeng.parts.reporting.SemiDarkPanelPart;
 import appeng.parts.reporting.StorageMonitorPart;
+import appeng.parts.reporting.TerminalPart;
 import appeng.parts.storagebus.StorageBusPart;
 
 /**

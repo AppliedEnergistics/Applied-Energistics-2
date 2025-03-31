@@ -28,12 +28,12 @@ import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import appeng.core.ConventionTags;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.BlockDefinition;
 import appeng.core.definitions.ItemDefinition;
-import appeng.core.ConventionTags;
 
 public class DecorationBlockRecipes extends AE2RecipeProvider {
     public DecorationBlockRecipes(HolderLookup.Provider registries, RecipeOutput output) {

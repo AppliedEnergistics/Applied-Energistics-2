@@ -71,8 +71,9 @@ public class PortableCellItem extends AbstractPortableCell implements IBasicCell
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> lines,
-                                TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
+            TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, context, tooltipDisplay, lines, advancedTooltips);
         addCellInformationToTooltip(stack, lines);
     }

@@ -18,7 +18,6 @@
 
 package appeng.block.misc;
 
-import appeng.core.particles.ParticleTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -36,6 +35,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.GrowthAcceleratorBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
+import appeng.core.particles.ParticleTypes;
 import appeng.util.Platform;
 
 public class GrowthAcceleratorBlock extends AEBaseEntityBlock<GrowthAcceleratorBlockEntity> {

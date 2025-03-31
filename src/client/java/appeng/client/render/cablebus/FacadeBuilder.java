@@ -29,26 +29,22 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import appeng.block.networking.CableBusRenderState;
-import appeng.block.networking.FacadeRenderState;
-import appeng.client.model.FacingModelState;
-import appeng.core.AppEng;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.ResolvableModel;
-import net.minecraft.util.TriState;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.TriState;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -57,6 +53,10 @@ import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.parts.PartHelper;
 import appeng.api.util.AEAxisAlignedBB;
+import appeng.block.networking.CableBusRenderState;
+import appeng.block.networking.FacadeRenderState;
+import appeng.client.model.FacingModelState;
+import appeng.core.AppEng;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadClamper;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadCornerKicker;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadFaceStripper;
@@ -102,16 +102,18 @@ public class FacadeBuilder {
         cableAnchorStilts = new EnumMap<>(Direction.class);
         transparentFacadeModels = new EnumMap<>(Direction.class);
         for (var facing : Direction.values()) {
-            cableAnchorStilts.put(facing, SimpleModelWrapper.bake(baker, ANCHOR_STILT, FacingModelState.fromFacing(facing)));
-            transparentFacadeModels.put(facing, SimpleModelWrapper.bake(baker, TRANSLUCENT_FACADE_MODEL, FacingModelState.fromFacing(facing)));
+            cableAnchorStilts.put(facing,
+                    SimpleModelWrapper.bake(baker, ANCHOR_STILT, FacingModelState.fromFacing(facing)));
+            transparentFacadeModels.put(facing,
+                    SimpleModelWrapper.bake(baker, TRANSLUCENT_FACADE_MODEL, FacingModelState.fromFacing(facing)));
         }
     }
 
     public void collectFacadeParts(CableBusRenderState renderState,
-                                   Supplier<RandomSource> rand,
-                                   BlockAndTintGetter level,
-                                   EnumMap<Direction, ModelData> facadeModelData,
-                                   Consumer<BlockModelPart> partConsumer) {
+            Supplier<RandomSource> rand,
+            BlockAndTintGetter level,
+            EnumMap<Direction, ModelData> facadeModelData,
+            Consumer<BlockModelPart> partConsumer) {
         boolean transparent = PartHelper.getCableRenderMode().transparentFacades;
         Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
         List<AABB> partBoxes = renderState.getBoundingBoxes();

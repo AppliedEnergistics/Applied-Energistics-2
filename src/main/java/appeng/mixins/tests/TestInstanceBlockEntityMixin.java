@@ -1,23 +1,26 @@
 package appeng.mixins.tests;
 
-import appeng.core.AppEng;
-import appeng.server.testplots.TestPlots;
-import appeng.server.testworld.GameTestPlotAdapter;
+import java.util.Optional;
+
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTestInstance;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.entity.TestInstanceBlockEntity;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Optional;
+import net.minecraft.core.BlockPos;
+import net.minecraft.gametest.framework.GameTestInstance;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.TestInstanceBlockEntity;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+
+import appeng.core.AppEng;
+import appeng.server.testplots.TestPlots;
+import appeng.server.testworld.GameTestPlotAdapter;
 
 @Mixin(value = TestInstanceBlockEntity.class, priority = 0)
 public abstract class TestInstanceBlockEntityMixin {
@@ -28,7 +31,8 @@ public abstract class TestInstanceBlockEntityMixin {
     private TestInstanceBlockEntity.Data data;
 
     @WrapMethod(method = "getStructureTemplate")
-    private static Optional<StructureTemplate> getStructureTemplate(ServerLevel level, ResourceKey<GameTestInstance> testInstance, Operation<Optional<StructureTemplate>> operation) {
+    private static Optional<StructureTemplate> getStructureTemplate(ServerLevel level,
+            ResourceKey<GameTestInstance> testInstance, Operation<Optional<StructureTemplate>> operation) {
         if (AppEng.MOD_ID.equals(testInstance.location().getNamespace())) {
             var testPlot = TestPlots.getById(testInstance.location());
             if (testPlot != null) {

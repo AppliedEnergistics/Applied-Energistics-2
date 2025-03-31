@@ -18,14 +18,12 @@
 
 package appeng.client.render.crafting;
 
-import appeng.block.crafting.CraftingUnitType;
-import appeng.blockentity.crafting.CraftingCubeModelData;
-import appeng.client.render.CubeBuilder;
-import appeng.core.AppEng;
-import appeng.thirdparty.fabric.ModelHelper;
-import appeng.util.Platform;
+import java.util.EnumSet;
+import java.util.List;
+
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
@@ -44,8 +42,12 @@ import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.model.data.ModelData;
 
-import java.util.EnumSet;
-import java.util.List;
+import appeng.block.crafting.CraftingUnitType;
+import appeng.blockentity.crafting.CraftingCubeModelData;
+import appeng.client.render.CubeBuilder;
+import appeng.core.AppEng;
+import appeng.thirdparty.fabric.ModelHelper;
+import appeng.util.Platform;
 
 /**
  * The base model for baked models used by components of the crafting cube multi-block in it's formed state. Primarily
@@ -66,7 +68,8 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
     }
 
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockModelPart> parts) {
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random,
+            List<BlockModelPart> parts) {
 
         var extraData = level.getModelData(pos);
 
@@ -215,7 +218,7 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
      * Adds a 3x3x3 corner cap to the cube builder if there are no adjacent crafting cubes on that corner.
      */
     private void addCornerCap(CubeBuilder builder, EnumSet<Direction> connections, Direction side, Direction down,
-                              Direction west, Direction north) {
+            Direction west, Direction north) {
         if (connections.contains(down) || connections.contains(west) || connections.contains(north)) {
             return;
         }
@@ -244,7 +247,7 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
     }
 
     protected abstract void addInnerCube(Direction facing, BlockState state, ModelData modelData, CubeBuilder builder,
-                                         float x1, float y1, float z1, float x2, float y2, float z2);
+            float x1, float y1, float z1, float x2, float y2, float z2);
 
     @Override
     public TextureAtlasSprite particleIcon() {
@@ -253,10 +256,10 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
 
     public record Unbaked(CraftingUnitType type) implements CustomUnbakedBlockStateModel {
         public static final ResourceLocation ID = AppEng.makeId("crafting_cube");
-        public static final MapCodec<CraftingCubeModel.Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                        CraftingUnitType.CODEC.fieldOf("unit_type").forGetter(Unbaked::type)
-                )
-                .apply(instance, CraftingCubeModel.Unbaked::new));
+        public static final MapCodec<CraftingCubeModel.Unbaked> MAP_CODEC = RecordCodecBuilder
+                .mapCodec(instance -> instance.group(
+                        CraftingUnitType.CODEC.fieldOf("unit_type").forGetter(Unbaked::type))
+                        .apply(instance, CraftingCubeModel.Unbaked::new));
 
         @Override
         public BlockStateModel bake(ModelBaker baker) {

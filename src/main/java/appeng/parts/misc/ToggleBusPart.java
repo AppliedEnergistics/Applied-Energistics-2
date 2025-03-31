@@ -20,16 +20,15 @@ package appeng.parts.misc;
 
 import java.util.EnumSet;
 
-import appeng.parts.automation.PartModelData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
@@ -39,14 +38,9 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
 import appeng.parts.AEBasePart;
-import appeng.parts.PartModel;
-import net.neoforged.neoforge.model.data.ModelData;
-import org.jetbrains.annotations.Nullable;
+import appeng.parts.automation.PartModelData;
 
 public class ToggleBusPart extends AEBasePart {
     private final IManagedGridNode outerNode = GridHelper

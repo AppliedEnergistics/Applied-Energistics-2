@@ -18,8 +18,6 @@
 
 package appeng.parts.reporting;
 
-import appeng.parts.automation.PartModelData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -27,22 +25,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ISubMenuHost;
 import appeng.api.storage.StorageHelper;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.ISubMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.crafting.CraftAmountMenu;
-import appeng.parts.PartModel;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.inv.PlayerInternalInventory;
-import net.neoforged.neoforge.model.data.ModelData;
-import org.jetbrains.annotations.Nullable;
 
 public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMenuHost {
     public ConversionMonitorPart(IPartItem<?> partItem) {

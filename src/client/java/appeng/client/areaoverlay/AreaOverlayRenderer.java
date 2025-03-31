@@ -18,11 +18,14 @@
 
 package appeng.client.areaoverlay;
 
-import appeng.client.render.AERenderTypes;
-import appeng.core.areaoverlay.AreaOverlayManager;
-import appeng.core.areaoverlay.IAreaOverlayDataSource;
+import java.util.Collection;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -31,10 +34,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 
-import java.util.Collection;
+import appeng.client.render.AERenderTypes;
+import appeng.core.areaoverlay.AreaOverlayManager;
+import appeng.core.areaoverlay.IAreaOverlayDataSource;
 
 /**
  * This is based on the area render of https://github.com/TeamPneumatic/pnc-repressurized/
@@ -90,7 +93,8 @@ public class AreaOverlayRenderer {
         render(level, allChunks, poseStack, buffer.getBuffer(typeLines), true, area.getOverlayColor());
     }
 
-    private void render(Level level, Collection<ChunkPos> allChunks, PoseStack poseStack, VertexConsumer builder, boolean renderLines, int color) {
+    private void render(Level level, Collection<ChunkPos> allChunks, PoseStack poseStack, VertexConsumer builder,
+            boolean renderLines, int color) {
         int[] cols = decomposeColor(color);
         for (ChunkPos pos : allChunks) {
             poseStack.pushPose();
@@ -100,7 +104,7 @@ public class AreaOverlayRenderer {
             poseStack.popPose();
         }
     }
-    
+
     private static int[] decomposeColor(int color) {
         int[] res = new int[4];
         res[0] = color >> 24 & 0xff;
@@ -109,8 +113,9 @@ public class AreaOverlayRenderer {
         res[3] = color & 0xff;
         return res;
     }
-    
-    private void addVertices(Level level, Collection<ChunkPos> allChunks, VertexConsumer wr, Matrix4f posMat, ChunkPos pos, int[] cols, boolean renderLines) {
+
+    private void addVertices(Level level, Collection<ChunkPos> allChunks, VertexConsumer wr, Matrix4f posMat,
+            ChunkPos pos, int[] cols, boolean renderLines) {
         // Render around a whole chunk
         float x1 = 0f;
         float x2 = 16f;

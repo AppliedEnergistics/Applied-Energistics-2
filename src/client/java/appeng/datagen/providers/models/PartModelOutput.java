@@ -1,15 +1,15 @@
 package appeng.datagen.providers.models;
 
-import appeng.api.parts.IPartItem;
-import appeng.client.api.model.parts.StaticPartModel;
-import appeng.client.api.model.parts.ClientPart;
-import appeng.client.api.model.parts.CompositePartModel;
-import appeng.client.api.model.parts.PartModel;
+import java.util.List;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 
-import java.util.Arrays;
-import java.util.List;
+import appeng.api.parts.IPartItem;
+import appeng.client.api.model.parts.ClientPart;
+import appeng.client.api.model.parts.CompositePartModel;
+import appeng.client.api.model.parts.PartModel;
+import appeng.client.api.model.parts.StaticPartModel;
 
 public interface PartModelOutput {
     void accept(IPartItem<?> part, PartModel.Unbaked model);

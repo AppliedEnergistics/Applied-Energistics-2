@@ -69,7 +69,8 @@ public class BasicCellHandler implements ICellHandler {
                     .text();
 
             if (handler.isFuzzy()) {
-                lines.accept(GuiText.Partitioned.withSuffix(" - ").append(list).append(" ").append(GuiText.Fuzzy.text()));
+                lines.accept(
+                        GuiText.Partitioned.withSuffix(" - ").append(list).append(" ").append(GuiText.Fuzzy.text()));
             } else {
                 lines.accept(
                         GuiText.Partitioned.withSuffix(" - ").append(list).append(" ").append(GuiText.Precise.text()));

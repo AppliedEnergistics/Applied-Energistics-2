@@ -1,7 +1,6 @@
 
 package appeng.core.network.clientbound;
 
-import appeng.core.particles.EnergyParticleData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -13,6 +12,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import appeng.core.AppEngClient;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
+import appeng.core.particles.EnergyParticleData;
 
 /**
  * Plays a transition particle effect into the supplied direction. Used primarily by annihilation planes.

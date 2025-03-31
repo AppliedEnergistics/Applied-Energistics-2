@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import appeng.block.networking.CableBusRenderState;
 import com.google.gson.stream.JsonWriter;
 
 import org.jetbrains.annotations.Nullable;
@@ -56,6 +55,7 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
+import appeng.block.networking.CableBusRenderState;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.AppEng;
 import appeng.helpers.AEMultiBlockEntity;

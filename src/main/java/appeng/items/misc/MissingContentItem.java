@@ -1,18 +1,16 @@
 package appeng.items.misc;
 
-import java.util.List;
 import java.util.function.Consumer;
 
-import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEKey;
@@ -79,7 +77,8 @@ public class MissingContentItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> lines, TooltipFlag advanced) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines, TooltipFlag advanced) {
         super.appendHoverText(stack, context, tooltipDisplay, lines, advanced);
 
         var error = stack.get(AEComponents.MISSING_CONTENT_ERROR);

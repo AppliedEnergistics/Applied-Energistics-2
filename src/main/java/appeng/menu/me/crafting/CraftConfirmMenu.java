@@ -23,6 +23,8 @@ import java.util.Objects;
 import java.util.concurrent.Future;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -59,8 +61,6 @@ import appeng.menu.guisync.GuiSync;
 import appeng.menu.guisync.PacketWritable;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.locator.MenuHostLocator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftConfirmScreen

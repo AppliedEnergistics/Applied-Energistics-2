@@ -44,8 +44,9 @@ public class AnnihilationPlanePartItem extends PartItem<AnnihilationPlanePart> {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> lines,
-                                TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
+            TooltipFlag isAdvanced) {
         super.appendHoverText(stack, context, tooltipDisplay, lines, isAdvanced);
 
         var enchantments = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);

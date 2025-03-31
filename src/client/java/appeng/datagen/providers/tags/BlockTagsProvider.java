@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import appeng.core.ConventionTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -36,6 +35,7 @@ import net.neoforged.neoforge.common.Tags;
 
 import appeng.api.ids.AETags;
 import appeng.core.AppEng;
+import appeng.core.ConventionTags;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;

@@ -20,8 +20,6 @@ package appeng.blockentity.crafting;
 
 import java.util.Objects;
 
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.world.level.block.TransparentBlock;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;

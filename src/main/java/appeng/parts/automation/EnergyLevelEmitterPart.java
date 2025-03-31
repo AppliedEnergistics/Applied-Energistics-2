@@ -18,6 +18,9 @@
 
 package appeng.parts.automation;
 
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
+
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.networking.energy.IEnergyService;
@@ -28,8 +31,6 @@ import appeng.api.util.IConfigManagerBuilder;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.EnergyLevelEmitterMenu;
 import appeng.menu.locator.MenuLocators;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 
 public class EnergyLevelEmitterPart extends AbstractLevelEmitterPart {
     private IEnergyWatcher energyWatcher;

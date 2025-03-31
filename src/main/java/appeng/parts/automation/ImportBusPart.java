@@ -29,7 +29,6 @@ import appeng.api.behaviors.StackImportStrategy;
 import appeng.api.networking.IGrid;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.util.KeyTypeSelection;
 import appeng.api.util.KeyTypeSelectionHost;
 import appeng.core.definitions.AEItems;

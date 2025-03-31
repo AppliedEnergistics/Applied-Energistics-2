@@ -20,12 +20,9 @@ package appeng.client.render.cablebus;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-import appeng.block.networking.CableCoreType;
-import appeng.client.render.CubeBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -36,6 +33,8 @@ import net.minecraft.core.Direction;
 
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import appeng.block.networking.CableCoreType;
+import appeng.client.render.CubeBuilder;
 import appeng.core.AppEng;
 
 /**

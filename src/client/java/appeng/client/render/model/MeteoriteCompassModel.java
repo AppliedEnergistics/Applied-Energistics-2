@@ -18,13 +18,15 @@
 
 package appeng.client.render.model;
 
-import appeng.client.render.ItemBaseModelWrapper;
-import appeng.core.AppEng;
-import appeng.hooks.CompassManager;
-import appeng.thirdparty.fabric.MutableQuadView;
-import appeng.thirdparty.fabric.RenderContext;
+import java.util.Objects;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
+
+import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -43,11 +45,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.model.data.ModelProperty;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
-import java.util.Objects;
+import appeng.client.render.ItemBaseModelWrapper;
+import appeng.core.AppEng;
+import appeng.hooks.CompassManager;
+import appeng.thirdparty.fabric.MutableQuadView;
+import appeng.thirdparty.fabric.RenderContext;
 
 /**
  * This baked model combines the quads of a compass base and the quads of a compass pointer, which will be rotated
@@ -77,7 +80,8 @@ public class MeteoriteCompassModel implements ItemModel {
     }
 
     @Override
-    public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver itemModelResolver, ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
+    public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver itemModelResolver,
+            ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
 
         base.applyToLayer(renderState.newLayer(), displayContext);
 
@@ -135,7 +139,8 @@ public class MeteoriteCompassModel implements ItemModel {
 
     private record RotatedPointerRenderer(ItemBaseModelWrapper pointer) implements SpecialModelRenderer<Float> {
         @Override
-        public void render(@Nullable Float rotation, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, boolean hasFoilType) {
+        public void render(@Nullable Float rotation, ItemDisplayContext displayContext, PoseStack poseStack,
+                MultiBufferSource bufferSource, int packedLight, int packedOverlay, boolean hasFoilType) {
 
             // In the pointer model, it is pointing towards z+
             // Apply the camera and item transform to determine where in world coordinates it is now pointing

@@ -18,27 +18,26 @@
 
 package appeng.client.render.cablebus;
 
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
-import appeng.api.parts.PartModelsInternal;
-import appeng.api.util.AECableType;
-import appeng.api.util.AEColor;
-import appeng.block.networking.CableBusBlock;
-import appeng.block.networking.CableBusRenderState;
-import appeng.block.networking.CableCoreType;
-import appeng.blockentity.AEModelData;
-import appeng.client.AppEngClientRendering;
-import appeng.client.api.model.parts.PartModel;
-import appeng.client.model.FacingModelState;
-import appeng.core.AppEng;
-import appeng.thirdparty.fabric.MeshBuilderImpl;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
+
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.Weigher;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
+
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -61,18 +60,20 @@ import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Consumer;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartItem;
+import appeng.api.parts.PartModelsInternal;
+import appeng.api.util.AECableType;
+import appeng.api.util.AEColor;
+import appeng.block.networking.CableBusBlock;
+import appeng.block.networking.CableBusRenderState;
+import appeng.block.networking.CableCoreType;
+import appeng.blockentity.AEModelData;
+import appeng.client.AppEngClientRendering;
+import appeng.client.api.model.parts.PartModel;
+import appeng.client.model.FacingModelState;
+import appeng.core.AppEng;
 
 /**
  * The built-in model for the cable bus block.
@@ -89,7 +90,7 @@ public class CableBusModel implements DynamicBlockStateModel {
      * <p>
      * DUNSWE for the facing index, 4 spin values per facing.
      */
-    private static final Direction[] SPIN_TO_DIRECTION = new Direction[]{
+    private static final Direction[] SPIN_TO_DIRECTION = new Direction[] {
             Direction.NORTH, Direction.WEST, Direction.SOUTH, Direction.EAST, // DOWN
             Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, // UP
             Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST, // NORTH
@@ -116,7 +117,8 @@ public class CableBusModel implements DynamicBlockStateModel {
 
     private final SimpleModelWrapper emptyCableModel;
 
-    private CableBusModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder, Map<IPartItem<?>, PartModel[]> partModels, TextureAtlasSprite particleTexture) {
+    private CableBusModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder,
+            Map<IPartItem<?>, PartModel[]> partModels, TextureAtlasSprite particleTexture) {
         this.cableBuilder = cableBuilder;
         this.facadeBuilder = facadeBuilder;
         this.particleTexture = particleTexture;
@@ -124,7 +126,8 @@ public class CableBusModel implements DynamicBlockStateModel {
         this.emptyCableModel = new SimpleModelWrapper(QuadCollection.EMPTY, false, particleTexture, null);
         this.cableModelCache = CacheBuilder.newBuilder()//
                 .maximumWeight(CACHE_QUAD_COUNT)//
-                .weigher((Weigher<CableBusRenderState, SimpleModelWrapper>) (key, value) -> value.quads().getAll().size())//
+                .weigher((Weigher<CableBusRenderState, SimpleModelWrapper>) (key, value) -> value.quads().getAll()
+                        .size())//
                 .build(new CacheLoader<>() {
                     @Override
                     public SimpleModelWrapper load(CableBusRenderState renderState) {
@@ -157,7 +160,8 @@ public class CableBusModel implements DynamicBlockStateModel {
     }
 
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockModelPart> parts) {
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random,
+            List<BlockModelPart> parts) {
         var data = level.getModelData(pos);
 
         var renderState = data.get(CableBusRenderState.PROPERTY);
@@ -193,13 +197,13 @@ public class CableBusModel implements DynamicBlockStateModel {
                     pos,
                     attachedPart.modelData(),
                     random,
-                    parts
-            );
+                    parts);
         }
 
         FacadeModelData facadeData = data.get(FACADE_DATA);
         if (facadeData != null) {
-            this.facadeBuilder.collectFacadeParts(renderState, () -> random, facadeData.level, facadeData.facadeData, parts::add);
+            this.facadeBuilder.collectFacadeParts(renderState, () -> random, facadeData.level, facadeData.facadeData,
+                    parts::add);
         }
     }
 
@@ -278,8 +282,10 @@ public class CableBusModel implements DynamicBlockStateModel {
         // If the connection is straight, no busses are attached, and no covered core
         // has been forced (in case of glass
         // cables), then render the cable as a simplified straight line.
-        boolean noAttachments = false; /* TODO !renderState.getAttachments().values().stream()
-                .anyMatch(IPartModel::requireCableConnection); */
+        boolean noAttachments = false; /*
+                                        * TODO !renderState.getAttachments().values().stream()
+                                        * .anyMatch(IPartModel::requireCableConnection);
+                                        */
         if (noAttachments && isStraightLine(cableType, connectionTypes)) {
             Direction facing = connectionTypes.keySet().iterator().next();
 

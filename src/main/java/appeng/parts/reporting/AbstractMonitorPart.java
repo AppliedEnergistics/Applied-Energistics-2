@@ -18,8 +18,6 @@
 
 package appeng.parts.reporting;
 
-import appeng.parts.automation.PartModelData;
-import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
@@ -30,6 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.implementations.parts.IStorageMonitorPart;
@@ -42,6 +41,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.core.localization.PlayerMessages;
+import appeng.parts.automation.PartModelData;
 import appeng.util.InteractionUtil;
 
 /**

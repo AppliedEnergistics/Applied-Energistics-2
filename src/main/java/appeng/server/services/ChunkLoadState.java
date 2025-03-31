@@ -1,24 +1,27 @@
 package appeng.server.services;
 
-import appeng.core.AppEng;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
+
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
+
+import appeng.core.AppEng;
 
 /**
  * Implementation detail of {@link ChunkLoadingService} on Fabric, as {@code ForgeChunkManager} is not available there.
@@ -29,17 +32,16 @@ class ChunkLoadState extends SavedData {
         public static final Codec<ForcedChunk> CODEC = RecordCodecBuilder.create(builder -> builder.group(
                 Codec.INT.fieldOf("cx").forGetter(ForcedChunk::cx),
                 Codec.INT.fieldOf("cz").forGetter(ForcedChunk::cz),
-                BlockPos.CODEC.listOf().fieldOf("blocks").forGetter(ForcedChunk::blocks)
-        ).apply(builder, ForcedChunk::new));
+                BlockPos.CODEC.listOf().fieldOf("blocks").forGetter(ForcedChunk::blocks))
+                .apply(builder, ForcedChunk::new));
     }
 
     private static final SavedDataType<ChunkLoadState> TYPE = new SavedDataType<>(
             AppEng.MOD_ID + "_chunk_load_state",
             context -> new ChunkLoadState(context.levelOrThrow()),
             context -> RecordCodecBuilder.create(builder -> builder.group(
-                    ForcedChunk.CODEC.listOf().fieldOf("forcedChunks").forGetter(ChunkLoadState::getForcedChunks)
-            ).apply(builder, data -> new ChunkLoadState(context.levelOrThrow(), data)))
-    );
+                    ForcedChunk.CODEC.listOf().fieldOf("forcedChunks").forGetter(ChunkLoadState::getForcedChunks))
+                    .apply(builder, data -> new ChunkLoadState(context.levelOrThrow(), data))));
 
     public static ChunkLoadState get(ServerLevel level) {
         return level.getDataStorage().computeIfAbsent(TYPE);
