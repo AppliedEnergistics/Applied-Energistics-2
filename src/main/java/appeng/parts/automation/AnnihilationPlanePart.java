@@ -337,7 +337,6 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
                 what, amount, this.actionSource, mode);
     }
 
-    @Nullable
     @Override
     public void collectModelData(ModelData.Builder builder) {
         super.collectModelData(builder);

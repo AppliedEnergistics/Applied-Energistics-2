@@ -3,10 +3,17 @@
     "type": "ae2:composite",
     "models": [
       {
+        "type": "ae2:status_indicator",
+        "active": "ae2:part/transition_plane_has_channel",
+        "powered": "ae2:part/transition_plane_on",
+        "unpowered": "ae2:part/transition_plane_off"
+      },
+      {
         "type": "ae2:plane",
-        "back": "ae2:part/formation_plane",
-        "front": "ae2:part/formation_plane",
-        "sides": "ae2:part/formation_plane"
+        "back": "ae2:part/transition_plane_back",
+        "front_off": "ae2:part/formation_plane",
+        "front_on": "ae2:part/formation_plane_on",
+        "sides": "ae2:part/plane_sides"
       }
     ]
   }

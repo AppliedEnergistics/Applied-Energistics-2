@@ -285,7 +285,6 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
         return config;
     }
 
-    @Nullable
     @Override
     public void collectModelData(ModelData.Builder builder) {
         super.collectModelData(builder);

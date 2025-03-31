@@ -78,6 +78,7 @@ import appeng.core.definitions.AEEntities;
 import appeng.core.particles.ParticleTypes;
 import appeng.entity.TinyTNTPrimedRenderer;
 import appeng.parts.reporting.ConversionMonitorPart;
+import appeng.parts.reporting.StorageMonitorPart;
 import appeng.spatial.SpatialStorageDimensionIds;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.block.model.TextureSlots;
@@ -174,7 +175,7 @@ public class AppEngClientRendering {
 
     private void registerPartRenderers(RegisterPartRendererEvent event) {
         event.register(ConversionMonitorPart.class, new MonitorRenderer());
-        event.register(ConversionMonitorPart.class, new MonitorRenderer());
+        event.register(StorageMonitorPart.class, new MonitorRenderer());
     }
 
     public PartModels getPartModels() {

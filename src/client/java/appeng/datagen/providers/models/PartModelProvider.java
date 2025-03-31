@@ -112,7 +112,9 @@ public class PartModelProvider extends ModelSubProvider {
         }
         partModels.composite(
                 AEParts.ANNIHILATION_PLANE,
+                partStatusIndicator(makeId("part/transition_plane")),
                 new PlanePartModel.Unbaked(
+                        makeId("part/annihilation_plane_on"),
                         makeId("part/annihilation_plane"),
                         makeId("part/plane_sides"),
                         makeId("part/transition_plane_back")
@@ -121,7 +123,9 @@ public class PartModelProvider extends ModelSubProvider {
         itemModels.declareCustomModelItem(AEParts.ANNIHILATION_PLANE.asItem());
         partModels.composite(
                 AEParts.FORMATION_PLANE,
+                partStatusIndicator(makeId("part/transition_plane")),
                 new PlanePartModel.Unbaked(
+                        makeId("part/formation_plane_on"),
                         makeId("part/formation_plane"),
                         makeId("part/plane_sides"),
                         makeId("part/transition_plane_back")

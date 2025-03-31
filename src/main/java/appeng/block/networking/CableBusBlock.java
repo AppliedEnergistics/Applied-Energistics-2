@@ -168,8 +168,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData,
             Player player) {
         var playerRay = InteractionUtil.getPlayerRay(player, 100);
-
-        var collisionShape = state.getCollisionShape(level, pos);
+        var collisionShape = state.getShape(level, pos);
         var hitResult = collisionShape.clip(playerRay.getA(), playerRay.getB(), pos);
         if (hitResult == null) {
             return ItemStack.EMPTY;
