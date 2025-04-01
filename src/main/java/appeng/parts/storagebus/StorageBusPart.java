@@ -29,7 +29,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -58,7 +57,6 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
@@ -66,14 +64,12 @@ import appeng.api.storage.MEStorage;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigManagerBuilder;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.InterfaceLogicHost;
-import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.CompositeStorage;
 import appeng.me.storage.ITickingMonitor;
@@ -84,7 +80,6 @@ import appeng.menu.MenuOpener;
 import appeng.menu.implementations.StorageBusMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartAdjacentApi;
-import appeng.parts.PartModel;
 import appeng.parts.automation.StackWorldBehaviors;
 import appeng.parts.automation.UpgradeablePart;
 import appeng.util.ConfigInventory;
@@ -94,20 +89,6 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class StorageBusPart extends UpgradeablePart
         implements IGridTickable, IStorageProvider, IPriorityHost, IConfigInvHost {
-
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/storage_bus_base");
-
-    @PartModels
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/storage_bus_off"));
-
-    @PartModels
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/storage_bus_on"));
-
-    @PartModels
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/storage_bus_has_channel"));
 
     protected final IActionSource source;
     private final ConfigInventory config = ConfigInventory.configTypes(63).changeListener(this::onConfigurationChanged)
@@ -210,7 +191,7 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.readFromNBT(data, registries);
-        this.priority = data.getInt("priority");
+        this.priority = data.getIntOr("priority", 0);
         config.readFromChildTag(data, "config", registries);
     }
 
@@ -533,17 +514,6 @@ public class StorageBusPart extends UpgradeablePart
 
         if (mode == SettingsFrom.MEMORY_CARD) {
             builder.set(AEComponents.EXPORTED_CONFIG_INV, config.toList());
-        }
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        if (this.isActive() && this.isPowered()) {
-            return MODELS_HAS_CHANNEL;
-        } else if (this.isPowered()) {
-            return MODELS_ON;
-        } else {
-            return MODELS_OFF;
         }
     }
 

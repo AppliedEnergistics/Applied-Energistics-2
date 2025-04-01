@@ -1,0 +1,17 @@
+{
+  "model": {
+    "type": "ae2:composite",
+    "models": [
+      {
+        "type": "ae2:model",
+        "model": "ae2:part/display_base"
+      },
+      {
+        "type": "ae2:status_indicator",
+        "active": "ae2:part/monitor_medium_on",
+        "powered": "ae2:part/monitor_medium_off",
+        "unpowered": "ae2:part/monitor_medium_off"
+      }
+    ]
+  }
+}

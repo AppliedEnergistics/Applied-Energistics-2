@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/chicken"
-  },
+  "ammo": "#c:nuggets/chicken",
   "weight": 32.0
 }

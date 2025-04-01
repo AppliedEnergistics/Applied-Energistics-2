@@ -2,7 +2,8 @@
   "credit": "Made with Blockbench",
   "parent": "block/block",
   "textures": {
-    "0": "ae2:item/meteorite_compass"
+    "0": "ae2:item/meteorite_compass",
+    "particle": "#0"
   },
   "elements": [
     {

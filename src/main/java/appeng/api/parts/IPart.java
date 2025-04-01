@@ -26,14 +26,11 @@ package appeng.api.parts;
 import java.util.List;
 import java.util.Set;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.CrashReportCategory;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -51,17 +48,16 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEColor;
 import appeng.util.SettingsFrom;
 
 public interface IPart extends ICustomCableConnection, Clearable {
+
+    List<Direction> ATTACHMENT_POINTS = List.of(Direction.values());
 
     /**
      * Gets the item from which this part was created. Will be used to save and load this part from NBT Data or to
@@ -71,24 +67,6 @@ public interface IPart extends ICustomCableConnection, Clearable {
      * @return The item from which this part was placed.
      */
     IPartItem<?> getPartItem();
-
-    /**
-     * Render dynamic portions of this part, as part of the cable bus TESR. This part has to return true for
-     * {@link #requireDynamicRender()} in order for this method to be called.
-     */
-    @OnlyIn(Dist.CLIENT)
-    default void renderDynamic(float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
-            int combinedLightIn, int combinedOverlayIn) {
-    }
-
-    /**
-     * return true only if your part require dynamic rendering, must be consistent.
-     *
-     * @return true to enable {@link #renderDynamic}
-     */
-    default boolean requireDynamicRender() {
-        return false;
-    }
 
     /**
      * @return if the bus has a solid side, and you can place random stuff on it like torches or levers
@@ -160,7 +138,7 @@ public interface IPart extends ICustomCableConnection, Clearable {
 
     /**
      * a block around the bus's host has been changed.
-     * 
+     *
      * @see net.neoforged.neoforge.common.extensions.IBlockExtension#onNeighborChange
      */
     default void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
@@ -394,9 +372,8 @@ public interface IPart extends ICustomCableConnection, Clearable {
 
     /**
      * Called when placed in the world by a player, this happens before addWorld.
-     * 
-     * @param player placing player
      *
+     * @param player placing player
      */
     default void onPlacement(Player player) {
     }
@@ -414,36 +391,10 @@ public interface IPart extends ICustomCableConnection, Clearable {
     }
 
     /**
-     * This method is used when a chunk is rebuilt to determine how this part should be rendered. The returned models
-     * should represent the part oriented north. They will be automatically rotated to match the part's actual
-     * orientation. Tint indices 1-4 can be used in the models to access the parts color.
-     *
-     * <dl>
-     * <dt>Tint Index 1</dt>
-     * <dd>The {@link AEColor#blackVariant dark variant color} of the cable that this part is attached to.</dd>
-     * <dt>Tint Index 2</dt>
-     * <dd>The {@link AEColor#mediumVariant color} of the cable that this part is attached to.</dd>
-     * <dt>Tint Index 3</dt>
-     * <dd>The {@link AEColor#whiteVariant bright variant color} of the cable that this part is attached to.</dd>
-     * <dt>Tint Index 4</dt>
-     * <dd>A color variant that is between the cable's {@link AEColor#mediumVariant color} and its
-     * {@link AEColor#whiteVariant bright variant}.</dd>
-     * </dl>
-     *
-     * <b>Important:</b> All models must have been registered via the {@link PartModels} API before use.
+     * Additional model data to be passed to the part models for rendering this part.
      */
-    default IPartModel getStaticModels() {
-        return new IPartModel() {
-        };
-    }
-
-    /**
-     * Additional model data to be passed to the models for rendering this part.
-     *
-     * @return The model data to pass to the model. Only useful if custom models are used.
-     */
-    default ModelData getModelData() {
-        return ModelData.EMPTY;
+    @Nullable
+    default void collectModelData(ModelData.Builder builder) {
     }
 
     /**
@@ -468,5 +419,9 @@ public interface IPart extends ICustomCableConnection, Clearable {
      */
     default AECableType getDesiredConnectionType() {
         return AECableType.GLASS;
+    }
+
+    default IPartModel getStaticModels() {
+        return null;
     }
 }

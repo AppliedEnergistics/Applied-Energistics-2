@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "c": {
-      "tag": "c:ingots/copper"
-    },
-    "f": {
-      "item": "ae2:fluix_block"
-    },
-    "i": {
-      "tag": "c:ingots/iron"
-    },
-    "q": {
-      "item": "ae2:charged_certus_quartz_crystal"
-    }
+    "c": "#c:ingots/copper",
+    "f": "ae2:fluix_block",
+    "i": "#c:ingots/iron",
+    "q": "ae2:charged_certus_quartz_crystal"
   },
   "pattern": [
     "cfc",

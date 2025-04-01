@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:wireless_receiver"
-    },
-    "b": {
-      "item": "ae2:calculation_processor"
-    },
-    "c": {
-      "item": "ae2:fluix_glass_cable"
-    }
+    "a": "ae2:wireless_receiver",
+    "b": "ae2:calculation_processor",
+    "c": "ae2:fluix_glass_cable"
   },
   "pattern": [
     "a",

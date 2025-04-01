@@ -23,6 +23,8 @@ import java.util.Objects;
 import java.util.concurrent.Future;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -47,6 +49,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ISubMenuHost;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.network.clientbound.CraftConfirmPlanPacket;
 import appeng.crafting.execution.CraftingSubmitResult;
 import appeng.helpers.ICraftingGridMenu;
@@ -63,6 +66,8 @@ import appeng.menu.locator.MenuHostLocator;
  * @see appeng.client.gui.me.crafting.CraftConfirmScreen
  */
 public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CraftConfirmMenu.class);
 
     private static final String ACTION_BACK = "back";
     private static final String ACTION_CYCLE_CPU = "cycleCpu";
@@ -159,7 +164,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
                 ccc.broadcastChanges();
             }
         } catch (Throwable e) {
-            AELog.info(e);
+            LOG.info("Failed to open craft confirm menu.", e);
         }
     }
 
@@ -230,7 +235,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
                 sendPacketToClient(new CraftConfirmPlanPacket(plan));
             } catch (Throwable e) {
-                this.getPlayerInventory().player.sendSystemMessage(Component.literal("Error: " + e));
+                AppEng.instance().sendSystemMessage(this.getPlayerInventory().player, Component.literal("Error: " + e));
                 AELog.warn("Failed to start crafting job.", e);
                 this.setValidMenu(false);
                 this.result = null;

@@ -4,7 +4,8 @@
     "sides": "ae2:part/p2p_tunnel_sides",
     "back": "ae2:part/p2p_tunnel_back",
     "front": "ae2:part/p2p_tunnel_front",
-    "type": "ae2:block/quartz_block"
+    "type": "ae2:block/quartz_block",
+    "particle": "#type"
   },
   "elements": [
     {

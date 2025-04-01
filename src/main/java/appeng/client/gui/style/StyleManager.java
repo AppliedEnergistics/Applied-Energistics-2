@@ -33,7 +33,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
@@ -195,11 +194,8 @@ public final class StyleManager {
         return style;
     }
 
-    public static void initialize(ResourceManager resourceManager) {
-        if (resourceManager instanceof ReloadableResourceManager) {
-            ((ReloadableResourceManager) resourceManager).registerReloadListener(new ReloadListener());
-        }
-        setResourceManager(resourceManager);
+    public static ResourceManagerReloadListener getReloadListener() {
+        return new ReloadListener();
     }
 
     private static void setResourceManager(ResourceManager resourceManager) {
@@ -209,7 +205,7 @@ public final class StyleManager {
 
     private static class ReloadListener implements ResourceManagerReloadListener {
         @Override
-        public void onResourceManagerReload(ResourceManager p_10758_) {
+        public void onResourceManagerReload(ResourceManager resourceManager) {
             setResourceManager(resourceManager);
         }
     }

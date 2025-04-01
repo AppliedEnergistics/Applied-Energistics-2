@@ -20,6 +20,7 @@ package appeng.init.worldgen;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.world.level.biome.AmbientMoodSettings;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
@@ -36,14 +37,25 @@ public final class InitBiomes {
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         var configuredCarvers = context.lookup(Registries.CONFIGURED_CARVER);
 
+        var specialEffects = new BiomeSpecialEffects.Builder()
+                .waterColor(4159204)
+                .waterFogColor(329011)
+                .fogColor(0)
+                .skyColor(0x111111)
+                .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS)
+                .build();
+
+        var generationSettings = new BiomeGenerationSettings.Builder(placedFeatures, configuredCarvers)
+                .build();
+
         Biome biome = new Biome.BiomeBuilder()
-                .generationSettings(new BiomeGenerationSettings.Builder(placedFeatures, configuredCarvers).build())
+                .generationSettings(generationSettings)
                 .hasPrecipitation(false)
                 // Copied from the vanilla void biome
                 .temperature(0.5F).downfall(0.5F)
-                .specialEffects(new BiomeSpecialEffects.Builder().waterColor(4159204).waterFogColor(329011).fogColor(0)
-                        .skyColor(0x111111).build())
-                .mobSpawnSettings(new MobSpawnSettings.Builder().creatureGenerationProbability(0).build()).build();
+                .specialEffects(specialEffects)
+                .mobSpawnSettings(new MobSpawnSettings.Builder().build())
+                .build();
 
         context.register(SpatialStorageDimensionIds.BIOME_KEY, biome);
     }

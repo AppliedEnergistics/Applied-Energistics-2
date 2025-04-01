@@ -30,8 +30,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.EffectType;
@@ -51,12 +49,11 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
                 new AABB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
     }
 
-    public QuantumLinkChamberBlock() {
-        super(glassProps());
+    public QuantumLinkChamberBlock(Properties p) {
+        super(glassProps(p));
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
         final QuantumBridgeBlockEntity bridge = this.getBlockEntity(level, pos);
         if (bridge != null && bridge.hasQES() && AppEngClient.instance().shouldAddParticles(rand)) {
@@ -73,7 +70,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
             if (!level.isClientSide()) {
                 MenuOpener.open(QNBMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

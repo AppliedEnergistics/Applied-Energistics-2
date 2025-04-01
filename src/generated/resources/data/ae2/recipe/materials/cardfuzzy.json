@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "ae2:advanced_card"
-    },
-    {
-      "tag": "minecraft:wool"
-    }
+    "ae2:advanced_card",
+    "#minecraft:wool"
   ],
   "result": {
     "count": 1,

@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/germanium"
-  },
+  "ammo": "#c:nuggets/germanium",
   "weight": 72.64
 }

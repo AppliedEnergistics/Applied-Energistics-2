@@ -31,7 +31,6 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.ids.AEComponents;
-import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
 
 /**
@@ -80,8 +79,8 @@ public abstract class AEKey {
                         var originalData = input.get(AEComponents.MISSING_CONTENT_AEKEY_DATA);
                         if (originalData != null) {
                             var originalDataMap = originalData.getUnsafe();
-                            for (var key : originalDataMap.getAllKeys()) {
-                                t.add(key, NbtOps.INSTANCE.convertTo(ops, originalDataMap.get(key)));
+                            for (var entry : originalDataMap.entrySet()) {
+                                t.add(entry.getKey(), NbtOps.INSTANCE.convertTo(ops, entry.getValue()));
                             }
                         }
                     }
@@ -132,7 +131,7 @@ public abstract class AEKey {
         var id = buffer.readVarInt();
         var type = AEKeyType.fromRawId(id);
         if (type == null) {
-            AELog.error("Received unknown key space id %d", id);
+            LOG.error("Received unknown key type id {}", id);
             return null;
         }
         return type.readFromPacket(buffer);

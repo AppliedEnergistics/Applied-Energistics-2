@@ -25,10 +25,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
@@ -38,31 +38,11 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
 import appeng.parts.AEBasePart;
-import appeng.parts.PartModel;
+import appeng.parts.automation.PartModelData;
 
 public class ToggleBusPart extends AEBasePart {
-
-    @PartModels
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/toggle_bus_base");
-    @PartModels
-    public static final ResourceLocation MODEL_STATUS_OFF = AppEng.makeId(
-            "part/toggle_bus_status_off");
-    @PartModels
-    public static final ResourceLocation MODEL_STATUS_ON = AppEng.makeId(
-            "part/toggle_bus_status_on");
-    @PartModels
-    public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = AppEng.makeId(
-            "part/toggle_bus_status_has_channel");
-
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_STATUS_OFF);
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_STATUS_ON);
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_STATUS_HAS_CHANNEL);
-
     private final IManagedGridNode outerNode = GridHelper
             .createManagedNode(this, NodeListener.INSTANCE)
             .setTagName("outer")
@@ -105,7 +85,7 @@ public class ToggleBusPart extends AEBasePart {
     @Override
     public void readVisualStateFromNBT(CompoundTag data) {
         super.readVisualStateFromNBT(data);
-        this.clientSideEnabled = data.getBoolean("on");
+        this.clientSideEnabled = data.getBooleanOr("on", false);
     }
 
     protected boolean isEnabled() {
@@ -199,13 +179,16 @@ public class ToggleBusPart extends AEBasePart {
     }
 
     @Override
-    public IPartModel getStaticModels() {
+    public void collectModelData(ModelData.Builder builder) {
+        super.collectModelData(builder);
+
+        // Overwrite the original state
         if (isEnabled() && this.isActive() && this.isPowered()) {
-            return MODELS_HAS_CHANNEL;
+            builder.with(PartModelData.STATUS_INDICATOR, PartModelData.StatusIndicatorState.ACTIVE);
         } else if (isEnabled() && this.isPowered()) {
-            return MODELS_ON;
+            builder.with(PartModelData.STATUS_INDICATOR, PartModelData.StatusIndicatorState.POWERED);
         } else {
-            return MODELS_OFF;
+            builder.with(PartModelData.STATUS_INDICATOR, PartModelData.StatusIndicatorState.UNPOWERED);
         }
     }
 }

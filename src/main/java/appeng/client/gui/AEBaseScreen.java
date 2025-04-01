@@ -504,6 +504,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         this.drawBG(guiGraphics, leftPos, topPos, x, y, f);
 
+        guiGraphics.flush();
+
         widgets.drawBackgroundLayer(guiGraphics, getBounds(true), new Point(x - leftPos, y - topPos));
 
         for (Slot slot : this.getInventorySlots()) {
@@ -597,7 +599,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
-        final Slot slot = this.findSlot(mouseX, mouseY);
+        final Slot slot = this.getHoveredSlot(mouseX, mouseY);
         var itemstack = getMenu().getCarried();
 
         Point mousePos = new Point((int) Math.round(mouseX - leftPos), (int) Math.round(mouseY - topPos));
@@ -782,6 +784,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY,
             float partialTicks) {
+
+        guiGraphics.flush();
 
         var generatedBackground = style.getGeneratedBackground();
         if (generatedBackground != null) {

@@ -31,6 +31,8 @@ import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -95,6 +97,7 @@ import appeng.util.Platform;
 public class MEStorageMenu extends AEBaseMenu
         implements IConfigurableObject, IMEInteractionHandler, LinkStatusAwareMenu,
         KeyTypeSelectionMenu {
+    private static final Logger LOG = LoggerFactory.getLogger(MEStorageMenu.class);
 
     public static final MenuType<MEStorageMenu> TYPE = MenuTypeBuilder
             .<MEStorageMenu, ITerminalHost>create(MEStorageMenu::new, ITerminalHost.class)
@@ -278,7 +281,7 @@ public class MEStorageMenu extends AEBaseMenu
                 }
 
             } catch (Exception e) {
-                AELog.warn(e, "Failed to send incremental inventory update to client");
+                LOG.warn("Failed to send incremental inventory update to client", e);
             }
 
             previousCraftables = ImmutableSet.copyOf(craftables);
@@ -537,7 +540,7 @@ public class MEStorageMenu extends AEBaseMenu
                 }
             }
             case MOVE_REGION -> {
-                final int playerInv = player.getInventory().items.size();
+                final int playerInv = player.getInventory().getNonEquipmentItems().size();
                 for (int slotNum = 0; slotNum < playerInv; slotNum++) {
                     if (!moveOneStackToPlayer(clickedItem)) {
                         break;

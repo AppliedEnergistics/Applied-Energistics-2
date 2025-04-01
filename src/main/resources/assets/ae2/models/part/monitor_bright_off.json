@@ -1,6 +1,7 @@
 {
   "textures": {
-    "lights": "ae2:part/monitor_light"
+    "lights": "ae2:part/monitor_light",
+    "particle": "#lights"
   },
   "elements": [
     {

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "ae2:cable_pattern_provider"
-    }
+    "ae2:cable_pattern_provider"
   ],
   "result": {
     "count": 1,

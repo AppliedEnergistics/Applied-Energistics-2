@@ -18,14 +18,16 @@
 
 package appeng.blockentity.misc;
 
+import java.util.Optional;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.Level;
 
 import appeng.api.ids.AEComponents;
 import appeng.core.definitions.AEItems;
@@ -45,12 +47,12 @@ public final class InscriberRecipes {
     /**
      * Returns an unmodifiable view of all registered inscriber recipes.
      */
-    public static Iterable<RecipeHolder<InscriberRecipe>> getRecipes(Level level) {
-        return level.getRecipeManager().byType(AERecipeTypes.INSCRIBER);
+    public static Iterable<RecipeHolder<InscriberRecipe>> getRecipes(ServerLevel level) {
+        return level.recipeAccess().recipeMap().byType(AERecipeTypes.INSCRIBER);
     }
 
     @Nullable
-    public static InscriberRecipe findRecipe(Level level, ItemStack input, ItemStack plateA, ItemStack plateB,
+    public static InscriberRecipe findRecipe(ServerLevel level, ItemStack input, ItemStack plateA, ItemStack plateB,
             boolean supportNamePress) {
         if (supportNamePress) {
             boolean isNameA = AEItems.NAME_PRESS.is(plateA);
@@ -66,8 +68,10 @@ public final class InscriberRecipes {
         for (var holder : getRecipes(level)) {
             var recipe = holder.value();
             // The recipe can be flipped at will
-            final boolean matchA = recipe.getTopOptional().test(plateA) && recipe.getBottomOptional().test(plateB);
-            final boolean matchB = recipe.getTopOptional().test(plateB) && recipe.getBottomOptional().test(plateA);
+            final boolean matchA = testIngredient(recipe.getTopOptional(), plateA)
+                    && testIngredient(recipe.getBottomOptional(), plateB);
+            final boolean matchB = testIngredient(recipe.getTopOptional(), plateB)
+                    && testIngredient(recipe.getBottomOptional(), plateA);
 
             if ((matchA || matchB) && recipe.getMiddleInput().test(input)) {
                 return recipe;
@@ -98,7 +102,7 @@ public final class InscriberRecipes {
             }
         }
 
-        var startingItem = Ingredient.of(input.copy());
+        var startingItem = Ingredient.of(input.getItem());
         var renamedItem = input.copyWithCount(1);
 
         if (name != null) {
@@ -110,19 +114,20 @@ public final class InscriberRecipes {
         final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
         return new InscriberRecipe(startingItem, renamedItem,
-                plateA.isEmpty() ? Ingredient.EMPTY : Ingredient.of(plateA),
-                plateB.isEmpty() ? Ingredient.EMPTY : Ingredient.of(plateB), type);
+                plateA.isEmpty() ? Optional.empty() : Optional.of(Ingredient.of(plateA.getItem())),
+                plateB.isEmpty() ? Optional.empty() : Optional.of(Ingredient.of(plateB.getItem())), type);
     }
 
     /**
      * Checks if there is an inscriber recipe that supports the given combination of top/bottom presses. Both the given
      * combination and the reverse will be searched.
      */
-    public static boolean isValidOptionalIngredientCombination(Level level, ItemStack pressA, ItemStack pressB) {
+    public static boolean isValidOptionalIngredientCombination(ServerLevel level, ItemStack pressA, ItemStack pressB) {
         for (var holder : getRecipes(level)) {
             var recipe = holder.value();
-            if (recipe.getTopOptional().test(pressA) && recipe.getBottomOptional().test(pressB)
-                    || recipe.getTopOptional().test(pressB) && recipe.getBottomOptional().test(pressA)) {
+            if (testIngredient(recipe.getTopOptional(), pressA) && testIngredient(recipe.getBottomOptional(), pressB)
+                    || testIngredient(recipe.getTopOptional(), pressB)
+                            && testIngredient(recipe.getBottomOptional(), pressA)) {
                 return true;
             }
         }
@@ -134,15 +139,19 @@ public final class InscriberRecipes {
      * Checks if there is an inscriber recipe that would use the given item stack as an optional ingredient. Bottom and
      * top can be used interchangeably here, because the inscriber will flip the recipe if needed.
      */
-    public static boolean isValidOptionalIngredient(Level level, ItemStack is) {
+    public static boolean isValidOptionalIngredient(ServerLevel level, ItemStack is) {
         for (var holder : getRecipes(level)) {
             var recipe = holder.value();
-            if (recipe.getTopOptional().test(is) || recipe.getBottomOptional().test(is)) {
+            if (testIngredient(recipe.getTopOptional(), is) || testIngredient(recipe.getBottomOptional(), is)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    private static boolean testIngredient(Optional<Ingredient> ingredient, ItemStack stack) {
+        return ingredient.map(value -> value.test(stack)).orElseGet(stack::isEmpty);
     }
 
 }

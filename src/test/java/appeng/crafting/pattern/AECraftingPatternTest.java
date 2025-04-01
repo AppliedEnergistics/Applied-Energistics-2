@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
@@ -26,17 +27,20 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -60,7 +64,8 @@ import appeng.util.RecursiveTagReplace;
 class AECraftingPatternTest {
     private final RegistryAccess registries = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
 
-    private static final ResourceLocation TEST_RECIPE_ID = AppEng.makeId("test_recipe");
+    private static final ResourceKey<Recipe<?>> TEST_RECIPE_ID = ResourceKey.create(Registries.RECIPE,
+            AppEng.makeId("test_recipe"));
 
     @Mock
     MockedStatic<AppEng> appEngMock;
@@ -74,7 +79,7 @@ class AECraftingPatternTest {
     }
 
     private final RecipeHolder<CraftingRecipe> TEST_RECIPE = buildRecipe(
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Items.STICK)
+            ShapedRecipeBuilder.shaped(BuiltInRegistries.ITEM, RecipeCategory.MISC, Items.STICK)
                     .pattern("xy")
                     .define('x', Items.TORCH)
                     .define('y', Items.DIAMOND));
@@ -89,9 +94,13 @@ class AECraftingPatternTest {
             }
 
             @Override
-            public void accept(ResourceLocation id, Recipe<?> recipe, @Nullable AdvancementHolder advancement,
+            public void accept(ResourceKey<Recipe<?>> id, Recipe<?> recipe, @Nullable AdvancementHolder advancement,
                     ICondition... conditions) {
                 result.set((ShapedRecipe) recipe);
+            }
+
+            @Override
+            public void includeRootAdvancement() {
             }
         }, TEST_RECIPE_ID);
         return new RecipeHolder<>(TEST_RECIPE_ID, Objects.requireNonNull(result.get()));
@@ -115,7 +124,7 @@ class AECraftingPatternTest {
 
         // Replace the diamond ID string with an unknown ID string
         assertEquals(1, RecursiveTagReplace.replace(encodedTag, "minecraft:torch", "minecraft:does_not_exist"));
-        var brokenPatternStack = ItemStack.parseOptional(registries, encodedTag);
+        var brokenPatternStack = ItemStack.parse(registries, encodedTag).get();
 
         assertNull(decode(encodedTag));
         assertThat(getExtraTooltip(brokenPatternStack)).containsExactly(
@@ -130,7 +139,8 @@ class AECraftingPatternTest {
 
     private List<String> getExtraTooltip(ItemStack stack) {
         var lines = new ArrayList<Component>();
-        stack.getItem().appendHoverText(stack, Item.TooltipContext.EMPTY, lines, TooltipFlag.ADVANCED);
+        stack.getItem().appendHoverText(stack, Item.TooltipContext.EMPTY, TooltipDisplay.DEFAULT, lines::add,
+                TooltipFlag.ADVANCED);
         return lines.stream().map(Component::getString).toList();
     }
 
@@ -154,12 +164,12 @@ class AECraftingPatternTest {
     }
 
     private AECraftingPattern decode(CompoundTag tag) {
-        var level = mock(Level.class);
-        var recipeManager = mock(RecipeManager.class);
-        when(level.getRecipeManager()).thenReturn(recipeManager);
-        when(recipeManager.byType(RecipeType.CRAFTING)).thenReturn(List.of(TEST_RECIPE));
+        var level = mock(ServerLevel.class, Mockito.RETURNS_DEEP_STUBS);
+        var recipeManager = mock(RecipeManager.class, Mockito.RETURNS_DEEP_STUBS);
+        when(level.recipeAccess()).thenReturn(recipeManager);
+        when(recipeManager.recipeMap().byType(RecipeType.CRAFTING)).thenReturn(List.of(TEST_RECIPE));
 
-        var pattern = ItemStack.parseOptional(registries, tag);
+        var pattern = ItemStack.parse(registries, tag).get();
         var details = PatternDetailsHelper.decodePattern(AEItemKey.of(pattern), level);
         if (details == null) {
             return null;

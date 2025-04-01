@@ -6,6 +6,7 @@
     "front": "ae2:part/storage_bus",
     "particle": "ae2:part/storage_bus_back"
   },
+  "render_type": "minecraft:cutout",
   "elements": [
     {
       "from": [3, 3, 0],

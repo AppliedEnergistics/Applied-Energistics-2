@@ -18,24 +18,23 @@
 
 package appeng.parts.reporting;
 
-import net.minecraft.core.BlockPos;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.implementations.parts.IMonitorPart;
 import appeng.api.networking.GridFlags;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
-import appeng.client.render.model.AEModelData;
+import appeng.blockentity.AEModelData;
 import appeng.parts.AEBasePart;
 import appeng.util.InteractionUtil;
 
@@ -76,8 +75,8 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
-        if (pos.relative(this.getSide()).equals(neighbor)) {
+    public void onUpdateShape(Direction side) {
+        if (side.equals(getSide())) {
             this.opacity = -1;
             this.getHost().markForUpdate();
         }
@@ -86,7 +85,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     @Override
     public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.readFromNBT(data, registries);
-        this.spin = data.getByte("spin");
+        this.spin = data.getByteOr("spin", (byte) 0);
     }
 
     @Override
@@ -119,7 +118,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     @Override
     public boolean onUseWithoutItem(Player player, Vec3 pos) {
-        if (InteractionUtil.canWrenchRotate(player.getInventory().getSelected())) {
+        if (InteractionUtil.canWrenchRotate(player.getInventory().getSelectedItem())) {
             if (!isClientSide()) {
                 this.spin = (byte) ((this.spin + 1) % 4);
                 this.getHost().markForUpdate();
@@ -146,27 +145,17 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
             var te = getHost().getBlockEntity();
             Level level = te.getLevel();
             var pos = te.getBlockPos().relative(this.getSide());
-            this.opacity = level.getBlockState(pos).getLightBlock(level, pos);
+            this.opacity = level.getBlockState(pos).getLightBlock();
         }
 
         return Math.max(0, emit - opacity);
     }
 
-    protected IPartModel selectModel(IPartModel offModels, IPartModel onModels, IPartModel hasChannelModels) {
-        if (this.isActive()) {
-            return hasChannelModels;
-        } else if (this.isPowered()) {
-            return onModels;
-        } else {
-            return offModels;
-        }
-    }
-
+    @Nullable
     @Override
-    public ModelData getModelData() {
-        return ModelData.builder()
-                .with(AEModelData.SPIN, getSpin())
-                .build();
+    public void collectModelData(ModelData.Builder builder) {
+        super.collectModelData(builder);
+        builder.with(AEModelData.SPIN, getSpin());
     }
 
     public final byte getSpin() {

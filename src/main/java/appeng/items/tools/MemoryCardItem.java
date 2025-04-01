@@ -20,8 +20,8 @@ package appeng.items.tools;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -34,13 +34,13 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackLinkedSet;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -58,11 +58,11 @@ import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigurableObject;
+import appeng.core.ConventionTags;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.InGameTooltip;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.localization.Tooltips;
-import appeng.datagen.providers.tags.ConventionTags;
 import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.AEBaseItem;
@@ -270,7 +270,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
                 if (missingAmount > 0 && !player.level().isClientSide()) {
                     player.displayClientMessage(
-                            PlayerMessages.MissingUpgrades.text(entry.getKey().getDescription(), missingAmount), true);
+                            PlayerMessages.MissingUpgrades.text(entry.getKey().getName(), missingAmount), true);
                 }
             }
         }
@@ -278,20 +278,22 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
             TooltipFlag advancedTooltips) {
 
         var settingsSource = stack.get(AEComponents.EXPORTED_SETTINGS_SOURCE);
         if (settingsSource != null) {
-            lines.add(Tooltips.of(settingsSource));
+            lines.accept(Tooltips.of(settingsSource));
         } else {
-            lines.add(Tooltips.of(GuiText.Blank.text()));
+            lines.accept(Tooltips.of(GuiText.Blank.text()));
         }
 
         var p2pFreq = stack.get(AEComponents.EXPORTED_P2P_FREQUENCY);
         if (p2pFreq != null) {
             var freqTooltip = Platform.p2p().toColoredHexString(p2pFreq).withStyle(ChatFormatting.BOLD);
-            lines.add(Tooltips.of(Component.translatable(InGameTooltip.P2PFrequency.getTranslationKey(), freqTooltip)));
+            lines.accept(
+                    Tooltips.of(Component.translatable(InGameTooltip.P2PFrequency.getTranslationKey(), freqTooltip)));
         }
     }
 
@@ -319,7 +321,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
             if (!level.isClientSide()) {
                 this.clearCard(context.getPlayer(), context.getLevel(), context.getHand());
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         } else {
             return super.useOn(context);
         }
@@ -331,7 +333,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (InteractionUtil.isInAlternateUseMode(player) && !level.isClientSide) {
             this.clearCard(player, level, hand);
         }
@@ -355,14 +357,5 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     // Override to change the default color
     public int getColor(ItemStack stack) {
         return DyedItemColor.getOrDefault(stack, DEFAULT_BASE_COLOR);
-    }
-
-    public static int getTintColor(ItemStack stack, int tintIndex) {
-        if (tintIndex == 1 && stack.getItem() instanceof MemoryCardItem memoryCard) {
-            return memoryCard.getColor(stack);
-        } else {
-            // White
-            return 0xFFFFFF;
-        }
     }
 }

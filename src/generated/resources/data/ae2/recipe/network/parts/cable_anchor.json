@@ -1,12 +1,7 @@
 {
   "type": "ae2:quartz_cutting",
   "ingredients": [
-    {
-      "tag": "ae2:knife"
-    },
-    {
-      "tag": "ae2:metal_ingots"
-    }
+    "#ae2:metal_ingots"
   ],
   "result": {
     "count": 4,

@@ -76,7 +76,7 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
     @Override
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
-        this.setInternalCurrentPower(data.getDouble("internalCurrentPower"));
+        this.setInternalCurrentPower(data.getDoubleOr("internalCurrentPower", 0.0));
     }
 
     @Override

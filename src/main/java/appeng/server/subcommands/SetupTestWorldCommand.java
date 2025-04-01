@@ -4,6 +4,7 @@ import static net.minecraft.commands.Commands.literal;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Set;
 
 import com.google.common.base.Stopwatch;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -11,6 +12,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +27,6 @@ import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.neoforged.neoforge.common.NeoForge;
 
-import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.tools.powered.ColorApplicatorItem;
@@ -38,6 +40,8 @@ import appeng.server.testworld.TestWorldGenerator;
  * setting up a testing world for AE2.
  */
 public class SetupTestWorldCommand implements ISubCommand {
+    private static final Logger LOG = LoggerFactory.getLogger(SetupTestWorldCommand.class);
+
     @Override
     public void addArguments(LiteralArgumentBuilder<CommandSourceStack> builder) {
         for (var plotId : TestPlots.getPlotIds()) {
@@ -74,8 +78,8 @@ public class SetupTestWorldCommand implements ISubCommand {
             // Pick the top layer of the superflat world, or default to 60
             var origin = player.blockPosition();
             // Ensure the origin is 3 blocks above the lower build limit
-            if (origin.getY() - 3 < level.getMinBuildHeight()) {
-                origin = origin.atY(level.getMinBuildHeight() + 3);
+            if (origin.getY() - 3 < level.getMinY()) {
+                origin = origin.atY(level.getMinY() + 3);
             }
             var generator = new TestWorldGenerator(level, player, origin, plotId);
             generator.generate();
@@ -88,12 +92,13 @@ public class SetupTestWorldCommand implements ISubCommand {
             // Only teleport the player if they're not within the bounds already
             if (!generator.isWithinBounds(player.blockPosition())) {
                 var goodStartPos = generator.getSuitableStartPos();
-                player.teleportTo(level, goodStartPos.getX(), goodStartPos.getY(), goodStartPos.getZ(), 0, 0);
+                player.teleportTo(level, goodStartPos.getX(), goodStartPos.getY(), goodStartPos.getZ(), Set.of(), 0, 0,
+                        true);
             }
 
             sender.sendSuccess(() -> PlayerMessages.TestWorldSetupComplete.text(sw.toString()), true);
         } catch (RuntimeException | CommandSyntaxException e) {
-            AELog.error(e);
+            LOG.error("Failed to setup testworld", e);
             sender.sendFailure(PlayerMessages.TestWorldSetupFailed.text(e.toString()));
         }
     }

@@ -29,12 +29,12 @@
     "facing=south,powered=false": {
       "model": "ae2:block/growth_accelerator",
       "x": 90,
-      "y": 180
+      "y": 90
     },
     "facing=south,powered=true": {
       "model": "ae2:block/growth_accelerator_on",
       "x": 90,
-      "y": 180
+      "y": 90
     },
     "facing=up,powered=false": {
       "model": "ae2:block/growth_accelerator"
@@ -45,12 +45,12 @@
     "facing=west,powered=false": {
       "model": "ae2:block/growth_accelerator",
       "x": 90,
-      "y": 270
+      "y": 90
     },
     "facing=west,powered=true": {
       "model": "ae2:block/growth_accelerator_on",
       "x": 90,
-      "y": 270
+      "y": 90
     }
   }
 }

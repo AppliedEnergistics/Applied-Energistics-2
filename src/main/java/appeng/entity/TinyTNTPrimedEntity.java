@@ -18,6 +18,7 @@
 
 package appeng.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -36,11 +38,14 @@ import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Explosion.BlockInteraction;
+import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerExplosion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.event.EventHooks;
 
@@ -137,19 +142,27 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithC
             return;
         }
 
-        final Explosion ex = new Explosion(this.level(), this, this.getX(), this.getY(), this.getZ(),
-                0.2f, false, AEConfig.instance().isTinyTntBlockDamageEnabled() ? BlockInteraction.DESTROY_WITH_DECAY
+        // TODO 1.21.4: Can likely be rewritten to use the explosion calculator
+        var damageSource = Explosion.getDefaultDamageSource(this.level(), this);
+        var ex = new ServerExplosion(
+                (ServerLevel) this.level(),
+                this,
+                damageSource,
+                new ExplosionDamageCalculator(),
+                new Vec3(this.getX(), this.getY(), this.getZ()),
+                0.2f,
+                false,
+                AEConfig.instance().isTinyTntBlockDamageEnabled() ? BlockInteraction.DESTROY_WITH_DECAY
                         : BlockInteraction.KEEP);
         final AABB area = new AABB(this.getX() - 1.5, this.getY() - 1.5f, this.getZ() - 1.5,
                 this.getX() + 1.5, this.getY() + 1.5, this.getZ() + 1.5);
         final List<Entity> list = this.level().getEntities(this, area);
 
-        EventHooks.onExplosionDetonate(this.level(), ex, list, 0.2f * 2d);
-
         for (Entity e : list) {
             e.hurt(level().damageSources().explosion(ex), 6);
         }
 
+        var pos = new ArrayList<BlockPos>();
         if (AEConfig.instance().isTinyTntBlockDamageEnabled()) {
             this.setPos(this.getX(), this.getY() - 0.25, this.getZ());
 
@@ -174,18 +187,18 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithC
                             strength -= (resistance + 0.3F) * 0.11f;
 
                             if (strength > 0.01 && !state.isAir()) {
-                                if (state.canDropFromExplosion(this.level(), point, ex)) {
-                                    Block.dropResources(state, this.level(), point, this.level().getBlockEntity(point));
-                                }
-
                                 level().setBlock(point, Blocks.AIR.defaultBlockState(), 3);
-                                state.onBlockExploded(this.level(), point, ex);
+                                state.onExplosionHit((ServerLevel) this.level(), point, ex, (stack, dropPoint) -> {
+                                    Block.popResource(this.level(), dropPoint, stack);
+                                });
+                                pos.add(point);
                             }
                         }
                     }
                 }
             }
         }
+        EventHooks.onExplosionDetonate(this.level(), ex, list, pos);
 
         AppEng.instance().sendToAllNearExcept(null, this.getX(), this.getY(), this.getZ(), 64, this.level(),
                 new MockExplosionPacket(this.getX(), this.getY(), this.getZ()));

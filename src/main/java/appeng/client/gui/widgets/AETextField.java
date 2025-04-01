@@ -22,9 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -34,6 +31,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
@@ -197,10 +195,7 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
         endX = Mth.clamp(endX, getX(), getX() + this.width);
         startX = Mth.clamp(startX, getX(), getX() + this.width);
 
-        RenderSystem.enableColorLogicOp();
-        RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-        guiGraphics.fill(startX, startY, endX, endY, this.selectionColor);
-        RenderSystem.disableColorLogicOp();
+        guiGraphics.fill(RenderType.guiTextHighlight(), startX, startY, endX, endY, this.selectionColor);
     }
 
     @Override

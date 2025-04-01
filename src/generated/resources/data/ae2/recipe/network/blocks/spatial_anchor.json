@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:spatial_pylon"
-    },
-    "b": {
-      "item": "ae2:fluix_glass_cable"
-    },
-    "c": {
-      "item": "ae2:spatial_cell_component_128"
-    },
-    "d": {
-      "tag": "c:ingots/iron"
-    },
-    "e": {
-      "item": "ae2:engineering_processor"
-    }
+    "a": "ae2:spatial_pylon",
+    "b": "ae2:fluix_glass_cable",
+    "c": "ae2:spatial_cell_component_128",
+    "d": "#c:ingots/iron",
+    "e": "ae2:engineering_processor"
   },
   "pattern": [
     "aaa",

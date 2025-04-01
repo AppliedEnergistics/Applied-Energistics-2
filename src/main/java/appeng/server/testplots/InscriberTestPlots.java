@@ -79,7 +79,7 @@ public final class InscriberTestPlots {
         }, plotTestHelper -> {
             plotTestHelper.startSequence()
                     .thenWaitUntil(() -> {
-                        var inscriber = (InscriberBlockEntity) plotTestHelper.getBlockEntity(BlockPos.ZERO);
+                        var inscriber = plotTestHelper.getBlockEntity(BlockPos.ZERO, InscriberBlockEntity.class);
                         var inv = inscriber.getInternalInventory();
                         plotTestHelper.check(
                                 ItemStack.isSameItemSameComponents(inv.getStackInSlot(0), expectedTopSlot),

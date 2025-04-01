@@ -22,6 +22,7 @@ import java.util.EnumSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +33,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -161,7 +164,7 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
         this.upgrades.readFromNBT(data, "upgrades", registries);
         this.configManager.readFromNBT(data, registries);
         // TODO 1.22: Remove compat with old format.
-        if ("NO".equals(data.getString("inscriber_buffer_size"))) {
+        if ("NO".equals(data.getStringOr("inscriber_buffer_size", ""))) {
             this.configManager.putSetting(Settings.INSCRIBER_INPUT_CAPACITY, InscriberInputCapacity.FOUR);
         }
 
@@ -211,7 +214,7 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
     protected void loadVisualState(CompoundTag data) {
         super.loadVisualState(data);
 
-        setSmash(data.getBoolean("smash"));
+        setSmash(data.getBooleanOr("smash", false));
     }
 
     @Override
@@ -293,7 +296,7 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
 
     @Nullable
     public InscriberRecipe getTask() {
-        if (this.cachedTask == null && level != null) {
+        if (this.cachedTask == null && level instanceof ServerLevel serverLevel) {
             ItemStack input = this.sideItemHandler.getStackInSlot(0);
             ItemStack plateA = this.topItemHandler.getStackInSlot(0);
             ItemStack plateB = this.bottomItemHandler.getStackInSlot(0);
@@ -301,7 +304,7 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
                 return null; // No input to handle
             }
 
-            this.cachedTask = InscriberRecipes.findRecipe(level, input, plateA, plateB, true);
+            this.cachedTask = InscriberRecipes.findRecipe(serverLevel, input, plateA, plateB, true);
         }
         return this.cachedTask;
     }
@@ -526,6 +529,10 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
     public class BaseFilter implements IAEItemFilter {
         @Override
         public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
+            if (!(level instanceof ServerLevel serverLevel)) {
+                return false;
+            }
+
             // output slot
             if (slot == 1) {
                 // slots and automation prevent insertion into the output,
@@ -558,7 +565,7 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
             if (inv == topItemHandler)
                 top = stack;
 
-            for (var holder : InscriberRecipes.getRecipes(level)) {
+            for (var holder : InscriberRecipes.getRecipes(serverLevel)) {
                 var recipe = holder.value();
                 if (!middle.isEmpty() && !recipe.getMiddleInput().test(middle)) {
                     continue;
@@ -567,22 +574,30 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
                 if (bot.isEmpty() && top.isEmpty()) {
                     return true;
                 } else if (bot.isEmpty()) {
-                    if (recipe.getTopOptional().test(top) || recipe.getBottomOptional().test(top)) {
+                    if (testIngredient(recipe.getTopOptional(), top)
+                            || testIngredient(recipe.getBottomOptional(), top)) {
                         return true;
                     }
                 } else if (top.isEmpty()) {
-                    if (recipe.getBottomOptional().test(bot) || recipe.getTopOptional().test(bot)) {
+                    if (testIngredient(recipe.getBottomOptional(), bot)
+                            || testIngredient(recipe.getTopOptional(), bot)) {
                         return true;
                     }
                 } else {
-                    if ((recipe.getTopOptional().test(top) && recipe.getBottomOptional().test(bot))
-                            || (recipe.getBottomOptional().test(top) && recipe.getTopOptional().test(bot))) {
+                    if ((testIngredient(recipe.getTopOptional(), top)
+                            && testIngredient(recipe.getBottomOptional(), bot))
+                            || (testIngredient(recipe.getBottomOptional(), top)
+                                    && testIngredient(recipe.getTopOptional(), bot))) {
                         return true;
                     }
                 }
             }
             return false;
         }
+    }
+
+    private static boolean testIngredient(Optional<Ingredient> ingredient, ItemStack stack) {
+        return ingredient.map(value -> value.test(stack)).orElseGet(stack::isEmpty);
     }
 
     public class AutomationFilter implements IAEItemFilter {

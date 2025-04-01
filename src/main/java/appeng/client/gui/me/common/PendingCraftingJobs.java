@@ -61,7 +61,7 @@ public final class PendingCraftingJobs {
                 if (AEConfig.instance().isNotifyForFinishedCraftingJobs()
                         && !(minecraft.screen instanceof MEStorageScreen<?>)
                         && minecraft.player != null && hasNotificationEnablingItem(minecraft.player)) {
-                    minecraft.getToasts().addToast(new FinishedJobToast(what, requestedAmount));
+                    minecraft.getToastManager().addToast(new FinishedJobToast(what, requestedAmount));
                 }
             }
         }

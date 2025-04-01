@@ -1,0 +1,724 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "north",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "north",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "north",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "north",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "east",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "east",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "east",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "east",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "south",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "south",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "south",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "south",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "west",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "west",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "west",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "west",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base",
+        "x": 270
+      },
+      "when": {
+        "facing": "up",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base",
+        "x": 270
+      },
+      "when": {
+        "facing": "up",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base",
+        "x": 270
+      },
+      "when": {
+        "facing": "up",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base",
+        "x": 270
+      },
+      "when": {
+        "facing": "up",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base",
+        "x": 90
+      },
+      "when": {
+        "facing": "down",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base",
+        "x": 90
+      },
+      "when": {
+        "facing": "down",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base",
+        "x": 90
+      },
+      "when": {
+        "facing": "down",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_base",
+        "x": 90
+      },
+      "when": {
+        "facing": "down",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "north",
+        "lights_on": "false",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "north",
+        "lights_on": "false",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "north",
+        "lights_on": "false",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "north",
+        "lights_on": "false",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "east",
+        "lights_on": "false",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "east",
+        "lights_on": "false",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "east",
+        "lights_on": "false",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "east",
+        "lights_on": "false",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "south",
+        "lights_on": "false",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "south",
+        "lights_on": "false",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "south",
+        "lights_on": "false",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "south",
+        "lights_on": "false",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "west",
+        "lights_on": "false",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "west",
+        "lights_on": "false",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "west",
+        "lights_on": "false",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "west",
+        "lights_on": "false",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off",
+        "x": 270
+      },
+      "when": {
+        "facing": "up",
+        "lights_on": "false",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off",
+        "x": 270
+      },
+      "when": {
+        "facing": "up",
+        "lights_on": "false",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off",
+        "x": 270
+      },
+      "when": {
+        "facing": "up",
+        "lights_on": "false",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off",
+        "x": 270
+      },
+      "when": {
+        "facing": "up",
+        "lights_on": "false",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off",
+        "x": 90
+      },
+      "when": {
+        "facing": "down",
+        "lights_on": "false",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off",
+        "x": 90
+      },
+      "when": {
+        "facing": "down",
+        "lights_on": "false",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off",
+        "x": 90
+      },
+      "when": {
+        "facing": "down",
+        "lights_on": "false",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_off",
+        "x": 90
+      },
+      "when": {
+        "facing": "down",
+        "lights_on": "false",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "north",
+        "lights_on": "true",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "north",
+        "lights_on": "true",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "north",
+        "lights_on": "true",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "north",
+        "lights_on": "true",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "east",
+        "lights_on": "true",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "east",
+        "lights_on": "true",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "east",
+        "lights_on": "true",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "east",
+        "lights_on": "true",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "south",
+        "lights_on": "true",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "south",
+        "lights_on": "true",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "south",
+        "lights_on": "true",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "south",
+        "lights_on": "true",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "west",
+        "lights_on": "true",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "west",
+        "lights_on": "true",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "west",
+        "lights_on": "true",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "west",
+        "lights_on": "true",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on",
+        "x": 270
+      },
+      "when": {
+        "facing": "up",
+        "lights_on": "true",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on",
+        "x": 270
+      },
+      "when": {
+        "facing": "up",
+        "lights_on": "true",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on",
+        "x": 270
+      },
+      "when": {
+        "facing": "up",
+        "lights_on": "true",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on",
+        "x": 270
+      },
+      "when": {
+        "facing": "up",
+        "lights_on": "true",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on",
+        "x": 90
+      },
+      "when": {
+        "facing": "down",
+        "lights_on": "true",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on",
+        "x": 90
+      },
+      "when": {
+        "facing": "down",
+        "lights_on": "true",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on",
+        "x": 90
+      },
+      "when": {
+        "facing": "down",
+        "lights_on": "true",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/me_chest_lights_on",
+        "x": 90
+      },
+      "when": {
+        "facing": "down",
+        "lights_on": "true",
+        "spin": "3"
+      }
+    }
+  ]
+}

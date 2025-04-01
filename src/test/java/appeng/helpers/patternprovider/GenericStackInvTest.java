@@ -95,7 +95,7 @@ class GenericStackInvTest {
         var tag = new CompoundTag();
         inv.setStack(0, ONE_STICK);
         inv.writeToChildTag(tag, "child", registryAccess);
-        assertThat(tag.getAllKeys()).containsOnly("child");
+        assertThat(tag.keySet()).containsOnly("child");
     }
 
     /**

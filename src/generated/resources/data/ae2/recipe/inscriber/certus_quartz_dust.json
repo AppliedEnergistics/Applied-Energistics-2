@@ -1,9 +1,7 @@
 {
   "type": "ae2:inscriber",
   "ingredients": {
-    "middle": {
-      "tag": "c:gems/certus_quartz"
-    }
+    "middle": "#c:gems/certus_quartz"
   },
   "mode": "inscribe",
   "result": {

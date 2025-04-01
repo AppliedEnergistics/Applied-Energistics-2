@@ -39,7 +39,7 @@ import appeng.parts.CableBusContainer;
 public class CableBusColor implements BlockColor {
 
     @Override
-    public int getColor(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int color) {
+    public int getColor(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int tintIndex) {
 
         AEColor busColor = AEColor.TRANSPARENT;
 
@@ -51,7 +51,7 @@ public class CableBusColor implements BlockColor {
             }
         }
 
-        return busColor.getVariantByTintIndex(color);
+        return busColor.getVariantByTintIndex(tintIndex);
 
     }
 }

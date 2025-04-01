@@ -18,28 +18,49 @@
 
 package appeng.server.services.compass;
 
+import java.nio.ByteBuffer;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.Util;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
-
-import appeng.core.AELog;
-import appeng.core.worlddata.AESavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 /**
  * A compass region stores information about the occurrence of skystone blocks in a region of 1024x1024 chunks.
  */
-final class CompassRegion extends AESavedData {
-    private static final SavedData.Factory<CompassRegion> FACTORY = new Factory<>(
-            CompassRegion::new,
-            CompassRegion::load,
-            null);
+final class CompassRegion extends SavedData {
+    // Helper used to record it in the codec
+    private record Section(int index, ByteBuffer bits) {
+    }
+
+    private static final Codec<Section> SECTION_CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            Codec.INT.fieldOf("index").forGetter(Section::index),
+            Codec.BYTE_BUFFER.fieldOf("index").forGetter(Section::bits)).apply(builder, Section::new));
+
+    private static final Codec<CompassRegion> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            SECTION_CODEC.listOf().fieldOf("sections").forGetter(CompassRegion::sections))
+            .apply(builder, CompassRegion::new));
+
+    private List<Section> sections() {
+        return sections.entrySet().stream().map(
+                entry -> new Section(entry.getKey(), ByteBuffer.wrap(entry.getValue().toByteArray()))).toList();
+    }
+
+    private static final BiFunction<Integer, Integer, SavedDataType<CompassRegion>> TYPE = Util
+            .memoize((regionX, regionZ) -> new SavedDataType<>(
+                    "ae2_compass_" + regionX + "_" + regionZ,
+                    CompassRegion::new,
+                    CODEC));
 
     /**
      * The number of chunks that get saved in a region on each axis.
@@ -51,11 +72,13 @@ final class CompassRegion extends AESavedData {
     // Key is the section index, see ChunkAccess.getSections()
     private final Map<Integer, BitSet> sections = new HashMap<>();
 
-    /**
-     * Gets the name of the save data for a region that has the given coordinates.
-     */
-    private static String getRegionSaveName(int regionX, int regionZ) {
-        return "ae2_compass_" + regionX + "_" + regionZ;
+    private CompassRegion() {
+    }
+
+    private CompassRegion(List<Section> sections) {
+        for (var section : sections) {
+            this.sections.put(section.index(), BitSet.valueOf(section.bits()));
+        }
     }
 
     /**
@@ -69,37 +92,7 @@ final class CompassRegion extends AESavedData {
         var regionZ = chunkPos.z / CHUNKS_PER_REGION;
 
         return level.getDataStorage().computeIfAbsent(
-                FACTORY,
-                getRegionSaveName(regionX, regionZ));
-    }
-
-    public static CompassRegion load(CompoundTag nbt, HolderLookup.Provider registries) {
-        var result = new CompassRegion();
-        for (String key : nbt.getAllKeys()) {
-            if (key.startsWith("section")) {
-                try {
-                    var sectionIndex = Integer.parseInt(key.substring("section".length()));
-                    result.sections.put(sectionIndex, BitSet.valueOf(nbt.getByteArray(key)));
-                } catch (NumberFormatException e) {
-                    AELog.warn("Compass region contains invalid NBT tag %s", key);
-                }
-            } else {
-                AELog.warn("Compass region contains unknown NBT tag %s", key);
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public CompoundTag save(CompoundTag compound, HolderLookup.Provider registries) {
-        for (var entry : sections.entrySet()) {
-            var key = "section" + entry.getKey();
-            if (entry.getValue().isEmpty()) {
-                continue;
-            }
-            compound.putByteArray(key, entry.getValue().toByteArray());
-        }
-        return compound;
+                TYPE.apply(regionX, regionZ));
     }
 
     boolean hasCompassTarget(int cx, int cz) {

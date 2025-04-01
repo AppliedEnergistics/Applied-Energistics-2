@@ -2,7 +2,8 @@
   "credit": "Made with Blockbench",
   "parent": "block/block",
   "textures": {
-    "wood": "ae2:block/crank"
+    "wood": "ae2:block/crank",
+    "particle": "ae2:block/crank"
   },
   "elements": [
     {

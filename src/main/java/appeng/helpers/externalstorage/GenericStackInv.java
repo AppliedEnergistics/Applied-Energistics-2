@@ -30,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 
 import it.unimi.dsi.fastutil.objects.Reference2LongArrayMap;
@@ -298,7 +297,8 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     public void readFromTag(ListTag tag, HolderLookup.Provider registries) {
         boolean changed = false;
         for (int i = 0; i < Math.min(size(), tag.size()); ++i) {
-            var stack = GenericStack.readTag(registries, tag.getCompound(i));
+            var stackTag = tag.getCompound(i).orElse(null);
+            var stack = stackTag != null ? GenericStack.readTag(registries, stackTag) : null;
             if (!Objects.equals(stack, stacks[i])) {
                 stacks[i] = stack;
                 changed = true;
@@ -333,8 +333,9 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     }
 
     public void readFromChildTag(CompoundTag tag, String name, HolderLookup.Provider registries) {
-        if (tag.contains(name, Tag.TAG_LIST)) {
-            readFromTag(tag.getList(name, Tag.TAG_COMPOUND), registries);
+        var contentTag = tag.getList(name);
+        if (contentTag.isPresent()) {
+            readFromTag(contentTag.get(), registries);
         } else {
             clear();
         }

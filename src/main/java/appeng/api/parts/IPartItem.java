@@ -77,7 +77,7 @@ public interface IPartItem<P extends IPart> extends ItemLike {
      */
     @Nullable
     static IPartItem<?> byId(ResourceLocation id) {
-        var item = BuiltInRegistries.ITEM.get(id);
+        var item = BuiltInRegistries.ITEM.getValue(id);
         if (item instanceof IPartItem<?> partItem) {
             return partItem;
         }

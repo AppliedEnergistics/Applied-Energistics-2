@@ -77,7 +77,7 @@ final class AEFluidKeys extends AEKeyType {
 
     @Override
     public Stream<TagKey<?>> getTagNames() {
-        return BuiltInRegistries.FLUID.getTagNames().map(t -> t);
+        return BuiltInRegistries.FLUID.listTagIds().map(t -> t);
     }
 
     @Override

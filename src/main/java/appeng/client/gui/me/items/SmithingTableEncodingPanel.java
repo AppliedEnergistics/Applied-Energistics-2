@@ -7,8 +7,6 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
 
 import appeng.api.config.ActionItems;
@@ -84,15 +82,15 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
                 menu.getSmithingTableBaseSlot().getItem(),
                 menu.getSmithingTableAdditionSlot().getItem());
 
-        var level = menu.getPlayer().level();
-        var recipe = level.getRecipeManager()
-                .getRecipeFor(RecipeType.SMITHING, recipeInput, level)
-                .orElse(null);
-        if (recipe == null) {
-            resultSlot.set(ItemStack.EMPTY);
-        } else {
-            resultSlot.set(recipe.value().assemble(recipeInput, level.registryAccess()));
-        }
+        // TODO 1.21.4 var level = menu.getPlayer().level();
+        // TODO 1.21.4 var recipe = level.recipeAccess()
+        // TODO 1.21.4 .getRecipeFor(RecipeType.SMITHING, recipeInput, level)
+        // TODO 1.21.4 .orElse(null);
+        // TODO 1.21.4 if (recipe == null) {
+        // TODO 1.21.4 resultSlot.set(ItemStack.EMPTY);
+        // TODO 1.21.4 } else {
+        // TODO 1.21.4 resultSlot.set(recipe.value().assemble(recipeInput, level.registryAccess()));
+        // TODO 1.21.4 }
     }
 
     @Override

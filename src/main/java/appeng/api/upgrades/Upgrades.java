@@ -171,7 +171,7 @@ public final class Upgrades {
             for (var association : cardAssociations) {
                 if (association.upgradableItem() == upgradableItem) {
                     result.add(GuiText.CompatibleUpgrade
-                            .text(association.upgradeCard().getDescription(), association.maxCount())
+                            .text(association.upgradeCard().getName(), association.maxCount())
                             .withStyle(ChatFormatting.GRAY));
                     break;
                 }
@@ -198,7 +198,7 @@ public final class Upgrades {
 
         for (int i = 0; i < associations.size(); i++) {
             var association = associations.get(i);
-            Component name = association.upgradableItem().getDescription();
+            Component name = association.upgradableItem().getName();
 
             // If the group was already added by a previous item, skip this
             if (association.tooltipGroup() != null && namesAdded.contains(association.tooltipGroup())) {

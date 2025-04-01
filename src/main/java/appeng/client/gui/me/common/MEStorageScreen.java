@@ -36,10 +36,10 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -491,7 +491,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
             if (slot instanceof RepoSlot repoSlot) {
                 var entry = repoSlot.getEntry();
                 if (entry != null && PendingCraftingJobs.hasPendingJob(entry.getWhat())) {
-                    var sprite = minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                    var sprite = minecraft.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
                             .apply(AppEng.makeId("block/molecular_assembler_lights"));
                     Blitter.sprite(sprite)
                             .src(sprite.getX() + 2, sprite.getY() + 2, sprite.contents().width() - 4,
@@ -514,7 +514,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         // handler for middle mouse button crafting in survival mode
         if (Minecraft.getInstance().options.keyPickItem.matchesMouse(btn)) {
-            Slot slot = this.findSlot(xCoord, yCoord);
+            Slot slot = this.getHoveredSlot(xCoord, yCoord);
             if (slot instanceof RepoSlot repoSlot && repoSlot.isCraftable()) {
                 handleGridInventoryEntryMouseClick(repoSlot.getEntry(), btn, ClickType.CLONE);
                 return true;
@@ -527,7 +527,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     @Override
     public boolean mouseScrolled(double x, double y, double deltaX, double deltaY) {
         if (deltaY != 0 && hasShiftDown()) {
-            if (this.findSlot(x, y) instanceof RepoSlot repoSlot) {
+            if (this.getHoveredSlot(x, y) instanceof RepoSlot repoSlot) {
                 GridInventoryEntry entry = repoSlot.getEntry();
                 long serial = entry != null ? entry.getSerial() : -1;
                 final InventoryAction direction = deltaY > 0 ? InventoryAction.ROLL_DOWN
@@ -573,6 +573,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
     @Override
     public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY, float partialTicks) {
+
+        guiGraphics.flush();
 
         style.getHeader()
                 .dest(offsetX, offsetY)

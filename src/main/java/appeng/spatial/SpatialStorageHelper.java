@@ -33,7 +33,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.entity.Visibility;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -108,7 +108,7 @@ public class SpatialStorageHelper {
             AdvancementTriggers.SPATIAL_EXPLORER.trigger((ServerPlayer) entity);
         }
 
-        entity.changeDimension(new DimensionTransition(
+        entity.teleport(new TeleportTransition(
                 newLevel, new Vec3(link.x, link.y, link.z), Vec3.ZERO, entity.getYRot(),
                 entity.getXRot(), transportedEntity -> {
                     if (!passengersOnOtherSide.isEmpty()) {
@@ -247,7 +247,7 @@ public class SpatialStorageHelper {
         @Override
         public void visit(BlockPos pos) {
             final BlockState state = this.dst.getBlockState(pos);
-            state.handleNeighborChanged(this.dst, pos, state.getBlock(), pos, false);
+            state.handleNeighborChanged(this.dst, pos, state.getBlock(), null, false);
         }
     }
 

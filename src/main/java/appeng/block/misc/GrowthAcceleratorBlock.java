@@ -33,17 +33,17 @@ import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.GrowthAcceleratorBlockEntity;
-import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
+import appeng.core.particles.ParticleTypes;
 import appeng.util.Platform;
 
 public class GrowthAcceleratorBlock extends AEBaseEntityBlock<GrowthAcceleratorBlockEntity> {
 
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public GrowthAcceleratorBlock() {
-        super(metalProps());
+    public GrowthAcceleratorBlock(Properties p) {
+        super(metalProps(p));
         this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 

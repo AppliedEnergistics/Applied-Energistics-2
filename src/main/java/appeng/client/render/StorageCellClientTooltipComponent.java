@@ -27,7 +27,7 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(Font font) {
         var height = 0;
         var upgrades = tooltipComponent.upgrades();
         if (!upgrades.isEmpty()) {
@@ -87,7 +87,7 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, GuiGraphics guiGraphics) {
+    public void renderImage(Font font, int x, int y, int width, int height, GuiGraphics guiGraphics) {
         var content = tooltipComponent.content();
         if (!content.isEmpty()) {
             var xoff = 0;

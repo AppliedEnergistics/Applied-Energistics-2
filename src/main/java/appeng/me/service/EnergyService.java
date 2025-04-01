@@ -39,7 +39,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 
 import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 
@@ -583,8 +582,8 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
         }
 
         // If the node came with buffered energy, add it to our internal storage
-        if (storedData != null && storedData.contains(TAG_STORED_ENERGY, Tag.TAG_DOUBLE)) {
-            double buffer = storedData.getDouble(TAG_STORED_ENERGY);
+        if (storedData != null && storedData.contains(TAG_STORED_ENERGY)) {
+            double buffer = storedData.getDoubleOr(TAG_STORED_ENERGY, 0.0);
             if (buffer > 0) {
                 localStorage.injectAEPower(buffer, Actionable.MODULATE);
             }

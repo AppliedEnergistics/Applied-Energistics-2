@@ -29,8 +29,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -45,6 +43,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.spatial.ISpatialService;
 import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 
@@ -59,17 +58,17 @@ public class ReplicatorCardItem extends AEBaseItem {
     }
 
     private int getReplications(ItemStack stack) {
-        return getTag(stack).getInt("r");
+        return getTag(stack).getIntOr("r", 0);
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player playerIn, InteractionHand handIn) {
+    public InteractionResult use(Level level, Player playerIn, InteractionHand handIn) {
         if (!level.isClientSide()) {
             var stack = playerIn.getItemInHand(handIn);
             CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> {
                 final int replications;
                 if (tag.contains("r")) {
-                    replications = (tag.getInt("r") + 1) % 4;
+                    replications = (tag.getIntOr("r", 0) + 1) % 4;
                 } else {
                     replications = 0;
                 }
@@ -77,7 +76,7 @@ public class ReplicatorCardItem extends AEBaseItem {
             });
 
             var replications = getReplications(stack);
-            playerIn.sendSystemMessage(Component.literal(replications + 1 + "³ Replications"));
+            AppEng.instance().sendSystemMessage(playerIn, Component.literal(replications + 1 + "³ Replications"));
         }
 
         return super.use(level, playerIn, handIn);
@@ -88,7 +87,7 @@ public class ReplicatorCardItem extends AEBaseItem {
         Level level = context.getLevel();
         if (level.isClientSide()) {
             // Needed, otherwise client will trigger onItemRightClick also on server...
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         Player player = context.getPlayer();
@@ -124,14 +123,14 @@ public class ReplicatorCardItem extends AEBaseItem {
         } else {
             var ish = getTag(player.getItemInHand(hand));
             if (!ish.isEmpty()) {
-                final int src_x = ish.getInt("x");
-                final int src_y = ish.getInt("y");
-                final int src_z = ish.getInt("z");
-                final int src_side = ish.getInt("side");
-                final String worldId = ish.getString("w");
+                final int src_x = ish.getIntOr("x", 0);
+                final int src_y = ish.getIntOr("y", 0);
+                final int src_z = ish.getIntOr("z", 0);
+                final int src_side = ish.getIntOr("side", 0);
+                final String worldId = ish.getStringOr("w", "");
                 final Level src_w = level.getServer()
                         .getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(worldId)));
-                final int replications = ish.getInt("r") + 1;
+                final int replications = ish.getIntOr("r", 0) + 1;
 
                 var gh = GridHelper.getNodeHost(src_w, new BlockPos(src_x, src_y, src_z));
 
@@ -220,11 +219,11 @@ public class ReplicatorCardItem extends AEBaseItem {
                 this.outputMsg(player, "No Source Defined");
             }
         }
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
-    private void outputMsg(Entity player, String string) {
-        player.sendSystemMessage(Component.literal(string));
+    private void outputMsg(Player player, String string) {
+        AppEng.instance().sendSystemMessage(player, Component.literal(string));
     }
 
     @Override

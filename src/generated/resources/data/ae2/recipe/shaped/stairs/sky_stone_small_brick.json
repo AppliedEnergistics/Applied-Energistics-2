@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "ae2:sky_stone_small_brick"
-    }
+    "#": "ae2:sky_stone_small_brick"
   },
   "pattern": [
     "#  ",

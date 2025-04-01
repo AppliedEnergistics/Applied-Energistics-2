@@ -18,7 +18,7 @@
 
 package appeng.block.networking;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -42,11 +42,11 @@ public class EnergyCellBlockItem extends AEBaseBlockItem implements IAEItemPower
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addCheckedInformation(ItemStack stack, TooltipContext context, List<Component> lines,
+    public void addCheckedInformation(ItemStack stack, TooltipContext context, Consumer<Component> lines,
             TooltipFlag advancedTooltips) {
         var storedEnergy = getAECurrentPower(stack);
         var maxEnergy = getAEMaxPower(stack);
-        lines.add(Tooltips.energyStorageComponent(storedEnergy, maxEnergy));
+        lines.accept(Tooltips.energyStorageComponent(storedEnergy, maxEnergy));
     }
 
     @Override

@@ -18,14 +18,15 @@
 
 package appeng.items.storage;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
@@ -66,7 +67,8 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
             TooltipFlag advancedTooltips) {
         var inventory = StorageCells.getCellInventory(stack, null);
 
@@ -75,10 +77,10 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
             if (!cc.isEmpty()) {
                 if (Screen.hasShiftDown()) {
                     for (var key : cc.keySet()) {
-                        lines.add(Tooltips.of(AEKeyRendering.getDisplayName(key)));
+                        lines.accept(Tooltips.of(AEKeyRendering.getDisplayName(key)));
                     }
                 } else {
-                    lines.add(Tooltips.of(GuiText.PressShiftForFullList));
+                    lines.accept(Tooltips.of(GuiText.PressShiftForFullList));
                 }
             }
         }

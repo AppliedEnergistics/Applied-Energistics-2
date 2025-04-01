@@ -1,8 +1,6 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "ae2:quartz_block"
-  },
+  "ingredient": "ae2:quartz_block",
   "result": {
     "count": 1,
     "id": "ae2:cut_quartz_block"

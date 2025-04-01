@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "c:ingots/iron"
-    },
-    "b": {
-      "item": "minecraft:furnace"
-    },
-    "c": {
-      "item": "ae2:energy_acceptor"
-    },
-    "d": {
-      "tag": "c:ingots/copper"
-    },
-    "e": {
-      "tag": "c:gems/fluix"
-    }
+    "a": "#c:ingots/iron",
+    "b": "minecraft:furnace",
+    "c": "ae2:energy_acceptor",
+    "d": "#c:ingots/copper",
+    "e": "#c:gems/fluix"
   },
   "pattern": [
     "ded",

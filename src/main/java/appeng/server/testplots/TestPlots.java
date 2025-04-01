@@ -28,6 +28,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -164,7 +165,7 @@ public final class TestPlots {
                 }
             }
         } catch (Exception e) {
-            AELog.error("Failed to scan for plots: %s", e);
+            LOG.error("Failed to scan for plots.", e);
         }
 
         return plots;
@@ -217,10 +218,10 @@ public final class TestPlots {
     }
 
     private static AEItemKey createEnchantedPickaxe(Level level) {
-        var enchantmentRegistry = level.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+        var enchantmentRegistry = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
 
         var enchantedPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
-        enchantedPickaxe.enchant(enchantmentRegistry.getHolderOrThrow(Enchantments.FORTUNE), 3);
+        enchantedPickaxe.enchant(enchantmentRegistry.getOrThrow(Enchantments.FORTUNE), 3);
         return AEItemKey.of(enchantedPickaxe);
     }
 
@@ -476,7 +477,7 @@ public final class TestPlots {
 
         plot.test(helper -> {
             // Import bus should import nothing on its own
-            var inputChest = (ChestBlockEntity) helper.getBlockEntity(inputPos);
+            var inputChest = helper.getBlockEntity(inputPos, ChestBlockEntity.class);
             var grid = helper.getGrid(origin);
             Runnable assertNothingMoved = () -> {
                 helper.assertContainerContains(inputPos, Items.OAK_PLANKS);
@@ -613,7 +614,7 @@ public final class TestPlots {
         plot.creativeEnergyCell(origin.east().north().below());
 
         plot.test(helper -> helper.succeedWhen(() -> {
-            var meChest = (MEChestBlockEntity) helper.getBlockEntity(origin);
+            var meChest = helper.getBlockEntity(origin, MEChestBlockEntity.class);
             helper.assertContains(meChest.getInventory(), AEFluidKey.of(Fluids.WATER));
         }));
     }
@@ -634,7 +635,7 @@ public final class TestPlots {
         plot.hopper(origin.above(), Direction.DOWN, Items.STICK, Items.REDSTONE);
 
         plot.test(helper -> helper.succeedWhen(() -> {
-            var meChest = (MEChestBlockEntity) helper.getBlockEntity(origin);
+            var meChest = helper.getBlockEntity(origin, MEChestBlockEntity.class);
             helper.assertContains(meChest.getInventory(), AEItemKey.of(Items.REDSTONE));
             // The stick should still be in the hopper
             helper.assertContainerContains(origin.above(), Items.STICK);
@@ -663,7 +664,7 @@ public final class TestPlots {
 
             var patternProviders = grid.getMachines(PatternProviderPart.class).iterator();
             PatternProviderPart current = patternProviders.next();
-            var craftingRecipes = node.getLevel().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING);
+            var craftingRecipes = node.getLevel().recipeAccess().recipeMap().byType(RecipeType.CRAFTING);
 
             Set<AEItemKey> neededIngredients = new HashSet<>();
             Set<AEItemKey> providedResults = new HashSet<>();
@@ -676,33 +677,35 @@ public final class TestPlots {
 
                 ItemStack craftingPattern;
                 try {
+                    var resultItem = CraftingRecipeUtil.getResult(recipe);
                     var ingredients = CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe).stream()
                             .map(i -> {
                                 if (i.isEmpty()) {
                                     return ItemStack.EMPTY;
                                 } else {
-                                    return i.getItems()[0];
+                                    return i.get().items().map(Holder::value).map(Item::getDefaultInstance).findFirst()
+                                            .orElse(ItemStack.EMPTY);
                                 }
                             }).toArray(ItemStack[]::new);
+
                     craftingPattern = PatternDetailsHelper.encodeCraftingPattern(
                             holder,
                             ingredients,
-                            recipe.getResultItem(node.getLevel().registryAccess()),
+                            resultItem,
                             false,
                             false);
 
-                    for (ItemStack ingredient : ingredients) {
+                    for (var ingredient : ingredients) {
                         var key = AEItemKey.of(ingredient);
                         if (key != null) {
                             neededIngredients.add(key);
                         }
                     }
-                    if (!recipe.getResultItem(node.getLevel().registryAccess()).isEmpty()) {
-                        providedResults.add(AEItemKey.of(recipe.getResultItem(node.getLevel().registryAccess())));
+                    if (!resultItem.isEmpty()) {
+                        providedResults.add(AEItemKey.of(resultItem));
                     }
                 } catch (Exception e) {
-                    AELog.warn(e);
-                    continue;
+                    throw new RuntimeException(e);
                 }
 
                 if (!current.getLogic().getPatternInv().addItems(craftingPattern).isEmpty()) {
@@ -777,7 +780,7 @@ public final class TestPlots {
                         var requesting = grid.getCraftingService().getRequestedAmount(output.what());
                         helper.check(requesting > 0, "not yet requesting items");
                         if (requesting != 1) {
-                            helper.fail("blocking mode failed, requesting: " + requesting);
+                            throw helper.assertionException("blocking mode failed, requesting: " + requesting);
                         }
                     })
                     .thenSucceed();
@@ -822,7 +825,7 @@ public final class TestPlots {
         plot.test(helper -> {
             helper.succeedWhen(() -> {
                 helper.assertBlockPresent(Blocks.CAULDRON, origin.east());
-                var tank = (SkyStoneTankBlockEntity) helper.getBlockEntity(origin.west());
+                var tank = helper.getBlockEntity(origin.west(), SkyStoneTankBlockEntity.class);
                 helper.check(tank.getTank().getFluidAmount() == AEFluidKey.AMOUNT_BUCKET,
                         "Less than a bucket stored");
                 helper.check(tank.getTank().getFluid().getFluid() == Fluids.LAVA,
@@ -860,8 +863,8 @@ public final class TestPlots {
             items.set(1, undamaged.toStack());
             var input = CraftingInput.of(3, 3, items);
 
-            var level = molecularAssembler.getLevel();
-            var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level).get();
+            var level = (ServerLevel) molecularAssembler.getLevel();
+            var recipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, level).get();
 
             // Encode pattern
             var sparseInputs = new ItemStack[9];
@@ -881,12 +884,13 @@ public final class TestPlots {
 
         plot.test(helper -> {
             helper.runAfterDelay(40, () -> {
-                var molecularAssembler = (MolecularAssemblerBlockEntity) helper.getBlockEntity(molecularAssemblerPos);
+                var molecularAssembler = helper.getBlockEntity(molecularAssemblerPos,
+                        MolecularAssemblerBlockEntity.class);
                 var outputItem = molecularAssembler.getInternalInventory().getStackInSlot(9);
                 if (correctResult.matches(outputItem)) {
                     helper.succeed();
                 } else if (undamaged.matches(outputItem)) {
-                    helper.fail("created undamaged item");
+                    throw helper.assertionException("created undamaged item");
                 }
             });
         });

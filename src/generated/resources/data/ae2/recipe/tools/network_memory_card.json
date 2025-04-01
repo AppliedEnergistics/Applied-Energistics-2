@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:calculation_processor"
-    },
-    "b": {
-      "tag": "c:ingots/iron"
-    },
-    "c": {
-      "tag": "c:ingots/gold"
-    },
-    "d": {
-      "tag": "c:dusts/redstone"
-    }
+    "a": "ae2:calculation_processor",
+    "b": "#c:ingots/iron",
+    "c": "#c:ingots/gold",
+    "d": "#c:dusts/redstone"
   },
   "pattern": [
     "abb",

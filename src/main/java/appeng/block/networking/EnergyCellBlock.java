@@ -42,8 +42,8 @@ public class EnergyCellBlock extends AEBaseEntityBlock<EnergyCellBlockEntity> {
     private final double chargeRate;
     private final int priority;
 
-    public EnergyCellBlock(double maxPower, double chargeRate, int priority) {
-        super(glassProps());
+    public EnergyCellBlock(Properties p, double maxPower, double chargeRate, int priority) {
+        super(glassProps(p));
         this.maxPower = maxPower;
         this.chargeRate = chargeRate;
         this.priority = priority;

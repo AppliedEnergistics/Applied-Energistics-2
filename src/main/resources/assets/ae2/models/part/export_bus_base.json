@@ -6,6 +6,7 @@
     "front": "ae2:part/export_bus",
     "particle": "ae2:part/monitor_back"
   },
+  "render_type": "minecraft:cutout",
   "elements": [
     {
       "from": [4, 4, 2],

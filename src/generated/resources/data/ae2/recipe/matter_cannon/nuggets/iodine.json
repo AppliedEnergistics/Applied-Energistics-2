@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/iodine"
-  },
+  "ammo": "#c:nuggets/iodine",
   "weight": 126.9045
 }

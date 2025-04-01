@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/nickel"
-  },
+  "ammo": "#c:nuggets/nickel",
   "weight": 58.6934
 }

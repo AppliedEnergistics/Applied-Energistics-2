@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/palladium"
-  },
+  "ammo": "#c:nuggets/palladium",
   "weight": 106.42
 }

@@ -1,9 +1,7 @@
 {
   "type": "ae2:inscriber",
   "ingredients": {
-    "middle": {
-      "item": "ae2:sky_stone_block"
-    }
+    "middle": "ae2:sky_stone_block"
   },
   "mode": "inscribe",
   "result": {

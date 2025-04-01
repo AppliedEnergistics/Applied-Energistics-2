@@ -18,24 +18,9 @@
 
 package appeng.parts.reporting;
 
-import net.minecraft.resources.ResourceLocation;
-
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
-import appeng.parts.PartModel;
 
 public class DarkPanelPart extends AbstractPanelPart {
-
-    @PartModels
-    public static final ResourceLocation MODEL_OFF = AppEng.makeId("part/monitor_dark_off");
-    @PartModels
-    public static final ResourceLocation MODEL_ON = AppEng.makeId("part/monitor_dark_on");
-
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF);
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON);
-
     public DarkPanelPart(IPartItem<?> partItem) {
         super(partItem);
     }
@@ -44,10 +29,4 @@ public class DarkPanelPart extends AbstractPanelPart {
     protected int getBrightnessColor() {
         return this.getColor().mediumVariant;
     }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return this.isPowered() ? MODELS_ON : MODELS_OFF;
-    }
-
 }

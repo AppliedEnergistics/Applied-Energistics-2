@@ -23,11 +23,11 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.registries.GameData;
 
-import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AELog;
 import appeng.core.AppEngClient;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
+import appeng.core.particles.EnergyParticleData;
 
 /**
  * Plays the block breaking or fluid pickup sound and a transition particle effect into the supplied direction. Used

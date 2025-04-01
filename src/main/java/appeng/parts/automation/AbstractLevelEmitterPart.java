@@ -30,6 +30,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Setting;
@@ -104,7 +105,7 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     public void readVisualStateFromNBT(CompoundTag data) {
         super.readVisualStateFromNBT(data);
 
-        this.clientSideOn = data.getBoolean("on");
+        this.clientSideOn = data.getBooleanOr("on", false);
     }
 
     protected void updateState() {
@@ -182,9 +183,9 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     @Override
     public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.readFromNBT(data, registries);
-        this.lastReportedValue = data.getLong("lastReportedValue");
-        this.reportingValue = data.getLong("reportingValue");
-        this.prevState = data.getBoolean("prevState");
+        this.lastReportedValue = data.getLongOr("lastReportedValue", 0);
+        this.reportingValue = data.getLongOr("reportingValue", 0);
+        this.prevState = data.getBooleanOr("prevState", false);
     }
 
     @Override
@@ -242,5 +243,12 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     @Override
     protected boolean shouldSendMissingChannelStateToClient() {
         return false; // We handle this completely in our enabled flag
+    }
+
+    @Nullable
+    @Override
+    public void collectModelData(ModelData.Builder builder) {
+        super.collectModelData(builder);
+        builder.with(PartModelData.LEVEL_EMITTER_ON, isLevelEmitterOn());
     }
 }

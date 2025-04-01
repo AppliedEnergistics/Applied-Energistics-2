@@ -1,6 +1,6 @@
 package appeng.block.misc;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -20,10 +20,12 @@ import appeng.server.services.compass.ServerCompassService;
 
 public class MysteriousCubeBlock extends AEBaseEntityBlock<MysteriousCubeBlockEntity> {
     // Not a redstone conductor to prevent using it as a facade.
-    public static final Properties PROPERTIES = metalProps().strength(10, 1000).isRedstoneConductor(Blocks::never);
+    public static Properties properties(Properties p) {
+        return metalProps(p).strength(10, 1000).isRedstoneConductor(Blocks::never);
+    }
 
-    public MysteriousCubeBlock() {
-        super(PROPERTIES);
+    public MysteriousCubeBlock(Properties p) {
+        super(properties(p));
     }
 
     @Override
@@ -33,22 +35,22 @@ public class MysteriousCubeBlock extends AEBaseEntityBlock<MysteriousCubeBlockEn
         }
     }
 
+// TODO 1.21.4 redesign as BE    @Override
+// TODO 1.21.4 redesign as BE    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+// TODO 1.21.4 redesign as BE        if (newState.getBlock() == state.getBlock()) {
+// TODO 1.21.4 redesign as BE            return; // Just a block state change
+// TODO 1.21.4 redesign as BE        }
+// TODO 1.21.4 redesign as BE
+// TODO 1.21.4 redesign as BE        super.onRemove(state, level, pos, newState, isMoving);
+// TODO 1.21.4 redesign as BE
+// TODO 1.21.4 redesign as BE        if (level instanceof ServerLevel serverLevel) {
+// TODO 1.21.4 redesign as BE            ServerCompassService.notifyBlockChange(serverLevel, pos);
+// TODO 1.21.4 redesign as BE        }
+// TODO 1.21.4 redesign as BE    }
+
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (newState.getBlock() == state.getBlock()) {
-            return; // Just a block state change
-        }
-
-        super.onRemove(state, level, pos, newState, isMoving);
-
-        if (level instanceof ServerLevel serverLevel) {
-            ServerCompassService.notifyBlockChange(serverLevel, pos);
-        }
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip,
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, Consumer<Component> tooltip,
             TooltipFlag flag) {
-        tooltip.add(Tooltips.of(GuiText.MysteriousQuote, Tooltips.QUOTE_TEXT));
+        tooltip.accept(Tooltips.of(GuiText.MysteriousQuote, Tooltips.QUOTE_TEXT));
     }
 }

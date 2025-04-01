@@ -1,114 +1,100 @@
 {
   "variants": {
     "facing=down,spin=0": {
-      "model": "ae2:block/drive",
-      "x": 90
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=down,spin=1": {
-      "ae2:z": 270,
-      "model": "ae2:block/drive",
-      "x": 90
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=down,spin=2": {
-      "ae2:z": 180,
-      "model": "ae2:block/drive",
-      "x": 90
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=down,spin=3": {
-      "ae2:z": 90,
-      "model": "ae2:block/drive",
-      "x": 90
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=east,spin=0": {
-      "model": "ae2:block/drive",
-      "y": 90
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=east,spin=1": {
-      "ae2:z": 270,
-      "model": "ae2:block/drive",
-      "y": 90
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=east,spin=2": {
-      "ae2:z": 180,
-      "model": "ae2:block/drive",
-      "y": 90
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=east,spin=3": {
-      "ae2:z": 90,
-      "model": "ae2:block/drive",
-      "y": 90
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=north,spin=0": {
-      "model": "ae2:block/drive"
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=north,spin=1": {
-      "ae2:z": 270,
-      "model": "ae2:block/drive"
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=north,spin=2": {
-      "ae2:z": 180,
-      "model": "ae2:block/drive"
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=north,spin=3": {
-      "ae2:z": 90,
-      "model": "ae2:block/drive"
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=south,spin=0": {
-      "model": "ae2:block/drive",
-      "y": 180
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=south,spin=1": {
-      "ae2:z": 90,
-      "model": "ae2:block/drive",
-      "y": 180
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=south,spin=2": {
-      "ae2:z": 180,
-      "model": "ae2:block/drive",
-      "y": 180
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=south,spin=3": {
-      "ae2:z": 270,
-      "model": "ae2:block/drive",
-      "y": 180
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=up,spin=0": {
-      "ae2:z": 180,
-      "model": "ae2:block/drive",
-      "x": 270
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=up,spin=1": {
-      "ae2:z": 90,
-      "model": "ae2:block/drive",
-      "x": 270
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=up,spin=2": {
-      "model": "ae2:block/drive",
-      "x": 270
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=up,spin=3": {
-      "ae2:z": 270,
-      "model": "ae2:block/drive",
-      "x": 270
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=west,spin=0": {
-      "model": "ae2:block/drive",
-      "y": 270
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=west,spin=1": {
-      "ae2:z": 270,
-      "model": "ae2:block/drive",
-      "y": 270
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=west,spin=2": {
-      "ae2:z": 180,
-      "model": "ae2:block/drive",
-      "y": 270
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     },
     "facing=west,spin=3": {
-      "ae2:z": 90,
-      "model": "ae2:block/drive",
-      "y": 270
+      "type": "ae2:drive",
+      "model": "ae2:drive_base"
     }
   }
 }

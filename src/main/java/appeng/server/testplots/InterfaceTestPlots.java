@@ -61,16 +61,16 @@ public class InterfaceTestPlots {
                                 "fluid should be valid in slot 1");
                     })
                     .thenWaitUntil(() -> {
-                        var iface = (InterfaceBlockEntity) helper.getBlockEntity(o);
+                        var iface = helper.getBlockEntity(o, InterfaceBlockEntity.class);
                         helper.assertEquals(o, null, iface.getStorage().getKey(0));
                         helper.assertEquals(o, AEItemKey.of(Items.BRICK), iface.getStorage().getKey(1));
                     })
                     .thenExecute(() -> {
-                        var hopper = (HopperBlockEntity) helper.getBlockEntity(o.above());
+                        var hopper = helper.getBlockEntity(o.above(), HopperBlockEntity.class);
                         hopper.setItem(0, Items.STICK.getDefaultInstance());
                     })
                     .thenWaitUntil(() -> {
-                        var iface = (InterfaceBlockEntity) helper.getBlockEntity(o);
+                        var iface = helper.getBlockEntity(o, InterfaceBlockEntity.class);
                         helper.assertEquals(o, AEItemKey.of(Items.STICK), iface.getStorage().getKey(0));
                         helper.assertEquals(o, AEItemKey.of(Items.BRICK), iface.getStorage().getKey(1));
                     })
@@ -107,7 +107,7 @@ public class InterfaceTestPlots {
                 helper.assertContainerEmpty(o.north().west());
 
                 // The output interface should have 64 sticks
-                var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.above());
+                var iface = helper.getBlockEntity(o.above(), InterfaceBlockEntity.class);
                 var counter = new KeyCounter();
                 iface.getInterfaceLogic().getStorage().getAvailableStacks(counter);
                 var stickCount = counter.get(AEItemKey.of(Items.STICK));
@@ -140,17 +140,17 @@ public class InterfaceTestPlots {
         plot.test(helper -> helper.startSequence()
                 // Test interface restock
                 .thenWaitUntil(() -> {
-                    var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.south());
+                    var iface = helper.getBlockEntity(o.south(), InterfaceBlockEntity.class);
                     var apples = iface.getStorage().getStack(0);
                     helper.check(apples != null && apples.amount() == 1, "Expected 1 apple", o.south());
                 })
                 // Test interface pushing items away to subnet
                 .thenExecute(() -> {
-                    var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.south());
+                    var iface = helper.getBlockEntity(o.south(), InterfaceBlockEntity.class);
                     iface.getStorage().setStack(1, GenericStack.fromItemStack(new ItemStack(Items.DIAMOND)));
                 })
                 .thenWaitUntil(() -> {
-                    var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.north());
+                    var iface = helper.getBlockEntity(o.north(), InterfaceBlockEntity.class);
                     var diamonds = iface.getStorage().getStack(1);
                     helper.check(diamonds != null && diamonds.amount() == 1, "Expected 1 diamond", o.north());
                 })
@@ -200,7 +200,7 @@ public class InterfaceTestPlots {
                     })
                     .thenExecute(() -> {
                         // Cancel the job by removing the upgrade card
-                        var iface = (InterfaceBlockEntity) helper.getBlockEntity(origin.above());
+                        var iface = helper.getBlockEntity(origin.above(), InterfaceBlockEntity.class);
                         iface.getUpgrades().removeItems(1, ItemStack.EMPTY, null);
 
                         // and immediately insert a craft result into the network storage

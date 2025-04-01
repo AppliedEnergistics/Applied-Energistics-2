@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -20,13 +22,14 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartHelper;
-import appeng.core.AELog;
 import appeng.core.definitions.AEAttachmentTypes;
 import appeng.parts.networking.CablePart;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 public class PartPlacement {
+    private static final Logger LOG = LoggerFactory.getLogger(PartPlacement.class);
+
     public static InteractionResult place(UseOnContext context) {
 
         var player = context.getPlayer();
@@ -63,7 +66,7 @@ public class PartPlacement {
             }
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     /**
@@ -108,7 +111,7 @@ public class PartPlacement {
             try {
                 addedPart.importSettings(SettingsFrom.DISMANTLE_ITEM, configData, player);
             } catch (Exception e) {
-                AELog.warn(e, "Failed to import part settings during placement.");
+                LOG.warn("Failed to import part settings during placement", e);
             }
         }
 

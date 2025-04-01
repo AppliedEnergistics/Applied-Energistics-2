@@ -21,10 +21,12 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.PatternDetailsHelper;
@@ -127,17 +129,18 @@ class AEProcessingPatternTest {
     }
 
     private List<String> getExtraTooltip(CompoundTag tag) {
-        var stack = ItemStack.parseOptional(registryAccess, tag);
+        var stack = ItemStack.parse(registryAccess, tag).orElseThrow();
 
         var lines = new ArrayList<Component>();
-        stack.getItem().appendHoverText(stack, Item.TooltipContext.EMPTY, lines, TooltipFlag.ADVANCED);
+        stack.getItem().appendHoverText(stack, Item.TooltipContext.EMPTY, TooltipDisplay.DEFAULT, lines::add,
+                TooltipFlag.ADVANCED);
         return lines.stream().map(Component::getString).toList();
     }
 
     private AEProcessingPattern decode(CompoundTag tag) {
-        var stack = ItemStack.parseOptional(registryAccess, tag);
+        var stack = ItemStack.parse(registryAccess, tag).orElseThrow();
 
-        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(stack), mock(Level.class));
+        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(stack), mock(ServerLevel.class));
         if (details == null) {
             return null;
         }

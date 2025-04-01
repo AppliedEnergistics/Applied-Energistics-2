@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "c:dusts/glowstone"
-    },
-    "b": {
-      "item": "ae2:fluix_pearl"
-    },
-    "c": {
-      "item": "ae2:engineering_processor"
-    }
+    "a": "#c:dusts/glowstone",
+    "b": "ae2:fluix_pearl",
+    "c": "ae2:engineering_processor"
   },
   "pattern": [
     "aba",

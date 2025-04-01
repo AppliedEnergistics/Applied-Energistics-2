@@ -33,8 +33,8 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelProperty;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
@@ -85,9 +85,9 @@ public class SpatialPylonBlockEntity extends AENetworkedBlockEntity implements I
         this.disconnect(false);
     }
 
-    public void neighborChanged(BlockPos changedPos) {
+    public void updateMultiBlock(BlockPos changedPos) {
         if (level instanceof ServerLevel serverLevel) {
-            this.calc.updateMultiblockAfterNeighborUpdate(serverLevel, worldPosition, changedPos);
+            this.calc.updateMultiblockAfterNeighborChange(serverLevel, worldPosition, changedPos);
         }
     }
 
@@ -249,21 +249,25 @@ public class SpatialPylonBlockEntity extends AENetworkedBlockEntity implements I
         }
 
         public static ClientState readFromNbt(CompoundTag tag) {
-            var powered = tag.getBoolean("powered");
-            var online = tag.getBoolean("online");
-            var axisPositionName = tag.getString("axisPosition");
-            AxisPosition axisPosition;
-            try {
-                axisPosition = Enum.valueOf(AxisPosition.class, axisPositionName);
-            } catch (IllegalArgumentException ignored) {
-                axisPosition = DEFAULT.axisPosition;
+            var powered = tag.getBooleanOr("powered", false);
+            var online = tag.getBooleanOr("online", false);
+            AxisPosition axisPosition = DEFAULT.axisPosition;
+            var axisPositionName = tag.getStringOr("axisPosition", null);
+            if (axisPositionName != null) {
+                try {
+                    axisPosition = Enum.valueOf(AxisPosition.class, axisPositionName);
+                } catch (IllegalArgumentException ignored) {
+                    axisPosition = DEFAULT.axisPosition;
+                }
             }
-            var axisName = tag.getString("axis");
-            Direction.Axis axis;
-            try {
-                axis = Enum.valueOf(Direction.Axis.class, axisName);
-            } catch (IllegalArgumentException ignored) {
-                axis = DEFAULT.axis;
+            var axisName = tag.getStringOr("axis", null);
+            Direction.Axis axis = DEFAULT.axis;
+            if (axisName != null) {
+                try {
+                    axis = Enum.valueOf(Direction.Axis.class, axisName);
+                } catch (IllegalArgumentException ignored) {
+                    axis = DEFAULT.axis;
+                }
             }
             return new ClientState(
                     powered,

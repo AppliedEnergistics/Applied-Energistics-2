@@ -43,7 +43,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 
@@ -55,8 +55,8 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
+import appeng.block.networking.CableBusRenderState;
 import appeng.blockentity.AEBaseBlockEntity;
-import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.core.AppEng;
 import appeng.helpers.AEMultiBlockEntity;
 import appeng.parts.CableBusContainer;
@@ -242,12 +242,6 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public boolean isBlocked(Direction side) {
-        // TODO 1.10.2-R - Stuff.
-        return false;
-    }
-
-    @Override
     public SelectedPart selectPartLocal(Vec3 pos) {
         return this.getCableBus().selectPartLocal(pos);
     }
@@ -291,7 +285,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
             var targetState = this.level.getBlockState(targetPos);
             if (!targetState.isAir()) {
                 NeighborUpdater.executeUpdate(level, targetState, targetPos,
-                        getBlockState().getBlock(), getBlockPos(), false);
+                        getBlockState().getBlock(), null, false);
             }
         }
     }
@@ -321,7 +315,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
             return ModelData.EMPTY;
         }
 
-        CableBusRenderState renderState = this.cb.getRenderState();
+        var renderState = this.cb.getRenderState();
         renderState.setPos(worldPosition);
         return ModelData.builder().with(CableBusRenderState.PROPERTY, renderState).build();
 
@@ -375,7 +369,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
             }
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
 
     }
 
@@ -404,5 +398,14 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
             }
         }
         writer.endObject();
+    }
+
+    @Nullable
+    public <T> T getPartRendererCache(Class<T> cacheClass) {
+        return cb.getPartRendererCache(cacheClass);
+    }
+
+    public void setPartRendererCache(Object partRendererCache) {
+        cb.setPartRendererCache(partRendererCache);
     }
 }

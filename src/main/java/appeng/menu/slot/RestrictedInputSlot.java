@@ -18,6 +18,7 @@
 
 package appeng.menu.slot;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +37,6 @@ import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.upgrades.Upgrades;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 import appeng.blockentity.misc.InscriberRecipes;
-import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;
@@ -103,8 +103,12 @@ public class RestrictedInputSlot extends AppEngSlot {
         // TODO: might need to check for our own patterns in some cases
         switch (this.which) {
             case MOLECULAR_ASSEMBLER_PATTERN:
-                return PatternDetailsHelper.decodePattern(stack,
-                        getLevel()) instanceof IMolecularAssemblerSupportedPattern;
+                if (getLevel() instanceof ServerLevel serverLevel) {
+                    return PatternDetailsHelper.decodePattern(stack,
+                            serverLevel) instanceof IMolecularAssemblerSupportedPattern;
+                } else {
+                    return true;
+                }
             case ENCODED_PATTERN, PROVIDER_PATTERN:
                 return PatternDetailsHelper.isEncodedPattern(stack);
             case ENCODED_AE_PATTERN:
@@ -120,7 +124,11 @@ public class RestrictedInputSlot extends AppEngSlot {
                     return true;
                 }
 
-                return InscriberRecipes.isValidOptionalIngredient(getLevel(), stack);
+                if (getLevel() instanceof ServerLevel serverLevel) {
+                    return InscriberRecipes.isValidOptionalIngredient(serverLevel, stack);
+                } else {
+                    return false;
+                }
 
             case INSCRIBER_INPUT:
                 return true;/*
@@ -135,7 +143,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case VIEW_CELL:
                 return AEItems.VIEW_CELL.is(stack);
             case FUEL:
-                return VibrationChamberBlockEntity.hasBurnTime(stack);
+                return stack.getBurnTime(null, getLevel().fuelValues()) > 0;
             case POWERED_TOOL:
                 return Platform.isChargeable(stack);
             case QE_SINGULARITY:

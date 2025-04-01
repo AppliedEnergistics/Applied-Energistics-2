@@ -18,7 +18,6 @@
 
 package appeng.items.tools.powered;
 
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -32,11 +31,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.api.distmarker.Dist;
@@ -111,28 +110,29 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      * Opens a wireless terminal when activated by the player while held in hand.
      */
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         var is = player.getItemInHand(hand);
 
         if (!player.level().isClientSide() && checkPreconditions(is)) {
             if (MenuOpener.open(getMenuType(), player, MenuLocators.forHand(player, hand))) {
-                return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()), is);
+                return InteractionResult.SUCCESS;
             }
         }
 
-        return new InteractionResultHolder<>(InteractionResult.FAIL, is);
+        return InteractionResult.FAIL;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
             TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, context, lines, advancedTooltips);
+        super.appendHoverText(stack, context, tooltipDisplay, lines, advancedTooltips);
 
         if (getLinkedPosition(stack) == null) {
-            lines.add(Tooltips.of(GuiText.Unlinked, Tooltips.RED));
+            lines.accept(Tooltips.of(GuiText.Unlinked, Tooltips.RED));
         } else {
-            lines.add(Tooltips.of(GuiText.Linked, Tooltips.GREEN));
+            lines.accept(Tooltips.of(GuiText.Linked, Tooltips.GREEN));
         }
     }
 

@@ -9,10 +9,10 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AppEngClient;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
+import appeng.core.particles.EnergyParticleData;
 
 /**
  * Plays a transition particle effect into the supplied direction. Used primarily by annihilation planes.

@@ -10,7 +10,7 @@
     "AnvilMenuMixin",
     "EnchantmentHelperMixin",
     "ItemEntityMixin",
-    "tests.StructureUtilsMixin",
+    "tests.TestInstanceBlockEntityMixin",
     "tests.TestCommandMixin",
     "StructureTemplateMixin"
   ],
@@ -21,8 +21,8 @@
     "PickColorMixin",
     "TextureAtlasMixin",
     "PonderWorldMixin",
-    "ModelBakeryMixin",
-    "VariantDeserializerMixin"
+    "RecipeUpdateMixin",
+    "client.PartModelLoaderMixin"
   ],
   "server": [],
   "injectors": {

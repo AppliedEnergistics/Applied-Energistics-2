@@ -1,16 +1,16 @@
 package appeng.items.misc;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEKey;
@@ -32,14 +32,14 @@ public class MissingContentItem extends Item {
         // "id" is just the most common ID field for key types
         if (itemStackData != null && itemStackData.contains("id")) {
             var brokenDataTag = itemStackData.getUnsafe();
-            if (!brokenDataTag.contains("id", Tag.TAG_STRING)) {
+            if (!brokenDataTag.contains("id")) {
                 return null; // Without any ID this info is worthless
             }
-            var missingId = brokenDataTag.getString("id");
+            var missingId = brokenDataTag.getStringOr("id", "");
 
             long amount;
             try {
-                amount = Math.max(1, brokenDataTag.getLong("count"));
+                amount = Math.max(1, brokenDataTag.getLongOr("count", 0));
             } catch (Exception ignored) {
                 amount = 1;
             }
@@ -47,16 +47,16 @@ public class MissingContentItem extends Item {
             return new BrokenStackInfo(Component.literal(missingId), AEKeyType.items(), amount);
         } else if (genericStackData != null && genericStackData.contains("id")) {
             var brokenDataTag = genericStackData.getUnsafe();
-            if (!brokenDataTag.contains("id", Tag.TAG_STRING)) {
+            if (!brokenDataTag.contains("id")) {
                 return null; // Without any ID this info is worthless
             }
-            var missingId = Component.literal(brokenDataTag.getString("id"));
+            var missingId = Component.literal(brokenDataTag.getStringOr("id", ""));
 
             // Try figuring out which AEKeyType it may have been. If that fails just default to item
             AEKeyType keyType = null;
             try {
-                var keyTypeString = brokenDataTag.getString(AEKey.TYPE_FIELD);
-                keyType = AEKeyTypesInternal.getRegistry().get(ResourceLocation.parse(keyTypeString));
+                var keyTypeString = brokenDataTag.getStringOr(AEKey.TYPE_FIELD, "");
+                keyType = AEKeyTypesInternal.getRegistry().getValue(ResourceLocation.parse(keyTypeString));
                 if (keyType == null) {
                     missingId.append(" (").append(keyTypeString).append(")");
                 }
@@ -65,7 +65,7 @@ public class MissingContentItem extends Item {
 
             long amount;
             try {
-                amount = Math.max(1, brokenDataTag.getLong(GenericStack.AMOUNT_FIELD));
+                amount = Math.max(1, brokenDataTag.getLongOr(GenericStack.AMOUNT_FIELD, 0));
             } catch (Exception ignored) {
                 amount = 1;
             }
@@ -77,12 +77,13 @@ public class MissingContentItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag advanced) {
-        super.appendHoverText(stack, context, lines, advanced);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines, TooltipFlag advanced) {
+        super.appendHoverText(stack, context, tooltipDisplay, lines, advanced);
 
         var error = stack.get(AEComponents.MISSING_CONTENT_ERROR);
         if (error != null) {
-            lines.add(Component.literal(error).withStyle(ChatFormatting.GRAY));
+            lines.accept(Component.literal(error).withStyle(ChatFormatting.GRAY));
         }
     }
 

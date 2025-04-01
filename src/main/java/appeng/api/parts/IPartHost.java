@@ -129,13 +129,6 @@ public interface IPartHost extends ICustomCableConnection {
     void clearContainer();
 
     /**
-     * Used to test for FMP microblock blocking internally.
-     *
-     * @return returns if microblocks are blocking this cable path.
-     */
-    boolean isBlocked(Direction side);
-
-    /**
      * Finds the part located at the position in block-local coordinates (0,0,0 is located at the block pos).
      *
      * @param pos part position

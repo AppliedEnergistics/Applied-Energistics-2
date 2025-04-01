@@ -202,8 +202,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_chassis",
-        "y": 180
+        "model": "ae2:block/wireless_access_point_chassis"
       },
       "when": {
         "facing": "south"
@@ -211,8 +210,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_off",
-        "y": 180
+        "model": "ae2:block/wireless_access_point_off"
       },
       "when": {
         "facing": "south",
@@ -221,8 +219,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_status_off",
-        "y": 180
+        "model": "ae2:block/wireless_access_point_status_off"
       },
       "when": {
         "facing": "south",
@@ -231,8 +228,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_off",
-        "y": 180
+        "model": "ae2:block/wireless_access_point_off"
       },
       "when": {
         "facing": "south",
@@ -241,8 +237,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_status_has_channel",
-        "y": 180
+        "model": "ae2:block/wireless_access_point_status_has_channel"
       },
       "when": {
         "facing": "south",
@@ -251,8 +246,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_on",
-        "y": 180
+        "model": "ae2:block/wireless_access_point_on"
       },
       "when": {
         "facing": "south",
@@ -261,8 +255,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_status_has_channel",
-        "y": 180
+        "model": "ae2:block/wireless_access_point_status_has_channel"
       },
       "when": {
         "facing": "south",
@@ -271,8 +264,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_chassis",
-        "y": 270
+        "model": "ae2:block/wireless_access_point_chassis"
       },
       "when": {
         "facing": "west"
@@ -280,8 +272,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_off",
-        "y": 270
+        "model": "ae2:block/wireless_access_point_off"
       },
       "when": {
         "facing": "west",
@@ -290,8 +281,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_status_off",
-        "y": 270
+        "model": "ae2:block/wireless_access_point_status_off"
       },
       "when": {
         "facing": "west",
@@ -300,8 +290,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_off",
-        "y": 270
+        "model": "ae2:block/wireless_access_point_off"
       },
       "when": {
         "facing": "west",
@@ -310,8 +299,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_status_has_channel",
-        "y": 270
+        "model": "ae2:block/wireless_access_point_status_has_channel"
       },
       "when": {
         "facing": "west",
@@ -320,8 +308,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_on",
-        "y": 270
+        "model": "ae2:block/wireless_access_point_on"
       },
       "when": {
         "facing": "west",
@@ -330,8 +317,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_status_has_channel",
-        "y": 270
+        "model": "ae2:block/wireless_access_point_status_has_channel"
       },
       "when": {
         "facing": "west",
@@ -340,8 +326,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_chassis",
-        "y": 90
+        "model": "ae2:block/wireless_access_point_chassis"
       },
       "when": {
         "facing": "east"
@@ -349,8 +334,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_off",
-        "y": 90
+        "model": "ae2:block/wireless_access_point_off"
       },
       "when": {
         "facing": "east",
@@ -359,8 +343,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_status_off",
-        "y": 90
+        "model": "ae2:block/wireless_access_point_status_off"
       },
       "when": {
         "facing": "east",
@@ -369,8 +352,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_off",
-        "y": 90
+        "model": "ae2:block/wireless_access_point_off"
       },
       "when": {
         "facing": "east",
@@ -379,8 +361,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_status_has_channel",
-        "y": 90
+        "model": "ae2:block/wireless_access_point_status_has_channel"
       },
       "when": {
         "facing": "east",
@@ -389,8 +370,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_on",
-        "y": 90
+        "model": "ae2:block/wireless_access_point_on"
       },
       "when": {
         "facing": "east",
@@ -399,8 +379,7 @@
     },
     {
       "apply": {
-        "model": "ae2:block/wireless_access_point_status_has_channel",
-        "y": 90
+        "model": "ae2:block/wireless_access_point_status_has_channel"
       },
       "when": {
         "facing": "east",

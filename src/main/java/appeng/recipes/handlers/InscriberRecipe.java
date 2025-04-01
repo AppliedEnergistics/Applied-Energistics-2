@@ -18,27 +18,34 @@
 
 package appeng.recipes.handlers;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
 import appeng.recipes.AERecipeTypes;
 
 public class InscriberRecipe implements Recipe<RecipeInput> {
@@ -78,8 +85,8 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
     public static final RecipeType<InscriberRecipe> TYPE = AERecipeTypes.INSCRIBER;
 
     private final Ingredient middleInput;
-    private final Ingredient topOptional;
-    private final Ingredient bottomOptional;
+    private final Optional<Ingredient> topOptional;
+    private final Optional<Ingredient> bottomOptional;
     private final ItemStack output;
     private final InscriberProcessType processType;
 
@@ -88,7 +95,7 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
     }
 
     public InscriberRecipe(Ingredient middleInput, ItemStack output,
-            Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
+            Optional<Ingredient> topOptional, Optional<Ingredient> bottomOptional, InscriberProcessType processType) {
         this.middleInput = Objects.requireNonNull(middleInput, "middleInput");
         this.output = Objects.requireNonNull(output, "output");
         this.topOptional = Objects.requireNonNull(topOptional, "topOptional");
@@ -103,17 +110,7 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
 
     @Override
     public ItemStack assemble(RecipeInput inv, HolderLookup.Provider registries) {
-        return getResultItem(registries).copy();
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return true;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return getResultItem();
+        return getResultItem().copy();
     }
 
     public ItemStack getResultItem() {
@@ -121,33 +118,46 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<InscriberRecipe> getSerializer() {
         return InscriberRecipeSerializer.INSTANCE;
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<InscriberRecipe> getType() {
         return TYPE;
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients() {
-        NonNullList<Ingredient> ingredients = NonNullList.create();
-        ingredients.add(this.topOptional);
-        ingredients.add(this.middleInput);
-        ingredients.add(this.bottomOptional);
-        return ingredients;
+    public List<RecipeDisplay> display() {
+        return List.of(
+                new InscriberRecipeDisplay(
+                        middleInput.display(),
+                        topOptional.map(Ingredient::display).orElse(SlotDisplay.Empty.INSTANCE),
+                        bottomOptional.map(Ingredient::display).orElse(SlotDisplay.Empty.INSTANCE),
+                        processType,
+                        new SlotDisplay.ItemStackSlotDisplay(output),
+                        new SlotDisplay.ItemSlotDisplay(AEBlocks.INSCRIBER.asItem())));
+    }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC; // TODO 1.21.4
     }
 
     public Ingredient getMiddleInput() {
         return middleInput;
     }
 
-    public Ingredient getTopOptional() {
+    public Optional<Ingredient> getTopOptional() {
         return topOptional;
     }
 
-    public Ingredient getBottomOptional() {
+    public Optional<Ingredient> getBottomOptional() {
         return bottomOptional;
     }
 
@@ -168,24 +178,24 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
     }
 
     private record Ingredients(
-            Ingredient top,
+            Optional<Ingredient> top,
             Ingredient middle,
-            Ingredient bottom) {
+            Optional<Ingredient> bottom) {
         public static final Codec<Ingredients> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                Ingredient.CODEC.optionalFieldOf("top", Ingredient.EMPTY)
+                Ingredient.CODEC.optionalFieldOf("top")
                         .forGetter(Ingredients::top),
-                Ingredient.CODEC_NONEMPTY.fieldOf("middle")
+                Ingredient.CODEC.fieldOf("middle")
                         .forGetter(Ingredients::middle),
-                Ingredient.CODEC.optionalFieldOf("bottom", Ingredient.EMPTY)
+                Ingredient.CODEC.optionalFieldOf("bottom")
                         .forGetter(Ingredients::bottom))
                 .apply(builder, Ingredients::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, Ingredients> STREAM_CODEC = StreamCodec.composite(
-                Ingredient.CONTENTS_STREAM_CODEC,
+                Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC,
                 Ingredients::top,
                 Ingredient.CONTENTS_STREAM_CODEC,
                 Ingredients::middle,
-                Ingredient.CONTENTS_STREAM_CODEC,
+                Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC,
                 Ingredients::bottom,
                 Ingredients::new);
     }

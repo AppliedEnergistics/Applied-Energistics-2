@@ -36,6 +36,9 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.network.chat.Component;
@@ -61,6 +64,7 @@ import appeng.util.ILevelRunnable;
 import appeng.util.Platform;
 
 public class TickHandler {
+    private static final Logger LOG = LoggerFactory.getLogger(TickHandler.class);
 
     /**
      * Time limit for process queues with respect to the 50ms of a minecraft tick.
@@ -423,7 +427,7 @@ public class TickHandler {
                     break;
                 }
             } catch (Exception e) {
-                AELog.warn(e);
+                LOG.warn("Uncaught exception when running delay action", e);
             }
         }
 

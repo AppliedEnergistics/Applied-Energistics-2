@@ -20,25 +20,17 @@ package appeng.block.networking;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -48,8 +40,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -64,26 +56,21 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.networking.CableBusBlockEntity;
-import appeng.client.render.cablebus.CableBusBakedModel;
-import appeng.client.render.cablebus.CableBusBreakingParticle;
-import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
+import appeng.util.InteractionUtil;
 
 public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implements IAEFacade, SimpleWaterloggedBlock {
 
@@ -92,14 +79,14 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     private static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 15);
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    public CableBusBlock() {
-        super(glassProps().noOcclusion().noLootTable().dynamicShape().forceSolidOn()
+    public CableBusBlock(Properties p) {
+        super(glassProps(p).noOcclusion().noLootTable().dynamicShape().forceSolidOn()
                 .lightLevel(state -> state.getValue(LIGHT_LEVEL)));
         registerDefaultState(defaultBlockState().setValue(LIGHT_LEVEL, 0).setValue(WATERLOGGED, false));
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
+    protected boolean propagatesSkylightDown(BlockState state) {
         return true;
     }
 
@@ -137,8 +124,9 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entityIn) {
-        this.cb(level, pos).onEntityCollision(entityIn);
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity,
+            InsideBlockEffectApplier effectApplier) {
+        this.cb(level, pos).onEntityCollision(entity);
     }
 
     @Override
@@ -178,9 +166,16 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos,
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData,
             Player player) {
-        var v3 = target.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
+        var playerRay = InteractionUtil.getPlayerRay(player, 100);
+        var collisionShape = state.getShape(level, pos);
+        var hitResult = collisionShape.clip(playerRay.getA(), playerRay.getB(), pos);
+        if (hitResult == null) {
+            return ItemStack.EMPTY;
+        }
+
+        var v3 = hitResult.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
         var sp = this.cb(level, pos).selectPartLocal(v3);
 
         if (sp.part != null) {
@@ -192,15 +187,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         return ItemStack.EMPTY;
     }
 
-    @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
-        if (!level.isClientSide()) {
-            this.cb(level, pos).onNeighborChanged(level, pos, fromPos);
-        }
-    }
-
-    private ICableBusContainer cb(BlockGetter level, BlockPos pos) {
+    public ICableBusContainer cb(BlockGetter level, BlockPos pos) {
         final BlockEntity te = level.getBlockEntity(pos);
         ICableBusContainer out = null;
 
@@ -224,14 +211,14 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
+    protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
         // Transform from world into block space
         Vec3 hitVec = hit.getLocation();
         Vec3 hitInBlock = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
         return this.cb(level, pos).useItemOn(heldItem, player, hand, hitInBlock)
-                ? ItemInteractionResult.sidedSuccess(level.isClientSide())
-                : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                ? InteractionResult.SUCCESS
+                : InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override
@@ -241,7 +228,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         Vec3 hitVec = hitResult.getLocation();
         Vec3 hitInBlock = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
         return this.cb(level, pos).useWithoutItem(player, hitInBlock)
-                ? InteractionResult.sidedSuccess(level.isClientSide())
+                ? InteractionResult.SUCCESS
                 : InteractionResult.PASS;
     }
 
@@ -320,115 +307,20 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor level,
-            BlockPos currentPos, BlockPos facingPos) {
-        if (blockState.getValue(WATERLOGGED)) {
-            level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess,
+            BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        if (state.getValue(WATERLOGGED)) {
+            scheduledTickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
-        this.cb(level, currentPos).onUpdateShape(level, currentPos, facing);
+        this.cb(level, pos).onUpdateShape(level, pos, direction);
 
-        return super.updateShape(blockState, facing, facingState, level, currentPos, facingPos);
+        return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
     }
 
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
         this.cb(level, pos).onNeighborChanged(level, pos, neighbor);
-    }
-
-    @Override
-    public void initializeClient(Consumer<IClientBlockExtensions> consumer) {
-        consumer.accept(new IClientBlockExtensions() {
-
-            @Override
-            public boolean addHitEffects(BlockState state, Level level, HitResult target,
-                    ParticleEngine effectRenderer) {
-
-                // Half the particle rate. Since we're spawning concentrated on a specific spot,
-                // our particle effect otherwise looks too strong
-                if (level.getRandom().nextBoolean()) {
-                    return true;
-                }
-
-                if (target.getType() != Type.BLOCK) {
-                    return false;
-                }
-                BlockPos blockPos = BlockPos.containing(target.getLocation().x, target.getLocation().y,
-                        target.getLocation().z);
-
-                ICableBusContainer cb = cb(level, blockPos);
-
-                // Our built-in model has the actual baked sprites we need
-                BakedModel model = Minecraft.getInstance().getBlockRenderer()
-                        .getBlockModel(defaultBlockState());
-
-                // We cannot add the effect if we don't have the model
-                if (!(model instanceof CableBusBakedModel cableBusModel)) {
-                    return true;
-                }
-
-                CableBusRenderState renderState = cb.getRenderState();
-
-                // Spawn a particle for one of the particle textures
-                var textures = cableBusModel.getParticleTextures(renderState);
-                if (!textures.isEmpty()) {
-                    var texture = Util.getRandom(textures, level.getRandom());
-                    double x = target.getLocation().x;
-                    double y = target.getLocation().y;
-                    double z = target.getLocation().z;
-                    // FIXME: Check how this looks, probably like shit, maybe provide parts the
-                    // ability to supply particle textures???
-                    effectRenderer.add(
-                            new CableBusBreakingParticle((ClientLevel) level, x, y, z, texture).scale(0.8F));
-                }
-
-                return true;
-            }
-
-            @Override
-            public boolean addDestroyEffects(BlockState state, Level level, BlockPos pos,
-                    ParticleEngine effectRenderer) {
-                ICableBusContainer cb = cb(level, pos);
-
-                // Our built-in model has the actual baked sprites we need
-                BakedModel model = Minecraft.getInstance().getBlockRenderer()
-                        .getBlockModel(defaultBlockState());
-
-                // We cannot add the effect if we dont have the model
-                if (!(model instanceof CableBusBakedModel cableBusModel)) {
-                    return true;
-                }
-
-                CableBusRenderState renderState = cb.getRenderState();
-
-                List<TextureAtlasSprite> textures = cableBusModel.getParticleTextures(renderState);
-
-                if (!textures.isEmpty()) {
-                    // Shamelessly inspired by ParticleManager.addBlockDestroyEffects
-                    for (int j = 0; j < 4; ++j) {
-                        for (int k = 0; k < 4; ++k) {
-                            for (int l = 0; l < 4; ++l) {
-                                // Randomly select one of the textures if the cable bus has more than just one
-                                // possibility here
-                                var texture = Util.getRandom(textures, level.getRandom());
-
-                                final double x = pos.getX() + (j + 0.5D) / 4.0D;
-                                final double y = pos.getY() + (k + 0.5D) / 4.0D;
-                                final double z = pos.getZ() + (l + 0.5D) / 4.0D;
-
-                                // FIXME: Check how this looks, probably like shit, maybe provide parts the
-                                // ability to supply particle textures???
-                                Particle effect = new CableBusBreakingParticle((ClientLevel) level, x, y, z,
-                                        x - pos.getX() - 0.5D, y - pos.getY() - 0.5D, z - pos.getZ() - 0.5D, texture);
-                                effectRenderer.add(effect);
-                            }
-                        }
-                    }
-                }
-
-                return true;
-            }
-        });
     }
 
     /**
@@ -466,12 +358,12 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
             if (side.getOpposite() != renderingFacadeDir) {
                 var facadeState = facades.get(side);
                 if (facadeState != null) {
-                    return facadeState.getSourceBlock();
+                    return facadeState.sourceBlock();
                 }
             }
 
             if (renderingFacadeDir != null && facades.containsKey(renderingFacadeDir)) {
-                return facades.get(renderingFacadeDir).getSourceBlock();
+                return facades.get(renderingFacadeDir).sourceBlock();
             }
         }
         return state;

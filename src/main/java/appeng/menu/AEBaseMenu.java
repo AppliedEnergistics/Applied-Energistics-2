@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
@@ -34,9 +35,13 @@ import com.google.gson.GsonBuilder;
 
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -80,6 +85,8 @@ import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigMenuInventory;
 
 public abstract class AEBaseMenu extends AbstractContainerMenu {
+    private static final Logger LOG = LoggerFactory.getLogger(AEBaseMenu.class);
+
     private static final int MAX_STRING_LENGTH = 32767;
     private static final int MAX_CONTAINER_TRANSFER_ITERATIONS = 256;
     private static final String HIDE_SLOT = "HideSlot";
@@ -198,7 +205,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 getSlots(SlotSemantics.PLAYER_INVENTORY).isEmpty(),
                 "Player inventory was already created");
 
-        for (int i = 0; i < playerInventory.items.size(); i++) {
+        for (int i = 0; i < playerInventory.getNonEquipmentItems().size(); i++) {
             Slot slot;
             if (this.lockedPlayerInventorySlots.contains(i)) {
                 slot = new DisabledSlot(playerInventory, i);
@@ -626,7 +633,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             var extracted = source.extract(amountAllowed, Actionable.MODULATE);
             if (extracted <= 0) {
                 // Something went wrong
-                AELog.error("Unable to pull fluid out of the ME system even though the simulation said yes ");
+                LOG.error("Unable to pull fluid out of the ME system even though the simulation said yes ");
                 break;
             }
 
@@ -682,15 +689,15 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             // Actually drain
             var extracted = ctx.extract(what, amountAllowed, Actionable.MODULATE);
             if (extracted != amountAllowed) {
-                AELog.error(
-                        "Fluid item [%s] reported a different possible amount to drain than it actually provided.",
+                LOG.error(
+                        "Fluid item [{}] reported a different possible amount to drain than it actually provided.",
                         getCarried());
                 break;
             }
 
             // Actually push into the system
             if (sink.insert(what, extracted, Actionable.MODULATE) != extracted) {
-                AELog.error("Failed to insert previously simulated %s into ME system", what);
+                LOG.error("Failed to insert previously simulated {} into ME system", what);
                 break;
             }
 
@@ -815,6 +822,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
         a.set(testA);
         b.set(testB);
+    }
+
+    @Nullable
+    protected final ServerLevel getServerLevel() {
+        return getPlayer().level() instanceof ServerLevel serverLevel ? serverLevel : null;
     }
 
     /**
@@ -1010,5 +1022,12 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
     public void setReturnedFromSubScreen(boolean returnedFromSubScreen) {
         this.returnedFromSubScreen = returnedFromSubScreen;
+    }
+
+    protected final <T> void syncField(int id,
+            Supplier<T> getter,
+            Consumer<T> setter,
+            StreamCodec<? super RegistryFriendlyByteBuf, T> codec) {
+
     }
 }

@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/plutonium"
-  },
+  "ammo": "#c:nuggets/plutonium",
   "weight": 244.0
 }

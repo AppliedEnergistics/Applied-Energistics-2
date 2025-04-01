@@ -35,7 +35,7 @@ public class ChargedStaffItem extends AEBasePoweredItem {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack item, LivingEntity target, LivingEntity hitter) {
+    public void hurtEnemy(ItemStack item, LivingEntity target, LivingEntity hitter) {
         if (this.getAECurrentPower(item) > 300) {
             this.extractAEPower(item, 300, Actionable.MODULATE);
             if (!target.level().isClientSide()) {
@@ -52,10 +52,7 @@ public class ChargedStaffItem extends AEBasePoweredItem {
                 }
             }
             target.hurt(target.level().damageSources().magic(), 6);
-            return true;
         }
-
-        return false;
     }
 
     @Override

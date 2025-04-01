@@ -1,0 +1,76 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "ae2:block/controller"
+  },
+  "render_type": "cutout",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#lights",
+          "uv": [0, 0, 16, 16],
+          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+        },
+        "east": {
+          "texture": "#lights",
+          "uv": [0, 0, 16, 16],
+          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+        },
+        "north": {
+          "texture": "#lights",
+          "uv": [0, 0, 16, 16],
+          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+        },
+        "south": {
+          "texture": "#lights",
+          "uv": [0, 0, 16, 16],
+          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+        },
+        "up": {
+          "texture": "#lights",
+          "uv": [0, 0, 16, 16],
+          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+        },
+        "west": {
+          "texture": "#lights",
+          "uv": [0, 0, 16, 16],
+          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+        }
+      },
+      "from": [0, 0, 0],
+      "shade": false,
+      "to": [16, 16, 16]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#block",
+          "uv": [0, 0, 16, 16]
+        },
+        "east": {
+          "texture": "#block",
+          "uv": [0, 0, 16, 16]
+        },
+        "north": {
+          "texture": "#block",
+          "uv": [0, 0, 16, 16]
+        },
+        "south": {
+          "texture": "#block",
+          "uv": [0, 0, 16, 16]
+        },
+        "up": {
+          "texture": "#block",
+          "uv": [0, 0, 16, 16]
+        },
+        "west": {
+          "texture": "#block",
+          "uv": [0, 0, 16, 16]
+        }
+      },
+      "from": [0, 0, 0],
+      "to": [16, 16, 16]
+    }
+  ]
+}

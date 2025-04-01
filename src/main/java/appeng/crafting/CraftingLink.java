@@ -20,6 +20,7 @@ package appeng.crafting;
 
 import java.util.UUID;
 
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.config.Actionable;
@@ -39,12 +40,12 @@ public class CraftingLink implements ICraftingLink {
     private CraftingLinkNexus tie;
 
     public CraftingLink(CompoundTag data, ICraftingRequester req) {
-        this.craftId = data.getUUID("craftId");
-        this.setCanceled(data.getBoolean("canceled"));
-        this.setDone(data.getBoolean("done"));
-        this.standalone = data.getBoolean("standalone");
+        this.craftId = data.read("craftId", UUIDUtil.CODEC).orElseThrow();
+        this.setCanceled(data.getBooleanOr("canceled", false));
+        this.setDone(data.getBooleanOr("done", false));
+        this.standalone = data.getBooleanOr("standalone", false);
 
-        if (!data.contains("req") || !data.getBoolean("req")) {
+        if (!data.contains("req") || !data.getBooleanOr("req", false)) {
             throw new IllegalStateException("Invalid Crafting Link for Object");
         }
 
@@ -53,12 +54,12 @@ public class CraftingLink implements ICraftingLink {
     }
 
     public CraftingLink(CompoundTag data, ICraftingCPU cpu) {
-        this.craftId = data.getUUID("craftId");
-        this.setCanceled(data.getBoolean("canceled"));
-        this.setDone(data.getBoolean("done"));
-        this.standalone = data.getBoolean("standalone");
+        this.craftId = data.read("craftId", UUIDUtil.CODEC).orElseThrow();
+        this.setCanceled(data.getBooleanOr("canceled", false));
+        this.setDone(data.getBooleanOr("done", false));
+        this.standalone = data.getBooleanOr("standalone", false);
 
-        if (!data.contains("req") || data.getBoolean("req")) {
+        if (!data.contains("req") || data.getBooleanOr("req", false)) {
             throw new IllegalStateException("Invalid Crafting Link for Object");
         }
 
@@ -122,7 +123,7 @@ public class CraftingLink implements ICraftingLink {
 
     @Override
     public void writeToNBT(CompoundTag tag) {
-        tag.putUUID("craftId", this.craftId);
+        tag.store("craftId", UUIDUtil.CODEC, this.craftId);
         tag.putBoolean("canceled", this.isCanceled());
         tag.putBoolean("done", this.isDone());
         tag.putBoolean("standalone", this.standalone);

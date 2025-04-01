@@ -44,9 +44,9 @@ public class ElapsedTimeTracker {
     }
 
     public ElapsedTimeTracker(CompoundTag data) {
-        this.elapsedTime = data.getLong(NBT_ELAPSED_TIME);
-        readLongByTypeMap(data.getCompound(NBT_STARTED_WORK), startedWorkByType);
-        readLongByTypeMap(data.getCompound(NBT_COMPLETED_WORK), completedWorkByType);
+        this.elapsedTime = data.getLongOr(NBT_ELAPSED_TIME, 0);
+        readLongByTypeMap(data.getCompoundOrEmpty(NBT_STARTED_WORK), startedWorkByType);
+        readLongByTypeMap(data.getCompoundOrEmpty(NBT_COMPLETED_WORK), completedWorkByType);
     }
 
     public CompoundTag writeToNBT() {
@@ -59,7 +59,7 @@ public class ElapsedTimeTracker {
 
     private static void readLongByTypeMap(CompoundTag tag, Reference2LongMap<AEKeyType> output) {
         for (var keyType : AEKeyTypes.getAll()) {
-            output.put(keyType, tag.getLong(keyType.getId().toString()));
+            output.put(keyType, tag.getLongOr(keyType.getId().toString(), 0));
         }
     }
 

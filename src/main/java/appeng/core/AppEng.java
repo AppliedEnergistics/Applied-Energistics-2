@@ -22,14 +22,13 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
-
-import guideme.PageAnchor;
 
 import appeng.api.ids.AEConstants;
 import appeng.api.parts.CableRenderMode;
@@ -100,9 +99,7 @@ public interface AppEng {
     void registerHotkey(String id);
 
     /**
-     * Opens the guidebook (if this is a client) on the last opened page, or the given initial page, if no page has ever
-     * been opened yet.
+     * Shows a system chat message to the player
      */
-    default void openGuideAtAnchor(PageAnchor anchor) {
-    }
+    void sendSystemMessage(Player player, Component text);
 }

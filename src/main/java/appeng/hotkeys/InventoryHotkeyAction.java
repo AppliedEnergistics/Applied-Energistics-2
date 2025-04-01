@@ -18,7 +18,7 @@ public record InventoryHotkeyAction(Predicate<ItemStack> locatable, Opener opene
 
     @Override
     public boolean run(Player player) {
-        var items = player.getInventory().items;
+        var items = player.getInventory().getNonEquipmentItems();
         for (int i = 0; i < items.size(); i++) {
             if (locatable.test(items.get(i))) {
                 if (opener.open(player, MenuLocators.forInventorySlot(i))) {

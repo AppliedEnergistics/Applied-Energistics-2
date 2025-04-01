@@ -22,11 +22,12 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -40,6 +41,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -59,7 +61,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public int getLightBlock(BlockState state, BlockGetter level, BlockPos pos) {
+    protected int getLightBlock(BlockState state) {
         return 2; // FIXME: Validate that this is the correct value range
     }
 
@@ -69,7 +71,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
+    protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
         if (heldItem.is(Items.FLINT_AND_STEEL) || heldItem.is(Items.FIRE_CHARGE)) {
             onCaughtFire(state, level, pos, hit.getDirection(), player);
@@ -84,15 +86,16 @@ public class TinyTNTBlock extends AEBaseBlock {
             }
 
             player.awardStat(Stats.ITEM_USED.get(item));
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
         return super.useItemOn(heldItem, state, level, pos, player, hand, hit);
     }
 
     @Override
-    public void onCaughtFire(BlockState state, Level level, BlockPos pos, @Nullable Direction direction,
+    public boolean onCaughtFire(BlockState state, Level level, BlockPos pos, @Nullable Direction direction,
             @Nullable LivingEntity igniter) {
         this.startFuse(level, pos, igniter);
+        return true;
     }
 
     public void startFuse(Level level, BlockPos pos, LivingEntity igniter) {
@@ -106,8 +109,8 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock,
+            @Nullable Orientation orientation, boolean movedByPiston) {
         if (level.getBestNeighborSignal(pos) > 0) {
             this.startFuse(level, pos, null);
             level.removeBlock(pos, false);
@@ -147,11 +150,11 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public void wasExploded(Level level, BlockPos pos, Explosion exp) {
-        super.wasExploded(level, pos, exp);
+    public void wasExploded(ServerLevel level, BlockPos pos, Explosion explosion) {
+        super.wasExploded(level, pos, explosion);
         if (!level.isClientSide) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F,
-                    pos.getY(), pos.getZ() + 0.5F, exp.getIndirectSourceEntity());
+                    pos.getY(), pos.getZ() + 0.5F, explosion.getIndirectSourceEntity());
             primedTinyTNTEntity
                     .setFuse(level.random.nextInt(primedTinyTNTEntity.getFuse() / 4)
                             + primedTinyTNTEntity.getFuse() / 8);

@@ -19,6 +19,7 @@
 package appeng.blockentity;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -64,7 +64,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.network.connection.ConnectionType;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 
@@ -76,13 +77,13 @@ import appeng.api.networking.IGridNode;
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.RelativeSide;
 import appeng.block.AEBaseEntityBlock;
-import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
 import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.tools.MemoryCardItem;
 import appeng.util.IDebugExportable;
 import appeng.util.JsonStreamUtil;
+import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 import appeng.util.helpers.ItemComparisonHelper;
 
@@ -142,36 +143,35 @@ public class AEBaseBlockEntity extends BlockEntity
         } else if (level != null) {
             registryAccess = level.registryAccess();
         }
-        if (tag.contains("#upd", Tag.TAG_BYTE_ARRAY) && tag.size() == 1) {
+        if (tag.size() == 1) {
             var updateData = tag.getByteArray("#upd");
-            if (registryAccess == null) {
-                LOG.warn("Ignoring  update packet for {} since no registry is available.", this);
-            } else if (readUpdateData(
-                    new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(updateData), registryAccess))) {
-                // Triggers a chunk re-render if the level is already loaded
-                if (level != null) {
-                    requestModelDataUpdate();
-                    level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
+            if (updateData.isPresent()) {
+                if (registryAccess == null) {
+                    LOG.warn("Ignoring  update packet for {} since no registry is available.", this);
+                } else if (readUpdateData(
+                        new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(updateData.get()), registryAccess,
+                                ConnectionType.NEOFORGE))) {
+                    // Triggers a chunk re-render if the level is already loaded
+                    if (level != null) {
+                        requestModelDataUpdate();
+                        level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
+                    }
                 }
             }
             return;
         }
 
         // Load visual client-side data (used by PonderJS)
-        if (tag.contains("visual", Tag.TAG_COMPOUND)) {
-            loadVisualState(tag.getCompound("visual"));
-        }
+        tag.getCompound("visual").ifPresent(this::loadVisualState);
 
         super.loadAdditional(tag, registries);
         loadTag(tag, registries);
     }
 
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        if (data.contains("customName")) {
-            this.customName = Component.literal(data.getString("customName"));
-        } else {
-            this.customName = null;
-        }
+        this.customName = data.getString("customName")
+                .map(Component::literal)
+                .orElse(null);
     }
 
     @Override
@@ -226,7 +226,7 @@ public class AEBaseBlockEntity extends BlockEntity
         try {
             output = this.readFromStream(stream);
         } catch (Throwable t) {
-            AELog.warn(t);
+            LOG.warn("Failed to read block entity update data for {}@{}", getClass(), getBlockPos(), t);
         }
 
         return output;
@@ -341,7 +341,7 @@ public class AEBaseBlockEntity extends BlockEntity
 
         if (mode == SettingsFrom.MEMORY_CARD) {
             MemoryCardItem.exportGenericSettings(this, builder);
-            builder.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getItemFromBlockEntity().getDescription());
+            builder.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getItemFromBlockEntity().getName());
         }
     }
 
@@ -386,7 +386,7 @@ public class AEBaseBlockEntity extends BlockEntity
 
     @Override
     public Component getName() {
-        return Objects.requireNonNullElse(this.customName, getItemFromBlockEntity().getDescription());
+        return Objects.requireNonNullElse(this.customName, getItemFromBlockEntity().getName());
     }
 
     @Override
@@ -479,7 +479,7 @@ public class AEBaseBlockEntity extends BlockEntity
         level.removeBlock(pos, false);
         block.destroy(level, pos, getBlockState());
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     public byte getQueuedForReady() {
@@ -518,5 +518,17 @@ public class AEBaseBlockEntity extends BlockEntity
                 "level", level.dimension().location().toString(),
                 "pos", getBlockPos(),
                 "data", CompoundTag.CODEC.encodeStart(ops, data).getOrThrow()), writer);
+    }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos blockPos, BlockState blockState) {
+        super.preRemoveSideEffects(blockPos, blockState);
+
+        // Drop internal BE content
+        if (level != null) {
+            var drops = new ArrayList<ItemStack>();
+            addAdditionalDrops(level, blockPos, drops);
+            Platform.spawnDrops(level, blockPos, drops);
+        }
     }
 }

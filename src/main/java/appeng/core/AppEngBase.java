@@ -22,10 +22,13 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -62,6 +65,7 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.InitNetwork;
+import appeng.core.particles.InitParticleTypes;
 import appeng.hooks.SkyStoneBreakSpeed;
 import appeng.hooks.WrenchHook;
 import appeng.hooks.ticking.TickHandler;
@@ -73,7 +77,6 @@ import appeng.init.InitDispenserBehavior;
 import appeng.init.InitMenuTypes;
 import appeng.init.InitStats;
 import appeng.init.InitVillager;
-import appeng.init.client.InitParticleTypes;
 import appeng.init.internal.InitBlockEntityMoveStrategies;
 import appeng.init.internal.InitGridLinkables;
 import appeng.init.internal.InitGridServices;
@@ -97,6 +100,8 @@ import appeng.spatial.SpatialStorageDimensionIds;
  * Note that a client will still have zero or more embedded servers (although only one at a time).
  */
 public abstract class AppEngBase implements AppEng {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AppEngBase.class);
 
     /**
      * While we process a player-specific part placement/cable interaction packet, we need to use that player's
@@ -160,6 +165,9 @@ public abstract class AppEngBase implements AppEng {
                 InitVillager.initPointOfInterestType(event.getRegistry(Registries.POINT_OF_INTEREST_TYPE));
             } else if (event.getRegistryKey() == AEKeyType.REGISTRY_KEY) {
                 registerKeyTypes(event.getRegistry(AEKeyType.REGISTRY_KEY));
+            } else if (event.getRegistryKey() == Registries.TEST_INSTANCE_TYPE) {
+                event.register(Registries.TEST_INSTANCE_TYPE, AppEng.makeId("plot_adapter"),
+                        () -> GameTestPlotAdapter.CODEC);
             }
         });
 
@@ -186,7 +194,7 @@ public abstract class AppEngBase implements AppEng {
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(this::postRegistrationInitialization).whenComplete((res, err) -> {
             if (err != null) {
-                AELog.warn(err);
+                LOG.error("Common setup failed", err);
             }
         });
     }
@@ -283,6 +291,13 @@ public abstract class AppEngBase implements AppEng {
         return ServerLifecycleHooks.getCurrentServer();
     }
 
+    @Override
+    public void sendSystemMessage(Player player, Component text) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.sendSystemMessage(text);
+        }
+    }
+
     protected final CableRenderMode getCableRenderModeForPlayer(@Nullable Player player) {
         if (player != null) {
             if (AEItems.NETWORK_TOOL.is(player.getItemInHand(InteractionHand.MAIN_HAND))
@@ -296,7 +311,7 @@ public abstract class AppEngBase implements AppEng {
 
     private void registerTests(RegisterGameTestsEvent e) {
         if ("true".equals(System.getProperty("appeng.tests"))) {
-            e.register(GameTestPlotAdapter.class);
+            GameTestPlotAdapter.registerAll(e::registerTest);
         }
     }
 }

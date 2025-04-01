@@ -45,7 +45,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -453,8 +452,8 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
         var oldNodeData = this.savedData;
         if (nodeDataContainer.get(name) instanceof CompoundTag newNodeData) {
             this.savedData = newNodeData;
-            if (newNodeData.contains("p", Tag.TAG_INT)) {
-                this.owningPlayerId = newNodeData.getInt("p");
+            if (newNodeData.contains("p")) {
+                this.owningPlayerId = newNodeData.getIntOr("p", 0);
             }
         } else {
             this.savedData = null;
@@ -469,8 +468,8 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
     }
 
     private boolean areTagsEqualIgnoringPlayerId(CompoundTag newData, CompoundTag oldData) {
-        Set<String> newKeys = newData != null ? newData.getAllKeys() : Set.of();
-        Set<String> oldKeys = oldData != null ? oldData.getAllKeys() : Set.of();
+        Set<String> newKeys = newData != null ? newData.keySet() : Set.of();
+        Set<String> oldKeys = oldData != null ? oldData.keySet() : Set.of();
         for (var newKey : newKeys) {
             if ("p".equals(newKey)) {
                 continue; // Ignore player ID

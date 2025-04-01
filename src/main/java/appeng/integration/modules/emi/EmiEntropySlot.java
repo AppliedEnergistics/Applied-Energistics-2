@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
 
@@ -66,7 +67,8 @@ class EmiEntropySlot extends SlotWidget {
         // Draw an X over the input ingredient to represent that it is consumed
         if (consumed) {
             var bounds = getBounds();
-            draw.blit(AppEngEmiPlugin.TEXTURE, bounds.x() + 1, bounds.y() + 1,
+            draw.blit(RenderType::guiTextured, AppEngEmiPlugin.TEXTURE, bounds.x() + 1, bounds.y() + 1,
+                    0, 0,
                     0, 52, 16, 16);
         }
         super.drawOverlay(draw, mouseX, mouseY, delta);

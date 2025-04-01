@@ -6,17 +6,31 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.core.localization.GuiText;
+import appeng.util.AECodecs;
 
 /**
  * Properties shown in the tooltip of an encoded pattern. Used for both valid and invalid encoded patterns. For invalid
  * patterns, only partial information might be given.
  */
 public class PatternDetailsTooltip {
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, PatternDetailsTooltip> STREAM_CODEC = StreamCodec
+            .composite(
+                    ComponentSerialization.TRUSTED_STREAM_CODEC, PatternDetailsTooltip::getOutputMethod,
+                    Property.STREAM_CODEC.apply(ByteBufCodecs.list()), PatternDetailsTooltip::getProperties,
+                    GenericStack.STREAM_CODEC.apply(ByteBufCodecs.list()), PatternDetailsTooltip::getInputs,
+                    GenericStack.STREAM_CODEC.apply(ByteBufCodecs.list()), PatternDetailsTooltip::getOutputs,
+                    PatternDetailsTooltip::new);
+
     /**
      * The text to use when the pattern uses Vanilla crafting as its method of producing the item. Usually reserved for
      * patterns used in molecular assemblers.
@@ -43,6 +57,16 @@ public class PatternDetailsTooltip {
      */
     public PatternDetailsTooltip(Component outputMethod) {
         setOutputMethod(outputMethod);
+    }
+
+    private PatternDetailsTooltip(Component outputMethod,
+            List<Property> additionalProperties,
+            List<GenericStack> inputs,
+            List<GenericStack> outputs) {
+        setOutputMethod(outputMethod);
+        this.additionalProperties.addAll(additionalProperties);
+        this.inputs.addAll(inputs);
+        this.outputs.addAll(outputs);
     }
 
     /**
@@ -114,6 +138,10 @@ public class PatternDetailsTooltip {
      * not.
      */
     public record Property(Component name, @Nullable Component value) {
+        public static StreamCodec<RegistryFriendlyByteBuf, Property> STREAM_CODEC = StreamCodec.composite(
+                ComponentSerialization.STREAM_CODEC, Property::name,
+                ComponentSerialization.STREAM_CODEC.apply(AECodecs::nullable), Property::value,
+                Property::new);
     }
 
     public Component getOutputMethod() {

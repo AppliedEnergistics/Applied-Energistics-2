@@ -38,6 +38,10 @@ sourceSets {
             srcDir 'src/generated/resources'
         }
     }
+    client {
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+    }
     buildtools
 }
 
@@ -50,6 +54,7 @@ configurations {
     configurations.runtimeClasspath.extendsFrom(guideExportOnly)
 
     runtimeClasspath.extendsFrom localRuntimeOnly
+    clientRuntimeClasspath.extendsFrom localRuntimeOnly
 }
 
 import appengbuild.*
@@ -59,7 +64,8 @@ dependencies {
     // Used for the guide export
     guideExportOnly("org.bytedeco:ffmpeg-platform:${ffmpeg_version}")
 
-    implementation("org.appliedenergistics:guideme:${guideme_version}")
+    implementation("org.appliedenergistics:guideme:${guideme_version}") // TODO: TEMP
+    clientImplementation("org.appliedenergistics:guideme:${guideme_version}")
 
     // compile against provided APIs
     compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
@@ -124,9 +130,12 @@ dependencies {
 }
 
 neoForge {
+    addModdingDependenciesTo sourceSets.client
+
     mods {
         ae2 {
             sourceSet sourceSets.main
+            sourceSet sourceSets.client
         }
     }
 
@@ -141,6 +150,7 @@ neoForge {
         client {
             client()
             systemProperty('appeng.tests', 'true')
+            sourceSet = sourceSets.client
         }
         gametestWorld {
             client()
@@ -148,28 +158,32 @@ neoForge {
                     '--username', 'AE2Dev', '--quickPlaySingleplayer', 'GametestWorld'
             ]
             systemProperty('appeng.tests', 'true')
+            sourceSet = sourceSets.client
         }
         guide {
             client()
 
             systemProperty('guideme.showOnStartup', 'ae2:guide')
+            sourceSet = sourceSets.client
         }
         server {
             server()
         }
         data {
-            data()
+            clientData()
             programArguments = [
                     '--mod', 'ae2',
                     '--all',
                     '--output', file('src/generated/resources/').absolutePath,
                     '--existing', file('src/main/resources').absolutePath
             ]
+            sourceSet = sourceSets.client
         }
         guideexport {
             client()
             systemProperty('appeng.runGuideExportAndExit', 'true')
             systemProperty('appeng.guideExportFolder', file('build/guide').absolutePath)
+            sourceSet = sourceSets.client
         }
         // Use to run the tests
         gametest {
@@ -213,6 +227,7 @@ sourceSets.main.resources.srcDir generateModMetadata
 neoForge.ideSyncTask generateModMetadata
 
 tasks.named('jar', Jar) {
+    from(sourceSets.client.output)
     exclude '/.cache'
     from('guidebook') {
         into 'assets/ae2/ae2guide'

@@ -38,7 +38,7 @@ public class TransformRecipeWrapper implements Display {
 
     @Override
     public Optional<ResourceLocation> getDisplayLocation() {
-        return Optional.of(holder.id());
+        return Optional.of(holder.id().location());
     }
 
     @Override

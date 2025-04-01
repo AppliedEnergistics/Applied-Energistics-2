@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.google.common.base.Preconditions;
@@ -36,6 +37,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.ToolMaterial;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import appeng.api.crafting.PatternDetailsHelper;
@@ -46,6 +48,7 @@ import appeng.api.upgrades.Upgrades;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
+import appeng.core.ConventionTags;
 import appeng.core.MainCreativeTab;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.AEProcessingPattern;
@@ -88,10 +91,7 @@ import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.items.tools.quartz.QuartzAxeItem;
 import appeng.items.tools.quartz.QuartzCuttingKnifeItem;
 import appeng.items.tools.quartz.QuartzHoeItem;
-import appeng.items.tools.quartz.QuartzPickaxeItem;
 import appeng.items.tools.quartz.QuartzSpadeItem;
-import appeng.items.tools.quartz.QuartzSwordItem;
-import appeng.items.tools.quartz.QuartzToolType;
 import appeng.items.tools.quartz.QuartzWrenchItem;
 import appeng.menu.me.common.MEStorageMenu;
 
@@ -108,31 +108,31 @@ public final class AEItems {
     /// CERTUS QUARTZ TOOLS
     ///
 
-    public static final ItemDefinition<QuartzAxeItem> CERTUS_QUARTZ_AXE = item("Certus Quartz Axe", AEItemIds.CERTUS_QUARTZ_AXE, p -> new QuartzAxeItem(p, QuartzToolType.CERTUS), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzHoeItem> CERTUS_QUARTZ_HOE = item("Certus Quartz Hoe", AEItemIds.CERTUS_QUARTZ_HOE, p -> new QuartzHoeItem(p, QuartzToolType.CERTUS), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzSpadeItem> CERTUS_QUARTZ_SHOVEL = item("Certus Quartz Shovel", AEItemIds.CERTUS_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p, QuartzToolType.CERTUS), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzPickaxeItem> CERTUS_QUARTZ_PICK = item("Certus Quartz Pickaxe", AEItemIds.CERTUS_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, QuartzToolType.CERTUS), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzSwordItem> CERTUS_QUARTZ_SWORD = item("Certus Quartz Sword", AEItemIds.CERTUS_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.CERTUS), CreativeModeTabs.COMBAT);
+    public static final ItemDefinition<QuartzAxeItem> CERTUS_QUARTZ_AXE = item("Certus Quartz Axe", AEItemIds.CERTUS_QUARTZ_AXE, p -> new QuartzAxeItem(p.axe(ToolMaterial.IRON, 6.0F, -3.1F).repairable(ConventionTags.CERTUS_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzHoeItem> CERTUS_QUARTZ_HOE = item("Certus Quartz Hoe", AEItemIds.CERTUS_QUARTZ_HOE, p -> new QuartzHoeItem(p.hoe(ToolMaterial.IRON, -2, -1.0F).repairable(ConventionTags.CERTUS_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzSpadeItem> CERTUS_QUARTZ_SHOVEL = item("Certus Quartz Shovel", AEItemIds.CERTUS_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p.shovel(ToolMaterial.IRON, 1.5F, -3.0F).repairable(ConventionTags.CERTUS_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<Item> CERTUS_QUARTZ_PICK = standardItem("Certus Quartz Pickaxe", AEItemIds.CERTUS_QUARTZ_PICK, p -> p.pickaxe(ToolMaterial.IRON, 1, -2.8F).repairable(ConventionTags.CERTUS_QUARTZ), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<Item> CERTUS_QUARTZ_SWORD = standardItem("Certus Quartz Sword", AEItemIds.CERTUS_QUARTZ_SWORD, p -> p.sword(ToolMaterial.IRON, 3, -2.4F).repairable(ConventionTags.CERTUS_QUARTZ), CreativeModeTabs.COMBAT);
     public static final ItemDefinition<QuartzWrenchItem> CERTUS_QUARTZ_WRENCH = item("Certus Quartz Wrench", AEItemIds.CERTUS_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.stacksTo(1)), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzCuttingKnifeItem> CERTUS_QUARTZ_KNIFE = item("Certus Quartz Cutting Knife", AEItemIds.CERTUS_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.durability(50), QuartzToolType.CERTUS), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzCuttingKnifeItem> CERTUS_QUARTZ_KNIFE = item("Certus Quartz Cutting Knife", AEItemIds.CERTUS_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.durability(50).repairable(ConventionTags.CERTUS_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
 
     ///
     /// NETHER QUARTZ TOOLS
     ///
 
-    public static final ItemDefinition<QuartzAxeItem> NETHER_QUARTZ_AXE = item("Nether Quartz Axe", AEItemIds.NETHER_QUARTZ_AXE, p -> new QuartzAxeItem(p, QuartzToolType.NETHER), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzHoeItem> NETHER_QUARTZ_HOE = item("Nether Quartz Hoe", AEItemIds.NETHER_QUARTZ_HOE, p -> new QuartzHoeItem(p, QuartzToolType.NETHER), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzSpadeItem> NETHER_QUARTZ_SHOVEL = item("Nether Quartz Shovel", AEItemIds.NETHER_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p, QuartzToolType.NETHER), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzPickaxeItem> NETHER_QUARTZ_PICK = item("Nether Quartz Pickaxe", AEItemIds.NETHER_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, QuartzToolType.NETHER), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzSwordItem> NETHER_QUARTZ_SWORD = item("Nether Quartz Sword", AEItemIds.NETHER_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.NETHER), CreativeModeTabs.COMBAT);
+    public static final ItemDefinition<QuartzAxeItem> NETHER_QUARTZ_AXE = item("Nether Quartz Axe", AEItemIds.NETHER_QUARTZ_AXE, p -> new QuartzAxeItem(p.axe(ToolMaterial.IRON, 6.0F, -3.1F).repairable(ConventionTags.NETHER_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzHoeItem> NETHER_QUARTZ_HOE = item("Nether Quartz Hoe", AEItemIds.NETHER_QUARTZ_HOE, p -> new QuartzHoeItem(p.hoe(ToolMaterial.IRON, -2, -1.0F).repairable(ConventionTags.NETHER_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzSpadeItem> NETHER_QUARTZ_SHOVEL = item("Nether Quartz Shovel", AEItemIds.NETHER_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p.shovel(ToolMaterial.IRON, 1.5F, -3.0F).repairable(ConventionTags.NETHER_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<Item> NETHER_QUARTZ_PICK = standardItem("Nether Quartz Pickaxe", AEItemIds.NETHER_QUARTZ_PICK, p -> p.pickaxe(ToolMaterial.IRON, 1, -2.8F).repairable(ConventionTags.NETHER_QUARTZ), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<Item> NETHER_QUARTZ_SWORD = standardItem("Nether Quartz Sword", AEItemIds.NETHER_QUARTZ_SWORD, p -> p.sword(ToolMaterial.IRON, 3, -2.4F).repairable(ConventionTags.NETHER_QUARTZ), CreativeModeTabs.COMBAT);
     public static final ItemDefinition<QuartzWrenchItem> NETHER_QUARTZ_WRENCH = item("Nether Quartz Wrench", AEItemIds.NETHER_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.stacksTo(1)), CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<QuartzCuttingKnifeItem> NETHER_QUARTZ_KNIFE = item("Nether Quartz Cutting Knife", AEItemIds.NETHER_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.stacksTo(1).durability(50), QuartzToolType.NETHER), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzCuttingKnifeItem> NETHER_QUARTZ_KNIFE = item("Nether Quartz Cutting Knife", AEItemIds.NETHER_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.stacksTo(1).durability(50).repairable(ConventionTags.NETHER_QUARTZ)), CreativeModeTabs.TOOLS_AND_UTILITIES);
 
     ///
     /// FLUIX TOOLS
     ///
 
-    public static final ItemDefinition<FluixSmithingTemplateItem> FLUIX_UPGRADE_SMITHING_TEMPLATE = item("Fluix Upgrade", AEItemIds.FLUIX_UPGRADE_SMITHING_TEMPLATE, p -> new FluixSmithingTemplateItem(), CreativeModeTabs.INGREDIENTS);
+    public static final ItemDefinition<FluixSmithingTemplateItem> FLUIX_UPGRADE_SMITHING_TEMPLATE = item("Fluix Upgrade", AEItemIds.FLUIX_UPGRADE_SMITHING_TEMPLATE, FluixSmithingTemplateItem::new, CreativeModeTabs.INGREDIENTS);
     public static final ItemDefinition<FluixAxeItem> FLUIX_AXE = item("Fluix Axe", AEItemIds.FLUIX_AXE, FluixAxeItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
     public static final ItemDefinition<FluixHoeItem> FLUIX_HOE = item("Fluix Hoe", AEItemIds.FLUIX_HOE, FluixHoeItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
     public static final ItemDefinition<FluixSpadeItem> FLUIX_SHOVEL = item("Fluix Shovel", AEItemIds.FLUIX_SHOVEL, FluixSpadeItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
@@ -184,10 +184,10 @@ public final class AEItems {
 
     public static final ItemDefinition<FacadeItem> FACADE = item("Cable Facade", AEItemIds.FACADE, FacadeItem::new);
     public static final ItemDefinition<MaterialItem> BLANK_PATTERN = item("Blank Pattern", AEItemIds.BLANK_PATTERN, MaterialItem::new);
-    public static final ItemDefinition<Item> CRAFTING_PATTERN = item("Crafting Pattern", AEItemIds.CRAFTING_PATTERN, p -> PatternDetailsHelper.encodedPatternItemBuilder(AECraftingPattern::new).invalidPatternTooltip(AECraftingPattern::getInvalidPatternTooltip).build());
-    public static final ItemDefinition<Item> PROCESSING_PATTERN = item("Processing Pattern", AEItemIds.PROCESSING_PATTERN, p -> PatternDetailsHelper.encodedPatternItemBuilder(AEProcessingPattern::new).invalidPatternTooltip(AEProcessingPattern::getInvalidPatternTooltip).build());
-    public static final ItemDefinition<Item> SMITHING_TABLE_PATTERN = item("Smithing Table Pattern", AEItemIds.SMITHING_TABLE_PATTERN, p -> PatternDetailsHelper.encodedPatternItemBuilder(AESmithingTablePattern::new).invalidPatternTooltip(AESmithingTablePattern::getInvalidTooltip).build());
-    public static final ItemDefinition<Item> STONECUTTING_PATTERN = item("Stonecutting Pattern", AEItemIds.STONECUTTING_PATTERN, p -> PatternDetailsHelper.encodedPatternItemBuilder(AEStonecuttingPattern::new).invalidPatternTooltip(AEStonecuttingPattern::getInvalidTooltip).build());
+    public static final ItemDefinition<Item> CRAFTING_PATTERN = item("Crafting Pattern", AEItemIds.CRAFTING_PATTERN, p -> PatternDetailsHelper.encodedPatternItemBuilder(AECraftingPattern::new).invalidPatternTooltip(AECraftingPattern::getInvalidPatternTooltip).build(p));
+    public static final ItemDefinition<Item> PROCESSING_PATTERN = item("Processing Pattern", AEItemIds.PROCESSING_PATTERN, p -> PatternDetailsHelper.encodedPatternItemBuilder(AEProcessingPattern::new).invalidPatternTooltip(AEProcessingPattern::getInvalidPatternTooltip).build(p));
+    public static final ItemDefinition<Item> SMITHING_TABLE_PATTERN = item("Smithing Table Pattern", AEItemIds.SMITHING_TABLE_PATTERN, p -> PatternDetailsHelper.encodedPatternItemBuilder(AESmithingTablePattern::new).invalidPatternTooltip(AESmithingTablePattern::getInvalidTooltip).build(p));
+    public static final ItemDefinition<Item> STONECUTTING_PATTERN = item("Stonecutting Pattern", AEItemIds.STONECUTTING_PATTERN, p -> PatternDetailsHelper.encodedPatternItemBuilder(AEStonecuttingPattern::new).invalidPatternTooltip(AEStonecuttingPattern::getInvalidTooltip).build(p));
     // Used to represent missing content if a mod got uninstalled
     public static final ItemDefinition<Item> MISSING_CONTENT = item("Missing Content", AEItemIds.MISSING_CONTENT, MissingContentItem::new, null);
 
@@ -273,7 +273,7 @@ public final class AEItems {
     public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL16 = item("16³ Spatial Storage Cell", AEItemIds.SPATIAL_CELL_16, p -> new SpatialStorageCellItem(p.stacksTo(1), 16));
     public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL128 = item("128³ Spatial Storage Cell", AEItemIds.SPATIAL_CELL_128, p -> new SpatialStorageCellItem(p.stacksTo(1), 128));
 
-    public static final ItemDefinition<Item> TABLET = item("Guide", AEItemIds.GUIDE, p -> new GuideItem(p.stacksTo(1)));
+    public static final ItemDefinition<Item> GUIDE = item("Guide", AEItemIds.GUIDE, p -> new GuideItem(p.stacksTo(1)));
 
     ///
     /// UNSUPPORTED DEV TOOLS
@@ -313,11 +313,18 @@ public final class AEItems {
         return item(name, id, factory, AECreativeTabIds.MAIN);
     }
 
+    static ItemDefinition<Item> standardItem(String name, ResourceLocation id,
+            Consumer<Item.Properties> customizer,
+            @Nullable ResourceKey<CreativeModeTab> group) {
+        return item(name, id, p -> {
+            customizer.accept(p);
+            return new Item(p);
+        }, group);
+    }
+
     static <T extends Item> ItemDefinition<T> item(String name, ResourceLocation id,
             Function<Item.Properties, T> factory,
             @Nullable ResourceKey<CreativeModeTab> group) {
-
-        Item.Properties p = new Item.Properties();
 
         Preconditions.checkArgument(id.getNamespace().equals(AppEng.MOD_ID), "Can only register for AE2");
         var definition = new ItemDefinition<>(name, DR.registerItem(id.getPath(), factory));

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "ae2:all_certus_quartz"
-    },
-    "b": {
-      "tag": "c:dusts/fluix"
-    },
-    "c": {
-      "item": "ae2:logic_processor"
-    }
+    "a": "#ae2:all_certus_quartz",
+    "b": "#c:dusts/fluix",
+    "c": "ae2:logic_processor"
   },
   "pattern": [
     "abc"

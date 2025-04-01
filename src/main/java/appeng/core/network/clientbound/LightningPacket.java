@@ -7,10 +7,10 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
+import appeng.core.particles.ParticleTypes;
 
 public record LightningPacket(
         double x,

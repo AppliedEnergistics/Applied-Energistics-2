@@ -1,12 +1,8 @@
 {
   "type": "ae2:inscriber",
   "ingredients": {
-    "middle": {
-      "tag": "c:gems/diamond"
-    },
-    "top": {
-      "item": "ae2:engineering_processor_press"
-    }
+    "middle": "#c:gems/diamond",
+    "top": "ae2:engineering_processor_press"
   },
   "mode": "inscribe",
   "result": {

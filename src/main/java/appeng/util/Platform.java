@@ -100,15 +100,6 @@ public class Platform {
         return Objects.requireNonNull(Platform.fallbackClientRegistryAccess);
     }
 
-    public static RecipeManager getClientRecipeManager() {
-        var minecraft = Minecraft.getInstance();
-        if (minecraft.level != null) {
-            return minecraft.level.getRecipeManager();
-        }
-
-        return fallbackClientRecipeManager;
-    }
-
     private static Class<?> findPonderLevelClass(String className) {
         if (!hasClientClasses()) {
             return null; // Don't attempt this on a dedicated server
@@ -282,8 +273,9 @@ public class Platform {
         if (forward.getAxis() == axis.getAxis()) {
             return forward;
         }
-        var newForward = forward.getNormal().cross(axis.getNormal());
-        return Objects.requireNonNull(Direction.fromDelta(newForward.getX(), newForward.getY(), newForward.getZ()));
+        var newForward = forward.getUnitVec3i().cross(axis.getUnitVec3i());
+        return Objects
+                .requireNonNull(Direction.getNearest(newForward.getX(), newForward.getY(), newForward.getZ(), null));
     }
 
     public static void configurePlayer(Player player, Direction side, BlockEntity blockEntity) {
@@ -299,7 +291,7 @@ public class Platform {
             }
         }
 
-        player.moveTo(blockEntity.getBlockPos().getX() + 0.5, blockEntity.getBlockPos().getY() + 0.5,
+        player.snapTo(blockEntity.getBlockPos().getX() + 0.5, blockEntity.getBlockPos().getY() + 0.5,
                 blockEntity.getBlockPos().getZ() + 0.5,
                 yaw, pitch);
     }

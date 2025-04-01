@@ -24,11 +24,11 @@ import org.joml.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -50,15 +50,15 @@ import appeng.api.util.AEAxisAlignedBB;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.misc.ChargerRecipes;
-import appeng.client.render.effects.LightningArcParticleData;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
+import appeng.core.particles.LightningArcParticleData;
 import appeng.util.Platform;
 
 public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
 
-    public ChargerBlock() {
-        super(metalProps().noOcclusion());
+    public ChargerBlock(Properties p) {
+        super(metalProps(p).noOcclusion());
     }
 
     @Override
@@ -67,21 +67,22 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
     }
 
     @Override
-    public int getLightBlock(BlockState state, BlockGetter level, BlockPos pos) {
+    public int getLightBlock(BlockState state) {
         return 2; // FIXME Double check this (esp. value range)
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
+    protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level.getBlockEntity(pos) instanceof ChargerBlockEntity charger) {
+        if (level instanceof ServerLevel serverLevel
+                && level.getBlockEntity(pos) instanceof ChargerBlockEntity charger) {
             var inv = charger.getInternalInventory();
             var chargingItem = inv.getStackInSlot(0);
             if (chargingItem.isEmpty()) {
-                if (ChargerRecipes.findRecipe(level, heldItem) != null || Platform.isChargeable(heldItem)) {
+                if (ChargerRecipes.findRecipe(serverLevel, heldItem) != null || Platform.isChargeable(heldItem)) {
                     var toInsert = heldItem.split(1);
                     inv.setItemDirect(0, toInsert);
-                    return ItemInteractionResult.sidedSuccess(level.isClientSide);
+                    return InteractionResult.SUCCESS;
                 }
             }
         }
@@ -99,7 +100,7 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
                 inv.setItemDirect(0, ItemStack.EMPTY);
                 Platform.spawnDrops(player.level(), charger.getBlockPos().relative(charger.getFront()),
                         List.of(chargingItem));
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.SUCCESS;
             }
         }
 

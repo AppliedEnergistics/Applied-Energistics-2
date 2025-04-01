@@ -1,69 +1,37 @@
 package appeng.items.tools.fluix;
 
-import java.util.function.Supplier;
-
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.Tiers;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ToolMaterial;
 
-import appeng.core.AppEng;
-import appeng.datagen.providers.tags.ConventionTags;
+import appeng.core.ConventionTags;
 
 public enum FluixToolType {
-    FLUIX("fluix", () -> Ingredient.of(ConventionTags.FLUIX_CRYSTAL)),
+    FLUIX("fluix", ConventionTags.FLUIX_CRYSTAL),
     ;
 
     private final String name;
-    private final Tier toolTier;
+    private final TagKey<Item> repairIngredient;
+    private final ToolMaterial material;
 
-    FluixToolType(String name, Supplier<Ingredient> repairIngredient) {
+    FluixToolType(String name, TagKey<Item> repairIngredient) {
         this.name = name;
-        this.toolTier = new Tier() {
-            @Override
-            public int getUses() {
-                return Tiers.IRON.getUses() * 3;
-            }
-
-            @Override
-            public float getSpeed() {
-                return Tiers.IRON.getSpeed() * 1.2F;
-            }
-
-            @Override
-            public float getAttackDamageBonus() {
-                return Tiers.IRON.getAttackDamageBonus() * 1.2F;
-            }
-
-            @Override
-            public TagKey<Block> getIncorrectBlocksForDrops() {
-                return Tiers.IRON.getIncorrectBlocksForDrops();
-            }
-
-            @Override
-            public int getEnchantmentValue() {
-                return Tiers.IRON.getEnchantmentValue();
-            }
-
-            @Override
-            public Ingredient getRepairIngredient() {
-                return repairIngredient.get();
-            }
-
-            // This allows mods like LevelZ to identify our tools.
-            @Override
-            public String toString() {
-                return AppEng.MOD_ID + ":" + name;
-            }
-        };
+        this.repairIngredient = repairIngredient;
+        this.material = new ToolMaterial(
+                BlockTags.INCORRECT_FOR_IRON_TOOL, 250 * 3, 6.0F * 1.2F, 2.0F * 1.2F, 14, ItemTags.IRON_TOOL_MATERIALS);
     }
 
     public final String getName() {
         return name;
     }
 
-    public final Tier getToolTier() {
-        return toolTier;
+    public TagKey<Item> getRepairIngredient() {
+        return repairIngredient;
+    }
+
+    public final ToolMaterial getMaterial() {
+        return material;
     }
 }

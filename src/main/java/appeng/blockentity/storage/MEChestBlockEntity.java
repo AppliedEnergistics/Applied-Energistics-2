@@ -375,24 +375,24 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
     protected void loadVisualState(CompoundTag data) {
         super.loadVisualState(data);
 
-        this.clientPowered = data.getBoolean("powered");
+        this.clientPowered = data.getBooleanOr("powered", false);
 
         try {
-            this.clientCellState = CellState.valueOf(data.getString("cellStatus"));
+            this.clientCellState = CellState.valueOf(data.getStringOr("cellStatus", ""));
         } catch (Exception e) {
             this.clientCellState = CellState.ABSENT;
             LOG.warn("Couldn't read cell status for {} from {}", this, data);
         }
 
         try {
-            this.cellItem = BuiltInRegistries.ITEM.get(ResourceLocation.parse(data.getString("cellId")));
+            this.cellItem = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(data.getStringOr("cellId", "")));
         } catch (Exception e) {
             LOG.warn("Couldn't read cell item for {} from {}", this, data);
             this.cellItem = Items.AIR;
         }
 
         try {
-            this.paintedColor = AEColor.valueOf(data.getString("color"));
+            this.paintedColor = AEColor.valueOf(data.getStringOr("color", ""));
         } catch (IllegalArgumentException ignore) {
             LOG.warn("Invalid painted color in visual data for {}: {}", this, data);
             this.paintedColor = AEColor.TRANSPARENT;
@@ -404,10 +404,9 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
         super.loadTag(data, registries);
         this.config.readFromNBT(data, registries);
         this.keyTypeSelection.readFromNBT(data, registries);
-        this.priority = data.getInt("priority");
-        if (data.contains("paintedColor")) {
-            this.paintedColor = AEColor.values()[data.getByte("paintedColor")];
-        }
+        this.priority = data.getIntOr("priority", 0);
+        var paintedColorIdx = data.getByteOr("paintedColor", (byte) AEColor.TRANSPARENT.ordinal());
+        this.paintedColor = AEColor.fromOrdinal(paintedColorIdx);
     }
 
     @Override

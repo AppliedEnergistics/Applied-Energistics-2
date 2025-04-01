@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "c:dusts/redstone"
-    },
-    "b": {
-      "item": "ae2:fluix_glass_cable"
-    },
-    "c": {
-      "item": "minecraft:lever"
-    }
+    "a": "#c:dusts/redstone",
+    "b": "ae2:fluix_glass_cable",
+    "c": "minecraft:lever"
   },
   "pattern": [
     " a ",

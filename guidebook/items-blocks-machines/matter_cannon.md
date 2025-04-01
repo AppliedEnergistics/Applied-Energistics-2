@@ -24,7 +24,7 @@ the damage of the ammunition.
 Its energy can be recharged in a <ItemLink id="charger" />.
 
 Matter cannons act like [storage cells](storage_cells.md), and their ammunition magazine can most easily be filled by sticking
-the cannon in the storage cell slot in a <ItemLink id="chest" />
+the cannon in the storage cell slot in a <ItemLink id="me_chest" />
 
 ## Upgrades
 

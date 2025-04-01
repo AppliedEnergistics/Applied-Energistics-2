@@ -20,36 +20,23 @@ package appeng.parts.encoding;
 
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
-import appeng.core.AppEng;
 import appeng.helpers.IPatternTerminalLogicHost;
 import appeng.helpers.IPatternTerminalMenuHost;
-import appeng.items.parts.PartModels;
 import appeng.menu.me.items.PatternEncodingTermMenu;
-import appeng.parts.PartModel;
 import appeng.parts.reporting.AbstractTerminalPart;
 
 public class PatternEncodingTerminalPart extends AbstractTerminalPart
         implements IPatternTerminalLogicHost, IPatternTerminalMenuHost {
-
-    @PartModels
-    public static final ResourceLocation MODEL_OFF = AppEng.makeId(
-            "part/pattern_encoding_terminal_off");
-    @PartModels
-    public static final ResourceLocation MODEL_ON = AppEng.makeId(
-            "part/pattern_encoding_terminal_on");
-
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
 
     private final PatternEncodingLogic logic = new PatternEncodingLogic(this);
 
@@ -94,11 +81,6 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart
     }
 
     @Override
-    public IPartModel getStaticModels() {
-        return this.selectModel(MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL);
-    }
-
-    @Override
     public PatternEncodingLogic getLogic() {
         return logic;
     }
@@ -106,5 +88,10 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart
     @Override
     public void markForSave() {
         getHost().markForSave();
+    }
+
+    @Override
+    public @Nullable ServerLevel getServerLevel() {
+        return getLevel() instanceof ServerLevel serverLevel ? serverLevel : null;
     }
 }

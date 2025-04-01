@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "c:rods/wooden"
-    },
-    "b": {
-      "tag": "c:ingots/iron"
-    },
-    "c": {
-      "tag": "c:gems/certus_quartz"
-    }
+    "a": "#c:rods/wooden",
+    "b": "#c:ingots/iron",
+    "c": "#c:gems/certus_quartz"
   },
   "pattern": [
     "  a",

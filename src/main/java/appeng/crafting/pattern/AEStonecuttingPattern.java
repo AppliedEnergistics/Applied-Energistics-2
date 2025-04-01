@@ -28,13 +28,16 @@ import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
@@ -59,7 +62,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
 
     private final AEItemKey definition;
     public final boolean canSubstitute;
-    private final ResourceLocation recipeId;
+    private final ResourceKey<Recipe<?>> recipeId;
     private final StonecutterRecipe recipe;
     private final AEItemKey input;
     private final ItemStack output;
@@ -71,7 +74,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
      */
     private final Map<Item, Boolean> isValidCache = new IdentityHashMap<>();
 
-    public AEStonecuttingPattern(AEItemKey definition, Level level) {
+    public AEStonecuttingPattern(AEItemKey definition, ServerLevel level) {
         this.definition = definition;
 
         var encodedPattern = definition.get(AEComponents.ENCODED_STONECUTTING_PATTERN);
@@ -86,7 +89,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
 
         // Find recipe
         this.recipeId = encodedPattern.recipeId();
-        this.recipe = level.getRecipeManager().byKey(recipeId).map(holder -> (StonecutterRecipe) holder.value())
+        this.recipe = level.recipeAccess().byKey(recipeId).map(holder -> (StonecutterRecipe) holder.value())
                 .orElse(null);
         if (recipe == null) {
             throw new IllegalStateException("Stonecutting pattern references unknown recipe " + recipeId);
@@ -109,7 +112,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         this.outputs = Collections.singletonList(GenericStack.fromItemStack(this.output));
     }
 
-    public ResourceLocation getRecipeId() {
+    public ResourceKey<Recipe<?>> getRecipeId() {
         return recipeId;
     }
 
@@ -170,7 +173,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
      * Gets the {@link Ingredient} from the actual used recipe. Stonecutting recipes must have exactly one ingredient.
      */
     private Ingredient getRecipeIngredient() {
-        return recipe.getIngredients().get(0);
+        return recipe.input();
     }
 
     public boolean isItemValid(AEItemKey key, Level level) {
@@ -281,7 +284,8 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
             if (!canSubstitute) {
                 this.possibleInputs = new GenericStack[] { new GenericStack(input, 1) };
             } else {
-                ItemStack[] matchingStacks = getRecipeIngredient().getItems();
+                ItemStack[] matchingStacks = getRecipeIngredient().items().map(Holder::value)
+                        .map(Item::getDefaultInstance).toArray(ItemStack[]::new); // TODO 1.21.4 can't stay like this
                 this.possibleInputs = new GenericStack[matchingStacks.length + 1];
                 // Ensure that the stack chosen by the user gets precedence.
                 this.possibleInputs[0] = new GenericStack(input, 1);

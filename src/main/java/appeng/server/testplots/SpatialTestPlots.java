@@ -161,14 +161,14 @@ public final class SpatialTestPlots {
     }
 
     private static ItemStack getCellFromSpatialIoPortOutput(PlotTestHelper helper, BlockPos ioPortPos) {
-        var spatialIoPort = (SpatialIOPortBlockEntity) helper.getBlockEntity(ioPortPos);
+        var spatialIoPort = helper.getBlockEntity(ioPortPos, SpatialIOPortBlockEntity.class);
         var cell = spatialIoPort.getInternalInventory().extractItem(1, 1, false);
         helper.check(AEItems.SPATIAL_CELL2.is(cell), "no spatial cell in output slot", ioPortPos);
         return cell;
     }
 
     private static void insertCell(PlotTestHelper helper, BlockPos ioPortPos, ItemStack cell) {
-        var spatialIoPort = (SpatialIOPortBlockEntity) helper.getBlockEntity(ioPortPos);
+        var spatialIoPort = helper.getBlockEntity(ioPortPos, SpatialIOPortBlockEntity.class);
         spatialIoPort.getInternalInventory().insertItem(0, cell, false);
     }
 

@@ -1,10 +1,8 @@
 
 package appeng.core.network.serverbound;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import com.google.common.base.Preconditions;
@@ -12,14 +10,16 @@ import com.google.common.primitives.Ints;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -53,7 +53,7 @@ import appeng.util.prioritylist.IPartitionList;
  * @param craftMissing        True if missing entries should be queued for autocrafting instead.
  */
 public record FillCraftingGridFromRecipePacket(
-        @Nullable ResourceLocation recipeId,
+        @Nullable ResourceKey<Recipe<?>> recipeId,
         NonNullList<ItemStack> ingredientTemplates,
         boolean craftMissing) implements ServerboundPacket {
 
@@ -70,7 +70,7 @@ public record FillCraftingGridFromRecipePacket(
         return TYPE;
     }
 
-    public FillCraftingGridFromRecipePacket(@Nullable ResourceLocation recipeId,
+    public FillCraftingGridFromRecipePacket(@Nullable ResourceKey<Recipe<?>> recipeId,
             NonNullList<ItemStack> ingredientTemplates,
             boolean craftMissing) {
         this.recipeId = recipeId;
@@ -79,9 +79,9 @@ public record FillCraftingGridFromRecipePacket(
     }
 
     public static FillCraftingGridFromRecipePacket decode(RegistryFriendlyByteBuf stream) {
-        ResourceLocation recipeId = null;
+        ResourceKey<Recipe<?>> recipeId = null;
         if (stream.readBoolean()) {
-            recipeId = stream.readResourceLocation();
+            recipeId = stream.readResourceKey(Registries.RECIPE);
         }
 
         var ingredientTemplates = NonNullList.withSize(stream.readInt(), ItemStack.EMPTY);
@@ -96,7 +96,7 @@ public record FillCraftingGridFromRecipePacket(
     public void write(RegistryFriendlyByteBuf data) {
         if (recipeId != null) {
             data.writeBoolean(true);
-            data.writeResourceLocation(recipeId);
+            data.writeResourceKey(recipeId);
         } else {
             data.writeBoolean(false);
         }
@@ -155,12 +155,12 @@ public record FillCraftingGridFromRecipePacket(
         // Handle each slot
         for (var x = 0; x < craftMatrix.size(); x++) {
             var currentItem = craftMatrix.getStackInSlot(x);
-            var ingredient = ingredients.get(x);
+            var ingredient = ingredients.get(x).orElse(null);
 
             // Move out items blocking the grid
             if (!currentItem.isEmpty()) {
                 // Put away old item, if not correct
-                if (ingredient.test(currentItem)) {
+                if (ingredient != null && ingredient.test(currentItem)) {
                     // Grid already has an item that matches the ingredient
                     continue;
                 } else {
@@ -184,7 +184,7 @@ public record FillCraftingGridFromRecipePacket(
                 }
             }
 
-            if (ingredient.isEmpty()) {
+            if (ingredient == null) {
                 continue;
             }
 
@@ -237,7 +237,7 @@ public record FillCraftingGridFromRecipePacket(
 
     private ItemStack takeIngredientFromPlayer(ICraftingGridMenu cct, ServerPlayer player, Ingredient ingredient) {
         var playerInv = player.getInventory();
-        for (int i = 0; i < playerInv.items.size(); i++) {
+        for (int i = 0; i < playerInv.getNonEquipmentItems().size(); i++) {
             // Do not take ingredients out of locked slots
             if (cct.isPlayerInventorySlotLocked(i)) {
                 continue;
@@ -254,24 +254,24 @@ public record FillCraftingGridFromRecipePacket(
         return ItemStack.EMPTY;
     }
 
-    private NonNullList<Ingredient> getDesiredIngredients(Player player) {
+    private List<Optional<Ingredient>> getDesiredIngredients(ServerPlayer player) {
         // Try to retrieve the real recipe on the server-side
         if (this.recipeId != null) {
-            var recipe = player.level().getRecipeManager().byKey(this.recipeId).orElse(null);
+            var recipe = player.serverLevel().recipeAccess().byKey(this.recipeId).orElse(null);
             if (recipe != null) {
                 return CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe.value());
             }
         }
 
         // If the recipe is unavailable for any reason, use the templates provided by the client
-        var ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
+        var ingredients = NonNullList.<Optional<Ingredient>>withSize(9, Optional.empty());
         Preconditions.checkArgument(ingredients.size() == this.ingredientTemplates.size(),
                 "Got %d ingredient templates from client, expected %d",
                 ingredientTemplates.size(), ingredients.size());
         for (int i = 0; i < ingredients.size(); i++) {
             var template = ingredientTemplates.get(i);
             if (!template.isEmpty()) {
-                ingredients.set(i, Ingredient.of(template));
+                ingredients.set(i, Optional.of(Ingredient.of(template.getItem())));
             }
         }
 
@@ -295,26 +295,38 @@ public record FillCraftingGridFromRecipePacket(
      */
     private List<AEItemKey> findBestMatchingItemStack(Ingredient ingredient, IPartitionList filter,
             KeyCounter storage) {
-        return Arrays.stream(ingredient.getItems())//
-                .map(AEItemKey::of) //
-                .filter(r -> r != null && (filter == null || filter.isListed(r)))
-                .flatMap(s -> storage.findFuzzy(s, FuzzyMode.IGNORE_ALL).stream())//
-                // While FuzzyMode.IGNORE_ALL will retrieve all stacks of the same Item which matches
-                // standard Vanilla Ingredient matching, there are NBT-matching Ingredient subclasses on Forge,
-                // and Mods might actually have mixed into Ingredient
-                .filter(e -> ((AEItemKey) e.getKey()).matches(ingredient))
-                // Sort in descending order of availability
-                .sorted((a, b) -> Long.compare(b.getLongValue(), a.getLongValue()))//
-                .map(e -> (AEItemKey) e.getKey())//
-                .toList();
+        if (!ingredient.isCustom()) {
+            return ingredient.getValues().stream()
+                    .map(Holder::value)
+                    .map(AEItemKey::of)
+                    .filter(r -> r != null && (filter == null || filter.isListed(r)))
+                    .flatMap(s -> storage.findFuzzy(s, FuzzyMode.IGNORE_ALL).stream())
+                    // While FuzzyMode.IGNORE_ALL will retrieve all stacks of the same Item which matches
+                    // standard Vanilla Ingredient matching, there are NBT-matching Ingredient subclasses on Forge,
+                    // and Mods might actually have mixed into Ingredient
+                    .filter(e -> ((AEItemKey) e.getKey()).matches(ingredient))
+                    // Sort in descending order of availability
+                    .sorted((a, b) -> Long.compare(b.getLongValue(), a.getLongValue()))
+                    .map(e -> (AEItemKey) e.getKey())
+                    .toList();
+        } else {
+            return storage.keySet().stream()
+                    .map(k -> {
+                        return k instanceof AEItemKey itemKey ? itemKey : null;
+                    })
+                    .filter(r -> r != null && (filter == null || filter.isListed(r))
+                            && ingredient.test(r.getReadOnlyStack()))
+                    // Sort in descending order of availability
+                    .sorted((a, b) -> Long.compare(storage.get(b), storage.get(a)))
+                    .toList();
+        }
+
     }
 
     private Optional<AEItemKey> findCraftableKey(Ingredient ingredient, ICraftingService craftingService) {
-        return Arrays.stream(ingredient.getItems())//
-                .map(AEItemKey::of)//
-                .map(s -> (AEItemKey) craftingService.getFuzzyCraftable(s,
-                        key -> ((AEItemKey) key).matches(ingredient)))//
-                .filter(Objects::nonNull)//
-                .findAny();//
+        return craftingService.getCraftables(AEItemKey.filter()).stream()
+                .map(k -> (AEItemKey) k)
+                .filter(k -> ingredient.test(k.getReadOnlyStack()))
+                .findFirst();
     }
 }

@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/tantalum"
-  },
+  "ammo": "#c:nuggets/tantalum",
   "weight": 180.9479
 }

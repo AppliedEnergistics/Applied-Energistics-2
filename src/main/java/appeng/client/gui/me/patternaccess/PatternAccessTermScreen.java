@@ -34,13 +34,12 @@ import com.google.common.collect.HashMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -55,7 +54,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import appeng.api.config.Settings;
 import appeng.api.config.ShowPatternProviders;
 import appeng.api.config.TerminalStyle;
-import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.storage.ILinkStatus;
 import appeng.client.gui.AEBaseScreen;
@@ -185,37 +183,36 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
         this.menu.slots.removeIf(slot -> slot instanceof PatternSlot);
 
         int textColor = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
-        var level = Minecraft.getInstance().level;
 
         final int scrollLevel = scrollbar.getCurrentScroll();
         int i = 0;
         for (; i < this.visibleRows; ++i) {
             if (scrollLevel + i < this.rows.size()) {
                 var row = this.rows.get(scrollLevel + i);
-                if (row instanceof SlotsRow slotsRow) {
+                if (row instanceof SlotsRow(PatternContainerRecord container, int offset, int slots)) {
                     // Note: We have to shift everything after the header up by 1 to avoid black line duplication.
-                    var container = slotsRow.container;
-                    for (int col = 0; col < slotsRow.slots; col++) {
+                    for (int col = 0; col < slots; col++) {
                         var slot = new PatternSlot(
                                 container,
-                                slotsRow.offset + col,
+                                offset + col,
                                 col * SLOT_SIZE + GUI_PADDING_X,
                                 (i + 1) * SLOT_SIZE);
                         this.menu.slots.add(slot);
 
                         // Indicate invalid patterns
-                        var pattern = container.getInventory().getStackInSlot(slotsRow.offset + col);
-                        if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level) == null) {
-                            guiGraphics.fill(
-                                    slot.x,
-                                    slot.y,
-                                    slot.x + 16,
-                                    slot.y + 16,
-                                    0x7fff0000);
-                        }
+                        var pattern = container.getInventory().getStackInSlot(offset + col);
+                        // TODO 1.21.4 Server needs to tell us which are invalid
+                        // TODO 1.21.4 if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level) ==
+                        // null) {
+                        // TODO 1.21.4 guiGraphics.fill(
+                        // TODO 1.21.4 slot.x,
+                        // TODO 1.21.4 slot.y,
+                        // TODO 1.21.4 slot.x + 16,
+                        // TODO 1.21.4 slot.y + 16,
+                        // TODO 1.21.4 0x7fff0000);
+                        // TODO 1.21.4 }
                     }
-                } else if (row instanceof GroupHeaderRow headerRow) {
-                    var group = headerRow.group;
+                } else if (row instanceof GroupHeaderRow(PatternContainerGroup group)) {
                     if (group.icon() != null) {
                         var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics);
                         renderContext.renderItem(
@@ -386,6 +383,8 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
             currentY += ROW_HEIGHT;
         }
+
+        guiGraphics.flush();
     }
 
     private Rect2i selectRowBackgroundBox(boolean isInvLine, boolean firstLine, boolean lastLine) {
@@ -548,17 +547,17 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     private String getPatternSearchText(ItemStack stack) {
         var level = menu.getPlayer().level();
         var text = new StringBuilder();
-        var pattern = PatternDetailsHelper.decodePattern(stack, level);
-
-        if (pattern != null) {
-            for (var output : pattern.getOutputs()) {
-                output.what().getDisplayName().visit(content -> {
-                    text.append(content.toLowerCase());
-                    return Optional.empty();
-                });
-                text.append('\n');
-            }
-        }
+// TODO 1.21.4        var pattern = PatternDetailsHelper.decodePattern(stack, level);
+// TODO 1.21.4
+// TODO 1.21.4        if (pattern != null) {
+// TODO 1.21.4            for (var output : pattern.getOutputs()) {
+// TODO 1.21.4                output.what().getDisplayName().visit(content -> {
+// TODO 1.21.4                    text.append(content.toLowerCase());
+// TODO 1.21.4                    return Optional.empty();
+// TODO 1.21.4                });
+// TODO 1.21.4                text.append('\n');
+// TODO 1.21.4            }
+// TODO 1.21.4        }
 
         return text.toString();
     }
@@ -610,13 +609,20 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
     /**
      * A version of blit that lets us pass a source rectangle
-     *
-     * @see GuiGraphics#blit(ResourceLocation, int, int, int, int, int, int)
      */
     private void blit(GuiGraphics guiGraphics, int offsetX, int offsetY, Rect2i srcRect) {
         var texture = AppEng.makeId("textures/guis/patternaccessterminal.png");
-        guiGraphics.blit(texture, offsetX, offsetY, srcRect.getX(), srcRect.getY(), srcRect.getWidth(),
-                srcRect.getHeight());
+        guiGraphics.blit(
+                RenderType::guiTextured,
+                texture,
+                offsetX,
+                offsetY,
+                srcRect.getX(),
+                srcRect.getY(),
+                srcRect.getWidth(),
+                srcRect.getHeight(),
+                256,
+                256);
     }
 
     protected int getVisibleRows() {

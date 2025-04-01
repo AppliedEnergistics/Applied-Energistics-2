@@ -1,12 +1,8 @@
 {
   "type": "ae2:inscriber",
   "ingredients": {
-    "middle": {
-      "tag": "c:ingots/gold"
-    },
-    "top": {
-      "item": "ae2:logic_processor_press"
-    }
+    "middle": "#c:ingots/gold",
+    "top": "ae2:logic_processor_press"
   },
   "mode": "inscribe",
   "result": {

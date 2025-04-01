@@ -18,13 +18,10 @@
 
 package appeng.parts.p2p;
 
-import java.util.List;
-
-import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -34,20 +31,9 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
-import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
-import appeng.items.parts.PartModels;
 
 public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implements IGridTickable {
-
-    private static final P2PModels MODELS = new P2PModels(AppEng.makeId("part/p2p/p2p_tunnel_light"));
-
-    @PartModels
-    public static List<IPartModel> getModels() {
-        return MODELS.getModels();
-    }
-
     private int lastValue = 0;
     private int opacity = -1;
 
@@ -107,8 +93,8 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
-        if (this.isOutput() && pos.relative(this.getSide()).equals(neighbor)) {
+    public void onUpdateShape(Direction side) {
+        if (this.isOutput() && side.equals(getSide())) {
             this.opacity = -1;
             this.getHost().markForUpdate();
         } else {
@@ -144,7 +130,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     @Override
     public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
         super.readFromNBT(tag, registries);
-        this.lastValue = tag.getInt("lastValue");
+        this.lastValue = tag.getIntOr("lastValue", 0);
     }
 
     @Override
@@ -180,11 +166,6 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         return this.doWork() ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return MODELS.getModel(this.isPowered(), this.isActive());
     }
 
 }

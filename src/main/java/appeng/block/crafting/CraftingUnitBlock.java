@@ -22,8 +22,8 @@ import appeng.blockentity.crafting.CraftingBlockEntity;
 
 public class CraftingUnitBlock extends AbstractCraftingUnitBlock<CraftingBlockEntity> {
 
-    public CraftingUnitBlock(ICraftingUnitType type) {
-        super(metalProps(), type);
+    public CraftingUnitBlock(Properties p, ICraftingUnitType type) {
+        super(metalProps(p), type);
     }
 
 }

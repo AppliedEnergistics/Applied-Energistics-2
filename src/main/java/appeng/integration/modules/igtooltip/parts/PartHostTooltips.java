@@ -41,7 +41,7 @@ public final class PartHostTooltips {
                 }
             }
 
-            return selected.part.getPartItem().asItem().getDescription();
+            return selected.part.getPartItem().asItem().getName();
         } else {
             return null;
         }
@@ -99,8 +99,9 @@ public final class PartHostTooltips {
         if (selected.part != null) {
             // Then pick the data for that particular part
             var partTag = context.serverData().getCompound(getPartDataName(selected.side));
-
-            buildPartTooltip(selected.part, partTag, context, tooltip);
+            if (partTag.isPresent()) {
+                buildPartTooltip(selected.part, partTag.get(), context, tooltip);
+            }
         }
     }
 

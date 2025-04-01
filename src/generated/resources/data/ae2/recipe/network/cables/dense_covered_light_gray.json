@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:fluix_covered_dense_cable"
-    },
-    "b": {
-      "tag": "c:dyes/light_gray"
-    }
+    "a": "ae2:fluix_covered_dense_cable",
+    "b": "#c:dyes/light_gray"
   },
   "pattern": [
     "aaa",

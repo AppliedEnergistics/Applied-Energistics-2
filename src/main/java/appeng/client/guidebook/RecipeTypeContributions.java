@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
@@ -37,7 +36,7 @@ public class RecipeTypeContributions implements RecipeTypeMappingSupplier {
     private static LytStandardRecipeBox<ChargerRecipe> charging(RecipeHolder<ChargerRecipe> holder) {
         return LytStandardRecipeBox.builder()
                 .icon(AEBlocks.CHARGER)
-                .title(AEBlocks.CHARGER.asItem().getDescription().getString())
+                .title(AEBlocks.CHARGER.asItem().getName().getString())
                 .input(holder.value().getIngredient())
                 .outputFromResultOf(holder)
                 .build(holder);
@@ -46,7 +45,7 @@ public class RecipeTypeContributions implements RecipeTypeMappingSupplier {
     private static LytStandardRecipeBox<InscriberRecipe> inscribing(RecipeHolder<InscriberRecipe> holder) {
         return LytStandardRecipeBox.builder()
                 .icon(AEBlocks.INSCRIBER)
-                .title(AEBlocks.INSCRIBER.asItem().getDescription().getString())
+                .title(AEBlocks.INSCRIBER.asItem().getName().getString())
                 .customBody(new LytInscriberRecipe(holder.value()))
                 .build(holder);
     }
@@ -55,8 +54,8 @@ public class RecipeTypeContributions implements RecipeTypeMappingSupplier {
         var recipe = holder.value();
 
         var builder = LytStandardRecipeBox.builder()
-                .input(LytSlotGrid.column(recipe.getIngredients(), true))
-                .output(LytSlotGrid.column(List.of(Ingredient.of(recipe.getResultItem())), true));
+                .input(LytSlotGrid.columnFromIngredients(recipe.getIngredients(), true))
+                .output(LytSlotGrid.columnFromStacks(List.of(recipe.getResultItem()), true));
 
         if (recipe.circumstance.isExplosion()) {
             builder.icon(Blocks.TNT);

@@ -4,7 +4,8 @@
       "model": "ae2:block/crafting/accelerator"
     },
     "formed=true": {
-      "model": "ae2:block/crafting/accelerator_formed"
+      "type": "ae2:crafting_cube",
+      "unit_type": "accelerator"
     }
   }
 }

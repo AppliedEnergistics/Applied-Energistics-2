@@ -31,8 +31,8 @@ import appeng.core.AEConfig;
 
 public class CubeGeneratorBlock extends AEBaseEntityBlock<CubeGeneratorBlockEntity> {
 
-    public CubeGeneratorBlock() {
-        super(metalProps());
+    public CubeGeneratorBlock(Properties p) {
+        super(metalProps(p));
     }
 
     @Override
@@ -40,7 +40,7 @@ public class CubeGeneratorBlock extends AEBaseEntityBlock<CubeGeneratorBlockEnti
             BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof CubeGeneratorBlockEntity be) {
             be.click(player);
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

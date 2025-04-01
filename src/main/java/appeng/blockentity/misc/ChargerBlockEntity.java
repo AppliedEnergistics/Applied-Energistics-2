@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -134,11 +135,11 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-        doWork(ticksSinceLastCall);
+        doWork(node.getLevel(), ticksSinceLastCall);
         return TickRateModulation.FASTER;
     }
 
-    private void doWork(int ticksSinceLastCall) {
+    private void doWork(ServerLevel level, int ticksSinceLastCall) {
         var wasWorking = this.working;
         this.working = false;
         var changed = false;
@@ -185,7 +186,7 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
             } else if (this.getInternalCurrentPower() >= POWER_THRESHOLD
                     && ChargerRecipes.findRecipe(level, myItem) != null) {
                 this.working = true;
-                if (level != null && level.getRandom().nextFloat() > 0.8f) {
+                if (this.level != null && this.level.getRandom().nextFloat() > 0.8f) {
                     this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
                     var charged = Objects.requireNonNull(ChargerRecipes.findRecipe(level, myItem)).result;
@@ -233,7 +234,11 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
 
         @Override
         public boolean allowInsert(InternalInventory inv, int i, ItemStack itemstack) {
-            return Platform.isChargeable(itemstack) || ChargerRecipes.allowInsert(chargerBlockEntity.level, itemstack);
+            if (chargerBlockEntity.level instanceof ServerLevel serverLevel) {
+                return Platform.isChargeable(itemstack) || ChargerRecipes.allowInsert(serverLevel, itemstack);
+            } else {
+                return false;
+            }
         }
 
         @Override
@@ -247,7 +252,11 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
                 }
             }
 
-            return ChargerRecipes.allowExtract(chargerBlockEntity.level, extractedItem);
+            if (chargerBlockEntity.level instanceof ServerLevel serverLevel) {
+                return ChargerRecipes.allowExtract(serverLevel, extractedItem);
+            } else {
+                return false;
+            }
         }
     }
 }

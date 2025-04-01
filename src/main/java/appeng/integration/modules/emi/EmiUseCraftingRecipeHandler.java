@@ -15,7 +15,6 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 import dev.emi.emi.api.recipe.EmiRecipe;
-import dev.emi.emi.api.stack.EmiStack;
 
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.itemlists.CraftingHelper;
@@ -85,14 +84,14 @@ public class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends Abs
     }
 
     private Recipe<?> createFakeRecipe(EmiRecipe display) {
-        var ingredients = NonNullList.withSize(CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT,
-                Ingredient.EMPTY);
+        var ingredients = NonNullList.<Optional<Ingredient>>withSize(CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT,
+                Optional.empty());
 
         for (int i = 0; i < Math.min(display.getInputs().size(), ingredients.size()); i++) {
-            var ingredient = Ingredient.of(display.getInputs().get(i).getEmiStacks().stream()
-                    .map(EmiStack::getItemStack)
-                    .filter(is -> !is.isEmpty()));
-            ingredients.set(i, ingredient);
+            // TODO 1.21.4 var ingredient = Ingredient.of(display.getInputs().get(i).getEmiStacks().stream()
+            // TODO 1.21.4 .map(EmiStack::getItemStack)
+            // TODO 1.21.4 .filter(is -> !is.isEmpty()));
+            // TODO 1.21.4 ingredients.set(i, ingredient);
         }
 
         var pattern = new ShapedRecipePattern(CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT, ingredients, Optional.empty());
@@ -100,7 +99,10 @@ public class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends Abs
     }
 
     public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(Recipe<?> recipe) {
-        var ingredients = recipe.getIngredients();
+        var placement = recipe.placementInfo();
+        if (placement.isImpossibleToPlace()) {
+            return Map.of();
+        }
 
         // JEI will align non-shaped recipes smaller than 3x3 in the grid. It'll center them horizontally, and
         // some will be aligned to the bottom. (i.e. slab recipes).
@@ -111,13 +113,11 @@ public class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends Abs
             width = CRAFTING_GRID_WIDTH;
         }
 
-        var result = new HashMap<Integer, Ingredient>(ingredients.size());
-        for (int i = 0; i < ingredients.size(); i++) {
+        var result = new HashMap<Integer, Ingredient>(placement.slotsToIngredientIndex().size());
+        for (int i = 0; i < placement.slotsToIngredientIndex().size(); i++) {
             var guiSlot = (i / width) * CRAFTING_GRID_WIDTH + (i % width);
-            var ingredient = ingredients.get(i);
-            if (!ingredient.isEmpty()) {
-                result.put(guiSlot, ingredient);
-            }
+            var ingredient = placement.ingredients().get(placement.slotsToIngredientIndex().getInt(i));
+            result.put(guiSlot, ingredient);
         }
         return result;
     }

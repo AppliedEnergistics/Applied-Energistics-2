@@ -3,9 +3,9 @@ package appeng.items.tools.powered;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +17,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.storage.StorageCells;
-import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.UpgradeInventories;
@@ -88,26 +87,29 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         return context.isSecondaryUseActive()
                 && this.disassembleDrive(stack, context.getLevel(), context.getPlayer())
-                        ? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
+                        ? InteractionResult.SUCCESS
                         : InteractionResult.PASS;
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (!InteractionUtil.isInAlternateUseMode(player)
                 || !disassembleDrive(player.getItemInHand(hand), level, player)) {
             if (!level.isClientSide()) {
                 MenuOpener.open(this.menuType, player, MenuLocators.forHand(player, hand));
             }
         }
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                player.getItemInHand(hand));
+        return InteractionResult.SUCCESS;
     }
 
     private boolean disassembleDrive(ItemStack stack, Level level, Player player) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return false;
+        }
+
         var playerInventory = player.getInventory();
-        var disassemblyItems = StorageCellDisassemblyRecipe.getDisassemblyResult(level, stack.getItem());
-        if (disassemblyItems.isEmpty() || playerInventory.getSelected() != stack || stack.getCount() != 1) {
+        var disassemblyItems = StorageCellDisassemblyRecipe.getDisassemblyResult(serverLevel, stack.getItem());
+        if (disassemblyItems.isEmpty() || playerInventory.getSelectedItem() != stack || stack.getCount() != 1) {
             return false;
         }
 
@@ -121,7 +123,7 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
             return true; // Prevents the UI from opening and overlaying the error message
         }
 
-        playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
+        playerInventory.setItem(playerInventory.getSelectedSlot(), ItemStack.EMPTY);
 
         double remainingEnergy = getAECurrentPower(stack);
         for (var recipeStack : disassemblyItems) {
@@ -149,24 +151,5 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
         // The energy card is crafted with a dense energy cell, while the base portable just uses a normal energy cell.
         // Since the dense cells capacity is 8x the normal capacity, the result should be 9x normal.
         setAEMaxPowerMultiplier(stack, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8);
-    }
-
-    public static int getColor(ItemStack stack, int tintIndex) {
-        if (tintIndex == 1 && stack.getItem() instanceof AbstractPortableCell portableCell) {
-            // If the cell is out of power, always display empty
-            if (portableCell.getAECurrentPower(stack) <= 0) {
-                return CellState.ABSENT.getStateColor();
-            }
-
-            // Determine LED color
-            var cellInv = StorageCells.getCellInventory(stack, null);
-            var cellStatus = cellInv != null ? cellInv.getStatus() : CellState.EMPTY;
-            return cellStatus.getStateColor();
-        } else if (tintIndex == 2 && stack.getItem() instanceof AbstractPortableCell portableCell) {
-            return portableCell.getColor(stack);
-        } else {
-            // White
-            return 0xFFFFFF;
-        }
     }
 }

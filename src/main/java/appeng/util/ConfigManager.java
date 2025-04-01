@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 
 import appeng.api.config.Setting;
 import appeng.api.util.IConfigManager;
@@ -105,8 +104,8 @@ public final class ConfigManager implements IConfigManager {
     public boolean readFromNBT(CompoundTag tagCompound, HolderLookup.Provider registries) {
         boolean anythingRead = false;
         for (var setting : this.settings.keySet()) {
-            if (tagCompound.contains(setting.getName(), Tag.TAG_STRING)) {
-                String value = tagCompound.getString(setting.getName());
+            if (tagCompound.contains(setting.getName())) {
+                String value = tagCompound.getStringOr(setting.getName(), "");
                 try {
                     setting.setFromString(this, value);
                     anythingRead = true;

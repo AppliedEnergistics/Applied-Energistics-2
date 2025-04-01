@@ -1,6 +1,6 @@
 package appeng.decorative.solid;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -13,13 +13,13 @@ import appeng.core.localization.Tooltips;
 import appeng.decorative.AEDecorativeBlock;
 
 public class NotSoMysteriousCubeBlock extends AEDecorativeBlock {
-    public NotSoMysteriousCubeBlock() {
-        super(MysteriousCubeBlock.PROPERTIES);
+    public NotSoMysteriousCubeBlock(Properties p) {
+        super(MysteriousCubeBlock.properties(p));
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip,
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, Consumer<Component> tooltip,
             TooltipFlag flag) {
-        tooltip.add(Tooltips.of(GuiText.NotSoMysteriousQuote, Tooltips.QUOTE_TEXT));
+        tooltip.accept(Tooltips.of(GuiText.NotSoMysteriousQuote, Tooltips.QUOTE_TEXT));
     }
 }

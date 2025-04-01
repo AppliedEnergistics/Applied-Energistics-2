@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/electrum"
-  },
+  "ammo": "#c:nuggets/electrum",
   "weight": 152.41737
 }

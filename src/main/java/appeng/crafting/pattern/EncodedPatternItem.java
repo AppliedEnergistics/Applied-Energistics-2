@@ -18,23 +18,24 @@
 
 package appeng.crafting.pattern;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
@@ -51,7 +52,6 @@ import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.items.misc.MissingContentItem;
-import appeng.items.misc.WrappedGenericStack;
 import appeng.util.InteractionUtil;
 
 /**
@@ -82,17 +82,16 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         this.clearPattern(player.getItemInHand(hand), player);
 
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                player.getItemInHand(hand));
+        return InteractionResult.SUCCESS;
     }
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         return this.clearPattern(stack, context.getPlayer())
-                ? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
+                ? InteractionResult.SUCCESS
                 : InteractionResult.PASS;
     }
 
@@ -119,7 +118,8 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
             TooltipFlag flags) {
         var what = AEItemKey.of(stack);
         if (what == null) {
@@ -133,12 +133,14 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
             return; // Showing pattern details will only work reliably client-side
         }
 
-        PatternDetailsTooltip tooltip;
+        PatternDetailsTooltip tooltip = null;
         try {
-            var details = Objects.requireNonNull(decoder.decode(what, clientLevel), "decoder returned null");
-            tooltip = details.getTooltip(clientLevel, flags);
+            // TODO 1.21.4 var details = Objects.requireNonNull(decoder.decode(what, clientLevel), "decoder returned
+            // null");
+            // TODO 1.21.4 tooltip = details.getTooltip(clientLevel, flags);
+            tooltip = ClientPatternCache.getTooltip(stack);
         } catch (Exception e) {
-            lines.add(GuiText.InvalidPattern.text().copy().withStyle(ChatFormatting.RED));
+            lines.accept(GuiText.InvalidPattern.text().copy().withStyle(ChatFormatting.RED));
             if (invalidPatternTooltip != null) {
                 tooltip = invalidPatternTooltip.getTooltip(stack, clientLevel, e, flags);
             } else {
@@ -155,23 +157,23 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
 
             boolean first = true;
             for (var output : tooltip.getOutputs()) {
-                lines.add(Component.empty().append(first ? label : and).append(getTooltipEntryLine(output)));
+                lines.accept(Component.empty().append(first ? label : and).append(getTooltipEntryLine(output)));
                 first = false;
             }
 
             first = true;
             for (var input : tooltip.getInputs()) {
-                lines.add(Component.empty().append(first ? with : and).append(getTooltipEntryLine(input)));
+                lines.accept(Component.empty().append(first ? with : and).append(getTooltipEntryLine(input)));
                 first = false;
             }
 
             for (var property : tooltip.getProperties()) {
                 if (property.value() != null) {
-                    lines.add(Component.empty().append(property.name())
+                    lines.accept(Component.empty().append(property.name())
                             .append(Component.literal(": ").withStyle(ChatFormatting.GRAY))
                             .append(property.value()));
                 } else {
-                    lines.add(Component.empty().withStyle(ChatFormatting.GRAY).append(property.name()));
+                    lines.accept(Component.empty().withStyle(ChatFormatting.GRAY).append(property.name()));
                 }
             }
         }
@@ -215,26 +217,26 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
             return ItemStack.EMPTY;
         }
 
-        var details = decode(item, level);
         out = ItemStack.EMPTY;
-
-        if (details != null) {
-            var output = details.getPrimaryOutput();
-
-            // Can only be an item or fluid stack.
-            if (output.what() instanceof AEItemKey itemKey) {
-                out = itemKey.toStack();
-            } else {
-                out = WrappedGenericStack.wrap(output.what(), 0);
-            }
-        }
+// TODO 1.21.4        var details = decode(item, level);
+//
+//        if (details != null) {
+//            var output = details.getPrimaryOutput();
+//
+//            // Can only be an item or fluid stack.
+//            if (output.what() instanceof AEItemKey itemKey) {
+//                out = itemKey.toStack();
+//            } else {
+//                out = WrappedGenericStack.wrap(output.what(), 0);
+//            }
+//        }
 
         SIMPLE_CACHE.put(item, out);
         return out;
     }
 
     @Nullable
-    public IPatternDetails decode(ItemStack stack, Level level) {
+    public IPatternDetails decode(ItemStack stack, ServerLevel level) {
         if (stack.getItem() != this || level == null) {
             return null;
         }
@@ -248,7 +250,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
     }
 
     @Nullable
-    public IPatternDetails decode(AEItemKey what, Level level) {
+    public IPatternDetails decode(AEItemKey what, ServerLevel level) {
         if (what == null) {
             return null;
         }
