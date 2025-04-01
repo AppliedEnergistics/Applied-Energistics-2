@@ -648,9 +648,18 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
+    public void onRedstoneLevelMayHaveChanged() {
         this.hasRedstone = YesNo.UNDECIDED;
+        for (var s : Platform.DIRECTIONS_WITH_NULL) {
+            var part = this.getPart(s);
+            if (part != null) {
+                part.onRedstoneLevelMayHaveChanged();
+            }
+        }
+    }
 
+    @Override
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         for (var s : Platform.DIRECTIONS_WITH_NULL) {
             var part = this.getPart(s);
             if (part != null) {

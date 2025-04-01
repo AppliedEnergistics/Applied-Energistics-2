@@ -137,6 +137,12 @@ public interface IPart extends ICustomCableConnection, Clearable {
     }
 
     /**
+     * The redsstone signal of the host may have changed.
+     */
+    default void onRedstoneLevelMayHaveChanged() {
+    }
+
+    /**
      * a block around the bus's host has been changed.
      *
      * @see net.neoforged.neoforge.common.extensions.IBlockExtension#onNeighborChange

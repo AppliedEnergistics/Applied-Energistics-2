@@ -72,6 +72,10 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
+    public void onRedstoneLevelMayHaveChanged() {
+    }
+
+    @Override
     public void onUpdateShape(LevelReader level, BlockPos pos, Direction side) {
     }
 

@@ -53,6 +53,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
@@ -316,6 +317,14 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         this.cb(level, pos).onUpdateShape(level, pos, direction);
 
         return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
+    }
+
+    @Override
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock,
+            @Nullable Orientation orientation, boolean movedByPiston) {
+        if (!level.isClientSide()) {
+            this.cb(level, pos).onRedstoneLevelMayHaveChanged();
+        }
     }
 
     @Override

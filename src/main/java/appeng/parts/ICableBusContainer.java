@@ -53,6 +53,8 @@ public interface ICableBusContainer {
 
     void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor);
 
+    void onRedstoneLevelMayHaveChanged();
+
     void onUpdateShape(LevelReader level, BlockPos pos, Direction side);
 
     boolean isEmpty();

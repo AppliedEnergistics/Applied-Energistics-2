@@ -28,7 +28,7 @@ public class SkyStoneTankBlock extends AEBaseEntityBlock<SkyStoneTankBlockEntity
     @Override
     protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
-        if (super.useItemOn(heldItem, state, level, pos, player, hand, hit) == InteractionResult.PASS) {
+        if (super.useItemOn(heldItem, state, level, pos, player, hand, hit) == InteractionResult.TRY_WITH_EMPTY_HAND) {
             if (level.getBlockEntity(pos) instanceof SkyStoneTankBlockEntity tank && tank.onPlayerUse(player, hand)) {
                 return InteractionResult.SUCCESS;
             }

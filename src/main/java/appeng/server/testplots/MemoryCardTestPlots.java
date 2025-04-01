@@ -36,6 +36,7 @@ import appeng.parts.crafting.PatternProviderPart;
 import appeng.parts.misc.InterfacePart;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
+import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 @TestPlotClass
@@ -158,7 +159,7 @@ public final class MemoryCardTestPlots {
             var from = helper.getBlockEntity(BlockPos.ZERO.east(), PatternProviderBlockEntity.class);
             var to = helper.getPart(BlockPos.ZERO, Direction.WEST, PatternProviderPart.class);
 
-            var player = helper.makeMockPlayer(GameType.SURVIVAL);
+            var player = Platform.getFakePlayer(helper.getLevel(), null);
             player.getInventory().placeItemBackInInventory(AEItems.BLANK_PATTERN.stack(64));
 
             // This should be copied to the other pattern provider

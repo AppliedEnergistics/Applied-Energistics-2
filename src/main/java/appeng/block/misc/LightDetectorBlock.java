@@ -95,14 +95,6 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     }
 
     @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
-        var tld = this.getBlockEntity(level, pos);
-        if (tld != null) {
-            tld.updateLight();
-        }
-    }
-
-    @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPES.get(state.getValue(FACING));
     }
@@ -159,6 +151,11 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     @Override
     protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess,
             BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        var tld = this.getBlockEntity(level, pos);
+        if (tld != null) {
+            tld.updateLight();
+        }
+
         if (state.getValue(WATERLOGGED).booleanValue()) {
             scheduledTickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
