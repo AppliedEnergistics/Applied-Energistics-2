@@ -42,6 +42,10 @@ sourceSets {
         compileClasspath += main.output
         runtimeClasspath += main.output
     }
+    test {
+        compileClasspath += client.output
+        runtimeClasspath += client.output
+    }
     buildtools
 }
 

@@ -31,14 +31,12 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.Weigher;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -47,7 +45,6 @@ import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.BlockPos;
@@ -63,17 +60,16 @@ import net.neoforged.neoforge.model.data.ModelProperty;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.PartModelsInternal;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.block.networking.CableBusBlock;
 import appeng.block.networking.CableBusRenderState;
 import appeng.block.networking.CableCoreType;
 import appeng.blockentity.AEModelData;
-import appeng.client.AppEngClientRendering;
 import appeng.client.api.model.parts.PartModel;
 import appeng.client.model.FacingModelState;
 import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 
 /**
  * The built-in model for the cable bus block.
@@ -432,7 +428,7 @@ public class CableBusModel implements DynamicBlockStateModel {
             // or otherwise damage models will crash
             var particleTexture = cableBuilder.getCoreTexture(CableCoreType.GLASS, AEColor.TRANSPARENT);
 
-            var unbakedPartModels = AppEngClientRendering.getInstance().getPartModels().getUnbaked();
+            var unbakedPartModels = AppEngClient.instance().getPartModels().getUnbaked();
             var bakedPartModels = new IdentityHashMap<IPartItem<?>, PartModel[]>(unbakedPartModels.size());
             var attachmentPoints = IPart.ATTACHMENT_POINTS;
             for (var entry : unbakedPartModels.entrySet()) {
@@ -453,7 +449,7 @@ public class CableBusModel implements DynamicBlockStateModel {
 
         @Override
         public void resolveDependencies(Resolver resolver) {
-            AppEngClientRendering.getInstance().getPartModels().resolveDependencies(resolver);
+            AppEngClient.instance().getPartModels().resolveDependencies(resolver);
 
             FacadeBuilder.resolveDependencies(resolver);
         }
@@ -461,24 +457,6 @@ public class CableBusModel implements DynamicBlockStateModel {
         @Override
         public MapCodec<CableBusModel.Unbaked> codec() {
             return MAP_CODEC;
-        }
-
-        private Map<ResourceLocation, SimpleModelWrapper> loadPartModels(ModelBaker baker) {
-            ImmutableMap.Builder<ResourceLocation, SimpleModelWrapper> result = ImmutableMap.builder();
-
-            for (var location : PartModelsInternal.getModels()) {
-                // TODO: This might now be validated independently in vanilla
-                if (SharedConstants.IS_RUNNING_IN_IDE) {
-                    var slots = baker.getModel(location).getTopTextureSlots();
-                    if (slots.getMaterial("particle") == null) {
-                        LOG.error("Part model {} is missing a 'particle' texture", location);
-                    }
-                }
-
-                result.put(location, SimpleModelWrapper.bake(baker, location, BlockModelRotation.X0_Y0));
-            }
-
-            return result.build();
         }
     }
 }

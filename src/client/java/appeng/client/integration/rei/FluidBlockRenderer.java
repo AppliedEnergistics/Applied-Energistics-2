@@ -1,4 +1,4 @@
-package appeng.integration.modules.rei;
+package appeng.client.integration.rei;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +14,7 @@ import me.shedaniel.rei.api.common.entry.EntryStack;
 
 import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEFluidKey;
-import appeng.integration.modules.itemlists.FluidBlockRendering;
+import appeng.client.integration.itemlists.FluidBlockRendering;
 
 public class FluidBlockRenderer implements EntryRenderer<FluidStack> {
     @Override

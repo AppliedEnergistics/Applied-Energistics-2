@@ -33,7 +33,6 @@ import appeng.api.config.Settings;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import appeng.util.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.SettingToggleButton;
@@ -41,6 +40,7 @@ import appeng.client.gui.widgets.ToggleButton;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.menu.implementations.CellWorkbenchMenu;
+import appeng.util.Icon;
 
 public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchMenu> {
 

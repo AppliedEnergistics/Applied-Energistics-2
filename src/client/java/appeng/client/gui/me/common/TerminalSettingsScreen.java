@@ -3,13 +3,13 @@ package appeng.client.gui.me.common;
 import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.AESubScreen;
-import appeng.util.Icon;
 import appeng.client.gui.widgets.AECheckbox;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.ItemListMod;
 import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.MEStorageMenu;
+import appeng.util.Icon;
 
 public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen<C, MEStorageScreen<C>> {
 

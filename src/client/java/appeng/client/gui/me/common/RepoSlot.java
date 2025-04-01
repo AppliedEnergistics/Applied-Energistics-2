@@ -18,10 +18,10 @@
 
 package appeng.client.gui.me.common;
 
-import appeng.menu.slot.ClientReadOnlySlot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.menu.me.common.GridInventoryEntry;
+import appeng.menu.slot.ClientReadOnlySlot;
 
 /**
  * This is a virtual slot that has no corresponding slot on the server-side. It displays an item stack from the

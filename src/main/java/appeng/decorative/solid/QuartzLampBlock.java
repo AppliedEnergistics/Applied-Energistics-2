@@ -26,7 +26,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.core.AEConfig;
-
 import appeng.core.particles.ParticleTypes;
 
 public class QuartzLampBlock extends QuartzGlassBlock {

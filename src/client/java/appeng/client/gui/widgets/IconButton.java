@@ -31,8 +31,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.util.Icon;
 import appeng.client.gui.style.Blitter;
+import appeng.util.Icon;
 
 public abstract class IconButton extends Button implements ITooltip {
 
@@ -74,12 +74,12 @@ public abstract class IconButton extends Button implements ITooltip {
 
             if (this.halfSize) {
                 if (!disableBackground) {
-                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(getX(), getY()).zOffset(10).blit(guiGraphics);
+                    Blitter.icon(Icon.TOOLBAR_BUTTON_BACKGROUND).dest(getX(), getY()).zOffset(10).blit(guiGraphics);
                 }
                 if (item != null) {
                     guiGraphics.renderItem(new ItemStack(item), getX(), getY(), 0, 20);
                 } else if (icon != null) {
-                    Blitter blitter = icon.getBlitter();
+                    Blitter blitter = Blitter.icon(icon);
                     if (!this.active) {
                         blitter.opacity(0.5f);
                     }
@@ -90,7 +90,7 @@ public abstract class IconButton extends Button implements ITooltip {
                     Icon bgIcon = isHovered() ? Icon.TOOLBAR_BUTTON_BACKGROUND_HOVER
                             : isFocused() ? Icon.TOOLBAR_BUTTON_BACKGROUND_FOCUS : Icon.TOOLBAR_BUTTON_BACKGROUND;
 
-                    bgIcon.getBlitter()
+                    Blitter.icon(bgIcon)
                             .dest(getX() - 1, getY() + yOffset, 18, 20)
                             .zOffset(2)
                             .blit(guiGraphics);
@@ -98,7 +98,7 @@ public abstract class IconButton extends Button implements ITooltip {
                 if (item != null) {
                     guiGraphics.renderItem(new ItemStack(item), getX(), getY() + 1 + yOffset, 0, 3);
                 } else if (icon != null) {
-                    icon.getBlitter().dest(getX(), getY() + 1 + yOffset).zOffset(3).blit(guiGraphics);
+                    Blitter.icon(icon).dest(getX(), getY() + 1 + yOffset).zOffset(3).blit(guiGraphics);
                 }
             }
         }

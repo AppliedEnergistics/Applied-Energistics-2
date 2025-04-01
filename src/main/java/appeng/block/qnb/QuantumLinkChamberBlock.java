@@ -34,7 +34,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.EffectType;
 import appeng.core.AppEng;
-
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.QNBMenu;
 import appeng.menu.locator.MenuLocators;

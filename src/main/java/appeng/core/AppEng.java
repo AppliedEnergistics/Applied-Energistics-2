@@ -20,17 +20,21 @@ package appeng.core;
 
 import java.util.Collection;
 
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import appeng.api.ids.AEConstants;
 import appeng.api.parts.CableRenderMode;
@@ -38,8 +42,6 @@ import appeng.client.EffectType;
 import appeng.core.network.ClientboundPacket;
 
 public interface AppEng {
-
-    String MOD_NAME = "Applied Energistics 2";
     String MOD_ID = AEConstants.MOD_ID;
 
     static AppEng instance() {
@@ -108,5 +110,8 @@ public interface AppEng {
     /**
      * Handles a clientbound packet when on the client (throws on the server).
      */
-    <T extends ClientboundPacket> void handleClientboundPacket(CustomPacketPayload.Type<T> type, T payload, IPayloadContext context);
+    <T extends ClientboundPacket> void handleClientboundPacket(CustomPacketPayload.Type<T> type, T payload,
+            IPayloadContext context);
+
+    <T extends Recipe<?>> RecipeHolder<T> getRecipeById(Level level, RecipeType<T> type, ResourceKey<Recipe<?>> id);
 }

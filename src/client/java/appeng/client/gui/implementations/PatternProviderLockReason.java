@@ -14,10 +14,11 @@ import appeng.api.config.LockCraftingMode;
 import appeng.api.stacks.AmountFormat;
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
-import appeng.util.Icon;
 import appeng.client.gui.Tooltip;
+import appeng.client.gui.style.Blitter;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.InGameTooltip;
+import appeng.util.Icon;
 
 public class PatternProviderLockReason implements ICompositeWidget {
     protected boolean visible = false;
@@ -70,7 +71,7 @@ public class PatternProviderLockReason implements ICompositeWidget {
                     .setStyle(Style.EMPTY.withColor(ARGB.color(193, 66, 75)));
         }
 
-        icon.getBlitter().dest(x, y).blit(guiGraphics);
+        Blitter.icon(icon).dest(x, y).blit(guiGraphics);
         guiGraphics.drawString(Minecraft.getInstance().font, lockStatusText, x + 15, y + 5, -1, false);
     }
 

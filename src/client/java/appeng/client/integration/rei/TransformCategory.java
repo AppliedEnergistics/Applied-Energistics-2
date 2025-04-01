@@ -1,4 +1,4 @@
-package appeng.integration.modules.rei;
+package appeng.client.integration.rei;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,15 +19,14 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
-import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.ItemModText;
+import appeng.integration.modules.rei.CategoryIds;
+import appeng.integration.modules.rei.TransformRecipeWrapper;
 import appeng.recipes.transform.TransformCircumstance;
 
 public class TransformCategory implements DisplayCategory<TransformRecipeWrapper> {
-    public static final CategoryIdentifier<TransformRecipeWrapper> ID = CategoryIdentifier
-            .of(AppEng.makeId("item_transformation"));
 
     private final Renderer icon;
 
@@ -47,7 +46,7 @@ public class TransformCategory implements DisplayCategory<TransformRecipeWrapper
 
     @Override
     public CategoryIdentifier<TransformRecipeWrapper> getCategoryIdentifier() {
-        return ID;
+        return CategoryIds.TRANSFORM;
     }
 
     @Override

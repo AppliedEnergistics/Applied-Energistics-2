@@ -5,13 +5,11 @@ import java.util.Optional;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.player.Player;
 
 import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.LinkStatus;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
-import appeng.menu.guisync.LinkStatusAwareMenu;
 
 public record SetLinkStatusPacket(ILinkStatus linkStatus) implements ClientboundPacket {
     public static final StreamCodec<RegistryFriendlyByteBuf, SetLinkStatusPacket> STREAM_CODEC = StreamCodec.ofMember(

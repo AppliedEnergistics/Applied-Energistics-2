@@ -110,7 +110,8 @@ public class InitNetwork {
         });
     }
 
-    private static <T extends ClientboundPacket> void handleOnClient(CustomPacketPayload.Type<T> type, T payload, IPayloadContext context) {
+    private static <T extends ClientboundPacket> void handleOnClient(CustomPacketPayload.Type<T> type, T payload,
+            IPayloadContext context) {
         AppEng.instance().handleClientboundPacket(type, payload, context);
     }
 }

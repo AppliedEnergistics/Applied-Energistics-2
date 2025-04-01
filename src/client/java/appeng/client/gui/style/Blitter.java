@@ -45,6 +45,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.core.AppEng;
+import appeng.util.Icon;
 
 /**
  * Utility class for drawing rectangular textures in the UI.
@@ -139,6 +140,14 @@ public final class Blitter {
         var sprites = Minecraft.getInstance().getGuiSprites();
         var sprite = sprites.getSprite(resourceLocation);
         return sprite(sprite);
+    }
+
+    public static Blitter icon(Icon icon) {
+        ResourceLocation TEXTURE = AppEng.makeId("textures/guis/states.png");
+        int TEXTURE_WIDTH = 256;
+        int TEXTURE_HEIGHT = 256;
+        return Blitter.texture(TEXTURE, TEXTURE_WIDTH, TEXTURE_HEIGHT)
+                .src(icon.x, icon.y, icon.width, icon.height);
     }
 
     public Blitter copy() {

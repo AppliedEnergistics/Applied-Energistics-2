@@ -16,11 +16,11 @@ import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.AESubScreen;
 import appeng.client.gui.ICompositeWidget;
-import appeng.util.Icon;
 import appeng.client.gui.widgets.AECheckbox;
 import appeng.client.gui.widgets.TabButton;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.interfaces.KeyTypeSelectionMenu;
+import appeng.util.Icon;
 
 public class KeyTypeSelectionScreen<C extends AEBaseMenu & KeyTypeSelectionMenu, P extends AEBaseScreen<C>>
         extends AESubScreen<C, P> {

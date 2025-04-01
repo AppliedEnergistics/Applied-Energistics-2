@@ -15,7 +15,6 @@ import net.neoforged.fml.ModWorkManager;
 import appeng.api.parts.IPart;
 import appeng.client.api.renderer.parts.PartRenderer;
 import appeng.client.api.renderer.parts.RegisterPartRendererEvent;
-import appeng.parts.PartModel;
 
 /**
  * Registration facility for associating {@link PartModel} with {@link IPart} classes.

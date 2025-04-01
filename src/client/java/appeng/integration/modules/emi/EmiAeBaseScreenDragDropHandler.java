@@ -10,7 +10,7 @@ import dev.emi.emi.api.EmiDragDropHandler;
 import dev.emi.emi.api.stack.EmiIngredient;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.integration.modules.itemlists.DropTargets;
+import appeng.client.integration.itemlists.DropTargets;
 
 class EmiAeBaseScreenDragDropHandler implements EmiDragDropHandler<Screen> {
 

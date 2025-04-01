@@ -420,8 +420,4 @@ public interface IPart extends ICustomCableConnection, Clearable {
     default AECableType getDesiredConnectionType() {
         return AECableType.GLASS;
     }
-
-    default IPartModel getStaticModels() {
-        return null;
-    }
 }

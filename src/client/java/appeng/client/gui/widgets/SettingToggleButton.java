@@ -57,10 +57,10 @@ import appeng.api.config.TerminalStyle;
 import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
 import appeng.client.gui.AEBaseScreen;
-import appeng.util.Icon;
 import appeng.core.definitions.AEParts;
 import appeng.core.localization.ButtonToolTips;
 import appeng.util.EnumCycler;
+import appeng.util.Icon;
 
 public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     private static Map<EnumPair<?>, ButtonAppearance> appearances;

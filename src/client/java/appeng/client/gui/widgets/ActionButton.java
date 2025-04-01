@@ -26,8 +26,8 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.chat.Component;
 
 import appeng.api.config.ActionItems;
-import appeng.util.Icon;
 import appeng.core.localization.ButtonToolTips;
+import appeng.util.Icon;
 
 public class ActionButton extends IconButton {
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);

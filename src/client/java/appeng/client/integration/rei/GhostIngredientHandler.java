@@ -20,7 +20,6 @@ package appeng.client.integration.rei;
 
 import java.util.stream.Stream;
 
-import appeng.integration.modules.rei.GenericEntryStackHelper;
 import net.minecraft.client.gui.screens.Screen;
 
 import me.shedaniel.math.Rectangle;
@@ -31,6 +30,7 @@ import me.shedaniel.rei.api.client.gui.drag.DraggingContext;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.integration.itemlists.DropTargets;
+import appeng.integration.modules.rei.GenericEntryStackHelper;
 
 /**
  * JEI allows ingredients to be dragged from a JEI panel onto compatible slots to set filters and the like without

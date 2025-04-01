@@ -3,14 +3,8 @@ package appeng.core.network.clientbound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.AEKey;
-import appeng.blockentity.crafting.MolecularAssemblerAnimationStatus;
-import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
 

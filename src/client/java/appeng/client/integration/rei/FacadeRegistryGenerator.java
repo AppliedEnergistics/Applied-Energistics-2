@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.rei;
+package appeng.client.integration.rei;
 
 import java.util.Collections;
 import java.util.List;

@@ -29,9 +29,7 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Holder;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -39,6 +37,7 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
@@ -51,6 +50,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
+import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 
 /**
@@ -74,7 +74,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
      */
     private final Map<Item, Boolean> isValidCache = new IdentityHashMap<>();
 
-    public AEStonecuttingPattern(AEItemKey definition, ServerLevel level) {
+    public AEStonecuttingPattern(AEItemKey definition, Level level) {
         this.definition = definition;
 
         var encodedPattern = definition.get(AEComponents.ENCODED_STONECUTTING_PATTERN);
@@ -89,11 +89,11 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
 
         // Find recipe
         this.recipeId = encodedPattern.recipeId();
-        this.recipe = level.recipeAccess().byKey(recipeId).map(holder -> (StonecutterRecipe) holder.value())
-                .orElse(null);
-        if (recipe == null) {
+        var holder = AppEng.instance().getRecipeById(level, RecipeType.STONECUTTING, recipeId);
+        if (holder == null) {
             throw new IllegalStateException("Stonecutting pattern references unknown recipe " + recipeId);
         }
+        this.recipe = holder.value();
 
         // Build frame and find output
         var testInput = new SingleRecipeInput(input.toStack());
@@ -147,7 +147,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_CRAFTS);
         tooltip.addInputsAndOutputs(this);
         if (flags.isAdvanced()) {
-            tooltip.addProperty(Component.literal("Recipe"), Component.literal(recipeId.toString()));
+            tooltip.addRecipeId(recipeId);
         }
         return tooltip;
     }
@@ -162,8 +162,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
                 tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
             }
             if (flags.isAdvanced()) {
-                tooltip.addProperty(Component.literal("Recipe"),
-                        Component.literal(encodedPattern.recipeId().toString()));
+                tooltip.addRecipeId(encodedPattern.recipeId());
             }
         }
         return tooltip;

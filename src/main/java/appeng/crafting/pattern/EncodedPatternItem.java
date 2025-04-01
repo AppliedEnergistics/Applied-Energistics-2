@@ -27,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
@@ -52,6 +51,7 @@ import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.items.misc.MissingContentItem;
+import appeng.items.misc.WrappedGenericStack;
 import appeng.util.InteractionUtil;
 
 /**
@@ -234,7 +234,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
     }
 
     @Nullable
-    public IPatternDetails decode(ItemStack stack, ServerLevel level) {
+    public IPatternDetails decode(ItemStack stack, Level level) {
         if (stack.getItem() != this || level == null) {
             return null;
         }
@@ -248,7 +248,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
     }
 
     @Nullable
-    public IPatternDetails decode(AEItemKey what, ServerLevel level) {
+    public IPatternDetails decode(AEItemKey what, Level level) {
         if (what == null) {
             return null;
         }

@@ -11,10 +11,10 @@ import net.minecraft.network.chat.Component;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.ISubMenuHost;
 import appeng.client.gui.AEBaseScreen;
-import appeng.util.Icon;
 import appeng.client.gui.implementations.KeyTypeSelectionScreen;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.interfaces.KeyTypeSelectionMenu;
+import appeng.util.Icon;
 
 public class KeyTypeSelectionButton extends IconButton {
     public static <C extends AEBaseMenu & KeyTypeSelectionMenu, P extends AEBaseScreen<C>> KeyTypeSelectionButton create(

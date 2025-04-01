@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.rei;
+package appeng.client.integration.rei;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +36,8 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
+import appeng.integration.modules.rei.CategoryIds;
+import appeng.integration.modules.rei.InscriberRecipeDisplay;
 
 public class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeDisplay> {
 
@@ -43,9 +45,6 @@ public class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeD
     private static final int SLOT_INPUT_TOP = 0;
     private static final int SLOT_INPUT_MIDDLE = 1;
     private static final int SLOT_INPUT_BOTTOM = 2;
-
-    public static final CategoryIdentifier<InscriberRecipeDisplay> ID = CategoryIdentifier
-            .of(AppEng.makeId("ae2.inscriber"));
 
     @Override
     public Renderer getIcon() {
@@ -59,7 +58,7 @@ public class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeD
 
     @Override
     public CategoryIdentifier<InscriberRecipeDisplay> getCategoryIdentifier() {
-        return ID;
+        return CategoryIds.INSCRIBER;
     }
 
     @Override

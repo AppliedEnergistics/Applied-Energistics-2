@@ -27,8 +27,8 @@ import net.minecraft.world.phys.Vec3;
 
 import appeng.api.parts.IPart;
 import appeng.blockentity.networking.CableBusBlockEntity;
-import appeng.client.AppEngClientRendering;
 import appeng.client.renderer.parts.PartRendererDispatcher;
+import appeng.core.AppEngClient;
 
 /**
  * Renders dynamic aspects of parts attached to a cable bus.
@@ -38,7 +38,7 @@ public class CableBusRenderer implements BlockEntityRenderer<CableBusBlockEntity
     private final PartRendererDispatcher partRendererDispatcher;
 
     public CableBusRenderer(BlockEntityRendererProvider.Context context) {
-        partRendererDispatcher = AppEngClientRendering.getInstance().getPartRendererDispatcher();
+        partRendererDispatcher = AppEngClient.instance().getPartRendererDispatcher();
     }
 
     @Override

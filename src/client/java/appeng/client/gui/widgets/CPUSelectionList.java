@@ -15,7 +15,6 @@ import net.minecraft.util.Mth;
 import appeng.api.stacks.AmountFormat;
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
-import appeng.util.Icon;
 import appeng.client.gui.Tooltip;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.Color;
@@ -25,6 +24,7 @@ import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
 import appeng.menu.me.crafting.CraftingStatusMenu;
+import appeng.util.Icon;
 
 public class CPUSelectionList implements ICompositeWidget {
 

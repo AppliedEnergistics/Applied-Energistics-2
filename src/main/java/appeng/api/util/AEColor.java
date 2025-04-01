@@ -76,25 +76,25 @@ public enum AEColor implements StringRepresentable {
     private static final AEColor[] BY_ORDINAL = values();
 
     /**
-     * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #blackVariant dark
+     * The {@link BakedQuad#tintIndex() tint index} that can normally be used to get the {@link #blackVariant dark
      * variant} of the apprioriate AE color.
      */
     public static final int TINTINDEX_DARK = 1;
 
     /**
-     * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #mediumVariant medium
+     * The {@link BakedQuad#tintIndex() tint index} that can normally be used to get the {@link #mediumVariant medium
      * variant} of the apprioriate AE color.
      */
     public static final int TINTINDEX_MEDIUM = 2;
 
     /**
-     * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #whiteVariant bright
+     * The {@link BakedQuad#tintIndex() tint index} that can normally be used to get the {@link #whiteVariant bright
      * variant} of the apprioriate AE color.
      */
     public static final int TINTINDEX_BRIGHT = 3;
 
     /**
-     * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get a color between the
+     * The {@link BakedQuad#tintIndex() tint index} that can normally be used to get a color between the
      * {@link #mediumVariant medium} and {@link #whiteVariant bright variant} of the apprioriate AE color.
      */
     public static final int TINTINDEX_MEDIUM_BRIGHT = 4;

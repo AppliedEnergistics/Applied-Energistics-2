@@ -268,7 +268,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
 
         // Strip out trailing nulls
         for (int i = tag.size() - 1; i >= 0; i--) {
-            if (tag.getCompound(i).isEmpty()) {
+            if (tag.getCompound(i).orElseThrow().isEmpty()) {
                 tag.remove(i);
             } else {
                 break;

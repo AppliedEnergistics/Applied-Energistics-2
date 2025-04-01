@@ -74,7 +74,8 @@ class GenericStackInvTest {
 
     @Test
     void testWritingAnEmptyInventoryProducesAnEmptyTag() {
-        assertEquals(0, inv.writeToTag(registryAccess).size());
+        var serializedTag = inv.writeToTag(registryAccess);
+        assertEquals(0, serializedTag.size());
     }
 
     /**

@@ -1,4 +1,4 @@
-package appeng.integration.modules.rei;
+package appeng.client.integration.rei;
 
 import java.util.List;
 
@@ -15,14 +15,12 @@ import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
-import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.core.localization.ItemModText;
+import appeng.integration.modules.rei.AttunementDisplay;
+import appeng.integration.modules.rei.CategoryIds;
 
 public class AttunementCategory implements DisplayCategory<AttunementDisplay> {
-
-    public static final CategoryIdentifier<AttunementDisplay> ID = CategoryIdentifier
-            .of(AppEng.makeId("attunement"));
 
     @Override
     public Renderer getIcon() {
@@ -36,7 +34,7 @@ public class AttunementCategory implements DisplayCategory<AttunementDisplay> {
 
     @Override
     public CategoryIdentifier<? extends AttunementDisplay> getCategoryIdentifier() {
-        return ID;
+        return CategoryIds.ATTUNEMENT;
     }
 
     @Override

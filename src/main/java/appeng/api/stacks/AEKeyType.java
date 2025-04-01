@@ -261,7 +261,7 @@ public abstract class AEKeyType {
      * Returns all tags that apply to keys of this type. Is an optional operation is keys of this type cannot have tags,
      * and {@link AEKey#isTagged(TagKey)} is not implemented for this key type.
      *
-     * @see Registry#getTagNames()
+     * @see Registry#listTagIds()
      */
     public Stream<TagKey<?>> getTagNames() {
         return Stream.empty();

@@ -138,7 +138,7 @@ class AEProcessingPatternTest {
     }
 
     private AEProcessingPattern decode(CompoundTag tag) {
-        var stack = ItemStack.parse(registryAccess, tag).orElseThrow();
+        var stack = ItemStack.parse(registryAccess, tag).orElse(ItemStack.EMPTY);
 
         var details = PatternDetailsHelper.decodePattern(AEItemKey.of(stack), mock(ServerLevel.class));
         if (details == null) {

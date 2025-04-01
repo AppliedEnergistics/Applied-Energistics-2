@@ -43,7 +43,7 @@ public class TransformRecipeWrapper implements Display {
 
     @Override
     public CategoryIdentifier<?> getCategoryIdentifier() {
-        return TransformCategory.ID;
+        return CategoryIds.TRANSFORM;
     }
 
     public TransformCircumstance getTransformCircumstance() {

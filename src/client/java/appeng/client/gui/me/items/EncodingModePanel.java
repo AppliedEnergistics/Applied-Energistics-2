@@ -5,9 +5,9 @@ import net.minecraft.network.chat.Component;
 
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
-import appeng.util.Icon;
 import appeng.client.gui.WidgetContainer;
 import appeng.menu.me.items.PatternEncodingTermMenu;
+import appeng.util.Icon;
 
 public abstract class EncodingModePanel implements ICompositeWidget {
     protected final PatternEncodingTermScreen<?> screen;

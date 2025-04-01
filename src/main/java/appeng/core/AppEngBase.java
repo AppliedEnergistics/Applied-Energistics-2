@@ -21,10 +21,6 @@ package appeng.core;
 import java.util.Collection;
 import java.util.Collections;
 
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.event.OnDatapackSyncEvent;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +29,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,18 +38,23 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
@@ -197,7 +200,13 @@ public abstract class AppEngBase implements AppEng {
     }
 
     private void registerSynchronizedRecipes(OnDatapackSyncEvent event) {
-        event.sendRecipes(RecipeType.CRAFTING);
+        event.sendRecipes(
+                RecipeType.CRAFTING,
+                RecipeType.STONECUTTING,
+                RecipeType.SMITHING,
+                RecipeType.SMELTING
+
+        );
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -274,7 +283,7 @@ public abstract class AppEngBase implements AppEng {
 
     @Override
     public void sendToAllNearExcept(Player p, double x, double y, double z,
-                                    double dist, Level level, ClientboundPacket packet) {
+            double dist, Level level, ClientboundPacket packet) {
         if (level instanceof ServerLevel serverLevel) {
             ServerPlayer except = null;
             if (p instanceof ServerPlayer) {
@@ -325,7 +334,26 @@ public abstract class AppEngBase implements AppEng {
     }
 
     @Override
-    public <T extends ClientboundPacket> void handleClientboundPacket(CustomPacketPayload.Type<T> type, T payload, IPayloadContext context) {
-        throw new IllegalStateException("Trying to handle a clientbound packet while not on the client: " + payload.type());
+    public <T extends ClientboundPacket> void handleClientboundPacket(CustomPacketPayload.Type<T> type, T payload,
+            IPayloadContext context) {
+        throw new IllegalStateException(
+                "Trying to handle a clientbound packet while not on the client: " + payload.type());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends Recipe<?>> RecipeHolder<T> getRecipeById(Level level, RecipeType<T> type,
+            ResourceKey<Recipe<?>> id) {
+        if (level instanceof ServerLevel serverLevel) {
+            var holder = serverLevel.recipeAccess().recipeMap().byKey(id);
+            if (holder != null) {
+                if (holder.value().getType() == type) {
+                    return (RecipeHolder<T>) holder;
+                }
+            }
+        } else {
+            LOG.warn("Don't know how to retrieve recipe information for level type {}", level);
+        }
+        return null;
     }
 }

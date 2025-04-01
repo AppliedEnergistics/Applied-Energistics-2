@@ -38,7 +38,6 @@ import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import appeng.blockentity.crafting.MolecularAssemblerAnimationStatus;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.core.AppEng;
-
 import appeng.core.particles.ParticleTypes;
 
 /**
@@ -58,7 +57,7 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
     public void render(MolecularAssemblerBlockEntity molecularAssembler, float partialTicks, PoseStack ms,
             MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, Vec3 cameraPosition) {
 
-        MolecularAssemblerAnimationStatus status = molecularAssembler.getAnimationStatus();
+        var status = molecularAssembler.getAnimationStatus();
         if (status != null) {
             if (!Minecraft.getInstance().isPaused()) {
                 if (status.isExpired()) {
@@ -91,21 +90,21 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
         }
     }
 
-    private void renderStatus(MolecularAssemblerBlockEntity molecularAssembler, PoseStack ms,
+    private void renderStatus(MolecularAssemblerBlockEntity be, PoseStack ms,
             MultiBufferSource bufferIn, int combinedLightIn, MolecularAssemblerAnimationStatus status) {
-        double centerX = molecularAssembler.getBlockPos().getX() + 0.5f;
-        double centerY = molecularAssembler.getBlockPos().getY() + 0.5f;
-        double centerZ = molecularAssembler.getBlockPos().getZ() + 0.5f;
+        double centerX = be.getBlockPos().getX() + 0.5f;
+        double centerY = be.getBlockPos().getY() + 0.5f;
+        double centerZ = be.getBlockPos().getZ() + 0.5f;
+
+        var level = be.getLevel();
 
         // Spawn crafting FX that fly towards the block's center
         Minecraft minecraft = Minecraft.getInstance();
         if (status.getTicksUntilParticles() <= 0) {
             status.setTicksUntilParticles(4);
 
-            if (AppEng.instance().shouldAddParticles(particleRandom)) {
-                for (int x = 0; x < (int) Math.ceil(status.getSpeed() / 5.0); x++) {
-                    minecraft.particleEngine.createParticle(ParticleTypes.CRAFTING, centerX, centerY, centerZ, 0, 0, 0);
-                }
+            for (int x = 0; x < (int) Math.ceil(status.getSpeed() / 5.0); x++) {
+                level.addParticle(ParticleTypes.CRAFTING, false, true, centerX, centerY, centerZ, 0, 0, 0);
             }
         }
 
@@ -122,7 +121,7 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
         }
 
         itemRenderer.renderStatic(is, ItemDisplayContext.GROUND, combinedLightIn,
-                OverlayTexture.NO_OVERLAY, ms, bufferIn, molecularAssembler.getLevel(), 0);
+                OverlayTexture.NO_OVERLAY, ms, bufferIn, be.getLevel(), 0);
         ms.popPose();
     }
 

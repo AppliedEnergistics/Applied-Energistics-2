@@ -9,7 +9,6 @@ import net.minecraft.world.inventory.Slot;
 
 import appeng.api.config.ActionItems;
 import appeng.client.Point;
-import appeng.util.Icon;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.ActionButton;
@@ -17,6 +16,7 @@ import appeng.client.gui.widgets.ToggleButton;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.menu.SlotSemantics;
+import appeng.util.Icon;
 
 public class CraftingEncodingPanel extends EncodingModePanel {
     private static final Blitter BG = Blitter.texture("guis/pattern_modes.png").src(0, 0, 124, 66);

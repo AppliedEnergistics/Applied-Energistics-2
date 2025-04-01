@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "ae2:block/drive"
+    "model": "ae2:block/drive_base"
   }
 }

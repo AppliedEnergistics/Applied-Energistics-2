@@ -10,7 +10,7 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.SlotWidget;
 
-import appeng.integration.modules.itemlists.FluidBlockRendering;
+import appeng.client.integration.itemlists.FluidBlockRendering;
 
 class EmiFluidBlockSlot extends SlotWidget {
 

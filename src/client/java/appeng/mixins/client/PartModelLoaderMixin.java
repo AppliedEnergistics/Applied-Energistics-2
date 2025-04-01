@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import net.minecraft.client.resources.model.BlockStateModelLoader;
 import net.minecraft.server.packs.resources.ResourceManager;
 
-import appeng.client.AppEngClientRendering;
+import appeng.core.AppEngClient;
 
 @Mixin(BlockStateModelLoader.class)
 public class PartModelLoaderMixin {
@@ -20,7 +20,7 @@ public class PartModelLoaderMixin {
             ResourceManager resourceManager,
             Executor executor,
             Operation<CompletableFuture<BlockStateModelLoader.LoadedModels>> operation) {
-        var partModelReload = AppEngClientRendering.getInstance().getPartModels().reload(resourceManager, executor);
+        var partModelReload = AppEngClient.instance().getPartModels().reload(resourceManager, executor);
         return partModelReload.thenCombine(operation.call(resourceManager, executor),
                 (unused, loadedModels) -> loadedModels);
     }

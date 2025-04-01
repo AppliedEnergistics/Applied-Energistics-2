@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.rei;
+package appeng.client.integration.rei;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,13 +42,12 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import appeng.api.config.CondenserOutput;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
+import appeng.integration.modules.rei.CategoryIds;
+import appeng.integration.modules.rei.CondenserOutputDisplay;
 
 class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
 
     private static final int PADDING = 7;
-
-    public static final CategoryIdentifier<CondenserOutputDisplay> ID = CategoryIdentifier
-            .of(AppEng.makeId("condenser"));
 
     @Override
     public Renderer getIcon() {
@@ -62,7 +61,7 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
 
     @Override
     public CategoryIdentifier<? extends CondenserOutputDisplay> getCategoryIdentifier() {
-        return ID;
+        return CategoryIds.CONDENSER;
     }
 
     @Override

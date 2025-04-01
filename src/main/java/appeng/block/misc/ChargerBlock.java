@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.joml.Vector3f;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -51,7 +50,6 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.misc.ChargerRecipes;
 import appeng.core.AEConfig;
-
 import appeng.core.particles.LightningArcParticleData;
 import appeng.util.Platform;
 

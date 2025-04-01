@@ -1,12 +1,13 @@
 package appeng.client;
 
-import appeng.core.network.ClientboundPacket;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
+import appeng.core.network.ClientboundPacket;
 
 public final class PakcetHandlerMap {
     private final Map<CustomPacketPayload.Type<?>, ClientPacketHandler<?>> handlers = new IdentityHashMap<>();
@@ -16,7 +17,8 @@ public final class PakcetHandlerMap {
         return (ClientPacketHandler<T>) handlers.get(type);
     }
 
-    public <T extends ClientboundPacket> void register(CustomPacketPayload.Type<T> type, ClientPacketHandler<T> handler) {
+    public <T extends ClientboundPacket> void register(CustomPacketPayload.Type<T> type,
+            ClientPacketHandler<T> handler) {
         if (handlers.put(type, handler) != null) {
             throw new IllegalStateException("Duplicate clientside packet handler for packet type: " + type);
         }

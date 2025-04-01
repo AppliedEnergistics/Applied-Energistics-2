@@ -30,12 +30,10 @@ import net.minecraft.world.item.Item;
 import appeng.api.ids.AEPartIds;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.PartModels;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.PartItem;
-import appeng.items.parts.PartModelsHelper;
 import appeng.parts.automation.AnnihilationPlanePart;
 import appeng.parts.automation.AnnihilationPlanePartItem;
 import appeng.parts.automation.EnergyLevelEmitterPart;
@@ -121,7 +119,6 @@ public final class AEParts {
             Class<T> partClass,
             Function<IPartItem<T>, T> factory) {
 
-        PartModels.registerModels(PartModelsHelper.createModels(partClass));
         return item(englishName, id, props -> new PartItem<>(props, partClass, factory));
     }
 
@@ -131,7 +128,6 @@ public final class AEParts {
             Class<T> partClass,
             Function<Item.Properties, PartItem<T>> factory) {
 
-        PartModels.registerModels(PartModelsHelper.createModels(partClass));
         return item(englishName, id, factory);
     }
 
@@ -140,8 +136,6 @@ public final class AEParts {
             String idSuffix,
             Class<T> partClass,
             Function<ColoredPartItem<T>, T> factory) {
-
-        PartModels.registerModels(PartModelsHelper.createModels(partClass));
 
         var definition = new ColoredItemDefinition<ColoredPartItem<T>>();
         for (AEColor color : AEColor.values()) {

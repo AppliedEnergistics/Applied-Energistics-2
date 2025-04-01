@@ -27,7 +27,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import appeng.util.Icon;
 import com.google.common.base.Stopwatch;
 import com.mojang.blaze3d.platform.InputConstants;
 
@@ -74,6 +73,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
 import appeng.client.gui.style.BackgroundGenerator;
+import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.SlotPosition;
 import appeng.client.gui.style.Text;
@@ -85,7 +85,7 @@ import appeng.client.gui.widgets.VerticalButtonBar;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
-
+import appeng.core.AppEngClient;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.Tooltips;
 import appeng.core.network.ServerboundPacket;
@@ -103,6 +103,7 @@ import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.IOptionalSlot;
 import appeng.menu.slot.ResizableSlot;
 import appeng.util.ConfigMenuInventory;
+import appeng.util.Icon;
 
 public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContainerScreen<T> {
     private static final Logger LOG = LoggerFactory.getLogger(AEBaseScreen.class);
@@ -524,7 +525,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
             Point pos = slot.getBackgroundPos();
 
-            Icon.SLOT_BACKGROUND.getBlitter()
+            Blitter.icon(Icon.SLOT_BACKGROUND)
                     .dest(leftPos + pos.getX(), topPos + pos.getY())
                     .color(1, 1, 1, alpha)
                     .blit(guiGraphics);
@@ -836,7 +837,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         // If the slot has a background icon, render it, but only if the slot is empty
         // or it requests the icon to be always drawn
         if ((s.renderIconWithItem() || is.isEmpty()) && s.isSlotEnabled() && s.getIcon() != null) {
-            s.getIcon().getBlitter()
+            Blitter.icon(s.getIcon())
                     .dest(s.x, s.y)
                     .opacity(s.getOpacityOfIcon())
                     .blit(guiGraphics);
@@ -1072,7 +1073,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         // Try finding the help topic automatically via the guidebook item index
-        var guide = AppEng.instance().getGuide();
+        var guide = AppEngClient.instance().getGuide();
         var itemIndex = guide.getIndex(ItemIndex.class);
 
         Object target = getMenu().getTarget();

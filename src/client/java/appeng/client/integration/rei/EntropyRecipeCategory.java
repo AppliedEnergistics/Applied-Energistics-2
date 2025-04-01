@@ -1,34 +1,41 @@
-package appeng.integration.modules.rei;
+package appeng.client.integration.rei;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
+import me.shedaniel.rei.api.client.entry.renderer.EntryRenderer;
 import me.shedaniel.rei.api.client.gui.Renderer;
+import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
+import me.shedaniel.rei.api.client.gui.widgets.TooltipContext;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.entry.EntryStack;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.ItemModText;
+import appeng.integration.modules.rei.CategoryIds;
+import appeng.integration.modules.rei.EntropyRecipeDisplay;
 import appeng.items.tools.powered.EntropyManipulatorItem;
 
 public class EntropyRecipeCategory implements DisplayCategory<EntropyRecipeDisplay> {
     private static final int PADDING = 5;
     private static final int BODY_TEXT_COLOR = 0x7E7E7E;
 
-    static final CategoryIdentifier<EntropyRecipeDisplay> ID = CategoryIdentifier
-            .of(AppEng.makeId("ae2.entropy_manipulator"));
-
     @Override
     public CategoryIdentifier<? extends EntropyRecipeDisplay> getCategoryIdentifier() {
-        return ID;
+        return CategoryIds.ENTROPY_MANIPULATOR;
     }
 
     @Override
@@ -51,6 +58,13 @@ public class EntropyRecipeCategory implements DisplayCategory<EntropyRecipeDispl
 
     @Override
     public List<Widget> setupDisplay(EntropyRecipeDisplay recipe, Rectangle bounds) {
+        for (var ingredient : recipe.getConsumed()) {
+            for (EntryStack<?> entryStack : ingredient) {
+                entryStack.tooltip(ItemModText.CONSUMED.text().withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
+                addConsumedOverlay(entryStack);
+            }
+        }
+
         var mode = recipe.getRecipe().getMode();
 
         var widgets = new ArrayList<Widget>();
@@ -75,8 +89,8 @@ public class EntropyRecipeCategory implements DisplayCategory<EntropyRecipeDispl
         var modeLabelX = modeLabel.getBounds().x;
         widgets.add(modeLabel);
         var modeIcon = switch (mode) {
-            case HEAT -> Widgets.createTexturedWidget(ReiPlugin.TEXTURE, modeLabelX - 9, y + 3, 0, 68, 6, 6);
-            case COOL -> Widgets.createTexturedWidget(ReiPlugin.TEXTURE, modeLabelX - 9, y + 3, 6, 68, 6, 6);
+            case HEAT -> Widgets.createTexturedWidget(ReiClientPlugin.TEXTURE, modeLabelX - 9, y + 3, 0, 68, 6, 6);
+            case COOL -> Widgets.createTexturedWidget(ReiClientPlugin.TEXTURE, modeLabelX - 9, y + 3, 6, 68, 6, 6);
         };
         widgets.add(modeIcon);
 
@@ -99,6 +113,25 @@ public class EntropyRecipeCategory implements DisplayCategory<EntropyRecipeDispl
         }
 
         return widgets;
+    }
+
+    private static <T> void addConsumedOverlay(EntryStack<T> entryStack) {
+        entryStack.withRenderer(new EntryRenderer<>() {
+            @Override
+            public void render(EntryStack<T> entry, GuiGraphics graphics, Rectangle bounds, int mouseX,
+                    int mouseY, float delta) {
+                var baseRenderer = entry.getDefinition().getRenderer();
+                baseRenderer.render(entry, graphics, bounds, mouseX, mouseY, delta);
+                graphics.blit(RenderType::guiTextured, ReiClientPlugin.TEXTURE, bounds.x, bounds.y, 0, 0,
+                        0, 52, 16, 16);
+            }
+
+            @Override
+            public @Nullable Tooltip getTooltip(EntryStack<T> entry, TooltipContext context) {
+                var baseRenderer = entry.getDefinition().getRenderer();
+                return baseRenderer.getTooltip(entry, context);
+            }
+        });
     }
 
     @Override

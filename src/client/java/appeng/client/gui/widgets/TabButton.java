@@ -28,6 +28,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.client.gui.style.Blitter;
 import appeng.util.Icon;
 
 public class TabButton extends Button implements ITooltip {
@@ -81,7 +82,7 @@ public class TabButton extends Button implements ITooltip {
                 }
             };
             if (!disableBackground) {
-                backdrop.getBlitter().dest(getX(), getY()).blit(guiGraphics);
+                Blitter.icon(backdrop).dest(getX(), getY()).blit(guiGraphics);
             }
 
             var iconX = switch (this.style) {
@@ -96,7 +97,7 @@ public class TabButton extends Button implements ITooltip {
             };
 
             if (this.icon != null) {
-                this.icon.getBlitter().dest(getX() + iconX, getY() + iconY - 1).blit(guiGraphics);
+                Blitter.icon(this.icon).dest(getX() + iconX, getY() + iconY - 1).blit(guiGraphics);
             }
 
             if (this.item != null) {

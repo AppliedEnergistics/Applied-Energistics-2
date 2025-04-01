@@ -11,6 +11,7 @@ import net.minecraft.world.level.ItemLike;
 import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
+import appeng.client.gui.style.Blitter;
 import appeng.util.Icon;
 
 public class InfoBar {
@@ -101,7 +102,7 @@ public class InfoBar {
             poseStack.pushPose();
             poseStack.translate(xPos, yPos, 0);
             poseStack.scale(scale, scale, 1);
-            icon.getBlitter()
+            Blitter.icon(icon)
                     .dest(0, 0)
                     .blit(guiGraphics);
             poseStack.popPose();

@@ -22,6 +22,6 @@ public class AttunementDisplay extends BasicDisplay {
 
     @Override
     public CategoryIdentifier<?> getCategoryIdentifier() {
-        return AttunementCategory.ID;
+        return CategoryIds.ATTUNEMENT;
     }
 }

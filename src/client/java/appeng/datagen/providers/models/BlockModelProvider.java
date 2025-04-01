@@ -8,6 +8,7 @@ import static net.minecraft.client.data.models.BlockModelGenerators.plainVariant
 import static net.minecraft.client.data.models.BlockModelGenerators.variant;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 import com.mojang.math.Quadrant;
@@ -78,14 +79,14 @@ public class BlockModelProvider extends ModelSubProvider {
                 TexturedModel.createDefault(block -> TRANSPARENT_PARTICLE, EMPTY_MODEL));
 
         // These models will be overwritten in code
-        builtInModel(AEBlocks.QUARTZ_GLASS, new QuartzGlassModel.Unbaked(), true);
-        blockModels.registerSimpleItemModel(
+        var quartzGlassItemBaseModel = ModelTemplates.CUBE_ALL.create(
                 AEBlocks.QUARTZ_GLASS.asItem(),
-                ModelTemplates.CUBE_ALL.create(
-                        AEBlocks.QUARTZ_GLASS.asItem(),
-                        TextureMapping.cube(AppEng.makeId("block/glass/quartz_glass_item")),
-                        modelOutput));
-        blockModels.copyModel(AEBlocks.QUARTZ_GLASS.block(), AEBlocks.QUARTZ_VIBRANT_GLASS.block());
+                TextureMapping.cube(AppEng.makeId("block/glass/quartz_glass_item")),
+                modelOutput);
+        for (var quartzGlassBlock : List.of(AEBlocks.QUARTZ_GLASS, AEBlocks.QUARTZ_VIBRANT_GLASS)) {
+            builtInModel(quartzGlassBlock, new QuartzGlassModel.Unbaked(), true);
+            blockModels.registerSimpleItemModel(quartzGlassBlock.asItem(), quartzGlassItemBaseModel);
+        }
 
         multiVariantGenerator(AEBlocks.CABLE_BUS,
                 MultiVariant.of(new CustomBlockStateModelBuilder.Simple(new CableBusModel.Unbaked())));
@@ -95,6 +96,7 @@ public class BlockModelProvider extends ModelSubProvider {
         var driveUnbaked = new DriveModel.Unbaked(new SpinnableVariant(makeId("drive_base")));
         var driveModel = customBlockStateModel(driveUnbaked);
         multiVariantGenerator(AEBlocks.DRIVE, driveModel, createFacingSpinDispatch());
+        blockModels.registerSimpleItemModel(AEBlocks.DRIVE.block(), AppEng.makeId("block/drive_base"));
 
         var charger = makeId("block/charger");
         multiVariantGenerator(AEBlocks.CHARGER, plainVariant(charger), createFacingSpinDispatch());

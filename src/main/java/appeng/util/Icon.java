@@ -18,10 +18,6 @@
 
 package appeng.util;
 
-import net.minecraft.resources.ResourceLocation;
-
-import appeng.core.AppEng;
-
 /**
  * Edit in {@code assets/ae2/textures/guis/states.png}.
  */
@@ -219,10 +215,6 @@ public enum Icon {
     public final int y;
     public final int width;
     public final int height;
-
-    public static final ResourceLocation TEXTURE = AppEng.makeId("textures/guis/states.png");
-    public static final int TEXTURE_WIDTH = 256;
-    public static final int TEXTURE_HEIGHT = 256;
 
     Icon(int x, int y) {
         this(x, y, 16, 16);

@@ -1,4 +1,4 @@
-package appeng.integration.modules.rei;
+package appeng.client.integration.rei;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,8 @@ import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.misc.CrankBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.localization.ItemModText;
+import appeng.integration.modules.rei.CategoryIds;
+import appeng.integration.modules.rei.ChargerDisplay;
 
 public class ChargerCategory implements DisplayCategory<ChargerDisplay> {
     private final Renderer icon;
@@ -29,7 +31,7 @@ public class ChargerCategory implements DisplayCategory<ChargerDisplay> {
 
     @Override
     public CategoryIdentifier<? extends ChargerDisplay> getCategoryIdentifier() {
-        return ChargerDisplay.ID;
+        return CategoryIds.CHARGER;
     }
 
     @Override

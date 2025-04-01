@@ -27,7 +27,6 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AESubScreen;
-import appeng.util.Icon;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.me.common.ClientDisplaySlot;
 import appeng.client.gui.widgets.NumberEntryWidget;
@@ -35,6 +34,7 @@ import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
 import appeng.menu.SlotSemantics;
 import appeng.menu.me.items.PatternEncodingTermMenu;
+import appeng.util.Icon;
 
 /**
  * Allows precisely setting the amount to use for a processing pattern slot.

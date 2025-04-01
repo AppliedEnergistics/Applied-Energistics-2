@@ -30,12 +30,12 @@ import net.neoforged.neoforge.event.entity.player.PlayerDestroyItemEvent;
 import appeng.api.ids.AEComponents;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.inventories.InternalInventory;
-import appeng.util.Icon;
 import appeng.core.definitions.AEItems;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.slot.OutputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
+import appeng.util.Icon;
 import appeng.util.inv.AppEngInternalInventory;
 
 /**

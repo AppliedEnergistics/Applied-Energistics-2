@@ -4,8 +4,8 @@ import java.util.List;
 
 import net.minecraft.network.chat.Component;
 
-import appeng.util.Icon;
 import appeng.core.localization.ButtonToolTips;
+import appeng.util.Icon;
 
 public class OpenGuideButton extends IconButton {
     public OpenGuideButton(OnPress onPress) {

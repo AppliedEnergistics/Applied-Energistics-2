@@ -1,6 +1,5 @@
 package appeng.mixins.client;
 
-import appeng.mixins.StructureTemplateMixin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
@@ -10,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.world.level.Level;
 
 import appeng.hooks.VisualStateSaving;
+import appeng.mixins.StructureTemplateMixin;
 
 /**
  * Similar to {@link StructureTemplateMixin}, this allows us to detect if Ponder is restoring backups of our block

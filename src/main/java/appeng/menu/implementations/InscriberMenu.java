@@ -30,7 +30,6 @@ import appeng.api.config.YesNo;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.misc.InscriberRecipes;
-import appeng.util.Icon;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.Side;
@@ -40,6 +39,7 @@ import appeng.menu.guisync.GuiSync;
 import appeng.menu.interfaces.IProgressProvider;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.OutputSlot;
+import appeng.util.Icon;
 
 /**
  * @see appeng.client.gui.implementations.InscriberScreen
