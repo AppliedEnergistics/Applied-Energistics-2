@@ -38,7 +38,7 @@ import appeng.api.upgrades.Upgrades;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 import appeng.blockentity.misc.InscriberRecipes;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
-import appeng.client.gui.Icon;
+import appeng.util.Icon;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.util.Platform;

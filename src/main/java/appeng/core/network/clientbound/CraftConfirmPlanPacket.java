@@ -35,12 +35,4 @@ public record CraftConfirmPlanPacket(CraftingPlanSummary plan) implements Client
     public void write(RegistryFriendlyByteBuf data) {
         plan.write(data);
     }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void handleOnClient(Player player) {
-        if (player.containerMenu instanceof CraftConfirmMenu menu) {
-            menu.setPlan(plan);
-        }
-    }
 }

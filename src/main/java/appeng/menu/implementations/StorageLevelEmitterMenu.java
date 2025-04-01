@@ -28,14 +28,13 @@ import appeng.api.config.Settings;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.util.IConfigManager;
-import appeng.client.gui.implementations.StorageLevelEmitterScreen;
 import appeng.core.definitions.AEItems;
 import appeng.menu.SlotSemantics;
 import appeng.menu.slot.FakeSlot;
 import appeng.parts.automation.StorageLevelEmitterPart;
 
 /**
- * @see StorageLevelEmitterScreen
+ * @see appeng.client.gui.implementations.StorageLevelEmitterScreen
  */
 public class StorageLevelEmitterMenu extends UpgradeableMenu<StorageLevelEmitterPart> {
 

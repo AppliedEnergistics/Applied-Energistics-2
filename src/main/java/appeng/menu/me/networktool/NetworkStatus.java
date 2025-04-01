@@ -34,12 +34,9 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IPassiveEnergyGenerator;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
-import appeng.client.gui.me.networktool.NetworkStatusScreen;
 
 /**
  * Contains statistics about an ME network and the machines that form it.
- *
- * @see NetworkStatusScreen
  */
 public class NetworkStatus {
 

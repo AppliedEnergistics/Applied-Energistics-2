@@ -32,7 +32,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.GenericStack;
-import appeng.client.gui.Icon;
+import appeng.util.Icon;
 import appeng.core.AELog;
 import appeng.menu.AEBaseMenu;
 

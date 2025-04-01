@@ -24,14 +24,13 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
-import appeng.client.gui.implementations.InterfaceScreen;
 import appeng.helpers.InterfaceLogicHost;
 import appeng.menu.SlotSemantics;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.FakeSlot;
 
 /**
- * @see InterfaceScreen
+ * @see appeng.client.gui.implementations.InterfaceScreen
  */
 public class InterfaceMenu extends UpgradeableMenu<InterfaceLogicHost> {
 

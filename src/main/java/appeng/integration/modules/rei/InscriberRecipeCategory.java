@@ -37,14 +37,14 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 
-class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeDisplay> {
+public class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeDisplay> {
 
     private static final int PADDING = 5;
     private static final int SLOT_INPUT_TOP = 0;
     private static final int SLOT_INPUT_MIDDLE = 1;
     private static final int SLOT_INPUT_BOTTOM = 2;
 
-    static final CategoryIdentifier<InscriberRecipeDisplay> ID = CategoryIdentifier
+    public static final CategoryIdentifier<InscriberRecipeDisplay> ID = CategoryIdentifier
             .of(AppEng.makeId("ae2.inscriber"));
 
     @Override

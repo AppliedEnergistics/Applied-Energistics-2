@@ -51,7 +51,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.misc.ChargerRecipes;
 import appeng.core.AEConfig;
-import appeng.core.AppEngClient;
+
 import appeng.core.particles.LightningArcParticleData;
 import appeng.util.Platform;
 
@@ -144,14 +144,14 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
                     origin = tmp;
                 }
 
-                if (AppEngClient.instance().shouldAddParticles(r)) {
-                    Minecraft.getInstance().particleEngine.createParticle(
-                            new LightningArcParticleData(target),
-                            origin.x(),
-                            origin.y(),
-                            origin.z(),
-                            0.0, 0.0, 0.0);
-                }
+                level.addParticle(
+                        new LightningArcParticleData(target),
+                        false,
+                        true,
+                        origin.x(),
+                        origin.y(),
+                        origin.z(),
+                        0.0, 0.0, 0.0);
             }
         }
     }

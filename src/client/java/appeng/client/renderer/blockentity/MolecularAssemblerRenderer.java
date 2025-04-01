@@ -38,7 +38,7 @@ import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import appeng.blockentity.crafting.MolecularAssemblerAnimationStatus;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.core.AppEng;
-import appeng.core.AppEngClient;
+
 import appeng.core.particles.ParticleTypes;
 
 /**
@@ -102,7 +102,7 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
         if (status.getTicksUntilParticles() <= 0) {
             status.setTicksUntilParticles(4);
 
-            if (AppEngClient.instance().shouldAddParticles(particleRandom)) {
+            if (AppEng.instance().shouldAddParticles(particleRandom)) {
                 for (int x = 0; x < (int) Math.ceil(status.getSpeed() / 5.0); x++) {
                     minecraft.particleEngine.createParticle(ParticleTypes.CRAFTING, centerX, centerY, centerZ, 0, 0, 0);
                 }

@@ -26,7 +26,7 @@ public class ConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if ("appeng.mixins.PonderWorldMixin".equals(mixinClassName)) {
+        if ("appeng.mixins.client.PonderWorldMixin".equals(mixinClassName)) {
             return isModLoaded("create");
         }
         return true;

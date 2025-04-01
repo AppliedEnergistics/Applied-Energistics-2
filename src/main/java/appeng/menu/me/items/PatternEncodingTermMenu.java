@@ -50,8 +50,7 @@ import it.unimi.dsi.fastutil.shorts.ShortSet;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import appeng.client.gui.Icon;
-import appeng.client.gui.me.items.PatternEncodingTermScreen;
+import appeng.util.Icon;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.AEProcessingPattern;
@@ -69,8 +68,6 @@ import appeng.util.ConfigInventory;
 
 /**
  * Can only be used with a host that implements {@link PatternEncodingLogic}.
- *
- * @see PatternEncodingTermScreen
  */
 public class PatternEncodingTermMenu extends MEStorageMenu {
 

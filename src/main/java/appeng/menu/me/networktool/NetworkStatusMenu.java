@@ -28,7 +28,6 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.blockentity.networking.ControllerBlockEntity;
-import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.core.network.clientbound.NetworkStatusPacket;
 import appeng.items.contents.NetworkToolMenuHost;
 import appeng.me.Grid;
@@ -36,9 +35,6 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.server.subcommands.GridsCommand;
 
-/**
- * @see NetworkStatusScreen
- */
 public class NetworkStatusMenu extends AEBaseMenu {
 
     private static final String ACTION_EXPORT_GRID = "export_grid";

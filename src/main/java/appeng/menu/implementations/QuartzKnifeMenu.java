@@ -30,7 +30,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerDestroyItemEvent;
 import appeng.api.ids.AEComponents;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.inventories.InternalInventory;
-import appeng.client.gui.Icon;
+import appeng.util.Icon;
 import appeng.core.definitions.AEItems;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;

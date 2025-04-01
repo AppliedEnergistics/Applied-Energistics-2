@@ -64,16 +64,4 @@ public record MatterCannonPacket(double x,
         data.writeFloat((float) this.dz);
         data.writeByte(len);
     }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void handleOnClient(Player player) {
-        try {
-            for (int a = 1; a < this.len; a++) {
-                Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.MATTER_CANNON, this.x + this.dx * a,
-                        this.y + this.dy * a, this.z + this.dz * a, 0, 0, 0);
-            }
-        } catch (Exception ignored) {
-        }
-    }
 }

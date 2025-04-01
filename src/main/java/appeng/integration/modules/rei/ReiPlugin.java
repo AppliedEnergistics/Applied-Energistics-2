@@ -58,8 +58,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.CondenserOutput;
 import appeng.api.features.P2PTunnelAttunementInternal;
 import appeng.api.integrations.rei.IngredientConverters;
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.implementations.InscriberScreen;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.FacadeCreativeTab;
@@ -165,34 +163,6 @@ public class ReiPlugin implements REIClientPlugin {
     }
 
     @Override
-    public void registerScreens(ScreenRegistry registry) {
-        if (CompatLayerHelper.IS_LOADED) {
-            return;
-        }
-
-        registry.registerDraggableStackVisitor(new GhostIngredientHandler());
-        registry.registerFocusedStack((screen, mouse) -> {
-            if (screen instanceof AEBaseScreen<?> aeScreen) {
-                var stack = aeScreen.getStackUnderMouse(mouse.x, mouse.y);
-                if (stack != null) {
-                    for (var converter : IngredientConverters.getConverters()) {
-                        var entryStack = converter.getIngredientFromStack(stack.stack());
-                        if (entryStack != null) {
-                            return CompoundEventResult.interruptTrue(entryStack);
-                        }
-                    }
-                }
-            }
-
-            return CompoundEventResult.pass();
-        });
-        registry.registerContainerClickArea(
-                new Rectangle(82, 39, 26, 16),
-                InscriberScreen.class,
-                InscriberRecipeCategory.ID);
-    }
-
-    @Override
     public void registerEntries(EntryRegistry registry) {
         registry.removeEntryIf(this::shouldEntryBeHidden);
 
@@ -209,25 +179,6 @@ public class ReiPlugin implements REIClientPlugin {
             registry.group(AppEng.makeId("facades"), Component.translatable("itemGroup.ae2.facades"),
                     stack -> stack.getType() == VanillaEntryTypes.ITEM && stack.<ItemStack>castValue().is(facadeItem));
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void registerExclusionZones(ExclusionZones zones) {
-        if (CompatLayerHelper.IS_LOADED) {
-            return;
-        }
-
-        zones.register(AEBaseScreen.class, screen -> {
-            return screen != null ? mapRects(screen.getExclusionZones()) : Collections.emptyList();
-        });
-
-    }
-
-    private static List<Rectangle> mapRects(List<Rect2i> exclusionZones) {
-        return exclusionZones.stream()
-                .map(ez -> new Rectangle(ez.getX(), ez.getY(), ez.getWidth(), ez.getHeight()))
-                .collect(Collectors.toList());
     }
 
     private void registerWorkingStations(CategoryRegistry registry) {

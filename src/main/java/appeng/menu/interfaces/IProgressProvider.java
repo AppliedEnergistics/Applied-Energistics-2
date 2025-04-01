@@ -18,12 +18,10 @@
 
 package appeng.menu.interfaces;
 
-import appeng.client.gui.widgets.ProgressBar;
-
 /**
  * This interface provides the data for anything simulating a progress.
  * <p>
- * Its main use is in combination with the {@link ProgressBar}, which ensures to scale it to a percentage of 0 to 100.
+ * Its main use is in combination with the {@link appeng.client.gui.widgets.ProgressBar}, which ensures to scale it to a percentage of 0 to 100.
  */
 public interface IProgressProvider {
 

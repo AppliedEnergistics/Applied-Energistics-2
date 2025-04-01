@@ -49,21 +49,13 @@ public record ConfigValuePacket(String name, String value) implements Clientboun
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void handleOnClient(Player player) {
-        if (player.containerMenu instanceof IConfigurableObject configurableObject) {
-            loadSetting(configurableObject);
-        }
-    }
-
-    @Override
     public void handleOnServer(ServerPlayer player) {
         if (player.containerMenu instanceof IConfigurableObject configurableObject) {
             loadSetting(configurableObject);
         }
     }
 
-    private void loadSetting(IConfigurableObject configurableObject) {
+    public void loadSetting(IConfigurableObject configurableObject) {
         var cm = configurableObject.getConfigManager();
 
         for (var setting : cm.getSettings()) {

@@ -68,7 +68,8 @@ dependencies {
     clientImplementation("org.appliedenergistics:guideme:${guideme_version}")
 
     // compile against provided APIs
-    compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
+    clientCompileOnly "dev.emi:emi-neoforge:${emi_version}:api"
+    clientCompileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     compileOnly "mcp.mobius.waila:wthit-api:neo-${project.wthit_version}"
     compileOnly "curse.maven:jade-324717:${project.jade_file_id}"

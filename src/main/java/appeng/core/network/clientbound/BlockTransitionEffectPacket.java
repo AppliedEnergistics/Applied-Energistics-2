@@ -24,7 +24,7 @@ import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.registries.GameData;
 
 import appeng.core.AELog;
-import appeng.core.AppEngClient;
+
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
 import appeng.core.particles.EnergyParticleData;
@@ -78,68 +78,6 @@ public record BlockTransitionEffectPacket(BlockPos pos,
         var direction = data.readEnum(Direction.class);
         var soundMode = data.readEnum(SoundMode.class);
         return new BlockTransitionEffectPacket(pos, blockState, direction, soundMode);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void handleOnClient(Player player) {
-        spawnParticles(player.level());
-
-        playBreakOrPickupSound();
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private void spawnParticles(Level level) {
-
-        EnergyParticleData data = new EnergyParticleData(false, direction);
-        for (int zz = 0; zz < 32; zz++) {
-            if (AppEngClient.instance().shouldAddParticles(level.getRandom())) {
-                // Distribute the spawn point across the entire block's area
-                double x = pos.getX() + level.getRandom().nextFloat();
-                double y = pos.getY() + level.getRandom().nextFloat();
-                double z = pos.getZ() + level.getRandom().nextFloat();
-                double speedX = 0.1f * this.direction.getStepX();
-                double speedY = 0.1f * this.direction.getStepY();
-                double speedZ = 0.1f * this.direction.getStepZ();
-
-                Minecraft.getInstance().particleEngine.createParticle(data, x, y, z, speedX, speedY, speedZ);
-            }
-        }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private void playBreakOrPickupSound() {
-
-        SoundEvent soundEvent;
-        float volume;
-        float pitch;
-        if (soundMode == SoundMode.FLUID) {
-            // This code is based on what BucketItem does
-            Fluid fluid = blockState.getFluidState().getType();
-            soundEvent = fluid.getFluidType().getSound(SoundActions.BUCKET_FILL);
-            if (soundEvent == null) {
-                if (fluid.is(FluidTags.LAVA)) {
-                    soundEvent = SoundEvents.BUCKET_FILL_LAVA;
-                } else {
-                    soundEvent = SoundEvents.BUCKET_FILL;
-                }
-            }
-            volume = 1;
-            pitch = 1;
-        } else if (soundMode == SoundMode.BLOCK) {
-            SoundType soundType = blockState.getSoundType();
-            soundEvent = soundType.getBreakSound();
-            volume = soundType.volume;
-            pitch = soundType.pitch;
-        } else {
-            return;
-        }
-
-        SimpleSoundInstance sound = new SimpleSoundInstance(soundEvent, SoundSource.BLOCKS, (volume + 1.0F) / 2.0F,
-                pitch * 0.8F,
-                SoundInstance.createUnseededRandom(),
-                pos);
-        Minecraft.getInstance().getSoundManager().play(sound);
     }
 
 }

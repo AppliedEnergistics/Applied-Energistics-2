@@ -21,23 +21,15 @@ package appeng.client;
 import java.util.Objects;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
-import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.InitializeClientRegistriesEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
-import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
-import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
-import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelBaker;
 import net.neoforged.neoforge.common.NeoForge;
@@ -148,11 +140,13 @@ public class AppEngClientRendering {
 
     private PartModels partModels;
 
+    private RecipeMap recipes = RecipeMap.EMPTY;
+
     public static AppEngClientRendering getInstance() {
         return Objects.requireNonNull(instance);
     }
 
-    public AppEngClientRendering(IEventBus modEventBus, ModContainer container) {
+    public AppEngClientRendering(IEventBus modEventBus) {
         instance = this;
 
         modEventBus.addListener(this::registerEntityRenderers);
@@ -363,4 +357,9 @@ public class AppEngClientRendering {
         event.register(new CableBusColor(), AEBlocks.CABLE_BUS.block());
         event.register(ColorableBlockEntityBlockColor.INSTANCE, AEBlocks.ME_CHEST.block());
     }
+
+    public void receiveRecipes(RecipesReceivedEvent event) {
+        this.recipes = event.getRecipeMap();
+    }
+
 }

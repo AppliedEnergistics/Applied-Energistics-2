@@ -20,6 +20,8 @@ package appeng.core;
 
 import java.util.Collection;
 
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
@@ -102,4 +104,9 @@ public interface AppEng {
      * Shows a system chat message to the player
      */
     void sendSystemMessage(Player player, Component text);
+
+    /**
+     * Handles a clientbound packet when on the client (throws on the server).
+     */
+    <T extends ClientboundPacket> void handleClientboundPacket(CustomPacketPayload.Type<T> type, T payload, IPayloadContext context);
 }

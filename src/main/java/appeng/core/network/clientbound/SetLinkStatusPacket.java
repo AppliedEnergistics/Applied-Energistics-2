@@ -36,11 +36,4 @@ public record SetLinkStatusPacket(ILinkStatus linkStatus) implements Clientbound
                 buffer.readBoolean(),
                 ComponentSerialization.TRUSTED_OPTIONAL_STREAM_CODEC.decode(buffer).orElse(null)));
     }
-
-    @Override
-    public void handleOnClient(Player player) {
-        if (player.containerMenu instanceof LinkStatusAwareMenu linkStatusAwareMenu) {
-            linkStatusAwareMenu.setLinkStatus(linkStatus);
-        }
-    }
 }

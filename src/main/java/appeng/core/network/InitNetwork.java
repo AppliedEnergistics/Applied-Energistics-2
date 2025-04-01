@@ -4,6 +4,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 import appeng.core.AppEng;
@@ -25,8 +26,6 @@ import appeng.core.network.clientbound.MolecularAssemblerAnimationPacket;
 import appeng.core.network.clientbound.NetworkStatusPacket;
 import appeng.core.network.clientbound.PatternAccessTerminalPacket;
 import appeng.core.network.clientbound.SetLinkStatusPacket;
-import appeng.core.network.request.DecodePatternReply;
-import appeng.core.network.request.DecodePatternRequest;
 import appeng.core.network.serverbound.ColorApplicatorSelectColorPacket;
 import appeng.core.network.serverbound.ConfigButtonPacket;
 import appeng.core.network.serverbound.ConfirmAutoCraftPacket;
@@ -65,7 +64,6 @@ public class InitNetwork {
         clientbound(registrar, PatternAccessTerminalPacket.TYPE, PatternAccessTerminalPacket.STREAM_CODEC);
         clientbound(registrar, SetLinkStatusPacket.TYPE, SetLinkStatusPacket.STREAM_CODEC);
         clientbound(registrar, ExportedGridContent.TYPE, ExportedGridContent.STREAM_CODEC);
-        clientbound(registrar, DecodePatternReply.TYPE, DecodePatternReply.STREAM_CODEC);
 
         // Serverbound
         serverbound(registrar, ColorApplicatorSelectColorPacket.TYPE, ColorApplicatorSelectColorPacket.STREAM_CODEC);
@@ -83,7 +81,6 @@ public class InitNetwork {
         serverbound(registrar, SwapSlotsPacket.TYPE, SwapSlotsPacket.STREAM_CODEC);
         serverbound(registrar, SwitchGuisPacket.TYPE, SwitchGuisPacket.STREAM_CODEC);
         serverbound(registrar, UpdateHoldingCtrlPacket.TYPE, UpdateHoldingCtrlPacket.STREAM_CODEC);
-        serverbound(registrar, DecodePatternRequest.TYPE, DecodePatternRequest.STREAM_CODEC);
 
         // Bidirectional
         bidirectional(registrar, ConfigValuePacket.TYPE, ConfigValuePacket.STREAM_CODEC);
@@ -92,7 +89,7 @@ public class InitNetwork {
     private static <T extends ClientboundPacket> void clientbound(PayloadRegistrar registrar,
             CustomPacketPayload.Type<T> type,
             StreamCodec<RegistryFriendlyByteBuf, T> codec) {
-        registrar.playToClient(type, codec, ClientboundPacket::handleOnClient);
+        registrar.playToClient(type, codec, (payload, context) -> handleOnClient(type, payload, context));
     }
 
     private static <T extends ServerboundPacket> void serverbound(PayloadRegistrar registrar,
@@ -106,10 +103,14 @@ public class InitNetwork {
             StreamCodec<RegistryFriendlyByteBuf, T> codec) {
         registrar.playBidirectional(type, codec, (payload, context) -> {
             if (context.flow().isClientbound()) {
-                payload.handleOnClient(context);
+                handleOnClient(type, payload, context);
             } else if (context.flow().isServerbound()) {
                 payload.handleOnServer(context);
             }
         });
+    }
+
+    private static <T extends ClientboundPacket> void handleOnClient(CustomPacketPayload.Type<T> type, T payload, IPayloadContext context) {
+        AppEng.instance().handleClientboundPacket(type, payload, context);
     }
 }

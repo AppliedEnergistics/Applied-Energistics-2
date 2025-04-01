@@ -133,12 +133,10 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
             return; // Showing pattern details will only work reliably client-side
         }
 
-        PatternDetailsTooltip tooltip = null;
+        PatternDetailsTooltip tooltip;
         try {
-            // TODO 1.21.4 var details = Objects.requireNonNull(decoder.decode(what, clientLevel), "decoder returned
-            // null");
-            // TODO 1.21.4 tooltip = details.getTooltip(clientLevel, flags);
-            tooltip = ClientPatternCache.getTooltip(stack);
+            var details = Objects.requireNonNull(decoder.decode(what, clientLevel), "decoder returned null");
+            tooltip = details.getTooltip(clientLevel, flags);
         } catch (Exception e) {
             lines.accept(GuiText.InvalidPattern.text().copy().withStyle(ChatFormatting.RED));
             if (invalidPatternTooltip != null) {
@@ -217,19 +215,19 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
             return ItemStack.EMPTY;
         }
 
+        var details = decode(item, level);
         out = ItemStack.EMPTY;
-// TODO 1.21.4        var details = decode(item, level);
-//
-//        if (details != null) {
-//            var output = details.getPrimaryOutput();
-//
-//            // Can only be an item or fluid stack.
-//            if (output.what() instanceof AEItemKey itemKey) {
-//                out = itemKey.toStack();
-//            } else {
-//                out = WrappedGenericStack.wrap(output.what(), 0);
-//            }
-//        }
+
+        if (details != null) {
+            var output = details.getPrimaryOutput();
+
+            // Can only be an item or fluid stack.
+            if (output.what() instanceof AEItemKey itemKey) {
+                out = itemKey.toStack();
+            } else {
+                out = WrappedGenericStack.wrap(output.what(), 0);
+            }
+        }
 
         SIMPLE_CACHE.put(item, out);
         return out;

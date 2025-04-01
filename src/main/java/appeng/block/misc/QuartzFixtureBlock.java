@@ -51,7 +51,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import appeng.api.orientation.RelativeSide;
 import appeng.block.AEBaseBlock;
 import appeng.core.AEConfig;
-import appeng.core.AppEngClient;
+
 import appeng.core.particles.ParticleTypes;
 
 public class QuartzFixtureBlock extends AEBaseBlock implements SimpleWaterloggedBlock {
@@ -156,10 +156,8 @@ public class QuartzFixtureBlock extends AEBaseBlock implements SimpleWaterlogged
         final double yOff = -0.3 * top.getStepY();
         final double zOff = -0.3 * top.getStepZ();
         for (int bolts = 0; bolts < 3; bolts++) {
-            if (AppEngClient.instance().shouldAddParticles(r)) {
-                level.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(),
-                        zOff + 0.5 + pos.getZ(), 0, 0, 0);
-            }
+            level.addParticle(ParticleTypes.LIGHTNING, false, true,xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(),
+                    zOff + 0.5 + pos.getZ(), 0, 0, 0);
         }
     }
 

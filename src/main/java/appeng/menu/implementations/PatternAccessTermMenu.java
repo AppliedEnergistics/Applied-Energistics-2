@@ -44,7 +44,6 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGrid;
 import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.IPatternAccessTermMenuHost;
-import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.core.AELog;
 import appeng.core.network.clientbound.ClearPatternAccessTerminalPacket;
 import appeng.core.network.clientbound.PatternAccessTerminalPacket;
@@ -59,7 +58,7 @@ import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
 /**
- * @see PatternAccessTermScreen
+ * @see appeng.client.gui.me.patternaccess.PatternAccessTermScreen
  */
 public class PatternAccessTermMenu extends AEBaseMenu implements LinkStatusAwareMenu {
 

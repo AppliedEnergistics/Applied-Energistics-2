@@ -23,13 +23,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.blockentity.storage.SkyStoneChestBlockEntity;
-import appeng.client.gui.implementations.SkyStoneChestScreen;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.slot.AppEngSlot;
 
 /**
- * @see SkyStoneChestScreen
+ * @see appeng.client.gui.implementations.SkyStoneChestScreen
  */
 public class SkyStonechestMenu extends AEBaseMenu {
 

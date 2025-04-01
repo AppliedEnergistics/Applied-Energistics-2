@@ -40,16 +40,4 @@ public record LightningPacket(
         data.writeFloat((float) y);
         data.writeFloat((float) z);
     }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void handleOnClient(Player player) {
-        try {
-            if (AEConfig.instance().isEnableEffects()) {
-                player.getCommandSenderWorld().addParticle(ParticleTypes.LIGHTNING, this.x, this.y, this.z, 0.0f, 0.0f,
-                        0.0f);
-            }
-        } catch (Exception ignored) {
-        }
-    }
 }

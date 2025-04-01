@@ -37,11 +37,4 @@ public record MockExplosionPacket(double x, double y, double z) implements Clien
         data.writeDouble(y);
         data.writeDouble(z);
     }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void handleOnClient(Player player) {
-        final Level level = player.getCommandSenderWorld();
-        level.addParticle(ParticleTypes.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
-    }
 }

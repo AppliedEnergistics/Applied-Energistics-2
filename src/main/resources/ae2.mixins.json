@@ -15,13 +15,12 @@
     "StructureTemplateMixin"
   ],
   "client": [
-    "AbstractContainerScreenMixin",
-    "GuiGraphicsMixin",
-    "WrappedGenericStackTooltipModIdMixin",
-    "PickColorMixin",
-    "TextureAtlasMixin",
-    "PonderWorldMixin",
-    "RecipeUpdateMixin",
+    "client.AbstractContainerScreenMixin",
+    "client.GuiGraphicsMixin",
+    "client.WrappedGenericStackTooltipModIdMixin",
+    "client.PickColorMixin",
+    "client.TextureAtlasMixin",
+    "client.PonderWorldMixin",
     "client.PartModelLoaderMixin"
   ],
   "server": [],

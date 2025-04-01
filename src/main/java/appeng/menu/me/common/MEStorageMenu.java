@@ -70,7 +70,6 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.api.util.KeyTypeSelection;
 import appeng.api.util.KeyTypeSelectionHost;
-import appeng.client.gui.me.common.MEStorageScreen;
 import appeng.core.AELog;
 import appeng.core.network.ServerboundPacket;
 import appeng.core.network.bidirectional.ConfigValuePacket;
@@ -91,9 +90,6 @@ import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.Platform;
 
-/**
- * @see MEStorageScreen
- */
 public class MEStorageMenu extends AEBaseMenu
         implements IConfigurableObject, IMEInteractionHandler, LinkStatusAwareMenu,
         KeyTypeSelectionMenu {

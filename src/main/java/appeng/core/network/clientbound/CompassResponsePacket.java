@@ -32,10 +32,4 @@ public record CompassResponsePacket(ChunkPos requestedPos,
     public Type<CompassResponsePacket> type() {
         return TYPE;
     }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void handleOnClient(Player player) {
-        CompassManager.INSTANCE.postResult(requestedPos, closestMeteorite.orElse(null));
-    }
 }

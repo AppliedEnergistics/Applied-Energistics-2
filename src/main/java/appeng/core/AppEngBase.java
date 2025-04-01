@@ -21,6 +21,10 @@ package appeng.core;
 import java.util.Collection;
 import java.util.Collections;
 
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -187,8 +191,13 @@ public abstract class AppEngBase implements AppEng {
 
         NeoForge.EVENT_BUS.addListener(WrenchHook::onPlayerUseBlockEvent);
         NeoForge.EVENT_BUS.addListener(SkyStoneBreakSpeed::handleBreakFaster);
+        NeoForge.EVENT_BUS.addListener(this::registerSynchronizedRecipes);
 
         HotkeyActions.init();
+    }
+
+    private void registerSynchronizedRecipes(OnDatapackSyncEvent event) {
+        event.sendRecipes(RecipeType.CRAFTING);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -265,7 +274,7 @@ public abstract class AppEngBase implements AppEng {
 
     @Override
     public void sendToAllNearExcept(Player p, double x, double y, double z,
-            double dist, Level level, ClientboundPacket packet) {
+                                    double dist, Level level, ClientboundPacket packet) {
         if (level instanceof ServerLevel serverLevel) {
             ServerPlayer except = null;
             if (p instanceof ServerPlayer) {
@@ -313,5 +322,10 @@ public abstract class AppEngBase implements AppEng {
         if ("true".equals(System.getProperty("appeng.tests"))) {
             GameTestPlotAdapter.registerAll(e::registerTest);
         }
+    }
+
+    @Override
+    public <T extends ClientboundPacket> void handleClientboundPacket(CustomPacketPayload.Type<T> type, T payload, IPayloadContext context) {
+        throw new IllegalStateException("Trying to handle a clientbound packet while not on the client: " + payload.type());
     }
 }

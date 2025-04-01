@@ -30,7 +30,7 @@ import appeng.api.config.YesNo;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.misc.InscriberRecipes;
-import appeng.client.gui.Icon;
+import appeng.util.Icon;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.Side;

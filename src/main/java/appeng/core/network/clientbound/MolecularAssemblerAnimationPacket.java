@@ -41,13 +41,4 @@ public record MolecularAssemblerAnimationPacket(BlockPos pos, byte rate, AEKey w
         data.writeByte(rate);
         AEKey.writeKey(data, what);
     }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void handleOnClient(Player player) {
-        BlockEntity te = player.getCommandSenderWorld().getBlockEntity(pos);
-        if (te instanceof MolecularAssemblerBlockEntity ma) {
-            ma.setAnimationStatus(new MolecularAssemblerAnimationStatus(rate, what.wrapForDisplayOrFilter()));
-        }
-    }
 }
