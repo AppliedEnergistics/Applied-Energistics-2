@@ -20,13 +20,7 @@ package appeng.client;
 
 import java.util.Objects;
 
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.block.model.TextureSlots;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.QuadCollection;
-import net.minecraft.client.resources.model.ResolvedModel;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
@@ -45,8 +39,10 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.client.model.standalone.StandaloneModelBaker;
 import net.neoforged.neoforge.common.NeoForge;
 
+import appeng.api.client.StorageCellModels;
 import appeng.api.parts.CableRenderMode;
 import appeng.api.util.AEColor;
 import appeng.block.networking.CableBusColor;
@@ -104,6 +100,7 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
+import appeng.core.definitions.AEItems;
 import appeng.core.particles.ParticleTypes;
 import appeng.entity.TinyTNTPrimedRenderer;
 import appeng.parts.reporting.ConversionMonitorPart;
@@ -115,6 +112,30 @@ import appeng.spatial.SpatialStorageDimensionIds;
  */
 @Mod(value = AppEng.MOD_ID, dist = Dist.CLIENT)
 public class AppEngClientRendering {
+
+    private static final ResourceLocation MODEL_CELL_ITEMS_1K = ResourceLocation.parse(
+            "ae2:block/drive_1k_item_cell");
+    private static final ResourceLocation MODEL_CELL_ITEMS_4K = ResourceLocation.parse(
+            "ae2:block/drive_4k_item_cell");
+    private static final ResourceLocation MODEL_CELL_ITEMS_16K = ResourceLocation.parse(
+            "ae2:block/drive_16k_item_cell");
+    private static final ResourceLocation MODEL_CELL_ITEMS_64K = ResourceLocation.parse(
+            "ae2:block/drive_64k_item_cell");
+    private static final ResourceLocation MODEL_CELL_ITEMS_256K = ResourceLocation.parse(
+            "ae2:block/drive_256k_item_cell");
+    private static final ResourceLocation MODEL_CELL_FLUIDS_1K = ResourceLocation.parse(
+            "ae2:block/drive_1k_fluid_cell");
+    private static final ResourceLocation MODEL_CELL_FLUIDS_4K = ResourceLocation.parse(
+            "ae2:block/drive_4k_fluid_cell");
+    private static final ResourceLocation MODEL_CELL_FLUIDS_16K = ResourceLocation.parse(
+            "ae2:block/drive_16k_fluid_cell");
+    private static final ResourceLocation MODEL_CELL_FLUIDS_64K = ResourceLocation.parse(
+            "ae2:block/drive_64k_fluid_cell");
+    private static final ResourceLocation MODEL_CELL_FLUIDS_256K = ResourceLocation.parse(
+            "ae2:block/drive_256k_fluid_cell");
+    private static final ResourceLocation MODEL_CELL_CREATIVE = ResourceLocation.parse(
+            "ae2:block/drive_creative_cell");
+
     private static AppEngClientRendering instance;
 
     /**
@@ -172,6 +193,29 @@ public class AppEngClientRendering {
 
     private void initCustomClientRegistries(InitializeClientRegistriesEvent event) {
         partModels = new PartModels();
+
+        StorageCellModels.registerModel(AEItems.ITEM_CELL_1K, MODEL_CELL_ITEMS_1K);
+        StorageCellModels.registerModel(AEItems.ITEM_CELL_4K, MODEL_CELL_ITEMS_4K);
+        StorageCellModels.registerModel(AEItems.ITEM_CELL_16K, MODEL_CELL_ITEMS_16K);
+        StorageCellModels.registerModel(AEItems.ITEM_CELL_64K, MODEL_CELL_ITEMS_64K);
+        StorageCellModels.registerModel(AEItems.ITEM_CELL_256K, MODEL_CELL_ITEMS_256K);
+        StorageCellModels.registerModel(AEItems.FLUID_CELL_1K, MODEL_CELL_FLUIDS_1K);
+        StorageCellModels.registerModel(AEItems.FLUID_CELL_4K, MODEL_CELL_FLUIDS_4K);
+        StorageCellModels.registerModel(AEItems.FLUID_CELL_16K, MODEL_CELL_FLUIDS_16K);
+        StorageCellModels.registerModel(AEItems.FLUID_CELL_64K, MODEL_CELL_FLUIDS_64K);
+        StorageCellModels.registerModel(AEItems.FLUID_CELL_256K, MODEL_CELL_FLUIDS_256K);
+        StorageCellModels.registerModel(AEItems.CREATIVE_CELL, MODEL_CELL_CREATIVE);
+
+        StorageCellModels.registerModel(AEItems.PORTABLE_ITEM_CELL1K, MODEL_CELL_ITEMS_1K);
+        StorageCellModels.registerModel(AEItems.PORTABLE_ITEM_CELL4K, MODEL_CELL_ITEMS_4K);
+        StorageCellModels.registerModel(AEItems.PORTABLE_ITEM_CELL16K, MODEL_CELL_ITEMS_16K);
+        StorageCellModels.registerModel(AEItems.PORTABLE_ITEM_CELL64K, MODEL_CELL_ITEMS_64K);
+        StorageCellModels.registerModel(AEItems.PORTABLE_ITEM_CELL256K, MODEL_CELL_ITEMS_256K);
+        StorageCellModels.registerModel(AEItems.PORTABLE_FLUID_CELL1K, MODEL_CELL_FLUIDS_1K);
+        StorageCellModels.registerModel(AEItems.PORTABLE_FLUID_CELL4K, MODEL_CELL_FLUIDS_4K);
+        StorageCellModels.registerModel(AEItems.PORTABLE_FLUID_CELL16K, MODEL_CELL_FLUIDS_16K);
+        StorageCellModels.registerModel(AEItems.PORTABLE_FLUID_CELL64K, MODEL_CELL_FLUIDS_64K);
+        StorageCellModels.registerModel(AEItems.PORTABLE_FLUID_CELL256K, MODEL_CELL_FLUIDS_256K);
     }
 
     private void registerPartRenderers(RegisterPartRendererEvent event) {
@@ -280,22 +324,16 @@ public class AppEngClientRendering {
         InterModComms.sendTo("framedblocks", "add_ct_property", () -> QuartzGlassModel.GLASS_STATE);
     }
 
-    private SimpleModelWrapper bakeSimpleWrapper(ResolvedModel resolvedmodel, ModelBaker baker) {
-        var modelState = BlockModelRotation.X0_Y0;
-        TextureSlots textureslots = resolvedmodel.getTopTextureSlots();
-        boolean flag = resolvedmodel.getTopAmbientOcclusion();
-        TextureAtlasSprite textureatlassprite = resolvedmodel.resolveParticleSprite(textureslots, baker);
-        QuadCollection quadcollection = resolvedmodel.bakeTopGeometry(textureslots, baker, modelState);
-        var renderTypeGroup = resolvedmodel.getTopAdditionalProperties()
-                .getOptional(net.neoforged.neoforge.client.model.NeoForgeModelProperties.RENDER_TYPE);
-        var renderTypes = renderTypeGroup == null || renderTypeGroup.isEmpty() ? null : renderTypeGroup.block();
-        return new SimpleModelWrapper(quadcollection, flag, textureatlassprite, renderTypes);
-    }
-
     private void registerStandaloneModels(ModelEvent.RegisterStandalone event) {
-        event.register(MolecularAssemblerRenderer.LIGHTS_MODEL, this::bakeSimpleWrapper);
-        event.register(CrankRenderer.BASE_MODEL, this::bakeSimpleWrapper);
-        event.register(CrankRenderer.HANDLE_MODEL, this::bakeSimpleWrapper);
+        event.register(MolecularAssemblerRenderer.LIGHTS_MODEL, StandaloneModelBaker.simpleModelWrapper());
+        event.register(CrankRenderer.BASE_MODEL, StandaloneModelBaker.simpleModelWrapper());
+        event.register(CrankRenderer.HANDLE_MODEL, StandaloneModelBaker.simpleModelWrapper());
+
+        // For rendering the ME chest we require the original storage cell models as standalone models
+        for (var cellModelKey : StorageCellModels.standaloneModels().values()) {
+            event.register(cellModelKey, StandaloneModelBaker.simpleModelWrapper());
+        }
+        event.register(StorageCellModels.getDefaultStandaloneModel(), StandaloneModelBaker.simpleModelWrapper());
     }
 
     private void registerItemModelProperties(RegisterRangeSelectItemModelPropertyEvent event) {

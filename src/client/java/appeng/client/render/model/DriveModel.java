@@ -18,7 +18,6 @@
 
 package appeng.client.render.model;
 
-import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,26 +25,27 @@ import java.util.Map;
 import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.ComposedModelState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 
@@ -53,7 +53,6 @@ import appeng.api.client.StorageCellModels;
 import appeng.block.storage.DriveModelData;
 import appeng.client.model.SpinnableVariant;
 import appeng.core.AppEng;
-import appeng.init.internal.InitStorageCells;
 import appeng.thirdparty.fabric.MutableQuadView;
 import appeng.thirdparty.fabric.RenderContext;
 
@@ -61,20 +60,38 @@ public class DriveModel implements DynamicBlockStateModel {
     private static final Logger LOG = LoggerFactory.getLogger(DriveModel.class);
 
     private static final ResourceLocation MODEL_BASE = ResourceLocation.parse("ae2:block/drive_base");
-    private static final ResourceLocation MODEL_CELL_EMPTY = ResourceLocation.parse("ae2:block/drive_cell_empty");
+    private static final Transformation[] BAY_TRANSLATIONS = buildBayTranslations();
 
-    private final Map<Item, SimpleModelWrapper> cellModels;
     private final SimpleModelWrapper baseModel;
-    private final SimpleModelWrapper defaultCellModel;
 
-    private final RenderContext.QuadTransform[] slotTransforms;
+    // Indices are the bay indices
+    private final SimpleModelWrapper[] defaultCellModels;
+    private final Map<Item, SimpleModelWrapper[]> cellModels;
 
-    public DriveModel(Transformation rotation, SimpleModelWrapper baseModel, Map<Item, SimpleModelWrapper> cellModels,
-            SimpleModelWrapper defaultCell) {
+    public DriveModel(SimpleModelWrapper baseModel,
+            Map<Item, SimpleModelWrapper[]> cellModels,
+            SimpleModelWrapper[] defaultCellModels) {
         this.baseModel = baseModel;
-        this.defaultCellModel = defaultCell;
-        this.slotTransforms = buildSlotTransforms(rotation);
+        this.defaultCellModels = defaultCellModels;
         this.cellModels = cellModels;
+    }
+
+    /**
+     * Pre-computes a {@link Transformation} from the base cell model into each respective bay. This assumes no further
+     * rotation of the drive.
+     */
+    private static Transformation[] buildBayTranslations() {
+        var result = new Transformation[5 * 2];
+
+        for (int row = 0; row < 5; row++) {
+            for (int col = 0; col < 2; col++) {
+                Vector3f translation = new Vector3f();
+                getSlotOrigin(row, col, translation);
+                result[getBayIndex(row, col)] = new Transformation(translation, null, null, null);
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -101,36 +118,13 @@ public class DriveModel implements DynamicBlockStateModel {
         if (cells != null) {
             for (int row = 0; row < 5; row++) {
                 for (int col = 0; col < 2; col++) {
-                    int slot = getSlotIndex(row, col);
+                    int slot = getBayIndex(row, col);
 
                     // Add the cell chassis
                     Item cell = slot < cells.length ? cells[slot] : null;
-                    var cellChassisModel = getCellChassisModel(cell);
-
-                    // TODO: We should pre-compile this
-                    var unculledQuads = new ArrayList<BakedQuad>();
-                    var quadView = MutableQuadView.getInstance();
-                    for (BakedQuad quad : cellChassisModel.getQuads(null)) {
-                        quadView.fromVanilla(quad, null);
-                        slotTransforms[slot].transform(quadView);
-                        unculledQuads.add(quadView.toBlockBakedQuad());
+                    if (cell != null && cell != Items.AIR) {
+                        parts.add(getCellChassisModel(cell, row, col));
                     }
-                    parts.add(new BlockModelPart() {
-                        @Override
-                        public List<BakedQuad> getQuads(@Nullable Direction side) {
-                            return side == null ? unculledQuads : List.of();
-                        }
-
-                        @Override
-                        public boolean useAmbientOcclusion() {
-                            return cellChassisModel.useAmbientOcclusion();
-                        }
-
-                        @Override
-                        public TextureAtlasSprite particleIcon() {
-                            return cellChassisModel.particleIcon();
-                        }
-                    });
                 }
             }
         }
@@ -152,16 +146,18 @@ public class DriveModel implements DynamicBlockStateModel {
     }
 
     // Determine which drive chassis to show based on the used cell
-    public SimpleModelWrapper getCellChassisModel(Item cell) {
+    @Nullable
+    public SimpleModelWrapper getCellChassisModel(Item cell, int row, int col) {
         if (cell == null) {
-            return cellModels.get(Items.AIR);
+            return null;
         }
-        final SimpleModelWrapper model = cellModels.get(cell);
 
-        return model != null ? model : defaultCellModel;
+        var bayIndex = getBayIndex(row, col);
+        var models = cellModels.get(cell);
+        return models != null ? models[bayIndex] : defaultCellModels[bayIndex];
     }
 
-    private RenderContext.QuadTransform[] buildSlotTransforms(Transformation rotation) {
+    private RenderContext.QuadTransform[] buildBayTransforms(Transformation rotation) {
         RenderContext.QuadTransform[] result = new RenderContext.QuadTransform[5 * 2];
 
         for (int row = 0; row < 5; row++) {
@@ -171,7 +167,7 @@ public class DriveModel implements DynamicBlockStateModel {
                 getSlotOrigin(row, col, translation);
                 rotation.getLeftRotation().transform(translation);
 
-                result[getSlotIndex(row, col)] = new QuadTranslator(translation.x(), translation.y(),
+                result[getBayIndex(row, col)] = new QuadTranslator(translation.x(), translation.y(),
                         translation.z());
             }
         }
@@ -179,7 +175,7 @@ public class DriveModel implements DynamicBlockStateModel {
         return result;
     }
 
-    private static int getSlotIndex(int row, int col) {
+    private static int getBayIndex(int row, int col) {
         return row * 2 + col;
     }
 
@@ -217,9 +213,13 @@ public class DriveModel implements DynamicBlockStateModel {
 
         @Override
         public BlockStateModel bake(ModelBaker baker) {
-            final Map<Item, SimpleModelWrapper> cellModels = new IdentityHashMap<>();
-
+            final Map<Item, SimpleModelWrapper[]> cellModels = new IdentityHashMap<>();
             var modelState = variant.modelState().asModelState();
+
+            ModelState[] bayTransforms = new ModelState[BAY_TRANSLATIONS.length];
+            for (int i = 0; i < BAY_TRANSLATIONS.length; i++) {
+                bayTransforms[i] = new ComposedModelState(modelState, BAY_TRANSLATIONS[i]);
+            }
 
             // Load the base model and the model for each cell model.
             for (var entry : StorageCellModels.models().entrySet()) {
@@ -232,21 +232,29 @@ public class DriveModel implements DynamicBlockStateModel {
                     }
                 }
 
-                var cellModel = SimpleModelWrapper.bake(baker, location, modelState);
-                cellModels.put(entry.getKey(), cellModel);
+                cellModels.put(entry.getKey(), preBakeCellInBays(baker, bayTransforms, location));
             }
+            var defaultCells = preBakeCellInBays(baker, bayTransforms, StorageCellModels.getDefaultModel());
 
             var baseModel = SimpleModelWrapper.bake(baker, MODEL_BASE, modelState);
-            var defaultCell = SimpleModelWrapper.bake(baker, StorageCellModels.getDefaultModel(), modelState);
-            cellModels.put(Items.AIR, SimpleModelWrapper.bake(baker, MODEL_CELL_EMPTY, modelState));
 
-            return new DriveModel(modelState.transformation(), baseModel, cellModels, defaultCell);
+            return new DriveModel(baseModel, cellModels, defaultCells);
+        }
+
+        private SimpleModelWrapper @NotNull [] preBakeCellInBays(ModelBaker baker, ModelState[] bayTransforms,
+                ResourceLocation location) {
+            // Bake each cell pre-translated into each of the bays
+            var cellsInBay = new SimpleModelWrapper[BAY_TRANSLATIONS.length];
+            for (int i = 0; i < bayTransforms.length; i++) {
+                cellsInBay[i] = SimpleModelWrapper.bake(baker, location, bayTransforms[i]);
+            }
+            return cellsInBay;
         }
 
         @Override
         public void resolveDependencies(Resolver resolver) {
+            resolver.markDependency(MODEL_BASE);
             resolver.markDependency(StorageCellModels.getDefaultModel());
-            InitStorageCells.getModels().forEach(resolver::markDependency);
             StorageCellModels.models().values().forEach(resolver::markDependency);
         }
     }

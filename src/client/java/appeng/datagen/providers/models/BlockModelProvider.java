@@ -31,7 +31,6 @@ import net.minecraft.client.renderer.item.EmptyModel;
 import net.minecraft.client.renderer.item.RangeSelectItemModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
@@ -88,9 +87,8 @@ public class BlockModelProvider extends ModelSubProvider {
                         modelOutput));
         blockModels.copyModel(AEBlocks.QUARTZ_GLASS.block(), AEBlocks.QUARTZ_VIBRANT_GLASS.block());
 
-        multiVariantGenerator(AEBlocks.CABLE_BUS, new MultiVariant(
-                WeightedList.of(),
-                new CustomBlockStateModelBuilder.Simple(new CableBusModel.Unbaked())));
+        multiVariantGenerator(AEBlocks.CABLE_BUS,
+                MultiVariant.of(new CustomBlockStateModelBuilder.Simple(new CableBusModel.Unbaked())));
 
         builtInModel(AEBlocks.PAINT, new PaintSplotchesModel.Unbaked());
 

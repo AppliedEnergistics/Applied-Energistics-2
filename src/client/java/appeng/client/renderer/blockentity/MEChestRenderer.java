@@ -38,10 +38,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import appeng.api.client.StorageCellModels;
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.storage.MEChestBlockEntity;
 import appeng.client.render.AERenderTypes;
-import appeng.client.render.model.DriveModel;
 import appeng.core.definitions.AEBlocks;
 import appeng.thirdparty.fabric.ModelHelper;
 
@@ -77,10 +77,11 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity> 
 
         // Try to get the right cell chassis model from the drive model since it already
         // loads them all
-        if (!(getDriveModel() instanceof DriveModel driveModel)) {
-            return;
+        var cellModelKey = StorageCellModels.standaloneModel(cellItem);
+        if (cellModelKey == null) {
+            cellModelKey = StorageCellModels.getDefaultStandaloneModel();
         }
-        var cellModel = driveModel.getCellChassisModel(cellItem);
+        var cellModel = modelManager.getStandaloneModel(cellModelKey);
 
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);

@@ -24,7 +24,6 @@ import net.minecraft.client.renderer.block.model.Variant;
 import net.minecraft.client.renderer.block.model.VariantMutator;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -225,6 +224,6 @@ public abstract class ModelSubProvider {
     }
 
     protected static MultiVariant customBlockStateModel(CustomUnbakedBlockStateModel model) {
-        return new MultiVariant(WeightedList.of(), new CustomBlockStateModelBuilder.Simple(model));
+        return MultiVariant.of(new CustomBlockStateModelBuilder.Simple(model));
     }
 }
