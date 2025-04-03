@@ -27,6 +27,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -70,6 +71,7 @@ public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implem
                 .add(Blocks.BAMBOO_SAPLING, Blocks.BAMBOO, Blocks.SUGAR_CANE, Blocks.SUGAR_CANE, Blocks.VINE,
                         Blocks.TWISTING_VINES, Blocks.WEEPING_VINES, Blocks.CAVE_VINES, Blocks.SWEET_BERRY_BUSH,
                         Blocks.NETHER_WART, Blocks.KELP, Blocks.COCOA)
+                .addOptional(ResourceLocation.fromNamespaceAndPath("projectvibrantjourneys", "cindercane"))
                 .addOptionalTag(ConventionTags.CROPS.location())
                 .addOptionalTag(ConventionTags.SAPLINGS.location())
                 .addTag(ConventionTags.BUDDING_BLOCKS_BLOCKS);
