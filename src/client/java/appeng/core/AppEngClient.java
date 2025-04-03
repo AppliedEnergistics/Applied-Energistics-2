@@ -18,8 +18,6 @@
 
 package appeng.core;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Objects;
@@ -57,7 +55,6 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
-import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
@@ -88,6 +85,8 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import guideme.Guide;
 import guideme.compiler.TagCompiler;
 import guideme.scene.ImplicitAnnotationStrategy;
+import guideme.siteexport.AdditionalResourceExporter;
+import guideme.siteexport.RecipeExporter;
 
 import appeng.api.client.StorageCellModels;
 import appeng.api.parts.CableRenderMode;
@@ -108,6 +107,8 @@ import appeng.client.commands.ClientCommands;
 import appeng.client.gui.me.common.PendingCraftingJobs;
 import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
+import appeng.client.guidebook.AEAdditionalExportData;
+import appeng.client.guidebook.AERecipeExporter;
 import appeng.client.guidebook.ConfigValueTagExtension;
 import appeng.client.guidebook.PartAnnotationStrategy;
 import appeng.client.hooks.RenderBlockOutlineHook;
@@ -173,7 +174,6 @@ import appeng.init.client.InitStackRenderHandlers;
 import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.parts.reporting.ConversionMonitorPart;
 import appeng.parts.reporting.StorageMonitorPart;
-import appeng.siteexport.AESiteExporter;
 import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.util.Platform;
 
@@ -319,6 +319,8 @@ public class AppEngClient extends AppEngBase {
                 .folder("ae2guide")
                 .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
                 .extension(TagCompiler.EXTENSION_POINT, new ConfigValueTagExtension())
+                .extension(RecipeExporter.EXTENSION_POINT, new AERecipeExporter())
+                .extension(AdditionalResourceExporter.EXTENSION_POINT, new AEAdditionalExportData())
                 .build();
     }
 
@@ -355,9 +357,8 @@ public class AppEngClient extends AppEngBase {
 
     private void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            Minecraft minecraft = Minecraft.getInstance();
             try {
-                postClientSetup(minecraft);
+                InitStackRenderHandlers.init();
             } catch (Throwable e) {
                 LOG.error("AE2 failed postClientSetup", e);
                 throw new RuntimeException(e);
@@ -370,25 +371,6 @@ public class AppEngClient extends AppEngBase {
 
     private void registerReloadListeners(AddClientReloadListenersEvent event) {
         event.addListener(AppEng.makeId("styles"), StyleManager.getReloadListener());
-    }
-
-    /**
-     * Called when other mods have finished initializing and the client is now available.
-     */
-    private void postClientSetup(Minecraft minecraft) {
-        InitStackRenderHandlers.init();
-
-        // Only activate the site exporter when we're not running a release version, since it'll
-        // replace blocks around spawn.
-        if (!FMLLoader.isProduction()) {
-            // Automatically run the export once the client has started and then exit
-            if (Boolean.getBoolean("appeng.runGuideExportAndExit")) {
-                Path outputFolder = Paths.get(System.getProperty("appeng.guideExportFolder"));
-
-                new AESiteExporter(minecraft, outputFolder, guide)
-                        .exportOnNextTickAndExit();
-            }
-        }
     }
 
     private void wheelEvent(final InputEvent.MouseScrollingEvent me) {

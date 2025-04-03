@@ -186,8 +186,9 @@ neoForge {
         }
         guideexport {
             client()
-            systemProperty('appeng.runGuideExportAndExit', 'true')
-            systemProperty('appeng.guideExportFolder', file('build/guide').absolutePath)
+            systemProperty('guideme.exportOnStartupAndExit', 'ae2:guide')
+            systemProperty('guideme.exportDestination.ae2.guide', file('build/guide').absolutePath)
+            systemProperty('guideme.exportModVersion.ae2.guide', project.version)
             sourceSet = sourceSets.client
         }
         // Use to run the tests

@@ -605,8 +605,11 @@ public class BlockModelProvider extends ModelSubProvider {
                 .accept(
                         MultiVariantGenerator.dispatch(
                                 block,
-                                plainVariant(ModelTemplates.CROSS.create(block, TextureMapping.cross(block),
-                                        modelOutput)))
+                                plainVariant(ModelTemplates.CROSS
+                                        .extend()
+                                        .renderType("cutout")
+                                        .build()
+                                        .create(block, TextureMapping.cross(block), modelOutput)))
                                 .with(ROTATIONS_COLUMN_WITH_FACING));
     }
 }

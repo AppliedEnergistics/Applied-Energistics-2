@@ -1,27 +1,25 @@
-package appeng.siteexport;
+package appeng.client.guidebook;
 
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
-import guideme.Guide;
-import guideme.internal.siteexport.SiteExporter;
+import guideme.siteexport.RecipeExporter;
+import guideme.siteexport.ResourceExporter;
 
-import appeng.client.guidebook.ConfigValueTagExtension;
 import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import appeng.items.tools.powered.MatterCannonItem;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.handlers.ChargerRecipe;
@@ -30,55 +28,46 @@ import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.mattercannon.MatterCannonAmmo;
 import appeng.recipes.transform.TransformRecipe;
 
-public class AESiteExporter extends SiteExporter {
-    public AESiteExporter(Minecraft client, Path outputFolder, Guide guide) {
-        super(client, outputFolder, guide);
+public class AERecipeExporter implements RecipeExporter {
+    @Override
+    public @Nullable Map<String, Object> convertToJson(ResourceKey<Recipe<?>> id, Recipe<?> recipe,
+            ResourceExporter exporter) {
 
-        // Ref items used as icons
-        referenceItem(Items.FURNACE);
-        referenceItem(AEBlocks.INSCRIBER);
-        referenceFluid(Fluids.WATER);
-        referenceFluid(Fluids.LAVA);
-        referenceItem(Items.TNT);
-        referenceItem(Blocks.SMITHING_TABLE);
+        if (recipe instanceof InscriberRecipe inscriberRecipe) {
+            exporter.referenceItem(AEBlocks.INSCRIBER); // Ref items used as icons
+            return exportRecipe(inscriberRecipe);
+        } else if (recipe instanceof TransformRecipe transformRecipe) {
+            // Ref items used as icons
+            exporter.referenceFluid(Fluids.WATER);
+            exporter.referenceFluid(Fluids.LAVA);
+            exporter.referenceItem(Items.TNT);
+            return exportRecipe(transformRecipe);
+        } else if (recipe instanceof EntropyRecipe entropyRecipe) {
+            exporter.referenceItem(AEItems.ENTROPY_MANIPULATOR); // Ref items used as icons
+            return exportRecipe(entropyRecipe);
+        } else if (recipe instanceof MatterCannonAmmo matterCannonAmmo) {
+            exporter.referenceItem(AEItems.MATTER_CANNON); // Ref items used as icons
+            return exportRecipe(matterCannonAmmo);
+        } else if (recipe instanceof ChargerRecipe chargerRecipe) {
+            exporter.referenceItem(AEBlocks.CHARGER); // Ref items used as icons
+            return exportRecipe(chargerRecipe);
+        }
+
+        return null;
     }
 
-    protected Map<String, Object> getModData() {
-
-        // TODO public List<P2PTypeInfo> p2pTunnelTypes = new ArrayList<>();
-
-        // TODO public Map<String, Map<DyeColor, String>> coloredVersions = new HashMap<>();
-
-        return Map.of("defaultConfigValues", ConfigValueTagExtension.CONFIG_VALUES.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> entry.getValue().get())));
-    }
-
-    @Nullable
-    protected Map<String, Object> getCustomRecipeFields(ResourceLocation id, Recipe<?> recipe) {
-        return switch (recipe) {
-            case InscriberRecipe inscriberRecipe -> addRecipe(inscriberRecipe);
-            case TransformRecipe transformRecipe -> addRecipe(transformRecipe);
-            case EntropyRecipe entropyRecipe -> addRecipe(entropyRecipe);
-            case MatterCannonAmmo ammoRecipe -> addRecipe(ammoRecipe);
-            case ChargerRecipe chargerRecipe -> addRecipe(chargerRecipe);
-            case null, default -> null;
-        };
-    }
-
-    private Map<String, Object> addRecipe(InscriberRecipe recipe) {
+    private Map<String, Object> exportRecipe(InscriberRecipe recipe) {
         var resultItem = recipe.getResultItem();
         return Map.of(
-                "top", recipe.getTopOptional(),
+                "top", unwrapIngredient(recipe.getTopOptional()),
                 "middle", recipe.getMiddleInput(),
-                "bottom", recipe.getBottomOptional(),
+                "bottom", unwrapIngredient(recipe.getBottomOptional()),
                 "resultItem", resultItem.getItem(),
                 "resultCount", resultItem.getCount(),
                 "consumesTopAndBottom", recipe.getProcessType() == InscriberProcessType.PRESS);
     }
 
-    private Map<String, Object> addRecipe(TransformRecipe recipe) {
+    private Map<String, Object> exportRecipe(TransformRecipe recipe) {
 
         Map<String, Object> circumstanceJson = new HashMap<>();
         var circumstance = recipe.circumstance;
@@ -103,20 +92,24 @@ public class AESiteExporter extends SiteExporter {
                 "circumstance", circumstanceJson);
     }
 
-    private Map<String, Object> addRecipe(EntropyRecipe recipe) {
+    private Map<String, Object> exportRecipe(EntropyRecipe recipe) {
         return Map.of(
                 "mode", recipe.getMode().name().toLowerCase(Locale.ROOT));
     }
 
-    private Map<String, Object> addRecipe(MatterCannonAmmo recipe) {
+    private Map<String, Object> exportRecipe(MatterCannonAmmo recipe) {
         return Map.of(
                 "ammo", recipe.getAmmo(),
                 "damage", MatterCannonItem.getDamageFromPenetration(recipe.getWeight()));
     }
 
-    private Map<String, Object> addRecipe(ChargerRecipe recipe) {
+    private Map<String, Object> exportRecipe(ChargerRecipe recipe) {
         return Map.of(
                 "resultItem", recipe.getResultItem(),
                 "ingredient", recipe.getIngredient());
+    }
+
+    private Object unwrapIngredient(Optional<Ingredient> ingredient) {
+        return ingredient.isPresent() ? ingredient.get() : List.of();
     }
 }

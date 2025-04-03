@@ -53,7 +53,7 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
                 ItemStack item = ItemStack.EMPTY;
                 if (opt != null) {
                     var itemTag = opt.getCompound("item" + x).orElse(null);
-                    if (itemTag != null) {
+                    if (itemTag != null && !itemTag.isEmpty()) {
                         item = ItemStack.parse(registries, itemTag).orElse(ItemStack.EMPTY);
                     }
                 }
