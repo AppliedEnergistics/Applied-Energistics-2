@@ -204,9 +204,14 @@ public abstract class AppEngBase implements AppEng {
                 RecipeType.CRAFTING,
                 RecipeType.STONECUTTING,
                 RecipeType.SMITHING,
-                RecipeType.SMELTING
-
-        );
+                RecipeType.SMELTING,
+                // For GuideME
+                AERecipeTypes.INSCRIBER,
+                AERecipeTypes.TRANSFORM,
+                AERecipeTypes.CHARGER,
+                AERecipeTypes.ENTROPY,
+                AERecipeTypes.MATTER_CANNON_AMMO,
+                AERecipeTypes.QUARTZ_CUTTING);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
