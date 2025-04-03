@@ -53,6 +53,7 @@ import appeng.core.definitions.AEBlocks;
 
 public class QnbFormedModel implements DynamicBlockStateModel {
     private static final ResourceLocation MODEL_RING = AppEng.makeId("block/quantum_ring");
+    private static final ResourceLocation MODEL_LINK = AppEng.makeId("block/quantum_link");
 
     private static final Material TEXTURE_LINK = new Material(TextureAtlas.LOCATION_BLOCKS,
             AppEng.makeId("block/quantum_link"));
@@ -77,7 +78,8 @@ public class QnbFormedModel implements DynamicBlockStateModel {
     private static final float CENTER_POWERED_RENDER_MIN = -0.01f;
     private static final float CENTER_POWERED_RENDER_MAX = 16.01f;
 
-    private final SimpleModelWrapper baseModel;
+    private final SimpleModelWrapper unformedRing;
+    private final SimpleModelWrapper unformedLink;
 
     private final Block linkBlock;
 
@@ -88,10 +90,12 @@ public class QnbFormedModel implements DynamicBlockStateModel {
     private final TextureAtlasSprite lightTexture;
     private final TextureAtlasSprite lightCornerTexture;
 
-    public QnbFormedModel(SimpleModelWrapper baseModel, SpriteGetter bakedTextureGetter) {
+    public QnbFormedModel(SimpleModelWrapper unformedRing, SimpleModelWrapper unformedLink,
+            SpriteGetter bakedTextureGetter) {
+        this.unformedLink = unformedLink;
         ModelDebugName debugName = QnbFormedModel.class::toString;
 
-        this.baseModel = baseModel;
+        this.unformedRing = unformedRing;
         this.linkTexture = bakedTextureGetter.get(TEXTURE_LINK, debugName);
         this.ringTexture = bakedTextureGetter.get(TEXTURE_RING, debugName);
         this.glassCableTexture = bakedTextureGetter.get(TEXTURE_CABLE_GLASS, debugName);
@@ -108,7 +112,11 @@ public class QnbFormedModel implements DynamicBlockStateModel {
         var formedState = modelData.get(QuantumBridgeBlockEntity.FORMED_STATE);
 
         if (formedState == null) {
-            parts.add(baseModel);
+            if (state.is(AEBlocks.QUANTUM_LINK.block())) {
+                parts.add(unformedLink);
+            } else {
+                parts.add(unformedRing);
+            }
             return;
         }
 
@@ -220,7 +228,7 @@ public class QnbFormedModel implements DynamicBlockStateModel {
 
     @Override
     public TextureAtlasSprite particleIcon() {
-        return this.baseModel.particleIcon();
+        return this.unformedRing.particleIcon();
     }
 
     public record Unbaked() implements CustomUnbakedBlockStateModel {
@@ -230,13 +238,15 @@ public class QnbFormedModel implements DynamicBlockStateModel {
         @Override
         public BlockStateModel bake(ModelBaker baker) {
             var ring = SimpleModelWrapper.bake(baker, MODEL_RING, BlockModelRotation.X0_Y0);
+            var link = SimpleModelWrapper.bake(baker, MODEL_LINK, BlockModelRotation.X0_Y0);
 
-            return new QnbFormedModel(ring, baker.sprites());
+            return new QnbFormedModel(ring, link, baker.sprites());
         }
 
         @Override
         public void resolveDependencies(Resolver resolver) {
             resolver.markDependency(MODEL_RING);
+            resolver.markDependency(MODEL_LINK);
         }
 
         @Override

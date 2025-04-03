@@ -104,6 +104,7 @@ public abstract class QuantumBaseBlock extends AEBaseEntityBlock<QuantumBridgeBl
         var bridge = this.getBlockEntity(level, pos);
         if (bridge != null) {
             bridge.updateMultiBlock(neighborPos);
+            bridge.requestModelDataUpdate(); // Adjacency is encoded in model data
         }
 
         return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);

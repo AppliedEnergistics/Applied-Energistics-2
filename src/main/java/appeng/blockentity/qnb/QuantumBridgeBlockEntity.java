@@ -226,7 +226,7 @@ public class QuantumBridgeBlockEntity extends AENetworkedInvBlockEntity
         return (this.constructed & this.getCorner()) == this.getCorner() && this.constructed != -1;
     }
 
-    public EnumSet<Direction> getAdjacentQuantumBridges() {
+    public Set<Direction> getAdjacentQuantumBridges() {
         var set = EnumSet.noneOf(Direction.class);
 
         if (level != null) {
@@ -299,8 +299,6 @@ public class QuantumBridgeBlockEntity extends AENetworkedInvBlockEntity
 
     @Override
     public ModelData getModelData() {
-        // FIXME must trigger model data updates
-
         return ModelData.builder()
                 .with(FORMED_STATE, new QnbFormedState(getAdjacentQuantumBridges(), isCorner(), isPowered()))
                 .build();
