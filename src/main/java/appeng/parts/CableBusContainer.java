@@ -69,7 +69,6 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.block.networking.CableBusRenderState;
 import appeng.block.networking.CableCoreType;
-import appeng.block.networking.FacadeRenderState;
 import appeng.block.networking.PartRenderState;
 import appeng.core.AELog;
 import appeng.facade.FacadeContainer;
@@ -960,12 +959,8 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         }
 
         // Determine attachments and facades
-        for (var side : Direction.values()) {
-            final FacadeRenderState facadeState = this.getFacadeRenderState(side);
-
-            if (facadeState != null) {
-                renderState.getFacades().put(side, facadeState);
-            }
+        for (var side : IPart.ATTACHMENT_POINTS) {
+            renderState.setFacade(side, getFacadeRenderState(side));
 
             var part = this.getPart(side);
 
@@ -1000,18 +995,13 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return renderState;
     }
 
-    private FacadeRenderState getFacadeRenderState(Direction side) {
+    @Nullable
+    private BlockState getFacadeRenderState(Direction side) {
         // Store the "masqueraded" itemstack for the given side, if there is a facade
-        final IFacadePart facade = this.storage.getFacade(side);
+        var facade = this.storage.getFacade(side);
 
         if (facade != null) {
-            final BlockState blockState = facade.getBlockState();
-
-            Level level = getBlockEntity().getLevel();
-            if (blockState != null && level != null) {
-                return new FacadeRenderState(blockState,
-                        !facade.getBlockState().isSolidRender());
-            }
+            return facade.getBlockState();
         }
 
         return null;

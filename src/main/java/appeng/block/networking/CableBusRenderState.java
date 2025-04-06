@@ -18,19 +18,20 @@
 
 package appeng.block.networking;
 
+import appeng.api.util.AECableType;
+import appeng.api.util.AEColor;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.model.data.ModelProperty;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.model.data.ModelProperty;
-
-import appeng.api.util.AECableType;
-import appeng.api.util.AEColor;
 
 /**
  * This class captures the entire rendering state needed for a cable bus and transports it to the rendering thread for
@@ -73,7 +74,18 @@ public class CableBusRenderState {
     private final EnumMap<Direction, Integer> attachmentConnections = new EnumMap<>(Direction.class);
 
     // Contains the facade to use for each side that has a facade attached
-    private final EnumMap<Direction, FacadeRenderState> facades = new EnumMap<>(Direction.class);
+    @Nullable
+    private BlockState facadeDown;
+    @Nullable
+    private BlockState facadeUp;
+    @Nullable
+    private BlockState facadeNorth;
+    @Nullable
+    private BlockState facadeSouth;
+    @Nullable
+    private BlockState facadeWest;
+    @Nullable
+    private BlockState facadeEast;
 
     // Used for Facades.
     private BlockPos pos;
@@ -140,8 +152,26 @@ public class CableBusRenderState {
         return this.attachmentConnections;
     }
 
-    public EnumMap<Direction, FacadeRenderState> getFacades() {
-        return this.facades;
+    public BlockState getFacade(Direction side) {
+        return switch (side) {
+            case DOWN -> facadeDown;
+            case UP -> facadeUp;
+            case NORTH -> facadeNorth;
+            case SOUTH -> facadeSouth;
+            case WEST -> facadeWest;
+            case EAST -> facadeEast;
+        };
+    }
+
+    public void setFacade(Direction side, @Nullable BlockState state) {
+        switch (side) {
+            case DOWN -> facadeDown = state;
+            case UP -> facadeUp = state;
+            case NORTH -> facadeNorth = state;
+            case SOUTH -> facadeSouth = state;
+            case WEST -> facadeWest = state;
+            case EAST -> facadeEast = state;
+        };
     }
 
     public BlockPos getPos() {
@@ -166,13 +196,34 @@ public class CableBusRenderState {
                 && Objects.equals(cableBusAdjacent, that.cableBusAdjacent)
                 && Objects.equals(channelsOnSide, that.channelsOnSide) && Objects.equals(attachments, that.attachments)
                 && Objects.equals(attachmentConnections, that.attachmentConnections)
-                && Objects.equals(facades, that.facades) && Objects.equals(pos, that.pos)
+                && facadeDown == that.facadeDown
+                && facadeUp == that.facadeUp
+                && facadeNorth == that.facadeNorth
+                && facadeSouth == that.facadeSouth
+                && facadeWest == that.facadeWest
+                && facadeEast == that.facadeEast
+                && Objects.equals(pos, that.pos)
                 && Objects.equals(boundingBoxes, that.boundingBoxes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(cableType, coreType, cableColor, connectionTypes, cableBusAdjacent, channelsOnSide,
-                attachments, attachmentConnections, facades, pos, boundingBoxes);
+        return Objects.hash(
+                cableType,
+                coreType,
+                cableColor,
+                connectionTypes,
+                cableBusAdjacent,
+                channelsOnSide,
+                attachments,
+                attachmentConnections,
+                facadeDown,
+                facadeUp,
+                facadeNorth,
+                facadeSouth,
+                facadeWest,
+                facadeWest,
+                pos,
+                boundingBoxes);
     }
 }

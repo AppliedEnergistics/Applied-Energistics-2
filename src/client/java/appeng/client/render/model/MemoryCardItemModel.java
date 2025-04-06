@@ -9,6 +9,7 @@ import com.google.common.cache.LoadingCache;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.client.renderer.Sheets;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -69,7 +70,10 @@ public class MemoryCardItemModel implements ItemModel {
         baseModel.applyToLayer(baseLayer, displayContext);
 
         var colors = stack.getOrDefault(AEComponents.MEMORY_CARD_COLORS, MemoryCardColors.DEFAULT);
-        renderState.newLayer().prepareQuadList().addAll(hashModelCache.getUnchecked(colors));
+        var colorLayer = renderState.newLayer();
+        colorLayer.setRenderType(Sheets.translucentItemSheet());
+        colorLayer.setTransform(baseModel.renderProperties().transforms().getTransform(displayContext));
+        colorLayer.prepareQuadList().addAll(hashModelCache.getUnchecked(colors));
     }
 
     private static List<BakedQuad> buildColorQuads(TextureAtlasSprite texture, MemoryCardColors colors) {

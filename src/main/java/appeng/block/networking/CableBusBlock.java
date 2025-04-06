@@ -359,20 +359,22 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
             modelData = renderView.getModelData(pos);
         }
 
-        CableBusRenderState cableBusRenderState = modelData.get(CableBusRenderState.PROPERTY);
+        var cableBusRenderState = modelData.get(CableBusRenderState.PROPERTY);
         if (cableBusRenderState != null) {
             var renderingFacadeDir = RENDERING_FACADE_DIRECTION.get();
-            var facades = cableBusRenderState.getFacades();
 
             if (side.getOpposite() != renderingFacadeDir) {
-                var facadeState = facades.get(side);
+                var facadeState = cableBusRenderState.getFacade(side);
                 if (facadeState != null) {
-                    return facadeState.sourceBlock();
+                    return facadeState;
                 }
             }
 
-            if (renderingFacadeDir != null && facades.containsKey(renderingFacadeDir)) {
-                return facades.get(renderingFacadeDir).sourceBlock();
+            if (renderingFacadeDir != null) {
+                var facadeState = cableBusRenderState.getFacade(renderingFacadeDir);
+                if (facadeState != null) {
+                    return facadeState;
+                }
             }
         }
         return state;

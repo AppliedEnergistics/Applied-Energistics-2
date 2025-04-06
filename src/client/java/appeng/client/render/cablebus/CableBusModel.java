@@ -95,12 +95,6 @@ public class CableBusModel implements DynamicBlockStateModel {
             Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH // EAST
     };
 
-    // TODO: now that we're storing the level anyway, might as well query it
-    private static final ModelProperty<FacadeModelData> FACADE_DATA = new ModelProperty<>();
-
-    private record FacadeModelData(EnumMap<Direction, ModelData> facadeData, BlockAndTintGetter level) {
-    }
-
     private final LoadingCache<CableBusRenderState, SimpleModelWrapper> cableModelCache;
 
     private final CableBuilder cableBuilder;
@@ -130,29 +124,6 @@ public class CableBusModel implements DynamicBlockStateModel {
                         return createCableModel(renderState);
                     }
                 });
-    }
-
-    private ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData data) {
-        CableBusRenderState renderState = data.get(CableBusRenderState.PROPERTY);
-        if (renderState == null || renderState.getFacades().isEmpty()) {
-            return data;
-        }
-
-        var dispatcher = Minecraft.getInstance().getBlockRenderer();
-
-        EnumMap<Direction, ModelData> facadeModelData = new EnumMap<>(Direction.class);
-        for (var entry : renderState.getFacades().entrySet()) {
-            var side = entry.getKey();
-            CableBusBlock.RENDERING_FACADE_DIRECTION.set(side);
-            try {
-                var blockState = entry.getValue().sourceBlock();
-                var model = dispatcher.getBlockModel(blockState);
-                // TODO facadeModelData.put(side, model.getModelData(level, pos, blockState, data));
-            } finally {
-                CableBusBlock.RENDERING_FACADE_DIRECTION.remove();
-            }
-        }
-        return data.derive().with(FACADE_DATA, new FacadeModelData(facadeModelData, level)).build();
     }
 
     @Override
@@ -196,11 +167,11 @@ public class CableBusModel implements DynamicBlockStateModel {
                     parts);
         }
 
-        FacadeModelData facadeData = data.get(FACADE_DATA);
-        if (facadeData != null) {
-            this.facadeBuilder.collectFacadeParts(renderState, () -> random, facadeData.level, facadeData.facadeData,
-                    parts::add);
-        }
+        this.facadeBuilder.collectFacadeParts(
+                renderState,
+                level,
+                parts::add
+        );
     }
 
     @Override

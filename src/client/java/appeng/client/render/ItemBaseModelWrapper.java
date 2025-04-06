@@ -1,10 +1,7 @@
 package appeng.client.render;
 
-import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.item.ModelRenderProperties;
@@ -13,6 +10,9 @@ import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.neoforged.neoforge.client.model.NeoForgeModelProperties;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public record ItemBaseModelWrapper(
         List<BakedQuad> quads,
@@ -33,10 +33,12 @@ public record ItemBaseModelWrapper(
     }
 
     public void applyToLayer(ItemStackRenderState.LayerRenderState layer, ItemDisplayContext context) {
-        // renderProperties.applyToLayer(layer, context);
+        renderProperties.applyToLayer(layer, context);
         layer.prepareQuadList().addAll(quads);
         if (renderType != null) {
             layer.setRenderType(renderType);
+        } else {
+            layer.setRenderType(Sheets.translucentItemSheet());
         }
     }
 }

@@ -18,8 +18,6 @@
 
 package appeng.client.render.cablebus;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -28,6 +26,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.FluidState;
+import net.neoforged.neoforge.model.data.ModelData;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This is used to retrieve the ExtendedState of a block for facade rendering. It fakes the block at BlockPos provided
