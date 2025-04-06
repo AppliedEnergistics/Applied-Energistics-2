@@ -34,8 +34,8 @@ import appeng.server.services.compass.ServerCompassService;
  */
 public final class CompassManager {
     public static final CompassManager INSTANCE = new CompassManager();
-    private static final int REFRESH_CACHE_AFTER = 30000;
-    private static final int EXPIRE_CACHE_AFTER = 60000;
+    private static final int REFRESH_CACHE_AFTER = 5000;
+    private static final int EXPIRE_CACHE_AFTER = 10000;
     private final Long2ObjectOpenHashMap<CachedResult> requests = new Long2ObjectOpenHashMap<>();
 
     private CompassManager() {

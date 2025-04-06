@@ -201,7 +201,7 @@
   "chat.ae2.ClickToShowDetails": "Click to show details",
   "chat.ae2.ClickToTeleport": "Click to teleport into plot",
   "chat.ae2.CommunicationError": "Error Communicating with Network.",
-  "chat.ae2.CompassTestSection": "Section [y=%d-%d] %d: %b",
+  "chat.ae2.CompassTestSection": "Section [y=%s-%s] %s: %s",
   "chat.ae2.CraftingCpuBusy": "This crafting CPU is busy!",
   "chat.ae2.DeviceNotLinked": "Device is not linked.",
   "chat.ae2.DeviceNotPowered": "Device is low on power.",

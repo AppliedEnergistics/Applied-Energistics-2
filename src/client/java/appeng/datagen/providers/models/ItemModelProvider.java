@@ -1,5 +1,7 @@
 package appeng.datagen.providers.models;
 
+import java.util.List;
+
 import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -9,6 +11,7 @@ import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.renderer.item.CompositeModel;
 import net.minecraft.client.renderer.item.EmptyModel;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.resources.ResourceLocation;
@@ -40,7 +43,10 @@ public class ItemModelProvider extends ModelSubProvider {
         flatSingleLayer(AEItems.MISSING_CONTENT, "minecraft:item/barrier");
 
         builtInItemModel(AEItems.FACADE, new FacadeItemModel.Unbaked());
-        builtInItemModel(AEItems.METEORITE_COMPASS, new MeteoriteCompassModel.Unbaked());
+        builtInItemModel(AEItems.METEORITE_COMPASS, new CompositeModel.Unbaked(
+                List.of(
+                        ItemModelUtils.plainModel(makeId("item/meteorite_compass_base")),
+                        new MeteoriteCompassModel.Unbaked())));
 
         flatSingleLayer(AEItems.ADVANCED_CARD, "item/advanced_card");
         flatSingleLayer(AEItems.VOID_CARD, "item/card_void");

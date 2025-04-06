@@ -21,36 +21,33 @@ package appeng.client.render.model;
 import java.util.Objects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import org.joml.Vector2f;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.model.data.ModelProperty;
+import net.neoforged.neoforge.client.model.QuadTransformers;
 
 import appeng.client.render.ItemBaseModelWrapper;
 import appeng.core.AppEng;
 import appeng.hooks.CompassManager;
-import appeng.thirdparty.fabric.MutableQuadView;
-import appeng.thirdparty.fabric.RenderContext;
 
 /**
  * This baked model combines the quads of a compass base and the quads of a compass pointer, which will be rotated
@@ -58,23 +55,14 @@ import appeng.thirdparty.fabric.RenderContext;
  */
 public class MeteoriteCompassModel implements ItemModel {
 
-    private static final ResourceLocation MODEL_BASE = ResourceLocation.parse(
-            "ae2:item/meteorite_compass_base");
-
     private static final ResourceLocation MODEL_POINTER = ResourceLocation.parse(
             "ae2:item/meteorite_compass_pointer");
-
-    // Rotation is expressed as radians
-    public static final ModelProperty<Float> ROTATION = new ModelProperty<>();
-
-    private final ItemBaseModelWrapper base;
 
     private final ItemBaseModelWrapper pointer;
 
     private final RotatedPointerRenderer rotatedPointerRenderer;
 
-    public MeteoriteCompassModel(ItemBaseModelWrapper base, ItemBaseModelWrapper pointer) {
-        this.base = base;
+    public MeteoriteCompassModel(ItemBaseModelWrapper pointer) {
         this.pointer = pointer;
         this.rotatedPointerRenderer = new RotatedPointerRenderer(pointer);
     }
@@ -82,119 +70,95 @@ public class MeteoriteCompassModel implements ItemModel {
     @Override
     public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver itemModelResolver,
             ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
-
-        base.applyToLayer(renderState.newLayer(), displayContext);
-
-        float rotation;
+        Float target = null;
         if (level != null && entity != null) {
-            rotation = getAnimatedRotation(entity.position(), true, 0);
-        } else {
-            rotation = getAnimatedRotation(null, false, 0);
+            target = getAnimatedRotation(entity.position(), entity.getViewVector(0f));
         }
 
-        renderState.newLayer().setupSpecialModel(rotatedPointerRenderer, rotation);
+        var pointerLayer = renderState.newLayer();
+        pointerLayer.setTransform(pointer.renderProperties().transforms().getTransform(displayContext));
+        pointerLayer.setupSpecialModel(rotatedPointerRenderer, target);
 
     }
 
     /**
      * Gets the effective, animated rotation for the compass given the current position of the compass.
      */
-    public static float getAnimatedRotation(@Nullable Vec3 pos, boolean prefetch, float playerRotation) {
+    public static Float getAnimatedRotation(Vec3 pos, Vec3 viewVector) {
 
         // Only query for a meteor position if we know our own position
-        if (pos != null) {
-            var ourChunkPos = new ChunkPos(BlockPos.containing(pos));
-            var closestMeteorite = CompassManager.INSTANCE.getClosestMeteorite(ourChunkPos, prefetch);
+        var ourChunkPos = new ChunkPos(BlockPos.containing(pos));
+        var closestMeteorite = CompassManager.INSTANCE.getClosestMeteorite(ourChunkPos, true);
 
-            // No close meteorite was found -> spin slowly
-            if (closestMeteorite == null) {
-                long timeMillis = System.currentTimeMillis();
-                // .5 seconds per full rotation
-                timeMillis %= 500;
-                return timeMillis / 500.f * (float) Math.PI * 2;
-            } else {
-                var dx = pos.x - closestMeteorite.getX();
-                var dz = pos.z - closestMeteorite.getZ();
-                var distanceSq = dx * dx + dz * dz;
-                if (distanceSq > 6 * 6) {
-                    var x = closestMeteorite.getX();
-                    var z = closestMeteorite.getZ();
-                    return (float) rad(pos.x(), pos.z(), x, z) + playerRotation;
-                }
+        // No close meteorite was found -> spin slowly
+        if (closestMeteorite != null) {
+            var dx = pos.x - closestMeteorite.getX();
+            var dz = pos.z - closestMeteorite.getZ();
+            var distanceSq = dx * dx + dz * dz;
+            if (distanceSq <= 6 * 6) {
+                return getFastSpinningRotation(); // We're on it
             }
-        }
 
+            // Calculate the angle on the 2D plane based on the entities look direction
+            var lookVector = new Vector2f((float) viewVector.x, (float) viewVector.z);
+            var dirVector = new Vector2f(
+                    (float) (closestMeteorite.getX() - pos.x),
+                    (float) (closestMeteorite.getZ() - pos.z));
+            return dirVector.angle(lookVector);
+        } else {
+            return getSlowSpinningRotation();
+        }
+    }
+
+    private static float getSlowSpinningRotation() {
         long timeMillis = System.currentTimeMillis();
         // 3 seconds per full rotation
         timeMillis %= 3000;
         return timeMillis / 3000.f * (float) Math.PI * 2;
     }
 
-    private static double rad(double ax, double az, double bx, double bz) {
-        var up = bz - az;
-        var side = bx - ax;
-
-        return Math.atan2(-up, side) - Math.PI / 2.0;
+    private static float getFastSpinningRotation() {
+        long timeMillis = System.currentTimeMillis();
+        // .5 seconds per full rotation
+        timeMillis %= 500;
+        return timeMillis / 500.f * (float) Math.PI * 2;
     }
 
     private record RotatedPointerRenderer(ItemBaseModelWrapper pointer) implements SpecialModelRenderer<Float> {
         @Override
-        public void render(@Nullable Float rotation, ItemDisplayContext displayContext, PoseStack poseStack,
-                MultiBufferSource bufferSource, int packedLight, int packedOverlay, boolean hasFoilType) {
-
-            // In the pointer model, it is pointing towards z+
-            // Apply the camera and item transform to determine where in world coordinates it is now pointing
-            var pointerNormal = poseStack.last().transformNormal(0, 0, 1, new Vector3f());
-            pointerNormal.y = 0; // Project onto x/z plane
-            pointerNormal.normalize();
-
-            // The angle around Y that the pointer is rotated just due to the current camera transform
-            var d = Mth.atan2(pointerNormal.z, pointerNormal.x) - Mth.atan2(1, 0);
-
-            // GUI obviously will not include the players view rotation
-            if (displayContext == ItemDisplayContext.GUI) {
-                if (Minecraft.getInstance() != null && Minecraft.getInstance().player != null) {
-                    var player = Minecraft.getInstance().player;
-                    float offRads = (float) (player.getYRot() / 180.0f * (float) Math.PI + Math.PI);
-                    d += offRads;
-                }
+        public void render(@Nullable Float target,
+                ItemDisplayContext displayContext,
+                PoseStack poseStack,
+                MultiBufferSource bufferSource,
+                int packedLight,
+                int packedOverlay,
+                boolean hasFoilType) {
+            if (target == null) {
+                target = getSlowSpinningRotation();
             }
 
-            float effectiveRotation = Objects.requireNonNullElse(rotation, 0.0f) + (float) d;
+            // PI/4 is 45° to correct for the pointer pointing to the "left" (positive Z in the model)
+            // and not "up"
+            var quaternion = new Quaternionf().rotationY((float) (target - Math.PI / 4));
+            var transformation = new Matrix4f();
+            transformation.rotateAround(quaternion, 0.5f, 0.5f, 0.5f);
 
-            // This is used to render a compass pointing in a specific direction when being
-            // held in hand
-            // Set up the rotation around the Y-axis for the pointer
-            RenderContext.QuadTransform transform = quad -> {
-                Quaternionf quaternion = new Quaternionf().rotationY(effectiveRotation);
-                Vector3f pos = new Vector3f();
-                for (int i = 0; i < 4; i++) {
-                    quad.copyPos(i, pos);
-                    pos.add(-0.5f, -0.5f, -0.5f);
-                    pos.rotate(quaternion);
-                    pos.add(0.5f, 0.5f, 0.5f);
-                    quad.pos(i, pos);
-                }
-                return true;
-            };
+            var transformer = QuadTransformers.applying(new Transformation(transformation));
 
             // Pre-compute the quad count to avoid list resizes
             // We'll add the pointer as "sideless" to the item rendering when state is null
-            var buffer = bufferSource.getBuffer(RenderType.solid());
-
+            var buffer = bufferSource
+                    .getBuffer(Objects.requireNonNullElse(pointer.renderType(), Sheets.translucentItemSheet()));
             var pose = poseStack.last();
-            var quadView = MutableQuadView.getInstance();
-            for (BakedQuad bakedQuad : this.pointer.quads()) {
-                quadView.fromVanilla(bakedQuad, null);
-                transform.transform(quadView);
-
-                buffer.putBulkData(pose, quadView.toBlockBakedQuad(), 1f, 1f, 1f, 1f, packedLight, packedOverlay);
+            for (var bakedQuad : this.pointer.quads()) {
+                bakedQuad = transformer.process(bakedQuad);
+                buffer.putBulkData(pose, bakedQuad, 1f, 1f, 1f, 1f, packedLight, packedOverlay);
             }
         }
 
         @Override
         public Float extractArgument(ItemStack stack) {
-            return 0f;
+            return null;
         }
     }
 
@@ -204,13 +168,13 @@ public class MeteoriteCompassModel implements ItemModel {
 
         @Override
         public ItemModel bake(BakingContext context) {
-            var baseModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), MODEL_BASE);
             var pointerModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), MODEL_POINTER);
-            return new MeteoriteCompassModel(baseModel, pointerModel);
+            return new MeteoriteCompassModel(pointerModel);
         }
 
         @Override
         public void resolveDependencies(Resolver resolver) {
+            resolver.markDependency(MODEL_POINTER);
         }
 
         @Override

@@ -33,7 +33,7 @@ public record ItemBaseModelWrapper(
     }
 
     public void applyToLayer(ItemStackRenderState.LayerRenderState layer, ItemDisplayContext context) {
-        renderProperties.applyToLayer(layer, context);
+        // renderProperties.applyToLayer(layer, context);
         layer.prepareQuadList().addAll(quads);
         if (renderType != null) {
             layer.setRenderType(renderType);

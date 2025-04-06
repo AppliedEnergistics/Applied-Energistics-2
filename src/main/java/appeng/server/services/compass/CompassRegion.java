@@ -18,7 +18,6 @@
 
 package appeng.server.services.compass;
 
-import java.nio.ByteBuffer;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +30,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.Util;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
@@ -40,27 +40,25 @@ import net.minecraft.world.level.saveddata.SavedDataType;
  */
 final class CompassRegion extends SavedData {
     // Helper used to record it in the codec
-    private record Section(int index, ByteBuffer bits) {
+    private record Section(int index, BitSet bits) {
     }
 
     private static final Codec<Section> SECTION_CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.INT.fieldOf("index").forGetter(Section::index),
-            Codec.BYTE_BUFFER.fieldOf("index").forGetter(Section::bits)).apply(builder, Section::new));
-
-    private static final Codec<CompassRegion> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            SECTION_CODEC.listOf().fieldOf("sections").forGetter(CompassRegion::sections))
-            .apply(builder, CompassRegion::new));
+            ExtraCodecs.BIT_SET.fieldOf("index").forGetter(Section::bits)).apply(builder, Section::new));
 
     private List<Section> sections() {
         return sections.entrySet().stream().map(
-                entry -> new Section(entry.getKey(), ByteBuffer.wrap(entry.getValue().toByteArray()))).toList();
+                entry -> new Section(entry.getKey(), entry.getValue())).toList();
     }
 
     private static final BiFunction<Integer, Integer, SavedDataType<CompassRegion>> TYPE = Util
             .memoize((regionX, regionZ) -> new SavedDataType<>(
                     "ae2_compass_" + regionX + "_" + regionZ,
-                    CompassRegion::new,
-                    CODEC));
+                    () -> new CompassRegion(regionX, regionZ),
+                    RecordCodecBuilder.create(builder -> builder.group(
+                            SECTION_CODEC.listOf().fieldOf("sections").forGetter(CompassRegion::sections))
+                            .apply(builder, sections -> new CompassRegion(regionX, regionZ, sections)))));
 
     /**
      * The number of chunks that get saved in a region on each axis.
@@ -69,30 +67,48 @@ final class CompassRegion extends SavedData {
 
     private static final int BITMAP_LENGTH = CHUNKS_PER_REGION * CHUNKS_PER_REGION;
 
+    private final int regionX;
+    private final int regionZ;
+
     // Key is the section index, see ChunkAccess.getSections()
     private final Map<Integer, BitSet> sections = new HashMap<>();
 
-    private CompassRegion() {
+    private CompassRegion(int regionX, int regionZ) {
+        this.regionX = regionX;
+        this.regionZ = regionZ;
     }
 
-    private CompassRegion(List<Section> sections) {
+    private CompassRegion(int regionX, int regionZ, List<Section> sections) {
+        this.regionX = regionX;
+        this.regionZ = regionZ;
         for (var section : sections) {
-            this.sections.put(section.index(), BitSet.valueOf(section.bits()));
+            this.sections.put(section.index(), section.bits());
         }
     }
 
     /**
-     * Retrieve the compass region that serves the given chunk position.
+     * Retrieve the compass region that contains the given chunk position.
      */
     public static CompassRegion get(ServerLevel level, ChunkPos chunkPos) {
-        Objects.requireNonNull(level, "level");
         Objects.requireNonNull(chunkPos, "chunkPos");
 
-        var regionX = chunkPos.x / CHUNKS_PER_REGION;
-        var regionZ = chunkPos.z / CHUNKS_PER_REGION;
+        return get(level, chunkPos.x, chunkPos.z);
+    }
 
-        return level.getDataStorage().computeIfAbsent(
-                TYPE.apply(regionX, regionZ));
+    /**
+     * Retrieve the compass region that contains the given chunk position.
+     */
+    public static CompassRegion get(ServerLevel level, int cx, int cz) {
+        Objects.requireNonNull(level, "level");
+
+        var regionX = Math.floorDiv(cx, CHUNKS_PER_REGION);
+        var regionZ = Math.floorDiv(cz, CHUNKS_PER_REGION);
+
+        return level.getDataStorage().computeIfAbsent(TYPE.apply(regionX, regionZ));
+    }
+
+    static boolean hasCompassTarget(ServerLevel level, int cx, int cz) {
+        return get(level, cx, cz).hasCompassTarget(cx, cz);
     }
 
     boolean hasCompassTarget(int cx, int cz) {
@@ -141,9 +157,14 @@ final class CompassRegion extends SavedData {
         }
     }
 
-    private static int getBitmapIndex(int cx, int cz) {
-        cx &= CHUNKS_PER_REGION - 1;
-        cz &= CHUNKS_PER_REGION - 1;
+    private int getBitmapIndex(int cx, int cz) {
+        cx -= regionX * CHUNKS_PER_REGION;
+        cz -= regionZ * CHUNKS_PER_REGION;
+        if (cx < 0 || cx >= CHUNKS_PER_REGION
+                || cz < 0 || cz >= CHUNKS_PER_REGION) {
+            throw new IllegalArgumentException(
+                    "cx=" + cx + ", cz=" + cz + " is out of range for compass region " + regionX + ", " + regionZ);
+        }
         return cx + cz * CHUNKS_PER_REGION;
     }
 

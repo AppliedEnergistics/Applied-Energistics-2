@@ -53,8 +53,6 @@ import appeng.api.client.StorageCellModels;
 import appeng.block.storage.DriveModelData;
 import appeng.client.model.SpinnableVariant;
 import appeng.core.AppEng;
-import appeng.thirdparty.fabric.MutableQuadView;
-import appeng.thirdparty.fabric.RenderContext;
 
 public class DriveModel implements DynamicBlockStateModel {
     private static final Logger LOG = LoggerFactory.getLogger(DriveModel.class);
@@ -157,49 +155,8 @@ public class DriveModel implements DynamicBlockStateModel {
         return models != null ? models[bayIndex] : defaultCellModels[bayIndex];
     }
 
-    private RenderContext.QuadTransform[] buildBayTransforms(Transformation rotation) {
-        RenderContext.QuadTransform[] result = new RenderContext.QuadTransform[5 * 2];
-
-        for (int row = 0; row < 5; row++) {
-            for (int col = 0; col < 2; col++) {
-
-                Vector3f translation = new Vector3f();
-                getSlotOrigin(row, col, translation);
-                rotation.getLeftRotation().transform(translation);
-
-                result[getBayIndex(row, col)] = new QuadTranslator(translation.x(), translation.y(),
-                        translation.z());
-            }
-        }
-
-        return result;
-    }
-
     private static int getBayIndex(int row, int col) {
         return row * 2 + col;
-    }
-
-    private static class QuadTranslator implements RenderContext.QuadTransform {
-        private final float x;
-        private final float y;
-        private final float z;
-
-        public QuadTranslator(float x, float y, float z) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        @Override
-        public boolean transform(MutableQuadView quad) {
-            Vector3f target = new Vector3f();
-            for (int i = 0; i < 4; i++) {
-                quad.copyPos(i, target);
-                target.add(x, y, z);
-                quad.pos(i, target);
-            }
-            return true;
-        }
     }
 
     public record Unbaked(SpinnableVariant variant) implements CustomUnbakedBlockStateModel {

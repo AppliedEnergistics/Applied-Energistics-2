@@ -67,7 +67,7 @@ public enum PlayerMessages implements LocalizationEnum {
     TestWorldNotInSuperflat("A test world can only be set up in a Superflat world!"),
     TestWorldSetupComplete("Test world setup completed in %s"),
     TestWorldSetupFailed("Setting up the test world failed: %s"),
-    CompassTestSection("Section [y=%d-%d] %d: %b"),
+    CompassTestSection("Section [y=%s-%s] %s: %s"),
     isNowLocked("Monitor is now Locked."),
     isNowUnlocked("Monitor is now Unlocked."),
     OnlyEmptyCellsCanBeDisassembled("Only empty storage cells can be disassembled."),
