@@ -37,7 +37,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
@@ -56,13 +55,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.model.data.ModelData;
-import net.neoforged.neoforge.model.data.ModelProperty;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.block.networking.CableBusBlock;
 import appeng.block.networking.CableBusRenderState;
 import appeng.block.networking.CableCoreType;
 import appeng.blockentity.AEModelData;
@@ -170,8 +167,7 @@ public class CableBusModel implements DynamicBlockStateModel {
         this.facadeBuilder.collectFacadeParts(
                 renderState,
                 level,
-                parts::add
-        );
+                parts::add);
     }
 
     @Override

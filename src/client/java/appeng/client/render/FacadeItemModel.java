@@ -18,26 +18,43 @@
 
 package appeng.client.render;
 
-import appeng.client.render.cablebus.FacadeBuilder;
-import appeng.core.AppEng;
-import appeng.items.parts.FacadeItem;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvableModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.EmptyBlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.RenderTypeHelper;
 import net.neoforged.neoforge.common.util.ItemStackMap;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Map;
+import appeng.api.implementations.items.IFacadeItem;
+import appeng.client.render.cablebus.FacadeBuilder;
+import appeng.core.AppEng;
+import appeng.items.parts.FacadeItem;
+import appeng.thirdparty.fabric.ModelHelper;
 
 /**
  * The model class for facades. Since facades wrap existing models, they don't declare any dependencies here other than
@@ -61,7 +78,7 @@ public class FacadeItemModel implements ItemModel {
 
     @Override
     public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver itemModelResolver,
-                       ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
+            ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
 
         if (!(stack.getItem() instanceof FacadeItem itemFacade)) {
             missingItemModel.update(renderState, stack, itemModelResolver, displayContext, level, entity, seed);
@@ -75,14 +92,82 @@ public class FacadeItemModel implements ItemModel {
         }
 
         // This is the facade stem
-        baseModel.applyToLayer(renderState.newLayer(), displayContext);
+        // baseModel.applyToLayer(renderState.newLayer(), displayContext);
 
-        // This is the actual layer showing the facade itself
-        var facadeLayers = facadeBuilder.getFacadeItemLayers(facadeBlockState);
-        for (var facadeLayer : facadeLayers) {
-            var layer = renderState.newLayer();
-            layer.setRenderType(facadeLayer.renderType());
-            layer.prepareQuadList().addAll(facadeLayer.quads());
+        var facadeLayer = renderState.newLayer();
+        facadeLayer.setTransform(baseModel.renderProperties().transforms().getTransform(displayContext));
+        facadeLayer.setupSpecialModel(new FacadeSpecialRender(), facadeBlockState);
+    }
+
+    public class FacadeSpecialRender implements SpecialModelRenderer<BlockState> {
+        @Override
+        public void render(@Nullable BlockState blockState,
+                ItemDisplayContext displayContext,
+                PoseStack poseStack,
+                MultiBufferSource bufferSource,
+                int packedLight,
+                int packedOverlay,
+                boolean hasFoilType) {
+            if (blockState == null) {
+                return;
+            }
+
+            // This is the actual layer showing the facade itself
+            var blockModelParts = new ArrayList<BlockModelPart>();
+            facadeBuilder.collectFacadePartsInternal(
+                    false,
+                    direction -> direction == Direction.NORTH ? blockState : null,
+                    EmptyBlockAndTintGetter.INSTANCE,
+                    List.of(),
+                    Set.of(),
+                    BlockPos.ZERO,
+                    blockModelParts::add);
+
+            var pose = poseStack.last();
+            float[] brightness = new float[4];
+            var lightmap = new int[] {
+                    packedLight,
+                    packedLight,
+                    packedLight,
+                    packedLight,
+            };
+            for (var blockModelPart : blockModelParts) {
+                var renderType = blockModelPart.getRenderType(blockState);
+                if (renderType.getChunkLayerId() != -1) {
+                    renderType = RenderTypeHelper.getEntityRenderType(renderType);
+                }
+                var buffer = bufferSource.getBuffer(renderType);
+                for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
+                    var cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
+                    for (var quad : blockModelPart.getQuads(cullFace)) {
+                        var shade = (quad.shade() && quad.direction() != null) ? getShade(quad.direction()) : 1f;
+                        brightness[0] = shade;
+                        brightness[1] = shade;
+                        brightness[2] = shade;
+                        brightness[3] = shade;
+                        buffer.putBulkData(
+                                pose, quad, brightness, 1f, 1f, 1f, 1f, lightmap, packedOverlay, false);
+                    }
+                }
+            }
+        }
+
+        private float getShade(Direction side) {
+            return switch (side) {
+                case DOWN -> 0.5F;
+                case NORTH, SOUTH -> 0.8F;
+                case WEST, EAST -> 0.6F;
+                default -> 1.0F;
+            };
+        }
+
+        @Override
+        public @Nullable BlockState extractArgument(ItemStack itemStack) {
+            if (itemStack.getItem() instanceof IFacadeItem facadeItem) {
+                return facadeItem.getTextureBlockState(itemStack);
+            } else {
+                return null;
+            }
         }
     }
 

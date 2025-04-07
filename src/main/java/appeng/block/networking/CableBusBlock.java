@@ -351,7 +351,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     public BlockState getAppearance(BlockState state, BlockAndTintGetter renderView, BlockPos pos, Direction side,
             @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         ModelData modelData;
-        if (renderView instanceof ServerLevel serverLevel) {
+        if (renderView instanceof ServerLevel) {
             // We're on the server, use BE directly
             BlockEntity be = renderView.getBlockEntity(pos);
             modelData = be != null ? be.getModelData() : ModelData.EMPTY;
