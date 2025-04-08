@@ -99,13 +99,13 @@ public class CraftingFx extends TextureSheetParticle {
         float minV = this.getV0();
         float maxV = this.getV1();
         int j = 15728880; // full brightness
-        buffer.addVertex(avector3f[0].x(), avector3f[0].y(), avector3f[0].z()).setUv(maxU, maxV)
+        buffer.addVertex(avector3f[3].x(), avector3f[3].y(), avector3f[0].z()).setUv(maxU, maxV)
                 .setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(j);
-        buffer.addVertex(avector3f[1].x(), avector3f[1].y(), avector3f[1].z()).setUv(maxU, minV)
+        buffer.addVertex(avector3f[2].x(), avector3f[2].y(), avector3f[1].z()).setUv(maxU, minV)
                 .setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(j);
-        buffer.addVertex(avector3f[2].x(), avector3f[2].y(), avector3f[2].z()).setUv(minU, minV)
+        buffer.addVertex(avector3f[1].x(), avector3f[1].y(), avector3f[2].z()).setUv(minU, minV)
                 .setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(j);
-        buffer.addVertex(avector3f[3].x(), avector3f[3].y(), avector3f[3].z()).setUv(minU, maxV)
+        buffer.addVertex(avector3f[0].x(), avector3f[0].y(), avector3f[3].z()).setUv(minU, maxV)
                 .setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(j);
     }
 
