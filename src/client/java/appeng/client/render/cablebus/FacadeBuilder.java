@@ -304,7 +304,7 @@ public class FacadeBuilder {
 
                         @Override
                         public RenderType getRenderType(BlockState state) {
-                            return part.getRenderType(state);
+                            return part.getRenderType(blockState);
                         }
                     });
                 }

@@ -36,6 +36,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEDamageTypes;
+import appeng.datagen.providers.AE2ParticleDescriptionProvider;
 import appeng.datagen.providers.advancements.AdvancementGenerator;
 import appeng.datagen.providers.localization.LocalizationProvider;
 import appeng.datagen.providers.loot.AE2LootTableProvider;
@@ -94,6 +95,7 @@ public class AE2DataGenerators {
         // Misc
         pack.addProvider(packOutput -> new AdvancementProvider(packOutput, registries, List.of(
                 new AdvancementGenerator(localization))));
+        pack.addProvider(AE2ParticleDescriptionProvider::new);
 
         // Recipes
         pack.addProvider(bindRegistries(AE2RecipeProvider.Runner::new, registries));

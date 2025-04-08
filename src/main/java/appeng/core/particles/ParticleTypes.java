@@ -20,6 +20,7 @@ package appeng.core.particles;
 
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -30,7 +31,17 @@ public final class ParticleTypes {
     private ParticleTypes() {
     }
 
-    public static final SimpleParticleType CRAFTING = new SimpleParticleType(false);
+    public static final ParticleType<ItemParticleOption> CRAFTING = new ParticleType<>(false) {
+        @Override
+        public MapCodec<ItemParticleOption> codec() {
+            return ItemParticleOption.codec(this);
+        }
+
+        @Override
+        public StreamCodec<? super RegistryFriendlyByteBuf, ItemParticleOption> streamCodec() {
+            return ItemParticleOption.streamCodec(this);
+        }
+    };
     public static final ParticleType<EnergyParticleData> ENERGY = new ParticleType<>(false) {
         @Override
         public MapCodec<EnergyParticleData> codec() {

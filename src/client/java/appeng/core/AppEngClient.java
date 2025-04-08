@@ -125,6 +125,7 @@ import appeng.client.model.PartModels;
 import appeng.client.model.PlanePartModel;
 import appeng.client.model.SpatialPylonModel;
 import appeng.client.model.StatusIndicatorPartModel;
+import appeng.client.render.AEColorItemTintSource;
 import appeng.client.render.AERenderPipelines;
 import appeng.client.render.ColorableBlockEntityBlockColor;
 import appeng.client.render.FacadeItemModel;
@@ -132,7 +133,7 @@ import appeng.client.render.StaticBlockColor;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.cablebus.CableBusModel;
 import appeng.client.render.crafting.CraftingCubeModel;
-import appeng.client.render.effects.CraftingFx;
+import appeng.client.render.effects.CraftingParticle;
 import appeng.client.render.effects.EnergyFx;
 import appeng.client.render.effects.LightningArcFX;
 import appeng.client.render.effects.LightningFX;
@@ -685,7 +686,7 @@ public class AppEngClient extends AppEngBase {
     }
 
     public void registerParticleFactories(RegisterParticleProvidersEvent event) {
-        event.registerSpriteSet(ParticleTypes.CRAFTING, CraftingFx.Factory::new);
+        event.registerSpriteSet(ParticleTypes.CRAFTING, CraftingParticle.Factory::new);
         event.registerSpriteSet(ParticleTypes.ENERGY, EnergyFx.Factory::new);
         event.registerSpriteSet(ParticleTypes.LIGHTNING_ARC, LightningArcFX.Factory::new);
         event.registerSpriteSet(ParticleTypes.LIGHTNING, LightningFX.Factory::new);
@@ -700,7 +701,6 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerStandaloneModels(ModelEvent.RegisterStandalone event) {
-        event.register(MolecularAssemblerRenderer.LIGHTS_MODEL, StandaloneModelBaker.simpleModelWrapper());
         event.register(CrankRenderer.BASE_MODEL, StandaloneModelBaker.simpleModelWrapper());
         event.register(CrankRenderer.HANDLE_MODEL, StandaloneModelBaker.simpleModelWrapper());
 
@@ -731,6 +731,7 @@ public class AppEngClient extends AppEngBase {
     private void registerItemTintSources(RegisterColorHandlersEvent.ItemTintSources event) {
         event.register(PortableCellColorTintSource.ID, PortableCellColorTintSource.MAP_CODEC);
         event.register(StorageCellStateTintSource.ID, StorageCellStateTintSource.MAP_CODEC);
+        event.register(AEColorItemTintSource.ID, AEColorItemTintSource.MAP_CODEC);
     }
 
     public void registerBlockColors(RegisterColorHandlersEvent.Block event) {

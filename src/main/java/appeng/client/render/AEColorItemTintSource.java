@@ -25,25 +25,30 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColorVariant;
+import appeng.core.AppEng;
 
 /**
  * Returns the shades of a single AE color for tint indices 0, 1, and 2.
  */
-public record StaticItemColor(AEColor color, AEColorVariant variant) implements ItemTintSource {
-    public static final MapCodec<StaticItemColor> MAP_CODEC = RecordCodecBuilder.mapCodec(
+public record AEColorItemTintSource(AEColor color, AEColorVariant variant) implements ItemTintSource {
+    public static final ResourceLocation ID = AppEng.makeId("color");
+
+    public static final MapCodec<AEColorItemTintSource> MAP_CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder.group(
-                    AEColor.CODEC.fieldOf("color").forGetter(StaticItemColor::color),
-                    AEColorVariant.CODEC.fieldOf("variant").forGetter(StaticItemColor::variant))
-                    .apply(builder, StaticItemColor::new));
+                    AEColor.CODEC.fieldOf("color").forGetter(AEColorItemTintSource::color),
+                    AEColorVariant.CODEC.fieldOf("variant").forGetter(AEColorItemTintSource::variant))
+                    .apply(builder, AEColorItemTintSource::new));
 
     @Override
     public int calculate(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity) {
-        return this.color.getVariant(variant);
+        return ARGB.opaque(this.color.getVariant(variant));
     }
 
     @Override

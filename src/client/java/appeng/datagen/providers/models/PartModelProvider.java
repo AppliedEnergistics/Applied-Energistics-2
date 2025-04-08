@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
@@ -16,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 
 import appeng.api.util.AEColor;
+import appeng.api.util.AEColorVariant;
 import appeng.client.api.model.parts.StaticPartModel;
 import appeng.client.model.CableAnchorPartModel;
 import appeng.client.model.LevelEmitterPartModel;
@@ -23,9 +26,12 @@ import appeng.client.model.LockableMonitorPartModel;
 import appeng.client.model.P2PFrequencyPartModel;
 import appeng.client.model.PlanePartModel;
 import appeng.client.model.StatusIndicatorPartModel;
+import appeng.client.render.AEColorItemTintSource;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ColoredItemDefinition;
 import appeng.core.definitions.ItemDefinition;
+import appeng.items.parts.ColoredPartItem;
+import appeng.items.parts.PartItem;
 
 public class PartModelProvider extends ModelSubProvider {
 
@@ -43,54 +49,54 @@ public class PartModelProvider extends ModelSubProvider {
         registerP2PTunnels();
 
         partModels.staticModel(AEParts.QUARTZ_FIBER, makeId("part/quartz_fiber"));
-        itemModels.declareCustomModelItem(AEParts.QUARTZ_FIBER.asItem());
+        customPartItemModel(AEParts.QUARTZ_FIBER.asItem());
         partModels.composite(AEParts.TOGGLE_BUS,
                 new StaticPartModel.Unbaked(makeId("part/toggle_bus_base")),
                 partStatusIndicator(makeId("part/toggle_bus_status")));
-        itemModels.declareCustomModelItem(AEParts.TOGGLE_BUS.asItem());
+        customPartItemModel(AEParts.TOGGLE_BUS.asItem());
         partModels.composite(AEParts.INVERTED_TOGGLE_BUS,
                 new StaticPartModel.Unbaked(makeId("part/inverted_toggle_bus_base")),
                 partStatusIndicator(makeId("part/toggle_bus_status")));
-        itemModels.declareCustomModelItem(AEParts.INVERTED_TOGGLE_BUS.asItem());
+        customPartItemModel(AEParts.INVERTED_TOGGLE_BUS.asItem());
         partModels.accept(AEParts.CABLE_ANCHOR.asItem(), new CableAnchorPartModel.Unbaked(
                 makeId("part/cable_anchor"),
                 makeId("part/cable_anchor_short")));
         usePartModelAsItemModel(AEParts.CABLE_ANCHOR);
         partModels.composite(AEParts.MONITOR,
-                new StaticPartModel.Unbaked(makeId("part/display_base")),
+                new StaticPartModel.Unbaked(makeId("part/monitor_base")),
                 new StatusIndicatorPartModel.Unbaked(
                         makeId("part/monitor_bright_on"),
                         makeId("part/monitor_bright_off"),
                         makeId("part/monitor_bright_off")));
-        itemModels.declareCustomModelItem(AEParts.MONITOR.asItem());
+        customPartItemModel(AEParts.MONITOR.asItem());
         partModels.composite(AEParts.SEMI_DARK_MONITOR,
-                new StaticPartModel.Unbaked(makeId("part/display_base")),
+                new StaticPartModel.Unbaked(makeId("part/monitor_base")),
                 new StatusIndicatorPartModel.Unbaked(
                         makeId("part/monitor_medium_on"),
                         makeId("part/monitor_medium_off"),
                         makeId("part/monitor_medium_off")));
-        itemModels.declareCustomModelItem(AEParts.SEMI_DARK_MONITOR.asItem());
+        customPartItemModel(AEParts.SEMI_DARK_MONITOR.asItem());
         partModels.composite(AEParts.DARK_MONITOR,
-                new StaticPartModel.Unbaked(makeId("part/display_base")),
+                new StaticPartModel.Unbaked(makeId("part/monitor_base")),
                 new StatusIndicatorPartModel.Unbaked(
                         makeId("part/monitor_dark_on"),
                         makeId("part/monitor_dark_off"),
                         makeId("part/monitor_dark_off")));
-        itemModels.declareCustomModelItem(AEParts.DARK_MONITOR.asItem());
+        customPartItemModel(AEParts.DARK_MONITOR.asItem());
         partModels.composite(AEParts.STORAGE_BUS,
                 new StaticPartModel.Unbaked(makeId("part/storage_bus_base")),
                 partStatusIndicator(makeId("part/storage_bus")));
-        itemModels.declareCustomModelItem(AEParts.STORAGE_BUS.asItem());
+        customPartItemModel(AEParts.STORAGE_BUS.asItem());
         partModels.composite(AEParts.IMPORT_BUS,
                 new StaticPartModel.Unbaked(makeId("part/import_bus_base")),
                 partStatusIndicator(makeId("part/import_bus")));
-        itemModels.declareCustomModelItem(AEParts.IMPORT_BUS.asItem());
+        customPartItemModel(AEParts.IMPORT_BUS.asItem());
         partModels.composite(AEParts.EXPORT_BUS,
                 new StaticPartModel.Unbaked(makeId("part/export_bus_base")),
                 partStatusIndicator(makeId("part/export_bus")));
-        itemModels.declareCustomModelItem(AEParts.EXPORT_BUS.asItem());
+        customPartItemModel(AEParts.EXPORT_BUS.asItem());
         for (var part : List.of(AEParts.LEVEL_EMITTER, AEParts.ENERGY_LEVEL_EMITTER)) {
-            itemModels.declareCustomModelItem(part.asItem());
+            customPartItemModel(part.asItem());
             partModels.composite(
                     part,
                     new LevelEmitterPartModel.Unbaked(
@@ -106,7 +112,7 @@ public class PartModelProvider extends ModelSubProvider {
                         makeId("part/annihilation_plane"),
                         makeId("part/plane_sides"),
                         makeId("part/transition_plane_back")));
-        itemModels.declareCustomModelItem(AEParts.ANNIHILATION_PLANE.asItem());
+        customPartItemModel(AEParts.ANNIHILATION_PLANE.asItem());
         partModels.composite(
                 AEParts.FORMATION_PLANE,
                 partStatusIndicator(makeId("part/transition_plane")),
@@ -115,13 +121,13 @@ public class PartModelProvider extends ModelSubProvider {
                         makeId("part/formation_plane"),
                         makeId("part/plane_sides"),
                         makeId("part/transition_plane_back")));
-        itemModels.declareCustomModelItem(AEParts.FORMATION_PLANE.asItem());
+        customPartItemModel(AEParts.FORMATION_PLANE.asItem());
         terminal(AEParts.PATTERN_ENCODING_TERMINAL, makeId("part/pattern_encoding_terminal"));
-        itemModels.declareCustomModelItem(AEParts.PATTERN_ENCODING_TERMINAL.asItem());
+        customPartItemModel(AEParts.PATTERN_ENCODING_TERMINAL.asItem());
         terminal(AEParts.CRAFTING_TERMINAL, makeId("part/crafting_terminal"));
-        itemModels.declareCustomModelItem(AEParts.CRAFTING_TERMINAL.asItem());
+        customPartItemModel(AEParts.CRAFTING_TERMINAL.asItem());
         terminal(AEParts.TERMINAL, makeId("part/terminal"));
-        itemModels.declareCustomModelItem(AEParts.TERMINAL.asItem());
+        customPartItemModel(AEParts.TERMINAL.asItem());
         partModels.composite(AEParts.STORAGE_MONITOR,
                 new StaticPartModel.Unbaked(makeId("part/display_base")),
                 new LockableMonitorPartModel.Unbaked(
@@ -130,7 +136,7 @@ public class PartModelProvider extends ModelSubProvider {
                         makeId("part/storage_monitor_locked_off"),
                         makeId("part/storage_monitor_locked_on")),
                 partStatusIndicator(makeId("part/display_status")));
-        itemModels.declareCustomModelItem(AEParts.STORAGE_MONITOR.asItem());
+        customPartItemModel(AEParts.STORAGE_MONITOR.asItem());
         partModels.composite(AEParts.CONVERSION_MONITOR,
                 new StaticPartModel.Unbaked(makeId("part/display_base")),
                 new LockableMonitorPartModel.Unbaked(
@@ -139,19 +145,36 @@ public class PartModelProvider extends ModelSubProvider {
                         makeId("part/conversion_monitor_locked_off"),
                         makeId("part/conversion_monitor_locked_on")),
                 partStatusIndicator(makeId("part/display_status")));
-        itemModels.declareCustomModelItem(AEParts.CONVERSION_MONITOR.asItem());
+        customPartItemModel(AEParts.CONVERSION_MONITOR.asItem());
         partModels.composite(AEParts.PATTERN_PROVIDER,
                 new StaticPartModel.Unbaked(makeId("part/pattern_provider_base")),
                 partStatusIndicator(makeId("part/interface")));
-        itemModels.declareCustomModelItem(AEParts.PATTERN_PROVIDER.asItem());
+        customPartItemModel(AEParts.PATTERN_PROVIDER.asItem());
         partModels.composite(AEParts.INTERFACE,
                 new StaticPartModel.Unbaked(makeId("part/interface_base")),
                 partStatusIndicator(makeId("part/interface")));
-        itemModels.declareCustomModelItem(AEParts.INTERFACE.asItem());
+        customPartItemModel(AEParts.INTERFACE.asItem());
         terminal(AEParts.PATTERN_ACCESS_TERMINAL, makeId("part/pattern_access_terminal"));
-        itemModels.declareCustomModelItem(AEParts.PATTERN_ACCESS_TERMINAL.asItem());
+        customPartItemModel(AEParts.PATTERN_ACCESS_TERMINAL.asItem());
         partModels.staticModel(AEParts.ENERGY_ACCEPTOR, makeId("part/energy_acceptor"));
-        itemModels.declareCustomModelItem(AEParts.ENERGY_ACCEPTOR.asItem());
+        customPartItemModel(AEParts.ENERGY_ACCEPTOR.asItem());
+    }
+
+    private void customPartItemModel(PartItem<?> item) {
+        var color = AEColor.TRANSPARENT;
+        if (item instanceof ColoredPartItem<?> coloredPartItem) {
+            color = coloredPartItem.getColor();
+        }
+
+        itemModels.itemModelOutput.accept(
+                item.asItem(),
+                ItemModelUtils.tintedModel(
+                        ModelLocationUtils.getModelLocation(item),
+                        new Constant(-1),
+                        new AEColorItemTintSource(color, AEColorVariant.DARK),
+                        new AEColorItemTintSource(color, AEColorVariant.MEDIUM),
+                        new AEColorItemTintSource(color, AEColorVariant.BRIGHT),
+                        new AEColorItemTintSource(color, AEColorVariant.MEDIUM_BRIGHT)));
     }
 
     private static StatusIndicatorPartModel.Unbaked partStatusIndicator(ResourceLocation baseModel) {

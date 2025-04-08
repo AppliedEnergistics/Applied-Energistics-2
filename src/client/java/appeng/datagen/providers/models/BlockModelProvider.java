@@ -40,6 +40,7 @@ import net.neoforged.neoforge.client.model.generators.blockstate.CustomBlockStat
 import appeng.api.orientation.BlockOrientation;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.CraftingUnitType;
+import appeng.block.crafting.MolecularAssemblerBlock;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.misc.GrowthAcceleratorBlock;
 import appeng.block.misc.VibrationChamberBlock;
@@ -108,8 +109,6 @@ public class BlockModelProvider extends ModelSubProvider {
                 plainVariant(makeId("block/sky_stone_tank")));
         multiVariantGenerator(AEBlocks.TINY_TNT,
                 plainVariant(makeId("block/tiny_tnt")));
-        multiVariantGenerator(AEBlocks.MOLECULAR_ASSEMBLER,
-                plainVariant(makeId("block/molecular_assembler")));
 
         // Generate an empty block model for the crank, since the base model and shaft will be used by the dynamic
         // renderer
@@ -126,6 +125,7 @@ public class BlockModelProvider extends ModelSubProvider {
         ioPort();
         spatialIoPort();
         spatialPylon();
+        molecularAssembler();
 
         blockModels.createParticleOnlyBlock(AEBlocks.SKY_STONE_CHEST.block(), AEBlocks.SKY_STONE_BLOCK.block());
         itemModels.declareCustomModelItem(AEBlocks.SKY_STONE_CHEST.asItem());
@@ -317,6 +317,13 @@ public class BlockModelProvider extends ModelSubProvider {
                         ModelTemplates.CUBE_ALL.create(AEBlocks.SPATIAL_PYLON.asItem(),
                                 TextureMapping.cube(AppEng.makeId("item/spatial_pylon")), modelOutput)));
         builtInModel(AEBlocks.SPATIAL_PYLON, new SpatialPylonModel.Unbaked(), true);
+    }
+
+    private void molecularAssembler() {
+        multiPartGenerator(AEBlocks.MOLECULAR_ASSEMBLER)
+                .with(plainVariant(makeId("block/molecular_assembler")))
+                .with(new ConditionBuilder().term(MolecularAssemblerBlock.POWERED, true),
+                        plainVariant(makeId("block/molecular_assembler_lights")));
     }
 
     private void meChest() {

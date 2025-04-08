@@ -22,34 +22,25 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.RandomSource;
+import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 
 import appeng.blockentity.crafting.MolecularAssemblerAnimationStatus;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
-import appeng.core.AppEng;
+import appeng.core.AEConfig;
 import appeng.core.particles.ParticleTypes;
 
 /**
  * Renders the item currently being crafted by the molecular assembler, as well as the light strip when it's powered.
  */
 public class MolecularAssemblerRenderer implements BlockEntityRenderer<MolecularAssemblerBlockEntity> {
-
-    public static final StandaloneModelKey<SimpleModelWrapper> LIGHTS_MODEL = new StandaloneModelKey<>(
-            AppEng.makeId("block/molecular_assembler_lights"));
-
-    private final RandomSource particleRandom = RandomSource.create();
-
     public MolecularAssemblerRenderer(BlockEntityRendererProvider.Context context) {
     }
 
@@ -70,24 +61,6 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
 
             renderStatus(molecularAssembler, ms, bufferIn, combinedLightIn, status);
         }
-
-        if (molecularAssembler.isPowered()) {
-            renderPowerLight(ms, bufferIn, combinedLightIn, combinedOverlayIn);
-        }
-    }
-
-    private void renderPowerLight(PoseStack ms, MultiBufferSource bufferIn, int packedLight,
-            int packedOverlay) {
-        Minecraft minecraft = Minecraft.getInstance();
-        var lightsModel = minecraft.getModelManager().getStandaloneModel(LIGHTS_MODEL);
-        // tripwire layer has the shader-property we're looking for:
-        // alpha testing
-        // translucency
-        var pose = ms.last();
-        var buffer = bufferIn.getBuffer(RenderType.tripwire());
-        for (var quad : lightsModel.quads().getAll()) {
-            buffer.putBulkData(pose, quad, 1f, 1f, 1f, 1f, packedLight, packedOverlay);
-        }
     }
 
     private void renderStatus(MolecularAssemblerBlockEntity be, PoseStack ms,
@@ -96,19 +69,21 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
         double centerY = be.getBlockPos().getY() + 0.5f;
         double centerZ = be.getBlockPos().getZ() + 0.5f;
 
-        var level = be.getLevel();
+        ItemStack is = status.getIs();
 
         // Spawn crafting FX that fly towards the block's center
-        Minecraft minecraft = Minecraft.getInstance();
-        if (status.getTicksUntilParticles() <= 0) {
-            status.setTicksUntilParticles(4);
+        var level = be.getLevel();
+        var minecraft = Minecraft.getInstance();
+        if (AEConfig.instance().isEnableEffects()) {
+            if (status.getTicksUntilParticles() <= 0) {
+                status.setTicksUntilParticles(4);
 
-            for (int x = 0; x < (int) Math.ceil(status.getSpeed() / 5.0); x++) {
-                level.addParticle(ParticleTypes.CRAFTING, false, true, centerX, centerY, centerZ, 0, 0, 0);
+                for (int x = 0; x < (int) Math.ceil(status.getSpeed() / 5.0); x++) {
+                    level.addParticle(new ItemParticleOption(ParticleTypes.CRAFTING, is), centerX, centerY, centerZ, 0,
+                            0, 0);
+                }
             }
         }
-
-        ItemStack is = status.getIs();
 
         ItemRenderer itemRenderer = minecraft.getItemRenderer();
         ms.pushPose();

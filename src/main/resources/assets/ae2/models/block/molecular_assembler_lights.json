@@ -4,7 +4,7 @@
     "all": "ae2:block/molecular_assembler_lights",
     "particle": "#all"
   },
-  "render_type": "cutout",
+  "render_type": "tripwire",
   "elements": [
     {
       "from": [2, 2, 2],

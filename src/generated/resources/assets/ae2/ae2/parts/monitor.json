@@ -4,7 +4,7 @@
     "models": [
       {
         "type": "ae2:model",
-        "model": "ae2:part/display_base"
+        "model": "ae2:part/monitor_base"
       },
       {
         "type": "ae2:status_indicator",
