@@ -29,7 +29,14 @@ import appeng.hooks.ticking.TickHandler;
  * Keeps track of the crafting patterns in the network, and related information.
  */
 public class NetworkCraftingProviders {
+    /**
+     * Tracks the provider state for each grid node that provides auto-crafting to the network.
+     */
     private final Map<IGridNode, ProviderState> craftingProviders = new HashMap<>();
+    /**
+     * Tracks state for crafting providers that may be provided without a grid node, such as by other grid services.
+     */
+    private final List<ProviderState> globalProviders = new ArrayList<>();
     private final Map<IPatternDetails, CraftingProviderList> craftingMethods = new HashMap<>();
     private final Map<AEKey, PatternsForKey> craftableItems = new HashMap<>();
     /**
@@ -56,11 +63,36 @@ public class NetworkCraftingProviders {
         }
     }
 
+    public void addProvider(ICraftingProvider provider) {
+        for (var state : globalProviders) {
+            if (state.provider == provider) {
+                throw new IllegalArgumentException("Attempted to add duplicate global crafting provider" + provider);
+            }
+        }
+
+        var state = new ProviderState(provider);
+        state.mount(this);
+        globalProviders.add(state);
+        setLastModifiedOnTick();
+    }
+
     public void removeProvider(IGridNode node) {
         var provider = node.getService(ICraftingProvider.class);
         if (provider != null) {
             var state = craftingProviders.remove(node);
             if (state != null) {
+                state.unmount(this);
+                setLastModifiedOnTick();
+            }
+        }
+    }
+
+    public void removeProvider(ICraftingProvider provider) {
+        var it = this.globalProviders.iterator();
+        while (it.hasNext()) {
+            var state = it.next();
+            if (state.provider == provider) {
+                it.remove();
                 state.unmount(this);
                 setLastModifiedOnTick();
             }

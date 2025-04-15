@@ -321,6 +321,22 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
         this.craftingProviders.addProvider(node);
     }
 
+    @Override
+    public void addGlobalCraftingProvider(ICraftingProvider cc) {
+        this.craftingProviders.addProvider(cc);
+    }
+
+    @Override
+    public void removeGlobalCraftingProvider(ICraftingProvider cc) {
+        this.craftingProviders.removeProvider(cc);
+    }
+
+    @Override
+    public void refreshGlobalCraftingProvider(ICraftingProvider cc) {
+        this.craftingProviders.removeProvider(cc);
+        this.craftingProviders.addProvider(cc);
+    }
+
     @Nullable
     @Override
     public AEKey getFuzzyCraftable(AEKey whatToCraft, AEKeyFilter filter) {
