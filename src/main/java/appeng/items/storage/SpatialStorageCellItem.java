@@ -59,8 +59,8 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
             TooltipFlag advancedTooltips) {
-        int plotId = this.getAllocatedPlotId(stack);
-        if (plotId == -1) {
+        var plotInfo = stack.get(AEComponents.SPATIAL_PLOT_INFO);
+        if (plotInfo == null) {
             lines.add(Tooltips.of(GuiText.Unformatted).withStyle(ChatFormatting.ITALIC));
             lines.add(Tooltips.of(GuiText.SpatialCapacity, maxRegion, maxRegion, maxRegion));
             return;
@@ -68,14 +68,10 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
         // Add a serial number to allows players to keep different cells apart
         // Try to make this a little more flavorful.
-        String serialNumber = String.format(Locale.ROOT, "SP-%04d", plotId);
+        String serialNumber = String.format(Locale.ROOT, "SP-%04d", plotInfo.id());
+        var size = plotInfo.size();
         lines.add(Tooltips.of(GuiText.SerialNumber, serialNumber));
-
-        var plotInfo = stack.get(AEComponents.SPATIAL_PLOT_INFO);
-        if (plotInfo != null) {
-            var size = plotInfo.size();
-            lines.add(Tooltips.of(GuiText.StoredSize, size.getX(), size.getY(), size.getZ()));
-        }
+        lines.add(Tooltips.of(GuiText.StoredSize, size.getX(), size.getY(), size.getZ()));
     }
 
     @Override
