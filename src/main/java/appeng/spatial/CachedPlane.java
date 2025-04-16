@@ -203,7 +203,13 @@ public class CachedPlane {
                             }
 
                             srcSection.setBlockState(srcCol.x, SectionPos.sectionRelative(src_y), srcCol.z, dstState);
+                            level.onBlockStateChange(
+                                    new BlockPos(this.x_offset + x, src_y, this.z_offset + z), srcState,
+                                    dstState);
                             dstSection.setBlockState(dstCol.x, SectionPos.sectionRelative(dst_y), dstCol.z, srcState);
+                            dst.level.onBlockStateChange(
+                                    new BlockPos(dst.x_offset + x, dst_y, dst.z_offset + z), dstState,
+                                    srcState);
                         } else {
                             this.markForUpdate(this.x_offset + x, src_y, this.z_offset + z);
                             dst.markForUpdate(dst.x_offset + x, dst_y, dst.z_offset + z);
