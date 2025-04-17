@@ -208,7 +208,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     public void addGlobalStorageProvider(IStorageProvider provider) {
         for (var state : globalProviders) {
             if (state.provider == provider) {
-                throw new IllegalArgumentException("Attempted to add duplicate global storage provider" + provider);
+                throw new IllegalArgumentException("Duplicate storage provider registration for " + provider);
             }
         }
 

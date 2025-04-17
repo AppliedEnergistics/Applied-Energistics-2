@@ -66,7 +66,7 @@ public class NetworkCraftingProviders {
     public void addProvider(ICraftingProvider provider) {
         for (var state : globalProviders) {
             if (state.provider == provider) {
-                throw new IllegalArgumentException("Attempted to add duplicate global crafting provider" + provider);
+                throw new IllegalArgumentException("Duplicate crafting provider registration for " + provider);
             }
         }
 
