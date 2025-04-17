@@ -65,6 +65,30 @@ public interface ICraftingService extends IGridService {
     void refreshNodeCraftingProvider(IGridNode node);
 
     /**
+     * Adds a {@link ICraftingProvider} that is not associated with a specific {@link IGridNode }. This is for providing
+     * crafting patterns and auto-crafting with {@link IGridService}s, for example.
+     * <p/>
+     * THIS IS NOT FOR USE BY {@link IGridNode NODES} THAT PROVIDE THE {@link ICraftingProvider} SERVICE. Those are
+     * automatically handled by the crafting system.
+     *
+     * @param cc to-be-added crafting pattern provider
+     */
+    void addGlobalCraftingProvider(ICraftingProvider cc);
+
+    /**
+     * Removes a provider added with {@link #addGlobalCraftingProvider(ICraftingProvider)}.
+     */
+    void removeGlobalCraftingProvider(ICraftingProvider cc);
+
+    /**
+     * Refreshes the storage mounts provided by a global storage provider.
+     *
+     * @throws IllegalArgumentException If the given provider has not been {@link #addGlobalCraftingProvider
+     *                                  registered}.
+     */
+    void refreshGlobalCraftingProvider(ICraftingProvider provider);
+
+    /**
      * Important: Never mutate the passed or returned stacks.
      *
      * @return another fuzzy equals stack that can be crafted and matches the filter, or null if none exists

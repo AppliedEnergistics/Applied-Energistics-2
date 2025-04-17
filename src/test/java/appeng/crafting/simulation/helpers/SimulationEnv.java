@@ -31,6 +31,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CalculationStrategy;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingPlan;
+import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingSimulationRequester;
@@ -189,6 +190,21 @@ public class SimulationEnv {
 
             @Override
             public void refreshNodeCraftingProvider(IGridNode node) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void addGlobalCraftingProvider(ICraftingProvider cc) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void removeGlobalCraftingProvider(ICraftingProvider cc) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void refreshGlobalCraftingProvider(ICraftingProvider provider) {
                 throw new UnsupportedOperationException();
             }
         };

@@ -206,6 +206,12 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
     @Override
     public void addGlobalStorageProvider(IStorageProvider provider) {
+        for (var state : globalProviders) {
+            if (state.provider == provider) {
+                throw new IllegalArgumentException("Duplicate storage provider registration for " + provider);
+            }
+        }
+
         var state = new ProviderState(provider);
         this.globalProviders.add(state);
         state.mount();
@@ -241,7 +247,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
             }
         }
 
-        throw new IllegalArgumentException("The given node is not part of this grid or has no storage provider.");
+        throw new IllegalArgumentException("Storage provider " + provider + " is not part of this grid.");
     }
 
     @Override
