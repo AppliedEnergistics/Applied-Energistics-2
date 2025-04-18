@@ -615,7 +615,7 @@
   "gui.tooltips.ae2.LinkWirelessTerminal": "Прив'яжіть бездротовий термінал тут",
   "gui.tooltips.ae2.LockCraftingMode": "Заблокувати створення",
   "gui.tooltips.ae2.LockCraftingModeNone": "Ніколи",
-  "gui.tooltips.ae2.LockCraftingUntilRedstonePulse": "До отримання імпульсу червоного каменю",
+  "gui.tooltips.ae2.LockCraftingUntilRedstonePulse": "До отримання імпульсу редстоуну",
   "gui.tooltips.ae2.LockCraftingUntilResultReturned": "До отримання результату головного майстрування",
   "gui.tooltips.ae2.LockCraftingWhileRedstoneHigh": "З сигналом редстоуну",
   "gui.tooltips.ae2.LockCraftingWhileRedstoneLow": "Без сигналу редстоуну",
