@@ -20,13 +20,19 @@ package appeng.spatial;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ThreadedLevelLightEngine;
+import net.minecraft.world.entity.ai.village.poi.PoiManager;
+import net.minecraft.world.entity.ai.village.poi.PoiRecord;
+import net.minecraft.world.entity.ai.village.poi.PoiSection;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -64,6 +70,7 @@ public class CachedPlane {
     private final ServerLevel level;
     private final List<BlockPos> updates = new ArrayList<>();
     private final BlockState matrixBlockState;
+    private final List<PoiMoveRecord> poiMoveRecords = new ArrayList<>();
 
     public CachedPlane(ServerLevel level, int minX, int minY, int minZ, int maxX,
             int maxY, int maxZ) {
@@ -167,6 +174,25 @@ public class CachedPlane {
                         this.ticks.add(entry);
                     }
                 });
+
+                for (int cy = 0; cy < cy_size; ++cy) {
+                    Optional<PoiSection> poiSection = level.getPoiManager()
+                            .getOrLoad(SectionPos.of(c.getPos(), minCY + cy).asLong());
+                    if (poiSection.isEmpty())
+                        continue;
+                    List<PoiRecord> poiRecords = poiSection.get()
+                            .getRecords(poiType -> true, PoiManager.Occupancy.ANY).toList();
+                    poiRecords.forEach(poiRecord -> {
+                        var pos = poiRecord.getPos();
+                        if (pos.getX() >= minX && pos.getX() <= maxX && pos.getY() >= minY && pos.getY() <= maxY
+                                && pos.getZ() >= minZ && pos.getZ() <= maxZ) {
+                            this.poiMoveRecords.add(new PoiMoveRecord(
+                                    poiRecord.getPos().offset(-x_offset, -y_offset, -z_offset),
+                                    poiRecord.getPoiType()));
+                            poiSection.get().remove(poiRecord.getPos());
+                        }
+                    });
+                }
             }
         }
 
@@ -203,13 +229,7 @@ public class CachedPlane {
                             }
 
                             srcSection.setBlockState(srcCol.x, SectionPos.sectionRelative(src_y), srcCol.z, dstState);
-                            level.onBlockStateChange(
-                                    new BlockPos(this.x_offset + x, src_y, this.z_offset + z), srcState,
-                                    dstState);
                             dstSection.setBlockState(dstCol.x, SectionPos.sectionRelative(dst_y), dstCol.z, srcState);
-                            dst.level.onBlockStateChange(
-                                    new BlockPos(dst.x_offset + x, dst_y, dst.z_offset + z), dstState,
-                                    srcState);
                         } else {
                             this.markForUpdate(this.x_offset + x, src_y, this.z_offset + z);
                             dst.markForUpdate(dst.x_offset + x, dst_y, dst.z_offset + z);
@@ -244,6 +264,12 @@ public class CachedPlane {
                 var movedPos = entry.pos().offset(-dst.x_offset, -dst.y_offset, -dst.z_offset);
                 addTick(movedPos, entry);
             }
+
+            for (var record : this.poiMoveRecords)
+                dst.addPoi(record);
+
+            for (var record : dst.poiMoveRecords)
+                this.addPoi(record);
 
             startTime = System.nanoTime();
             this.updateChunks();
@@ -307,6 +333,11 @@ public class CachedPlane {
         } catch (Throwable e) {
             AELog.warn(e);
         }
+    }
+
+    private void addPoi(PoiMoveRecord record) {
+        level.getPoiManager().add(record.relativePos.offset(this.x_offset, this.y_offset, this.z_offset),
+                record.poiType);
     }
 
     private void attemptRecovery(int x, int y, int z, BlockEntityMoveRecord moveRecord, Column c) {
@@ -415,4 +446,8 @@ public class CachedPlane {
             BlockState state) {
     }
 
+    private record PoiMoveRecord(
+            BlockPos relativePos,
+            Holder<PoiType> poiType) {
+    }
 }
