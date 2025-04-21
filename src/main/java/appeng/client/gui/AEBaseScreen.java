@@ -60,6 +60,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import guideme.GuidesCommon;
 import guideme.PageAnchor;
 import guideme.color.SymbolicColor;
+import guideme.compiler.IdUtils;
 import guideme.document.DefaultStyles;
 import guideme.indices.ItemIndex;
 import guideme.style.ResolvedTextStyle;
@@ -1060,7 +1061,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 helpTopic = helpTopic.substring(0, sep);
             }
             try {
-                return new PageAnchor(AppEng.makeId(helpTopic), fragment);
+                return new PageAnchor(IdUtils.resolveId(helpTopic, AppEng.MOD_ID), fragment);
             } catch (Exception e) {
                 LOG.warn("Invalid helpTopic for screen {}: {}", this, helpTopic);
             }
