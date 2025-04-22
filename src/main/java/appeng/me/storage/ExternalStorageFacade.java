@@ -149,80 +149,78 @@ public abstract class ExternalStorageFacade implements MEStorage {
                 return 0;
             }
 
-            int remainingSize = Ints.saturatedCast(amount);
-
-            // Use this to gather the requested items
-            ItemStack gathered = ItemStack.EMPTY;
-
-            final boolean simulate = mode == Actionable.SIMULATE;
+            int totalExtracted = 0;
 
             for (int i = 0; i < handler.getSlots(); i++) {
-                ItemStack stackInInventorySlot = handler.getStackInSlot(i);
-
-                if (!itemKey.matches(stackInInventorySlot)) {
-                    continue;
-                }
-
-                ItemStack extracted;
-                int stackSizeCurrentSlot = stackInInventorySlot.getCount();
-                int remainingCurrentSlot = Math.min(remainingSize, stackSizeCurrentSlot);
-
-                // We have to loop here because according to the docs, the handler shouldn't return a stack with
-                // size > maxSize, even if we request more. So even if it returns a valid stack, it might have more
-                // stuff.
-                do {
-                    extracted = handler.extractItem(i, remainingCurrentSlot, simulate);
-                    if (!extracted.isEmpty()) {
-                        // In order to guard against broken IItemHandler implementations, we'll try to guess if the
-                        // returned
-                        // stack (especially in simulate mode) is the same that was returned by getStackInSlot. This is
-                        // obviously not a precise science, but it would catch the previous Forge bug:
-                        // https://github.com/MinecraftForge/MinecraftForge/pull/6580
-                        if (extracted == stackInInventorySlot) {
-                            extracted = extracted.copy();
-                        }
-
-                        if (extracted.getCount() > remainingCurrentSlot) {
-                            // Something broke. It should never return more than we requested...
-                            // We're going to silently eat the remainder
-                            AELog.warn(
-                                    "Mod that provided item handler %s is broken. Returned %s items while only requesting %d.",
-                                    handler.getClass().getName(), extracted.toString(), remainingCurrentSlot);
-                            extracted.setCount(remainingCurrentSlot);
-                        }
-
-                        // Heuristic for simulation: looping in case of simulations is pointless, since the state of the
-                        // underlying inventory does not change after a simulated extraction. To still support
-                        // inventories
-                        // that report stacks that are larger than maxStackSize, we use this heuristic
-                        if (simulate && extracted.getCount() == extracted.getMaxStackSize()
-                                && remainingCurrentSlot > extracted.getMaxStackSize()) {
-                            extracted.setCount(remainingCurrentSlot);
-                        }
-
-                        // We're just gonna use the first stack we get our hands on as the template for the rest.
-                        if (gathered.isEmpty()) {
-                            gathered = extracted;
-                        } else {
-                            gathered.grow(extracted.getCount());
-                        }
-                        remainingCurrentSlot -= extracted.getCount();
-                    }
-                } while (!simulate && !extracted.isEmpty() && remainingCurrentSlot > 0);
-
-                remainingSize -= stackSizeCurrentSlot - remainingCurrentSlot;
+                int extracted = extractFromHandler(handler, i, itemKey, amount - totalExtracted, mode);
+                totalExtracted += extracted;
 
                 // Done?
-                if (remainingSize <= 0) {
+                if (amount == totalExtracted) {
                     break;
                 }
             }
 
-            if (!gathered.isEmpty()) {
-                return gathered.getCount();
+            return totalExtracted;
+        }
+
+        /**
+         * Extracts as much as possible from a single slot of an item handler, ignoring the usual max stack size
+         * restriction.
+         */
+        private static int extractFromHandler(IItemHandler handler, int slot, AEItemKey itemKey, int maxExtract,
+                Actionable actionable) {
+            ItemStack stackInInventorySlot = handler.getStackInSlot(slot);
+            if (!itemKey.matches(stackInInventorySlot)) {
+                return 0;
             }
 
-            return 0;
+            return switch (actionable) {
+                case SIMULATE -> {
+                    int extracted = wrapHandlerExtract(handler, slot, maxExtract, true);
+                    // Heuristic for simulation: looping in case of simulations is pointless, since the state of the
+                    // underlying inventory does not change after a simulated extraction. To still support
+                    // inventories that report stacks that are larger than maxStackSize, we use this heuristic
+                    if (extracted == itemKey.getMaxStackSize() && maxExtract > itemKey.getMaxStackSize()) {
+                        yield maxExtract;
+                    } else {
+                        yield extracted;
+                    }
+                }
+                case MODULATE -> {
+                    // We have to loop here because according to the docs, the handler shouldn't return a stack with
+                    // size > maxSize, even if we request more. So even if it returns a valid stack, it might have more
+                    // stuff.
+                    int totalExtracted = 0;
+                    while (true) {
+                        int extracted = wrapHandlerExtract(handler, slot, maxExtract - totalExtracted, false);
+                        if (extracted > 0) {
+                            totalExtracted += extracted;
+                        } else {
+                            break;
+                        }
+                    }
+                    yield totalExtracted;
+                }
+            };
+        }
+
+        /**
+         * Guards {@link IItemHandler#extractItem(int, int, boolean)} to make sure that we don't extract more than
+         * requested.
+         */
+        private static int wrapHandlerExtract(IItemHandler handler, int slot, int maxExtract, boolean simulate) {
+            int extracted = handler.extractItem(slot, maxExtract, simulate).getCount();
+            if (extracted > maxExtract) {
+                // Something broke. It should never return more than we requested...
+                // We're going to silently eat the remainder
+                AELog.warn(
+                        "Mod that provided item handler %s is broken. Returned %d items while only requesting %d.",
+                        handler.getClass().getName(), extracted, maxExtract);
+                return maxExtract;
+            } else {
+                return extracted;
+            }
         }
 
         @Override
