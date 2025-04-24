@@ -116,12 +116,13 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         Direction side = context.getClickedFace();
         Player p = context.getPlayer();
 
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return InteractionResult.SUCCESS_SERVER;
-        }
+        var serverLevel = level instanceof ServerLevel ? (ServerLevel) level : null;
 
         boolean tryBoth = false;
         if (p == null) {
+            if (serverLevel == null) {
+                return InteractionResult.FAIL;
+            }
             p = Platform.getFakePlayer(serverLevel, null);
             // Fake players cannot crouch and we cannot communicate whether they want to heat or cool
             tryBoth = true;
@@ -139,7 +140,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             }
 
             // Delegate to the server from here on
-            if (!level.isClientSide() && !tryApplyEffect(serverLevel, item, pos, side, p, tryBoth)) {
+            if (serverLevel != null && !tryApplyEffect(serverLevel, item, pos, side, p, tryBoth)) {
                 return InteractionResult.FAIL;
             }
 
@@ -196,7 +197,8 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         return false;
     }
 
-    private boolean applyFlintAndSteelEffect(Level level, ItemStack item, BlockPos pos, Direction side, Player p) {
+    private boolean applyFlintAndSteelEffect(ServerLevel level, ItemStack item, BlockPos pos, Direction side,
+            Player p) {
         final BlockPos offsetPos = pos.relative(side);
         if (!p.mayUseItemAt(offsetPos, side, item)) {
             return false;

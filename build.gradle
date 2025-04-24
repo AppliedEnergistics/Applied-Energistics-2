@@ -244,6 +244,7 @@ static void publicApiIncludePatterns(PatternFilterable spec) {
     spec.exclude "**/*Internal.*"
     spec.exclude "**/*Internal\$*.*"
     spec.include "appeng/api/**"
+    spec.include "appeng/client/api/**"
 }
 
 tasks.named('javadoc', Javadoc) {

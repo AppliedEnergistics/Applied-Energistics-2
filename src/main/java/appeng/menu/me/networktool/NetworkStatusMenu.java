@@ -32,12 +32,13 @@ import appeng.core.network.clientbound.NetworkStatusPacket;
 import appeng.items.contents.NetworkToolMenuHost;
 import appeng.me.Grid;
 import appeng.menu.AEBaseMenu;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.server.subcommands.GridsCommand;
 
 public class NetworkStatusMenu extends AEBaseMenu {
 
-    private static final String ACTION_EXPORT_GRID = "export_grid";
+    private static final ClientActionKey<Void> ACTION_EXPORT_GRID = new ClientActionKey<>("export_grid");
 
     public static final MenuType<NetworkStatusMenu> NETWORK_TOOL_TYPE = MenuTypeBuilder
             .create(NetworkStatusMenu::new, NetworkToolMenuHost.class)

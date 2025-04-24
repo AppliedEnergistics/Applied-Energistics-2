@@ -19,7 +19,7 @@
     "push_direction=south": {
       "model": "ae2:block/pattern_provider_oriented",
       "x": 90,
-      "y": 90
+      "y": 180
     },
     "push_direction=up": {
       "model": "ae2:block/pattern_provider_oriented"
@@ -27,7 +27,7 @@
     "push_direction=west": {
       "model": "ae2:block/pattern_provider_oriented",
       "x": 90,
-      "y": 90
+      "y": 270
     }
   }
 }

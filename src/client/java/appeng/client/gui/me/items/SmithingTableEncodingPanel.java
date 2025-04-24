@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
 
 import appeng.api.config.ActionItems;
@@ -17,6 +19,7 @@ import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
+import appeng.crafting.RecipeAccess;
 import appeng.menu.SlotSemantics;
 import appeng.util.Icon;
 
@@ -82,15 +85,13 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
                 menu.getSmithingTableBaseSlot().getItem(),
                 menu.getSmithingTableAdditionSlot().getItem());
 
-        // TODO 1.21.4 var level = menu.getPlayer().level();
-        // TODO 1.21.4 var recipe = level.recipeAccess()
-        // TODO 1.21.4 .getRecipeFor(RecipeType.SMITHING, recipeInput, level)
-        // TODO 1.21.4 .orElse(null);
-        // TODO 1.21.4 if (recipe == null) {
-        // TODO 1.21.4 resultSlot.set(ItemStack.EMPTY);
-        // TODO 1.21.4 } else {
-        // TODO 1.21.4 resultSlot.set(recipe.value().assemble(recipeInput, level.registryAccess()));
-        // TODO 1.21.4 }
+        var level = menu.getPlayer().level();
+        var recipe = RecipeAccess.getRecipeFor(level, RecipeType.SMITHING, recipeInput);
+        if (recipe == null) {
+            resultSlot.set(ItemStack.EMPTY);
+        } else {
+            resultSlot.set(recipe.value().assemble(recipeInput, level.registryAccess()));
+        }
     }
 
     @Override

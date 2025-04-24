@@ -38,6 +38,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.util.IConfigManager;
 import appeng.core.definitions.AEItems;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.guisync.GuiSync;
 import appeng.parts.storagebus.StorageBusPart;
 
@@ -46,8 +47,8 @@ import appeng.parts.storagebus.StorageBusPart;
  */
 public class StorageBusMenu extends UpgradeableMenu<StorageBusPart> {
 
-    private static final String ACTION_CLEAR = "clear";
-    private static final String ACTION_PARTITION = "partition";
+    private static final ClientActionKey<Void> ACTION_CLEAR = new ClientActionKey<>("clear");
+    private static final ClientActionKey<Void> ACTION_PARTITION = new ClientActionKey<>("partition");
 
     public static final MenuType<StorageBusMenu> TYPE = MenuTypeBuilder
             .create(StorageBusMenu::new, StorageBusPart.class)

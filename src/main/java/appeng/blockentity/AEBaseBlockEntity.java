@@ -64,6 +64,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.common.util.FriendlyByteBufUtil;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.network.connection.ConnectionType;
 
@@ -211,12 +212,8 @@ public class AEBaseBlockEntity extends BlockEntity
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         var data = new CompoundTag();
-
-        var stream = new RegistryFriendlyByteBuf(Unpooled.buffer(), level.registryAccess());
-        this.writeToStream(stream);
-
-        stream.capacity(stream.readableBytes());
-        data.putByteArray("#upd", stream.array());
+        var updateData = FriendlyByteBufUtil.writeCustomData(this::writeToStream, level.registryAccess());
+        data.putByteArray("#upd", updateData);
         return data;
     }
 

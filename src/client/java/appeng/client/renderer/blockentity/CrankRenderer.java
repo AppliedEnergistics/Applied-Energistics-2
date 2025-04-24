@@ -1,21 +1,3 @@
-/*
- * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
- *
- * Applied Energistics 2 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Applied Energistics 2 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
- */
-
 package appeng.client.renderer.blockentity;
 
 import java.util.List;
@@ -44,8 +26,6 @@ import appeng.core.AppEng;
 @OnlyIn(Dist.CLIENT)
 public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {
 
-    public static final StandaloneModelKey<SimpleModelWrapper> BASE_MODEL = new StandaloneModelKey<>(
-            AppEng.makeId("block/crank_base"));
     public static final StandaloneModelKey<SimpleModelWrapper> HANDLE_MODEL = new StandaloneModelKey<>(
             AppEng.makeId("block/crank_handle"));
 
@@ -62,35 +42,17 @@ public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {
     public void render(CrankBlockEntity crank, float partialTick, PoseStack stack, MultiBufferSource buffers,
             int packedLight, int packedOverlay, Vec3 cameraPosition) {
 
-        var baseModel = Objects.requireNonNull(modelManager.getStandaloneModel(BASE_MODEL));
         var handleModel = Objects.requireNonNull(modelManager.getStandaloneModel(HANDLE_MODEL));
 
         var blockState = crank.getBlockState();
         var pos = crank.getBlockPos();
 
-        // Apply GL transformations relative to the center of the block:
-        // 1) Block orientation. The cranks top faces NORTH by default
-        // and 2) crank rotation
         stack.pushPose();
-        stack.translate(0.5, 0.5, 0.5);
-        stack.mulPose(BlockOrientation.get(crank).getQuaternion());
-        stack.translate(-0.5, -0.5, -0.5);
-
-        // Render the base model followed by the actual crank model
-        blockRenderer.getModelRenderer().tesselateBlock(
-                crank.getLevel(),
-                List.of(baseModel),
-                blockState,
-                pos,
-                stack,
-                buffers::getBuffer,
-                false,
-                packedOverlay);
-
-        // The unrotated cranks orientation is towards NORTH (negative Z axis)
-        stack.translate(0.5, 0.5, 0.5);
-        stack.mulPose(new Quaternionf().rotationZ(-Mth.DEG_TO_RAD * crank.getVisibleRotation()));
-        stack.translate(-0.5, -0.5, -0.5);
+        var rotation = new Quaternionf(BlockOrientation.get(crank).getQuaternion());
+        // The base model points "up" towards positive Y by default, although the unrotated state would be facing north
+        rotation.rotateX(Mth.DEG_TO_RAD * 270);
+        rotation.rotateY(-Mth.DEG_TO_RAD * crank.getVisibleRotation());
+        stack.rotateAround(rotation, 0.5f, 0.5f, 0.5f);
 
         blockRenderer.getModelRenderer().tesselateBlock(
                 crank.getLevel(),

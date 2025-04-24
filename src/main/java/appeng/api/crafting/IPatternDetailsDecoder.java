@@ -25,8 +25,8 @@ package appeng.api.crafting;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEItemKey;
 
@@ -38,13 +38,13 @@ public interface IPatternDetailsDecoder {
     boolean isEncodedPattern(ItemStack stack);
 
     @Nullable
-    IPatternDetails decodePattern(AEItemKey what, ServerLevel level);
+    IPatternDetails decodePattern(AEItemKey what, Level level);
 
     /**
-     * Convenience alternative to {@link #decodePattern(AEItemKey, ServerLevel)} that takes an ItemStack.
+     * Convenience alternative to {@link #decodePattern(AEItemKey, Level)} that takes an ItemStack.
      */
     @Nullable
-    default IPatternDetails decodePattern(ItemStack what, ServerLevel level) {
+    default IPatternDetails decodePattern(ItemStack what, Level level) {
         return decodePattern(AEItemKey.of(what), level);
     }
 }

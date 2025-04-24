@@ -48,8 +48,8 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
-import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
+import appeng.crafting.RecipeAccess;
 
 /**
  * Encodes patterns for the {@link net.minecraft.world.level.block.SmithingTableBlock}.
@@ -88,7 +88,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
 
         // Find recipe
         this.recipeId = encodedPattern.recipeId();
-        var holder = AppEng.instance().getRecipeById(level, RecipeType.SMITHING, recipeId);
+        var holder = RecipeAccess.byKey(level, RecipeType.SMITHING, recipeId);
         if (holder == null) {
             throw new IllegalStateException("Smithing pattern references unknown recipe " + recipeId);
         }
@@ -273,6 +273,9 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
     public PatternDetailsTooltip getTooltip(Level level, TooltipFlag flags) {
         var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_CRAFTS);
         tooltip.addInputsAndOutputs(this);
+        if (canSubstitute) {
+            tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
+        }
         if (flags.isAdvanced()) {
             tooltip.addRecipeId(recipeId);
         }

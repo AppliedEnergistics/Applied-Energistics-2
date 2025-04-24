@@ -50,8 +50,8 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
-import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
+import appeng.crafting.RecipeAccess;
 
 /**
  * Encodes patterns for the {@link net.minecraft.world.level.block.StonecutterBlock}.
@@ -89,7 +89,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
 
         // Find recipe
         this.recipeId = encodedPattern.recipeId();
-        var holder = AppEng.instance().getRecipeById(level, RecipeType.STONECUTTING, recipeId);
+        var holder = RecipeAccess.byKey(level, RecipeType.STONECUTTING, recipeId);
         if (holder == null) {
             throw new IllegalStateException("Stonecutting pattern references unknown recipe " + recipeId);
         }
@@ -146,6 +146,9 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     public PatternDetailsTooltip getTooltip(Level level, TooltipFlag flags) {
         var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_CRAFTS);
         tooltip.addInputsAndOutputs(this);
+        if (canSubstitute) {
+            tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
+        }
         if (flags.isAdvanced()) {
             tooltip.addRecipeId(recipeId);
         }

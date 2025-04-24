@@ -20,6 +20,7 @@ package appeng.menu.implementations;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -30,6 +31,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.util.IConfigManager;
 import appeng.core.definitions.AEItems;
 import appeng.menu.SlotSemantics;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.slot.FakeSlot;
 import appeng.parts.automation.StorageLevelEmitterPart;
 
@@ -38,7 +40,7 @@ import appeng.parts.automation.StorageLevelEmitterPart;
  */
 public class StorageLevelEmitterMenu extends UpgradeableMenu<StorageLevelEmitterPart> {
 
-    private static final String ACTION_SET_REPORTING_VALUE = "setReportingValue";
+    private static final ClientActionKey<Long> ACTION_SET_REPORTING_VALUE = new ClientActionKey<>("setReportingValue");
 
     public static final MenuType<StorageLevelEmitterMenu> TYPE = MenuTypeBuilder
             .create(StorageLevelEmitterMenu::new, StorageLevelEmitterPart.class)
@@ -58,7 +60,7 @@ public class StorageLevelEmitterMenu extends UpgradeableMenu<StorageLevelEmitter
             StorageLevelEmitterPart te) {
         super(menuType, id, ip, te);
 
-        registerClientAction(ACTION_SET_REPORTING_VALUE, Long.class, this::setValue);
+        registerClientAction(ACTION_SET_REPORTING_VALUE, ByteBufCodecs.LONG, this::setValue);
     }
 
     public long getCurrentValue() {

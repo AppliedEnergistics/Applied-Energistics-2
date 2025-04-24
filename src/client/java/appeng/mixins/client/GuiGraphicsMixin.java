@@ -28,7 +28,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import appeng.hooks.GuiGraphicsHooks;
+import appeng.client.hooks.GuiGraphicsHooks;
 
 /**
  * This mixin specifically targets rendering of items in the user interface to allow us to customize _only_ the UI

@@ -35,8 +35,6 @@ public final class FluidBlockRendering {
 
         var renderType = ItemBlockRenderTypes.getRenderLayer(fluidState);
 
-        // TODO 1.21.5 RenderSystem.disableDepthTest();
-
         var worldMatStack = RenderSystem.getModelViewStack();
         worldMatStack.pushMatrix();
         worldMatStack.mul(guiGraphics.pose().last().pose());

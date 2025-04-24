@@ -333,7 +333,7 @@ public class AEClientboundPacketHandler {
         }
     }
 
-    public void register(PakcetHandlerMap handlers) {
+    public void register(ClientsidePacketHandlers handlers) {
         handlers.register(GuiDataSyncPacket.TYPE, this::handleGuiDataSyncPacket);
         handlers.register(MatterCannonPacket.TYPE, this::handleMatterCannonPacket);
         handlers.register(SetLinkStatusPacket.TYPE, this::handleSetLinkStatusPacket);

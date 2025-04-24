@@ -20,8 +20,8 @@ package appeng.crafting.pattern;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.IPatternDetailsDecoder;
@@ -37,8 +37,8 @@ public class AEPatternDecoder implements IPatternDetailsDecoder {
 
     @Nullable
     @Override
-    public IPatternDetails decodePattern(AEItemKey what, ServerLevel level) {
-        if (level == null || what == null || !(what.getItem() instanceof EncodedPatternItem<?> encodedPatternItem)) {
+    public IPatternDetails decodePattern(AEItemKey what, Level level) {
+        if (what == null || !(what.getItem() instanceof EncodedPatternItem<?> encodedPatternItem)) {
             return null;
         }
 

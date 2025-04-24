@@ -128,16 +128,6 @@ public class DriveModel implements DynamicBlockStateModel {
         }
     }
 
-    // TODO 1.21.5 shuld be in the base model @Override
-    // TODO 1.21.5 shuld be in the base model public boolean useAmbientOcclusion() {
-    // TODO 1.21.5 shuld be in the base model // We have faces inside the chassis that are facing east, but should not
-    // receive
-    // TODO 1.21.5 shuld be in the base model // ambient occlusion from the east-side, but sadly this cannot be
-    // fine-tuned on
-    // TODO 1.21.5 shuld be in the base model // a face-by-face basis.
-    // TODO 1.21.5 shuld be in the base model return false;
-    // TODO 1.21.5 shuld be in the base model }
-
     @Override
     public TextureAtlasSprite particleIcon() {
         return baseModel.particleIcon();

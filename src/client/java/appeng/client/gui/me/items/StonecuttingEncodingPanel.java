@@ -12,7 +12,8 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.display.SlotDisplayContext;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.StonecutterRecipe;
 
 import appeng.client.Point;
 import appeng.client.gui.Tooltip;
@@ -72,14 +73,13 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
         var startIndex = scrollbar.getCurrentScroll() * COLS;
         var endIndex = startIndex + ROWS * COLS;
 
-        var selectedRecipeIdx = menu.getStonecuttingRecipeIndex();
-        var displayContext = SlotDisplayContext.fromLevel(screen.getMinecraft().level);
+        var selectedRecipe = menu.getStonecuttingRecipeId();
 
         for (int i = startIndex; i < endIndex && i < recipes.size(); ++i) {
             var slotBounds = getRecipeBounds(i - startIndex);
 
             var recipe = recipes.get(i);
-            boolean selected = i == selectedRecipeIdx;
+            boolean selected = selectedRecipe != null && selectedRecipe.equals(recipe.id());
 
             Blitter blitter = BG_SLOT;
             if (selected) {
@@ -88,10 +88,11 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
                 blitter = BG_SLOT_HOVER;
             }
 
-            var renderX = bounds.getX() + slotBounds.getX() - 7;
-            var renderY = bounds.getY() + slotBounds.getY() + 5;
+            var renderX = bounds.getX() + slotBounds.getX();
+            var renderY = bounds.getY() + slotBounds.getY();
             blitter.dest(renderX, renderY).blit(guiGraphics);
-            ItemStack resultItem = recipe.optionDisplay().resolveForFirstStack(displayContext);
+            ItemStack resultItem = recipe.value().result();
+
             if (selected || mouse.isIn(slotBounds)) {
                 guiGraphics.renderItem(resultItem, renderX + 2, renderY + 3);
                 guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 3);
@@ -104,9 +105,10 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
 
     @Override
     public boolean onMouseDown(Point mousePos, int button) {
-        var recipeIndexAt = getRecipeIndexAt(mousePos);
-        if (recipeIndexAt != -1) {
-            menu.setStonecuttingRecipeIndex(recipeIndexAt);
+        var recipe = getRecipeAt(mousePos);
+        if (recipe != null) {
+            menu.setStonecuttingRecipeId(recipe.id());
+
             Minecraft.getInstance().getSoundManager()
                     .play(SimpleSoundInstance.forUI(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
             return true;
@@ -117,18 +119,17 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     @Nullable
     @Override
     public Tooltip getTooltip(int mouseX, int mouseY) {
-        var recipeIndex = getRecipeIndexAt(new Point(mouseX, mouseY));
-        if (recipeIndex != -1) {
-            var display = menu.getStonecuttingRecipes().get(recipeIndex);
-            var displayContext = SlotDisplayContext.fromLevel(screen.getMinecraft().level);
-            var lines = screen
-                    .getTooltipFromContainerItem(display.optionDisplay().resolveForFirstStack(displayContext));
+        var recipe = getRecipeAt(new Point(mouseX, mouseY));
+        if (recipe != null) {
+            var lines = screen.getTooltipFromContainerItem(recipe.value().result());
+
             return new Tooltip(lines);
         }
         return null;
     }
 
-    private int getRecipeIndexAt(Point point) {
+    @Nullable
+    private RecipeHolder<StonecutterRecipe> getRecipeAt(Point point) {
         var recipes = menu.getStonecuttingRecipes();
 
         if (!recipes.isEmpty()) {
@@ -138,20 +139,20 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
             for (int i = startIndex; i < endIndex && i < recipes.size(); ++i) {
                 var slotBounds = getRecipeBounds(i - startIndex);
                 if (point.isIn(slotBounds)) {
-                    return i;
+                    return recipes.get(i);
                 }
             }
         }
 
-        return -1;
+        return null;
     }
 
     // Return bounds of a recipe slot relative to the screen
     private Rect2i getRecipeBounds(int index) {
         var col = index % COLS;
         var row = index / COLS;
-        int slotX = x + 33 + col * BG_SLOT.getSrcWidth();
-        int slotY = y + 7 + row * BG_SLOT.getSrcHeight();
+        int slotX = x + 26 + col * BG_SLOT.getSrcWidth();
+        int slotY = y + 12 + row * BG_SLOT.getSrcHeight();
         return new Rect2i(slotX, slotY, BG_SLOT.getSrcWidth(), BG_SLOT.getSrcHeight());
     }
 

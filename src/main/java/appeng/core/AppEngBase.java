@@ -30,7 +30,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,8 +37,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.EventPriority;
@@ -345,20 +343,13 @@ public abstract class AppEngBase implements AppEng {
                 "Trying to handle a clientbound packet while not on the client: " + payload.type());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T extends Recipe<?>> RecipeHolder<T> getRecipeById(Level level, RecipeType<T> type,
-            ResourceKey<Recipe<?>> id) {
+    public RecipeMap getRecipeMapForType(Level level, RecipeType<?> recipeType) {
         if (level instanceof ServerLevel serverLevel) {
-            var holder = serverLevel.recipeAccess().recipeMap().byKey(id);
-            if (holder != null) {
-                if (holder.value().getType() == type) {
-                    return (RecipeHolder<T>) holder;
-                }
-            }
+            return serverLevel.recipeAccess().recipeMap();
         } else {
             LOG.warn("Don't know how to retrieve recipe information for level type {}", level);
+            return RecipeMap.EMPTY;
         }
-        return null;
     }
 }

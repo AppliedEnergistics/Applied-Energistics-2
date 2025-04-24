@@ -21,16 +21,20 @@ package appeng.menu.guisync;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 import appeng.api.stacks.GenericStack;
@@ -114,6 +118,16 @@ public class SynchronizedField<T> {
 
     public static SynchronizedField<?> create(Object source, Field field) {
         Class<?> fieldType = field.getType();
+
+        // Special handling for ResourceKey<Recipe> since it's the only type that switched away from ResourceLocation
+        if (ResourceKey.class.isAssignableFrom(fieldType)
+                && field.getGenericType() instanceof ParameterizedType parameterizedType) {
+            var objectType = parameterizedType.getActualTypeArguments()[0];
+            if (objectType instanceof ParameterizedType elementType && elementType.getRawType() == Recipe.class) {
+                var codec = AECodecs.nullable(ResourceKey.streamCodec(Registries.RECIPE));
+                return new SynchronizedField<>(source, field, codec);
+            }
+        }
 
         var codec = CODECS.get(fieldType);
         if (codec == null) {

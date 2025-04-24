@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
@@ -40,6 +41,7 @@ import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ITerminalHost;
 import appeng.menu.ISubMenu;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.guisync.PacketWritable;
 import appeng.menu.implementations.MenuTypeBuilder;
@@ -56,7 +58,7 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
             .thenComparing(e -> e.name() != null ? e.name().getString() : "")
             .thenComparingInt(CraftingCpuListEntry::serial);
 
-    private static final String ACTION_SELECT_CPU = "selectCpu";
+    private static final ClientActionKey<Integer> ACTION_SELECT_CPU = new ClientActionKey<>("selectCpu");
 
     public static final MenuType<CraftingStatusMenu> TYPE = MenuTypeBuilder
             .create(CraftingStatusMenu::new, ITerminalHost.class)
@@ -85,7 +87,7 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
     public CraftingStatusMenu(int id, Inventory ip, ITerminalHost host) {
         super(TYPE, id, ip, host);
         this.host = host;
-        registerClientAction(ACTION_SELECT_CPU, Integer.class, this::selectCpu);
+        registerClientAction(ACTION_SELECT_CPU, ByteBufCodecs.INT, this::selectCpu);
     }
 
     @Override

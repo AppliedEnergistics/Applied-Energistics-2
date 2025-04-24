@@ -29,12 +29,12 @@
     "facing=south,powered=false": {
       "model": "ae2:block/spatial_anchor",
       "x": 90,
-      "y": 90
+      "y": 180
     },
     "facing=south,powered=true": {
       "model": "ae2:block/spatial_anchor_on",
       "x": 90,
-      "y": 90
+      "y": 180
     },
     "facing=up,powered=false": {
       "model": "ae2:block/spatial_anchor"
@@ -45,12 +45,12 @@
     "facing=west,powered=false": {
       "model": "ae2:block/spatial_anchor",
       "x": 90,
-      "y": 90
+      "y": 270
     },
     "facing=west,powered=true": {
       "model": "ae2:block/spatial_anchor_on",
       "x": 90,
-      "y": 90
+      "y": 270
     }
   }
 }

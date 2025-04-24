@@ -9,7 +9,8 @@
       "unit_type": "monitor"
     },
     "facing=east,formed=false": {
-      "model": "ae2:block/crafting/monitor"
+      "model": "ae2:block/crafting/monitor",
+      "y": 90
     },
     "facing=east,formed=true": {
       "type": "ae2:crafting_cube",
@@ -23,7 +24,8 @@
       "unit_type": "monitor"
     },
     "facing=south,formed=false": {
-      "model": "ae2:block/crafting/monitor"
+      "model": "ae2:block/crafting/monitor",
+      "y": 180
     },
     "facing=south,formed=true": {
       "type": "ae2:crafting_cube",
@@ -38,7 +40,8 @@
       "unit_type": "monitor"
     },
     "facing=west,formed=false": {
-      "model": "ae2:block/crafting/monitor"
+      "model": "ae2:block/crafting/monitor",
+      "y": 270
     },
     "facing=west,formed=true": {
       "type": "ae2:crafting_cube",

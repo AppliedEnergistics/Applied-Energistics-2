@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import net.minecraft.client.resources.model.BlockStateModelLoader;
 import net.minecraft.server.packs.resources.ResourceManager;
 
-import appeng.core.AppEngClient;
+import appeng.client.AppEngClient;
 
 @Mixin(BlockStateModelLoader.class)
 public class PartModelLoaderMixin {

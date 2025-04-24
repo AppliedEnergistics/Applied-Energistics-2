@@ -58,8 +58,8 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
-import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
+import appeng.crafting.RecipeAccess;
 
 public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSupportedPattern {
     public static final int CRAFTING_GRID_DIMENSION = 3;
@@ -96,7 +96,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         this.sparseInputs = getCraftingInputs(encodedPattern.inputs());
 
         // Find recipe
-        this.recipeHolder = AppEng.instance().getRecipeById(level, RecipeType.CRAFTING, encodedPattern.recipeId());
+        this.recipeHolder = RecipeAccess.byKey(level, RecipeType.CRAFTING, encodedPattern.recipeId());
         if (recipeHolder == null) {
             throw new IllegalArgumentException("Pattern references unknown recipe " + encodedPattern.recipeId());
         }

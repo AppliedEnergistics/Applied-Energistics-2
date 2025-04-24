@@ -32,6 +32,7 @@ import com.mojang.math.Quadrant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.MultiVariant;
+import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
@@ -75,7 +76,7 @@ public class DecorationModelProvider extends ModelSubProvider {
     private void smoothSkyStone() {
         blockModels.blockStateOutput.accept(
                 createSimpleBlock(
-                        AEBlocks.SMOOTH_SKY_STONE_BLOCK.block(),
+                        AEBlocks.SMOOTH_SKY_STONE_BLOCK,
                         applyAthena(
                                 plainVariant(
                                         ModelTemplates.CUBE_ALL.create(AEBlocks.SMOOTH_SKY_STONE_BLOCK.block(),
@@ -154,7 +155,7 @@ public class DecorationModelProvider extends ModelSubProvider {
     private void cutQuartz() {
         blockModels.blockStateOutput.accept(
                 createSimpleBlock(
-                        AEBlocks.CUT_QUARTZ_BLOCK.block(),
+                        AEBlocks.CUT_QUARTZ_BLOCK,
                         applyAthena(plainVariant(ModelTemplates.CUBE_ALL.create(AEBlocks.CUT_QUARTZ_BLOCK.block(),
                                 TextureMapping.cube(AEBlocks.CUT_QUARTZ_BLOCK.block()), modelOutput)),
                                 "athena:ctm",
@@ -172,7 +173,7 @@ public class DecorationModelProvider extends ModelSubProvider {
     private void quartz() {
         blockModels.blockStateOutput.accept(
                 createSimpleBlock(
-                        AEBlocks.QUARTZ_BLOCK.block(),
+                        AEBlocks.QUARTZ_BLOCK,
                         applyAthena(plainVariant(ModelTemplates.CUBE_ALL.create(AEBlocks.QUARTZ_BLOCK.block(),
                                 TextureMapping.cube(AEBlocks.QUARTZ_BLOCK.block()), modelOutput)),
                                 "athena:ctm",
@@ -192,7 +193,7 @@ public class DecorationModelProvider extends ModelSubProvider {
 
         blockModels.blockStateOutput.accept(
                 createSimpleBlock(
-                        AEBlocks.FLUIX_BLOCK.block(),
+                        AEBlocks.FLUIX_BLOCK,
                         applyAthena(
                                 plainVariant(ModelTemplates.CUBE_ALL.create(AEBlocks.FLUIX_BLOCK.block(),
                                         TextureMapping.cube(blockTexture),
@@ -216,7 +217,7 @@ public class DecorationModelProvider extends ModelSubProvider {
 
         blockModels.blockStateOutput.accept(
                 createSimpleBlock(
-                        AEBlocks.CHISELED_QUARTZ_BLOCK.block(),
+                        AEBlocks.CHISELED_QUARTZ_BLOCK,
                         applyAthena(
                                 plainVariant(ModelTemplates.CUBE_COLUMN.create(AEBlocks.CHISELED_QUARTZ_BLOCK.block(),
                                         TextureMapping.column(sideTexture, getBlockTexture(AEBlocks.CUT_QUARTZ_BLOCK)),
@@ -259,8 +260,10 @@ public class DecorationModelProvider extends ModelSubProvider {
         dispatch.select(Direction.WEST, true,
                 plainVariant(wallOdd).with(VariantMutator.Y_ROT.withValue(Quadrant.R270)));
 
-        multiVariantGenerator(AEBlocks.QUARTZ_FIXTURE, dispatch);
-        multiVariantGenerator(AEBlocks.LIGHT_DETECTOR, dispatch);
+        blockStateOutput.accept(
+                MultiVariantGenerator.dispatch(AEBlocks.QUARTZ_FIXTURE.block()).with(dispatch));
+        blockStateOutput.accept(
+                MultiVariantGenerator.dispatch(AEBlocks.LIGHT_DETECTOR.block()).with(dispatch));
 
         // Special item model
         blockModels.registerSimpleItemModel(

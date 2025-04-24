@@ -19,6 +19,7 @@
 package appeng.menu.implementations;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -33,6 +34,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.core.definitions.AEItems;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.slot.OutputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.Icon;
@@ -43,7 +45,7 @@ import appeng.util.inv.AppEngInternalInventory;
  */
 public class QuartzKnifeMenu extends AEBaseMenu {
 
-    private static final String ACTION_SET_NAME = "setName";
+    private static final ClientActionKey<String> ACTION_SET_NAME = new ClientActionKey<>("setName");
 
     public static final MenuType<QuartzKnifeMenu> TYPE = MenuTypeBuilder
             .create(QuartzKnifeMenu::new, ItemMenuHost.class)
@@ -63,7 +65,7 @@ public class QuartzKnifeMenu extends AEBaseMenu {
 
         this.createPlayerInventorySlots(ip);
 
-        registerClientAction(ACTION_SET_NAME, String.class, this::setName);
+        registerClientAction(ACTION_SET_NAME, ByteBufCodecs.stringUtf8(256), this::setName);
     }
 
     public void setName(String value) {

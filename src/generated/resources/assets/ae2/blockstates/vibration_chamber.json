@@ -1,164 +1,272 @@
 {
   "variants": {
     "active=false,facing=down,spin=0": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber",
       "x": 90
     },
     "active=false,facing=down,spin=1": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber",
-      "x": 90
+      "x": 90,
+      "z": 270
     },
     "active=false,facing=down,spin=2": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber",
-      "x": 90
+      "x": 90,
+      "z": 180
     },
     "active=false,facing=down,spin=3": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber",
-      "x": 90
+      "x": 90,
+      "z": 90
     },
     "active=false,facing=east,spin=0": {
-      "model": "ae2:block/vibration_chamber"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber",
+      "y": 90
     },
     "active=false,facing=east,spin=1": {
-      "model": "ae2:block/vibration_chamber"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber",
+      "y": 90,
+      "z": 270
     },
     "active=false,facing=east,spin=2": {
-      "model": "ae2:block/vibration_chamber"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber",
+      "y": 90,
+      "z": 180
     },
     "active=false,facing=east,spin=3": {
-      "model": "ae2:block/vibration_chamber"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber",
+      "y": 90,
+      "z": 90
     },
     "active=false,facing=north,spin=0": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber"
     },
     "active=false,facing=north,spin=1": {
-      "model": "ae2:block/vibration_chamber"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber",
+      "z": 270
     },
     "active=false,facing=north,spin=2": {
-      "model": "ae2:block/vibration_chamber"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber",
+      "z": 180
     },
     "active=false,facing=north,spin=3": {
-      "model": "ae2:block/vibration_chamber"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber",
+      "z": 90
     },
     "active=false,facing=south,spin=0": {
-      "model": "ae2:block/vibration_chamber"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber",
+      "y": 180
     },
     "active=false,facing=south,spin=1": {
-      "model": "ae2:block/vibration_chamber"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber",
+      "y": 180,
+      "z": 90
     },
     "active=false,facing=south,spin=2": {
-      "model": "ae2:block/vibration_chamber"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber",
+      "y": 180,
+      "z": 180
     },
     "active=false,facing=south,spin=3": {
-      "model": "ae2:block/vibration_chamber"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber",
+      "y": 180,
+      "z": 270
     },
     "active=false,facing=up,spin=0": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber",
-      "x": 270
+      "x": 270,
+      "z": 180
     },
     "active=false,facing=up,spin=1": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber",
-      "x": 270
+      "x": 270,
+      "z": 90
     },
     "active=false,facing=up,spin=2": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber",
       "x": 270
     },
     "active=false,facing=up,spin=3": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber",
-      "x": 270
+      "x": 270,
+      "z": 270
     },
     "active=false,facing=west,spin=0": {
-      "model": "ae2:block/vibration_chamber"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber",
+      "y": 270
     },
     "active=false,facing=west,spin=1": {
-      "model": "ae2:block/vibration_chamber"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber",
+      "y": 270,
+      "z": 270
     },
     "active=false,facing=west,spin=2": {
-      "model": "ae2:block/vibration_chamber"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber",
+      "y": 270,
+      "z": 180
     },
     "active=false,facing=west,spin=3": {
-      "model": "ae2:block/vibration_chamber"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber",
+      "y": 270,
+      "z": 90
     },
     "active=true,facing=down,spin=0": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber_on",
       "x": 90
     },
     "active=true,facing=down,spin=1": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber_on",
-      "x": 90
+      "x": 90,
+      "z": 270
     },
     "active=true,facing=down,spin=2": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber_on",
-      "x": 90
+      "x": 90,
+      "z": 180
     },
     "active=true,facing=down,spin=3": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber_on",
-      "x": 90
+      "x": 90,
+      "z": 90
     },
     "active=true,facing=east,spin=0": {
-      "model": "ae2:block/vibration_chamber_on"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 90
     },
     "active=true,facing=east,spin=1": {
-      "model": "ae2:block/vibration_chamber_on"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 90,
+      "z": 270
     },
     "active=true,facing=east,spin=2": {
-      "model": "ae2:block/vibration_chamber_on"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 90,
+      "z": 180
     },
     "active=true,facing=east,spin=3": {
-      "model": "ae2:block/vibration_chamber_on"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 90,
+      "z": 90
     },
     "active=true,facing=north,spin=0": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber_on"
     },
     "active=true,facing=north,spin=1": {
-      "model": "ae2:block/vibration_chamber_on"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber_on",
+      "z": 270
     },
     "active=true,facing=north,spin=2": {
-      "model": "ae2:block/vibration_chamber_on"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber_on",
+      "z": 180
     },
     "active=true,facing=north,spin=3": {
-      "model": "ae2:block/vibration_chamber_on"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber_on",
+      "z": 90
     },
     "active=true,facing=south,spin=0": {
-      "model": "ae2:block/vibration_chamber_on"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 180
     },
     "active=true,facing=south,spin=1": {
-      "model": "ae2:block/vibration_chamber_on"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 180,
+      "z": 90
     },
     "active=true,facing=south,spin=2": {
-      "model": "ae2:block/vibration_chamber_on"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 180,
+      "z": 180
     },
     "active=true,facing=south,spin=3": {
-      "model": "ae2:block/vibration_chamber_on"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 180,
+      "z": 270
     },
     "active=true,facing=up,spin=0": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber_on",
-      "x": 270
+      "x": 270,
+      "z": 180
     },
     "active=true,facing=up,spin=1": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber_on",
-      "x": 270
+      "x": 270,
+      "z": 90
     },
     "active=true,facing=up,spin=2": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber_on",
       "x": 270
     },
     "active=true,facing=up,spin=3": {
+      "type": "ae2:spinnable_variant",
       "model": "ae2:block/vibration_chamber_on",
-      "x": 270
+      "x": 270,
+      "z": 270
     },
     "active=true,facing=west,spin=0": {
-      "model": "ae2:block/vibration_chamber_on"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 270
     },
     "active=true,facing=west,spin=1": {
-      "model": "ae2:block/vibration_chamber_on"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 270,
+      "z": 270
     },
     "active=true,facing=west,spin=2": {
-      "model": "ae2:block/vibration_chamber_on"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 270,
+      "z": 180
     },
     "active=true,facing=west,spin=3": {
-      "model": "ae2:block/vibration_chamber_on"
+      "type": "ae2:spinnable_variant",
+      "model": "ae2:block/vibration_chamber_on",
+      "y": 270,
+      "z": 90
     }
   }
 }

@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -57,6 +58,7 @@ import appeng.me.helpers.PlayerSource;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.guisync.PacketWritable;
 import appeng.menu.implementations.MenuTypeBuilder;
@@ -69,10 +71,10 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
     private static final Logger LOG = LoggerFactory.getLogger(CraftConfirmMenu.class);
 
-    private static final String ACTION_BACK = "back";
-    private static final String ACTION_CYCLE_CPU = "cycleCpu";
-    private static final String ACTION_START_JOB = "startJob";
-    private static final String ACTION_REPLAN = "replan";
+    private static final ClientActionKey<Void> ACTION_BACK = new ClientActionKey<>("back");
+    private static final ClientActionKey<Boolean> ACTION_CYCLE_CPU = new ClientActionKey<>("cycleCpu");
+    private static final ClientActionKey<Void> ACTION_START_JOB = new ClientActionKey<>("startJob");
+    private static final ClientActionKey<Void> ACTION_REPLAN = new ClientActionKey<>("replan");
 
     private static final SyncableSubmitResult NO_ERROR = new SyncableSubmitResult((ICraftingSubmitResult) null);
 
@@ -129,7 +131,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
         this.cpuCycler.setAllowNoSelection(true);
 
         registerClientAction(ACTION_BACK, this::goBack);
-        registerClientAction(ACTION_CYCLE_CPU, Boolean.class, this::cycleSelectedCPU);
+        registerClientAction(ACTION_CYCLE_CPU, ByteBufCodecs.BOOL, this::cycleSelectedCPU);
         registerClientAction(ACTION_START_JOB, this::startJob);
         registerClientAction(ACTION_REPLAN, this::replan);
     }

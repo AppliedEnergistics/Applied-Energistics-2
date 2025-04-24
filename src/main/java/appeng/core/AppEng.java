@@ -24,13 +24,11 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
@@ -113,5 +111,5 @@ public interface AppEng {
     <T extends ClientboundPacket> void handleClientboundPacket(CustomPacketPayload.Type<T> type, T payload,
             IPayloadContext context);
 
-    <T extends Recipe<?>> RecipeHolder<T> getRecipeById(Level level, RecipeType<T> type, ResourceKey<Recipe<?>> id);
+    RecipeMap getRecipeMapForType(Level level, RecipeType<?> recipeType);
 }

@@ -1,9 +1,8 @@
 package appeng.datagen.providers.models;
 
-import static net.minecraft.client.data.models.BlockModelGenerators.variant;
-
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.mojang.math.Quadrant;
@@ -11,6 +10,7 @@ import com.mojang.math.Quadrant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.MultiVariant;
+import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator;
 import net.minecraft.client.data.models.blockstates.ConditionBuilder;
 import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
@@ -24,23 +24,24 @@ import net.minecraft.client.renderer.block.model.Variant;
 import net.minecraft.client.renderer.block.model.VariantMutator;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.client.model.generators.blockstate.CustomBlockStateModelBuilder;
+import net.neoforged.neoforge.client.model.generators.blockstate.UnbakedMutator;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.IOrientationStrategy;
+import appeng.client.model.SpinnableVariant;
+import appeng.client.render.model.DriveModel;
+import appeng.client.render.model.SingleSpinnableVariant;
 import appeng.core.AppEng;
 import appeng.core.definitions.BlockDefinition;
 
 public abstract class ModelSubProvider {
-    // TODO 1.21.5 protected static final VariantProperty<VariantProperties.Rotation> Z_ROT = new
-    // VariantProperty<>("ae2:z",
-    // TODO 1.21.5 r -> new JsonPrimitive(r.ordinal() * 90));
-
     public static final TextureMapping TRANSPARENT_PARTICLE = TextureMapping
             .particle(AppEng.makeId("block/transparent"));
 
@@ -48,6 +49,7 @@ public abstract class ModelSubProvider {
             TextureSlot.PARTICLE);
 
     protected final BlockModelGenerators blockModels;
+    protected final Consumer<BlockModelDefinitionGenerator> blockStateOutput;
     protected final ItemModelGenerators itemModels;
     protected final BiConsumer<ResourceLocation, ModelInstance> modelOutput;
     protected final PartModelOutput partModels;
@@ -58,6 +60,7 @@ public abstract class ModelSubProvider {
         this.itemModels = itemModels;
         this.partModels = partModels;
         this.modelOutput = blockModels.modelOutput;
+        this.blockStateOutput = blockModels.blockStateOutput;
     }
 
     protected abstract void register();
@@ -86,59 +89,41 @@ public abstract class ModelSubProvider {
         // item falls back automatically to the block model
     }
 
-    @SafeVarargs
-    protected final void multiVariantGenerator(BlockDefinition<?> blockDef,
-            PropertyDispatch<MultiVariant> dispatch,
-            PropertyDispatch<VariantMutator>... dispatchMutators) {
-        var generator = MultiVariantGenerator.dispatch(blockDef.block()).with(dispatch);
-        for (var dispatchMutator : dispatchMutators) {
-            generator = generator.with(dispatchMutator);
-        }
-        blockModels.blockStateOutput.accept(generator);
-    }
-
-    @SafeVarargs
-    protected final void multiVariantGenerator(BlockDefinition<?> blockDef,
-            MultiVariant baseVariant,
-            PropertyDispatch<VariantMutator>... dispatchMutators) {
-        var generator = MultiVariantGenerator.dispatch(blockDef.block(), baseVariant);
-        for (var dispatchMutator : dispatchMutators) {
-            generator = generator.with(dispatchMutator);
-        }
-        blockModels.blockStateOutput.accept(generator);
+    protected MultiVariantGenerator createSpinnableBlock(BlockDefinition<?> block, ResourceLocation model) {
+        return MultiVariantGenerator.dispatch(block.block(), plainSpinnableVariant(model))
+                .withUnbaked(createFacingSpinDispatch());
     }
 
     protected static PropertyDispatch<VariantMutator> createFacingDispatch(int baseRotX, int baseRotY) {
         return PropertyDispatch.modify(BlockStateProperties.FACING)
-                .select(Direction.DOWN, applyRotation(baseRotX + 90, baseRotY, 0))
-                .select(Direction.UP, applyRotation(baseRotX + 270, baseRotY, 0))
-                .select(Direction.NORTH, applyRotation(baseRotX, baseRotY, 0))
-                .select(Direction.SOUTH, applyRotation(baseRotX, baseRotY + 180, 0))
-                .select(Direction.WEST, applyRotation(baseRotX, baseRotY + 270, 0))
-                .select(Direction.EAST, applyRotation(baseRotX, baseRotY + 90, 0));
+                .select(Direction.DOWN, applyRotation(baseRotX + 90, baseRotY))
+                .select(Direction.UP, applyRotation(baseRotX + 270, baseRotY))
+                .select(Direction.NORTH, applyRotation(baseRotX, baseRotY))
+                .select(Direction.SOUTH, applyRotation(baseRotX, baseRotY + 180))
+                .select(Direction.WEST, applyRotation(baseRotX, baseRotY + 270))
+                .select(Direction.EAST, applyRotation(baseRotX, baseRotY + 90));
     }
 
-    protected static PropertyDispatch<VariantMutator> createFacingSpinDispatch(int baseRotX, int baseRotY) {
-        return PropertyDispatch.modify(BlockStateProperties.FACING, IOrientationStrategy.SPIN)
+    protected static PropertyDispatch<UnbakedMutator> createFacingSpinDispatch() {
+        return PropertyDispatch.modifyUnbaked(BlockStateProperties.FACING, IOrientationStrategy.SPIN)
                 .generate((facing, spin) -> {
                     var orientation = BlockOrientation.get(facing, spin);
-                    return applyRotation(
-                            orientation.getAngleX() + baseRotX,
-                            orientation.getAngleY() + baseRotY,
-                            orientation.getAngleZ());
+                    return UnbakedMutator.builder()
+                            .add(SingleSpinnableVariant.Unbaked.class, unbaked -> new SingleSpinnableVariant.Unbaked(
+                                    applyOrientation(unbaked.variant(), orientation)))
+                            .add(DriveModel.Unbaked.class, unbaked -> new DriveModel.Unbaked(
+                                    applyOrientation(unbaked.variant(), orientation)))
+                            .build();
                 });
     }
 
-    protected static PropertyDispatch<VariantMutator> createFacingSpinDispatch() {
-        return createFacingSpinDispatch(0, 0);
-    }
-
-    protected static void withOrientations(MultiPartGenerator multipart, Variant baseVariant) {
+    protected static void withOrientations(MultiPartGenerator multipart, SpinnableVariant baseVariant) {
         withOrientations(multipart, ConditionBuilder::new, baseVariant);
     }
 
     protected static void withOrientations(MultiPartGenerator multipart,
-            Supplier<ConditionBuilder> baseCondition, Variant baseVariant) {
+            Supplier<ConditionBuilder> baseCondition,
+            SpinnableVariant baseVariant) {
         var defaultState = multipart.block().defaultBlockState();
         var strategy = IOrientationStrategy.get(defaultState);
 
@@ -147,24 +132,30 @@ public abstract class ModelSubProvider {
             for (var property : strategy.getProperties()) {
                 addConditionTerm(condition, blockState, property);
             }
-
             var orientation = BlockOrientation.get(strategy, blockState);
-            multipart.with(condition, variant(applyOrientation(baseVariant, orientation)));
+            multipart.with(condition, customBlockStateModel(
+                    new SingleSpinnableVariant.Unbaked(applyOrientation(baseVariant, orientation))));
         });
     }
 
-    // TODO 1.21.5 should probably also return a VariantModifier always
-    protected static Variant applyOrientation(Variant variant, BlockOrientation orientation) {
-        return variant.with(applyRotation(orientation.getAngleX(), orientation.getAngleY(), orientation.getAngleZ()));
+    protected static SpinnableVariant applyOrientation(SpinnableVariant baseVariant, BlockOrientation orientation) {
+        return applyOrientation(baseVariant, orientation.getAngleX(), orientation.getAngleY(), orientation.getAngleZ());
     }
 
-    protected static VariantMutator applyRotation(int angleX, int angleY, int angleZ) {
-        angleZ = normalizeAngle(angleZ);
-        VariantMutator mutator = applyRotation(angleX, angleY);
-        if (angleZ != 0) {
-            // TODO 1.21.5 mutator = mutator.then(Z_ROT, rotationByAngle(angleZ));
-        }
-        return mutator;
+    protected static SpinnableVariant applyOrientation(SpinnableVariant baseVariant, int angleX, int angleY,
+            int angleZ) {
+        return baseVariant
+                .withXRot(rotationByAngle(normalizeAngle(angleX)))
+                .withYRot(rotationByAngle(normalizeAngle(angleY)))
+                .withZRot(rotationByAngle(normalizeAngle(angleZ)));
+    }
+
+    protected static Variant applyOrientation(Variant baseVariant, Direction facing) {
+        var orientation = BlockOrientation.get(facing);
+
+        return baseVariant
+                .withXRot(rotationByAngle(orientation.getAngleX()))
+                .withYRot(rotationByAngle(orientation.getAngleY()));
     }
 
     protected static VariantMutator applyRotation(int angleX, int angleY) {
@@ -176,7 +167,7 @@ public abstract class ModelSubProvider {
             mutator = mutator.then(VariantMutator.X_ROT.withValue(rotationByAngle(angleX)));
         }
         if (angleY != 0) {
-            mutator = mutator.then(VariantMutator.Y_ROT.withValue(rotationByAngle(angleX)));
+            mutator = mutator.then(VariantMutator.Y_ROT.withValue(rotationByAngle(angleY)));
         }
         return mutator;
     }
@@ -225,5 +216,21 @@ public abstract class ModelSubProvider {
 
     protected static MultiVariant customBlockStateModel(CustomUnbakedBlockStateModel model) {
         return MultiVariant.of(new CustomBlockStateModelBuilder.Simple(model));
+    }
+
+    public static MultiVariant variant(SpinnableVariant variant) {
+        return customBlockStateModel(new SingleSpinnableVariant.Unbaked(variant));
+    }
+
+    public static MultiVariant variant(Variant variant) {
+        return new MultiVariant(WeightedList.of(variant));
+    }
+
+    public static MultiVariant plainSpinnableVariant(ResourceLocation model) {
+        return variant(new SpinnableVariant(model));
+    }
+
+    public static MultiVariantGenerator createSimpleBlock(BlockDefinition<?> block, MultiVariant variant) {
+        return BlockModelGenerators.createSimpleBlock(block.block(), variant);
     }
 }

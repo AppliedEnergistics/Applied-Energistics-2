@@ -63,10 +63,10 @@ import appeng.api.util.AEColor;
 import appeng.block.networking.CableBusRenderState;
 import appeng.block.networking.CableCoreType;
 import appeng.blockentity.AEModelData;
+import appeng.client.AppEngClient;
 import appeng.client.api.model.parts.PartModel;
 import appeng.client.model.FacingModelState;
 import appeng.core.AppEng;
-import appeng.core.AppEngClient;
 
 /**
  * The built-in model for the cable bus block.

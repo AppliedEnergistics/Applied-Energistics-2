@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,16 +31,17 @@ import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.netty.buffer.Unpooled;
+
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -52,6 +54,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.connection.ConnectionType;
 
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
@@ -66,7 +69,6 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.upgrades.IUpgradeInventory;
-import appeng.core.AELog;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.ServerboundPacket;
 import appeng.core.network.clientbound.GuiDataSyncPacket;
@@ -74,6 +76,7 @@ import appeng.core.network.serverbound.GuiActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.me.helpers.PlayerSource;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.guisync.DataSynchronization;
 import appeng.menu.locator.MenuHostLocator;
 import appeng.menu.slot.AppEngSlot;
@@ -87,9 +90,9 @@ import appeng.util.ConfigMenuInventory;
 public abstract class AEBaseMenu extends AbstractContainerMenu {
     private static final Logger LOG = LoggerFactory.getLogger(AEBaseMenu.class);
 
-    private static final int MAX_STRING_LENGTH = 32767;
+    private static final int MAX_CLIENT_ACTION_PAYLOAD = 32767;
     private static final int MAX_CONTAINER_TRANSFER_ITERATIONS = 256;
-    private static final String HIDE_SLOT = "HideSlot";
+    private static final ClientActionKey<String> HIDE_SLOT = new ClientActionKey<>("HideSlot");
 
     private final IActionSource mySrc;
     @Nullable
@@ -131,7 +134,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         }
 
         this.mySrc = new PlayerSource(getPlayer(), this.getActionHost());
-        registerClientAction(HIDE_SLOT, String.class, this::hideSlot);
+        registerClientAction(HIDE_SLOT, ByteBufCodecs.STRING_UTF8, this::hideSlot);
     }
 
     protected final IActionHost getActionHost() {
@@ -165,7 +168,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     protected final RegistryAccess registryAccess() {
-        return getPlayer().level().registryAccess();
+        return getPlayer().registryAccess();
     }
 
     public IActionSource getActionSource() {
@@ -893,13 +896,13 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     /**
      * Receives a menu action from the client.
      */
-    public final void receiveClientAction(String actionName, @Nullable String jsonPayload) {
+    public final void receiveClientAction(String actionName, byte[] argumentPayload) {
         ClientAction<?> action = clientActions.get(actionName);
         if (action == null) {
             throw new IllegalArgumentException("Unknown client action: '" + actionName + "'");
         }
 
-        action.handle(jsonPayload);
+        action.handle(argumentPayload, registryAccess());
     }
 
     /**
@@ -907,93 +910,88 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
      * arbitrary data. The given argument class will be serialized as JSON across the wire, so it must be GSON
      * serializable.
      */
-    protected final <T> void registerClientAction(String name, Class<T> argClass, Consumer<T> handler) {
-        if (clientActions.containsKey(name)) {
-            throw new IllegalArgumentException("Duplicate client action registered: " + name);
+    protected final <T> void registerClientAction(ClientActionKey<T> key,
+            StreamCodec<? super RegistryFriendlyByteBuf, T> argCodec, Consumer<T> handler) {
+        if (clientActions.containsKey(key.name())) {
+            throw new IllegalArgumentException("Duplicate client action registered: " + key);
         }
 
-        clientActions.put(name, new ClientAction<>(name, argClass, handler));
+        clientActions.put(key.name(), new ClientAction<>(key, argCodec, handler));
     }
 
     /**
      * Convenience function for registering a client action with no argument.
      *
-     * @see #registerClientAction(String, Class, Consumer)
+     * @see #registerClientAction(ClientActionKey, StreamCodec, Consumer)
      */
-    protected final void registerClientAction(String name, Runnable callback) {
-        registerClientAction(name, Void.class, arg -> callback.run());
+    protected final void registerClientAction(ClientActionKey<Void> key, Runnable callback) {
+        registerClientAction(key, null, arg -> callback.run());
     }
 
     /**
      * Trigger a client action on the server.
      */
-    protected final <T> void sendClientAction(String action, T arg) {
-        ClientAction<?> clientAction = clientActions.get(action);
+    protected final <T> void sendClientAction(ClientActionKey<T> action, T arg) {
+        @SuppressWarnings("unchecked")
+        ClientAction<T> clientAction = (ClientAction<T>) clientActions.get(action.name());
         if (clientAction == null) {
             throw new IllegalArgumentException("Trying to send unregistered client action: " + action);
         }
 
         // Serialize the argument to JSON for sending it in the packet
-        String jsonPayload;
-        if (clientAction.argClass == Void.class) {
+        byte[] argumentPayload;
+        if (clientAction.argCodec == null) {
             if (arg != null) {
                 throw new IllegalArgumentException(
                         "Client action " + action + " requires no argument, but it was given");
             }
-            jsonPayload = null;
+            argumentPayload = new byte[0];
         } else {
             if (arg == null) {
                 throw new IllegalArgumentException(
                         "Client action " + action + " requires an argument, but none was given");
             }
-            if (clientAction.argClass != arg.getClass()) {
-                throw new IllegalArgumentException(
-                        "Trying to send client action " + action + " with wrong argument type " + arg.getClass()
-                                + ", expected: " + clientAction.argClass);
-            }
-            jsonPayload = clientAction.gson.toJson(arg);
+            var buffer = new RegistryFriendlyByteBuf(
+                    Unpooled.buffer(),
+                    registryAccess(),
+                    ConnectionType.NEOFORGE);
+            clientAction.argCodec.encode(buffer, arg);
+            argumentPayload = new byte[buffer.readableBytes()];
+            buffer.readBytes(argumentPayload);
         }
 
-        // We do not allow for longer strings than 32kb
-        if (jsonPayload != null && jsonPayload.length() > MAX_STRING_LENGTH) {
-            throw new IllegalArgumentException(
-                    "Cannot send client action " + action + " because serialized argument is longer than "
-                            + MAX_STRING_LENGTH + " (" + jsonPayload.length() + ")");
-        }
-
-        ServerboundPacket message = new GuiActionPacket(containerId, clientAction.name, jsonPayload);
+        ServerboundPacket message = new GuiActionPacket(containerId, clientAction.key().name(), argumentPayload);
         PacketDistributor.sendToServer(message);
     }
 
     /**
      * Sends a previously registered client action to the server.
      */
-    protected final void sendClientAction(String action) {
-        sendClientAction(action, (Void) null);
+    protected final void sendClientAction(ClientActionKey<Void> action) {
+        sendClientAction(action, null);
     }
 
     /**
      * Registration for an action that a client can initiate.
      */
-    private static class ClientAction<T> {
-        private final Gson gson = new GsonBuilder().create();
-        private final String name;
-        private final Class<T> argClass;
-        private final Consumer<T> handler;
-
-        public ClientAction(String name, Class<T> argClass, Consumer<T> handler) {
-            this.name = name;
-            this.argClass = argClass;
-            this.handler = handler;
-        }
-
-        public void handle(@Nullable String jsonPayload) {
+    private record ClientAction<T>(
+            ClientActionKey<T> key,
+            @Nullable StreamCodec<? super RegistryFriendlyByteBuf, T> argCodec,
+            Consumer<T> handler) {
+        public void handle(byte[] payload, RegistryAccess registryAccess) {
             T arg = null;
-            if (argClass != Void.class) {
-                AELog.debug("Handling client action '%s' with payload %s", name, jsonPayload);
-                arg = gson.fromJson(jsonPayload, argClass);
+            LOG.debug("Handling client action '{}' with payload {}", key, HexFormat.of().formatHex(payload));
+            if (argCodec != null) {
+                var buffer = new RegistryFriendlyByteBuf(
+                        Unpooled.wrappedBuffer(payload),
+                        registryAccess,
+                        ConnectionType.NEOFORGE);
+                arg = argCodec.decode(buffer);
             } else {
-                AELog.debug("Handling client action '%s'", name);
+                if (payload.length > 0) {
+                    LOG.warn("Client action {} should not have an argmuent, but received payload: {}", arg,
+                            HexFormat.of().formatHex(payload));
+                }
             }
 
             this.handler.accept(arg);

@@ -97,7 +97,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
 
     @Override
     public boolean isClientSide() {
-        return host.getServerLevel() == null;
+        return host.getLevel().isClientSide();
     }
 
     private void onEncodedInputChanged() {
@@ -110,11 +110,11 @@ public class PatternEncodingLogic implements InternalInventoryHost {
     }
 
     private void loadEncodedPattern(ItemStack pattern) {
-        if (pattern.isEmpty() || host.getServerLevel() == null) {
+        if (pattern.isEmpty()) {
             return;
         }
 
-        var details = PatternDetailsHelper.decodePattern(pattern, host.getServerLevel());
+        var details = PatternDetailsHelper.decodePattern(pattern, host.getLevel());
 
         if (details instanceof AECraftingPattern craftingPattern) {
             loadCraftingPattern(craftingPattern);
@@ -281,7 +281,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
         data.putBoolean("substitute", this.substitute);
         data.putBoolean("substituteFluids", this.substituteFluids);
         if (this.stonecuttingRecipeId != null) {
-            data.putString("stonecuttingRecipeId", this.stonecuttingRecipeId.toString());
+            data.putString("stonecuttingRecipeId", this.stonecuttingRecipeId.location().toString());
         }
         blankPatternInv.writeToNBT(data, "blankPattern", registries);
         encodedPatternInv.writeToNBT(data, "encodedPattern", registries);
@@ -291,7 +291,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
 
     private void fixCraftingRecipes() {
         // Do not do this on the client since the server will always sync the correct state to us anyway
-        if (isClientSide()) {
+        if (host.getLevel() == null || host.getLevel().isClientSide()) {
             return;
         }
 

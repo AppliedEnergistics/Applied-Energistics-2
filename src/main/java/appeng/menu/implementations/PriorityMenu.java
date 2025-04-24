@@ -18,19 +18,21 @@
 
 package appeng.menu.implementations;
 
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.helpers.IPriorityHost;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
+import appeng.menu.guisync.ClientActionKey;
 
 /**
  * @see appeng.client.gui.implementations.PriorityScreen
  */
 public class PriorityMenu extends AEBaseMenu implements ISubMenu {
 
-    private static final String ACTION_SET_PRIORITY = "setPriority";
+    private static final ClientActionKey<Integer> ACTION_SET_PRIORITY = new ClientActionKey<>("setPriority");
 
     public static final MenuType<PriorityMenu> TYPE = MenuTypeBuilder
             .create(PriorityMenu::new, IPriorityHost.class)
@@ -50,7 +52,7 @@ public class PriorityMenu extends AEBaseMenu implements ISubMenu {
         this.host = host;
         this.priorityValue = host.getPriority();
 
-        registerClientAction(ACTION_SET_PRIORITY, Integer.class, this::setPriority);
+        registerClientAction(ACTION_SET_PRIORITY, ByteBufCodecs.INT, this::setPriority);
     }
 
     public void setPriority(int newValue) {

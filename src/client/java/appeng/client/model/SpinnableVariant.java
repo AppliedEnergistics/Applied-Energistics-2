@@ -24,8 +24,6 @@ import net.minecraft.core.BlockMath;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Extends Vanillas {@link net.minecraft.client.renderer.block.model.Variant} with rotation around the Z-axis.
@@ -40,8 +38,8 @@ public record SpinnableVariant(ResourceLocation modelLocation,
                     .apply(builder, SpinnableVariant::new));
     public static final Codec<SpinnableVariant> CODEC = MAP_CODEC.codec();
 
-    public SpinnableVariant(ResourceLocation model) {
-        this(model, SimpleModelState.DEFAULT);
+    public SpinnableVariant(ResourceLocation modelLocation) {
+        this(modelLocation, SimpleModelState.DEFAULT);
     }
 
     public SpinnableVariant withXRot(Quadrant xRot) {
@@ -78,7 +76,6 @@ public record SpinnableVariant(ResourceLocation modelLocation,
         p_410425_.markDependency(this.modelLocation);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public record SimpleModelState(Quadrant x, Quadrant y, Quadrant z, boolean uvLock) {
 
         public static final MapCodec<SimpleModelState> MAP_CODEC = RecordCodecBuilder.mapCodec(

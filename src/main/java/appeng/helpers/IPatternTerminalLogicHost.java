@@ -1,16 +1,13 @@
 package appeng.helpers;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 
 import appeng.parts.encoding.PatternEncodingLogic;
 
 public interface IPatternTerminalLogicHost {
     PatternEncodingLogic getLogic();
 
-    @Nullable
-    ServerLevel getServerLevel();
+    Level getLevel();
 
     void markForSave();
 }
