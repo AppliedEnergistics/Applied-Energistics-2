@@ -276,6 +276,7 @@
   "config.jade.plugin_ae2.part_tooltip": "AE2 Part Tooltip",
   "config.jade.plugin_ae2.pattern_provider": "AE2 Pattern Provider",
   "config.jade.plugin_ae2.power_storage": "AE2 Power State",
+  "dimension.ae2.spatial_storage": "Spatial Storage",
   "entity.ae2.tiny_tnt_primed": "Tiny TNT Primed",
   "entity.minecraft.villager.fluix_researcher": "Fluix Researcher",
   "gui.ae2.AdjacentToDifferentMachines": "Adjacent to Different Machines",
