@@ -161,3 +161,5 @@ accessible method net/minecraft/client/renderer/texture/SpriteContents$AnimatedT
 accessible field net/minecraft/server/level/ServerLevel entityManager Lnet/minecraft/world/level/entity/PersistentEntitySectionManager;
 accessible field net/minecraft/world/level/entity/PersistentEntitySectionManager permanentStorage Lnet/minecraft/world/level/entity/EntityPersistentStorage;
 accessible field net/minecraft/world/level/entity/PersistentEntitySectionManager chunkVisibility Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;
+
+accessible method net/minecraft/world/level/chunk/storage/SectionStorage getOrLoad (J)Ljava/util/Optional;
