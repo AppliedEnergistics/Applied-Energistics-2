@@ -42,11 +42,11 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         flatSingleLayer(AEItems.CALCULATION_PROCESSOR_PRESS, "item/calculation_processor_press");
         flatSingleLayer(AEItems.CALCULATION_PROCESSOR_PRINT, "item/printed_calculation_processor");
         flatSingleLayer(AEItems.CAPACITY_CARD, "item/card_capacity");
-        storageCell(AEItems.ITEM_CELL_1K, "item/item_storage_cell_1k");
-        storageCell(AEItems.ITEM_CELL_4K, "item/item_storage_cell_4k");
-        storageCell(AEItems.ITEM_CELL_16K, "item/item_storage_cell_16k");
-        storageCell(AEItems.ITEM_CELL_64K, "item/item_storage_cell_64k");
-        storageCell(AEItems.ITEM_CELL_256K, "item/item_storage_cell_256k");
+        storageCell(AEItems.ITEM_CELL_1K, "item", "1k");
+        storageCell(AEItems.ITEM_CELL_4K, "item", "4k");
+        storageCell(AEItems.ITEM_CELL_16K, "item", "16k");
+        storageCell(AEItems.ITEM_CELL_64K, "item", "64k");
+        storageCell(AEItems.ITEM_CELL_256K, "item", "256k");
         flatSingleLayer(AEItems.CERTUS_QUARTZ_CRYSTAL, "item/certus_quartz_crystal");
         flatSingleLayer(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, "item/certus_quartz_crystal_charged");
         flatSingleLayer(AEItems.CERTUS_QUARTZ_DUST, "item/certus_quartz_dust");
@@ -64,11 +64,11 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         flatSingleLayer(AEItems.ENGINEERING_PROCESSOR_PRESS, "item/engineering_processor_press");
         flatSingleLayer(AEItems.ENGINEERING_PROCESSOR_PRINT, "item/printed_engineering_processor");
         flatSingleLayer(AEItems.EQUAL_DISTRIBUTION_CARD, "item/card_equal_distribution");
-        storageCell(AEItems.FLUID_CELL_1K, "item/fluid_storage_cell_1k");
-        storageCell(AEItems.FLUID_CELL_4K, "item/fluid_storage_cell_4k");
-        storageCell(AEItems.FLUID_CELL_16K, "item/fluid_storage_cell_16k");
-        storageCell(AEItems.FLUID_CELL_64K, "item/fluid_storage_cell_64k");
-        storageCell(AEItems.FLUID_CELL_256K, "item/fluid_storage_cell_256k");
+        storageCell(AEItems.FLUID_CELL_1K, "fluid", "1k");
+        storageCell(AEItems.FLUID_CELL_4K, "fluid", "4k");
+        storageCell(AEItems.FLUID_CELL_16K, "fluid", "16k");
+        storageCell(AEItems.FLUID_CELL_64K, "fluid", "64k");
+        storageCell(AEItems.FLUID_CELL_256K, "fluid", "256k");
         flatSingleLayer(AEItems.FLUID_CELL_HOUSING, "item/fluid_cell_housing");
         flatSingleLayer(AEItems.FLUIX_CRYSTAL, "item/fluix_crystal");
         flatSingleLayer(AEItems.FLUIX_DUST, "item/fluix_dust");
@@ -129,14 +129,15 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         registerHandheld();
     }
 
-    private void storageCell(ItemDefinition<?> item, String background) {
+    private void storageCell(ItemDefinition<?> item, String housingType, String tier) {
         String id = item.id().getPath();
         singleTexture(
                 id,
                 mcLoc("item/generated"),
                 "layer0",
-                makeId(background))
-                .texture("layer1", "item/storage_cell_led");
+                makeId("item/%s_cell_housing".formatted(housingType)))
+                .texture("layer1", "item/storage_cell_led")
+                .texture("layer2", "item/storage_cell_side_%s".formatted(tier));
     }
 
     private void portableCell(ItemDefinition<?> item, String housingType, String tier) {
