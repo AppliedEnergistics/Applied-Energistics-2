@@ -57,6 +57,7 @@ class EmiInscriberRecipe extends BasicEmiRecipe {
         widgets.addSlot(EmiIngredient.of(recipe.getBottomOptional()), 0, 46)
                 .drawBack(false);
         widgets.addSlot(EmiStack.of(recipe.getResultItem()), 68, 24)
+                .recipeContext(this)
                 .drawBack(false);
     }
 }
