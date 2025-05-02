@@ -20,7 +20,6 @@ package appeng.spatial;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,8 +29,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ThreadedLevelLightEngine;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
-import net.minecraft.world.entity.ai.village.poi.PoiRecord;
-import net.minecraft.world.entity.ai.village.poi.PoiSection;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -175,23 +172,29 @@ public class CachedPlane {
                     }
                 });
 
+                // Find any Villager point of interests that are within this section, remove them and queue
+                // re-adding them to the destination locations
                 for (int cy = 0; cy < cy_size; ++cy) {
-                    Optional<PoiSection> poiSection = level.getPoiManager()
-                            .getOrLoad(SectionPos.of(c.getPos(), minCY + cy).asLong());
-                    if (poiSection.isEmpty())
+                    var poiSection = level.getPoiManager()
+                            .getOrLoad(SectionPos.of(c.getPos(), minCY + cy).asLong())
+                            .orElse(null);
+                    if (poiSection == null) {
                         continue;
-                    List<PoiRecord> poiRecords = poiSection.get()
-                            .getRecords(poiType -> true, PoiManager.Occupancy.ANY).toList();
-                    poiRecords.forEach(poiRecord -> {
+                    }
+                    var poiRecords = poiSection
+                            .getRecords(poiType -> true, PoiManager.Occupancy.ANY)
+                            .iterator();
+                    while (poiRecords.hasNext()) {
+                        var poiRecord = poiRecords.next();
                         var pos = poiRecord.getPos();
                         if (pos.getX() >= minX && pos.getX() <= maxX && pos.getY() >= minY && pos.getY() <= maxY
                                 && pos.getZ() >= minZ && pos.getZ() <= maxZ) {
                             this.poiMoveRecords.add(new PoiMoveRecord(
                                     poiRecord.getPos().offset(-x_offset, -y_offset, -z_offset),
                                     poiRecord.getPoiType()));
-                            poiSection.get().remove(poiRecord.getPos());
+                            poiSection.remove(poiRecord.getPos());
                         }
-                    });
+                    }
                 }
             }
         }
@@ -265,11 +268,13 @@ public class CachedPlane {
                 addTick(movedPos, entry);
             }
 
-            for (var record : this.poiMoveRecords)
+            for (var record : this.poiMoveRecords) {
                 dst.addPoi(record);
+            }
 
-            for (var record : dst.poiMoveRecords)
-                this.addPoi(record);
+            for (var record : dst.poiMoveRecords) {
+                addPoi(record);
+            }
 
             startTime = System.nanoTime();
             this.updateChunks();
