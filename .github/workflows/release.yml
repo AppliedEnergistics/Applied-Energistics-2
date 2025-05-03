@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/gradle-setup
       - name: Build with Gradle
-        run: ./gradlew build publish -x check --no-daemon --max-workers 1
+        run: ./gradlew build publish -x check --max-workers 1
       - name: Prepare artifact metadata. Note that VERSION is set by the gradle script.
         id: prepare_artifact_metadata
         run: |
@@ -119,12 +119,13 @@ jobs:
       - name: Validate artifacts exist
         run: test -d ./build
       - name: Upload to Curseforge
-        uses: Kir-Antipov/mc-publish@4db8bd126f74d5e143822181a2b1201308e2c796
+        uses: Kir-Antipov/mc-publish@995edadc13559a8b28d0b7e6571229f067ec7659
         with:
           name: AE2 ${{ needs.build.outputs.VERSION }} [NEOFORGE]
           version: ${{ needs.build.outputs.VERSION }}
           files: ${{ needs.build.outputs.ARTIFACT_PATH }}
           dependencies: |
+            guideme(required){modrinth:Ck4E7v7R}{curseforge:1173950}
             jade(optional){modrinth:nvQzSEkH}{curseforge:324717}
             wthit(optional){modrinth:6AQIaxuO}{curseforge:440979}
             rei(optional){modrinth:nfn13YXA}{curseforge:310111}
@@ -133,9 +134,7 @@ jobs:
             theoneprobe(optional){modrinth:Eyw0UxEx}{curseforge:245211}
           curseforge-id: 223794
           curseforge-token: ${{ secrets.CURSEFORGE }}
-          loaders: |
-            neoforge
-            forge
+          loaders: forge
 
   deploy-modmaven:
     name: Deploy to Modmaven
@@ -172,12 +171,13 @@ jobs:
       - name: Validate artifacts exist
         run: test -d ./build
       - name: Upload to Modrinth
-        uses: Kir-Antipov/mc-publish@4db8bd126f74d5e143822181a2b1201308e2c796
+        uses: Kir-Antipov/mc-publish@995edadc13559a8b28d0b7e6571229f067ec7659
         with:
           name: AE2 ${{ needs.build.outputs.VERSION }} [NEOFORGE]
           version: ${{ needs.build.outputs.VERSION }}
           files: ${{ needs.build.outputs.ARTIFACT_PATH }}
           dependencies: |
+            guideme(required){modrinth:Ck4E7v7R}{curseforge:1173950}
             jade(optional){modrinth:nvQzSEkH}{curseforge:324717}
             wthit(optional){modrinth:6AQIaxuO}{curseforge:440979}
             rei(optional){modrinth:nfn13YXA}{curseforge:310111}
@@ -186,6 +186,4 @@ jobs:
             theoneprobe(optional){modrinth:Eyw0UxEx}{curseforge:245211}
           modrinth-id: XxWD5pD3
           modrinth-token: ${{ secrets.MODRINTH }}
-          loaders: |
-            neoforge
-            forge
+          loaders: forge
