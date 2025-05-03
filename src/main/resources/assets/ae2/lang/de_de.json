@@ -273,6 +273,7 @@
   "config.jade.plugin_ae2.power_storage": "AE2 Netzwerkstatus",
   "death.attack.matter_cannon": "%1$s wurde von %2$s erschossen",
   "death.attack.matter_cannon.item": "%1$s wurde von %2$s mit %3$s geschossen",
+  "dimension.ae2.spatial_storage": "Raumspeicher",
   "entity.ae2.tiny_tnt_primed": "Kleines gezündetes TNT",
   "entity.minecraft.villager.ae2.fluix_researcher": "Fluix Forscher",
   "exported_setting.ae2.exported_config_inv": "Filtern",
