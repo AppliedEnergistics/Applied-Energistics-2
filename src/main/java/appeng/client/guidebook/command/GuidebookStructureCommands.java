@@ -49,6 +49,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * will not be used directly by users, but rather by command blocks built by
  * {@link appeng.server.testplots.GuidebookPlot}.
  */
+@Deprecated(forRemoval = true)
 @OnlyIn(Dist.CLIENT)
 public class GuidebookStructureCommands {
 

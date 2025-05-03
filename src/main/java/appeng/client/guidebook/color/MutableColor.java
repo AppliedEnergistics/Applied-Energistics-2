@@ -6,6 +6,7 @@ import net.minecraft.util.Mth;
 /**
  * A helper for mutating color values.
  */
+@Deprecated(forRemoval = true)
 public final class MutableColor implements ColorValue {
     private float r = 1f;
     private float g = 1f;

@@ -2,6 +2,7 @@ package appeng.client.guidebook.color;
 
 import net.minecraft.util.FastColor;
 
+@Deprecated(forRemoval = true)
 final class Colors {
     public static int argb(int a, int r, int g, int b) {
         return FastColor.ARGB32.color(a, r, g, b);

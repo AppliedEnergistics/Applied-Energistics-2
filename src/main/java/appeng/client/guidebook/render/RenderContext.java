@@ -61,20 +61,12 @@ public interface RenderContext {
     void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorValue topLeft, ColorValue topRight,
             ColorValue bottomRight, ColorValue bottomLeft, float u0, float v0, float u1, float v1);
 
-    default void fillTexturedRect(LytRect rect, GuidePageTexture texture) {
-        fillTexturedRect(rect, texture.use(), ConstantColor.WHITE);
-    }
-
     default void fillTexturedRect(LytRect rect, AbstractTexture texture) {
         fillTexturedRect(rect, texture, ConstantColor.WHITE);
     }
 
     default void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorValue color) {
         fillTexturedRect(rect, texture, color, color, color, color);
-    }
-
-    default void fillTexturedRect(LytRect rect, GuidePageTexture texture, ColorValue color) {
-        fillTexturedRect(rect, texture.use(), color, color, color, color);
     }
 
     default void fillTexturedRect(LytRect rect, TextureAtlasSprite sprite, ColorValue color) {

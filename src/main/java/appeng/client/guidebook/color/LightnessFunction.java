@@ -3,6 +3,7 @@ package appeng.client.guidebook.color;
 /**
  * Applies a function to an existing color that makes it lighter or darker by a given percentage.
  */
+@Deprecated(forRemoval = true)
 public class LightnessFunction implements ColorValue {
     private final ColorValue color;
     private final float percentage;

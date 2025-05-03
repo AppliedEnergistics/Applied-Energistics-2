@@ -1,5 +1,6 @@
 package appeng.client.guidebook.color;
 
+@Deprecated(forRemoval = true)
 public record ConstantColor(int color) implements ColorValue {
     public static ConstantColor WHITE = new ConstantColor(-1);
 
