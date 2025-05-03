@@ -96,7 +96,7 @@ import appeng.init.client.InitRenderTypes;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
 import appeng.items.storage.StorageCellTooltipComponent;
-import appeng.siteexport.SiteExporter;
+import appeng.siteexport.AESiteExporter;
 import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.spatial.SpatialStorageSkyProperties;
 import appeng.util.InteractionUtil;
@@ -276,7 +276,7 @@ public class AppEngClient extends AppEngBase {
         // Only activate the site exporter when we're not running a release version, since it'll
         // replace blocks around spawn.
         if (!FMLLoader.isProduction()) {
-            SiteExporter.initialize();
+            AESiteExporter.initialize();
         }
     }
 

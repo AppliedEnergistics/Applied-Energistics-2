@@ -1,6 +1,7 @@
 package appeng.siteexport;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -8,17 +9,25 @@ import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.LoadingOverlay;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 
 import guideme.Guide;
 import guideme.internal.siteexport.SiteExporter;
 
+import appeng.core.AppEngClient;
 import appeng.core.definitions.AEBlocks;
 import appeng.items.tools.powered.MatterCannonItem;
 import appeng.recipes.entropy.EntropyRecipe;
@@ -39,6 +48,56 @@ public class AESiteExporter extends SiteExporter {
         referenceFluid(Fluids.LAVA);
         referenceItem(Items.TNT);
         referenceItem(Blocks.SMITHING_TABLE);
+    }
+
+    public static void initialize() {
+        // Automatically run the export once the client has started and then exit
+        if (Boolean.getBoolean("appeng.runGuideExportAndExit")) {
+            Path outputFolder = Paths.get(System.getProperty("appeng.guideExportFolder"));
+
+            MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent evt) -> {
+                if (evt.phase == TickEvent.Phase.END) {
+                    var client = Minecraft.getInstance();
+                    if (client.getOverlay() instanceof LoadingOverlay) {
+                        return; // Do nothing while it's loading
+                    }
+
+                    var guide = AppEngClient.instance().getGuide();
+                    try {
+                        new AESiteExporter(Minecraft.getInstance(), outputFolder, guide)
+                                .exportOnNextTickAndExit();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.exit(1);
+                    }
+                }
+            });
+        }
+    }
+
+    public static void export(FabricClientCommandSource source) {
+        var guide = AppEngClient.instance().getGuide();
+        try {
+            Path outputFolder = Paths.get("guide-export").toAbsolutePath();
+            export(Minecraft.getInstance(), outputFolder, guide);
+
+            source.sendFeedback(Component.literal("Guide data exported to ")
+                    .append(Component.literal("[" + outputFolder.getFileName().toString() + "]")
+                            .withStyle(style -> style
+                                    .withClickEvent(
+                                            new ClickEvent(ClickEvent.Action.OPEN_FILE, outputFolder.toString()))
+                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                            Component.literal("Click to open export folder")))
+                                    .applyFormats(ChatFormatting.UNDERLINE, ChatFormatting.GREEN))));
+        } catch (Exception e) {
+            e.printStackTrace();
+            source.sendError(Component.literal(e.toString()));
+        }
+    }
+
+    private static void export(Minecraft client, Path outputFolder, guideme.Guide guide) throws Exception {
+        new AESiteExporter(client, outputFolder, guide)
+                .exportOnNextTickAndExit();
     }
 
     @Nullable
