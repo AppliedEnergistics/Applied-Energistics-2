@@ -228,13 +228,6 @@ allprojects {
             }
         }
         maven { url = 'https://repo.spongepowered.org/maven' }
-        maven {
-            name = 'GuideME Snapshots'
-            url = 'https://central.sonatype.com/repository/maven-snapshots/'
-            content {
-                includeModule('org.appliedenergistics', 'guideme')
-            }
-        }
     }
 
     // ensure everything uses UTF-8 and not some random codepage chosen by gradle
