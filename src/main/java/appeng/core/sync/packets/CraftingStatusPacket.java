@@ -49,6 +49,7 @@ public class CraftingStatusPacket extends BasePacket {
 
         var data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeInt(getPacketID());
+        data.writeInt(containerId);
         status.write(data);
         configureWrite(data);
     }
