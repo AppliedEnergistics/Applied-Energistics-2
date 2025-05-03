@@ -1,4 +1,4 @@
-package appeng.client.guidebook.scene;
+package appeng.client.guidebook;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;

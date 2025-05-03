@@ -502,6 +502,8 @@
   "gui.ae2.ToCraft": "To Craft: %s",
   "gui.ae2.ToastCraftingJobFinishedText": "%d %s",
   "gui.ae2.ToastCraftingJobFinishedTitle": "Auto-Crafting Complete",
+  "gui.ae2.TransformTypeExplode": "Explode",
+  "gui.ae2.TransformTypeThrowInFluid": "Throw in %s",
   "gui.ae2.TransparentFacades": "Transparent Facades",
   "gui.ae2.TransparentFacadesHint": "Controls visibility of facades while the network tool is on your toolbar.",
   "gui.ae2.Types": "Types",

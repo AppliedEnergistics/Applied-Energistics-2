@@ -57,7 +57,7 @@ def extraModsDir = "extra-mods-${minecraft_version}"
 file(extraModsDir).mkdir()
 
 dependencies {
-    implementation(jarJar("org.appliedenergistics:guideme:${guideme_version}"))
+    modImplementation("org.appliedenergistics:guideme:${guideme_version}")
 
     // To be copied into the jar file
     shaded project(path: ':libs:markdown', configuration: "archives")
@@ -228,6 +228,13 @@ allprojects {
             }
         }
         maven { url = 'https://repo.spongepowered.org/maven' }
+        maven {
+            name = 'GuideME Snapshots'
+            url = 'https://central.sonatype.com/repository/maven-snapshots/'
+            content {
+                includeModule('org.appliedenergistics', 'guideme')
+            }
+        }
     }
 
     // ensure everything uses UTF-8 and not some random codepage chosen by gradle

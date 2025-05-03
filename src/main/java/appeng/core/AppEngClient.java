@@ -59,6 +59,7 @@ import net.minecraftforge.fml.loading.FMLLoader;
 
 import guideme.Guide;
 import guideme.GuidesCommon;
+import guideme.compiler.TagCompiler;
 import guideme.scene.ImplicitAnnotationStrategy;
 
 import appeng.api.parts.CableRenderMode;
@@ -68,9 +69,10 @@ import appeng.client.commands.ClientCommands;
 import appeng.client.gui.me.common.PendingCraftingJobs;
 import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
+import appeng.client.guidebook.ConfigValueTagExtension;
 import appeng.client.guidebook.PageAnchor;
+import appeng.client.guidebook.PartAnnotationStrategy;
 import appeng.client.guidebook.command.GuidebookStructureCommands;
-import appeng.client.guidebook.scene.PartAnnotationStrategy;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.client.render.effects.ParticleTypes;
@@ -192,6 +194,7 @@ public class AppEngClient extends AppEngBase {
         return Guide.builder(GUIDE_ID)
                 .folder("ae2guide")
                 .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
+                .extension(TagCompiler.EXTENSION_POINT, new ConfigValueTagExtension())
                 .build();
     }
 
