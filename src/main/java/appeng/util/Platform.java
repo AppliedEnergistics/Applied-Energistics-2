@@ -263,6 +263,10 @@ public class Platform {
         return fluid.getDisplayName().getString();
     }
 
+    public static Component getFluidDisplayName(Fluid fluid) {
+        return getFluidDisplayName(fluid, null);
+    }
+
     public static Component getFluidDisplayName(Fluid fluid, @Nullable CompoundTag tag) {
         var fluidStack = new FluidStack(fluid, 1);
         fluidStack.setTag(tag);

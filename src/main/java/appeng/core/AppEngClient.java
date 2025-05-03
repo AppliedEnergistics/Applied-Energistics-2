@@ -57,6 +57,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
 
+import guideme.Guide;
+import guideme.GuidesCommon;
+import guideme.compiler.TagCompiler;
+import guideme.scene.ImplicitAnnotationStrategy;
+
 import appeng.api.parts.CableRenderMode;
 import appeng.client.EffectType;
 import appeng.client.Hotkeys;
@@ -64,14 +69,10 @@ import appeng.client.commands.ClientCommands;
 import appeng.client.gui.me.common.PendingCraftingJobs;
 import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
-import appeng.client.guidebook.Guide;
+import appeng.client.guidebook.ConfigValueTagExtension;
 import appeng.client.guidebook.PageAnchor;
+import appeng.client.guidebook.PartAnnotationStrategy;
 import appeng.client.guidebook.command.GuidebookStructureCommands;
-import appeng.client.guidebook.hotkey.OpenGuideHotkey;
-import appeng.client.guidebook.scene.ImplicitAnnotationStrategy;
-import appeng.client.guidebook.scene.PartAnnotationStrategy;
-import appeng.client.guidebook.screen.GlobalInMemoryHistory;
-import appeng.client.guidebook.screen.GuideScreen;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.client.render.effects.ParticleTypes;
@@ -95,7 +96,7 @@ import appeng.init.client.InitRenderTypes;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
 import appeng.items.storage.StorageCellTooltipComponent;
-import appeng.siteexport.SiteExporter;
+import appeng.siteexport.AESiteExporter;
 import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.spatial.SpatialStorageSkyProperties;
 import appeng.util.InteractionUtil;
@@ -107,6 +108,7 @@ import appeng.util.Platform;
 @OnlyIn(Dist.CLIENT)
 public class AppEngClient extends AppEngBase {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppEngClient.class);
+    public static final ResourceLocation GUIDE_ID = AppEng.makeId("guide");
 
     private static AppEngClient INSTANCE;
 
@@ -138,7 +140,6 @@ public class AppEngClient extends AppEngBase {
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
         guide = createGuide();
-        OpenGuideHotkey.init();
 
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, (TickEvent.ClientTickEvent e) -> {
             if (e.phase == TickEvent.Phase.START) {
@@ -190,8 +191,10 @@ public class AppEngClient extends AppEngBase {
             GuidebookStructureCommands.register(dispatcher);
         });
 
-        return Guide.builder(MOD_ID, "ae2guide")
+        return Guide.builder(GUIDE_ID)
+                .folder("ae2guide")
                 .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
+                .extension(TagCompiler.EXTENSION_POINT, new ConfigValueTagExtension())
                 .build();
     }
 
@@ -213,9 +216,6 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerHotkeys(RegisterKeyMappingsEvent e) {
-        if (AEConfig.instance().isGuideHotkeyEnabled()) {
-            e.register(OpenGuideHotkey.getHotkey());
-        }
         Hotkeys.finalizeRegistration(e::register);
     }
 
@@ -276,7 +276,7 @@ public class AppEngClient extends AppEngBase {
         // Only activate the site exporter when we're not running a release version, since it'll
         // replace blocks around spawn.
         if (!FMLLoader.isProduction()) {
-            SiteExporter.initialize();
+            AESiteExporter.initialize();
         }
     }
 
@@ -421,10 +421,7 @@ public class AppEngClient extends AppEngBase {
     @Override
     public void openGuideAtPreviousPage(ResourceLocation initialPage) {
         try {
-            var screen = GuideScreen.openAtPreviousPage(guide, PageAnchor.page(initialPage),
-                    GlobalInMemoryHistory.INSTANCE);
-
-            openGuideScreen(screen);
+            GuidesCommon.openGuide(Minecraft.getInstance().player, GUIDE_ID);
         } catch (Exception e) {
             LOGGER.error("Failed to open guide.", e);
         }
@@ -433,21 +430,11 @@ public class AppEngClient extends AppEngBase {
     @Override
     public void openGuideAtAnchor(PageAnchor anchor) {
         try {
-            var screen = GuideScreen.openNew(guide, anchor, GlobalInMemoryHistory.INSTANCE);
-
-            openGuideScreen(screen);
+            GuidesCommon.openGuide(Minecraft.getInstance().player, GUIDE_ID,
+                    new guideme.PageAnchor(anchor.pageId(), anchor.anchor()));
         } catch (Exception e) {
             LOGGER.error("Failed to open guide at {}.", anchor, e);
         }
-    }
-
-    private static void openGuideScreen(GuideScreen screen) {
-        var minecraft = Minecraft.getInstance();
-        if (minecraft.screen != null) {
-            screen.setReturnToOnClose(minecraft.screen);
-        }
-
-        minecraft.setScreen(screen);
     }
 
     public Guide getGuide() {

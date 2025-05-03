@@ -56,6 +56,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import guideme.indices.ItemIndex;
+
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.behaviors.EmptyingAction;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -73,7 +75,6 @@ import appeng.client.gui.widgets.ITooltip;
 import appeng.client.gui.widgets.OpenGuideButton;
 import appeng.client.gui.widgets.VerticalButtonBar;
 import appeng.client.guidebook.PageAnchor;
-import appeng.client.guidebook.indices.ItemIndex;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -1034,15 +1035,15 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         if (target instanceof BlockEntity be) {
             var block = be.getBlockState().getBlock();
             var blockId = BuiltInRegistries.BLOCK.getKey(block);
-            return itemIndex.get(blockId);
+            return PageAnchor.of(itemIndex.get(blockId));
         } else if (target instanceof IPart part) {
             var item = part.getPartItem().asItem();
             var itemId = BuiltInRegistries.ITEM.getKey(item);
-            return itemIndex.get(itemId);
+            return PageAnchor.of(itemIndex.get(itemId));
         } else if (target instanceof ItemMenuHost menuHost) {
             var item = menuHost.getItemStack().getItem();
             var itemId = BuiltInRegistries.ITEM.getKey(item);
-            return itemIndex.get(itemId);
+            return PageAnchor.of(itemIndex.get(itemId));
         }
         return null;
     }

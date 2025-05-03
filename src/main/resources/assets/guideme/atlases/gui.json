@@ -1,0 +1,9 @@
+{
+  "sources": [
+    {
+      "type": "single",
+      "resource": "ae2:gui/sprites/guide/inscriber_arrows_bg",
+      "sprite": "ae2:guide/inscriber_arrows_bg"
+    }
+  ]
+}

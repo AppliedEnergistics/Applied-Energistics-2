@@ -1,4 +1,4 @@
-package appeng.client.guidebook.scene;
+package appeng.client.guidebook;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -12,12 +12,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 
+import guideme.color.SymbolicColor;
+import guideme.scene.ImplicitAnnotationStrategy;
+import guideme.scene.annotation.InWorldBoxAnnotation;
+import guideme.scene.annotation.SceneAnnotation;
+import guideme.scene.level.GuidebookLevel;
+
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
-import appeng.client.guidebook.color.SymbolicColor;
-import appeng.client.guidebook.scene.annotation.InWorldBoxAnnotation;
-import appeng.client.guidebook.scene.annotation.SceneAnnotation;
-import appeng.client.guidebook.scene.level.GuidebookLevel;
 import appeng.core.localization.GuiText;
 import appeng.parts.BusCollisionHelper;
 

@@ -9,8 +9,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 
 import appeng.core.AEConfig;
+import appeng.siteexport.AESiteExporter;
 import appeng.siteexport.FabricClientCommandSource;
-import appeng.siteexport.SiteExporter;
 
 public final class ClientCommands {
 
@@ -28,7 +28,7 @@ public final class ClientCommands {
 
     private static void exportSiteData(LiteralArgumentBuilder<CommandSourceStack> builder) {
         builder.then(Commands.literal("export_site_data").executes(context -> {
-            SiteExporter.export(new FabricClientCommandSource() {
+            AESiteExporter.export(new FabricClientCommandSource() {
                 @Override
                 public void sendFeedback(Component message) {
                     context.getSource().sendSystemMessage(message);

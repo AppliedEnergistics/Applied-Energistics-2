@@ -85,6 +85,7 @@ import appeng.init.internal.InitUpgrades;
 import appeng.init.worldgen.InitStructures;
 import appeng.integration.Integrations;
 import appeng.items.tools.MemoryCardItem;
+import appeng.recipes.AERecipeTypes;
 import appeng.server.AECommand;
 import appeng.server.services.ChunkLoadingService;
 import appeng.server.testworld.GameTestPlotAdapter;
@@ -122,6 +123,7 @@ public abstract class AppEngBase implements AppEng {
         InitStorageCells.init();
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        AERecipeTypes.DR.register(modEventBus);
         modEventBus.addListener(this::registerRegistries);
         modEventBus.addListener(MainCreativeTab::initExternal);
         modEventBus.addListener((RegisterEvent event) -> {

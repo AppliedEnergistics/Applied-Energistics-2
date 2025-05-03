@@ -247,6 +247,8 @@ public enum GuiText implements LocalizationEnum {
     ToastCraftingJobFinishedTitle("Auto-Crafting Complete"),
     ToastCraftingJobFinishedText("%d %s"),
     ToCraft("To Craft: %s"),
+    TransformTypeExplode("Explode"),
+    TransformTypeThrowInFluid("Throw in %s"),
     TransparentFacades("Transparent Facades"),
     TransparentFacadesHint("Controls visibility of facades while the network tool is on your toolbar."),
     Types("Types"),

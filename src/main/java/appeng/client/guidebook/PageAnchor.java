@@ -15,6 +15,13 @@ public record PageAnchor(ResourceLocation pageId, @Nullable String anchor) {
         return new PageAnchor(pageId, null);
     }
 
+    public static @Nullable PageAnchor of(guideme.PageAnchor pageAnchor) {
+        if (pageAnchor == null) {
+            return null;
+        }
+        return new PageAnchor(pageAnchor.pageId(), pageAnchor.anchor());
+    }
+
     @Override
     public String toString() {
         if (anchor != null) {

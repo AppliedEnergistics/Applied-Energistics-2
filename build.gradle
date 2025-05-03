@@ -50,12 +50,15 @@ configurations {
 }
 
 import com.diffplug.gradle.spotless.JsonExtension
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 // All jar files from this folder will be added automatically as runtime mod dependencies
 def extraModsDir = "extra-mods-${minecraft_version}"
 file(extraModsDir).mkdir()
 
 dependencies {
+    modImplementation("org.appliedenergistics:guideme:${guideme_version}")
+
     // To be copied into the jar file
     shaded project(path: ':libs:markdown', configuration: "archives")
     shaded "io.methvin:directory-watcher:${directory_watcher_version}"
@@ -274,7 +277,7 @@ test {
     useJUnitPlatform()
 
     // Might not need this anymore...
-    systemProperty "guideDev.ae2guide.sources", file("guidebook").absolutePath
+    systemProperty "guideme.ae2.guide.sources", file("guidebook").absolutePath
 }
 
 dependencies {
@@ -313,30 +316,22 @@ legacyForge {
                     "--add-opens", "java.base/sun.security.util=ALL-UNNAMED",
                     "--add-opens", "java.base/java.util.jar=ALL-UNNAMED"
             )
+
+            systemProperty "guideme.ae2.guide.sources", file("guidebook").absolutePath
         }
         client {
             client()
-            systemProperties.putAll(
-                    "appeng.tests"             : "true",
-                    "guideDev.ae2guide.sources": file("guidebook").absolutePath,
-            )
         }
         gametestWorld {
             client()
             programArguments.addAll(
                     "--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld"
             )
-            systemProperties.putAll(
-                    "appeng.tests"             : "true",
-                    "guideDev.ae2guide.sources": file("guidebook").absolutePath,
-            )
         }
         guide {
             client()
-            systemProperties.putAll(
-                    "guideDev.ae2guide.sources"    : file("guidebook").absolutePath,
-                    "guideDev.ae2guide.startupPage": "ae2:index.md"
-            )
+
+            systemProperty('guideme.showOnStartup', 'ae2:guide')
         }
         server {
             server()
@@ -352,12 +347,8 @@ legacyForge {
         }
         guideexport {
             client()
-            systemProperties.putAll(
-                    "appeng.runGuideExportAndExit": "true",
-                    "appeng.guideExportFolder"    : file("$buildDir/guide").absolutePath,
-                    "guideDev.ae2guide.sources"   : file("guidebook").absolutePath,
-                    "appeng.version"              : project.version
-            )
+            systemProperty('appeng.runGuideExportAndExit', 'true')
+            systemProperty('appeng.guideExportFolder', file('build/guide').absolutePath)
         }
         // Use to run the tests
         gametest {
@@ -375,6 +366,7 @@ Map<String, String> expansionVariables = [
         "project_version"  : project.version,
         'minecraft_version': project.minecraft_version_range,
         'forge_version'    : project.forge_version_range,
+        'guideme_version'  : project.guideme_version_range,
         'jei_version'      : project.jei_version_range,
         'top_version'      : project.top_version_range,
         'jade_version'     : project.jade_version_range
@@ -397,7 +389,8 @@ processResources {
 
 jar.enabled = false // Replaced by "shadowJar"
 
-shadowJar {
+final shadowJar = tasks.named("shadowJar", ShadowJar)
+shadowJar.configure {
     finalizedBy 'reobfShadowJar'
 
     from sourceSets.main.output.classesDirs
@@ -422,7 +415,7 @@ shadowJar {
 }
 
 obfuscation {
-    reobfuscate(tasks.named('shadowJar'), sourceSets.main) {
+    reobfuscate(shadowJar, sourceSets.main) {
         archiveClassifier = ""
     }
 }
@@ -434,7 +427,7 @@ tasks.assemble.dependsOn reobfShadowJar
 // Mixins
 mixin {
     var refmap = add sourceSets.main, "ae2.mixins.refmap.json"
-    shadowJar.from refmap
+    shadowJar.configure { from refmap }
     config "ae2.mixins.json"
 }
 
