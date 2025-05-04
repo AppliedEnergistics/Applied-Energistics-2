@@ -369,10 +369,15 @@ mixin {
     config "ae2.mixins.json"
 }
 
-jar.manifest {
-    attributes([
-            "MixinConfigs"          : "ae2.mixins.json"
-    ])
+jar {
+    from('guidebook') {
+        into 'assets/ae2/ae2guide'
+    }
+    manifest {
+        attributes([
+                "MixinConfigs"          : "ae2.mixins.json"
+        ])
+    }
 }
 
 def publicApiIncludePatterns = {
