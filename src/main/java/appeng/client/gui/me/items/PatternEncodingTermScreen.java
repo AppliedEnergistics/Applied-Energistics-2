@@ -92,24 +92,44 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
         }
     }
 
+    private boolean handleModifyAmount(Slot slot) {
+        if (menu.canModifyAmountForSlot(slot)) {
+            var currentStack = GenericStack.fromItemStack(slot.getItem());
+            if (currentStack != null) {
+                var screen = new SetProcessingPatternAmountScreen<>(
+                        this,
+                        currentStack,
+                        newStack -> NetworkHandler.instance().sendToServer(new InventoryActionPacket(
+                                InventoryAction.SET_FILTER, slot.index,
+                                GenericStack.wrapInItemStack(newStack))));
+                switchToScreen(screen);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.minecraft.options.keyPickItem.matches(keyCode, scanCode)) {
+            return true; // Don't remove item in this case.
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        if (this.minecraft.options.keyPickItem.matches(keyCode, scanCode) && handleModifyAmount(getSlotUnderMouse())) {
+            return true;
+        }
+        return super.keyReleased(keyCode, scanCode, modifiers);
+    }
+
     @Override
     public boolean mouseClicked(double xCoord, double yCoord, int btn) {
         // handler for middle mouse button crafting in survival mode
-        if (this.minecraft.options.keyPickItem.matchesMouse(btn)) {
-            var slot = this.findSlot(xCoord, yCoord);
-            if (menu.canModifyAmountForSlot(slot)) {
-                var currentStack = GenericStack.fromItemStack(slot.getItem());
-                if (currentStack != null) {
-                    var screen = new SetProcessingPatternAmountScreen<>(
-                            this,
-                            currentStack,
-                            newStack -> NetworkHandler.instance().sendToServer(new InventoryActionPacket(
-                                    InventoryAction.SET_FILTER, slot.index,
-                                    GenericStack.wrapInItemStack(newStack))));
-                    switchToScreen(screen);
-                    return true;
-                }
-            }
+        if (this.minecraft.options.keyPickItem.matchesMouse(btn) && handleModifyAmount(getSlotUnderMouse())) {
+            return true;
         }
 
         return super.mouseClicked(xCoord, yCoord, btn);
