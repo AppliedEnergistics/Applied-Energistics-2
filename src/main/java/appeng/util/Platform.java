@@ -29,6 +29,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.mojang.authlib.GameProfile;
 
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -50,8 +51,12 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.BlockSnapshot;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -214,7 +219,7 @@ public class Platform {
         if (!dc.isInWorld(player.level())) {
             return false;
         }
-        return player.level().mayInteract(player, dc.getPos());
+        return player.level().mayInteract(player, dc.getPos()) && mayExchange(level, player, dc.getPos());
     }
 
     /*
@@ -464,4 +469,23 @@ public class Platform {
     public static boolean isDevelopmentEnvironment() {
         return !FMLEnvironment.production;
     }
+
+    public static boolean mayExchange(ServerLevel level, Player player, BlockPos pos) {
+		 return canBreak((Level)level, player, pos) && mayPlace(level, player, pos);
+	 }
+	 
+	 public static boolean mayPlace(ServerLevel level, Player player, @NotNull BlockPos pos) { 
+		 BlockSnapshot blockSnapshot = BlockSnapshot.create(level.dimension(), level, pos);
+		 BlockState placedAgainst = Objects.requireNonNull(blockSnapshot.getLevel()).getBlockState(blockSnapshot.getPos());
+		 BlockEvent.EntityPlaceEvent event = new BlockEvent.EntityPlaceEvent(blockSnapshot, placedAgainst, player);
+		 boolean placeAllowed = !MinecraftForge.EVENT_BUS.post(event);
+		 return level.mayInteract(player,pos) && placeAllowed;
+	 }
+	 
+	 public static boolean canBreak(Level level, Player player, BlockPos pos) { 
+		    BlockState state = level.getBlockState(pos);
+		    BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, pos, state, player);
+		    boolean breakAllowed = !MinecraftForge.EVENT_BUS.post(event);
+		    return level.mayInteract(player,pos) && breakAllowed;
+		}
 }
