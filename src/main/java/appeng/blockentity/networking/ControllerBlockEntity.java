@@ -84,7 +84,8 @@ public class ControllerBlockEntity extends AENetworkedPoweredBlockEntity {
             if (grid.getEnergyService().isNetworkPowered()) {
                 metaState = ControllerBlockState.online;
 
-                if (grid.getPathingService().getControllerState() == ControllerState.CONTROLLER_CONFLICT) {
+                var state = grid.getPathingService().getControllerState();
+                if (state == ControllerState.CONTROLLER_CONFLICT || state == ControllerState.CONTROLLER_TRUNK_INVALID) {
                     metaState = ControllerBlockState.conflicted;
                 }
             }

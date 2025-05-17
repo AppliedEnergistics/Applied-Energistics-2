@@ -18,6 +18,10 @@
 
 package appeng.me.pathfinding;
 
+import java.lang.ref.WeakReference;
+
+import org.jetbrains.annotations.Nullable;
+
 import appeng.api.networking.GridFlags;
 
 public interface IPathItem {
@@ -34,6 +38,12 @@ public interface IPathItem {
      * Sets route to controller.
      */
     void setControllerRoute(IPathItem fast);
+
+    /* used by controller pathing in multi-controller operation */
+    @Nullable
+    WeakReference<ControllerInfo.SubtreeInfo> getSubtreeInfo();
+
+    void setSubtreeInfo(@Nullable ControllerInfo.SubtreeInfo controller);
 
     /**
      * The maximum number of channels connections to this path item can carry.

@@ -18,6 +18,7 @@
 
 package appeng.me;
 
+import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 import com.google.common.base.Preconditions;
@@ -32,6 +33,7 @@ import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.pathing.ChannelMode;
+import appeng.me.pathfinding.ControllerInfo;
 import appeng.me.pathfinding.IPathItem;
 
 public class GridConnection implements IGridConnection, IPathItem {
@@ -53,6 +55,9 @@ public class GridConnection implements IGridConnection, IPathItem {
     @Nullable
     private Direction fromAtoB;
     private GridNode sideB;
+
+    @Nullable
+    private WeakReference<ControllerInfo.SubtreeInfo> subtreeInfo = null;
 
     private GridConnection(GridNode aNode, GridNode bNode, @Nullable Direction fromAtoB) {
         this.sideA = aNode;
@@ -193,6 +198,20 @@ public class GridConnection implements IGridConnection, IPathItem {
 
     void setVisitorIterationNumber(Object visitorIterationNumber) {
         this.visitorIterationNumber = visitorIterationNumber;
+    }
+
+    @Override
+    public @Nullable WeakReference<ControllerInfo.SubtreeInfo> getSubtreeInfo() {
+        return this.subtreeInfo;
+    }
+
+    @Override
+    public void setSubtreeInfo(@Nullable ControllerInfo.SubtreeInfo subtreeInfo) {
+        if (subtreeInfo == null) {
+            this.subtreeInfo = null;
+        } else {
+            this.subtreeInfo = new WeakReference<>(subtreeInfo);
+        }
     }
 
     /**

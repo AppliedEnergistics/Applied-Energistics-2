@@ -29,6 +29,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridVisitor;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.blockentity.networking.ControllerBlockEntity;
+import appeng.core.AEConfig;
 
 /**
  * Validates that the controller shape doesn't exceed the max size, and counts the number of adjacent controllers.
@@ -48,48 +49,73 @@ public class ControllerValidator implements IGridVisitor {
     private int maxX;
     private int maxY;
     private int maxZ;
+    private final HashSet<ControllerBlockEntity> unvisited;
 
     /**
      * @param pos The position of the controller this visitor is first applied to.
      */
-    private ControllerValidator(BlockPos pos) {
+    private ControllerValidator(BlockPos pos, HashSet<ControllerBlockEntity> unvisited) {
         this.minX = pos.getX();
         this.maxX = pos.getX();
         this.minY = pos.getY();
         this.maxY = pos.getY();
         this.minZ = pos.getZ();
         this.maxZ = pos.getZ();
+        this.unvisited = unvisited;
     }
 
     /**
      * Conditions for valid controllers in grids: 1) The controller structure must not exceed max size (isValid()) 2)
      * All controllers of this grid must be connected to the first controller. This is true if the validator could reach
      * all controllers from the first. 3) There must not be any crosses.
+     * <p>
+     * If multi-controller is enabled, each structure is checked independently for size limits.
      */
     public static ControllerState calculateState(Collection<ControllerBlockEntity> controllers) {
         if (controllers.isEmpty()) {
             return ControllerState.NO_CONTROLLER;
         }
 
-        var startingController = controllers.iterator().next();
-        var startingNode = startingController.getGridNode();
-        if (startingNode == null) {
-            return ControllerState.CONTROLLER_CONFLICT;
-        }
+        if (AEConfig.instance().allowMultiController()) {
+            var unvisited = new HashSet<>(controllers);
 
-        // Explore the controller structure surrounding the first controller in our grid
-        var cv = new ControllerValidator(startingController.getBlockPos());
-        startingNode.beginVisit(cv);
+            while (!unvisited.isEmpty()) {
+                var next = unvisited.iterator().next();
+                var nextNode = next.getGridNode();
+                if (nextNode == null) {
+                    return ControllerState.CONTROLLER_CONFLICT;
+                }
 
-        if (!cv.isValid()) {
-            // The controller structure exceeds the maximum size
-            return ControllerState.CONTROLLER_CONFLICT;
-        }
+                // Validate one controller structure
+                var cv = new ControllerValidator(next.getBlockPos(), unvisited);
+                nextNode.beginVisit(cv);
 
-        if (cv.getFound() != controllers.size()) {
-            // Not all controllers connected to this grid are directly connected to the first
-            // controller, so the visitor could not reach them.
-            return ControllerState.CONTROLLER_CONFLICT;
+                if (!cv.isValid()) {
+                    // Exceeds max size
+                    return ControllerState.CONTROLLER_CONFLICT;
+                }
+            }
+        } else {
+            var startingController = controllers.iterator().next();
+            var startingNode = startingController.getGridNode();
+            if (startingNode == null) {
+                return ControllerState.CONTROLLER_CONFLICT;
+            }
+
+            // Explore the controller structure surrounding the first controller in our grid
+            var cv = new ControllerValidator(startingController.getBlockPos(), null);
+            startingNode.beginVisit(cv);
+
+            if (!cv.isValid()) {
+                // The controller structure exceeds the maximum size
+                return ControllerState.CONTROLLER_CONFLICT;
+            }
+
+            if (cv.getFound() != controllers.size()) {
+                // Not all controllers connected to this grid are directly connected to the first
+                // controller, so the visitor could not reach them.
+                return ControllerState.CONTROLLER_CONFLICT;
+            }
         }
 
         if (hasControllerCross(controllers)) {
@@ -117,6 +143,9 @@ public class ControllerValidator implements IGridVisitor {
                     && this.maxY - this.minY < MAX_SIZE
                     && this.maxZ - this.minZ < MAX_SIZE) {
                 this.found++;
+                if (this.unvisited != null) {
+                    this.unvisited.remove(c);
+                }
                 return true;
             }
 

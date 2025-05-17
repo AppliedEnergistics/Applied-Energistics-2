@@ -69,7 +69,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     private int channelsInUse = 0;
     private int channelsByBlocks = 0;
     private double channelPowerUsage = 0.0;
-    private boolean recalculateControllerNextTick = true;
+    private boolean controllersChanged = true;
     // Flag to indicate a reboot should occur next tick
     private boolean reboot = true;
     private boolean booting = false;
@@ -90,8 +90,12 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
     @Override
     public void onServerEndTick() {
-        if (this.recalculateControllerNextTick) {
-            this.updateControllerState();
+        final var oldControllerState = this.controllerState;
+        if (this.controllersChanged) {
+            this.controllersChanged = false;
+
+            // Check if each controller multiblock structure is valid.
+            this.controllerState = ControllerValidator.calculateState(controllers);
         }
 
         if (this.reboot) {
@@ -126,8 +130,21 @@ public class PathingService implements IPathingService, IGridServiceProvider {
             } else {
                 var calculation = new PathingCalculation(grid);
                 calculation.compute();
-                this.channelsInUse = calculation.getChannelsInUse();
-                this.channelsByBlocks = calculation.getChannelsByBlocks();
+
+                if (calculation.isInvalidTrunkConnection()) {
+                    this.channelsInUse = 0;
+                    this.channelsByBlocks = 0;
+                    this.controllerState = ControllerState.CONTROLLER_TRUNK_INVALID;
+                    this.grid.getPivot().beginVisit(new AdHocChannelUpdater(0));
+                } else {
+                    this.channelsInUse = calculation.getChannelsInUse();
+                    this.channelsByBlocks = calculation.getChannelsByBlocks();
+                    this.controllerState = ControllerState.CONTROLLER_ONLINE;
+                }
+            }
+
+            if (oldControllerState != this.controllerState) {
+                this.grid.postEvent(new GridControllerChange());
             }
 
             // check for achievements
@@ -151,7 +168,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     public void removeNode(IGridNode gridNode) {
         if (gridNode.getOwner() instanceof ControllerBlockEntity controller) {
             this.controllers.remove(controller);
-            this.recalculateControllerNextTick = true;
+            this.controllersChanged = true;
         }
 
         if (gridNode.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
@@ -173,7 +190,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
         if (gridNode.getOwner() instanceof ControllerBlockEntity controller) {
             this.controllers.add(controller);
-            this.recalculateControllerNextTick = true;
+            this.controllersChanged = true;
         }
 
         if (gridNode.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
@@ -203,17 +220,6 @@ public class PathingService implements IPathingService, IGridServiceProvider {
             } catch (IllegalArgumentException e) {
                 AELog.warn("Invalid channel mode stored on grid node: %s", channelModeName);
             }
-        }
-    }
-
-    private void updateControllerState() {
-        this.recalculateControllerNextTick = false;
-        final ControllerState old = this.controllerState;
-
-        this.controllerState = ControllerValidator.calculateState(controllers);
-
-        if (old != this.controllerState) {
-            this.grid.postEvent(new GridControllerChange());
         }
     }
 

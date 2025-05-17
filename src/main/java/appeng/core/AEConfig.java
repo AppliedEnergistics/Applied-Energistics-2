@@ -325,6 +325,10 @@ public final class AEConfig {
         return common.channels.get();
     }
 
+    public boolean allowMultiController() {
+        return common.multiController.get();
+    }
+
     public void setChannelModel(ChannelMode mode) {
         if (mode != common.channels.get()) {
             common.channels.set(mode);
@@ -527,6 +531,7 @@ public final class AEConfig {
         public final BooleanValue matterCannonBlockDamage;
         public final BooleanValue tinyTntBlockDamage;
         public final EnumValue<ChannelMode> channels;
+        public final BooleanValue multiController;
         public final BooleanValue spatialAnchorEnableRandomTicks;
 
         public final IntValue growthAcceleratorSpeed;
@@ -596,6 +601,8 @@ public final class AEConfig {
                     "Enables the ability of Tiny TNT to break blocks.");
             channels = defineEnum(builder, "channels", ChannelMode.DEFAULT,
                     "Changes the channel capacity that cables provide in AE2.");
+            multiController = define(builder, "multiController", false,
+                    "Allow multiple controllers in the same network");
             spatialAnchorEnableRandomTicks = define(builder, "spatialAnchorEnableRandomTicks", true,
                     "Whether Spatial Anchors should force random chunk ticks and entity spawning.");
             builder.pop();

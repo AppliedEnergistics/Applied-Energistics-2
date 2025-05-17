@@ -37,5 +37,10 @@ public enum ControllerState {
     /**
      * Controller rules not followed, lock up while booting.
      */
-    CONTROLLER_CONFLICT
+    CONTROLLER_CONFLICT,
+
+    /**
+     * Network is multi-controller but trunk link(s) failed to come up, lock up while booting.
+     */
+    CONTROLLER_TRUNK_INVALID
 }
