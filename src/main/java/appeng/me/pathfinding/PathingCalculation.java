@@ -20,11 +20,14 @@ package appeng.me.pathfinding;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,8 +38,11 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.blockentity.networking.ControllerBlockEntity;
+import appeng.core.AEConfig;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
+import appeng.me.pathfinding.ControllerInfo.SubtreeInfo;
+import appeng.me.pathfinding.ControllerInfo.TrunkSearchState;
 
 /**
  * Calculation to assign channels starting from the controllers. The full computation is split in two steps, each linear
@@ -86,24 +92,84 @@ public class PathingCalculation {
      * Tracks the total number of channels for each path item is using.
      */
     private int channelsByBlocks = 0;
+    /** True if multi-controller is enabled and controllers are connected wrongly. */
+    private boolean invalidTrunkConnection = false;
+    /** Whether multi-controller mode is enabled */
+    private final boolean multiController = AEConfig.instance().allowMultiController();
+    /**
+     * Tracks SubtreeInfo objects for multi-controller routing. Null unless multi-controller is enabled
+     */
+    @Nullable
+    private final Map<GridConnection, SubtreeInfo> subtreeInfoMap;
+    /**
+     * Tracks ControllerInfo objects for multi-controller routing. Null unless multi-controller is enabled
+     */
+    @Nullable
+    private final Map<IGridNode, ControllerInfo> controllerInfoMap;
 
     /**
      * Create a new pathing calculation from the passed grid.
      */
     public PathingCalculation(IGrid grid) {
         this.grid = grid;
+        if (multiController) {
+            subtreeInfoMap = new HashMap<>();
+            controllerInfoMap = new HashMap<>();
+        } else {
+            subtreeInfoMap = null;
+            controllerInfoMap = null;
+        }
 
         // Add every outgoing connection of the controllers (that doesn't point to another controller) to the list.
         for (var node : grid.getMachineNodes(ControllerBlockEntity.class)) {
             visited.add((IPathItem) node);
+            ControllerInfo controllerInfo;
+            if (multiController) {
+                controllerInfo = new ControllerInfo(this, node);
+                controllerInfoMap.put(node, controllerInfo);
+            } else {
+                controllerInfo = null;
+            }
             for (var gcc : node.getConnections()) {
                 var gc = (GridConnection) gcc;
                 if (!(gc.getOtherSide(node).getOwner() instanceof ControllerBlockEntity)) {
                     enqueue(gc, 0);
                     gc.setControllerRoute((GridNode) node);
+                    if (multiController) {
+                        var subtreeInfo = controllerInfo.forSubtree(gc);
+                        subtreeInfoMap.put(gc, subtreeInfo);
+                        gc.setSubtreeInfo(subtreeInfo);
+                    }
+                } else if (multiController) {
+                    var other = getSubtreeInfo(gc);
+                    if (other == null) {
+                        var subtreeInfo = controllerInfo.forSubtree(gc);
+                        subtreeInfoMap.put(gc, subtreeInfo);
+                        gc.setSubtreeInfo(subtreeInfo);
+                    } else {
+                        // do the merge
+                        ControllerInfo.mergeMembers(other.parent(), controllerInfo);
+                    }
                 }
             }
         }
+    }
+
+    private @Nullable SubtreeInfo getSubtreeInfo(IPathItem node) {
+        // was this a mistake? perhaps!
+        var ref = node.getSubtreeInfo();
+        if (ref == null) {
+            return null;
+        }
+        var nc = ref.get();
+        if (nc == null) {
+            return null;
+        }
+        // ensure correct generation
+        if (nc.parent().owner != this) {
+            return null;
+        }
+        return nc;
     }
 
     private void enqueue(IPathItem pathItem, int queueIndex) {
@@ -134,6 +200,14 @@ public class PathingCalculation {
             processQueue(queues[i], i);
         }
 
+        if (multiController && controllerInfoMap != null) {
+            var firstCluster = controllerInfoMap.values().iterator().next();
+            if (firstCluster.members.size() != controllerInfoMap.size()) {
+                invalidTrunkConnection = true;
+                return;
+            }
+        }
+
         // DFS pass
         propagateAssignments();
     }
@@ -142,38 +216,116 @@ public class PathingCalculation {
         while (!oldOpen.isEmpty()) {
             IPathItem i = oldOpen.poll();
             for (IPathItem pi : i.getPossibleOptions()) {
-                if (!this.visited.contains(pi)) {
-                    // Set BFS parent.
-                    pi.setControllerRoute(i);
+                if (this.visited.contains(pi)) {
+                    if (multiController && queueIndex == 0 && pi.getControllerRoute() != i) {
+                        // check if this should be a trunk link
+                        maybeDoTrunk(i, pi);
+                    }
+                    continue;
+                }
 
-                    if (pi.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
-                        if (!this.multiblocksWithChannel.contains(pi)) {
-                            // Try to use the channel along the path.
-                            boolean worked = tryUseChannel((GridNode) pi);
+                // Set BFS parent.
+                pi.setControllerRoute(i);
 
-                            if (worked && pi.hasFlag(GridFlags.MULTIBLOCK)) {
-                                var multiblock = ((IGridNode) pi).getService(IGridMultiblock.class);
-                                if (multiblock != null) {
-                                    var oni = multiblock.getMultiblockNodes();
-                                    while (oni.hasNext()) {
-                                        final IGridNode otherNodes = oni.next();
-                                        if (otherNodes == null) {
-                                            // Only a log for now until addons are fixed too. See
-                                            // https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/8295
-                                            LOG.error("Skipping null node returned by grid multiblock node {}",
-                                                    multiblock);
-                                        } else if (otherNodes != pi) {
-                                            this.multiblocksWithChannel.add((GridNode) otherNodes);
-                                        }
+                if (pi.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
+                    if (!this.multiblocksWithChannel.contains(pi)) {
+                        // Try to use the channel along the path.
+                        boolean worked = tryUseChannel((GridNode) pi);
+
+                        if (multiController && queueIndex == 0 && worked) {
+                            // cannot trunk if any channel is allocated here
+                            var subtreeInfo = getSubtreeInfo(i);
+                            if (subtreeInfo != null) {
+                                subtreeInfo.trunkState = TrunkSearchState.INVALID;
+                            }
+                        }
+
+                        if (worked && pi.hasFlag(GridFlags.MULTIBLOCK)) {
+                            var multiblock = ((IGridNode) pi).getService(IGridMultiblock.class);
+                            if (multiblock != null) {
+                                var oni = multiblock.getMultiblockNodes();
+                                while (oni.hasNext()) {
+                                    final IGridNode otherNodes = oni.next();
+                                    if (otherNodes == null) {
+                                        // Only a log for now until addons are fixed too. See
+                                        // https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/8295
+                                        LOG.error("Skipping null node returned by grid multiblock node {}",
+                                                multiblock);
+                                    } else if (otherNodes != pi) {
+                                        this.multiblocksWithChannel.add((GridNode) otherNodes);
                                     }
                                 }
                             }
                         }
                     }
-
-                    enqueue(pi, queueIndex);
                 }
+
+                // propagate nearestController (optimization: only check in dense queue)
+                outer: if (multiController && queueIndex == 0) {
+                    var parentSubtree = getSubtreeInfo(i);
+                    if (parentSubtree == null) {
+                        break outer;
+                    }
+                    if (parentSubtree.trunkState != TrunkSearchState.SEARCHING) {
+                        // no reason to proceed further
+                        break outer;
+                    }
+                    if (!(pi instanceof GridConnection) && !pi.hasFlag(GridFlags.DENSE_CAPACITY)) {
+                        // not valid to propagate trunk
+                        break outer;
+                    }
+                    if (pi.hasFlag(GridFlags.CANNOT_CARRY_COMPRESSED)) {
+                        // disallow trunk connections over p2p tunnels
+                        break outer;
+                    }
+                    pi.setSubtreeInfo(parentSubtree);
+                }
+
+                enqueue(pi, queueIndex);
             }
+        }
+    }
+
+    private void maybeDoTrunk(IPathItem current, IPathItem other) {
+        var currentSt = getSubtreeInfo(current);
+        if (currentSt == null || currentSt.trunkState != TrunkSearchState.SEARCHING) {
+            return;
+        }
+        var otherSt = getSubtreeInfo(other);
+        if (otherSt == null || otherSt.trunkState != TrunkSearchState.SEARCHING) {
+            return;
+        }
+        if (currentSt.parent().members == otherSt.parent().members) {
+            return;
+        }
+
+        // we are ok to trunk
+        var currentNc = currentSt.parent();
+        var otherNc = otherSt.parent();
+        ControllerInfo.mergeMembers(currentNc, otherNc);
+        currentSt.trunkState = TrunkSearchState.CONNECTED;
+        otherSt.trunkState = TrunkSearchState.CONNECTED;
+        var maxChannels = grid.getPathingService().getChannelMode().getCableCapacityFactor() * 32;
+
+        // trunkState will be INVALID if there are already any channels assigned on this subtree
+        // so we are free to allocate channels here
+        var sideA = current;
+        while (sideA != currentNc.controllerNode) {
+            if (sideA instanceof GridConnection gc) {
+                gc.setAdHocChannels(maxChannels);
+            } else if (sideA instanceof GridNode gn) {
+                gn.incrementChannelCount(maxChannels);
+            }
+            sideA = sideA.getControllerRoute();
+        }
+        var sideB = other;
+        while (sideB != otherNc.controllerNode) {
+            if (sideB instanceof GridConnection gc) {
+                gc.setAdHocChannels(maxChannels);
+            } else if (sideB instanceof GridNode gn) {
+                gn.incrementChannelCount(maxChannels);
+            }
+            sideB = sideB.getControllerRoute();
         }
     }
 
@@ -192,6 +344,11 @@ public class PathingCalculation {
         GridNode pi = start;
         while (pi != null) {
             if (channelBottlenecks.getOrDefault(pi, 0) >= pi.getMaxChannels()) {
+                return false;
+            }
+            var subtreeInfo = getSubtreeInfo(pi);
+            if (subtreeInfo != null && subtreeInfo.trunkState == TrunkSearchState.CONNECTED) {
+                // this subtree is currently used by a trunk connection
                 return false;
             }
 
@@ -222,6 +379,13 @@ public class PathingCalculation {
             controllerNodes.add((IPathItem) node);
             for (var gcc : node.getConnections()) {
                 var gc = (GridConnection) gcc;
+                if (multiController && subtreeInfoMap != null) {
+                    var subtreeInfo = subtreeInfoMap.get(gc);
+                    if (subtreeInfo != null && subtreeInfo.trunkState == TrunkSearchState.CONNECTED) {
+                        // ignore this subtree
+                        continue;
+                    }
+                }
                 if (!(gc.getOtherSide(node).getOwner() instanceof ControllerBlockEntity)) {
                     stack.add(gc);
                 }
@@ -268,5 +432,9 @@ public class PathingCalculation {
 
     public int getChannelsByBlocks() {
         return channelsByBlocks;
+    }
+
+    public boolean isInvalidTrunkConnection() {
+        return invalidTrunkConnection;
     }
 }

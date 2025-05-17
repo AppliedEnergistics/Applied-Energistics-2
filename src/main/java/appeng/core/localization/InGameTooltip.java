@@ -32,6 +32,7 @@ public enum InGameTooltip implements LocalizationEnum {
     DeviceOnline("Device Online"),
     EnchantedWith("Enchanted with:"),
     ErrorControllerConflict("Error: Controller Conflict"),
+    ErrorControllerTrunkInvalid("Error: Invalid Trunk Connection Between Controllers"),
     ErrorNestedP2PTunnel("Error: Nested P2P Tunnel"),
     ErrorTooManyChannels("Error: Too Many Channels"),
     P2PFrequency("Frequency: %s"),

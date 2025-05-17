@@ -1004,6 +1004,7 @@
   "waila.ae2.DeviceOnline": "Device Online",
   "waila.ae2.EnchantedWith": "Enchanted with:",
   "waila.ae2.ErrorControllerConflict": "Error: Controller Conflict",
+  "waila.ae2.ErrorControllerTrunkInvalid": "Error: Invalid Trunk Connection Between Controllers",
   "waila.ae2.ErrorNestedP2PTunnel": "Error: Nested P2P Tunnel",
   "waila.ae2.ErrorTooManyChannels": "Error: Too Many Channels",
   "waila.ae2.Locked": "Locked",

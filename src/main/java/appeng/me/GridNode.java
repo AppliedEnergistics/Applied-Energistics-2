@@ -19,6 +19,7 @@
 package appeng.me;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -68,6 +69,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AEColor;
 import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.core.AELog;
+import appeng.me.pathfinding.ControllerInfo;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.IDebugExportable;
 import appeng.util.JsonStreamUtil;
@@ -127,6 +129,8 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
     private GridNode highestSimilarAncestor = null;
     private int subtreeMaxChannels;
     private boolean subtreeAllowsCompressedChannels;
+    @Nullable
+    private WeakReference<ControllerInfo.SubtreeInfo> subtreeInfo = null;
 
     private final EnumSet<GridFlags> flags;
     private ClassToInstanceMap<IGridNodeService> services;
@@ -708,6 +712,20 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
             if (this.getInternalGrid() != null) {
                 notifyStatusChange(IGridNodeListener.State.CHANNEL);
             }
+        }
+    }
+
+    @Override
+    public @Nullable WeakReference<ControllerInfo.SubtreeInfo> getSubtreeInfo() {
+        return this.subtreeInfo;
+    }
+
+    @Override
+    public void setSubtreeInfo(@Nullable ControllerInfo.SubtreeInfo subtreeInfo) {
+        if (subtreeInfo == null) {
+            this.subtreeInfo = null;
+        } else {
+            this.subtreeInfo = new WeakReference<>(subtreeInfo);
         }
     }
 

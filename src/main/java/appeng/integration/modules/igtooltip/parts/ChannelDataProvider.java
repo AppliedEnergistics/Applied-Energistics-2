@@ -49,7 +49,8 @@ public final class ChannelDataProvider
         var gridNode = object.getGridNode();
         if (gridNode != null) {
             var pathingService = (PathingService) gridNode.getGrid().getPathingService();
-            if (pathingService.getControllerState() == ControllerState.NO_CONTROLLER) {
+            var controllerState = pathingService.getControllerState();
+            if (controllerState == ControllerState.NO_CONTROLLER) {
                 var adHocError = pathingService.getAdHocNetworkError();
                 if (adHocError != null) {
                     serverData.putString(TAG_ERROR, switch (adHocError) {
@@ -58,8 +59,10 @@ public final class ChannelDataProvider
                     });
                     return;
                 }
-            } else if (pathingService.getControllerState() == ControllerState.CONTROLLER_CONFLICT) {
+            } else if (controllerState == ControllerState.CONTROLLER_CONFLICT) {
                 serverData.putString(TAG_ERROR, ChannelError.CONTROLLER_CONFLICT.name());
+            } else if (controllerState == ControllerState.CONTROLLER_TRUNK_INVALID) {
+                serverData.putString(TAG_ERROR, ChannelError.CONTROLLER_TRUNK_INVALID.name());
             }
         }
 
@@ -70,7 +73,8 @@ public final class ChannelDataProvider
     enum ChannelError {
         AD_HOC_NESTED_P2P_TUNNEL(InGameTooltip.ErrorNestedP2PTunnel),
         AD_HOC_TOO_MANY_CHANNELS(InGameTooltip.ErrorTooManyChannels),
-        CONTROLLER_CONFLICT(InGameTooltip.ErrorControllerConflict);
+        CONTROLLER_CONFLICT(InGameTooltip.ErrorControllerConflict),
+        CONTROLLER_TRUNK_INVALID(InGameTooltip.ErrorControllerTrunkInvalid);
 
         final InGameTooltip text;
 
