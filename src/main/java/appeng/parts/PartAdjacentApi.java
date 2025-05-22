@@ -2,36 +2,27 @@ package appeng.parts;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.minecraftforge.common.capabilities.Capability;
 
-import appeng.api.parts.IPartHost;
+import appeng.util.BlockApiCache;
 import appeng.util.Platform;
 
 /**
  * Utility class to cache an API that is adjacent to a part.
  */
-public class PartAdjacentApi<T> {
+public class PartAdjacentApi<C> {
     private final AEBasePart part;
-    private final BlockCapability<T, Direction> capability;
-    private final Runnable invalidationListener;
-    private BlockCapabilityCache<T, Direction> cache;
+    private final Capability<C> apiLookup;
+    private BlockApiCache<C> apiCache;
 
-    public PartAdjacentApi(AEBasePart part, BlockCapability<T, Direction> capability) {
-        this(part, capability, () -> {
-        });
-    }
-
-    public PartAdjacentApi(AEBasePart part, BlockCapability<T, Direction> capability, Runnable invalidationListener) {
-        this.capability = capability;
+    public PartAdjacentApi(AEBasePart part, Capability<C> apiLookup) {
+        this.apiLookup = apiLookup;
         this.part = part;
-        this.invalidationListener = invalidationListener;
     }
 
     @Nullable
-    public T find() {
+    public C find() {
         if (!(part.getLevel() instanceof ServerLevel serverLevel)) {
             return null;
         }
@@ -44,21 +35,10 @@ public class PartAdjacentApi<T> {
             return null;
         }
 
-        if (cache == null) {
-            cache = BlockCapabilityCache.create(
-                    capability,
-                    serverLevel,
-                    targetPos,
-                    attachedSide.getOpposite(),
-                    () -> isPartValid(part),
-                    invalidationListener);
+        if (apiCache == null) {
+            apiCache = BlockApiCache.create(apiLookup, serverLevel, targetPos);
         }
 
-        return cache.getCapability();
-    }
-
-    public static boolean isPartValid(AEBasePart part) {
-        var be = part.getBlockEntity();
-        return be instanceof IPartHost host && host.getPart(part.getSide()) == part && !be.isRemoved();
+        return apiCache.find(attachedSide.getOpposite());
     }
 }

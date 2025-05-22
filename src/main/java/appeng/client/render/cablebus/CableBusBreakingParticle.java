@@ -22,8 +22,8 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 // Derived from Vanilla's BreakingParticle, but allows
 // a texture to be specified directly rather than via an itemstack
@@ -54,22 +54,22 @@ public class CableBusBreakingParticle extends TextureSheetParticle {
 
     @Override
     protected float getU0() {
-        return this.sprite.getU((this.uCoord + 1.0F) / 4.0F);
+        return this.sprite.getU((this.uCoord + 1.0F) / 4.0F * 16.0F);
     }
 
     @Override
     protected float getU1() {
-        return this.sprite.getU(this.uCoord / 4.0F);
+        return this.sprite.getU(this.uCoord / 4.0F * 16.0F);
     }
 
     @Override
     protected float getV0() {
-        return this.sprite.getV(this.vCoord / 4.0F);
+        return this.sprite.getV(this.vCoord / 4.0F * 16.0F);
     }
 
     @Override
     protected float getV1() {
-        return this.sprite.getV((this.vCoord + 1.0F) / 4.0F);
+        return this.sprite.getV((this.vCoord + 1.0F) / 4.0F * 16.0F);
     }
 
 }

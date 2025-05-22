@@ -20,7 +20,6 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -44,9 +43,9 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     public static final ResourceLocation INV_CRAFTING = AppEng.makeId("crafting_terminal_crafting");
 
     @PartModels
-    public static final ResourceLocation MODEL_OFF = AppEng.makeId("part/crafting_terminal_off");
+    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/crafting_terminal_off");
     @PartModels
-    public static final ResourceLocation MODEL_ON = AppEng.makeId("part/crafting_terminal_on");
+    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/crafting_terminal_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
@@ -75,15 +74,15 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
-        this.craftingGrid.readFromNBT(data, "craftingGrid", registries);
+    public void readFromNBT(CompoundTag data) {
+        super.readFromNBT(data);
+        this.craftingGrid.readFromNBT(data, "craftingGrid");
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
-        this.craftingGrid.writeToNBT(data, "craftingGrid", registries);
+    public void writeToNBT(CompoundTag data) {
+        super.writeToNBT(data);
+        this.craftingGrid.writeToNBT(data, "craftingGrid");
     }
 
     @Override

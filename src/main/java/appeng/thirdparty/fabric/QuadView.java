@@ -15,6 +15,8 @@ package appeng.thirdparty.fabric;
  * limitations under the License.
  */
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
@@ -22,7 +24,6 @@ import org.joml.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.FaceBakery;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -36,7 +37,7 @@ import net.minecraft.core.Direction;
  */
 public interface QuadView {
     /** Count of integers in a conventional (un-modded) block or item vertex. */
-    int VANILLA_VERTEX_STRIDE = FaceBakery.VERTEX_INT_SIZE;
+    int VANILLA_VERTEX_STRIDE = DefaultVertexFormat.BLOCK.getIntegerSize();
 
     /** Count of integers in a conventional (un-modded) block or item quad. */
     int VANILLA_QUAD_STRIDE = VANILLA_VERTEX_STRIDE * 4;
@@ -80,16 +81,6 @@ public interface QuadView {
      * Retrieve vertical texture coordinates.
      */
     float v(int vertexIndex);
-
-    /**
-     * Whether this quad should be rendered with diffuse lighting
-     */
-    boolean hasShade();
-
-    /**
-     * Whether this quad should be rendered with ambient occlusion
-     */
-    boolean hasAmbientOcclusion();
 
     /**
      * Pass a non-null target to avoid allocation - will be returned with values. Otherwise returns a new instance.
@@ -205,8 +196,9 @@ public interface QuadView {
     default BakedQuad toBakedQuad(TextureAtlasSprite sprite) {
         int[] vertexData = new int[VANILLA_QUAD_STRIDE];
         toVanilla(vertexData, 0);
+        // TODO material inspection: set shade as !disableDiffuse
         // TODO material inspection: set color index to -1 if the material disables it
-        return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite, hasShade(), hasAmbientOcclusion());
+        return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite, true);
     }
 
     default BakedQuad toBlockBakedQuad() {

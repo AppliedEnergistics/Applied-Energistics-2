@@ -105,18 +105,18 @@ public class RestrictedInputSlot extends AppEngSlot {
             case MOLECULAR_ASSEMBLER_PATTERN:
                 return PatternDetailsHelper.decodePattern(stack,
                         getLevel()) instanceof IMolecularAssemblerSupportedPattern;
-            case ENCODED_PATTERN, PROVIDER_PATTERN:
+            case ENCODED_PATTERN:
                 return PatternDetailsHelper.isEncodedPattern(stack);
             case ENCODED_AE_PATTERN:
-                return AEItems.CRAFTING_PATTERN.is(stack)
-                        || AEItems.PROCESSING_PATTERN.is(stack)
-                        || AEItems.SMITHING_TABLE_PATTERN.is(stack)
-                        || AEItems.STONECUTTING_PATTERN.is(stack);
+                return AEItems.CRAFTING_PATTERN.isSameAs(stack)
+                        || AEItems.PROCESSING_PATTERN.isSameAs(stack)
+                        || AEItems.SMITHING_TABLE_PATTERN.isSameAs(stack)
+                        || AEItems.STONECUTTING_PATTERN.isSameAs(stack);
             case BLANK_PATTERN:
-                return AEItems.BLANK_PATTERN.is(stack);
+                return AEItems.BLANK_PATTERN.isSameAs(stack);
 
             case INSCRIBER_PLATE:
-                if (AEItems.NAME_PRESS.is(stack)) {
+                if (AEItems.NAME_PRESS.isSameAs(stack)) {
                     return true;
                 }
 
@@ -133,7 +133,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                 return isMetalIngot(stack);
 
             case VIEW_CELL:
-                return AEItems.VIEW_CELL.is(stack);
+                return AEItems.VIEW_CELL.isSameAs(stack);
             case FUEL:
                 return VibrationChamberBlockEntity.hasBurnTime(stack);
             case POWERED_TOOL:
@@ -141,7 +141,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case QE_SINGULARITY:
                 return QuantumBridgeBlockEntity.isValidEntangledSingularity(stack);
             case RANGE_BOOSTER:
-                return AEItems.WIRELESS_BOOSTER.is(stack);
+                return AEItems.WIRELESS_BOOSTER.isSameAs(stack);
 
             case SPATIAL_STORAGE_CELLS:
                 return stack.getItem() instanceof ISpatialStorageCell
@@ -182,8 +182,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     @Override
     public ItemStack getDisplayStack() {
         // If the slot only takes encoded patterns, show the encoded item instead
-        if (isRemote() && (this.which == PlacableItemType.ENCODED_PATTERN
-                || this.which == PlacableItemType.PROVIDER_PATTERN)) {
+        if (isRemote() && this.which == PlacableItemType.ENCODED_PATTERN) {
             final ItemStack is = super.getDisplayStack();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem iep) {
                 final ItemStack out = iep.getOutput(is);
@@ -224,11 +223,10 @@ public class RestrictedInputSlot extends AppEngSlot {
         /**
          * Only accepts {@link AEItems#CRAFTING_PATTERN} and {@link AEItems#STONECUTTING_PATTERN}.
          */
-        MOLECULAR_ASSEMBLER_PATTERN(Icon.BACKGROUND_BLANK_PATTERN),
+        MOLECULAR_ASSEMBLER_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
         /**
          * An encoded pattern from any mod (AE2 or otherwise). Delegates to AE2 API to identify such items.
          */
-        PROVIDER_PATTERN(Icon.BACKGROUND_BLANK_PATTERN),
         ENCODED_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
         PATTERN(Icon.BACKGROUND_BLANK_PATTERN),
         BLANK_PATTERN(Icon.BACKGROUND_BLANK_PATTERN),
@@ -236,7 +234,6 @@ public class RestrictedInputSlot extends AppEngSlot {
         RANGE_BOOSTER(Icon.BACKGROUND_WIRELESS_BOOSTER),
         QE_SINGULARITY(Icon.BACKGROUND_SINGULARITY),
         SPATIAL_STORAGE_CELLS(Icon.BACKGROUND_SPATIAL_CELL),
-        SPATIAL_STORAGE_CELLS_NO_SHADOW(Icon.BACKGROUND_SPATIAL_CELL_NO_SHADOW),
         FUEL(Icon.BACKGROUND_FUEL),
         UPGRADES(Icon.BACKGROUND_UPGRADE),
         WORKBENCH_CELL(Icon.BACKGROUND_STORAGE_CELL),

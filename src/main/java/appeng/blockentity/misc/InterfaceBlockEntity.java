@@ -24,13 +24,14 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
@@ -40,14 +41,14 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigurableObject;
-import appeng.blockentity.grid.AENetworkedBlockEntity;
+import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.InterfaceLogic;
 import appeng.helpers.InterfaceLogicHost;
 import appeng.me.helpers.BlockEntityNodeListener;
 
-public class InterfaceBlockEntity extends AENetworkedBlockEntity
+public class InterfaceBlockEntity extends AENetworkBlockEntity
         implements IPriorityHost, IUpgradeableObject, IConfigurableObject, InterfaceLogicHost {
 
     private static final IGridNodeListener<InterfaceBlockEntity> NODE_LISTENER = new BlockEntityNodeListener<>() {
@@ -92,15 +93,15 @@ public class InterfaceBlockEntity extends AENetworkedBlockEntity
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        this.logic.writeToNBT(data, registries);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
+        this.logic.writeToNBT(data);
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        this.logic.readFromNBT(data, registries);
+    public void loadTag(CompoundTag data) {
+        super.loadTag(data);
+        this.logic.readFromNBT(data);
     }
 
     @Override
@@ -116,6 +117,15 @@ public class InterfaceBlockEntity extends AENetworkedBlockEntity
     @Override
     public ItemStack getMainMenuIcon() {
         return AEBlocks.INTERFACE.stack();
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
+        LazyOptional<T> result = this.logic.getCapability(capability, facing);
+        if (result.isPresent()) {
+            return result;
+        }
+        return super.getCapability(capability, facing);
     }
 
     @Nullable

@@ -23,7 +23,7 @@
 
 package appeng.api.config;
 
-import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public enum Actionable {
     /**

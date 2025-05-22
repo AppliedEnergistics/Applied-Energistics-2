@@ -23,17 +23,11 @@
 
 package appeng.api.util;
 
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Setting;
-import appeng.api.ids.AEComponents;
-import appeng.util.ConfigManager;
 
 /**
  * Used to adjust settings on an object,
@@ -41,6 +35,7 @@ import appeng.util.ConfigManager;
  * Obtained via {@link IConfigurableObject}
  */
 public interface IConfigManager {
+
     /**
      * get a list of different settings
      *
@@ -54,6 +49,14 @@ public interface IConfigManager {
     default boolean hasSetting(Setting<?> setting) {
         return getSettings().contains(setting);
     }
+
+    /**
+     * used to initialize the configuration manager, should be called for all settings.
+     *
+     * @param setting      the setting
+     * @param defaultValue default value of setting
+     */
+    <T extends Enum<T>> void registerSetting(Setting<T> setting, T defaultValue);
 
     /**
      * Get Value of a particular setting
@@ -77,79 +80,14 @@ public interface IConfigManager {
      * write all settings to the NBT Tag so they can be read later.
      *
      * @param destination to be written nbt tag
-     * @param registries
      */
-    void writeToNBT(CompoundTag destination, HolderLookup.Provider registries);
+    void writeToNBT(CompoundTag destination);
 
     /**
      * Only works after settings have been registered
      *
-     * @param src        to be read nbt tag
-     * @param registries
+     * @param src to be read nbt tag
      * @return true if any configuration was loaded from src
      */
-    boolean readFromNBT(CompoundTag src, HolderLookup.Provider registries);
-
-    /**
-     * Import settings that were previously exported from {@link #exportSettings()}. Unparsable or unknown settings are
-     * ignored.
-     *
-     * @return true if any of the settings were successfully imported
-     */
-    boolean importSettings(Map<String, String> settings);
-
-    /**
-     * Exports all settings.
-     */
-    Map<String, String> exportSettings();
-
-    /**
-     * Get a builder for configuration manager that stores its settings in a block entity.
-     */
-    static IConfigManagerBuilder builder(ItemStack stack) {
-        return builder(() -> stack);
-    }
-
-    /**
-     * Get a builder for configuration manager that stores its settings in a block entity.
-     */
-    static IConfigManagerBuilder builder(Supplier<ItemStack> stack) {
-        var manager = new ConfigManager((mgr, settingName) -> {
-            stack.get().set(AEComponents.EXPORTED_SETTINGS, mgr.exportSettings());
-        });
-
-        return new IConfigManagerBuilder() {
-            @Override
-            public <T extends Enum<T>> IConfigManagerBuilder registerSetting(Setting<T> setting, T defaultValue) {
-                manager.registerSetting(setting, defaultValue);
-                return this;
-            }
-
-            @Override
-            public IConfigManager build() {
-                manager.importSettings(stack.get().getOrDefault(AEComponents.EXPORTED_SETTINGS, Map.of()));
-                return manager;
-            }
-        };
-    }
-
-    static IConfigManagerBuilder builder(Runnable changeListener) {
-        return builder((manager, setting) -> changeListener.run());
-    }
-
-    static IConfigManagerBuilder builder(IConfigManagerListener changeListener) {
-        var manager = new ConfigManager(changeListener);
-        return new IConfigManagerBuilder() {
-            @Override
-            public <T extends Enum<T>> IConfigManagerBuilder registerSetting(Setting<T> setting, T defaultValue) {
-                manager.registerSetting(setting, defaultValue);
-                return this;
-            }
-
-            @Override
-            public IConfigManager build() {
-                return manager;
-            }
-        };
-    }
+    boolean readFromNBT(CompoundTag src);
 }

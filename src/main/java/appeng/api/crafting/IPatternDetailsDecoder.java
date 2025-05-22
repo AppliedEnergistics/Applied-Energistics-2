@@ -41,10 +41,9 @@ public interface IPatternDetailsDecoder {
     IPatternDetails decodePattern(AEItemKey what, Level level);
 
     /**
-     * Convenience alternative to {@link #decodePattern(AEItemKey, Level)} that takes an ItemStack.
+     * Decodes a pattern stored in a stack. Can attempt to recover a pattern hat has broken by recipe IDs being changed
+     * by other mods. Recovery will modify the given item stack.
      */
     @Nullable
-    default IPatternDetails decodePattern(ItemStack what, Level level) {
-        return decodePattern(AEItemKey.of(what), level);
-    }
+    IPatternDetails decodePattern(ItemStack what, Level level, boolean tryRecovery);
 }

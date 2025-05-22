@@ -23,7 +23,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.crafting.execution.CraftingCpuLogic;
 import appeng.crafting.execution.ElapsedTimeTracker;
@@ -92,21 +92,30 @@ public class CraftingStatus {
         return entries;
     }
 
-    public void write(RegistryFriendlyByteBuf buffer) {
+    public void write(FriendlyByteBuf buffer) {
         buffer.writeBoolean(fullStatus);
         buffer.writeVarLong(elapsedTime);
         buffer.writeVarLong(remainingItemCount);
         buffer.writeVarLong(startItemCount);
-        CraftingStatusEntry.LIST_STREAM_CODEC.encode(buffer, entries);
+        buffer.writeVarInt(entries.size());
+        for (CraftingStatusEntry entry : entries) {
+            entry.write(buffer);
+        }
     }
 
-    public static CraftingStatus read(RegistryFriendlyByteBuf buffer) {
+    public static CraftingStatus read(FriendlyByteBuf buffer) {
         boolean fullStatus = buffer.readBoolean();
         long elapsedTime = buffer.readVarLong();
         long remainingItemCount = buffer.readVarLong();
         long startItemCount = buffer.readVarLong();
-        var entries = CraftingStatusEntry.LIST_STREAM_CODEC.decode(buffer);
-        return new CraftingStatus(fullStatus, elapsedTime, remainingItemCount, startItemCount, List.copyOf(entries));
+        int entryCount = buffer.readVarInt();
+
+        ImmutableList.Builder<CraftingStatusEntry> entries = ImmutableList.builder();
+        for (int i = 0; i < entryCount; i++) {
+            entries.add(CraftingStatusEntry.read(buffer));
+        }
+
+        return new CraftingStatus(fullStatus, elapsedTime, remainingItemCount, startItemCount, entries.build());
     }
 
     public static CraftingStatus create(IncrementalUpdateHelper changes, CraftingCpuLogic logic) {

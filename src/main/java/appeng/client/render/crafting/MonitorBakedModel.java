@@ -21,7 +21,7 @@ package appeng.client.render.crafting;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.RelativeSide;

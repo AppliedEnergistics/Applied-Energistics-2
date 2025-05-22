@@ -19,12 +19,14 @@ public final class StoredEnergyAmount {
 
     /**
      * If we store more energy than this, we are capable of providing energy to the grid. If we change from being below
-     * to being above the threshold, we emit a {@link GridPowerStorageStateChanged.PowerEventType#PROVIDE_POWER} event.
+     * to being above the threshold, we emit a
+     * {@link appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType#PROVIDE_POWER} event.
      */
     private final double provideThreshold;
     /**
      * If we have more unfilled storage than this, we are capable of receiving energy. If we change from being below to
-     * being above this threshold, we emit a {@link GridPowerStorageStateChanged.PowerEventType#RECEIVE_POWER} event.
+     * being above this threshold, we emit a
+     * {@link appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType#RECEIVE_POWER} event.
      */
     private final double receiveThreshold;
     private double maximum;
@@ -72,7 +74,7 @@ public final class StoredEnergyAmount {
     }
 
     /**
-     * Decrease the amount, and return how much was actually extracted.
+     * Increase the amount, and return what would have exceeded the maximum.
      */
     public double extract(double amount, boolean commit) {
         if (amount < MIN_AMOUNT) {

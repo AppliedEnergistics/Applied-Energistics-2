@@ -13,7 +13,6 @@ import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.BlockCapability;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridHelper;
@@ -24,7 +23,6 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
-import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.parts.AEBasePart;
@@ -85,7 +83,7 @@ public class PlotTestHelper extends GameTestHelper {
     public IGridNode getGridNode(BlockPos pos) {
         checkAllInitialized();
 
-        var be = getLevel().getBlockEntity(absolutePos(pos));
+        var be = getBlockEntity(pos);
         if (be instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
             var node = gridConnectedBlockEntity.getMainNode().getNode();
             check(node != null, "no node", pos);
@@ -119,7 +117,7 @@ public class PlotTestHelper extends GameTestHelper {
      */
     public void checkAllInitialized() {
         forEveryBlockInStructure(blockPos -> {
-            var be = getLevel().getBlockEntity(absolutePos(blockPos));
+            var be = getBlockEntity(blockPos);
             if (be instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
                 check(gridConnectedBlockEntity.getMainNode().isReady(), "BE " + be + " is not ready");
             } else if (be instanceof IPartHost partHost) {
@@ -165,10 +163,6 @@ public class PlotTestHelper extends GameTestHelper {
         }
     }
 
-    public <T, C> T getCapability(BlockPos ref, BlockCapability<T, C> cap, C context) {
-        return getLevel().getCapability(cap, absolutePos(ref), context);
-    }
-
     public void assertEquals(BlockPos ref, Object expected, Object actual) {
         if (!Objects.equals(expected, actual)) {
             String message = actual + " was not " + expected;
@@ -195,21 +189,12 @@ public class PlotTestHelper extends GameTestHelper {
     }
 
     public void countContainerContentAt(BlockPos pos, KeyCounter counter) {
-        var be = getBlockEntity(pos);
-        if (be instanceof BaseContainerBlockEntity container) {
-            for (int i = 0; i < container.getContainerSize(); i++) {
-                var item = container.getItem(i);
-                if (!item.isEmpty()) {
-                    counter.add(AEItemKey.of(item), item.getCount());
-                }
-            }
-        } else if (be instanceof AEBaseInvBlockEntity aeBe) {
-            var internalInv = aeBe.getInternalInventory();
-            for (var item : internalInv) {
+        var container = ((BaseContainerBlockEntity) getBlockEntity(pos));
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            var item = container.getItem(i);
+            if (!item.isEmpty()) {
                 counter.add(AEItemKey.of(item), item.getCount());
             }
-        } else {
-            throw new RuntimeException("Unsupported BE: " + be);
         }
     }
 

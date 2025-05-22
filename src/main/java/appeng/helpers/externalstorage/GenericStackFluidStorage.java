@@ -4,8 +4,9 @@ import com.google.common.primitives.Ints;
 
 import org.jetbrains.annotations.NotNull;
 
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.Actionable;
@@ -44,11 +45,8 @@ public class GenericStackFluidStorage implements IFluidHandler {
 
     @Override
     public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
-        if (stack.isEmpty()) {
-            return true;
-        }
         var what = AEFluidKey.of(stack);
-        return what != null && inv.isAllowedIn(tank, what);
+        return what == null || inv.isAllowed(what);
     }
 
     @Override

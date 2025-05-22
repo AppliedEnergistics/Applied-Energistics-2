@@ -1,78 +1,31 @@
 {
-  "credit": "Made with Blockbench",
   "textures": {
     "indicator": "ae2:part/monitor_sides_status_has_channel"
   },
   "elements": [
     {
-      "from": [7, 11, 2],
-      "to": [9, 12, 3],
+      "from": [4, 4, 2],
+      "to": [12, 12, 3],
       "faces": {
-        "south": {
-          "uv": [7, 0, 9, 1],
+        "down": {
           "texture": "#indicator",
           "tintindex": 1,
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+          "forge_data": { "block_light": 15, "sky_light": 15 }
         },
         "up": {
-          "uv": [7, 0, 9, 1],
           "texture": "#indicator",
           "tintindex": 1,
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
-        }
-      }
-    },
-    {
-      "from": [7, 4, 2],
-      "to": [9, 5, 3],
-      "faces": {
-        "south": {
-          "uv": [7, 15, 9, 16],
-          "texture": "#indicator",
-          "tintindex": 1,
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+          "forge_data": { "block_light": 15, "sky_light": 15 }
         },
-        "down": {
-          "uv": [7, 15, 9, 16],
+        "east": {
           "texture": "#indicator",
           "tintindex": 1,
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
-        }
-      }
-    },
-    {
-      "from": [4, 7, 2],
-      "to": [5, 9, 3],
-      "faces": {
-        "south": {
-          "uv": [0, 7, 1, 9],
-          "texture": "#indicator",
-          "tintindex": 1,
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+          "forge_data": { "block_light": 15, "sky_light": 15 }
         },
         "west": {
-          "uv": [0, 7, 1, 9],
           "texture": "#indicator",
           "tintindex": 1,
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
-        }
-      }
-    },
-    {
-      "from": [11, 7, 2],
-      "to": [12, 9, 3],
-      "faces": {
-        "east": {
-          "uv": [15, 7, 16, 9],
-          "texture": "#indicator",
-          "tintindex": 1,
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
-        },
-        "south": {
-          "uv": [15, 7, 16, 9],
-          "texture": "#indicator",
-          "tintindex": 1,
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+          "forge_data": { "block_light": 15, "sky_light": 15 }
         }
       }
     }

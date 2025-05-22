@@ -19,6 +19,7 @@
 package appeng.blockentity.misc;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,14 +27,18 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnit;
+import appeng.api.config.PowerUnits;
 import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.inventories.InternalInventory;
@@ -45,14 +50,16 @@ import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.RelativeSide;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
-import appeng.blockentity.grid.AENetworkedPoweredBlockEntity;
+import appeng.api.util.DimensionalBlockPos;
+import appeng.blockentity.grid.AENetworkPowerBlockEntity;
+import appeng.capabilities.Capabilities;
 import appeng.core.AEConfig;
 import appeng.core.settings.TickRates;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements IGridTickable {
+public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGridTickable {
     public static final int POWER_MAXIMUM_AMOUNT = 1600;
     private static final int POWER_THRESHOLD = POWER_MAXIMUM_AMOUNT - 1;
     private boolean working;
@@ -80,7 +87,7 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
     }
 
     @Override
-    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         var changed = super.readFromStream(data);
 
         this.working = data.readBoolean();
@@ -96,7 +103,7 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
     }
 
     @Override
-    protected void writeToStream(RegistryFriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(working);
         var is = AEItemKey.of(this.inv.getStackInSlot(0));
@@ -119,7 +126,7 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
     }
 
     @Override
-    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         getMainNode().ifPresent((grid, node) -> {
             grid.getTickManager().wakeDevice(node);
         });
@@ -127,9 +134,29 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
         this.markForUpdate();
     }
 
+    public void activate(Player player) {
+        if (!Platform.hasPermissions(new DimensionalBlockPos(this), player)) {
+            return;
+        }
+
+        var myItem = this.inv.getStackInSlot(0);
+        if (myItem.isEmpty()) {
+            ItemStack held = player.getInventory().getSelected();
+
+            if (ChargerRecipes.findRecipe(level, held) != null || Platform.isChargeable(held)) {
+                held = player.getInventory().removeItem(player.getInventory().selected, 1);
+                this.inv.setItemDirect(0, held);
+            }
+        } else {
+            var drops = List.of(myItem);
+            this.inv.setItemDirect(0, ItemStack.EMPTY);
+            Platform.spawnDrops(player.level(), this.worldPosition.relative(this.getFront()), drops);
+        }
+    }
+
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.Charger, false);
+        return new TickingRequest(TickRates.Charger, false, true);
     }
 
     @Override
@@ -182,14 +209,14 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
                         changed = true;
                     }
                 }
-            } else if (this.getInternalCurrentPower() >= POWER_THRESHOLD
+            } else if (this.getInternalCurrentPower() > POWER_THRESHOLD
                     && ChargerRecipes.findRecipe(level, myItem) != null) {
                 this.working = true;
                 if (level != null && level.getRandom().nextFloat() > 0.8f) {
                     this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-                    var charged = Objects.requireNonNull(ChargerRecipes.findRecipe(level, myItem)).result;
-                    this.inv.setItemDirect(0, charged.copy());
+                    Item charged = Objects.requireNonNull(ChargerRecipes.findRecipe(level, myItem)).result;
+                    this.inv.setItemDirect(0, new ItemStack(charged));
 
                     changed = true;
                 }
@@ -203,7 +230,7 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
                 final double extracted = grid.getEnergyService().extractAEPower(toExtract, Actionable.MODULATE,
                         PowerMultiplier.ONE);
 
-                this.injectExternalPower(PowerUnit.AE, extracted, Actionable.MODULATE);
+                this.injectExternalPower(PowerUnits.AE, extracted, Actionable.MODULATE);
             });
 
             changed = true;
@@ -229,6 +256,21 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
         return null;
     }
 
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
+        if (Capabilities.CRANKABLE.equals(capability)) {
+            var crankable = getCrankable(facing);
+            if (crankable == null) {
+                return LazyOptional.empty();
+            }
+            return Capabilities.CRANKABLE.orEmpty(
+                    capability,
+                    LazyOptional.of(() -> crankable));
+        }
+
+        return super.getCapability(capability, facing);
+    }
+
     private record ChargerInvFilter(ChargerBlockEntity chargerBlockEntity) implements IAEItemFilter {
 
         @Override
@@ -248,6 +290,18 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
             }
 
             return ChargerRecipes.allowExtract(chargerBlockEntity.level, extractedItem);
+        }
+    }
+
+    class Crankable implements ICrankable {
+        @Override
+        public boolean canTurn() {
+            return getInternalCurrentPower() < getInternalMaxPower();
+        }
+
+        @Override
+        public void applyTurn() {
+            injectExternalPower(PowerUnits.AE, CrankBlockEntity.POWER_PER_CRANK_TURN, Actionable.MODULATE);
         }
     }
 }

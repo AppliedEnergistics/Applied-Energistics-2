@@ -20,12 +20,9 @@ package appeng.client.gui.me.common;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
-import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import org.jetbrains.annotations.Nullable;
@@ -39,29 +36,22 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.PacketDistributor;
-
-import guideme.color.ConstantColor;
-import guideme.document.LytRect;
-import guideme.render.SimpleRenderContext;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.client.AEKeyRendering;
 import appeng.api.config.ActionItems;
+import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
+import appeng.api.config.TypeFilter;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKeyType;
-import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.ILinkStatus;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.Hotkeys;
@@ -75,7 +65,6 @@ import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ISortSource;
-import appeng.client.gui.widgets.KeyTypeSelectionButton;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
@@ -83,26 +72,26 @@ import appeng.client.gui.widgets.ToolboxPanel;
 import appeng.client.gui.widgets.UpgradesPanel;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
-import appeng.core.network.ServerboundPacket;
-import appeng.core.network.bidirectional.ConfigValuePacket;
-import appeng.core.network.serverbound.MEInteractionPacket;
-import appeng.core.network.serverbound.SwitchGuisPacket;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.core.sync.packets.MEInteractionPacket;
+import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.InventoryAction;
-import appeng.integration.abstraction.ItemListMod;
 import appeng.items.storage.ViewCellItem;
 import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
+import appeng.util.ExternalSearch;
+import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
 public class MEStorageScreen<C extends MEStorageMenu>
-        extends AEBaseScreen<C> implements ISortSource {
+        extends AEBaseScreen<C> implements ISortSource, IConfigManagerListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(MEStorageScreen.class);
 
@@ -120,6 +109,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     private final AETextField searchField;
     private int rows = 0;
     private SettingToggleButton<ViewItems> viewModeToggle;
+    private SettingToggleButton<TypeFilter> filterTypesToggle;
     private SettingToggleButton<SortOrder> sortByToggle;
     private final SettingToggleButton<SortDir> sortDirToggle;
     private int currentMouseX = 0;
@@ -139,7 +129,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.searchField = widgets.addTextField("search");
         this.searchField.setPlaceholder(GuiText.SearchPlaceholder.text());
 
-        this.scrollbar = widgets.addScrollBar("scrollbar", Scrollbar.BIG);
+        this.scrollbar = widgets.addScrollBar("scrollbar");
         this.repo = new Repo(scrollbar, this);
         menu.setClientRepo(this.repo);
         this.repo.setUpdateViewListener(this::updateScrollbar);
@@ -151,7 +141,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.imageHeight = this.style.getScreenHeight(0);
 
         this.configSrc = ((IConfigurableObject) this.menu).getConfigManager();
-        this.menu.setGui(this::onMenuReceivedClientUpdate);
+        this.menu.setGui(this);
 
         List<Slot> viewCellSlots = menu.getSlots(SlotSemantics.VIEW_CELL);
         this.supportsViewCells = !viewCellSlots.isEmpty();
@@ -163,6 +153,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         if (this.style.isSupportsAutoCrafting()) {
             this.craftingStatusBtn = new TabButton(Icon.CRAFT_HAMMER,
                     GuiText.CraftingStatus.text(), btn -> showCraftingStatus());
+            this.craftingStatusBtn.setStyle(TabButton.Style.CORNER);
             this.widgets.add("craftingStatus", this.craftingStatusBtn);
         }
 
@@ -178,8 +169,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         if (this.menu.canConfigureTypeFilter()) {
-            this.addToLeftToolbar(
-                    KeyTypeSelectionButton.create(this, menu.getHost(), GuiText.ConfigureVisibleTypes.text()));
+            this.filterTypesToggle = this.addToLeftToolbar(new SettingToggleButton<>(
+                    Settings.TYPE_FILTER, getTypeFilter(), this::toggleServerSetting));
+
         }
 
         this.addToLeftToolbar(this.sortDirToggle = new SettingToggleButton<>(
@@ -208,7 +200,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         // Clear external search on open if configured, but not upon returning from a sub-screen
         if (!menu.isReturnedFromSubScreen() && config.isUseExternalSearch() && config.isClearExternalSearchOnOpen()) {
-            ItemListMod.setSearchText("");
+            ExternalSearch.clearExternalSearchText();
         }
     }
 
@@ -228,30 +220,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
             AELog.debug("Clicked on grid inventory entry serial=%s, key=%s", entry.getSerial(), entry.getWhat());
         }
 
-        // Left-Clicking on an entry that is supported by a container strategy will either fill the currently
-        // held container, or it will consume a container from the grid to be filled.
-        // Holding shift tries to fill the entire container, while only transferring a single unit otherwise.
-        if (mouseButton == 0 && entry != null && ContainerItemStrategies.isKeySupported(entry.getWhat())) {
-            InventoryAction action;
-            if (clickType != ClickType.QUICK_MOVE) {
-                action = InventoryAction.FILL_ITEM; // Simple click fills item in hand or puts filled item in hand
-            } else {
-                // Shift-click on fluid with an empty hand -> move filled container to player
-                action = menu.getCarried().isEmpty() ? InventoryAction.FILL_ENTIRE_ITEM_MOVE_TO_PLAYER
-                        : InventoryAction.FILL_ENTIRE_ITEM;
-            }
-
-            menu.handleInteraction(entry.getSerial(), action);
-            return;
-        }
-
-        // Right-clicking with an item in hand tries to empty the container into the network
-        // Holding shift tries to empty the entire container, while only transferring a single unit otherwise.
-        if (mouseButton == 1 && !menu.getCarried().isEmpty()) {
+        // Is there an emptying action? If so, send it to the server
+        if (mouseButton == 1 && clickType == ClickType.PICKUP && !menu.getCarried().isEmpty()) {
             var emptyingAction = ContainerItemStrategies.getEmptyingAction(menu.getCarried());
             if (emptyingAction != null && menu.isKeyVisible(emptyingAction.what())) {
-                menu.handleInteraction(-1, clickType == ClickType.QUICK_MOVE ? InventoryAction.EMPTY_ENTIRE_ITEM
-                        : InventoryAction.EMPTY_ITEM);
+                menu.handleInteraction(-1, InventoryAction.EMPTY_ITEM);
                 return;
             }
         }
@@ -330,8 +303,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     private void showCraftingStatus() {
-        ServerboundPacket message = SwitchGuisPacket.openSubMenu(CraftingStatusMenu.TYPE);
-        PacketDistributor.sendToServer(message);
+        NetworkHandler.instance().sendToServer(SwitchGuisPacket.openSubMenu(CraftingStatusMenu.TYPE));
     }
 
     private int getSlotsPerRow() {
@@ -380,14 +352,14 @@ public class MEStorageScreen<C extends MEStorageMenu>
             setTextContent(TEXT_ID_DIALOG_TITLE, this.title);
         } else if (this.menu.getTarget() instanceof IMEChest) {
             // ME Chest uses Item Terminals, but overrides the title
-            setTextContent(TEXT_ID_DIALOG_TITLE, GuiText.MEChest.text());
+            setTextContent(TEXT_ID_DIALOG_TITLE, GuiText.Chest.text());
         }
     }
 
     private void updateSearch() {
         if (config.isUseExternalSearch()) {
             this.searchField.setVisible(false);
-            var externalSearchText = ItemListMod.getSearchText();
+            var externalSearchText = ExternalSearch.getExternalSearchText();
             if (!Objects.equals(repo.getSearchString(), externalSearchText)) {
                 setSearchText(externalSearchText);
             }
@@ -415,10 +387,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
             // Sync the search text both ways but make the direction depend on which search has the focus
             if (config.isSyncWithExternalSearch()) {
                 if (searchField.isFocused()) {
-                    String text = searchField.getValue();
-                    ItemListMod.setSearchText(text);
-                } else if (ItemListMod.hasSearchFocus()) {
-                    var externalSearchText = ItemListMod.getSearchText();
+                    ExternalSearch.setExternalSearchText(searchField.getValue());
+                } else if (ExternalSearch.isExternalSearchFocused()) {
+                    var externalSearchText = ExternalSearch.getExternalSearchText();
                     if (!Objects.equals(externalSearchText, searchField.getValue())) {
                         searchField.setValue(externalSearchText);
                     }
@@ -452,37 +423,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
         if (this.craftingStatusBtn != null && menu.activeCraftingJobs != -1) {
             // The stack size renderer expects a 16x16 slot, while the button is normally
             // bigger
-            int x = this.craftingStatusBtn.getX() + (this.craftingStatusBtn.getWidth() - 18) / 2;
-            int y = this.craftingStatusBtn.getY() + (this.craftingStatusBtn.getHeight() - 18) / 2;
+            int x = this.craftingStatusBtn.getX() + (this.craftingStatusBtn.getWidth() - 16) / 2;
+            int y = this.craftingStatusBtn.getY() + (this.craftingStatusBtn.getHeight() - 16) / 2;
 
             StackSizeRenderer.renderSizeLabel(guiGraphics, font, x - this.leftPos, y - this.topPos,
                     String.valueOf(menu.activeCraftingJobs));
-        }
-
-        renderLinkStatus(guiGraphics, getMenu().getLinkStatus());
-    }
-
-    private void renderLinkStatus(GuiGraphics guiGraphics, ILinkStatus linkStatus) {
-        // Draw an overlay indicating the grid is disconnected
-        if (!linkStatus.connected()) {
-            var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics);
-
-            var firstSlot = style.getSlotPos(0, 0);
-            var lastSlot = style.getSlotPos(rows - 1, style.getSlotsPerRow() - 1);
-
-            var rect = new LytRect(
-                    firstSlot.getX() - 1,
-                    firstSlot.getY() - 1,
-                    lastSlot.getX() + 17 - (firstSlot.getX() - 1),
-                    lastSlot.getY() + 17 - (firstSlot.getY() - 1));
-
-            renderContext.fillRect(rect, new ConstantColor(0x3f000000));
-
-            // Draw the disconnect status on top of the grid
-            var statusDescription = linkStatus.statusDescription();
-            if (statusDescription != null) {
-                renderContext.renderTextCenteredIn(statusDescription.getString(), ERROR_TEXT_STYLE, rect);
-            }
         }
     }
 
@@ -491,11 +436,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
             if (slot instanceof RepoSlot repoSlot) {
                 var entry = repoSlot.getEntry();
                 if (entry != null && PendingCraftingJobs.hasPendingJob(entry.getWhat())) {
-                    var sprite = minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                            .apply(AppEng.makeId("block/molecular_assembler_lights"));
-                    Blitter.sprite(sprite)
-                            .src(sprite.getX() + 2, sprite.getY() + 2, sprite.contents().width() - 4,
-                                    sprite.contents().height() - 4)
+                    var frames = 192 / 16;
+                    var frame = (int) ((System.currentTimeMillis() / 100) % frames);
+
+                    Blitter.texture("block/molecular_assembler_lights.png", 16, 192)
+                            .src(2, 2 + frame * 16, 12, 12)
                             .dest(slot.x - 1, slot.y - 1, 18, 18)
                             .blit(guiGraphics);
                 }
@@ -525,23 +470,23 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public boolean mouseScrolled(double x, double y, double deltaX, double deltaY) {
-        if (deltaY != 0 && hasShiftDown()) {
+    public boolean mouseScrolled(double x, double y, double wheelDelta) {
+        if (wheelDelta != 0 && hasShiftDown()) {
             if (this.findSlot(x, y) instanceof RepoSlot repoSlot) {
                 GridInventoryEntry entry = repoSlot.getEntry();
                 long serial = entry != null ? entry.getSerial() : -1;
-                final InventoryAction direction = deltaY > 0 ? InventoryAction.ROLL_DOWN
+                final InventoryAction direction = wheelDelta > 0 ? InventoryAction.ROLL_DOWN
                         : InventoryAction.ROLL_UP;
-                int times = (int) Math.abs(deltaY);
+                int times = (int) Math.abs(wheelDelta);
                 for (int h = 0; h < times; h++) {
                     final MEInteractionPacket p = new MEInteractionPacket(this.menu.containerId, serial, direction);
-                    PacketDistributor.sendToServer(p);
+                    NetworkHandler.instance().sendToServer(p);
                 }
 
                 return true;
             }
         }
-        return super.mouseScrolled(x, y, deltaX, deltaY);
+        return super.mouseScrolled(x, y, wheelDelta);
     }
 
     @Override
@@ -614,7 +559,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
     @Override
     public void renderSlot(GuiGraphics guiGraphics, Slot s) {
         if (s instanceof RepoSlot repoSlot) {
-            if (this.menu.getLinkStatus().connected()) {
+            if (!this.repo.hasPower()) {
+                guiGraphics.fill(s.x, s.y, 16 + s.x, 16 + s.y, 0x66111111);
+            } else {
                 GridInventoryEntry entry = repoSlot.getEntry();
                 if (entry != null) {
                     try {
@@ -633,7 +580,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     boolean craftable = entry.isCraftable();
                     var useLargeFonts = config.isUseLargeFonts();
                     if (craftable && (isViewOnlyCraftable() || storedAmount <= 0)) {
-                        StackSizeRenderer.renderSizeLabel(guiGraphics, this.font, s.x, s.y, "+");
+                        var craftLabelText = useLargeFonts ? GuiText.LargeFontCraft.getLocal()
+                                : GuiText.SmallFontCraft.getLocal();
+                        StackSizeRenderer.renderSizeLabel(guiGraphics, this.font, s.x, s.y, craftLabelText);
                     } else {
                         AmountFormat format = useLargeFonts ? AmountFormat.SLOT_LARGE_FONT
                                 : AmountFormat.SLOT;
@@ -762,7 +711,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     @Override
     public void containerTick() {
-        this.repo.setEnabled(this.menu.getLinkStatus().connected());
+        this.repo.setPower(this.menu.isPowered());
 
         if (this.supportsViewCells) {
             List<ItemStack> viewCells = this.menu.getViewCells();
@@ -792,12 +741,12 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public Set<AEKeyType> getSortKeyTypes() {
-        return menu.canConfigureTypeFilter() ? new HashSet<>(menu.searchKeyTypes.enabledSet())
-                : Sets.newHashSet(AEKeyTypes.getAll());
+    public TypeFilter getTypeFilter() {
+        return this.configSrc.getSetting(Settings.TYPE_FILTER);
     }
 
-    public void onMenuReceivedClientUpdate() {
+    @Override
+    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
         if (this.sortByToggle != null) {
             this.sortByToggle.set(getSortBy());
         }
@@ -810,11 +759,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
             this.viewModeToggle.set(getSortDisplay());
         }
 
-        this.repo.updateView();
-    }
+        if (this.filterTypesToggle != null) {
+            this.filterTypesToggle.set(getTypeFilter());
+        }
 
-    protected int getVisibleRows() {
-        return rows;
+        this.repo.updateView();
     }
 
     private void toggleTerminalStyle(SettingToggleButton<appeng.api.config.TerminalStyle> btn, boolean backwards) {
@@ -826,8 +775,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     private <SE extends Enum<SE>> void toggleServerSetting(SettingToggleButton<SE> btn, boolean backwards) {
         SE next = btn.getNextValue(backwards);
-        ServerboundPacket message = new ConfigValuePacket(btn.getSetting(), next);
-        PacketDistributor.sendToServer(message);
+        NetworkHandler.instance().sendToServer(new ConfigValuePacket(btn.getSetting(), next));
         btn.set(next);
     }
 

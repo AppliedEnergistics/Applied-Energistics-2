@@ -129,7 +129,7 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
     }
 
     public void selectAll() {
-        this.moveCursorTo(0, false);
+        this.moveCursorTo(0);
         this.setHighlightPos(this.getMaxLength());
     }
 

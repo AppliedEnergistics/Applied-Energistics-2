@@ -30,9 +30,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.AECapabilities;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.KeyCounter;
+import appeng.capabilities.Capabilities;
 
 /**
  * Provides crafting services to adjacent pattern providers for automatic crafting. Can be provided via capability on
@@ -42,22 +42,26 @@ public interface ICraftingMachine {
 
     @Nullable
     static ICraftingMachine of(@Nullable BlockEntity blockEntity, Direction side) {
-        if (blockEntity == null || blockEntity.getLevel() == null) {
+        if (blockEntity == null) {
             return null;
         }
 
-        return blockEntity.getLevel().getCapability(
-                AECapabilities.CRAFTING_MACHINE, blockEntity.getBlockPos(), blockEntity.getBlockState(),
-                blockEntity, side);
+        return of(blockEntity.getLevel(), blockEntity.getBlockPos(), side, blockEntity);
     }
 
     @Nullable
-    static ICraftingMachine of(Level level, BlockPos pos, Direction side) {
-        return level.getCapability(AECapabilities.CRAFTING_MACHINE, pos, side);
+    static ICraftingMachine of(Level level, BlockPos pos, Direction side,
+            @org.jetbrains.annotations.Nullable BlockEntity blockEntity) {
+        if (blockEntity != null) {
+            return blockEntity.getCapability(Capabilities.CRAFTING_MACHINE, side).orElse(null);
+        } else {
+            return null;
+        }
+
     }
 
     /**
-     * Describe how this machine is displayed and grouped in the pattern access terminal.
+     * Describe how this machine is displayed & grouped in the pattern access terminal.
      */
     PatternContainerGroup getCraftingMachineInfo();
 

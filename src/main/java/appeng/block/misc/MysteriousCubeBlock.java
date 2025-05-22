@@ -2,23 +2,24 @@ package appeng.block.misc;
 
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.block.AEBaseEntityBlock;
-import appeng.blockentity.misc.MysteriousCubeBlockEntity;
+import appeng.block.AEBaseBlock;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
-import appeng.server.services.compass.ServerCompassService;
+import appeng.server.services.compass.CompassService;
 
-public class MysteriousCubeBlock extends AEBaseEntityBlock<MysteriousCubeBlockEntity> {
+public class MysteriousCubeBlock extends AEBaseBlock {
     // Not a redstone conductor to prevent using it as a facade.
     public static final Properties PROPERTIES = metalProps().strength(10, 1000).isRedstoneConductor(Blocks::never);
 
@@ -29,7 +30,7 @@ public class MysteriousCubeBlock extends AEBaseEntityBlock<MysteriousCubeBlockEn
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (level instanceof ServerLevel serverLevel) {
-            ServerCompassService.notifyBlockChange(serverLevel, pos);
+            CompassService.notifyBlockChange(serverLevel, pos);
         }
     }
 
@@ -42,12 +43,12 @@ public class MysteriousCubeBlock extends AEBaseEntityBlock<MysteriousCubeBlockEn
         super.onRemove(state, level, pos, newState, isMoving);
 
         if (level instanceof ServerLevel serverLevel) {
-            ServerCompassService.notifyBlockChange(serverLevel, pos);
+            CompassService.notifyBlockChange(serverLevel, pos);
         }
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip,
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
             TooltipFlag flag) {
         tooltip.add(Tooltips.of(GuiText.MysteriousQuote, Tooltips.QUOTE_TEXT));
     }

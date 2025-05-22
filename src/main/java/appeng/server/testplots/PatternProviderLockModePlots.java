@@ -1,7 +1,5 @@
 package appeng.server.testplots;
 
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +27,6 @@ import appeng.server.testworld.SavedBlockEntity;
  * All plots are essentially the same: PP on Chest, powered by Creative Energy Cell. Use of the PP is via API, not
  * in-game tools.
  */
-@TestPlotClass
 public final class PatternProviderLockModePlots {
     private static final BlockPos LEVER_POS = BlockPos.ZERO.east();
     private static final BlockPos BUTTON_POS = BlockPos.ZERO.west();
@@ -501,8 +498,8 @@ public final class PatternProviderLockModePlots {
 
     private static ItemStack createPattern() {
         return PatternDetailsHelper.encodeProcessingPattern(
-                List.of(new GenericStack(AEItemKey.of(Blocks.OAK_LOG), 1)),
-                List.of(TWO_PLANK));
+                new GenericStack[] { new GenericStack(AEItemKey.of(Blocks.OAK_LOG), 1) },
+                new GenericStack[] { TWO_PLANK });
     }
 
     private static IPatternDetails createPatternDetails(PatternProviderLogicHost host) {

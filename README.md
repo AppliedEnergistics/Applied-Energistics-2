@@ -2,8 +2,6 @@
 [![Latest Release](https://img.shields.io/github/v/release/AppliedEnergistics/Applied-Energistics-2?style=flat-square&label=Release)](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases)
 [![Latest PreRelease](https://img.shields.io/github/v/release/AppliedEnergistics/Applied-Energistics-2?include_prereleases&style=flat-square&label=Pre)](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases)
 
-[![Maven Central Version](https://img.shields.io/maven-central/v/org.appliedenergistics/appliedenergistics2)](https://central.sonatype.com/artifact/org.appliedenergistics/appliedenergistics2)
-
 # Applied Energistics 2
 
 ## Table of Contents
@@ -22,7 +20,7 @@
 
 ## About
 
-A Minecraft mod about Matter, Energy and using them to conquer the world...
+A Mod about Matter, Energy and using them to conquer the world..
 
 ## Contacts
 
@@ -51,7 +49,7 @@ A Minecraft mod about Matter, Energy and using them to conquer the world...
 
 ## Downloads
 
-Downloads can be found on [CurseForge](https://www.curseforge.com/minecraft/mc-mods/applied-energistics-2), [Modrinth](https://modrinth.com/mod/ae2) or on the [official website](https://appliedenergistics.github.io/download).
+Downloads can be found on [CurseForge](https://www.curseforge.com/minecraft/mc-mods/applied-energistics-2) or on the [official website](https://appliedenergistics.github.io/download).
 
 ## Installation
 
@@ -78,31 +76,36 @@ The API for Applied Energistics 2. It is open source to discuss changes, improve
 
 ### Maven
 
-AE2 is available on [Maven Central](https://central.sonatype.com/artifact/org.appliedenergistics/appliedenergistics2).
+Our authoritative Maven repository is Github Packages, which you can also use in your builds. Use of Github Packages 
+[requires special setup](https://docs.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-gradle-for-use-with-github-packages#authenticating-to-github-packages) 
+to authenticate with your personal access token.
 
-You can use the following snippet as example on how to add a repository to your gradle build file.
+AE2 is also available without authentication from Modmaven. You can use the following snippet as example on how to add a repository to your gradle build file.
 
     repositories {
-        mavenCentral()
+        maven {
+            name "Modmaven"
+            url "https://modmaven.dev/"
+            // For Gradle 5.1 and above, limit it to just AE2
+            content {
+                includeGroup 'appeng'
+            }
+        }
     }
-
-
-We are also available on Github Packages, which you can also use in your builds. Use of Github Packages
-[requires special setup](https://docs.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-gradle-for-use-with-github-packages#authenticating-to-github-packages) to authenticate with your personal access token.
 
 When compiling against the AE2 API you can use gradle dependencies, just add
 
     dependencies {
-        compileOnly "org.appliedenergistics:appliedenergistics2:VERSION:api"
+        modCompileOnly "appeng:appliedenergistics2-fabric:VERSION:api"
     }
 
-or add the `compileOnly` line to your existing dependencies block to your build.gradle.
+or add the `modCompileOnly` line to your existing dependencies task to your build.gradle.
 
 Replace `VERSION` with the desired one. With 1.15+ we switched to using [semver](https://semver.org/). 
 It is highly recommended following its specification and further considering an upper bound for the dependency version.
 A change of the `MAJOR` version will be an API break and can lead to various crashes. Better to inform a player about the addon not supporting the new version until it could be tested or updated.
 
-An example string would be `org.appliedenergistics:appliedenergistics2:12.9.5:api` for the API only or `org.appliedenergistics:appliedenergistics2:12.9.5` for the whole mod.
+An example string would be `appeng:appliedenergistics2-fabric:12.9.5:api` for the API only or `appeng:appliedenergistics2-fabric:12.9.5` for the whole mod.
 
 ## Building
 
@@ -110,7 +113,9 @@ An example string would be `org.appliedenergistics:appliedenergistics2:12.9.5:ap
   - SSH `git clone git@github.com:AppliedEnergistics/Applied-Energistics-2.git` or 
   - HTTPS `git clone https://github.com/AppliedEnergistics/Applied-Energistics-2.git`
 2. Build using the `gradlew runData build` command. Jar will be in `build/libs`
-3. For core developer: Load the Gradle project in your IDE
+3. For core developer: Setup IDE
+  - IntelliJ: Import as gradle project
+  - Eclipse: Import as gradle project or execute gradle task `eclipse` and potentially `genEclipseRuns`
 
 ## Contribution
 
@@ -166,10 +171,16 @@ This might not be possible for some languages. Should this be the case, please c
 
 ### Final Note
 
-If you have issues localizing something, feel free to contact us on [Discord](https://discord.gg/b6HZ4p8EKH).
+If you have have issues localizing something feel free to contact us on IRC, at #AppliedEnergistics on Esper.net
 
 Thanks to everyone helping out to improve localization of AE2.
 
 ## Credits
 
-Thanks to all of our [contributors](https://github.com/AppliedEnergistics/Applied-Energistics-2/graphs/contributors)!
+Thanks to
+ 
+* Notch et al for Minecraft
+* Lex et al for MinecraftForge
+* AlgorithmX2 for AppliedEnergistics2
+* [Ridanisaurus Rid](https://github.com/Ridanisaurus/) for the new 2020 textures
+* all [contributors](https://github.com/AppliedEnergistics/Applied-Energistics-2/graphs/contributors)

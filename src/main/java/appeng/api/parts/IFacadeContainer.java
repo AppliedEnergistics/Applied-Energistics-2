@@ -26,9 +26,8 @@ package appeng.api.parts;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 
 /**
  * Used Internally.
@@ -65,10 +64,9 @@ public interface IFacadeContainer {
     /**
      * write nbt data
      *
-     * @param data       to be written data
-     * @param registries
+     * @param data to be written data
      */
-    void writeToNBT(CompoundTag data, HolderLookup.Provider registries);
+    void writeToNBT(CompoundTag data);
 
     /**
      * read from stream
@@ -77,22 +75,21 @@ public interface IFacadeContainer {
      *
      * @return true if it was readable
      */
-    boolean readFromStream(RegistryFriendlyByteBuf data);
+    boolean readFromStream(FriendlyByteBuf data);
 
     /**
      * read from NBT
      *
-     * @param data       to be read data
-     * @param registries
+     * @param data to be read data
      */
-    void readFromNBT(CompoundTag data, HolderLookup.Provider registries);
+    void readFromNBT(CompoundTag data);
 
     /**
      * write to stream
      *
      * @param data to be written data
      */
-    void writeToStream(RegistryFriendlyByteBuf data);
+    void writeToStream(FriendlyByteBuf data);
 
     /**
      * @return true if there are no facades.

@@ -19,25 +19,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 50
-      - run: git fetch origin --tags
-        shell: bash
       - uses: ./.github/actions/gradle-setup
       - name: Build with Gradle
-        run: ./gradlew printProjectVersion build publish -x check --max-workers 1
-        env:
-          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_KEY }}
-          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_KEY_PASSWORD }}
+        run: ./gradlew build publish -x check --max-workers 1
       - name: Prepare artifact metadata. Note that VERSION is set by the gradle script.
         id: prepare_artifact_metadata
         run: |
-          echo ARTIFACT_PATH=./build/libs/appliedenergistics2-${VERSION}.jar >> $GITHUB_OUTPUT
-          echo ARTIFACT_NAME=appliedenergistics2-${VERSION}.jar >> $GITHUB_OUTPUT
-          echo JAVADOC_PATH=./build/libs/appliedenergistics2-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
-          echo JAVADOC_NAME=appliedenergistics2-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
-          echo API_PATH=./build/libs/appliedenergistics2-${VERSION}-api.jar >> $GITHUB_OUTPUT
-          echo API_NAME=appliedenergistics2-${VERSION}-api.jar >> $GITHUB_OUTPUT
+          echo ARTIFACT_PATH=./build/libs/appliedenergistics2-forge-${VERSION}.jar >> $GITHUB_OUTPUT
+          echo ARTIFACT_NAME=appliedenergistics2-forge-${VERSION}.jar >> $GITHUB_OUTPUT
+          echo JAVADOC_PATH=./build/libs/appliedenergistics2-forge-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
+          echo JAVADOC_NAME=appliedenergistics2-forge-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
+          echo API_PATH=./build/libs/appliedenergistics2-forge-${VERSION}-api.jar >> $GITHUB_OUTPUT
+          echo API_NAME=appliedenergistics2-forge-${VERSION}-api.jar >> $GITHUB_OUTPUT
           echo VERSION=${VERSION} >> $GITHUB_OUTPUT
       - name: Archive build results
         # It is important to  archive .gradle as well since gradle stores the incremental build state there
@@ -112,26 +105,6 @@ jobs:
           remote-repository-username: ${{ github.actor }}
           remote-repository-password: ${{ github.token }}
 
-  deploy-maven-central:
-    name: Deploy to Maven Central
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
-      - name: Unpack build artifact
-        run: tar axf build.tar.zst
-      - name: Validate artifacts exist
-        run: test -d ./build
-      - name: Publish to Maven Central
-        uses: AppliedEnergistics/maven-central-publish-action@main
-        with:
-          local-repository-path: build/repo
-          username: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
-          password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-
   deploy-curseforge:
     name: Deploy to Curseforge
     needs: build
@@ -156,12 +129,33 @@ jobs:
             jade(optional){modrinth:nvQzSEkH}{curseforge:324717}
             wthit(optional){modrinth:6AQIaxuO}{curseforge:440979}
             rei(optional){modrinth:nfn13YXA}{curseforge:310111}
-            emi(optional){modrinth:fRiHVvU7}{curseforge:580555}
+            jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}
             optifine(incompatible)
             theoneprobe(optional){modrinth:Eyw0UxEx}{curseforge:245211}
           curseforge-id: 223794
           curseforge-token: ${{ secrets.CURSEFORGE }}
-          loaders: neoforge
+          loaders: forge
+
+  deploy-modmaven:
+    name: Deploy to Modmaven
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+      - name: Unpack build artifact
+        run: tar axf build.tar.zst
+      - name: Validate artifacts exist
+        run: test -d ./build
+      - name: Publish to Modmaven
+        uses: AppliedEnergistics/maven-publish-action@main
+        with:
+          local-repository-path: build/repo
+          remote-repository-url: https://modmaven.dev/artifactory/local-releases/
+          remote-repository-username: ${{ secrets.MODMAVEN_USER }}
+          remote-repository-password: ${{ secrets.MODMAVEN_PASSWORD }}
 
   deploy-modrinth:
     name: Deploy to Modrinth
@@ -187,9 +181,9 @@ jobs:
             jade(optional){modrinth:nvQzSEkH}{curseforge:324717}
             wthit(optional){modrinth:6AQIaxuO}{curseforge:440979}
             rei(optional){modrinth:nfn13YXA}{curseforge:310111}
-            emi(optional){modrinth:fRiHVvU7}{curseforge:580555}
+            jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}
             optifine(incompatible)
             theoneprobe(optional){modrinth:Eyw0UxEx}{curseforge:245211}
           modrinth-id: XxWD5pD3
           modrinth-token: ${{ secrets.MODRINTH }}
-          loaders: neoforge
+          loaders: forge

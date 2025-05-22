@@ -30,6 +30,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -47,7 +48,7 @@ public class EraserItem extends AEBaseItem {
     private static final int BLOCK_ERASE_LIMIT = BOX_SIZE * BOX_SIZE * BOX_SIZE;
     final static Set<Block> COMMON_BLOCKS = new HashSet<>();
 
-    public EraserItem(Properties properties) {
+    public EraserItem(Item.Properties properties) {
         super(properties);
     }
 
@@ -155,7 +156,7 @@ public class EraserItem extends AEBaseItem {
     }
 
     @Override
-    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
         if (AEConfig.instance().isDebugToolsEnabled()) {
             output.accept(this);
         }

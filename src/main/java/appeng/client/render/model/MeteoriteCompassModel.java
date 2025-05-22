@@ -39,16 +39,16 @@ import appeng.client.render.BasicUnbakedModel;
  */
 public class MeteoriteCompassModel implements BasicUnbakedModel {
 
-    private static final ResourceLocation MODEL_BASE = ResourceLocation.parse(
+    private static final ResourceLocation MODEL_BASE = new ResourceLocation(
             "ae2:item/meteorite_compass_base");
 
-    private static final ResourceLocation MODEL_POINTER = ResourceLocation.parse(
+    private static final ResourceLocation MODEL_POINTER = new ResourceLocation(
             "ae2:item/meteorite_compass_pointer");
 
     @Nullable
     @Override
     public BakedModel bake(ModelBaker loader, Function<Material, TextureAtlasSprite> textureGetter,
-            ModelState rotationContainer) {
+            ModelState rotationContainer, ResourceLocation modelId) {
         BakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
         BakedModel pointerModel = loader.bake(MODEL_POINTER, rotationContainer);
         return new MeteoriteCompassBakedModel(baseModel, pointerModel);

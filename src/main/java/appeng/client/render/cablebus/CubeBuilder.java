@@ -191,29 +191,29 @@ public class CubeBuilder {
         UvVector uv = new UvVector();
 
         if (face.getAxis() != Direction.Axis.Y) {
-            uv.v1 = texture.getV(1 - y1);
-            uv.v2 = texture.getV(1 - y2);
+            uv.v1 = texture.getV(16 - y1 * 16);
+            uv.v2 = texture.getV(16 - y2 * 16);
         } else {
-            uv.v1 = texture.getV(z1);
-            uv.v2 = texture.getV(z2);
+            uv.v1 = texture.getV(z1 * 16);
+            uv.v2 = texture.getV(z2 * 16);
         }
 
         switch (face) {
             case DOWN, UP, SOUTH -> {
-                uv.u1 = texture.getU(x1);
-                uv.u2 = texture.getU(x2);
+                uv.u1 = texture.getU(x1 * 16);
+                uv.u2 = texture.getU(x2 * 16);
             }
             case NORTH -> {
-                uv.u1 = texture.getU(1 - x2);
-                uv.u2 = texture.getU(1 - x1);
+                uv.u1 = texture.getU(16 - x2 * 16);
+                uv.u2 = texture.getU(16 - x1 * 16);
             }
             case WEST -> {
-                uv.u1 = texture.getU(z1);
-                uv.u2 = texture.getU(z2);
+                uv.u1 = texture.getU(z1 * 16);
+                uv.u2 = texture.getU(z2 * 16);
             }
             case EAST -> {
-                uv.u1 = texture.getU(1 - z2);
-                uv.u2 = texture.getU(1 - z1);
+                uv.u1 = texture.getU(16 - z2 * 16);
+                uv.u2 = texture.getU(16 - z1 * 16);
             }
         }
 

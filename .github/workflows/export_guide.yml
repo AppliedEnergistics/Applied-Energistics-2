@@ -11,18 +11,13 @@ on:
   push: {}
 
 jobs:
-  export-guide:
-    name: Export Guide
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Install Software OpenGL Rendering
         run: sudo apt-get install xvfb libgl1-mesa-dri zopfli
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 50
-      - run: git fetch origin --tags
-        shell: bash
       - uses: ./.github/actions/gradle-setup
       - name: Export Guide
         run: DRI_PRIME=0 xvfb-run ./gradlew runGuideexport
@@ -36,26 +31,22 @@ jobs:
           gunzip build/guide/guide.*.json.gz
           zopfli build/guide/guide.*.json
           rm -f build/guide/guide.*.json
-      - name: Compress guide files before upload as artifact
-        run: tar cf guide.tar build/guide/
       - uses: actions/upload-artifact@v4
         with:
           name: guide
-          path: guide.tar
+          path: build/guide/
 
   # Attach the guide as a release artifact if we're building a tag which might be a release
   attach-release-artifact:
-    if: startsWith(github.ref, 'refs/tags/fabric/v') || startsWith(github.ref, 'refs/tags/neoforge/v')
-    needs: export-guide
+    if: startsWith(github.ref, 'refs/tags/fabric/v') || startsWith(github.ref, 'refs/tags/forge/v')
+    needs: build
     name: Attach Release Artifact
     runs-on: ubuntu-latest
     steps:
-      - id: download
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: guide
-      - name: Decompress guide tar
-        run: tar xf ${{steps.download.outputs.download-path}}/guide.tar
+          path: build/guide/
       - name: Create ZIP
         working-directory: build/guide
         run: zip -r ../../guide-assets.zip .
@@ -67,19 +58,19 @@ jobs:
   # This job publishes the release version of guides to S3
   # Our general approach is that the latest release for any given
   # Minecraft version will be used to upload the guide data for it.
-  # We only publish our main Neoforge releases to the site.
+  # Since we build for both fabric/forge, we only upload tags
+  # starting with fabric/v[...]
   publish-web-release:
-    needs: export-guide
+    needs: build
     name: Publish Release to Web
     runs-on: ubuntu-latest
     environment: Production
-    if: startsWith(github.ref, 'refs/tags/neoforge/v')
+    if: startsWith(github.ref, 'refs/tags/fabric/v')
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: guide
-      - name: Decompress guide tar
-        run: tar xf guide.tar
+          path: build/guide/
       - id: versions
         name: Determine Game and Mod-Version
         run: |
@@ -109,17 +100,16 @@ jobs:
   # push to master, it'll only run for manually triggered workflows (workflow_dispatch)
   # or once per night.
   publish-web-snapshot:
-    needs: export-guide
+    needs: build
     name: Publish Snapshot to Web
     runs-on: ubuntu-latest
     environment: Production
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+    if: github.ref == 'refs/heads/master' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: guide
-      - name: Decompress guide tar
-        run: tar xf guide.tar
+          path: build/guide/
       # Finally, upload to S3
       - uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
         with:

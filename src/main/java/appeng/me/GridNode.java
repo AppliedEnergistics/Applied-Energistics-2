@@ -18,7 +18,6 @@
 
 package appeng.me;
 
-import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -34,23 +33,19 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.MutableClassToInstanceMap;
-import com.google.gson.stream.JsonWriter;
+import com.mojang.logging.LogUtils;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.GridFlags;
@@ -69,12 +64,9 @@ import appeng.api.util.AEColor;
 import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.core.AELog;
 import appeng.me.pathfinding.IPathItem;
-import appeng.util.IDebugExportable;
-import appeng.util.JsonStreamUtil;
 
-public class GridNode implements IGridNode, IPathItem, IDebugExportable {
-    private static final Logger LOG = LoggerFactory.getLogger(GridNode.class);
-
+public class GridNode implements IGridNode, IPathItem {
+    private static final Logger LOGGER = LogUtils.getLogger();
     private final ServerLevel level;
     /**
      * This is the logical host of the node, which could be any object. In many cases this will be a block entity or
@@ -212,12 +204,7 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
 
     public Grid getInternalGrid() {
         if (this.myGrid == null) {
-            Grid.create(this);
-            // Note that the node can be moved immediately to a new grid when
-            // it triggers adjacent connections due to block updates emitted while it joins the grid.
-            // That means the return value of Grid.create is not necessarily the new grid,
-            // but myGrid will already have been updated by the Grid calling setGrid on this node.
-            return Objects.requireNonNull(this.myGrid);
+            this.myGrid = Grid.create(this);
         }
 
         return this.myGrid;
@@ -271,7 +258,7 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
      * security system. Called instead of loadFromNBT when initially placed, once set never required again, the value is
      * saved with the Node NBT.
      *
-     * @param ownerPlayerId ME player id of the owner. See {@link IPlayerRegistry}.
+     * @param ownerPlayerId ME player id of the owner. See {@link appeng.api.features.IPlayerRegistry}.
      */
     public void setOwningPlayerId(int ownerPlayerId) {
         if (ownerPlayerId >= 0 && this.owningPlayerId != ownerPlayerId) {
@@ -597,7 +584,7 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
                     "Node %s has no connections, cannot have a controller route!".formatted(this));
         }
 
-        return this.connections.getFirst();
+        return this.connections.get(0);
     }
 
     public @Nullable GridNode getHighestSimilarAncestor() {
@@ -682,7 +669,7 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
         }
 
         if (this.usedChannels > getMaxChannels()) {
-            LOG.error(
+            LOGGER.error(
                     "Internal channel assignment error. Grid node {} has {} channels passing through it but it only supports up to {}. Please open an issue on the AE2 repository.",
                     this, this.usedChannels, getMaxChannels());
         }
@@ -764,26 +751,5 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
                 category.setDetail("Level", level.dimension());
             }
         }
-    }
-
-    @Override
-    public final void debugExport(JsonWriter writer, HolderLookup.Provider registries,
-            Reference2IntMap<Object> machineIds,
-            Reference2IntMap<IGridNode> nodeIds) throws IOException {
-        writer.beginObject();
-        exportProperties(writer, machineIds, nodeIds);
-        writer.endObject();
-    }
-
-    protected void exportProperties(JsonWriter writer, Reference2IntMap<Object> machineIds,
-            Reference2IntMap<IGridNode> nodeIds)
-            throws IOException {
-        var id = nodeIds.getInt(this);
-        var machineId = machineIds.getInt(owner);
-        JsonStreamUtil.writeProperties(Map.of(
-                "id", id, "owner", machineId), writer);
-
-        writer.name("level");
-        writer.value(level.dimension().location().toString());
     }
 }

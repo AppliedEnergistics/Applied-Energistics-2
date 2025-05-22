@@ -28,14 +28,11 @@ import appeng.api.behaviors.PlacementStrategy;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEKey;
-import appeng.util.Platform;
 
 public class FluidPlacementStrategy implements PlacementStrategy {
     private final ServerLevel level;
     private final BlockPos pos;
     private final Direction side;
-    @Nullable
-    private final UUID owningPlayerId;
     /**
      * The fluids that we tried to place unsuccessfully.
      */
@@ -50,7 +47,6 @@ public class FluidPlacementStrategy implements PlacementStrategy {
         this.level = level;
         this.pos = pos;
         this.side = side;
-        this.owningPlayerId = owningPlayerId;
     }
 
     @Override
@@ -76,8 +72,8 @@ public class FluidPlacementStrategy implements PlacementStrategy {
             return 0;
         }
 
-        // We do not support placing fluids with patched components for now
-        if (!fluidKey.toStack(1).getComponentsPatch().isEmpty()) {
+        // We do not support placing fluids with NBT for now
+        if (fluidKey.hasTag()) {
             return 0;
         }
 
@@ -147,7 +143,7 @@ public class FluidPlacementStrategy implements PlacementStrategy {
     /**
      * Checks from {@link net.minecraft.world.item.BucketItem#emptyContents}
      */
-    private boolean canPlace(ServerLevel level, BlockState state, BlockPos pos, Fluid fluid) {
+    private boolean canPlace(Level level, BlockState state, BlockPos pos, Fluid fluid) {
         if (!(fluid instanceof FlowingFluid)) {
             return false;
         }
@@ -158,20 +154,10 @@ public class FluidPlacementStrategy implements PlacementStrategy {
             return false;
         }
 
-        if (state.isAir()) {
-            return true;
-        }
-
-        if (state.canBeReplaced(fluid)) {
-            return true;
-        }
-
-        if (state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer) {
-            var fakePlayer = Platform.getFakePlayer(level, owningPlayerId);
-            return liquidBlockContainer.canPlaceLiquid(fakePlayer, level, pos, state, fluid);
-        }
-
-        return false;
+        return state.isAir()
+                || state.canBeReplaced(fluid)
+                || state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer
+                        && liquidBlockContainer.canPlaceLiquid(level, pos, state, fluid);
     }
 
     /**

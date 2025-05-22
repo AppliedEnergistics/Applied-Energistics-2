@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2:calculation_processor"
+    },
+    "b": {
+      "tag": "forge:ingots/iron"
+    },
+    "c": {
+      "tag": "forge:ingots/gold"
+    },
+    "d": {
+      "tag": "forge:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "abb",
+    "cdc"
+  ],
+  "result": {
+    "item": "ae2:memory_card"
+  },
+  "show_notification": true
+}

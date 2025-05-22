@@ -33,8 +33,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import appeng.client.render.cablebus.CubeBuilder;
@@ -47,7 +47,7 @@ public final class SkyStoneTankBlockEntityRenderer implements BlockEntityRendere
     @Override
     public void render(SkyStoneTankBlockEntity tank, float tickDelta, PoseStack ms, MultiBufferSource vertexConsumers,
             int light, int overlay) {
-        if (!tank.getTank().getFluid().isEmpty()) {
+        if (!tank.getStorage().getFluid().isEmpty()) {
 
             /*
              * 
@@ -55,8 +55,8 @@ public final class SkyStoneTankBlockEntityRenderer implements BlockEntityRendere
              * FacingToRotation.get(tank.getForward(), tank.getUp()).push(ms); ms.translate(-0.5, -0.5, -0.5);
              */
 
-            drawFluidInTank(tank, ms, vertexConsumers, tank.getTank().getFluid(),
-                    (float) tank.getTank().getFluid().getAmount() / tank.getTank().getCapacity());
+            drawFluidInTank(tank, ms, vertexConsumers, tank.getStorage().getFluid(),
+                    (float) tank.getStorage().getFluid().getAmount() / tank.getStorage().getCapacity());
 
             // ms.popPose();
         }
@@ -109,7 +109,8 @@ public final class SkyStoneTankBlockEntityRenderer implements BlockEntityRendere
         builder.addCube(x1, y1, z1, x2, y2, z2);
 
         for (var bakedQuad : builder.getOutput()) {
-            vc.putBulkData(ps.last(), bakedQuad, r, g, b, 1.0f, FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+            vc.putBulkData(ps.last(), bakedQuad, r, g, b, FULL_LIGHT,
+                    OverlayTexture.NO_OVERLAY);
         }
 
     }

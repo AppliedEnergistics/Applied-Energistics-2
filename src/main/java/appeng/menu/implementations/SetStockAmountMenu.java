@@ -20,7 +20,7 @@ import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.locator.MenuHostLocator;
+import appeng.menu.locator.MenuLocator;
 import appeng.menu.slot.InaccessibleSlot;
 import appeng.util.inv.AppEngInternalInventory;
 
@@ -73,7 +73,7 @@ public class SetStockAmountMenu extends AEBaseMenu implements ISubMenu {
     /**
      * Opens the screen to enter the stocked amount for the given player.
      */
-    public static void open(ServerPlayer player, MenuHostLocator locator,
+    public static void open(ServerPlayer player, MenuLocator locator,
             int slot,
             AEKey whatToStock, int initialAmount) {
         MenuOpener.open(SetStockAmountMenu.TYPE, player, locator);

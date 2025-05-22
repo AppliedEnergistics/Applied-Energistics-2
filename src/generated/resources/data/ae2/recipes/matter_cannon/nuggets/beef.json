@@ -1,0 +1,16 @@
+{
+  "type": "ae2:matter_cannon",
+  "ammo": {
+    "tag": "forge:nuggets/beef"
+  },
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:tag_empty",
+        "tag": "forge:nuggets/beef"
+      }
+    }
+  ],
+  "weight": 32.0
+}

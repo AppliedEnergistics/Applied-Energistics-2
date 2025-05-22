@@ -27,8 +27,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -36,6 +38,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -82,7 +85,7 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
 
     public final SkyChestType type;
 
-    public SkyChestBlock(SkyChestType type, Properties props) {
+    public SkyChestBlock(SkyChestType type, BlockBehaviour.Properties props) {
         super(props);
         this.type = type;
         registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false));
@@ -111,24 +114,24 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
-            BlockHitResult hitResult) {
-        if (level.getBlockEntity(pos) instanceof SkyChestBlockEntity be) {
-            if (!level.isClientSide()) {
-                MenuOpener.open(SkyChestMenu.TYPE, player, MenuLocators.forBlockEntity(be));
+    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
+            InteractionHand hand,
+            @Nullable ItemStack heldItem, BlockHitResult hit) {
+        if (!level.isClientSide()) {
+            SkyChestBlockEntity blockEntity = getBlockEntity(level, pos);
+            if (blockEntity != null) {
+                MenuOpener.open(SkyChestMenu.TYPE, player,
+                        MenuLocators.forBlockEntity(blockEntity));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return super.useWithoutItem(state, level, pos, player, hitResult);
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        var chest = AEBlockEntities.SKY_CHEST.getBlockEntity(level, pos);
-        if (chest != null) {
-            chest.recheckOpen();
-        }
+        level.getBlockEntity(pos, AEBlockEntities.SKY_CHEST).ifPresent(SkyChestBlockEntity::recheckOpen);
+
     }
 
     @Override

@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.block.crafting.CraftingUnitType;
 import appeng.core.AppEng;
@@ -77,7 +78,7 @@ public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider
 
     private static Material texture(String name) {
         var mat = new Material(TextureAtlas.LOCATION_BLOCKS,
-                AppEng.makeId("block/crafting/" + name));
+                new ResourceLocation(AppEng.MOD_ID, "block/crafting/" + name));
         MATERIALS.add(mat);
         return mat;
     }

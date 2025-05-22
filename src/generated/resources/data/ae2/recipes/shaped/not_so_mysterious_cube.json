@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "ae2:controller"
+    },
+    "S": {
+      "item": "ae2:smooth_sky_stone_block"
+    },
+    "c": {
+      "item": "ae2:calculation_processor_press"
+    },
+    "e": {
+      "item": "ae2:engineering_processor_press"
+    },
+    "l": {
+      "item": "ae2:logic_processor_press"
+    },
+    "s": {
+      "item": "ae2:silicon_press"
+    }
+  },
+  "pattern": [
+    "ScS",
+    "eCl",
+    "SsS"
+  ],
+  "result": {
+    "count": 4,
+    "item": "ae2:not_so_mysterious_cube"
+  },
+  "show_notification": true
+}

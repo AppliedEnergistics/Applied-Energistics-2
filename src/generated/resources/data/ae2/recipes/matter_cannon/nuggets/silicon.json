@@ -1,0 +1,16 @@
+{
+  "type": "ae2:matter_cannon",
+  "ammo": {
+    "tag": "forge:nuggets/silicon"
+  },
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:tag_empty",
+        "tag": "forge:nuggets/silicon"
+      }
+    }
+  ],
+  "weight": 28.0855
+}

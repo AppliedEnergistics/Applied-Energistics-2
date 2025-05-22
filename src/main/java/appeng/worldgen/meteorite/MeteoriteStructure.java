@@ -21,7 +21,7 @@ package appeng.worldgen.meteorite;
 import java.util.Optional;
 
 import com.google.common.math.StatsAccumulator;
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -51,7 +51,7 @@ public class MeteoriteStructure extends Structure {
     public static final ResourceKey<StructureSet> STRUCTURE_SET_KEY = ResourceKey
             .create(Registries.STRUCTURE_SET, ID);
 
-    public static final MapCodec<MeteoriteStructure> CODEC = simpleCodec(MeteoriteStructure::new);
+    public static final Codec<MeteoriteStructure> CODEC = simpleCodec(MeteoriteStructure::new);
 
     public static final ResourceKey<Structure> KEY = ResourceKey
             .create(Registries.STRUCTURE, ID);
@@ -59,7 +59,7 @@ public class MeteoriteStructure extends Structure {
     public static final TagKey<Biome> BIOME_TAG_KEY = TagKey.create(Registries.BIOME,
             AppEng.makeId("has_meteorites"));
 
-    public static StructureType<MeteoriteStructure> TYPE = () -> MeteoriteStructure.CODEC;
+    public static StructureType<MeteoriteStructure> TYPE;
 
     public MeteoriteStructure(StructureSettings settings) {
         super(settings);

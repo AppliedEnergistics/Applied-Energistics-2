@@ -5,7 +5,7 @@ import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.Actionable;
@@ -70,10 +70,7 @@ public class GenericStackItemStorage implements IItemHandler {
 
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-        if (stack.isEmpty()) {
-            return true;
-        }
         var what = AEItemKey.of(stack);
-        return what != null && inv.isAllowedIn(slot, what);
+        return what == null || inv.isAllowed(what);
     }
 }

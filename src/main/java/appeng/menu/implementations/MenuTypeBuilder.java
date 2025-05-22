@@ -25,24 +25,26 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.Nameable;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.network.NetworkHooks;
 
 import appeng.core.AppEng;
 import appeng.init.InitMenuTypes;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuHostLocator;
+import appeng.menu.locator.MenuLocator;
 import appeng.menu.locator.MenuLocators;
 
 /**
@@ -113,7 +115,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
      * Opens a menu that is based around a single block entity. The block entity's position is encoded in the packet
      * buffer.
      */
-    private M fromNetwork(int containerId, Inventory inv, RegistryFriendlyByteBuf packetBuf) {
+    private M fromNetwork(int containerId, Inventory inv, FriendlyByteBuf packetBuf) {
         var locator = MenuLocators.readFromPacket(packetBuf);
         I host = locator.locate(inv.player, hostInterface);
         if (host == null) {
@@ -132,7 +134,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
         return menu;
     }
 
-    private boolean open(Player player, MenuHostLocator locator, boolean fromSubMenu) {
+    private boolean open(Player player, MenuLocator locator, boolean fromSubMenu) {
         if (!(player instanceof ServerPlayer)) {
             // Cannot open menus on the client or for non-players
             // FIXME logging?
@@ -147,30 +149,14 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
 
         Component title = menuTitleStrategy.apply(accessInterface);
 
-        class AppEngMenuProvider implements MenuProvider {
-            @Override
-            public Component getDisplayName() {
-                return title;
-            }
-
-            @Nullable
-            @Override
-            public AbstractContainerMenu createMenu(int wnd, Inventory p, Player pl) {
-                M m = factory.create(wnd, p, accessInterface);
-                // Set the original locator on the opened server-side menu for it to more
-                // easily remember how to re-open after being closed.
-                m.setLocator(locator);
-                return m;
-            }
-
-            @Override
-            public boolean shouldTriggerClientSideContainerClosingOnOpen() {
-                // Do not send close packets when switching between AE menus
-                return !(player.containerMenu instanceof AEBaseMenu);
-            }
-        }
-
-        player.openMenu(new AppEngMenuProvider(), buffer -> {
+        MenuProvider menu = new SimpleMenuProvider((wnd, p, pl) -> {
+            M m = factory.create(wnd, p, accessInterface);
+            // Set the original locator on the opened server-side menu for it to more
+            // easily remember how to re-open after being closed.
+            m.setLocator(locator);
+            return m;
+        }, title);
+        NetworkHooks.openScreen((ServerPlayer) player, menu, buffer -> {
             MenuLocators.writeToPacket(buffer, locator);
             buffer.writeBoolean(fromSubMenu);
             if (initialDataSerializer != null) {
@@ -181,36 +167,23 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
         return true;
     }
 
-    public MenuType<M> build(String id) {
-        return build(AppEng.makeId(id));
-    }
-
     /**
      * Creates a menu type that uses this helper as a factory and network deserializer.
      */
-    public MenuType<M> buildUnregistered(ResourceLocation id) {
+    public MenuType<M> build(String id) {
         Preconditions.checkState(menuType == null, "build was already called");
         Preconditions.checkState(this.id == null, "id should not be set");
 
-        this.id = id;
-        menuType = IMenuTypeExtension.create(this::fromNetwork);
-        MenuOpener.addOpener(menuType, this::open);
-        return menuType;
-    }
-
-    /**
-     * Creates a menu type that uses this helper as a factory and network deserializer, and queues it for registration
-     * with Vanilla.
-     */
-    public MenuType<M> build(ResourceLocation id) {
-        var menuType = buildUnregistered(id);
+        this.id = AppEng.makeId(id);
+        menuType = IForgeMenuType.create(this::fromNetwork);
         InitMenuTypes.queueRegistration(this.id, menuType);
+        MenuOpener.addOpener(menuType, this::open);
         return menuType;
     }
 
     @FunctionalInterface
     public interface MenuFactory<C, I> {
-        C create(int containerId, Inventory playerInv, I menuHost);
+        C create(int containerId, Inventory playerInv, I accessObj);
     }
 
     @FunctionalInterface
@@ -224,7 +197,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
      */
     @FunctionalInterface
     public interface InitialDataSerializer<I> {
-        void serializeInitialData(I host, RegistryFriendlyByteBuf buffer);
+        void serializeInitialData(I host, FriendlyByteBuf buffer);
     }
 
     /**
@@ -233,7 +206,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
      */
     @FunctionalInterface
     public interface InitialDataDeserializer<C, I> {
-        void deserializeInitialData(I host, C menu, RegistryFriendlyByteBuf buffer);
+        void deserializeInitialData(I host, C menu, FriendlyByteBuf buffer);
     }
 
     private Component getDefaultMenuTitle(I accessInterface) {

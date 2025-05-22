@@ -59,7 +59,7 @@ class StyleManagerTest {
 
         ScreenStyle style = StyleManager.loadStyleDoc("/screens/cell_workbench.json");
 
-        assertThat(style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB()).isEqualTo(0xff413f54);
+        assertThat(style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB()).isEqualTo(0xff404040);
         assertThat(style.getText()).hasSize(2);
         assertThat(style.getSlots()).containsOnlyKeys(
                 SlotSemantics.TOOLBOX.id(),

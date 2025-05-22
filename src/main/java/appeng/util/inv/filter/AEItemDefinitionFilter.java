@@ -37,7 +37,7 @@ public class AEItemDefinitionFilter implements IAEItemFilter {
 
     @Override
     public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
-        return this.definition.is(stack);
+        return this.definition.isSameAs(stack);
     }
 
 }

@@ -7,7 +7,8 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
@@ -24,7 +25,7 @@ class FluidContainerItemStrategy
 
     @Override
     public @Nullable Context findCarriedContext(Player player, AbstractContainerMenu menu) {
-        if (menu.getCarried().getCapability(Capabilities.FluidHandler.ITEM) != null) {
+        if (menu.getCarried().getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent()) {
             return new CarriedContext(player, menu);
         }
         return null;
@@ -32,7 +33,7 @@ class FluidContainerItemStrategy
 
     @Override
     public @Nullable Context findPlayerSlotContext(Player player, int slot) {
-        if (player.getInventory().getItem(slot).getCapability(Capabilities.FluidHandler.ITEM) != null) {
+        if (player.getInventory().getItem(slot).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent()) {
             return new PlayerInvContext(player, slot);
         }
 
@@ -42,8 +43,8 @@ class FluidContainerItemStrategy
     @Override
     public long extract(Context context, AEFluidKey what, long amount, Actionable mode) {
         var stack = context.getStack();
-        var copy = stack.copyWithCount(1);
-        var fluidHandler = copy.getCapability(Capabilities.FluidHandler.ITEM);
+        var copy = ItemHandlerHelper.copyStackWithSize(stack, 1);
+        var fluidHandler = copy.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).orElse(null);
         if (fluidHandler == null) {
             return 0;
         }
@@ -59,8 +60,8 @@ class FluidContainerItemStrategy
     @Override
     public long insert(Context context, AEFluidKey what, long amount, Actionable mode) {
         var stack = context.getStack();
-        var copy = stack.copyWithCount(1);
-        var fluidHandler = copy.getCapability(Capabilities.FluidHandler.ITEM);
+        var copy = ItemHandlerHelper.copyStackWithSize(stack, 1);
+        var fluidHandler = copy.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).orElse(null);
         if (fluidHandler == null) {
             return 0;
         }

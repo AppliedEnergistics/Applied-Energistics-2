@@ -22,7 +22,6 @@ import java.time.Duration;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.ResourceLocation;
@@ -112,10 +111,10 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
         Blitter image;
         if (this.getRange() == 0) {
             yOffset = 0;
-            image = Blitter.guiSprite(style.disabledSprite());
+            image = style.disabledBlitter();
         } else {
             yOffset = getHandleYOffset();
-            image = Blitter.guiSprite(style.enabledSprite());
+            image = style.enabledBlitter();
         }
 
         image.dest(this.displayX, this.displayY + yOffset).blit(guiGraphics);
@@ -296,34 +295,44 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
     }
 
     public static final Style DEFAULT = Style.create(
-            ResourceLocation.fromNamespaceAndPath("minecraft", "container/creative_inventory/scroller"),
-            ResourceLocation.fromNamespaceAndPath("minecraft", "container/creative_inventory/scroller_disabled"));
-
-    public static final Style BIG = Style.create(
-            AppEng.makeId("big_scroller"),
-            AppEng.makeId("big_scroller_disabled"));
+            new ResourceLocation("minecraft", "textures/gui/container/creative_inventory/tabs.png"),
+            12,
+            15,
+            232, 0,
+            244, 0);
 
     public static final Style SMALL = Style.create(
-            AppEng.makeId("small_scroller"),
-            AppEng.makeId("small_scroller_disabled"));
+            AppEng.makeId("textures/guis/pattern_modes.png"),
+            7,
+            15,
+            242, 0,
+            249, 0);
 
+    /**
+     * @param handleWidth     Width of the scrollbar handle sprite in the source texture.
+     * @param handleHeight    Height of the scrollbar handle sprite in the source texture.
+     * @param texture         Texture containing the scrollbar handle sprites.
+     * @param enabledBlitter  Rectangle in the source texture that contains the sprite for an enabled handle.
+     * @param disabledBlitter Rectangle in the source texture that contains the sprite for a disabled handle.
+     */
     public record Style(
-            ResourceLocation enabledSprite,
-            ResourceLocation disabledSprite) {
+            int handleWidth,
+            int handleHeight,
+            ResourceLocation texture,
+            Blitter enabledBlitter,
+            Blitter disabledBlitter) {
         public static Style create(
-                ResourceLocation enabledSprite,
-                ResourceLocation disabledSprite) {
-            return new Style(enabledSprite, disabledSprite);
-        }
-
-        public int handleWidth() {
-            var minecraft = Minecraft.getInstance();
-            return minecraft.getGuiSprites().getSprite(enabledSprite).contents().width();
-        }
-
-        public int handleHeight() {
-            var minecraft = Minecraft.getInstance();
-            return minecraft.getGuiSprites().getSprite(enabledSprite).contents().height();
+                ResourceLocation texture,
+                int handleWidth,
+                int handleHeight,
+                int enabledSrcX, int enabledSrcY,
+                int disabledSrcX, int disabledSrcY) {
+            return new Style(
+                    handleWidth,
+                    handleHeight,
+                    texture,
+                    Blitter.texture(texture).src(enabledSrcX, enabledSrcY, handleWidth, handleHeight),
+                    Blitter.texture(texture).src(disabledSrcX, disabledSrcY, handleWidth, handleHeight));
         }
     }
 

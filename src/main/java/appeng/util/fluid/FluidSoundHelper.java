@@ -24,8 +24,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.SoundActions;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.common.SoundActions;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.stacks.AEFluidKey;
 
@@ -64,7 +64,7 @@ public final class FluidSoundHelper {
     }
 
     /**
-     * @see net.neoforged.neoforge.fluids.FluidUtil#tryFillContainer(ItemStack, IFluidHandler, int, Player, boolean)
+     * @see net.minecraftforge.fluids.FluidUtil#tryFillContainer(ItemStack, IFluidHandler, int, Player, boolean)
      */
     private static void playSound(Player player, SoundEvent fillSound) {
         // This should just play the sound for the player themselves

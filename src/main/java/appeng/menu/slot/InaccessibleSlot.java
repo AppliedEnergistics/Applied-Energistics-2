@@ -37,14 +37,14 @@ public class InaccessibleSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean mayPickup(Player player) {
-        return false;
-    }
-
-    @Override
     public void setChanged() {
         super.setChanged();
         this.dspStack = ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean mayPickup(Player player) {
+        return false;
     }
 
     @Override

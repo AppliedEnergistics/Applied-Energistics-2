@@ -23,23 +23,23 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnit;
+import appeng.api.config.PowerUnits;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.blockentity.AEBaseInvBlockEntity;
+import appeng.capabilities.Capabilities;
 import appeng.helpers.ForgeEnergyAdapter;
 import appeng.me.energy.StoredEnergyAmount;
 
@@ -53,10 +53,20 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
     private Set<Direction> internalPowerSides = ALL_SIDES;
     private final IEnergyStorage forgeEnergyAdapter;
     // Cache the optional to not continuously re-allocate it or the supplier
+    private LazyOptional<IEnergyStorage> forgeEnergyAdapterOptional;
 
     public AEBasePoweredBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.forgeEnergyAdapter = new ForgeEnergyAdapter(this);
+        this.forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        forgeEnergyAdapterOptional.invalidate();
+        // We just create a new one immediately in case this BE gets cleared for use again
+        forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
     }
 
     protected final Set<Direction> getPowerSides() {
@@ -68,21 +78,21 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         data.putDouble("internalCurrentPower", this.getInternalCurrentPower());
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
+    public void loadTag(CompoundTag data) {
+        super.loadTag(data);
         this.setInternalCurrentPower(data.getDouble("internalCurrentPower"));
     }
 
     @Override
-    public final double getExternalPowerDemand(PowerUnit externalUnit, double maxPowerRequired) {
-        return PowerUnit.AE.convertTo(externalUnit,
-                Math.max(0.0, this.getFunnelPowerDemand(externalUnit.convertTo(PowerUnit.AE, maxPowerRequired))));
+    public final double getExternalPowerDemand(PowerUnits externalUnit, double maxPowerRequired) {
+        return PowerUnits.AE.convertTo(externalUnit,
+                Math.max(0.0, this.getFunnelPowerDemand(externalUnit.convertTo(PowerUnits.AE, maxPowerRequired))));
     }
 
     protected double getFunnelPowerDemand(double maxRequired) {
@@ -90,8 +100,8 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
     }
 
     @Override
-    public final double injectExternalPower(PowerUnit input, double amt, Actionable mode) {
-        return PowerUnit.AE.convertTo(input, this.funnelPowerIntoStorage(input.convertTo(PowerUnit.AE, amt), mode));
+    public final double injectExternalPower(PowerUnits input, double amt, Actionable mode) {
+        return PowerUnits.AE.convertTo(input, this.funnelPowerIntoStorage(input.convertTo(PowerUnits.AE, amt), mode));
     }
 
     protected double funnelPowerIntoStorage(double power, Actionable mode) {
@@ -168,15 +178,25 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
         this.internalPowerFlow = internalPowerFlow;
     }
 
-    @Nullable
-    public IEnergyStorage getEnergyStorage(@Nullable Direction side) {
-        if (side == null && getPowerSides().equals(ALL_SIDES)) {
-            return forgeEnergyAdapter;
-        } else if (side != null && getPowerSides().contains(side)) {
-            return forgeEnergyAdapter;
-        } else {
-            return null;
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability) {
+
+        if (capability == Capabilities.FORGE_ENERGY && this.getPowerSides().equals(ALL_SIDES)) {
+            return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
         }
+
+        return super.getCapability(capability);
+
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
+        if (capability == Capabilities.FORGE_ENERGY && this.getPowerSides().contains(facing)) {
+            return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
+        }
+        return super.getCapability(capability, facing);
     }
 
 }

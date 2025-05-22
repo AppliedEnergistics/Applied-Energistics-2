@@ -5,7 +5,7 @@ import static appeng.core.AppEng.makeId;
 import java.util.Locale;
 
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;

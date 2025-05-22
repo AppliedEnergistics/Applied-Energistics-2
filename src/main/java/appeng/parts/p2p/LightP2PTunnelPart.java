@@ -21,9 +21,8 @@ package appeng.parts.p2p;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -70,13 +69,13 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void writeToStream(RegistryFriendlyByteBuf data) {
+    public void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeInt(this.isOutput() ? this.lastValue : 0);
     }
 
     @Override
-    public boolean readFromStream(RegistryFriendlyByteBuf data) {
+    public boolean readFromStream(FriendlyByteBuf data) {
         boolean changed = super.readFromStream(data);
         final int oldValue = this.lastValue;
 
@@ -118,7 +117,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
 
     @Override
     public int getLightLevel() {
-        if (this.isOutput() && this.isPowered() && this.getInput() != null) {
+        if (this.isOutput() && this.isPowered()) {
             return this.blockLight(this.lastValue);
         }
 
@@ -142,14 +141,14 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
-        super.readFromNBT(tag, registries);
+    public void readFromNBT(CompoundTag tag) {
+        super.readFromNBT(tag);
         this.lastValue = tag.getInt("lastValue");
     }
 
     @Override
-    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries) {
-        super.writeToNBT(tag, registries);
+    public void writeToNBT(CompoundTag tag) {
+        super.writeToNBT(tag);
         tag.putInt("lastValue", this.lastValue);
     }
 
@@ -174,7 +173,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.LightTunnel, false);
+        return new TickingRequest(TickRates.LightTunnel, false, false);
     }
 
     @Override

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "forge:glass"
+    },
+    "b": {
+      "item": "ae2:drive"
+    },
+    "c": {
+      "item": "ae2:fluix_glass_cable"
+    },
+    "d": {
+      "tag": "forge:ingots/iron"
+    },
+    "e": {
+      "item": "ae2:logic_processor"
+    }
+  },
+  "pattern": [
+    "aaa",
+    "bcb",
+    "ded"
+  ],
+  "result": {
+    "item": "ae2:io_port"
+  },
+  "show_notification": true
+}

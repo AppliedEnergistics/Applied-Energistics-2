@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ae2:item/fluid_storage_cell_64k",
+    "layer1": "ae2:item/storage_cell_led"
+  }
+}

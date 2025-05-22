@@ -24,7 +24,7 @@
 package appeng.api.inventories;
 
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import appeng.api.stacks.GenericStack;
 

@@ -22,21 +22,18 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.status.ChunkStatus;
+import net.minecraft.world.level.chunk.ChunkStatus;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.ids.AEComponents;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
@@ -46,12 +43,12 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.block.networking.EnergyCellBlock;
-import appeng.blockentity.grid.AENetworkedBlockEntity;
+import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.me.energy.StoredEnergyAmount;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public class EnergyCellBlockEntity extends AENetworkedBlockEntity implements IAEPowerStorage, IGridTickable {
+public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPowerStorage, IGridTickable {
 
     private final StoredEnergyAmount stored;
     private byte currentDisplayLevel;
@@ -144,37 +141,35 @@ public class EnergyCellBlockEntity extends AENetworkedBlockEntity implements IAE
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         data.putDouble("internalCurrentPower", this.stored.getAmount());
         data.putBoolean("neighborChangePending", this.neighborChangePending);
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
+    public void loadTag(CompoundTag data) {
+        super.loadTag(data);
         this.stored.setStored(data.getDouble("internalCurrentPower"));
         this.neighborChangePending = data.getBoolean("neighborChangePending");
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            var storedEnergy = input.get(AEComponents.STORED_ENERGY);
-            if (storedEnergy != null) {
-                this.stored.setStored(storedEnergy);
-            }
+            this.stored.setStored(input.getDouble("internalCurrentPower"));
         }
     }
 
     @Override
-    public void exportSettings(SettingsFrom from, DataComponentMap.Builder data, @Nullable Player player) {
+    public void exportSettings(SettingsFrom from, CompoundTag data, @Nullable Player player) {
         super.exportSettings(from, data, player);
 
-        if (from == SettingsFrom.DISMANTLE_ITEM && stored.getAmount() > 0) {
-            data.set(AEComponents.STORED_ENERGY, stored.getAmount());
+        if (from == SettingsFrom.DISMANTLE_ITEM && this.stored.getAmount() > 0) {
+            data.putDouble("internalCurrentPower", this.stored.getAmount());
+            data.putDouble("internalMaxPower", this.stored.getMaximum()); // used for tool tip.
         }
     }
 
@@ -232,7 +227,7 @@ public class EnergyCellBlockEntity extends AENetworkedBlockEntity implements IAE
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(1, 20, !neighborChangePending);
+        return new TickingRequest(1, 20, !neighborChangePending, true);
     }
 
     @Override

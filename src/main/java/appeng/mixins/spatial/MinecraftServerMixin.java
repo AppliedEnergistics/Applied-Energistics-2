@@ -24,8 +24,8 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.WorldData;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.LevelEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.level.LevelEvent;
 
 import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
@@ -87,6 +87,6 @@ public abstract class MinecraftServerMixin {
         // dimension anyway.
         this.levels.put(SpatialStorageDimensionIds.WORLD_ID, level);
         // Emulate the Forge world load event
-        NeoForge.EVENT_BUS.post(new LevelEvent.Load(level));
+        MinecraftForge.EVENT_BUS.post(new LevelEvent.Load(level));
     }
 }

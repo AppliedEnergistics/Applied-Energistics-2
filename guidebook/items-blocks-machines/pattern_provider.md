@@ -100,16 +100,16 @@ Pattern providers will attempt to round-robin their batches to all of their face
 Pattern Providers come in 3 different variants: normal, directional, and flat/[subpart](../ae2-mechanics/cable-subparts.md). This affects which specific sides they push
 ingredients to, receive items from, and provide a network connection to.
 
-* Normal pattern providers push ingredients to all sides, receive inputs from all sides, and, like most AE2 machines, act
-    like a cable providing [network connections](../ae2-mechanics/me-network-connections.md) to all sides.
+*   Normal pattern providers push ingredients to all sides, receive inputs from all sides, and, like most AE2 machines, act
+    like a cable providing network connection to all sides.
 
-* Directional pattern providers are made by using a <ItemLink id="certus_quartz_wrench" /> on a normal pattern provider to change its
-    direction. They only push ingredients to the selected side, receive inputs from all sides, and specifically don't provide a
-  [network connection](../ae2-mechanics/me-network-connections.md) on the selected side. This allows them to push to AE2 machines without connecting networks, if you want to make a subnetwork.
+*   Directional pattern providers are made by using a <ItemLink id="certus_quartz_wrench" /> on a normal pattern provider to change its
+    direction. They only push ingredients to the selected side, receive inputs from all sides, and specifically don't provide a network
+    connection on the selected side. This allows them to push to AE2 machines without connecting networks, if you want to make a subnetwork.
 
-* Flat pattern providers are [cable subparts](../ae2-mechanics/cable-subparts.md), and so multiple can be placed on the same cable, allowing for compact setups.
+*   Flat pattern providers are [cable subparts](../ae2-mechanics/cable-subparts.md), and so multiple can be placed on the same cable, allowing for compact setups.
     They act similar to the selected side on a directional pattern provider, providing patterns, receiving inputs, and **not**
-    providing a [network connection](../ae2-mechanics/me-network-connections.md) on their face.
+    providing a network connection on their face.
 
 Pattern providers can be swapped between normal and flat in a crafting grid.
 
@@ -179,30 +179,6 @@ the adjacent machine:
 
   <IsometricCamera yaw="95" pitch="5" />
 </GameScene>
-
-## Use With Molecular Assemblers
-
-<ItemLink id="molecular_assembler" />s are basically just like any other machine. They have an inventory that can be inserted
-into, they then perform an action on the things in that inventory, and then, like many machines, they push the result to an
-adjacent inventory. Thus, they should be used with providers like any other machine, with one addition:
-
-Assemblers can take the desired pattern from a <ItemLink id="crafting_pattern" />, <ItemLink id="smithing_table_pattern" />, or <ItemLink id="stonecutting_pattern" />
-that is inserted directly into the assembler.
-This is useful in an assembly line but having to have a dedicated assembler per-crafting-recipe would be annoying.
-
-Thus, pattern providers have a special functionality with assemblers, they can send the pattern data along with the ingredients.
-This way, you can simply place an assembler next to a pattern provider, and the provider can then use the assembler for all of its
-crafting, smithing, and stonecutting patterns.
-
-It's really this simple, just put the patterns in the providers:
-
-<GameScene zoom="4" background="transparent">
-  <ImportStructure src="../assets/assemblies/assembler_tower.snbt" />
-  <IsometricCamera yaw="195" pitch="30" />
-</GameScene>
-
-*Note that this has exactly 8 providers, the maximum amount of channels that can be routed through a single assembler, provider, or
-non-dense cable.*
 
 ## Recipes
 

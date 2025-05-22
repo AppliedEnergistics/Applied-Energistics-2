@@ -25,7 +25,6 @@ package appeng.api.inventories;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -73,7 +72,7 @@ class ContainerAdapter implements Container {
      */
     @Override
     public int getMaxStackSize() {
-        int max = Item.ABSOLUTE_MAX_STACK_SIZE;
+        int max = Container.LARGE_MAX_STACK_SIZE;
         for (int i = 0; i < inventory.size(); ++i) {
             max = Math.min(max, inventory.getSlotLimit(i));
         }

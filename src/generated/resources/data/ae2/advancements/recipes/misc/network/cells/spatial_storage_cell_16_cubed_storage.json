@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_16_cubed_spatial_cell_component": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:spatial_cell_component_16"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ae2:network/cells/spatial_storage_cell_16_cubed_storage"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_16_cubed_spatial_cell_component",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ae2:network/cells/spatial_storage_cell_16_cubed_storage"
+    ]
+  },
+  "sends_telemetry_event": false
+}

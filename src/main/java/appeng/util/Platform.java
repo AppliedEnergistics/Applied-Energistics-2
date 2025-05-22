@@ -34,42 +34,47 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.fml.util.thread.SidedThreadGroups;
-import net.neoforged.neoforge.common.util.FakePlayerFactory;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.util.thread.SidedThreadGroups;
 
 import appeng.api.config.AccessRestriction;
-import appeng.api.config.PowerUnit;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.config.PowerUnits;
 import appeng.api.config.SortOrder;
 import appeng.api.implementations.items.IAEItemPowerStorage;
+import appeng.api.networking.energy.IEnergySource;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.KeyCounter;
+import appeng.api.storage.MEStorage;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.util.helpers.P2PHelper;
+import appeng.util.prioritylist.IPartitionList;
 
 public class Platform {
 
@@ -85,7 +90,7 @@ public class Platform {
      * Class of the Create Ponder Level. Enables {@link VisualStateSaving} if a block entity is attached to a Ponder
      * level.
      */
-    @Nullable
+    @org.jetbrains.annotations.Nullable
     private static final Class<?> ponderLevelClass = findPonderLevelClass(
             "com.simibubi.create.foundation.ponder.PonderWorld");
 
@@ -138,8 +143,8 @@ public class Platform {
     }
 
     public static String formatPower(double p, boolean isRate) {
-        var displayUnits = AEConfig.instance().getSelectedEnergyUnit();
-        p = PowerUnit.AE.convertTo(displayUnits, p);
+        var displayUnits = AEConfig.instance().getSelectedPowerUnit();
+        p = PowerUnits.AE.convertTo(displayUnits, p);
 
         final String[] preFixes = { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
         var unitName = displayUnits.getSymbolName();
@@ -250,9 +255,22 @@ public class Platform {
                 .orElse(modId);
     }
 
+    public static String getDescriptionId(Fluid fluid) {
+        return fluid.defaultFluidState().createLegacyBlock().getBlock().getDescriptionId();
+    }
+
+    public static String getDescriptionId(FluidStack fluid) {
+        return fluid.getDisplayName().getString();
+    }
+
     public static Component getFluidDisplayName(Fluid fluid) {
+        return getFluidDisplayName(fluid, null);
+    }
+
+    public static Component getFluidDisplayName(Fluid fluid, @Nullable CompoundTag tag) {
         var fluidStack = new FluidStack(fluid, 1);
-        return fluidStack.getHoverName();
+        fluidStack.setTag(tag);
+        return fluidStack.getDisplayName();
     }
 
     public static boolean isChargeable(ItemStack i) {
@@ -266,16 +284,14 @@ public class Platform {
         return false;
     }
 
-    private static final UUID DEFAULT_FAKE_PLAYER_UUID = UUID.fromString("60C173A5-E1E6-4B87-85B1-272CE424521D");
-
     public static Player getFakePlayer(ServerLevel level, @Nullable UUID playerUuid) {
         Objects.requireNonNull(level);
 
         if (playerUuid == null) {
-            playerUuid = DEFAULT_FAKE_PLAYER_UUID;
+            playerUuid = FakePlayer.DEFAULT_UUID;
         }
 
-        return FakePlayerFactory.get(level, new GameProfile(playerUuid, "[AE2]"));
+        return FakePlayer.get(level, new GameProfile(playerUuid, "[AE2]"));
     }
 
     public static Direction rotateAround(Direction forward, Direction axis) {
@@ -302,6 +318,59 @@ public class Platform {
         player.moveTo(blockEntity.getBlockPos().getX() + 0.5, blockEntity.getBlockPos().getY() + 0.5,
                 blockEntity.getBlockPos().getZ() + 0.5,
                 yaw, pitch);
+    }
+
+    public static ItemStack extractItemsByRecipe(IEnergySource energySrc,
+            IActionSource mySrc,
+            MEStorage src,
+            Level level,
+            Recipe<CraftingContainer> r,
+            ItemStack output,
+            CraftingContainer ci,
+            ItemStack providedTemplate,
+            int slot,
+            KeyCounter items,
+            Actionable realForFake,
+            IPartitionList filter) {
+        if (energySrc.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.9) {
+            if (providedTemplate == null) {
+                return ItemStack.EMPTY;
+            }
+
+            var ae_req = AEItemKey.of(providedTemplate);
+
+            if (filter == null || filter.isListed(ae_req)) {
+                var extracted = src.extract(ae_req, 1, realForFake, mySrc);
+                if (extracted > 0) {
+                    energySrc.extractAEPower(1, realForFake, PowerMultiplier.CONFIG);
+                    return ae_req.toStack();
+                }
+            }
+
+            var checkFuzzy = providedTemplate.hasTag() || providedTemplate.isDamageableItem();
+
+            if (items != null && checkFuzzy) {
+                for (var x : items) {
+                    if (x.getKey() instanceof AEItemKey itemKey) {
+                        if (providedTemplate.getItem() == itemKey.getItem() && !itemKey.matches(output)) {
+                            ci.setItem(slot, itemKey.toStack());
+                            if (r.matches(ci, level)
+                                    && ItemStack.matches(r.assemble(ci, level.registryAccess()), output)) {
+                                if (filter == null || filter.isListed(itemKey)) {
+                                    var ex = src.extract(itemKey, 1, realForFake, mySrc);
+                                    if (ex > 0) {
+                                        energySrc.extractAEPower(1, realForFake, PowerMultiplier.CONFIG);
+                                        return itemKey.toStack();
+                                    }
+                                }
+                            }
+                            ci.setItem(slot, providedTemplate);
+                        }
+                    }
+                }
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
     public static void notifyBlocksOfNeighbors(Level level, BlockPos pos) {
@@ -394,19 +463,5 @@ public class Platform {
      */
     public static boolean isDevelopmentEnvironment() {
         return !FMLEnvironment.production;
-    }
-
-    /**
-     * Uses the given server to look up an enchantment.
-     */
-    public static Holder<Enchantment> getEnchantment(MinecraftServer server, ResourceKey<Enchantment> enchantment) {
-        return server.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment);
-    }
-
-    /**
-     * Uses the given server-level to look up an enchantment.
-     */
-    public static Holder<Enchantment> getEnchantment(ServerLevel level, ResourceKey<Enchantment> enchantment) {
-        return level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment);
     }
 }

@@ -22,7 +22,6 @@ import java.util.Map;
 
 import com.google.common.collect.Iterables;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.ListTag;
 
 import appeng.api.config.Actionable;
@@ -82,13 +81,13 @@ public class ListCraftingInventory implements ICraftingInventory {
         list.removeZeros();
     }
 
-    public void readFromNBT(ListTag data, HolderLookup.Provider registries) {
+    public void readFromNBT(ListTag data) {
         list.clear();
 
         if (data != null) {
             for (int i = 0; i < data.size(); ++i) {
                 var compound = data.getCompound(i);
-                var key = AEKey.fromTagGeneric(registries, compound);
+                var key = AEKey.fromTagGeneric(compound);
                 if (key != null) {
                     var amount = compound.getLong("#");
                     insert(key, amount, Actionable.MODULATE);
@@ -97,14 +96,14 @@ public class ListCraftingInventory implements ICraftingInventory {
         }
     }
 
-    public ListTag writeToNBT(HolderLookup.Provider registries) {
+    public ListTag writeToNBT() {
         ListTag tag = new ListTag();
 
         for (var entry : list) {
             var key = entry.getKey();
             var amount = entry.getLongValue();
 
-            var entryTag = key.toTagGeneric(registries);
+            var entryTag = key.toTagGeneric();
             entryTag.putLong("#", amount);
             tag.add(entryTag);
         }

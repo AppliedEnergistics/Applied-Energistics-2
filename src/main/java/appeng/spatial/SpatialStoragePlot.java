@@ -189,7 +189,7 @@ public class SpatialStoragePlot {
 
     public static SpatialStoragePlot fromTag(CompoundTag tag) {
         int id = tag.getInt(TAG_ID);
-        BlockPos size = NbtUtils.readBlockPos(tag, TAG_SIZE).orElseThrow();
+        BlockPos size = NbtUtils.readBlockPos(tag.getCompound(TAG_SIZE));
         int ownerId = tag.getInt(TAG_OWNER);
         SpatialStoragePlot plot = new SpatialStoragePlot(id, size, ownerId);
 

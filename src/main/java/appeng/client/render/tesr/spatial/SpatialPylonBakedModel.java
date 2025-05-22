@@ -32,9 +32,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.ChunkRenderTypeSet;
-import net.neoforged.neoforge.client.model.IDynamicBakedModel;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 import appeng.client.render.cablebus.CubeBuilder;
@@ -43,7 +42,6 @@ import appeng.client.render.cablebus.CubeBuilder;
  * The baked model that will be used for rendering the spatial pylon.
  */
 class SpatialPylonBakedModel implements IDynamicBakedModel {
-    private static final ChunkRenderTypeSet RENDER_TYPES = ChunkRenderTypeSet.of(RenderType.CUTOUT);
 
     private final Map<SpatialPylonTextureType, TextureAtlasSprite> textures;
 
@@ -200,10 +198,5 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
     @Override
     public ItemOverrides getOverrides() {
         return ItemOverrides.EMPTY;
-    }
-
-    @Override
-    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-        return RENDER_TYPES;
     }
 }

@@ -33,9 +33,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.ChunkRenderTypeSet;
-import net.neoforged.neoforge.client.model.IDynamicBakedModel;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.blockentity.crafting.CraftingCubeModelData;
 import appeng.client.render.cablebus.CubeBuilder;
@@ -47,7 +46,6 @@ import appeng.util.Platform;
  * "inner" part of each block to the subclasses of this class.
  */
 abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
-    private static final ChunkRenderTypeSet RENDER_TYPES = ChunkRenderTypeSet.of(RenderType.CUTOUT);
 
     private final TextureAtlasSprite ringCorner;
 
@@ -269,8 +267,4 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
         return ItemOverrides.EMPTY;
     }
 
-    @Override
-    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-        return RENDER_TYPES;
-    }
 }

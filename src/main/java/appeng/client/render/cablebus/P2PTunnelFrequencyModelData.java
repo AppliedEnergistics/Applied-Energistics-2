@@ -18,7 +18,7 @@
 
 package appeng.client.render.cablebus;
 
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 public final class P2PTunnelFrequencyModelData {
     public static final ModelProperty<Long> FREQUENCY = new ModelProperty<>();

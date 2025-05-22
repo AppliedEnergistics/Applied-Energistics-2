@@ -19,11 +19,13 @@
 package appeng.client.render;
 
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.ItemStackMap;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 import appeng.client.render.cablebus.FacadeBuilder;
 import appeng.items.parts.FacadeItem;
@@ -34,7 +36,7 @@ import appeng.items.parts.FacadeItem;
  */
 public class FacadeDispatcherBakedModel extends DelegateBakedModel {
     private final FacadeBuilder facadeBuilder;
-    private final Map<ItemStack, FacadeBakedItemModel> cache = ItemStackMap.createTypeAndTagMap();
+    private final Int2ObjectMap<FacadeBakedItemModel> cache = new Int2ObjectArrayMap<>();
 
     public FacadeDispatcherBakedModel(BakedModel baseModel, FacadeBuilder facadeBuilder) {
         super(baseModel);
@@ -42,16 +44,21 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel {
     }
 
     @Override
-    public synchronized List<BakedModel> getRenderPasses(ItemStack stack, boolean fabulous) {
+    public List<BakedModel> getRenderPasses(ItemStack stack, boolean fabulous) {
         if (!(stack.getItem() instanceof FacadeItem itemFacade)) {
             return List.of(this);
         }
 
-        var textureItem = itemFacade.getTextureItem(stack);
-        var model = cache.get(textureItem);
+        ItemStack textureItem = itemFacade.getTextureItem(stack);
+        if (textureItem.isEmpty()) {
+            return List.of(this);
+        }
+
+        var itemId = BuiltInRegistries.ITEM.getId(textureItem.getItem());
+        var model = cache.get(itemId);
         if (model == null) {
             model = new FacadeBakedItemModel(getBaseModel(), textureItem, facadeBuilder);
-            cache.put(textureItem, model);
+            cache.put(itemId, model);
         }
 
         return List.of(model);

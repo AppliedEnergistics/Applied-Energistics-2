@@ -25,13 +25,12 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
@@ -47,9 +46,7 @@ public interface ICableBusContainer {
 
     void onEntityCollision(Entity e);
 
-    boolean useItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 localPos);
-
-    boolean useWithoutItem(Player player, Vec3 localPos);
+    boolean activate(Player player, InteractionHand hand, Vec3 vecFromPool);
 
     void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor);
 

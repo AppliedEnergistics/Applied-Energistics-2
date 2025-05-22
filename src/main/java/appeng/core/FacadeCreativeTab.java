@@ -60,9 +60,9 @@ public final class FacadeCreativeTab {
             CreativeModeTab.Output output) {
         // We need to create our own set since vanilla doesn't allow duplicates, but we cannot guarantee
         // uniqueness
-        var facades = ItemStackLinkedSet.createTypeAndComponentsSet();
+        var facades = ItemStackLinkedSet.createTypeAndTagSet();
 
-        var itemFacade = AEItems.FACADE.get();// Collect all variants of this item from creative tabs
+        var itemFacade = AEItems.FACADE.asItem();// Collect all variants of this item from creative tabs
         try {
             for (var tab : CreativeModeTabs.allTabs()) {
                 if (tab == group) {

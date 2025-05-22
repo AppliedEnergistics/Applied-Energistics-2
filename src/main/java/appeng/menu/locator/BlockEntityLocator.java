@@ -11,7 +11,7 @@ import appeng.core.AELog;
 /**
  * Locates a {@link net.minecraft.world.level.block.entity.BlockEntity} that hosts a menu.
  */
-record BlockEntityLocator(BlockPos pos) implements MenuHostLocator {
+record BlockEntityLocator(BlockPos pos) implements MenuLocator {
     public void writeToPacket(FriendlyByteBuf buf) {
         buf.writeBlockPos(pos);
     }

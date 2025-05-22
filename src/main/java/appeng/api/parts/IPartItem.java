@@ -25,17 +25,26 @@ package appeng.api.parts;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
+
+//@formatter:off
 
 /**
  * When implementing a custom part, you must create an item to both represent the part in NBT and Packet data, and to
  * actually place the part onto the bus. Implement this interface on your part {@link net.minecraft.world.item.Item}.
  * <p/>
- * To help with placing parts onto buses, use {@link PartHelper#usePartItem(UseOnContext)} to implement your items
- * {@link net.minecraft.world.item.Item#useOn(UseOnContext)} method.
+ * To help with placing parts onto buses, use
+ * {@link PartHelper#usePartItem(ItemStack, BlockPos, Direction, Player, InteractionHand, Level)} to implement your
+ * items {@link net.minecraft.world.item.Item#useOn(UseOnContext)} method.
  */
 public interface IPartItem<P extends IPart> extends ItemLike {
     /**

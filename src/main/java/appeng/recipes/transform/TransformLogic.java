@@ -1,6 +1,5 @@
 package appeng.recipes.transform;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.function.Predicate;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -18,13 +18,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
-import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.minecraftforge.client.event.RecipesUpdatedEvent;
+import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 public final class TransformLogic {
     public static boolean canTransformInFluid(ItemEntity entity, FluidState fluid) {
@@ -47,51 +46,48 @@ public final class TransformLogic {
         List<ItemEntity> itemEntities = level.getEntities(null, region).stream()
                 .filter(e -> e instanceof ItemEntity && !e.isRemoved()).map(e -> (ItemEntity) e).toList();
 
-        for (var holder : level.getRecipeManager().byType(TransformRecipe.TYPE)) {
-            var recipe = holder.value();
+        for (var recipe : level.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
             if (!circumstancePredicate.test(recipe.circumstance))
                 continue;
 
-            if (recipe.ingredients.isEmpty())
+            if (recipe.ingredients.size() == 0)
                 continue;
 
             List<Ingredient> missingIngredients = Lists.newArrayList(recipe.ingredients);
-            Reference2IntMap<ItemEntity> consumedItems = new Reference2IntOpenHashMap<>(missingIngredients.size());
+            Set<ItemEntity> selectedEntities = new ReferenceOpenHashSet<>(missingIngredients.size());
 
             if (recipe.circumstance.isExplosion()) {
                 if (missingIngredients.stream().noneMatch(i -> i.test(entity.getItem())))
                     continue;
             } else {
-                if (!missingIngredients.getFirst().test(entity.getItem()))
+                if (!missingIngredients.get(0).test(entity.getItem()))
                     continue;
             }
 
             for (var itemEntity : itemEntities) {
-                var other = itemEntity.getItem();
+                final ItemStack other = itemEntity.getItem();
                 if (!other.isEmpty()) {
                     for (var it = missingIngredients.iterator(); it.hasNext();) {
                         Ingredient ing = it.next();
-                        var alreadyClaimed = consumedItems.getInt(itemEntity);
-                        if (ing.test(other) && other.getCount() - alreadyClaimed > 0) {
-                            consumedItems.merge(itemEntity, 1, Integer::sum);
+                        if (ing.test(other)) {
+                            selectedEntities.add(itemEntity);
                             it.remove();
+                            break;
                         }
                     }
                 }
             }
 
             if (missingIngredients.isEmpty()) {
-                var items = new ArrayList<ItemStack>(consumedItems.size());
-                for (var e : consumedItems.reference2IntEntrySet()) {
-                    var itemEntity = e.getKey();
-                    items.add(itemEntity.getItem().split(e.getIntValue()));
+                SimpleContainer recipeContainer = new SimpleContainer(selectedEntities.size());
+                int i = 0;
+                for (var e : selectedEntities) {
+                    recipeContainer.setItem(i++, e.getItem().split(1));
 
-                    if (itemEntity.getItem().getCount() <= 0) {
-                        itemEntity.discard();
+                    if (e.getItem().getCount() <= 0) {
+                        e.discard();
                     }
                 }
-                var recipeInput = new TransformRecipeInput(items);
-                var craftResult = recipe.assemble(recipeInput, level.registryAccess());
 
                 var random = level.getRandom();
                 final double x = Math.floor(entity.getX()) + .25d + random.nextDouble() * .5;
@@ -101,7 +97,8 @@ public final class TransformLogic {
                 final double ySpeed = random.nextDouble() * .25 - 0.125;
                 final double zSpeed = random.nextDouble() * .25 - 0.125;
 
-                final ItemEntity newEntity = new ItemEntity(level, x, y, z, craftResult);
+                final ItemEntity newEntity = new ItemEntity(level, x, y, z,
+                        recipe.assemble(recipeContainer, level.registryAccess()));
 
                 newEntity.setDeltaMovement(xSpeed, ySpeed, zSpeed);
                 level.addFreshEntity(newEntity);
@@ -127,8 +124,7 @@ public final class TransformLogic {
     private static Set<Item> getTransformableItems(Level level, Fluid fluid) {
         return fluidCache.computeIfAbsent(fluid, f -> {
             Set<Item> ret = Collections.newSetFromMap(new IdentityHashMap<>());
-            for (var holder : level.getRecipeManager().getAllRecipesFor(TransformRecipe.TYPE)) {
-                var recipe = holder.value();
+            for (var recipe : level.getRecipeManager().getAllRecipesFor(TransformRecipe.TYPE)) {
                 if (!(recipe.circumstance.isFluid(fluid)))
                     continue;
                 for (var ingredient : recipe.ingredients) {
@@ -146,8 +142,7 @@ public final class TransformLogic {
         Set<Item> ret = anyFluidCache;
         if (ret == null) {
             ret = Collections.newSetFromMap(new IdentityHashMap<>());
-            for (var holder : level.getRecipeManager().getAllRecipesFor(TransformRecipe.TYPE)) {
-                var recipe = holder.value();
+            for (var recipe : level.getRecipeManager().getAllRecipesFor(TransformRecipe.TYPE)) {
                 if (!recipe.circumstance.isFluid())
                     continue;
                 for (var ingredient : recipe.ingredients) {
@@ -166,8 +161,7 @@ public final class TransformLogic {
         Set<Item> ret = explosionCache;
         if (ret == null) {
             ret = Collections.newSetFromMap(new IdentityHashMap<>());
-            for (var holder : level.getRecipeManager().getAllRecipesFor(TransformRecipe.TYPE)) {
-                var recipe = holder.value();
+            for (var recipe : level.getRecipeManager().getAllRecipesFor(TransformRecipe.TYPE)) {
                 if (!recipe.circumstance.isExplosion())
                     continue;
                 for (var ingredient : recipe.ingredients) {

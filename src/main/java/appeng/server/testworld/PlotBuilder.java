@@ -2,17 +2,14 @@ package appeng.server.testworld;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -45,16 +42,7 @@ import appeng.items.parts.PartItem;
 
 public interface PlotBuilder {
 
-    @FunctionalInterface
-    interface PostBuildAction {
-        void postBuild(ServerLevel level, Player player, BlockPos origin);
-    }
-
     void addBuildAction(BuildAction action);
-
-    void addPostBuildAction(PostBuildAction action);
-
-    void addPostInitAction(PostBuildAction action);
 
     BoundingBox bb(String def);
 
@@ -110,7 +98,7 @@ public interface PlotBuilder {
             Direction side,
             ItemDefinition<? extends PartItem<T>> part,
             Consumer<T> partCustomizer) {
-        addBuildAction(new PlacePart(bb(bb), part.get(), side));
+        addBuildAction(new PlacePart(bb(bb), part.asItem(), side));
         addBuildAction(new PartCustomizer<>(bb(bb), side, part, partCustomizer));
     }
 
@@ -303,23 +291,23 @@ public interface PlotBuilder {
     /**
      * Runs a given callback once the grid has been initialized at all viable nodes in the given bounding box.
      */
-    default void afterGridInitAt(List<BlockPos> positions, BiConsumer<IGrid, IGridNode> consumer) {
-        addBuildAction(new PostGridInitAction(positions, consumer, true));
+    default void afterGridInitAt(String bb, BiConsumer<IGrid, IGridNode> consumer) {
+        addBuildAction(new PostGridInitAction(bb(bb), consumer, true));
     }
 
     default void afterGridInitAt(BlockPos pos, BiConsumer<IGrid, IGridNode> consumer) {
-        afterGridInitAt(List.of(pos), consumer);
+        afterGridInitAt(posToBb(pos), consumer);
     }
 
     /**
      * Runs a given callback once the grid is available at all viable nodes in the given bounding box.
      */
-    default void afterGridExistsAt(List<BlockPos> positions, BiConsumer<IGrid, IGridNode> consumer) {
-        addBuildAction(new PostGridInitAction(positions, consumer, false));
+    default void afterGridExistsAt(String bb, BiConsumer<IGrid, IGridNode> consumer) {
+        addBuildAction(new PostGridInitAction(bb(bb), consumer, false));
     }
 
     default void afterGridExistsAt(BlockPos pos, BiConsumer<IGrid, IGridNode> consumer) {
-        afterGridExistsAt(List.of(pos), consumer);
+        afterGridExistsAt(posToBb(pos), consumer);
     }
 
     /**
@@ -362,15 +350,6 @@ public interface PlotBuilder {
     default void fencedEntity(BlockPos pos, EntityType<?> entity) {
         fencedEntity(pos, entity, e -> {
         });
-    }
-
-    default void entity(BlockPos pos, EntityType<?> entity) {
-        entity(pos, entity, e -> {
-        });
-    }
-
-    default void entity(BlockPos pos, EntityType<?> entity, Consumer<Entity> postProcessor) {
-        addBuildAction(new SpawnEntityAction(bb(posToBb(pos)), entity, postProcessor));
     }
 
     default void fencedEntity(BlockPos pos, EntityType<?> entity, Consumer<Entity> postProcessor) {

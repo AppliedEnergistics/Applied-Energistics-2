@@ -26,20 +26,19 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.networking.crafting.CalculationStrategy;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ISubMenuHost;
-import appeng.core.network.ServerboundPacket;
-import appeng.core.network.serverbound.ConfirmAutoCraftPacket;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.ConfirmAutoCraftPacket;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.MenuTypeBuilder;
-import appeng.menu.locator.MenuHostLocator;
+import appeng.menu.locator.MenuLocator;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.InaccessibleSlot;
 import appeng.util.inv.AppEngInternalInventory;
@@ -81,7 +80,7 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
     /**
      * Opens the craft amount screen for the given player.
      */
-    public static void open(ServerPlayer player, MenuHostLocator locator, AEKey whatToCraft, int initialAmount) {
+    public static void open(ServerPlayer player, MenuLocator locator, AEKey whatToCraft, int initialAmount) {
         MenuOpener.open(CraftAmountMenu.TYPE, player, locator);
 
         if (player.containerMenu instanceof CraftAmountMenu cca) {
@@ -109,8 +108,7 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
      */
     public void confirm(int amount, boolean craftMissingAmount, boolean autoStart) {
         if (!isServerSide()) {
-            ServerboundPacket message = new ConfirmAutoCraftPacket(amount, craftMissingAmount, autoStart);
-            PacketDistributor.sendToServer(message);
+            NetworkHandler.instance().sendToServer(new ConfirmAutoCraftPacket(amount, craftMissingAmount, autoStart));
             return;
         }
 

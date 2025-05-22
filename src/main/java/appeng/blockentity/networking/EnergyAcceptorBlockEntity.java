@@ -26,9 +26,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import appeng.api.config.Actionable;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.util.AECableType;
-import appeng.blockentity.grid.AENetworkedPoweredBlockEntity;
+import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 
-public class EnergyAcceptorBlockEntity extends AENetworkedPoweredBlockEntity {
+public class EnergyAcceptorBlockEntity extends AENetworkPowerBlockEntity {
 
     public EnergyAcceptorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -66,4 +66,8 @@ public class EnergyAcceptorBlockEntity extends AENetworkedPoweredBlockEntity {
         return InternalInventory.empty();
     }
 
+    @Override
+    public void onChangeInventory(InternalInventory inv, int slot) {
+
+    }
 }

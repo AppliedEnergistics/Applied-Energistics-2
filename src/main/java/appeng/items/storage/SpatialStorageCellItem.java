@@ -22,19 +22,19 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
@@ -46,34 +46,39 @@ import appeng.spatial.SpatialStoragePlotManager;
 import appeng.spatial.TransitionInfo;
 
 public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorageCell {
-    private static final Logger LOG = LoggerFactory.getLogger(SpatialStorageCellItem.class);
+    private static final String TAG_PLOT_ID = "plot_id";
+
+    /**
+     * This is only stored in the itemstack to display in the tooltip on the client-side.
+     */
+    private static final String TAG_PLOT_SIZE = "plot_size";
 
     private final int maxRegion;
 
-    public SpatialStorageCellItem(Properties props, int spatialScale) {
+    public SpatialStorageCellItem(Item.Properties props, int spatialScale) {
         super(props);
         this.maxRegion = spatialScale;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag advancedTooltips) {
-        int plotId = this.getAllocatedPlotId(stack);
-        if (plotId == -1) {
+        CompoundTag tag = stack.getTag();
+        if (tag == null || !tag.contains(TAG_PLOT_ID, Tag.TAG_INT)) {
             lines.add(Tooltips.of(GuiText.Unformatted).withStyle(ChatFormatting.ITALIC));
             lines.add(Tooltips.of(GuiText.SpatialCapacity, maxRegion, maxRegion, maxRegion));
             return;
         }
+        var plotId = tag.getInt(TAG_PLOT_ID);
 
         // Add a serial number to allows players to keep different cells apart
         // Try to make this a little more flavorful.
         String serialNumber = String.format(Locale.ROOT, "SP-%04d", plotId);
         lines.add(Tooltips.of(GuiText.SerialNumber, serialNumber));
 
-        var plotInfo = stack.get(AEComponents.SPATIAL_PLOT_INFO);
-        if (plotInfo != null) {
-            var size = plotInfo.size();
+        if (tag != null && tag.contains(TAG_PLOT_SIZE, Tag.TAG_LONG)) {
+            BlockPos size = BlockPos.of(tag.getLong(TAG_PLOT_SIZE));
             lines.add(Tooltips.of(GuiText.StoredSize, size.getX(), size.getY(), size.getZ()));
         }
     }
@@ -89,16 +94,17 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     }
 
     @Override
-    public int getAllocatedPlotId(ItemStack stack) {
-        var plotInfo = stack.get(AEComponents.SPATIAL_PLOT_INFO);
-        if (plotInfo != null) {
+    public int getAllocatedPlotId(ItemStack is) {
+        final CompoundTag c = is.getTag();
+        if (c != null && c.contains(TAG_PLOT_ID)) {
             try {
-                if (SpatialStoragePlotManager.INSTANCE.getPlot(plotInfo.id()) == null) {
+                int plotId = c.getInt(TAG_PLOT_ID);
+                if (SpatialStoragePlotManager.INSTANCE.getPlot(plotId) == null) {
                     return -1;
                 }
-                return plotInfo.id();
+                return plotId;
             } catch (Exception e) {
-                LOG.warn("Failed to retrieve spatial storage dimension for plot {}: {}", plotInfo, e);
+                AELog.warn("Failed to retrieve spatial storage dimension: %s", e);
             }
         }
         return -1;
@@ -160,7 +166,8 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     }
 
     public void setStoredDimension(ItemStack is, int plotId, BlockPos size) {
-        is.set(AEComponents.SPATIAL_PLOT_INFO, new SpatialPlotInfo(
-                plotId, size.immutable()));
+        final CompoundTag c = is.getOrCreateTag();
+        c.putInt(TAG_PLOT_ID, plotId);
+        c.putLong(TAG_PLOT_SIZE, size.asLong());
     }
 }

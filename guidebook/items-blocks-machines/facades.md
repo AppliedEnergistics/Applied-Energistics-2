@@ -3,8 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Facades
   icon: facade
-  icon_components:
-    "ae2:facade_item": "minecraft:stone"
+  icon_nbt: '{item: "minecraft:stone"}'
   position: 110
 categories:
 - network infrastructure

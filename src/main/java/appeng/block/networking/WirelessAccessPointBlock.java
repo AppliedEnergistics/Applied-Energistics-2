@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -55,6 +56,7 @@ import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.WirelessAccessPointMenu;
 import appeng.menu.locator.MenuLocators;
+import appeng.util.InteractionUtil;
 
 public class WirelessAccessPointBlock extends AEBaseEntityBlock<WirelessAccessPointBlockEntity>
         implements SimpleWaterloggedBlock {
@@ -99,18 +101,20 @@ public class WirelessAccessPointBlock extends AEBaseEntityBlock<WirelessAccessPo
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
-            BlockHitResult hitResult) {
-        var be = this.getBlockEntity(level, pos);
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+            BlockHitResult hit) {
+        final WirelessAccessPointBlockEntity tg = this.getBlockEntity(level, pos);
 
-        if (be != null) {
+        if (tg != null && !InteractionUtil.isInAlternateUseMode(player)) {
             if (!level.isClientSide()) {
-                MenuOpener.open(WirelessAccessPointMenu.TYPE, player, MenuLocators.forBlockEntity(be));
+                hit.getDirection();
+                MenuOpener.open(WirelessAccessPointMenu.TYPE, player,
+                        MenuLocators.forBlockEntity(tg));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return super.useWithoutItem(state, level, pos, player, hitResult);
+        return super.use(state, level, pos, player, hand, hit);
     }
 
     @Override

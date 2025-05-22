@@ -20,7 +20,7 @@ package appeng.menu.me.crafting;
 
 import java.util.Comparator;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.stacks.AEKey;
 
@@ -68,14 +68,14 @@ public class CraftingPlanSummaryEntry implements Comparable<CraftingPlanSummaryE
         return COMPARATOR.compare(this, o);
     }
 
-    public void write(RegistryFriendlyByteBuf buffer) {
+    public void write(FriendlyByteBuf buffer) {
         AEKey.writeKey(buffer, what);
         buffer.writeVarLong(missingAmount);
         buffer.writeVarLong(storedAmount);
         buffer.writeVarLong(craftAmount);
     }
 
-    public static CraftingPlanSummaryEntry read(RegistryFriendlyByteBuf buffer) {
+    public static CraftingPlanSummaryEntry read(FriendlyByteBuf buffer) {
         var what = AEKey.readKey(buffer);
         long missingAmount = buffer.readVarLong();
         long storedAmount = buffer.readVarLong();

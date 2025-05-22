@@ -65,7 +65,7 @@ public class CellLedRenderer {
     private static final float T = 1 / 16.f; // top (y-axis)
     private static final float B = -0.001f / 16.f; // bottom (y-axis)
     private static final float FR = -0.001f / 16.f; // front (z-axis)
-    private static final float BA = 0.999f / 16.f; // back (z-axis)
+    private static final float BA = 0.499f / 16.f; // back (z-axis)
 
     // Vertex data for the LED cuboid (has no back)
     // Directions are when looking from the front onto the LED
@@ -99,7 +99,8 @@ public class CellLedRenderer {
             float x = LED_QUADS[i];
             float y = LED_QUADS[i + 1];
             float z = LED_QUADS[i + 2];
-            buffer.addVertex(ms.last().pose(), x, y, z).setColor(color.x(), color.y(), color.z(), 1.f);
+            buffer.vertex(ms.last().pose(), x, y, z).color(color.x(), color.y(), color.z(), 1.f)
+                    .endVertex();
         }
     }
 

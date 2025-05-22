@@ -35,11 +35,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.util.helpers.ItemComparisonHelper;
@@ -47,12 +47,19 @@ import appeng.util.helpers.ItemComparisonHelper;
 public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
 
     @Nullable
-    static ItemTransfer wrapExternal(Level level, BlockPos pos, Direction side) {
-        var handler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, side);
-        if (handler != null) {
-            return new PlatformInventoryWrapper(handler);
+    static ItemTransfer wrapExternal(@Nullable BlockEntity be, Direction side) {
+        if (be == null) {
+            return null;
         }
-        return null;
+
+        return be.getCapability(ForgeCapabilities.ITEM_HANDLER, side)
+                .map(PlatformInventoryWrapper::new)
+                .orElse(null);
+    }
+
+    @Nullable
+    static ItemTransfer wrapExternal(Level level, BlockPos pos, Direction side) {
+        return wrapExternal(level.getBlockEntity(pos), side);
     }
 
     static InternalInventory empty() {
@@ -80,7 +87,7 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
     int size();
 
     default int getSlotLimit(int slot) {
-        return Item.ABSOLUTE_MAX_STACK_SIZE;
+        return Container.LARGE_MAX_STACK_SIZE;
     }
 
     ItemStack getStackInSlot(int slotIndex);
@@ -196,7 +203,7 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
 
         for (int slot = 0; slot < slots && amount > 0; slot++) {
             final ItemStack is = getStackInSlot(slot);
-            if (is.isEmpty() || !filter.isEmpty() && !ItemStack.isSameItemSameComponents(is, filter)) {
+            if (is.isEmpty() || !filter.isEmpty() && !ItemStack.isSameItemSameTags(is, filter)) {
                 continue;
             }
 
@@ -238,7 +245,7 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
 
         for (int slot = 0; slot < slots && amount > 0; slot++) {
             final ItemStack is = getStackInSlot(slot);
-            if (!is.isEmpty() && (filter.isEmpty() || ItemStack.isSameItemSameComponents(is, filter))) {
+            if (!is.isEmpty() && (filter.isEmpty() || ItemStack.isSameItemSameTags(is, filter))) {
                 ItemStack extracted = extractItem(slot, amount, true);
 
                 if (extracted.isEmpty()) {
@@ -343,7 +350,7 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
 
         // Check merging stacks after checking if the slot is full, as NBT comparisons are expensive and cap comparisons
         // even more so.
-        if (!inSlot.isEmpty() && !ItemStack.isSameItemSameComponents(inSlot, stack)) {
+        if (!inSlot.isEmpty() && !ItemStack.isSameItemSameTags(inSlot, stack)) {
             return stack;
         }
 
@@ -387,6 +394,11 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
             }
             return result;
         }
+    }
+
+    @Override
+    default boolean mayAllowInsertion() {
+        return size() > 0;
     }
 
     /**

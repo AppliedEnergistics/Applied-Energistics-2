@@ -23,13 +23,8 @@
 
 package appeng.api.networking;
 
-import java.io.IOException;
-
-import com.google.gson.stream.JsonWriter;
-
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
@@ -82,6 +77,10 @@ public interface IGridServiceProvider {
     default void removeNode(IGridNode gridNode) {
     }
 
+    @Deprecated(forRemoval = true, since = "1.20.1")
+    default void addNode(IGridNode gridNode) {
+    }
+
     /**
      * Informs the grid service about a node that was added to the grid.
      * <p>
@@ -93,6 +92,7 @@ public interface IGridServiceProvider {
      *                  {@link #saveNodeData}.
      */
     default void addNode(IGridNode gridNode, @Nullable CompoundTag savedData) {
+        addNode(gridNode);
     }
 
     /**
@@ -102,9 +102,15 @@ public interface IGridServiceProvider {
     default void saveNodeData(IGridNode gridNode, CompoundTag savedData) {
     }
 
-    /**
-     * Write debug information about this service to the given writer.
-     */
-    default void debugDump(JsonWriter writer, HolderLookup.Provider registries) throws IOException {
+    @Deprecated(forRemoval = true, since = "1.20.1")
+    default void onSplit(IGridStorage destinationStorage) {
+    }
+
+    @Deprecated(forRemoval = true, since = "1.20.1")
+    default void onJoin(IGridStorage sourceStorage) {
+    }
+
+    @Deprecated(forRemoval = true, since = "1.20.1")
+    default void populateGridStorage(IGridStorage destinationStorage) {
     }
 }

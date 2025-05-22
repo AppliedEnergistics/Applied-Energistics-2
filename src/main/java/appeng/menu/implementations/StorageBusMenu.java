@@ -44,7 +44,7 @@ import appeng.parts.storagebus.StorageBusPart;
 
 /**
  * @see StorageBusScreen
- * @see StorageBusScreen
+ * @see appeng.client.gui.implementations.StorageBusScreen
  */
 public class StorageBusMenu extends UpgradeableMenu<StorageBusPart> {
 

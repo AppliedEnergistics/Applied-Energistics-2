@@ -31,8 +31,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
-import it.unimi.dsi.fastutil.shorts.ShortSet;
-
 import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
@@ -123,7 +121,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     protected void setupUpgrades() {
         // We support up to 8 upgrade slots, see ICellWorkbenchItem, but we need to pre-create all slots here
         // while the active number of slots changes depending on the item inserted
-        var upgradeInventory = new SupplierInternalInventory<>(this::getUpgrades);
+        var upgradeInventory = new SupplierInternalInventory(this::getUpgrades);
         for (int i = 0; i < 8; i++) {
             OptionalRestrictedInputSlot slot = new OptionalRestrictedInputSlot(
                     RestrictedInputSlot.PlacableItemType.UPGRADES,
@@ -158,8 +156,8 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     @Override
-    public void onServerDataSync(ShortSet updatedFields) {
-        super.onServerDataSync(updatedFields);
+    public void onServerDataSync() {
+        super.onServerDataSync();
 
         getHost().getConfigManager().putSetting(Settings.COPY_MODE, this.getCopyMode());
     }

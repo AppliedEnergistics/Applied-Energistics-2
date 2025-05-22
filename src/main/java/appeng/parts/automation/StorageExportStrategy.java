@@ -6,28 +6,30 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import appeng.api.behaviors.StackExportStrategy;
 import appeng.api.behaviors.StackTransferContext;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.StorageHelper;
+import appeng.util.BlockApiCache;
 
-public class StorageExportStrategy<T, S> implements StackExportStrategy {
-    private static final Logger LOG = LoggerFactory.getLogger(StorageExportStrategy.class);
-    private final BlockCapabilityCache<T, Direction> cache;
-    private final HandlerStrategy<T, S> handlerStrategy;
+public class StorageExportStrategy<C, S> implements StackExportStrategy {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StorageExportStrategy.class);
+    private final BlockApiCache<C> apiCache;
+    private final Direction fromSide;
+    private final HandlerStrategy<C, S> handlerStrategy;
 
-    public StorageExportStrategy(BlockCapability<T, Direction> capability,
-            HandlerStrategy<T, S> handlerStrategy,
+    protected StorageExportStrategy(Capability<C> apiLookup,
+            HandlerStrategy<C, S> handlerStrategy,
             ServerLevel level,
             BlockPos fromPos,
             Direction fromSide) {
         this.handlerStrategy = handlerStrategy;
-        this.cache = BlockCapabilityCache.create(capability, level, fromPos, fromSide);
+        this.apiCache = BlockApiCache.create(apiLookup, level, fromPos);
+        this.fromSide = fromSide;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class StorageExportStrategy<T, S> implements StackExportStrategy {
             return 0;
         }
 
-        var adjacentStorage = cache.getCapability();
+        var adjacentStorage = apiCache.find(fromSide);
         if (adjacentStorage == null) {
             return 0;
         }
@@ -69,7 +71,7 @@ public class StorageExportStrategy<T, S> implements StackExportStrategy {
                 long leftover = extracted - wasInserted;
                 leftover -= inv.getInventory().insert(what, leftover, Actionable.MODULATE, context.getActionSource());
                 if (leftover > 0) {
-                    LOG.error("Storage export: adjacent block unexpectedly refused insert, voided {}x{}", leftover,
+                    LOGGER.error("Storage export: adjacent block unexpectedly refused insert, voided {}x{}", leftover,
                             what);
                 }
             }
@@ -84,7 +86,7 @@ public class StorageExportStrategy<T, S> implements StackExportStrategy {
             return 0;
         }
 
-        var adjacentStorage = cache.getCapability();
+        var adjacentStorage = apiCache.find(fromSide);
         if (adjacentStorage == null) {
             return 0;
         }
@@ -94,7 +96,7 @@ public class StorageExportStrategy<T, S> implements StackExportStrategy {
 
     public static StackExportStrategy createItem(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageExportStrategy<>(
-                Capabilities.ItemHandler.BLOCK,
+                ForgeCapabilities.ITEM_HANDLER,
                 HandlerStrategy.ITEMS,
                 level,
                 fromPos,
@@ -103,7 +105,7 @@ public class StorageExportStrategy<T, S> implements StackExportStrategy {
 
     public static StackExportStrategy createFluid(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageExportStrategy<>(
-                Capabilities.FluidHandler.BLOCK,
+                ForgeCapabilities.FLUID_HANDLER,
                 HandlerStrategy.FLUIDS,
                 level,
                 fromPos,

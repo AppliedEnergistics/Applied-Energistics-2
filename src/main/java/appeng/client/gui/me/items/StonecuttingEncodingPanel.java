@@ -12,11 +12,10 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 
 import appeng.client.Point;
-import appeng.client.gui.Icon;
 import appeng.client.gui.Tooltip;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
@@ -28,19 +27,19 @@ import appeng.menu.SlotSemantics;
  * Implements the panel for encoding stonecutting recipes.
  */
 public final class StonecuttingEncodingPanel extends EncodingModePanel {
-    private static final Blitter BG = Blitter.texture("guis/pattern_modes.png").src(0, 140, 124, 66);
+    private static final Blitter BG = Blitter.texture("guis/pattern_modes.png").src(0, 141, 126, 68);
     private static final Blitter BG_SLOT = BG
             .copy()
-            .src(124, 140, 20, 22);
+            .src(126, 141, 16, 18);
     private static final Blitter BG_SLOT_SELECTED = BG
             .copy()
-            .src(124, 162, 20, 22);
+            .src(126, 159, 16, 18);
     private static final Blitter BG_SLOT_HOVER = BG
             .copy()
-            .src(124, 184, 20, 22);
+            .src(126, 177, 16, 18);
 
     private static final int COLS = 4;
-    private static final int ROWS = 2;
+    private static final int ROWS = 3;
 
     private final Scrollbar scrollbar;
 
@@ -60,8 +59,10 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
 
     @Override
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
-        BG.dest(bounds.getX() + 8, bounds.getY() + bounds.getHeight() - 165).blit(guiGraphics);
+        BG.dest(bounds.getX() + 9, bounds.getY() + bounds.getHeight() - 164).blit(guiGraphics);
+
         drawRecipes(guiGraphics, bounds, mouse);
+
     }
 
     private RegistryAccess getRegistryAccess() {
@@ -73,13 +74,14 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
         var startIndex = scrollbar.getCurrentScroll() * COLS;
         var endIndex = startIndex + ROWS * COLS;
 
+        var minecraft = Minecraft.getInstance();
         var selectedRecipe = menu.getStonecuttingRecipeId();
 
         for (int i = startIndex; i < endIndex && i < recipes.size(); ++i) {
             var slotBounds = getRecipeBounds(i - startIndex);
 
             var recipe = recipes.get(i);
-            boolean selected = selectedRecipe != null && selectedRecipe.equals(recipe.id());
+            boolean selected = selectedRecipe != null && selectedRecipe.equals(recipe.getId());
 
             Blitter blitter = BG_SLOT;
             if (selected) {
@@ -88,17 +90,12 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
                 blitter = BG_SLOT_HOVER;
             }
 
-            var renderX = bounds.getX() + slotBounds.getX() - 7;
-            var renderY = bounds.getY() + slotBounds.getY() + 5;
-            blitter.dest(renderX, renderY).blit(guiGraphics);
-            ItemStack resultItem = recipe.value().getResultItem(getRegistryAccess());
-            if (selected || mouse.isIn(slotBounds)) {
-                guiGraphics.renderItem(resultItem, renderX + 2, renderY + 3);
-                guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 3);
-            } else {
-                guiGraphics.renderItem(resultItem, renderX + 2, renderY + 2);
-                guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 2);
-            }
+            var renderX = bounds.getX() + slotBounds.getX();
+            var renderY = bounds.getY() + slotBounds.getY();
+            blitter.dest(renderX, renderY - 1).blit(guiGraphics);
+            ItemStack resultItem = recipe.getResultItem(getRegistryAccess());
+            guiGraphics.renderItem(resultItem, renderX, renderY);
+            guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX, renderY);
         }
     }
 
@@ -106,7 +103,7 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     public boolean onMouseDown(Point mousePos, int button) {
         var recipe = getRecipeAt(mousePos);
         if (recipe != null) {
-            menu.setStonecuttingRecipeId(recipe.id());
+            menu.setStonecuttingRecipeId(recipe.getId());
             Minecraft.getInstance().getSoundManager()
                     .play(SimpleSoundInstance.forUI(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
             return true;
@@ -119,14 +116,14 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     public Tooltip getTooltip(int mouseX, int mouseY) {
         var recipe = getRecipeAt(new Point(mouseX, mouseY));
         if (recipe != null) {
-            var lines = screen.getTooltipFromContainerItem(recipe.value().getResultItem(getRegistryAccess()));
+            var lines = screen.getTooltipFromContainerItem(recipe.getResultItem(getRegistryAccess()));
             return new Tooltip(lines);
         }
         return null;
     }
 
     @Nullable
-    private RecipeHolder<StonecutterRecipe> getRecipeAt(Point point) {
+    private StonecutterRecipe getRecipeAt(Point point) {
         var recipes = menu.getStonecuttingRecipes();
 
         if (!recipes.isEmpty()) {
@@ -148,8 +145,8 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     private Rect2i getRecipeBounds(int index) {
         var col = index % COLS;
         var row = index / COLS;
-        int slotX = x + 33 + col * BG_SLOT.getSrcWidth();
-        int slotY = y + 7 + row * BG_SLOT.getSrcHeight();
+        int slotX = x + 44 + col * BG_SLOT.getSrcWidth();
+        int slotY = y + 8 + row * BG_SLOT.getSrcHeight();
         return new Rect2i(slotX, slotY, BG_SLOT.getSrcWidth(), BG_SLOT.getSrcHeight());
     }
 
@@ -159,8 +156,8 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     }
 
     @Override
-    Icon getIcon() {
-        return Icon.TAB_STONECUTTING;
+    public ItemStack getTabIconItem() {
+        return new ItemStack(Items.STONECUTTER);
     }
 
     @Override

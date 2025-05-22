@@ -29,7 +29,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.behaviors.EmptyingAction;
@@ -43,8 +42,8 @@ import appeng.client.gui.widgets.TabButton;
 import appeng.core.AEConfig;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.Tooltips;
-import appeng.core.network.ServerboundPacket;
-import appeng.core.network.serverbound.InventoryActionPacket;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.SlotSemantics;
 import appeng.menu.me.items.PatternEncodingTermMenu;
@@ -66,7 +65,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
                 case STONECUTTING -> new StonecuttingEncodingPanel(this, widgets);
             };
             var tabButton = new TabButton(
-                    panel.getIcon(),
+                    panel.getTabIconItem(),
                     panel.getTabTooltip(),
                     btn -> getMenu().setMode(mode));
             tabButton.setStyle(TabButton.Style.HORIZONTAL);
@@ -104,12 +103,9 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
                     var screen = new SetProcessingPatternAmountScreen<>(
                             this,
                             currentStack,
-                            newStack -> {
-                                ServerboundPacket message = new InventoryActionPacket(
-                                        InventoryAction.SET_FILTER, slot.index,
-                                        GenericStack.wrapInItemStack(newStack));
-                                PacketDistributor.sendToServer(message);
-                            });
+                            newStack -> NetworkHandler.instance().sendToServer(new InventoryActionPacket(
+                                    InventoryAction.SET_FILTER, slot.index,
+                                    GenericStack.wrapInItemStack(newStack))));
                     switchToScreen(screen);
                     return true;
                 }

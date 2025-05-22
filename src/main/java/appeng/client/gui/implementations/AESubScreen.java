@@ -20,14 +20,14 @@ package appeng.client.gui.implementations;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.PacketDistributor;
 
-import appeng.client.gui.Icon;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.widgets.TabButton;
-import appeng.core.network.ServerboundPacket;
-import appeng.core.network.serverbound.SwitchGuisPacket;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.menu.ISubMenu;
 
 /**
@@ -43,10 +43,12 @@ public final class AESubScreen {
 
     public static void addBackButton(ISubMenu subMenu, String id, WidgetContainer widgets,
             @Nullable Component label) {
+        var icon = subMenu.getHost().getMainMenuIcon();
         if (label == null) {
-            label = subMenu.getHost().getMainMenuIcon().getHoverName();
+            label = icon.getHoverName();
         }
-        TabButton button = new TabButton(Icon.BACK, label,
+        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+        TabButton button = new TabButton(icon, label,
                 btn -> {
                     goBack();
                 });
@@ -54,8 +56,7 @@ public final class AESubScreen {
     }
 
     public static void goBack() {
-        ServerboundPacket message = SwitchGuisPacket.returnToParentMenu();
-        PacketDistributor.sendToServer(message);
+        NetworkHandler.instance().sendToServer(SwitchGuisPacket.returnToParentMenu());
     }
 
 }

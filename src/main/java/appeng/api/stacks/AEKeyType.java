@@ -27,26 +27,17 @@ import java.text.NumberFormat;
 import java.util.stream.Stream;
 
 import com.google.common.base.Preconditions;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 
 import appeng.api.storage.AEKeyFilter;
-import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.util.ReadableNumberConverter;
 
 /**
@@ -54,13 +45,6 @@ import appeng.util.ReadableNumberConverter;
  * {@link AEItemKeys}.
  */
 public abstract class AEKeyType {
-    public static final ResourceKey<Registry<AEKeyType>> REGISTRY_KEY = ResourceKey
-            .createRegistryKey(AppEng.makeId("keytypes"));
-    public static final Codec<AEKeyType> CODEC = Codec
-            .lazyInitialized(() -> AEKeyTypesInternal.getRegistry().byNameCodec());
-    public static final StreamCodec<RegistryFriendlyByteBuf, AEKeyType> STREAM_CODEC = ByteBufCodecs
-            .registry(AEKeyType.REGISTRY_KEY);
-
     private final ResourceLocation id;
     private final Class<? extends AEKey> keyClass;
     private final AEKeyFilter filter;
@@ -73,11 +57,6 @@ public abstract class AEKeyType {
         this.filter = what -> what.getType() == this;
         this.description = description;
     }
-
-    /**
-     * A codec used to encode keys of this type.
-     */
-    public abstract MapCodec<? extends AEKey> codec();
 
     /**
      * @return AE2's key space for {@link AEItemKey}.
@@ -93,7 +72,7 @@ public abstract class AEKeyType {
     @Nullable
     public static AEKeyType fromRawId(int id) {
         Preconditions.checkArgument(id >= 0 && id <= Byte.MAX_VALUE, "id out of range: %d", id);
-        return AEKeyTypesInternal.getRegistry().byId(id);
+        return AEKeyTypesInternal.getRegistry().getValue(id);
     }
 
     /**
@@ -116,7 +95,7 @@ public abstract class AEKeyType {
     }
 
     public final byte getRawId() {
-        var id = AEKeyTypesInternal.getRegistry().getId(this);
+        var id = AEKeyTypesInternal.getRegistry().getID(this);
         if (id < 0 || id > 127) {
             throw new IllegalStateException("Key type " + this + " has an invalid numeric id: " + id);
         }
@@ -146,21 +125,13 @@ public abstract class AEKeyType {
      * Attempts to load a key of this type from the given packet buffer.
      */
     @Nullable
-    public abstract AEKey readFromPacket(RegistryFriendlyByteBuf input);
+    public abstract AEKey readFromPacket(FriendlyByteBuf input);
 
     /**
      * Attempts to load a key of this type from the given tag.
      */
     @Nullable
-    public AEKey loadKeyFromTag(HolderLookup.Provider registries, CompoundTag tag) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        try {
-            return codec().codec().decode(ops, tag).getOrThrow().getFirst();
-        } catch (Exception e) {
-            AELog.debug("Tried to load an invalid item key from NBT: %s", tag, e);
-            return null;
-        }
-    }
+    public abstract AEKey loadKeyFromTag(CompoundTag tag);
 
     /**
      * Does this key belong to this storage channel.

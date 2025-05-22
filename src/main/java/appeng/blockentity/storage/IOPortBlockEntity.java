@@ -24,9 +24,8 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -61,22 +60,23 @@ import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.blockentity.grid.AENetworkedInvBlockEntity;
+import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
+import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.AEItemFilters;
 
-public class IOPortBlockEntity extends AENetworkedInvBlockEntity
+public class IOPortBlockEntity extends AENetworkInvBlockEntity
         implements IUpgradeableObject, IConfigurableObject, IGridTickable {
     private static final int NUMBER_OF_CELL_SLOTS = 6;
     private static final int NUMBER_OF_UPGRADE_SLOTS = 3;
 
-    private final IConfigManager manager;
+    private final ConfigManager manager;
 
     private final AppEngInternalInventory inputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
     private final AppEngInternalInventory outputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
@@ -99,11 +99,10 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, this);
-        this.manager = IConfigManager.builder(this::updateTask)
-                .registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE)
-                .registerSetting(Settings.FULLNESS_MODE, FullnessMode.EMPTY)
-                .registerSetting(Settings.OPERATION_MODE, OperationMode.EMPTY)
-                .build();
+        this.manager = new ConfigManager(this::updateTask);
+        this.manager.registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
+        this.manager.registerSetting(Settings.FULLNESS_MODE, FullnessMode.EMPTY);
+        this.manager.registerSetting(Settings.OPERATION_MODE, OperationMode.EMPTY);
         this.mySrc = new MachineSource(this);
         this.lastRedstoneState = YesNo.UNDECIDED;
 
@@ -111,31 +110,31 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        this.manager.writeToNBT(data, registries);
-        this.upgrades.writeToNBT(data, "upgrades", registries);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
+        this.manager.writeToNBT(data);
+        this.upgrades.writeToNBT(data, "upgrades");
         data.putInt("lastRedstoneState", this.lastRedstoneState.ordinal());
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        this.manager.readFromNBT(data, registries);
-        this.upgrades.readFromNBT(data, "upgrades", registries);
+    public void loadTag(CompoundTag data) {
+        super.loadTag(data);
+        this.manager.readFromNBT(data);
+        this.upgrades.readFromNBT(data, "upgrades");
         if (data.contains("lastRedstoneState")) {
             this.lastRedstoneState = YesNo.values()[data.getInt("lastRedstoneState")];
         }
     }
 
     @Override
-    protected void writeToStream(RegistryFriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(this.isActive());
     }
 
     @Override
-    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         boolean ret = super.readFromStream(data);
 
         final boolean isActive = data.readBoolean();
@@ -240,7 +239,7 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         if (this.inputCells == inv) {
             this.updateTask();
         }
@@ -257,7 +256,7 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.IOPort, !this.hasWork());
+        return new TickingRequest(TickRates.IOPort, !this.hasWork(), false);
     }
 
     @Override

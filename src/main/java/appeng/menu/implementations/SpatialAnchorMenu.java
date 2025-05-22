@@ -19,9 +19,13 @@
 package appeng.menu.implementations;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
+
+import com.google.common.collect.Multiset;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 
 import appeng.api.config.Settings;
@@ -95,8 +99,8 @@ public class SpatialAnchorMenu extends AEBaseMenu {
 
                 this.allWorlds = statistics.getChunks().size();
                 this.allChunks = 0;
-                for (var value : statistics.getChunks().values()) {
-                    this.allChunks += value.elementSet().size();
+                for (Entry<LevelAccessor, Multiset<ChunkPos>> entry : statistics.getChunks().entrySet()) {
+                    this.allChunks += entry.getValue().elementSet().size();
                 }
 
                 this.delay = 0;

@@ -18,7 +18,7 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.behaviors.EmptyingAction;
-import appeng.api.config.PowerUnit;
+import appeng.api.config.PowerUnits;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
@@ -208,8 +208,7 @@ public final class Tooltips {
     public static final long[] DECIMAL_NUMS = new long[] { 1000L, 1000_000L, 1000_000_000L, 1000_000_000_000L,
             1000_000_000_000_000L,
             1000_000_000_000_000_000L };
-    public static final long[] BYTE_NUMS = new long[] { 1024L, 1024 * 1024L, 1024 * 1024 * 1024L,
-            1024 * 1024 * 1024 * 1024L };
+    public static final long[] BYTE_NUMS = new long[] { 1024L, 1024 * 1024L, 1024 * 1024 * 1024L, 1024 * 1024 * 1024L };
 
     public static Component ofAmount(GenericStack stack) {
         return Component.literal(stack.what().formatAmount(stack.amount(), AmountFormat.FULL))
@@ -329,7 +328,7 @@ public final class Tooltips {
         return Component.literal(s).withStyle(NORMAL_TOOLTIP_TEXT);
     }
 
-    public static MutableComponent of(PowerUnit pU) {
+    public static MutableComponent of(PowerUnits pU) {
         return pU.textComponent().copy().withStyle(UNIT_TEXT);
     }
 
@@ -416,7 +415,7 @@ public final class Tooltips {
                 Tooltips.of(": "),
                 Tooltips.ofNumber(energy, max),
                 Tooltips.of(" "),
-                Tooltips.of(PowerUnit.AE),
+                Tooltips.of(PowerUnits.AE),
                 Tooltips.of(" ("),
                 Tooltips.ofPercent(energy / max),
                 Tooltips.of(")"));

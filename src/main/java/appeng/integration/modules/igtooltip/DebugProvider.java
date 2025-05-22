@@ -220,8 +220,8 @@ public final class DebugProvider {
     }
 
     private static boolean isVisible(Player player) {
-        return AEItems.DEBUG_CARD.is(player.getItemInHand(InteractionHand.OFF_HAND))
-                || AEItems.DEBUG_CARD.is(player.getItemInHand(InteractionHand.MAIN_HAND));
+        return AEItems.DEBUG_CARD.isSameAs(player.getItemInHand(InteractionHand.OFF_HAND))
+                || AEItems.DEBUG_CARD.isSameAs(player.getItemInHand(InteractionHand.MAIN_HAND));
     }
 
 }

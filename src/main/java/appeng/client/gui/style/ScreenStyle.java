@@ -18,27 +18,18 @@
 
 package appeng.client.gui.style;
 
-import java.lang.reflect.Type;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.mojang.serialization.JsonOps;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Component.Serializer;
 import net.minecraft.network.chat.Style;
 
 /**
@@ -48,9 +39,8 @@ public class ScreenStyle {
 
     public static final Gson GSON = new GsonBuilder()
             .disableHtmlEscaping()
-            .registerTypeHierarchyAdapter(Component.class,
-                    new Component.SerializerAdapter(HolderLookup.Provider.create(Stream.of())))
-            .registerTypeAdapter(Style.class, new StyleSerializer())
+            .registerTypeHierarchyAdapter(Component.class, new Serializer())
+            .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
             .registerTypeAdapter(Blitter.class, BlitterDeserializer.INSTANCE)
             .registerTypeAdapter(Rect2i.class, Rectangle2dDeserializer.INSTANCE)
             .registerTypeAdapter(Color.class, ColorDeserializer.INSTANCE)
@@ -60,7 +50,7 @@ public class ScreenStyle {
      * Overrides the default help topic for this screen. This will be resolved as a link to a page in the guidebook and
      * may contain an optional fragment (#some-heading) to directly link to a heading or anchor in the page.
      */
-    @Nullable
+    @org.jetbrains.annotations.Nullable
     private String helpTopic;
 
     /**
@@ -118,12 +108,12 @@ public class ScreenStyle {
         return tooltips;
     }
 
-    @Nullable
+    @org.jetbrains.annotations.Nullable
     public Blitter getBackground() {
         return background != null ? background.copy() : null;
     }
 
-    @Nullable
+    @org.jetbrains.annotations.Nullable
     public GeneratedBackground getGeneratedBackground() {
         return generatedBackground;
     }
@@ -165,16 +155,4 @@ public class ScreenStyle {
         }
     }
 
-    private static class StyleSerializer implements JsonSerializer<Style>, JsonDeserializer<Style> {
-        @Override
-        public Style deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-                throws JsonParseException {
-            return Style.Serializer.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(JsonParseException::new);
-        }
-
-        @Override
-        public JsonElement serialize(Style src, Type typeOfSrc, JsonSerializationContext context) {
-            return Style.Serializer.CODEC.encodeStart(JsonOps.INSTANCE, src).getOrThrow(JsonParseException::new);
-        }
-    }
 }

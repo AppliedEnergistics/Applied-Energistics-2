@@ -22,8 +22,8 @@ import java.util.function.Supplier;
 
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.crafting.CraftingUnitType;
 import appeng.block.paint.PaintSplotchesModel;

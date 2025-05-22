@@ -24,7 +24,7 @@ import java.util.concurrent.Future;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -47,9 +47,9 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ISubMenuHost;
 import appeng.core.AELog;
-import appeng.core.network.clientbound.CraftConfirmPlanPacket;
+import appeng.core.sync.packets.CraftConfirmPlanPacket;
 import appeng.crafting.execution.CraftingSubmitResult;
-import appeng.helpers.ICraftingGridMenu;
+import appeng.helpers.IMenuCraftingPacket;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
@@ -57,7 +57,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.guisync.PacketWritable;
 import appeng.menu.implementations.MenuTypeBuilder;
-import appeng.menu.locator.MenuHostLocator;
+import appeng.menu.locator.MenuLocator;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftConfirmScreen
@@ -113,7 +113,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
      * if canceling should return to the craft amount menu.
      */
     @Nullable
-    private List<ICraftingGridMenu.AutoCraftEntry> autoCraftingQueue;
+    private List<IMenuCraftingPacket.AutoCraftEntry> autoCraftingQueue;
     private List<Integer> requestedSlots;
 
     public CraftConfirmMenu(int id, Inventory ip, ISubMenuHost te) {
@@ -133,7 +133,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
      * Open with a list of items to craft, i.e. via REI ctrl+click.
      */
     public static void openWithCraftingList(@Nullable IActionHost terminal, ServerPlayer player,
-            @Nullable MenuHostLocator locator, List<ICraftingGridMenu.AutoCraftEntry> stacksToCraft) {
+            @Nullable MenuLocator locator, List<IMenuCraftingPacket.AutoCraftEntry> stacksToCraft) {
         if (terminal == null || locator == null || stacksToCraft.isEmpty()) {
             return;
         }
@@ -406,7 +406,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
     // Helper to sync the crafting result error
     public record SyncableSubmitResult(@Nullable ICraftingSubmitResult result) implements PacketWritable {
-        public SyncableSubmitResult(RegistryFriendlyByteBuf data) {
+        public SyncableSubmitResult(FriendlyByteBuf data) {
             this(readFromPacket(data));
         }
 
@@ -417,7 +417,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
             return this == obj;
         }
 
-        private static ICraftingSubmitResult readFromPacket(RegistryFriendlyByteBuf data) {
+        private static ICraftingSubmitResult readFromPacket(FriendlyByteBuf data) {
             if (!data.readBoolean()) {
                 return null;
             }
@@ -445,7 +445,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
         }
 
         @Override
-        public void writeToPacket(RegistryFriendlyByteBuf data) {
+        public void writeToPacket(FriendlyByteBuf data) {
             if (result == null) {
                 data.writeBoolean(false);
                 return;

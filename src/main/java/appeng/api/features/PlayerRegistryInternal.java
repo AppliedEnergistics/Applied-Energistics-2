@@ -27,7 +27,6 @@ import com.google.common.collect.HashBiMap;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -67,10 +66,8 @@ final class PlayerRegistryInternal extends AESavedData implements IPlayerRegistr
             throw new IllegalStateException("Cannot retrieve player data for a server that has no overworld.");
         }
         return overworld.getDataStorage().computeIfAbsent(
-                new Factory<>(
-                        () -> new PlayerRegistryInternal(server),
-                        (nbt, provider) -> PlayerRegistryInternal.load(server, nbt),
-                        null),
+                nbt -> PlayerRegistryInternal.load(server, nbt),
+                () -> new PlayerRegistryInternal(server),
                 PlayerRegistryInternal.NAME);
     }
 
@@ -104,7 +101,7 @@ final class PlayerRegistryInternal extends AESavedData implements IPlayerRegistr
         long[] profileIds = nbt.getLongArray(TAG_PROFILE_IDS);
 
         if (playerIds.length * 2 != profileIds.length) {
-            throw new IllegalStateException("Player ID mapping is corrupted. " + playerIds.length + " player IDs vs. "
+            throw new IllegalStateException("Plaer ID mapping is corrupted. " + playerIds.length + " player IDs vs. "
                     + profileIds.length + " profile IDs (latter must be 2 * the former)");
         }
 
@@ -122,7 +119,7 @@ final class PlayerRegistryInternal extends AESavedData implements IPlayerRegistr
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound, HolderLookup.Provider registries) {
+    public CompoundTag save(CompoundTag compound) {
         int index = 0;
         int[] playerIds = new int[mapping.size()];
         long[] profileIds = new long[mapping.size() * 2];

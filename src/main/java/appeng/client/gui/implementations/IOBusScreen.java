@@ -26,13 +26,10 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.SchedulingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
-import appeng.api.util.KeyTypeSelectionHost;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.KeyTypeSelectionButton;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.core.definitions.AEItems;
-import appeng.core.localization.GuiText;
 import appeng.menu.implementations.IOBusMenu;
 
 public class IOBusScreen extends UpgradeableScreen<IOBusMenu> {
@@ -45,11 +42,6 @@ public class IOBusScreen extends UpgradeableScreen<IOBusMenu> {
     public IOBusScreen(IOBusMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
         super(menu, playerInventory, title, style);
-
-        if (menu.getHost() instanceof KeyTypeSelectionHost) {
-            addToLeftToolbar(
-                    KeyTypeSelectionButton.create(this, menu.getHost(), GuiText.ConfigureImportedTypes.text()));
-        }
 
         this.redstoneMode = new ServerSettingToggleButton<>(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         addToLeftToolbar(this.redstoneMode);

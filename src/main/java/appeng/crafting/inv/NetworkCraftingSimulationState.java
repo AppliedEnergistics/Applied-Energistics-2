@@ -24,11 +24,13 @@ import com.google.common.collect.Iterables;
 
 import org.jetbrains.annotations.Nullable;
 
+import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
+import appeng.core.AEConfig;
 
 /**
  * Currently, extracts the whole network contents when the job starts. Lazily extracting is unfortunately not possible
@@ -36,25 +38,20 @@ import appeng.api.stacks.KeyCounter;
  * the server.
  */
 public class NetworkCraftingSimulationState extends CraftingSimulationState {
-    private final KeyCounter list;
+    private final KeyCounter list = new KeyCounter();
 
     public NetworkCraftingSimulationState(IStorageService storage, @Nullable IActionSource src) {
-        if (src != null && src.player().isPresent()) {
-            // We choose to re-query the available stacks every time a crafting simulation is started by a player.
-            // Using getCachedInventory causes issues with our "CTRL+click to craft" integration with EMI, which submits
-            // a job and then immediately starts a new simulation. We want that simulation to see the state of the
-            // network after the previous job was submitted in case of overlap between the recipes. More generally,
-            // having to replan is annoying, and we want to minimize the risk of that for player-started calculations.
-            this.list = storage.getInventory().getAvailableStacks();
-        } else {
-            // For non-player sources, it is fine to use the cached inventory: they will submit a new request eventually
-            // if this simulation or job fails.
-            this.list = new KeyCounter();
-            for (var stack : storage.getCachedInventory()) {
-                long networkAmount = stack.getLongValue();
-                if (networkAmount > 0) {
-                    this.list.add(stack.getKey(), networkAmount);
-                }
+        // Take care of the edge case where ICraftingSimulationRequester#getActionSource() returns null.
+        if (src == null) {
+            return;
+        }
+
+        for (var stack : storage.getCachedInventory()) {
+            long networkAmount = AEConfig.instance().isCraftingSimulatedExtraction()
+                    ? storage.getInventory().extract(stack.getKey(), stack.getLongValue(), Actionable.SIMULATE, src)
+                    : stack.getLongValue();
+            if (networkAmount > 0) {
+                this.list.add(stack.getKey(), networkAmount);
             }
         }
     }

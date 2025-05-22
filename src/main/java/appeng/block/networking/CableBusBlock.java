@@ -20,6 +20,7 @@ package appeng.block.networking;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
@@ -33,11 +34,9 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -70,8 +69,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraftforge.client.extensions.common.IClientBlockExtensions;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
@@ -104,7 +103,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    protected boolean isPathfindable(BlockState state, PathComputationType type) {
+    public boolean isPathfindable(BlockState state, BlockGetter reader, BlockPos pos, PathComputationType type) {
         return false;
     }
 
@@ -169,7 +168,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
 
     @Override
     public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos,
-            @Nullable Direction side) {
+            @org.jetbrains.annotations.Nullable Direction side) {
         if (side == null) {
             return false;
         }
@@ -178,7 +177,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos,
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos,
             Player player) {
         var v3 = target.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
         var sp = this.cb(level, pos).selectPartLocal(v3);
@@ -224,23 +223,13 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
-            Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
+            InteractionHand hand,
+            @Nullable ItemStack heldItem, BlockHitResult hit) {
         // Transform from world into block space
         Vec3 hitVec = hit.getLocation();
         Vec3 hitInBlock = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
-        return this.cb(level, pos).useItemOn(heldItem, player, hand, hitInBlock)
-                ? ItemInteractionResult.sidedSuccess(level.isClientSide())
-                : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-    }
-
-    @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
-            BlockHitResult hitResult) {
-        // Transform from world into block space
-        Vec3 hitVec = hitResult.getLocation();
-        Vec3 hitInBlock = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
-        return this.cb(level, pos).useWithoutItem(player, hitInBlock)
+        return this.cb(level, pos).activate(player, hand, hitInBlock)
                 ? InteractionResult.sidedSuccess(level.isClientSide())
                 : InteractionResult.PASS;
     }
@@ -248,13 +237,13 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     public boolean recolorBlock(BlockGetter level, BlockPos pos, Direction side,
             DyeColor color, Player who) {
         try {
-            return this.cb(level, pos).recolourBlock(side, AEColor.fromDye(color), who);
+            return this.cb(level, pos).recolourBlock(side, AEColor.values()[color.ordinal()], who);
         } catch (Throwable ignored) {
         }
         return false;
     }
 
-    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
         // do nothing
     }
 
@@ -450,12 +439,13 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     public BlockState getAppearance(BlockState state, BlockAndTintGetter renderView, BlockPos pos, Direction side,
             @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         ModelData modelData;
-        if (renderView instanceof ServerLevel serverLevel) {
+        var modelDataManager = renderView.getModelDataManager();
+        if (modelDataManager == null) {
             // We're on the server, use BE directly
             BlockEntity be = renderView.getBlockEntity(pos);
             modelData = be != null ? be.getModelData() : ModelData.EMPTY;
         } else {
-            modelData = renderView.getModelData(pos);
+            modelData = Objects.requireNonNullElse(modelDataManager.getAt(pos), ModelData.EMPTY);
         }
 
         CableBusRenderState cableBusRenderState = modelData.get(CableBusRenderState.PROPERTY);

@@ -18,28 +18,29 @@
 
 package appeng.debug;
 
+import javax.annotation.Nullable;
+
 import com.google.common.math.IntMath;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
+import appeng.capabilities.Capabilities;
 
 public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements ServerTickingBlockEntity, IEnergyStorage {
     /**
      * The base energy injected each tick. Adjacent energy generators will increase it to pow(base, #generators).
      */
-    private int generationRate = 8;
+    private static final int BASE_ENERGY = 8;
 
     public EnergyGeneratorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -58,37 +59,31 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Ser
             }
         }
 
-        final int energyToInsert = IntMath.pow(generationRate, tier);
+        final int energyToInsert = IntMath.pow(BASE_ENERGY, tier);
 
         for (Direction facing : Direction.values()) {
-            var consumer = getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(facing),
-                    facing.getOpposite());
-            if (consumer != null && consumer.canReceive()) {
-                consumer.receiveEnergy(energyToInsert, false);
+            final BlockEntity te = this.getLevel().getBlockEntity(this.getBlockPos().relative(facing));
+            if (te == null) {
+                continue;
             }
+            final LazyOptional<IEnergyStorage> cap = te.getCapability(Capabilities.FORGE_ENERGY, facing.getOpposite());
+
+            cap.ifPresent(consumer -> {
+                if (consumer.canReceive()) {
+                    consumer.receiveEnergy(energyToInsert, false);
+                }
+            });
         }
     }
 
-    public int getGenerationRate() {
-        return generationRate;
-    }
-
-    public void setGenerationRate(int generationRate) {
-        this.generationRate = generationRate;
-    }
-
+    @SuppressWarnings("unchecked")
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        if (data.contains("generationRate", Tag.TAG_INT)) {
-            generationRate = data.getInt("generationRate");
+    @Nullable
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
+        if (capability == Capabilities.FORGE_ENERGY) {
+            return (LazyOptional<T>) LazyOptional.of(() -> this);
         }
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        data.putInt("generationRate", generationRate);
+        return super.getCapability(capability, facing);
     }
 
     @Override

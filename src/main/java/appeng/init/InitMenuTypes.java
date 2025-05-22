@@ -21,11 +21,12 @@ package appeng.init;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.menu.implementations.CellWorkbenchMenu;
+import appeng.menu.implementations.ChestMenu;
 import appeng.menu.implementations.CondenserMenu;
 import appeng.menu.implementations.DriveMenu;
 import appeng.menu.implementations.EnergyLevelEmitterMenu;
@@ -34,7 +35,6 @@ import appeng.menu.implementations.IOBusMenu;
 import appeng.menu.implementations.IOPortMenu;
 import appeng.menu.implementations.InscriberMenu;
 import appeng.menu.implementations.InterfaceMenu;
-import appeng.menu.implementations.MEChestMenu;
 import appeng.menu.implementations.MolecularAssemblerMenu;
 import appeng.menu.implementations.PatternAccessTermMenu;
 import appeng.menu.implementations.PatternProviderMenu;
@@ -54,7 +54,6 @@ import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingCPUMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
-import appeng.menu.me.items.BasicCellChestMenu;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.menu.me.items.WirelessCraftingTermMenu;
@@ -67,11 +66,10 @@ public final class InitMenuTypes {
     private InitMenuTypes() {
     }
 
-    public static void init(Registry<MenuType<?>> registry) {
+    public static void init(IForgeRegistry<MenuType<?>> registry) {
         registerAll(registry,
-                BasicCellChestMenu.TYPE,
                 CellWorkbenchMenu.TYPE,
-                MEChestMenu.TYPE,
+                ChestMenu.TYPE,
                 CondenserMenu.TYPE,
                 CraftAmountMenu.TYPE,
                 CraftConfirmMenu.TYPE,
@@ -111,11 +109,11 @@ public final class InitMenuTypes {
                 WirelessAccessPointMenu.TYPE);
     }
 
-    private static void registerAll(Registry<MenuType<?>> registry, MenuType<?>... types) {
+    private static void registerAll(IForgeRegistry<MenuType<?>> registry, MenuType<?>... types) {
         // Flush the registration queue. Calling the static ctor of each menu class will have
         // filled it.
         for (var entry : REGISTRATION_QUEUE.entrySet()) {
-            Registry.register(registry, entry.getKey(), entry.getValue());
+            registry.register(entry.getKey(), entry.getValue());
         }
         REGISTRATION_QUEUE.clear();
 

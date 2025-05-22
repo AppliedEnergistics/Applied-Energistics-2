@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "forge:gems/certus_quartz"
+    },
+    "b": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "pattern": [
+    "aa",
+    "ab",
+    " b"
+  ],
+  "result": {
+    "item": "ae2:certus_quartz_axe"
+  },
+  "show_notification": true
+}

@@ -23,7 +23,7 @@ import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,13 +38,13 @@ import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.RelativeSide;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
-import appeng.blockentity.grid.AENetworkedInvBlockEntity;
+import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.filter.AEItemDefinitionFilter;
 
-public class WirelessAccessPointBlockEntity extends AENetworkedInvBlockEntity
+public class WirelessAccessPointBlockEntity extends AENetworkInvBlockEntity
         implements IWirelessAccessPoint, IPowerChannelState {
 
     public static final int POWERED_FLAG = 1;
@@ -73,7 +73,7 @@ public class WirelessAccessPointBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final int old = this.getClientFlags();
         this.setClientFlags(data.readByte());
@@ -82,7 +82,7 @@ public class WirelessAccessPointBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    protected void writeToStream(RegistryFriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         this.setClientFlags(0);
 
@@ -112,6 +112,11 @@ public class WirelessAccessPointBlockEntity extends AENetworkedInvBlockEntity
     @Override
     public InternalInventory getInternalInventory() {
         return this.inv;
+    }
+
+    @Override
+    public void onChangeInventory(InternalInventory inv, int slot) {
+        // :P
     }
 
     @Override

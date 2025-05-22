@@ -1,14 +1,18 @@
 package appeng.server.testplots;
 
+import java.util.function.Consumer;
+
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
-public class KitOutPlayerEvent extends PlayerEvent {
-    public KitOutPlayerEvent(ServerPlayer player) {
-        super(player);
-    }
+import appeng.api.events.Event;
+import appeng.api.events.EventFactory;
 
-    public ServerPlayer getPlayer() {
-        return (ServerPlayer) getEntity();
-    }
+public class KitOutPlayerEvent {
+    public static final Event<Consumer<ServerPlayer>> EVENT = EventFactory.createArrayBacked(
+            Consumer.class,
+            (events) -> (player) -> {
+                for (var event : events) {
+                    event.accept(player);
+                }
+            });
 }

@@ -24,6 +24,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.features.GridLinkables;
+import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
 import appeng.client.gui.implementations.WirelessAccessPointScreen;
 import appeng.core.AEConfig;
@@ -115,11 +116,11 @@ public class WirelessAccessPointMenu extends AEBaseMenu implements InternalInven
     }
 
     @Override
-    public void saveChangedInventory(AppEngInternalInventory inv) {
+    public void saveChanges() {
     }
 
     @Override
-    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         if (!this.linkableOut.hasItem() && this.linkableIn.hasItem()) {
             var term = this.linkableIn.getItem().copy();
 

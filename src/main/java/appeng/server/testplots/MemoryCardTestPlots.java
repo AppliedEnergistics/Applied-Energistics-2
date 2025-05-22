@@ -1,16 +1,14 @@
 package appeng.server.testplots;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.config.FuzzyMode;
@@ -38,7 +36,6 @@ import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
 import appeng.util.SettingsFrom;
 
-@TestPlotClass
 public final class MemoryCardTestPlots {
     private MemoryCardTestPlots() {
     }
@@ -55,7 +52,7 @@ public final class MemoryCardTestPlots {
             var fromPart = helper.getPart(BlockPos.ZERO, Direction.WEST, ExportBusPart.class);
             var toPart = helper.getPart(BlockPos.ZERO, Direction.EAST, ExportBusPart.class);
 
-            var player = helper.makeMockPlayer(GameType.SURVIVAL);
+            var player = helper.makeMockPlayer();
             var networkToolInv = addNetworkToolToPlayer(player);
 
             // Run part-specific setup code
@@ -74,9 +71,9 @@ public final class MemoryCardTestPlots {
             copyUpgradesToNetworkInv(fromPart, networkToolInv);
 
             // Export&Import settings
-            var settings = DataComponentMap.builder();
+            var settings = new CompoundTag();
             fromPart.exportSettings(SettingsFrom.MEMORY_CARD, settings);
-            toPart.importSettings(SettingsFrom.MEMORY_CARD, settings.build(), player);
+            toPart.importSettings(SettingsFrom.MEMORY_CARD, settings, player);
 
             assertUpgradeEquals(origin, helper, fromPart, toPart);
 
@@ -103,7 +100,7 @@ public final class MemoryCardTestPlots {
             var from = (InterfaceBlockEntity) helper.getBlockEntity(BlockPos.ZERO.east());
             var to = helper.getPart(BlockPos.ZERO, Direction.WEST, InterfacePart.class);
 
-            var player = helper.makeMockPlayer(GameType.SURVIVAL);
+            var player = helper.makeMockPlayer();
             var networkToolInv = addNetworkToolToPlayer(player);
 
             // Run part-specific setup code
@@ -118,9 +115,9 @@ public final class MemoryCardTestPlots {
             copyUpgradesToNetworkInv(from, networkToolInv);
 
             // Export&Import settings
-            var settings = DataComponentMap.builder();
+            var settings = new CompoundTag();
             from.exportSettings(SettingsFrom.MEMORY_CARD, settings, null);
-            to.importSettings(SettingsFrom.MEMORY_CARD, settings.build(), player);
+            to.importSettings(SettingsFrom.MEMORY_CARD, settings, player);
 
             assertUpgradeEquals(origin, helper, from, to);
 
@@ -148,8 +145,8 @@ public final class MemoryCardTestPlots {
 
             // Create arbitrary processing+crafting patterns
             var processingPattern = PatternDetailsHelper.encodeProcessingPattern(
-                    List.of(new GenericStack(AEFluidKey.of(Fluids.WATER), 1)),
-                    List.of(new GenericStack(AEFluidKey.of(Fluids.LAVA), 1)));
+                    new GenericStack[] { new GenericStack(AEFluidKey.of(Fluids.WATER), 1) },
+                    new GenericStack[] { new GenericStack(AEFluidKey.of(Fluids.LAVA), 1) });
             var craftingPattern = CraftingPatternHelper.encodeShapelessCraftingRecipe(
                     helper.getLevel(), Items.OAK_LOG.getDefaultInstance());
             var differentCraftingPattern = CraftingPatternHelper.encodeShapelessCraftingRecipe(
@@ -158,7 +155,7 @@ public final class MemoryCardTestPlots {
             var from = (PatternProviderBlockEntity) helper.getBlockEntity(BlockPos.ZERO.east());
             var to = helper.getPart(BlockPos.ZERO, Direction.WEST, PatternProviderPart.class);
 
-            var player = helper.makeMockPlayer(GameType.SURVIVAL);
+            var player = helper.makeMockPlayer();
             player.getInventory().placeItemBackInInventory(AEItems.BLANK_PATTERN.stack(64));
 
             // This should be copied to the other pattern provider
@@ -174,9 +171,9 @@ public final class MemoryCardTestPlots {
             var blankPatternsBefore = player.getInventory().countItem(AEItems.BLANK_PATTERN.asItem());
 
             // Export&Import settings
-            var settings = DataComponentMap.builder();
+            var settings = new CompoundTag();
             from.exportSettings(SettingsFrom.MEMORY_CARD, settings, null);
-            to.importSettings(SettingsFrom.MEMORY_CARD, settings.build(), player);
+            to.importSettings(SettingsFrom.MEMORY_CARD, settings, player);
 
             var blankPatternsAfter = player.getInventory().countItem(AEItems.BLANK_PATTERN.asItem());
 
@@ -188,7 +185,7 @@ public final class MemoryCardTestPlots {
             for (int i = 0; i < fromPatternInv.size(); i++) {
                 var fromItem = fromPatternInv.getStackInSlot(i);
                 var toItem = toPatternInv.getStackInSlot(i);
-                if (!ItemStack.isSameItemSameComponents(fromItem, toItem)) {
+                if (!ItemStack.isSameItemSameTags(fromItem, toItem)) {
                     helper.fail("Mismatch in slot " + i, origin.east());
                 }
             }

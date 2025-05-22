@@ -4,52 +4,37 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.testframework.junit.EphemeralTestServerProvider;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.ids.AEComponents;
-import appeng.core.definitions.AEItems;
 import appeng.util.BootstrapMinecraft;
-import appeng.util.Platform;
 
 @BootstrapMinecraft
-@ExtendWith(EphemeralTestServerProvider.class)
 class AEItemKeyTest {
-    private RegistryAccess registries = RegistryAccess.EMPTY;
-
-    private static int getMaxDamage(ItemLike item) {
-        return item.asItem().getMaxDamage(item.asItem().getDefaultInstance());
-    }
-
     @Test
     void testFuzzySearchValues() {
         var undamaged = AEItemKey.of(Items.DIAMOND_PICKAXE);
         var damagedStack = undamaged.toStack();
-        damagedStack.setDamageValue(getMaxDamage(undamaged.getItem()));
+        damagedStack.setDamageValue(undamaged.getItem().getMaxDamage());
         var damaged = AEItemKey.of(damagedStack);
 
-        assertEquals(damaged.getFuzzySearchMaxValue(), getMaxDamage(Items.DIAMOND_PICKAXE));
-        assertEquals(damaged.getFuzzySearchValue(), getMaxDamage(Items.DIAMOND_PICKAXE));
+        assertEquals(damaged.getFuzzySearchMaxValue(), Items.DIAMOND_PICKAXE.getMaxDamage());
+        assertEquals(damaged.getFuzzySearchValue(), Items.DIAMOND_PICKAXE.getMaxDamage());
         assertEquals(undamaged.getFuzzySearchValue(), 0);
     }
 
@@ -96,7 +81,7 @@ class AEItemKeyTest {
     @EnumSource(value = FuzzyMode.class, mode = EnumSource.Mode.EXCLUDE, names = "IGNORE_ALL")
     void testConsistencyWithFuzzySearch(FuzzyMode mode) {
         var keys = new KeyCounter();
-        for (var i = 0; i <= getMaxDamage(Items.IRON_PICKAXE); i++) {
+        for (var i = 0; i <= Items.IRON_PICKAXE.getMaxDamage(); i++) {
             var stack = new ItemStack(Items.IRON_PICKAXE);
             stack.setDamageValue(i);
             keys.set(AEItemKey.of(stack), 1);
@@ -142,50 +127,36 @@ class AEItemKeyTest {
     }
 
     @Test
-    void testFuzzyEqualsDifferentNbt(MinecraftServer server) {
+    void testFuzzyEqualsDifferentNbt() {
         var pick1 = new ItemStack(Items.DIAMOND_PICKAXE);
         var pick2 = new ItemStack(Items.DIAMOND_PICKAXE);
-        pick2.enchant(Platform.getEnchantment(server, Enchantments.FORTUNE), 2);
-        assertNotEquals(pick1.getComponents(), pick2.getComponents());
+        pick2.enchant(Enchantments.BLOCK_FORTUNE, 2);
+        assertNotEquals(pick1.getTag(), pick2.getTag());
 
         assertTrue(AEItemKey.of(pick1).fuzzyEquals(AEItemKey.of(pick2), FuzzyMode.IGNORE_ALL));
     }
 
     @Nested
     class GenericTagSerialization {
-
         @Test
         void deserializeFromTagWithoutChannel() {
-            var tag = new CompoundTag();
-
-            assertMissingContent(tag, "Input does not contain a key [#t]: MapLike[{}]");
+            assertNull(AEKey.fromTagGeneric(new CompoundTag()));
         }
 
         @Test
         void deserializeFromTagWithUnknownChannelId() {
             var tag = new CompoundTag();
-            tag.putString("#t", "modid:doesnt_exist");
+            tag.putString("#c", "modid:doesnt_exist");
 
-            assertMissingContent(tag,
-                    "Unknown registry key in ResourceKey[minecraft:root / ae2:keytypes]: modid:doesnt_exist");
+            assertNull(AEKey.fromTagGeneric(tag));
         }
 
         @Test
         void deserializeFromTagWithMalformedChannelId() {
             var tag = new CompoundTag();
-            tag.putString("#t", "modid!!!!!doesnt_exist");
+            tag.putString("#c", "modid!!!!!doesnt_exist");
 
-            assertMissingContent(tag,
-                    "Not a valid resource location: modid!!!!!doesnt_exist Non [a-z0-9/._-] character in path of location: minecraft:modid!!!!!doesnt_exist");
-        }
-
-        private void assertMissingContent(CompoundTag tag, String error) {
-            var decodedKey = AEKey.fromTagGeneric(registries, tag);
-            assertNotNull(decodedKey);
-            assertEquals(decodedKey.dropSecondary(), AEItemKey.of(AEItems.MISSING_CONTENT));
-            assertEquals(error, decodedKey.get(AEComponents.MISSING_CONTENT_ERROR));
-            assertNotNull(decodedKey.get(AEComponents.MISSING_CONTENT_AEKEY_DATA));
-            assertEquals(tag, decodedKey.get(AEComponents.MISSING_CONTENT_AEKEY_DATA).copyTag());
+            assertNull(AEKey.fromTagGeneric(tag));
         }
     }
 
@@ -206,7 +177,7 @@ class AEItemKeyTest {
      * Regression test for {@link FuzzySearch#COMPARATOR} wrongly using AEKey identity comparison as a last resort.
      */
     @Test
-    void testDifferentInstances(MinecraftServer server) {
+    void testDifferentInstances() {
         int testCount = 100;
         while (testCount-- > 0) {
 
@@ -216,7 +187,7 @@ class AEItemKeyTest {
 
             for (int i = 0; i < COUNT; i++) {
                 var stack = new ItemStack(Items.DIAMOND_SWORD);
-                stack.enchant(Platform.getEnchantment(server, Enchantments.SHARPNESS), i + 1);
+                stack.enchant(Enchantments.SHARPNESS, i + 1);
                 keys[i] = AEItemKey.of(stack);
                 keyCopies[i] = AEItemKey.of(stack);
 

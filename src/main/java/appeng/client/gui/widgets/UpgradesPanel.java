@@ -47,7 +47,7 @@ import appeng.menu.slot.AppEngSlot;
 public final class UpgradesPanel implements ICompositeWidget {
 
     private static final int SLOT_SIZE = 18;
-    private static final int PADDING = 5;
+    private static final int PADDING = 7;
     private static final int MAX_ROWS = 8;
 
     private static final Blitter BACKGROUND = Blitter.texture("guis/extra_panels.png", 128, 128);
@@ -110,7 +110,7 @@ public final class UpgradesPanel implements ICompositeWidget {
 
     @Override
     public void updateBeforeRender() {
-        int slotOriginX = this.x;
+        int slotOriginX = this.x + PADDING;
         int slotOriginY = this.y + PADDING;
 
         for (Slot slot : slots) {
@@ -158,11 +158,6 @@ public final class UpgradesPanel implements ICompositeWidget {
                 INNER_CORNER.dest(x, y + SLOT_SIZE).blit(guiGraphics);
             }
         }
-        // Added border to match the rest of the GUI style - RID
-        guiGraphics.hLine(slotOriginX - 4, slotOriginX + 11, slotOriginY, 0XFFf2f2f2);
-        guiGraphics.hLine(slotOriginX - 4, slotOriginX + 11, slotOriginY + (SLOT_SIZE * slotCount) - 1, 0XFFf2f2f2);
-        guiGraphics.vLine(slotOriginX - 5, slotOriginY - 1, slotOriginY + (SLOT_SIZE * slotCount), 0XFFf2f2f2);
-        guiGraphics.vLine(slotOriginX + 12, slotOriginY - 1, slotOriginY + (SLOT_SIZE * slotCount), 0XFFf2f2f2);
     }
 
     @Override
@@ -237,7 +232,7 @@ public final class UpgradesPanel implements ICompositeWidget {
             srcHeight += PADDING;
         }
         if (borderBottom) {
-            srcHeight += PADDING + 2;
+            srcHeight += PADDING;
         }
 
         BACKGROUND.src(srcX, srcY, srcWidth, srcHeight)

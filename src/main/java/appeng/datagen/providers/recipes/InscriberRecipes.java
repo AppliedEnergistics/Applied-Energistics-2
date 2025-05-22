@@ -18,11 +18,10 @@
 
 package appeng.datagen.providers.recipes;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -35,12 +34,12 @@ import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipeBuilder;
 
 public class InscriberRecipes extends AE2RecipeProvider {
-    public InscriberRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    public InscriberRecipes(PackOutput output) {
+        super(output);
     }
 
     @Override
-    public void buildRecipes(RecipeOutput consumer) {
+    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
 
         // Silicon Press Copying & Printing
         InscriberRecipeBuilder.inscribe(Items.IRON_BLOCK, AEItems.SILICON_PRESS, 1)
@@ -85,7 +84,7 @@ public class InscriberRecipes extends AE2RecipeProvider {
                 .save(consumer, AppEng.makeId("inscriber/ender_dust"));
     }
 
-    private void processor(RecipeOutput consumer,
+    private void processor(Consumer<FinishedRecipe> consumer,
             String name,
             ItemLike press,
             ItemLike print,

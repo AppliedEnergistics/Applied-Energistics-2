@@ -18,12 +18,9 @@
 
 package appeng.init.client;
 
-import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.util.FastColor;
+import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 
 import appeng.api.util.AEColor;
 import appeng.client.render.StaticItemColor;
@@ -42,31 +39,21 @@ public final class InitItemColors {
     private InitItemColors() {
     }
 
-    @FunctionalInterface
-    interface ItemColorRegistrar {
-        void register(ItemColor itemColor, ItemLike... items);
-    }
-
-    public static void init(RegisterColorHandlersEvent.Item event) {
-        // Automatically make all registered itemcolors create opaque colors
-        init((itemColor, items) -> event.register(makeOpaque(itemColor), items));
-    }
-
-    private static void init(ItemColorRegistrar registrar) {
+    public static void init(ItemColors itemColors) {
         // I checked, the ME chest doesn't keep its color in item form
-        registrar.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.ME_CHEST.asItem());
+        itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.CHEST.asItem());
 
-        registrar.register(MemoryCardItem::getTintColor, AEItems.MEMORY_CARD);
+        itemColors.register(MemoryCardItem::getTintColor, AEItems.MEMORY_CARD);
 
-        registrar.register(InitItemColors::getColorApplicatorColor, AEItems.COLOR_APPLICATOR);
+        itemColors.register(InitItemColors::getColorApplicatorColor, AEItems.COLOR_APPLICATOR);
 
-        registrar.register(PortableCellItem::getColor, AEItems.PORTABLE_ITEM_CELL1K, AEItems.PORTABLE_FLUID_CELL1K,
+        itemColors.register(PortableCellItem::getColor, AEItems.PORTABLE_ITEM_CELL1K, AEItems.PORTABLE_FLUID_CELL1K,
                 AEItems.PORTABLE_ITEM_CELL4K, AEItems.PORTABLE_FLUID_CELL4K,
                 AEItems.PORTABLE_ITEM_CELL16K, AEItems.PORTABLE_FLUID_CELL16K,
                 AEItems.PORTABLE_ITEM_CELL64K, AEItems.PORTABLE_FLUID_CELL64K,
                 AEItems.PORTABLE_ITEM_CELL256K, AEItems.PORTABLE_FLUID_CELL256K);
 
-        registrar.register(BasicStorageCell::getColor, AEItems.ITEM_CELL_1K, AEItems.FLUID_CELL_1K,
+        itemColors.register(BasicStorageCell::getColor, AEItems.ITEM_CELL_1K, AEItems.FLUID_CELL_1K,
                 AEItems.ITEM_CELL_4K, AEItems.FLUID_CELL_4K,
                 AEItems.ITEM_CELL_16K, AEItems.FLUID_CELL_16K,
                 AEItems.ITEM_CELL_64K, AEItems.FLUID_CELL_64K,
@@ -80,9 +67,9 @@ public final class InitItemColors {
                 if (item instanceof ColoredPartItem) {
                     color = ((ColoredPartItem<?>) item).getColor();
                 }
-                registrar.register(new StaticItemColor(color), item);
+                itemColors.register(new StaticItemColor(color), item);
             } else if (item instanceof PaintBallItem) {
-                registerPaintBall(registrar, (PaintBallItem) item);
+                registerPaintBall(itemColors, (PaintBallItem) item);
             }
         }
     }
@@ -90,7 +77,7 @@ public final class InitItemColors {
     /**
      * We use a white base item icon for paint balls. This applies the correct color to it.
      */
-    private static void registerPaintBall(ItemColorRegistrar registrar, PaintBallItem item) {
+    private static void registerPaintBall(ItemColors colors, PaintBallItem item) {
         AEColor color = item.getColor();
         final int colorValue = item.isLumen() ? color.mediumVariant : color.mediumVariant;
         final int r = colorValue >> 16 & 0xff;
@@ -107,7 +94,7 @@ public final class InitItemColors {
             renderColor = r << 16 | g << 8 | b | 0xff << 24;
         }
 
-        registrar.register((is, tintIndex) -> renderColor, item);
+        colors.register((is, tintIndex) -> renderColor, item);
     }
 
     private static int getColorApplicatorColor(ItemStack itemStack, int idx) {
@@ -129,7 +116,4 @@ public final class InitItemColors {
         };
     }
 
-    private static ItemColor makeOpaque(ItemColor itemColor) {
-        return (stack, tintIndex) -> FastColor.ARGB32.opaque(itemColor.getColor(stack, tintIndex));
-    }
 }

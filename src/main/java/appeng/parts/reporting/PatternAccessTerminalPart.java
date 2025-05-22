@@ -18,9 +18,9 @@
 
 package appeng.parts.reporting;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
@@ -28,42 +28,41 @@ import appeng.api.config.Settings;
 import appeng.api.config.ShowPatternProviders;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.ILinkStatus;
-import appeng.api.storage.IPatternAccessTermMenuHost;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.PatternAccessTermMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartModel;
+import appeng.util.ConfigManager;
 
-public class PatternAccessTerminalPart extends AbstractDisplayPart implements IPatternAccessTermMenuHost {
+public class PatternAccessTerminalPart extends AbstractDisplayPart implements IConfigurableObject {
 
     @PartModels
-    public static final ResourceLocation MODEL_OFF = AppEng.makeId(
+    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/pattern_access_terminal_off");
     @PartModels
-    public static final ResourceLocation MODEL_ON = AppEng.makeId(
+    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID,
             "part/pattern_access_terminal_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
 
-    private final IConfigManager configManager = IConfigManager.builder(() -> {
+    private final ConfigManager configManager = new ConfigManager(() -> {
         this.getHost().markForSave();
-    })
-            .registerSetting(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS, ShowPatternProviders.VISIBLE)
-            .build();
+    });
 
     public PatternAccessTerminalPart(IPartItem<?> partItem) {
         super(partItem, true);
+        this.configManager.registerSetting(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS, ShowPatternProviders.VISIBLE);
     }
 
     @Override
-    public boolean onUseWithoutItem(Player player, Vec3 pos) {
-        if (!super.onUseWithoutItem(player, pos) && !isClientSide()) {
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
+        if (!super.onPartActivate(player, hand, pos) && !isClientSide()) {
             MenuOpener.open(PatternAccessTermMenu.TYPE, player, MenuLocators.forPart(this));
         }
         return true;
@@ -79,18 +78,13 @@ public class PatternAccessTerminalPart extends AbstractDisplayPart implements IP
         return configManager;
     }
 
-    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries) {
-        super.writeToNBT(tag, registries);
-        configManager.writeToNBT(tag, registries);
+    public void writeToNBT(CompoundTag tag) {
+        super.writeToNBT(tag);
+        configManager.writeToNBT(tag);
     }
 
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
-        super.readFromNBT(tag, registries);
-        configManager.readFromNBT(tag, registries);
-    }
-
-    @Override
-    public ILinkStatus getLinkStatus() {
-        return ILinkStatus.ofManagedNode(getMainNode());
+    public void readFromNBT(CompoundTag tag) {
+        super.readFromNBT(tag);
+        configManager.readFromNBT(tag);
     }
 }

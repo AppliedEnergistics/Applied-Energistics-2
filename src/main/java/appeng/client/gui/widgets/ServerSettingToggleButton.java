@@ -18,11 +18,9 @@
 
 package appeng.client.gui.widgets;
 
-import net.neoforged.neoforge.network.PacketDistributor;
-
 import appeng.api.config.Setting;
-import appeng.core.network.ServerboundPacket;
-import appeng.core.network.serverbound.ConfigButtonPacket;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.ConfigButtonPacket;
 
 /**
  * Convenience button that automatically sends settings changes to the server.
@@ -34,8 +32,7 @@ public class ServerSettingToggleButton<T extends Enum<T>> extends SettingToggleB
     }
 
     private static <T extends Enum<T>> void sendToServer(SettingToggleButton<T> button, boolean backwards) {
-        ServerboundPacket message = new ConfigButtonPacket(button.getSetting(), backwards);
-        PacketDistributor.sendToServer(message);
+        NetworkHandler.instance().sendToServer(new ConfigButtonPacket(button.getSetting(), backwards));
     }
 
 }

@@ -20,12 +20,14 @@ package appeng.parts.encoding;
 
 import java.util.List;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
@@ -41,10 +43,10 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart
         implements IPatternTerminalLogicHost, IPatternTerminalMenuHost {
 
     @PartModels
-    public static final ResourceLocation MODEL_OFF = AppEng.makeId(
+    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/pattern_encoding_terminal_off");
     @PartModels
-    public static final ResourceLocation MODEL_ON = AppEng.makeId(
+    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID,
             "part/pattern_encoding_terminal_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
@@ -76,16 +78,16 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
+    public void readFromNBT(CompoundTag data) {
+        super.readFromNBT(data);
 
-        logic.readFromNBT(data, registries);
+        logic.readFromNBT(data);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
-        logic.writeToNBT(data, registries);
+    public void writeToNBT(CompoundTag data) {
+        super.writeToNBT(data);
+        logic.writeToNBT(data);
     }
 
     @Override
@@ -106,5 +108,13 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart
     @Override
     public void markForSave() {
         getHost().markForSave();
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> cap) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            return LazyOptional.of(() -> logic.getBlankPatternInv().toItemHandler()).cast();
+        }
+        return super.getCapability(cap);
     }
 }

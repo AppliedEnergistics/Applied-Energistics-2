@@ -9,11 +9,14 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 
 import appeng.core.AEConfig;
+import appeng.siteexport.AESiteExporter;
+import appeng.siteexport.FabricClientCommandSource;
 
 public final class ClientCommands {
 
     public static final List<CommandBuilder> DEBUG_COMMANDS = List.of(
-            ClientCommands::highlightGuiAreas);
+            ClientCommands::highlightGuiAreas,
+            ClientCommands::exportSiteData);
 
     private ClientCommands() {
     }
@@ -21,6 +24,23 @@ public final class ClientCommands {
     @FunctionalInterface
     public interface CommandBuilder {
         void build(LiteralArgumentBuilder<CommandSourceStack> builder);
+    }
+
+    private static void exportSiteData(LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder.then(Commands.literal("export_site_data").executes(context -> {
+            AESiteExporter.export(new FabricClientCommandSource() {
+                @Override
+                public void sendFeedback(Component message) {
+                    context.getSource().sendSystemMessage(message);
+                }
+
+                @Override
+                public void sendError(Component message) {
+                    context.getSource().sendFailure(message);
+                }
+            });
+            return 0;
+        }));
     }
 
     private static void highlightGuiAreas(LiteralArgumentBuilder<CommandSourceStack> builder) {

@@ -1,13 +1,15 @@
 package appeng.client.gui.me.common;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.AESubScreen;
-import appeng.client.gui.Icon;
 import appeng.client.gui.widgets.AECheckbox;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
-import appeng.integration.abstraction.ItemListMod;
+import appeng.integration.abstraction.JEIFacade;
+import appeng.integration.abstraction.REIFacade;
 import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.MEStorageMenu;
 
@@ -32,12 +34,15 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
 
         Component externalSearchMod;
         boolean hasExternalSearch;
-        if (ItemListMod.isEnabled()) {
-            externalSearchMod = Component.literal(ItemListMod.getShortName());
+        if (JEIFacade.instance().isEnabled()) {
+            externalSearchMod = Component.literal("JEI");
+            hasExternalSearch = true;
+        } else if (REIFacade.instance().isEnabled()) {
+            externalSearchMod = Component.literal("REI");
             hasExternalSearch = true;
         } else {
             // User doesn't have either, so disable the buttons but show what *would* be possible
-            externalSearchMod = Component.literal("REI/EMI");
+            externalSearchMod = Component.literal("JEI/REI");
             hasExternalSearch = false;
         }
 
@@ -90,8 +95,10 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
     }
 
     private void addBackButton() {
-        var label = menu.getHost().getMainMenuIcon().getHoverName();
-        TabButton button = new TabButton(Icon.BACK, label, btn -> returnToParent());
+        var icon = menu.getHost().getMainMenuIcon();
+        var label = icon.getHoverName();
+        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+        TabButton button = new TabButton(icon, label, btn -> returnToParent());
         widgets.add("back", button);
     }
 

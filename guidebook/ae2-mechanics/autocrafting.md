@@ -44,14 +44,6 @@ Here is what happens:
 
 5.  If that craft is a prerequisite for another craft in the request, the items are stored in that crafting CPU and then used in that craft.
 
-## Recursive Recipes
-
-<ItemImage id="minecraft:netherite_upgrade_smithing_template" scale="4" />
-
-One thing the autocrafting algorithm *cannot* handle is recursive recipes. For example, duplication recipes like
-"1 redstone dust = 2 redstone dust", from throwing redstone in a Botania manapool. Another example would be smithing templates
-in vanilla Minecraft. However, there is [a way to handle these recipes.](../example-setups/recursive-crafting-setup.md)
-
 # Patterns
 
 <ItemImage id="crafting_pattern" scale="4" />
@@ -80,7 +72,7 @@ There are several different types of pattern for different things:
 ***
 
 *   <ItemLink id="processing_pattern" />s are where a lot of flexibility in autocrafting comes from. They are the most generalized type, simply
-    saying "if a pattern provider pushes these ingredients to adjacent inventories, the ME system will receive these items at some point in the
+    saying "if a pattern provider pushes these ingredients to adjacent inventories, the ME system will recieve these items at some point in the
     near or distant future". They are how you will autocraft with almost any modded machine, or furnaces and the like. Because they are so
     general in use and do not care what happens between pushing ingredients and receiving the result, you can do some really funky stuff, like inputting
     the ingredients into an entire complex factory production chain which will sort out stuff, take in other ingredients from infinitely-producing
@@ -96,7 +88,7 @@ your smelting setup every operation instead of one at a time.
 
 There is actually an even more "general" form of "pattern" than a processing pattern. A <ItemLink id="level_emitter" /> with a crafting card can be set
 to emit a redstone signal in order to craft something. This "pattern" does not define, or even care about ingredients.
-All it says is "If you emit redstone from this level emitter, the ME system will receive this item at some point in the
+All it says is "If you emit redstone from this level emitter, the ME system will recieve this item at some point in the
 near or distant future". This is usually used to activate and deactivate infinite farms which require no input ingredients,
 or to activate a system that handles recursive recipes (which standard autocafting cannot understand) like, for example, "1 cobblestone = 2 cobblestone"
 if you have a machine that duplicates cobblestone.
@@ -117,7 +109,7 @@ Crafting CPUs are made out of:
 *   (Required) [Crafting storages](../items-blocks-machines/crafting_cpu_multiblock.md), available in all the standard cell sizes (1k, 4k, 16k, 64k, 256k). They store the ingredients and
     intermediate ingredients involved in a craft, so larger or more storages are required for the CPU to handle crafting jobs
     with more ingredients.
-*   (Optional) <ItemLink id="crafting_accelerator" />s, they make the system send out ingredient batches from pattern providers more often.
+*   (Optional) <ItemLink id="crafting_accelerator" />s, they make the system send out more ingredient batches from pattern providers.
     This allows, say, a pattern provider surrounded by 6 molecular assemblers to send ingredients to (and thus use) all 6 at once instead of just one.
 *   (Optional) <ItemLink id="crafting_monitor" />s, they display the job the CPU is handling at the moment. They can be colored via a <ItemLink id="color_applicator" />
 *   (Optional) <ItemLink id="crafting_unit" />s, they simply fill space in order to make the CPU a rectangular prism.

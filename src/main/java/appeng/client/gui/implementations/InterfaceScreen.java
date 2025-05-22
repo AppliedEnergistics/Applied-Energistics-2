@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -87,7 +88,7 @@ public class InterfaceScreen<C extends InterfaceMenu> extends UpgradeableScreen<
 
         @Override
         protected Icon getIcon() {
-            return isHoveredOrFocused() ? Icon.COG : Icon.COG_DISABLED;
+            return isHoveredOrFocused() ? Icon.WRENCH : Icon.WRENCH_DISABLED;
         }
     }
 }

@@ -20,29 +20,36 @@ package appeng.items.materials;
 
 import java.util.List;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.ids.AEComponents;
 import appeng.items.AEBaseItem;
 
 public class NamePressItem extends AEBaseItem {
-    public NamePressItem(Properties properties) {
+    /**
+     * NBT property used by the name press to store the name to be inscribed.
+     */
+    public static final String TAG_INSCRIBE_NAME = "InscribeName";
+
+    public NamePressItem(Item.Properties properties) {
         super(properties);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, context, lines, advancedTooltips);
+        super.appendHoverText(stack, level, lines, advancedTooltips);
 
-        var inscribedName = stack.get(AEComponents.NAME_PRESS_NAME);
-        if (inscribedName != null) {
-            lines.add(inscribedName);
+        final CompoundTag c = stack.getOrCreateTag();
+        if (c.contains(TAG_INSCRIBE_NAME)) {
+            lines.add(Component.literal(c.getString(TAG_INSCRIBE_NAME)));
         }
     }
 }

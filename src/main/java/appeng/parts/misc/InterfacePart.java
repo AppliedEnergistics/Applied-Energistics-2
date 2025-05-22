@@ -22,12 +22,14 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
@@ -49,9 +51,9 @@ import appeng.parts.PartModel;
 
 public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
 
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/interface_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/interface_base");
 
-    private static final IGridNodeListener<InterfacePart> NODE_LISTENER = new NodeListener<>() {
+    private static final IGridNodeListener<InterfacePart> NODE_LISTENER = new AEBasePart.NodeListener<>() {
         @Override
         public void onGridChanged(InterfacePart nodeOwner, IGridNode node) {
             super.onGridChanged(nodeOwner, node);
@@ -61,15 +63,15 @@ public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
 
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/interface_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/interface_off"));
 
     @PartModels
     public static final PartModel MODELS_ON = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/interface_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/interface_on"));
 
     @PartModels
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/interface_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/interface_has_channel"));
 
     private final InterfaceLogic logic = createLogic();
 
@@ -106,15 +108,15 @@ public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
-        this.logic.readFromNBT(data, registries);
+    public void readFromNBT(CompoundTag data) {
+        super.readFromNBT(data);
+        this.logic.readFromNBT(data);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
-        this.logic.writeToNBT(data, registries);
+    public void writeToNBT(CompoundTag data) {
+        super.writeToNBT(data);
+        this.logic.writeToNBT(data);
     }
 
     @Override
@@ -140,7 +142,7 @@ public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
     }
 
     @Override
-    public boolean onUseWithoutItem(Player p, Vec3 pos) {
+    public boolean onPartActivate(Player p, InteractionHand hand, Vec3 pos) {
         if (!p.getCommandSenderWorld().isClientSide()) {
             openMenu(p, MenuLocators.forPart(this));
         }
@@ -185,5 +187,10 @@ public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
     @Override
     public ItemStack getMainMenuIcon() {
         return new ItemStack(getPartItem());
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
+        return this.logic.getCapability(capabilityClass, this.getSide());
     }
 }

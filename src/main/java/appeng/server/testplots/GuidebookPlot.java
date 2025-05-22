@@ -6,7 +6,6 @@ import java.util.function.BiFunction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.StandingSignBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,7 +17,6 @@ import appeng.server.testworld.PlotBuilder;
 /**
  * Test plot that sets up a working area for working on Guidebook structures.
  */
-@TestPlotClass
 public final class GuidebookPlot {
     private GuidebookPlot() {
     }
@@ -31,10 +29,10 @@ public final class GuidebookPlot {
 
         var controlPos = BlockPos.ZERO.north(2).east(1);
         control(plot, controlPos.east(0), "LOAD", (blockEntity, origin) -> {
-            return String.format(Locale.ROOT, "guideme importstructure %s", formatBlockPos(origin));
+            return String.format(Locale.ROOT, "ae2guide importstructure %s", formatBlockPos(origin));
         });
         control(plot, controlPos.east(1), "SAVE", (blockEntity, origin) -> {
-            return String.format(Locale.ROOT, "guideme exportstructure %s %d %d %d", formatBlockPos(origin), 16, 16,
+            return String.format(Locale.ROOT, "ae2guide exportstructure %s %d %d %d", formatBlockPos(origin), 16, 16,
                     16);
         });
         control(plot, controlPos.east(2), "CLEAR", (blockEntity, origin) -> {
@@ -52,8 +50,7 @@ public final class GuidebookPlot {
         plot.blockState(pos, Blocks.DARK_OAK_SIGN.defaultBlockState().setValue(StandingSignBlock.ROTATION,
                 RotationSegment.convertToSegment(Direction.NORTH)));
         plot.customizeBlockEntity(pos, BlockEntityType.SIGN, sign -> {
-            var text = sign.getFrontText().setMessage(0, Component.literal(label)).setColor(DyeColor.WHITE);
-            sign.setText(text, true);
+            sign.getFrontText().setMessage(0, Component.literal(label));
         });
 
         pos = pos.north();

@@ -31,11 +31,13 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
 
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.contents.TranslatableContents;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import appeng.client.gui.MockResourceManager;
 import appeng.client.gui.style.ScreenStyle;
@@ -51,7 +53,9 @@ class InitScreensTest {
 
     @BeforeAll
     static void setUp() {
-        InitScreens.init(new RegisterMenuScreensEvent(new HashMap<>()));
+        try (MockedStatic<MenuScreens> registration = Mockito.mockStatic(MenuScreens.class)) {
+            InitScreens.init();
+        }
     }
 
     /**

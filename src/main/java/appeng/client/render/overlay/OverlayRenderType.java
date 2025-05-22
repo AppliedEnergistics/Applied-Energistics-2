@@ -18,11 +18,6 @@
 
 package appeng.client.render.overlay;
 
-import static net.minecraft.client.renderer.RenderStateShard.COLOR_WRITE;
-import static net.minecraft.client.renderer.RenderStateShard.GREATER_DEPTH_TEST;
-import static net.minecraft.client.renderer.RenderStateShard.LEQUAL_DEPTH_TEST;
-import static net.minecraft.client.renderer.RenderStateShard.TRANSLUCENT_TRANSPARENCY;
-
 import java.util.OptionalDouble;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -41,7 +36,6 @@ public class OverlayRenderType extends RenderType {
 
     private static RenderType BLOCK_HIGHLIGHT_FACE;
     private static RenderType BLOCK_HIGHLIGHT_LINE;
-    private static RenderType BLOCK_HIGHLIGHT_LINE_OCCLUDED;
 
     public OverlayRenderType(String nameIn, VertexFormat formatIn, VertexFormat.Mode mode, int bufferSizeIn,
             boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
@@ -57,7 +51,7 @@ public class OverlayRenderType extends RenderType {
                             .setTransparencyState(TransparencyStateShard.CRUMBLING_TRANSPARENCY)
                             .setTextureState(NO_TEXTURE)
                             .setLightmapState(NO_LIGHTMAP)
-                            .setDepthTestState(LEQUAL_DEPTH_TEST)
+                            .setDepthTestState(NO_DEPTH_TEST)
                             .setWriteMaskState(COLOR_WRITE)
                             .setCullState(NO_CULL)
                             .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
@@ -70,30 +64,19 @@ public class OverlayRenderType extends RenderType {
 
     public static RenderType getBlockHilightLine() {
         if (BLOCK_HIGHLIGHT_LINE == null) {
-            BLOCK_HIGHLIGHT_LINE = makeLineRenderType("block_hilight_line", false);
+            BLOCK_HIGHLIGHT_LINE = create("block_hilight_line",
+                    DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 65536, false, false,
+                    CompositeState.builder().setLineState(LINE_3)
+                            .setTransparencyState(TransparencyStateShard.GLINT_TRANSPARENCY)
+                            .setTextureState(NO_TEXTURE)
+                            .setDepthTestState(NO_DEPTH_TEST)
+                            .setCullState(NO_CULL)
+                            .setLightmapState(NO_LIGHTMAP)
+                            .setWriteMaskState(COLOR_DEPTH_WRITE)
+                            .setShaderState(RENDERTYPE_LINES_SHADER)
+                            .createCompositeState(false));
         }
         return BLOCK_HIGHLIGHT_LINE;
-    }
-
-    public static RenderType getBlockHilightLineOccluded() {
-        if (BLOCK_HIGHLIGHT_LINE_OCCLUDED == null) {
-            BLOCK_HIGHLIGHT_LINE_OCCLUDED = makeLineRenderType("block_hilight_line_occluded", true);
-        }
-        return BLOCK_HIGHLIGHT_LINE_OCCLUDED;
-    }
-
-    private static CompositeRenderType makeLineRenderType(String name, boolean occluded) {
-        return create(name,
-                DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 65536, false, false,
-                CompositeState.builder().setLineState(LINE_3)
-                        .setTransparencyState(occluded ? TRANSLUCENT_TRANSPARENCY : ADDITIVE_TRANSPARENCY)
-                        .setTextureState(NO_TEXTURE)
-                        .setDepthTestState(occluded ? GREATER_DEPTH_TEST : LEQUAL_DEPTH_TEST)
-                        .setCullState(NO_CULL)
-                        .setLightmapState(NO_LIGHTMAP)
-                        .setWriteMaskState(occluded ? COLOR_WRITE : COLOR_DEPTH_WRITE)
-                        .setShaderState(RENDERTYPE_LINES_SHADER)
-                        .createCompositeState(false));
     }
 
     public static int[] decomposeColor(int color) {

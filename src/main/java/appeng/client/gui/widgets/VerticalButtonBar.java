@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
@@ -30,21 +29,25 @@ import net.minecraft.client.renderer.Rect2i;
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.ICompositeWidget;
-import appeng.core.AppEng;
 
 /**
  * A stacked button panel on the left or right side of our UIs.
  */
 public class VerticalButtonBar implements ICompositeWidget {
+
     // Vertical space between buttons
-    private static final int VERTICAL_SPACING = 6;
+    private static final int VERTICAL_SPACING = 4;
+
     // The margin between the right side of the buttons and the GUI
     private static final int MARGIN = 2;
+
     private final List<Button> buttons = new ArrayList<>();
+
     // The origin of the last initialized screen in window coordinates
     private Point screenOrigin = Point.ZERO;
     // This bounding rectangle relative to the screens origin
     private Rect2i bounds = new Rect2i(0, 0, 0, 0);
+
     private Point position;
 
     public VerticalButtonBar() {
@@ -118,16 +121,5 @@ public class VerticalButtonBar implements ICompositeWidget {
             }
             addWidget.accept(button);
         }
-    }
-
-    @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
-        guiGraphics.blitSprite(
-                AppEng.makeId("vertical_buttons_bg"),
-                bounds.getX() + this.bounds.getX() - 2,
-                bounds.getY() + this.bounds.getY() - 1,
-                1,
-                this.bounds.getWidth() + 1,
-                this.bounds.getHeight() + 4);
     }
 }

@@ -42,6 +42,7 @@ public class QuadViewImpl implements QuadView {
     /** True when geometry flags or light face may not match geometry. */
     protected boolean isGeometryInvalid = true;
     protected final Vector3f faceNormal = new Vector3f();
+    private boolean shade = true;
 
     /** Size and where it comes from will vary in subtypes. But in all cases quad is fully encoded to array. */
     protected int[] data;
@@ -249,14 +250,12 @@ public class QuadViewImpl implements QuadView {
         return baseIndex + HEADER_STRIDE;
     }
 
-    @Override
     public boolean hasShade() {
-        return EncodingFormat.shade(data[baseIndex + HEADER_BITS]);
+        return shade;
     }
 
-    @Override
-    public boolean hasAmbientOcclusion() {
-        return EncodingFormat.ambientOcclusion(data[baseIndex + HEADER_BITS]);
+    public void shade(boolean shade) {
+        this.shade = shade;
     }
 
     @Override

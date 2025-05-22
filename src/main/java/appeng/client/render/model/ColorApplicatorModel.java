@@ -41,15 +41,15 @@ import appeng.core.AppEng;
  */
 public class ColorApplicatorModel implements BasicUnbakedModel {
 
-    private static final ResourceLocation MODEL_BASE = AppEng.makeId(
+    private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
             "item/color_applicator_colored");
 
     private static final Material TEXTURE_DARK = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("item/color_applicator_tip_dark"));
+            new ResourceLocation(AppEng.MOD_ID, "item/color_applicator_tip_dark"));
     private static final Material TEXTURE_MEDIUM = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("item/color_applicator_tip_medium"));
+            new ResourceLocation(AppEng.MOD_ID, "item/color_applicator_tip_medium"));
     private static final Material TEXTURE_BRIGHT = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("item/color_applicator_tip_bright"));
+            new ResourceLocation(AppEng.MOD_ID, "item/color_applicator_tip_bright"));
 
     @Override
     public Collection<ResourceLocation> getDependencies() {
@@ -59,7 +59,7 @@ public class ColorApplicatorModel implements BasicUnbakedModel {
     @Nullable
     @Override
     public BakedModel bake(ModelBaker bakery, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelTransform) {
+            ModelState modelTransform, ResourceLocation modelId) {
         BakedModel baseModel = bakery.bake(MODEL_BASE, modelTransform);
 
         TextureAtlasSprite texDark = spriteGetter.apply(TEXTURE_DARK);

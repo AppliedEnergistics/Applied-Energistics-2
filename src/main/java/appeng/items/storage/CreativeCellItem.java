@@ -24,12 +24,14 @@ import java.util.Optional;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.client.AEKeyRendering;
 import appeng.api.config.FuzzyMode;
@@ -66,8 +68,7 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
-            TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines, TooltipFlag advancedTooltips) {
         var inventory = StorageCells.getCellInventory(stack, null);
 
         if (inventory != null) {
@@ -90,8 +91,8 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     public static ItemStack ofItems(ItemLike... items) {
-        var cell = AEItems.CREATIVE_CELL.stack();
-        var configInv = AEItems.CREATIVE_CELL.get().getConfigInventory(cell);
+        var cell = AEItems.ITEM_CELL_CREATIVE.stack();
+        var configInv = AEItems.ITEM_CELL_CREATIVE.asItem().getConfigInventory(cell);
         for (int i = 0; i < items.length; i++) {
             configInv.setStack(i, GenericStack.fromItemStack(new ItemStack(items[i])));
         }
@@ -99,8 +100,8 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     public static ItemStack ofFluids(Fluid... fluids) {
-        var cell = AEItems.CREATIVE_CELL.stack();
-        var configInv = AEItems.CREATIVE_CELL.get().getConfigInventory(cell);
+        var cell = AEItems.FLUID_CELL_CREATIVE.stack();
+        var configInv = AEItems.FLUID_CELL_CREATIVE.asItem().getConfigInventory(cell);
         for (int i = 0; i < fluids.length; i++) {
             configInv.setStack(i, new GenericStack(AEFluidKey.of(fluids[i]), 1));
         }

@@ -28,9 +28,9 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.util.AECableType;
-import appeng.blockentity.grid.AENetworkedBlockEntity;
+import appeng.blockentity.grid.AENetworkBlockEntity;
 
-public class CreativeEnergyCellBlockEntity extends AENetworkedBlockEntity implements IAEPowerStorage {
+public class CreativeEnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPowerStorage {
 
     public CreativeEnergyCellBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);

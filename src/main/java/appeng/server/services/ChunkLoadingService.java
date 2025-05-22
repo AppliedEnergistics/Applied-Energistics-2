@@ -22,12 +22,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.world.chunk.LoadingValidationCallback;
-import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
-import net.neoforged.neoforge.common.world.chunk.TicketController;
-import net.neoforged.neoforge.common.world.chunk.TicketHelper;
-import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
-import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.common.world.ForgeChunkManager;
+import net.minecraftforge.common.world.ForgeChunkManager.LoadingValidationCallback;
+import net.minecraftforge.common.world.ForgeChunkManager.TicketHelper;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 
 import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
 import appeng.core.AppEng;
@@ -39,10 +38,8 @@ public class ChunkLoadingService implements LoadingValidationCallback {
     // Flag to ignore a server after it is stopping as grid nodes might reevaluate their grids during a shutdown.
     private boolean running = true;
 
-    private final TicketController controller = new TicketController(AppEng.makeId("default"), this);
-
-    public void register(RegisterTicketControllersEvent event) {
-        event.register(controller);
+    public static void register() {
+        ForgeChunkManager.setForcedChunkLoadingCallback(AppEng.MOD_ID, INSTANCE);
     }
 
     public void onServerAboutToStart(ServerAboutToStartEvent evt) {
@@ -66,8 +63,8 @@ public class ChunkLoadingService implements LoadingValidationCallback {
             // Add all persisted chunks to the list of handled ones by each anchor.
             // Or remove all in case the anchor no longer exists.
             if (blockEntity instanceof SpatialAnchorBlockEntity anchor) {
-                for (Long chunk : chunks.ticking()) {
-                    anchor.registerChunk(new ChunkPos(chunk));
+                for (Long chunk : chunks.getSecond()) {
+                    anchor.registerChunk(new ChunkPos(chunk.longValue()));
                 }
             } else {
                 ticketHelper.removeAllTickets(blockPos);
@@ -75,17 +72,17 @@ public class ChunkLoadingService implements LoadingValidationCallback {
         });
     }
 
-    public boolean forceChunk(ServerLevel level, BlockPos owner, ChunkPos position) {
+    public boolean forceChunk(ServerLevel level, BlockPos owner, ChunkPos position, boolean ticking) {
         if (running) {
-            return controller.forceChunk(level, owner, position.x, position.z, true, true);
+            return ForgeChunkManager.forceChunk(level, AppEng.MOD_ID, owner, position.x, position.z, true, true);
         }
 
         return false;
     }
 
-    public boolean releaseChunk(ServerLevel level, BlockPos owner, ChunkPos position) {
+    public boolean releaseChunk(ServerLevel level, BlockPos owner, ChunkPos position, boolean ticking) {
         if (running) {
-            return controller.forceChunk(level, owner, position.x, position.z, false, true);
+            return ForgeChunkManager.forceChunk(level, AppEng.MOD_ID, owner, position.x, position.z, false, true);
         }
 
         return false;

@@ -2,7 +2,6 @@ package appeng.server.testworld;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -20,16 +19,10 @@ public class Plot implements PlotBuilder {
     private final ResourceLocation id;
 
     private final List<BuildAction> buildActions = new ArrayList<>();
-    private final List<PostBuildAction> postBuildActions = new ArrayList<>();
-    private final List<PostBuildAction> postInitActions = new ArrayList<>();
 
     private Test test;
 
     public BoundingBox getBounds() {
-        if (buildActions.isEmpty()) {
-            return new BoundingBox(0, 0, 0, 0, 0, 0);
-        }
-
         return BoundingBox.encapsulatingBoxes(buildActions.stream().map(BuildAction::getBoundingBox).toList())
                 .orElseThrow();
     }
@@ -47,16 +40,6 @@ public class Plot implements PlotBuilder {
     @Override
     public void addBuildAction(BuildAction action) {
         buildActions.add(action);
-    }
-
-    @Override
-    public void addPostBuildAction(PostBuildAction action) {
-        postBuildActions.add(action);
-    }
-
-    @Override
-    public void addPostInitAction(PostBuildAction action) {
-        postInitActions.add(action);
     }
 
     @Override
@@ -97,25 +80,6 @@ public class Plot implements PlotBuilder {
 
         for (var action : buildActions) {
             action.spawnEntities(level, origin, entities);
-        }
-
-        for (var action : postBuildActions) {
-            action.postBuild(level, player, origin);
-        }
-
-        // Gather all block entities in the built area
-        if (!postInitActions.isEmpty()) {
-            var blockEntities = BlockPos
-                    .betweenClosedStream(getBounds().moved(origin.getX(), origin.getY(), origin.getZ()))
-                    .map(level::getBlockEntity)
-                    .filter(Objects::nonNull)
-                    .toList();
-
-            GridInitHelper.doAfterGridInit(level, blockEntities, false, () -> {
-                for (var action : postInitActions) {
-                    action.postBuild(level, player, origin);
-                }
-            });
         }
     }
 

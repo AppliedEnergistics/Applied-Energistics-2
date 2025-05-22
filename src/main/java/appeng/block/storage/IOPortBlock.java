@@ -18,9 +18,13 @@
 
 package appeng.block.storage;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,6 +39,7 @@ import appeng.blockentity.storage.IOPortBlockEntity;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.IOPortMenu;
 import appeng.menu.locator.MenuLocators;
+import appeng.util.InteractionUtil;
 
 public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
 
@@ -72,15 +77,22 @@ public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
-            BlockHitResult hitResult) {
-        if (level.getBlockEntity(pos) instanceof IOPortBlockEntity be) {
+    public InteractionResult onActivated(Level level, BlockPos pos, Player p,
+            InteractionHand hand,
+            @Nullable ItemStack heldItem, BlockHitResult hit) {
+        if (InteractionUtil.isInAlternateUseMode(p)) {
+            return InteractionResult.PASS;
+        }
+
+        final IOPortBlockEntity tg = this.getBlockEntity(level, pos);
+        if (tg != null) {
             if (!level.isClientSide()) {
-                MenuOpener.open(IOPortMenu.TYPE, player, MenuLocators.forBlockEntity(be));
+                hit.getDirection();
+                MenuOpener.open(IOPortMenu.TYPE, p,
+                        MenuLocators.forBlockEntity(tg));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
-
-        return super.useWithoutItem(state, level, pos, player, hitResult);
+        return InteractionResult.PASS;
     }
 }

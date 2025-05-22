@@ -7,15 +7,14 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.Capabilities;
 
+import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartHost;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.localization.GuiText;
@@ -44,52 +43,48 @@ public record PatternContainerGroup(
         return NOTHING;
     }
 
-    public void writeToPacket(RegistryFriendlyByteBuf buffer) {
+    public void writeToPacket(FriendlyByteBuf buffer) {
         buffer.writeBoolean(icon != null);
         if (icon != null) {
             icon.writeToPacket(buffer);
         }
-        ComponentSerialization.TRUSTED_STREAM_CODEC.encode(buffer, name);
+        buffer.writeComponent(name);
         buffer.writeVarInt(tooltip.size());
         for (var component : tooltip) {
-            ComponentSerialization.TRUSTED_STREAM_CODEC.encode(buffer, component);
+            buffer.writeComponent(component);
         }
     }
 
-    public static PatternContainerGroup readFromPacket(RegistryFriendlyByteBuf buffer) {
+    public static PatternContainerGroup readFromPacket(FriendlyByteBuf buffer) {
         var icon = buffer.readBoolean() ? AEItemKey.fromPacket(buffer) : null;
-        var name = ComponentSerialization.TRUSTED_STREAM_CODEC.decode(buffer);
+        var name = buffer.readComponent();
         var lineCount = buffer.readVarInt();
         var lines = new ArrayList<Component>(lineCount);
         for (int i = 0; i < lineCount; i++) {
-            lines.add(ComponentSerialization.TRUSTED_STREAM_CODEC.decode(buffer));
+            lines.add(buffer.readComponent());
         }
         return new PatternContainerGroup(icon, name, lines);
     }
 
     @Nullable
     public static PatternContainerGroup fromMachine(Level level, BlockPos pos, Direction side) {
+        var target = level.getBlockEntity(pos);
+
         // Check for first-class support
-        var craftingMachine = ICraftingMachine.of(level, pos, side);
+        var craftingMachine = ICraftingMachine.of(level, pos, side, target);
         if (craftingMachine != null) {
             return craftingMachine.getCraftingMachineInfo();
         }
 
         // Anything else requires a block entity
-        var target = level.getBlockEntity(pos);
         if (target == null) {
             return null;
         }
 
-        // Heuristic: If it doesn't allow item or fluid transfers, ignore it
-        var itemHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, target.getBlockState(), target,
-                side);
-        if (itemHandler == null || itemHandler.getSlots() <= 0) {
-            var fluidHandler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, target.getBlockState(), target,
-                    side);
-            if (fluidHandler == null || fluidHandler.getTanks() == 0) {
-                return null;
-            }
+        // Heuristic: If it doesn't allow any transfers, ignore it
+        var adaptor = InternalInventory.wrapExternal(target, side);
+        if (adaptor == null || !adaptor.mayAllowInsertion()) {
+            return null;
         }
 
         AEItemKey icon;

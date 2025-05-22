@@ -45,12 +45,6 @@ public interface QuadEmitter extends MutableQuadView {
     }
 
     @Override
-    QuadEmitter shade(boolean shade);
-
-    @Override
-    QuadEmitter ambientOcclusion(boolean ao);
-
-    @Override
     QuadEmitter spriteBake(TextureAtlasSprite sprite, int bakeFlags);
 
     default QuadEmitter uvUnitSquare() {

@@ -50,7 +50,7 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusMenu> {
         widgets.addOpenPriorityButton();
 
         addToLeftToolbar(new ActionButton(ActionItems.CLOSE, btn -> menu.clear()));
-        addToLeftToolbar(new ActionButton(ActionItems.COG, btn -> menu.partition()));
+        addToLeftToolbar(new ActionButton(ActionItems.WRENCH, btn -> menu.partition()));
         this.rwMode = new ServerSettingToggleButton<>(Settings.ACCESS, AccessRestriction.READ_WRITE);
         this.storageFilter = new ServerSettingToggleButton<>(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
         this.filterOnExtract = new ServerSettingToggleButton<>(Settings.FILTER_ON_EXTRACT, YesNo.YES);

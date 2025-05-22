@@ -1,7 +1,8 @@
 {
   "textures": {
     "lightsBright": "ae2:part/storage_monitor_bright",
-    "lightsMedium": "ae2:part/storage_monitor_medium"
+    "lightsMedium": "ae2:part/storage_monitor_medium",
+    "lightsDark": "ae2:part/storage_monitor_dark"
   },
   "elements": [
     {
@@ -11,7 +12,7 @@
         "north": {
           "texture": "#lightsBright",
           "tintindex": 3,
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+          "forge_data": { "block_light": 15, "sky_light": 15 }
         }
       }
     },
@@ -22,7 +23,18 @@
         "north": {
           "texture": "#lightsMedium",
           "tintindex": 2,
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+          "forge_data": { "block_light": 15, "sky_light": 15 }
+        }
+      }
+    },
+    {
+      "from": [2, 2, 0],
+      "to": [14, 14, 2],
+      "faces": {
+        "north": {
+          "texture": "#lightsDark",
+          "tintindex": 1,
+          "forge_data": { "block_light": 15, "sky_light": 15 }
         }
       }
     }

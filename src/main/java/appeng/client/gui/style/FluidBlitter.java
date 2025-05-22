@@ -23,8 +23,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.stacks.AEFluidKey;
 
@@ -41,8 +41,8 @@ public final class FluidBlitter {
     }
 
     public static Blitter create(FluidStack stack) {
-        if (stack.isEmpty() && stack.getFluid() != Fluids.EMPTY) {
-            stack = new FluidStack(stack.getFluidHolder(), 1, stack.getComponentsPatch());
+        if (stack.isEmpty() && stack.getRawFluid() != Fluids.EMPTY) {
+            stack = new FluidStack(stack.getRawFluid(), 1, stack.getTag());
         }
 
         Fluid fluid = stack.getFluid();

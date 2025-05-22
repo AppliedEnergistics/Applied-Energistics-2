@@ -7,23 +7,23 @@ import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IServerDataProvider;
 
 import appeng.api.integrations.igtooltip.providers.ServerDataProvider;
+import appeng.core.AppEng;
 
 class ServerDataProviderAdapter<T> implements IServerDataProvider<BlockAccessor> {
-    private final ResourceLocation id;
+    private static final ResourceLocation ID = AppEng.makeId("server_data");
+
     private final ServerDataProvider<? super T> provider;
 
     private final Class<T> objectClass;
 
-    public ServerDataProviderAdapter(ResourceLocation id, ServerDataProvider<? super T> provider,
-            Class<T> objectClass) {
-        this.id = id;
+    public ServerDataProviderAdapter(ServerDataProvider<? super T> provider, Class<T> objectClass) {
         this.provider = provider;
         this.objectClass = objectClass;
     }
 
     @Override
     public ResourceLocation getUid() {
-        return id;
+        return ID;
     }
 
     @Override

@@ -38,6 +38,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.locale.Language;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
@@ -45,11 +47,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.PacketDistributor;
 
-import guideme.color.ConstantColor;
-import guideme.document.LytRect;
-import guideme.render.SimpleRenderContext;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 import appeng.api.config.Settings;
@@ -57,7 +55,7 @@ import appeng.api.config.ShowPatternProviders;
 import appeng.api.config.TerminalStyle;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
-import appeng.api.storage.ILinkStatus;
+import appeng.api.stacks.AEItemKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
@@ -65,15 +63,18 @@ import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
+import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.render.SimpleRenderContext;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
-import appeng.core.network.serverbound.InventoryActionPacket;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.implementations.PatternAccessTermMenu;
 
 public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AEBaseScreen<C> {
-    private static final Logger LOG = LoggerFactory.getLogger(PatternAccessTermScreen.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PatternAccessTermScreen.class);
 
     private static final int GUI_WIDTH = 195;
     private static final int GUI_TOP_AND_BOTTOM_PADDING = 54;
@@ -82,7 +83,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     private static final int GUI_PADDING_Y = 6;
 
     private static final int GUI_HEADER_HEIGHT = 17;
-    private static final int GUI_FOOTER_HEIGHT = 99;
+    private static final int GUI_FOOTER_HEIGHT = 97;
     private static final int COLUMNS = 9;
 
     /**
@@ -135,7 +136,6 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     private final Map<String, Set<Object>> cachedSearches = new WeakHashMap<>();
     private final Scrollbar scrollbar;
     private final AETextField searchField;
-    private final Map<ItemStack, String> patternSearchText = new WeakHashMap<>();
 
     private int visibleRows = 0;
 
@@ -144,7 +144,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     public PatternAccessTermScreen(C menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
-        this.scrollbar = widgets.addScrollBar("scrollbar", Scrollbar.BIG);
+        this.scrollbar = widgets.addScrollBar("scrollbar");
         this.imageWidth = GUI_WIDTH;
 
         // Add a terminalstyle button
@@ -152,7 +152,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
         this.addToLeftToolbar(
                 new SettingToggleButton<>(Settings.TERMINAL_STYLE, terminalStyle, this::toggleTerminalStyle));
 
-        showPatternProviders = new ServerSettingToggleButton<>(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS,
+        showPatternProviders = new ServerSettingToggleButton(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS,
                 ShowPatternProviders.VISIBLE);
 
         this.addToLeftToolbar(showPatternProviders);
@@ -164,8 +164,8 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
     @Override
     public void init() {
-        this.visibleRows = Math.max(2, config.getTerminalStyle().getRows(
-                (this.height - GUI_HEADER_HEIGHT - GUI_FOOTER_HEIGHT - GUI_TOP_AND_BOTTOM_PADDING) / ROW_HEIGHT));
+        this.visibleRows = config.getTerminalStyle().getRows(
+                (this.height - GUI_HEADER_HEIGHT - GUI_FOOTER_HEIGHT - GUI_TOP_AND_BOTTOM_PADDING) / ROW_HEIGHT);
         // Render inventory in correct place.
         this.imageHeight = GUI_HEADER_HEIGHT + GUI_FOOTER_HEIGHT + this.visibleRows * ROW_HEIGHT;
 
@@ -205,7 +205,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
                         // Indicate invalid patterns
                         var pattern = container.getInventory().getStackInSlot(slotsRow.offset + col);
-                        if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level) == null) {
+                        if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level, false) == null) {
                             guiGraphics.fill(
                                     slot.x,
                                     slot.y,
@@ -243,30 +243,6 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                     guiGraphics.drawString(font, text, GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X + 10,
                             GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, textColor, false);
                 }
-            }
-        }
-
-        // Draw an overlay indicating the grid is disconnected
-        renderLinkStatus(guiGraphics, getMenu().getLinkStatus());
-    }
-
-    private void renderLinkStatus(GuiGraphics guiGraphics, ILinkStatus linkStatus) {
-        // Draw an overlay indicating the grid is disconnected
-        if (!linkStatus.connected()) {
-            var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics);
-
-            var rect = new LytRect(
-                    GUI_PADDING_X - 1,
-                    GUI_HEADER_HEIGHT,
-                    COLUMNS * 18,
-                    visibleRows * ROW_HEIGHT);
-
-            renderContext.fillRect(rect, new ConstantColor(0x3f000000));
-
-            // Draw the disconnect status on top of the grid
-            var statusDescription = linkStatus.statusDescription();
-            if (statusDescription != null) {
-                renderContext.renderTextCenteredIn(statusDescription.getString(), ERROR_TEXT_STYLE, rect);
             }
         }
     }
@@ -343,7 +319,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                 PatternSlot machineSlot = (PatternSlot) slot;
                 final InventoryActionPacket p = new InventoryActionPacket(action, machineSlot.slot,
                         machineSlot.getMachineInv().getServerId());
-                PacketDistributor.sendToServer(p);
+                NetworkHandler.instance().sendToServer(p);
             }
 
             return;
@@ -443,7 +419,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             Int2ObjectMap<ItemStack> slots) {
         var record = byId.get(inventoryId);
         if (record == null) {
-            LOG.warn("Ignoring incremental update for unknown inventory id {}", inventoryId);
+            LOGGER.warn("Ignoring incremental update for unknown inventory id {}", inventoryId);
             return;
         }
 
@@ -541,26 +517,28 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             return false;
         }
 
-        // Potential later use to filter by input
-        return patternSearchText.computeIfAbsent(itemStack, this::getPatternSearchText).contains(searchTerm);
-    }
+        final CompoundTag encodedValue = itemStack.getTag();
 
-    private String getPatternSearchText(ItemStack stack) {
-        var level = menu.getPlayer().level();
-        var text = new StringBuilder();
-        var pattern = PatternDetailsHelper.decodePattern(stack, level);
-
-        if (pattern != null) {
-            for (var output : pattern.getOutputs()) {
-                output.what().getDisplayName().visit(content -> {
-                    text.append(content.toLowerCase());
-                    return Optional.empty();
-                });
-                text.append('\n');
-            }
+        if (encodedValue == null) {
+            return false;
         }
 
-        return text.toString();
+        // Potential later use to filter by input
+        // ListNBT inTag = encodedValue.getTagList( "in", 10 );
+        final ListTag outTag = encodedValue.getList("out", 10);
+
+        for (int i = 0; i < outTag.size(); i++) {
+
+            var parsedItemStack = ItemStack.of(outTag.getCompound(i));
+            var itemKey = AEItemKey.of(parsedItemStack);
+            if (itemKey != null) {
+                var displayName = itemKey.getDisplayName().getString().toLowerCase();
+                if (displayName.contains(searchTerm)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -617,10 +595,6 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
         var texture = AppEng.makeId("textures/guis/patternaccessterminal.png");
         guiGraphics.blit(texture, offsetX, offsetY, srcRect.getX(), srcRect.getY(), srcRect.getWidth(),
                 srcRect.getHeight());
-    }
-
-    protected int getVisibleRows() {
-        return visibleRows;
     }
 
     sealed interface Row {

@@ -18,24 +18,7 @@
 
 package appeng.recipes.entropy;
 
-import com.mojang.serialization.Codec;
-
-import net.minecraft.util.StringRepresentable;
-
-public enum EntropyMode implements StringRepresentable {
-    HEAT("heat"),
-    COOL("cool");
-
-    public static final Codec<EntropyMode> CODEC = StringRepresentable.fromEnum(EntropyMode::values);
-
-    private final String serializedName;
-
-    EntropyMode(String serializedName) {
-        this.serializedName = serializedName;
-    }
-
-    @Override
-    public String getSerializedName() {
-        return serializedName;
-    }
+public enum EntropyMode {
+    HEAT,
+    COOL
 }

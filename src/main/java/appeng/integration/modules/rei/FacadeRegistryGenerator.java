@@ -20,7 +20,6 @@ package appeng.integration.modules.rei;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import net.minecraft.core.NonNullList;
@@ -29,9 +28,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 import me.shedaniel.rei.api.client.registry.display.DynamicDisplayGenerator;
 import me.shedaniel.rei.api.common.entry.EntryStack;
@@ -39,7 +36,6 @@ import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 import me.shedaniel.rei.plugin.common.displays.crafting.DefaultShapedDisplay;
 
 import appeng.core.AppEng;
-import appeng.core.FacadeCreativeTab;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.FacadeItem;
@@ -49,12 +45,13 @@ import appeng.items.parts.FacadeItem;
  */
 class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDisplay> {
 
-    private final Ingredient cableAnchor;
     private final FacadeItem itemFacade;
 
+    private final ItemStack cableAnchor;
+
     FacadeRegistryGenerator() {
-        this.itemFacade = AEItems.FACADE.get();
-        this.cableAnchor = Ingredient.of(AEParts.CABLE_ANCHOR.stack());
+        this.itemFacade = AEItems.FACADE.asItem();
+        this.cableAnchor = AEParts.CABLE_ANCHOR.stack();
     }
 
     @Override
@@ -67,7 +64,7 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
         ItemStack itemStack = entry.castValue();
         if (itemStack.getItem() instanceof FacadeItem facadeItem) {
             ItemStack textureItem = facadeItem.getTextureItem(itemStack);
-            return Optional.of(Collections.singletonList(make(textureItem, itemStack.copy())));
+            return Optional.of(Collections.singletonList(make(textureItem, this.cableAnchor, itemStack.copy())));
         }
 
         return Optional.empty();
@@ -86,43 +83,26 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
         ItemStack facade = this.itemFacade.createFacadeForItem(itemStack, false);
 
         if (!facade.isEmpty()) {
-            return Optional.of(Collections.singletonList(make(itemStack, facade)));
-        }
-
-        // Looking up uses for cable anchors
-        if (cableAnchor.test(itemStack)) {
-            return Optional.of(FacadeCreativeTab.getDisplayItems().stream()
-                    .map(stack -> {
-                        if (stack.getItem() instanceof FacadeItem facadeItem) {
-                            ItemStack textureItem = facadeItem.getTextureItem(stack);
-                            return make(textureItem, stack.copy());
-                        }
-                        return null;
-                    })
-                    .filter(Objects::nonNull)
-                    .toList());
+            return Optional.of(Collections.singletonList(make(itemStack, this.cableAnchor, facade)));
         }
 
         return Optional.empty();
     }
 
-    private DefaultShapedDisplay make(ItemStack textureItem, ItemStack result) {
+    private DefaultShapedDisplay make(ItemStack textureItem, ItemStack cableAnchor, ItemStack result) {
+        // This id should only be used within JEI and not really matter
+        ResourceLocation id = AppEng.makeId("facade/" + Item.getId(textureItem.getItem()));
+
         var ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
-        ingredients.set(1, cableAnchor);
-        ingredients.set(3, cableAnchor);
-        ingredients.set(5, cableAnchor);
-        ingredients.set(7, cableAnchor);
+        ingredients.set(1, Ingredient.of(cableAnchor));
+        ingredients.set(3, Ingredient.of(cableAnchor));
+        ingredients.set(5, Ingredient.of(cableAnchor));
+        ingredients.set(7, Ingredient.of(cableAnchor));
         ingredients.set(4, Ingredient.of(textureItem));
-        var pattern = new ShapedRecipePattern(3, 3, ingredients, Optional.empty());
 
         result.setCount(4);
 
-        // This id should only be used within REI and not really matter
-        ResourceLocation id = AppEng.makeId("facade/" + Item.getId(textureItem.getItem()));
-        return new DefaultShapedDisplay(
-                new RecipeHolder<>(
-                        id,
-                        new ShapedRecipe("", CraftingBookCategory.MISC, pattern, result)));
+        return new DefaultShapedDisplay(new ShapedRecipe(id, "", CraftingBookCategory.MISC, 3, 3, ingredients, result));
     }
 
 }

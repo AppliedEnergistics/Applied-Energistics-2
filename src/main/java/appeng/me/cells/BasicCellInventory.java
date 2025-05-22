@@ -18,15 +18,15 @@
 
 package appeng.me.cells;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
-
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -34,12 +34,10 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
-import appeng.api.ids.AEComponents;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
-import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.CellState;
@@ -47,6 +45,7 @@ import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.cells.ISaveProvider;
 import appeng.api.storage.cells.StorageCell;
 import appeng.api.upgrades.IUpgradeInventory;
+import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
 import appeng.util.ConfigInventory;
 import appeng.util.prioritylist.FuzzyPriorityList;
@@ -54,14 +53,16 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class BasicCellInventory implements StorageCell {
     private static final int MAX_ITEM_TYPES = 63;
+    private static final String ITEM_COUNT_TAG = "ic";
+    private static final String STACK_KEYS = "keys";
+    private static final String STACK_AMOUNTS = "amts";
 
-    @Nullable
     private final ISaveProvider container;
     private final AEKeyType keyType;
     private final IPartitionList partitionList;
     private final IncludeExclude partitionListMode;
     private int maxItemTypes;
-    private int storedItems;
+    private short storedItems;
     private long storedItemCount;
     private Object2LongMap<AEKey> storedAmounts;
     private final ItemStack i;
@@ -70,7 +71,7 @@ public class BasicCellInventory implements StorageCell {
     private final boolean hasVoidUpgrade;
     private boolean isPersisted = true;
 
-    private BasicCellInventory(IBasicCellItem cellType, ItemStack o, @Nullable ISaveProvider container) {
+    private BasicCellInventory(IBasicCellItem cellType, ItemStack o, ISaveProvider container) {
         this.i = o;
         this.cellType = cellType;
         this.maxItemTypes = this.cellType.getTotalTypes(this.i);
@@ -83,9 +84,8 @@ public class BasicCellInventory implements StorageCell {
         }
 
         this.container = container;
-        var storedStacks = getStoredStacks();
-        this.storedItems = storedStacks.size();
-        this.storedItemCount = storedStacks.stream().mapToLong(GenericStack::amount).sum();
+        this.storedItems = (short) getTag().getLongArray(STACK_AMOUNTS).length;
+        this.storedItemCount = getTag().getLong(ITEM_COUNT_TAG);
         this.storedAmounts = null;
         this.keyType = cellType.getKeyType();
 
@@ -125,10 +125,6 @@ public class BasicCellInventory implements StorageCell {
         this.hasVoidUpgrade = upgrades.isInstalled(AEItems.VOID_CARD);
     }
 
-    private List<GenericStack> getStoredStacks() {
-        return i.getOrDefault(AEComponents.STORAGE_CELL_INV, List.of());
-    }
-
     public IncludeExclude getPartitionListMode() {
         return partitionListMode;
     }
@@ -141,7 +137,14 @@ public class BasicCellInventory implements StorageCell {
         return partitionList instanceof FuzzyPriorityList;
     }
 
-    public static BasicCellInventory createInventory(ItemStack o, @Nullable ISaveProvider container) {
+    private CompoundTag getTag() {
+        // On Fabric, the tag itself may be copied and then replaced later in case a portable cell is being charged.
+        // In that case however, we can rely on the itemstack reference not changing due to the special logic in the
+        // transactional inventory wrappers. So we must always re-query the tag from the stack.
+        return this.i.getOrCreateTag();
+    }
+
+    public static BasicCellInventory createInventory(ItemStack o, ISaveProvider container) {
         Objects.requireNonNull(o, "Cannot create cell inventory for null itemstack");
 
         if (!(o.getItem() instanceof IBasicCellItem cellType)) {
@@ -189,28 +192,39 @@ public class BasicCellInventory implements StorageCell {
             return;
         }
 
+        long itemCount = 0;
+
         // add new pretty stuff...
-        var itemCount = 0L;
-        var stacks = new ArrayList<GenericStack>(storedAmounts.size());
+        var amounts = new LongArrayList(storedAmounts.size());
+        var keys = new ListTag();
 
         for (var entry : this.storedAmounts.object2LongEntrySet()) {
             long amount = entry.getLongValue();
-            itemCount += amount;
 
             if (amount > 0) {
-                stacks.add(new GenericStack(entry.getKey(), amount));
+                itemCount += amount;
+                keys.add(entry.getKey().toTagGeneric());
+                amounts.add(amount);
             }
         }
 
-        if (stacks.isEmpty()) {
-            i.remove(AEComponents.STORAGE_CELL_INV);
+        if (keys.isEmpty()) {
+            getTag().remove(STACK_KEYS);
+            getTag().remove(STACK_AMOUNTS);
         } else {
-            i.set(AEComponents.STORAGE_CELL_INV, stacks);
+            getTag().put(STACK_KEYS, keys);
+            getTag().putLongArray(STACK_AMOUNTS, amounts.toArray(new long[0]));
         }
 
         this.storedItems = (short) this.storedAmounts.size();
 
         this.storedItemCount = itemCount;
+        if (itemCount == 0) {
+            getTag().remove(ITEM_COUNT_TAG);
+        } else {
+            getTag().putLong(ITEM_COUNT_TAG, itemCount);
+        }
+
         this.isPersisted = true;
     }
 
@@ -232,9 +246,28 @@ public class BasicCellInventory implements StorageCell {
     }
 
     private void loadCellItems() {
-        var stacks = getStoredStacks();
-        for (var stack : stacks) {
-            storedAmounts.put(stack.what(), stack.amount());
+        boolean corruptedTag = false;
+
+        var amounts = getTag().getLongArray(STACK_AMOUNTS);
+        var tags = getTag().getList(STACK_KEYS, Tag.TAG_COMPOUND);
+        if (amounts.length != tags.size()) {
+            AELog.warn("Loading storage cell with mismatched amounts/tags: %d != %d",
+                    amounts.length, tags.size());
+        }
+
+        for (int i = 0; i < amounts.length; i++) {
+            var amount = amounts[i];
+            AEKey key = AEKey.fromTagGeneric(tags.getCompound(i));
+
+            if (amount <= 0 || key == null) {
+                corruptedTag = true;
+            } else {
+                storedAmounts.put(key, amount);
+            }
+        }
+
+        if (corruptedTag) {
+            this.saveChanges();
         }
     }
 

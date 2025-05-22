@@ -21,7 +21,6 @@ package appeng.items.tools.powered;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -30,11 +29,11 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.upgrades.IUpgradeInventory;
@@ -71,9 +70,9 @@ public class PortableCellItem extends AbstractPortableCell implements IBasicCell
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, context, lines, advancedTooltips);
+        super.appendHoverText(stack, level, lines, advancedTooltips);
         addCellInformationToTooltip(stack, lines);
     }
 
@@ -109,17 +108,22 @@ public class PortableCellItem extends AbstractPortableCell implements IBasicCell
 
     @Override
     public ConfigInventory getConfigInventory(ItemStack is) {
-        return CellConfig.create(Set.of(keyType), is);
+        return CellConfig.create(keyType.filter(), is);
     }
 
     @Override
     public FuzzyMode getFuzzyMode(ItemStack is) {
-        return is.getOrDefault(AEComponents.STORAGE_CELL_FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+        final String fz = is.getOrCreateTag().getString("FuzzyMode");
+        try {
+            return FuzzyMode.valueOf(fz);
+        } catch (Throwable t) {
+            return FuzzyMode.IGNORE_ALL;
+        }
     }
 
     @Override
     public void setFuzzyMode(ItemStack is, FuzzyMode fzMode) {
-        is.set(AEComponents.STORAGE_CELL_FUZZY_MODE, fzMode);
+        is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
     }
 
     @Override

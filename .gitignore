@@ -9,21 +9,17 @@
 !build.gradle
 !settings.gradle
 !gradle.properties
-!crowdin.yml
+!.travis.yml
 
 # Scripts
 !/scripts
 /scripts/node_modules
-!/buildSrc
-/buildSrc/build
-/buildSrc/.gradle
 
 # include markdowns
 !*.md
 !LICENSE
 
 # include sourcecode
-!docs/
 !src/
 src/generated/resources/.cache
 out

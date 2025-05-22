@@ -1,67 +1,234 @@
 {
-  "credit": "Made with Blockbench",
-  "textures": {
-    "2": "ae2:block/quartz_fixture",
-    "particle": "ae2:block/quartz_fixture"
-  },
-  "render_type": "cutout",
   "elements": [
     {
-      "from": [6, 2, 6],
-      "to": [8, 5, 8],
-      "rotation": { "angle": 0, "axis": "y", "origin": [-3, 6, 13] },
       "faces": {
-        "north": { "uv": [12, 5, 10, 8], "texture": "#2" },
-        "east": { "uv": [10, 5, 12, 8], "texture": "#2" },
-        "south": { "uv": [12, 5, 10, 8], "texture": "#2" },
-        "west": { "uv": [10, 5, 12, 8], "texture": "#2" },
-        "up": { "uv": [14, 2, 16, 4], "rotation": 270, "texture": "#2" }
-      }
+        "down": {
+          "texture": "#metal"
+        },
+        "east": {
+          "texture": "#metal"
+        },
+        "north": {
+          "texture": "#metal"
+        },
+        "south": {
+          "texture": "#metal"
+        },
+        "up": {
+          "texture": "#metal"
+        },
+        "west": {
+          "texture": "#metal"
+        }
+      },
+      "from": [6.0, 3.0, 6.0],
+      "name": "Middle Plate",
+      "to": [10.0, 4.0, 10.0]
     },
     {
-      "from": [7, 2, 7],
-      "to": [9, 7, 9],
       "faces": {
-        "north": { "uv": [10, 0, 12, 5], "texture": "#2" },
-        "east": { "uv": [12, 0, 10, 5], "texture": "#2" },
-        "south": { "uv": [14, 0, 12, 5], "texture": "#2" },
-        "west": { "uv": [12, 0, 14, 5], "texture": "#2" },
-        "up": { "uv": [14, 0, 16, 2], "texture": "#2" }
-      }
+        "down": {
+          "texture": "#quartz"
+        },
+        "east": {
+          "texture": "#quartz"
+        },
+        "north": {
+          "texture": "#quartz"
+        },
+        "south": {
+          "texture": "#quartz"
+        },
+        "up": {
+          "texture": "#quartz"
+        },
+        "west": {
+          "texture": "#quartz"
+        }
+      },
+      "from": [7.0, 1.0, 7.0],
+      "name": "Lower Quartz Block",
+      "to": [9.0, 3.0, 9.0]
     },
     {
-      "from": [8, 2, 8],
-      "to": [10, 4, 10],
       "faces": {
-        "north": { "uv": [8, 4, 6, 6], "texture": "#2" },
-        "east": { "uv": [6, 4, 8, 6], "texture": "#2" },
-        "south": { "uv": [10, 4, 8, 6], "texture": "#2" },
-        "west": { "uv": [8, 4, 10, 6], "texture": "#2" },
-        "up": { "uv": [14, 4, 16, 6], "texture": "#2" }
-      }
+        "down": {
+          "texture": "#quartz"
+        },
+        "east": {
+          "texture": "#quartz"
+        },
+        "north": {
+          "texture": "#quartz"
+        },
+        "south": {
+          "texture": "#quartz"
+        },
+        "up": {
+          "texture": "#quartz"
+        },
+        "west": {
+          "texture": "#quartz"
+        }
+      },
+      "from": [7.0, 0.0, 7.0],
+      "name": "Lower Quartz Tip",
+      "to": [8.0, 1.0, 8.0]
     },
     {
-      "from": [5, 0, 5],
-      "to": [11, 1, 11],
       "faces": {
-        "north": { "uv": [6, 0, 0, 1], "texture": "#2" },
-        "east": { "uv": [5, 0, 6, 6], "rotation": 90, "texture": "#2" },
-        "south": { "uv": [0, 5, 6, 6], "texture": "#2" },
-        "west": { "uv": [0, 6, 1, 0], "rotation": 90, "texture": "#2" },
-        "up": { "uv": [0, 0, 6, 6], "texture": "#2" },
-        "down": { "uv": [0, 6, 6, 0], "texture": "#2", "cullface": "down" }
-      }
+        "down": {
+          "texture": "#quartz"
+        },
+        "east": {
+          "texture": "#quartz"
+        },
+        "north": {
+          "texture": "#quartz"
+        },
+        "south": {
+          "texture": "#quartz"
+        },
+        "up": {
+          "texture": "#quartz"
+        },
+        "west": {
+          "texture": "#quartz"
+        }
+      },
+      "from": [7.0, 4.0, 7.0],
+      "name": "Upper Quartz Block",
+      "to": [9.0, 6.0, 9.0]
     },
     {
-      "from": [6, 1, 6],
-      "to": [10, 2, 10],
       "faces": {
-        "north": { "uv": [6, 0, 10, 1], "rotation": 180, "texture": "#2" },
-        "east": { "uv": [9, 0, 10, 4], "rotation": 90, "texture": "#2" },
-        "south": { "uv": [6, 3, 10, 4], "texture": "#2" },
-        "west": { "uv": [6, 0, 7, 4], "rotation": 270, "texture": "#2" },
-        "up": { "uv": [6, 0, 10, 4], "texture": "#2" }
-      }
+        "down": {
+          "texture": "#quartz"
+        },
+        "east": {
+          "texture": "#quartz"
+        },
+        "north": {
+          "texture": "#quartz"
+        },
+        "south": {
+          "texture": "#quartz"
+        },
+        "up": {
+          "texture": "#quartz"
+        },
+        "west": {
+          "texture": "#quartz"
+        }
+      },
+      "from": [8.0, 6.0, 8.0],
+      "name": "Upper Quartz Tip",
+      "to": [9.0, 7.0, 9.0]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#metal"
+        },
+        "east": {
+          "texture": "#metal"
+        },
+        "north": {
+          "texture": "#metal"
+        },
+        "south": {
+          "texture": "#metal"
+        },
+        "up": {
+          "texture": "#metal"
+        },
+        "west": {
+          "texture": "#metal"
+        }
+      },
+      "from": [6.0, 0.0, 6.0],
+      "name": "NW Feet",
+      "to": [7.0, 3.0, 7.0]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#metal"
+        },
+        "east": {
+          "texture": "#metal"
+        },
+        "north": {
+          "texture": "#metal"
+        },
+        "south": {
+          "texture": "#metal"
+        },
+        "up": {
+          "texture": "#metal"
+        },
+        "west": {
+          "texture": "#metal"
+        }
+      },
+      "from": [6.0, 0.0, 9.0],
+      "name": "NE Feet",
+      "to": [7.0, 3.0, 10.0]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#metal"
+        },
+        "east": {
+          "texture": "#metal"
+        },
+        "north": {
+          "texture": "#metal"
+        },
+        "south": {
+          "texture": "#metal"
+        },
+        "up": {
+          "texture": "#metal"
+        },
+        "west": {
+          "texture": "#metal"
+        }
+      },
+      "from": [9.0, 0.0, 6.0],
+      "name": "SW Feet",
+      "to": [10.0, 3.0, 7.0]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#metal"
+        },
+        "east": {
+          "texture": "#metal"
+        },
+        "north": {
+          "texture": "#metal"
+        },
+        "south": {
+          "texture": "#metal"
+        },
+        "up": {
+          "texture": "#metal"
+        },
+        "west": {
+          "texture": "#metal"
+        }
+      },
+      "from": [9.0, 0.0, 9.0],
+      "name": "SE Feet",
+      "to": [10.0, 3.0, 10.0]
     }
-  ]
+  ],
+  "textures": {
+    "particle": "ae2:block/quartz_fixture",
+    "metal": "ae2:block/quartz_fixture_metal",
+    "quartz": "ae2:block/quartz_fixture"
+  }
 }

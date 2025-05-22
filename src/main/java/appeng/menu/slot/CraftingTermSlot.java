@@ -26,30 +26,27 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
-import appeng.helpers.ICraftingGridMenu;
+import appeng.helpers.IMenuCraftingPacket;
 import appeng.helpers.InventoryAction;
 import appeng.items.storage.ViewCellItem;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.util.Platform;
 import appeng.util.inv.CarriedItemInventory;
 import appeng.util.inv.PlayerInternalInventory;
-import appeng.util.prioritylist.IPartitionList;
 
 /**
  * This is the crafting result slot of the crafting terminal, which also handles performing the actual crafting when a
@@ -63,11 +60,11 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     private final IActionSource mySrc;
     private final IEnergySource energySrc;
     private final MEStorage storage;
-    private final ICraftingGridMenu menu;
+    private final IMenuCraftingPacket menu;
 
     public CraftingTermSlot(Player player, IActionSource mySrc, IEnergySource energySrc,
             MEStorage storage, InternalInventory cMatrix, InternalInventory secondMatrix,
-            ICraftingGridMenu ccp) {
+            IMenuCraftingPacket ccp) {
         super(player, cMatrix);
         this.energySrc = energySrc;
         this.storage = storage;
@@ -83,7 +80,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     }
 
     @Override
-    public void onTake(Player player, ItemStack is) {
+    public void onTake(Player p, ItemStack is) {
     }
 
     public void doClick(InventoryAction action, Player who) {
@@ -137,7 +134,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
         for (var x = 0; x < maxTimesToCraft; x++) {
             // Stop if the recipe output has changed (i.e. due to fully consumed input slots)
-            if (!ItemStack.isSameItemSameComponents(itemAtStart, getItem())) {
+            if (!ItemStack.isSameItemSameTags(itemAtStart, getItem())) {
                 return;
             }
 
@@ -159,11 +156,11 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
     // TODO: This is really hacky and NEEDS to be solved with a full menu/gui
     // refactoring.
-    protected RecipeHolder<CraftingRecipe> findRecipe(CraftingInput ic, Level level) {
+    protected Recipe<CraftingContainer> findRecipe(CraftingContainer ic, Level level) {
         if (this.menu instanceof CraftingTermMenu terminalMenu) {
             var recipe = terminalMenu.getCurrentRecipe();
 
-            if (recipe != null && recipe.value().matches(ic, level)) {
+            if (recipe != null && recipe.matches(ic, level)) {
                 return terminalMenu.getCurrentRecipe();
             }
         }
@@ -174,12 +171,12 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     // TODO: This is really hacky and NEEDS to be solved with a full menu/gui
     // refactoring.
     @Override
-    protected NonNullList<ItemStack> getRemainingItems(CraftingInput ic, Level level) {
+    protected NonNullList<ItemStack> getRemainingItems(CraftingContainer ic, Level level) {
         if (this.menu instanceof CraftingTermMenu terminalMenu) {
             var recipe = terminalMenu.getCurrentRecipe();
 
-            if (recipe != null && recipe.value().matches(ic, level)) {
-                return terminalMenu.getCurrentRecipe().value().getRemainingItems(ic);
+            if (recipe != null && recipe.matches(ic, level)) {
+                return terminalMenu.getCurrentRecipe().getRemainingItems(ic);
             }
         }
 
@@ -201,31 +198,46 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         // add one of each item to the items on the board...
         var level = p.level();
         if (!level.isClientSide()) {
-            final var ic = NonNullList.withSize(9, ItemStack.EMPTY);
+            final var ic = new TransientCraftingContainer(p.containerMenu, 3, 3);
             for (var x = 0; x < 9; x++) {
-                ic.set(x, this.getPattern().getStackInSlot(x));
+                ic.setItem(x, this.getPattern().getStackInSlot(x));
             }
-            var recipeInput = CraftingInput.of(3, 3, ic);
 
-            final var r = this.findRecipe(recipeInput, level);
-            setRecipeUsed(r);
+            final var r = this.findRecipe(ic, level);
 
             if (r == null) {
+                final var target = is.getItem();
+                if (target.canBeDepleted() && target.isValidRepairItem(is, is)) {
+                    var isBad = false;
+                    for (var x = 0; x < ic.getContainerSize(); x++) {
+                        final var pis = ic.getItem(x);
+                        if (pis.isEmpty()) {
+                            continue;
+                        }
+                        if (pis.getItem() != target) {
+                            isBad = true;
+                        }
+                    }
+                    if (!isBad) {
+                        super.onTake(p, is);
+                        // actually necessary to cleanup this case...
+                        p.containerMenu.slotsChanged(this.craftInv.toContainer());
+                        return is;
+                    }
+                }
                 return ItemStack.EMPTY;
             }
 
-            is = r.value().assemble(recipeInput, level.registryAccess());
+            is = r.assemble(ic, level.registryAccess());
 
             if (inv != null) {
                 var filter = ViewCellItem.createItemFilter(this.menu.getViewCells());
                 for (var x = 0; x < this.getPattern().size(); x++) {
                     if (!this.getPattern().getStackInSlot(x).isEmpty()) {
-                        set[x] = extractItemsByRecipe(this.energySrc, this.mySrc, inv, level, r.value(), is,
-                                recipeInput.width(), recipeInput.height(),
-                                ic,
-                                this.getPattern().getStackInSlot(x), x, all,
+                        set[x] = Platform.extractItemsByRecipe(this.energySrc, this.mySrc, inv, level, r, is, ic,
+                                this.getPattern().getStackInSlot(x), x, all, Actionable.MODULATE,
                                 filter);
-                        ic.set(x, set[x]);
+                        ic.setItem(x, set[x]);
                     }
                 }
             }
@@ -233,6 +245,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
         if (this.preCraft(p, inv, set, is)) {
             this.makeItem(p, is);
+
             this.postCraft(p, inv, set, is);
         }
 
@@ -241,67 +254,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         return is;
     }
 
-    private static ItemStack extractItemsByRecipe(IEnergySource energySrc,
-            IActionSource mySrc,
-            MEStorage src,
-            Level level,
-            Recipe<CraftingInput> r,
-            ItemStack output,
-            int gridWidth, int gridHeight,
-            List<ItemStack> craftingItems,
-            ItemStack providedTemplate,
-            int slot,
-            KeyCounter items,
-            IPartitionList filter) {
-
-        if (energySrc.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.9) {
-            if (providedTemplate == null) {
-                return ItemStack.EMPTY;
-            }
-
-            var ae_req = AEItemKey.of(providedTemplate);
-
-            if (filter == null || filter.isListed(ae_req)) {
-                var extracted = src.extract(ae_req, 1, Actionable.MODULATE, mySrc);
-                if (extracted > 0) {
-                    energySrc.extractAEPower(1, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                    return ae_req.toStack();
-                }
-            }
-
-            var checkFuzzy = !providedTemplate.getComponents().isEmpty() || providedTemplate.isDamageableItem();
-
-            if (items != null && checkFuzzy) {
-                var craftingInputItems = new ArrayList<>(craftingItems);
-
-                for (var x : items) {
-                    if (x.getKey() instanceof AEItemKey itemKey) {
-                        if (providedTemplate.getItem() == itemKey.getItem() && !itemKey.matches(output)) {
-
-                            craftingInputItems.set(slot, itemKey.toStack());
-                            var adjustedCraftingInput = CraftingInput.of(gridWidth, gridHeight, craftingInputItems);
-                            if (r.matches(adjustedCraftingInput, level)
-                                    && ItemStack.matches(r.assemble(adjustedCraftingInput, level.registryAccess()),
-                                            output)) {
-                                if (filter == null || filter.isListed(itemKey)) {
-                                    var ex = src.extract(itemKey, 1, Actionable.MODULATE, mySrc);
-                                    if (ex > 0) {
-                                        energySrc.extractAEPower(1, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                                        return itemKey.toStack();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return ItemStack.EMPTY;
-    }
-
     private boolean preCraft(Player p, MEStorage inv, ItemStack[] set,
             ItemStack result) {
-
         return true;
     }
 

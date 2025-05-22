@@ -18,107 +18,86 @@
 
 package appeng.hooks;
 
-import org.jetbrains.annotations.Nullable;
+import java.util.HashMap;
+import java.util.Iterator;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.ChunkPos;
-import net.neoforged.neoforge.network.PacketDistributor;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.CompassRequestPacket;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+public class CompassManager {
 
-import appeng.core.network.serverbound.RequestClosestMeteoritePacket;
-import appeng.server.services.compass.ServerCompassService;
-
-/**
- * The server-side version of this is called {@link ServerCompassService}.
- */
-public final class CompassManager {
     public static final CompassManager INSTANCE = new CompassManager();
-    private static final int REFRESH_CACHE_AFTER = 30000;
-    private static final int EXPIRE_CACHE_AFTER = 60000;
-    private final Long2ObjectOpenHashMap<CachedResult> requests = new Long2ObjectOpenHashMap<>();
+    private final HashMap<CompassRequest, CompassResult> requests = new HashMap<>();
 
-    private CompassManager() {
+    public void postResult(long attunement, int x, int y, int z, CompassResult result) {
+        final CompassRequest r = new CompassRequest(attunement, x, y, z);
+        this.requests.put(r, result);
     }
 
-    public void postResult(ChunkPos requestedPos, @Nullable BlockPos closestMeteorite) {
-        this.requests.put(requestedPos.toLong(), new CachedResult(closestMeteorite, System.currentTimeMillis()));
-    }
+    public CompassResult getCompassDirection(long attunement, int x, int y, int z) {
+        final long now = System.currentTimeMillis();
 
-    @Nullable
-    public BlockPos getClosestMeteorite(BlockPos pos, boolean prefetch) {
-        return getClosestMeteorite(new ChunkPos(pos), prefetch);
-    }
-
-    @Nullable
-    public BlockPos getClosestMeteorite(ChunkPos chunkPos, boolean prefetch) {
-        var now = System.currentTimeMillis();
-
-        // Expire cached results
-        var it = this.requests.values().iterator();
-        while (it.hasNext()) {
-            var res = it.next();
-            var age = now - res.received();
-            if (age > EXPIRE_CACHE_AFTER) {
-                it.remove();
+        final Iterator<CompassResult> i = this.requests.values().iterator();
+        while (i.hasNext()) {
+            final CompassResult res = i.next();
+            final long diff = now - res.getTime();
+            if (diff > 20000) {
+                i.remove();
             }
         }
 
-        BlockPos result = null;
-        boolean request;
+        final CompassRequest r = new CompassRequest(attunement, x, y, z);
+        CompassResult res = this.requests.get(r);
 
-        var cached = this.requests.get(chunkPos.toLong());
-        if (cached != null) {
-            result = cached.closestMeteoritePos();
-            var age = now - cached.received();
-            request = age > REFRESH_CACHE_AFTER;
-        } else {
-            request = true;
+        if (res == null) {
+            res = new CompassResult(false, true, 0);
+            this.requests.put(r, res);
+            this.requestUpdate(r);
+        } else if (now - res.getTime() > 1000 * 3 && !res.isRequested()) {
+            res.setRequested(true);
+            this.requestUpdate(r);
         }
 
-        // Find the closest existing result
-        if (result == null) {
-            result = findClosestKnownResult(chunkPos);
-        }
-
-        if (request) {
-            this.requests.put(chunkPos.toLong(), new CachedResult(result, now));
-            PacketDistributor.sendToServer(new RequestClosestMeteoritePacket(chunkPos));
-        }
-
-        // Prefetch meteor positions from the server for adjacent blocks, so they are
-        // available more quickly when we're moving
-        if (prefetch) {
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    if (i != 0 || j != 0) {
-                        getClosestMeteorite(new ChunkPos(chunkPos.x + i, chunkPos.z + j), false);
-                    }
-                }
-            }
-        }
-
-        return result;
+        return res;
     }
 
-    @Nullable
-    private BlockPos findClosestKnownResult(ChunkPos chunkPos) {
-        // If there was no cached result, reuse the closest existing result
-        var closestDistance = Long.MAX_VALUE;
-        BlockPos result = null;
-        for (var entry : this.requests.long2ObjectEntrySet()) {
-            var closestPos = entry.getValue().closestMeteoritePos();
-            if (closestPos != null) {
-                var distance = chunkPos.distanceSquared(entry.getLongKey());
-                if (distance < closestDistance) {
-                    closestDistance = distance;
-                    result = closestPos;
-                }
-            }
-        }
-        return result;
+    private void requestUpdate(CompassRequest r) {
+        NetworkHandler.instance().sendToServer(new CompassRequestPacket(r.attunement, r.cx, r.cz, r.cdy));
     }
 
-    private record CachedResult(@Nullable BlockPos closestMeteoritePos, long received) {
+    private static class CompassRequest {
+
+        private final int hash;
+        private final long attunement;
+        private final int cx;
+        private final int cdy;
+        private final int cz;
+
+        public CompassRequest(long attunement, int x, int y, int z) {
+            this.attunement = attunement;
+            this.cx = x >> 4;
+            this.cdy = y >> 5;
+            this.cz = z >> 4;
+            this.hash = ((Integer) this.cx).hashCode() ^ ((Integer) this.cdy).hashCode()
+                    ^ ((Integer) this.cz).hashCode() ^ ((Long) attunement).hashCode();
+        }
+
+        @Override
+        public int hashCode() {
+            return this.hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (this.getClass() != obj.getClass()) {
+                return false;
+            }
+            final CompassRequest other = (CompassRequest) obj;
+            return this.attunement == other.attunement && this.cx == other.cx && this.cdy == other.cdy
+                    && this.cz == other.cz;
+        }
     }
 }

@@ -18,7 +18,6 @@
 
 package appeng.me.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -29,17 +28,10 @@ import java.util.Set;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
-import com.google.common.math.StatsAccumulator;
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonWriter;
-import com.mojang.serialization.Dynamic;
-import com.mojang.serialization.JsonOps;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -56,10 +48,8 @@ import appeng.api.storage.MEStorage;
 import appeng.me.helpers.InterestManager;
 import appeng.me.helpers.StackWatcher;
 import appeng.me.storage.NetworkStorage;
-import appeng.util.JsonStreamUtil;
 
 public class StorageService implements IStorageService, IGridServiceProvider {
-    private static final Gson GSON = new Gson();
 
     /**
      * Tracks the storage service's state for each grid node that provides storage to the network.
@@ -89,8 +79,6 @@ public class StorageService implements IStorageService, IGridServiceProvider {
      */
     private final Map<IGridNode, StackWatcher<IStorageWatcherNode>> watchers = new IdentityHashMap<>();
 
-    private final StatsAccumulator inventoryRefreshStats = new StatsAccumulator();
-
     public StorageService() {
         this.storage = new NetworkStorage();
     }
@@ -107,40 +95,34 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     }
 
     private void updateCachedStacks() {
-        var time = System.nanoTime();
+        cachedStacksNeedUpdate = false;
 
-        try {
-            cachedStacksNeedUpdate = false;
+        cachedAvailableStacks.clear();
+        storage.getAvailableStacks(cachedAvailableStacks);
+        // clear() only clears the inner maps,
+        // so ensure that the outer map gets cleaned up too
+        cachedAvailableStacks.removeEmptySubmaps();
 
-            cachedAvailableStacks.clear();
-            storage.getAvailableStacks(cachedAvailableStacks);
-            // clear() only clears the inner maps,
-            // so ensure that the outer map gets cleaned up too
-            cachedAvailableStacks.removeEmptySubmaps();
-
-            // Post watcher update for currently available stacks
-            for (var entry : cachedAvailableStacks) {
-                var what = entry.getKey();
-                var newAmount = entry.getLongValue();
-                if (newAmount != cachedAvailableAmounts.getLong(what)) {
-                    postWatcherUpdate(what, newAmount);
-                }
+        // Post watcher update for currently available stacks
+        for (var entry : cachedAvailableStacks) {
+            var what = entry.getKey();
+            var newAmount = entry.getLongValue();
+            if (newAmount != cachedAvailableAmounts.getLong(what)) {
+                postWatcherUpdate(what, newAmount);
             }
-            // Post watcher update for removed stacks
-            for (var what : cachedAvailableAmounts.keySet()) {
-                var newAmount = cachedAvailableStacks.get(what);
-                if (newAmount == 0) {
-                    postWatcherUpdate(what, newAmount);
-                }
+        }
+        // Post watcher update for removed stacks
+        for (var what : cachedAvailableAmounts.keySet()) {
+            var newAmount = cachedAvailableStacks.get(what);
+            if (newAmount == 0) {
+                postWatcherUpdate(what, newAmount);
             }
+        }
 
-            // Update private amounts
-            cachedAvailableAmounts.clear();
-            for (var entry : cachedAvailableStacks) {
-                cachedAvailableAmounts.put(entry.getKey(), entry.getLongValue());
-            }
-        } finally {
-            inventoryRefreshStats.add(System.nanoTime() - time);
+        // Update private amounts
+        cachedAvailableAmounts.clear();
+        for (var entry : cachedAvailableStacks) {
+            cachedAvailableAmounts.put(entry.getKey(), entry.getLongValue());
         }
     }
 
@@ -305,27 +287,5 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         private void unmount(MEStorage inventory) {
             storage.unmount(inventory);
         }
-    }
-
-    @Override
-    public void debugDump(JsonWriter writer, HolderLookup.Provider registries) throws IOException {
-
-        JsonStreamUtil.writeProperties(Map.of(
-                "inventoryRefreshTime", JsonStreamUtil.toMap(inventoryRefreshStats)), writer);
-
-        writer.name("cachedAvailableStacks");
-        writer.beginArray();
-        for (var entry : cachedAvailableStacks) {
-            writer.beginObject();
-            writer.name("key");
-            var serializedKey = entry.getKey().toTagGeneric(registries);
-            var jsonKey = Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, serializedKey);
-            GSON.toJson(jsonKey, writer);
-            writer.name("amount");
-            writer.value(entry.getLongValue());
-            writer.endObject();
-        }
-        writer.endArray();
-
     }
 }

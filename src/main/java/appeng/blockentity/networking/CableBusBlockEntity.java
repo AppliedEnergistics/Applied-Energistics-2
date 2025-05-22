@@ -18,19 +18,15 @@
 
 package appeng.blockentity.networking;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gson.stream.JsonWriter;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -43,9 +39,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.client.model.data.ModelData;
-
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
@@ -60,7 +56,6 @@ import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.core.AppEng;
 import appeng.helpers.AEMultiBlockEntity;
 import appeng.parts.CableBusContainer;
-import appeng.util.IDebugExportable;
 import appeng.util.Platform;
 
 public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlockEntity {
@@ -74,19 +69,19 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        this.getCableBus().readFromNBT(data, registries);
+    public void loadTag(CompoundTag data) {
+        super.loadTag(data);
+        this.getCableBus().readFromNBT(data);
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        this.getCableBus().writeToNBT(data, registries);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
+        this.getCableBus().writeToNBT(data);
     }
 
     @Override
-    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         boolean ret = this.getCableBus().readFromStream(data);
 
@@ -102,7 +97,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    protected void writeToStream(RegistryFriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         this.getCableBus().writeToStream(data);
     }
@@ -205,13 +200,13 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     @Override
     @Nullable
     public <T extends IPart> T addPart(IPartItem<T> partItem, Direction side,
-            @Nullable Player player) {
+            @org.jetbrains.annotations.Nullable Player player) {
         return cb.addPart(partItem, side, player);
     }
 
-    @Nullable
+    @org.jetbrains.annotations.Nullable
     @Override
-    public <T extends IPart> T replacePart(IPartItem<T> partItem, @Nullable Direction side,
+    public <T extends IPart> T replacePart(IPartItem<T> partItem, @org.jetbrains.annotations.Nullable Direction side,
             Player owner, InteractionHand hand) {
         return cb.replacePart(partItem, side, owner, hand);
     }
@@ -315,6 +310,20 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, @Nullable Direction partLocation) {
+        // Note that null will be translated to INTERNAL here
+
+        IPart part = this.getPart(partLocation);
+        LazyOptional<T> result = part == null ? LazyOptional.empty() : part.getCapability(capabilityClass);
+
+        if (result.isPresent()) {
+            return result;
+        }
+
+        return super.getCapability(capabilityClass, partLocation);
+    }
+
+    @Override
     public ModelData getModelData() {
         Level level = getLevel();
         if (level == null) {
@@ -382,27 +391,5 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     @Override
     public VoxelShape getCollisionShape(CollisionContext context) {
         return cb.getCollisionShape(context);
-    }
-
-    @Override
-    public void debugExport(JsonWriter writer, HolderLookup.Provider registries, Reference2IntMap<Object> machineIds,
-            Reference2IntMap<IGridNode> nodeIds)
-            throws IOException {
-        super.debugExport(writer, registries, machineIds, nodeIds);
-
-        writer.name("parts");
-        writer.beginObject();
-        for (var side : Platform.DIRECTIONS_WITH_NULL) {
-            var part = getPart(side);
-            if (part != null) {
-                writer.name(side == null ? "center" : side.getSerializedName());
-                writer.beginObject();
-                if (part instanceof IDebugExportable exportable) {
-                    exportable.debugExport(writer, registries, machineIds, nodeIds);
-                }
-                writer.endObject();
-            }
-        }
-        writer.endObject();
     }
 }

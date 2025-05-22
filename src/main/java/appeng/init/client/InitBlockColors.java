@@ -19,8 +19,8 @@
 package appeng.init.client;
 
 import net.minecraft.client.color.block.BlockColors;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEColor;
 import appeng.block.networking.CableBusColor;
@@ -37,7 +37,7 @@ public final class InitBlockColors {
     public static void init(BlockColors blockColors) {
         blockColors.register(new StaticBlockColor(AEColor.TRANSPARENT), AEBlocks.WIRELESS_ACCESS_POINT.block());
         blockColors.register(new CableBusColor(), AEBlocks.CABLE_BUS.block());
-        blockColors.register(ColorableBlockEntityBlockColor.INSTANCE, AEBlocks.ME_CHEST.block());
+        blockColors.register(ColorableBlockEntityBlockColor.INSTANCE, AEBlocks.CHEST.block());
     }
 
 }

@@ -21,12 +21,13 @@ package appeng.client.render.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import com.google.common.base.Strings;
 
+import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -45,31 +46,31 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.ChunkRenderTypeSet;
-import net.neoforged.neoforge.client.model.IDynamicBakedModel;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
-import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
+import net.minecraftforge.client.model.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
 
 import appeng.decorative.solid.GlassState;
 import appeng.decorative.solid.QuartzGlassBlock;
 
-public class GlassBakedModel implements IDynamicBakedModel {
-    private static final ChunkRenderTypeSet RENDER_TYPES = ChunkRenderTypeSet.of(RenderType.CUTOUT);
+class GlassBakedModel implements IDynamicBakedModel {
 
     // This unlisted property is used to determine the actual block that should be
     // rendered
     public static final ModelProperty<GlassState> GLASS_STATE = new ModelProperty<>();
 
+    private static final byte[][][] OFFSETS = generateOffsets();
+
     // Alternating textures based on position
     static final Material TEXTURE_A = new Material(TextureAtlas.LOCATION_BLOCKS,
-            ResourceLocation.parse("ae2:block/glass/quartz_glass_a"));
+            new ResourceLocation("ae2:block/glass/quartz_glass_a"));
     static final Material TEXTURE_B = new Material(TextureAtlas.LOCATION_BLOCKS,
-            ResourceLocation.parse("ae2:block/glass/quartz_glass_b"));
+            new ResourceLocation("ae2:block/glass/quartz_glass_b"));
     static final Material TEXTURE_C = new Material(TextureAtlas.LOCATION_BLOCKS,
-            ResourceLocation.parse("ae2:block/glass/quartz_glass_c"));
+            new ResourceLocation("ae2:block/glass/quartz_glass_c"));
     static final Material TEXTURE_D = new Material(TextureAtlas.LOCATION_BLOCKS,
-            ResourceLocation.parse("ae2:block/glass/quartz_glass_d"));
+            new ResourceLocation("ae2:block/glass/quartz_glass_d"));
 
     // Frame texture
     static final Material[] TEXTURES_FRAME = generateTexturesFrame();
@@ -77,7 +78,7 @@ public class GlassBakedModel implements IDynamicBakedModel {
     // Generates the required textures for the frame
     private static Material[] generateTexturesFrame() {
         return IntStream.range(1, 16).mapToObj(Integer::toBinaryString).map(s -> Strings.padStart(s, 4, '0'))
-                .map(s -> ResourceLocation.parse("ae2:block/glass/quartz_glass_frame" + s))
+                .map(s -> new ResourceLocation("ae2:block/glass/quartz_glass_frame" + s))
                 .map(rl -> new Material(TextureAtlas.LOCATION_BLOCKS, rl)).toArray(Material[]::new);
     }
 
@@ -112,13 +113,21 @@ public class GlassBakedModel implements IDynamicBakedModel {
             return Collections.emptyList();
         }
 
-        GlassState glassState = Objects.requireNonNullElse(extraData.get(GLASS_STATE), GlassState.DEFAULT);
+        final GlassState glassState = extraData.get(GLASS_STATE);
 
-        int randomOffset = rand.nextInt(4);
-        var u = randomOffset / 16f;
-        var v = rand.nextInt(4) / 16f;
+        if (glassState == null) {
+            return Collections.emptyList();
+        }
 
-        int texIdx = (randomOffset + rand.nextInt(4)) % 4;
+        // TODO: This could just use the Random instance we're given...
+        final int cx = Math.abs(glassState.getX() % 10);
+        final int cy = Math.abs(glassState.getY() % 10);
+        final int cz = Math.abs(glassState.getZ() % 10);
+
+        int u = OFFSETS[cx][cy][cz] % 4;
+        int v = OFFSETS[9 - cx][9 - cy][9 - cz] % 4;
+
+        int texIdx = Math.abs((OFFSETS[cx][cy][cz] + (glassState.getX() + glassState.getY() + glassState.getZ())) % 4);
 
         if (texIdx < 2) {
             u /= 2;
@@ -178,16 +187,16 @@ public class GlassBakedModel implements IDynamicBakedModel {
 
         int bitmask = 0;
 
-        if (!isGlassBlock(level, state, pos, face, up, face)) {
+        if (!isGlassBlock(level, state, pos, face, up)) {
             bitmask |= 1;
         }
-        if (!isGlassBlock(level, state, pos, face, right, face)) {
+        if (!isGlassBlock(level, state, pos, face, right)) {
             bitmask |= 2;
         }
-        if (!isGlassBlock(level, state, pos, face, down, face)) {
+        if (!isGlassBlock(level, state, pos, face, down)) {
             bitmask |= 4;
         }
-        if (!isGlassBlock(level, state, pos, face, left, face)) {
+        if (!isGlassBlock(level, state, pos, face, left)) {
             bitmask |= 8;
         }
         return bitmask;
@@ -206,33 +215,35 @@ public class GlassBakedModel implements IDynamicBakedModel {
 
         // Apply the u,v shift.
         // This mirrors the logic from OffsetIcon from 1.7
-        float u1 = Mth.clamp(0 - uOffset, 0, 1);
-        float u2 = Mth.clamp(1 - uOffset, 0, 1);
-        float v1 = Mth.clamp(0 - vOffset, 0, 1);
-        float v2 = Mth.clamp(1 - vOffset, 0, 1);
+        float u1 = Mth.clamp(0 - uOffset, 0, 16);
+        float u2 = Mth.clamp(16 - uOffset, 0, 16);
+        float v1 = Mth.clamp(0 - vOffset, 0, 16);
+        float v2 = Mth.clamp(16 - vOffset, 0, 16);
 
-        var builder = new QuadBakingVertexConsumer();
+        var result = new MutableObject<BakedQuad>();
+        var builder = new QuadBakingVertexConsumer(result::setValue);
         builder.setSprite(sprite);
         builder.setDirection(side);
         this.putVertex(builder, normal, c1.x(), c1.y(), c1.z(), sprite, u1, v1);
         this.putVertex(builder, normal, c2.x(), c2.y(), c2.z(), sprite, u1, v2);
         this.putVertex(builder, normal, c3.x(), c3.y(), c3.z(), sprite, u2, v2);
         this.putVertex(builder, normal, c4.x(), c4.y(), c4.z(), sprite, u2, v1);
-        return builder.bakeQuad();
+        return result.getValue();
     }
 
     /*
      * This method is as complicated as it is, because the order in which we push data into the vertexbuffer actually
      * has to be precisely the order in which the vertex elements had been declared in the vertex format.
      */
-    private void putVertex(QuadBakingVertexConsumer builder, Vec3 normal, float x, float y, float z,
+    private void putVertex(QuadBakingVertexConsumer builder, Vec3 normal, double x, double y, double z,
             TextureAtlasSprite sprite, float u, float v) {
-        builder.addVertex(x, y, z);
-        builder.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        builder.setNormal((float) normal.x, (float) normal.y, (float) normal.z);
+        builder.vertex(x, y, z);
+        builder.color(1.0f, 1.0f, 1.0f, 1.0f);
+        builder.normal((float) normal.x, (float) normal.y, (float) normal.z);
         u = sprite.getU(u);
         v = sprite.getV(v);
-        builder.setUv(u, v);
+        builder.uv(u, v);
+        builder.endVertex();
     }
 
     @Override
@@ -260,6 +271,19 @@ public class GlassBakedModel implements IDynamicBakedModel {
         return this.frameTextures[this.frameTextures.length - 1];
     }
 
+    private static byte[][][] generateOffsets() {
+        final Random r = new Random(924);
+        final byte[][][] offset = new byte[10][10][10];
+
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
+                r.nextBytes(offset[x][y]);
+            }
+        }
+
+        return offset;
+    }
+
     private static GlassState getGlassState(BlockAndTintGetter level, BlockState state, BlockPos pos) {
         /*
          * This needs some explanation: The bit-field contains 4-bits, one for each direction that a frame may be drawn.
@@ -275,37 +299,23 @@ public class GlassBakedModel implements IDynamicBakedModel {
         }
         boolean[] adjacentGlassBlocks = new boolean[6];
         for (Direction facing : Direction.values()) {
-            adjacentGlassBlocks[facing.get3DDataValue()] = isGlassBlock(level, state, pos, facing,
-                    facing, facing.getOpposite());
+            adjacentGlassBlocks[facing.get3DDataValue()] = isGlassBlock(level, state, pos, facing.getOpposite(),
+                    facing);
         }
-        return new GlassState(masks, adjacentGlassBlocks);
+        return new GlassState(pos.getX(), pos.getY(), pos.getZ(), masks, adjacentGlassBlocks);
     }
 
     /**
      * Checks if the given block is a glass block.
      *
-     * @param queryingFace Face of the glass that is currently performing the check.
-     * @param adjFace      Face of the glass that we are currently checking for.
-     * @param adjDir       Direction in which to check.
+     * @param face   Face of the glass that we are currently checking for.
+     * @param adjDir Direction in which to check.
      */
-    private static boolean isGlassBlock(BlockAndTintGetter level, BlockState state, BlockPos pos,
-            Direction queryingFace, Direction adjDir, Direction adjFace) {
+    private static boolean isGlassBlock(BlockAndTintGetter level, BlockState state, BlockPos pos, Direction face,
+            Direction adjDir) {
         var adjacentPos = pos.relative(adjDir);
-        var adjacentState = level.getBlockState(adjacentPos);
-        // Checks that the adjacent block is indeed glass
-        if (!(adjacentState.getAppearance(level, adjacentPos, adjFace, state, pos)
-                .getBlock() instanceof QuartzGlassBlock)) {
-            return false;
-        }
-        // Checks that the current block is also glass, in other words that the adjacent block would connect to us.
-        // This ensures consistency between this block and the adjacent block deciding to connect or not.
-        // This is important for advanced use cases such as FramedBlocks.
-        return state.getAppearance(level, pos, queryingFace, adjacentState, adjacentPos)
+        return level.getBlockState(adjacentPos).getAppearance(level, adjacentPos, face, state, pos)
                 .getBlock() instanceof QuartzGlassBlock;
     }
 
-    @Override
-    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-        return RENDER_TYPES;
-    }
 }

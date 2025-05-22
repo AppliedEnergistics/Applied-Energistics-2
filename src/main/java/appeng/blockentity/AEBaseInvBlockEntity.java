@@ -20,21 +20,19 @@ package appeng.blockentity;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.GenericStack;
-import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 
 public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements InternalInventoryHost {
@@ -44,14 +42,14 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
+    public void loadTag(CompoundTag data) {
+        super.loadTag(data);
         var inv = this.getInternalInventory();
         if (inv != InternalInventory.empty()) {
             var opt = data.getCompound("inv");
             for (int x = 0; x < inv.size(); x++) {
                 var item = opt.getCompound("item" + x);
-                inv.setItemDirect(x, ItemStack.parseOptional(registries, item));
+                inv.setItemDirect(x, ItemStack.of(item));
             }
         }
     }
@@ -59,14 +57,18 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     public abstract InternalInventory getInternalInventory();
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         var inv = this.getInternalInventory();
         if (inv != InternalInventory.empty()) {
             final CompoundTag opt = new CompoundTag();
             for (int x = 0; x < inv.size(); x++) {
-                var is = inv.getStackInSlot(x);
-                opt.put("item" + x, is.saveOptional(registries));
+                final CompoundTag item = new CompoundTag();
+                final ItemStack is = inv.getStackInSlot(x);
+                if (!is.isEmpty()) {
+                    is.save(item);
+                }
+                opt.put("item" + x, item);
             }
             data.put("inv", opt);
         }
@@ -96,26 +98,23 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public void saveChangedInventory(AppEngInternalInventory inv) {
-        this.saveChanges();
-    }
+    public abstract void onChangeInventory(InternalInventory inv, int slot);
 
     protected InternalInventory getExposedInventoryForSide(Direction side) {
         return this.getInternalInventory();
     }
 
-    @Nullable
-    public IItemHandler getExposedItemHandler(@Nullable Direction side) {
-        if (side == null) {
-            return getInternalInventory().toItemHandler();
-        } else {
-            var exposed = getExposedInventoryForSide(side);
-            // If the inventory has 0 slots, it's probably a dummy.
-            // Return null to avoid pipe connections to it.
-            // isEmpty checks for stacks, use size to only check the slot count.
-            // noinspection SizeReplaceableByIsEmpty
-            return exposed.size() == 0 ? null : exposed.toItemHandler();
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            if (facing == null) {
+                return (LazyOptional<T>) LazyOptional.of(getInternalInventory()::toItemHandler);
+            } else {
+                return (LazyOptional<T>) LazyOptional.of(() -> getExposedInventoryForSide(facing).toItemHandler());
+            }
         }
+        return super.getCapability(capability, facing);
     }
 
 }

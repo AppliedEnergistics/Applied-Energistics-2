@@ -5,15 +5,15 @@ import java.util.Objects;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
 import appeng.api.networking.IGrid;
 import appeng.api.parts.PartHelper;
-import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.core.definitions.ItemDefinition;
 import appeng.items.parts.PartItem;
 import appeng.me.service.P2PService;
+import appeng.parts.AEBasePart;
 import appeng.parts.p2p.P2PTunnelPart;
 import appeng.server.testworld.PlotBuilder;
 import appeng.util.SettingsFrom;
@@ -28,10 +28,10 @@ public final class P2PPlotHelper {
         plot.cable(origin);
         plot.cable(origin.west()).part(Direction.WEST, tunnel);
         plot.cable(origin.east()).part(Direction.EAST, tunnel);
-        plot.addPostInitAction((level, player, absOrigin) -> {
-            var be = (CableBusBlockEntity) level.getBlockEntity(absOrigin);
-            var grid = be.getCableBus().getPart(null).getGridNode().getGrid();
-            linkTunnels(grid, tunnel.get().getPartClass(), absOrigin.west(), absOrigin.east());
+        plot.afterGridInitAt(origin, (grid, gridNode) -> {
+            BlockPos absOrigin = ((AEBasePart) gridNode.getOwner()).getBlockEntity().getBlockPos();
+
+            linkTunnels(grid, tunnel.asItem().getPartClass(), absOrigin.west(), absOrigin.east());
         });
     }
 
@@ -57,9 +57,9 @@ public final class P2PPlotHelper {
         p2p.updateFreq(inputTunnel, inputTunnel.getFrequency());
 
         // Link to output
-        var settings = DataComponentMap.builder();
+        var settings = new CompoundTag();
         inputTunnel.exportSettings(SettingsFrom.MEMORY_CARD, settings);
-        outputTunnel.importSettings(SettingsFrom.MEMORY_CARD, settings.build(), null);
+        outputTunnel.importSettings(SettingsFrom.MEMORY_CARD, settings, null);
 
         return inputTunnel.getFrequency();
     }
@@ -76,12 +76,12 @@ public final class P2PPlotHelper {
         p2p.updateFreq(inputTunnel, inputTunnel.getFrequency());
 
         // Link to output
-        var settings = DataComponentMap.builder();
+        var settings = new CompoundTag();
         inputTunnel.exportSettings(SettingsFrom.MEMORY_CARD, settings);
 
         for (var outputPos : outputPositions) {
             var outputTunnel = getTunnelAt(level, outputPos);
-            outputTunnel.importSettings(SettingsFrom.MEMORY_CARD, settings.build(), null);
+            outputTunnel.importSettings(SettingsFrom.MEMORY_CARD, settings, null);
         }
 
         return inputTunnel.getFrequency();

@@ -1,19 +1,18 @@
 package appeng.server.testplots;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
-import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEItemKey;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
+import appeng.items.materials.NamePressItem;
 
-@TestPlotClass
 public final class InscriberTestPlots {
     private InscriberTestPlots() {
     }
@@ -22,10 +21,10 @@ public final class InscriberTestPlots {
     public static void generateInscriberRecipePlots(TestPlotCollection tests) {
 
         var namePlate = AEItems.NAME_PRESS.stack();
-        namePlate.set(AEComponents.NAME_PRESS_NAME, Component.literal("HELLO WORLD"));
+        namePlate.addTagElement(NamePressItem.TAG_INSCRIBE_NAME, StringTag.valueOf("HELLO WORLD"));
         var ironIngots = new ItemStack(Items.IRON_INGOT, 2);
         var namedIngots = ironIngots.copy();
-        namedIngots.set(DataComponents.CUSTOM_NAME, Component.literal("HELLO WORLD"));
+        namedIngots.setHoverName(Component.literal("HELLO WORLD"));
 
         addTest(
                 "nameplate", tests,
@@ -82,19 +81,19 @@ public final class InscriberTestPlots {
                         var inscriber = (InscriberBlockEntity) plotTestHelper.getBlockEntity(BlockPos.ZERO);
                         var inv = inscriber.getInternalInventory();
                         plotTestHelper.check(
-                                ItemStack.isSameItemSameComponents(inv.getStackInSlot(0), expectedTopSlot),
+                                ItemStack.isSameItemSameTags(inv.getStackInSlot(0), expectedTopSlot),
                                 "Top slot is not as expected",
                                 BlockPos.ZERO);
                         plotTestHelper.check(
-                                ItemStack.isSameItemSameComponents(inv.getStackInSlot(1), expectedBottomSlot),
+                                ItemStack.isSameItemSameTags(inv.getStackInSlot(1), expectedBottomSlot),
                                 "Bottom slot is not as expected",
                                 BlockPos.ZERO);
                         plotTestHelper.check(
-                                ItemStack.isSameItemSameComponents(inv.getStackInSlot(2), expectedMiddleSlot),
+                                ItemStack.isSameItemSameTags(inv.getStackInSlot(2), expectedMiddleSlot),
                                 "Middle slot is not as expected",
                                 BlockPos.ZERO);
                         plotTestHelper.check(
-                                ItemStack.isSameItemSameComponents(inv.getStackInSlot(3), expectedResult),
+                                ItemStack.isSameItemSameTags(inv.getStackInSlot(3), expectedResult),
                                 "Result slot is not as expected",
                                 BlockPos.ZERO);
                     })

@@ -29,14 +29,14 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.client.render.effects.ParticleTypes;
@@ -49,8 +49,7 @@ import appeng.core.AppEngClient;
 @OnlyIn(Dist.CLIENT)
 public class MolecularAssemblerRenderer implements BlockEntityRenderer<MolecularAssemblerBlockEntity> {
 
-    public static final ModelResourceLocation LIGHTS_MODEL = ModelResourceLocation
-            .standalone(AppEng.makeId("block/molecular_assembler_lights"));
+    public static final ResourceLocation LIGHTS_MODEL = AppEng.makeId("block/molecular_assembler_lights");
 
     private final RandomSource particleRandom = RandomSource.create();
 

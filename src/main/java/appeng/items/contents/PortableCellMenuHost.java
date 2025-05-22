@@ -20,11 +20,13 @@ package appeng.items.contents;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -36,83 +38,36 @@ import appeng.api.config.ViewItems;
 import appeng.api.features.HotkeyAction;
 import appeng.api.implementations.menuobjects.IPortableTerminal;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
-import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
-import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
-import appeng.api.storage.StorageHelper;
-import appeng.api.storage.SupplierStorage;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.util.IConfigManager;
-import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.AbstractPortableCell;
-import appeng.me.helpers.PlayerSource;
 import appeng.menu.ISubMenu;
-import appeng.menu.locator.ItemMenuHostLocator;
+import appeng.util.ConfigManager;
 
 /**
- * Hosts the terminal interface for a {@link AbstractPortableCell}.
+ * Hosts the terminal interface for a {@link appeng.items.tools.powered.AbstractPortableCell}.
  */
-public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMenuHost<T> implements IPortableTerminal {
+public class PortableCellMenuHost extends ItemMenuHost implements IPortableTerminal {
     private final BiConsumer<Player, ISubMenu> returnMainMenu;
     private final MEStorage cellStorage;
     private final AbstractPortableCell item;
-    private final IConfigManager configManager;
-    private ILinkStatus linkStatus = ILinkStatus.ofDisconnected();
 
-    public PortableCellMenuHost(T item, Player player, ItemMenuHostLocator locator,
+    public PortableCellMenuHost(Player player, @Nullable Integer slot, AbstractPortableCell item, ItemStack itemStack,
             BiConsumer<Player, ISubMenu> returnMainMenu) {
-        super(item, player, locator);
-        Preconditions.checkArgument(getItemStack().is(item), "Stack doesn't match item");
+        super(player, slot, itemStack);
+        Preconditions.checkArgument(itemStack.getItem() == item, "Stack doesn't match item");
         this.returnMainMenu = returnMainMenu;
-        this.cellStorage = new SupplierStorage(new CellStorageSupplier());
+        this.cellStorage = StorageCells.getCellInventory(itemStack, null);
         Objects.requireNonNull(cellStorage, "Portable cell doesn't expose a cell inventory.");
         this.item = item;
-        this.updateLinkStatus();
-        this.configManager = IConfigManager.builder(this::getItemStack)
-                .registerSetting(Settings.SORT_BY, SortOrder.NAME)
-                .registerSetting(Settings.VIEW_MODE, ViewItems.ALL)
-                .registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING)
-                .build();
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        consumeIdlePower(Actionable.MODULATE);
-        updateLinkStatus();
-    }
-
-    @Override
-    public long insert(Player player, AEKey what, long amount, Actionable mode) {
-        if (getLinkStatus().connected()) {
-            var inv = getInventory();
-            if (inv == null) {
-                return 0;
-            }
-
-            return StorageHelper.poweredInsert(this, inv, what, amount, new PlayerSource(player), mode);
-        } else {
-            var statusText = getLinkStatus().statusDescription();
-            if (isClientSide() && statusText != null && !mode.isSimulate()) {
-                player.displayClientMessage(statusText, false);
-            }
-            return 0;
-        }
-    }
-
-    private void updateLinkStatus() {
-        if (!consumeIdlePower(Actionable.SIMULATE)) {
-            this.linkStatus = ILinkStatus.ofDisconnected(GuiText.OutOfPower.text());
-        } else {
-            this.linkStatus = ILinkStatus.ofConnected();
-        }
-    }
-
-    @Override
-    public ILinkStatus getLinkStatus() {
-        return linkStatus;
+    public boolean onBroadcastChanges(AbstractContainerMenu menu) {
+        return ensureItemStillInSlot() && drainPower();
     }
 
     @Override
@@ -133,7 +88,16 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
 
     @Override
     public IConfigManager getConfigManager() {
-        return configManager;
+        var out = new ConfigManager((manager, settingName) -> {
+            manager.writeToNBT(getItemStack().getOrCreateTag());
+        });
+
+        out.registerSetting(Settings.SORT_BY, SortOrder.NAME);
+        out.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+        out.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
+
+        out.readFromNBT(getItemStack().getOrCreateTag().copy());
+        return out;
     }
 
     @Override
@@ -156,20 +120,5 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
         }
 
         return null; // We don't know
-    }
-
-    private class CellStorageSupplier implements Supplier<MEStorage> {
-        private MEStorage currentStorage;
-        private ItemStack currentStack;
-
-        @Override
-        public MEStorage get() {
-            var stack = getItemStack();
-            if (stack != currentStack) {
-                currentStorage = StorageCells.getCellInventory(stack, null);
-                currentStack = stack;
-            }
-            return currentStorage;
-        }
     }
 }

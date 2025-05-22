@@ -29,6 +29,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.MapColor;
@@ -41,7 +42,7 @@ import appeng.hooks.WrenchHook;
 
 public abstract class AEBaseBlock extends Block implements IOrientableBlock {
 
-    protected AEBaseBlock(Properties props) {
+    protected AEBaseBlock(BlockBehaviour.Properties props) {
         super(props);
     }
 
@@ -61,34 +62,34 @@ public abstract class AEBaseBlock extends Block implements IOrientableBlock {
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static Properties defaultProps(MapColor mapColor, SoundType soundType) {
-        return Properties.of()
+    public static BlockBehaviour.Properties defaultProps(MapColor mapColor, SoundType soundType) {
+        return BlockBehaviour.Properties.of()
                 // These values previously were encoded in AEBaseBlock
                 .strength(2.2f, 11.f)
                 .mapColor(mapColor)
                 .sound(soundType);
     }
 
-    public static Properties stoneProps() {
+    public static BlockBehaviour.Properties stoneProps() {
         return defaultProps(MapColor.STONE, SoundType.STONE).forceSolidOn();
     }
 
-    public static Properties metalProps() {
+    public static BlockBehaviour.Properties metalProps() {
         return defaultProps(MapColor.METAL, SoundType.METAL).forceSolidOn();
     }
 
-    public static Properties glassProps() {
+    public static BlockBehaviour.Properties glassProps() {
         return defaultProps(MapColor.NONE, SoundType.GLASS);
     }
 
-    public static Properties fixtureProps() {
+    public static BlockBehaviour.Properties fixtureProps() {
         return defaultProps(MapColor.METAL, SoundType.GLASS)
                 .noCollission()
                 .noOcclusion()
                 .pushReaction(PushReaction.DESTROY);
     }
 
-    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
         output.accept(this);
     }
 

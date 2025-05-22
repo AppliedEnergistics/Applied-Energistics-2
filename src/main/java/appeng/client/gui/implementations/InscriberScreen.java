@@ -21,7 +21,6 @@ package appeng.client.gui.implementations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-import appeng.api.config.InscriberInputCapacity;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.client.gui.style.ScreenStyle;
@@ -36,7 +35,7 @@ public class InscriberScreen extends UpgradeableScreen<InscriberMenu> {
     private final ProgressBar pb;
     private final SettingToggleButton<YesNo> separateSidesBtn;
     private final SettingToggleButton<YesNo> autoExportBtn;
-    private final SettingToggleButton<InscriberInputCapacity> bufferSizeBtn;
+    private final SettingToggleButton<YesNo> bufferSizeBtn;
 
     public InscriberScreen(InscriberMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
@@ -51,8 +50,7 @@ public class InscriberScreen extends UpgradeableScreen<InscriberMenu> {
         this.autoExportBtn = new ServerSettingToggleButton<>(Settings.AUTO_EXPORT, YesNo.NO);
         this.addToLeftToolbar(autoExportBtn);
 
-        this.bufferSizeBtn = new ServerSettingToggleButton<>(Settings.INSCRIBER_INPUT_CAPACITY,
-                InscriberInputCapacity.SIXTY_FOUR);
+        this.bufferSizeBtn = new ServerSettingToggleButton<>(Settings.INSCRIBER_BUFFER_SIZE, YesNo.YES);
         this.addToLeftToolbar(bufferSizeBtn);
     }
 

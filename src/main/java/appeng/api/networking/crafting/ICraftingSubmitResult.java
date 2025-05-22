@@ -13,7 +13,7 @@ public interface ICraftingSubmitResult {
     }
 
     /**
-     * @return A not-null error code if the auto-crafting request was not submitted successfully.
+     * @return A not-null error code if the auto-crafting request was not submitted succesfully.
      */
     @Nullable
     CraftingSubmitErrorCode errorCode();

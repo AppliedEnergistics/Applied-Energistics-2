@@ -27,13 +27,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
@@ -41,11 +40,7 @@ import net.minecraft.world.level.Level;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.core.definitions.AEItems;
-import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.AEPatternDecoder;
-import appeng.crafting.pattern.AEProcessingPattern;
-import appeng.crafting.pattern.AESmithingTablePattern;
-import appeng.crafting.pattern.AEStonecuttingPattern;
 
 public final class PatternDetailsHelper {
     private static final List<IPatternDetailsDecoder> DECODERS = new CopyOnWriteArrayList<>();
@@ -60,26 +55,6 @@ public final class PatternDetailsHelper {
         DECODERS.add(decoder);
     }
 
-    /**
-     * Creates a new encoded pattern item based on the given decoder. Your mod must register this item and use it, when
-     * it encodes its patterns. You do not need to register {@linkplain #registerDecoder an additional decoder} for the
-     * returned item.
-     */
-    public static <T extends IPatternDetails> EncodedPatternItemBuilder<T> encodedPatternItemBuilder(
-            EncodedPatternDecoder<T> decoder) {
-        return new EncodedPatternItemBuilder<>(decoder);
-    }
-
-    /**
-     * Convenience method for decoders that do not need access to the level to decode a pattern.
-     * 
-     * @see #encodedPatternItemBuilder(EncodedPatternDecoder)
-     */
-    public static <T extends IPatternDetails> EncodedPatternItemBuilder<T> encodedPatternItemBuilder(
-            Function<AEItemKey, T> decoder) {
-        return new EncodedPatternItemBuilder<>((what, level) -> decoder.apply(what));
-    }
-
     public static boolean isEncodedPattern(ItemStack stack) {
         for (var decoder : DECODERS) {
             if (decoder.isEncodedPattern(stack)) {
@@ -87,6 +62,11 @@ public final class PatternDetailsHelper {
             }
         }
         return false;
+    }
+
+    @Nullable
+    public static IPatternDetails decodePattern(ItemStack stack, Level level) {
+        return decodePattern(stack, level, false);
     }
 
     @Nullable
@@ -101,9 +81,9 @@ public final class PatternDetailsHelper {
     }
 
     @Nullable
-    public static IPatternDetails decodePattern(ItemStack stack, Level level) {
+    public static IPatternDetails decodePattern(ItemStack stack, Level level, boolean autoRecovery) {
         for (var decoder : DECODERS) {
-            var decoded = decoder.decodePattern(stack, level);
+            var decoded = decoder.decodePattern(stack, level, autoRecovery);
             if (decoded != null) {
                 return decoded;
             }
@@ -115,14 +95,12 @@ public final class PatternDetailsHelper {
      * Encodes a processing pattern which represents the ability to convert the given inputs into the given outputs
      * using some process external to the ME system.
      *
-     * @param sparseOutputs The first element is considered the primary output and must be present
+     * @param out The first element is considered the primary output and must be present
      * @return A new encoded pattern.
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks, or no primary output
      */
-    public static ItemStack encodeProcessingPattern(List<GenericStack> sparseInputs, List<GenericStack> sparseOutputs) {
-        var stack = AEItems.PROCESSING_PATTERN.stack();
-        AEProcessingPattern.encode(stack, sparseInputs, sparseOutputs);
-        return stack;
+    public static ItemStack encodeProcessingPattern(GenericStack[] in, GenericStack[] out) {
+        return AEItems.PROCESSING_PATTERN.asItem().encode(in, out);
     }
 
     /**
@@ -137,12 +115,9 @@ public final class PatternDetailsHelper {
      * @param allowFluidSubstitutes Controls whether the ME system will allow the use of equivalent fluids.
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks.
      */
-    public static ItemStack encodeCraftingPattern(RecipeHolder<CraftingRecipe> recipe, ItemStack[] in,
+    public static ItemStack encodeCraftingPattern(CraftingRecipe recipe, ItemStack[] in,
             ItemStack out, boolean allowSubstitutes, boolean allowFluidSubstitutes) {
-        var stack = AEItems.CRAFTING_PATTERN.stack();
-        AECraftingPattern.encode(stack, recipe, in, out, allowSubstitutes,
-                allowFluidSubstitutes);
-        return stack;
+        return AEItems.CRAFTING_PATTERN.asItem().encode(recipe, in, out, allowSubstitutes, allowFluidSubstitutes);
     }
 
     /**
@@ -156,12 +131,12 @@ public final class PatternDetailsHelper {
      * @param allowSubstitutes Controls whether the ME system will allow the use of equivalent items to craft this
      *                         recipe.
      */
-    public static ItemStack encodeStonecuttingPattern(RecipeHolder<StonecutterRecipe> recipe, AEItemKey in,
-            AEItemKey out,
+    public static ItemStack encodeStonecuttingPattern(StonecutterRecipe recipe, AEItemKey in, AEItemKey out,
             boolean allowSubstitutes) {
-        var stack = AEItems.STONECUTTING_PATTERN.stack();
-        AEStonecuttingPattern.encode(stack, recipe, in, out, allowSubstitutes);
-        return stack;
+        Preconditions.checkNotNull(recipe, "recipe");
+        Preconditions.checkNotNull(in, "in");
+        Preconditions.checkNotNull(out, "out");
+        return AEItems.STONECUTTING_PATTERN.asItem().encode(recipe, in, out, allowSubstitutes);
     }
 
     /**
@@ -178,14 +153,17 @@ public final class PatternDetailsHelper {
      * @param allowSubstitutes Controls whether the ME system will allow the use of equivalent items to craft this
      *                         recipe.
      */
-    public static ItemStack encodeSmithingTablePattern(RecipeHolder<SmithingRecipe> recipe,
+    public static ItemStack encodeSmithingTablePattern(SmithingRecipe recipe,
             AEItemKey template,
             AEItemKey base,
             AEItemKey addition,
             AEItemKey out,
             boolean allowSubstitutes) {
-        var stack = AEItems.SMITHING_TABLE_PATTERN.stack();
-        AESmithingTablePattern.encode(stack, recipe, template, base, addition, out, allowSubstitutes);
-        return stack;
+        Preconditions.checkNotNull(recipe, "recipe");
+        Preconditions.checkNotNull(recipe, "template");
+        Preconditions.checkNotNull(base, "base");
+        Preconditions.checkNotNull(addition, "addition");
+        Preconditions.checkNotNull(out, "out");
+        return AEItems.SMITHING_TABLE_PATTERN.asItem().encode(recipe, template, base, addition, out, allowSubstitutes);
     }
 }

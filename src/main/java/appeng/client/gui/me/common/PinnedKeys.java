@@ -11,8 +11,8 @@ import com.google.common.collect.ImmutableSet;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.AEKey;
 

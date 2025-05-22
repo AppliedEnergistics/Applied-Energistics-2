@@ -29,7 +29,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.capabilities.ItemCapability;
+import net.minecraftforge.common.capabilities.Capability;
 
 /**
  * Internal methods that complement {@link P2PTunnelAttunement} and which are not part of the public API.
@@ -45,7 +45,7 @@ public final class P2PTunnelAttunementInternal {
     public static AttunementInfo getAttunementInfo(ItemLike tunnelType) {
         var tunnelItem = tunnelType.asItem();
 
-        Set<ItemCapability<?, Void>> caps = new HashSet<>();
+        Set<Capability<?>> caps = new HashSet<>();
 
         for (var entry : P2PTunnelAttunement.apiAttunements) {
             if (entry.tunnelType() == tunnelItem) {
@@ -65,7 +65,7 @@ public final class P2PTunnelAttunementInternal {
         return P2PTunnelAttunement.tagTunnels;
     }
 
-    public record AttunementInfo(Set<ItemCapability<?, Void>> apis) {
+    public record AttunementInfo(Set<Capability<?>> apis) {
     }
 
     public record Resultant(Component description, Item tunnelType, Predicate<ItemStack> stackPredicate) {

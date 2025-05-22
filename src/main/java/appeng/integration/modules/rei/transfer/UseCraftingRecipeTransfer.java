@@ -1,13 +1,12 @@
 package appeng.integration.modules.rei.transfer;
 
-import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
-import static appeng.integration.modules.itemlists.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
-import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
-import static appeng.integration.modules.itemlists.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
+import static appeng.integration.modules.jeirei.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
+import static appeng.integration.modules.jeirei.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
+import static appeng.integration.modules.jeirei.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
+import static appeng.integration.modules.jeirei.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.NonNullList;
@@ -15,9 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.widgets.Slot;
@@ -27,9 +24,10 @@ import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRenderer;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 
+import appeng.core.AppEng;
 import appeng.core.localization.ItemModText;
-import appeng.integration.modules.itemlists.CraftingHelper;
-import appeng.integration.modules.itemlists.TransferHelper;
+import appeng.integration.modules.jeirei.CraftingHelper;
+import appeng.integration.modules.jeirei.TransferHelper;
 import appeng.menu.me.items.CraftingTermMenu;
 
 /**
@@ -53,10 +51,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
     }
 
     @Override
-    protected Result transferRecipe(T menu, RecipeHolder<?> holder, Display display, boolean doTransfer) {
-
-        var recipeId = holder != null ? holder.id() : null;
-        var recipe = holder != null ? holder.value() : null;
+    protected Result transferRecipe(T menu, Recipe<?> recipe, Display display, boolean doTransfer) {
 
         boolean craftingRecipe = isCraftingRecipe(recipe, display);
         if (!craftingRecipe) {
@@ -83,20 +78,20 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
         }
 
         if (!doTransfer) {
-            if (missingSlots.anyMissingOrCraftable()) {
+            if (missingSlots.totalSize() != 0) {
                 // Highlight the slots with missing ingredients
                 int color = missingSlots.anyMissing() ? ORANGE_PLUS_BUTTON_COLOR : BLUE_PLUS_BUTTON_COLOR;
                 var result = Result.createSuccessful()
                         .color(color)
                         .renderer(createErrorRenderer(missingSlots));
 
-                var tooltip = TransferHelper.createCraftingTooltip(missingSlots, craftMissing, true);
+                var tooltip = TransferHelper.createCraftingTooltip(missingSlots, craftMissing);
                 result.overrideTooltipRenderer((point, sink) -> sink.accept(Tooltip.create(tooltip)));
 
                 return result;
             }
         } else {
-            CraftingHelper.performTransfer(menu, recipeId, recipe, craftMissing);
+            CraftingHelper.performTransfer(menu, recipe, craftMissing);
         }
 
         // No error
@@ -114,8 +109,9 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
             ingredients.set(i, ingredient);
         }
 
-        var pattern = new ShapedRecipePattern(CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT, ingredients, Optional.empty());
-        return new ShapedRecipe("", CraftingBookCategory.MISC, pattern, ItemStack.EMPTY);
+        return new ShapedRecipe(AppEng.makeId("__fake_recipe"), "", CraftingBookCategory.MISC, CRAFTING_GRID_WIDTH,
+                CRAFTING_GRID_HEIGHT,
+                ingredients, ItemStack.EMPTY);
     }
 
     public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(Recipe<?> recipe) {

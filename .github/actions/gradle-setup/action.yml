@@ -10,15 +10,9 @@ runs:
       run: |
         echo "TAG=${TAG}" >> $GITHUB_ENV
 
-    - uses: gradle/actions/wrapper-validation@v3
-
-    - name: Set up JDK 21
-      uses: actions/setup-java@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
       with:
         distribution: 'microsoft'
-        java-version: '21'
-
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
-      with:
-        cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+        java-version: '17'
+        cache: 'gradle'

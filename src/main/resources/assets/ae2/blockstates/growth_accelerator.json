@@ -1,0 +1,56 @@
+{
+  "variants": {
+    "facing=down,powered=false": {
+      "model": "ae2:block/growth_accelerator",
+      "x": 180
+    },
+    "facing=down,powered=true": {
+      "model": "ae2:block/growth_accelerator_on",
+      "x": 180
+    },
+    "facing=east,powered=false": {
+      "model": "ae2:block/growth_accelerator",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,powered=true": {
+      "model": "ae2:block/growth_accelerator_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north,powered=false": {
+      "model": "ae2:block/growth_accelerator",
+      "x": 90
+    },
+    "facing=north,powered=true": {
+      "model": "ae2:block/growth_accelerator_on",
+      "x": 90
+    },
+    "facing=south,powered=false": {
+      "model": "ae2:block/growth_accelerator",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,powered=true": {
+      "model": "ae2:block/growth_accelerator_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up,powered=false": {
+      "model": "ae2:block/growth_accelerator"
+    },
+    "facing=up,powered=true": {
+      "model": "ae2:block/growth_accelerator_on"
+    },
+    "facing=west,powered=false": {
+      "model": "ae2:block/growth_accelerator",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,powered=true": {
+      "model": "ae2:block/growth_accelerator_on",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

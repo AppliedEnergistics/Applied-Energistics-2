@@ -228,7 +228,7 @@ public class AppEngSlot extends Slot {
     }
 
     public float getOpacityOfIcon() {
-        return 1f;
+        return 0.4f;
     }
 
     public boolean renderIconWithItem() {

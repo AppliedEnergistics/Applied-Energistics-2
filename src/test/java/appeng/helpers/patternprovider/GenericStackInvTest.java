@@ -12,8 +12,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.Items;
@@ -21,7 +19,6 @@ import net.minecraft.world.item.Items;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.me.helpers.BaseActionSource;
@@ -30,7 +27,6 @@ import appeng.util.ConfigInventory;
 
 @BootstrapMinecraft
 class GenericStackInvTest {
-    private final RegistryAccess registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
     public static final AEItemKey STICK_KEY = AEItemKey.of(Items.STICK);
     public static final GenericStack ONE_STICK = new GenericStack(STICK_KEY, 1);
     public static final IActionSource SRC = new BaseActionSource();
@@ -54,11 +50,11 @@ class GenericStackInvTest {
      */
     @Test
     void testSaveLargeAndLoadIntoSmallerInventory() {
-        var large = ConfigInventory.configStacks(2).supportedType(AEKeyType.items()).build();
+        var large = ConfigInventory.configStacks(AEItemKey.filter(), 2, null, false);
         large.setStack(0, ONE_STICK);
         large.setStack(1, ONE_STICK);
 
-        inv.readFromTag(large.writeToTag(registryAccess), registryAccess);
+        inv.readFromTag(large.writeToTag());
 
         assertEquals(ONE_STICK, inv.getStack(0));
         // Size didnt change...
@@ -68,13 +64,13 @@ class GenericStackInvTest {
     @Test
     void testLoadingFromEmptyTagClearsFilledSlots() {
         inv.setStack(0, ONE_STICK);
-        inv.readFromTag(new ListTag(), registryAccess);
+        inv.readFromTag(new ListTag());
         assertNull(inv.getStack(0));
     }
 
     @Test
     void testWritingAnEmptyInventoryProducesAnEmptyTag() {
-        assertEquals(0, inv.writeToTag(registryAccess).size());
+        assertEquals(0, inv.writeToTag().size());
     }
 
     /**
@@ -83,7 +79,7 @@ class GenericStackInvTest {
     @Test
     void testWritingAnEmptyInventoryProducesNoChildTag() {
         var tag = new CompoundTag();
-        inv.writeToChildTag(tag, "child", registryAccess);
+        inv.writeToChildTag(tag, "child");
         assertEquals(new CompoundTag(), tag);
     }
 
@@ -94,7 +90,7 @@ class GenericStackInvTest {
     void testWritingToChildTag() {
         var tag = new CompoundTag();
         inv.setStack(0, ONE_STICK);
-        inv.writeToChildTag(tag, "child", registryAccess);
+        inv.writeToChildTag(tag, "child");
         assertThat(tag.getAllKeys()).containsOnly("child");
     }
 
@@ -105,10 +101,10 @@ class GenericStackInvTest {
     void testReadingFromChildTag() {
         var tag = new CompoundTag();
         inv.setStack(0, ONE_STICK);
-        inv.writeToChildTag(tag, "child", registryAccess);
+        inv.writeToChildTag(tag, "child");
         inv.clear();
         changeNotifications.set(0);
-        inv.readFromChildTag(tag, "child", registryAccess);
+        inv.readFromChildTag(tag, "child");
 
         assertEquals(ONE_STICK, inv.getStack(0));
         assertEquals(1, changeNotifications.get());
@@ -123,15 +119,15 @@ class GenericStackInvTest {
         otherInv.setStack(0, ONE_STICK);
 
         // Read once
-        inv.readFromTag(otherInv.writeToTag(registryAccess), registryAccess);
+        inv.readFromTag(otherInv.writeToTag());
         assertEquals(1, changeNotifications.get());
 
         // Read again
-        inv.readFromTag(otherInv.writeToTag(registryAccess), registryAccess);
+        inv.readFromTag(otherInv.writeToTag());
         assertEquals(1, changeNotifications.get());
 
         // Notification on clear
-        inv.readFromTag(new ListTag(), registryAccess);
+        inv.readFromTag(new ListTag());
         assertEquals(2, changeNotifications.get());
     }
 
@@ -159,7 +155,7 @@ class GenericStackInvTest {
     @Test
     void testReadingFromMissingChildTag() {
         inv.setStack(0, ONE_STICK);
-        inv.readFromChildTag(new CompoundTag(), "child", registryAccess);
+        inv.readFromChildTag(new CompoundTag(), "child");
         assertNull(inv.getStack(0));
     }
 
@@ -193,7 +189,7 @@ class GenericStackInvTest {
             inv.setStack(0, ONE_STICK);
             inv.setStack(0, null);
             inv.setStack(0, ONE_STICK);
-            inv.readFromTag(new ListTag(), registryAccess);
+            inv.readFromTag(new ListTag());
             assertEquals(0, changeNotifications.get());
             inv.endBatch();
             assertEquals(1, changeNotifications.get());

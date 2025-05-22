@@ -25,20 +25,17 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.ICapabilityInvalidationListener;
 
-import appeng.api.AECapabilities;
 import appeng.api.behaviors.ExternalStorageStrategy;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
@@ -48,7 +45,6 @@ import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.YesNo;
 import appeng.api.features.IPlayerRegistry;
-import appeng.api.ids.AEComponents;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
@@ -65,7 +61,7 @@ import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigManagerBuilder;
+import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
@@ -95,23 +91,22 @@ import appeng.util.prioritylist.IPartitionList;
 public class StorageBusPart extends UpgradeablePart
         implements IGridTickable, IStorageProvider, IPriorityHost, IConfigInvHost {
 
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/storage_bus_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_base");
 
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/storage_bus_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_off"));
 
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/storage_bus_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_on"));
 
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/storage_bus_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_has_channel"));
 
     protected final IActionSource source;
-    private final ConfigInventory config = ConfigInventory.configTypes(63).changeListener(this::onConfigurationChanged)
-            .build();
+    private final ConfigInventory config = ConfigInventory.configTypes(63, this::onConfigurationChanged);
     /**
      * This is the virtual inventory this storage bus exposes to the network it belongs to. To avoid continuous
      * cell-change notifications, we instead use a handler that will exist as long as this storage bus exists, while
@@ -129,42 +124,17 @@ public class StorageBusPart extends UpgradeablePart
     private PendingUpdateStatus updateStatus = PendingUpdateStatus.FAST_UPDATE;
     private ITickingMonitor monitor = null;
 
-    // Capability listener.
-    // Stored as a field because it will be stored in a WeakReference by the capability invalidation system.
-    private final ICapabilityInvalidationListener capabilityListener = () -> {
-        if (!PartAdjacentApi.isPartValid(this)) {
-            return false;
-        }
-
-        this.onCapabilityInvalidation();
-        return true;
-    };
-
     public StorageBusPart(IPartItem<?> partItem) {
         super(partItem);
-        this.adjacentStorageAccessor = new PartAdjacentApi<>(this, AECapabilities.ME_STORAGE);
+        this.adjacentStorageAccessor = new PartAdjacentApi<>(this, Capabilities.STORAGE);
+        this.getConfigManager().registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
+        this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+        this.getConfigManager().registerSetting(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
+        this.getConfigManager().registerSetting(Settings.FILTER_ON_EXTRACT, YesNo.YES);
         this.source = new MachineSource(this);
         getMainNode()
                 .addService(IStorageProvider.class, this)
                 .addService(IGridTickable.class, this);
-    }
-
-    @Override
-    protected void registerSettings(IConfigManagerBuilder builder) {
-        super.registerSettings(builder);
-        builder.registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
-        builder.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
-        builder.registerSetting(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
-        builder.registerSetting(Settings.FILTER_ON_EXTRACT, YesNo.YES);
-    }
-
-    @Override
-    public void addToWorld() {
-        super.addToWorld();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            var targetPos = getBlockEntity().getBlockPos().relative(getSide());
-            serverLevel.registerCapabilityListener(targetPos, this.capabilityListener);
-        }
     }
 
     @Override
@@ -208,21 +178,21 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
+    public void readFromNBT(CompoundTag data) {
+        super.readFromNBT(data);
         this.priority = data.getInt("priority");
-        config.readFromChildTag(data, "config", registries);
+        config.readFromChildTag(data, "config");
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
+    public void writeToNBT(CompoundTag data) {
+        super.writeToNBT(data);
         data.putInt("priority", this.priority);
-        config.writeToChildTag(data, "config", registries);
+        config.writeToChildTag(data, "config");
     }
 
     @Override
-    public final boolean onUseWithoutItem(Player player, Vec3 pos) {
+    public final boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (!isClientSide()) {
             openConfigMenu(player);
         }
@@ -267,18 +237,20 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public final void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         if (pos.relative(getSide()).equals(neighbor)) {
-            // Tick again to update the monitor.
-            if (!isClientSide()) {
-                getMainNode().ifPresent((grid, node) -> {
-                    grid.getTickManager().alertDevice(node);
-                });
+            var te = level.getBlockEntity(neighbor);
+
+            if (te == null) {
+                // In case the TE was destroyed, we have to update the target handler immediately.
+                this.updateTarget(false);
+            } else {
+                this.scheduleUpdate();
             }
         }
     }
 
     @Override
     public final TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.StorageBus, false);
+        return new TickingRequest(TickRates.StorageBus, false, true);
     }
 
     @Override
@@ -314,14 +286,6 @@ public class StorageBusPart extends UpgradeablePart
         if (getMainNode().isReady()) {
             updateTarget(true);
         }
-    }
-
-    private void onCapabilityInvalidation() {
-        // Immediately replace the inventory by a null inventory to avoid any further operations on the old inventory.
-        this.handler.setDelegate(NullInventory.of());
-        // TODO: potentially set handlerDescription to null?
-        // Enqueue update.
-        this.scheduleUpdate();
     }
 
     private void updateTarget(boolean forceFullUpdate) {
@@ -519,20 +483,17 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         super.importSettings(mode, input, player);
-        var configInv = input.get(AEComponents.EXPORTED_CONFIG_INV);
-        if (configInv != null) {
-            config.readFromList(configInv);
-        }
+        config.readFromChildTag(input, "config");
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder) {
-        super.exportSettings(mode, builder);
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
+        super.exportSettings(mode, output);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
-            builder.set(AEComponents.EXPORTED_CONFIG_INV, config.toList());
+            config.writeToChildTag(output, "config");
         }
     }
 

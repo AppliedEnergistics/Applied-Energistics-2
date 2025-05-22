@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.CondenserOutput;
@@ -25,7 +25,7 @@ import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
 class CondenserMEStorageTest {
-    CondenserBlockEntity be = new CondenserBlockEntity(AEBlockEntities.CONDENSER.get(), BlockPos.ZERO,
+    CondenserBlockEntity be = new CondenserBlockEntity(AEBlockEntities.CONDENSER, BlockPos.ZERO,
             AEBlocks.CONDENSER.block().defaultBlockState());
     MEStorage inv = be.getMEStorage();
 

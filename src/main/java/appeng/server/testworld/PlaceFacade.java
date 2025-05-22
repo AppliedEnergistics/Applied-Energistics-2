@@ -24,8 +24,8 @@ record PlaceFacade(BoundingBox bb, ItemStack visual, @Nullable Direction side) i
     public void placeBlock(ServerLevel level, Player player, BlockPos pos, BlockPos minPos, BlockPos maxPos) {
         var actualSide = Objects.requireNonNullElse(side, Direction.UP);
         var partHost = PartHelper.getPartHost(level, pos);
-        var facadeItem = AEItems.FACADE.get().createFacadeForItemUnchecked(visual);
-        var facadePart = AEItems.FACADE.get().createPartFromItemStack(facadeItem, actualSide);
+        var facadeItem = AEItems.FACADE.asItem().createFacadeForItemUnchecked(visual);
+        var facadePart = AEItems.FACADE.asItem().createPartFromItemStack(facadeItem, actualSide);
         partHost.getFacadeContainer().addFacade(facadePart);
     }
 }

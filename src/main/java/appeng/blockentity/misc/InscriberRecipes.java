@@ -20,16 +20,16 @@ package appeng.blockentity.misc;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
-import appeng.api.ids.AEComponents;
+import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
-import appeng.recipes.AERecipeTypes;
+import appeng.items.materials.NamePressItem;
 import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipe;
 
@@ -39,22 +39,24 @@ import appeng.recipes.handlers.InscriberRecipe;
  */
 public final class InscriberRecipes {
 
+    public static final ResourceLocation NAMEPLATE_RECIPE_ID = new ResourceLocation(AppEng.MOD_ID, "nameplate");
+
     private InscriberRecipes() {
     }
 
     /**
      * Returns an unmodifiable view of all registered inscriber recipes.
      */
-    public static Iterable<RecipeHolder<InscriberRecipe>> getRecipes(Level level) {
-        return level.getRecipeManager().byType(AERecipeTypes.INSCRIBER);
+    public static Iterable<InscriberRecipe> getRecipes(Level level) {
+        return level.getRecipeManager().byType(InscriberRecipe.TYPE).values();
     }
 
     @Nullable
     public static InscriberRecipe findRecipe(Level level, ItemStack input, ItemStack plateA, ItemStack plateB,
             boolean supportNamePress) {
         if (supportNamePress) {
-            boolean isNameA = AEItems.NAME_PRESS.is(plateA);
-            boolean isNameB = AEItems.NAME_PRESS.is(plateB);
+            boolean isNameA = AEItems.NAME_PRESS.isSameAs(plateA);
+            boolean isNameB = AEItems.NAME_PRESS.isSameAs(plateB);
 
             if (isNameA && isNameB || isNameA && plateB.isEmpty()) {
                 return makeNamePressRecipe(input, plateA, plateB);
@@ -63,8 +65,7 @@ public final class InscriberRecipes {
             }
         }
 
-        for (var holder : getRecipes(level)) {
-            var recipe = holder.value();
+        for (InscriberRecipe recipe : getRecipes(level)) {
             // The recipe can be flipped at will
             final boolean matchA = recipe.getTopOptional().test(plateA) && recipe.getBottomOptional().test(plateB);
             final boolean matchB = recipe.getTopOptional().test(plateB) && recipe.getBottomOptional().test(plateA);
@@ -78,38 +79,30 @@ public final class InscriberRecipes {
     }
 
     private static InscriberRecipe makeNamePressRecipe(ItemStack input, ItemStack plateA, ItemStack plateB) {
-        Component name = null;
+        String name = "";
 
         if (!plateA.isEmpty()) {
-            var plateAName = plateA.get(AEComponents.NAME_PRESS_NAME);
-            if (plateAName != null) {
-                name = plateAName;
-            }
+            final CompoundTag tag = plateA.getOrCreateTag();
+            name += tag.getString(NamePressItem.TAG_INSCRIBE_NAME);
         }
 
         if (!plateB.isEmpty()) {
-            var plateBName = plateB.get(AEComponents.NAME_PRESS_NAME);
-            if (plateBName != null) {
-                if (name == null) {
-                    name = plateBName;
-                } else {
-                    name = name.copy().append(" ").append(plateBName);
-                }
-            }
+            final CompoundTag tag = plateB.getOrCreateTag();
+            name += " " + tag.getString(NamePressItem.TAG_INSCRIBE_NAME);
         }
 
-        var startingItem = Ingredient.of(input.copy());
-        var renamedItem = input.copyWithCount(1);
+        final Ingredient startingItem = Ingredient.of(input.copy());
+        final ItemStack renamedItem = input.copyWithCount(1);
 
-        if (name != null) {
-            renamedItem.set(DataComponents.CUSTOM_NAME, name);
+        if (!name.isEmpty()) {
+            renamedItem.setHoverName(Component.literal(name));
         } else {
-            renamedItem.remove(DataComponents.CUSTOM_NAME);
+            renamedItem.setHoverName(null);
         }
 
         final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
-        return new InscriberRecipe(startingItem, renamedItem,
+        return new InscriberRecipe(NAMEPLATE_RECIPE_ID, startingItem, renamedItem,
                 plateA.isEmpty() ? Ingredient.EMPTY : Ingredient.of(plateA),
                 plateB.isEmpty() ? Ingredient.EMPTY : Ingredient.of(plateB), type);
     }
@@ -119,8 +112,7 @@ public final class InscriberRecipes {
      * combination and the reverse will be searched.
      */
     public static boolean isValidOptionalIngredientCombination(Level level, ItemStack pressA, ItemStack pressB) {
-        for (var holder : getRecipes(level)) {
-            var recipe = holder.value();
+        for (InscriberRecipe recipe : getRecipes(level)) {
             if (recipe.getTopOptional().test(pressA) && recipe.getBottomOptional().test(pressB)
                     || recipe.getTopOptional().test(pressB) && recipe.getBottomOptional().test(pressA)) {
                 return true;
@@ -135,8 +127,7 @@ public final class InscriberRecipes {
      * top can be used interchangeably here, because the inscriber will flip the recipe if needed.
      */
     public static boolean isValidOptionalIngredient(Level level, ItemStack is) {
-        for (var holder : getRecipes(level)) {
-            var recipe = holder.value();
+        for (InscriberRecipe recipe : getRecipes(level)) {
             if (recipe.getTopOptional().test(is) || recipe.getBottomOptional().test(is)) {
                 return true;
             }

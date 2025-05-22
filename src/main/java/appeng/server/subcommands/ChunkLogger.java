@@ -26,9 +26,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.ChunkEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.level.ChunkEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -90,10 +90,10 @@ public class ChunkLogger implements ISubCommand {
         this.enabled = !this.enabled;
 
         if (this.enabled) {
-            NeoForge.EVENT_BUS.register(this);
+            MinecraftForge.EVENT_BUS.register(this);
             sender.sendSuccess(() -> Component.translatable("commands.ae2.ChunkLoggerOn"), true);
         } else {
-            NeoForge.EVENT_BUS.unregister(this);
+            MinecraftForge.EVENT_BUS.unregister(this);
             sender.sendSuccess(() -> Component.translatable("commands.ae2.ChunkLoggerOff"), true);
         }
     }

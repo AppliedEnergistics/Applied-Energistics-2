@@ -23,26 +23,21 @@ import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
+import appeng.api.implementations.items.IFacadeItem;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
+import appeng.core.definitions.AEItems;
+import appeng.items.parts.FacadeItem;
 import appeng.parts.CableBusStorage;
 
 public class FacadeContainer implements IFacadeContainer {
-    private static final StreamCodec<ByteBuf, BlockState> BLOCK_STATE_STREAM_CODEC = ByteBufCodecs
-            .idMapper(Block.BLOCK_STATE_REGISTRY);
 
     /**
      * Key names to store facades
@@ -91,32 +86,35 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void readFromNBT(CompoundTag c, HolderLookup.Provider registries) {
+    public void readFromNBT(CompoundTag c) {
         for (var side : Direction.values()) {
             this.storage.removeFacade(side);
 
             var tag = c.get(NBT_KEY_NAMES[side.ordinal()]);
-            var result = BlockState.CODEC.decode(NbtOps.INSTANCE, tag).result();
-            if (result.isPresent()) {
-                var blockState = result.get().getFirst();
-                this.storage.setFacade(side, new FacadePart(blockState, side));
+            if (tag instanceof CompoundTag facadeTag) {
+                var is = ItemStack.of(facadeTag);
+                if (!is.isEmpty()) {
+                    if (is.getItem() instanceof IFacadeItem facadeItem) {
+                        this.storage.setFacade(side, facadeItem.createPartFromItemStack(is, side));
+                    }
+                }
             }
         }
     }
 
     @Override
-    public void writeToNBT(CompoundTag c, HolderLookup.Provider registries) {
+    public void writeToNBT(CompoundTag c) {
         for (var side : Direction.values()) {
             if (this.storage.getFacade(side) != null) {
-                var data = BlockState.CODEC.encodeStart(NbtOps.INSTANCE, this.storage.getFacade(side).getBlockState())
-                        .getOrThrow();
+                var data = new CompoundTag();
+                this.storage.getFacade(side).getItemStack().save(data);
                 c.put(NBT_KEY_NAMES[side.ordinal()], data);
             }
         }
     }
 
     @Override
-    public boolean readFromStream(RegistryFriendlyByteBuf out) {
+    public boolean readFromStream(FriendlyByteBuf out) {
         final int facadeSides = out.readByte();
 
         boolean changed = false;
@@ -124,9 +122,14 @@ public class FacadeContainer implements IFacadeContainer {
         for (var side : Direction.values()) {
             final int ix = 1 << side.ordinal();
             if ((facadeSides & ix) == ix) {
-                var facade = BLOCK_STATE_STREAM_CODEC.decode(out);
-                changed = changed || this.storage.getFacade(side) == null;
-                this.storage.setFacade(side, new FacadePart(facade, side));
+                final int id = out.readVarInt();
+
+                final FacadeItem ifa = AEItems.FACADE.asItem();
+                final ItemStack facade = ifa.createFromID(id);
+                if (facade != null) {
+                    changed = changed || this.storage.getFacade(side) == null;
+                    this.storage.setFacade(side, ifa.createPartFromItemStack(facade, side));
+                }
             } else {
                 changed = changed || this.storage.getFacade(side) != null;
                 this.storage.removeFacade(side);
@@ -137,7 +140,7 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void writeToStream(RegistryFriendlyByteBuf out) {
+    public void writeToStream(FriendlyByteBuf out) {
         int facadeSides = 0;
         for (var side : Direction.values()) {
             if (this.getFacade(side) != null) {
@@ -149,7 +152,8 @@ public class FacadeContainer implements IFacadeContainer {
         for (var side : Direction.values()) {
             final IFacadePart part = this.getFacade(side);
             if (part != null) {
-                BLOCK_STATE_STREAM_CODEC.encode(out, part.getBlockState());
+                final int itemID = Item.getId(part.getItem());
+                out.writeVarInt(itemID);
             }
         }
     }

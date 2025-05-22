@@ -21,8 +21,8 @@ package appeng.init.client;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEColor;
 import appeng.block.networking.EnergyCellBlockItem;
@@ -43,7 +43,7 @@ public final class InitItemModelsProperties {
     }
 
     public static void init() {
-        ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.get();
+        ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.asItem();
         ItemProperties.register(colorApplicatorItem, COLORED_PREDICATE_ID,
                 (itemStack, level, entity, seed) -> {
                     // If the stack has no color, don't use the colored model since the impact of

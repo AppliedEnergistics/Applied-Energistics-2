@@ -20,9 +20,10 @@ package appeng.parts.p2p;
 
 import java.util.List;
 
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
@@ -41,7 +42,7 @@ public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPa
     }
 
     public FluidP2PTunnelPart(IPartItem<?> partItem) {
-        super(partItem, Capabilities.FluidHandler.BLOCK);
+        super(partItem, ForgeCapabilities.FLUID_HANDLER);
         inputHandler = new InputFluidHandler();
         outputHandler = new OutputFluidHandler();
         emptyHandler = NULL_FLUID_HANDLER;

@@ -5,30 +5,32 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import appeng.api.behaviors.ExternalStorageStrategy;
 import appeng.api.storage.MEStorage;
+import appeng.util.BlockApiCache;
 
-public class ForgeExternalStorageStrategy<T, S> implements ExternalStorageStrategy {
-    private final BlockCapabilityCache<T, Direction> cache;
-    private final HandlerStrategy<T, S> conversion;
+public class ForgeExternalStorageStrategy<C, S> implements ExternalStorageStrategy {
+    private final BlockApiCache<C> apiCache;
+    private final Direction fromSide;
+    private final HandlerStrategy<C, S> conversion;
 
-    public ForgeExternalStorageStrategy(BlockCapability<T, Direction> capability,
-            HandlerStrategy<T, S> conversion,
+    public ForgeExternalStorageStrategy(Capability<C> capability,
+            HandlerStrategy<C, S> conversion,
             ServerLevel level,
             BlockPos fromPos,
             Direction fromSide) {
-        this.cache = BlockCapabilityCache.create(capability, level, fromPos, fromSide);
+        this.apiCache = BlockApiCache.create(capability, level, fromPos);
+        this.fromSide = fromSide;
         this.conversion = conversion;
     }
 
     @Nullable
     @Override
     public MEStorage createWrapper(boolean extractableOnly, Runnable injectOrExtractCallback) {
-        var storage = cache.getCapability();
+        var storage = apiCache.find(fromSide);
         if (storage == null) {
             return null;
         }
@@ -41,7 +43,7 @@ public class ForgeExternalStorageStrategy<T, S> implements ExternalStorageStrate
 
     public static ExternalStorageStrategy createItem(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new ForgeExternalStorageStrategy<>(
-                Capabilities.ItemHandler.BLOCK,
+                ForgeCapabilities.ITEM_HANDLER,
                 HandlerStrategy.ITEMS,
                 level,
                 fromPos,
@@ -50,7 +52,7 @@ public class ForgeExternalStorageStrategy<T, S> implements ExternalStorageStrate
 
     public static ExternalStorageStrategy createFluid(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new ForgeExternalStorageStrategy<>(
-                Capabilities.FluidHandler.BLOCK,
+                ForgeCapabilities.FLUID_HANDLER,
                 HandlerStrategy.FLUIDS,
                 level,
                 fromPos,

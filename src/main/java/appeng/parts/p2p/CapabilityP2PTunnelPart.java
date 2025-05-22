@@ -18,31 +18,33 @@
 
 package appeng.parts.p2p;
 
-import java.util.Objects;
-
-import net.minecraft.core.Direction;
-import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.parts.IPartItem;
-import appeng.parts.PartAdjacentApi;
+import appeng.hooks.ticking.TickHandler;
 
 /**
  * Base class for simple capability-based p2p tunnels. Don't forget to set the 3 handlers in the constructor of the
  * child class!
  */
-public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<P, T>, T> extends P2PTunnelPart<P> {
-    private final PartAdjacentApi<T> adjacentCapability;
+public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<P, A>, A> extends P2PTunnelPart<P> {
+    private final Capability<A> capability;
+    // Prevents recursive block updates.
+    private boolean inBlockUpdate = false;
     // Prevents recursive access to the adjacent capability in case P2P input/output faces touch
     private int accessDepth = 0;
     private final CapabilityGuard capabilityGuard = new CapabilityGuard();
     private final EmptyCapabilityGuard emptyCapabilityGuard = new EmptyCapabilityGuard();
-    protected T inputHandler;
-    protected T outputHandler;
-    protected T emptyHandler;
+    protected A inputHandler;
+    protected A outputHandler;
+    protected A emptyHandler;
 
-    public CapabilityP2PTunnelPart(IPartItem<?> partItem, BlockCapability<T, Direction> capability) {
+    public CapabilityP2PTunnelPart(IPartItem<?> partItem, Capability<A> capability) {
         super(partItem);
-        this.adjacentCapability = new PartAdjacentApi<>(this, capability, this::forwardCapabilityInvalidation);
+        this.capability = capability;
     }
 
     @Override
@@ -50,12 +52,15 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
         return 2.0f;
     }
 
-    public T getExposedApi() {
-        if (isOutput()) {
-            return outputHandler;
-        } else {
-            return inputHandler;
+    public final <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
+        if (capabilityClass == capability) {
+            if (isOutput()) {
+                return LazyOptional.of(() -> outputHandler).cast();
+            } else {
+                return LazyOptional.of(() -> inputHandler).cast();
+            }
         }
+        return LazyOptional.empty();
     }
 
     /**
@@ -82,12 +87,18 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
         /**
          * Get the capability, or a null handler if not available. Use within the scope of the enclosing AdjCapability.
          */
-        public T get() {
+        public A get() {
             if (accessDepth == 0) {
                 throw new IllegalStateException("get was called after closing the wrapper");
             } else if (accessDepth == 1) {
                 if (isActive()) {
-                    return Objects.requireNonNullElse(adjacentCapability.find(), emptyHandler);
+                    var self = getBlockEntity();
+                    var te = self.getLevel().getBlockEntity(getFacingPos());
+
+                    if (te != null) {
+                        return te.getCapability(capability, getSide().getOpposite())
+                                .orElse(emptyHandler);
+                    }
                 }
 
                 return emptyHandler;
@@ -107,6 +118,13 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
     }
 
     /**
+     * The position right in front of this P2P tunnel.
+     */
+    private BlockPos getFacingPos() {
+        return getHost().getLocation().getPos().relative(getSide());
+    }
+
+    /**
      * This specialization is used when the tunnel is not connected.
      */
     protected class EmptyCapabilityGuard extends CapabilityGuard implements AutoCloseable {
@@ -115,30 +133,68 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
         }
 
         @Override
-        public T get() {
+        public A get() {
             return emptyHandler;
         }
     }
 
-    protected void forwardCapabilityInvalidation() {
-        if (isOutput()) {
-            P input = getInput();
+    // Send a block update on p2p status change, or any update on another endpoint.
+    protected void sendBlockUpdate() {
+        // Prevent recursive block updates.
+        if (!inBlockUpdate) {
+            inBlockUpdate = true;
 
-            if (input != null) {
-                input.getBlockEntity().invalidateCapabilities();
-            }
-        } else {
-            for (P output : getOutputs()) {
-                output.getBlockEntity().invalidateCapabilities();
+            try {
+                // getHost().notifyNeighbors() would queue a callback, but we want to do an update synchronously!
+                // (otherwise we can't detect infinite recursion, it would just queue updates endlessly)
+                getHost().notifyNeighborNow(getSide());
+            } finally {
+                inBlockUpdate = false;
             }
         }
     }
 
     @Override
     public void onTunnelNetworkChange() {
-        // This might be invoked while the network is being unloaded,
-        // however the capability system should handle this fine.
-        // (Not OK for block updates though, thankfully we don't need them anymore!)
-        getBlockEntity().invalidateCapabilities();
+        // This might be invoked while the network is being unloaded and we don't want to send a block update then, so
+        // we delay it until the next tick.
+        TickHandler.instance().addCallable(getLevel(), () -> {
+            if (getMainNode().isReady()) { // Check that the p2p tunnel is still there.
+                sendBlockUpdate();
+            }
+        });
+    }
+
+    /**
+     * Forward block updates from the attached tile's position to the other end of the tunnel. Required for TE's on the
+     * other end to know that the available caps may have changed.
+     */
+    @Override
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
+        // We only care about block updates on the side this tunnel is facing
+        if (!getFacingPos().equals(neighbor)) {
+            return;
+        }
+
+        // Prevent recursive block updates.
+        if (!inBlockUpdate) {
+            inBlockUpdate = true;
+
+            try {
+                if (isOutput()) {
+                    P input = getInput();
+
+                    if (input != null) {
+                        input.sendBlockUpdate();
+                    }
+                } else {
+                    for (P output : getOutputs()) {
+                        output.sendBlockUpdate();
+                    }
+                }
+            } finally {
+                inBlockUpdate = false;
+            }
+        }
     }
 }

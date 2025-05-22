@@ -1,10 +1,8 @@
 package appeng.util;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.config.Setting;
@@ -19,6 +17,11 @@ public final class NullConfigManager implements IConfigManager {
     }
 
     @Override
+    public <T extends Enum<T>> void registerSetting(Setting<T> setting, T defaultValue) {
+        throw new UnsupportedOperationException("Cannot register settings with " + getClass().getSimpleName());
+    }
+
+    @Override
     public <T extends Enum<T>> T getSetting(Setting<T> setting) {
         throw new IllegalStateException("Trying to get unsupported setting " + setting.getName());
     }
@@ -29,21 +32,11 @@ public final class NullConfigManager implements IConfigManager {
     }
 
     @Override
-    public void writeToNBT(CompoundTag destination, HolderLookup.Provider registries) {
+    public void writeToNBT(CompoundTag destination) {
     }
 
     @Override
-    public boolean readFromNBT(CompoundTag src, HolderLookup.Provider registries) {
+    public boolean readFromNBT(CompoundTag src) {
         return false;
-    }
-
-    @Override
-    public boolean importSettings(Map<String, String> settings) {
-        return false;
-    }
-
-    @Override
-    public Map<String, String> exportSettings() {
-        return Map.of();
     }
 }

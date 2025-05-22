@@ -1,137 +1,160 @@
 {
-  "credit": "Made with Blockbench",
   "ambientocclusion": false,
-  "textures": {
-    "particle": "ae2:block/quartz_fixture",
-    "quartz": "ae2:block/quartz_fixture"
-  },
-  "render_type": "cutout",
   "elements": [
     {
-      "from": [7, 8, 10],
-      "to": [9, 13, 12],
-      "rotation": { "angle": 0, "axis": "y", "origin": [8, 7.5, 11] },
       "faces": {
-        "north": { "uv": [14, 0, 12, 5], "texture": "#quartz" },
-        "east": { "uv": [12, 0, 14, 5], "texture": "#quartz" },
-        "south": { "uv": [10, 0, 12, 5], "texture": "#quartz" },
-        "west": { "uv": [12, 0, 10, 5], "texture": "#quartz" },
-        "up": { "uv": [14, 0, 16, 2], "rotation": 180, "texture": "#quartz" },
-        "down": { "uv": [0, 0, 2, 2], "rotation": 180, "texture": "#quartz" }
-      }
+        "down": {
+          "texture": "#metal"
+        },
+        "east": {
+          "texture": "#metal"
+        },
+        "north": {
+          "texture": "#metal"
+        },
+        "south": {
+          "texture": "#metal"
+        },
+        "up": {
+          "texture": "#metal"
+        },
+        "west": {
+          "texture": "#metal"
+        }
+      },
+      "from": [7.0, 7.0, 14.0],
+      "name": "Connecting Strut",
+      "to": [8.0, 8.0, 16.0]
     },
     {
-      "from": [8, 8, 11],
-      "to": [10, 11, 13],
-      "rotation": { "angle": 0, "axis": "y", "origin": [8, 7.5, 11] },
       "faces": {
-        "north": { "uv": [12, 5, 10, 8], "texture": "#quartz" },
-        "east": { "uv": [10, 5, 12, 8], "texture": "#quartz" },
-        "south": { "uv": [12, 5, 10, 8], "texture": "#quartz" },
-        "west": { "uv": [10, 5, 12, 8], "texture": "#quartz" },
-        "up": { "uv": [14, 2, 16, 4], "rotation": 90, "texture": "#quartz" },
-        "down": { "uv": [0, 0, 2, 2], "rotation": 270, "texture": "#quartz" }
-      }
+        "down": {
+          "texture": "#metal"
+        },
+        "east": {
+          "texture": "#metal"
+        },
+        "north": {
+          "texture": "#metal"
+        },
+        "south": {
+          "texture": "#metal"
+        },
+        "up": {
+          "texture": "#metal"
+        },
+        "west": {
+          "texture": "#metal"
+        }
+      },
+      "from": [6.0, 7.0, 10.0],
+      "name": "Middle Plate",
+      "to": [10.0, 8.0, 14.0]
     },
     {
-      "from": [6, 8, 9],
-      "to": [8, 10, 11],
-      "rotation": { "angle": 0, "axis": "y", "origin": [8, 7.5, 11] },
       "faces": {
-        "north": { "uv": [10, 4, 8, 6], "texture": "#quartz" },
-        "east": { "uv": [8, 4, 10, 6], "texture": "#quartz" },
-        "south": { "uv": [8, 4, 6, 6], "texture": "#quartz" },
-        "west": { "uv": [6, 4, 8, 6], "texture": "#quartz" },
-        "up": { "uv": [14, 4, 16, 6], "rotation": 180, "texture": "#quartz" },
-        "down": { "uv": [0, 0, 2, 2], "rotation": 180, "texture": "#quartz" }
-      }
+        "down": {
+          "texture": "#quartz"
+        },
+        "east": {
+          "texture": "#quartz"
+        },
+        "north": {
+          "texture": "#quartz"
+        },
+        "south": {
+          "texture": "#quartz"
+        },
+        "up": {
+          "texture": "#quartz"
+        },
+        "west": {
+          "texture": "#quartz"
+        }
+      },
+      "from": [7.0, 5.0, 11.0],
+      "name": "Lower Quartz Block",
+      "to": [9.0, 7.0, 13.0]
     },
     {
-      "from": [8, 4, 11],
-      "to": [10, 7, 13],
-      "rotation": { "angle": 0, "axis": "y", "origin": [8, 7.5, 11] },
       "faces": {
-        "north": { "uv": [12, 8, 10, 5], "texture": "#quartz" },
-        "east": { "uv": [10, 8, 12, 5], "texture": "#quartz" },
-        "south": { "uv": [12, 8, 10, 5], "texture": "#quartz" },
-        "west": { "uv": [10, 8, 12, 5], "texture": "#quartz" },
-        "up": { "uv": [0, 2, 2, 0], "rotation": 90, "texture": "#quartz" },
-        "down": { "uv": [14, 4, 16, 2], "rotation": 270, "texture": "#quartz" }
-      }
+        "down": {
+          "texture": "#quartz"
+        },
+        "east": {
+          "texture": "#quartz"
+        },
+        "north": {
+          "texture": "#quartz"
+        },
+        "south": {
+          "texture": "#quartz"
+        },
+        "up": {
+          "texture": "#quartz"
+        },
+        "west": {
+          "texture": "#quartz"
+        }
+      },
+      "from": [8.0, 4.0, 12.0],
+      "name": "Lower Quartz Tip",
+      "to": [9.0, 5.0, 13.0]
     },
     {
-      "from": [7, 2, 10],
-      "to": [9, 7, 12],
-      "rotation": { "angle": 0, "axis": "y", "origin": [8, 7.5, 11] },
       "faces": {
-        "north": { "uv": [14, 5, 12, 0], "texture": "#quartz" },
-        "east": { "uv": [12, 5, 14, 0], "texture": "#quartz" },
-        "south": { "uv": [10, 5, 12, 0], "texture": "#quartz" },
-        "west": { "uv": [12, 5, 10, 0], "texture": "#quartz" },
-        "up": { "uv": [2, 0, 0, 2], "texture": "#quartz" },
-        "down": { "uv": [16, 0, 14, 2], "texture": "#quartz" }
-      }
+        "down": {
+          "texture": "#quartz"
+        },
+        "east": {
+          "texture": "#quartz"
+        },
+        "north": {
+          "texture": "#quartz"
+        },
+        "south": {
+          "texture": "#quartz"
+        },
+        "up": {
+          "texture": "#quartz"
+        },
+        "west": {
+          "texture": "#quartz"
+        }
+      },
+      "from": [7.0, 8.0, 11.0],
+      "name": "Upper Quartz Block",
+      "to": [9.0, 10.0, 13.0]
     },
     {
-      "from": [6, 5, 9],
-      "to": [8, 7, 11],
-      "rotation": { "angle": 0, "axis": "y", "origin": [8, 7.5, 11] },
       "faces": {
-        "north": { "uv": [10, 6, 8, 4], "texture": "#quartz" },
-        "east": { "uv": [8, 6, 10, 4], "texture": "#quartz" },
-        "south": { "uv": [8, 6, 6, 4], "texture": "#quartz" },
-        "west": { "uv": [6, 6, 8, 4], "texture": "#quartz" },
-        "up": { "uv": [2, 0, 0, 2], "texture": "#quartz" },
-        "down": { "uv": [16, 4, 14, 6], "texture": "#quartz" }
-      }
-    },
-    {
-      "from": [5, 8, 8],
-      "to": [11, 9, 14],
-      "faces": {
-        "north": { "uv": [0, 6, 1, 0], "rotation": 90, "texture": "#quartz" },
-        "east": { "uv": [6, 0, 0, 1], "texture": "#quartz" },
-        "south": { "uv": [5, 0, 6, 6], "rotation": 90, "texture": "#quartz" },
-        "west": { "uv": [0, 5, 6, 6], "texture": "#quartz" },
-        "up": { "uv": [0, 0, 6, 6], "rotation": 90, "texture": "#quartz" },
-        "down": { "uv": [0, 6, 6, 0], "rotation": 270, "texture": "#quartz" }
-      }
-    },
-    {
-      "from": [5, 6, 8],
-      "to": [11, 7, 14],
-      "faces": {
-        "north": { "uv": [0, 6, 1, 0], "rotation": 90, "texture": "#quartz" },
-        "east": { "uv": [6, 0, 0, 1], "texture": "#quartz" },
-        "south": { "uv": [5, 0, 6, 6], "rotation": 90, "texture": "#quartz" },
-        "west": { "uv": [0, 5, 6, 6], "texture": "#quartz" },
-        "up": { "uv": [0, 0, 6, 6], "rotation": 90, "texture": "#quartz" },
-        "down": { "uv": [0, 6, 6, 0], "rotation": 270, "texture": "#quartz" }
-      }
-    },
-    {
-      "from": [6, 7, 9],
-      "to": [10, 8, 13],
-      "faces": {
-        "north": { "uv": [0, 13, 1, 9], "rotation": 90, "texture": "#quartz" },
-        "east": { "uv": [4, 9, 0, 10], "texture": "#quartz" },
-        "south": { "uv": [3, 9, 4, 13], "rotation": 90, "texture": "#quartz" },
-        "west": { "uv": [0, 12, 4, 13], "texture": "#quartz" },
-        "up": { "uv": [0, 9, 4, 13], "rotation": 90, "texture": "#quartz" },
-        "down": { "uv": [0, 6, 6, 0], "rotation": 270, "texture": "#quartz" }
-      }
-    },
-    {
-      "from": [7, 7, 13],
-      "to": [9, 8, 16],
-      "faces": {
-        "north": { "uv": [0, 0, 2, 1], "texture": "#missing" },
-        "east": { "uv": [2, 6, 1, 9], "rotation": 90, "texture": "#quartz" },
-        "south": { "uv": [2, 5, 4, 6], "texture": "#quartz" },
-        "west": { "uv": [1, 9, 0, 6], "rotation": 90, "texture": "#quartz" },
-        "up": { "uv": [0, 6, 2, 9], "texture": "#quartz" },
-        "down": { "uv": [0, 9, 2, 6], "texture": "#quartz" }
-      }
+        "down": {
+          "texture": "#quartz"
+        },
+        "east": {
+          "texture": "#quartz"
+        },
+        "north": {
+          "texture": "#quartz"
+        },
+        "south": {
+          "texture": "#quartz"
+        },
+        "up": {
+          "texture": "#quartz"
+        },
+        "west": {
+          "texture": "#quartz"
+        }
+      },
+      "from": [7.0, 10.0, 11.0],
+      "name": "Upper Quartz Tip",
+      "to": [8.0, 11.0, 12.0]
     }
-  ]
+  ],
+  "textures": {
+    "particle": "ae2:block/quartz_fixture",
+    "metal": "ae2:block/quartz_fixture_metal",
+    "quartz": "ae2:block/quartz_fixture"
+  }
 }

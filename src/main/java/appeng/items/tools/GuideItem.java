@@ -1,14 +1,14 @@
 package appeng.items.tools;
 
-import net.minecraft.resources.ResourceLocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
-import guideme.GuidesCommon;
 
 import appeng.core.AppEng;
 import appeng.items.AEBaseItem;
@@ -17,7 +17,7 @@ import appeng.items.AEBaseItem;
  * Shows the guidebook when used.
  */
 public class GuideItem extends AEBaseItem {
-    public static final ResourceLocation GUIDE_ID = AppEng.makeId("guide");
+    private static final Logger LOGGER = LoggerFactory.getLogger(GuideItem.class);
 
     public GuideItem(Properties properties) {
         super(properties);
@@ -28,9 +28,13 @@ public class GuideItem extends AEBaseItem {
         var stack = player.getItemInHand(hand);
 
         if (level.isClientSide()) {
-            GuidesCommon.openGuide(player, GUIDE_ID);
+            openGuide();
         }
 
         return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+    }
+
+    private static void openGuide() {
+        AppEng.instance().openGuideAtPreviousPage(AppEng.makeId("index.md"));
     }
 }

@@ -52,11 +52,11 @@ public interface IStorageService extends IGridService {
     KeyCounter getCachedInventory();
 
     /**
-     * Adds a {@link IStorageProvider} that is not associated with a specific {@link IGridNode }. This is for adding
-     * storage provided by {@link IGridService}s for examples.
+     * Adds a {@link IStorageProvider} that is not associated with a specific {@link appeng.api.networking.IGridNode }.
+     * This is for adding storage provided by {@link IGridService}s for examples.
      * <p/>
-     * THIS IT NOT FOR USE BY {@link IGridNode NODES} THAT PROVIDE THE {@link IStorageProvider} SERVICE. Those are
-     * automatically handled by the storage system.
+     * THIS IT NOT FOR USE BY {@link appeng.api.networking.IGridNode NODES} THAT PROVIDE THE {@link IStorageProvider}
+     * SERVICE. Those are automatically handled by the storage system.
      *
      * @param cc to be added cell provider
      */

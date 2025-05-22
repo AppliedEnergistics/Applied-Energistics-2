@@ -23,9 +23,9 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
@@ -42,7 +42,6 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
-import appeng.api.util.IConfigManagerBuilder;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.IConfigInvHost;
@@ -60,19 +59,19 @@ import appeng.util.ConfigInventory;
 public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
         implements IConfigInvHost, ICraftingProvider {
     @PartModels
-    public static final ResourceLocation MODEL_BASE_OFF = AppEng.makeId(
+    public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/level_emitter_base_off");
     @PartModels
-    public static final ResourceLocation MODEL_BASE_ON = AppEng.makeId(
+    public static final ResourceLocation MODEL_BASE_ON = new ResourceLocation(AppEng.MOD_ID,
             "part/level_emitter_base_on");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_OFF = AppEng.makeId(
+    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/level_emitter_status_off");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_ON = AppEng.makeId(
+    public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
             "part/level_emitter_status_on");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = AppEng.makeId(
+    public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
             "part/level_emitter_status_has_channel");
     public static final PartModel MODEL_OFF_OFF = new PartModel(MODEL_BASE_OFF, MODEL_STATUS_OFF);
     public static final PartModel MODEL_OFF_ON = new PartModel(MODEL_BASE_OFF, MODEL_STATUS_ON);
@@ -81,8 +80,7 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
     public static final PartModel MODEL_ON_ON = new PartModel(MODEL_BASE_ON, MODEL_STATUS_ON);
     public static final PartModel MODEL_ON_HAS_CHANNEL = new PartModel(MODEL_BASE_ON, MODEL_STATUS_HAS_CHANNEL);
 
-    private final ConfigInventory config = ConfigInventory.configTypes(1).changeListener(this::configureWatchers)
-            .build();
+    private final ConfigInventory config = ConfigInventory.configTypes(1, this::configureWatchers);
     private IStackWatcher storageWatcher;
     private IStackWatcher craftingWatcher;
     private long lastUpdateTick = -1;
@@ -133,13 +131,9 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
         getMainNode().addService(IStorageWatcherNode.class, stackWatcherNode);
         getMainNode().addService(ICraftingWatcherNode.class, craftingWatcherNode);
         getMainNode().addService(ICraftingProvider.class, this);
-    }
 
-    @Override
-    protected void registerSettings(IConfigManagerBuilder builder) {
-        super.registerSettings(builder);
-        builder.registerSetting(Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
-        builder.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+        getConfigManager().registerSetting(Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
+        getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
     }
 
     @Nullable
@@ -278,19 +272,19 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
-        config.readFromChildTag(data, "config", registries);
+    public void readFromNBT(CompoundTag data) {
+        super.readFromNBT(data);
+        config.readFromChildTag(data, "config");
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
-        config.writeToChildTag(data, "config", registries);
+    public void writeToNBT(CompoundTag data) {
+        super.writeToNBT(data);
+        config.writeToChildTag(data, "config");
     }
 
     @Override
-    public boolean onUseWithoutItem(Player player, Vec3 pos) {
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (!isClientSide()) {
             MenuOpener.open(StorageLevelEmitterMenu.TYPE, player, MenuLocators.forPart(this));
         }

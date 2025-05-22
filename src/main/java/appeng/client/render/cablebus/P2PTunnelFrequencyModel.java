@@ -26,6 +26,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
@@ -33,12 +34,12 @@ import appeng.core.AppEng;
 public class P2PTunnelFrequencyModel implements BasicUnbakedModel {
 
     private static final Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("part/p2p_tunnel_frequency"));
+            new ResourceLocation(AppEng.MOD_ID, "part/p2p_tunnel_frequency"));
 
     @org.jetbrains.annotations.Nullable
     @Override
     public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> textureGetter,
-            ModelState modelState) {
+            ModelState modelState, ResourceLocation resourceLocation) {
         final TextureAtlasSprite texture = textureGetter.apply(TEXTURE);
         return new P2PTunnelFrequencyBakedModel(texture);
     }

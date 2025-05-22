@@ -18,35 +18,27 @@
 
 package appeng.menu.slot;
 
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.client.gui.me.common.ClientReadOnlySlot;
+import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.energy.IEnergySource;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.MEStorage;
+import appeng.helpers.IMenuCraftingPacket;
 
 /**
  * The crafting result slot in a pattern terminal.
  */
-public class PatternTermSlot extends ClientReadOnlySlot {
-    private ItemStack resultItem = ItemStack.EMPTY;
-    private boolean active = true;
-
-    public PatternTermSlot() {
+public class PatternTermSlot extends CraftingTermSlot {
+    public PatternTermSlot(Player player, IActionSource mySrc, IEnergySource energySrc,
+            MEStorage storage, InternalInventory cMatrix,
+            IMenuCraftingPacket c) {
+        super(player, mySrc, energySrc, storage, cMatrix, InternalInventory.empty(), c);
     }
 
     @Override
-    public ItemStack getItem() {
-        return resultItem;
-    }
-
-    public void setResultItem(ItemStack resultItem) {
-        this.resultItem = resultItem;
-    }
-
-    @Override
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
+    public void initialize(ItemStack stack) {
+        // The result is computed on the client-side, don't let the server override it with an empty stack.
     }
 }

@@ -35,7 +35,7 @@ public class LightDetectorBlockEntity extends AEBaseBlockEntity implements Commo
         super(blockEntityType, pos, blockState);
     }
 
-    public boolean isExposedToLight() {
+    public boolean isReady() {
         return this.lastLight > 0;
     }
 

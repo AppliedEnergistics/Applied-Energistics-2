@@ -1,78 +1,18 @@
-import org.gradle.api.initialization.resolve.RepositoriesMode
-import org.gradle.api.initialization.resolve.RulesMode
-
 pluginManagement {
-    plugins {
-        id 'com.diffplug.spotless' version '6.25.0'
-        // https://projects.neoforged.net/neoforged/ModDevGradle
-        id 'net.neoforged.moddev' version '2.0.74'
-        id 'net.neoforged.moddev.repositories' version '2.0.74'
-    }
-}
-
-plugins {
-    id 'net.neoforged.moddev.repositories'
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.9.0'
-}
-
-dependencyResolutionManagement {
-    repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
-    rulesMode = RulesMode.FAIL_ON_PROJECT_RULES
     repositories {
         maven {
-            url = 'https://maven.shedaniel.me/'
-            content {
-                includeGroup 'me.shedaniel'
-                includeGroup 'me.shedaniel.cloth'
-                includeGroup 'dev.architectury'
-            }
+            name = 'NeoForged'
+            url = 'https://maven.neoforged.net/releases'
         }
         maven {
-            url = 'https://maven2.bai.lol'
-            content {
-                includeGroup 'mcp.mobius.waila'
-                includeGroup 'lol.bai'
-            }
+            name = "Sponge"
+            url = 'https://repo.spongepowered.org/maven'
         }
-        maven {
-            name = 'TerraformersMC'
-            url = 'https://maven.terraformersmc.com/'
-            content {
-                includeGroup 'dev.emi'
-            }
-        }
-        maven {
-            name = 'cursemaven'
-            url = 'https://www.cursemaven.com'
-            content {
-                includeGroup 'curse.maven'
-            }
-        }
-        maven { // for TOP
-            url = 'https://maven.k-4u.nl/'
-            content {
-                includeGroup 'mcjty.theoneprobe'
-            }
-        }
-        maven {
-            url = 'https://maven.theillusivec4.top/'
-            content {
-                includeGroup 'top.theillusivec4.curios'
-            }
-        }
-        maven {
-            url = 'https://maven.blamejared.com/'
-            content {
-                includeGroup 'mezz.jei'
-            }
-        }
-        mavenLocal() {
-            content {
-                includeModule('org.appliedenergistics', 'guideme')
-            }
-        }
+        gradlePluginPortal()
         mavenCentral()
     }
+    plugins {
+        id 'net.neoforged.moddev.legacyforge' version '2.0.86'
+        id 'com.diffplug.spotless' version '6.25.0'
+    }
 }
-
-rootProject.name = 'ae2';

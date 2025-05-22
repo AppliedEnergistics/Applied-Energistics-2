@@ -194,10 +194,14 @@ public class NumberEntryWidget implements ICompositeWidget {
 
         List<Button> buttons = new ArrayList<>(9);
 
-        buttons.add(new AE2Button(left, top, 22, 20, makeLabel(PLUS, STEPS[0]), btn -> addQty(STEPS[0])));
-        buttons.add(new AE2Button(left + 28, top, 28, 20, makeLabel(PLUS, STEPS[1]), btn -> addQty(STEPS[1])));
-        buttons.add(new AE2Button(left + 62, top, 32, 20, makeLabel(PLUS, STEPS[2]), btn -> addQty(STEPS[2])));
-        buttons.add(new AE2Button(left + 100, top, 38, 20, makeLabel(PLUS, STEPS[3]), btn -> addQty(STEPS[3])));
+        buttons.add(
+                Button.builder(makeLabel(PLUS, STEPS[0]), btn -> addQty(STEPS[0])).bounds(left, top, 22, 20).build());
+        buttons.add(Button.builder(makeLabel(PLUS, STEPS[1]), btn -> addQty(STEPS[1])).bounds(left + 28, top, 28, 20)
+                .build());
+        buttons.add(Button.builder(makeLabel(PLUS, STEPS[2]), btn -> addQty(STEPS[2])).bounds(left + 62, top, 32, 20)
+                .build());
+        buttons.add(Button.builder(makeLabel(PLUS, STEPS[3]), btn -> addQty(STEPS[3])).bounds(left + 100, top, 38, 20)
+                .build());
 
         // Need to add these now for sensible tab-order
         buttons.forEach(addWidget);
@@ -208,10 +212,14 @@ public class NumberEntryWidget implements ICompositeWidget {
         screen.setInitialFocus(this.textField);
         addWidget.accept(this.textField);
 
-        buttons.add(new AE2Button(left, top + 42, 22, 20, makeLabel(MINUS, STEPS[0]), btn -> addQty(-STEPS[0])));
-        buttons.add(new AE2Button(left + 28, top + 42, 28, 20, makeLabel(MINUS, STEPS[1]), btn -> addQty(-STEPS[1])));
-        buttons.add(new AE2Button(left + 62, top + 42, 32, 20, makeLabel(MINUS, STEPS[2]), btn -> addQty(-STEPS[2])));
-        buttons.add(new AE2Button(left + 100, top + 42, 38, 20, makeLabel(MINUS, STEPS[3]), btn -> addQty(-STEPS[3])));
+        buttons.add(Button.builder(makeLabel(MINUS, STEPS[0]), btn -> addQty(-STEPS[0])).bounds(left, top + 42, 22, 20)
+                .build());
+        buttons.add(Button.builder(makeLabel(MINUS, STEPS[1]), btn -> addQty(-STEPS[1]))
+                .bounds(left + 28, top + 42, 28, 20).build());
+        buttons.add(Button.builder(makeLabel(MINUS, STEPS[2]), btn -> addQty(-STEPS[2]))
+                .bounds(left + 62, top + 42, 32, 20).build());
+        buttons.add(Button.builder(makeLabel(MINUS, STEPS[3]), btn -> addQty(-STEPS[3]))
+                .bounds(left + 100, top + 42, 38, 20).build());
 
         // This element is not focusable
         if (!hideValidationIcon) {
@@ -283,7 +291,7 @@ public class NumberEntryWidget implements ICompositeWidget {
     public void setLongValue(long value) {
         var internalValue = convertToInternalValue(Longs.constrainToRange(value, minValue, maxValue));
         this.textField.setValue(decimalFormat.format(internalValue));
-        this.textField.moveCursorToEnd(false);
+        this.textField.moveCursorToEnd();
         this.textField.setHighlightPos(0);
         validate();
     }

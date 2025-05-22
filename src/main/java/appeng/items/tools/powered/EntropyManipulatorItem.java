@@ -35,14 +35,14 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.ClipContext.Fluid;
 import net.minecraft.world.level.Level;
@@ -72,7 +72,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
      */
     public static final int ENERGY_PER_USE = 1600;
 
-    public EntropyManipulatorItem(Properties props) {
+    public EntropyManipulatorItem(Item.Properties props) {
         super(AEConfig.instance().getEntropyManipulatorBattery(), props);
     }
 
@@ -85,7 +85,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     public boolean hurtEnemy(ItemStack item, LivingEntity target, LivingEntity hitter) {
         if (this.getAECurrentPower(item) > ENERGY_PER_USE) {
             this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
-            target.igniteForSeconds(8);
+            target.setSecondsOnFire(8);
         }
 
         return false;
@@ -230,12 +230,13 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         BlockState smeltedBlockState = null;
         List<ItemStack> smeltedDrops = new ArrayList<>();
 
+        var tempInv = new SimpleContainer(1);
         for (ItemStack i : drops) {
-            var tempInv = new SingleRecipeInput(i);
+            tempInv.setItem(0, i);
             Optional<SmeltingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, tempInv,
-                    level).map(RecipeHolder::value);
+                    level);
 
-            if (recipe.isEmpty()) {
+            if (!recipe.isPresent()) {
                 return false;
             }
 
@@ -282,8 +283,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     @Nullable
     private static EntropyRecipe findRecipe(Level level, EntropyMode mode, BlockState blockState,
             FluidState fluidState) {
-        for (var holder : level.getRecipeManager().byType(EntropyRecipe.TYPE)) {
-            var recipe = holder.value();
+        for (var recipe : level.getRecipeManager().byType(EntropyRecipe.TYPE).values()) {
             if (recipe.matches(mode, blockState, fluidState)) {
                 return recipe;
             }

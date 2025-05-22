@@ -18,6 +18,8 @@
 
 package appeng.items.misc;
 
+import net.minecraft.world.item.Item;
+
 import appeng.api.util.AEColor;
 import appeng.items.AEBaseItem;
 
@@ -27,7 +29,7 @@ public class PaintBallItem extends AEBaseItem {
 
     private final boolean lumen;
 
-    public PaintBallItem(Properties properties, AEColor color, boolean lumen) {
+    public PaintBallItem(Item.Properties properties, AEColor color, boolean lumen) {
         super(properties);
         this.color = color;
         this.lumen = lumen;

@@ -33,6 +33,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -59,7 +60,7 @@ import appeng.util.Platform;
 
 public class DebugCardItem extends AEBaseItem {
 
-    public DebugCardItem(Properties properties) {
+    public DebugCardItem(Item.Properties properties) {
         super(properties);
     }
 

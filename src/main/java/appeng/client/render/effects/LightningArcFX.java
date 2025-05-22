@@ -23,10 +23,9 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class LightningArcFX extends LightningFX {
@@ -50,18 +49,19 @@ public class LightningArcFX extends LightningFX {
 
     @Override
     protected void regen() {
-        float i = 1.0f / (this.getSteps() - 1);
-        float lastDirectionX = (float) this.rx * i;
-        float lastDirectionY = (float) this.ry * i;
-        float lastDirectionZ = (float) this.rz * i;
+        final double i = 1.0 / (this.getSteps() - 1);
+        final double lastDirectionX = this.rx * i;
+        final double lastDirectionY = this.ry * i;
+        final double lastDirectionZ = this.rz * i;
 
-        float len = Mth.sqrt(
+        final double len = Math.sqrt(
                 lastDirectionX * lastDirectionX + lastDirectionY * lastDirectionY + lastDirectionZ * lastDirectionZ);
         for (int s = 0; s < this.getSteps(); s++) {
-            var localSteps = this.getPrecomputedSteps();
-            localSteps[s][0] = (lastDirectionX + (RANDOM_GENERATOR.nextFloat() - 0.5f) * len * 1.2f) / 2.0f;
-            localSteps[s][1] = (lastDirectionY + (RANDOM_GENERATOR.nextFloat() - 0.5f) * len * 1.2f) / 2.0f;
-            localSteps[s][2] = (lastDirectionZ + (RANDOM_GENERATOR.nextFloat() - 0.5f) * len * 1.2f) / 2.0f;
+            final double[][] localSteps = this.getPrecomputedSteps();
+
+            localSteps[s][0] = (lastDirectionX + (RANDOM_GENERATOR.nextDouble() - 0.5) * len * 1.2) / 2.0;
+            localSteps[s][1] = (lastDirectionY + (RANDOM_GENERATOR.nextDouble() - 0.5) * len * 1.2) / 2.0;
+            localSteps[s][2] = (lastDirectionZ + (RANDOM_GENERATOR.nextDouble() - 0.5) * len * 1.2) / 2.0;
         }
     }
 
@@ -76,8 +76,8 @@ public class LightningArcFX extends LightningFX {
         @Override
         public Particle createParticle(LightningArcParticleData data, ClientLevel level, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            TextureSheetParticle lightningFX = new LightningArcFX(level, x, y, z, data.target().x, data.target().y,
-                    data.target().z, 0, 0, 0);
+            TextureSheetParticle lightningFX = new LightningArcFX(level, x, y, z, data.target.x, data.target.y,
+                    data.target.z, 0, 0, 0);
             lightningFX.pickSprite(this.spriteSet);
             return lightningFX;
         }

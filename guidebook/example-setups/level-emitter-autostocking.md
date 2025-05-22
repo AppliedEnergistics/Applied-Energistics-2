@@ -12,8 +12,6 @@ One might ask "How do I keep a certain amount of an item in stock, crafting more
 One solution is use of an <ItemLink id="export_bus" />, <ItemLink id="level_emitter" />, and <ItemLink id="crafting_card" /> to automatically request new items
 from your network's [autocrafting](../ae2-mechanics/autocrafting.md). This setup is for maintaining a large quantity of one item.
 
-You can of course make your network craft continuously, by omitting the level emitter and redstone card.
-
 <GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/level_emitter_autostocking.snbt" />
 
@@ -49,7 +47,7 @@ You can of course make your network craft continuously, by omitting the level em
 
 1. If the amount of the desired item in [network storage](../ae2-mechanics/import-export-storage.md) is below the quantity specified in the
    <ItemLink id="level_emitter" />, it will emit a redstone signal.
-2. Upon receiving a redstone signal (and due to the <ItemLink id="crafting_card" /> and being set to not use stocked items),
+2. Upon recieving a redstone signal (and due to the <ItemLink id="crafting_card" /> and being set to not use stocked items),
    the <ItemLink id="export_bus" /> will request that the network's [autocrafting](../ae2-mechanics/autocrafting.md) craft
    more of the desired item, then export it.
 3. Upon having an item pushed into it (and not being configured to have anything in its internal inventory), the <ItemLink id="interface" /> will push that item into network storage.

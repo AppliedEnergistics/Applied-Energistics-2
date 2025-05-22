@@ -14,13 +14,12 @@ import appeng.core.definitions.AEBlocks;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
 
-@TestPlotClass
 public class ChannelTests {
     @TestPlot("channel_assignment_test")
     public static void channelAssignmentTest(PlotBuilder plot) {
         plot.block("[-1,1] 0 0", AEBlocks.CONTROLLER);
         plot.creativeEnergyCell("0 -1 0");
-        plot.block("0 1 0", AEBlocks.ME_CHEST);
+        plot.block("0 1 0", AEBlocks.CHEST);
         plot.denseCable("0 0 [1,3]");
         plot.block("0 0 4", AEBlocks.PATTERN_PROVIDER);
         plot.cable("[1,2] 0 3");
@@ -167,7 +166,7 @@ public class ChannelTests {
                 checkNode(pos, node, expectedChannelCount);
 
                 helper.check(node.getConnections().size() == 1, "Node does not have exactly one connection", pos);
-                checkConnection(pos, node.getConnections().getFirst(), expectedChannelCount);
+                checkConnection(pos, node.getConnections().get(0), expectedChannelCount);
             });
         }
 

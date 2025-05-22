@@ -52,7 +52,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
         super(menu, playerInventory, title, style);
         this.table = new CraftConfirmTableRenderer(this, 9, 19);
 
-        this.scrollbar = widgets.addScrollBar("scrollbar", Scrollbar.BIG);
+        this.scrollbar = widgets.addScrollBar("scrollbar");
 
         this.start = widgets.addButton("start", GuiText.Start.text(), this::start);
         this.start.active = false;

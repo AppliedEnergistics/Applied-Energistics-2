@@ -7,9 +7,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
@@ -19,7 +17,6 @@ import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
 import appeng.spatial.SpatialStoragePlotManager;
 
-@TestPlotClass
 public final class SpatialTestPlots {
     private SpatialTestPlots() {
     }
@@ -122,36 +119,33 @@ public final class SpatialTestPlots {
 
         // Woosh!
         plot.test(helper -> {
-            // Remove all entities
-            // Spawn cow + chicken
             helper.startSequence()
                     .thenExecute(() -> {
-                        helper.spawn(EntityType.CHICKEN, Vec3.atBottomCenterOf(chickenPos.above()));
-                        helper.spawnItem(Items.OBSIDIAN, Vec3.atCenterOf(chickenPos));
-                    })
-                    .thenWaitUntil(() -> {
-                        helper.assertItemEntityCountIs(Items.OBSIDIAN, chickenPos, 1, 1);
-                        helper.assertEntitiesPresent(EntityType.CHICKEN, chickenPos, 1, 1);
+                        // Remove all entities
+                        // Spawn cow + chicken
+                        helper.killAllEntities();
+                        helper.spawn(EntityType.CHICKEN, chickenPos.above());
+                        helper.spawnItem(Items.OBSIDIAN, chickenPos.getX() + .5f, chickenPos.getY() + .5f,
+                                chickenPos.getZ() + .5f);
                     })
                     .thenIdle(5)
-                    // Wait for the grid to become available
-                    .thenWaitUntil(helper::checkAllInitialized)
                     .thenExecute(() -> helper.pressButton(buttonPos))
-                    .thenWaitUntil(() -> {
+                    .thenIdle(5)
+                    .thenExecute(() -> {
                         // Validate, that the chicken and obsidian are gone
                         helper.assertItemEntityCountIs(Items.OBSIDIAN, chickenPos, 1, 0);
                         helper.assertEntitiesPresent(EntityType.CHICKEN, chickenPos, 0, 1);
-                    })
-                    .thenExecute(() -> {
+
                         // Swap the cell back to the input slot and trigger a transition
                         var cell = getCellFromSpatialIoPortOutput(helper, ioPortPos);
                         insertCell(helper, ioPortPos, cell);
                     })
                     // Wait for button to reset
-                    .thenWaitUntil(() -> helper.assertBlockProperty(buttonPos, ButtonBlock.POWERED, false))
+                    .thenIdle(25)
                     // Transition back
                     .thenExecute(() -> helper.pressButton(buttonPos))
-                    .thenWaitUntil(() -> {
+                    .thenIdle(5)
+                    .thenExecute(() -> {
                         // Validate that the chicken and obsidian are back
                         helper.assertItemEntityCountIs(Items.OBSIDIAN, chickenPos, 1, 1);
                         helper.assertEntitiesPresent(EntityType.CHICKEN, chickenPos, 1, 1);
@@ -163,7 +157,7 @@ public final class SpatialTestPlots {
     private static ItemStack getCellFromSpatialIoPortOutput(PlotTestHelper helper, BlockPos ioPortPos) {
         var spatialIoPort = (SpatialIOPortBlockEntity) helper.getBlockEntity(ioPortPos);
         var cell = spatialIoPort.getInternalInventory().extractItem(1, 1, false);
-        helper.check(AEItems.SPATIAL_CELL2.is(cell), "no spatial cell in output slot", ioPortPos);
+        helper.check(AEItems.SPATIAL_CELL2.isSameAs(cell), "no spatial cell in output slot", ioPortPos);
         return cell;
     }
 
@@ -181,8 +175,8 @@ public final class SpatialTestPlots {
         return new PlotInfo(
                 SpatialStoragePlotManager.INSTANCE.getLevel(),
                 new AABB(
-                        Vec3.atLowerCornerOf(plot.getOrigin()),
-                        Vec3.atLowerCornerOf(plot.getOrigin().offset(plot.getSize()))),
+                        plot.getOrigin(),
+                        plot.getOrigin().offset(plot.getSize())),
                 plot.getOrigin());
     }
 

@@ -27,15 +27,12 @@ import appeng.core.AppEng;
  * Edit in {@code assets/ae2/textures/guis/states.png}.
  */
 public enum Icon {
+
     // ROW 0
     REDSTONE_LOW(0, 0),
     REDSTONE_HIGH(16, 0),
     REDSTONE_PULSE(32, 0),
     REDSTONE_IGNORE(48, 0),
-    REDSTONE_OFF(64, 0),
-    REDSTONE_ON(80, 0),
-    REDSTONE_ABOVE_EQUAL(192, 0),
-    REDSTONE_BELOW(208, 0),
     // CLEAR, STASH
     CLEAR(96, 0),
     ENTER(112, 0),
@@ -55,7 +52,6 @@ public enum Icon {
     VIEW_MODE_CRAFTING(48, 16),
     BLOCKING_MODE_NO(64, 16),
     BLOCKING_MODE_YES(80, 16),
-    BACK(96, 16),
     TRANSPARENT_FACADES_OFF(96, 16),
     TRANSPARENT_FACADES_ON(112, 16),
     TYPE_FILTER_ITEMS(128, 16),
@@ -74,10 +70,6 @@ public enum Icon {
     SEARCH_REI_AUTO_CLEAR(160, 32),
     BACKGROUND_PLATE(224, 32),
     BACKGROUND_DUST(240, 32),
-    TAB_CRAFTING(0, 32),
-    TAB_PROCESSING(16, 32),
-    TAB_SMITHING(32, 32),
-    TAB_STONECUTTING(48, 32),
 
     // ROW 3
     ARROW_UP(0, 48),
@@ -99,12 +91,11 @@ public enum Icon {
     SORT_BY_NAME(0, 64),
     SORT_BY_AMOUNT(16, 64),
     // WRENCH | PARTITION STORAGE
-    COG(32, 64),
-    COG_DISABLED(48, 64),
+    WRENCH(32, 64),
+    WRENCH_DISABLED(48, 64),
     LEVEL_ITEM(64, 64),
     SORT_BY_INVENTORY_TWEAKS(80, 64),
     SORT_BY_MOD(96, 64),
-    PRIORITY(144, 64),
     BACKGROUND_VIEW_CELL(224, 64),
     BACKGROUND_WIRELESS_TERM(240, 64),
 
@@ -130,9 +121,8 @@ public enum Icon {
     INSCRIBER_COMBINED_SIDES(96, 96),
     AUTO_EXPORT_OFF(112, 96),
     AUTO_EXPORT_ON(128, 96),
-    INSCRIBER_BUFFER_4(144, 96),
-    INSCRIBER_BUFFER_64(160, 96),
-    INSCRIBER_BUFFER_1(176, 96),
+    INSCRIBER_BUFFER_LOW(144, 96),
+    INSCRIBER_BUFFER_HIGH(160, 96),
     BACKGROUND_WIRELESS_BOOSTER(240, 96),
 
     // ROW 7
@@ -146,13 +136,10 @@ public enum Icon {
     VALID(16, 128),
     WHITELIST(32, 128),
     BLACKLIST(48, 128),
-    HORIZONTAL_TAB(128, 128, 22, 22),
-    HORIZONTAL_TAB_SELECTED(128, 150, 22, 22),
-    HORIZONTAL_TAB_FOCUS(150, 128, 22, 22),
+    HORIZONTAL_TAB(128, 128, 20, 22),
+    HORIZONTAL_TAB_SELECTED(128, 150, 20, 22),
+    HORIZONTAL_TAB_FOCUS(148, 128, 20, 22),
     BACKGROUND_BLANK_PATTERN(240, 128),
-    TOOLBAR_BUTTON_BACKGROUND(176, 128, 18, 20),
-    TOOLBAR_BUTTON_BACKGROUND_FOCUS(194, 128, 18, 20),
-    TOOLBAR_BUTTON_BACKGROUND_HOVER(212, 128, 18, 20),
 
     // ROW 9
     ACCESS_WRITE(0, 144),
@@ -172,13 +159,12 @@ public enum Icon {
 
     // ROW 11
     COPY_MODE_ON(80, 176),
-    BACKGROUND_SPATIAL_CELL_NO_SHADOW(224, 176),
     BACKGROUND_SPATIAL_CELL(240, 176),
 
     // ROW 12
     COPY_MODE_OFF(80, 192),
     TAB_BUTTON_BACKGROUND_BORDERLESS(128, 192, 25, 22),
-    TAB_BUTTON_BACKGROUND(160, 192, 20, 20),
+    TAB_BUTTON_BACKGROUND(160, 192, 22, 22),
     SLOT_BACKGROUND(192, 192, 18, 18),
     BACKGROUND_FUEL(240, 192),
 
@@ -200,28 +186,14 @@ public enum Icon {
     SCHEDULING_RANDOM(32, 240),
     OVERLAY_OFF(48, 240),
     OVERLAY_ON(64, 240),
-
-    // Small Icons
-    S_ARROW_UP(224, 192, 8, 8),
-    S_ARROW_DOWN(232, 192, 8, 8),
-    S_CLEAR(224, 200, 8, 8),
-    S_CYCLE(232, 200, 8, 8),
-    S_SUBSTITUTION_ENABLED(224, 208, 8, 8),
-    S_SUBSTITUTION_DISABLED(232, 208, 8, 8),
-    S_FLUID_SUBSTITUTION_ENABLED(224, 216, 8, 8),
-    S_FLUID_SUBSTITUTION_DISABLED(232, 216, 8, 8),
-    S_STORAGE(208, 224, 10, 10),
-    S_PROCESSOR(208, 234, 10, 10),
-    S_CRAFT(208, 244, 10, 10),
-    S_TERMINAL(192, 224, 10, 10),
-    S_MACHINE(192, 234, 10, 10);
+    TOOLBAR_BUTTON_BACKGROUND(240, 240);
 
     public final int x;
     public final int y;
     public final int width;
     public final int height;
 
-    public static final ResourceLocation TEXTURE = AppEng.makeId("textures/guis/states.png");
+    public static final ResourceLocation TEXTURE = new ResourceLocation(AppEng.MOD_ID, "textures/guis/states.png");
     public static final int TEXTURE_WIDTH = 256;
     public static final int TEXTURE_HEIGHT = 256;
 

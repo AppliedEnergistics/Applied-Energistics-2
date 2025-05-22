@@ -1,17 +1,12 @@
 package appeng.block.crafting;
 
-import com.mojang.serialization.Codec;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 /**
- * Extends {@link Direction} with an 'all' key.
+ * Extends {@link net.minecraft.core.Direction} with an 'all' key.
  */
 public enum PushDirection implements StringRepresentable {
     DOWN(Direction.DOWN),
@@ -22,12 +17,7 @@ public enum PushDirection implements StringRepresentable {
     EAST(Direction.EAST),
     ALL;
 
-    public static final Codec<PushDirection> CODEC = StringRepresentable.fromEnum(PushDirection::values);
-
-    public static final StreamCodec<FriendlyByteBuf, PushDirection> STREAM_CODEC = NeoForgeStreamCodecs
-            .enumCodec(PushDirection.class);
-
-    @Nullable
+    @org.jetbrains.annotations.Nullable
     private final Direction direction;
 
     PushDirection(Direction direction) {
@@ -38,7 +28,7 @@ public enum PushDirection implements StringRepresentable {
         this.direction = null;
     }
 
-    @Nullable
+    @org.jetbrains.annotations.Nullable
     public Direction getDirection() {
         return direction;
     }

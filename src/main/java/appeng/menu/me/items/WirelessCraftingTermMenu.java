@@ -20,7 +20,7 @@ public class WirelessCraftingTermMenu extends CraftingTermMenu {
             .create(WirelessCraftingTermMenu::new, WirelessCraftingTerminalMenuHost.class)
             .build("wirelesscraftingterm");
 
-    private final WirelessCraftingTerminalMenuHost<?> menuHost;
+    private final WirelessCraftingTerminalMenuHost menuHost;
 
     public WirelessCraftingTermMenu(int id, Inventory ip, WirelessCraftingTerminalMenuHost monitorable) {
         super(TYPE, id, ip, monitorable, false);
@@ -28,7 +28,7 @@ public class WirelessCraftingTermMenu extends CraftingTermMenu {
         this.menuHost = monitorable;
     }
 
-    public IGridNode getGridNode() {
+    public IGridNode getNetworkNode() {
         return menuHost.getActionableNode();
     }
 }

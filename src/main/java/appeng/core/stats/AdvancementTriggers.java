@@ -18,50 +18,26 @@
 
 package appeng.core.stats;
 
-import java.util.Optional;
-
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.PlayerTrigger;
-
 public class AdvancementTriggers {
     /**
      * Has a network with 8 channels
      */
-    public static final PlayerTrigger NETWORK_APPRENTICE = new PlayerTrigger();
+    public static final AppEngAdvancementTrigger NETWORK_APPRENTICE = new AppEngAdvancementTrigger(
+            "network_apprentice");
     /**
      * Has a network with 128 channels
      */
-    public static final PlayerTrigger NETWORK_ENGINEER = new PlayerTrigger();
+    public static final AppEngAdvancementTrigger NETWORK_ENGINEER = new AppEngAdvancementTrigger("network_engineer");
     /**
      * Has a network with 2048 channels
      */
-    public static final PlayerTrigger NETWORK_ADMIN = new PlayerTrigger();
+    public static final AppEngAdvancementTrigger NETWORK_ADMIN = new AppEngAdvancementTrigger("network_admin");
     /**
      * Entered spatial dimension
      */
-    public static final PlayerTrigger SPATIAL_EXPLORER = new PlayerTrigger();
+    public static final AppEngAdvancementTrigger SPATIAL_EXPLORER = new AppEngAdvancementTrigger("spatial_explorer");
     /**
      * Placed a storage bus on an interface.
      */
-    public static final PlayerTrigger RECURSIVE = new PlayerTrigger();
-
-    public static Criterion<?> networkApprenticeCriterion() {
-        return NETWORK_APPRENTICE.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()));
-    }
-
-    public static Criterion<?> networkEngineerCriterion() {
-        return NETWORK_ENGINEER.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()));
-    }
-
-    public static Criterion<?> networkAdminCriterion() {
-        return NETWORK_ADMIN.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()));
-    }
-
-    public static Criterion<?> spatialExplorerCriterion() {
-        return SPATIAL_EXPLORER.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()));
-    }
-
-    public static Criterion<?> recursiveCriterion() {
-        return RECURSIVE.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()));
-    }
+    public static final AppEngAdvancementTrigger RECURSIVE = new AppEngAdvancementTrigger("recursive_networking");
 }

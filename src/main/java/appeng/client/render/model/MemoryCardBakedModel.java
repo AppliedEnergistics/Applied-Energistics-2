@@ -19,6 +19,7 @@
 package appeng.client.render.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -41,40 +42,42 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
-import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.IMemoryCard;
-import appeng.api.implementations.items.MemoryCardColors;
 import appeng.api.util.AEColor;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AELog;
 
 class MemoryCardBakedModel implements BakedModel {
+    private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[] { AEColor.TRANSPARENT, AEColor.TRANSPARENT,
+            AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
+            AEColor.TRANSPARENT, };
+
     private final BakedModel baseModel;
 
     private final TextureAtlasSprite texture;
 
-    private final MemoryCardColors colors;
+    private final AEColor[] colorCode;
 
-    private final Cache<MemoryCardColors, MemoryCardBakedModel> modelCache;
+    private final Cache<CacheKey, MemoryCardBakedModel> modelCache;
 
     private final ImmutableList<BakedQuad> generalQuads;
 
     MemoryCardBakedModel(BakedModel baseModel, TextureAtlasSprite texture) {
-        this(baseModel, texture, MemoryCardColors.DEFAULT, createCache());
+        this(baseModel, texture, DEFAULT_COLOR_CODE, createCache());
     }
 
-    private MemoryCardBakedModel(BakedModel baseModel, TextureAtlasSprite texture, MemoryCardColors colors,
-            Cache<MemoryCardColors, MemoryCardBakedModel> modelCache) {
+    private MemoryCardBakedModel(BakedModel baseModel, TextureAtlasSprite texture, AEColor[] hash,
+            Cache<CacheKey, MemoryCardBakedModel> modelCache) {
         this.baseModel = baseModel;
         this.texture = texture;
-        this.colors = colors;
+        this.colorCode = hash;
         this.generalQuads = ImmutableList.copyOf(this.buildGeneralQuads());
         this.modelCache = modelCache;
     }
 
-    private static Cache<MemoryCardColors, MemoryCardBakedModel> createCache() {
+    private static Cache<CacheKey, MemoryCardBakedModel> createCache() {
         return CacheBuilder.newBuilder().maximumSize(100).build();
     }
 
@@ -100,10 +103,10 @@ class MemoryCardBakedModel implements BakedModel {
 
         for (int x = 0; x < 4; x++) {
             for (int y = 0; y < 2; y++) {
-                final AEColor color = this.colors.get(x, y);
+                final AEColor color = this.colorCode[x + y * 4];
 
                 builder.setColorRGB(color.mediumVariant);
-                builder.addCube(8 + x, 8 + 1 - y, 7.5f, 8 + x + 1, 8 + 1 - y + 1, 8.5f);
+                builder.addCube(7 + x, 8 + 1 - y, 7.5f, 7 + x + 1, 8 + 1 - y + 1, 8.5f);
             }
         }
 
@@ -148,9 +151,9 @@ class MemoryCardBakedModel implements BakedModel {
                     LivingEntity entity, int seed) {
                 try {
                     if (stack.getItem() instanceof IMemoryCard memoryCard) {
-                        var colors = stack.getOrDefault(AEComponents.MEMORY_CARD_COLORS, MemoryCardColors.DEFAULT);
+                        final AEColor[] colors = memoryCard.getColorCode(stack);
 
-                        return MemoryCardBakedModel.this.modelCache.get(colors,
+                        return MemoryCardBakedModel.this.modelCache.get(new CacheKey(colors),
                                 () -> new MemoryCardBakedModel(MemoryCardBakedModel.this.baseModel,
                                         MemoryCardBakedModel.this.texture, colors,
                                         MemoryCardBakedModel.this.modelCache));
@@ -171,4 +174,34 @@ class MemoryCardBakedModel implements BakedModel {
         return this;
     }
 
+    private static class CacheKey {
+        private final AEColor[] key;
+
+        CacheKey(AEColor[] key) {
+            this.key = key;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + Arrays.hashCode(this.key);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (this.getClass() != obj.getClass()) {
+                return false;
+            }
+            CacheKey other = (CacheKey) obj;
+            return Arrays.equals(this.key, other.key);
+        }
+    }
 }

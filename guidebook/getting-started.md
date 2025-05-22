@@ -90,7 +90,7 @@ The inscriber is a sided machine, much like the vanilla furnace. Inserting from 
 
 To facilitate automation with hoppers (and possibly reduce pipe spaghetti), inscribers can be rotated with a <ItemLink id="certus_quartz_wrench" />.
 
-Produce a few of each type of processor in preparation for the next step, making a very basic ME system. Automating processor production is "[left as an exercise for the reader](example-setups/processor-automation.md)".
+Produce a few of each type of processor in preparation for the next step, making a very basic ME system. Automating processor production is "left as an exercise for the reader".
 
 ## Matter Energy Tech: ME Networks and Storage
 
@@ -113,8 +113,8 @@ The <ItemLink id="chest" /> shows you the contents of the Cell as soon as its pl
 can add and remove items from it as if it were a <ItemLink id="minecraft:chest" />, with the exception that the items are
 actually stored in the Storage cells, and not the <ItemLink id="chest" /> itself.
 
-The <ItemLink id="chest" /> is quite situational and limited in utility. To really
-take advantage of AE2, you need to set up an [ME Network](ae2-mechanics/me-network-connections.md).
+While the <ItemLink id="chest" /> is a great way to get introduced to the concept of ME, to really
+take advantage you need to set up an [ME Network](ae2-mechanics/me-network-connections.md).
 
 ## Your Very First ME System
 
@@ -150,7 +150,7 @@ automate some processing.
 
 A great example of this is to place a <ItemLink id="export_bus" /> on the top of a furnace to
 dump in ores, and a <ItemLink id="import_bus" />
-on the bottom of the furnace to extract furnaced ores.
+on the bottom of the furance to extract furnaced ores.
 
 The <ItemLink id="export_bus" /> lets you export items from the network, into the attached
 inventory, while the <ItemLink id="import_bus" /> imports items from the attached inventory into

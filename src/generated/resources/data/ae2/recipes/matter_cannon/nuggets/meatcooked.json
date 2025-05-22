@@ -1,0 +1,16 @@
+{
+  "type": "ae2:matter_cannon",
+  "ammo": {
+    "tag": "forge:nuggets/meatcooked"
+  },
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:tag_empty",
+        "tag": "forge:nuggets/meatcooked"
+      }
+    }
+  ],
+  "weight": 32.0
+}

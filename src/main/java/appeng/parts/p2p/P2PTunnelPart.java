@@ -23,23 +23,21 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnit;
+import appeng.api.config.PowerUnits;
 import appeng.api.features.P2PTunnelAttunement;
-import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.IMemoryCard;
-import appeng.api.implementations.items.MemoryCardColors;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.networking.GridFlags;
 import appeng.api.parts.IPart;
@@ -49,14 +47,15 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.util.AECableType;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModelData;
 import appeng.core.AEConfig;
-import appeng.items.tools.MemoryCardItem;
 import appeng.me.service.P2PService;
 import appeng.parts.AEBasePart;
-import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePart {
+    private static final String CONFIG_NBT_TYPE = "p2pType";
+    private static final String CONFIG_NBT_FREQ = "p2pFreq";
+
     private boolean output;
     private short freq;
 
@@ -108,21 +107,21 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
+    public void readFromNBT(CompoundTag data) {
+        super.readFromNBT(data);
         this.setOutput(data.getBoolean("output"));
         this.freq = data.getShort("freq");
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
+    public void writeToNBT(CompoundTag data) {
+        super.writeToNBT(data);
         data.putBoolean("output", this.isOutput());
         data.putShort("freq", this.getFrequency());
     }
 
     @Override
-    public boolean readFromStream(RegistryFriendlyByteBuf data) {
+    public boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final short oldf = this.freq;
         this.freq = data.readShort();
@@ -130,7 +129,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
     }
 
     @Override
-    public void writeToStream(RegistryFriendlyByteBuf data) {
+    public void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeShort(this.getFrequency());
     }
@@ -146,9 +145,42 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
     }
 
     @Override
-    public boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos) {
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
+        if (isClientSide()) {
+            return true;
+        }
+
+        if (hand == InteractionHand.OFF_HAND) {
+            return false;
+        }
+
+        var is = player.getItemInHand(hand);
+
+        // Prefer restoring from memory card
+        if (!is.isEmpty() && is.getItem() instanceof IMemoryCard mc) {
+            var configData = mc.getData(is);
+
+            // Change the actual tunnel type and import settings when the encoded type is a P2P
+            var partItem = IPartItem.byId(new ResourceLocation(configData.getString(CONFIG_NBT_TYPE)));
+            if (partItem != null && P2PTunnelPart.class.isAssignableFrom(partItem.getPartClass())) {
+                IPart newBus = this;
+                if (newBus.getPartItem() != partItem) {
+                    newBus = this.getHost().replacePart(partItem, this.getSide(), player, hand);
+                }
+
+                if (newBus instanceof P2PTunnelPart<?> newTunnel) {
+                    newTunnel.importSettings(SettingsFrom.MEMORY_CARD, configData, player);
+                }
+
+                mc.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
+                return true;
+            }
+            mc.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
+            return false;
+        }
+
         // Attunement via held item replaces the tunnel part with the desired target part type
-        var newType = P2PTunnelAttunement.getTunnelPartByTriggerItem(heldItem);
+        var newType = P2PTunnelAttunement.getTunnelPartByTriggerItem(is);
         if (!newType.isEmpty() && newType.getItem() != getPartItem()
                 && newType.getItem() instanceof IPartItem<?> partItem) {
             var oldOutput = isOutput();
@@ -156,98 +188,82 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
 
             // If we were able to replace the tunnel part, copy over frequency/output state
             var tunnel = getHost().replacePart(partItem, getSide(), player, hand);
-            if (!isClientSide()) {
-                if (tunnel instanceof P2PTunnelPart<?> newTunnel) {
-                    newTunnel.setOutput(oldOutput);
-                    newTunnel.onTunnelNetworkChange();
+            if (tunnel instanceof P2PTunnelPart newTunnel) {
+                newTunnel.setOutput(oldOutput);
+                newTunnel.onTunnelNetworkChange();
 
-                    newTunnel.getMainNode().ifPresent(grid -> {
-                        P2PService.get(grid).updateFreq(newTunnel, myFreq);
-                    });
-                }
+                newTunnel.getMainNode().ifPresent(grid -> {
+                    P2PService.get(grid).updateFreq(newTunnel, myFreq);
+                });
             }
 
             Platform.notifyBlocksOfNeighbors(getLevel(), getBlockEntity().getBlockPos());
             return true;
         }
 
-        if (isClientSide() || hand == InteractionHand.OFF_HAND) {
-            return false;
-        }
-
-        // Prefer restoring from memory card
-        if (heldItem.getItem() instanceof IMemoryCard mc) {
-            if (InteractionUtil.isInAlternateUseMode(player)) {
-                var storedFrequency = heldItem.get(AEComponents.EXPORTED_P2P_FREQUENCY);
-
-                short newFreq = this.getFrequency();
-                final boolean wasOutput = this.isOutput();
-                this.setOutput(false);
-
-                var needsNewFrequency = wasOutput || newFreq == 0;
-
-                var grid = getMainNode().getGrid();
-                if (grid != null) {
-                    var p2p = P2PService.get(grid);
-                    if (needsNewFrequency) {
-                        newFreq = p2p.newFrequency();
-                    }
-
-                    p2p.updateFreq(this, newFreq);
-                }
-
-                this.onTunnelConfigChange();
-
-                MemoryCardItem.clearCard(heldItem);
-                heldItem.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getPartItem().asItem().getDescription());
-                heldItem.applyComponents(exportSettings(SettingsFrom.MEMORY_CARD));
-
-                if (needsNewFrequency) {
-                    mc.notifyUser(player, MemoryCardMessages.SETTINGS_RESET);
-                } else {
-                    mc.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
-                }
-                return true;
-            } else {
-                // Change the actual tunnel type and import settings when the encoded type is a P2P
-                var p2pTunnelItem = heldItem.get(AEComponents.EXPORTED_P2P_TYPE);
-                if (p2pTunnelItem instanceof IPartItem<?> partItem
-                        && P2PTunnelPart.class.isAssignableFrom(partItem.getPartClass())) {
-                    IPart newBus = this;
-                    if (newBus.getPartItem() != partItem) {
-                        newBus = this.getHost().replacePart(partItem, this.getSide(), player, hand);
-                    }
-
-                    if (newBus instanceof P2PTunnelPart<?> newTunnel) {
-                        newTunnel.importSettings(SettingsFrom.MEMORY_CARD, heldItem.getComponents(), player);
-                    }
-
-                    mc.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
-                    return true;
-                }
-                mc.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
-            }
-            return false;
-        }
-
         return false;
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
+    public boolean onPartShiftActivate(Player player, InteractionHand hand, Vec3 pos) {
+        final ItemStack is = player.getInventory().getSelected();
+        if (!is.isEmpty() && is.getItem() instanceof IMemoryCard mc) {
+            if (isClientSide()) {
+                return true;
+            }
+
+            final CompoundTag data = mc.getData(is);
+            final short storedFrequency = data.getShort("freq");
+
+            short newFreq = this.getFrequency();
+            final boolean wasOutput = this.isOutput();
+            this.setOutput(false);
+
+            final boolean needsNewFrequency = wasOutput || this.getFrequency() == 0 || storedFrequency == newFreq;
+
+            var grid = getMainNode().getGrid();
+            if (grid != null) {
+                var p2p = P2PService.get(grid);
+                if (needsNewFrequency) {
+                    newFreq = p2p.newFrequency();
+                }
+
+                p2p.updateFreq(this, newFreq);
+            }
+
+            this.onTunnelConfigChange();
+
+            var type = getPartItem().asItem().getDescriptionId();
+
+            exportSettings(SettingsFrom.MEMORY_CARD, data);
+
+            mc.setMemoryCardContents(is, type, data);
+            if (needsNewFrequency) {
+                mc.notifyUser(player, MemoryCardMessages.SETTINGS_RESET);
+            } else {
+                mc.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         super.importSettings(mode, input, player);
 
-        var frequency = input.get(AEComponents.EXPORTED_P2P_FREQUENCY);
-        if (frequency != null) {
+        if (input.contains(CONFIG_NBT_FREQ, Tag.TAG_SHORT)) {
+            var freq = input.getShort(CONFIG_NBT_FREQ);
+
             // Only make this an output, if it's not already on the frequency.
             // Otherwise, the tunnel input may be made unusable by accidentally loading it with its own settings
-            if (frequency != this.freq) {
+            if (freq != this.freq) {
                 setOutput(true);
                 var grid = getMainNode().getGrid();
                 if (grid != null) {
-                    P2PService.get(grid).updateFreq(this, frequency);
+                    P2PService.get(grid).updateFreq(this, freq);
                 } else {
-                    setFrequency(frequency); // Remember it for when we actually join the grid
+                    setFrequency(freq); // Remember it for when we actually join the grid
                     onTunnelNetworkChange();
                 }
 
@@ -256,21 +272,21 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder) {
-        super.exportSettings(mode, builder);
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
+        super.exportSettings(mode, output);
 
         // Save the tunnel type
         if (mode == SettingsFrom.MEMORY_CARD) {
-            builder.set(AEComponents.EXPORTED_P2P_TYPE, getPartItem().asItem());
+            output.putString(CONFIG_NBT_TYPE, IPartItem.getId(getPartItem()).toString());
 
             if (freq != 0) {
-                builder.set(AEComponents.EXPORTED_P2P_FREQUENCY, freq);
+                output.putShort(CONFIG_NBT_FREQ, freq);
 
                 var colors = Platform.p2p().toColors(freq);
-                // the P2P freq only has 4 colors, so we stretch em out a bit
-                builder.set(AEComponents.MEMORY_CARD_COLORS, new MemoryCardColors(
-                        colors[0], colors[0], colors[1], colors[1],
-                        colors[2], colors[2], colors[3], colors[3]));
+                var colorCode = new int[] { colors[0].ordinal(), colors[0].ordinal(), colors[1].ordinal(),
+                        colors[1].ordinal(), colors[2].ordinal(), colors[2].ordinal(), colors[3].ordinal(),
+                        colors[3].ordinal(), };
+                output.putIntArray(IMemoryCard.NBT_COLOR_CODE, colorCode);
             }
         }
     }
@@ -281,14 +297,14 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
     public void onTunnelNetworkChange() {
     }
 
-    protected void deductEnergyCost(double energyTransported, PowerUnit typeTransported) {
+    protected void deductEnergyCost(double energyTransported, PowerUnits typeTransported) {
         var costFactor = AEConfig.instance().getP2PTunnelEnergyTax();
         if (costFactor <= 0) {
             return;
         }
 
         getMainNode().ifPresent(grid -> {
-            var tax = typeTransported.convertTo(PowerUnit.AE, energyTransported * costFactor);
+            var tax = typeTransported.convertTo(PowerUnits.AE, energyTransported * costFactor);
             grid.getEnergyService().extractAEPower(tax, Actionable.MODULATE, PowerMultiplier.CONFIG);
         });
     }
@@ -310,8 +326,8 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
      * Use {@link #deductEnergyCost} or {@link #deductTransportCost}.
      */
     @Deprecated(forRemoval = true, since = "1.21.1")
-    protected void queueTunnelDrain(PowerUnit unit, double f) {
-        final double ae_to_tax = unit.convertTo(PowerUnit.AE, f * 0.05);
+    protected void queueTunnelDrain(PowerUnits unit, double f) {
+        final double ae_to_tax = unit.convertTo(PowerUnits.AE, f * 0.05);
 
         getMainNode().ifPresent(grid -> {
             grid.getEnergyService().extractAEPower(ae_to_tax, Actionable.MODULATE, PowerMultiplier.CONFIG);

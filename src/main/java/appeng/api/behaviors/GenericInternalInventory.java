@@ -46,20 +46,7 @@ public interface GenericInternalInventory {
     /**
      * Return true if the key would generally be allowed, ignoring the current state of the inventory.
      */
-    boolean isSupportedType(AEKeyType type);
-
-    /**
-     * Return true if the key would generally be allowed, ignoring the current state of the inventory.
-     */
-    default boolean isSupportedType(AEKey what) {
-        return isSupportedType(what.getType());
-    }
-
-    /**
-     * Return true if the key is {@link #isSupportedType(AEKey) of a supported type} and would pass a potential filter
-     * configured for the given slot.
-     */
-    boolean isAllowedIn(int slot, AEKey what);
+    boolean isAllowed(AEKey what);
 
     /**
      * Try to insert something into a given slot.

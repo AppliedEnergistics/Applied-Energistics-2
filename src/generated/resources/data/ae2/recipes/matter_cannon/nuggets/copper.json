@@ -1,0 +1,16 @@
+{
+  "type": "ae2:matter_cannon",
+  "ammo": {
+    "tag": "forge:nuggets/copper"
+  },
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:tag_empty",
+        "tag": "forge:nuggets/copper"
+      }
+    }
+  ],
+  "weight": 63.546
+}

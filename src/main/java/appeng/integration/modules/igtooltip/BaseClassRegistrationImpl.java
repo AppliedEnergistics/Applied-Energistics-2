@@ -15,7 +15,7 @@ import appeng.api.integrations.igtooltip.BaseClassRegistration;
 import appeng.api.parts.IPartHost;
 
 public class BaseClassRegistrationImpl implements BaseClassRegistration {
-    private static final Logger LOG = LoggerFactory.getLogger(BaseClassRegistrationImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseClassRegistrationImpl.class);
 
     private final List<BaseClass> baseClasses = new ArrayList<>();
     private final Set<BaseClass> partHostClasses = new HashSet<>();
@@ -27,7 +27,7 @@ public class BaseClassRegistrationImpl implements BaseClassRegistration {
         // If any superclass is already in the list, don't add it
         for (var registeredClass : baseClasses) {
             if (registeredClass.isSuperclassOf(defaultClass)) {
-                LOG.info("Not registering {}, because superclass {} is already registered.",
+                LOGGER.info("Not registering {}, because superclass {} is already registered.",
                         defaultClass, registeredClass);
                 return;
             }
@@ -36,7 +36,7 @@ public class BaseClassRegistrationImpl implements BaseClassRegistration {
         // Remove any subclasses of this class
         baseClasses.removeIf(otherClass -> {
             if (defaultClass.isSuperclassOf(otherClass)) {
-                LOG.info("Replacing default server-data registration for {} with superclass {}.",
+                LOGGER.info("Replacing default server-data registration for {} with superclass {}.",
                         defaultClass, otherClass);
                 return true;
             }

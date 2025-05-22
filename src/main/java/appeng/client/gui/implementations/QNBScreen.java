@@ -43,7 +43,7 @@ public class QNBScreen extends AEBaseScreen<QNBMenu> {
     protected List<Component> getTooltipFromContainerItem(ItemStack stack) {
         var tooltip = super.getTooltipFromContainerItem(stack);
 
-        if (AEItems.QUANTUM_ENTANGLED_SINGULARITY.is(stack)
+        if (AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(stack)
                 && !QuantumBridgeBlockEntity.isValidEntangledSingularity(stack)) {
             tooltip = new ArrayList<>(tooltip);
             tooltip.add(Tooltips.of(GuiText.InvalidSingularity, Tooltips.RED));

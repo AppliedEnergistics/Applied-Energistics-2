@@ -20,12 +20,18 @@ package appeng.items.parts;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.EmptyBlockGetter;
 import net.minecraft.world.level.Level;
@@ -35,18 +41,21 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.api.ids.AEComponents;
 import appeng.api.ids.AETags;
 import appeng.api.implementations.items.IFacadeItem;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartHelper;
+import appeng.core.AEConfig;
+import appeng.core.definitions.AEItems;
 import appeng.facade.FacadePart;
 import appeng.items.AEBaseItem;
 
 public class FacadeItem extends AEBaseItem implements IFacadeItem {
 
-    public FacadeItem(Properties properties) {
+    private static final String NBT_ITEM_ID = "item";
+
+    public FacadeItem(Item.Properties properties) {
         super(properties);
     }
 
@@ -133,13 +142,12 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
     }
 
     @Override
-    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
         // Don't show in creative mode, since it's not useful without NBT
     }
 
     public ItemStack createFacadeForItem(ItemStack itemStack, boolean returnItem) {
-        if (itemStack.isEmpty() || !itemStack.getComponentsPatch().isEmpty()
-                || !(itemStack.getItem() instanceof BlockItem blockItem)) {
+        if (itemStack.isEmpty() || itemStack.hasTag() || !(itemStack.getItem() instanceof BlockItem blockItem)) {
             return ItemStack.EMPTY;
         }
 
@@ -148,16 +156,18 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
             return ItemStack.EMPTY;
         }
 
+        // We only support the default state for facades. Sorry.
         BlockState blockState = block.defaultBlockState();
 
+        final boolean areBlockEntitiesEnabled = AEConfig.instance().isBlockEntityFacadesEnabled();
         final boolean isWhiteListed = block.builtInRegistryHolder().is(AETags.FACADE_BLOCK_WHITELIST);
         final boolean isModel = blockState.getRenderShape() == RenderShape.MODEL;
 
         final BlockState defaultState = block.defaultBlockState();
         final boolean isBlockEntity = defaultState.hasBlockEntity();
-        final boolean isFullCube = defaultState.isCollisionShapeFullBlock(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
+        final boolean isFullCube = defaultState.isRedstoneConductor(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
 
-        final boolean isBlockEntityAllowed = !isBlockEntity || isWhiteListed;
+        final boolean isBlockEntityAllowed = !isBlockEntity || areBlockEntitiesEnabled && isWhiteListed;
         final boolean isBlockAllowed = isFullCube || isWhiteListed;
 
         if (isModel && isBlockEntityAllowed && isBlockAllowed) {
@@ -171,8 +181,10 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
     }
 
     public ItemStack createFacadeForItemUnchecked(ItemStack itemStack) {
-        var is = new ItemStack(this);
-        is.set(AEComponents.FACADE_ITEM, itemStack.getItemHolder());
+        final ItemStack is = new ItemStack(this);
+        final CompoundTag data = new CompoundTag();
+        data.putString(NBT_ITEM_ID, BuiltInRegistries.ITEM.getKey(itemStack.getItem()).toString());
+        is.setTag(data);
         return is;
     }
 
@@ -180,19 +192,25 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
     public FacadePart createPartFromItemStack(ItemStack is, Direction side) {
         final ItemStack in = this.getTextureItem(is);
         if (!in.isEmpty()) {
-            return new FacadePart(getTextureBlockState(is), side);
+            return new FacadePart(is, side);
         }
         return null;
     }
 
     @Override
     public ItemStack getTextureItem(ItemStack is) {
-        var baseItem = is.get(AEComponents.FACADE_ITEM);
+        CompoundTag nbt = is.getTag();
 
-        if (baseItem == null) {
+        if (nbt == null || !nbt.contains(NBT_ITEM_ID, Tag.TAG_STRING)) {
             return ItemStack.EMPTY;
         }
 
+        var itemId = ResourceLocation.tryParse(nbt.getString(NBT_ITEM_ID));
+        if (itemId == null) {
+            return ItemStack.EMPTY;
+        }
+
+        Item baseItem = BuiltInRegistries.ITEM.get(itemId);
         return new ItemStack(baseItem, 1);
     }
 
@@ -212,5 +230,21 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
         }
 
         return block.defaultBlockState();
+    }
+
+    public ItemStack createFromID(int id) {
+        ItemStack facadeStack = AEItems.FACADE.stack();
+
+        // Convert back to a registry name...
+        Item item = BuiltInRegistries.ITEM.byId(id);
+        if (item == Items.AIR) {
+            return ItemStack.EMPTY;
+        }
+
+        final CompoundTag facadeTag = new CompoundTag();
+        facadeTag.putString(NBT_ITEM_ID, BuiltInRegistries.ITEM.getKey(item).toString());
+        facadeStack.setTag(facadeTag);
+
+        return facadeStack;
     }
 }

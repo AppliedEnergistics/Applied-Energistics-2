@@ -1,20 +1,17 @@
 package appeng.parts.automation;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.behaviors.ExternalStorageStrategy;
@@ -43,10 +40,8 @@ public final class StackWorldBehaviors {
         registerExternalStorageStrategy(AEKeyType.fluids(), ForgeExternalStorageStrategy::createFluid);
         registerPlacementStrategy(AEKeyType.fluids(), FluidPlacementStrategy::new);
         registerPlacementStrategy(AEKeyType.items(), ItemPlacementStrategy::new);
-        registerPickupStrategy(AEKeyType.fluids(), (level, pos, side, host, enchantments,
-                owningPlayerId) -> new FluidPickupStrategy(level, pos, side, host, enchantments, owningPlayerId));
-        registerPickupStrategy(AEKeyType.items(), (level, pos, side, host, enchantments,
-                owningPlayerId) -> new ItemPickupStrategy(level, pos, side, host, enchantments, owningPlayerId));
+        registerPickupStrategy(AEKeyType.fluids(), FluidPickupStrategy::new);
+        registerPickupStrategy(AEKeyType.items(), ItemPickupStrategy::new);
     }
 
     private StackWorldBehaviors() {
@@ -79,29 +74,11 @@ public final class StackWorldBehaviors {
         return what -> importStrategies.getMap().containsKey(what.getType());
     }
 
-    public static Predicate<AEKeyType> hasImportStrategyTypeFilter() {
-        return type -> importStrategies.getMap().containsKey(type);
-    }
-
-    /**
-     * {@return set of key types that have an import strategy}
-     */
-    public static Set<AEKeyType> withImportStrategy() {
-        return Collections.unmodifiableSet(importStrategies.getMap().keySet());
-    }
-
     /**
      * {@return filter matching any key for which there is an export strategy}
      */
     public static AEKeyFilter hasExportStrategyFilter() {
         return what -> exportStrategies.getMap().containsKey(what.getType());
-    }
-
-    /**
-     * {@return set of key types that have an export strategy}
-     */
-    public static Set<AEKeyType> withExportStrategy() {
-        return Collections.unmodifiableSet(exportStrategies.getMap().keySet());
     }
 
     /**
@@ -111,20 +88,10 @@ public final class StackWorldBehaviors {
         return what -> placementStrategies.getMap().containsKey(what.getType());
     }
 
-    /**
-     * {@return set of key types that have a placement strategy}
-     */
-    public static Set<AEKeyType> withPlacementStrategy() {
-        return Collections.unmodifiableSet(placementStrategies.getMap().keySet());
-    }
-
-    public static StackImportStrategy createImportFacade(ServerLevel level, BlockPos fromPos, Direction fromSide,
-            Predicate<AEKeyType> forTypes) {
+    public static StackImportStrategy createImportFacade(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         var strategies = new ArrayList<StackImportStrategy>(importStrategies.getMap().size());
-        for (var entry : importStrategies.getMap().entrySet()) {
-            if (forTypes.test(entry.getKey())) {
-                strategies.add(entry.getValue().create(level, fromPos, fromSide));
-            }
+        for (var supplier : importStrategies.getMap().values()) {
+            strategies.add(supplier.create(level, fromPos, fromSide));
         }
         return new StackImportFacade(strategies);
     }
@@ -157,7 +124,7 @@ public final class StackWorldBehaviors {
     }
 
     public static List<PickupStrategy> createPickupStrategies(ServerLevel level, BlockPos fromPos, Direction fromSide,
-            BlockEntity host, ItemEnchantments enchantments, @Nullable UUID owningPlayerId) {
+            BlockEntity host, Map<Enchantment, Integer> enchantments, @Nullable UUID owningPlayerId) {
         return pickupStrategies.getMap().values()
                 .stream()
                 .map(f -> f.create(level, fromPos, fromSide, host, enchantments, owningPlayerId))

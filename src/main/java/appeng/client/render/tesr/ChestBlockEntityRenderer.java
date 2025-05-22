@@ -39,10 +39,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.api.orientation.BlockOrientation;
-import appeng.blockentity.storage.MEChestBlockEntity;
+import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.client.render.BakedModelUnwrapper;
 import appeng.client.render.DelegateBakedModel;
 import appeng.client.render.model.DriveBakedModel;
@@ -52,7 +52,7 @@ import appeng.core.definitions.AEBlocks;
  * The block entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the
  * LED.
  */
-public class ChestBlockEntityRenderer implements BlockEntityRenderer<MEChestBlockEntity> {
+public class ChestBlockEntityRenderer implements BlockEntityRenderer<ChestBlockEntity> {
 
     private final ModelManager modelManager;
 
@@ -65,7 +65,7 @@ public class ChestBlockEntityRenderer implements BlockEntityRenderer<MEChestBloc
     }
 
     @Override
-    public void render(MEChestBlockEntity chest, float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
+    public void render(ChestBlockEntity chest, float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
             int combinedLight, int combinedOverlay) {
 
         Level level = chest.getLevel();

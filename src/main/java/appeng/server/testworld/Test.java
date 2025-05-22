@@ -10,9 +10,7 @@ public final class Test {
      */
     public int setupTicks = 21;
 
-    public int maxTicks = 150;
-
-    public boolean skyAccess = false;
+    public int maxTicks = 100;
 
     public Test(Consumer<PlotTestHelper> testFunction) {
         this.testFunction = testFunction;
@@ -29,11 +27,6 @@ public final class Test {
 
     public Test maxTicks(int maxTicks) {
         this.maxTicks = maxTicks;
-        return this;
-    }
-
-    public Test withSkyAccess() {
-        this.skyAccess = true;
         return this;
     }
 }

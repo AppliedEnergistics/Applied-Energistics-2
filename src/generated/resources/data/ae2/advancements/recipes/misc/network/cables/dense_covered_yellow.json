@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dyes/black": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:dyes/yellow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_fluix_covered_dense_cable": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:fluix_covered_dense_cable"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ae2:network/cables/dense_covered_yellow"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_fluix_covered_dense_cable",
+      "has_dyes/black",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ae2:network/cables/dense_covered_yellow"
+    ]
+  },
+  "sends_telemetry_event": false
+}

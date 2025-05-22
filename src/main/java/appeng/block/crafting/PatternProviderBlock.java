@@ -18,11 +18,12 @@
 
 package appeng.block.crafting;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -64,22 +65,22 @@ public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlock
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
-            Player player, InteractionHand hand, BlockHitResult hit) {
-        if (InteractionUtil.canWrenchRotate(heldItem)) {
-            setSide(level, pos, hit.getDirection());
-            return ItemInteractionResult.sidedSuccess(level.isClientSide());
+    public InteractionResult onActivated(Level level, BlockPos pos, Player p,
+            InteractionHand hand,
+            @Nullable ItemStack heldItem, BlockHitResult hit) {
+        if (InteractionUtil.isInAlternateUseMode(p)) {
+            return InteractionResult.PASS;
         }
-        return super.useItemOn(heldItem, state, level, pos, player, hand, hit);
-    }
 
-    @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
-            BlockHitResult hitResult) {
+        if (heldItem != null && InteractionUtil.canWrenchRotate(heldItem)) {
+            setSide(level, pos, hit.getDirection());
+            return InteractionResult.sidedSuccess(level.isClientSide());
+        }
+
         var be = this.getBlockEntity(level, pos);
         if (be != null) {
             if (!level.isClientSide()) {
-                be.openMenu(player, MenuLocators.forBlockEntity(be));
+                be.openMenu(p, MenuLocators.forBlockEntity(be));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }

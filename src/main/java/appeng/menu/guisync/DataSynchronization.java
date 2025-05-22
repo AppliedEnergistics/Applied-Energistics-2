@@ -21,10 +21,8 @@ package appeng.menu.guisync;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-
-import it.unimi.dsi.fastutil.shorts.ShortSet;
 
 import appeng.core.AELog;
 
@@ -72,18 +70,18 @@ public class DataSynchronization {
     /**
      * Write the data for all fields to the given buffer, and marks all fields as unchanged.
      */
-    public void writeFull(RegistryFriendlyByteBuf data) {
+    public void writeFull(FriendlyByteBuf data) {
         writeFields(data, true);
     }
 
     /**
      * Write the data for changed fields to the given buffer, and marks all fields as unchanged.
      */
-    public void writeUpdate(RegistryFriendlyByteBuf data) {
+    public void writeUpdate(FriendlyByteBuf data) {
         writeFields(data, false);
     }
 
-    private void writeFields(RegistryFriendlyByteBuf data, boolean includeUnchanged) {
+    private void writeFields(FriendlyByteBuf data, boolean includeUnchanged) {
         for (Map.Entry<Short, SynchronizedField<?>> entry : fields.entrySet()) {
             if (includeUnchanged || entry.getValue().hasChanges()) {
                 data.writeShort(entry.getKey());
@@ -95,7 +93,7 @@ public class DataSynchronization {
         data.writeVarInt(-1);
     }
 
-    public void readUpdate(RegistryFriendlyByteBuf data, ShortSet updatedFields) {
+    public void readUpdate(FriendlyByteBuf data) {
         for (short key = data.readShort(); key != -1; key = data.readShort()) {
             SynchronizedField<?> field = fields.get(key);
             if (field == null) {
@@ -104,7 +102,6 @@ public class DataSynchronization {
             }
 
             field.read(data);
-            updatedFields.add(key);
         }
     }
 

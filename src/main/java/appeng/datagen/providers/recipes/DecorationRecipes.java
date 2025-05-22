@@ -20,12 +20,11 @@ package appeng.datagen.providers.recipes;
 
 import static appeng.datagen.providers.recipes.RecipeCriteria.criterionName;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -63,12 +62,12 @@ public class DecorationRecipes extends AE2RecipeProvider {
             { AEBlocks.QUARTZ_PILLAR, AEBlocks.QUARTZ_PILLAR_SLAB, AEBlocks.QUARTZ_PILLAR_STAIRS,
                     AEBlocks.QUARTZ_PILLAR_WALL }, };
 
-    public DecorationRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    public DecorationRecipes(PackOutput output) {
+        super(output);
     }
 
     @Override
-    public void buildRecipes(RecipeOutput consumer) {
+    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
         for (var block : blocks) {
             slabRecipe(consumer, block[0], block[1]);
             stairRecipe(consumer, block[0], block[2]);
@@ -89,7 +88,7 @@ public class DecorationRecipes extends AE2RecipeProvider {
                 .save(consumer, AppEng.makeId("shaped/not_so_mysterious_cube"));
     }
 
-    private void slabRecipe(RecipeOutput consumer, BlockDefinition<?> block, BlockDefinition<?> slabs) {
+    private void slabRecipe(Consumer<FinishedRecipe> consumer, BlockDefinition<?> block, BlockDefinition<?> slabs) {
         Block inputBlock = block.block();
         Block outputBlock = slabs.block();
 
@@ -102,7 +101,7 @@ public class DecorationRecipes extends AE2RecipeProvider {
                 .save(consumer, prefix("block_cutter/slabs/", slabs.id()));
     }
 
-    private void stairRecipe(RecipeOutput consumer, BlockDefinition<?> block, BlockDefinition<?> stairs) {
+    private void stairRecipe(Consumer<FinishedRecipe> consumer, BlockDefinition<?> block, BlockDefinition<?> stairs) {
         Block inputBlock = block.block();
         Block outputBlock = stairs.block();
 
@@ -116,7 +115,7 @@ public class DecorationRecipes extends AE2RecipeProvider {
 
     }
 
-    private void wallRecipe(RecipeOutput consumer, BlockDefinition<?> block, BlockDefinition<?> wall) {
+    private void wallRecipe(Consumer<FinishedRecipe> consumer, BlockDefinition<?> block, BlockDefinition<?> wall) {
         Block inputBlock = block.block();
         Block outputBlock = wall.block();
 
@@ -131,7 +130,7 @@ public class DecorationRecipes extends AE2RecipeProvider {
     }
 
     private ResourceLocation prefix(String prefix, ResourceLocation id) {
-        return ResourceLocation.fromNamespaceAndPath(
+        return new ResourceLocation(
                 id.getNamespace(),
                 prefix + id.getPath());
     }

@@ -20,10 +20,14 @@ package appeng.block.misc;
 
 import java.util.Arrays;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -34,7 +38,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayer;
 
 import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.orientation.IOrientationStrategy;
@@ -54,9 +58,9 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
-            BlockHitResult hitResult) {
-        if (player instanceof FakePlayer) {
+    public InteractionResult onActivated(Level level, BlockPos pos, Player player, InteractionHand hand,
+            @Nullable ItemStack heldItem, BlockHitResult hit) {
+        if (player instanceof FakePlayer || player == null) {
             this.dropCrank(level, pos);
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
@@ -67,7 +71,7 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return super.useWithoutItem(state, level, pos, player, hitResult);
+        return InteractionResult.PASS;
     }
 
     private void dropCrank(Level level, BlockPos pos) {

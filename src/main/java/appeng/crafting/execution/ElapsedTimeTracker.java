@@ -18,6 +18,8 @@
 
 package appeng.crafting.execution;
 
+import com.google.common.collect.Iterables;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 
@@ -36,9 +38,9 @@ public class ElapsedTimeTracker {
     private long elapsedTime = 0;
 
     private final Reference2LongMap<AEKeyType> startedWorkByType = new Reference2LongOpenHashMap<>(
-            AEKeyTypes.getAll().size());
+            Iterables.size(AEKeyTypes.getAll()));
     private final Reference2LongMap<AEKeyType> completedWorkByType = new Reference2LongOpenHashMap<>(
-            AEKeyTypes.getAll().size());
+            Iterables.size(AEKeyTypes.getAll()));
 
     public ElapsedTimeTracker() {
     }

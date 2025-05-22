@@ -34,11 +34,11 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.ChunkRenderTypeSet;
-import net.neoforged.neoforge.client.model.IDynamicBakedModel;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 import appeng.client.render.cablebus.CubeBuilder;
@@ -52,13 +52,11 @@ import appeng.helpers.Splotch;
 class PaintSplotchesBakedModel implements IDynamicBakedModel {
 
     private static final Material TEXTURE_PAINT1 = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/paint1"));
+            new ResourceLocation(AppEng.MOD_ID, "block/paint1"));
     private static final Material TEXTURE_PAINT2 = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/paint2"));
+            new ResourceLocation(AppEng.MOD_ID, "block/paint2"));
     private static final Material TEXTURE_PAINT3 = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/paint3"));
-
-    private static final ChunkRenderTypeSet RENDER_TYPES = ChunkRenderTypeSet.of(RenderType.CUTOUT);
+            new ResourceLocation(AppEng.MOD_ID, "block/paint3"));
 
     private final TextureAtlasSprite[] textures;
 
@@ -115,7 +113,7 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
 
             TextureAtlasSprite ico = this.textures[s.getSeed() % this.textures.length];
             builder.setTexture(ico);
-            builder.setCustomUv(s.getSide().getOpposite(), 0, 0, 1, 1);
+            builder.setCustomUv(s.getSide().getOpposite(), 0, 0, 16, 16);
 
             switch (s.getSide()) {
                 case UP:
@@ -190,10 +188,5 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
 
     static List<Material> getRequiredTextures() {
         return ImmutableList.of(TEXTURE_PAINT1, TEXTURE_PAINT2, TEXTURE_PAINT3);
-    }
-
-    @Override
-    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-        return RENDER_TYPES;
     }
 }

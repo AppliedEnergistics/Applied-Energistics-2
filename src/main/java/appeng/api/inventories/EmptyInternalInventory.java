@@ -27,8 +27,8 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.EmptyHandler;
 
 class EmptyInternalInventory implements InternalInventory {
     static final EmptyInternalInventory INSTANCE = new EmptyInternalInventory();
@@ -43,7 +43,7 @@ class EmptyInternalInventory implements InternalInventory {
 
     @Override
     public IItemHandler toItemHandler() {
-        return EmptyItemHandler.INSTANCE;
+        return EmptyHandler.INSTANCE;
     }
 
     @Override

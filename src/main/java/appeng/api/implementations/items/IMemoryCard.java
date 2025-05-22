@@ -23,7 +23,11 @@
 
 package appeng.api.implementations.items;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+import appeng.api.util.AEColor;
 
 /**
  * Memory Card API
@@ -31,6 +35,57 @@ import net.minecraft.world.entity.player.Player;
  * AE's Memory Card Item Class implements this interface.
  */
 public interface IMemoryCard {
+
+    /**
+     * A tag that may be present on the memory card to show a color code for P2P frequencies or other purposes on the
+     * memory card model.
+     */
+    String NBT_COLOR_CODE = "colorCode";
+
+    /**
+     * Configures the data stored on the memory card, the SettingsName, will be localized when displayed.
+     * <p/>
+     * The data can contain an optional string with the key "tooltip", which will be used as unlocalized string to
+     * display it after the settings name.
+     * <p/>
+     * The data can contain an optional intArray using {@link #NBT_COLOR_CODE} to be displayed on the model itself. It
+     * needs to have exactly 8 elements representing the ordinal of the matching {@link AEColor}. The first 4 values
+     * represent the top row, left to right. The second 4 the bottom row.
+     *
+     * @param is           item
+     * @param settingsName unlocalized string that represents the block entity.
+     * @param data         the NBT tag, refer to the normal comment for special keys.
+     */
+    void setMemoryCardContents(ItemStack is, String settingsName, CompoundTag data);
+
+    /**
+     * returns the settings name provided by a previous call to setMemoryCardContents, or "AppEng.GuiITooltip.Blank" if
+     * there was no previous call to setMemoryCardContents.
+     *
+     * @param is item
+     *
+     * @return setting name
+     */
+    String getSettingsName(ItemStack is);
+
+    /**
+     * @param is item
+     *
+     * @return the NBT Data previously saved by setMemoryCardContents, or an empty NBTCompound
+     */
+    CompoundTag getData(ItemStack is);
+
+    /**
+     * This represent as 4x2 grid of {@link AEColor} without transparent/fluix color.
+     *
+     * First 4 colors are used for the top row, second for the bottom one.
+     *
+     * @param is item
+     *
+     * @return a hash representation of the memory card content
+     */
+    AEColor[] getColorCode(ItemStack is);
+
     /**
      * notify the user of a outcome related to the memory card.
      *

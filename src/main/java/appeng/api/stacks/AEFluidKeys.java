@@ -21,12 +21,9 @@ package appeng.api.stacks;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import com.mojang.serialization.MapCodec;
-
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 
@@ -43,11 +40,6 @@ final class AEFluidKeys extends AEKeyType {
     }
 
     @Override
-    public MapCodec<? extends AEKey> codec() {
-        return AEFluidKey.MAP_CODEC;
-    }
-
-    @Override
     public int getAmountPerOperation() {
         // On Forge this was 125mb (so 125/1000th of a bucket)
         return AEFluidKey.AMOUNT_BUCKET * 125 / 1000;
@@ -59,15 +51,15 @@ final class AEFluidKeys extends AEKeyType {
     }
 
     @Override
-    public AEFluidKey readFromPacket(RegistryFriendlyByteBuf input) {
+    public AEFluidKey readFromPacket(FriendlyByteBuf input) {
         Objects.requireNonNull(input);
 
         return AEFluidKey.fromPacket(input);
     }
 
     @Override
-    public AEFluidKey loadKeyFromTag(HolderLookup.Provider registries, CompoundTag tag) {
-        return AEFluidKey.fromTag(registries, tag);
+    public AEFluidKey loadKeyFromTag(CompoundTag tag) {
+        return AEFluidKey.fromTag(tag);
     }
 
     @Override

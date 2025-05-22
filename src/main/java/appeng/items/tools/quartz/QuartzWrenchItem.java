@@ -18,10 +18,12 @@
 
 package appeng.items.tools.quartz;
 
+import net.minecraft.world.item.Item;
+
 import appeng.items.AEBaseItem;
 
 public class QuartzWrenchItem extends AEBaseItem {
-    public QuartzWrenchItem(Properties props) {
+    public QuartzWrenchItem(Item.Properties props) {
         super(props);
     }
 }

@@ -24,7 +24,6 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -52,7 +51,6 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
     // Dimensions of each table cell
     private static final int CELL_WIDTH = 30;
     private static final int CELL_HEIGHT = 18;
-    private final Button exportGridButton;
 
     private NetworkStatus status = new NetworkStatus();
 
@@ -61,20 +59,14 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
     public NetworkStatusScreen(NetworkStatusMenu menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
-        this.scrollbar = widgets.addScrollBar("scrollbar", Scrollbar.BIG);
+        this.scrollbar = widgets.addScrollBar("scrollbar");
 
         this.addToLeftToolbar(CommonButtons.togglePowerUnit());
-
-        exportGridButton = widgets.addButton("export_grid", Component.literal("Export Grid"), menu::exportGrid);
     }
 
     @Override
     protected void updateBeforeRender() {
         super.updateBeforeRender();
-
-        // Make the export button only visible if the command can actually be run. This allows tie-in with
-        // Prometheus or similar mods, which checking for op would not.
-        exportGridButton.visible = menu.canExportGrid();
 
         setTextContent("dialog_title", GuiText.NetworkDetails.text(status.getChannelsUsed()));
         setTextContent("stored_power", GuiText.StoredPower.text(Platform.formatPower(status.getStoredPower(), false)));

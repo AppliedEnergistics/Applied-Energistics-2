@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "tag": "forge:ingots/copper"
+    },
+    "f": {
+      "item": "ae2:fluix_block"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "q": {
+      "item": "ae2:charged_certus_quartz_crystal"
+    }
+  },
+  "pattern": [
+    "cfc",
+    "cqc",
+    "iii"
+  ],
+  "result": {
+    "item": "ae2:crystal_resonance_generator"
+  },
+  "show_notification": true
+}

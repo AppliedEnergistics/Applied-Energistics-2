@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "forge:dusts/fluix"
+    },
+    "b": {
+      "tag": "ae2:all_certus_quartz"
+    },
+    "c": {
+      "tag": "forge:dusts/ender_pearl"
+    },
+    "d": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "pattern": [
+    "abc",
+    "ddd"
+  ],
+  "result": {
+    "count": 2,
+    "item": "ae2:wireless_booster"
+  },
+  "show_notification": true
+}

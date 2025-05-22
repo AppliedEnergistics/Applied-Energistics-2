@@ -31,12 +31,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.AECapabilities;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.MEStorage;
+import appeng.capabilities.Capabilities;
 import appeng.me.storage.CompositeStorage;
 import appeng.parts.automation.StackWorldBehaviors;
 
@@ -47,14 +47,11 @@ public interface PatternProviderTarget {
     @Nullable
     static PatternProviderTarget get(Level l, BlockPos pos, @Nullable BlockEntity be, Direction side,
             IActionSource src) {
+        if (be == null)
+            return null;
 
         // our capability first: allows any storage channel
-        MEStorage storage;
-        if (be != null) {
-            storage = l.getCapability(AECapabilities.ME_STORAGE, be.getBlockPos(), be.getBlockState(), be, side);
-        } else {
-            storage = l.getCapability(AECapabilities.ME_STORAGE, pos, side);
-        }
+        var storage = be.getCapability(Capabilities.STORAGE, side).orElse(null);
         if (storage != null) {
             return wrapMeStorage(storage, src);
         }
@@ -70,7 +67,7 @@ public interface PatternProviderTarget {
             }
         }
 
-        if (!externalStorages.isEmpty()) {
+        if (externalStorages.size() > 0) {
             return wrapMeStorage(new CompositeStorage(externalStorages), src);
         }
 

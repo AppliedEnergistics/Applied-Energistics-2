@@ -23,10 +23,13 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ThreadedLevelLightEngine;
+import net.minecraft.world.entity.ai.village.poi.PoiManager;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -45,7 +48,7 @@ import appeng.api.movable.BlockEntityMoveStrategies;
 import appeng.api.movable.IBlockEntityMoveStrategy;
 import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
-import appeng.server.services.compass.ServerCompassService;
+import appeng.server.services.compass.CompassService;
 import appeng.util.Platform;
 
 public class CachedPlane {
@@ -64,6 +67,7 @@ public class CachedPlane {
     private final ServerLevel level;
     private final List<BlockPos> updates = new ArrayList<>();
     private final BlockState matrixBlockState;
+    private final List<PoiMoveRecord> poiMoveRecords = new ArrayList<>();
 
     public CachedPlane(ServerLevel level, int minX, int minY, int minZ, int maxX,
             int maxY, int maxZ) {
@@ -112,49 +116,44 @@ public class CachedPlane {
                 this.myChunks[cx][cz] = c;
 
                 // Make a copy of the BE list in the chunk. This allows us to immediately remove BE's we're moving.
-                // We cannot simply copy the map entries since the map may reuse those if we remove entries.
-                var chunkBlockEntities = c.getBlockEntities().entrySet();
-                var blockEntities = new ArrayList<BlockEntity>(chunkBlockEntities.size());
-                for (var entity : chunkBlockEntities) {
-                    var pos = entity.getKey();
+                var rawBlockEntities = new ArrayList<>(c.getBlockEntities().entrySet());
+                for (var entry : rawBlockEntities) {
+                    var blockEntity = entry.getValue();
+
+                    var pos = blockEntity.getBlockPos();
                     if (pos.getX() >= minX && pos.getX() <= maxX && pos.getY() >= minY && pos.getY() <= maxY
                             && pos.getZ() >= minZ && pos.getZ() <= maxZ) {
-                        blockEntities.add(entity.getValue());
-                    }
-                }
 
-                for (var blockEntity : blockEntities) {
-                    var pos = blockEntity.getBlockPos();
+                        // If the block entities containing block is blacklisted, it will be skipped
+                        // automatically later, so we have to avoid removing it here
+                        if (blockEntity.getBlockState().is(AETags.SPATIAL_BLACKLIST)) {
+                            continue;
+                        }
 
-                    // If the block entities containing block is blacklisted, it will be skipped
-                    // automatically later, so we have to avoid removing it here
-                    if (blockEntity.getBlockState().is(AETags.SPATIAL_BLACKLIST)) {
-                        continue;
-                    }
+                        var strategy = BlockEntityMoveStrategies.get(blockEntity);
+                        var savedData = strategy.beginMove(blockEntity);
+                        var section = c.getSection(c.getSectionIndex(entry.getKey().getY()));
 
-                    var strategy = BlockEntityMoveStrategies.get(blockEntity);
-                    var savedData = strategy.beginMove(blockEntity, level.registryAccess());
-                    var section = c.getSection(c.getSectionIndex(pos.getY()));
+                        // Coordinate within the section
+                        int sx = entry.getKey().getX() & (LevelChunkSection.SECTION_WIDTH - 1);
+                        int sy = entry.getKey().getY() & (LevelChunkSection.SECTION_HEIGHT - 1);
+                        int sz = entry.getKey().getZ() & (LevelChunkSection.SECTION_WIDTH - 1);
+                        var state = section.getBlockState(sx, sy, sz);
 
-                    // Coordinate within the section
-                    int sx = pos.getX() & (LevelChunkSection.SECTION_WIDTH - 1);
-                    int sy = pos.getY() & (LevelChunkSection.SECTION_HEIGHT - 1);
-                    int sz = pos.getZ() & (LevelChunkSection.SECTION_WIDTH - 1);
-                    var state = section.getBlockState(sx, sy, sz);
+                        if (savedData != null) {
+                            this.blockEntities.add(
+                                    new BlockEntityMoveRecord(strategy, blockEntity, savedData, entry.getKey(), state));
 
-                    if (savedData != null) {
-                        this.blockEntities.add(
-                                new BlockEntityMoveRecord(strategy, blockEntity, savedData, pos, state));
-
-                        // Set the state to AIR now since that prevents it from being resurrected recursively
-                        section.setBlockState(sx, sy, sz, Blocks.AIR.defaultBlockState());
-                        c.removeBlockEntity(pos);
-                    } else {
-                        // don't skip air, just let the code replace it...
-                        if (state.isAir()) {
-                            level.removeBlock(pos, false);
+                            // Set the state to AIR now since that prevents it from being resurrected recursively
+                            section.setBlockState(sx, sy, sz, Blocks.AIR.defaultBlockState());
+                            c.removeBlockEntity(entry.getKey());
                         } else {
-                            this.myColumns[pos.getX() - minX][pos.getZ() - minZ].setSkip(pos.getY());
+                            // don't skip air, just let the code replace it...
+                            if (state.isAir()) {
+                                level.removeBlock(pos, false);
+                            } else {
+                                this.myColumns[pos.getX() - minX][pos.getZ() - minZ].setSkip(pos.getY());
+                            }
                         }
                     }
                 }
@@ -167,6 +166,31 @@ public class CachedPlane {
                         this.ticks.add(entry);
                     }
                 });
+
+                // Find any Villager point of interests that are within this section, remove them and queue
+                // re-adding them to the destination locations
+                for (int cy = 0; cy < cy_size; ++cy) {
+                    var poiSection = level.getPoiManager()
+                            .getOrLoad(SectionPos.of(c.getPos(), minCY + cy).asLong())
+                            .orElse(null);
+                    if (poiSection == null) {
+                        continue;
+                    }
+                    var poiRecords = poiSection
+                            .getRecords(poiType -> true, PoiManager.Occupancy.ANY)
+                            .iterator();
+                    while (poiRecords.hasNext()) {
+                        var poiRecord = poiRecords.next();
+                        var pos = poiRecord.getPos();
+                        if (pos.getX() >= minX && pos.getX() <= maxX && pos.getY() >= minY && pos.getY() <= maxY
+                                && pos.getZ() >= minZ && pos.getZ() <= maxZ) {
+                            this.poiMoveRecords.add(new PoiMoveRecord(
+                                    poiRecord.getPos().offset(-x_offset, -y_offset, -z_offset),
+                                    poiRecord.getPoiType()));
+                            poiSection.remove(poiRecord.getPos());
+                        }
+                    }
+                }
             }
         }
 
@@ -239,6 +263,14 @@ public class CachedPlane {
                 addTick(movedPos, entry);
             }
 
+            for (var record : this.poiMoveRecords) {
+                dst.addPoi(record);
+            }
+
+            for (var record : dst.poiMoveRecords) {
+                addPoi(record);
+            }
+
             startTime = System.nanoTime();
             this.updateChunks();
             dst.updateChunks();
@@ -303,6 +335,11 @@ public class CachedPlane {
         }
     }
 
+    private void addPoi(PoiMoveRecord record) {
+        level.getPoiManager().add(record.relativePos.offset(this.x_offset, this.y_offset, this.z_offset),
+                record.poiType);
+    }
+
     private void attemptRecovery(int x, int y, int z, BlockEntityMoveRecord moveRecord, Column c) {
         var pos = new BlockPos(x, y, z);
         var type = moveRecord.blockEntity().getType();
@@ -310,7 +347,7 @@ public class CachedPlane {
 
         // attempt recovery, but do not reuse the same TE instance since we did destroy it
         var blockState = moveRecord.blockEntity().getBlockState();
-        var recoveredEntity = BlockEntity.loadStatic(pos, blockState, moveRecord.savedData(), level.registryAccess());
+        var recoveredEntity = BlockEntity.loadStatic(pos, blockState, moveRecord.savedData());
         if (recoveredEntity != null) {
             // We need to restore the block state too before re-setting the entity
             this.level.setBlock(pos, blockState, 3);
@@ -342,7 +379,7 @@ public class CachedPlane {
 
                 final LevelChunk c = this.myChunks[x][z];
 
-                ServerCompassService.updateArea(this.getLevel(), c);
+                CompassService.updateArea(this.getLevel(), c);
 
                 var cdp = Platform.getFullChunkPacket(c);
                 level.getChunkSource().chunkMap.getPlayers(c.getPos(), false)
@@ -409,4 +446,8 @@ public class CachedPlane {
             BlockState state) {
     }
 
+    private record PoiMoveRecord(
+            BlockPos relativePos,
+            Holder<PoiType> poiType) {
+    }
 }

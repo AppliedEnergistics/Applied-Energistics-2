@@ -1,6 +1,6 @@
 package appeng.menu.me.networktool;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.stacks.AEItemKey;
 
@@ -9,14 +9,14 @@ import appeng.api.stacks.AEItemKey;
  */
 record MachineGroupKey(AEItemKey display, boolean missingChannel) {
 
-    public static MachineGroupKey fromPacket(RegistryFriendlyByteBuf data) {
+    public static MachineGroupKey fromPacket(FriendlyByteBuf data) {
         var display = AEItemKey.fromPacket(data);
         var missingChannel = data.readBoolean();
         return new MachineGroupKey(display, missingChannel);
 
     }
 
-    public void write(RegistryFriendlyByteBuf data) {
+    public void write(FriendlyByteBuf data) {
         display.writeToPacket(data);
         data.writeBoolean(missingChannel);
     }

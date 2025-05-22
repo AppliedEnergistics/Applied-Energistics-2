@@ -33,8 +33,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.neoforged.neoforge.client.event.RenderHighlightEvent;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.client.event.RenderHighlightEvent;
+import net.minecraftforge.common.MinecraftForge;
 
 import appeng.api.implementations.items.IFacadeItem;
 import appeng.api.parts.IFacadePart;
@@ -73,7 +73,7 @@ public class RenderBlockOutlineHook {
                     .createCompositeState(false));
 
     public static void install() {
-        NeoForge.EVENT_BUS.addListener(RenderBlockOutlineHook::handleEvent);
+        MinecraftForge.EVENT_BUS.addListener(RenderBlockOutlineHook::handleEvent);
     }
 
     private static void handleEvent(RenderHighlightEvent.Block evt) {
@@ -159,7 +159,7 @@ public class RenderBlockOutlineHook {
                 // Maybe a bit hacky, but if there's no part on the side to support the facade
                 // We would render a cable anchor implicitly
                 if (partHost.getPart(side) == null) {
-                    var cableAnchor = AEParts.CABLE_ANCHOR.get().createPart();
+                    var cableAnchor = AEParts.CABLE_ANCHOR.asItem().createPart();
                     renderPart(poseStack, buffers, camera, pos, cableAnchor, side, true, insideBlock);
                 }
 

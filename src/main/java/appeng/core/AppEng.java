@@ -29,12 +29,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 
-import guideme.PageAnchor;
-
 import appeng.api.ids.AEConstants;
 import appeng.api.parts.CableRenderMode;
 import appeng.client.EffectType;
-import appeng.core.network.ClientboundPacket;
+import appeng.client.guidebook.PageAnchor;
+import appeng.core.sync.BasePacket;
 
 public interface AppEng {
 
@@ -46,7 +45,7 @@ public interface AppEng {
     }
 
     static ResourceLocation makeId(String id) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, id);
+        return new ResourceLocation(MOD_ID, id);
     }
 
     /**
@@ -61,8 +60,7 @@ public interface AppEng {
      */
     Collection<ServerPlayer> getPlayers();
 
-    void sendToAllNearExcept(Player p, double x, double y, double z, double dist, Level level,
-            ClientboundPacket packet);
+    void sendToAllNearExcept(Player p, double x, double y, double z, double dist, Level level, BasePacket packet);
 
     void spawnEffect(EffectType effect, Level level, double posX, double posY,
             double posZ, Object o);
@@ -98,6 +96,12 @@ public interface AppEng {
      * registers Hotkeys for {@link appeng.hotkeys.HotkeyActions}
      */
     void registerHotkey(String id);
+
+    /**
+     * Opens the guidebook (if this is a client) on the last opened page, or the given initial page.
+     */
+    default void openGuideAtPreviousPage(ResourceLocation initialPage) {
+    }
 
     /**
      * Opens the guidebook (if this is a client) on the last opened page, or the given initial page, if no page has ever

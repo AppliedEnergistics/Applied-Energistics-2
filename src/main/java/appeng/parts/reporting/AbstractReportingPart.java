@@ -20,15 +20,15 @@ package appeng.parts.reporting;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.api.implementations.parts.IMonitorPart;
 import appeng.api.networking.GridFlags;
@@ -84,26 +84,26 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
+    public void readFromNBT(CompoundTag data) {
+        super.readFromNBT(data);
         this.spin = data.getByte("spin");
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
+    public void writeToNBT(CompoundTag data) {
+        super.writeToNBT(data);
         data.putByte("spin", this.getSpin());
     }
 
     @Override
-    public void writeToStream(RegistryFriendlyByteBuf data) {
+    public void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
 
         data.writeByte(this.getSpin());
     }
 
     @Override
-    public boolean readFromStream(RegistryFriendlyByteBuf data) {
+    public boolean readFromStream(FriendlyByteBuf data) {
         var changed = super.readFromStream(data);
         var oldSpin = this.spin;
 
@@ -118,7 +118,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public boolean onUseWithoutItem(Player player, Vec3 pos) {
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (InteractionUtil.canWrenchRotate(player.getInventory().getSelected())) {
             if (!isClientSide()) {
                 this.spin = (byte) ((this.spin + 1) % 4);
@@ -127,7 +127,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
             }
             return true;
         } else {
-            return super.onUseWithoutItem(player, pos);
+            return super.onPartActivate(player, hand, pos);
         }
     }
 

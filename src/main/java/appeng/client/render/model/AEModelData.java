@@ -18,8 +18,8 @@
 
 package appeng.client.render.model;
 
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 /**
  * This implementation of IModelData allows us to know precisely which data is part of the model data.

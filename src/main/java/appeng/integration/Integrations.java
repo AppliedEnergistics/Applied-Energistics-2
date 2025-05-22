@@ -18,13 +18,13 @@
 
 package appeng.integration;
 
-import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 
 import appeng.integration.modules.theoneprobe.TOP;
 
 public class Integrations {
 
-    public static void enqueueIMC(InterModEnqueueEvent event) {
+    public static void enqueueIMC(final InterModEnqueueEvent event) {
         TOP.enqueueIMC(event);
     }
 }

@@ -78,21 +78,21 @@ public final class AETags {
 
     /**
      * Crystal growth accelerators will trigger additional random ticks for blocks in that tag, regardless of what the
-     * blocks are. By default, includes {@code c:budding_blocks} which includes budding amethyst and the various budding
-     * certus quartz blocks.
+     * blocks are. By default, includes {@code c:budding_blocks} / {@code forge:budding} which includes budding amethyst
+     * and the various budding certus quartz blocks.
      */
     public static final TagKey<Block> GROWTH_ACCELERATABLE = blockTag("ae2:growth_acceleratable");
 
     private static TagKey<Item> itemTag(String name) {
-        return TagKey.create(Registries.ITEM, ResourceLocation.parse(name));
+        return TagKey.create(Registries.ITEM, new ResourceLocation(name));
     }
 
     private static TagKey<Fluid> fluidTag(String name) {
-        return TagKey.create(Registries.FLUID, ResourceLocation.parse(name));
+        return TagKey.create(Registries.FLUID, new ResourceLocation(name));
     }
 
     private static TagKey<Block> blockTag(String name) {
-        return TagKey.create(Registries.BLOCK, ResourceLocation.parse(name));
+        return TagKey.create(Registries.BLOCK, new ResourceLocation(name));
     }
 
 }

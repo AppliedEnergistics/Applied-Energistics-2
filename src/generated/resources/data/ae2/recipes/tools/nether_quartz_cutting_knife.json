@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "forge:rods/wooden"
+    },
+    "b": {
+      "tag": "forge:ingots/iron"
+    },
+    "c": {
+      "tag": "forge:gems/quartz"
+    }
+  },
+  "pattern": [
+    "  a",
+    "ba ",
+    "cc "
+  ],
+  "result": {
+    "item": "ae2:nether_quartz_cutting_knife"
+  },
+  "show_notification": true
+}

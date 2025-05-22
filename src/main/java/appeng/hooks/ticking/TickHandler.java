@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -44,12 +43,14 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.ChunkEvent;
-import net.neoforged.neoforge.event.level.LevelEvent;
-import net.neoforged.neoforge.event.tick.LevelTickEvent;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent.LevelTickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.ServerTickEvent;
+import net.minecraftforge.event.level.ChunkEvent;
+import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.fml.LogicalSide;
 
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.AEConfig;
@@ -94,13 +95,11 @@ public class TickHandler {
     }
 
     public void init() {
-        NeoForge.EVENT_BUS.addListener(this::onServerTickStart);
-        NeoForge.EVENT_BUS.addListener(this::onServerTickEnd);
-        NeoForge.EVENT_BUS.addListener(this::onServerLevelTickStart);
-        NeoForge.EVENT_BUS.addListener(this::onServerLevelTickEnd);
-        NeoForge.EVENT_BUS.addListener(this::onUnloadChunk);
+        MinecraftForge.EVENT_BUS.addListener(this::onServerTick);
+        MinecraftForge.EVENT_BUS.addListener(this::onLevelTick);
+        MinecraftForge.EVENT_BUS.addListener(this::onUnloadChunk);
         // Try to go last for level unloads since we use it to clean-up state
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onUnloadLevel);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onUnloadLevel);
     }
 
     public void addCallable(LevelAccessor level, Runnable c) {
@@ -113,7 +112,7 @@ public class TickHandler {
      * Callbacks on the client are not support.
      * <p>
      * Using null as level will queue it into the global {@link ServerTickEvent}, otherwise it will be ticked with the
-     * corresponding {@link LevelTickEvent}.
+     * corresponding {@link WorldTickEvent}.
      *
      * @param level null or the specific {@link Level}
      * @param c     the callback
@@ -175,7 +174,7 @@ public class TickHandler {
         this.grids.removeNetwork(grid);
     }
 
-    public Set<Grid> getGridList() {
+    public Iterable<Grid> getGridList() {
         Platform.assertServerThread();
         return this.grids.getNetworks();
     }
@@ -229,10 +228,28 @@ public class TickHandler {
         this.callQueue.remove(level);
     }
 
-    private void onServerLevelTickStart(LevelTickEvent.Pre event) {
-        if (!(event.getLevel() instanceof ServerLevel level)) {
+    /**
+     * Tick a single {@link Level}
+     * <p>
+     * This can happen multiple times per level, but each level should only be ticked once per minecraft tick.
+     */
+    public void onLevelTick(final LevelTickEvent ev) {
+        var level = ev.level;
+
+        if (!(level instanceof ServerLevel serverLevel) || ev.side != LogicalSide.SERVER) {
+            // While forge doesn't generate this event for client worlds,
+            // the event is generic enough that some other mod might be insane enough to do so.
             return;
         }
+
+        if (ev.phase == Phase.START) {
+            onServerLevelTickStart(serverLevel);
+        } else if (ev.phase == Phase.END) {
+            onServerLevelTickEnd(serverLevel);
+        }
+    }
+
+    private void onServerLevelTickStart(ServerLevel level) {
         var queue = this.callQueue.remove(level);
         processQueueElementsRemaining += this.processQueue(queue, level);
         var newQueue = this.callQueue.put(level, queue);
@@ -255,10 +272,7 @@ public class TickHandler {
         }
     }
 
-    private void onServerLevelTickEnd(LevelTickEvent.Post event) {
-        if (!(event.getLevel() instanceof ServerLevel level)) {
-            return;
-        }
+    private void onServerLevelTickEnd(ServerLevel level) {
         this.simulateCraftingJobs(level);
         this.readyBlockEntities(level);
 
@@ -275,7 +289,18 @@ public class TickHandler {
         }
     }
 
-    private void onServerTickStart(ServerTickEvent.Pre event) {
+    /**
+     * Tick everything related to the global server tick once per minecraft tick.
+     */
+    public void onServerTick(final ServerTickEvent ev) {
+        if (ev.phase == Phase.START) {
+            onServerTickStart();
+        } else if (ev.phase == Phase.END) {
+            onServerTickEnd();
+        }
+    }
+
+    private void onServerTickStart() {
         // Reset the stop watch on the start of each server tick.
         this.processQueueElementsProcessed = 0;
         this.processQueueElementsRemaining = 0;
@@ -293,7 +318,7 @@ public class TickHandler {
         }
     }
 
-    private void onServerTickEnd(ServerTickEvent.Post event) {
+    private void onServerTickEnd() {
         // tick networks
         for (var g : this.grids.getNetworks()) {
             try {

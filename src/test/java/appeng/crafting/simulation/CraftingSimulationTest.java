@@ -74,7 +74,7 @@ public class CraftingSimulationTest {
 
         var waterBucket = item(Items.WATER_BUCKET);
         var dirt = item(Items.DIRT);
-        var grass = item(Items.GRASS_BLOCK);
+        var grass = item(Items.GRASS);
         var water1mb = fluid(Fluids.WATER, 1);
         var water1000mb = mult(water1mb, 1000);
 
@@ -154,7 +154,7 @@ public class CraftingSimulationTest {
 
         var emptyBucket = item(Items.BUCKET);
         var waterBucket = item(Items.WATER_BUCKET);
-        var grass = item(Items.GRASS_BLOCK);
+        var grass = item(Items.GRASS);
         var dirt = item(Items.DIRT);
         var water1000mb = fluid(Fluids.WATER, 1000);
 
@@ -379,7 +379,7 @@ public class CraftingSimulationTest {
         var env = new SimulationEnv();
 
         var output = item(Items.DIAMOND);
-        var primaryInput = item(Items.GRASS_BLOCK);
+        var primaryInput = item(Items.GRASS);
         var secondaryInput = item(Items.DIRT);
         var secondaryInputSource = item(Items.PODZOL);
 

@@ -24,15 +24,15 @@ import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 
-import appeng.api.ids.AEComponents;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
@@ -40,7 +40,7 @@ import appeng.api.orientation.BlockOrientation;
 import appeng.api.util.AECableType;
 import appeng.block.qnb.QnbFormedState;
 import appeng.blockentity.ServerTickingBlockEntity;
-import appeng.blockentity.grid.AENetworkedInvBlockEntity;
+import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.me.cluster.IAEMultiBlock;
@@ -50,12 +50,14 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class QuantumBridgeBlockEntity extends AENetworkedInvBlockEntity
+public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
         implements IAEMultiBlock<QuantumCluster>, ServerTickingBlockEntity {
 
     public static final ModelProperty<QnbFormedState> FORMED_STATE = new ModelProperty<>();
 
     private static int singularitySeed = 0;
+
+    public static final String TAG_FREQUENCY = "freq";
 
     private final byte corner = 16;
     private final AppEngInternalInventory internalInventory = new AppEngInternalInventory(this, 1, 1);
@@ -73,7 +75,6 @@ public class QuantumBridgeBlockEntity extends AENetworkedInvBlockEntity
         super(blockEntityType, pos, blockState);
         this.getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
         this.getMainNode().setIdlePowerUsage(22);
-        onGridConnectableSidesChanged();
     }
 
     @Override
@@ -105,7 +106,7 @@ public class QuantumBridgeBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    protected void writeToStream(RegistryFriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         int out = this.constructed;
 
@@ -121,7 +122,7 @@ public class QuantumBridgeBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final int oldValue = this.constructed;
         this.constructed = data.readByte();
@@ -134,7 +135,7 @@ public class QuantumBridgeBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         if (this.cluster != null) {
             this.cluster.updateStatus(true);
         }
@@ -242,9 +243,12 @@ public class QuantumBridgeBlockEntity extends AENetworkedInvBlockEntity
     }
 
     public long getQEFrequency() {
-        var is = this.internalInventory.getStackInSlot(0);
+        final ItemStack is = this.internalInventory.getStackInSlot(0);
         if (!is.isEmpty()) {
-            return is.getOrDefault(AEComponents.ENTANGLED_SINGULARITY_ID, 0L);
+            var c = is.getTag();
+            if (c != null) {
+                return c.getLong(TAG_FREQUENCY);
+            }
         }
         return 0;
     }
@@ -315,11 +319,13 @@ public class QuantumBridgeBlockEntity extends AENetworkedInvBlockEntity
     }
 
     public static boolean isValidEntangledSingularity(ItemStack stack) {
-        return stack.has(AEComponents.ENTANGLED_SINGULARITY_ID);
+        return AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(stack)
+                && stack.getTag() != null
+                && stack.getTag().contains(TAG_FREQUENCY, Tag.TAG_LONG);
     }
 
     public static void assignFrequency(ItemStack stack) {
         var frequency = new Date().getTime() * 100 + singularitySeed++ % 100;
-        stack.set(AEComponents.ENTANGLED_SINGULARITY_ID, frequency);
+        stack.getOrCreateTag().putLong(TAG_FREQUENCY, frequency);
     }
 }

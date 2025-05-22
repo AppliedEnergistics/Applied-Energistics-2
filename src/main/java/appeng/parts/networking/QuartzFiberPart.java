@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Objects;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -33,6 +33,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
@@ -43,6 +44,7 @@ import appeng.items.parts.PartModels;
 import appeng.me.energy.IEnergyOverlayGridConnection;
 import appeng.me.service.EnergyService;
 import appeng.parts.AEBasePart;
+import appeng.parts.AEBasePart.NodeListener;
 import appeng.parts.PartModel;
 
 /**
@@ -56,7 +58,7 @@ import appeng.parts.PartModel;
 public class QuartzFiberPart extends AEBasePart {
 
     @PartModels
-    private static final IPartModel MODELS = new PartModel(AppEng.makeId("part/quartz_fiber"));
+    private static final IPartModel MODELS = new PartModel(new ResourceLocation(AppEng.MOD_ID, "part/quartz_fiber"));
 
     private final IManagedGridNode outerNode;
 
@@ -79,12 +81,12 @@ public class QuartzFiberPart extends AEBasePart {
 
     private List<EnergyService> getOurEnergyServices() {
         var grid = Objects.requireNonNull(getMainNode().getGrid());
-        return Collections.singletonList((EnergyService) grid.getEnergyService());
+        return Collections.singletonList((EnergyService) grid.getService(IEnergyService.class));
     }
 
     private List<EnergyService> getTheirEnergyServices() {
         var grid = Objects.requireNonNull(outerNode.getGrid());
-        return Collections.singletonList((EnergyService) grid.getEnergyService());
+        return Collections.singletonList((EnergyService) grid.getService(IEnergyService.class));
     }
 
     @Override
@@ -93,14 +95,14 @@ public class QuartzFiberPart extends AEBasePart {
     }
 
     @Override
-    public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.readFromNBT(extra, registries);
+    public void readFromNBT(CompoundTag extra) {
+        super.readFromNBT(extra);
         this.outerNode.loadFromNBT(extra);
     }
 
     @Override
-    public void writeToNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.writeToNBT(extra, registries);
+    public void writeToNBT(CompoundTag extra) {
+        super.writeToNBT(extra);
         this.outerNode.saveToNBT(extra);
     }
 

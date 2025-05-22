@@ -45,7 +45,6 @@ public final class AEItemIds {
     public static final ResourceLocation PROCESSING_PATTERN = id("processing_pattern");
     public static final ResourceLocation SMITHING_TABLE_PATTERN = id("smithing_table_pattern");
     public static final ResourceLocation STONECUTTING_PATTERN = id("stonecutting_pattern");
-    public static final ResourceLocation MISSING_CONTENT = id("missing_content");
     public static final ResourceLocation ENTROPY_MANIPULATOR = id("entropy_manipulator");
     public static final ResourceLocation MATTER_CANNON = id("matter_cannon");
     public static final ResourceLocation CHARGED_STAFF = id("charged_staff");
@@ -76,7 +75,8 @@ public final class AEItemIds {
     public static final ResourceLocation SPATIAL_CELL_2 = id("spatial_storage_cell_2");
     public static final ResourceLocation SPATIAL_CELL_16 = id("spatial_storage_cell_16");
     public static final ResourceLocation SPATIAL_CELL_128 = id("spatial_storage_cell_128");
-    public static final ResourceLocation CREATIVE_CELL = id("creative_storage_cell");
+    public static final ResourceLocation ITEM_CELL_CREATIVE = id("creative_item_cell");
+    public static final ResourceLocation FLUID_CELL_CREATIVE = id("creative_fluid_cell");
     public static final ResourceLocation PORTABLE_ITEM_CELL1K = id("portable_item_cell_1k");
     public static final ResourceLocation PORTABLE_ITEM_CELL4K = id("portable_item_cell_4k");
     public static final ResourceLocation PORTABLE_ITEM_CELL16K = id("portable_item_cell_16k");
@@ -247,6 +247,6 @@ public final class AEItemIds {
     public static final ResourceLocation QUANTUM_ENTANGLED_SINGULARITY = id("quantum_entangled_singularity");
 
     private static ResourceLocation id(String id) {
-        return ResourceLocation.fromNamespaceAndPath(AEConstants.MOD_ID, id);
+        return new ResourceLocation(AEConstants.MOD_ID, id);
     }
 }

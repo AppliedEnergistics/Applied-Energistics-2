@@ -49,7 +49,7 @@ enum BlitterDeserializer implements JsonDeserializer<Blitter> {
 
         Blitter blitter;
         if (texture.contains(":")) {
-            blitter = new Blitter(ResourceLocation.parse(texture), textureWidth, textureHeight);
+            blitter = new Blitter(new ResourceLocation(texture), textureWidth, textureHeight);
         } else {
             blitter = Blitter.texture(texture, textureWidth, textureHeight);
         }

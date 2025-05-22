@@ -3,7 +3,6 @@ package appeng.integration.modules.rei.transfer;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandler;
@@ -11,7 +10,7 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.display.SimpleGridMenuDisplay;
 
-import appeng.integration.modules.itemlists.EncodingHelper;
+import appeng.integration.modules.jeirei.EncodingHelper;
 import appeng.menu.AEBaseMenu;
 
 public abstract class AbstractTransferHandler<T extends AEBaseMenu> implements TransferHandler {
@@ -26,7 +25,7 @@ public abstract class AbstractTransferHandler<T extends AEBaseMenu> implements T
     }
 
     protected abstract Result transferRecipe(T menu,
-            @Nullable RecipeHolder<?> holder,
+            @Nullable Recipe<?> recipe,
             Display display,
             boolean doTransfer);
 
@@ -40,17 +39,17 @@ public abstract class AbstractTransferHandler<T extends AEBaseMenu> implements T
 
         T menu = containerClass.cast(context.getMenu());
 
-        var holder = getRecipeHolder(display);
+        var recipe = getRecipe(display);
 
-        return transferRecipe(menu, holder, display, context.isActuallyCrafting());
+        return transferRecipe(menu, recipe, display, context.isActuallyCrafting());
     }
 
     @Nullable
-    private RecipeHolder<?> getRecipeHolder(Display display) {
+    private Recipe<?> getRecipe(Display display) {
         // Displays can be based on completely custom objects, or on actual Vanilla recipes
         var origin = DisplayRegistry.getInstance().getDisplayOrigin(display);
 
-        return origin instanceof RecipeHolder<?> holder ? holder : null;
+        return origin instanceof Recipe<?> recipe ? recipe : null;
     }
 
     protected final boolean isCraftingRecipe(Recipe<?> recipe, Display display) {

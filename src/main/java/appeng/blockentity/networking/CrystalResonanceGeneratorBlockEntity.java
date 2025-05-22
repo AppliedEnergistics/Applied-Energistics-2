@@ -24,7 +24,7 @@ import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -32,10 +32,10 @@ import appeng.api.networking.energy.IPassiveEnergyGenerator;
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.RelativeSide;
 import appeng.api.util.AECableType;
-import appeng.blockentity.grid.AENetworkedBlockEntity;
+import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.AEConfig;
 
-public class CrystalResonanceGeneratorBlockEntity extends AENetworkedBlockEntity {
+public class CrystalResonanceGeneratorBlockEntity extends AENetworkBlockEntity {
     // This needs to be synchronized to allow visual indication / Jade tooltips
     private boolean suppressed;
 
@@ -70,14 +70,14 @@ public class CrystalResonanceGeneratorBlockEntity extends AENetworkedBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         super.readFromStream(data);
         this.suppressed = data.readBoolean();
         return false;
     }
 
     @Override
-    protected void writeToStream(RegistryFriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(this.suppressed);
     }

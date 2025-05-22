@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "forge:gems/diamond"
+    },
+    "b": {
+      "tag": "forge:ingots/iron"
+    },
+    "c": {
+      "tag": "forge:dusts/redstone"
+    },
+    "d": {
+      "item": "ae2:calculation_processor"
+    }
+  },
+  "pattern": [
+    "ab ",
+    "cdb",
+    "ab "
+  ],
+  "result": {
+    "count": 2,
+    "item": "ae2:advanced_card"
+  },
+  "show_notification": true
+}

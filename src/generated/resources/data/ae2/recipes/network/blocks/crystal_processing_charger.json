@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "forge:ingots/iron"
+    },
+    "b": {
+      "tag": "forge:ingots/copper"
+    }
+  },
+  "pattern": [
+    "aba",
+    "a  ",
+    "aba"
+  ],
+  "result": {
+    "item": "ae2:charger"
+  },
+  "show_notification": true
+}

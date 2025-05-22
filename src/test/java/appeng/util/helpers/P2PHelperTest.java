@@ -36,12 +36,12 @@ public class P2PHelperTest {
             AEColor.WHITE };
 
     private static final short BLACK_FREQUENCY = (short) 0xFFFF;
-    private static final AEColor[] BLACK_COLORS = new AEColor[] { AEColor.GREEN, AEColor.GREEN, AEColor.GREEN,
-            AEColor.GREEN };
+    private static final AEColor[] BLACK_COLORS = new AEColor[] { AEColor.BLACK, AEColor.BLACK, AEColor.BLACK,
+            AEColor.BLACK };
 
     private static final short MULTI_FREQUENCY = (short) 0xE8D1;
-    private static final AEColor[] MULTI_COLORS = new AEColor[] { AEColor.CYAN, AEColor.RED, AEColor.LIGHT_BLUE,
-            AEColor.LIGHT_GRAY };
+    private static final AEColor[] MULTI_COLORS = new AEColor[] { AEColor.RED, AEColor.LIGHT_GRAY, AEColor.GREEN,
+            AEColor.ORANGE };
 
     private static final String HEX_WHITE_FREQUENCY = "0000";
     private static final String HEX_BLACK_FREQUENCY = "FFFF";
@@ -73,21 +73,21 @@ public class P2PHelperTest {
     @Test
     public void testToHexDigit() {
         assertEquals("0", this.unitUnderTest.toHexDigit(AEColor.WHITE));
-        assertEquals("1", this.unitUnderTest.toHexDigit(AEColor.LIGHT_GRAY));
-        assertEquals("2", this.unitUnderTest.toHexDigit(AEColor.GRAY));
-        assertEquals("3", this.unitUnderTest.toHexDigit(AEColor.BLACK));
-        assertEquals("4", this.unitUnderTest.toHexDigit(AEColor.LIME));
-        assertEquals("5", this.unitUnderTest.toHexDigit(AEColor.YELLOW));
-        assertEquals("6", this.unitUnderTest.toHexDigit(AEColor.ORANGE));
-        assertEquals("7", this.unitUnderTest.toHexDigit(AEColor.BROWN));
-        assertEquals("8", this.unitUnderTest.toHexDigit(AEColor.RED));
-        assertEquals("9", this.unitUnderTest.toHexDigit(AEColor.PINK));
-        assertEquals("A", this.unitUnderTest.toHexDigit(AEColor.MAGENTA));
-        assertEquals("B", this.unitUnderTest.toHexDigit(AEColor.PURPLE));
-        assertEquals("C", this.unitUnderTest.toHexDigit(AEColor.BLUE));
-        assertEquals("D", this.unitUnderTest.toHexDigit(AEColor.LIGHT_BLUE));
-        assertEquals("E", this.unitUnderTest.toHexDigit(AEColor.CYAN));
-        assertEquals("F", this.unitUnderTest.toHexDigit(AEColor.GREEN));
+        assertEquals("1", this.unitUnderTest.toHexDigit(AEColor.ORANGE));
+        assertEquals("2", this.unitUnderTest.toHexDigit(AEColor.MAGENTA));
+        assertEquals("3", this.unitUnderTest.toHexDigit(AEColor.LIGHT_BLUE));
+        assertEquals("4", this.unitUnderTest.toHexDigit(AEColor.YELLOW));
+        assertEquals("5", this.unitUnderTest.toHexDigit(AEColor.LIME));
+        assertEquals("6", this.unitUnderTest.toHexDigit(AEColor.PINK));
+        assertEquals("7", this.unitUnderTest.toHexDigit(AEColor.GRAY));
+        assertEquals("8", this.unitUnderTest.toHexDigit(AEColor.LIGHT_GRAY));
+        assertEquals("9", this.unitUnderTest.toHexDigit(AEColor.CYAN));
+        assertEquals("A", this.unitUnderTest.toHexDigit(AEColor.PURPLE));
+        assertEquals("B", this.unitUnderTest.toHexDigit(AEColor.BLUE));
+        assertEquals("C", this.unitUnderTest.toHexDigit(AEColor.BROWN));
+        assertEquals("D", this.unitUnderTest.toHexDigit(AEColor.GREEN));
+        assertEquals("E", this.unitUnderTest.toHexDigit(AEColor.RED));
+        assertEquals("F", this.unitUnderTest.toHexDigit(AEColor.BLACK));
     }
 
     @Test

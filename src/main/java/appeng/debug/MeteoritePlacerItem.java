@@ -19,7 +19,7 @@
 package appeng.debug;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,8 +28,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -49,7 +49,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
     private static final String MODE_TAG = "mode";
 
-    public MeteoritePlacerItem(Properties properties) {
+    public MeteoritePlacerItem(Item.Properties properties) {
         super(properties);
     }
 
@@ -61,16 +61,16 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
         if (InteractionUtil.isInAlternateUseMode(player)) {
             final ItemStack itemStack = player.getItemInHand(hand);
-            CustomData.update(DataComponents.CUSTOM_DATA, itemStack, tag -> {
-                if (tag.contains(MODE_TAG)) {
-                    final byte mode = tag.getByte("mode");
-                    tag.putByte(MODE_TAG, (byte) ((mode + 1) % CraterType.values().length));
-                } else {
-                    tag.putByte(MODE_TAG, (byte) CraterType.NORMAL.ordinal());
-                }
-            });
+            final CompoundTag tag = itemStack.getOrCreateTag();
 
-            var craterType = getCraterType(itemStack);
+            if (tag.contains(MODE_TAG)) {
+                final byte mode = tag.getByte("mode");
+                tag.putByte(MODE_TAG, (byte) ((mode + 1) % CraterType.values().length));
+            } else {
+                tag.putByte(MODE_TAG, (byte) CraterType.NORMAL.ordinal());
+            }
+
+            CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
 
             player.sendSystemMessage(Component.literal(craterType.name()));
 
@@ -78,12 +78,6 @@ public class MeteoritePlacerItem extends AEBaseItem {
         }
 
         return super.use(level, player, hand);
-    }
-
-    private CraterType getCraterType(ItemStack stack) {
-        var customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
-        var tag = customData.copyTag();
-        return CraterType.values()[tag.getByte(MODE_TAG)];
     }
 
     @Override
@@ -100,10 +94,15 @@ public class MeteoritePlacerItem extends AEBaseItem {
             return InteractionResult.PASS;
         }
 
+        CompoundTag tag = stack.getOrCreateTag();
+        if (!tag.contains(MODE_TAG)) {
+            tag.putByte(MODE_TAG, (byte) CraterType.NORMAL.ordinal());
+        }
+
         // See MeteoriteStructure for original code
         float coreRadius = level.getRandom().nextFloat() * 6.0f + 2;
         boolean pureCrater = level.getRandom().nextFloat() > 0.5f;
-        CraterType craterType = getCraterType(stack);
+        CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
 
         MeteoriteSpawner spawner = new MeteoriteSpawner();
         PlacedMeteoriteSettings spawned = spawner.trySpawnMeteoriteAtSuitableHeight(level, pos, coreRadius, craterType,
@@ -137,7 +136,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
     }
 
     @Override
-    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
         if (AEConfig.instance().isDebugToolsEnabled()) {
             output.accept(this);
         }

@@ -22,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.levelgen.FlatLevelSource;
-import net.neoforged.neoforge.common.NeoForge;
 
 import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
@@ -91,10 +90,10 @@ public class SetupTestWorldCommand implements ISubCommand {
                 player.teleportTo(level, goodStartPos.getX(), goodStartPos.getY(), goodStartPos.getZ(), 0, 0);
             }
 
-            sender.sendSuccess(() -> PlayerMessages.TestWorldSetupComplete.text(sw.toString()), true);
+            sender.sendSuccess(() -> PlayerMessages.TestWorldSetupComplete.text(sw), true);
         } catch (RuntimeException | CommandSyntaxException e) {
             AELog.error(e);
-            sender.sendFailure(PlayerMessages.TestWorldSetupFailed.text(e.toString()));
+            sender.sendFailure(PlayerMessages.TestWorldSetupFailed.text(e));
         }
     }
 
@@ -117,7 +116,7 @@ public class SetupTestWorldCommand implements ISubCommand {
         if (!playerInv.hasAnyOf(Collections.singleton(AEItems.COLOR_APPLICATOR.asItem()))) {
             playerInv.placeItemBackInInventory(fullApplicator);
         }
-        NeoForge.EVENT_BUS.post(new KitOutPlayerEvent(player));
+        KitOutPlayerEvent.EVENT.invoker().accept(player);
     }
 
     /**

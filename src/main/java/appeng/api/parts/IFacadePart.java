@@ -26,12 +26,9 @@ package appeng.api.parts;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 
 /**
  * Used Internally.
@@ -72,7 +69,4 @@ public interface IFacadePart {
      */
     BlockState getBlockState();
 
-    boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos);
-
-    boolean onClicked(Player player, Vec3 pos);
 }

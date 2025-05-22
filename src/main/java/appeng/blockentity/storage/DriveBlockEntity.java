@@ -27,11 +27,10 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -39,7 +38,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.api.implementations.blockentities.IChestOrDrive;
 import appeng.api.inventories.InternalInventory;
@@ -54,7 +53,7 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
 import appeng.api.util.AECableType;
-import appeng.blockentity.grid.AENetworkedInvBlockEntity;
+import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngCellInventory;
 import appeng.client.render.model.DriveModelData;
 import appeng.core.AELog;
@@ -65,10 +64,9 @@ import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.DriveMenu;
 import appeng.menu.locator.MenuLocators;
-import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class DriveBlockEntity extends AENetworkedInvBlockEntity
+public class DriveBlockEntity extends AENetworkInvBlockEntity
         implements IChestOrDrive, IPriorityHost, IStorageProvider {
 
     private final AppEngCellInventory inv = new AppEngCellInventory(this, getCellCount());
@@ -97,7 +95,7 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    protected void writeToStream(RegistryFriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         updateClientSideState();
 
@@ -137,7 +135,7 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         var changed = super.readFromStream(data);
 
         var packedState = data.readInt();
@@ -184,7 +182,7 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
             var tagName = "cell" + i;
             if (data.contains(tagName, Tag.TAG_COMPOUND)) {
                 var cellData = data.getCompound(tagName);
-                var id = ResourceLocation.parse(cellData.getString("id"));
+                var id = new ResourceLocation(cellData.getString("id"));
                 var cellStateName = cellData.getString("state");
 
                 clientSideCellItems[i] = BuiltInRegistries.ITEM.getOptional(id).orElse(null);
@@ -261,15 +259,15 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
+    public void loadTag(CompoundTag data) {
+        super.loadTag(data);
         this.isCached = false;
         this.priority = data.getInt("priority");
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         data.putInt("priority", this.priority);
     }
 
@@ -330,7 +328,7 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         if (this.isCached) {
             this.isCached = false; // recalculate the storage cell.
             this.updateState();

@@ -229,10 +229,10 @@ public class PathingCalculation {
         }
 
         while (!stack.isEmpty()) {
-            Object current = stack.getLast();
+            Object current = stack.get(stack.size() - 1);
             if (current == SUBTREE_END) {
-                stack.removeLast();
-                IPathItem item = (IPathItem) stack.removeLast();
+                stack.remove(stack.size() - 1);
+                IPathItem item = (IPathItem) stack.remove(stack.size() - 1);
                 // We have visited the entire subtree and can now propagate channels upwards.
                 if (item instanceof GridNode node) {
                     boolean hasChannel = channelNodes.contains(item);

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "forge:dusts/glowstone"
+    },
+    "b": {
+      "item": "ae2:quartz_glass"
+    },
+    "c": {
+      "tag": "forge:ingots/iron"
+    },
+    "d": {
+      "tag": "forge:dusts/redstone"
+    }
+  },
+  "pattern": [
+    " ab",
+    "cdb",
+    " ab"
+  ],
+  "result": {
+    "count": 3,
+    "item": "ae2:semi_dark_monitor"
+  },
+  "show_notification": true
+}

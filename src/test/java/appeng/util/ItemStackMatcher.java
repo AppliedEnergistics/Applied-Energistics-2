@@ -24,7 +24,7 @@ public class ItemStackMatcher implements ArgumentMatcher<ItemStack> {
 
     @Override
     public boolean matches(ItemStack argument) {
-        return ItemStack.isSameItemSameComponents(stack, argument)
+        return ItemStack.isSameItemSameTags(stack, argument)
                 && !matchCount || stack.getCount() == argument.getCount();
     }
 
@@ -35,8 +35,8 @@ public class ItemStackMatcher implements ArgumentMatcher<ItemStack> {
             result.append(stack.getCount()).append(' ');
         }
         result.append(stack.getItem());
-        if (!stack.getComponentsPatch().isEmpty()) {
-            result.append(" [has components]");
+        if (stack.hasTag()) {
+            result.append(" [has NBT]");
         }
         return result.toString();
     }

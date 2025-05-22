@@ -19,7 +19,7 @@
 package appeng.client.render.model;
 
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 /**
  * Used as the cache key for caching automatically rotated baked models.

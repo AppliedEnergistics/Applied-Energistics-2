@@ -18,27 +18,22 @@
 
 package appeng.block.misc;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -54,7 +49,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     private static final VoxelShape SHAPE = Shapes
             .create(new AABB(0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f));
 
-    public TinyTNTBlock(Properties props) {
+    public TinyTNTBlock(BlockBehaviour.Properties props) {
         super(props);
     }
 
@@ -69,36 +64,25 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
-            Player player, InteractionHand hand, BlockHitResult hit) {
-        if (heldItem.is(Items.FLINT_AND_STEEL) || heldItem.is(Items.FIRE_CHARGE)) {
-            onCaughtFire(state, level, pos, hit.getDirection(), player);
-            level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
-            Item item = heldItem.getItem();
-            if (!player.isCreative()) {
-                if (heldItem.is(Items.FLINT_AND_STEEL)) {
-                    heldItem.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
-                } else {
-                    heldItem.shrink(1);
-                }
-            }
-
-            player.awardStat(Stats.ITEM_USED.get(item));
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
+            InteractionHand handIn, BlockHitResult hit) {
+        ItemStack heldItem = player.getItemInHand(handIn);
+        if (!heldItem.isEmpty() && heldItem.getItem() == Items.FLINT_AND_STEEL) {
+            this.startFuse(level, pos, player);
+            level.removeBlock(pos, false);
+            heldItem.hurtAndBreak(1, player, p -> {
+                p.broadcastBreakEvent(handIn);
+            }); // FIXME Check if onBroken is equivalent
+            return InteractionResult.sidedSuccess(level.isClientSide());
+        } else {
+            return super.use(state, level, pos, player, handIn, hit);
         }
-        return super.useItemOn(heldItem, state, level, pos, player, hand, hit);
-    }
-
-    @Override
-    public void onCaughtFire(BlockState state, Level level, BlockPos pos, @Nullable Direction direction,
-            @Nullable LivingEntity igniter) {
-        this.startFuse(level, pos, igniter);
     }
 
     public void startFuse(Level level, BlockPos pos, LivingEntity igniter) {
         if (!level.isClientSide) {
-            var primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F, pos.getY(),
-                    pos.getZ() + 0.5F, igniter);
+            final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F,
+                    pos.getY() + 0.5F, pos.getZ() + 0.5F, igniter);
             level.addFreshEntity(primedTinyTNTEntity);
             level.playSound(null, primedTinyTNTEntity.getX(), primedTinyTNTEntity.getY(),
                     primedTinyTNTEntity.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1, 1);
@@ -151,7 +135,7 @@ public class TinyTNTBlock extends AEBaseBlock {
         super.wasExploded(level, pos, exp);
         if (!level.isClientSide) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F,
-                    pos.getY(), pos.getZ() + 0.5F, exp.getIndirectSourceEntity());
+                    pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getIndirectSourceEntity());
             primedTinyTNTEntity
                     .setFuse(level.random.nextInt(primedTinyTNTEntity.getFuse() / 4)
                             + primedTinyTNTEntity.getFuse() / 8);

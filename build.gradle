@@ -17,20 +17,10 @@
  */
 
 plugins {
-    id 'net.neoforged.moddev'
-    id 'maven-publish'
-    id 'signing'
-    id 'com.diffplug.spotless'
+    id "net.neoforged.moddev.legacyforge"
+    id "maven-publish"
+    id "com.diffplug.spotless"
 }
-
-apply plugin: ProjectDefaultsPlugin
-apply plugin: CrowdinPlugin
-
-base {
-    archivesName = "appliedenergistics2"
-}
-
-neoForge.version = project.neoforge_version
 
 sourceSets {
     main {
@@ -38,78 +28,224 @@ sourceSets {
             srcDir 'src/generated/resources'
         }
     }
+    test {
+    }
     buildtools
 }
 
 configurations {
-    localRuntimeOnly
+    shaded {
+        transitive = false
+    }
     buildtoolsImplementation.extendsFrom(compileClasspath)
     // Dependencies only used for the guide export, but not shipped
     guideExportOnly
     configurations.compileClasspath.extendsFrom(guideExportOnly)
     configurations.runtimeClasspath.extendsFrom(guideExportOnly)
-
-    runtimeClasspath.extendsFrom localRuntimeOnly
 }
 
-import appengbuild.*
 import com.diffplug.gradle.spotless.JsonExtension
 
-dependencies {
-    // Used for the guide export
-    guideExportOnly("org.bytedeco:ffmpeg-platform:${ffmpeg_version}")
+// All jar files from this folder will be added automatically as runtime mod dependencies
+def extraModsDir = "extra-mods-${minecraft_version}"
+file(extraModsDir).mkdir()
 
-    implementation("org.appliedenergistics:guideme:${guideme_version}")
+dependencies {
+    modImplementation("org.appliedenergistics:guideme:${guideme_version}")
+
+    // Used for the guide export
+    guideExportOnly("org.bytedeco:ffmpeg-platform:6.0-1.5.9")
 
     // compile against provided APIs
-    compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
-    compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
-    compileOnly "mcp.mobius.waila:wthit-api:neo-${project.wthit_version}"
-    compileOnly "curse.maven:jade-324717:${project.jade_file_id}"
-    compileOnly "mcjty.theoneprobe:theoneprobe:${project.top_version}"
+    modCompileOnly "mezz.jei:jei-${jei_minecraft_version}-common-api:${jei_version}"
+    modCompileOnly "mezz.jei:jei-${jei_minecraft_version}-forge-api:${jei_version}"
 
-    switch (project.runtime_itemlist_mod) {
-        case "emi":
-            localRuntimeOnly "dev.emi:emi-neoforge:${emi_version}"
-            break
-        case "rei":
-            localRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
-            break
+    // Always depend on the REI API to compile
+    if (project.runtime_itemlist_mod == "jei") {
+        modRuntimeOnly "mezz.jei:jei-${jei_minecraft_version}-forge:${jei_version}"
+
+        compileOnly "me.shedaniel.cloth:basic-math:0.6.1"
+        modCompileOnly "dev.architectury:architectury-forge:${project.architectury_version}"
+        modCompileOnly "me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}"
+    } else if (project.runtime_itemlist_mod == "rei") {
+        implementation "me.shedaniel.cloth:basic-math:0.6.1"
+        modImplementation "me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}"
+        modImplementation "dev.architectury:architectury-forge:${project.architectury_version}"
+        modImplementation "me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}"
+    } else {
+        modCompileOnly "me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}"
+        modCompileOnly "dev.architectury:architectury-forge:${project.architectury_version}"
+        modCompileOnly "me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}"
     }
 
-    switch (project.runtime_tooltip_mod) {
-        case "wthit":
-            localRuntimeOnly "mcp.mobius.waila:wthit:neo-${project.wthit_version}"
-            break
-        case "jade":
-            localRuntimeOnly "curse.maven:jade-324717:${project.jade_file_id}"
-            break
-        case "top":
-            localRuntimeOnly "mcjty.theoneprobe:theoneprobe:${project.top_version}"
-            break
+    // Locally sourced extra mods for runtime (i.e. testing)
+    for (extraModJar in fileTree(dir: extraModsDir, include: '*.jar')) {
+        def basename = extraModJar.name.substring(0, extraModJar.name.length() - ".jar".length())
+        def versionSep = basename.lastIndexOf('-')
+        assert versionSep != -1
+        def artifactId = basename.substring(0, versionSep)
+        def version = basename.substring(versionSep + 1)
+        modRuntimeOnly "extra-mods:$artifactId:$version"
     }
 
-    if (project.runtime_curio == "true") {
-        localRuntimeOnly("top.theillusivec4.curios:curios-neoforge:${project.curios_version}")
+    if (project.runtime_tooltip_mod == "wthit") {
+        modRuntimeOnly "mcp.mobius.waila:wthit:forge-${project.wthit_version}"
+        modRuntimeOnly "lol.bai:badpackets:forge-0.1.2"
+    } else {
+        modCompileOnly "mcp.mobius.waila:wthit-api:forge-${project.wthit_version}"
     }
 
-    // Athena
-    if (project.runtime_athena == "true") {
-        localRuntimeOnly("curse.maven:athena-841890:${project.athena_file_id}")
+    if (project.runtime_tooltip_mod == "jade") {
+        modImplementation "curse.maven:jade-324717:${project.jade_file_id}"
+    } else {
+        modCompileOnly "curse.maven:jade-324717:${project.jade_file_id}"
+    }
+
+    def topDependency = "curse.maven:the-one-probe-245211:4159743"
+    if (project.runtime_tooltip_mod == "top") {
+        modImplementation topDependency
+    } else {
+        compileOnly topDependency
     }
 
     // unit test dependencies
     testImplementation(platform("org.junit:junit-bom:${project.junit_version}"))
-    testImplementation(platform("org.assertj:assertj-bom:${project.assertj_version}"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testImplementation("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.assertj:assertj-core")
+    testImplementation("org.assertj:assertj-core:3.19.0")
     testImplementation("com.google.guava:guava-testlib:21.0")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.12.0")
-    testImplementation("net.neoforged:testframework:${project.neoforge_version}")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
+
+    compileOnly 'org.apache.commons:commons-configuration2:2.9.0'
+    compileOnly 'org.jetbrains:annotations:24.1.0'
+    testCompileOnly 'org.jetbrains:annotations:24.1.0'
+
+    // Annotation Processors
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
+archivesBaseName = artifact_basename
+
+allprojects {
+    group = artifact_group
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven {
+            url "https://maven.shedaniel.me/"
+            content {
+                includeGroup "me.shedaniel"
+                includeGroup "me.shedaniel.cloth"
+                includeGroup "dev.architectury"
+            }
+        }
+        maven {
+            url "https://maven2.bai.lol"
+            content {
+                includeGroup "mcp.mobius.waila"
+                includeGroup "lol.bai"
+            }
+        }
+        maven {
+            url "https://maven.parchmentmc.net/"
+            content {
+                includeGroup "org.parchmentmc.data"
+            }
+        }
+        // For the "No Indium?" mod
+        maven {
+            url = 'https://maven.cafeteria.dev/releases/'
+            content {
+                includeGroup "me.luligabi"
+            }
+        }
+
+        maven {
+            name 'modmaven'
+            url "https://modmaven.dev/"
+            content {
+                includeGroup "mezz.jei"
+            }
+        }
+
+        maven {
+            name 'cursemaven'
+            url "https://www.cursemaven.com"
+            content {
+                includeGroup "curse.maven"
+            }
+        }
+
+        maven {
+            url "https://maven.blamejared.com"
+            content {
+                includeGroup "vazkii.patchouli"
+            }
+        }
+
+        flatDir {
+            name "extra-mods"
+            dir file(extraModsDir)
+        }
+        maven { // for TOP
+            url "https://maven.k-4u.nl/"
+            content {
+                includeGroup "mcjty"
+            }
+        }
+        maven { url = 'https://repo.spongepowered.org/maven' }
+    }
+
+    // ensure everything uses UTF-8 and not some random codepage chosen by gradle
+    compileJava.options.encoding = 'UTF-8'
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+        options.deprecation = false
+        options.compilerArgs << "-Xmaxerrs" << "9999"
+    }
+}
+
+///////////////////
+// Version Number
+
+ext.pr = System.getenv('PR_NUMBER') ?: ""
+if (ext.pr) {
+    version = version + "+pr." + ext.pr
+}
+
+ext.branch = System.getenv('BRANCH') ?: ""
+if (ext.branch) {
+    version = version + "+branch." + ext.branch
+}
+
+ext.tag = System.getenv('TAG') ?: ""
+if (ext.tag) {
+    if (!ext.tag.startsWith("forge/v")) {
+        throw new GradleException("Tags for the forge version should start with forge/: ${ext.tag}")
+    }
+
+    version = ext.tag.substring("forge/v".length())
+    // Validate that the rest is a semver version
+    if (version ==~ /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/) {
+        if (System.getenv("GITHUB_ENV")) {
+            def envFile = new File(System.getenv("GITHUB_ENV"))
+            envFile.append("VERSION=${version}")
+        }
+    } else {
+        throw new GradleException("Invalid semver: $version")
+    }
+}
+
+ext.isAlpha = project.version.contains("alpha")
+ext.isBeta = project.version.contains("beta")
 
 test {
     useJUnitPlatform()
@@ -123,7 +259,18 @@ dependencies {
     buildtoolsImplementation 'com.google.code.gson:gson:2.8.9'
 }
 
-neoForge {
+/**
+ * Configures properties common to all run configurations
+ */
+Map<String, String> commonSystemProperties = [
+        'forge.logging.console.level': 'debug',
+        'appeng.tests'               : 'true',
+        'appeng.version'             : project.version
+]
+
+legacyForge {
+    version = "${minecraft_version}-${forge_version}"
+
     mods {
         ae2 {
             sourceSet sourceSets.main
@@ -133,21 +280,27 @@ neoForge {
     runs {
         configureEach {
             gameDirectory = project.file('run')
-            systemProperty('appeng.tests', 'true')
-            // systemProperty('mixin.debug.export', 'true')
-            logLevel = org.slf4j.event.Level.INFO
-            systemProperty('guideme.ae2.guide.sources', file('guidebook').absolutePath)
+            systemProperties.putAll(commonSystemProperties)
+            // property "mixin.debug.export", "true"
+
+            additionalRuntimeClasspathConfiguration.extendsFrom configurations.shaded
+            additionalRuntimeClasspathConfiguration.extendsFrom configurations.guideExportOnly
+
+            jvmArguments.addAll(
+                    "--add-opens", "java.base/sun.security.util=ALL-UNNAMED",
+                    "--add-opens", "java.base/java.util.jar=ALL-UNNAMED"
+            )
+
+            systemProperty "guideme.ae2.guide.sources", file("guidebook").absolutePath
         }
         client {
             client()
-            systemProperty('appeng.tests', 'true')
         }
         gametestWorld {
             client()
-            programArguments = [
-                    '--username', 'AE2Dev', '--quickPlaySingleplayer', 'GametestWorld'
-            ]
-            systemProperty('appeng.tests', 'true')
+            programArguments.addAll(
+                    "--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld"
+            )
         }
         guide {
             client()
@@ -159,12 +312,12 @@ neoForge {
         }
         data {
             data()
-            programArguments = [
+            programArguments.addAll(
                     '--mod', 'ae2',
                     '--all',
                     '--output', file('src/generated/resources/').absolutePath,
                     '--existing', file('src/main/resources').absolutePath
-            ]
+            )
         }
         guideexport {
             client()
@@ -173,75 +326,96 @@ neoForge {
         }
         // Use to run the tests
         gametest {
-            type = 'gameTestServer'
-            gameDirectory = project.file('build/gametest')
+            type = "gameTestServer"
+            gameDirectory = project.file("build/gametest")
         }
     }
 
-    unitTest {
-        enable()
-        testedMod = mods.ae2
-    }
+    addModdingDependenciesTo(sourceSets.test)
 }
-
-configurations.additionalRuntimeClasspath.extendsFrom configurations.guideExportOnly
 
 //////////////
 // Artifacts
-final generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
-    group = 'build'
-    from('src/main/neoforge.mods.toml') {
-        rename '(.*)', 'META-INF/$1'
-    }
-    into 'build/generated/modMetadata'
+Map<String, String> expansionVariables = [
+        "project_version"  : project.version,
+        'minecraft_version': project.minecraft_version_range,
+        'forge_version'    : project.forge_version_range,
+        'guideme_version'  : project.guideme_version_range,
+        'jei_version'      : project.jei_version_range,
+        'top_version'      : project.top_version_range,
+        'jade_version'     : project.jade_version_range
+]
 
-    // Exposed project properties
-    Map<String, String> projectProperties = [
-            'version',
-            'minecraft_version',
-            'neoforge_version_range',
-            'top_version_range',
-            'jade_version_range',
-            'guideme_version'
-    ].collectEntries { [it, project[it]] }
-
+processResources {
+    exclude '.cache'
     // Ensure the resources get re-evaluate when the version changes
-    inputs.properties projectProperties
-    expand projectProperties
-}
-sourceSets.main.resources.srcDir generateModMetadata
-neoForge.ideSyncTask generateModMetadata
+    for (var entry : expansionVariables.entrySet()) {
+        inputs.property(entry.key, entry.value)
+    }
 
-tasks.named('jar', Jar) {
-    exclude '/.cache'
+    filesMatching("META-INF/mods.toml") {
+        expand expansionVariables
+        filter { line ->
+            line.replace('version="0.0.0"', "version=\"${expansionVariables['project_version']}\"")
+        }
+    }
+}
+
+///////////
+// Mixins
+mixin {
+    var refmap = add sourceSets.main, "ae2.mixins.refmap.json"
+    jar.from refmap
+    config "ae2.mixins.json"
+}
+
+jar {
     from('guidebook') {
         into 'assets/ae2/ae2guide'
     }
+    manifest {
+        attributes([
+                "MixinConfigs"          : "ae2.mixins.json"
+        ])
+    }
 }
 
-static void publicApiIncludePatterns(PatternFilterable spec) {
-    spec.exclude "**/*Internal.*"
-    spec.exclude "**/*Internal\$*.*"
-    spec.include "appeng/api/**"
+def publicApiIncludePatterns = {
+    exclude "**/*Internal.*"
+    exclude "**/*Internal\$*.*"
+    include "appeng/api/**"
 }
 
-tasks.named('javadoc', Javadoc) {
+javadoc {
     source = sourceSets.main.allJava
     classpath = sourceSets.main.compileClasspath + sourceSets.main.output
 
     options.addStringOption('Xdoclint:none', '-quiet')
     options.encoding = 'UTF-8'
     options.charSet = 'UTF-8'
-    publicApiIncludePatterns(it)
+}
+javadoc publicApiIncludePatterns
+
+task javadocJar(type: Jar, dependsOn: javadoc, group: "build") {
+    archiveClassifier = "javadoc"
+    from javadoc.destinationDir
 }
 
-tasks.register('apiJar', Jar) {
+task sourcesJar(type: Jar) {
+    archiveClassifier = "sources"
+    from sourceSets.main.allJava
+}
+
+task apiJar(type: Jar, group: "build") {
     archiveClassifier = "api"
     // api jar ist just a development aid and serves as both a binary and source jar simultaneously
     from sourceSets.main.output
     from sourceSets.main.allJava
-    publicApiIncludePatterns(it)
+    manifest {
+        attributes("Fabric-Loom-Remap": true)
+    }
 }
+apiJar publicApiIncludePatterns
 
 artifacts {
     archives javadocJar
@@ -254,40 +428,13 @@ artifacts {
 publishing {
     publications {
         maven(MavenPublication) {
-            artifactId = "appliedenergistics2"
+            groupId = project.group
+            artifactId = project.archivesBaseName
             version = project.version
-            pom {
-                name = "Applied Energistics 2"
-                description = "A Minecraft mod about Matter, Energy and using them to conquer the world..."
-                url = "https://appliedenergistics.org"
-                scm {
-                    connection = "scm:git:git://github.com/AppliedEnergistics/Applied-Energistics-2.git"
-                    developerConnection = "scm:git:ssh://github.com:AppliedEnergistics/Applied-Energistics-2.git"
-                    url = "https://github.com/AppliedEnergistics/Applied-Energistics-2/tree/main"
-                }
-                licenses {
-                    license {
-                        name = "LGPLv3, MIT, CC BY-NC-SA 3.0"
-                        url = "https://github.com/AppliedEnergistics/Applied-Energistics-2?tab=readme-ov-file#license"
-                    }
-                }
-                developers {
-                    developer {
-                        name = "Technici4n"
-                        email = "team@appliedenergistics.org"
-                        organization = "Applied Energistics"
-                        organizationUrl = "https://github.com/AppliedEnergistics/"
-                    }
-                    developer {
-                        name = "shartte"
-                        email = "team@appliedenergistics.org"
-                        organization = "Applied Energistics"
-                        organizationUrl = "https://github.com/AppliedEnergistics/"
-                    }
-                }
-            }
 
-            from(components.java)
+            artifact jar
+            artifact sourcesJar
+            artifact javadocJar
             artifact apiJar
         }
     }
@@ -340,6 +487,32 @@ spotless {
 }
 
 ////////////////
+// Crowdin
+tasks.register('uploadToCrowdin', JavaExec) {
+    classpath = sourceSets.buildtools.runtimeClasspath
+    mainClass = 'Crowdin'
+    args 'upload_source'
+    workingDir "."
+}
+tasks.register('uploadTranslations', JavaExec) {
+    classpath = sourceSets.buildtools.runtimeClasspath
+    mainClass = 'Crowdin'
+    args 'upload_translations'
+    workingDir "."
+}
+tasks.register('downloadFromCrowdin', JavaExec) {
+    classpath = sourceSets.buildtools.runtimeClasspath
+    mainClass = 'Crowdin'
+    args 'update_translations'
+    workingDir "."
+}
+
+// See https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5259
+// Gradle module metadata contains mapped dependencies, making our artifacts unconsumable
+tasks.withType(GenerateModuleMetadata) {
+    enabled = false
+}
+
 check.dependsOn tasks.register('validateResources', JavaExec) {
     group = "verification"
     classpath = sourceSets.buildtools.runtimeClasspath
@@ -349,11 +522,3 @@ check.dependsOn tasks.register('validateResources', JavaExec) {
     javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
 }
 
-signing {
-    String signingKey = findProperty("signingKey")
-    String signingPassword = findProperty("signingPassword")
-    if (signingKey && signingPassword) {
-        useInMemoryPgpKeys(signingKey, signingPassword)
-        sign publishing.publications.maven
-    }
-}

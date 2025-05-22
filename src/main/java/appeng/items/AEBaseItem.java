@@ -27,7 +27,7 @@ import net.minecraft.world.item.Item;
 
 public abstract class AEBaseItem extends Item {
 
-    public AEBaseItem(Properties properties) {
+    public AEBaseItem(Item.Properties properties) {
         super(properties);
     }
 
@@ -37,7 +37,7 @@ public abstract class AEBaseItem extends Item {
         return id != BuiltInRegistries.ITEM.getDefaultKey() ? id : null;
     }
 
-    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
         output.accept(this);
     }
 

@@ -25,13 +25,11 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemContainerContents;
 
 import appeng.api.inventories.BaseInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -129,7 +127,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         if (this.host != null && this.eventsEnabled() && !this.notifyingChanges) {
             this.notifyingChanges = true;
             this.host.onChangeInventory(this, slot);
-            this.host.saveChangedInventory(this);
+            this.host.saveChanges();
             this.notifyingChanges = false;
         }
     }
@@ -152,15 +150,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         return true;
     }
 
-    public ItemContainerContents toItemContainerContents() {
-        return ItemContainerContents.fromItems(stacks);
-    }
-
-    public void fromItemContainerContents(ItemContainerContents contents) {
-        contents.copyInto(stacks);
-    }
-
-    public void writeToNBT(CompoundTag data, String name, HolderLookup.Provider registries) {
+    public void writeToNBT(CompoundTag data, String name) {
         if (isEmpty()) {
             data.remove(name);
             return;
@@ -172,13 +162,13 @@ public class AppEngInternalInventory extends BaseInternalInventory {
             if (!stack.isEmpty()) {
                 CompoundTag itemTag = new CompoundTag();
                 itemTag.putInt("Slot", i);
-                items.add(stack.save(registries, itemTag));
+                items.add(stack.save(itemTag));
             }
         }
         data.put(name, items);
     }
 
-    public void readFromNBT(CompoundTag data, String name, HolderLookup.Provider registries) {
+    public void readFromNBT(CompoundTag data, String name) {
         if (data.contains(name, Tag.TAG_LIST)) {
             var tagList = data.getList(name, Tag.TAG_COMPOUND);
             for (var itemTag : tagList) {
@@ -186,7 +176,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
                 int slot = itemCompound.getInt("Slot");
 
                 if (slot >= 0 && slot < stacks.size()) {
-                    stacks.set(slot, ItemStack.parseOptional(registries, itemCompound));
+                    stacks.set(slot, ItemStack.of(itemCompound));
                 }
             }
         }

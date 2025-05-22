@@ -23,7 +23,6 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -88,7 +87,7 @@ public class SpatialStorageWorldData extends AESavedData {
         setDirty();
     }
 
-    public static SpatialStorageWorldData load(CompoundTag tag, HolderLookup.Provider registries) {
+    public static SpatialStorageWorldData load(CompoundTag tag) {
         SpatialStorageWorldData result = new SpatialStorageWorldData();
         int version = tag.getInt(TAG_FORMAT);
         if (version != CURRENT_FORMAT) {
@@ -110,7 +109,7 @@ public class SpatialStorageWorldData extends AESavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+    public CompoundTag save(CompoundTag tag) {
         tag.putInt(TAG_FORMAT, CURRENT_FORMAT);
 
         ListTag plotTags = new ListTag();

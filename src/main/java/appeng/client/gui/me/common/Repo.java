@@ -74,7 +74,7 @@ public class Repo implements IClientRepo {
 
     private int rowSize = 9;
 
-    private boolean enabled = false;
+    private boolean hasPower;
 
     private final BiMap<Long, GridInventoryEntry> entries = HashBiMap.create();
     private final ArrayList<GridInventoryEntry> view = new ArrayList<>();
@@ -208,7 +208,7 @@ public class Repo implements IClientRepo {
 
     private void addEntriesToView(Collection<GridInventoryEntry> entries) {
         var viewMode = this.sortSrc.getSortDisplay();
-        var typeFilter = this.sortSrc.getSortKeyTypes();
+        var typeFilter = this.sortSrc.getTypeFilter().getFilter();
 
         var hasPinnedRow = !PinnedKeys.isEmpty();
 
@@ -231,7 +231,7 @@ public class Repo implements IClientRepo {
                 continue;
             }
 
-            if (!typeFilter.contains(entry.getWhat().getType())) {
+            if (!typeFilter.matches(entry.getWhat())) {
                 continue;
             }
 
@@ -365,12 +365,12 @@ public class Repo implements IClientRepo {
         return !this.pinnedRow.isEmpty();
     }
 
-    public boolean isEnabled() {
-        return enabled;
+    public final boolean hasPower() {
+        return this.hasPower;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public final void setPower(boolean hasPower) {
+        this.hasPower = hasPower;
     }
 
     public final int getRowSize() {

@@ -21,8 +21,6 @@ package appeng.items.misc;
 import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +32,6 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
-import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.core.definitions.AEItems;
@@ -46,23 +43,28 @@ import appeng.items.AEBaseItem;
  * item.
  */
 public class WrappedGenericStack extends AEBaseItem {
-    private static final Logger LOG = LoggerFactory.getLogger(WrappedGenericStack.class);
+    private static final String NBT_AMOUNT = "#";
 
     public static ItemStack wrap(GenericStack stack) {
         Objects.requireNonNull(stack, "stack");
-        var item = AEItems.WRAPPED_GENERIC_STACK.asItem();
-        var result = new ItemStack(item);
-        result.set(AEComponents.WRAPPED_STACK, stack);
-        return result;
+        return wrap(stack.what(), stack.amount());
     }
 
     public static ItemStack wrap(AEKey what, long amount) {
         Objects.requireNonNull(what, "what");
 
-        return wrap(new GenericStack(what, amount));
+        var item = AEItems.WRAPPED_GENERIC_STACK.asItem();
+        var result = new ItemStack(item);
+
+        var tag = what.toTagGeneric();
+        if (amount != 0) {
+            tag.putLong(NBT_AMOUNT, amount);
+        }
+        result.setTag(tag);
+        return result;
     }
 
-    public WrappedGenericStack(Properties properties) {
+    public WrappedGenericStack(Item.Properties properties) {
         super(properties.stacksTo(1));
     }
 
@@ -72,13 +74,12 @@ public class WrappedGenericStack extends AEBaseItem {
             return null;
         }
 
-        var wrapped = stack.get(AEComponents.WRAPPED_STACK);
-
-        if (wrapped == null) {
+        var tag = stack.getTag();
+        if (tag == null) {
             return null;
         }
 
-        return wrapped.what();
+        return AEKey.fromTagGeneric(tag);
     }
 
     public long unwrapAmount(ItemStack stack) {
@@ -86,13 +87,12 @@ public class WrappedGenericStack extends AEBaseItem {
             return 0;
         }
 
-        var wrapped = stack.get(AEComponents.WRAPPED_STACK);
-
-        if (wrapped == null) {
-            return 0;
+        long amount = 0;
+        if (stack.getTag() != null && stack.getTag().contains(NBT_AMOUNT)) {
+            amount = stack.getTag().getLong(NBT_AMOUNT);
         }
 
-        return wrapped.amount();
+        return amount;
     }
 
     /**
@@ -100,22 +100,15 @@ public class WrappedGenericStack extends AEBaseItem {
      */
     @Override
     public boolean overrideOtherStackedOnMe(ItemStack itemInSlot, ItemStack otherStack, Slot slot,
-            ClickAction clickAction, Player player, SlotAccess access) {
+            ClickAction clickAction, Player player, SlotAccess otherItemAccess) {
         if (player.containerMenu == null) {
             // We need the opened menu since we're ignoring slotAccess due to no helper being available for it in the
             // transfer API
             return true;
         }
 
-        // When trying to stack onto degenerate wrapped stacks, delete them
-        var what = unwrapWhat(itemInSlot);
-        if (what == null && slot.getItem() == itemInSlot) {
-            LOG.error("Removing a broken wrapped generic stack from player {} slot {}", player, slot.slot);
-            slot.setByPlayer(ItemStack.EMPTY, itemInSlot);
-            return true;
-        }
-
         // Allow picking up fluids items with a fluid container, this is a special case for fluids
+        var what = unwrapWhat(itemInSlot);
         if (clickAction == ClickAction.PRIMARY) {
             var heldContainer = ContainerItemStrategies.findCarriedContextForKey(what, player, player.containerMenu);
             if (heldContainer != null) {
@@ -140,7 +133,7 @@ public class WrappedGenericStack extends AEBaseItem {
     }
 
     @Override
-    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
         // Don't show this item in CreativeTabs
     }
 }

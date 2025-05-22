@@ -13,7 +13,7 @@ import appeng.core.AELog;
 /**
  * Locates a part on an {@link appeng.api.parts.IPartHost} using the position of its host and the side it's attached to.
  */
-record PartLocator(BlockPos pos, @Nullable Direction side) implements MenuHostLocator {
+record PartLocator(BlockPos pos, @Nullable Direction side) implements MenuLocator {
     @Override
     public <T> @Nullable T locate(Player player, Class<T> hostInterface) {
         var part = PartHelper.getPart(player.level(), pos, side);

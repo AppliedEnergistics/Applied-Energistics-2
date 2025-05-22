@@ -12,7 +12,6 @@ import appeng.core.definitions.AEItems;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
 
-@TestPlotClass
 public final class QnbTestPlots {
     private QnbTestPlots() {
     }

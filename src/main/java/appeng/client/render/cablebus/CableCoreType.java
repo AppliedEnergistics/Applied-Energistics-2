@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
@@ -72,7 +73,7 @@ public enum CableCoreType {
 
     public Material getTexture(AEColor color) {
         return new Material(TextureAtlas.LOCATION_BLOCKS,
-                AppEng.makeId(this.textureFolder + "/" + color.name().toLowerCase(Locale.ROOT)));
+                new ResourceLocation(AppEng.MOD_ID, this.textureFolder + "/" + color.name().toLowerCase(Locale.ROOT)));
     }
 
 }

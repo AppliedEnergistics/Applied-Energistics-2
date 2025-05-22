@@ -29,7 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 
-import appeng.api.AECapabilities;
+import appeng.capabilities.Capabilities;
 
 /**
  * Crank/Crankable API,
@@ -54,6 +54,10 @@ public interface ICrankable {
 
     @Nullable
     static ICrankable get(Level level, BlockPos pos, Direction side) {
-        return level.getCapability(AECapabilities.CRANKABLE, pos, side);
+        var be = level.getExistingBlockEntity(pos);
+        if (be != null) {
+            return be.getCapability(Capabilities.CRANKABLE, side).orElse(null);
+        }
+        return null;
     }
 }

@@ -22,9 +22,8 @@ import java.util.EnumSet;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -48,15 +47,15 @@ import appeng.parts.PartModel;
 public class ToggleBusPart extends AEBasePart {
 
     @PartModels
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/toggle_bus_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/toggle_bus_base");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_OFF = AppEng.makeId(
+    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/toggle_bus_status_off");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_ON = AppEng.makeId(
+    public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
             "part/toggle_bus_status_on");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = AppEng.makeId(
+    public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
             "part/toggle_bus_status_has_channel");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_STATUS_OFF);
@@ -83,13 +82,13 @@ public class ToggleBusPart extends AEBasePart {
     }
 
     @Override
-    public void writeToStream(RegistryFriendlyByteBuf data) {
+    public void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(isEnabled());
     }
 
     @Override
-    public boolean readFromStream(RegistryFriendlyByteBuf data) {
+    public boolean readFromStream(FriendlyByteBuf data) {
         var changed = super.readFromStream(data);
         var wasEnabled = this.clientSideEnabled;
         this.clientSideEnabled = data.readBoolean();
@@ -133,14 +132,14 @@ public class ToggleBusPart extends AEBasePart {
     }
 
     @Override
-    public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.readFromNBT(extra, registries);
+    public void readFromNBT(CompoundTag extra) {
+        super.readFromNBT(extra);
         this.getOuterNode().loadFromNBT(extra);
     }
 
     @Override
-    public void writeToNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.writeToNBT(extra, registries);
+    public void writeToNBT(CompoundTag extra) {
+        super.writeToNBT(extra);
         this.getOuterNode().saveToNBT(extra);
     }
 

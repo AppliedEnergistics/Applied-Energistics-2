@@ -168,7 +168,9 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
             var tt = new TickTracker(tr, gridNode, tickable, this.currentTick);
 
-            this.alertable.put(gridNode, tt);
+            if (tr.canBeAlerted()) {
+                this.alertable.put(gridNode, tt);
+            }
 
             if (tr.isSleeping()) {
                 this.sleeping.put(gridNode, tt);

@@ -24,7 +24,6 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.Renderer;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
@@ -37,14 +36,14 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 
-class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeDisplay> {
+class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeWrapper> {
 
     private static final int PADDING = 5;
     private static final int SLOT_INPUT_TOP = 0;
     private static final int SLOT_INPUT_MIDDLE = 1;
     private static final int SLOT_INPUT_BOTTOM = 2;
 
-    static final CategoryIdentifier<InscriberRecipeDisplay> ID = CategoryIdentifier
+    static final CategoryIdentifier<InscriberRecipeWrapper> ID = CategoryIdentifier
             .of(AppEng.makeId("ae2.inscriber"));
 
     @Override
@@ -54,16 +53,16 @@ class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeDisplay>
 
     @Override
     public Component getTitle() {
-        return AEBlocks.INSCRIBER.asItem().getDescription();
+        return Component.translatable("block.ae2.inscriber");
     }
 
     @Override
-    public CategoryIdentifier<InscriberRecipeDisplay> getCategoryIdentifier() {
+    public CategoryIdentifier<InscriberRecipeWrapper> getCategoryIdentifier() {
         return ID;
     }
 
     @Override
-    public List<Widget> setupDisplay(InscriberRecipeDisplay recipeDisplay, Rectangle bounds) {
+    public List<Widget> setupDisplay(InscriberRecipeWrapper recipeDisplay, Rectangle bounds) {
         ResourceLocation location = AppEng.makeId("textures/guis/inscriber.png");
 
         List<Widget> widgets = new ArrayList<>();
@@ -76,14 +75,14 @@ class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeDisplay>
         List<EntryIngredient> ingredients = recipeDisplay.getInputEntries();
         EntryIngredient output = recipeDisplay.getOutputEntries().get(0);
 
-        widgets.add(Widgets.createSlot(new Point(innerX + 1, innerY + 1)).disableBackground().markInput()
-                .entries(ingredients.get(SLOT_INPUT_TOP)));
-        widgets.add(Widgets.createSlot(new Point(innerX + 19, innerY + 24)).disableBackground().markInput()
-                .entries(ingredients.get(SLOT_INPUT_MIDDLE)));
-        widgets.add(Widgets.createSlot(new Point(innerX + 1, innerY + 47)).disableBackground().markInput()
-                .entries(ingredients.get(SLOT_INPUT_BOTTOM)));
-        widgets.add(Widgets.createSlot(new Point(innerX + 69, innerY + 25)).disableBackground().markOutput()
-                .entries(output));
+// TODO 1.19.3        widgets.add(Widgets.createSlot(new Point(innerX + 1, innerY + 1)).disableBackground().markInput()
+// TODO 1.19.3                .entries(ingredients.get(SLOT_INPUT_TOP)));
+// TODO 1.19.3        widgets.add(Widgets.createSlot(new Point(innerX + 19, innerY + 24)).disableBackground().markInput()
+// TODO 1.19.3                .entries(ingredients.get(SLOT_INPUT_MIDDLE)));
+// TODO 1.19.3        widgets.add(Widgets.createSlot(new Point(innerX + 1, innerY + 47)).disableBackground().markInput()
+// TODO 1.19.3                .entries(ingredients.get(SLOT_INPUT_BOTTOM)));
+// TODO 1.19.3        widgets.add(Widgets.createSlot(new Point(innerX + 69, innerY + 25)).disableBackground().markOutput()
+// TODO 1.19.3                .entries(output));
 
         return widgets;
     }
@@ -94,7 +93,7 @@ class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeDisplay>
     }
 
     @Override
-    public int getDisplayWidth(InscriberRecipeDisplay display) {
+    public int getDisplayWidth(InscriberRecipeWrapper display) {
         return 97 + 2 * PADDING;
     }
 }

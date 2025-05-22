@@ -18,15 +18,20 @@
 
 package appeng.blockentity.misc;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.IFluidTank;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
@@ -38,7 +43,9 @@ import appeng.api.storage.MEStorage;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseInvBlockEntity;
+import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEItems;
+import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
@@ -48,12 +55,10 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     public static final int BYTE_MULTIPLIER = 8;
 
-    private final IConfigManager cm = IConfigManager.builder(() -> {
+    private final ConfigManager cm = new ConfigManager(() -> {
         saveChanges();
         addPower(0);
-    })
-            .registerSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH)
-            .build();
+    });
 
     private final AppEngInternalInventory outputSlot = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory storageSlot = new AppEngInternalInventory(this, 1);
@@ -62,8 +67,8 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     /**
      * This is used to expose a fake ME subnetwork that is only composed of this condenser. The purpose of this is to
-     * enable the condenser to override the {@link MEStorage#isPreferredStorageFor} method to make sure a condenser is
-     * only ever used if an item can't go anywhere else.
+     * enable the condenser to override the {@link appeng.api.storage.MEStorage#isPreferredStorageFor} method to make
+     * sure a condenser is only ever used if an item can't go anywhere else.
      */
     private final CondenserMEStorage meStorage = new CondenserMEStorage(this);
 
@@ -76,19 +81,20 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     public CondenserBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
+        this.cm.registerSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH);
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        this.cm.writeToNBT(data, registries);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
+        this.cm.writeToNBT(data);
         data.putDouble("storedPower", this.getStoredPower());
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        this.cm.readFromNBT(data, registries);
+    public void loadTag(CompoundTag data) {
+        super.loadTag(data);
+        this.cm.readFromNBT(data);
         this.setStoredPower(data.getDouble("storedPower"));
     }
 
@@ -154,7 +160,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     @Override
-    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         if (inv == outputSlot)
             fillOutput();
     }
@@ -182,6 +188,19 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     public MEStorage getMEStorage() {
         return meStorage;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            return (LazyOptional<T>) LazyOptional.of(this.externalInv::toItemHandler);
+        } else if (capability == ForgeCapabilities.FLUID_HANDLER) {
+            return (LazyOptional<T>) LazyOptional.of(() -> this.fluidHandler);
+        } else if (capability == Capabilities.STORAGE) {
+            return (LazyOptional<T>) LazyOptional.of(() -> this.meStorage);
+        }
+        return super.getCapability(capability, facing);
     }
 
     private class CondenseItemHandler extends BaseInternalInventory {

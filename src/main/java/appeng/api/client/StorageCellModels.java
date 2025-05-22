@@ -43,7 +43,7 @@ import net.minecraft.world.level.ItemLike;
  */
 public final class StorageCellModels {
 
-    private static final ResourceLocation MODEL_CELL_DEFAULT = ResourceLocation.parse(
+    private static final ResourceLocation MODEL_CELL_DEFAULT = new ResourceLocation(
             "ae2:block/drive/drive_cell");
 
     private static final Map<Item, ResourceLocation> registry = new IdentityHashMap<>();
@@ -56,7 +56,7 @@ public final class StorageCellModels {
      * 
      * <p>
      * You are responsible for ensuring that the given model is actually loaded by the game. See
-     * {@link net.neoforged.neoforge.client.event.ModelEvent.RegisterAdditional}.
+     * {@link net.minecraftforge.client.model.ModelLoader#addSpecialModel}.
      * 
      * This method only maps an {@link Item} to a {@link ResourceLocation} which can be looked up from the
      * {@link ModelBakery}. No validation about missing models will be done.

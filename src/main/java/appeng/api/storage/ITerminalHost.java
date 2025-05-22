@@ -30,17 +30,8 @@ import appeng.api.util.IConfigurableObject;
 import appeng.client.Hotkeys;
 
 public interface ITerminalHost extends IUpgradeableObject, IConfigurableObject, ISubMenuHost {
-    /**
-     * Please note that this will only be called <strong>once</strong> when the menu is opened. If the inventory of this
-     * terminal host can change during its lifecycle, you need to return a {@link SupplierStorage}.
-     */
+    @Nullable
     MEStorage getInventory();
-
-    /**
-     * For hosts that do not have a fixed connection to the grid, this method is used to give feedback to the player
-     * about the current connection status.
-     */
-    ILinkStatus getLinkStatus();
 
     /**
      * An optional hotkey used to close the terminal while its open.

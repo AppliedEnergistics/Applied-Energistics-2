@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2:dense_energy_cell"
+    },
+    "b": {
+      "item": "ae2:advanced_card"
+    }
+  },
+  "pattern": [
+    "ab"
+  ],
+  "result": {
+    "item": "ae2:energy_card"
+  },
+  "show_notification": true
+}

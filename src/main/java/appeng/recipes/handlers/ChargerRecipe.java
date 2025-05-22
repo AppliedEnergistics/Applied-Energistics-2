@@ -1,17 +1,13 @@
 package appeng.recipes.handlers;
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -19,43 +15,30 @@ import net.minecraft.world.level.Level;
 import appeng.core.AppEng;
 import appeng.recipes.AERecipeTypes;
 
-public class ChargerRecipe implements Recipe<RecipeInput> {
-    @Deprecated(forRemoval = true, since = "1.21.1")
+public class ChargerRecipe implements Recipe<Container> {
     public static final ResourceLocation TYPE_ID = AppEng.makeId("charger");
-    @Deprecated(forRemoval = true, since = "1.21.1")
+
     public static final RecipeType<ChargerRecipe> TYPE = AERecipeTypes.CHARGER;
 
+    private final ResourceLocation id;
     public final Ingredient ingredient;
     public final NonNullList<Ingredient> ingredients;
-    public final ItemStack result;
+    public final Item result;
 
-    public static final MapCodec<ChargerRecipe> CODEC = RecordCodecBuilder.mapCodec(
-            builder -> builder
-                    .group(
-                            Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(ChargerRecipe::getIngredient),
-                            ItemStack.CODEC.fieldOf("result").forGetter(cr -> cr.result))
-                    .apply(builder, ChargerRecipe::new));
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, ChargerRecipe> STREAM_CODEC = StreamCodec.composite(
-            Ingredient.CONTENTS_STREAM_CODEC,
-            ChargerRecipe::getIngredient,
-            ItemStack.STREAM_CODEC,
-            ChargerRecipe::getResultItem,
-            ChargerRecipe::new);
-
-    public ChargerRecipe(Ingredient ingredient, ItemStack result) {
+    public ChargerRecipe(ResourceLocation id, Ingredient ingredient, Item result) {
+        this.id = id;
         this.ingredient = ingredient;
         this.result = result;
         this.ingredients = NonNullList.of(Ingredient.EMPTY, ingredient);
     }
 
     @Override
-    public boolean matches(RecipeInput container, Level level) {
+    public boolean matches(Container container, Level level) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(RecipeInput container, HolderLookup.Provider registries) {
+    public ItemStack assemble(Container container, RegistryAccess registryAccess) {
         return null;
     }
 
@@ -65,12 +48,17 @@ public class ChargerRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
         return getResultItem();
     }
 
     public ItemStack getResultItem() {
-        return result;
+        return new ItemStack(result);
+    }
+
+    @Override
+    public ResourceLocation getId() {
+        return id;
     }
 
     @Override
@@ -90,10 +78,5 @@ public class ChargerRecipe implements Recipe<RecipeInput> {
     @Override
     public NonNullList<Ingredient> getIngredients() {
         return ingredients;
-    }
-
-    @Override
-    public boolean isSpecial() {
-        return true;
     }
 }

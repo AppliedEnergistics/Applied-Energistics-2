@@ -19,8 +19,8 @@
 package appeng.client.render.model;
 
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 public final class DriveModelData {
     public final static ModelProperty<Item[]> STATE = new ModelProperty<>();

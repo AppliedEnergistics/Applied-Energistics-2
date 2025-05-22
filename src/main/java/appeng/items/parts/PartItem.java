@@ -21,6 +21,7 @@ package appeng.items.parts;
 import java.util.function.Function;
 
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 
 import appeng.api.parts.IPart;
@@ -33,7 +34,7 @@ public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T
     private final Class<T> partClass;
     private final Function<IPartItem<T>, T> factory;
 
-    public PartItem(Properties properties, Class<T> partClass, Function<IPartItem<T>, T> factory) {
+    public PartItem(Item.Properties properties, Class<T> partClass, Function<IPartItem<T>, T> factory) {
         super(properties);
         this.partClass = partClass;
         this.factory = factory;

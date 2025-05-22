@@ -29,6 +29,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
@@ -37,7 +38,8 @@ public class SpatialPylonModel implements BasicUnbakedModel {
 
     @Override
     public BakedModel bake(ModelBaker bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform) {
+            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+            ResourceLocation modelLocation) {
         Map<SpatialPylonTextureType, TextureAtlasSprite> textures = new EnumMap<>(SpatialPylonTextureType.class);
 
         for (SpatialPylonTextureType type : SpatialPylonTextureType.values()) {
@@ -49,7 +51,7 @@ public class SpatialPylonModel implements BasicUnbakedModel {
 
     private static Material getTexturePath(SpatialPylonTextureType type) {
         return new Material(TextureAtlas.LOCATION_BLOCKS,
-                AppEng.makeId("block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
+                new ResourceLocation(AppEng.MOD_ID, "block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
     }
 
 }

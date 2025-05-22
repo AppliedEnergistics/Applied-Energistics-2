@@ -18,37 +18,30 @@
 
 package appeng.crafting.pattern;
 
-import java.util.Collections;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.google.common.base.Preconditions;
-
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.chat.Component;
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.crafting.PatternDetailsTooltip;
-import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
-import appeng.core.localization.GuiText;
 
 /**
  * Encodes patterns for the {@link net.minecraft.world.level.block.StonecutterBlock}.
@@ -59,12 +52,12 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
 
     private final AEItemKey definition;
     public final boolean canSubstitute;
-    private final ResourceLocation recipeId;
     private final StonecutterRecipe recipe;
+    private final Container testFrame;
     private final AEItemKey input;
     private final ItemStack output;
     private final IInput[] inputs;
-    private final List<GenericStack> outputs;
+    private final GenericStack[] outputs;
 
     /**
      * We cache results of isValid(...) calls for stacks that don't have NBT.
@@ -73,32 +66,24 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
 
     public AEStonecuttingPattern(AEItemKey definition, Level level) {
         this.definition = definition;
+        var tag = Objects.requireNonNull(definition.getTag());
 
-        var encodedPattern = definition.get(AEComponents.ENCODED_STONECUTTING_PATTERN);
-        if (encodedPattern == null) {
-            throw new IllegalArgumentException("Given item does not encode a stonecutting pattern: " + definition);
-        } else if (encodedPattern.containsMissingContent()) {
-            throw new IllegalArgumentException("Pattern references missing content");
-        }
-
-        this.input = Objects.requireNonNull(AEItemKey.of(encodedPattern.input()));
-        this.canSubstitute = encodedPattern.canSubstitute();
+        this.input = StonecuttingPatternEncoding.getInput(tag);
+        this.canSubstitute = StonecuttingPatternEncoding.canSubstitute(tag);
 
         // Find recipe
-        this.recipeId = encodedPattern.recipeId();
-        this.recipe = level.getRecipeManager().byKey(recipeId).map(holder -> (StonecutterRecipe) holder.value())
-                .orElse(null);
-        if (recipe == null) {
-            throw new IllegalStateException("Stonecutting pattern references unknown recipe " + recipeId);
-        }
+        var recipeId = StonecuttingPatternEncoding.getRecipeId(tag);
+        this.recipe = level.getRecipeManager().byType(RecipeType.STONECUTTING).get(recipeId);
 
         // Build frame and find output
-        var testInput = new SingleRecipeInput(input.toStack());
-        if (!this.recipe.matches(testInput, level)) {
+        this.testFrame = new SimpleContainer(1);
+        this.testFrame.setItem(0, input.toStack());
+
+        if (!this.recipe.matches(testFrame, level)) {
             throw new IllegalStateException("The recipe " + recipeId + " no longer matches the encoded input.");
         }
 
-        this.output = this.recipe.assemble(testInput, level.registryAccess());
+        this.output = this.recipe.assemble(testFrame, level.registryAccess());
         if (this.output.isEmpty()) {
             throw new IllegalStateException("The recipe " + recipeId + " produced an empty item stack result.");
         }
@@ -106,11 +91,13 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         this.inputs = new IInput[] {
                 new Input()
         };
-        this.outputs = Collections.singletonList(GenericStack.fromItemStack(this.output));
+        this.outputs = new GenericStack[] {
+                GenericStack.fromItemStack(this.output)
+        };
     }
 
     public ResourceLocation getRecipeId() {
-        return recipeId;
+        return recipe.getId();
     }
 
     @Override
@@ -135,35 +122,8 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     }
 
     @Override
-    public List<GenericStack> getOutputs() {
+    public GenericStack[] getOutputs() {
         return outputs;
-    }
-
-    @Override
-    public PatternDetailsTooltip getTooltip(Level level, TooltipFlag flags) {
-        var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_CRAFTS);
-        tooltip.addInputsAndOutputs(this);
-        if (flags.isAdvanced()) {
-            tooltip.addProperty(Component.literal("Recipe"), Component.literal(recipeId.toString()));
-        }
-        return tooltip;
-    }
-
-    public static PatternDetailsTooltip getInvalidTooltip(ItemStack stack, Level level, @Nullable Exception cause,
-            TooltipFlag flags) {
-
-        var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_CRAFTS);
-        var encodedPattern = stack.get(AEComponents.ENCODED_STONECUTTING_PATTERN);
-        if (encodedPattern != null) {
-            if (encodedPattern.canSubstitute()) {
-                tooltip.addProperty(GuiText.PatternTooltipSubstitutions.text());
-            }
-            if (flags.isAdvanced()) {
-                tooltip.addProperty(Component.literal("Recipe"),
-                        Component.literal(encodedPattern.recipeId().toString()));
-            }
-        }
-        return tooltip;
     }
 
     /**
@@ -188,12 +148,16 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         }
 
         // Fill frame and check result
-        var testInput = new SingleRecipeInput(key.toStack());
+        var previousStack = testFrame.removeItemNoUpdate(0);
+        testFrame.setItem(0, key.toStack());
 
-        var newResult = recipe.matches(testInput, level)
-                && ItemStack.matches(output, recipe.assemble(testInput, level.registryAccess()));
+        var newResult = recipe.matches(testFrame, level)
+                && ItemStack.matches(output, recipe.assemble(testFrame, level.registryAccess()));
 
         setTestResult(key, newResult);
+
+        // Restore old stack in the frame
+        testFrame.setItem(0, previousStack);
 
         return newResult;
     }
@@ -205,7 +169,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
      */
     @Nullable
     private Boolean getTestResult(AEItemKey what) {
-        if (what == null || what.hasComponents()) {
+        if (what == null || what.hasTag()) {
             return null;
         }
 
@@ -213,7 +177,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     }
 
     private void setTestResult(AEItemKey what, boolean result) {
-        if (what != null && !what.hasComponents()) {
+        if (what != null && !what.hasTag()) {
             isValidCache.put(what.getItem(), result);
         }
     }
@@ -223,16 +187,13 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     }
 
     @Override
-    public ItemStack assemble(CraftingInput container, Level level) {
-        if (container.size() != 1) {
-            return ItemStack.EMPTY;
-        }
-
+    public ItemStack assemble(Container container, Level level) {
         // Jiggle the container around
-        var testInput = new SingleRecipeInput(container.getItem(0));
+        var testContainer = new SimpleContainer(2);
+        testContainer.setItem(0, container.getItem(CRAFTING_GRID_SLOT));
 
-        if (recipe.matches(testInput, level)) {
-            return recipe.assemble(testInput, level.registryAccess());
+        if (recipe.matches(testContainer, level)) {
+            return recipe.assemble(testContainer, level.registryAccess());
         }
         return ItemStack.EMPTY;
     }
@@ -256,22 +217,14 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         }
     }
 
-    public AEItemKey getInput() {
-        return input;
+    @Override
+    public NonNullList<ItemStack> getRemainingItems(CraftingContainer container) {
+        // Stonecutter does not support remainders
+        return NonNullList.withSize(container.getContainerSize(), ItemStack.EMPTY);
     }
 
-    public static void encode(ItemStack stack, RecipeHolder<StonecutterRecipe> recipe, AEItemKey input,
-            AEItemKey output,
-            boolean allowSubstitution) {
-        Preconditions.checkNotNull(recipe, "recipe");
-        Preconditions.checkNotNull(input, "input");
-        Preconditions.checkNotNull(output, "output");
-
-        stack.set(AEComponents.ENCODED_STONECUTTING_PATTERN, new EncodedStonecuttingPattern(
-                input.toStack(),
-                output.toStack(),
-                allowSubstitution,
-                recipe.id()));
+    public AEItemKey getInput() {
+        return input;
     }
 
     private class Input implements IInput {

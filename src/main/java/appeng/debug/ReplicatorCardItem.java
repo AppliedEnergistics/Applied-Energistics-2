@@ -20,7 +20,6 @@ package appeng.debug;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -33,8 +32,8 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -50,33 +49,24 @@ import appeng.util.InteractionUtil;
 
 public class ReplicatorCardItem extends AEBaseItem {
 
-    public ReplicatorCardItem(Properties properties) {
+    public ReplicatorCardItem(Item.Properties properties) {
         super(properties);
-    }
-
-    private CompoundTag getTag(ItemStack stack) {
-        return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-    }
-
-    private int getReplications(ItemStack stack) {
-        return getTag(stack).getInt("r");
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player playerIn, InteractionHand handIn) {
         if (!level.isClientSide()) {
-            var stack = playerIn.getItemInHand(handIn);
-            CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> {
-                final int replications;
-                if (tag.contains("r")) {
-                    replications = (tag.getInt("r") + 1) % 4;
-                } else {
-                    replications = 0;
-                }
-                tag.putInt("r", replications);
-            });
+            final CompoundTag tag = playerIn.getItemInHand(handIn).getOrCreateTag();
+            final int replications;
 
-            var replications = getReplications(stack);
+            if (tag.contains("r")) {
+                replications = (tag.getInt("r") + 1) % 4;
+            } else {
+                replications = 0;
+            }
+
+            tag.putInt("r", replications);
+
             playerIn.sendSystemMessage(Component.literal(replications + 1 + "³ Replications"));
         }
 
@@ -108,29 +98,28 @@ public class ReplicatorCardItem extends AEBaseItem {
             var gridHost = GridHelper.getNodeHost(level, pos);
 
             if (gridHost != null) {
-                CustomData.update(DataComponents.CUSTOM_DATA, player.getItemInHand(hand), tag -> {
-                    tag.putInt("x", x);
-                    tag.putInt("y", y);
-                    tag.putInt("z", z);
-                    tag.putInt("side", side.ordinal());
-                    tag.putString("w", level.dimension().location().toString());
-                    tag.putInt("r", 0);
-                });
+                final CompoundTag tag = player.getItemInHand(hand).getOrCreateTag();
+                tag.putInt("x", x);
+                tag.putInt("y", y);
+                tag.putInt("z", z);
+                tag.putInt("side", side.ordinal());
+                tag.putString("w", level.dimension().location().toString());
+                tag.putInt("r", 0);
 
                 this.outputMsg(player, "Set replicator source");
             } else {
                 this.outputMsg(player, "This does not host a grid node");
             }
         } else {
-            var ish = getTag(player.getItemInHand(hand));
-            if (!ish.isEmpty()) {
+            final CompoundTag ish = player.getItemInHand(hand).getTag();
+            if (ish != null) {
                 final int src_x = ish.getInt("x");
                 final int src_y = ish.getInt("y");
                 final int src_z = ish.getInt("z");
                 final int src_side = ish.getInt("side");
                 final String worldId = ish.getString("w");
                 final Level src_w = level.getServer()
-                        .getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(worldId)));
+                        .getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(worldId)));
                 final int replications = ish.getInt("r") + 1;
 
                 var gh = GridHelper.getNodeHost(src_w, new BlockPos(src_x, src_y, src_z));
@@ -193,9 +182,8 @@ public class ReplicatorCardItem extends AEBaseItem {
                                                     level.setBlockAndUpdate(d, state);
                                                     if (state.hasBlockEntity()) {
                                                         final BlockEntity ote = src_w.getBlockEntity(p);
-                                                        var data = ote.saveWithId(level.registryAccess());
-                                                        var newBe = BlockEntity.loadStatic(d, state, data,
-                                                                level.registryAccess());
+                                                        var data = ote.saveWithId();
+                                                        var newBe = BlockEntity.loadStatic(d, state, data);
                                                         if (newBe != null) {
                                                             level.setBlockEntity(newBe);
                                                         }
@@ -228,7 +216,7 @@ public class ReplicatorCardItem extends AEBaseItem {
     }
 
     @Override
-    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
         if (AEConfig.instance().isDebugToolsEnabled()) {
             output.accept(this);
         }

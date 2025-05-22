@@ -1,9 +1,10 @@
 package appeng.mixins;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.UnbakedModel;
@@ -16,12 +17,17 @@ import appeng.hooks.BuiltInModelHooks;
  */
 @Mixin(ModelBakery.class)
 public class ModelBakeryMixin {
-    @Inject(at = @At("HEAD"), method = "getModel", cancellable = true)
-    private void getModelHook(ResourceLocation id, CallbackInfoReturnable<UnbakedModel> cir) {
+    @Inject(at = @At("HEAD"), method = "loadModel", cancellable = true)
+    private void loadModelHook(ResourceLocation id, CallbackInfo ci) {
         var model = BuiltInModelHooks.getBuiltInModel(id);
 
         if (model != null) {
-            cir.setReturnValue(model);
+            cacheAndQueueDependencies(id, model);
+            ci.cancel();
         }
+    }
+
+    @Shadow
+    protected void cacheAndQueueDependencies(ResourceLocation id, UnbakedModel unbakedModel) {
     }
 }

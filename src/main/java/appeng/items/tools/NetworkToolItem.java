@@ -27,7 +27,6 @@ import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -36,49 +35,42 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.implementations.menuobjects.IMenuItem;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import appeng.api.upgrades.Upgrades;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.INetworkToolAware;
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.menu.MenuOpener;
-import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 import appeng.util.Platform;
-import appeng.util.inv.AppEngInternalInventory;
-import appeng.util.inv.InternalInventoryHost;
-import appeng.util.inv.filter.IAEItemFilter;
 
-public class NetworkToolItem extends AEBaseItem implements IMenuItem {
+public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem {
 
-    public NetworkToolItem(Properties properties) {
+    public NetworkToolItem(Item.Properties properties) {
         super(properties);
     }
 
     @Override
-    public NetworkToolMenuHost<?> getMenuHost(Player player, ItemMenuHostLocator locator,
-            @Nullable BlockHitResult hitResult) {
+    public NetworkToolMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
         var level = player.level();
-        if (hitResult == null) {
-            return new NetworkToolMenuHost<>(this, player, locator, null);
+        if (pos == null) {
+            return new NetworkToolMenuHost(player, inventorySlot, stack, null);
         }
-        var host = GridHelper.getNodeHost(level, hitResult.getBlockPos());
-        return new NetworkToolMenuHost<>(this, player, locator, host);
+        var host = GridHelper.getNodeHost(level, pos);
+        return new NetworkToolMenuHost(player, inventorySlot, stack, host);
     }
 
     @Override
@@ -156,7 +148,7 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem {
         for (int x = 0; x < pi.getContainerSize(); x++) {
             var pii = pi.getItem(x);
             if (!pii.isEmpty() && pii.getItem() instanceof NetworkToolItem networkToolItem) {
-                return networkToolItem.getMenuHost(pi.player, MenuLocators.forInventorySlot(x), null);
+                return networkToolItem.getMenuHost(pi.player, x, pii, null);
             }
         }
         return null;
@@ -164,7 +156,7 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem {
 
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        var toolHost = new NetworkToolMenuHost<>(this, null, MenuLocators.forStack(stack), null);
+        var toolHost = new NetworkToolMenuHost(null, null, stack, null);
 
         if (toolHost.getInventory().isEmpty()) {
             return Optional.empty();
@@ -183,39 +175,6 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem {
         stacks.sort(Comparator.comparingLong(GenericStack::amount).reversed());
 
         return Optional.of(new StorageCellTooltipComponent(List.of(), stacks, false, true));
-    }
-
-    /**
-     * Gets the internal inventory of the network tool. Changes to the inventory will be persisted to the stack.
-     */
-    public static InternalInventory getInventory(ItemStack stack) {
-        var inv = new AppEngInternalInventory(new InternalInventoryHost() {
-            @Override
-            public void saveChangedInventory(AppEngInternalInventory inv) {
-                stack.set(DataComponents.CONTAINER, inv.toItemContainerContents());
-            }
-
-            @Override
-            public boolean isClientSide() {
-                return false; // We always want events anyway
-            }
-        }, 9);
-        inv.setEnableClientEvents(true); // Also write to NBT on the client to prevent desyncs
-        inv.setFilter(new NetworkToolInventoryFilter());
-        inv.fromItemContainerContents(stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY));
-        return inv;
-    }
-
-    private static class NetworkToolInventoryFilter implements IAEItemFilter {
-        @Override
-        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
-            return true;
-        }
-
-        @Override
-        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
-            return Upgrades.isUpgradeCardItem(stack.getItem());
-        }
     }
 
     /**
@@ -255,10 +214,11 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem {
     }
 
     private void insertIntoTool(ItemStack tool, ItemStack upgrade, Player player) {
-        var toolHost = new NetworkToolMenuHost<>(this, player, MenuLocators.forStack(tool), null);
+        var toolHost = new NetworkToolMenuHost(player, null, tool, null);
         var amount = upgrade.getCount();
         var overflow = toolHost.getInventory().addItems(upgrade);
         upgrade.shrink(amount - overflow.getCount());
+        toolHost.saveChanges();
     }
 
 }

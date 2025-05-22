@@ -18,42 +18,38 @@
 
 package appeng.items.contents;
 
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.base.Preconditions;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.ids.AEComponents;
-import appeng.api.stacks.AEKeyType;
+import appeng.api.storage.AEKeyFilter;
 import appeng.util.ConfigInventory;
 
 public final class CellConfig {
     private CellConfig() {
     }
 
-    public static ConfigInventory create(Set<AEKeyType> supportedTypes, ItemStack is, int size) {
+    public static ConfigInventory create(@Nullable AEKeyFilter filter, ItemStack is, int size) {
         Preconditions.checkArgument(size >= 1 && size <= 63,
                 "Config inventory must have between 1 and 63 slots inclusive.");
         var holder = new Holder(is);
-        holder.inv = ConfigInventory.configTypes(size).supportedTypes(supportedTypes).changeListener(holder::save)
-                .build();
+        holder.inv = ConfigInventory.configTypes(filter, size, holder::save);
         holder.load();
         return holder.inv;
     }
 
-    public static ConfigInventory create(Set<AEKeyType> supportedTypes, ItemStack is) {
+    public static ConfigInventory create(@Nullable AEKeyFilter filter, ItemStack is) {
         var holder = new Holder(is);
-        holder.inv = ConfigInventory.configTypes(63).supportedTypes(supportedTypes).changeListener(holder::save)
-                .build();
+        holder.inv = ConfigInventory.configTypes(filter, 63, holder::save);
         holder.load();
         return holder.inv;
     }
 
     public static ConfigInventory create(ItemStack is) {
         var holder = new Holder(is);
-        holder.inv = ConfigInventory.configTypes(63).changeListener(holder::save).build();
+        holder.inv = ConfigInventory.configTypes(null, 63, holder::save);
         holder.load();
         return holder.inv;
     }
@@ -67,11 +63,13 @@ public final class CellConfig {
         }
 
         public void load() {
-            inv.readFromList(stack.getOrDefault(AEComponents.STORAGE_CELL_CONFIG_INV, List.of()));
+            if (stack.hasTag()) {
+                inv.readFromChildTag(stack.getOrCreateTag(), "list");
+            }
         }
 
         public void save() {
-            stack.set(AEComponents.STORAGE_CELL_CONFIG_INV, inv.toList());
+            inv.writeToChildTag(stack.getOrCreateTag(), "list");
         }
     }
 }

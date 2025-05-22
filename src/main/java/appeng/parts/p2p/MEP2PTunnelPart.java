@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -45,6 +44,7 @@ import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
+import appeng.parts.AEBasePart.NodeListener;
 
 public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements IGridTickable {
 
@@ -85,14 +85,14 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
-    public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.readFromNBT(extra, registries);
+    public void readFromNBT(CompoundTag extra) {
+        super.readFromNBT(extra);
         this.outerNode.loadFromNBT(extra);
     }
 
     @Override
-    public void writeToNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.writeToNBT(extra, registries);
+    public void writeToNBT(CompoundTag extra) {
+        super.writeToNBT(extra);
         this.outerNode.saveToNBT(extra);
     }
 
@@ -144,7 +144,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.METunnel, true);
+        return new TickingRequest(TickRates.METunnel, true, false);
     }
 
     @Override

@@ -16,9 +16,9 @@ import appeng.api.stacks.GenericStack;
 import appeng.helpers.externalstorage.GenericStackInv;
 
 /**
- * Wraps this configuration inventory as an {@link ItemStack} based inventory for use in a menu. It will automatically
- * convert appropriately from {@link ItemStack}s set by the player to the internal key-based representation with the
- * help of a matching {@link AEKeyType}.
+ * Wraps this configuration inventory as an {@link net.minecraft.world.item.ItemStack} based inventory for use in a
+ * menu. It will automatically convert appropriately from {@link net.minecraft.world.item.ItemStack}s set by the player
+ * to the internal key-based representation with the help of a matching {@link AEKeyType}.
  */
 public class ConfigMenuInventory implements InternalInventory {
     private final GenericStackInv inv;
@@ -42,8 +42,7 @@ public class ConfigMenuInventory implements InternalInventory {
             return true; // Clearing filters is always allowed
         }
 
-        var genericStack = convertToSuitableStack(stack);
-        return genericStack != null && inv.isAllowedIn(slot, genericStack.what());
+        return convertToSuitableStack(stack) != null;
     }
 
     @Override
@@ -96,7 +95,7 @@ public class ConfigMenuInventory implements InternalInventory {
                 stack = itemKey.toStack(Math.max(1, Ints.saturatedCast(unwrapped.amount())));
             } else {
                 // In all other cases the channel must match
-                if (inv.isSupportedType(unwrapped.what())) {
+                if (inv.isAllowed(unwrapped.what())) {
                     return unwrapped;
                 } else {
                     return null;
@@ -105,11 +104,9 @@ public class ConfigMenuInventory implements InternalInventory {
         }
 
         // Try items last
-        if (inv.isSupportedType(AEKeyType.items())) {
-            var what = AEItemKey.of(stack);
-            if (what != null) {
-                return new GenericStack(what, stack.getCount());
-            }
+        var what = AEItemKey.of(stack);
+        if (inv.isAllowed(what)) {
+            return new GenericStack(what, stack.getCount());
         }
 
         return null;

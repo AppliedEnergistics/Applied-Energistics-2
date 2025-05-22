@@ -21,6 +21,7 @@ import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.Color;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.core.definitions.AEParts;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
@@ -32,7 +33,6 @@ public class CPUSelectionList implements ICompositeWidget {
 
     private final Blitter background;
     private final Blitter buttonBg;
-    private final Blitter buttonBgSelected;
     private final CraftingStatusMenu menu;
     private final Color textColor;
     private final int selectedColor;
@@ -46,7 +46,6 @@ public class CPUSelectionList implements ICompositeWidget {
         this.scrollbar = scrollbar;
         this.background = style.getImage("cpuList");
         this.buttonBg = style.getImage("cpuListButton");
-        this.buttonBgSelected = style.getImage("cpuListButtonSelected");
         this.textColor = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR);
         this.selectedColor = style.getColor(PaletteColor.SELECTION_COLOR).toARGB();
         this.scrollbar.setCaptureMouseWheel(false);
@@ -81,6 +80,11 @@ public class CPUSelectionList implements ICompositeWidget {
             var tooltipLines = new ArrayList<Component>();
             tooltipLines.add(getCpuName(cpu));
 
+            // Show the amount of storage in the Crafting CPU
+            tooltipLines.add(ButtonToolTips.CpuStatusStorage.text(Tooltips.ofBytes(cpu.storage()))
+                    // Vanilla text formatting is broken and inherits the color of the 1st placeholder in the text
+                    .withStyle(ChatFormatting.GRAY));
+
             // Show the number of coprocessors if any are installed
             var coProcessors = cpu.coProcessors();
             if (coProcessors == 1) {
@@ -90,11 +94,6 @@ public class CPUSelectionList implements ICompositeWidget {
                 tooltipLines.add(ButtonToolTips.CpuStatusCoProcessors.text(Tooltips.ofNumber(coProcessors))
                         .withStyle(ChatFormatting.GRAY));
             }
-
-            // Show the amount of storage in the Crafting CPU
-            tooltipLines.add(ButtonToolTips.CpuStatusStorage.text(Tooltips.ofBytes(cpu.storage()))
-                    // Vanilla text formatting is broken and inherits the color of the 1st placeholder in the text
-                    .withStyle(ChatFormatting.GRAY));
 
             // Show if the CPU is player or automation only
             var modeText = switch (cpu.mode()) {
@@ -137,7 +136,7 @@ public class CPUSelectionList implements ICompositeWidget {
     private CraftingStatusMenu.CraftingCpuListEntry hitTestCpu(Point mousePos) {
         var relX = mousePos.getX() - bounds.getX();
         var relY = mousePos.getY() - bounds.getY();
-        relX -= 8;
+        relX -= 9;
         if (relX < 0 || relX >= buttonBg.getSrcWidth()) {
             return null;
         }
@@ -178,7 +177,7 @@ public class CPUSelectionList implements ICompositeWidget {
                 this.bounds.getHeight()).blit(guiGraphics);
 
         // Move to first button
-        x += 8;
+        x += 9;
         y += 19;
 
         var pose = guiGraphics.pose();
@@ -188,16 +187,18 @@ public class CPUSelectionList implements ICompositeWidget {
                 Mth.clamp(scrollbar.getCurrentScroll(), 0, menu.cpuList.cpus().size()),
                 Mth.clamp(scrollbar.getCurrentScroll() + ROWS, 0, menu.cpuList.cpus().size()));
         for (var cpu : cpus) {
+            int color = -1;
             if (cpu.serial() == menu.getSelectedCpuSerial()) {
-                buttonBgSelected.dest(x, y).blit(guiGraphics);
-            } else {
-                buttonBg.dest(x, y).blit(guiGraphics);
+                color = selectedColor;
             }
+            buttonBg.dest(x, y)
+                    .colorRgb(color)
+                    .blit(guiGraphics);
 
             var name = getCpuName(cpu);
             pose.pushPose();
-            pose.translate(x + 3, y + 2, 0);
-            pose.scale(0.666f, 0.666f, 1);
+            pose.translate(x + 3, y + 3, 0);
+            pose.scale(0.8f, 0.8f, 1);
             guiGraphics.drawString(font, name, 0, 0, textColor.toARGB(), false);
             pose.popPose();
 
@@ -206,38 +207,40 @@ public class CPUSelectionList implements ICompositeWidget {
             var currentJob = cpu.currentJob();
             if (currentJob != null) {
                 // Show what was initially requested
-                infoBar.add(Icon.S_CRAFT, 1f, x + 2, y + 9);
+                infoBar.add(Icon.CRAFT_HAMMER, 0.6f);
+                infoBar.addSpace(2);
                 var craftAmt = currentJob.what().formatAmount(currentJob.amount(), AmountFormat.SLOT);
-                infoBar.add(craftAmt, textColor.toARGB(), 0.666f, x + 14, y + 13);
-                infoBar.add(currentJob.what(), 0.666f, x + 55, y + 9);
+                infoBar.add(craftAmt, textColor.toARGB(), 0.6f);
+                infoBar.addSpace(1);
+                infoBar.add(currentJob.what(), 0.6f);
 
                 // Draw a bar at the bottom of the button to indicate job progress
                 var progress = (int) (cpu.progress() * (buttonBg.getSrcWidth() - 1));
-                guiGraphics.pose().pushPose();
-                guiGraphics.pose().translate(1, -1, 0);
                 guiGraphics.fill(
-                        x,
+                        x + 1,
                         y + buttonBg.getSrcHeight() - 2,
                         x + progress,
                         y + buttonBg.getSrcHeight() - 1,
-                        menu.getSelectedCpuSerial() == cpu.serial() ? 0xFF7da9d2 : (selectedColor));
-                guiGraphics.pose().popPose();
+                        menu.getSelectedCpuSerial() == cpu.serial() ? 0xFFFFFFFF : (0xFF000000 + selectedColor));
 
             } else {
-                infoBar.add(Icon.S_STORAGE, 1f, x + 27, y + 9);
+                infoBar.add(Icon.LEVEL_ITEM, 0.6f);
+                infoBar.addSpace(1);
 
                 String storageAmount = formatStorage(cpu);
-                infoBar.add(storageAmount, textColor.toARGB(), 0.666f, x + 39, y + 13);
+                infoBar.add(storageAmount, textColor.toARGB(), 0.6f);
+                infoBar.addSpace(1);
 
                 if (cpu.coProcessors() > 0) {
-                    infoBar.add(Icon.S_PROCESSOR, 1f, x + 2, y + 9);
+                    infoBar.add(Icon.BLOCKING_MODE_NO, 0.6f);
                     String coProcessorCount = String.valueOf(cpu.coProcessors());
-                    infoBar.add(coProcessorCount, textColor.toARGB(), 0.666f, x + 14, y + 13);
+                    infoBar.add(coProcessorCount, textColor.toARGB(), 0.6f);
+                    infoBar.addSpace(1);
                 }
 
                 switch (cpu.mode()) {
-                    case PLAYER_ONLY -> infoBar.add(Icon.S_TERMINAL, 1f, x + 55, y + 9);
-                    case MACHINE_ONLY -> infoBar.add(Icon.S_MACHINE, 1f, x + 55, y + 9);
+                    case PLAYER_ONLY -> infoBar.add(AEParts.TERMINAL, 0.6f);
+                    case MACHINE_ONLY -> infoBar.add(AEParts.EXPORT_BUS, 0.6f);
                 }
             }
 
@@ -248,13 +251,7 @@ public class CPUSelectionList implements ICompositeWidget {
     }
 
     private String formatStorage(CraftingStatusMenu.CraftingCpuListEntry cpu) {
-        long storage = cpu.storage();
-
-        if (storage >= 1024 * 1024) {
-            return (storage / (1024 * 1024)) + "M";
-        } else {
-            return (storage / 1024) + "k";
-        }
+        return (cpu.storage() / 1024) + "k";
     }
 
     private Component getCpuName(CraftingStatusMenu.CraftingCpuListEntry cpu) {

@@ -18,47 +18,35 @@
 
 package appeng.block.crafting;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.crafting.CraftingBlockEntity;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.localization.PlayerMessages;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.crafting.CraftingCPUMenu;
-import appeng.recipes.game.CraftingUnitTransformRecipe;
 import appeng.util.InteractionUtil;
 
 public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> extends AEBaseEntityBlock<T> {
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractCraftingUnitBlock.class);
-
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public final ICraftingUnitType type;
 
-    public AbstractCraftingUnitBlock(Properties props, ICraftingUnitType type) {
+    public AbstractCraftingUnitBlock(BlockBehaviour.Properties props, ICraftingUnitType type) {
         super(props);
         this.type = type;
         this.registerDefaultState(defaultBlockState().setValue(FORMED, false).setValue(POWERED, false));
@@ -105,116 +93,20 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
-            BlockHitResult hitResult) {
-        if (InteractionUtil.isInAlternateUseMode(player)) {
-            var result = this.removeUpgrade(level, player, pos, AEBlocks.CRAFTING_UNIT.block().defaultBlockState());
-            if (result != InteractionResult.FAIL)
-                return result;
-        }
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player p, InteractionHand hand,
+            BlockHitResult hit) {
+        final CraftingBlockEntity tg = this.getBlockEntity(level, pos);
 
-        if (level.getBlockEntity(pos) instanceof CraftingBlockEntity be && be.isFormed() && be.isActive()) {
+        if (tg != null && !InteractionUtil.isInAlternateUseMode(p) && tg.isFormed() && tg.isActive()) {
             if (!level.isClientSide()) {
-                MenuOpener.open(CraftingCPUMenu.TYPE, player, MenuLocators.forBlockEntity(be));
+                hit.getDirection();
+                MenuOpener.open(CraftingCPUMenu.TYPE, p,
+                        MenuLocators.forBlockEntity(tg));
             }
 
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return super.useWithoutItem(state, level, pos, player, hitResult);
-    }
-
-    @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
-            Player player, InteractionHand hand, BlockHitResult hit) {
-        if (this.upgrade(heldItem, state, level, pos, player, hit))
-            return ItemInteractionResult.sidedSuccess(level.isClientSide());
-        return super.useItemOn(heldItem, state, level, pos, player, hand, hit);
-    }
-
-    public boolean upgrade(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player,
-            BlockHitResult hit) {
-        if (heldItem.isEmpty()) {
-            return false;
-        }
-
-        var upgradedBlock = CraftingUnitTransformRecipe.getUpgradedBlock(level, heldItem);
-        if (upgradedBlock == null) {
-            return false;
-        }
-
-        if (!(upgradedBlock instanceof AbstractCraftingUnitBlock<?>)) {
-            LOG.warn("Upgraded block for crafting unit upgrade with {} is not a crafting block: {}",
-                    heldItem, upgradedBlock);
-            return false;
-        }
-
-        if (upgradedBlock == state.getBlock()) {
-            return false;
-        }
-
-        // If Upgrading is possible - but disassembly isn't, this will still make the hand animation play.
-        if (level.isClientSide()) {
-            return true;
-        }
-
-        var newState = upgradedBlock.defaultBlockState();
-
-        // Makes sure Crafting Monitors are looking at the player.
-        newState = newState.trySetValue(BlockStateProperties.FACING, hit.getDirection());
-
-        // Crafting Unit doesn't have a disassembly recipe, so we can ignore the drops.
-        InteractionResult result = state.getBlock() == AEBlocks.CRAFTING_UNIT.block()
-                ? this.transform(level, pos, newState) ? InteractionResult.SUCCESS : InteractionResult.FAIL
-                : this.removeUpgrade(level, player, pos, newState);
-
-        if (result == InteractionResult.FAIL)
-            return false;
-        // Pass => Crafting Unit is busy!
-        if (result == InteractionResult.PASS)
-            return true;
-        heldItem.consume(1, player);
-        return true;
-    }
-
-    public InteractionResult removeUpgrade(Level level, Player player, BlockPos pos, BlockState newState) {
-        if (this.type == CraftingUnitType.UNIT || level.isClientSide())
-            return InteractionResult.FAIL;
-
-        var removedUpgrade = CraftingUnitTransformRecipe.getRemovedUpgrade(level, this);
-        if (removedUpgrade.isEmpty()) {
-            return InteractionResult.FAIL;
-        }
-
-        var cb = this.getBlockEntity(level, pos);
-        if (cb != null && cb.getCluster() != null && cb.getCluster().isBusy()) {
-            player.displayClientMessage(PlayerMessages.CraftingCpuBusy.text().withColor(0xFF1F1F), true);
-            return InteractionResult.PASS;
-        }
-
-        if (!this.transform(level, pos, newState)) {
-            return InteractionResult.FAIL;
-        }
-
-        player.getInventory().placeItemBackInInventory(removedUpgrade);
-
-        return InteractionResult.SUCCESS;
-    }
-
-    private boolean transform(Level level, BlockPos pos, BlockState state) {
-        if (level.isClientSide() || !level.removeBlock(pos, false) || !level.setBlock(pos, state, UPDATE_ALL)) {
-            return false;
-        }
-
-        level.playSound(
-                null,
-                pos.getX(),
-                pos.getY(),
-                pos.getZ(),
-                SoundEvents.ITEM_FRAME_REMOVE_ITEM,
-                SoundSource.BLOCKS,
-                0.5f,
-                1f);
-        return true;
+        return super.use(state, level, pos, p, hand, hit);
     }
 }

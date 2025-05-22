@@ -18,40 +18,35 @@
 
 package appeng.menu.me.items;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraft.world.level.Level;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.energy.IEnergySource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ITerminalHost;
-import appeng.core.network.serverbound.InventoryActionPacket;
-import appeng.helpers.ICraftingGridMenu;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.InventoryActionPacket;
+import appeng.helpers.IMenuCraftingPacket;
 import appeng.helpers.InventoryAction;
-import appeng.me.storage.LinkStatusRespectingInventory;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEStorageMenu;
@@ -67,7 +62,7 @@ import appeng.util.inv.PlayerInternalInventory;
  *
  * @see appeng.client.gui.me.items.CraftingTermScreen
  */
-public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu {
+public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPacket {
 
     public static final MenuType<CraftingTermMenu> TYPE = MenuTypeBuilder
             .create(CraftingTermMenu::new, ITerminalHost.class)
@@ -77,10 +72,10 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
 
     private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots = new CraftingMatrixSlot[9];
-    @Nullable
-    private CraftingInput lastTestedInput;
+    private final CraftingContainer recipeTestContainer = new TransientCraftingContainer(this, 3, 3);
+
     private final CraftingTermSlot outputSlot;
-    private RecipeHolder<CraftingRecipe> currentRecipe;
+    private Recipe<CraftingContainer> currentRecipe;
 
     public CraftingTermMenu(int id, Inventory ip, ITerminalHost host) {
         this(TYPE, id, ip, host, true);
@@ -99,19 +94,13 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
                     SlotSemantics.CRAFTING_GRID);
         }
 
-        var linkStatusInventory = new LinkStatusRespectingInventory(host.getInventory(), this::getLinkStatus);
         this.addSlot(this.outputSlot = new CraftingTermSlot(this.getPlayerInventory().player, this.getActionSource(),
-                this.energySource, linkStatusInventory, craftingGridInv, craftingGridInv, this),
+                this.powerSource, host.getInventory(), craftingGridInv, craftingGridInv, this),
                 SlotSemantics.CRAFTING_RESULT);
 
         updateCurrentRecipeAndOutput(true);
 
         registerClientAction(ACTION_CLEAR_TO_PLAYER, this::clearToPlayerInventory);
-    }
-
-    @Override
-    public IEnergySource getEnergySource() {
-        return this.energySource;
     }
 
     /**
@@ -120,29 +109,34 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
 
     @Override
     public void slotsChanged(Container inventory) {
-        updateCurrentRecipeAndOutput(false);
+        // Do not trigger a recursive update from updating the test container
+        if (inventory != recipeTestContainer) {
+            updateCurrentRecipeAndOutput(false);
+        }
     }
 
     private void updateCurrentRecipeAndOutput(boolean forceUpdate) {
-        var testItems = new ArrayList<ItemStack>(this.craftingSlots.length);
-        for (var craftingSlot : this.craftingSlots) {
-            testItems.add(craftingSlot.getItem().copy());
+        boolean hasChanged = forceUpdate;
+        for (int x = 0; x < 9; x++) {
+            var stack = this.craftingSlots[x].getItem();
+            if (!ItemStack.isSameItemSameTags(stack, recipeTestContainer.getItem(x))) {
+                hasChanged = true;
+                recipeTestContainer.setItem(x, stack.copy());
+            }
         }
-        var testInput = CraftingInput.of(3, 3, testItems);
 
-        if (!forceUpdate && Objects.equals(lastTestedInput, testInput)) {
+        if (!hasChanged) {
             return;
         }
 
-        var level = getPlayer().level();
-        this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, testInput, level)
+        Level level = this.getPlayerInventory().player.level();
+        this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, recipeTestContainer, level)
                 .orElse(null);
-        this.lastTestedInput = testInput;
 
         if (this.currentRecipe == null) {
             this.outputSlot.set(ItemStack.EMPTY);
         } else {
-            this.outputSlot.set(this.currentRecipe.value().assemble(testInput, level.registryAccess()));
+            this.outputSlot.set(this.currentRecipe.assemble(recipeTestContainer, level.registryAccess()));
         }
     }
 
@@ -152,11 +146,16 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
     }
 
     @Override
+    public boolean useRealItems() {
+        return true;
+    }
+
+    @Override
     public void startAutoCrafting(List<AutoCraftEntry> toCraft) {
         CraftConfirmMenu.openWithCraftingList(getActionHost(), (ServerPlayer) getPlayer(), getLocator(), toCraft);
     }
 
-    public RecipeHolder<CraftingRecipe> getCurrentRecipe() {
+    public Recipe<CraftingContainer> getCurrentRecipe() {
         return this.currentRecipe;
     }
 
@@ -167,7 +166,7 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
         Preconditions.checkState(isClientSide());
         CraftingMatrixSlot slot = craftingSlots[0];
         var p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.index, 0);
-        PacketDistributor.sendToServer(p);
+        NetworkHandler.instance().sendToServer(p);
     }
 
     @Override

@@ -73,7 +73,7 @@ public final class ItemComparisonHelper {
     }
 
     /**
-     * Similar to {@link ItemStack#isSameItemSameComponents}, but it can further check, if both are equal considering a
+     * Similar to {@link ItemStack#isSameItemSameTags}, but it can further check, if both are equal considering a
      * {@link FuzzyMode}.
      *
      * @param mode how to compare the two {@link ItemStack}s
@@ -89,7 +89,7 @@ public final class ItemComparisonHelper {
         }
 
         // test damageable items..
-        if (a.getItem() == b.getItem() && a.isDamageableItem()) {
+        if (a.getItem() == b.getItem() && a.getItem().canBeDepleted()) {
             if (mode == FuzzyMode.IGNORE_ALL) {
                 return true;
             } else if (mode == FuzzyMode.PERCENT_99) {

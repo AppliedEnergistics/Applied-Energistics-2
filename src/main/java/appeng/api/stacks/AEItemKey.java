@@ -1,65 +1,86 @@
 package appeng.api.stacks;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.ref.WeakReference;
 import java.util.List;
-
-import com.google.common.base.Preconditions;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Objects;
+import java.util.WeakHashMap;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.nbt.NumericTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.CapabilityProvider;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
 
 public final class AEItemKey extends AEKey {
+    private static final Logger LOG = LoggerFactory.getLogger(AEItemKey.class);
+
+    private static final MethodHandle SERIALIZE_CAPS_HANDLE;
+    static {
+        try {
+            var method = CapabilityProvider.class.getDeclaredMethod("serializeCaps");
+            method.setAccessible(true);
+            SERIALIZE_CAPS_HANDLE = MethodHandles.lookup().unreflect(method);
+        } catch (Exception exception) {
+            throw new RuntimeException("Failed to create serializeCaps method handle", exception);
+        }
+    }
+
+    @Nullable
+    private static CompoundTag serializeStackCaps(ItemStack stack) {
+        try {
+            var caps = (CompoundTag) SERIALIZE_CAPS_HANDLE.invokeExact((CapabilityProvider) stack);
+            // Ensure stacks with no serializable cap providers are treated the same as stacks with no caps!
+            return caps == null || caps.isEmpty() ? null : caps;
+        } catch (Throwable ex) {
+            throw new RuntimeException("Failed to call serializeCaps", ex);
+        }
+    }
+
+    private final Item item;
+    private final InternedTag internedTag;
+    private final InternedTag internedCaps;
+    private final int hashCode;
+    private final int cachedDamage;
+    /**
+     * A lazily initialized itemstack used for display and ingredient testing purposes. This should never be modified
+     * and will always have amount 1.
+     */
+    @Nullable
+    private ItemStack readOnlyStack;
 
     /**
-     * We currently cannot directly use {@link ItemStack#SINGLE_ITEM_CODEC} since it is wrapped up in a lazy codec,
-     * which prevents the dispatch codec from recognizing it as a MapCodec, making it unable to inline the fields.
+     * Max stack size cache, or {@code -1} if not initialized.
      */
-    public static final MapCodec<AEItemKey> MAP_CODEC = RecordCodecBuilder.mapCodec(
-            builder -> builder.group(
-                    BuiltInRegistries.ITEM.holderByNameCodec().validate(
-                            item -> item.is(Items.AIR.builtInRegistryHolder())
-                                    ? DataResult.error(() -> "Item must not be minecraft:air")
-                                    : DataResult.success(item))
-                            .fieldOf("id").forGetter(key -> key.stack.getItemHolder()),
-                    DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY)
-                            .forGetter(key -> key.stack.getComponentsPatch()))
-                    .apply(builder, (item, componentPatch) -> new AEItemKey(new ItemStack(item, 1, componentPatch))));
-    public static final Codec<AEItemKey> CODEC = MAP_CODEC.codec();
+    private int maxStackSize = -1;
 
-    private final ItemStack stack;
-    private final int hashCode;
-    private final int maxStackSize;
-    private final int damage;
-
-    private AEItemKey(ItemStack stack) {
-        Preconditions.checkArgument(!stack.isEmpty(), "stack is empty");
-        this.stack = stack;
-        this.hashCode = ItemStack.hashItemAndComponents(stack);
-        this.maxStackSize = stack.getMaxStackSize();
-        this.damage = stack.getDamageValue();
+    private AEItemKey(Item item, InternedTag internedTag, InternedTag internedCaps) {
+        this.item = item;
+        this.internedTag = internedTag;
+        this.internedCaps = internedCaps;
+        this.hashCode = Objects.hash(item, internedTag, internedCaps);
+        if (internedTag.tag != null && internedTag.tag.get("Damage") instanceof NumericTag numericTag) {
+            this.cachedDamage = numericTag.getAsInt();
+        } else {
+            this.cachedDamage = 0;
+        }
     }
 
     @Nullable
@@ -67,8 +88,10 @@ public final class AEItemKey extends AEKey {
         if (stack.isEmpty()) {
             return null;
         }
-
-        return new AEItemKey(stack.copy());
+        var ret = of(stack.getItem(), stack.getTag(), serializeStackCaps(stack));
+        // Cache max stack size since we already have an ItemStack.
+        ret.maxStackSize = stack.getMaxStackSize();
+        return ret;
     }
 
     public static boolean matches(AEKey what, ItemStack itemStack) {
@@ -90,7 +113,7 @@ public final class AEItemKey extends AEKey {
 
     @Override
     public AEItemKey dropSecondary() {
-        return of(stack.getItem().getDefaultInstance());
+        return of(item, null);
     }
 
     @Override
@@ -100,8 +123,7 @@ public final class AEItemKey extends AEKey {
         if (o == null || getClass() != o.getClass())
             return false;
         AEItemKey aeItemKey = (AEItemKey) o;
-        // The hash code comparison is a fast-fail cheap check
-        return this.hashCode == aeItemKey.hashCode && ItemStack.isSameItemSameComponents(stack, aeItemKey.stack);
+        return item == aeItemKey.item && internedTag == aeItemKey.internedTag && internedCaps == aeItemKey.internedCaps;
     }
 
     @Override
@@ -110,15 +132,21 @@ public final class AEItemKey extends AEKey {
     }
 
     public static AEItemKey of(ItemLike item) {
-        return of(item.asItem().getDefaultInstance());
+        return of(item, null);
     }
 
-    public boolean is(ItemLike item) {
-        return stack.is(item.asItem());
+    public static AEItemKey of(ItemLike item, @Nullable CompoundTag tag) {
+        return of(item, tag, null);
+    }
+
+    private static AEItemKey of(ItemLike item, @Nullable CompoundTag tag, @Nullable CompoundTag caps) {
+        return new AEItemKey(item.asItem(), InternedTag.of(tag, false), InternedTag.of(caps, false));
     }
 
     public boolean matches(ItemStack stack) {
-        return !stack.isEmpty() && ItemStack.isSameItemSameComponents(this.stack, stack);
+        // TODO: remove or optimize cap check if it becomes too slow >:-(
+        return !stack.isEmpty() && stack.is(item) && Objects.equals(stack.getTag(), internedTag.tag)
+                && Objects.equals(serializeStackCaps(stack), internedCaps.tag);
     }
 
     public boolean matches(Ingredient ingredient) {
@@ -129,7 +157,17 @@ public final class AEItemKey extends AEKey {
      * @return The ItemStack represented by this key. <strong>NEVER MUTATE THIS</strong>
      */
     public ItemStack getReadOnlyStack() {
-        return stack;
+        if (readOnlyStack == null) {
+            readOnlyStack = new ItemStack(item, 1, internedCaps.tag);
+            readOnlyStack.setTag(internedTag.tag);
+        } else {
+            if (readOnlyStack.isEmpty()) {
+                LOG.error("Something destroyed the read-only itemstack of {}", this);
+                readOnlyStack = null;
+                return getReadOnlyStack();
+            }
+        }
+        return readOnlyStack;
     }
 
     public ItemStack toStack() {
@@ -141,18 +179,23 @@ public final class AEItemKey extends AEKey {
             return ItemStack.EMPTY;
         }
 
-        return stack.copyWithCount(count);
+        var result = new ItemStack(item, count, internedCaps.tag);
+        result.setTag(copyTag());
+        return result;
     }
 
     public Item getItem() {
-        return stack.getItem();
+        return item;
     }
 
     @Nullable
-    public static AEItemKey fromTag(HolderLookup.Provider registries, CompoundTag tag) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+    public static AEItemKey fromTag(CompoundTag tag) {
         try {
-            return CODEC.decode(ops, tag).getOrThrow().getFirst();
+            var item = BuiltInRegistries.ITEM.getOptional(new ResourceLocation(tag.getString("id")))
+                    .orElseThrow(() -> new IllegalArgumentException("Unknown item id."));
+            var extraTag = tag.contains("tag") ? tag.getCompound("tag") : null;
+            var extraCaps = tag.contains("caps") ? tag.getCompound("caps") : null;
+            return of(item, extraTag, extraCaps);
         } catch (Exception e) {
             AELog.debug("Tried to load an invalid item key from NBT: %s", tag, e);
             return null;
@@ -160,15 +203,23 @@ public final class AEItemKey extends AEKey {
     }
 
     @Override
-    public CompoundTag toTag(HolderLookup.Provider registries) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        return (CompoundTag) CODEC.encodeStart(ops, this)
-                .getOrThrow();
+    public CompoundTag toTag() {
+        CompoundTag result = new CompoundTag();
+        result.putString("id", BuiltInRegistries.ITEM.getKey(item).toString());
+
+        if (internedTag.tag != null) {
+            result.put("tag", internedTag.tag.copy());
+        }
+        if (internedCaps.tag != null) {
+            result.put("caps", internedCaps.tag.copy());
+        }
+
+        return result;
     }
 
     @Override
     public Object getPrimaryKey() {
-        return stack.getItem();
+        return item;
     }
 
     /**
@@ -176,7 +227,7 @@ public final class AEItemKey extends AEKey {
      */
     @Override
     public int getFuzzySearchValue() {
-        return this.damage;
+        return this.cachedDamage;
     }
 
     /**
@@ -189,7 +240,24 @@ public final class AEItemKey extends AEKey {
 
     @Override
     public ResourceLocation getId() {
-        return BuiltInRegistries.ITEM.getKey(stack.getItem());
+        return BuiltInRegistries.ITEM.getKey(item);
+    }
+
+    /**
+     * @return <strong>NEVER MODIFY THE RETURNED TAG</strong>
+     */
+    @Nullable
+    public CompoundTag getTag() {
+        return internedTag.tag;
+    }
+
+    @Nullable
+    public CompoundTag copyTag() {
+        return internedTag.tag != null ? internedTag.tag.copy() : null;
+    }
+
+    public boolean hasTag() {
+        return internedTag.tag != null;
     }
 
     @Override
@@ -201,7 +269,7 @@ public final class AEItemKey extends AEKey {
     public void addDrops(long amount, List<ItemStack> drops, Level level, BlockPos pos) {
         while (amount > 0) {
             if (drops.size() > 1000) {
-                AELog.warn("Tried dropping an excessive amount of items, ignoring %s %ss", amount, stack.getItem());
+                AELog.warn("Tried dropping an excessive amount of items, ignoring %s %ss", amount, item);
                 break;
             }
 
@@ -220,45 +288,108 @@ public final class AEItemKey extends AEKey {
     @Override
     public boolean isTagged(TagKey<?> tag) {
         // This will just return false for incorrectly cast tags
-        return stack.is((TagKey<Item>) tag);
-    }
-
-    @Override
-    public <T> @Nullable T get(DataComponentType<T> type) {
-        return stack.get(type);
-    }
-
-    @Override
-    public boolean hasComponents() {
-        return stack.getComponents().isEmpty();
+        return item.builtInRegistryHolder().is((TagKey<Item>) tag);
     }
 
     /**
      * @return True if the item represented by this key is damaged.
      */
     public boolean isDamaged() {
-        return damage > 0;
+        return cachedDamage > 0;
     }
 
     public int getMaxStackSize() {
-        return maxStackSize;
+        int ret = maxStackSize;
+
+        if (ret == -1) {
+            maxStackSize = ret = getReadOnlyStack().getMaxStackSize();
+        }
+
+        return ret;
     }
 
     @Override
-    public void writeToPacket(RegistryFriendlyByteBuf data) {
-        ItemStack.STREAM_CODEC.encode(data, stack);
+    public void writeToPacket(FriendlyByteBuf data) {
+        data.writeVarInt(Item.getId(item));
+        CompoundTag compoundTag = null;
+        if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
+            compoundTag = item.getShareTag(toStack());
+        }
+        data.writeNbt(compoundTag);
     }
 
-    public static AEItemKey fromPacket(RegistryFriendlyByteBuf data) {
-        var stack = ItemStack.STREAM_CODEC.decode(data);
-        return new AEItemKey(stack);
+    public static AEItemKey fromPacket(FriendlyByteBuf data) {
+        int i = data.readVarInt();
+        var item = Item.byId(i);
+        var shareTag = data.readNbt();
+        var stack = new ItemStack(item);
+        stack.readShareTag(shareTag);
+        return new AEItemKey(item, InternedTag.of(stack.getTag(), true),
+                InternedTag.of(serializeStackCaps(stack), true));
     }
 
     @Override
     public String toString() {
-        var id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        var id = BuiltInRegistries.ITEM.getKey(item);
         String idString = id != BuiltInRegistries.ITEM.getDefaultKey() ? id.toString()
-                : stack.getItem().getClass().getName() + "(unregistered)";
-        return stack.isComponentsPatchEmpty() ? idString : idString + " (with patches)";
+                : item.getClass().getName() + "(unregistered)";
+        return internedTag.tag == null ? idString : idString + " (+tag)";
+    }
+
+    private static final class InternedTag {
+        private static final InternedTag EMPTY = new InternedTag(null);
+
+        private static final WeakHashMap<InternedTag, WeakReference<InternedTag>> INTERNED = new WeakHashMap<>();
+
+        private final CompoundTag tag;
+        private final int hashCode;
+
+        InternedTag(CompoundTag tag) {
+            this.tag = tag;
+            this.hashCode = Objects.hashCode(tag);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
+            InternedTag internedTag = (InternedTag) o;
+            return Objects.equals(tag, internedTag.tag);
+        }
+
+        @Override
+        public int hashCode() {
+            return hashCode;
+        }
+
+        public static InternedTag of(@Nullable CompoundTag tag, boolean giveOwnership) {
+            if (tag == null) {
+                return EMPTY;
+            }
+
+            synchronized (AEItemKey.class) {
+                var searchHolder = new InternedTag(tag);
+                var weakRef = INTERNED.get(searchHolder);
+                InternedTag ret = null;
+
+                if (weakRef != null) {
+                    ret = weakRef.get();
+                }
+
+                if (ret == null) {
+                    // Copy the tag if we don't get to have ownership of it
+                    if (giveOwnership) {
+                        ret = searchHolder;
+                    } else {
+                        ret = new InternedTag(tag.copy());
+                    }
+                    INTERNED.put(ret, new WeakReference<>(ret));
+                }
+
+                return ret;
+            }
+        }
     }
 }

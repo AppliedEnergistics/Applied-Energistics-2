@@ -22,16 +22,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
-import org.joml.Quaternionf;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.api.util.DimensionalBlockPos;
 
@@ -54,10 +53,6 @@ public class OverlayManager {
             return;
         }
 
-        if (overlayHandlers.isEmpty()) {
-            return;
-        }
-
         Minecraft minecraft = Minecraft.getInstance();
         BufferSource buffer = minecraft.renderBuffers().bufferSource();
         PoseStack poseStack = event.getPoseStack();
@@ -65,20 +60,16 @@ public class OverlayManager {
         poseStack.pushPose();
 
         Vec3 projectedView = minecraft.gameRenderer.getMainCamera().getPosition();
-        Quaternionf rotation = new Quaternionf(minecraft.gameRenderer.getMainCamera().rotation());
-        rotation.invert();
-        poseStack.mulPose(rotation);
         poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
-        for (var handler : overlayHandlers.entrySet().stream()
+        for (OverlayRenderer handler : overlayHandlers.entrySet().stream()
                 .filter(e -> e.getKey().getLevel() == minecraft.level).map(Entry::getValue)
-                .toList()) {
+                .collect(Collectors.toList())) {
             handler.render(poseStack, buffer);
         }
 
         poseStack.popPose();
 
-        buffer.endBatch(OverlayRenderType.getBlockHilightLineOccluded());
         buffer.endBatch(OverlayRenderType.getBlockHilightFace());
         buffer.endBatch(OverlayRenderType.getBlockHilightLine());
     }

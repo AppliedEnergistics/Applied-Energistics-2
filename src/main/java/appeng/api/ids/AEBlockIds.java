@@ -65,7 +65,7 @@ public final class AEBlockIds {
     public static final ResourceLocation QUANTUM_LINK = id("quantum_link");
     public static final ResourceLocation CONTROLLER = id("controller");
     public static final ResourceLocation DRIVE = id("drive");
-    public static final ResourceLocation ME_CHEST = id("chest");
+    public static final ResourceLocation CHEST = id("chest");
     public static final ResourceLocation INTERFACE = id("interface");
     public static final ResourceLocation CELL_WORKBENCH = id("cell_workbench");
     public static final ResourceLocation IO_PORT = id("io_port");
@@ -168,6 +168,6 @@ public final class AEBlockIds {
     public static final ResourceLocation CRANK = id("crank");
 
     private static ResourceLocation id(String id) {
-        return ResourceLocation.fromNamespaceAndPath(AEConstants.MOD_ID, id);
+        return new ResourceLocation(AEConstants.MOD_ID, id);
     }
 }

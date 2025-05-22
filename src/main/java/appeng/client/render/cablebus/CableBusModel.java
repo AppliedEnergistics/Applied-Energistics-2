@@ -60,7 +60,7 @@ public class CableBusModel implements BasicUnbakedModel {
 
     @Override
     public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelState) {
+            ModelState modelState, ResourceLocation resourceLocation) {
         Map<ResourceLocation, BakedModel> partModels = this.loadPartModels(baker, spriteGetter, modelState);
 
         CableBuilder cableBuilder = new CableBuilder(spriteGetter);

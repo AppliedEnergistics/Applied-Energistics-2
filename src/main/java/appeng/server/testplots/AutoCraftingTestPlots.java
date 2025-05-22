@@ -1,14 +1,17 @@
 package appeng.server.testplots;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.config.Actionable;
@@ -21,18 +24,16 @@ import appeng.api.stacks.GenericStack;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.storage.SkyChestBlockEntity;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.items.storage.CreativeCellItem;
 import appeng.me.helpers.BaseActionSource;
+import appeng.menu.AutoCraftingMenu;
 import appeng.server.testworld.PlotBuilder;
-import appeng.server.testworld.SpawnExtraGridTestToolsChest;
 import appeng.server.testworld.TestCraftingJob;
 import appeng.util.inv.AppEngInternalInventory;
 
-@TestPlotClass
 public final class AutoCraftingTestPlots {
     private AutoCraftingTestPlots() {
     }
@@ -65,7 +66,6 @@ public final class AutoCraftingTestPlots {
             drive.getInternalInventory().addItems(CreativeCellItem.ofItems(Items.REDSTONE));
             drive.getInternalInventory().addItems(CreativeCellItem.ofFluids(Fluids.LAVA));
         });
-        plot.block("7 -1 0", AEBlocks.CELL_WORKBENCH);
         plot.part("6 0 1", Direction.NORTH, AEParts.PATTERN_ENCODING_TERMINAL, term -> {
             var inv = term.getLogic().getBlankPatternInv();
             inv.addItems(AEItems.BLANK_PATTERN.stack(64));
@@ -73,15 +73,6 @@ public final class AutoCraftingTestPlots {
         plot.part("5 0 1", Direction.NORTH, AEParts.PATTERN_ACCESS_TERMINAL);
         plot.part("4 0 1", Direction.NORTH, AEParts.TERMINAL);
         plot.part("3 0 1", Direction.NORTH, AEParts.CRAFTING_TERMINAL);
-
-        // Wireless access
-        plot.blockState("6 1 1", AEBlocks.WIRELESS_ACCESS_POINT.block()
-                .defaultBlockState()
-                .setValue(BlockStateProperties.FACING, Direction.UP));
-        plot.addBuildAction(new SpawnExtraGridTestToolsChest(
-                new BlockPos(8, 0, 1),
-                new BlockPos(7, 0, 1),
-                AppEng.makeId("autocrafting_testplot")));
 
         // Subsystem to craft obsidian
         buildObsidianCrafting(plot.offset(3, 0, 5));
@@ -96,11 +87,11 @@ public final class AutoCraftingTestPlots {
         plot.cable("4 0 [6,9]", AEParts.SMART_DENSE_CABLE);
 
         // Add post-processing action once the grid is up and running
-        plot.afterGridInitAt(new BlockPos(4, 0, 4), (grid, gridNode) -> {
+        plot.afterGridInitAt("4 0 4", (grid, gridNode) -> {
             var level = gridNode.getLevel();
             var patterns = new ArrayList<ItemStack>();
             // Crafting pattern table with substitutions enabled and some items that are NOT in storage
-            patterns.add(CraftingPatternHelper.encodeCraftingPattern(
+            patterns.add(encodeCraftingPattern(
                     level,
                     new Object[] {
                             Items.OAK_PLANKS, Items.OAK_PLANKS, null,
@@ -111,7 +102,7 @@ public final class AutoCraftingTestPlots {
                     false));
             // Crafting pattern table with substitutions enabled and some items that are NOT in storage,
             // and an actual sparse pattern
-            patterns.add(CraftingPatternHelper.encodeCraftingPattern(
+            patterns.add(encodeCraftingPattern(
                     level,
                     new Object[] {
                             Items.OAK_PLANKS, Items.OAK_PLANKS, Items.OAK_PLANKS,
@@ -121,35 +112,20 @@ public final class AutoCraftingTestPlots {
                     true,
                     false));
 
-            // Pattern for stonecutter
-            patterns.add(CraftingPatternHelper.encodeStoneCutterPattern(
-                    level,
-                    Items.STONE,
-                    Items.STONE_BRICKS,
-                    false));
-
             // This isn't a real sensible pattern, but we need some pattern that results in fluid being crafted
             // to check how the terminal behaves
             patterns.add(PatternDetailsHelper.encodeProcessingPattern(
-                    List.of(
+                    new GenericStack[] {
                             new GenericStack(AEFluidKey.of(Fluids.WATER), AEFluidKey.AMOUNT_BUCKET),
-                            GenericStack.fromItemStack(new ItemStack(Items.REDSTONE))),
-                    List.of(
-                            new GenericStack(AEFluidKey.of(Fluids.WATER), AEFluidKey.AMOUNT_BUCKET))));
-
-            // Add a smithing recipe to make netherite picks
-            patterns.add(CraftingPatternHelper.encodeSmithingPattern(
-                    level, Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, Items.DIAMOND_PICKAXE, Items.NETHERITE_INGOT,
-                    true));
+                            GenericStack.fromItemStack(new ItemStack(Items.REDSTONE))
+                    },
+                    new GenericStack[] {
+                            new GenericStack(AEFluidKey.of(Fluids.WATER), AEFluidKey.AMOUNT_BUCKET)
+                    }));
 
             // Add ingredients to network storage
             var networkInv = grid.getStorageService().getInventory();
             networkInv.insert(AEItemKey.of(Items.OAK_PLANKS), 83, Actionable.MODULATE, new BaseActionSource());
-            networkInv.insert(AEItemKey.of(Items.STONE), 192, Actionable.MODULATE, new BaseActionSource());
-            networkInv.insert(AEItemKey.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), 64, Actionable.MODULATE,
-                    new BaseActionSource());
-            networkInv.insert(AEItemKey.of(Items.DIAMOND_PICKAXE), 64, Actionable.MODULATE, new BaseActionSource());
-            networkInv.insert(AEItemKey.of(Items.NETHERITE_INGOT), 64, Actionable.MODULATE, new BaseActionSource());
 
             // Distribute patterns across the pattern providers in the grid
             for (var provider : grid.getMachines(PatternProviderBlockEntity.class)) {
@@ -168,7 +144,7 @@ public final class AutoCraftingTestPlots {
     private static void buildChestCraftingExport(PlotBuilder plot) {
         // Subsystem to export chests via crafting card export bus
         plot.cable("0 0 0").part(Direction.SOUTH, AEParts.EXPORT_BUS, eb -> {
-            eb.getUpgrades().addItems(AEItems.CRAFTING_CARD.stack());
+            eb.getUpgrades().addItems(new ItemStack(AEItems.CRAFTING_CARD));
             eb.getConfig().insert(0, AEItemKey.of(Items.CHEST), 1, Actionable.MODULATE);
         });
         plot.block("0 0 1", Blocks.CHEST);
@@ -197,10 +173,12 @@ public final class AutoCraftingTestPlots {
         plot.blockEntity("0 0 0", AEBlocks.PATTERN_PROVIDER, provider -> {
             // A pattern to create obsidian by combining lava with water
             var pattern = PatternDetailsHelper.encodeProcessingPattern(
-                    List.of(
-                            new GenericStack(AEFluidKey.of(Fluids.LAVA), AEFluidKey.AMOUNT_BUCKET)),
-                    List.of(
-                            new GenericStack(AEItemKey.of(Items.OBSIDIAN), 1)));
+                    new GenericStack[] {
+                            new GenericStack(AEFluidKey.of(Fluids.LAVA), AEFluidKey.AMOUNT_BUCKET)
+                    },
+                    new GenericStack[] {
+                            new GenericStack(AEItemKey.of(Items.OBSIDIAN), 1)
+                    });
             provider.getLogic().getPatternInv().addItems(pattern);
         });
         plot.cable("-1 0 0")
@@ -229,6 +207,43 @@ public final class AutoCraftingTestPlots {
         plot.block("-1 0 [-2,-1]", Blocks.COBBLESTONE);
         plot.block("-2 0 1", Blocks.COBBLESTONE);
         plot.block("-2 0 -2", Blocks.WATER);
+    }
+
+    private static ItemStack encodeCraftingPattern(ServerLevel level,
+            Object[] ingredients,
+            boolean allowSubstitutions,
+            boolean allowFluidSubstitutions) {
+
+        // Allow a mixed input of items or item stacks as ingredients
+        var stacks = Arrays.stream(ingredients)
+                .map(in -> {
+                    if (in instanceof ItemLike itemLike) {
+                        return new ItemStack(itemLike);
+                    } else if (in instanceof ItemStack itemStack) {
+                        return itemStack;
+                    } else if (in == null) {
+                        return ItemStack.EMPTY;
+                    } else {
+                        throw new IllegalArgumentException("Unsupported argument: " + in);
+                    }
+                })
+                .toArray(ItemStack[]::new);
+
+        var c = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
+        for (int i = 0; i < stacks.length; i++) {
+            c.setItem(i, stacks[i]);
+        }
+
+        var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, c, level).orElseThrow();
+
+        var result = recipe.assemble(c, level.registryAccess());
+
+        return PatternDetailsHelper.encodeCraftingPattern(
+                recipe,
+                stacks,
+                result,
+                allowSubstitutions,
+                allowFluidSubstitutions);
     }
 
     private static void craftingCube(PlotBuilder plot) {
@@ -265,10 +280,12 @@ public final class AutoCraftingTestPlots {
         plot.cable("0 0 -2");
         plot.blockEntity("0 0 -3", AEBlocks.PATTERN_PROVIDER, provider -> {
             var pattern = PatternDetailsHelper.encodeProcessingPattern(
-                    List.of(
-                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_CRYSTAL.stack())),
-                    List.of(
-                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_DUST.stack())));
+                    new GenericStack[] {
+                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_CRYSTAL.stack())
+                    },
+                    new GenericStack[] {
+                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_DUST.stack())
+                    });
             provider.getLogic().getPatternInv().addItems(pattern);
         });
         for (var pos : inscriberPos) {
@@ -315,13 +332,15 @@ public final class AutoCraftingTestPlots {
         plot.cable("0 0 -2");
         plot.blockEntity("0 0 -3", AEBlocks.PATTERN_PROVIDER, provider -> {
             var pattern = PatternDetailsHelper.encodeProcessingPattern(
-                    List.of(
+                    new GenericStack[] {
                             GenericStack.fromItemStack(new ItemStack(Items.STONE)),
                             GenericStack.fromItemStack(new ItemStack(Items.STONE)),
                             GenericStack.fromItemStack(new ItemStack(Items.DIAMOND)),
-                            GenericStack.fromItemStack(new ItemStack(Items.STONE))),
-                    List.of(
-                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_DUST.stack())));
+                            GenericStack.fromItemStack(new ItemStack(Items.STONE)),
+                    },
+                    new GenericStack[] {
+                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_DUST.stack())
+                    });
             provider.getLogic().getPatternInv().addItems(pattern);
         });
         plot.blockEntity(chestPos, AEBlocks.SKY_STONE_CHEST, skyChest -> {
@@ -377,10 +396,12 @@ public final class AutoCraftingTestPlots {
         plot.cable("0 0 -2");
         plot.blockEntity("0 0 -3", AEBlocks.PATTERN_PROVIDER, provider -> {
             var pattern = PatternDetailsHelper.encodeProcessingPattern(
-                    List.of(
-                            GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))),
-                    List.of(
-                            GenericStack.fromItemStack(new ItemStack(Items.STICK))));
+                    new GenericStack[] {
+                            GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))
+                    },
+                    new GenericStack[] {
+                            GenericStack.fromItemStack(new ItemStack(Items.STICK))
+                    });
             provider.getLogic().getPatternInv().addItems(pattern);
         });
         plot.cable("0 0 -4");

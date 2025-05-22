@@ -60,8 +60,7 @@ public class SpatialIOPortMenu extends AEBaseMenu {
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS,
                 spatialIOPort.getInternalInventory(), 0), SlotSemantics.MACHINE_INPUT);
         this.addSlot(new OutputSlot(spatialIOPort.getInternalInventory(), 1,
-                RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS_NO_SHADOW.icon),
-                SlotSemantics.MACHINE_OUTPUT);
+                RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS.icon), SlotSemantics.MACHINE_OUTPUT);
 
         this.createPlayerInventorySlots(ip);
     }

@@ -18,16 +18,12 @@
 
 package appeng.helpers.externalstorage;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -43,10 +39,9 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
-import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.AEKeySlotFilter;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.MEStorage;
 import appeng.core.AELog;
 import appeng.util.ConfigMenuInventory;
@@ -57,21 +52,13 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     private boolean suppressOnChange;
     private boolean onChangeSuppressed;
     private final Reference2LongMap<AEKeyType> capacities = new Reference2LongArrayMap<>();
-    private final Set<AEKeyType> supportedKeyTypes;
-    @Nullable
-    private AEKeySlotFilter filter;
+    @org.jetbrains.annotations.Nullable
+    private AEKeyFilter filter;
     protected final Mode mode;
     private Component description = Component.empty();
 
     public enum Mode {
-        /**
-         * When in types mode, the config inventory will ignore all amounts and always return amount 1 for stacks in the
-         * inventory.
-         */
         CONFIG_TYPES,
-        /**
-         * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
-         */
         CONFIG_STACKS,
         STORAGE
     }
@@ -81,28 +68,27 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     }
 
     public GenericStackInv(@Nullable Runnable listener, Mode mode, int size) {
-        this(AEKeyTypes.getAll(), listener, mode, size);
-    }
-
-    public GenericStackInv(Set<AEKeyType> supportedKeyTypes, @Nullable Runnable listener, Mode mode, int size) {
-        this.supportedKeyTypes = Set.copyOf(Objects.requireNonNull(supportedKeyTypes, "supportedKeyTypes"));
         this.stacks = new GenericStack[size];
         this.listener = listener;
         this.mode = mode;
     }
 
-    protected void setFilter(@Nullable AEKeySlotFilter filter) {
+    protected void setFilter(@Nullable AEKeyFilter filter) {
         this.filter = filter;
     }
 
     @Nullable
-    public AEKeySlotFilter getFilter() {
+    public AEKeyFilter getFilter() {
         return filter;
     }
 
     @Override
-    public boolean isSupportedType(AEKeyType type) {
-        return supportedKeyTypes.contains(type);
+    public boolean isAllowed(AEKey what) {
+        return filter == null || filter.matches(what);
+    }
+
+    public boolean isAllowed(@Nullable GenericStack stack) {
+        return stack == null || isAllowed(stack.what());
     }
 
     @Override
@@ -153,7 +139,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         Objects.requireNonNull(what, "what");
         Preconditions.checkArgument(amount >= 0, "amount >= 0");
 
-        if (!canInsert() || !isAllowedIn(slot, what)) {
+        if (!canInsert() || !isAllowed(what)) {
             return 0;
         }
 
@@ -171,10 +157,6 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
             }
         }
         return 0;
-    }
-
-    public boolean isAllowedIn(int slot, AEKey what) {
-        return isSupportedType(what) && (filter == null || filter.isAllowed(slot, what));
     }
 
     @Override
@@ -260,11 +242,11 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         }
     }
 
-    public ListTag writeToTag(HolderLookup.Provider registries) {
+    public ListTag writeToTag() {
         ListTag tag = new ListTag();
 
         for (var stack : stacks) {
-            tag.add(GenericStack.writeTag(registries, stack));
+            tag.add(GenericStack.writeTag(stack));
         }
 
         // Strip out trailing nulls
@@ -279,7 +261,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         return tag;
     }
 
-    public void writeToChildTag(CompoundTag tag, String name, HolderLookup.Provider registries) {
+    public void writeToChildTag(CompoundTag tag, String name) {
         boolean isEmpty = true;
         for (var stack : stacks) {
             if (stack != null) {
@@ -289,16 +271,16 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         }
 
         if (!isEmpty) {
-            tag.put(name, writeToTag(registries));
+            tag.put(name, writeToTag());
         } else {
             tag.remove(name);
         }
     }
 
-    public void readFromTag(ListTag tag, HolderLookup.Provider registries) {
+    public void readFromTag(ListTag tag) {
         boolean changed = false;
         for (int i = 0; i < Math.min(size(), tag.size()); ++i) {
-            var stack = GenericStack.readTag(registries, tag.getCompound(i));
+            var stack = GenericStack.readTag(tag.getCompound(i));
             if (!Objects.equals(stack, stacks[i])) {
                 stacks[i] = stack;
                 changed = true;
@@ -332,34 +314,16 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         }
     }
 
-    public void readFromChildTag(CompoundTag tag, String name, HolderLookup.Provider registries) {
+    public void readFromChildTag(CompoundTag tag, String name) {
         if (tag.contains(name, Tag.TAG_LIST)) {
-            readFromTag(tag.getList(name, Tag.TAG_COMPOUND), registries);
+            readFromTag(tag.getList(name, Tag.TAG_COMPOUND));
         } else {
             clear();
         }
     }
 
-    public void readFromList(List<@Nullable GenericStack> stacks) {
-        for (var i = 0; i < size(); i++) {
-            if (i < stacks.size()) {
-                setStack(i, stacks.get(i));
-            } else {
-                setStack(i, null);
-            }
-        }
-    }
-
-    public List<@Nullable GenericStack> toList() {
-        var result = new ArrayList<GenericStack>(size());
-        for (int i = 0; i < size(); i++) {
-            result.add(getStack(i));
-        }
-        return result;
-    }
-
     /**
-     * Begin a section where change notifications are suppressed until {@link #endBatch()} is called. If a change after
+     * Begin a section where change notifications are supressed until {@link #endBatch()} is called. If a change after
      * calling this method would cause a notification to occur, a <strong>single</strong> change notification will occur
      * upon calling {@link #endBatch()} instead.
      */
@@ -407,7 +371,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         Objects.requireNonNull(what, "what");
         Preconditions.checkArgument(amount >= 0, "amount >= 0");
-        if (!isSupportedType(what)) {
+        if (!isAllowed(what)) {
             return 0;
         }
 

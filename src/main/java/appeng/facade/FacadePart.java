@@ -20,37 +20,33 @@ package appeng.facade;
 
 import java.util.Objects;
 
-import net.minecraft.Util;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 
-import appeng.api.ids.AEComponents;
+import appeng.api.implementations.items.IFacadeItem;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.core.definitions.AEItems;
-import appeng.core.localization.PlayerMessages;
-import appeng.util.InteractionUtil;
 
 public class FacadePart implements IFacadePart {
 
+    private final ItemStack facade;
     private final Direction side;
-    private BlockState facade;
 
-    public FacadePart(BlockState facade, Direction side) {
-        this.side = Objects.requireNonNull(side, "side");
-        this.facade = Objects.requireNonNull(facade, "facade");
+    public FacadePart(ItemStack facade, Direction side) {
+        Objects.requireNonNull(side, "side");
+        Objects.requireNonNull(facade, "facade");
+        this.facade = facade.copy();
+        this.facade.setCount(1);
+        this.side = side;
     }
 
     @Override
     public ItemStack getItemStack() {
-        return AEItems.FACADE.get().createFacadeForItemUnchecked(getTextureItem());
+        return this.facade;
     }
 
     @Override
@@ -71,79 +67,37 @@ public class FacadePart implements IFacadePart {
 
     @Override
     public Item getItem() {
-        return facade.getBlock().asItem();
+        var is = this.getTextureItem();
+        if (is.isEmpty()) {
+            return Items.AIR;
+        }
+        return is.getItem();
     }
 
     @Override
     public ItemStack getTextureItem() {
-        return new ItemStack(getItem());
+        final Item maybeFacade = this.facade.getItem();
+
+        // AE Facade
+        if (maybeFacade instanceof IFacadeItem facade) {
+
+            return facade.getTextureItem(this.facade);
+        }
+
+        return ItemStack.EMPTY;
     }
 
     @Override
     public BlockState getBlockState() {
-        return facade;
-    }
+        final Item maybeFacade = this.facade.getItem();
 
-    private void setBlockState(BlockState blockState) {
-        facade = blockState;
-    }
+        // AE Facade
+        if (maybeFacade instanceof IFacadeItem facade) {
 
-    public boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos) {
-        if (!InteractionUtil.canWrenchRotate(heldItem))
-            return false;
-
-        return handleInteraction(player, true, heldItem);
-    }
-
-    public boolean onClicked(Player player, Vec3 pos) {
-        ItemStack heldItem = player.getMainHandItem();
-        if (!InteractionUtil.canWrenchRotate(heldItem))
-            return false;
-
-        return handleInteraction(player, false, heldItem);
-    }
-
-    private boolean handleInteraction(Player player, boolean shouldCycleState, ItemStack heldItem) {
-        var holder = getBlockState().getBlockHolder();
-        var statedefinition = holder.value().getStateDefinition();
-        var properties = statedefinition.getProperties();
-        if (properties.isEmpty()) {
-            return false;
+            return facade.getTextureBlockState(this.facade);
         }
 
-        var firstProperty = properties.iterator().next();
-        var cyclePropertyName = heldItem.getOrDefault(AEComponents.FACADE_CYCLE_PROPERTY, firstProperty.getName());
-        var property = statedefinition.getProperty(cyclePropertyName);
-        if (property == null) {
-            // Fall back to the first property if the wrench was set to a property that does not exist on this facade
-            property = firstProperty;
-        }
-
-        if (shouldCycleState) {
-            var newState = getBlockState().cycle(property);
-            setBlockState(newState);
-
-            // If we reached the default value of the property, we consider that wrapping and show
-            // a message indicating to the player that they can left-click to change which property is cycled
-            var defaultValue = getBlockState().getBlock().defaultBlockState().getValue(property);
-            if (Objects.equals(newState.getValue(property), defaultValue)) {
-                message(player, PlayerMessages.FacadePropertyWrapped.text(property.getName()));
-            }
-        } else {
-            property = Util.findNextInIterable(properties, property);
-            if (property == firstProperty) {
-                heldItem.remove(AEComponents.FACADE_CYCLE_PROPERTY);
-            } else {
-                heldItem.set(AEComponents.FACADE_CYCLE_PROPERTY, property.getName());
-            }
-            message(player, PlayerMessages.FacadePropertySelected.text(property.getName()));
-        }
-        return true;
+        return Blocks.GLASS.defaultBlockState();
     }
 
-    private static void message(Player player, Component messageComponent) {
-        if (player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.sendSystemMessage(messageComponent, true);
-        }
-    }
 }

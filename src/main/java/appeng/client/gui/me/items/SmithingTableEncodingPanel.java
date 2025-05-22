@@ -8,8 +8,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SmithingRecipeInput;
 
 import appeng.api.config.ActionItems;
 import appeng.client.Point;
@@ -23,7 +23,7 @@ import appeng.core.localization.GuiText;
 import appeng.menu.SlotSemantics;
 
 public class SmithingTableEncodingPanel extends EncodingModePanel {
-    private static final Blitter BG = Blitter.texture("guis/pattern_modes.png").src(128, 70, 124, 66);
+    private static final Blitter BG = Blitter.texture("guis/pattern_modes.png").src(128, 70, 126, 68);
 
     private final ActionButton clearBtn;
     private final ToggleButton substitutionsBtn;
@@ -32,9 +32,8 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
     public SmithingTableEncodingPanel(PatternEncodingTermScreen<?> screen, WidgetContainer widgets) {
         super(screen, widgets);
 
-        clearBtn = new ActionButton(ActionItems.S_CLOSE, act -> menu.clear());
+        clearBtn = new ActionButton(ActionItems.CLOSE, act -> menu.clear());
         clearBtn.setHalfSize(true);
-        clearBtn.setDisableBackground(true);
         widgets.add("smithingTableClearPattern", clearBtn);
 
         this.substitutionsBtn = createSubstitutionButton(widgets);
@@ -44,8 +43,8 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
     }
 
     @Override
-    Icon getIcon() {
-        return Icon.TAB_SMITHING;
+    public ItemStack getTabIconItem() {
+        return Items.SMITHING_TABLE.getDefaultInstance();
     }
 
     @Override
@@ -55,11 +54,10 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
 
     private ToggleButton createSubstitutionButton(WidgetContainer widgets) {
         var button = new ToggleButton(
-                Icon.S_SUBSTITUTION_ENABLED,
-                Icon.S_SUBSTITUTION_DISABLED,
+                Icon.SUBSTITUTION_ENABLED,
+                Icon.SUBSTITUTION_DISABLED,
                 menu::setSubstitute);
         button.setHalfSize(true);
-        button.setDisableBackground(true);
         button.setTooltipOn(List.of(
                 ButtonToolTips.SubstitutionsOn.text(),
                 ButtonToolTips.SubstitutionsDescEnabled.text()));
@@ -72,26 +70,26 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
 
     @Override
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
-        BG.dest(bounds.getX() + 8, bounds.getY() + bounds.getHeight() - 165).blit(guiGraphics);
+        BG.dest(bounds.getX() + 9, bounds.getY() + bounds.getHeight() - 164).blit(guiGraphics);
     }
 
     @Override
     public void updateBeforeRender() {
         this.substitutionsBtn.setState(this.menu.substitute);
 
-        var recipeInput = new SmithingRecipeInput(
-                menu.getSmithingTableTemplateSlot().getItem(),
-                menu.getSmithingTableBaseSlot().getItem(),
-                menu.getSmithingTableAdditionSlot().getItem());
+        var container = new SimpleContainer(3);
+        container.setItem(0, menu.getSmithingTableTemplateSlot().getItem());
+        container.setItem(1, menu.getSmithingTableBaseSlot().getItem());
+        container.setItem(2, menu.getSmithingTableAdditionSlot().getItem());
 
         var level = menu.getPlayer().level();
         var recipe = level.getRecipeManager()
-                .getRecipeFor(RecipeType.SMITHING, recipeInput, level)
+                .getRecipeFor(RecipeType.SMITHING, container, level)
                 .orElse(null);
         if (recipe == null) {
             resultSlot.set(ItemStack.EMPTY);
         } else {
-            resultSlot.set(recipe.value().assemble(recipeInput, level.registryAccess()));
+            resultSlot.set(recipe.assemble(container, level.registryAccess()));
         }
     }
 

@@ -23,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -34,15 +33,14 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.player.Player;
@@ -60,14 +58,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.ids.AEComponents;
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
-import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
@@ -109,44 +105,34 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                     Function.identity()));
     private static final BiMap<DyeColor, Item> VANILLA_DYES = EnumHashBiMap.create(DyeColor.class);
 
-    // TODO (RID): Sorted the colours according to the colour wheel
     static {
         VANILLA_DYES.put(DyeColor.WHITE, Items.WHITE_DYE);
-        VANILLA_DYES.put(DyeColor.LIGHT_GRAY, Items.LIGHT_GRAY_DYE);
-        VANILLA_DYES.put(DyeColor.GRAY, Items.GRAY_DYE);
-        VANILLA_DYES.put(DyeColor.BLACK, Items.BLACK_DYE);
-        VANILLA_DYES.put(DyeColor.LIME, Items.LIME_DYE);
-        VANILLA_DYES.put(DyeColor.YELLOW, Items.YELLOW_DYE);
         VANILLA_DYES.put(DyeColor.ORANGE, Items.ORANGE_DYE);
-        VANILLA_DYES.put(DyeColor.BROWN, Items.BROWN_DYE);
-        VANILLA_DYES.put(DyeColor.RED, Items.RED_DYE);
-        VANILLA_DYES.put(DyeColor.PINK, Items.PINK_DYE);
         VANILLA_DYES.put(DyeColor.MAGENTA, Items.MAGENTA_DYE);
+        VANILLA_DYES.put(DyeColor.LIGHT_BLUE, Items.LIGHT_BLUE_DYE);
+        VANILLA_DYES.put(DyeColor.YELLOW, Items.YELLOW_DYE);
+        VANILLA_DYES.put(DyeColor.LIME, Items.LIME_DYE);
+        VANILLA_DYES.put(DyeColor.PINK, Items.PINK_DYE);
+        VANILLA_DYES.put(DyeColor.GRAY, Items.GRAY_DYE);
+        VANILLA_DYES.put(DyeColor.LIGHT_GRAY, Items.LIGHT_GRAY_DYE);
+        VANILLA_DYES.put(DyeColor.CYAN, Items.CYAN_DYE);
         VANILLA_DYES.put(DyeColor.PURPLE, Items.PURPLE_DYE);
         VANILLA_DYES.put(DyeColor.BLUE, Items.BLUE_DYE);
-        VANILLA_DYES.put(DyeColor.LIGHT_BLUE, Items.LIGHT_BLUE_DYE);
-        VANILLA_DYES.put(DyeColor.CYAN, Items.CYAN_DYE);
+        VANILLA_DYES.put(DyeColor.BROWN, Items.BROWN_DYE);
         VANILLA_DYES.put(DyeColor.GREEN, Items.GREEN_DYE);
+        VANILLA_DYES.put(DyeColor.RED, Items.RED_DYE);
+        VANILLA_DYES.put(DyeColor.BLACK, Items.BLACK_DYE);
     }
 
-    public ColorApplicatorItem(Properties props) {
+    private static final String TAG_COLOR = "color";
+
+    public ColorApplicatorItem(Item.Properties props) {
         super(AEConfig.instance().getColorApplicatorBattery(), props);
     }
 
     @Override
     public double getChargeRate(ItemStack stack) {
         return 80d + 80d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
-    }
-
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-        var stack = player.getItemInHand(usedHand);
-
-        cycleColors(stack, getColor(stack), 1);
-        if (level.isClientSide) {
-            player.displayClientMessage(stack.getHoverName(), true);
-        }
-        return InteractionResultHolder.fail(stack);
     }
 
     @Override
@@ -162,29 +148,35 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         final Block blk = level.getBlockState(pos).getBlock();
 
-        var color = this.getColor(is);
+        var paintBall = this.getColor(is);
+        var paintBallKey = AEItemKey.of(paintBall);
 
         var source = new PlayerSource(p);
 
         var inv = StorageCells.getCellInventory(is, null);
         if (inv != null) {
+            var extracted = inv.extract(paintBallKey, 1, Actionable.SIMULATE, source);
+
+            if (extracted > 0) {
+                paintBall = paintBall.copy();
+                paintBall.setCount(1);
+            } else {
+                paintBall = ItemStack.EMPTY;
+            }
+
             if (p != null && !Platform.hasPermissions(new DimensionalBlockPos(level, pos), p)) {
                 return InteractionResult.FAIL;
             }
 
-            if (!consumeColor(is, color, true)) {
-                color = null;
-            }
-
-            if (color != null) {
-                if (color == AEColor.TRANSPARENT) {
+            if (!paintBall.isEmpty()) {
+                if (paintBall.getItem() instanceof SnowballItem) {
                     // clean cables.
                     if (p != null
                             && level.getBlockEntity(pos) instanceof IColorableBlockEntity colorableBlockEntity
                             && this.getAECurrentPower(is) > POWER_PER_USE
                             && colorableBlockEntity.getColor() != AEColor.TRANSPARENT) {
                         if (colorableBlockEntity.recolourBlock(side, AEColor.TRANSPARENT, p)) {
-                            consumeColor(is, color, false);
+                            consumeItem(is, paintBallKey, false);
                             return InteractionResult.sidedSuccess(level.isClientSide());
                         }
                     }
@@ -194,26 +186,25 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                     final BlockEntity painted = level.getBlockEntity(pos.relative(side));
                     if (this.getAECurrentPower(is) > POWER_PER_USE && testBlk instanceof PaintSplotchesBlock
                             && painted instanceof PaintSplotchesBlockEntity) {
-                        consumeColor(is, color, false);
+                        consumeItem(is, paintBallKey, false);
                         ((PaintSplotchesBlockEntity) painted).cleanSide(side.getOpposite());
                         return InteractionResult.sidedSuccess(level.isClientSide());
                     }
                 }
 
-                if (this.getAECurrentPower(is) > POWER_PER_USE
+                final AEColor color = this.getColorFromItem(paintBall);
+
+                if (color != null
+                        && this.getAECurrentPower(is) > POWER_PER_USE
                         && this.recolourBlock(blk, side, level, pos, color, p)) {
-                    consumeColor(is, color, false);
+                    consumeItem(is, paintBallKey, false);
                     return InteractionResult.sidedSuccess(level.isClientSide());
                 }
             }
         }
 
         if (p != null && InteractionUtil.isInAlternateUseMode(p)) {
-            this.cycleColors(is, color, 1);
-            if (level.isClientSide) {
-                p.displayClientMessage(is.getHoverName(), true);
-            }
-            return InteractionResult.CONSUME;
+            this.cycleColors(is, paintBall, 1);
         }
 
         return InteractionResult.FAIL;
@@ -222,14 +213,15 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     @Override
     public InteractionResult interactLivingEntity(ItemStack is, Player player, LivingEntity interactionTarget,
             InteractionHand usedHand) {
-        var paintBallColor = this.getColor(is);
+        var paintBall = this.getColor(is);
+        var paintBallColor = this.getColorFromItem(paintBall);
 
         if (paintBallColor != null && interactionTarget instanceof Sheep sheep) {
             if (sheep.isAlive() && !sheep.isSheared() && sheep.getColor() != paintBallColor.dye) {
                 if (!player.level().isClientSide && this.getAECurrentPower(is) > POWER_PER_USE) {
                     sheep.setColor(paintBallColor.dye);
                     sheep.level().playSound(player, sheep, SoundEvents.DYE_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
-                    this.consumeColor(is, paintBallColor, false);
+                    this.consumeItem(is, AEItemKey.of(paintBall), false);
                 }
 
                 return InteractionResult.sidedSuccess(player.level().isClientSide);
@@ -253,7 +245,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     public AEColor getActiveColor(ItemStack tol) {
-        return this.getColor(tol);
+        return this.getColorFromItem(this.getColor(tol));
     }
 
     /**
@@ -266,10 +258,16 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         }
 
         var availableItems = inv.getAvailableStacks();
+        AEItemKey paintItem = null;
         for (var what : availableItems.keySet()) {
-            if (getColorFrom(what) == color) {
-                return consumeItem(applicator, what, simulate);
+            if (what instanceof AEItemKey itemKey && getColorFromItem(itemKey.getItem()) == color) {
+                paintItem = itemKey;
+                break;
             }
+        }
+
+        if (paintItem != null) {
+            return consumeItem(applicator, paintItem, simulate);
         }
 
         return false;
@@ -278,99 +276,105 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     /**
      * Try consuming 1 of the given item.
      */
-    public boolean consumeItem(ItemStack applicator, AEKey key, boolean simulate) {
+    public boolean consumeItem(ItemStack applicator, AEItemKey paintItem, boolean simulate) {
         var inv = StorageCells.getCellInventory(applicator, null);
         if (inv == null) {
             return false;
         }
 
         var mode = simulate ? Actionable.SIMULATE : Actionable.MODULATE;
-        var success = inv.extract(key, 1, mode, new BaseActionSource()) >= 1
+        var success = inv.extract(paintItem, 1, mode, new BaseActionSource()) >= 1
                 && this.extractAEPower(applicator, POWER_PER_USE, mode) >= POWER_PER_USE;
         // Clear the color once we run out
         if (success
                 && !simulate
-                && getColorFrom(key) == getColor(applicator)
-                && inv.getAvailableStacks().get(key) == 0) {
-            setColor(applicator, null);
+                && paintItem.matches(getColor(applicator))
+                && inv.getAvailableStacks().get(paintItem) == 0) {
+            setColor(applicator, ItemStack.EMPTY);
         }
         return success;
     }
 
-    @Nullable
-    private AEColor getColorFrom(AEKey key) {
-        if (key instanceof AEItemKey itemKey) {
-            var item = itemKey.getItem();
+    private AEColor getColorFromItem(ItemStack paintBall) {
+        if (paintBall.isEmpty()) {
+            return null;
+        }
 
-            if (item instanceof SnowballItem) {
-                return AEColor.TRANSPARENT;
-            }
+        return getColorFromItem(paintBall.getItem());
+    }
 
-            if (item instanceof PaintBallItem ipb) {
-                return ipb.getColor();
-            }
+    private AEColor getColorFromItem(Item paintBall) {
+        if (paintBall instanceof SnowballItem) {
+            return AEColor.TRANSPARENT;
+        }
 
-            // Especially during startup when Vanilla builds it's search index, we don't have tags loaded yet
-            var vanillaDye = VANILLA_DYES.inverse().get(item);
-            if (vanillaDye != null) {
-                return AEColor.fromDye(vanillaDye);
-            }
+        if (paintBall instanceof PaintBallItem ipb) {
+            return ipb.getColor();
+        }
 
-            for (var entry : TAG_TO_COLOR.entrySet()) {
-                if (item.builtInRegistryHolder().is(entry.getKey())) {
-                    return entry.getValue();
-                }
-            }
-        } else if (key instanceof AEFluidKey fluidKey) {
-            if (fluidKey.isTagged(FluidTags.WATER)) {
-                return AEColor.TRANSPARENT;
+        // Especially during startup when Vanilla builds it's search index, we don't have tags loaded yet
+        var vanillaDye = VANILLA_DYES.inverse().get(paintBall);
+        if (vanillaDye != null) {
+            return AEColor.fromDye(vanillaDye);
+        }
+
+        for (var entry : TAG_TO_COLOR.entrySet()) {
+            if (paintBall.builtInRegistryHolder().is(entry.getKey())) {
+                return entry.getValue();
             }
         }
+
         return null;
     }
 
-    public AEColor getColor(ItemStack is) {
-        var selectedPaint = is.get(AEComponents.SELECTED_COLOR);
-        if (selectedPaint != null) {
-            return selectedPaint;
+    public ItemStack getColor(ItemStack is) {
+        final CompoundTag c = is.getTag();
+        if (c != null && c.contains(TAG_COLOR)) {
+            final CompoundTag color = c.getCompound(TAG_COLOR);
+            final ItemStack oldColor = ItemStack.of(color);
+            if (!oldColor.isEmpty()) {
+                return oldColor;
+            }
         }
 
-        return this.findNextColor(is, null, 0);
+        return this.findNextColor(is, ItemStack.EMPTY, 0);
     }
 
-    @Nullable
-    private AEColor findNextColor(ItemStack is, @Nullable AEColor anchorColor, int scrollOffset) {
-        AEColor newColor = null;
+    private ItemStack findNextColor(ItemStack is, ItemStack anchor, int scrollOffset) {
+        ItemStack newColor = ItemStack.EMPTY;
 
         var inv = StorageCells.getCellInventory(is, null);
         if (inv != null) {
-            var keyList = inv.getAvailableStacks();
-            if (anchorColor == null) {
-                var firstItem = keyList.getFirstKey();
+            var itemList = inv.getAvailableStacks();
+            if (anchor.isEmpty()) {
+                var firstItem = itemList.getFirstKey(AEItemKey.class);
                 if (firstItem != null) {
-                    newColor = getColorFrom(firstItem);
+                    newColor = firstItem.toStack();
                 }
             } else {
-                var list = new LinkedList<AEKey>();
+                var list = new LinkedList<AEItemKey>();
 
-                for (var i : keyList) {
-                    list.add(i.getKey());
+                for (var i : itemList) {
+                    if (i.getKey() instanceof AEItemKey itemKey) {
+                        list.add(itemKey);
+                    }
                 }
 
                 if (list.isEmpty()) {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
 
                 // Sort by color
                 list.sort(Comparator.comparingInt(a -> {
-                    var color = getColorFrom(a);
+                    var color = getColorFromItem(a.getItem());
                     return color != null ? color.ordinal() : Integer.MAX_VALUE;
                 }));
 
                 var where = list.getFirst();
                 int cycles = 1 + list.size();
 
-                while (cycles > 0 && getColorFrom(where) != anchorColor) {
+                AEColor anchorColor = getColorFromItem(anchor);
+                while (cycles > 0 && getColorFromItem(where.getItem()) != anchorColor) {
                     list.addLast(list.removeFirst());
                     cycles--;
                     where = list.getFirst();
@@ -384,19 +388,26 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                     list.addFirst(list.removeLast());
                 }
 
-                return getColorFrom(list.get(0));
+                return list.get(0).toStack();
             }
         }
 
-        if (newColor != null) {
+        if (!newColor.isEmpty()) {
             this.setColor(is, newColor);
         }
 
         return newColor;
     }
 
-    private void setColor(ItemStack is, @Nullable AEColor newColor) {
-        is.set(AEComponents.SELECTED_COLOR, newColor);
+    private void setColor(ItemStack is, ItemStack newColor) {
+        final CompoundTag data = is.getOrCreateTag();
+        if (newColor.isEmpty()) {
+            data.remove(TAG_COLOR);
+        } else {
+            final CompoundTag color = new CompoundTag();
+            newColor.save(color);
+            data.put(TAG_COLOR, color);
+        }
     }
 
     private boolean recolourBlock(Block blk, Direction side, Level level, BlockPos pos,
@@ -436,19 +447,19 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         return newState;
     }
 
-    public void cycleColors(ItemStack is, @Nullable AEColor currentColor, int i) {
-        if (currentColor == null) {
+    public void cycleColors(ItemStack is, ItemStack paintBall, int i) {
+        if (paintBall.isEmpty()) {
             this.setColor(is, this.getColor(is));
         } else {
-            this.setColor(is, this.findNextColor(is, currentColor, i));
+            this.setColor(is, this.findNextColor(is, paintBall, i));
         }
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, context, lines, advancedTooltips);
+        super.appendHoverText(stack, level, lines, advancedTooltips);
         addCellInformationToTooltip(stack, lines);
     }
 
@@ -474,7 +485,10 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     public boolean isBlackListed(ItemStack cellItem, AEKey requestedAddition) {
-        return getColorFrom(requestedAddition) == null;
+        if (requestedAddition instanceof AEItemKey itemKey) {
+            return getColorFromItem(itemKey.getItem()) == null;
+        }
+        return true;
     }
 
     @Override
@@ -504,17 +518,25 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     public ConfigInventory getConfigInventory(ItemStack is) {
-        return CellConfig.create(Set.of(AEKeyType.items()), is);
+        return CellConfig.create(AEItemKey.filter(), is);
     }
 
     @Override
     public FuzzyMode getFuzzyMode(ItemStack is) {
-        return is.getOrDefault(AEComponents.STORAGE_CELL_FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+        final String fz = is.getOrCreateTag().getString("FuzzyMode");
+        if (fz.isEmpty()) {
+            return FuzzyMode.IGNORE_ALL;
+        }
+        try {
+            return FuzzyMode.valueOf(fz);
+        } catch (Throwable t) {
+            return FuzzyMode.IGNORE_ALL;
+        }
     }
 
     @Override
     public void setFuzzyMode(ItemStack is, FuzzyMode fzMode) {
-        is.set(AEComponents.STORAGE_CELL_FUZZY_MODE, fzMode);
+        is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
     }
 
     @Override
@@ -523,8 +545,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
-        super.addToMainCreativeTab(parameters, output);
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+        super.addToMainCreativeTab(output);
 
         output.accept(createFullColorApplicator());
     }
@@ -534,7 +556,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
      */
     public static ItemStack createFullColorApplicator() {
         // Give a fully set up color applicator
-        var item = AEItems.COLOR_APPLICATOR.get();
+        var item = AEItems.COLOR_APPLICATOR.asItem();
         var applicator = new ItemStack(item);
 
         // Add all dyes
@@ -557,19 +579,18 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     public void setActiveColor(ItemStack applicator, @Nullable AEColor color) {
         if (color == null) {
-            setColor(applicator, null);
+            setColor(applicator, ItemStack.EMPTY);
             return;
         }
 
-        // Check that we actually have the color...
         var inv = StorageCells.getCellInventory(applicator, null);
         if (inv == null) {
             return;
         }
 
         for (var entry : inv.getAvailableStacks()) {
-            if (entry.getKey() instanceof AEItemKey itemKey && getColorFrom(itemKey) == color) {
-                setColor(applicator, color);
+            if (entry.getKey() instanceof AEItemKey itemKey && getColorFromItem(itemKey.getItem()) == color) {
+                setColor(applicator, itemKey.toStack());
                 return;
             }
         }

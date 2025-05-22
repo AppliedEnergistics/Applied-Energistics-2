@@ -2,44 +2,28 @@ package appeng.api.stacks;
 
 import java.util.List;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.Lifecycle;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.MapLike;
-import com.mojang.serialization.RecordBuilder;
-
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import net.minecraft.ResourceLocationException;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.ids.AEComponents;
 import appeng.core.AELog;
-import appeng.core.definitions.AEItems;
 
 /**
  * Uniquely identifies something that "stacks" within an ME inventory.
  * <p/>
  * For example for items, this is the combination of an {@link net.minecraft.world.item.Item} and optional
- * {@link CompoundTag}. To account for common indexing scenarios, a key is (optionally) split into a primary and
- * secondary component, which serves two purposes:
+ * {@link net.minecraft.nbt.CompoundTag}. To account for common indexing scenarios, a key is (optionally) split into a
+ * primary and secondary component, which serves two purposes:
  * <ul>
  * <li>Fuzzy cards allow setting filters for the primary component of a key, i.e. for an
  * {@link net.minecraft.world.item.Item}, while disregarding the compound tag.</li>
@@ -48,69 +32,45 @@ import appeng.core.definitions.AEItems;
  * </ul>
  */
 public abstract class AEKey {
-    public static final String TYPE_FIELD = "#t";
-    private static final Logger LOG = LoggerFactory.getLogger(AEKey.class);
-    public static final MapCodec<AEKey> MAP_CODEC = AEKeyType.CODEC
-            .<AEKey>dispatchMap(TYPE_FIELD, AEKey::getType, AEKeyType::codec)
-            .mapResult(new MapCodec.ResultFunction<>() {
-                @Override
-                public <T> DataResult<AEKey> apply(DynamicOps<T> ops, MapLike<T> input, DataResult<AEKey> a) {
-                    if (a instanceof DataResult.Error<AEKey> error) {
-                        var missingContent = AEItems.MISSING_CONTENT.stack();
-                        var convert = ops.convertMap(NbtOps.INSTANCE, ops.createMap(input.entries()));
-                        if (convert instanceof CompoundTag compoundTag) {
-                            missingContent.set(AEComponents.MISSING_CONTENT_AEKEY_DATA, CustomData.of(compoundTag));
-                        }
-                        LOG.error("Failed to deserialize AE key: {}", error.message());
-                        missingContent.set(AEComponents.MISSING_CONTENT_ERROR, error.message());
 
-                        return DataResult.success(
-                                AEItemKey.of(missingContent),
-                                Lifecycle.stable());
-                    }
+    /**
+     * The display name, which is used to sort by name in client terminal. Lazily initialized to avoid unnecessary work
+     * on the server. Volatile ensures that this cache is thread-safe (but can be initialized multiple times).
+     */
+    private volatile Component cachedDisplayName;
 
-                    return a; // Return unchanged if deserialization succeeded
-                }
+    @Nullable
+    public static AEKey fromTagGeneric(CompoundTag tag) {
+        // Handle malformed tags where the channel is missing
+        var channelId = tag.getString("#c");
+        if (channelId.isEmpty()) {
+            AELog.warn("Cannot deserialize generic key from %s because key '#c' is missing.", tag);
+            return null;
+        }
 
-                @Override
-                public <T> RecordBuilder<T> coApply(DynamicOps<T> ops, AEKey input, RecordBuilder<T> t) {
-                    // When the input is a MISSING_CONTENT item and has the original data attached,
-                    // we write that back.
-                    if (AEItems.MISSING_CONTENT.is(input)) {
-                        var originalData = input.get(AEComponents.MISSING_CONTENT_AEKEY_DATA);
-                        if (originalData != null) {
-                            var originalDataMap = originalData.getUnsafe();
-                            for (var key : originalDataMap.getAllKeys()) {
-                                t.add(key, NbtOps.INSTANCE.convertTo(ops, originalDataMap.get(key)));
-                            }
-                        }
-                    }
+        // Handle tags where the mod that provided the channel has been uninstalled
+        AEKeyType channel;
+        try {
+            channel = AEKeyTypes.get(new ResourceLocation(channelId));
+        } catch (IllegalArgumentException | ResourceLocationException e) {
+            AELog.warn("Cannot deserialize generic key from %s because channel '%s' is missing.", tag, channelId);
+            return null;
+        }
 
-                    return t;
-                }
-            });
-
-    public static final Codec<AEKey> CODEC = MAP_CODEC.codec();
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, AEKey> STREAM_CODEC = StreamCodec.of(
-            AEKey::writeKey,
-            AEKey::readKey);
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, AEKey> OPTIONAL_STREAM_CODEC = StreamCodec.of(
-            AEKey::writeOptionalKey,
-            AEKey::readOptionalKey);
+        return channel.loadKeyFromTag(tag);
+    }
 
     /**
      * Writes a generic, nullable key to the given buffer.
      */
-    public static void writeOptionalKey(RegistryFriendlyByteBuf buffer, @Nullable AEKey key) {
+    public static void writeOptionalKey(FriendlyByteBuf buffer, @Nullable AEKey key) {
         buffer.writeBoolean(key != null);
         if (key != null) {
             writeKey(buffer, key);
         }
     }
 
-    public static void writeKey(RegistryFriendlyByteBuf buffer, AEKey key) {
+    public static void writeKey(FriendlyByteBuf buffer, AEKey key) {
         var id = key.getType().getRawId();
         buffer.writeVarInt(id);
         key.writeToPacket(buffer);
@@ -120,7 +80,7 @@ public abstract class AEKey {
      * Tries reading a key written using {@link #writeOptionalKey}.
      */
     @Nullable
-    public static AEKey readOptionalKey(RegistryFriendlyByteBuf buffer) {
+    public static AEKey readOptionalKey(FriendlyByteBuf buffer) {
         if (!buffer.readBoolean()) {
             return null;
         }
@@ -128,7 +88,7 @@ public abstract class AEKey {
     }
 
     @Nullable
-    public static AEKey readKey(RegistryFriendlyByteBuf buffer) {
+    public static AEKey readKey(FriendlyByteBuf buffer) {
         var id = buffer.readVarInt();
         var type = AEKeyType.fromRawId(id);
         if (type == null) {
@@ -139,31 +99,13 @@ public abstract class AEKey {
     }
 
     /**
-     * The display name, which is used to sort by name in client terminal. Lazily initialized to avoid unnecessary work
-     * on the server. Volatile ensures that this cache is thread-safe (but can be initialized multiple times).
+     * Same as {@link #toTag()}, but includes type information so that {@link #fromTagGeneric(CompoundTag)} can restore
+     * this particular type of key withot knowing the actual type beforehand.
      */
-    private volatile Component cachedDisplayName;
-
-    @Nullable
-    public static AEKey fromTagGeneric(HolderLookup.Provider registries, CompoundTag tag) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        try {
-            return CODEC.decode(ops, tag).getOrThrow().getFirst();
-        } catch (Exception e) {
-            LOG.warn("Cannot deserialize generic key from {}: {}", tag, e);
-            return null;
-        }
-    }
-
-    /**
-     * Same as {@link #toTag(HolderLookup.Provider)}, but includes type information so that
-     * {@link #fromTagGeneric(HolderLookup.Provider, CompoundTag)} can restore this particular type of key withot
-     * knowing the actual type beforehand.
-     */
-    public final CompoundTag toTagGeneric(HolderLookup.Provider registries) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        return (CompoundTag) CODEC.encodeStart(ops, this)
-                .getOrThrow();
+    public final CompoundTag toTagGeneric() {
+        var tag = toTag();
+        tag.putString("#c", getType().getId().toString());
+        return tag;
     }
 
     /**
@@ -195,7 +137,7 @@ public abstract class AEKey {
     }
 
     /**
-     * @see AEKeyType#formatAmount(long, AmountFormat)
+     * @see AEKeyType#formatAmount(long,AmountFormat)
      */
     public String formatAmount(long amount, AmountFormat format) {
         return getType().formatAmount(amount, format);
@@ -216,7 +158,7 @@ public abstract class AEKey {
      * Serialized keys MUST NOT contain keys that start with <code>#</code>, because this prefix can be used to add
      * additional data into the same tag as the key.
      */
-    public abstract CompoundTag toTag(HolderLookup.Provider registries);
+    public abstract CompoundTag toTag();
 
     public abstract Object getPrimaryKey();
 
@@ -286,7 +228,7 @@ public abstract class AEKey {
      */
     public abstract ResourceLocation getId();
 
-    public abstract void writeToPacket(RegistryFriendlyByteBuf data);
+    public abstract void writeToPacket(FriendlyByteBuf data);
 
     /**
      * Wraps a key in an ItemStack that can be unwrapped into a key later.
@@ -339,17 +281,4 @@ public abstract class AEKey {
     public boolean isTagged(TagKey<?> tag) {
         return false;
     }
-
-    /**
-     * Get a data component attached to this key. It might be null.
-     */
-    @Nullable
-    public <T> T get(DataComponentType<T> type) {
-        return null;
-    }
-
-    /**
-     * @return true if this key has *any* components attached.
-     */
-    public abstract boolean hasComponents();
 }

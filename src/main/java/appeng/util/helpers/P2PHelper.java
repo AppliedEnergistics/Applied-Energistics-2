@@ -74,8 +74,8 @@ public class P2PHelper {
 
         for (var i = 0; i < 4; i++) {
             var nibble = getFrequencyNibble(frequency, i);
-            parent.append(Component.literal(HEX_DIGITS[nibble])
-                    .withColor(AEColor.values()[nibble].whiteVariant));
+            var hex = Component.literal(HEX_DIGITS[nibble]);
+            parent.append(hex.setStyle(hex.getStyle().withColor(AEColor.values()[nibble].mediumVariant)));
         }
 
         return parent;

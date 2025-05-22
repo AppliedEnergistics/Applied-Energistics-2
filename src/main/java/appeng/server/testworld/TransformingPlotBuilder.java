@@ -20,16 +20,6 @@ class TransformingPlotBuilder implements PlotBuilder {
     }
 
     @Override
-    public void addPostBuildAction(PostBuildAction action) {
-        plot.addPostBuildAction(action);
-    }
-
-    @Override
-    public void addPostInitAction(PostBuildAction action) {
-        plot.addPostInitAction(action);
-    }
-
-    @Override
     public BoundingBox bb(String def) {
         return transform.apply(plot.bb(def));
     }

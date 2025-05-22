@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -20,7 +19,6 @@ import guideme.render.RenderContext;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.localization.GuiText;
-import appeng.recipes.AERecipeTypes;
 import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.transform.TransformRecipe;
@@ -29,31 +27,29 @@ import appeng.util.Platform;
 public class RecipeTypeContributions implements RecipeTypeMappingSupplier {
     @Override
     public void collect(RecipeTypeMappings mappings) {
-        mappings.add(AERecipeTypes.INSCRIBER, RecipeTypeContributions::inscribing);
-        mappings.add(AERecipeTypes.CHARGER, RecipeTypeContributions::charging);
-        mappings.add(AERecipeTypes.TRANSFORM, RecipeTypeContributions::transform);
+        mappings.add(InscriberRecipe.TYPE, RecipeTypeContributions::inscribing);
+        mappings.add(ChargerRecipe.TYPE, RecipeTypeContributions::charging);
+        mappings.add(TransformRecipe.TYPE, RecipeTypeContributions::transform);
     }
 
-    private static LytStandardRecipeBox<ChargerRecipe> charging(RecipeHolder<ChargerRecipe> holder) {
+    private static LytStandardRecipeBox<ChargerRecipe> charging(ChargerRecipe recipe) {
         return LytStandardRecipeBox.builder()
                 .icon(AEBlocks.CHARGER)
                 .title(AEBlocks.CHARGER.asItem().getDescription().getString())
-                .input(holder.value().getIngredient())
-                .outputFromResultOf(holder)
-                .build(holder);
+                .input(recipe.getIngredient())
+                .outputFromResultOf(recipe)
+                .build(recipe);
     }
 
-    private static LytStandardRecipeBox<InscriberRecipe> inscribing(RecipeHolder<InscriberRecipe> holder) {
+    private static LytStandardRecipeBox<InscriberRecipe> inscribing(InscriberRecipe recipe) {
         return LytStandardRecipeBox.builder()
                 .icon(AEBlocks.INSCRIBER)
                 .title(AEBlocks.INSCRIBER.asItem().getDescription().getString())
-                .customBody(new LytInscriberRecipe(holder.value()))
-                .build(holder);
+                .customBody(new LytInscriberRecipe(recipe))
+                .build(recipe);
     }
 
-    private static LytStandardRecipeBox<TransformRecipe> transform(RecipeHolder<TransformRecipe> holder) {
-        var recipe = holder.value();
-
+    private static LytStandardRecipeBox<TransformRecipe> transform(TransformRecipe recipe) {
         var builder = LytStandardRecipeBox.builder()
                 .input(LytSlotGrid.column(recipe.getIngredients(), true))
                 .output(LytSlotGrid.column(List.of(Ingredient.of(recipe.getResultItem())), true));
@@ -78,7 +74,7 @@ public class RecipeTypeContributions implements RecipeTypeMappingSupplier {
             builder.title(GuiText.TransformTypeThrowInFluid.text(Platform.getFluidDisplayName(fluid)).getString());
         }
 
-        return builder.build(holder);
+        return builder.build(recipe);
     }
 
     static class FluidIcon extends LytBlock {

@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sky_stone_brick": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:sky_stone_brick"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ae2:decorative/sky_stone_small_brick"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_sky_stone_brick",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ae2:decorative/sky_stone_small_brick"
+    ]
+  },
+  "sends_telemetry_event": false
+}

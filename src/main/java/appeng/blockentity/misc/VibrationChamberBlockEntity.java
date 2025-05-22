@@ -24,9 +24,8 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
@@ -34,6 +33,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ForgeHooks;
 
 import appeng.api.config.Actionable;
 import appeng.api.inventories.ISegmentedInventory;
@@ -46,7 +46,7 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
-import appeng.blockentity.grid.AENetworkedInvBlockEntity;
+import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -56,8 +56,7 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
-        implements IGridTickable, IUpgradeableObject {
+public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity implements IGridTickable, IUpgradeableObject {
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1);
     private final InternalInventory invExt = new FilteredInternalInventory(this.inv, new FuelSlotFilter());
 
@@ -107,7 +106,7 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final boolean wasOn = this.isOn;
 
@@ -117,16 +116,16 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    protected void writeToStream(RegistryFriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         this.isOn = this.getRemainingFuelTicks() > 0;
         data.writeBoolean(this.isOn);
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        this.upgrades.writeToNBT(data, "upgrades", registries);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
+        this.upgrades.writeToNBT(data, "upgrades");
         data.putDouble("burnTime", this.getRemainingFuelTicks());
         data.putDouble("maxBurnTime", this.getFuelItemFuelTicks());
         // Save as percentage of max-speed
@@ -135,9 +134,9 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        this.upgrades.readFromNBT(data, "upgrades", registries);
+    public void loadTag(CompoundTag data) {
+        super.loadTag(data);
+        this.upgrades.readFromNBT(data, "upgrades");
         this.setRemainingFuelTicks(data.getDouble("burnTime"));
         this.setFuelItemFuelTicks(data.getDouble("maxBurnTime"));
         this.setCurrentFuelTicksPerTick(data.getInt("burnSpeed") * maxFuelTicksPerTick / 100.0);
@@ -186,7 +185,7 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         if (this.getRemainingFuelTicks() <= 0 && this.canEatFuel()) {
             getMainNode().ifPresent((grid, node) -> {
                 grid.getTickManager().wakeDevice(node);
@@ -211,7 +210,8 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
             this.eatFuel();
         }
 
-        return new TickingRequest(TickRates.VibrationChamber, this.getRemainingFuelTicks() <= 0);
+        return new TickingRequest(TickRates.VibrationChamber,
+                this.getRemainingFuelTicks() <= 0, false);
     }
 
     @Override
@@ -309,7 +309,7 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
     }
 
     public static int getBurnTime(ItemStack is) {
-        return is.getBurnTime(null);
+        return ForgeHooks.getBurnTime(is, null);
     }
 
     public static boolean hasBurnTime(ItemStack is) {

@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_calculation_processor": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:calculation_processor"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_quartz_wrench": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "ae2:quartz_wrench"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ae2:tools/network_tool"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_quartz_wrench",
+      "has_calculation_processor",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ae2:tools/network_tool"
+    ]
+  },
+  "sends_telemetry_event": false
+}

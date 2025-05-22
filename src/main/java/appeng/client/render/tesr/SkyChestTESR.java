@@ -36,12 +36,11 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.phys.AABB;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.storage.SkyChestBlock;
 import appeng.block.storage.SkyChestBlock.SkyChestType;
@@ -56,9 +55,9 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
 
     // The textures are in the block sheet due to the item model requiring them there
     public static final Material TEXTURE_STONE = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/skychest"));
+            new ResourceLocation(AppEng.MOD_ID, "block/skychest"));
     public static final Material TEXTURE_BLOCK = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/skyblockchest"));
+            new ResourceLocation(AppEng.MOD_ID, "block/skyblockchest"));
 
     private final ModelPart lid;
     private final ModelPart bottom;
@@ -69,12 +68,6 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
         this.bottom = modelpart.getChild("bottom");
         this.lid = modelpart.getChild("lid");
         this.lock = modelpart.getChild("lock");
-    }
-
-    @Override
-    public AABB getRenderBoundingBox(SkyChestBlockEntity blockEntity) {
-        BlockPos pos = blockEntity.getBlockPos();
-        return AABB.encapsulatingFullBlocks(pos.offset(-1, 0, -1), pos.offset(1, 1, 1));
     }
 
     public static LayerDefinition createSingleBodyLayer() {

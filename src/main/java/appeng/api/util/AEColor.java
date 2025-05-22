@@ -26,52 +26,38 @@ package appeng.api.util;
 import java.util.Arrays;
 import java.util.List;
 
-import com.mojang.serialization.Codec;
-
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 /**
  * List of all colors supported by AE, their names, and various colors for display.
  *
  * Should be the same order as Dyes, excluding Transparent.
  */
+public enum AEColor {
 
-// TODO (RID): Sorted the colours according to the colour wheel
-public enum AEColor implements StringRepresentable {
-    // TODO (Rid): Sorted the colours based on the colour wheel.
-    WHITE("White", "gui.ae2.White", "white", DyeColor.WHITE, 0xb4b4b4, 0xe0e0e0, 0xf9f9f9, 0x000000),
-    LIGHT_GRAY("Light Gray", "gui.ae2.LightGray", "light_gray", DyeColor.LIGHT_GRAY, 0x7e7e7e, 0xa09fa0, 0xc4c4c4,
+    WHITE("White", "gui.ae2.White", "white", DyeColor.WHITE, 0xBEBEBE, 0xDBDBDB, 0xFAFAFA, 0x000000),
+    ORANGE("Orange", "gui.ae2.Orange", "orange", DyeColor.ORANGE, 0xF99739, 0xFAAE44, 0xF4DEC3, 0x000000),
+    MAGENTA("Magenta", "gui.ae2.Magenta", "magenta", DyeColor.MAGENTA, 0x821E82, 0xB82AB8, 0xC598C8, 0x000000),
+    LIGHT_BLUE("Light Blue", "gui.ae2.LightBlue", "light_blue", DyeColor.LIGHT_BLUE, 0x628DCB, 0x82ACE7, 0xD8F6FF,
             0x000000),
-    GRAY("Gray", "gui.ae2.Gray", "gray", DyeColor.GRAY, 0x4f4f4f, 0x6c6b6c, 0x949294, 0x000000),
-    BLACK("Black", "gui.ae2.Black", "black", DyeColor.BLACK, 0x131313, 0x272727, 0x3b3b3b, 0xFFFFFF),
-    LIME("Lime", "gui.ae2.Lime", "lime", DyeColor.LIME, 0x4ec04e, 0x70e259, 0xb3f86d, 0x000000),
-    YELLOW("Yellow", "gui.ae2.Yellow", "yellow", DyeColor.YELLOW, 0xffcf40, 0xffe359, 0xf4ff80, 0x000000),
-    ORANGE("Orange", "gui.ae2.Orange", "orange", DyeColor.ORANGE, 0xd9782f, 0xeca23c, 0xf2ba49, 0x000000),
-    BROWN("Brown", "gui.ae2.Brown", "brown", DyeColor.BROWN, 0x6e4a12, 0x7e5c16, 0x8e6e1a, 0x000000),
-    RED("Red", "gui.ae2.Red", "red", DyeColor.RED, 0xaa212b, 0xd73e42, 0xf07665, 0x000000),
-    PINK("Pink", "gui.ae2.Pink", "pink", DyeColor.PINK, 0xd86eaa, 0xff99bb, 0xfbcad5, 0x000000),
-    MAGENTA("Magenta", "gui.ae2.Magenta", "magenta", DyeColor.MAGENTA, 0xc15189, 0xd5719c, 0xe69ebf, 0x000000),
-    PURPLE("Purple", "gui.ae2.Purple", "purple", DyeColor.PURPLE, 0x6e5cb8, 0x915dcd, 0xb06fdd, 0x000000),
-    BLUE("Blue", "gui.ae2.Blue", "blue", DyeColor.BLUE, 0x337ff0, 0x3894ff, 0x40c1ff, 0x000000),
-    LIGHT_BLUE("Light Blue", "gui.ae2.LightBlue", "light_blue", DyeColor.LIGHT_BLUE, 0x69b9ff, 0x70d2ff, 0x80f7ff,
+    YELLOW("Yellow", "gui.ae2.Yellow", "yellow", DyeColor.YELLOW, 0xFFF7AA, 0xF8FF4A, 0xFFFFE8, 0x000000),
+    LIME("Lime", "gui.ae2.Lime", "lime", DyeColor.LIME, 0x7CFF4A, 0xBBFF51, 0xE7F7D7, 0x000000),
+    PINK("Pink", "gui.ae2.Pink", "pink", DyeColor.PINK, 0xDC8DB5, 0xF8B5D7, 0xF7DEEB, 0x000000),
+    GRAY("Gray", "gui.ae2.Gray", "gray", DyeColor.GRAY, 0x7C7C7C, 0xA0A0A0, 0xC9C9C9, 0x000000),
+    LIGHT_GRAY("Light Gray", "gui.ae2.LightGray", "light_gray", DyeColor.LIGHT_GRAY, 0x9D9D9D, 0xCDCDCD, 0xEFEFEF,
             0x000000),
-    CYAN("Cyan", "gui.ae2.Cyan", "cyan", DyeColor.CYAN, 0x22b0ae, 0x2fccb7, 0x65e8c9, 0x000000),
-    GREEN("Green", "gui.ae2.Green", "green", DyeColor.GREEN, 0x079b6b, 0x17b86d, 0x32d850, 0x000000),
-    TRANSPARENT("Fluix", "gui.ae2.Fluix", "fluix", null, 0x5a479e, 0x915dcd, 0xe2a3e3, 0x000000);
+    CYAN("Cyan", "gui.ae2.Cyan", "cyan", DyeColor.CYAN, 0x2F9BA5, 0x51AAC6, 0xAEDDF4, 0x000000),
+    PURPLE("Purple", "gui.ae2.Purple", "purple", DyeColor.PURPLE, 0x8230B2, 0xA453CE, 0xC7A3CC, 0x000000),
+    BLUE("Blue", "gui.ae2.Blue", "blue", DyeColor.BLUE, 0x2D29A0, 0x514AFF, 0xDDE6FF, 0x000000),
+    BROWN("Brown", "gui.ae2.Brown", "brown", DyeColor.BROWN, 0x724E35, 0xB7967F, 0xE0D2C8, 0x000000),
+    GREEN("Green", "gui.ae2.Green", "green", DyeColor.GREEN, 0x45A021, 0x60E32E, 0xE3F2E3, 0x000000),
+    RED("Red", "gui.ae2.Red", "red", DyeColor.RED, 0xA50029, 0xFF003C, 0xFFE6ED, 0x000000),
+    BLACK("Black", "gui.ae2.Black", "black", DyeColor.BLACK, 0x2B2B2B, 0x565656, 0x848484, 0xFFFFFF),
+    TRANSPARENT("Fluix", "gui.ae2.Fluix", "fluix", null, 0x1B2344, 0x895CA8, 0xD7BBEC, 0x000000);
 
-    public static final Codec<AEColor> CODEC = StringRepresentable.fromEnum(AEColor::values);
-
-    public static final StreamCodec<FriendlyByteBuf, AEColor> STREAM_CODEC = NeoForgeStreamCodecs
-            .enumCodec(AEColor.class);
-
-    // TODO (RID): Sorted the colours according to the colour wheel
-    public static final List<AEColor> VALID_COLORS = Arrays.asList(WHITE, LIGHT_GRAY, GRAY, BLACK, LIME, YELLOW,
-            ORANGE, BROWN, RED, PINK, MAGENTA, PURPLE, BLUE, LIGHT_BLUE, CYAN, GREEN);
+    public static final List<AEColor> VALID_COLORS = Arrays.asList(WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME,
+            PINK, GRAY, LIGHT_GRAY, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK);
 
     /**
      * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #blackVariant dark
@@ -198,8 +184,4 @@ public enum AEColor implements StringRepresentable {
         return this.translationKey;
     }
 
-    @Override
-    public String getSerializedName() {
-        return registryPrefix;
-    }
 }

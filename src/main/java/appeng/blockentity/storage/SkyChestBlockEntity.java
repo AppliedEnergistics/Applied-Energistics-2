@@ -32,8 +32,8 @@ import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.AEBaseInvBlockEntity;
@@ -113,6 +113,11 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
         } else {
             return super.triggerEvent(id, type);
         }
+    }
+
+    @Override
+    public void onChangeInventory(InternalInventory inv, int slot) {
+
     }
 
     @Override

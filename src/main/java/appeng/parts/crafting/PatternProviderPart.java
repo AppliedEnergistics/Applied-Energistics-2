@@ -25,14 +25,15 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
@@ -52,21 +53,21 @@ import appeng.util.SettingsFrom;
 
 public class PatternProviderPart extends AEBasePart implements PatternProviderLogicHost {
 
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId(
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
             "part/pattern_provider_base");
 
     // TODO: unify the following between the 3 interface parts?
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/interface_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/interface_off"));
 
     @PartModels
     public static final PartModel MODELS_ON = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/interface_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/interface_on"));
 
     @PartModels
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/interface_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/interface_has_channel"));
 
     protected final PatternProviderLogic logic = createLogic();
 
@@ -101,15 +102,15 @@ public class PatternProviderPart extends AEBasePart implements PatternProviderLo
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
-        this.logic.readFromNBT(data, registries);
+    public void readFromNBT(CompoundTag data) {
+        super.readFromNBT(data);
+        this.logic.readFromNBT(data);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
-        this.logic.writeToNBT(data, registries);
+    public void writeToNBT(CompoundTag data) {
+        super.writeToNBT(data);
+        this.logic.writeToNBT(data);
     }
 
     @Override
@@ -136,16 +137,16 @@ public class PatternProviderPart extends AEBasePart implements PatternProviderLo
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder) {
-        super.exportSettings(mode, builder);
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
+        super.exportSettings(mode, output);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
-            logic.exportSettings(builder);
+            logic.exportSettings(output);
         }
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
@@ -159,7 +160,7 @@ public class PatternProviderPart extends AEBasePart implements PatternProviderLo
     }
 
     @Override
-    public boolean onUseWithoutItem(Player p, Vec3 pos) {
+    public boolean onPartActivate(Player p, InteractionHand hand, Vec3 pos) {
         if (!p.getCommandSenderWorld().isClientSide()) {
             openMenu(p, MenuLocators.forPart(this));
         }
@@ -190,5 +191,10 @@ public class PatternProviderPart extends AEBasePart implements PatternProviderLo
     @Override
     public ItemStack getMainMenuIcon() {
         return AEParts.PATTERN_PROVIDER.stack();
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
+        return this.logic.getCapability(capabilityClass);
     }
 }

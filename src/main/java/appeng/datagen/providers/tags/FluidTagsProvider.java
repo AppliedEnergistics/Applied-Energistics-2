@@ -22,7 +22,7 @@ import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import appeng.api.ids.AETags;
 import appeng.core.AppEng;
@@ -36,7 +36,7 @@ public class FluidTagsProvider extends net.minecraft.data.tags.FluidTagsProvider
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider registries) {
+    protected void addTags(HolderLookup.Provider provider) {
         // Provide an empty fluid blacklist
         tag(AETags.ANNIHILATION_PLANE_FLUID_BLACKLIST);
     }

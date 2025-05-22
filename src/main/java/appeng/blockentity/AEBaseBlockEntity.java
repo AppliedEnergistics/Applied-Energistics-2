@@ -18,33 +18,24 @@
 
 package appeng.blockentity;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-
-import com.google.gson.stream.JsonWriter;
-import com.mojang.serialization.JsonOps;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -63,17 +54,17 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelData;
 
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-
-import appeng.api.ids.AEComponents;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
-import appeng.api.networking.IGridNode;
 import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.RelativeSide;
 import appeng.block.AEBaseEntityBlock;
 import appeng.client.render.model.AEModelData;
@@ -81,14 +72,12 @@ import appeng.core.AELog;
 import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.tools.MemoryCardItem;
-import appeng.util.IDebugExportable;
-import appeng.util.JsonStreamUtil;
+import appeng.util.CustomNameUtil;
 import appeng.util.SettingsFrom;
 import appeng.util.helpers.ItemComparisonHelper;
 
 public class AEBaseBlockEntity extends BlockEntity
-        implements Nameable, ISegmentedInventory, Clearable, IDebugExportable {
-    private static final Logger LOG = LoggerFactory.getLogger(AEBaseBlockEntity.class);
+        implements Nameable, ISegmentedInventory, Clearable {
 
     private static final Map<BlockEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
     @Nullable
@@ -96,7 +85,7 @@ public class AEBaseBlockEntity extends BlockEntity
     private boolean setChangedQueued = false;
     /**
      * For diagnosing issues with the delayed block entity initialization, this tracks how often this BE has been queued
-     * for defered initializiation using {@link GridHelper#onFirstTick}.
+     * for defered initializiation using {@link appeng.api.networking.GridHelper#onFirstTick}.
      */
     private byte queuedForReady = 0;
     /**
@@ -104,6 +93,10 @@ public class AEBaseBlockEntity extends BlockEntity
      * subsequently be equal.
      */
     private byte readyInvoked = 0;
+
+    // Remove in 1.20.1+: Convert legacy NBT orientation to blockstate
+    @org.jetbrains.annotations.Nullable
+    private BlockOrientation pendingOrientationChange;
 
     public AEBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -133,21 +126,12 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     @Override
-    public final void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+    public final void load(CompoundTag tag) {
         // On the client, this can either be data received as part of an initial chunk update,
         // or as part of a sole block entity data update.
-        RegistryAccess registryAccess = null;
-        if (registries instanceof RegistryAccess) {
-            registryAccess = (RegistryAccess) registries;
-        } else if (level != null) {
-            registryAccess = level.registryAccess();
-        }
         if (tag.contains("#upd", Tag.TAG_BYTE_ARRAY) && tag.size() == 1) {
             var updateData = tag.getByteArray("#upd");
-            if (registryAccess == null) {
-                LOG.warn("Ignoring  update packet for {} since no registry is available.", this);
-            } else if (readUpdateData(
-                    new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(updateData), registryAccess))) {
+            if (readUpdateData(new FriendlyByteBuf(Unpooled.wrappedBuffer(updateData)))) {
                 // Triggers a chunk re-render if the level is already loaded
                 if (level != null) {
                     requestModelDataUpdate();
@@ -162,20 +146,30 @@ public class AEBaseBlockEntity extends BlockEntity
             loadVisualState(tag.getCompound("visual"));
         }
 
-        super.loadAdditional(tag, registries);
-        loadTag(tag, registries);
+        super.load(tag);
+        loadTag(tag);
     }
 
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
+    public void loadTag(CompoundTag data) {
         if (data.contains("customName")) {
             this.customName = Component.literal(data.getString("customName"));
         } else {
             this.customName = null;
         }
+
+        // Remove in 1.20.1+: Convert legacy NBT orientation to blockstate
+        if (data.contains("forward", Tag.TAG_STRING) && data.contains("up", Tag.TAG_STRING)) {
+            try {
+                var forward = Direction.valueOf(data.getString("forward").toUpperCase(Locale.ROOT));
+                var up = Direction.valueOf(data.getString("up").toUpperCase(Locale.ROOT));
+                pendingOrientationChange = BlockOrientation.get(forward, up);
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
+    public void saveAdditional(CompoundTag data) {
         // Save visual state first, so that it can never overwrite normal state
         if (VisualStateSaving.isEnabled(level)) {
             var visualTag = new CompoundTag();
@@ -183,7 +177,7 @@ public class AEBaseBlockEntity extends BlockEntity
             data.put("visual", visualTag);
         }
 
-        super.saveAdditional(data, registries);
+        super.saveAdditional(data);
 
         if (this.customName != null) {
             data.putString("customName", this.customName.getString());
@@ -197,6 +191,15 @@ public class AEBaseBlockEntity extends BlockEntity
     @MustBeInvokedByOverriders
     public void onReady() {
         readyInvoked++;
+
+        if (pendingOrientationChange != null) {
+            var state = getBlockState();
+            level.setBlockAndUpdate(getBlockPos(), IOrientationStrategy.get(state).setOrientation(
+                    state,
+                    pendingOrientationChange.getSide(RelativeSide.FRONT),
+                    pendingOrientationChange.getSpin()));
+            pendingOrientationChange = null;
+        }
     }
 
     protected void scheduleInit() {
@@ -209,10 +212,10 @@ public class AEBaseBlockEntity extends BlockEntity
      * doesn't need update syncs, it returns null.
      */
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+    public CompoundTag getUpdateTag() {
         var data = new CompoundTag();
 
-        var stream = new RegistryFriendlyByteBuf(Unpooled.buffer(), level.registryAccess());
+        var stream = new FriendlyByteBuf(Unpooled.buffer());
         this.writeToStream(stream);
 
         stream.capacity(stream.readableBytes());
@@ -220,7 +223,7 @@ public class AEBaseBlockEntity extends BlockEntity
         return data;
     }
 
-    private boolean readUpdateData(RegistryFriendlyByteBuf stream) {
+    private boolean readUpdateData(FriendlyByteBuf stream) {
         boolean output = false;
 
         try {
@@ -237,19 +240,18 @@ public class AEBaseBlockEntity extends BlockEntity
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         return false;
     }
 
-    protected void writeToStream(RegistryFriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
     }
 
     /**
      * Used to store the state that is synchronized to clients for the visual appearance of this part as NBT. This is
      * only used to store this state for tools such as Create Ponders in Structure NBT. Actual synchronization uses
-     * {@link #writeToStream(RegistryFriendlyByteBuf)} and {@link #readFromStream(RegistryFriendlyByteBuf)}. Any data
-     * that is saved to the NBT tag in {@link #saveAdditional(CompoundTag, HolderLookup.Provider)} does not need to be
-     * saved here again.
+     * {@link #writeToStream(FriendlyByteBuf)} and {@link #readFromStream(FriendlyByteBuf)}. Any data that is saved to
+     * the NBT tag in {@link #saveAdditional(CompoundTag)} does not need to be saved here again.
      * <p>
      * The data saved should be equivalent to the data sent to the client in {@link #writeToStream}.
      */
@@ -262,17 +264,6 @@ public class AEBaseBlockEntity extends BlockEntity
      */
     @MustBeInvokedByOverriders
     protected void loadVisualState(CompoundTag data) {
-    }
-
-    /**
-     * Mark this block to be updated for clients.
-     */
-    public void markForClientUpdate() {
-        this.requestModelDataUpdate();
-
-        if (this.level != null && !this.isRemoved() && !notLoaded()) {
-            this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
-        }
     }
 
     public void markForUpdate() {
@@ -317,31 +308,20 @@ public class AEBaseBlockEntity extends BlockEntity
      */
     @ApiStatus.OverrideOnly
     protected void onOrientationChanged(BlockOrientation orientation) {
-        invalidateCapabilities();
-    }
-
-    public final DataComponentMap exportSettings(SettingsFrom mode, @Nullable Player player) {
-        var builder = DataComponentMap.builder();
-        exportSettings(mode, builder, player);
-        return builder.build();
     }
 
     /**
-     * @param mode    source of settings
-     * @param builder
-     * @param player  The (optional) player, who is exporting the settings
+     * null means nothing to store...
+     *
+     * @param mode   source of settings
+     * @param player The (optional) player, who is exporting the settings
      */
     @MustBeInvokedByOverriders
-    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder, @Nullable Player player) {
-        if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            builder.set(DataComponents.CUSTOM_NAME, this.customName);
-        } else if (mode == SettingsFrom.MEMORY_CARD) {
-            builder.set(AEComponents.EXPORTED_CUSTOM_NAME, this.customName);
-        }
+    public void exportSettings(SettingsFrom mode, CompoundTag output, @Nullable Player player) {
+        CustomNameUtil.setCustomName(output, customName);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
-            MemoryCardItem.exportGenericSettings(this, builder);
-            builder.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getItemFromBlockEntity().getDescription());
+            MemoryCardItem.exportGenericSettings(this, output);
         }
     }
 
@@ -352,11 +332,12 @@ public class AEBaseBlockEntity extends BlockEntity
      * @param player The (optional) player, who is importing the settings
      */
     @MustBeInvokedByOverriders
-    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
-        if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            this.customName = input.get(DataComponents.CUSTOM_NAME);
-        } else if (mode == SettingsFrom.MEMORY_CARD) {
-            this.customName = input.get(AEComponents.EXPORTED_CUSTOM_NAME);
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        var customName = CustomNameUtil.getCustomName(input);
+        if (customName != null) {
+            this.customName = Component.literal(customName.getString());
+        } else {
+            this.customName = null;
         }
 
         MemoryCardItem.importGenericSettings(this, input, player);
@@ -445,6 +426,16 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     /**
+     * AE Block entities will generally confine themselves to rendering within the bounding block. Forge however would
+     * retrieve the collision box here, which is very expensive.
+     */
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public AABB getRenderBoundingBox() {
+        return new AABB(worldPosition, worldPosition.offset(1, 1, 1));
+    }
+
+    /**
      * Called when a player uses a wrench on this block entity to disassemble it.
      */
     public InteractionResult disassembleWithWrench(Player player, Level level, BlockHitResult hitResult,
@@ -460,8 +451,11 @@ public class AEBaseBlockEntity extends BlockEntity
             var op = new ItemStack(state.getBlock());
             for (var ol : drops) {
                 if (ItemComparisonHelper.isEqualItemType(ol, op)) {
-                    var settings = exportSettings(SettingsFrom.DISMANTLE_ITEM, player);
-                    ol.applyComponents(settings);
+                    var tag = new CompoundTag();
+                    exportSettings(SettingsFrom.DISMANTLE_ITEM, tag, player);
+                    if (!tag.isEmpty()) {
+                        ol.setTag(tag);
+                    }
                     break;
                 }
             }
@@ -503,20 +497,5 @@ public class AEBaseBlockEntity extends BlockEntity
         if (previousOrientation != newOrientation) {
             onOrientationChanged(newOrientation);
         }
-    }
-
-    @Override
-    public void debugExport(JsonWriter writer, HolderLookup.Provider registries, Reference2IntMap<Object> machineIds,
-            Reference2IntMap<IGridNode> nodeIds)
-            throws IOException {
-        var data = new CompoundTag();
-        saveAdditional(data, registries);
-
-        var ops = registries.createSerializationContext(JsonOps.INSTANCE);
-        JsonStreamUtil.writeProperties(Map.of(
-                "blockState", BlockState.CODEC.encodeStart(ops, getBlockState()).getOrThrow(),
-                "level", level.dimension().location().toString(),
-                "pos", getBlockPos(),
-                "data", CompoundTag.CODEC.encodeStart(ops, data).getOrThrow()), writer);
     }
 }

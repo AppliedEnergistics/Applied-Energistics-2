@@ -20,7 +20,7 @@ public class ValidateResourceIds {
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     var f = path.relativize(file).toString().replace('\\', '/');
 
-                    if (!ResourceLocation.isValidPath(f)) {
+                    if (!ResourceLocation.isValidResourceLocation("dummy:" + f)) {
                         invalidPaths.add(f);
                     }
                     return FileVisitResult.CONTINUE;

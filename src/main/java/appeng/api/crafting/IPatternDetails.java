@@ -23,11 +23,8 @@
 
 package appeng.api.crafting;
 
-import java.util.List;
-
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 
@@ -60,13 +57,13 @@ public interface IPatternDetails {
      * just byproducts.
      */
     default GenericStack getPrimaryOutput() {
-        return getOutputs().get(0);
+        return getOutputs()[0];
     }
 
     /**
-     * The outputs of this pattern.
+     * The outputs of this pattern. <b>The return array or any of its stacks must never be edited</b>.
      */
-    List<GenericStack> getOutputs();
+    GenericStack[] getOutputs();
 
     /**
      * @return True if this pattern allows its inputs to be pushed to generic external inventories that would accept
@@ -92,15 +89,6 @@ public interface IPatternDetails {
                 inputSink.pushInput(input.getKey(), input.getLongValue());
             }
         }
-    }
-
-    /**
-     * Gets a tooltip describing the details of this crafting pattern.
-     */
-    default PatternDetailsTooltip getTooltip(Level level, TooltipFlag flags) {
-        var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_PRODUCES);
-        tooltip.addInputsAndOutputs(this);
-        return tooltip;
     }
 
     interface IInput {

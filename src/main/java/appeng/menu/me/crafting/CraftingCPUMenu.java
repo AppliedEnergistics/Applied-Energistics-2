@@ -32,7 +32,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.CraftingBlockEntity;
-import appeng.core.network.clientbound.CraftingStatusPacket;
+import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;

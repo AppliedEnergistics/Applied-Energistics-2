@@ -27,7 +27,7 @@ import com.google.common.collect.ImmutableList;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -135,9 +135,9 @@ public class NetworkStatus {
     }
 
     /**
-     * Reads a network status previously written using {@link #write(RegistryFriendlyByteBuf)}.
+     * Reads a network status previously written using {@link #write(FriendlyByteBuf)}.
      */
-    public static NetworkStatus read(RegistryFriendlyByteBuf data) {
+    public static NetworkStatus read(FriendlyByteBuf data) {
         NetworkStatus status = new NetworkStatus();
         status.averagePowerInjection = data.readDouble();
         status.averagePowerUsage = data.readDouble();
@@ -157,9 +157,9 @@ public class NetworkStatus {
     }
 
     /**
-     * Writes the contents of this object to a packet buffer. Use {@link #read(RegistryFriendlyByteBuf)} to restore.
+     * Writes the contents of this object to a packet buffer. Use {@link #read(FriendlyByteBuf)} to restore.
      */
-    public void write(RegistryFriendlyByteBuf data) {
+    public void write(FriendlyByteBuf data) {
         data.writeDouble(averagePowerInjection);
         data.writeDouble(averagePowerUsage);
         data.writeDouble(storedPower);

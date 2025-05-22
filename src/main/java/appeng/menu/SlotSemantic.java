@@ -7,5 +7,5 @@ package appeng.menu;
  * @param playerSide Indicates whether a slot is considered to be part of the items that a player carries.
  * @see SlotSemantics For a registry of slot semantics.
  */
-public record SlotSemantic(String id, boolean playerSide, int quickMovePriority) {
+public record SlotSemantic(String id, boolean playerSide) {
 }

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2:wireless_receiver"
+    },
+    "b": {
+      "item": "ae2:crafting_terminal"
+    },
+    "c": {
+      "item": "ae2:dense_energy_cell"
+    }
+  },
+  "pattern": [
+    "a",
+    "b",
+    "c"
+  ],
+  "result": {
+    "item": "ae2:wireless_crafting_terminal"
+  },
+  "show_notification": true
+}

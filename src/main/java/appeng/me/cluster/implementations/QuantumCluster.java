@@ -25,9 +25,9 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.LevelEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.api.features.Locatables;
 import appeng.api.networking.GridHelper;
@@ -198,7 +198,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
         MBCalculator.setModificationInProgress(this);
         try {
             if (this.registered) {
-                NeoForge.EVENT_BUS.unregister(this);
+                MinecraftForge.EVENT_BUS.unregister(this);
                 this.registered = false;
             }
 
@@ -241,7 +241,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
 
     void setCenter(QuantumBridgeBlockEntity c) {
         this.registered = true;
-        NeoForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(this);
         this.center = c;
     }
 

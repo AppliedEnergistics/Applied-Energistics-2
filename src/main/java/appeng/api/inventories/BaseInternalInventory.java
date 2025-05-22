@@ -23,7 +23,7 @@
 
 package appeng.api.inventories;
 
-import net.neoforged.neoforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 /**
  * Implementation aid for {@link InternalInventory} that ensures the platorm adapter maintains its referential equality

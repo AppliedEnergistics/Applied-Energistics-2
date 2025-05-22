@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
-import snownee.jade.api.JadeIds;
+import snownee.jade.api.Identifiers;
 import snownee.jade.api.config.IPluginConfig;
 
 import appeng.api.integrations.igtooltip.providers.NameProvider;
@@ -32,7 +32,7 @@ class NameProviderAdapter<T> extends BaseProvider implements IBlockComponentProv
 
         // Replace the object name
         if (name != null) {
-            tooltip.remove(JadeIds.CORE_OBJECT_NAME);
+            tooltip.remove(Identifiers.CORE_OBJECT_NAME);
             tooltip.add(0, name.copy().withStyle(style -> {
                 // Don't overwrite a text color if one is present
                 if (style.getColor() == null) {
@@ -40,7 +40,7 @@ class NameProviderAdapter<T> extends BaseProvider implements IBlockComponentProv
                 } else {
                     return style;
                 }
-            }), JadeIds.CORE_OBJECT_NAME);
+            }), Identifiers.CORE_OBJECT_NAME);
         }
     }
 }

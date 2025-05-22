@@ -1,119 +1,26 @@
 package appeng.api.stacks;
 
-import java.util.List;
 import java.util.Objects;
 
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.Dynamic;
-import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.Lifecycle;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 
-import appeng.api.ids.AEComponents;
-import appeng.core.definitions.AEItems;
 import appeng.items.misc.WrappedGenericStack;
 
 /**
  * Represents some amount of some generic resource that AE can store or handle in crafting.
  */
 public record GenericStack(AEKey what, long amount) {
-
-    @ApiStatus.Internal
-    public static final String AMOUNT_FIELD = "#";
-
-    private static final Logger LOG = LoggerFactory.getLogger(GenericStack.class);
-
-    public static final Codec<GenericStack> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            AEKey.MAP_CODEC.forGetter(GenericStack::what),
-            Codec.LONG.fieldOf(AMOUNT_FIELD).forGetter(GenericStack::amount)).apply(builder, GenericStack::new));
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, GenericStack> STREAM_CODEC = StreamCodec.ofMember(
-            GenericStack::writeBuffer,
-            GenericStack::readBuffer);
-
-    /**
-     * This result function converts failed serialization results for GenericStack into missing content storing the
-     * error message.
-     */
-    private static final Codec.ResultFunction<GenericStack> MISSING_CONTENT_GENERICSTACK_RESULT = new Codec.ResultFunction<>() {
-        @Override
-        public <T> DataResult<Pair<GenericStack, T>> apply(DynamicOps<T> ops, T input,
-                DataResult<Pair<GenericStack, T>> a) {
-            if (a instanceof DataResult.Error<Pair<GenericStack, T>> error) {
-                var missingContent = AEItems.MISSING_CONTENT.stack();
-                var convert = Dynamic.convert(ops, NbtOps.INSTANCE, input);
-                if (convert instanceof CompoundTag compoundTag) {
-                    missingContent.set(AEComponents.MISSING_CONTENT_ITEMSTACK_DATA, CustomData.of(compoundTag));
-                }
-                LOG.error("Failed to deserialize GenericStack {}: {}", input, error.message());
-                missingContent.set(AEComponents.MISSING_CONTENT_ERROR, error.message());
-
-                var replacement = new GenericStack(AEItemKey.of(missingContent), 1);
-
-                return DataResult.success(
-                        Pair.of(replacement, input),
-                        Lifecycle.stable());
-            }
-
-            // Return unchanged if deserialization succeeded
-            return a;
-        }
-
-        @Override
-        public <T> DataResult<T> coApply(DynamicOps<T> ops, GenericStack input, DataResult<T> t) {
-            // When the serialization result failed, we write a missing content item instead
-            // this one will NOT be recoverable
-            if (t instanceof DataResult.Error<T> error) {
-                var missingContent = AEItems.MISSING_CONTENT.stack();
-                LOG.error("Failed to serialize GenericStack {}: {}", input, error.message());
-                missingContent.set(AEComponents.MISSING_CONTENT_ERROR, error.message());
-
-                var replacement = new GenericStack(AEItemKey.of(missingContent), 1);
-                return CODEC.encodeStart(ops, replacement).setLifecycle(t.lifecycle());
-            }
-
-            // When the input is a MISSING_CONTENT item and has the original data attached,
-            // we write that back.
-            if (input.what() instanceof AEItemKey itemKey && itemKey.is(AEItems.MISSING_CONTENT)) {
-                var originalData = itemKey.get(AEComponents.MISSING_CONTENT_ITEMSTACK_DATA);
-                if (originalData != null) {
-                    return DataResult.success(Dynamic.convert(NbtOps.INSTANCE, ops, originalData.getUnsafe()),
-                            t.lifecycle());
-                }
-            }
-
-            return t;
-        }
-    };
-
-    public static final Codec<List<@Nullable GenericStack>> FAULT_TOLERANT_NULLABLE_LIST_CODEC = new GenericStackListCodec(
-            CODEC.mapResult(MISSING_CONTENT_GENERICSTACK_RESULT));
-
-    public static final Codec<List<GenericStack>> FAULT_TOLERANT_LIST_CODEC = CODEC
-            .mapResult(MISSING_CONTENT_GENERICSTACK_RESULT).listOf();
-
     public GenericStack {
         Objects.requireNonNull(what, "what");
     }
 
     @Nullable
-    public static GenericStack readBuffer(RegistryFriendlyByteBuf buffer) {
+    public static GenericStack readBuffer(FriendlyByteBuf buffer) {
         if (!buffer.readBoolean()) {
             return null;
         }
@@ -126,7 +33,7 @@ public record GenericStack(AEKey what, long amount) {
         return new GenericStack(what, buffer.readVarLong());
     }
 
-    public static void writeBuffer(@Nullable GenericStack stack, RegistryFriendlyByteBuf buffer) {
+    public static void writeBuffer(@Nullable GenericStack stack, FriendlyByteBuf buffer) {
         if (stack == null) {
             buffer.writeBoolean(false);
         } else {
@@ -138,24 +45,24 @@ public record GenericStack(AEKey what, long amount) {
     }
 
     @Nullable
-    public static GenericStack readTag(HolderLookup.Provider registries, CompoundTag tag) {
+    public static GenericStack readTag(CompoundTag tag) {
         if (tag.isEmpty()) {
             return null;
         }
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        return GenericStack.CODEC.decode(ops, tag)
-                .ifError(err -> LOG.error("Failed to decode GenericStack from {}: {}", tag, err.message()))
-                .getPartialOrThrow()
-                .getFirst();
+        var key = AEKey.fromTagGeneric(tag);
+        if (key == null) {
+            return null;
+        }
+        return new GenericStack(key, tag.getLong("#"));
     }
 
-    public static CompoundTag writeTag(HolderLookup.Provider registries, @Nullable GenericStack stack) {
+    public static CompoundTag writeTag(@Nullable GenericStack stack) {
         if (stack == null) {
             return new CompoundTag();
         }
-
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        return (CompoundTag) GenericStack.CODEC.encodeStart(ops, stack).getOrThrow();
+        var tag = stack.what.toTagGeneric();
+        tag.putLong("#", stack.amount);
+        return tag;
     }
 
     /**

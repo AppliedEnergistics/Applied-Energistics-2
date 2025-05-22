@@ -1,6 +1,5 @@
 package appeng.integration.modules.igtooltip;
 
-import java.util.Locale;
 import java.util.ServiceLoader;
 
 import org.slf4j.Logger;
@@ -24,7 +23,6 @@ import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.blockentity.networking.CrystalResonanceGeneratorBlockEntity;
-import appeng.core.AppEng;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.integration.modules.igtooltip.blocks.ChargerDataProvider;
 import appeng.integration.modules.igtooltip.blocks.CraftingMonitorDataProvider;
@@ -46,7 +44,7 @@ import appeng.parts.reporting.AbstractMonitorPart;
 
 public final class TooltipProviders implements TooltipProvider {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TooltipProviders.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TooltipProviders.class);
 
     public static final ServiceLoader<TooltipProvider> LOADER = ServiceLoader.load(TooltipProvider.class);
 
@@ -76,21 +74,15 @@ public final class TooltipProviders implements TooltipProvider {
         }
 
         for (var clazz : baseClasses.getBaseClasses()) {
-            LOG.debug("Registering default-data for BE {} and sub-classes", clazz);
-            registration.addBlockEntityData(AppEng.makeId("grid_node"), clazz.blockEntity(),
-                    new GridNodeStateDataProvider());
-            registration.addBlockEntityData(AppEng.makeId("power_storage"), clazz.blockEntity(),
-                    new PowerStorageDataProvider());
-            registration.addBlockEntityData(AppEng.makeId("debug"), clazz.blockEntity(),
-                    DebugProvider::provideBlockEntityData);
+            LOGGER.debug("Registering default-data for BE {} and sub-classes", clazz);
+            registration.addBlockEntityData(clazz.blockEntity(), new GridNodeStateDataProvider());
+            registration.addBlockEntityData(clazz.blockEntity(), new PowerStorageDataProvider());
+            registration.addBlockEntityData(clazz.blockEntity(), DebugProvider::provideBlockEntityData);
         }
 
         for (var clazz : baseClasses.getPartHostClasses()) {
-            LOG.debug("Registering part host provider for {} and sub-classes", clazz);
-            registration.addBlockEntityData(
-                    AppEng.makeId("base_" + clazz.blockEntity().getSimpleName().toLowerCase(Locale.ROOT)),
-                    clazz.blockEntity(),
-                    PartHostTooltips::provideServerData);
+            LOGGER.debug("Registering part host provider for {} and sub-classes", clazz);
+            registration.addBlockEntityData(clazz.blockEntity(), PartHostTooltips::provideServerData);
         }
     }
 
@@ -103,7 +95,7 @@ public final class TooltipProviders implements TooltipProvider {
         }
 
         for (var clazz : baseClasses.getBaseClasses()) {
-            LOG.debug("Registering default client providers for BE {} and sub-classes", clazz);
+            LOGGER.debug("Registering default client providers for BE {} and sub-classes", clazz);
             registration.addBlockEntityBody(
                     clazz.blockEntity(),
                     clazz.block(),
@@ -123,7 +115,7 @@ public final class TooltipProviders implements TooltipProvider {
         }
 
         for (var clazz : baseClasses.getPartHostClasses()) {
-            LOG.debug("Registering part host provider for {} and sub-classes", clazz);
+            LOGGER.debug("Registering part host provider for {} and sub-classes", clazz);
             registration.addBlockEntityName(
                     clazz.blockEntity(),
                     clazz.block(),
@@ -150,7 +142,6 @@ public final class TooltipProviders implements TooltipProvider {
     @Override
     public void registerCommon(CommonRegistration registration) {
         registration.addBlockEntityData(
-                AppEng.makeId("pattern_provider"),
                 PatternProviderBlockEntity.class,
                 new PatternProviderDataProvider());
     }

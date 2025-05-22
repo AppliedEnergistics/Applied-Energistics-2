@@ -21,7 +21,6 @@ package appeng.blockentity.misc;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -78,19 +77,19 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        this.cell.writeToNBT(data, "cell", registries);
-        this.config.writeToChildTag(data, "config", registries);
-        this.manager.writeToNBT(data, registries);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
+        this.cell.writeToNBT(data, "cell");
+        this.config.writeToChildTag(data, "config");
+        this.manager.writeToNBT(data);
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        this.cell.readFromNBT(data, "cell", registries);
-        this.config.readFromChildTag(data, "config", registries);
-        this.manager.readFromNBT(data, registries);
+    public void loadTag(CompoundTag data) {
+        super.loadTag(data);
+        this.cell.readFromNBT(data, "cell");
+        this.config.readFromChildTag(data, "config");
+        this.manager.readFromNBT(data);
     }
 
     @Override
@@ -103,12 +102,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void saveChangedInventory(AppEngInternalInventory inv) {
-        saveChanges();
-    }
-
-    @Override
-    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         if (inv == this.cell && !this.locked) {
             this.locked = true;
             try {
@@ -159,11 +153,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
 
     public static void copy(GenericStackInv from, GenericStackInv to) {
         for (int i = 0; i < Math.min(from.size(), to.size()); ++i) {
-            var fromStack = from.getStack(i);
-            if (fromStack != null && !to.isAllowedIn(i, fromStack.what())) {
-                fromStack = null; // Thing is not allowed in slot
-            }
-            to.setStack(i, fromStack);
+            to.setStack(i, from.getStack(i));
         }
         for (int i = from.size(); i < to.size(); i++) {
             to.setStack(i, null);

@@ -19,7 +19,6 @@
 package appeng.menu;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,8 +34,7 @@ import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -46,10 +44,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.network.PacketDistributor;
-
-import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
-import it.unimi.dsi.fastutil.shorts.ShortSet;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
@@ -57,31 +51,29 @@ import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPart;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.core.AELog;
-import appeng.core.network.ClientboundPacket;
-import appeng.core.network.ServerboundPacket;
-import appeng.core.network.clientbound.GuiDataSyncPacket;
-import appeng.core.network.serverbound.GuiActionPacket;
+import appeng.core.sync.BasePacket;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.GuiDataSyncPacket;
 import appeng.helpers.InventoryAction;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.guisync.DataSynchronization;
-import appeng.menu.locator.MenuHostLocator;
+import appeng.menu.locator.MenuLocator;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import appeng.menu.slot.DisabledSlot;
 import appeng.menu.slot.FakeSlot;
+import appeng.menu.slot.InaccessibleSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigMenuInventory;
 
 public abstract class AEBaseMenu extends AbstractContainerMenu {
     private static final int MAX_STRING_LENGTH = 32767;
-    private static final int MAX_CONTAINER_TRANSFER_ITERATIONS = 256;
     private static final String HIDE_SLOT = "HideSlot";
 
     private final IActionSource mySrc;
@@ -90,7 +82,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     @Nullable
     private final IPart part;
     @Nullable
-    protected final ItemMenuHost<?> itemMenuHost;
+    protected final ItemMenuHost itemMenuHost;
     private final DataSynchronization dataSync = new DataSynchronization(this);
     private final Inventory playerInventory;
     private final Set<Integer> lockedPlayerInventorySlots = new HashSet<>();
@@ -98,11 +90,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private final ArrayListMultimap<SlotSemantic, Slot> slotsBySemantic = ArrayListMultimap.create();
     private final Map<String, ClientAction<?>> clientActions = new HashMap<>();
     private boolean menuValid = true;
-    private MenuHostLocator locator;
+    private MenuLocator locator;
     // Slots that are only present on the client-side
     private final Set<Slot> clientSideSlot = new HashSet<>();
     /**
-     * Indicates that the menu was created after returning from a {@link ISubMenu}. Previous screen state amount on the
+     * Indicates that the menu was created after returning from a {@link ISubMenu}. Previous screen state stored on the
      * client should be restored.
      */
     private boolean returnedFromSubScreen;
@@ -113,14 +105,14 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         this.playerInventory = playerInventory;
         this.blockEntity = host instanceof BlockEntity ? (BlockEntity) host : null;
         this.part = host instanceof IPart ? (IPart) host : null;
-        this.itemMenuHost = host instanceof ItemMenuHost<?> ? (ItemMenuHost<?>) host : null;
+        this.itemMenuHost = host instanceof ItemMenuHost ? (ItemMenuHost) host : null;
 
         if (host != null && this.blockEntity == null && this.part == null && this.itemMenuHost == null) {
             throw new IllegalArgumentException("Must have a valid host, instead " + host + " in " + playerInventory);
         }
 
-        if (itemMenuHost != null && itemMenuHost.getPlayerInventorySlot() != null) {
-            lockPlayerInventorySlot(itemMenuHost.getPlayerInventorySlot());
+        if (itemMenuHost != null && itemMenuHost.getSlot() != null) {
+            lockPlayerInventorySlot(itemMenuHost.getSlot());
         }
 
         this.mySrc = new PlayerSource(getPlayer(), this.getActionHost());
@@ -155,10 +147,6 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
     public Player getPlayer() {
         return getPlayerInventory().player;
-    }
-
-    protected final RegistryAccess registryAccess() {
-        return getPlayer().level().registryAccess();
     }
 
     public IActionSource getActionSource() {
@@ -300,12 +288,9 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             return;
         }
 
-        if (itemMenuHost != null) {
-            if (!itemMenuHost.isValid()) {
-                setValidMenu(false);
-                return;
-            }
-            itemMenuHost.tick();
+        if (itemMenuHost != null && !itemMenuHost.onBroadcastChanges(this)) {
+            setValidMenu(false);
+            return;
         }
 
         if (isServerSide()) {
@@ -315,7 +300,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             }
 
             if (dataSync.hasChanges()) {
-                sendPacketToClient(new GuiDataSyncPacket(containerId, dataSync::writeUpdate, registryAccess()));
+                sendPacketToClient(new GuiDataSyncPacket(containerId, dataSync::writeUpdate));
             }
         }
 
@@ -323,30 +308,23 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     /**
-     * Get a slots priority for quick moving items (higher priority slots are tried first)
-     */
-    protected int getQuickMovePriority(Slot slot) {
-        var semantic = getSlotSemantic(slot);
-        if (semantic == null) {
-            return 0;
-        }
-        return semantic.quickMovePriority();
-    }
-
-    /**
      * Check if a given slot is considered to be "on the player side" for the purposes of shift-clicking items back and
      * forth between the opened menu and the player's inventory.
      */
-    protected boolean isPlayerSideSlot(Slot slot) {
+    private boolean isPlayerSideSlot(Slot slot) {
         if (slot.container == playerInventory) {
             return true;
         }
 
-        var slotSemantic = semanticBySlot.get(slot);
-        return slotSemantic != null && slotSemantic.playerSide();
+        SlotSemantic slotSemantic = semanticBySlot.get(slot);
+        return slotSemantic == SlotSemantics.PLAYER_INVENTORY
+                || slotSemantic == SlotSemantics.PLAYER_HOTBAR
+                || slotSemantic == SlotSemantics.TOOLBOX
+                // The crafting grid in the crafting terminal also shift-clicks into the network
+                || slotSemantic == SlotSemantics.CRAFTING_GRID;
     }
 
-    @Nullable
+    @org.jetbrains.annotations.Nullable
     public SlotSemantic getSlotSemantic(Slot s) {
         return semanticBySlot.get(s);
     }
@@ -381,130 +359,159 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             return ItemStack.EMPTY;
         }
 
-        var clickSlot = this.slots.get(idx);
+        final Slot clickSlot = this.slots.get(idx);
+        boolean playerSide = isPlayerSideSlot(clickSlot);
 
-        // Vanilla will check this before calling this method, but we do use it in other contexts as well (move region)
-        if (!clickSlot.mayPickup(player)) {
+        if (clickSlot instanceof DisabledSlot || clickSlot instanceof InaccessibleSlot) {
             return ItemStack.EMPTY;
         }
+        if (clickSlot.hasItem()) {
+            ItemStack tis = clickSlot.getItem();
 
-        var stackToMove = clickSlot.getItem();
-        if (stackToMove.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-
-        boolean fromPlayerSide = isPlayerSideSlot(clickSlot);
-
-        // Allow moving items from player-side slots into some "remote" inventory that is not slot-based
-        // This is used to move items into the network inventory
-        if (fromPlayerSide) {
-            // With a Storage Bus on a Just Dire Things player accessor, the stack to move might be modified during the
-            // transfer. So keep track of how much was transferred and only subtract it at the end.
-            int transferred = transferStackToMenu(stackToMove.copy());
-            if (transferred > 0) {
-                clickSlot.remove(transferred);
+            if (tis.isEmpty()) {
+                return ItemStack.EMPTY;
             }
-        }
-        stackToMove = clickSlot.getItem();
-        if (stackToMove.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
 
-        var originalStackToMove = stackToMove.copy();
+            final List<Slot> selectedSlots = new ArrayList<>();
 
-        stackToMove = quickMoveToOtherSlots(stackToMove, isPlayerSideSlot(clickSlot));
+            // Gather a list of valid destinations.
+            if (playerSide) {
+                tis = this.transferStackToMenu(tis);
 
-        // While we did modify stackToMove in-place, this causes the container to be notified of the change
-        if (!ItemStack.matches(originalStackToMove, stackToMove)) {
-            clickSlot.setByPlayer(stackToMove.isEmpty() ? ItemStack.EMPTY : stackToMove);
-        }
+                if (!tis.isEmpty()) {
+                    // target slots in the menu...
+                    for (Slot cs : this.slots) {
+                        if (!isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)
+                                && cs.mayPlace(tis)) {
+                            selectedSlots.add(cs);
+                        }
+                    }
+                }
+            } else {
+                tis = tis.copy();
 
-        return ItemStack.EMPTY;
-    }
-
-    private ItemStack quickMoveToOtherSlots(ItemStack stackToMove, boolean fromPlayerSide) {
-        var destinationSlots = getQuickMoveDestinationSlots(stackToMove, fromPlayerSide);
-
-        // If no actual targets were available, allow moving into filter slots too
-        if (destinationSlots.isEmpty() && fromPlayerSide) {
-            for (Slot cs : this.slots) {
-                if (cs instanceof FakeSlot && !isPlayerSideSlot(cs)) {
-                    var destination = cs.getItem();
-                    if (ItemStack.isSameItemSameComponents(destination, stackToMove)) {
-                        break; // Item is already in the filter
-                    } else if (destination.isEmpty()) {
-                        cs.set(stackToMove.copy());
-                        // ???
-                        this.broadcastChanges();
-                        break;
+                // target slots in the menu...
+                for (Slot cs : this.slots) {
+                    if (isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)
+                            && cs.mayPlace(tis)) {
+                        selectedSlots.add(cs);
                     }
                 }
             }
-            return stackToMove; // Since destinationSlots was empty, nothing else to do
-        }
 
-        // Try stacking the item into filled slots first
-        for (var dest : destinationSlots) {
-            if (dest.hasItem() && (stackToMove = dest.safeInsert(stackToMove)).isEmpty()) {
-                return stackToMove;
+            // Handle Fake Slot Shift clicking.
+            if (selectedSlots.isEmpty() && playerSide && !tis.isEmpty()) {
+                // target slots in the menu...
+                for (Slot cs : this.slots) {
+                    if (cs instanceof FakeSlot && !isPlayerSideSlot(cs)) {
+                        var destination = cs.getItem();
+                        if (ItemStack.isSameItemSameTags(destination, tis)) {
+                            break; // Item is already in the filter
+                        } else if (destination.isEmpty()) {
+                            cs.set(tis.copy());
+                            // ???
+                            this.broadcastChanges();
+                            break;
+                        }
+                    }
+                }
             }
-        }
 
-        // Now try placing it in empty slots, if it's not already fully consumed
-        for (var dest : destinationSlots) {
-            if (!dest.hasItem() && (stackToMove = dest.safeInsert(stackToMove)).isEmpty()) {
-                return stackToMove;
+            if (!tis.isEmpty()) {
+                // find slots to stack the item into
+                for (Slot d : selectedSlots) {
+                    if (d.mayPlace(tis) && d.hasItem() && x(clickSlot, tis, d)) {
+                        return ItemStack.EMPTY;
+                    }
+                }
+
+                // FIXME figure out whats the difference between this and the one above ?!
+                // any match..
+                for (Slot d : selectedSlots) {
+                    if (d.mayPlace(tis)) {
+                        if (d.hasItem()) {
+                            if (x(clickSlot, tis, d)) {
+                                return ItemStack.EMPTY;
+                            }
+                        } else {
+                            int maxSize = tis.getMaxStackSize();
+                            if (maxSize > d.getMaxStackSize()) {
+                                maxSize = d.getMaxStackSize();
+                            }
+
+                            final ItemStack tmp = tis.copy();
+                            if (tmp.getCount() > maxSize) {
+                                tmp.setCount(maxSize);
+                            }
+
+                            tis.setCount(tis.getCount() - tmp.getCount());
+                            d.set(tmp);
+
+                            if (tis.getCount() <= 0) {
+                                clickSlot.set(ItemStack.EMPTY);
+                                d.setChanged();
+
+                                this.broadcastChanges();
+                                return ItemStack.EMPTY;
+                            } else {
+                                this.broadcastChanges();
+                            }
+                        }
+                    }
+                }
             }
+
+            clickSlot.set(!tis.isEmpty() ? tis : ItemStack.EMPTY);
         }
 
-        return stackToMove;
+        // ???
+        this.broadcastChanges();
+        return ItemStack.EMPTY;
     }
 
-    protected List<Slot> getQuickMoveDestinationSlots(ItemStack stackToMove, boolean fromPlayerSide) {
-        // Find potential destination slots
-        var destinationSlots = new ArrayList<Slot>();
-        for (var candidateSlot : this.slots) {
-            if (isValidQuickMoveDestination(candidateSlot, stackToMove, fromPlayerSide)) {
-                destinationSlots.add(candidateSlot);
+    private boolean x(Slot clickSlot, ItemStack tis, Slot d) {
+        final ItemStack t = d.getItem().copy();
+
+        if (ItemStack.isSameItemSameTags(t, tis)) {
+            int maxSize = t.getMaxStackSize();
+            if (maxSize > d.getMaxStackSize()) {
+                maxSize = d.getMaxStackSize();
+            }
+
+            int placeable = maxSize - t.getCount();
+            if (placeable > 0) {
+                if (tis.getCount() < placeable) {
+                    placeable = tis.getCount();
+                }
+
+                t.setCount(t.getCount() + placeable);
+                tis.setCount(tis.getCount() - placeable);
+
+                d.set(t);
+
+                if (tis.getCount() <= 0) {
+                    clickSlot.set(ItemStack.EMPTY);
+                    d.setChanged();
+
+                    // ???
+                    this.broadcastChanges();
+                    // ???
+                    this.broadcastChanges();
+                    return true;
+                } else {
+                    // ???
+                    this.broadcastChanges();
+                }
             }
         }
-
-        // Order slots by the priority of their semantic
-        destinationSlots.sort(Comparator.comparingInt(this::getQuickMovePriority).reversed());
-        return destinationSlots;
-    }
-
-    /**
-     * Check if a given candidate slot is a valid destination for {@link #quickMoveStack}.
-     */
-    protected boolean isValidQuickMoveDestination(Slot candidateSlot, ItemStack stackToMove,
-            boolean fromPlayerSide) {
-        return isPlayerSideSlot(candidateSlot) != fromPlayerSide
-                && !(candidateSlot instanceof FakeSlot)
-                && !(candidateSlot instanceof CraftingMatrixSlot)
-                && candidateSlot.mayPlace(stackToMove);
-    }
-
-    protected int getPlaceableAmount(Slot s, AEItemKey what) {
-        if (!s.mayPlace(what.toStack())) {
-            return 0;
-        }
-
-        var currentItem = s.getItem();
-        if (currentItem.isEmpty()) {
-            return s.getMaxStackSize(what.getReadOnlyStack());
-        } else if (what.matches(currentItem)) {
-            return Math.max(0, s.getMaxStackSize(currentItem) - currentItem.getCount());
-        } else {
-            return 0;
-        }
+        return false;
     }
 
     @Override
-    public boolean stillValid(Player player) {
+    public boolean stillValid(Player PlayerEntity) {
         if (this.isValidMenu()) {
             if (this.blockEntity instanceof Container) {
-                return ((Container) this.blockEntity).stillValid(player);
+                return ((Container) this.blockEntity).stillValid(PlayerEntity);
             }
             return true;
         }
@@ -535,7 +542,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             return;
         }
 
-        if (s instanceof FakeSlot fakeSlot && fakeSlot.canSetFilterTo(item)) {
+        if (s instanceof FakeSlot) {
             s.set(item);
         }
     }
@@ -569,14 +576,13 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             var realInv = configInv.getDelegate();
             var realInvSlot = appEngSlot.slot;
 
-            if (action == InventoryAction.FILL_ITEM || action == InventoryAction.FILL_ENTIRE_ITEM) {
+            if (action == InventoryAction.FILL_ITEM) {
                 var what = realInv.getKey(realInvSlot);
                 handleFillingHeldItem(
                         (amount, mode) -> realInv.extract(realInvSlot, what, amount, mode),
-                        what, action == InventoryAction.FILL_ENTIRE_ITEM);
-            } else if (action == InventoryAction.EMPTY_ITEM || action == InventoryAction.EMPTY_ENTIRE_ITEM) {
-                handleEmptyHeldItem((what, amount, mode) -> realInv.insert(realInvSlot, what, amount, mode),
-                        action == InventoryAction.EMPTY_ENTIRE_ITEM);
+                        what);
+            } else if (action == InventoryAction.EMPTY_ITEM) {
+                handleEmptyHeldItem((what, amount, mode) -> realInv.insert(realInvSlot, what, amount, mode));
             }
         }
 
@@ -599,57 +605,46 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         long extract(long amount, Actionable mode);
     }
 
-    protected final void handleFillingHeldItem(FillingSource source, AEKey what, boolean fillAll) {
+    protected final void handleFillingHeldItem(FillingSource source, AEKey what) {
         var ctx = ContainerItemStrategies.findCarriedContextForKey(what, getPlayer(), this);
         if (ctx == null) {
             return;
         }
 
-        long amount = fillAll ? Long.MAX_VALUE : what.getAmountPerUnit();
-        boolean filled = false;
-        int maxIterations = fillAll ? MAX_CONTAINER_TRANSFER_ITERATIONS : 1;
-
-        while (maxIterations > 0) {
-            // Check if we can pull out of the system
-            var canPull = source.extract(amount, Actionable.SIMULATE);
-            if (canPull <= 0) {
-                break;
-            }
-
-            // Check how much we can store in the item
-            long amountAllowed = ctx.insert(what, canPull, Actionable.SIMULATE);
-            if (amountAllowed == 0) {
-                break; // Nothing.
-            }
-
-            // Now actually pull out of the system
-            var extracted = source.extract(amountAllowed, Actionable.MODULATE);
-            if (extracted <= 0) {
-                // Something went wrong
-                AELog.error("Unable to pull fluid out of the ME system even though the simulation said yes ");
-                break;
-            }
-
-            // Actually store possible amount in the held item
-            long inserted = ctx.insert(what, extracted, Actionable.MODULATE);
-            if (inserted == 0) {
-                break;
-            }
-
-            filled = true;
-            maxIterations--;
+        // Check if we can pull out of the system
+        var canPull = source.extract(Long.MAX_VALUE, Actionable.SIMULATE);
+        if (canPull <= 0) {
+            return;
         }
 
-        if (filled) {
-            ctx.playFillSound(getPlayer(), what);
+        // Check how much we can store in the item
+        long amountAllowed = ctx.insert(what, canPull, Actionable.SIMULATE);
+        if (amountAllowed == 0) {
+            return; // Nothing.
         }
+
+        // Now actually pull out of the system
+        var extracted = source.extract(amountAllowed, Actionable.MODULATE);
+        if (extracted <= 0) {
+            // Something went wrong
+            AELog.error("Unable to pull fluid out of the ME system even though the simulation said yes ");
+            return;
+        }
+
+        // How much could fit into the carried container
+        long inserted = ctx.insert(what, extracted, Actionable.MODULATE);
+        if (inserted == 0) {
+            return;
+        }
+
+        ctx.playFillSound(getPlayer(), what);
     }
 
     protected interface EmptyingSink {
         long insert(AEKey what, long amount, Actionable mode);
     }
 
-    protected final void handleEmptyHeldItem(EmptyingSink sink, boolean emptyAll) {
+    protected final void handleEmptyHeldItem(EmptyingSink sink) {
         var ctx = ContainerItemStrategies.findCarriedContext(null, getPlayer(), this);
         if (ctx == null) {
             return;
@@ -657,50 +652,34 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
         // See how much we can drain from the item
         var content = ctx.getExtractableContent();
-        if (content == null || content.amount() == 0) {
+        if (content == null) {
             return;
         }
 
         var what = content.what();
-        long amount = emptyAll ? Long.MAX_VALUE : what.getAmountPerUnit();
-        int maxIterations = emptyAll ? MAX_CONTAINER_TRANSFER_ITERATIONS : 1;
-        boolean emptied = false;
+        var amount = content.amount();
 
-        while (maxIterations > 0) {
-            // Check if we can pull out of the container
-            var canExtract = ctx.extract(what, amount, Actionable.SIMULATE);
-            if (canExtract <= 0) {
-                break;
-            }
-
-            // Check if we can push into the system
-            var amountAllowed = sink.insert(what, canExtract, Actionable.SIMULATE);
-            if (amountAllowed <= 0) {
-                break;
-            }
-
-            // Actually drain
-            var extracted = ctx.extract(what, amountAllowed, Actionable.MODULATE);
-            if (extracted != amountAllowed) {
-                AELog.error(
-                        "Fluid item [%s] reported a different possible amount to drain than it actually provided.",
-                        getCarried());
-                break;
-            }
-
-            // Actually push into the system
-            if (sink.insert(what, extracted, Actionable.MODULATE) != extracted) {
-                AELog.error("Failed to insert previously simulated %s into ME system", what);
-                break;
-            }
-
-            emptied = true;
-            maxIterations--;
+        // Check if we can push into the system
+        var canInsert = sink.insert(what, amount, Actionable.SIMULATE);
+        if (canInsert <= 0) {
+            return;
         }
 
-        if (emptied) {
-            ctx.playEmptySound(getPlayer(), what);
+        // Actually drain
+        var extracted = ctx.extract(what, canInsert, Actionable.MODULATE);
+        if (extracted != canInsert) {
+            AELog.error(
+                    "Fluid item [%s] reported a different possible amount to drain than it actually provided.",
+                    getCarried());
+            return;
         }
+
+        if (sink.insert(what, extracted, Actionable.MODULATE) != extracted) {
+            AELog.error("Failed to insert previously simulated %s into ME system", what);
+            return;
+        }
+
+        ctx.playEmptySound(getPlayer(), what);
     }
 
     private void handleFakeSlotAction(FakeSlot fakeSlot, InventoryAction action) {
@@ -742,10 +721,10 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     /**
-     * @return Returns how many items were transfered.
+     * @return Returns the remainder.
      */
-    protected int transferStackToMenu(ItemStack input) {
-        return 0;
+    protected ItemStack transferStackToMenu(ItemStack input) {
+        return input;
     }
 
     public void swapSlotContents(int slotA, int slotB) {
@@ -821,7 +800,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
      * Can be overridden in subclasses to be notified of GUI data updates sent by the server.
      */
     @MustBeInvokedByOverriders
-    public void onServerDataSync(ShortSet updatedFields) {
+    public void onServerDataSync() {
     }
 
     public void onSlotChange(Slot s) {
@@ -840,11 +819,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         this.menuValid = isContainerValid;
     }
 
-    public MenuHostLocator getLocator() {
+    public MenuLocator getLocator() {
         return this.locator;
     }
 
-    public void setLocator(MenuHostLocator locator) {
+    public void setLocator(MenuLocator locator) {
         this.locator = locator;
     }
 
@@ -862,9 +841,9 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         return !isClientSide();
     }
 
-    protected final void sendPacketToClient(ClientboundPacket packet) {
+    protected final void sendPacketToClient(BasePacket packet) {
         if (getPlayer() instanceof ServerPlayer serverPlayer) {
-            serverPlayer.connection.send(packet);
+            NetworkHandler.instance().sendTo(packet, serverPlayer);
         }
     }
 
@@ -873,29 +852,31 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         super.sendAllDataToRemote();
 
         if (dataSync.hasFields()) {
-            sendPacketToClient(new GuiDataSyncPacket(containerId, dataSync::writeFull, registryAccess()));
+            sendPacketToClient(new GuiDataSyncPacket(containerId, dataSync::writeFull));
         }
     }
 
     /**
      * Receives data from the server for synchronizing fields of this class.
      */
-    public final void receiveServerSyncData(RegistryFriendlyByteBuf data) {
-        ShortSet updatedFields = new ShortOpenHashSet();
-        this.dataSync.readUpdate(data, updatedFields);
-        this.onServerDataSync(updatedFields);
+    public final void receiveServerSyncData(GuiDataSyncPacket packet) {
+        this.dataSync.readUpdate(packet.getData());
+        this.onServerDataSync();
     }
 
     /**
      * Receives a menu action from the client.
      */
-    public final void receiveClientAction(String actionName, @Nullable String jsonPayload) {
-        ClientAction<?> action = clientActions.get(actionName);
+    public final void receiveClientAction(GuiDataSyncPacket packet) {
+        FriendlyByteBuf data = packet.getData();
+        String name = data.readUtf(256);
+
+        ClientAction<?> action = clientActions.get(name);
         if (action == null) {
-            throw new IllegalArgumentException("Unknown client action: '" + actionName + "'");
+            throw new IllegalArgumentException("Unknown client action: '" + name + "'");
         }
 
-        action.handle(jsonPayload);
+        action.handle(data);
     }
 
     /**
@@ -957,8 +938,12 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                             + MAX_STRING_LENGTH + " (" + jsonPayload.length() + ")");
         }
 
-        ServerboundPacket message = new GuiActionPacket(containerId, clientAction.name, jsonPayload);
-        PacketDistributor.sendToServer(message);
+        NetworkHandler.instance().sendToServer(new GuiDataSyncPacket(containerId, writer -> {
+            writer.writeUtf(clientAction.name);
+            if (jsonPayload != null) {
+                writer.writeUtf(jsonPayload);
+            }
+        }));
     }
 
     /**
@@ -983,11 +968,12 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             this.handler = handler;
         }
 
-        public void handle(@Nullable String jsonPayload) {
+        public void handle(FriendlyByteBuf buffer) {
             T arg = null;
             if (argClass != Void.class) {
-                AELog.debug("Handling client action '%s' with payload %s", name, jsonPayload);
-                arg = gson.fromJson(jsonPayload, argClass);
+                String payload = buffer.readUtf();
+                AELog.debug("Handling client action '%s' with payload %s", name, payload);
+                arg = gson.fromJson(payload, argClass);
             } else {
                 AELog.debug("Handling client action '%s'", name);
             }

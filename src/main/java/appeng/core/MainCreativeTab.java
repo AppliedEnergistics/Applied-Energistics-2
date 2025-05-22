@@ -27,7 +27,7 @@ import com.google.common.collect.Multimap;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 
 import appeng.api.ids.AECreativeTabIds;
 import appeng.block.AEBaseBlock;
@@ -74,9 +74,9 @@ public final class MainCreativeTab {
             // For block items, the block controls the creative tab
             if (item instanceof AEBaseBlockItem baseItem
                     && baseItem.getBlock() instanceof AEBaseBlock baseBlock) {
-                baseBlock.addToMainCreativeTab(itemDisplayParameters, output);
+                baseBlock.addToMainCreativeTab(output);
             } else if (item instanceof AEBaseItem baseItem) {
-                baseItem.addToMainCreativeTab(itemDisplayParameters, output);
+                baseItem.addToMainCreativeTab(output);
             } else {
                 output.accept(itemDef);
             }

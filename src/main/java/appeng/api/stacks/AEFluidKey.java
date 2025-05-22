@@ -1,63 +1,48 @@
 package appeng.api.stacks;
 
 import java.util.List;
-
-import com.google.common.base.Preconditions;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
+import appeng.util.Platform;
 
 public final class AEFluidKey extends AEKey {
-    public static final MapCodec<AEFluidKey> MAP_CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(
-                    BuiltInRegistries.FLUID.holderByNameCodec().validate(
-                            holder -> holder.is(Fluids.EMPTY.builtInRegistryHolder())
-                                    ? DataResult.error(() -> "Fluid must not be minecraft:empty")
-                                    : DataResult.success(holder))
-                            .fieldOf("id").forGetter(key -> key.stack.getFluidHolder()),
-                    DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY)
-                            .forGetter(key -> key.stack.getComponentsPatch()))
-                    .apply(instance, (fluidHolder,
-                            dataComponentPatch) -> new AEFluidKey(new FluidStack(fluidHolder, 1, dataComponentPatch))));
-    public static final Codec<AEFluidKey> CODEC = MAP_CODEC.codec();
-
     public static final int AMOUNT_BUCKET = 1000;
     public static final int AMOUNT_BLOCK = 1000;
 
-    private final FluidStack stack;
+    private final Fluid fluid;
+    @Nullable
+    private final CompoundTag tag;
     private final int hashCode;
 
-    private AEFluidKey(FluidStack stack) {
-        Preconditions.checkArgument(!stack.isEmpty(), "stack was empty");
-        this.stack = stack;
-        this.hashCode = FluidStack.hashFluidAndComponents(stack);
+    private AEFluidKey(Fluid fluid, @Nullable CompoundTag tag) {
+        this.fluid = fluid;
+        this.tag = tag;
+        this.hashCode = Objects.hash(fluid, tag);
+    }
+
+    public static AEFluidKey of(Fluid fluid, @Nullable CompoundTag tag) {
+        // Do a defensive copy of the tag if we're not sure that we can take ownership
+        return new AEFluidKey(fluid, tag != null ? tag.copy() : null);
     }
 
     public static AEFluidKey of(Fluid fluid) {
-        return of(new FluidStack(fluid, 1));
+        return of(fluid, null);
     }
 
     @Nullable
@@ -65,7 +50,7 @@ public final class AEFluidKey extends AEKey {
         if (fluidVariant.isEmpty()) {
             return null;
         }
-        return new AEFluidKey(fluidVariant.copyWithAmount(1));
+        return of(fluidVariant.getFluid(), fluidVariant.getTag());
     }
 
     public static boolean matches(AEKey what, FluidStack fluid) {
@@ -81,7 +66,7 @@ public final class AEFluidKey extends AEKey {
     }
 
     public boolean matches(FluidStack variant) {
-        return FluidStack.isSameFluidSameComponents(this.stack, variant);
+        return !variant.isEmpty() && fluid.isSame(variant.getFluid()) && Objects.equals(tag, variant.getTag());
     }
 
     @Override
@@ -91,7 +76,7 @@ public final class AEFluidKey extends AEKey {
 
     @Override
     public AEFluidKey dropSecondary() {
-        return of(new FluidStack(getFluid(), 1));
+        return of(fluid, null);
     }
 
     @Override
@@ -101,8 +86,8 @@ public final class AEFluidKey extends AEKey {
         if (o == null || getClass() != o.getClass())
             return false;
         AEFluidKey aeFluidKey = (AEFluidKey) o;
-        // The hash code comparison is a fast-fail cheap check
-        return hashCode == aeFluidKey.hashCode && FluidStack.isSameFluidSameComponents(this.stack, aeFluidKey.stack);
+        // The hash code comparison is a fast-fail for two objects with different NBT or fluid
+        return hashCode == aeFluidKey.hashCode && fluid == aeFluidKey.fluid && Objects.equals(tag, aeFluidKey.tag);
     }
 
     @Override
@@ -110,10 +95,12 @@ public final class AEFluidKey extends AEKey {
         return hashCode;
     }
 
-    public static AEFluidKey fromTag(HolderLookup.Provider registries, CompoundTag tag) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+    public static AEFluidKey fromTag(CompoundTag tag) {
         try {
-            return CODEC.decode(ops, tag).getOrThrow().getFirst();
+            var fluid = BuiltInRegistries.FLUID.getOptional(new ResourceLocation(tag.getString("id")))
+                    .orElseThrow(() -> new IllegalArgumentException("Unknown fluid id."));
+            var extraTag = tag.contains("tag") ? tag.getCompound("tag") : null;
+            return of(fluid, extraTag);
         } catch (Exception e) {
             AELog.debug("Tried to load an invalid fluid key from NBT: %s", tag, e);
             return null;
@@ -121,19 +108,25 @@ public final class AEFluidKey extends AEKey {
     }
 
     @Override
-    public CompoundTag toTag(HolderLookup.Provider registries) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        return (CompoundTag) CODEC.encodeStart(ops, this).getOrThrow();
+    public CompoundTag toTag() {
+        CompoundTag result = new CompoundTag();
+        result.putString("id", BuiltInRegistries.FLUID.getKey(fluid).toString());
+
+        if (tag != null) {
+            result.put("tag", tag.copy());
+        }
+
+        return result;
     }
 
     @Override
     public Object getPrimaryKey() {
-        return getFluid();
+        return fluid;
     }
 
     @Override
     public ResourceLocation getId() {
-        return BuiltInRegistries.FLUID.getKey(getFluid());
+        return BuiltInRegistries.FLUID.getKey(fluid);
     }
 
     @Override
@@ -143,42 +136,51 @@ public final class AEFluidKey extends AEKey {
 
     @Override
     protected Component computeDisplayName() {
-        return stack.getHoverName();
+        return Platform.getFluidDisplayName(fluid, tag);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean isTagged(TagKey<?> tag) {
         // This will just return false for incorrectly cast tags
-        return stack.is((TagKey<Fluid>) tag);
-    }
-
-    @Override
-    public <T> @Nullable T get(DataComponentType<T> type) {
-        return stack.get(type);
-    }
-
-    @Override
-    public boolean hasComponents() {
-        return stack.getComponents().isEmpty();
+        return fluid.builtInRegistryHolder().is((TagKey<Fluid>) tag);
     }
 
     public FluidStack toStack(int amount) {
-        return stack.copyWithAmount(amount);
+        return new FluidStack(fluid, amount, tag);
     }
 
     public Fluid getFluid() {
-        return stack.getFluid();
+        return fluid;
+    }
+
+    /**
+     * @return <strong>NEVER MODIFY THE RETURNED TAG</strong>
+     */
+    @Nullable
+    public CompoundTag getTag() {
+        return tag;
+    }
+
+    @Nullable
+    public CompoundTag copyTag() {
+        return tag != null ? tag.copy() : null;
+    }
+
+    public boolean hasTag() {
+        return tag != null;
     }
 
     @Override
-    public void writeToPacket(RegistryFriendlyByteBuf data) {
-        FluidStack.STREAM_CODEC.encode(data, stack);
+    public void writeToPacket(FriendlyByteBuf data) {
+        data.writeVarInt(BuiltInRegistries.FLUID.getId(fluid));
+        data.writeNbt(tag);
     }
 
-    public static AEFluidKey fromPacket(RegistryFriendlyByteBuf data) {
-        var stack = FluidStack.STREAM_CODEC.decode(data);
-        return new AEFluidKey(stack);
+    public static AEFluidKey fromPacket(FriendlyByteBuf data) {
+        var fluid = BuiltInRegistries.FLUID.byId(data.readVarInt());
+        var tag = data.readNbt();
+        return new AEFluidKey(fluid, tag);
     }
 
     public static boolean is(@Nullable GenericStack stack) {
@@ -187,9 +189,9 @@ public final class AEFluidKey extends AEKey {
 
     @Override
     public String toString() {
-        var id = BuiltInRegistries.FLUID.getKey(getFluid());
+        var id = BuiltInRegistries.FLUID.getKey(fluid);
         String idString = id != BuiltInRegistries.FLUID.getDefaultKey() ? id.toString()
-                : getFluid().getClass().getName() + "(unregistered)";
-        return stack.getComponents().isEmpty() ? idString : idString + " (+components)";
+                : fluid.getClass().getName() + "(unregistered)";
+        return tag == null ? idString : idString + " (+tag)";
     }
 }

@@ -18,9 +18,9 @@ public class CellPartitionSlot extends FakeSlot implements IOptionalSlot {
     private final IPartitionSlotHost host;
     private final int slot;
 
-    public CellPartitionSlot(InternalInventory inv, IPartitionSlotHost host, int invSlot) {
+    public CellPartitionSlot(InternalInventory inv, IPartitionSlotHost containerBus, int invSlot) {
         super(inv, invSlot);
-        this.host = host;
+        this.host = containerBus;
         this.slot = invSlot;
     }
 

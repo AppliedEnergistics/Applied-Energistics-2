@@ -18,25 +18,17 @@
 
 package appeng.parts;
 
-import java.io.IOException;
 import java.util.EnumSet;
-import java.util.Map;
 import java.util.Objects;
-
-import com.google.gson.stream.JsonWriter;
 
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -48,9 +40,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-
-import appeng.api.ids.AEComponents;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
@@ -71,13 +60,12 @@ import appeng.api.util.AEColor;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.items.tools.MemoryCardItem;
-import appeng.util.IDebugExportable;
+import appeng.util.CustomNameUtil;
 import appeng.util.InteractionUtil;
-import appeng.util.JsonStreamUtil;
 import appeng.util.SettingsFrom;
 
 public abstract class AEBasePart
-        implements IPart, IActionHost, ISegmentedInventory, IPowerChannelState, Nameable, IDebugExportable {
+        implements IPart, IActionHost, ISegmentedInventory, IPowerChannelState, Nameable {
 
     private final IManagedGridNode mainNode;
     private IPartItem<?> partItem;
@@ -109,9 +97,9 @@ public abstract class AEBasePart
      * @param reason Indicates which of the properties has changed.
      */
     @MustBeInvokedByOverriders
-    protected void onMainNodeStateChanged(State reason) {
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         // Client flags shouldn't depend on grid boot, optimize!
-        if (reason != State.GRID_BOOT) {
+        if (reason != IGridNodeListener.State.GRID_BOOT) {
             markForUpdateIfClientFlagsChanged();
         }
     }
@@ -190,12 +178,12 @@ public abstract class AEBasePart
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
+    public void readFromNBT(CompoundTag data) {
         this.mainNode.loadFromNBT(data);
 
         if (data.contains("customName")) {
             try {
-                this.customName = Component.Serializer.fromJson(data.getString("customName"), registries);
+                this.customName = Component.Serializer.fromJson(data.getString("customName"));
             } catch (Exception ignored) {
             }
         }
@@ -206,17 +194,17 @@ public abstract class AEBasePart
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
+    public void writeToNBT(CompoundTag data) {
         this.mainNode.saveToNBT(data);
 
         if (this.customName != null) {
-            data.putString("customName", Component.Serializer.toJson(this.customName, registries));
+            data.putString("customName", Component.Serializer.toJson(this.customName));
         }
     }
 
     @MustBeInvokedByOverriders
     @Override
-    public void writeToStream(RegistryFriendlyByteBuf data) {
+    public void writeToStream(FriendlyByteBuf data) {
         this.clientSidePowered = this.isPowered();
         this.clientSideMissingChannel = this.isMissingChannel();
 
@@ -232,7 +220,7 @@ public abstract class AEBasePart
 
     @MustBeInvokedByOverriders
     @Override
-    public boolean readFromStream(RegistryFriendlyByteBuf data) {
+    public boolean readFromStream(FriendlyByteBuf data) {
         var flags = data.readByte();
 
         var wasPowered = this.clientSidePowered;
@@ -248,9 +236,8 @@ public abstract class AEBasePart
     /**
      * Used to store the state that is synchronized to clients for the visual appearance of this part as NBT. This is
      * only used to store this state for tools such as Create Ponders in Structure NBT. Actual synchronization uses
-     * {@link IPart#writeToStream(RegistryFriendlyByteBuf)} and {@link IPart#readFromStream(RegistryFriendlyByteBuf)}.
-     * Any data that is saved to the NBT tag in {@link IPart#writeToNBT(CompoundTag, HolderLookup.Provider)} already
-     * does not need to be saved here again.
+     * {@link #writeToStream(FriendlyByteBuf)} and {@link #readFromStream(FriendlyByteBuf)}. Any data that is saved to
+     * the NBT tag in {@link #writeToNBT(CompoundTag)} already does not need to be saved here again.
      */
     @MustBeInvokedByOverriders
     @Override
@@ -305,82 +292,89 @@ public abstract class AEBasePart
      */
     @Override
     @MustBeInvokedByOverriders
-    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
-        if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            this.customName = input.get(DataComponents.CUSTOM_NAME);
-        } else if (mode == SettingsFrom.MEMORY_CARD) {
-            this.customName = input.get(AEComponents.EXPORTED_CUSTOM_NAME);
-        }
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        this.customName = CustomNameUtil.getCustomName(input);
 
         MemoryCardItem.importGenericSettings(this, input, player);
     }
 
     @Override
     @MustBeInvokedByOverriders
-    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder) {
-        if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            builder.set(DataComponents.CUSTOM_NAME, this.customName);
-        } else if (mode == SettingsFrom.MEMORY_CARD) {
-            builder.set(AEComponents.EXPORTED_CUSTOM_NAME, this.customName);
-        }
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
+        CustomNameUtil.setCustomName(output, this.customName);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
-            MemoryCardItem.exportGenericSettings(this, builder);
-            builder.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getPartItem().asItem().getDescription());
+            MemoryCardItem.exportGenericSettings(this, output);
         }
-    }
-
-    public final DataComponentMap exportSettings(SettingsFrom mode) {
-        var builder = DataComponentMap.builder();
-        exportSettings(mode, builder);
-        return builder.build();
     }
 
     public boolean useStandardMemoryCard() {
         return true;
     }
 
-    private boolean useMemoryCard(ItemStack memCardIS, Player player) {
-        if (!this.useStandardMemoryCard() || !(memCardIS.getItem() instanceof IMemoryCard memoryCard)) {
-            return false;
-        }
+    private boolean useMemoryCard(Player player) {
+        final ItemStack memCardIS = player.getInventory().getSelected();
 
-        Item partItem = getPartItem().asItem();
+        if (!memCardIS.isEmpty() && this.useStandardMemoryCard()
+                && memCardIS.getItem() instanceof IMemoryCard memoryCard) {
 
-        // Blocks and parts share the same soul!
-        if (AEParts.INTERFACE.asItem() == partItem) {
-            partItem = AEBlocks.INTERFACE.asItem();
-        } else if (AEParts.PATTERN_PROVIDER.asItem() == partItem) {
-            partItem = AEBlocks.PATTERN_PROVIDER.asItem();
-        }
+            Item partItem = getPartItem().asItem();
 
-        var name = partItem.getDescription();
-
-        if (InteractionUtil.isInAlternateUseMode(player)) {
-            var settings = exportSettings(SettingsFrom.MEMORY_CARD);
-            if (!settings.isEmpty()) {
-                MemoryCardItem.clearCard(memCardIS);
-                memCardIS.applyComponents(settings);
-                memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
+            // Blocks and parts share the same soul!
+            if (AEParts.INTERFACE.asItem() == partItem) {
+                partItem = AEBlocks.INTERFACE.asItem();
+            } else if (AEParts.PATTERN_PROVIDER.asItem() == partItem) {
+                partItem = AEBlocks.PATTERN_PROVIDER.asItem();
             }
-        } else {
-            var storedName = memCardIS.get(AEComponents.EXPORTED_SETTINGS_SOURCE);
-            if (name.equals(storedName)) {
-                importSettings(SettingsFrom.MEMORY_CARD, memCardIS.getComponents(), player);
-                memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
+
+            var name = partItem.getDescriptionId();
+
+            if (InteractionUtil.isInAlternateUseMode(player)) {
+                var data = new CompoundTag();
+                exportSettings(SettingsFrom.MEMORY_CARD, data);
+                if (!data.isEmpty()) {
+                    memoryCard.setMemoryCardContents(memCardIS, name, data);
+                    memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
+                }
             } else {
-                MemoryCardItem.importGenericSettingsAndNotify(this, memCardIS.getComponents(), player);
+                var storedName = memoryCard.getSettingsName(memCardIS);
+                var data = memoryCard.getData(memCardIS);
+                if (name.equals(storedName)) {
+                    importSettings(SettingsFrom.MEMORY_CARD, data, player);
+                    memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
+                } else {
+                    MemoryCardItem.importGenericSettingsAndNotify(this, data, player);
+                }
             }
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override
-    public boolean onUseItemOn(ItemStack heldItem, Player player, InteractionHand hand, Vec3 pos) {
-        if (useMemoryCard(heldItem, player)) {
+    public final boolean onActivate(Player player, InteractionHand hand, Vec3 pos) {
+        if (this.useMemoryCard(player)) {
             return true;
         }
-        return IPart.super.onUseItemOn(heldItem, player, hand, pos);
+
+        return this.onPartActivate(player, hand, pos);
+    }
+
+    @Override
+    public final boolean onShiftActivate(Player player, InteractionHand hand, Vec3 pos) {
+        if (this.useMemoryCard(player)) {
+            return true;
+        }
+
+        return this.onPartShiftActivate(player, hand, pos);
+    }
+
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
+        return false;
+    }
+
+    public boolean onPartShiftActivate(Player player, InteractionHand hand, Vec3 pos) {
+        return false;
     }
 
     @Override
@@ -481,16 +475,5 @@ public abstract class AEBasePart
      */
     protected boolean shouldSendMissingChannelStateToClient() {
         return true;
-    }
-
-    @Override
-    public void debugExport(JsonWriter writer, HolderLookup.Provider registries, Reference2IntMap<Object> machineIds,
-            Reference2IntMap<IGridNode> nodeIds)
-            throws IOException {
-        var myId = machineIds.getOrDefault(this, -1);
-        JsonStreamUtil.writeProperties(Map.of(
-                "id", myId,
-                "item", BuiltInRegistries.ITEM.getKey(getPartItem().asItem()).toString(),
-                "mainNodeId", nodeIds.getOrDefault(mainNode.getNode(), -1)), writer);
     }
 }

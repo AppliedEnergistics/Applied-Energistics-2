@@ -21,10 +21,13 @@ package appeng.client.gui.widgets;
 import java.util.Collections;
 import java.util.List;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
@@ -63,43 +66,54 @@ public abstract class IconButton extends Button implements ITooltip {
 
         if (this.visible) {
             var icon = this.getIcon();
-            var item = this.getItemOverlay();
+
+            Blitter blitter = icon.getBlitter();
+            if (!this.active) {
+                blitter.opacity(0.5f);
+            }
 
             if (this.halfSize) {
                 this.width = 8;
                 this.height = 8;
             }
 
-            var yOffset = isHovered() ? 1 : 0;
+            RenderSystem.disableDepthTest();
+            RenderSystem.enableBlend(); // FIXME: This should be the _default_ state, but some vanilla widget disables
+
+            if (isFocused()) {
+                // Draw 1px border with 4 quads, don't rely on the background as it can be disabled.
+                // top
+                guiGraphics.fill(getX() - 1, getY() - 1, getX() + width + 1, getY(), 0xFFFFFFFF);
+                // left
+                guiGraphics.fill(getX() - 1, getY(), getX(), getY() + height, 0xFFFFFFFF);
+                // right
+                guiGraphics.fill(getX() + width, getY(), getX() + width + 1, getY() + height, 0xFFFFFFFF);
+                // bottom
+                guiGraphics.fill(getX() - 1, getY() + height, getX() + width + 1, getY() + height + 1, 0xFFFFFFFF);
+            }
 
             if (this.halfSize) {
+                var pose = guiGraphics.pose();
+                pose.pushPose();
+                pose.translate(getX(), getY(), 0.0F);
+                pose.scale(0.5f, 0.5f, 1.f);
+
                 if (!disableBackground) {
-                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(getX(), getY()).zOffset(10).blit(guiGraphics);
+                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(0, 0).blit(guiGraphics);
                 }
-                if (item != null) {
-                    guiGraphics.renderItem(new ItemStack(item), getX(), getY(), 0, 20);
-                } else if (icon != null) {
-                    Blitter blitter = icon.getBlitter();
-                    if (!this.active) {
-                        blitter.opacity(0.5f);
-                    }
-                    blitter.dest(getX(), getY()).zOffset(20).blit(guiGraphics);
-                }
+                blitter.dest(0, 0).blit(guiGraphics);
+                pose.popPose();
             } else {
                 if (!disableBackground) {
-                    Icon bgIcon = isHovered() ? Icon.TOOLBAR_BUTTON_BACKGROUND_HOVER
-                            : isFocused() ? Icon.TOOLBAR_BUTTON_BACKGROUND_FOCUS : Icon.TOOLBAR_BUTTON_BACKGROUND;
+                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(getX(), getY()).blit(guiGraphics);
+                }
+                icon.getBlitter().dest(getX(), getY()).blit(guiGraphics);
+            }
+            RenderSystem.enableDepthTest();
 
-                    bgIcon.getBlitter()
-                            .dest(getX() - 1, getY() + yOffset, 18, 20)
-                            .zOffset(2)
-                            .blit(guiGraphics);
-                }
-                if (item != null) {
-                    guiGraphics.renderItem(new ItemStack(item), getX(), getY() + 1 + yOffset, 0, 3);
-                } else if (icon != null) {
-                    icon.getBlitter().dest(getX(), getY() + 1 + yOffset).zOffset(3).blit(guiGraphics);
-                }
+            var item = this.getItemOverlay();
+            if (item != null) {
+                guiGraphics.renderItem(new ItemStack(item), getX(), getY());
             }
         }
     }

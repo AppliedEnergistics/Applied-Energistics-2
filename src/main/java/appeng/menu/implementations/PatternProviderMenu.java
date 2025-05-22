@@ -41,7 +41,8 @@ import appeng.menu.slot.RestrictedInputSlot;
 public class PatternProviderMenu extends AEBaseMenu {
 
     public static final MenuType<PatternProviderMenu> TYPE = MenuTypeBuilder
-            .create(PatternProviderMenu::new, PatternProviderLogicHost.class)
+            .create((id, inv, host) -> new PatternProviderMenu(id, inv, host),
+                    PatternProviderLogicHost.class)
             .build("pattern_provider");
 
     protected final PatternProviderLogic logic;
@@ -57,7 +58,11 @@ public class PatternProviderMenu extends AEBaseMenu {
     @GuiSync(7)
     public GenericStack unlockStack = null;
 
-    public PatternProviderMenu(MenuType<? extends PatternProviderMenu> menuType, int id, Inventory playerInventory,
+    public PatternProviderMenu(int id, Inventory playerInventory, PatternProviderLogicHost host) {
+        this(TYPE, id, playerInventory, host);
+    }
+
+    protected PatternProviderMenu(MenuType<? extends PatternProviderMenu> menuType, int id, Inventory playerInventory,
             PatternProviderLogicHost host) {
         super(menuType, id, playerInventory, host);
         this.createPlayerInventorySlots(playerInventory);
@@ -66,7 +71,7 @@ public class PatternProviderMenu extends AEBaseMenu {
 
         var patternInv = logic.getPatternInv();
         for (int x = 0; x < patternInv.size(); x++) {
-            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.PROVIDER_PATTERN,
+            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
                     patternInv, x),
                     SlotSemantics.ENCODED_PATTERN);
         }

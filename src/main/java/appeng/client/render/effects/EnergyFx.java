@@ -28,8 +28,8 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class EnergyFx extends TextureSheetParticle {
@@ -115,10 +115,10 @@ public class EnergyFx extends TextureSheetParticle {
             result.setMotionX((float) xSpeed);
             result.setMotionY((float) ySpeed);
             result.setMotionZ((float) zSpeed);
-            if (data.forItem()) {
-                result.x += -0.2 * data.direction().getStepX();
-                result.y += -0.2 * data.direction().getStepY();
-                result.z += -0.2 * data.direction().getStepZ();
+            if (data.forItem) {
+                result.x += -0.2 * data.direction.getStepX();
+                result.y += -0.2 * data.direction.getStepY();
+                result.z += -0.2 * data.direction.getStepZ();
                 result.quadSize *= 0.8f;
             }
             return result;
