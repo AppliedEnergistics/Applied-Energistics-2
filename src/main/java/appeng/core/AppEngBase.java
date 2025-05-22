@@ -205,6 +205,8 @@ public abstract class AppEngBase implements AppEng {
         InitDispenserBehavior.init();
 
         InitUpgrades.init();
+
+        Integrations.init();
     }
 
     public void registerKeyTypes(Registry<AEKeyType> registry) {

@@ -66,6 +66,20 @@ dependencyResolutionManagement {
                 includeGroup 'mezz.jei'
             }
         }
+        maven {
+            url = 'https://maven.createmod.net/'
+            content {
+                includeGroup 'com.simibubi.create'
+                includeGroup 'net.createmod.ponder'
+                includeGroup 'dev.engine-room.flywheel'
+            }
+        }
+        maven {
+            url = 'https://maven.ithundxr.dev/snapshots'
+            content {
+                includeGroup 'com.tterrag.registrate'
+            }
+        }
         mavenLocal() {
             content {
                 includeModule('org.appliedenergistics', 'guideme')

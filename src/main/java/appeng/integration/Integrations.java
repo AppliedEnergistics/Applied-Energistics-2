@@ -18,12 +18,27 @@
 
 package appeng.integration;
 
+import appeng.integration.modules.create.CreateIntegration;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 
 import appeng.integration.modules.theoneprobe.TOP;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Integrations {
-
+    private static final Logger LOG = LoggerFactory.getLogger(Integrations.class);
+    
+    public static void init() {
+        if (ModList.get().isLoaded("create")) {
+            try {
+                CreateIntegration.init();
+            } catch (Exception e) {
+                LOG.error("Failed to initialize create compat!", e);
+            }
+        }
+    }
+    
     public static void enqueueIMC(InterModEnqueueEvent event) {
         TOP.enqueueIMC(event);
     }
