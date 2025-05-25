@@ -136,6 +136,7 @@ public abstract class AppEngBase implements AppEng {
         modEventBus.addListener(MainCreativeTab::initExternal);
         modEventBus.addListener(InitNetwork::init);
         modEventBus.addListener(ChunkLoadingService.getInstance()::register);
+        modEventBus.addListener(EventPriority.HIGH, InitCapabilityProviders::markProxyableCapabilities);
         modEventBus.addListener(InitCapabilityProviders::register);
         modEventBus.addListener(EventPriority.LOWEST, InitCapabilityProviders::registerGenericAdapters);
         modEventBus.addListener((RegisterEvent event) -> {

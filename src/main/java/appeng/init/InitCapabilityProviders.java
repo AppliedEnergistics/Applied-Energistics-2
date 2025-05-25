@@ -42,6 +42,22 @@ public final class InitCapabilityProviders {
     private InitCapabilityProviders() {
     }
 
+    /**
+     * Called with high priority to mark which capabilities are proxyable.
+     */
+    public static void markProxyableCapabilities(RegisterCapabilitiesEvent event) {
+        // Definitely proxyable - this is a storage capability.
+        event.setProxyable(AECapabilities.ME_STORAGE);
+        // Why not - in principle a crafting machine could be behind a tunnel.
+        event.setProxyable(AECapabilities.CRAFTING_MACHINE);
+        // Why not - this is a storage capability, albeit in principle not exposed directly.
+        event.setProxyable(AECapabilities.GENERIC_INTERNAL_INV);
+        // Definitely not proxyable, we don't want to connect nodes through a capability tunnel.
+        event.setNonProxyable(AECapabilities.IN_WORLD_GRID_NODE_HOST);
+        // It would be weird to crank through a tunnel, and we might miss neighbor updates from the crankable.
+        event.setNonProxyable(AECapabilities.CRANKABLE);
+    }
+
     public static void register(RegisterCapabilitiesEvent event) {
 
         var partEvent = new RegisterPartCapabilitiesEvent();
