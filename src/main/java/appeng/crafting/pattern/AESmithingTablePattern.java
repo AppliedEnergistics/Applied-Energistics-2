@@ -180,10 +180,11 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
     public ItemStack assemble(CraftingInput container, Level level) {
         // Note that the crafting input is always "compressed" and removes any margins,
         // so the slots we used to insert into the Molecular Assembler will change.
+        // noinspection SizeReplaceableByIsEmpty
         var testFrame = new SmithingRecipeInput(
-                container.getItem(0),
-                container.getItem(1),
-                container.getItem(2));
+                container.size() >= 1 ? container.getItem(0) : ItemStack.EMPTY,
+                container.size() >= 2 ? container.getItem(1) : ItemStack.EMPTY,
+                container.size() >= 3 ? container.getItem(2) : ItemStack.EMPTY);
 
         if (recipe.matches(testFrame, level)) {
             return recipe.assemble(testFrame, level.registryAccess());
