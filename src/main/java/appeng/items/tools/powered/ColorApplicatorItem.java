@@ -93,7 +93,6 @@ import appeng.items.storage.StorageTier;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.cells.BasicCellHandler;
 import appeng.me.helpers.BaseActionSource;
-import appeng.me.helpers.PlayerSource;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
@@ -163,8 +162,6 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         final Block blk = level.getBlockState(pos).getBlock();
 
         var color = this.getColor(is);
-
-        var source = new PlayerSource(p);
 
         var inv = StorageCells.getCellInventory(is, null);
         if (inv != null) {
