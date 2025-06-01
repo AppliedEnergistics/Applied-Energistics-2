@@ -55,6 +55,10 @@ import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.BlockSnapshot;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.level.BlockEvent;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -263,6 +267,11 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                     return;
                 }
 
+                if (ForgeEventFactory.onBlockPlace(p, BlockSnapshot.create(p.level().dimension(), level, hitPos),
+                        blockResult.getDirection())) {
+                    return;
+                }
+
                 final BlockState whatsThere = level.getBlockState(hitPos);
                 if (whatsThere.canBeReplaced() && level.isEmptyBlock(hitPos)) {
                     level.setBlock(hitPos, AEBlocks.PAINT.block().defaultBlockState(), 3);
@@ -339,12 +348,11 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                     final int dmg = getDamageFromPenetration(penetration);
                     if (entityHit instanceof LivingEntity el) {
                         penetration -= dmg;
-                        el.knockback(0, -direction.x, -direction.z);
-                        // el.knockBack( p, 0, Vector3d.x,
-                        // Vector3d.z );
-                        el.hurt(dmgSrc, dmg);
-                        if (!el.isAlive()) {
-                            hasDestroyed = true;
+                        if (el.hurt(dmgSrc, dmg)) {
+                            el.knockback(0, -direction.x, -direction.z);
+                            if (!el.isAlive()) {
+                                hasDestroyed = true;
+                            }
                         }
                     } else if (entityHit instanceof ItemEntity) {
                         hasDestroyed = true;
@@ -361,8 +369,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                         final BlockState bs = level.getBlockState(blockPos);
 
                         final float hardness = bs.getDestroySpeed(level, blockPos) * 9.0f;
-                        if (hardness >= 0.0 && penetration > hardness
-                                && Platform.hasPermissions(new DimensionalBlockPos(level, blockPos), p)) {
+                        if (hardness >= 0.0 && penetration > hardness && canDestroyBlock(level, blockPos, p)) {
                             hasDestroyed = true;
                             penetration -= hardness;
                             penetration *= 0.60;
@@ -372,6 +379,16 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                 }
             }
         }
+    }
+
+    private boolean canDestroyBlock(Level level, BlockPos pos, Player player) {
+        if (!Platform.hasPermissions(new DimensionalBlockPos(level, pos), player)) {
+            return false;
+        }
+
+        var state = level.getBlockState(pos);
+        var event = new BlockEvent.BreakEvent(level, pos, state, player);
+        return !MinecraftForge.EVENT_BUS.post(event);
     }
 
     public static int getDamageFromPenetration(float penetration) {
