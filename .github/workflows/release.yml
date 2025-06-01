@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/gradle-setup
+      - uses: AppliedEnergistics/Applied-Energistics-2/.github/actions/gradle-setup@main
       - name: Build with Gradle
         run: ./gradlew build publish -x check --max-workers 1
       - name: Prepare artifact metadata. Note that VERSION is set by the gradle script.
