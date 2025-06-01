@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/gradle-setup
+      - uses: AppliedEnergistics/Applied-Energistics-2/.github/actions/gradle-setup@main
       - name: Generate assets
         run: ./gradlew runData
       - name: Check that datagen ran
