@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 50
       - run: git fetch origin --tags
         shell: bash
-      - uses: ./.github/actions/gradle-setup
+      - uses: AppliedEnergistics/Applied-Energistics-2/.github/actions/gradle-setup@main
       - name: Build with Gradle
         run: ./gradlew printProjectVersion build publish -x check --max-workers 1
         env:

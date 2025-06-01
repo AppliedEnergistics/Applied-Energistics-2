@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 50
       - run: git fetch origin --tags
         shell: bash
-      - uses: ./.github/actions/gradle-setup
+      - uses: AppliedEnergistics/Applied-Energistics-2/.github/actions/gradle-setup@main
       - name: Export Guide
         run: DRI_PRIME=0 xvfb-run ./gradlew runGuideexport
       - name: Optimize PNG compression
