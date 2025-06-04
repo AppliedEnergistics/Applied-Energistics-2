@@ -18,6 +18,9 @@
 
 package appeng.block.misc;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.tags.ItemTags;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -33,7 +36,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -49,6 +51,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import appeng.block.AEBaseBlock;
 import appeng.entity.TinyTNTPrimedEntity;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class TinyTNTBlock extends AEBaseBlock {
 
     private static final VoxelShape SHAPE = Shapes
@@ -71,12 +77,12 @@ public class TinyTNTBlock extends AEBaseBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
-        if (heldItem.is(Items.FLINT_AND_STEEL) || heldItem.is(Items.FIRE_CHARGE)) {
+        if (heldItem.is(ItemTags.CREEPER_IGNITERS)) {
             onCaughtFire(state, level, pos, hit.getDirection(), player);
             level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
             Item item = heldItem.getItem();
             if (!player.isCreative()) {
-                if (heldItem.is(Items.FLINT_AND_STEEL)) {
+                if (heldItem.has(DataComponents.DAMAGE)) {
                     heldItem.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
                 } else {
                     heldItem.shrink(1);
