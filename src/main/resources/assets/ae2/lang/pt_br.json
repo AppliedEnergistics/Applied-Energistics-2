@@ -273,6 +273,7 @@
   "config.jade.plugin_ae2.power_storage": "Estado de Carga AE2",
   "death.attack.matter_cannon": "%1$s foi atingido por %2$s",
   "death.attack.matter_cannon.item": "%1$s foi atingido por %2$s usando %3$s",
+  "dimension.ae2.spatial_storage": "Armazenamento Espacial",
   "entity.ae2.tiny_tnt_primed": "TNT Minúscula acionada",
   "entity.minecraft.villager.ae2.fluix_researcher": "Pesquisador de Fluix",
   "exported_setting.ae2.exported_config_inv": "Filtro",
