@@ -121,7 +121,7 @@ jobs:
       - name: Upload to Curseforge
         uses: Kir-Antipov/mc-publish@995edadc13559a8b28d0b7e6571229f067ec7659
         with:
-          name: AE2 ${{ needs.build.outputs.VERSION }} [NEOFORGE]
+          name: AE2 ${{ needs.build.outputs.VERSION }} [FORGE]
           version: ${{ needs.build.outputs.VERSION }}
           files: ${{ needs.build.outputs.ARTIFACT_PATH }}
           dependencies: |
@@ -173,7 +173,7 @@ jobs:
       - name: Upload to Modrinth
         uses: Kir-Antipov/mc-publish@995edadc13559a8b28d0b7e6571229f067ec7659
         with:
-          name: AE2 ${{ needs.build.outputs.VERSION }} [NEOFORGE]
+          name: AE2 ${{ needs.build.outputs.VERSION }} [FORGE]
           version: ${{ needs.build.outputs.VERSION }}
           files: ${{ needs.build.outputs.ARTIFACT_PATH }}
           dependencies: |
