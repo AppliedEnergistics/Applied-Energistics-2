@@ -83,7 +83,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
      * {@link #cachedAvailableStacks} is modified by mistake.
      */
     private final Object2LongMap<AEKey> cachedAvailableAmounts = new Object2LongOpenHashMap<>();
-    private final ObjectSet<AEKey> cacheUpdateMissedTypesSet = new ObjectOpenHashSet();
+    private final ObjectSet<AEKey> cacheUpdateMissedTypesSet = new ObjectOpenHashSet<>();
 
     private boolean cachedStacksNeedUpdate = true;
     /**
@@ -128,12 +128,11 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         var time = System.nanoTime();
         try
         {
-            var cachedStacks = cachedAvailableStacks;
             var availableAmounts = cachedAvailableAmounts;
             var keys = cacheUpdateMissedTypesSet;
             keys.addAll(availableAmounts.keySet());
             // Post watcher update for currently available stacks.
-            for (var entry : cachedStacks) {
+            for (var entry : cachedAvailableStacks) {
                 var what = entry.getKey();
                 var newAmount = entry.getLongValue();
                 long oldAmount;

@@ -352,4 +352,8 @@ public abstract class AEKey {
      * @return true if this key has *any* components attached.
      */
     public abstract boolean hasComponents();
+
+    public long hashCode64() {
+        return hashCode();
+    }
 }

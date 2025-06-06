@@ -2,6 +2,7 @@ package appeng.api.stacks;
 
 import java.util.List;
 
+import appeng.api.util.ItemHashHelper;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -50,14 +51,14 @@ public final class AEItemKey extends AEKey {
     public static final Codec<AEItemKey> CODEC = MAP_CODEC.codec();
 
     private final ItemStack stack;
-    private final int hashCode;
+    private final long hashCode;
     private final int maxStackSize;
     private final int damage;
 
     private AEItemKey(ItemStack stack) {
         Preconditions.checkArgument(!stack.isEmpty(), "stack is empty");
         this.stack = stack;
-        this.hashCode = ItemStack.hashItemAndComponents(stack);
+        this.hashCode = ItemHashHelper.hashItemAndComponents(stack);
         this.maxStackSize = stack.getMaxStackSize();
         this.damage = stack.getDamageValue();
     }
@@ -106,6 +107,11 @@ public final class AEItemKey extends AEKey {
 
     @Override
     public int hashCode() {
+        return (int) hashCode;
+    }
+
+    @Override
+    public long hashCode64() {
         return hashCode;
     }
 
