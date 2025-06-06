@@ -35,14 +35,15 @@ import com.google.gson.stream.JsonWriter;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
@@ -82,6 +83,8 @@ public class StorageService implements IStorageService, IGridServiceProvider {
      * {@link #cachedAvailableStacks} is modified by mistake.
      */
     private final Object2LongMap<AEKey> cachedAvailableAmounts = new Object2LongOpenHashMap<>();
+    private final ObjectSet<AEKey> cacheUpdateMissedTypesSet = new ObjectOpenHashSet();
+
     private boolean cachedStacksNeedUpdate = true;
     /**
      * Tracks the stack watcher associated with a given grid node. Needed to clean up watchers when the node leaves the
@@ -103,6 +106,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         } else {
             // we need to rebuild the cache every tick to notify listeners
             updateCachedStacks();
+            notifyWatchers();
         }
     }
 
@@ -111,35 +115,42 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
         try {
             cachedStacksNeedUpdate = false;
+            var cachedStacks = cachedAvailableStacks;
+            cachedStacks.clear();
+            storage.getAvailableStacks(cachedStacks);
+        } finally {
+            inventoryRefreshStats.add(System.nanoTime() - time);
+        }
+    }
 
-            cachedAvailableStacks.clear();
-            storage.getAvailableStacks(cachedAvailableStacks);
-            // clear() only clears the inner maps,
-            // so ensure that the outer map gets cleaned up too
-            cachedAvailableStacks.removeEmptySubmaps();
-
-            // Post watcher update for currently available stacks
-            for (var entry : cachedAvailableStacks) {
+    private void notifyWatchers()
+    {
+        var time = System.nanoTime();
+        try
+        {
+            var cachedStacks = cachedAvailableStacks;
+            var availableAmounts = cachedAvailableAmounts;
+            var keys = cacheUpdateMissedTypesSet;
+            keys.addAll(availableAmounts.keySet());
+            // Post watcher update for currently available stacks.
+            for (var entry : cachedStacks) {
                 var what = entry.getKey();
                 var newAmount = entry.getLongValue();
-                if (newAmount != cachedAvailableAmounts.getLong(what)) {
+                long oldAmount;
+                keys.remove(what);
+                oldAmount = availableAmounts.put(what, newAmount);
+                if (newAmount != oldAmount) {
                     postWatcherUpdate(what, newAmount);
                 }
             }
-            // Post watcher update for removed stacks
-            for (var what : cachedAvailableAmounts.keySet()) {
-                var newAmount = cachedAvailableStacks.get(what);
-                if (newAmount == 0) {
-                    postWatcherUpdate(what, newAmount);
-                }
+            // Post watcher update for removed stacks.
+            for (var what : keys) {
+                postWatcherUpdate(what, 0);
+                availableAmounts.removeLong(what);
             }
-
-            // Update private amounts
-            cachedAvailableAmounts.clear();
-            for (var entry : cachedAvailableStacks) {
-                cachedAvailableAmounts.put(entry.getKey(), entry.getLongValue());
-            }
-        } finally {
+            keys.clear();
+        } finally
+        {
             inventoryRefreshStats.add(System.nanoTime() - time);
         }
     }
