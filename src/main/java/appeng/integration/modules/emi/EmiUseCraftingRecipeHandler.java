@@ -15,6 +15,7 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.stack.EmiStack;
 
 import appeng.core.localization.ItemModText;
@@ -39,6 +40,12 @@ public class EmiUseCraftingRecipeHandler<T extends CraftingTermMenu> extends Abs
 
     public EmiUseCraftingRecipeHandler(Class<T> containerClass) {
         super(containerClass);
+    }
+
+    @Override
+    public boolean supportsRecipe(EmiRecipe recipe) {
+        // For actual crafting, we only support normal crafting recipes
+        return recipe.getCategory().equals(VanillaEmiRecipeCategories.CRAFTING);
     }
 
     @Override
