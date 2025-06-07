@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.recipe.handler.EmiCraftContext;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -25,6 +26,17 @@ public class EmiEncodePatternHandler<T extends PatternEncodingTermMenu> extends 
 
     public EmiEncodePatternHandler(Class<T> containerClass) {
         super(containerClass);
+    }
+
+    @Override
+    public boolean canCraft(EmiRecipe recipe, EmiCraftContext<T> context) {
+        if (context.getType() == EmiCraftContext.Type.FILL_BUTTON) {
+            return transferRecipe(recipe, context, false).canCraft();
+        } else {
+            // Do not unnecessarily check if a recipe can be crafted
+            // when we're only capable of encoding patterns
+            return false;
+        }
     }
 
     @Override
