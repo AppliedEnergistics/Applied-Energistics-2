@@ -17,6 +17,7 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -37,6 +38,9 @@ public class InitVillager {
 
     public static final VillagerProfession PROFESSION = new VillagerProfession(ID.toString(), e -> e.is(POI_KEY),
             e -> e.is(POI_KEY), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_LIBRARIAN);
+
+    public static final ResourceKey<LootTable> LOOT_TABLE_KEY = ResourceKey.create(Registries.LOOT_TABLE,
+            AppEng.makeId("gameplay/hero_of_the_village/fluix_researcher_gifts"));
 
     public static void initProfession(Registry<VillagerProfession> registry) {
         Registry.register(registry, ID, PROFESSION);
