@@ -333,7 +333,7 @@
   "gui.ae2.Cyan": "Голубой",
   "gui.ae2.Deprecated": "Устарело",
   "gui.ae2.Drive": "МЭ-дисковод",
-  "gui.ae2.ETAFormat": "Час:мин:сек",
+  "gui.ae2.ETAFormat": "HH:mm:ss",
   "gui.ae2.Efficiency": "Эффективность: %s%%",
   "gui.ae2.Empty": "Пустой",
   "gui.ae2.Encoded": "Закодирован",
