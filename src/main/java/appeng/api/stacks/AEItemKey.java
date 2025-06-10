@@ -2,7 +2,7 @@ package appeng.api.stacks;
 
 import java.util.List;
 
-import appeng.api.util.ItemHashHelper;
+import appeng.api.util.HashHelper;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -53,14 +53,16 @@ public final class AEItemKey extends AEKey {
     private final ItemStack stack;
     private final long hashCode;
     private final int maxStackSize;
+    private final int maxDamage;
     private final int damage;
 
     private AEItemKey(ItemStack stack) {
         Preconditions.checkArgument(!stack.isEmpty(), "stack is empty");
         this.stack = stack;
-        this.hashCode = ItemHashHelper.hashItemAndComponents(stack);
+        this.hashCode = HashHelper.hashItemAndComponents(stack);
         this.maxStackSize = stack.getMaxStackSize();
         this.damage = stack.getDamageValue();
+        this.maxDamage = stack.getMaxDamage();
     }
 
     @Nullable
@@ -190,7 +192,7 @@ public final class AEItemKey extends AEKey {
      */
     @Override
     public int getFuzzySearchMaxValue() {
-        return getReadOnlyStack().getMaxDamage();
+        return maxDamage;
     }
 
     @Override

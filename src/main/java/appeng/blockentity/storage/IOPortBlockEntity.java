@@ -20,6 +20,8 @@ package appeng.blockentity.storage;
 
 import java.util.List;
 
+import appeng.api.networking.energy.IEnergySource;
+import appeng.api.stacks.AEKey;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -75,6 +77,7 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
         implements IUpgradeableObject, IConfigurableObject, IGridTickable {
     private static final int NUMBER_OF_CELL_SLOTS = 6;
     private static final int NUMBER_OF_UPGRADE_SLOTS = 3;
+    private static final int TRANSFER_TYPES_PER_TICK = 65535;
 
     private final IConfigManager manager;
 
@@ -280,30 +283,10 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
             return TickRateModulation.IDLE;
         }
 
-        for (int x = 0; x < NUMBER_OF_CELL_SLOTS; x++) {
-            var cell = this.inputCells.getStackInSlot(x);
-
-            var cellInv = StorageCells.getCellInventory(cell, null);
-
-            if (cellInv == null) {
-                // This item is not a valid storage cell, try to move it to the output
-                moveSlot(x);
-                continue;
-            }
-
-            if (itemsToMove > 0) {
-                itemsToMove = transferContents(grid, cellInv, itemsToMove);
-
-                if (itemsToMove > 0) {
-                    ret = TickRateModulation.IDLE;
-                } else {
-                    ret = TickRateModulation.URGENT;
-                }
-            }
-
-            if (itemsToMove > 0 && matchesFullnessMode(cellInv) && this.moveSlot(x)) {
-                ret = TickRateModulation.URGENT;
-            }
+        if (this.manager.getSetting(Settings.OPERATION_MODE) == OperationMode.EMPTY) {
+            ret = emptyCells(grid, itemsToMove, ret);
+        } else {
+            ret = fillCells(grid, itemsToMove, ret);
         }
 
         return ret;
@@ -322,58 +305,111 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
         };
     }
 
-    private long transferContents(IGrid grid, StorageCell cellInv, long itemsToMove) {
+    private static long transferEntry(AEKey key, MEStorage src, MEStorage destination, long itemsToMove, IEnergySource energy, IActionSource actionSource) {
+        long movedItem = 0;
+        if (itemsToMove > 0) {
+            var possible = destination.insert(key, itemsToMove, Actionable.SIMULATE, actionSource);
+            if (possible > 0) {
+                possible = Math.min(possible, itemsToMove * key.getAmountPerOperation());
 
-        var networkInv = grid.getStorageService().getInventory();
+                possible = src.extract(key, possible, Actionable.MODULATE, actionSource);
+                if (possible > 0) {
+                    var inserted = StorageHelper.poweredInsert(energy, destination, key, possible, actionSource);
 
-        KeyCounter srcList;
-        MEStorage src, destination;
-        if (this.manager.getSetting(Settings.OPERATION_MODE) == OperationMode.EMPTY) {
-            src = cellInv;
-            srcList = cellInv.getAvailableStacks();
-            destination = networkInv;
-        } else {
-            src = networkInv;
-            srcList = grid.getStorageService().getCachedInventory();
-            destination = cellInv;
-        }
+                    if (inserted < possible) {
+                        src.insert(key, possible - inserted, Actionable.MODULATE, actionSource);
+                    }
 
-        var energy = grid.getEnergyService();
-        boolean didStuff;
-
-        do {
-            didStuff = false;
-
-            for (var srcEntry : srcList) {
-                var totalStackSize = srcEntry.getLongValue();
-                if (totalStackSize > 0) {
-                    var what = srcEntry.getKey();
-                    var possible = destination.insert(what, totalStackSize, Actionable.SIMULATE, this.mySrc);
-
-                    if (possible > 0) {
-                        possible = Math.min(possible, itemsToMove * what.getAmountPerOperation());
-
-                        possible = src.extract(what, possible, Actionable.MODULATE, this.mySrc);
-                        if (possible > 0) {
-                            var inserted = StorageHelper.poweredInsert(energy, destination, what, possible, this.mySrc);
-
-                            if (inserted < possible) {
-                                src.insert(what, possible - inserted, Actionable.MODULATE, this.mySrc);
-                            }
-
-                            if (inserted > 0) {
-                                itemsToMove -= Math.max(1, inserted / what.getAmountPerOperation());
-                                didStuff = true;
-                            }
-
-                            break;
-                        }
+                    if (inserted > 0) {
+                        movedItem = Math.max(1, inserted / key.getAmountPerOperation());
                     }
                 }
             }
-        } while (itemsToMove > 0 && didStuff);
+        }
+        return movedItem;
+    }
 
-        return itemsToMove;
+    private TickRateModulation fillCells(IGrid grid, long itemsToMove, TickRateModulation ret) {
+        var networkInv = grid.getStorageService().getInventory();
+
+        KeyCounter srcList;
+        MEStorage src;
+        src = networkInv;
+        srcList = grid.getStorageService().getCachedInventory();
+        int x = 0;
+        int movedTypes = 0;
+
+        var energy = grid.getEnergyService();
+        // This avoids checking the same key multiple times
+        var srcIterator = srcList.iterator();
+        do {
+            var cell = this.inputCells.getStackInSlot(x);
+            if (cell == null) continue;
+            var cellInv = StorageCells.getCellInventory(cell, null);
+            if (cellInv == null) {
+                // This item is not a valid storage cell, try to move it to the output
+                moveSlot(x);
+                continue;
+            }
+            while (srcIterator.hasNext() && itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK) {
+                var srcEntry = srcIterator.next();
+                var totalStackSize = srcEntry.getLongValue();
+                if (totalStackSize > 0) {
+                    var what = srcEntry.getKey();
+                    long movedItems = transferEntry(what, src, cellInv, Math.min(totalStackSize, itemsToMove), energy, this.mySrc);
+                    itemsToMove -= movedItems;
+                    movedTypes += movedItems > 0 ? 1 : 0;
+                }
+            }
+            if (itemsToMove <= 0 || (matchesFullnessMode(cellInv) && this.moveSlot(x))) {
+                ret = TickRateModulation.URGENT;
+            } else {
+                ret = TickRateModulation.IDLE;
+            }
+        } while (srcIterator.hasNext() && itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK && ++x < NUMBER_OF_CELL_SLOTS);
+
+        return ret;
+    }
+
+    private TickRateModulation emptyCells(IGrid grid, long itemsToMove, TickRateModulation ret) {
+        var networkInv = grid.getStorageService().getInventory();
+
+        KeyCounter srcList = new KeyCounter();
+        MEStorage gridStorage;
+        gridStorage = networkInv;
+        int x = 0;
+        int movedTypes = 0;
+
+        var energy = grid.getEnergyService();
+        do {
+            var cell = this.inputCells.getStackInSlot(x);
+            var cellInv = StorageCells.getCellInventory(cell, null);
+            if (cellInv == null) {
+                // This item is not a valid storage cell, try to move it to the output
+                moveSlot(x);
+                continue;
+            }
+            srcList.clear();
+            cellInv.getAvailableStacks(srcList);
+            var srcIterator = srcList.iterator();
+            while (srcIterator.hasNext() && itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK) {
+                var srcEntry = srcIterator.next();
+                var totalStackSize = srcEntry.getLongValue();
+                if (totalStackSize > 0) {
+                    var what = srcEntry.getKey();
+                    long movedItems = transferEntry(what, cellInv, gridStorage, Math.min(totalStackSize, itemsToMove), energy, this.mySrc);
+                    itemsToMove -= movedItems;
+                    movedTypes += movedItems > 0 ? 1 : 0;
+                }
+            }
+            if (itemsToMove <= 0 || (matchesFullnessMode(cellInv) && this.moveSlot(x))) {
+                ret = TickRateModulation.URGENT;
+            } else {
+                ret = TickRateModulation.IDLE;
+            }
+        } while (itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK && ++x < NUMBER_OF_CELL_SLOTS);
+
+        return ret;
     }
 
     private boolean moveSlot(int x) {

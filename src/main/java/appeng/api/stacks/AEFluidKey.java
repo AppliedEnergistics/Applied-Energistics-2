@@ -2,6 +2,7 @@ package appeng.api.stacks;
 
 import java.util.List;
 
+import appeng.api.util.HashHelper;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -48,12 +49,12 @@ public final class AEFluidKey extends AEKey {
     public static final int AMOUNT_BLOCK = 1000;
 
     private final FluidStack stack;
-    private final int hashCode;
+    private final long hashCode;
 
     private AEFluidKey(FluidStack stack) {
         Preconditions.checkArgument(!stack.isEmpty(), "stack was empty");
         this.stack = stack;
-        this.hashCode = FluidStack.hashFluidAndComponents(stack);
+        this.hashCode = HashHelper.hashFluidAndComponents(stack);
     }
 
     public static AEFluidKey of(Fluid fluid) {
@@ -107,6 +108,11 @@ public final class AEFluidKey extends AEKey {
 
     @Override
     public int hashCode() {
+        return (int) hashCode;
+    }
+
+    @Override
+    public long hashCode64() {
         return hashCode;
     }
 

@@ -61,6 +61,7 @@ import appeng.util.JsonStreamUtil;
 
 public class StorageService implements IStorageService, IGridServiceProvider {
     private static final Gson GSON = new Gson();
+    private static final int MissedTypeSetDefaultSize = 32;
 
     /**
      * Tracks the storage service's state for each grid node that provides storage to the network.
@@ -83,16 +84,15 @@ public class StorageService implements IStorageService, IGridServiceProvider {
      * {@link #cachedAvailableStacks} is modified by mistake.
      */
     private final Object2LongMap<AEKey> cachedAvailableAmounts = new Object2LongOpenHashMap<>();
-    private final ObjectSet<AEKey> cacheUpdateMissedTypesSet = new ObjectOpenHashSet<>();
-
-    private boolean cachedStacksNeedUpdate = true;
     /**
      * Tracks the stack watcher associated with a given grid node. Needed to clean up watchers when the node leaves the
      * grid.
      */
     private final Map<IGridNode, StackWatcher<IStorageWatcherNode>> watchers = new IdentityHashMap<>();
-
     private final StatsAccumulator inventoryRefreshStats = new StatsAccumulator();
+    private ObjectOpenHashSet<AEKey> cacheUpdateMissedTypesSet = new ObjectOpenHashSet<>(MissedTypeSetDefaultSize);
+    private int missedTypeSetMinSize = MissedTypeSetDefaultSize;
+    private boolean cachedStacksNeedUpdate = true;
 
     public StorageService() {
         this.storage = new NetworkStorage();
@@ -123,33 +123,47 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         }
     }
 
-    private void notifyWatchers()
-    {
+    private void notifyWatchers() {
         var time = System.nanoTime();
-        try
-        {
+        try {
             var availableAmounts = cachedAvailableAmounts;
             var keys = cacheUpdateMissedTypesSet;
-            keys.addAll(availableAmounts.keySet());
+            var keySet = availableAmounts.keySet();
+            var numKeys = keySet.size();
+            if (numKeys > MissedTypeSetDefaultSize * 4 && numKeys >= missedTypeSetMinSize * 4 || numKeys < missedTypeSetMinSize >> 3) {
+                // Reset the minimum internal table size of the ObjectOpenHashSet in order to avoid too many rehashes
+                if (!keys.isEmpty()) {
+                    keys.clear();
+                }
+                keys = new ObjectOpenHashSet<>(keySet);
+                missedTypeSetMinSize = keys.size();
+                cacheUpdateMissedTypesSet = keys;
+            }
+            else {
+                keys.addAll(keySet);
+            }
             // Post watcher update for currently available stacks.
             for (var entry : cachedAvailableStacks) {
                 var what = entry.getKey();
                 var newAmount = entry.getLongValue();
                 long oldAmount;
-                keys.remove(what);
                 oldAmount = availableAmounts.put(what, newAmount);
                 if (newAmount != oldAmount) {
                     postWatcherUpdate(what, newAmount);
                 }
+                if (keys.isEmpty()) continue;
+                keys.remove(what);
             }
-            // Post watcher update for removed stacks.
-            for (var what : keys) {
-                postWatcherUpdate(what, 0);
-                availableAmounts.removeLong(what);
+            if (!keys.isEmpty()) {
+                // Post watcher update for removed stacks.
+                for (var what : keys) {
+                    postWatcherUpdate(what, 0);
+                    availableAmounts.removeLong(what);
+                }
+                keys.clear();
+                cachedAvailableStacks.removeEmptySubmaps();
             }
-            keys.clear();
-        } finally
-        {
+        } finally {
             inventoryRefreshStats.add(System.nanoTime() - time);
         }
     }
@@ -265,6 +279,28 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         cachedStacksNeedUpdate = true;
     }
 
+    @Override
+    public void debugDump(JsonWriter writer, HolderLookup.Provider registries) throws IOException {
+
+        JsonStreamUtil.writeProperties(Map.of(
+                "inventoryRefreshTime", JsonStreamUtil.toMap(inventoryRefreshStats)), writer);
+
+        writer.name("cachedAvailableStacks");
+        writer.beginArray();
+        for (var entry : cachedAvailableStacks) {
+            writer.beginObject();
+            writer.name("key");
+            var serializedKey = entry.getKey().toTagGeneric(registries);
+            var jsonKey = Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, serializedKey);
+            GSON.toJson(jsonKey, writer);
+            writer.name("amount");
+            writer.value(entry.getLongValue());
+            writer.endObject();
+        }
+        writer.endArray();
+
+    }
+
     /**
      * A {@link IStorageProvider}-specific mount table facade which allows the provider to easily mount/remount its
      * storage.
@@ -321,27 +357,5 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         private void unmount(MEStorage inventory) {
             storage.unmount(inventory);
         }
-    }
-
-    @Override
-    public void debugDump(JsonWriter writer, HolderLookup.Provider registries) throws IOException {
-
-        JsonStreamUtil.writeProperties(Map.of(
-                "inventoryRefreshTime", JsonStreamUtil.toMap(inventoryRefreshStats)), writer);
-
-        writer.name("cachedAvailableStacks");
-        writer.beginArray();
-        for (var entry : cachedAvailableStacks) {
-            writer.beginObject();
-            writer.name("key");
-            var serializedKey = entry.getKey().toTagGeneric(registries);
-            var jsonKey = Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, serializedKey);
-            GSON.toJson(jsonKey, writer);
-            writer.name("amount");
-            writer.value(entry.getLongValue());
-            writer.endObject();
-        }
-        writer.endArray();
-
     }
 }

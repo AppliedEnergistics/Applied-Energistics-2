@@ -2,6 +2,7 @@ package appeng.api.stacks;
 
 import java.util.List;
 
+import appeng.api.util.HashHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
@@ -47,7 +48,7 @@ import appeng.core.definitions.AEItems;
  * between memory usage and lookup speed.</li>
  * </ul>
  */
-public abstract class AEKey {
+public abstract class AEKey implements appeng.api.util.IHashCode64 {
     public static final String TYPE_FIELD = "#t";
     private static final Logger LOG = LoggerFactory.getLogger(AEKey.class);
     public static final MapCodec<AEKey> MAP_CODEC = AEKeyType.CODEC
@@ -354,6 +355,6 @@ public abstract class AEKey {
     public abstract boolean hasComponents();
 
     public long hashCode64() {
-        return hashCode();
+        return HashHelper.calculateTypedHash(getType().hashCode(), hashCode());
     }
 }
