@@ -31,8 +31,6 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.ids.AEComponents;
-import appeng.api.util.HashHelper;
-import appeng.api.util.IHashCode64;
 import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
 
@@ -49,7 +47,7 @@ import appeng.core.definitions.AEItems;
  * between memory usage and lookup speed.</li>
  * </ul>
  */
-public abstract class AEKey implements IHashCode64 {
+public abstract class AEKey {
     public static final String TYPE_FIELD = "#t";
     private static final Logger LOG = LoggerFactory.getLogger(AEKey.class);
     public static final MapCodec<AEKey> MAP_CODEC = AEKeyType.CODEC
@@ -354,8 +352,4 @@ public abstract class AEKey implements IHashCode64 {
      * @return true if this key has *any* components attached.
      */
     public abstract boolean hasComponents();
-
-    public long hashCode64() {
-        return HashHelper.calculateTypedHash(getType().hashCode(), hashCode());
-    }
 }

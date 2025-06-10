@@ -51,7 +51,7 @@ public final class AEItemKey extends AEKey {
     public static final Codec<AEItemKey> CODEC = MAP_CODEC.codec();
 
     private final ItemStack stack;
-    private final long hashCode;
+    private final int hashCode;
     private final int maxStackSize;
     private final int maxDamage;
     private final int damage;
@@ -59,7 +59,7 @@ public final class AEItemKey extends AEKey {
     private AEItemKey(ItemStack stack) {
         Preconditions.checkArgument(!stack.isEmpty(), "stack is empty");
         this.stack = stack;
-        this.hashCode = HashHelper.hashItemAndComponents(stack);
+        this.hashCode = HashHelper.compressHash(HashHelper.hashItemAndComponents(stack));
         this.maxStackSize = stack.getMaxStackSize();
         this.damage = stack.getDamageValue();
         this.maxDamage = stack.getMaxDamage();
@@ -109,11 +109,6 @@ public final class AEItemKey extends AEKey {
 
     @Override
     public int hashCode() {
-        return (int) hashCode;
-    }
-
-    @Override
-    public long hashCode64() {
         return hashCode;
     }
 

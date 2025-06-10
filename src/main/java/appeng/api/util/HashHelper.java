@@ -70,8 +70,19 @@ public final class HashHelper {
     public static final long ListHashStepIncrement = 0xfdaf_1f17_9f9a_a90dL;
     public static final long ListHashEmptyInitializationValue = 0xa694_d119_309f_2a69L;
     public static final long FluidStackHashStepMultiplier = 0xb8d7_8e1e_34e7_db35L;
+    public static final long CompressHashMultiplier = 0xfe79_ec74_f173_df3dL;
+    public static final long CompressHashIncrement = 0xc2d9_d4f6_dadc_4b6bL;
 
     private HashHelper() {
+    }
+
+    public static int compressHash(long longHash) {
+        longHash += CompressHashIncrement;
+        longHash *= CompressHashMultiplier;
+        longHash ^= longHash >> 32;
+        longHash += CompressHashIncrement;
+        longHash *= CompressHashMultiplier;
+        return (int) (longHash >> 32);
     }
 
     public static long calculateMapEntryHash(long key, long value) {
