@@ -333,6 +333,12 @@ public class BasicCellInventory implements StorageCell {
         return CellState.FULL;
     }
 
+    public boolean filterMatches(KeyCounter source, KeyCounter destination, long limit) {
+        if (!isPreformatted())
+            return false;
+        return partitionList.filterMatches(source, destination, partitionListMode, limit);
+    }
+
     @Override
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         if (amount == 0 || !keyType.contains(what)) {

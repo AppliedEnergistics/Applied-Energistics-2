@@ -21,17 +21,15 @@ package appeng.me.storage;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.NavigableMap;
-import java.util.TreeMap;
 
 import com.google.common.base.Preconditions;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMaps;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMaps;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;

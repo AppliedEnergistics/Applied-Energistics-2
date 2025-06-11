@@ -1,14 +1,29 @@
 package appeng.api.util;
 
-import appeng.core.AELog;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.IntConsumer;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
+
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.RecordBuilder;
+
+import org.jetbrains.annotations.NotNull;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.longs.LongConsumer;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
@@ -22,25 +37,24 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.*;
+import net.minecraft.world.item.component.BundleContents;
+import net.minecraft.world.item.component.ChargedProjectiles;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.FireworkExplosion;
+import net.minecraft.world.item.component.Fireworks;
+import net.minecraft.world.item.component.ItemContainerContents;
+import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.item.component.WritableBookContent;
+import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.entity.PotDecorations;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.IntConsumer;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.longs.LongConsumer;
+
+import appeng.core.AELog;
 
 public final class HashHelper {
     public static final long Upper32BitMask = 0xffff_ffff_0000_0000L;
@@ -141,7 +155,8 @@ public final class HashHelper {
         if (componentMap != null) {
             for (var entry : componentMap) {
                 var type = entry.type();
-                if (type.isTransient()) continue;
+                if (type.isTransient())
+                    continue;
                 var keyHash = hashString(type.toString());
                 var value = entry.value();
                 long valueHash = calculateHash(value);
@@ -157,7 +172,8 @@ public final class HashHelper {
             var entries = componentPatch.entrySet();
             for (var entry : entries) {
                 var type = entry.getKey();
-                if (type.isTransient()) continue;
+                if (type.isTransient())
+                    continue;
                 var keyHash = hashString(type.toString());
                 var value = entry.getValue();
                 long valueHash = -1;
@@ -233,7 +249,7 @@ public final class HashHelper {
             case Fireworks fireworks -> hashFireworks(fireworks);
             case IntList intList -> hashIntList(intList);
             case PatchedDataComponentMap patchedDataComponentMap ->
-                    hashComponentPatch(patchedDataComponentMap.asPatch());
+                hashComponentPatch(patchedDataComponentMap.asPatch());
             case DataComponentMap dataComponentMap -> hashComponentMap(dataComponentMap);
             case List<?> list -> hashList(list);
             default -> hashComplicatedComponentValue(value);

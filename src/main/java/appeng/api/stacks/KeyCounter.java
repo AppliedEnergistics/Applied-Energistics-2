@@ -32,10 +32,13 @@ import java.util.Set;
 
 import com.google.common.collect.Iterators;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 import appeng.api.config.FuzzyMode;
@@ -160,17 +163,147 @@ public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     }
 
     @Override
-    public Iterator<Object2LongMap.Entry<AEKey>> iterator() {
+    public @NotNull Iterator<Object2LongMap.Entry<AEKey>> iterator() {
         return Iterators.concat(
                 Iterators.transform(lists.values().iterator(), VariantCounter::iterator));
     }
 
+    public boolean filterMatchesPrecise(@Nullable KeyCounter source, @NotNull KeyCounter destination) {
+        if (isEmpty() || source == null)
+            return true;
+        var srcLists = source.lists;
+        if (srcLists.isEmpty())
+            return true;
+        if (source == destination || !destination.isEmpty())
+            return false;
+        var filterListIterator = Reference2ObjectMaps.fastIterator(lists);
+        while (filterListIterator.hasNext()) {
+            var list = filterListIterator.next();
+            var filterVariants = list.getValue().getRecords();
+            var filterVariantIterator = Object2LongMaps.fastIterator(filterVariants);
+            if (!filterVariantIterator.hasNext())
+                continue;
+            var firstKey = filterVariantIterator.next();
+            var primaryKey = list.getKey();
+            var s = srcLists.getOrDefault(primaryKey, null);
+            if (s != null && !s.isEmpty()) {
+                VariantCounter destinationVariants;
+                if (firstKey.getKey().getFuzzySearchMaxValue() > 0) {
+                    destinationVariants = destination.lists.computeIfAbsent(primaryKey,
+                            k -> new VariantCounter.FuzzyVariantMap());
+                } else {
+                    destinationVariants = destination.lists.computeIfAbsent(primaryKey,
+                            k -> new VariantCounter.UnorderedVariantMap());
+                }
+                destinationVariants.clear();
+                var sourceVariants = s.getRecords();
+                filterVariantsPrecise(sourceVariants, filterVariants, destinationVariants, -1L);
+            }
+        }
+        return true;
+    }
+
+    public boolean filterMatchesFuzzy(@Nullable KeyCounter source, @NotNull KeyCounter destination, FuzzyMode mode,
+            long limit) {
+        if (limit < 1)
+            return limit >= 0;
+        if (isEmpty() || source == null)
+            return true;
+        var srcLists = source.lists;
+        if (srcLists.isEmpty())
+            return true;
+        if (source == destination || !destination.isEmpty())
+            return false;
+        var filterListIterator = Reference2ObjectMaps.fastIterator(lists);
+        long added = 0;
+        while (added < limit && filterListIterator.hasNext()) {
+            var list = filterListIterator.next();
+            var filterVariantMap = list.getValue();
+            var filterVariants = filterVariantMap.getRecords();
+            var filterVariantIterator = Object2LongMaps.fastIterator(filterVariants);
+            if (!filterVariantIterator.hasNext())
+                continue;
+            var firstKey = filterVariantIterator.next();
+            var primaryKey = list.getKey();
+            var s = srcLists.getOrDefault(primaryKey, null);
+            if (s != null && !s.isEmpty()) {
+                VariantCounter destinationVariants;
+                AEKey firstAEKey = firstKey.getKey();
+                var isFuzzyComparableItem = firstAEKey.getFuzzySearchMaxValue() > 0;
+                if (isFuzzyComparableItem) {
+                    destinationVariants = destination.lists.computeIfAbsent(primaryKey,
+                            k -> new VariantCounter.FuzzyVariantMap());
+                } else {
+                    destinationVariants = destination.lists.computeIfAbsent(primaryKey,
+                            k -> new VariantCounter.UnorderedVariantMap());
+                }
+                destinationVariants.clear();
+                var sourceVariants = s.getRecords();
+                if (isFuzzyComparableItem && filterVariantMap instanceof VariantCounter.FuzzyVariantMap
+                        && s instanceof VariantCounter.FuzzyVariantMap fuzzySourceVariants) {
+                    var filtered = fuzzySourceVariants.findFuzzy(firstAEKey, mode);
+                    for (var entry : filtered) {
+                        destinationVariants.add(entry.getKey(), entry.getLongValue());
+                        added++;
+                        if (added >= limit)
+                            break;
+                    }
+                    while (added < limit && filterVariantIterator.hasNext()) {
+                        var next = filterVariantIterator.next();
+                        filtered = fuzzySourceVariants.findFuzzy(next.getKey(), mode);
+                        for (var entry : filtered) {
+                            destinationVariants.add(entry.getKey(), entry.getLongValue());
+                            added++;
+                            if (added >= limit)
+                                break;
+                        }
+                    }
+                } else {
+                    var newAdded = added
+                            + filterVariantsPrecise(sourceVariants, filterVariants, destinationVariants, limit - added);
+                    added = newAdded >= added ? newAdded : Long.MAX_VALUE; // Mitigate overflow
+                }
+            }
+        }
+        return true;
+    }
+
+    private static long filterVariantsPrecise(AEKey2LongMap sourceVariants, AEKey2LongMap filterVariants,
+            VariantCounter destinationVariants, long limit) {
+        long added = 0;
+        if (sourceVariants.size() < filterVariants.size()) {
+            var sourceVariantIterator = Object2LongMaps.fastIterator(sourceVariants);
+            while (Long.compareUnsigned(added, limit) < 0 && sourceVariantIterator.hasNext()) {
+                var sourceEntry = sourceVariantIterator.next();
+                var key = sourceEntry.getKey();
+                var value = sourceEntry.getLongValue();
+                if (value > 0 && filterVariants.containsKey(key)) {
+                    destinationVariants.add(key, value);
+                    added++;
+                }
+            }
+        } else {
+            var filterVariantIterator = Object2LongMaps.fastIterator(filterVariants);
+            while (Long.compareUnsigned(added, limit) < 0 && filterVariantIterator.hasNext()) {
+                var filterEntry = filterVariantIterator.next();
+                var key = filterEntry.getKey();
+                var value = sourceVariants.getOrDefault(key, 0L);
+                if (value > 0) {
+                    destinationVariants.add(key, value);
+                    added++;
+                }
+            }
+        }
+        return added;
+    }
+
     private VariantCounter getSubIndex(AEKey key) {
+        Object primaryKey = key.getPrimaryKey();
         // We check before the call to computeIfAbsent, otherwise we'd need a capturing lambda.
         if (key.getFuzzySearchMaxValue() > 0) {
-            return lists.computeIfAbsent(key.getPrimaryKey(), k -> new VariantCounter.FuzzyVariantMap());
+            return lists.computeIfAbsent(primaryKey, k -> new VariantCounter.FuzzyVariantMap());
         } else {
-            return lists.computeIfAbsent(key.getPrimaryKey(), k -> new VariantCounter.UnorderedVariantMap());
+            return lists.computeIfAbsent(primaryKey, k -> new VariantCounter.UnorderedVariantMap());
         }
     }
 

@@ -18,10 +18,12 @@
 
 package appeng.util.prioritylist;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 
@@ -51,6 +53,22 @@ public interface IPartitionList {
             }
         }
         return true;
+    }
+
+    /**
+     * Filters and writes the keys in the given KeyCounter matches this partition list assuming a given
+     * WHITELIST/BLACKLIST mode.
+     * 
+     * @param source The KeyCounter to filter. This could come from the {@link IStorageService#getCachedInventory()} so
+     *               <strong>DO NOT MODIFY!</strong>
+     * @param output The KeyCounter to store the matching keys.
+     * @param mode   The mode to assume.
+     * @param limit  The limit of types to be added in output.
+     * @return Whether this operation is supported or not.
+     */
+    default boolean filterMatches(@Nullable KeyCounter source, @NotNull KeyCounter output, IncludeExclude mode,
+            long limit) {
+        return false;
     }
 
     static Builder builder() {

@@ -2,7 +2,6 @@ package appeng.api.stacks;
 
 import java.util.List;
 
-import appeng.api.util.HashHelper;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -30,6 +29,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 
 import appeng.api.storage.AEKeyFilter;
+import appeng.api.util.HashHelper;
 import appeng.core.AELog;
 
 public final class AEItemKey extends AEKey {

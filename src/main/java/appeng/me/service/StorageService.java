@@ -35,15 +35,15 @@ import com.google.gson.stream.JsonWriter;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
@@ -130,7 +130,8 @@ public class StorageService implements IStorageService, IGridServiceProvider {
             var keys = cacheUpdateMissedTypesSet;
             var keySet = availableAmounts.keySet();
             var numKeys = keySet.size();
-            if (numKeys > MissedTypeSetDefaultSize * 4 && numKeys >= missedTypeSetMinSize * 4 || numKeys < missedTypeSetMinSize >> 3) {
+            if (numKeys > MissedTypeSetDefaultSize * 4 && numKeys >= missedTypeSetMinSize * 4
+                    || numKeys < missedTypeSetMinSize >> 3) {
                 // Reset the minimum internal table size of the ObjectOpenHashSet in order to avoid too many rehashes
                 if (!keys.isEmpty()) {
                     keys.clear();
@@ -138,8 +139,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
                 keys = new ObjectOpenHashSet<>(keySet);
                 missedTypeSetMinSize = keys.size();
                 cacheUpdateMissedTypesSet = keys;
-            }
-            else {
+            } else {
                 keys.addAll(keySet);
             }
             // Post watcher update for currently available stacks.
@@ -151,7 +151,8 @@ public class StorageService implements IStorageService, IGridServiceProvider {
                 if (newAmount != oldAmount) {
                     postWatcherUpdate(what, newAmount);
                 }
-                if (keys.isEmpty()) continue;
+                if (keys.isEmpty())
+                    continue;
                 keys.remove(what);
             }
             if (!keys.isEmpty()) {
@@ -279,28 +280,6 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         cachedStacksNeedUpdate = true;
     }
 
-    @Override
-    public void debugDump(JsonWriter writer, HolderLookup.Provider registries) throws IOException {
-
-        JsonStreamUtil.writeProperties(Map.of(
-                "inventoryRefreshTime", JsonStreamUtil.toMap(inventoryRefreshStats)), writer);
-
-        writer.name("cachedAvailableStacks");
-        writer.beginArray();
-        for (var entry : cachedAvailableStacks) {
-            writer.beginObject();
-            writer.name("key");
-            var serializedKey = entry.getKey().toTagGeneric(registries);
-            var jsonKey = Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, serializedKey);
-            GSON.toJson(jsonKey, writer);
-            writer.name("amount");
-            writer.value(entry.getLongValue());
-            writer.endObject();
-        }
-        writer.endArray();
-
-    }
-
     /**
      * A {@link IStorageProvider}-specific mount table facade which allows the provider to easily mount/remount its
      * storage.
@@ -357,5 +336,27 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         private void unmount(MEStorage inventory) {
             storage.unmount(inventory);
         }
+    }
+
+    @Override
+    public void debugDump(JsonWriter writer, HolderLookup.Provider registries) throws IOException {
+
+        JsonStreamUtil.writeProperties(Map.of(
+                "inventoryRefreshTime", JsonStreamUtil.toMap(inventoryRefreshStats)), writer);
+
+        writer.name("cachedAvailableStacks");
+        writer.beginArray();
+        for (var entry : cachedAvailableStacks) {
+            writer.beginObject();
+            writer.name("key");
+            var serializedKey = entry.getKey().toTagGeneric(registries);
+            var jsonKey = Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, serializedKey);
+            GSON.toJson(jsonKey, writer);
+            writer.name("amount");
+            writer.value(entry.getLongValue());
+            writer.endObject();
+        }
+        writer.endArray();
+
     }
 }

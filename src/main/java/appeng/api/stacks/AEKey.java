@@ -2,7 +2,6 @@ package appeng.api.stacks;
 
 import java.util.List;
 
-import appeng.api.util.HashHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
@@ -32,6 +31,8 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.ids.AEComponents;
+import appeng.api.util.HashHelper;
+import appeng.api.util.IHashCode64;
 import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
 
@@ -48,7 +49,7 @@ import appeng.core.definitions.AEItems;
  * between memory usage and lookup speed.</li>
  * </ul>
  */
-public abstract class AEKey implements appeng.api.util.IHashCode64 {
+public abstract class AEKey implements IHashCode64 {
     public static final String TYPE_FIELD = "#t";
     private static final Logger LOG = LoggerFactory.getLogger(AEKey.class);
     public static final MapCodec<AEKey> MAP_CODEC = AEKeyType.CODEC
