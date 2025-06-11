@@ -472,6 +472,7 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
                 }
             }
         }
+        var cellsChecked = itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK;
         if (!cells.isEmpty()) {
             // This avoids checking the same key multiple times
             var srcIterator = srcList.iterator();
@@ -512,6 +513,7 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
                 }
             }
         }
+        var typeFilledCellsChecked = itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK;
         if (!typeFilledCells.isEmpty()) {
             if (dstList == null)
                 dstList = new KeyCounter();
@@ -519,7 +521,7 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
                 dstList.clear();
             var filterList = new KeyCounter();
             int i = 0;
-            while (i < typeFilledCells.size()) {
+            while (itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK && i < typeFilledCells.size()) {
                 var cell = typeFilledCells.get(i);
                 var slot = cell.getIntKey();
                 var cellInv = cell.getValue();
@@ -574,9 +576,19 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
                     cellFlags &= ~p;
                 }
             }
-            cells.addAll(typeFilledCells);
-            if (!cells.isEmpty()) {
+            if (cellsChecked && !cells.isEmpty()) {
                 for (var cell : cells) {
+                    int slot = cell.getIntKey();
+                    var p = 1L << slot;
+                    if ((cellFlags & p) == 0
+                            || (checkFullnessMode && matchesFullnessMode(cell.getValue(), fullnessMode))) {
+                        isUrgent |= this.moveSlot(slot);
+                    }
+                    cellFlags &= ~p;
+                }
+            }
+            if (typeFilledCellsChecked && !typeFilledCells.isEmpty()) {
+                for (var cell : typeFilledCells) {
                     int slot = cell.getIntKey();
                     var p = 1L << slot;
                     if ((cellFlags & p) == 0
