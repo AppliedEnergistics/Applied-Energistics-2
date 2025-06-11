@@ -18,10 +18,13 @@
 
 package appeng.blockentity.storage;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.stacks.AEKey;
+import it.unimi.dsi.fastutil.ints.*;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -77,7 +80,7 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
         implements IUpgradeableObject, IConfigurableObject, IGridTickable {
     private static final int NUMBER_OF_CELL_SLOTS = 6;
     private static final int NUMBER_OF_UPGRADE_SLOTS = 3;
-    private static final int TRANSFER_TYPES_PER_TICK = 65535;
+    private static final int TRANSFER_TYPES_PER_TICK = 63 * NUMBER_OF_CELL_SLOTS;
 
     private final IConfigManager manager;
 
@@ -296,7 +299,12 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
      * Work is complete when the inventory has reached the desired end-state.
      */
     public boolean matchesFullnessMode(StorageCell inv) {
-        return switch (manager.getSetting(Settings.FULLNESS_MODE)) {
+        var fullnessMode = manager.getSetting(Settings.FULLNESS_MODE);
+        return matchesFullnessMode(inv, fullnessMode);
+    }
+
+    protected static boolean matchesFullnessMode(StorageCell inv, FullnessMode fullnessMode) {
+        return switch (fullnessMode) {
             // In this mode, work completes as soon as no more items are moved within one operation,
             // independent of the actual inventory state
             case HALF -> true;
@@ -336,39 +344,75 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
         MEStorage src;
         src = networkInv;
         srcList = grid.getStorageService().getCachedInventory();
-        int x = 0;
         int movedTypes = 0;
+        boolean isUrgent = false;
 
         var energy = grid.getEnergyService();
-        // This avoids checking the same key multiple times
-        var srcIterator = srcList.iterator();
-        do {
-            var cell = this.inputCells.getStackInSlot(x);
+        ArrayList<AbstractInt2ObjectMap.BasicEntry<StorageCell>> cells = new ArrayList<>(NUMBER_OF_CELL_SLOTS);
+        for (int i = 0; i < NUMBER_OF_CELL_SLOTS; i++) {
+            var cell = this.inputCells.getStackInSlot(i);
             if (cell == null) continue;
             var cellInv = StorageCells.getCellInventory(cell, null);
-            if (cellInv == null) {
+            if (cellInv == null || cellInv.getStatus() == CellState.FULL) {
                 // This item is not a valid storage cell, try to move it to the output
-                moveSlot(x);
+                moveSlot(i);
                 continue;
             }
-            while (srcIterator.hasNext() && itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK) {
-                var srcEntry = srcIterator.next();
-                var totalStackSize = srcEntry.getLongValue();
-                if (totalStackSize > 0) {
-                    var what = srcEntry.getKey();
-                    long movedItems = transferEntry(what, src, cellInv, Math.min(totalStackSize, itemsToMove), energy, this.mySrc);
-                    itemsToMove -= movedItems;
-                    movedTypes += movedItems > 0 ? 1 : 0;
-                }
-            }
-            if (itemsToMove <= 0 || (matchesFullnessMode(cellInv) && this.moveSlot(x))) {
-                ret = TickRateModulation.URGENT;
-            } else {
-                ret = TickRateModulation.IDLE;
-            }
-        } while (srcIterator.hasNext() && itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK && ++x < NUMBER_OF_CELL_SLOTS);
+            cells.add(new AbstractInt2ObjectMap.BasicEntry<>(i, cellInv));
+        }
+        if (cells.isEmpty()) {
+            return ret;
+        }
+        // The fastest way to manage <64 flags is to use primitive integer types
+        long ops = 0;
+        Objects.checkIndex(NUMBER_OF_CELL_SLOTS, Long.SIZE);
+        // This avoids checking the same key multiple times
+        var srcIterator = srcList.iterator();
 
-        return ret;
+        while (srcIterator.hasNext() && itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK && !cells.isEmpty()) {
+            var srcEntry = srcIterator.next();
+            var totalStackSize = srcEntry.getLongValue();
+            if (totalStackSize > 0) {
+                var what = srcEntry.getKey();
+                var movable = Math.min(totalStackSize, itemsToMove);
+                long movedItems = 0;
+                int x = 0;
+                do {
+                    var cell = cells.get(x);
+                    var cellInv = cell.getValue();
+                    var cellMovedItems = transferEntry(what, src, cellInv, movable, energy, this.mySrc);
+                    movable -= cellMovedItems;
+                    movedItems += cellMovedItems;
+                    if (cellMovedItems > 0) ops |= 1L << x;
+                    if (cellMovedItems <= 0 || cellInv.getStatus() != CellState.FULL) {
+                        x++;
+                    } else {
+                        cells.remove(x);
+                        isUrgent |= this.moveSlot(cell.getIntKey());
+                    }
+                } while (movable > 0 && x < cells.size());
+
+                itemsToMove -= movedItems;
+                movedTypes += movedItems > 0 ? 1 : 0;
+            }
+            if (itemsToMove <= 0) {
+                isUrgent = true;
+            }
+        }
+        var fullnessMode = manager.getSetting(Settings.FULLNESS_MODE);
+        var checkFullnessMode = itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK;
+        if (fullnessMode != FullnessMode.FULL && !cells.isEmpty()) {
+            for (var cell : cells) {
+                int slot = cell.getIntKey();
+                var p = 1L << slot;
+                if ((ops & p) == 0 || (checkFullnessMode && matchesFullnessMode(cell.getValue(), fullnessMode))) {
+                    isUrgent |= this.moveSlot(slot);
+                }
+                ops &= ~p;
+                if (ops == 0) break;
+            }
+        }
+        return isUrgent ? TickRateModulation.URGENT : TickRateModulation.IDLE;
     }
 
     private TickRateModulation emptyCells(IGrid grid, long itemsToMove, TickRateModulation ret) {
