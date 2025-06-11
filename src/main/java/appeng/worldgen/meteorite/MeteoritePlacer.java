@@ -168,7 +168,7 @@ public final class MeteoritePlacer {
     }
 
     private void placeCrater() {
-        final int maxY = 255;
+        final int maxY = level.getMaxBuildHeight();
         MutableBlockPos blockPos = new MutableBlockPos();
         BlockState filler = craterType.getFiller().defaultBlockState();
 
