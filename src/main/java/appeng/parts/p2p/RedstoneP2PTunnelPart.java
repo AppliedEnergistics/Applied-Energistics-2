@@ -63,6 +63,8 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
             final RedstoneP2PTunnelPart in = this.getInput();
             if (in != null) {
                 this.putInput(in.power);
+            } else {
+                this.putInput(0);
             }
         }
     }
@@ -73,8 +75,8 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
         }
 
         this.recursive = true;
-        if (this.isOutput() && this.getMainNode().isActive()) {
-            final int newPower = (Integer) o;
+        if (this.isOutput()) {
+            final int newPower = this.getMainNode().isActive() ? (Integer) o : 0;
             if (this.power != newPower) {
                 this.power = newPower;
                 this.notifyNeighbors();
