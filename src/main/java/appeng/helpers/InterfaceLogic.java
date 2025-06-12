@@ -127,7 +127,14 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     private boolean isAllowedInStorageSlot(int slot, AEKey what) {
         if (slot < config.size()) {
             var configured = config.getKey(slot);
-            return configured == null || configured.equals(what);
+            if (configured == null || configured.equals(what)) {
+                return true;
+            }
+            if (upgrades.isInstalled(AEItems.FUZZY_CARD)) {
+                var fuzzyMode = getConfigManager().getSetting(Settings.FUZZY_MODE);
+                return configured.fuzzyEquals(what, fuzzyMode);
+            }
+            return false;
         }
         return true;
     }

@@ -348,7 +348,8 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         rearrangeRoundRobin(possibleTargets);
 
         // Push to other kinds of blocks
-        for (var target : possibleTargets) {
+        for (int i = 0; i < possibleTargets.size(); ++i) {
+            var target = possibleTargets.get(i);
             var direction = target.direction();
             var adapter = target.target();
 
@@ -366,7 +367,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                 onPushPatternSuccess(patternDetails);
                 this.sendDirection = direction;
                 this.sendStacksOut();
-                ++roundRobinIndex;
+                roundRobinIndex += i + 1;
                 return true;
             }
         }
