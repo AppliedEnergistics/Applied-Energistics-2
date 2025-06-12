@@ -18,10 +18,7 @@
 
 package appeng.blockentity.storage;
 
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
-import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -36,11 +33,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
-
 import appeng.api.config.Actionable;
 import appeng.api.config.FullnessMode;
-import appeng.api.config.IncludeExclude;
 import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
@@ -51,12 +45,10 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
@@ -70,11 +62,9 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.grid.AENetworkedInvBlockEntity;
-import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
-import appeng.me.cells.BasicCellInventory;
 import appeng.me.helpers.MachineSource;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
@@ -85,7 +75,6 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
         implements IUpgradeableObject, IConfigurableObject, IGridTickable {
     private static final int NUMBER_OF_CELL_SLOTS = 6;
     private static final int NUMBER_OF_UPGRADE_SLOTS = 3;
-    private static final int TRANSFER_TYPES_PER_TICK = 63 * NUMBER_OF_CELL_SLOTS;
 
     private final IConfigManager manager;
 
@@ -172,14 +161,11 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
     }
 
     public void updateRedstoneState() {
-        if (this.level != null) {
-            final YesNo currentState = this.level.getBestNeighborSignal(this.worldPosition) != 0 ? YesNo.YES : YesNo.NO;
-            if (this.lastRedstoneState != currentState) {
-                this.lastRedstoneState = currentState;
-                this.updateTask();
-            }
+        final YesNo currentState = this.level.getBestNeighborSignal(this.worldPosition) != 0 ? YesNo.YES : YesNo.NO;
+        if (this.lastRedstoneState != currentState) {
+            this.lastRedstoneState = currentState;
+            this.updateTask();
         }
-
     }
 
     private boolean getRedstoneState() {
@@ -294,10 +280,30 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
             return TickRateModulation.IDLE;
         }
 
-        if (this.manager.getSetting(Settings.OPERATION_MODE) == OperationMode.EMPTY) {
-            ret = emptyCells(grid, itemsToMove, ret);
-        } else {
-            ret = fillCells(grid, itemsToMove, ret);
+        for (int x = 0; x < NUMBER_OF_CELL_SLOTS; x++) {
+            var cell = this.inputCells.getStackInSlot(x);
+
+            var cellInv = StorageCells.getCellInventory(cell, null);
+
+            if (cellInv == null) {
+                // This item is not a valid storage cell, try to move it to the output
+                moveSlot(x);
+                continue;
+            }
+
+            if (itemsToMove > 0) {
+                itemsToMove = transferContents(grid, cellInv, itemsToMove);
+
+                if (itemsToMove > 0) {
+                    ret = TickRateModulation.IDLE;
+                } else {
+                    ret = TickRateModulation.URGENT;
+                }
+            }
+
+            if (itemsToMove > 0 && matchesFullnessMode(cellInv) && this.moveSlot(x)) {
+                ret = TickRateModulation.URGENT;
+            }
         }
 
         return ret;
@@ -307,12 +313,7 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
      * Work is complete when the inventory has reached the desired end-state.
      */
     public boolean matchesFullnessMode(StorageCell inv) {
-        var fullnessMode = manager.getSetting(Settings.FULLNESS_MODE);
-        return matchesFullnessMode(inv, fullnessMode);
-    }
-
-    protected static boolean matchesFullnessMode(StorageCell inv, FullnessMode fullnessMode) {
-        return switch (fullnessMode) {
+        return switch (manager.getSetting(Settings.FULLNESS_MODE)) {
             // In this mode, work completes as soon as no more items are moved within one operation,
             // independent of the actual inventory state
             case HALF -> true;
@@ -321,329 +322,58 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
         };
     }
 
-    private static long transferEntryToCell(AEKey key, MEStorage src, StorageCell destination, long itemsToMove,
-            IEnergySource energy, IActionSource actionSource) {
-        long movedItem = 0;
-        if (itemsToMove > 0) {
-            var possible = destination.insert(key, itemsToMove, Actionable.SIMULATE, actionSource);
-            if (possible > 0) {
-                possible = Math.min(possible, itemsToMove * key.getAmountPerOperation());
+    private long transferContents(IGrid grid, StorageCell cellInv, long itemsToMove) {
 
-                possible = src.extract(key, possible, Actionable.MODULATE, actionSource);
-                if (possible > 0) {
-                    var inserted = StorageHelper.poweredInsert(energy, destination, key, possible, actionSource);
-
-                    if (inserted < possible) {
-                        src.insert(key, possible - inserted, Actionable.MODULATE, actionSource);
-                    }
-
-                    if (inserted > 0) {
-                        movedItem = Math.max(1, inserted / key.getAmountPerOperation());
-                    }
-                }
-            }
-        }
-        return movedItem;
-    }
-
-    private static long transferEntryFromCell(AEKey key, StorageCell src, MEStorage destination, long itemsToMove,
-            IEnergySource energy, IActionSource actionSource) {
-        long movedItem = 0;
-        if (itemsToMove > 0) {
-            // itemsToMove must be the number StorageCell just reported or less, so we can first modulate the
-            // NetworkStorage
-            var inserted = StorageHelper.poweredInsert(energy, destination, key, itemsToMove, actionSource,
-                    Actionable.MODULATE);
-            if (inserted > 0) {
-                movedItem = Math.max(1, inserted / key.getAmountPerOperation());
-                var extracted = src.extract(key, inserted, Actionable.MODULATE, actionSource);
-                long mismatch = inserted - extracted;
-                if (mismatch > 0) {
-                    AELog.warn("%s lied! Extracting some items back from NetworkStorage to prevent item duplication!",
-                            src.toString());
-                    inserted -= destination.extract(key, mismatch, Actionable.MODULATE, actionSource);
-                    movedItem = -Math.max(1, inserted / key.getAmountPerOperation());
-                } else if (mismatch < 0) {
-                    AELog.warn(
-                            "%s extracted too much items! Inserting some items back to StorageCell to prevent item loss!",
-                            src.toString());
-                    var remaining = -mismatch;
-                    extracted -= src.insert(key, remaining, Actionable.MODULATE, actionSource);
-                    movedItem = -movedItem;
-                }
-                if (extracted != inserted)
-                    throw new ConcurrentModificationException(
-                            "Failed to recover the mismatch of extraction and insertion!");
-            }
-        }
-        return movedItem;
-    }
-
-    private TickRateModulation fillCells(IGrid grid, long itemsToMove, TickRateModulation tickRateModulation) {
-        var networkInv = grid.getStorageService().getInventory();
-        KeyCounter srcList = grid.getStorageService().getCachedInventory();
-        KeyCounter dstList = null;
-        int movedTypes = 0;
-        boolean isUrgent = false;
-        var energy = grid.getEnergyService();
-        // The fastest way to manage <65 flags is to use primitive integer types
-        long cellFlags = 0;
-        Objects.checkIndex(NUMBER_OF_CELL_SLOTS, Long.SIZE);
-        ArrayList<AbstractInt2ObjectMap.BasicEntry<StorageCell>> typeFilledCells = new ArrayList<>();
-        ArrayList<AbstractInt2ObjectMap.BasicEntry<BasicCellInventory>> whitelistedCells = new ArrayList<>();
-        ArrayList<AbstractInt2ObjectMap.BasicEntry<StorageCell>> cells = new ArrayList<>();
-        for (int i = 0; i < NUMBER_OF_CELL_SLOTS; i++) {
-            var cell = this.inputCells.getStackInSlot(i);
-            if (cell == null)
-                continue;
-            var cellInv = StorageCells.getCellInventory(cell, null);
-
-            if (cellInv == null) {
-                // This item is not a valid storage cell, try to move it to the output
-                moveSlot(i);
-                continue;
-            }
-            var status = cellInv.getStatus();
-            switch (status) {
-                case FULL -> {
-                    // This item is not a valid storage cell, try to move it to the output
-                    moveSlot(i);
-                    continue;
-                }
-                case TYPES_FULL -> {
-                    typeFilledCells.add(new AbstractInt2ObjectMap.BasicEntry<>(i, cellInv));
-                    continue;
-                }
-            }
-            if (cellInv instanceof BasicCellInventory basicCellInventory) {
-                if (basicCellInventory.getFreeBytes() <= 0) {
-                    moveSlot(i);
-                    continue;
-                }
-                if (basicCellInventory.isPreformatted()
-                        && basicCellInventory.getPartitionListMode() == IncludeExclude.WHITELIST) {
-                    whitelistedCells.add(new AbstractInt2ObjectMap.BasicEntry<>(i, basicCellInventory));
-                    continue;
-                }
-            }
-            cells.add(new AbstractInt2ObjectMap.BasicEntry<>(i, cellInv));
-        }
-        if (cells.isEmpty() && whitelistedCells.isEmpty() && typeFilledCells.isEmpty())
-            return tickRateModulation;
-        if (!whitelistedCells.isEmpty()) {
-            dstList = new KeyCounter();
-            int i = 0;
-            while (itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK && i < whitelistedCells.size()) {
-                var cell = whitelistedCells.get(i);
-                var slot = cell.getIntKey();
-                var cellInv = cell.getValue();
-                var limitToAdd = cellInv instanceof BasicCellInventory basicCellInventory
-                        ? basicCellInventory.getRemainingItemTypes()
-                        : 0;
-                limitToAdd = Math.max(63, limitToAdd);
-                if (cellInv.filterMatches(srcList, dstList, movedTypes + limitToAdd)) {
-                    for (var entry : dstList) {
-                        var what = entry.getKey();
-                        var totalStackSize = entry.getLongValue();
-                        if (totalStackSize > 0) {
-                            var movable = Math.min(totalStackSize, itemsToMove);
-                            var cellMovedItems = transferEntryToCell(what, networkInv, cellInv, movable, energy,
-                                    this.mySrc);
-                            itemsToMove -= cellMovedItems;
-                            movedTypes += cellMovedItems > 0 ? 1 : 0;
-                            if (cellMovedItems > 0) {
-                                cellFlags |= 1L << slot;
-                                var status = cellInv.getStatus();
-                                if (status == CellState.FULL) {
-                                    isUrgent |= this.moveSlot(cell.getIntKey());
-                                    whitelistedCells.remove(i);
-                                    break;
-                                }
-                            }
-                            if (itemsToMove <= 0 || movedTypes >= TRANSFER_TYPES_PER_TICK)
-                                break;
-                        }
-                    }
-                    dstList.clear();
-                    i++;
-                } else {
-                    cells.add(new AbstractInt2ObjectMap.BasicEntry<>(slot, cellInv));
-                    whitelistedCells.remove(i);
-                }
-            }
-        }
-        var cellsChecked = itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK;
-        if (!cells.isEmpty()) {
-            // This avoids checking the same key multiple times
-            var srcIterator = srcList.iterator();
-            while (srcIterator.hasNext() && itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK
-                    && !cells.isEmpty()) {
-                var srcEntry = srcIterator.next();
-                var totalStackSize = srcEntry.getLongValue();
-                if (totalStackSize > 0) {
-                    var what = srcEntry.getKey();
-                    var movable = Math.min(totalStackSize, itemsToMove);
-                    long movedItems = 0;
-                    int x = 0;
-                    do {
-                        var cell = cells.get(x);
-                        var cellInv = cell.getValue();
-                        var cellMovedItems = transferEntryToCell(what, networkInv, cellInv, movable, energy,
-                                this.mySrc);
-                        movable -= cellMovedItems;
-                        movedItems += cellMovedItems;
-                        if (cellMovedItems > 0) {
-                            int slot = cell.getIntKey();
-                            cellFlags |= 1L << slot;
-                            var status = cellInv.getStatus();
-                            if (status == CellState.FULL) {
-                                isUrgent |= this.moveSlot(slot);
-                                cells.remove(x);
-                                continue;
-                            } else if (status == CellState.TYPES_FULL) {
-                                // Postpone to the next tick
-                                cells.remove(x);
-                                continue;
-                            }
-                        }
-                        x++;
-                    } while (movable > 0 && x < cells.size());
-                    itemsToMove -= movedItems;
-                    movedTypes += movedItems > 0 ? 1 : 0;
-                }
-            }
-        }
-        var typeFilledCellsChecked = itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK;
-        if (!typeFilledCells.isEmpty()) {
-            if (dstList == null)
-                dstList = new KeyCounter();
-            else
-                dstList.clear();
-            var filterList = new KeyCounter();
-            int i = 0;
-            while (itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK && i < typeFilledCells.size()) {
-                var cell = typeFilledCells.get(i);
-                var slot = cell.getIntKey();
-                var cellInv = cell.getValue();
-                boolean cellRemoved = false;
-                cellInv.getAvailableStacks(filterList);
-                if (filterList.filterMatchesPrecise(srcList, dstList)) {
-                    if (!dstList.isEmpty()) {
-                        for (var entry : dstList) {
-                            var what = entry.getKey();
-                            var totalStackSize = entry.getLongValue();
-                            if (totalStackSize > 0) {
-                                var movable = Math.min(totalStackSize, itemsToMove);
-                                var cellMovedItems = transferEntryToCell(what, networkInv, cellInv, movable, energy,
-                                        this.mySrc);
-                                itemsToMove -= cellMovedItems;
-                                movedTypes += cellMovedItems > 0 ? 1 : 0;
-                                if (cellMovedItems > 0) {
-                                    cellFlags |= 1L << slot;
-                                    var status = cellInv.getStatus();
-                                    if (status == CellState.FULL) {
-                                        isUrgent |= this.moveSlot(slot);
-                                        typeFilledCells.remove(i);
-                                        cellRemoved = true;
-                                        break;
-                                    }
-                                }
-                                if (itemsToMove <= 0 || movedTypes >= TRANSFER_TYPES_PER_TICK)
-                                    break;
-                            }
-                        }
-                        dstList.clear();
-                    } else {
-                        isUrgent |= this.moveSlot(slot);
-                        typeFilledCells.remove(i);
-                    }
-                }
-                i += cellRemoved ? 0 : 1;
-            }
-        }
-        isUrgent |= itemsToMove <= 0;
-        var fullnessMode = manager.getSetting(Settings.FULLNESS_MODE);
-        var checkFullnessMode = itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK;
-        if (fullnessMode != FullnessMode.FULL) {
-            if (!whitelistedCells.isEmpty()) {
-                for (var cell : whitelistedCells) {
-                    int slot = cell.getIntKey();
-                    var p = 1L << slot;
-                    if ((cellFlags & p) == 0
-                            || (checkFullnessMode && matchesFullnessMode(cell.getValue(), fullnessMode))) {
-                        isUrgent |= this.moveSlot(slot);
-                    }
-                    cellFlags &= ~p;
-                }
-            }
-            if (cellsChecked && !cells.isEmpty()) {
-                for (var cell : cells) {
-                    int slot = cell.getIntKey();
-                    var p = 1L << slot;
-                    if ((cellFlags & p) == 0
-                            || (checkFullnessMode && matchesFullnessMode(cell.getValue(), fullnessMode))) {
-                        isUrgent |= this.moveSlot(slot);
-                    }
-                    cellFlags &= ~p;
-                }
-            }
-            if (typeFilledCellsChecked && !typeFilledCells.isEmpty()) {
-                for (var cell : typeFilledCells) {
-                    int slot = cell.getIntKey();
-                    var p = 1L << slot;
-                    if ((cellFlags & p) == 0
-                            || (checkFullnessMode && matchesFullnessMode(cell.getValue(), fullnessMode))) {
-                        isUrgent |= this.moveSlot(slot);
-                    }
-                    cellFlags &= ~p;
-                }
-            }
-        }
-        return isUrgent ? TickRateModulation.URGENT : TickRateModulation.IDLE;
-    }
-
-    private TickRateModulation emptyCells(IGrid grid, long itemsToMove, TickRateModulation tickRateModulation) {
         var networkInv = grid.getStorageService().getInventory();
 
-        KeyCounter srcList = new KeyCounter();
-        int x = 0;
-        int movedTypes = 0;
+        KeyCounter srcList;
+        MEStorage src, destination;
+        if (this.manager.getSetting(Settings.OPERATION_MODE) == OperationMode.EMPTY) {
+            src = cellInv;
+            srcList = cellInv.getAvailableStacks();
+            destination = networkInv;
+        } else {
+            src = networkInv;
+            srcList = grid.getStorageService().getCachedInventory();
+            destination = cellInv;
+        }
 
         var energy = grid.getEnergyService();
+        boolean didStuff;
+
         do {
-            var cell = this.inputCells.getStackInSlot(x);
-            var cellInv = StorageCells.getCellInventory(cell, null);
-            if (cellInv == null) {
-                // This item is not a valid storage cell, try to move it to the output
-                moveSlot(x);
-                continue;
-            }
-            srcList.clear();
-            cellInv.getAvailableStacks(srcList);
-            var srcIterator = srcList.iterator();
-            while (srcIterator.hasNext() && itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK) {
-                var srcEntry = srcIterator.next();
+            didStuff = false;
+
+            for (var srcEntry : srcList) {
                 var totalStackSize = srcEntry.getLongValue();
                 if (totalStackSize > 0) {
                     var what = srcEntry.getKey();
-                    long movedItems = transferEntryFromCell(what, cellInv, networkInv,
-                            Math.min(totalStackSize, itemsToMove), energy, this.mySrc);
-                    itemsToMove -= Math.abs(movedItems);
-                    if (movedItems < 0) {
-                        // Apparently the cell lied about its stored amount.
-                        return TickRateModulation.SLOWER;
+                    var possible = destination.insert(what, totalStackSize, Actionable.SIMULATE, this.mySrc);
+
+                    if (possible > 0) {
+                        possible = Math.min(possible, itemsToMove * what.getAmountPerOperation());
+
+                        possible = src.extract(what, possible, Actionable.MODULATE, this.mySrc);
+                        if (possible > 0) {
+                            var inserted = StorageHelper.poweredInsert(energy, destination, what, possible, this.mySrc);
+
+                            if (inserted < possible) {
+                                src.insert(what, possible - inserted, Actionable.MODULATE, this.mySrc);
+                            }
+
+                            if (inserted > 0) {
+                                itemsToMove -= Math.max(1, inserted / what.getAmountPerOperation());
+                                didStuff = true;
+                            }
+
+                            break;
+                        }
                     }
-                    movedTypes += movedItems > 0 ? 1 : 0;
                 }
             }
-            if (itemsToMove <= 0 || (matchesFullnessMode(cellInv) && this.moveSlot(x))) {
-                tickRateModulation = TickRateModulation.URGENT;
-            } else {
-                tickRateModulation = TickRateModulation.IDLE;
-            }
-        } while (itemsToMove > 0 && movedTypes < TRANSFER_TYPES_PER_TICK && ++x < NUMBER_OF_CELL_SLOTS);
+        } while (itemsToMove > 0 && didStuff);
 
-        return tickRateModulation;
+        return itemsToMove;
     }
 
     private boolean moveSlot(int x) {
