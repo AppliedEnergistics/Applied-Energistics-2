@@ -18,11 +18,7 @@
 
 package appeng.util.prioritylist;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import appeng.api.config.FuzzyMode;
-import appeng.api.config.IncludeExclude;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 
@@ -49,13 +45,5 @@ public class FuzzyPriorityList implements IPartitionList {
     @Override
     public Iterable<AEKey> getItems() {
         return this.list.keySet();
-    }
-
-    @Override
-    public boolean filterMatches(@Nullable KeyCounter source, @NotNull KeyCounter output, IncludeExclude mode,
-            long limit) {
-        if (mode == IncludeExclude.BLACKLIST)
-            return false;
-        return list.filterMatchesFuzzy(source, output, this.mode, limit);
     }
 }
