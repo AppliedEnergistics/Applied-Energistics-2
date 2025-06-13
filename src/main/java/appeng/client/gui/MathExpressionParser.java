@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.Stack;
 
 public class MathExpressionParser {
+    private static final BigDecimal THIRTY = BigDecimal.valueOf(30);
+    private static final BigDecimal ONE_BILLION = BigDecimal.valueOf(1e9);
 
     public static Optional<BigDecimal> parse(String expression, DecimalFormat decimalFormat) {
         // Parse using the Shunting Yard Algorithm
@@ -24,7 +26,7 @@ public class MathExpressionParser {
                 continue;
             }
 
-            if (!wasNumberOrRightBracket || expression.charAt(i) != '-') {
+            if (!wasNumberOrRightBracket && expression.charAt(i) != '-') {
                 var position = new ParsePosition(i);
                 Number parsedNumber = decimalFormat.parse(expression, position);
                 if (position.getErrorIndex() == -1) { // no error
@@ -64,7 +66,7 @@ public class MathExpressionParser {
                     }
                     wasNumberOrRightBracket = true;
                 }
-                case '+', '-', '*', '/' -> {
+                case '+', '-', '*', '/', '^' -> {
                     while (!operatorStack.isEmpty()) {
                         char operator = operatorStack.peek();
                         if (operator != '(' && precedenceCheck(operator, currentOperator)) {
@@ -119,6 +121,22 @@ public class MathExpressionParser {
                                     number.push(left.divide(right, 8, RoundingMode.FLOOR));
                                 }
                             }
+                            case '^' -> {
+                                right = right.stripTrailingZeros();
+                                // if has a decimal part or is smaller than 0 -> nope
+                                if (right.scale() > 0 || right.compareTo(BigDecimal.ZERO) < 0) {
+                                    return Optional.empty();
+                                }
+                                // limit exponent to 30
+                                if (right.compareTo(THIRTY) > 0) {
+                                    return Optional.empty(); // exponent too big
+                                }
+                                // limit base number to 1e9
+                                if (left.compareTo(ONE_BILLION) > 0) {
+                                    return Optional.empty(); // base number too big
+                                }
+                                number.push(left.pow(right.intValueExact()));
+                            }
                             case '(', ')' -> {
                                 return Optional.empty(); // should not have any remaining parenthesis in the stack
                             }
@@ -147,6 +165,7 @@ public class MathExpressionParser {
 
     private static int getPrecedence(char operator) {
         return switch (operator) {
+            case '^' -> -1;
             case 'u' -> 0;
             case '/', '*' -> 1;
             case '+', '-' -> 2;
