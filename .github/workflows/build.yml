@@ -39,7 +39,7 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then exit 1; fi
 
       - name: Build with Gradle
-        run: ./gradlew printProjectVersion build publish -x check --max-workers 1
+        run: ./gradlew printProjectVersion build publish --max-workers 1
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_KEY_PASSWORD }}
