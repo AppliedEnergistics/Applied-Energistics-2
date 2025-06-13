@@ -42,6 +42,13 @@ public class MathExpressionParserTest {
             "NaN|failed",
             "1 / 0|failed",
             "64/4|16",
+            "-2^2|-4",
+            "2^2*3|12",
+            "2^3.1|failed",
+            "2^31|failed",
+            "2^3^4|4096", // a bit unusual but acceptable
+            "2^30^30^30|failed",
+            "2^-1|failed",
     }, delimiter = '|')
     void testThird(String expression, String expected) {
 
