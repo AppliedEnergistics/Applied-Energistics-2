@@ -105,7 +105,7 @@ final class FuzzySearch {
             // damage values to be predictable, while still having to satisfy the
             // complete order requirements of the sorted map
             // (We hope there won't be hash collisions... the probability is very low anyway)
-            return Long.compare(stackA.hashCode(), stackB.hashCode());
+            return Integer.compare(stackA.hashCode(), stackB.hashCode());
         }
     }
 
