@@ -273,6 +273,7 @@
   "config.jade.plugin_ae2.power_storage": "AE2 Power State",
   "death.attack.matter_cannon": "%1$s sköts av %2$s",
   "death.attack.matter_cannon.item": "%1$s sköts av %2$s med %3$s",
+  "dimension.ae2.spatial_storage": "Spatial Lagring",
   "entity.ae2.tiny_tnt_primed": "Liten TNT Primerad",
   "entity.minecraft.villager.ae2.fluix_researcher": "Fluixforskare",
   "exported_setting.ae2.exported_config_inv": "Filtrera",
