@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -69,6 +71,7 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.core.network.serverbound.InventoryActionPacket;
+import appeng.core.network.serverbound.QuickMovePatternPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.implementations.PatternAccessTermMenu;
 
@@ -346,6 +349,21 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                 PacketDistributor.sendToServer(p);
             }
 
+            return;
+        }
+
+        if (clickType == ClickType.QUICK_MOVE && slot.container == getPlayer().getInventory()) {
+            Set<Long> visiblePatternContainers = new LinkedHashSet<>();
+            for (var row : this.rows) {
+                if (row instanceof SlotsRow slotsRow) {
+                    visiblePatternContainers.add(slotsRow.container.getServerId());
+                }
+            }
+
+            int clickedSlot = slot.getContainerSlot();
+            var packet = new QuickMovePatternPacket(
+                    menu.containerId, clickedSlot, List.copyOf(visiblePatternContainers));
+            PacketDistributor.sendToServer(packet);
             return;
         }
 
