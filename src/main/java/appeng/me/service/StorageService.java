@@ -43,6 +43,7 @@ import net.minecraft.nbt.NbtOps;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
@@ -60,6 +61,7 @@ import appeng.util.JsonStreamUtil;
 
 public class StorageService implements IStorageService, IGridServiceProvider {
     private static final Gson GSON = new Gson();
+    private static final int MissedTypeSetDefaultSize = 32;
 
     /**
      * Tracks the storage service's state for each grid node that provides storage to the network.
@@ -82,14 +84,15 @@ public class StorageService implements IStorageService, IGridServiceProvider {
      * {@link #cachedAvailableStacks} is modified by mistake.
      */
     private final Object2LongMap<AEKey> cachedAvailableAmounts = new Object2LongOpenHashMap<>();
-    private boolean cachedStacksNeedUpdate = true;
     /**
      * Tracks the stack watcher associated with a given grid node. Needed to clean up watchers when the node leaves the
      * grid.
      */
     private final Map<IGridNode, StackWatcher<IStorageWatcherNode>> watchers = new IdentityHashMap<>();
-
     private final StatsAccumulator inventoryRefreshStats = new StatsAccumulator();
+    private ObjectOpenHashSet<AEKey> cacheUpdateMissedTypesSet = new ObjectOpenHashSet<>(MissedTypeSetDefaultSize);
+    private int missedTypeSetMinSize = MissedTypeSetDefaultSize;
+    private boolean cachedStacksNeedUpdate = true;
 
     public StorageService() {
         this.storage = new NetworkStorage();
@@ -103,6 +106,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         } else {
             // we need to rebuild the cache every tick to notify listeners
             updateCachedStacks();
+            notifyWatchers();
         }
     }
 
@@ -111,33 +115,54 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
         try {
             cachedStacksNeedUpdate = false;
+            var cachedStacks = cachedAvailableStacks;
+            cachedStacks.clear();
+            storage.getAvailableStacks(cachedStacks);
+        } finally {
+            inventoryRefreshStats.add(System.nanoTime() - time);
+        }
+    }
 
-            cachedAvailableStacks.clear();
-            storage.getAvailableStacks(cachedAvailableStacks);
-            // clear() only clears the inner maps,
-            // so ensure that the outer map gets cleaned up too
-            cachedAvailableStacks.removeEmptySubmaps();
-
-            // Post watcher update for currently available stacks
+    private void notifyWatchers() {
+        var time = System.nanoTime();
+        try {
+            var availableAmounts = cachedAvailableAmounts;
+            var keys = cacheUpdateMissedTypesSet;
+            var keySet = availableAmounts.keySet();
+            var numKeys = keySet.size();
+            if (numKeys > MissedTypeSetDefaultSize * 4 && numKeys >= missedTypeSetMinSize * 4
+                    || numKeys < missedTypeSetMinSize >> 3) {
+                // Reset the minimum internal table size of the ObjectOpenHashSet in order to avoid too many rehashes
+                if (!keys.isEmpty()) {
+                    keys.clear();
+                }
+                keys = new ObjectOpenHashSet<>(keySet);
+                missedTypeSetMinSize = keys.size();
+                cacheUpdateMissedTypesSet = keys;
+            } else {
+                keys.addAll(keySet);
+            }
+            // Post watcher update for currently available stacks.
             for (var entry : cachedAvailableStacks) {
                 var what = entry.getKey();
                 var newAmount = entry.getLongValue();
-                if (newAmount != cachedAvailableAmounts.getLong(what)) {
+                long oldAmount;
+                oldAmount = availableAmounts.put(what, newAmount);
+                if (newAmount != oldAmount) {
                     postWatcherUpdate(what, newAmount);
                 }
+                if (keys.isEmpty())
+                    continue;
+                keys.remove(what);
             }
-            // Post watcher update for removed stacks
-            for (var what : cachedAvailableAmounts.keySet()) {
-                var newAmount = cachedAvailableStacks.get(what);
-                if (newAmount == 0) {
-                    postWatcherUpdate(what, newAmount);
+            if (!keys.isEmpty()) {
+                // Post watcher update for removed stacks.
+                for (var what : keys) {
+                    postWatcherUpdate(what, 0);
+                    availableAmounts.removeLong(what);
                 }
-            }
-
-            // Update private amounts
-            cachedAvailableAmounts.clear();
-            for (var entry : cachedAvailableStacks) {
-                cachedAvailableAmounts.put(entry.getKey(), entry.getLongValue());
+                keys.clear();
+                cachedAvailableStacks.removeEmptySubmaps();
             }
         } finally {
             inventoryRefreshStats.add(System.nanoTime() - time);
