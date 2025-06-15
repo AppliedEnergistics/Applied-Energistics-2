@@ -1,6 +1,10 @@
 package appeng.api.stacks;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
@@ -8,6 +12,10 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMaps;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -54,10 +62,50 @@ public final class AEItemKey extends AEKey {
     private final int maxStackSize;
     private final int damage;
 
+    /**
+     * Similar to {@link ItemStack#hashItemAndComponents}, but optimized to reduce collisions.
+     * The main trick we play is how we hash the component patch map entries:
+     * instead of XOR'ing the hash codes of the keys and the values,
+     * we multiply the values by 31 ^ id, where id is the registered id of the data component.
+     *
+     * <p>Assumes non-empty stacks!
+     */
+    private static int hashItemAndComponents(ItemStack stack) {
+        // The cast here assumes that the stack is non-empty
+        PatchedDataComponentMap components = (PatchedDataComponentMap) stack.getComponents();
+        int componentsHash = components.prototype.hashCode() + hashComponentMapPatch(components.patch) * 31;
+
+        int i = 31 + stack.getItem().hashCode();
+        return 31 * i + componentsHash;
+    }
+
+    /**
+     * Cache the hash factors in case the component IDs change in the future (e.g. connection to a different server)
+     */
+    private static final Map<DataComponentType<?>, Integer> componentHashFactors = new ConcurrentHashMap<>();
+
+    private static int hashComponentMapPatch(Reference2ObjectMap<DataComponentType<?>, Optional<?>> patch) {
+        int h = 0, n = patch.size();
+        final ObjectIterator<Reference2ObjectMap.Entry<DataComponentType<?>, Optional<?>>> it = Reference2ObjectMaps.fastIterator(patch);
+        while (n-- != 0) {
+            var entry = it.next();
+            int componentHashFactor = componentHashFactors.computeIfAbsent(entry.getKey(), type -> {
+                int exponent = BuiltInRegistries.DATA_COMPONENT_TYPE.getId(type);
+                int result = 1;
+                for (int i = 0; i < exponent; ++i) {
+                    result *= 31;
+                }
+                return result;
+            });
+            h += componentHashFactor * entry.getValue().hashCode();
+        }
+        return h;
+    }
+
     private AEItemKey(ItemStack stack) {
         Preconditions.checkArgument(!stack.isEmpty(), "stack is empty");
         this.stack = stack;
-        this.hashCode = ItemStack.hashItemAndComponents(stack);
+        this.hashCode = hashItemAndComponents(stack);
         this.maxStackSize = stack.getMaxStackSize();
         this.damage = stack.getDamageValue();
     }
