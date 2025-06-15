@@ -273,6 +273,7 @@
   "config.jade.plugin_ae2.power_storage": "AE2電力状態",
   "death.attack.matter_cannon": "%1$sは%2$sに撃たれた",
   "death.attack.matter_cannon.item": "%1$sは%3$sで%2$sに撃たれた",
+  "dimension.ae2.spatial_storage": "空間ストレージ",
   "entity.ae2.tiny_tnt_primed": "極小TNTが起爆",
   "entity.minecraft.villager.ae2.fluix_researcher": "フルーシュ研究員",
   "exported_setting.ae2.exported_config_inv": "フィルター",
