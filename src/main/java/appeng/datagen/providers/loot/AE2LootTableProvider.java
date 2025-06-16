@@ -15,7 +15,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 public class AE2LootTableProvider extends LootTableProvider {
     private static final List<SubProviderEntry> SUB_PROVIDERS = List.of(
-            new SubProviderEntry(BlockDropProvider::new, LootContextParamSets.BLOCK));
+            new SubProviderEntry(BlockDropProvider::new, LootContextParamSets.BLOCK),
+            new SubProviderEntry(RaidHeroGiftLootProvider::new, LootContextParamSets.GIFT));
 
     public AE2LootTableProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> provider) {
         super(packOutput, Set.of(), SUB_PROVIDERS, provider);

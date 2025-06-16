@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:gift",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "ae2:certus_quartz_crystal"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ae2:fluix_crystal"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ae2:sky_stone_block"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "ae2:gameplay/hero_of_the_village/fluix_researcher_gifts"
+}
