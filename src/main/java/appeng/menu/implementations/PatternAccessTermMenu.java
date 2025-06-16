@@ -293,10 +293,13 @@ public class PatternAccessTermMenu extends AEBaseMenu implements LinkStatusAware
     }
 
     public void quickMovePattern(ServerPlayer player, int clickedSlot, List<Long> allowedPatternContainers) {
-        if (clickedSlot >= Inventory.INVENTORY_SIZE) {
+        if (clickedSlot < 0 || clickedSlot >= this.slots.size()) {
             return;
         }
         Slot sourceSlot = getSlot(clickedSlot);
+        if (!isPlayerSideSlot(sourceSlot)) {
+            return;
+        }
         ItemStack sourceStack = sourceSlot.getItem();
         if (sourceStack.getCount() != 1) {
             return;

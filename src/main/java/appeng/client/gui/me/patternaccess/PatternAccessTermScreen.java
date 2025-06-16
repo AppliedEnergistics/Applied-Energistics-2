@@ -352,7 +352,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             return;
         }
 
-        if (clickType == ClickType.QUICK_MOVE && slot.container == getPlayer().getInventory()) {
+        if (clickType == ClickType.QUICK_MOVE && menu.isPlayerSideSlot(slot)) {
             Set<Long> visiblePatternContainers = new LinkedHashSet<>();
             for (var row : this.rows) {
                 if (row instanceof SlotsRow slotsRow) {
