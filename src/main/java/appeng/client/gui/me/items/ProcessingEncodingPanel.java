@@ -24,6 +24,7 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
     private final ActionButton cycleOutputBtn;
     private final Scrollbar scrollbar;
     private final Label[] inputLabels;
+    private final Label[] outputLabels;
 
     public ProcessingEncodingPanel(PatternEncodingTermScreen<?> screen, WidgetContainer widgets) {
         super(screen, widgets);
@@ -50,35 +51,28 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
 
         this.inputLabels = new Label[9];
 
-        var aligns = new TextAlignment[] {
-            TextAlignment.LEFT,
-            TextAlignment.CENTER,
-            TextAlignment.RIGHT,
-        };
+        for (var i = 0; i < this.inputLabels.length; i += 1) {
+            var label = new Label(Component.empty(), font);
+            label
+                .setDropShadow(false)
+                .setScale(0.5f);
 
-        var i = 0;
-        for (var vert: aligns)
-            for (var horiz: aligns) {
-                var label = new Label(Component.empty(), font);
-                var hLetter = switch(horiz) {
-                    case LEFT -> "L";
-                    case CENTER -> "C";
-                    case RIGHT -> "R";
-                };
-                var vLetter = switch(vert) {
-                    case LEFT -> "T";
-                    case CENTER -> "C";
-                    case RIGHT -> "B";
-                };
-                label
+            widgets.add(String.format("inputLabel%d", i), label);
+
+            this.inputLabels[i] = label;
+        }
+
+        this.outputLabels = new Label[3];
+
+        for (var i = 0; i < this.outputLabels.length; i += 1) {
+            var label = new Label(Component.empty(), font);
+            label
                     .setDropShadow(false)
-                    .setAlignX(horiz)
-                    .setAlignY(vert);
+                    .setScale(0.5f);
 
-                widgets.add(String.format("slotLabel%s%s", hLetter, vLetter), label);
+            widgets.add(String.format("outputLabel%d", i), label);
 
-                this.inputLabels[i] = label;
-                i += 1;
+            this.outputLabels[i] = label;
         }
     }
 
@@ -103,13 +97,19 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
             slot.y -= scrollbar.getCurrentScroll() * 18;
         }
 
+        updateTooltipVisibility();
+
         var slot = scrollbar.getCurrentScroll() * 3;
         for (var label: inputLabels) {
             label.setMessage(Component.literal(Integer.toString(slot)));
             slot += 1;
         }
 
-        updateTooltipVisibility();
+        slot = scrollbar.getCurrentScroll();
+        for (var label: outputLabels) {
+            label.setMessage(Component.literal(Integer.toString(slot)));
+            slot += 1;
+        }
     }
 
     @Override
@@ -149,6 +149,12 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
 
         screen.setSlotsHidden(SlotSemantics.PROCESSING_INPUTS, !visible);
         screen.setSlotsHidden(SlotSemantics.PROCESSING_OUTPUTS, !visible);
+
+        for (var label: inputLabels)
+            label.visible = visible;
+
+        for (var label: outputLabels)
+            label.visible = visible;
 
         updateTooltipVisibility();
     }
