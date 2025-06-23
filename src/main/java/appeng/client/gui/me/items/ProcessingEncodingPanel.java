@@ -10,6 +10,7 @@ import appeng.client.Point;
 import appeng.client.gui.Icon;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.TextAlignment;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.Label;
 import appeng.client.gui.widgets.Scrollbar;
@@ -22,8 +23,7 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
     private final ActionButton clearBtn;
     private final ActionButton cycleOutputBtn;
     private final Scrollbar scrollbar;
-    private final Label[] inputLabels;
-    private final Label[] outputLabels;
+    private final Label[] rowLabels;
 
     public ProcessingEncodingPanel(PatternEncodingTermScreen<?> screen, WidgetContainer widgets) {
         super(screen, widgets);
@@ -48,36 +48,25 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
 
         var font = Minecraft.getInstance().font;
 
-        this.inputLabels = new Label[9];
+        this.rowLabels = new Label[3];
 
-        for (var i = 0; i < this.inputLabels.length; i += 1) {
+        for (var i = 0; i < this.rowLabels.length; i += 1) {
             var label = new Label(Component.empty(), font);
             label
                     .setDropShadow(false)
-                    .setScale(0.5f);
+                    .setAlignX(TextAlignment.RIGHT)
+                    .setAlignY(TextAlignment.CENTER)
+                    .setColor(0x696D88);
 
-            widgets.add(String.format("inputLabel%d", i), label);
+            widgets.add(String.format("rowLabel%d", i), label);
 
-            this.inputLabels[i] = label;
-        }
-
-        this.outputLabels = new Label[3];
-
-        for (var i = 0; i < this.outputLabels.length; i += 1) {
-            var label = new Label(Component.empty(), font);
-            label
-                    .setDropShadow(false)
-                    .setScale(0.5f);
-
-            widgets.add(String.format("outputLabel%d", i), label);
-
-            this.outputLabels[i] = label;
+            this.rowLabels[i] = label;
         }
     }
 
     @Override
     public void updateBeforeRender() {
-        // Update the processing slot position/visibility
+        // Update the processing row position/visibility
         screen.repositionSlots(SlotSemantics.PROCESSING_INPUTS);
         screen.repositionSlots(SlotSemantics.PROCESSING_OUTPUTS);
 
@@ -98,16 +87,10 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
 
         updateTooltipVisibility();
 
-        var slot = scrollbar.getCurrentScroll() * 3;
-        for (var label : inputLabels) {
-            label.setMessage(Component.literal(Integer.toString(slot)));
-            slot += 1;
-        }
-
-        slot = scrollbar.getCurrentScroll();
-        for (var label : outputLabels) {
-            label.setMessage(Component.literal(Integer.toString(slot)));
-            slot += 1;
+        var row = scrollbar.getCurrentScroll() + 1;
+        for (var label : rowLabels) {
+            label.setMessage(Component.literal(Integer.toString(row)));
+            row += 1;
         }
     }
 
@@ -149,10 +132,7 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
         screen.setSlotsHidden(SlotSemantics.PROCESSING_INPUTS, !visible);
         screen.setSlotsHidden(SlotSemantics.PROCESSING_OUTPUTS, !visible);
 
-        for (var label : inputLabels)
-            label.visible = visible;
-
-        for (var label : outputLabels)
+        for (var label : rowLabels)
             label.visible = visible;
 
         updateTooltipVisibility();
