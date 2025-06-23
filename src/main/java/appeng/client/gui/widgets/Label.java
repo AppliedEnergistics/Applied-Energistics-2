@@ -1,6 +1,7 @@
 package appeng.client.gui.widgets;
 
-import appeng.client.gui.style.TextAlignment;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractStringWidget;
@@ -9,11 +10,12 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.FormattedCharSequence;
-import org.jetbrains.annotations.NotNull;
+
+import appeng.client.gui.style.TextAlignment;
 
 /**
- * Label widget, usable on any composite widget panel.
- * Supports vertical and horizontal alignment, scaling, drop shadow and text clip
+ * Label widget, usable on any composite widget panel. Supports vertical and horizontal alignment, scaling, drop shadow
+ * and text clip
  */
 public class Label extends AbstractStringWidget {
     private boolean dropShadow;
@@ -115,8 +117,7 @@ public class Label extends AbstractStringWidget {
             if (clipWidth && textWidth > labelWidth) {
                 drawText = this.clipText(message, labelWidth);
                 textWidth = labelWidth;
-            }
-            else {
+            } else {
                 drawText = message.getVisualOrderText();
             }
 
@@ -130,8 +131,7 @@ public class Label extends AbstractStringWidget {
             if (clipWidth && textWidth > labelLogicWidth) {
                 drawText = this.clipText(message, labelLogicWidth);
                 textWidth = labelWidth;
-            }
-            else {
+            } else {
                 drawText = message.getVisualOrderText();
                 textWidth = Math.round(textWidth * scale);
             }

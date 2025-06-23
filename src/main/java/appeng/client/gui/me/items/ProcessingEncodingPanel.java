@@ -1,7 +1,5 @@
 package appeng.client.gui.me.items;
 
-import appeng.client.gui.style.TextAlignment;
-import appeng.client.gui.widgets.Label;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
@@ -13,6 +11,7 @@ import appeng.client.gui.Icon;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.ActionButton;
+import appeng.client.gui.widgets.Label;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.core.localization.GuiText;
 import appeng.menu.SlotSemantics;
@@ -54,8 +53,8 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
         for (var i = 0; i < this.inputLabels.length; i += 1) {
             var label = new Label(Component.empty(), font);
             label
-                .setDropShadow(false)
-                .setScale(0.5f);
+                    .setDropShadow(false)
+                    .setScale(0.5f);
 
             widgets.add(String.format("inputLabel%d", i), label);
 
@@ -100,13 +99,13 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
         updateTooltipVisibility();
 
         var slot = scrollbar.getCurrentScroll() * 3;
-        for (var label: inputLabels) {
+        for (var label : inputLabels) {
             label.setMessage(Component.literal(Integer.toString(slot)));
             slot += 1;
         }
 
         slot = scrollbar.getCurrentScroll();
-        for (var label: outputLabels) {
+        for (var label : outputLabels) {
             label.setMessage(Component.literal(Integer.toString(slot)));
             slot += 1;
         }
@@ -150,10 +149,10 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
         screen.setSlotsHidden(SlotSemantics.PROCESSING_INPUTS, !visible);
         screen.setSlotsHidden(SlotSemantics.PROCESSING_OUTPUTS, !visible);
 
-        for (var label: inputLabels)
+        for (var label : inputLabels)
             label.visible = visible;
 
-        for (var label: outputLabels)
+        for (var label : outputLabels)
             label.visible = visible;
 
         updateTooltipVisibility();
