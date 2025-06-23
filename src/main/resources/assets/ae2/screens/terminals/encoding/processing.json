@@ -88,6 +88,60 @@
     "processingClearPattern": {
       "left": 79,
       "bottom": 159
+    },
+    "slotLabelLT": {
+      "left": 24,
+      "bottom": 158,
+      "width": 18,
+      "height": 18
+    },
+    "slotLabelCT": {
+      "left": 42,
+      "bottom": 158,
+      "width": 18,
+      "height": 18
+    },
+    "slotLabelRT": {
+      "left": 60,
+      "bottom": 158,
+      "width": 18,
+      "height": 18
+    },
+    "slotLabelLC": {
+      "left": 24,
+      "bottom": 140,
+      "width": 18,
+      "height": 18
+    },
+    "slotLabelCC": {
+      "left": 42,
+      "bottom": 140,
+      "width": 18,
+      "height": 18
+    },
+    "slotLabelRC": {
+      "left": 60,
+      "bottom": 140,
+      "width": 18,
+      "height": 18
+    },
+    "slotLabelLB": {
+      "left": 24,
+      "bottom": 122,
+      "width": 18,
+      "height": 18
+    },
+    "slotLabelCB": {
+      "left": 42,
+      "bottom": 122,
+      "width": 18,
+      "height": 18
+    },
+    "slotLabelRB": {
+      "left": 60,
+      "bottom": 122,
+      "width": 18,
+      "height": 18
     }
   }
 }

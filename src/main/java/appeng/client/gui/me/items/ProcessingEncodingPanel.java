@@ -1,5 +1,8 @@
 package appeng.client.gui.me.items;
 
+import appeng.client.gui.style.TextAlignment;
+import appeng.client.gui.widgets.Label;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -20,6 +23,7 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
     private final ActionButton clearBtn;
     private final ActionButton cycleOutputBtn;
     private final Scrollbar scrollbar;
+    private final Label[] inputLabels;
 
     public ProcessingEncodingPanel(PatternEncodingTermScreen<?> screen, WidgetContainer widgets) {
         super(screen, widgets);
@@ -42,6 +46,40 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
         this.scrollbar.setRange(0, menu.getProcessingInputSlots().length / 3 - 3, 3);
         this.scrollbar.setCaptureMouseWheel(false);
 
+        var font = Minecraft.getInstance().font;
+
+        this.inputLabels = new Label[9];
+
+        var aligns = new TextAlignment[] {
+            TextAlignment.LEFT,
+            TextAlignment.CENTER,
+            TextAlignment.RIGHT,
+        };
+
+        var i = 0;
+        for (var vert: aligns)
+            for (var horiz: aligns) {
+                var label = new Label(Component.empty(), font);
+                var hLetter = switch(horiz) {
+                    case LEFT -> "L";
+                    case CENTER -> "C";
+                    case RIGHT -> "R";
+                };
+                var vLetter = switch(vert) {
+                    case LEFT -> "T";
+                    case CENTER -> "C";
+                    case RIGHT -> "B";
+                };
+                label
+                    .setDropShadow(false)
+                    .setAlignX(horiz)
+                    .setAlignY(vert);
+
+                widgets.add(String.format("slotLabel%s%s", hLetter, vLetter), label);
+
+                this.inputLabels[i] = label;
+                i += 1;
+        }
     }
 
     @Override
@@ -63,6 +101,12 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
 
             slot.setActive(effectiveRow >= 0 && effectiveRow < 3);
             slot.y -= scrollbar.getCurrentScroll() * 18;
+        }
+
+        var slot = scrollbar.getCurrentScroll() * 3;
+        for (var label: inputLabels) {
+            label.setMessage(Component.literal(Integer.toString(slot)));
+            slot += 1;
         }
 
         updateTooltipVisibility();
