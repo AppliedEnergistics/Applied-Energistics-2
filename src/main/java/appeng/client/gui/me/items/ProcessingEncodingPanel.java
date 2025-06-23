@@ -66,7 +66,7 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
 
     @Override
     public void updateBeforeRender() {
-        // Update the processing row position/visibility
+        // Update the processing slot position/visibility
         screen.repositionSlots(SlotSemantics.PROCESSING_INPUTS);
         screen.repositionSlots(SlotSemantics.PROCESSING_OUTPUTS);
 
