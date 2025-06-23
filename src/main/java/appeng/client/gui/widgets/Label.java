@@ -102,39 +102,52 @@ public class Label extends AbstractStringWidget {
 
         var labelWidth = this.getWidth();
         var labelHeight = this.getHeight();
+
         var textWidth = font.width(message);
         var textHeight = font.lineHeight;
 
         var offsetX = alignToOffset(alignX);
         var offsetY = alignToOffset(alignY);
 
-        var drawX = this.getX() + Math.round(offsetX * (labelWidth - textWidth));
-        var drawY = this.getY() + Math.round(offsetY * (labelHeight - textHeight));
+        if (scale == 1) {
+            FormattedCharSequence drawText;
 
-        var drawText = clipWidth && textWidth > labelWidth
-            ? this.clipText(message, labelWidth)
-            : message.getVisualOrderText();
+            if (clipWidth && textWidth > labelWidth) {
+                drawText = this.clipText(message, labelWidth);
+                textWidth = labelWidth;
+            }
+            else {
+                drawText = message.getVisualOrderText();
+            }
 
-        guiGraphics.drawString(font, drawText, drawX, drawY, this.getColor(), dropShadow);
+            var drawX = this.getX() + Math.round(offsetX * (labelWidth - textWidth));
+            var drawY = this.getY() + Math.round(offsetY * (labelHeight - textHeight));
 
-//        if (scale == 1) {
-//            guiGraphics.drawString(font, drawText, drawX, drawY, this.getColor(), dropShadow);
-//        }
-//        else {
-//            guiGraphics.pose().pushPose();
-//
-//            guiGraphics.pose().translate(x, y, 0);
-//            guiGraphics.pose().scale(scale, scale, 1);
-//            guiGraphics.drawString(
-//                    font,
-//                    line,
-//                    0,
-//                    0,
-//                    color,
-//                    false);
-//
-//            guiGraphics.pose().popPose();
-//        }
+            guiGraphics.drawString(font, drawText, drawX, drawY, this.getColor(), dropShadow);
+        } else {
+            var labelLogicWidth = Math.round(labelWidth / scale);
+            FormattedCharSequence drawText;
+            if (clipWidth && textWidth > labelLogicWidth) {
+                drawText = this.clipText(message, labelLogicWidth);
+                textWidth = labelWidth;
+            }
+            else {
+                drawText = message.getVisualOrderText();
+                textWidth = Math.round(textWidth * scale);
+            }
+
+            textHeight = Math.round(textHeight * scale);
+
+            var drawX = this.getX() + Math.round(offsetX * (labelWidth - textWidth));
+            var drawY = this.getY() + Math.round(offsetY * (labelHeight - textHeight));
+
+            guiGraphics.pose().pushPose();
+
+            guiGraphics.pose().translate(drawX, drawY, 0);
+            guiGraphics.pose().scale(scale, scale, 1);
+            guiGraphics.drawString(font, drawText, 0, 0, this.getColor(), dropShadow);
+            guiGraphics.pose().popPose();
+        }
     }
 
     private FormattedCharSequence clipText(Component message, int width) {
