@@ -192,4 +192,14 @@ public final class AEFluidKey extends AEKey {
                 : getFluid().getClass().getName() + "(unregistered)";
         return stack.getComponents().isEmpty() ? idString : idString + " (+components)";
     }
+
+    @Override
+    public int getTypeRegistryId() {
+        return Integer.MIN_VALUE + 1;
+    }
+
+    @Override
+    public int getRegistryId() {
+        return BuiltInRegistries.FLUID.getId(getFluid());
+    }
 }

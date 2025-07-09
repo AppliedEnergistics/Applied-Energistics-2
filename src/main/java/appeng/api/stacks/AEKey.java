@@ -352,4 +352,12 @@ public abstract class AEKey {
      * @return true if this key has *any* components attached.
      */
     public abstract boolean hasComponents();
+
+    public int getTypeRegistryId() {
+        return AEKeyTypesInternal.getRegistry().getId(getType());
+    }
+
+    public int getRegistryId() {
+        return 0;
+    }
 }
