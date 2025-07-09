@@ -302,7 +302,7 @@ public record FillCraftingGridFromRecipePacket(
                 // While FuzzyMode.IGNORE_ALL will retrieve all stacks of the same Item which matches
                 // standard Vanilla Ingredient matching, there are NBT-matching Ingredient subclasses on Forge,
                 // and Mods might actually have mixed into Ingredient
-                .filter(e -> ((AEItemKey) e.getKey()).matches(ingredient))
+                .filter(e -> e.getKey() instanceof AEItemKey && ((AEItemKey) e.getKey()).matches(ingredient))
                 // Sort in descending order of availability
                 .sorted((a, b) -> Long.compare(b.getLongValue(), a.getLongValue()))//
                 .map(e -> (AEItemKey) e.getKey())//
