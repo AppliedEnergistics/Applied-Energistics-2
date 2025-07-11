@@ -271,8 +271,8 @@ public class ItemPickupStrategy implements PickupStrategy {
                 useEnergy = randomNumber == 0;
             }
             var levelSum = enchantments.entrySet().stream().map(Map.Entry::getValue).reduce(0, Integer::sum)
-                    - efficiencyLevel;
-            requiredEnergy *= 8 * levelSum * efficiencyFactor;
+                    - efficiencyLevel - unbreakingLevel;
+            requiredEnergy *= (levelSum > 0 ? 8 * levelSum : 1) * efficiencyFactor;
         }
 
         return useEnergy ? requiredEnergy : 0;
