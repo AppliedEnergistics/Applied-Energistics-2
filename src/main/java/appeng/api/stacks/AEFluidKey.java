@@ -28,6 +28,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import appeng.api.storage.AEKeyFilter;
+import appeng.api.util.HashHelper;
 import appeng.core.AELog;
 
 public final class AEFluidKey extends AEKey {
@@ -53,7 +54,7 @@ public final class AEFluidKey extends AEKey {
     private AEFluidKey(FluidStack stack) {
         Preconditions.checkArgument(!stack.isEmpty(), "stack was empty");
         this.stack = stack;
-        this.hashCode = FluidStack.hashFluidAndComponents(stack);
+        this.hashCode = HashHelper.compressHash(HashHelper.hashFluidAndComponents(stack));
     }
 
     public static AEFluidKey of(Fluid fluid) {
