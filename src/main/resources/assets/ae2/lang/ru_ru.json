@@ -273,6 +273,7 @@
   "config.jade.plugin_ae2.power_storage": "AE2 состояние питания",
   "death.attack.matter_cannon": "%1$s был застрелен %2$s",
   "death.attack.matter_cannon.item": "%1$s был застрелен %2$s с помощью %3$s",
+  "dimension.ae2.spatial_storage": "Пространственное хранилище",
   "entity.ae2.tiny_tnt_primed": "Маленький динамит",
   "entity.minecraft.villager.ae2.fluix_researcher": "Исследователь флюкса",
   "exported_setting.ae2.exported_config_inv": "Фильтр",

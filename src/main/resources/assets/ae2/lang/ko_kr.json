@@ -226,6 +226,7 @@
   "config.jade.plugin_ae2.grid_node_state": "AE2 네트워크 상태",
   "config.jade.plugin_ae2.part_mod_name": "AE2 모드 이름",
   "config.jade.plugin_ae2.pattern_provider": "AE2 패턴 공급기",
+  "dimension.ae2.spatial_storage": "시공 저장소",
   "exported_setting.ae2.exported_patterns": "패턴",
   "exported_setting.ae2.exported_priority": "우선 순위",
   "gui.ae2.And": "와(과)",
