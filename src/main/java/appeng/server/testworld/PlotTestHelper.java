@@ -8,10 +8,13 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestAssertException;
+import net.minecraft.gametest.framework.GameTestAssertPosException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 
@@ -20,6 +23,7 @@ import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPartHost;
+import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
@@ -150,7 +154,42 @@ public class PlotTestHelper extends GameTestHelper {
     public void assertContainsNot(MEStorage storage, AEKey key) {
         var count = storage.getAvailableStacks().get(key);
         if (count > 0) {
-            throw new GameTestAssertException("Network storage does contains " + key + ".");
+            throw new GameTestAssertException("Network storage contains unexpected " + key + ".");
+        }
+    }
+
+    public void assertNetworkContains(BlockPos gridPos, ItemLike item) {
+        assertNetworkContains(gridPos, AEItemKey.of(item));
+    }
+
+    public void assertNetworkContains(BlockPos gridPos, Fluid fluid) {
+        assertNetworkContains(gridPos, AEFluidKey.of(fluid));
+    }
+
+    public void assertNetworkContainsNot(BlockPos gridPos, ItemLike item) {
+        assertNetworkContainsNot(gridPos, AEItemKey.of(item));
+    }
+
+    public void assertNetworkContainsNot(BlockPos gridPos, Fluid fluid) {
+        assertNetworkContainsNot(gridPos, AEFluidKey.of(fluid));
+    }
+
+    public void assertNetworkContains(BlockPos gridPos, AEKey key) {
+        var grid = getGrid(gridPos);
+        var storage = grid.getStorageService().getInventory().getAvailableStacks();
+        var count = storage.get(key);
+        if (count <= 0) {
+            throw new GameTestAssertPosException("Network storage does not contain " + key + ". Available keys: "
+                    + storage.keySet(), absolutePos(gridPos), gridPos, getTick());
+        }
+    }
+
+    public void assertNetworkContainsNot(BlockPos gridPos, AEKey key) {
+        var grid = getGrid(gridPos);
+        var count = grid.getStorageService().getInventory().getAvailableStacks().get(key);
+        if (count > 0) {
+            throw new GameTestAssertPosException("Network storage contains unexpected " + key + ".",
+                    absolutePos(gridPos), gridPos, getTick());
         }
     }
 

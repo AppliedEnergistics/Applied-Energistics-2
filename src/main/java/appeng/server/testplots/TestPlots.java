@@ -344,6 +344,40 @@ public final class TestPlots {
         });
     }
 
+    @TestPlot("inverted_import_bus_multitype")
+    public static void invertedImportBusMultitype(PlotBuilder plot) {
+        var origin = BlockPos.ZERO;
+        plot.creativeEnergyCell(origin.below());
+        plot.cable(origin).part(Direction.WEST, AEParts.IMPORT_BUS, part -> {
+            // Add an inversion card and filter for LAVA
+            part.getUpgrades().addItems(AEItems.INVERTER_CARD.stack());
+            part.getConfig().addFilter(Fluids.LAVA);
+        });
+
+        // Place an interface such that the import bus could pull LAVA, WATER and STICKS
+        plot.blockEntity(origin.west(), AEBlocks.INTERFACE, iface -> {
+            // Set up the config & storage
+            iface.getConfig().insert(0, AEFluidKey.of(Fluids.LAVA), AEFluidKey.AMOUNT_BUCKET, Actionable.MODULATE);
+            iface.getStorage().insert(0, AEFluidKey.of(Fluids.LAVA), AEFluidKey.AMOUNT_BUCKET, Actionable.MODULATE);
+
+            iface.getConfig().insert(1, AEFluidKey.of(Fluids.WATER), AEFluidKey.AMOUNT_BUCKET, Actionable.MODULATE);
+            iface.getStorage().insert(1, AEFluidKey.of(Fluids.WATER), AEFluidKey.AMOUNT_BUCKET, Actionable.MODULATE);
+            iface.getConfig().insert(2, AEItemKey.of(Items.STICK), 1, Actionable.MODULATE);
+            iface.getStorage().insert(2, AEItemKey.of(Items.STICK), 1, Actionable.MODULATE);
+        });
+        // Add some storage for the import bus to import into
+        plot.storageDrive(origin.east());
+
+        plot.test(helper -> {
+            helper.succeedWhen(() -> {
+                // We expect that everything except the black-listed fluid is imported, regardless of type
+                helper.assertNetworkContainsNot(origin, Fluids.LAVA);
+                helper.assertNetworkContains(origin, Fluids.WATER);
+                helper.assertNetworkContains(origin, Items.STICK);
+            });
+        });
+    }
+
     @TestPlot("inscriber")
     public static void inscriber(PlotBuilder plot) {
         processorInscriber(plot.offset(0, 1, 2), AEItems.LOGIC_PROCESSOR_PRESS, Items.GOLD_INGOT);
@@ -483,7 +517,7 @@ public final class TestPlots {
             };
             Runnable assertMoved = () -> {
                 helper.assertContainerEmpty(inputPos);
-                helper.assertContains(grid, Items.OAK_PLANKS);
+                helper.assertNetworkContains(origin, Items.OAK_PLANKS);
             };
             Runnable reset = () -> {
                 inputChest.clearContent();

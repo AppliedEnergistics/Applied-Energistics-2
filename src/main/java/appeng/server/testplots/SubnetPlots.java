@@ -168,9 +168,8 @@ public final class SubnetPlots {
                     .thenIdle(1)
                     .thenExecute(() -> {
                         // Ensure both red and blue concrete are visible on the sub-network
-                        var subnet = helper.getGrid(subnetOrigin);
-                        helper.assertContains(subnet, Items.RED_CONCRETE);
-                        helper.assertContains(subnet, Items.BLUE_CONCRETE);
+                        helper.assertNetworkContains(subnetOrigin, Items.RED_CONCRETE);
+                        helper.assertNetworkContains(subnetOrigin, Items.BLUE_CONCRETE);
                     })
                     .thenSucceed();
         }).withSkyAccess();
