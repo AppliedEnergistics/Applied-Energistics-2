@@ -1,5 +1,6 @@
 package appeng.client.gui.me.items;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -10,6 +11,7 @@ import appeng.client.gui.Icon;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.ActionButton;
+import appeng.client.gui.widgets.Label;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.core.localization.GuiText;
 import appeng.menu.SlotSemantics;
@@ -20,6 +22,8 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
     private final ActionButton clearBtn;
     private final ActionButton cycleOutputBtn;
     private final Scrollbar scrollbar;
+    private final Label[] inputLabels;
+    private final Label[] outputLabels;
 
     public ProcessingEncodingPanel(PatternEncodingTermScreen<?> screen, WidgetContainer widgets) {
         super(screen, widgets);
@@ -42,6 +46,33 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
         this.scrollbar.setRange(0, menu.getProcessingInputSlots().length / 3 - 3, 3);
         this.scrollbar.setCaptureMouseWheel(false);
 
+        var font = Minecraft.getInstance().font;
+
+        this.inputLabels = new Label[9];
+
+        for (var i = 0; i < this.inputLabels.length; i += 1) {
+            var label = new Label(Component.empty(), font);
+            label
+                    .setDropShadow(false)
+                    .setScale(0.5f);
+
+            widgets.add(String.format("inputLabel%d", i), label);
+
+            this.inputLabels[i] = label;
+        }
+
+        this.outputLabels = new Label[3];
+
+        for (var i = 0; i < this.outputLabels.length; i += 1) {
+            var label = new Label(Component.empty(), font);
+            label
+                    .setDropShadow(false)
+                    .setScale(0.5f);
+
+            widgets.add(String.format("outputLabel%d", i), label);
+
+            this.outputLabels[i] = label;
+        }
     }
 
     @Override
@@ -66,6 +97,18 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
         }
 
         updateTooltipVisibility();
+
+        var slot = scrollbar.getCurrentScroll() * 3;
+        for (var label : inputLabels) {
+            label.setMessage(Component.literal(Integer.toString(slot)));
+            slot += 1;
+        }
+
+        slot = scrollbar.getCurrentScroll();
+        for (var label : outputLabels) {
+            label.setMessage(Component.literal(Integer.toString(slot)));
+            slot += 1;
+        }
     }
 
     @Override
@@ -105,6 +148,12 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
 
         screen.setSlotsHidden(SlotSemantics.PROCESSING_INPUTS, !visible);
         screen.setSlotsHidden(SlotSemantics.PROCESSING_OUTPUTS, !visible);
+
+        for (var label : inputLabels)
+            label.visible = visible;
+
+        for (var label : outputLabels)
+            label.visible = visible;
 
         updateTooltipVisibility();
     }
