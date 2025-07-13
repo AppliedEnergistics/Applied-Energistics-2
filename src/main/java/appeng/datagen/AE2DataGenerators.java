@@ -37,6 +37,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEDamageTypes;
 import appeng.datagen.providers.advancements.AdvancementGenerator;
+import appeng.datagen.providers.datamaps.RaidHeroGiftsProvider;
 import appeng.datagen.providers.localization.LocalizationProvider;
 import appeng.datagen.providers.loot.AE2LootTableProvider;
 import appeng.datagen.providers.models.BlockModelProvider;
@@ -120,6 +121,9 @@ public class AE2DataGenerators {
         pack.addProvider(bindRegistries(ChargerRecipes::new, registries));
         pack.addProvider(bindRegistries(QuartzCuttingRecipesProvider::new, registries));
         pack.addProvider(bindRegistries(UpgradeRecipes::new, registries));
+
+        // DataMaps
+        pack.addProvider(bindRegistries(RaidHeroGiftsProvider::new, registries));
 
         // Must run last
         pack.addProvider(packOutput -> localization);
