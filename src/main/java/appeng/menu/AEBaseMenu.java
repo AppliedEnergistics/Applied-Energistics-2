@@ -40,6 +40,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -198,6 +199,16 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                     : SlotSemantics.PLAYER_INVENTORY;
             addSlot(slot, s);
         }
+    }
+
+    @Override
+    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+        // Do not allow swapping with off-hand if the off-hand slot is locked
+        if (clickType == ClickType.SWAP && isPlayerInventorySlotLocked(Inventory.SLOT_OFFHAND)) {
+            return;
+        }
+
+        super.clicked(slotId, button, clickType, player);
     }
 
     protected Slot addSlot(Slot slot, SlotSemantic semantic) {
