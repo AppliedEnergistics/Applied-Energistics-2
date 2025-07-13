@@ -29,7 +29,6 @@ import net.minecraft.world.phys.AABB;
 
 import appeng.api.behaviors.PickupSink;
 import appeng.api.behaviors.PickupStrategy;
-import appeng.api.behaviors.PickupStrategy.Result;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergySource;
@@ -255,20 +254,22 @@ public class ItemPickupStrategy implements PickupStrategy {
 
         if (enchantments != null) {
             var efficiencyFactor = 1f;
-            var efficiencyLevel = 0;
-            if (enchantments.containsKey(Enchantments.BLOCK_EFFICIENCY)) {
+            var efficiencyLevel = enchantments.getOrDefault(Enchantments.BLOCK_EFFICIENCY, 0);
+            if (efficiencyLevel > 0) {
                 // Reduce total energy usage incurred by other enchantments by 15% per Efficiency level.
-                efficiencyLevel = enchantments.get(Enchantments.BLOCK_EFFICIENCY);
                 efficiencyFactor *= Math.pow(0.85, efficiencyLevel);
             }
-            if (enchantments.containsKey(Enchantments.UNBREAKING)) {
+            var unbreakingLevel = enchantments.getOrDefault(Enchantments.UNBREAKING, 0);
+            if (unbreakingLevel > 0) {
                 // Give plane only a (100 / (level + 1))% chance to use energy.
                 // This is similar to vanilla Unbreaking behaviour for tools.
-                int randomNumber = level.getRandom().nextInt(enchantments.get(Enchantments.UNBREAKING) + 1);
+                int randomNumber = level.getRandom().nextInt(unbreakingLevel + 1);
                 useEnergy = randomNumber == 0;
             }
-            var levelSum = enchantments.values().stream().reduce(0, Integer::sum) - efficiencyLevel;
-            requiredEnergy *= 8 * levelSum * efficiencyFactor;
+            // Increase energy usage 8x for each *other* enchantment that might affect the pickup.
+            // Ignore efficiency & unbreaking since we did account for them here explicitly.
+            var levelSum = enchantments.values().stream().reduce(0, Integer::sum) - efficiencyLevel - unbreakingLevel;
+            requiredEnergy *= (levelSum > 0 ? 8 * levelSum : 1) * efficiencyFactor;
         }
 
         return useEnergy ? requiredEnergy : 0;
