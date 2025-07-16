@@ -271,6 +271,7 @@
   "config.jade.plugin_ae2.power_storage": "AE2 Stare de alimentare",
   "death.attack.matter_cannon": "%1$s a fost împuşcat de %2$s",
   "death.attack.matter_cannon.item": "%1$s a fost împuşcat de %2$s folosind %3$s",
+  "dimension.ae2.spatial_storage": "Stocare Spațială",
   "entity.ae2.tiny_tnt_primed": "Mică TNT Primită",
   "exported_setting.ae2.exported_patterns": "Modele",
   "exported_setting.ae2.exported_priority": "Prioritate",

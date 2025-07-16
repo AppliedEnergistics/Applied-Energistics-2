@@ -269,6 +269,7 @@
   "config.jade.plugin_ae2.power_storage": "AE2 stav napájení",
   "death.attack.matter_cannon": "%1$s byl sestřelen %2$s",
   "death.attack.matter_cannon.item": "%1$s byl sestřelen %2$s pomocí %3$s",
+  "dimension.ae2.spatial_storage": "Prostorové úložiště",
   "entity.ae2.tiny_tnt_primed": "Malý TNT primer",
   "exported_setting.ae2.exported_patterns": "Schémata",
   "exported_setting.ae2.exported_priority": "Priorita",
