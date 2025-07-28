@@ -2,7 +2,8 @@
 [![Latest Release](https://img.shields.io/github/v/release/AppliedEnergistics/Applied-Energistics-2?style=flat-square&label=Release)](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases)
 [![Latest PreRelease](https://img.shields.io/github/v/release/AppliedEnergistics/Applied-Energistics-2?include_prereleases&style=flat-square&label=Pre)](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases)
 
-# Applied Energistics 2
+# Applied Energistics 2 - Cosmic Frontiers
+## A Version of AE2 for the Cosmic Frontiers modpack, unlimiting, combining, and upgrading many features required for the modpack to fully function. Akin to GTNH-AE2
 
 ## Table of Contents
 
