@@ -36,38 +36,11 @@ import appeng.api.stacks.AEKey;
 
 /**
  * A crafting plan intended to be sent to the client.
+ *
+ * @param usedBytes
+ * @param simulation
  */
-public class CraftingPlanSummary {
-
-    /**
-     * @see ICraftingPlan#bytes()
-     */
-    private final long usedBytes;
-
-    /**
-     * @see ICraftingPlan#simulation()
-     */
-    private final boolean simulation;
-
-    private final List<CraftingPlanSummaryEntry> entries;
-
-    public CraftingPlanSummary(long usedBytes, boolean simulation, List<CraftingPlanSummaryEntry> entries) {
-        this.usedBytes = usedBytes;
-        this.simulation = simulation;
-        this.entries = entries;
-    }
-
-    public long getUsedBytes() {
-        return usedBytes;
-    }
-
-    public boolean isSimulation() {
-        return simulation;
-    }
-
-    public List<CraftingPlanSummaryEntry> getEntries() {
-        return entries;
-    }
+public record CraftingPlanSummary(long usedBytes, boolean simulation, List<CraftingPlanSummaryEntry> entries) {
 
     public void write(FriendlyByteBuf buffer) {
         buffer.writeVarLong(usedBytes);
@@ -132,10 +105,12 @@ public class CraftingPlanSummary {
 
         var storage = grid.getStorageService().getInventory();
         var crafting = grid.getCraftingService();
+        var cached = grid.getStorageService().getCachedInventory();
 
         for (var out : plan.entrySet()) {
             long missingAmount;
             long storedAmount;
+            long availableAmount;
             if (job.simulation() && !crafting.canEmitFor(out.getKey())) {
                 storedAmount = storage.extract(out.getKey(), out.getValue().stored, Actionable.SIMULATE, actionSource);
                 missingAmount = out.getValue().stored - storedAmount;
@@ -143,13 +118,14 @@ public class CraftingPlanSummary {
                 storedAmount = out.getValue().stored;
                 missingAmount = 0;
             }
+            availableAmount = cached.get(out.getKey());
             long craftAmount = out.getValue().crafting;
-
             entries.add(new CraftingPlanSummaryEntry(
                     out.getKey(),
                     missingAmount,
                     storedAmount,
-                    craftAmount));
+                    craftAmount,
+                    availableAmount));
 
         }
 

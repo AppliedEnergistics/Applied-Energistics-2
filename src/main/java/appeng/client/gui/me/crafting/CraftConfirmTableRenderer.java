@@ -29,6 +29,7 @@ import appeng.api.stacks.AmountFormat;
 import appeng.client.gui.AEBaseScreen;
 import appeng.core.localization.GuiText;
 import appeng.menu.me.crafting.CraftingPlanSummaryEntry;
+import appeng.util.NumberUtil;
 
 public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPlanSummaryEntry> {
 
@@ -39,53 +40,62 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
     @Override
     protected List<Component> getEntryDescription(CraftingPlanSummaryEntry entry) {
         List<Component> lines = new ArrayList<>(3);
-        if (entry.getStoredAmount() > 0) {
-            String amount = entry.getWhat().formatAmount(entry.getStoredAmount(), AmountFormat.SLOT);
+        if (entry.storedAmount() > 0) {
+            String amount = entry.what().formatAmount(entry.storedAmount(), AmountFormat.SLOT);
             lines.add(GuiText.FromStorage.text(amount));
         }
 
-        if (entry.getMissingAmount() > 0) {
-            String amount = entry.getWhat().formatAmount(entry.getMissingAmount(), AmountFormat.SLOT);
+        if (entry.missingAmount() > 0) {
+            String amount = entry.what().formatAmount(entry.missingAmount(), AmountFormat.SLOT);
             lines.add(GuiText.Missing.text(amount));
         }
 
-        if (entry.getCraftAmount() > 0) {
-            String amount = entry.getWhat().formatAmount(entry.getCraftAmount(), AmountFormat.SLOT);
+        if (entry.craftAmount() > 0) {
+            String amount = entry.what().formatAmount(entry.craftAmount(), AmountFormat.SLOT);
             lines.add(GuiText.ToCraft.text(amount));
+        }
+        // Same check as above because we want the percentage to be the last element
+        if (entry.storedAmount() > 0) {
+            var percentage = NumberUtil.createPercentageComponent(entry.storedAmount(), entry.availableAmount());
+            lines.add(GuiText.UsedAmount.text().withStyle(percentage.getStyle()).append(percentage));
         }
         return lines;
     }
 
     @Override
     protected AEKey getEntryStack(CraftingPlanSummaryEntry entry) {
-        return entry.getWhat();
+        return entry.what();
     }
 
     @Override
     protected List<Component> getEntryTooltip(CraftingPlanSummaryEntry entry) {
-        List<Component> lines = AEKeyRendering.getTooltip(entry.getWhat());
-
+        List<Component> lines = AEKeyRendering.getTooltip(entry.what());
         // The tooltip compares the unabbreviated amounts
-        if (entry.getStoredAmount() > 0) {
+        if (entry.storedAmount() > 0) {
             lines.add(GuiText.FromStorage
-                    .text(entry.getWhat().formatAmount(entry.getStoredAmount(), AmountFormat.FULL)));
+                    .text(entry.what().formatAmount(entry.storedAmount(), AmountFormat.FULL)));
         }
-        if (entry.getMissingAmount() > 0) {
+        if (entry.missingAmount() > 0) {
             lines.add(GuiText.Missing.text(
-                    entry.getWhat().formatAmount(entry.getMissingAmount(), AmountFormat.FULL)));
+                    entry.what().formatAmount(entry.missingAmount(), AmountFormat.FULL)));
         }
-        if (entry.getCraftAmount() > 0) {
+
+        if (entry.craftAmount() > 0) {
             lines.add(GuiText.ToCraft
-                    .text(entry.getWhat().formatAmount(entry.getCraftAmount(), AmountFormat.FULL)));
+                    .text(entry.what().formatAmount(entry.craftAmount(), AmountFormat.FULL)));
+        }
+        // Same check as above because we want the percentage to be the last element
+        if (entry.storedAmount() > 0) {
+            var percentage = NumberUtil.createPercentageComponent(entry.storedAmount(), entry.availableAmount());
+            lines.add(GuiText.UsedAmount.text().withStyle(percentage.getStyle()).append(percentage));
         }
 
         return lines;
-
     }
 
     @Override
     protected int getEntryOverlayColor(CraftingPlanSummaryEntry entry) {
-        return entry.getMissingAmount() > 0 ? 0x1AFF0000 : 0;
+        return entry.missingAmount() > 0 ? 0x1AFF0000 : 0;
     }
 
 }
