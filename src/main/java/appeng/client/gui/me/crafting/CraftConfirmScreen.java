@@ -18,8 +18,6 @@
 
 package appeng.client.gui.me.crafting;
 
-import java.text.NumberFormat;
-
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -34,6 +32,7 @@ import appeng.client.gui.widgets.Scrollbar;
 import appeng.core.localization.GuiText;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingPlanSummary;
+import appeng.util.NumberUtil;
 
 /**
  * This screen shows the computed crafting plan and allows the player to select a CPU on which it should be scheduled
@@ -84,7 +83,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
         Component planDetails = GuiText.CalculatingWait.text();
         Component cpuDetails = Component.empty();
         if (plan != null) {
-            String byteUsed = NumberFormat.getInstance().format(plan.getUsedBytes());
+            String byteUsed = NumberUtil.formatNumber(plan.getUsedBytes());
             planDetails = GuiText.BytesUsed.text(byteUsed);
 
             if (plan.isSimulation()) {

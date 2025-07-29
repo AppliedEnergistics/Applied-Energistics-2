@@ -26,6 +26,7 @@ import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
 import appeng.menu.me.crafting.CraftingStatusMenu;
+import appeng.util.NumberUtil;
 
 public class CPUSelectionList implements ICompositeWidget {
 
@@ -227,13 +228,13 @@ public class CPUSelectionList implements ICompositeWidget {
                 infoBar.add(Icon.LEVEL_ITEM, 0.6f);
                 infoBar.addSpace(1);
 
-                String storageAmount = formatStorage(cpu);
+                String storageAmount = NumberUtil.formatNumber(cpu.storage());
                 infoBar.add(storageAmount, textColor.toARGB(), 0.6f);
                 infoBar.addSpace(1);
 
                 if (cpu.coProcessors() > 0) {
                     infoBar.add(Icon.BLOCKING_MODE_NO, 0.6f);
-                    String coProcessorCount = String.valueOf(cpu.coProcessors());
+                    String coProcessorCount = NumberUtil.formatNumber(cpu.coProcessors());
                     infoBar.add(coProcessorCount, textColor.toARGB(), 0.6f);
                     infoBar.addSpace(1);
                 }
@@ -248,10 +249,6 @@ public class CPUSelectionList implements ICompositeWidget {
 
             y += buttonBg.getSrcHeight() + 1;
         }
-    }
-
-    private String formatStorage(CraftingStatusMenu.CraftingCpuListEntry cpu) {
-        return (cpu.storage() / 1024) + "k";
     }
 
     private Component getCpuName(CraftingStatusMenu.CraftingCpuListEntry cpu) {
