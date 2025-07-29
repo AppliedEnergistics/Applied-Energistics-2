@@ -18,16 +18,12 @@
 
 package appeng.client.gui.widgets;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.function.Consumer;
@@ -46,13 +42,13 @@ import net.minecraft.network.chat.Component;
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.ICompositeWidget;
-import appeng.client.gui.MathExpressionParser;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.Rects;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.WidgetStyle;
 import appeng.core.localization.GuiText;
+import appeng.util.NumberUtil;
 
 /**
  * A utility widget that consists of a text-field to enter a number with attached buttons to increment/decrement the
@@ -269,23 +265,27 @@ public class NumberEntryWidget implements ICompositeWidget {
      * value.
      */
     public OptionalLong getLongValue() {
-        var internalValue = getValueInternal();
-        if (internalValue.isEmpty()) {
+        double internalValue = getValueInternal();
+        if (Double.isNaN(internalValue)) {
             return OptionalLong.empty();
         }
 
         // Reject decimal values if the unit is integral
-        if (type.amountPerUnit() == 1 && internalValue.get().scale() > 0) {
+        if (type.amountPerUnit() == 1 && hasDecimalPart(internalValue)) {
             return OptionalLong.empty();
         }
 
-        var externalValue = convertToExternalValue(internalValue.get());
+        var externalValue = convertToExternalValue(internalValue);
         if (externalValue < minValue) {
             return OptionalLong.empty();
         } else if (externalValue > maxValue) {
             return OptionalLong.empty();
         }
         return OptionalLong.of(externalValue);
+    }
+
+    private boolean hasDecimalPart(double value) {
+        return value != Math.floor(value);
     }
 
     public void setLongValue(long value) {
@@ -297,16 +297,21 @@ public class NumberEntryWidget implements ICompositeWidget {
     }
 
     private void addQty(long delta) {
-        var currentValue = getValueInternal().orElse(BigDecimal.ZERO);
-        var newValue = currentValue.add(BigDecimal.valueOf(delta));
-        var minimum = convertToInternalValue(this.minValue).setScale(0, RoundingMode.CEILING);
-        var maximum = convertToInternalValue(this.maxValue).setScale(0, RoundingMode.FLOOR);
-        if (newValue.compareTo(minimum) < 0) {
+        double currentValue = getValueInternal();
+        if (Double.isNaN(currentValue)) {
+            currentValue = 0;
+        }
+
+        double newValue = currentValue + delta;
+        double minimum = convertToInternalValue(this.minValue);
+        double maximum = convertToInternalValue(this.maxValue);
+
+        if (newValue < minimum) {
             newValue = minimum;
-        } else if (newValue.compareTo(maximum) > 0) {
+        } else if (newValue > maximum) {
             newValue = maximum;
-        } else if (currentValue.compareTo(BigDecimal.ONE) == 0 && delta > 0 && delta % 10 == 0) {
-            newValue = newValue.subtract(BigDecimal.ONE);
+        } else if (currentValue == 1 && delta > 0 && delta % 10 == 0) {
+            newValue = newValue - 1;
         }
         setValueInternal(newValue);
     }
@@ -314,12 +319,12 @@ public class NumberEntryWidget implements ICompositeWidget {
     /**
      * Retrieves the numeric representation of the value entered by the user, if it is convertible.
      */
-    private Optional<BigDecimal> getValueInternal() {
+    private double getValueInternal() {
         var textValue = textField.getValue();
         if (textValue.startsWith("=")) {
             textValue = textValue.substring(1);
         }
-        return MathExpressionParser.parse(textValue, decimalFormat);
+        return NumberUtil.parse(textValue);
     }
 
     /*
@@ -335,7 +340,7 @@ public class NumberEntryWidget implements ICompositeWidget {
     /**
      * Changes the value displayed to the user.
      */
-    private void setValueInternal(BigDecimal value) {
+    private void setValueInternal(double value) {
         textField.setValue(decimalFormat.format(value));
     }
 
@@ -343,22 +348,22 @@ public class NumberEntryWidget implements ICompositeWidget {
         List<Component> validationErrors = new ArrayList<>();
         List<Component> infoMessages = new ArrayList<>();
 
-        var possibleValue = getValueInternal();
-        if (possibleValue.isPresent()) {
+        double value = getValueInternal();
+        if (!Double.isNaN(value)) {
             // Reject decimal values if the unit is integral
-            if (type.amountPerUnit() == 1 && possibleValue.get().scale() > 0) {
+            if (type.amountPerUnit() == 1 && hasDecimalPart(value)) {
                 validationErrors.add(GuiText.NumberNonInteger.text());
             } else {
-                var value = convertToExternalValue(possibleValue.get());
-                if (value < minValue) {
+                var externalValue = convertToExternalValue(value);
+                if (externalValue < minValue) {
                     var formatted = decimalFormat.format(convertToInternalValue(minValue));
                     validationErrors.add(GuiText.NumberLessThanMinValue.text(formatted));
-                } else if (value > maxValue) {
+                } else if (externalValue > maxValue) {
                     var formatted = decimalFormat.format(convertToInternalValue(maxValue));
                     validationErrors.add(GuiText.NumberGreaterThanMaxValue.text(formatted));
                 } else if (!isNumber()) { // is a mathematical expression
                     // displaying the evaluation of the expression
-                    infoMessages.add(Component.literal("= " + decimalFormat.format(possibleValue.get())));
+                    infoMessages.add(Component.literal("= " + decimalFormat.format(value)));
                 }
             }
         } else {
@@ -402,18 +407,6 @@ public class NumberEntryWidget implements ICompositeWidget {
         validate();
     }
 
-    private long convertToExternalValue(BigDecimal internalValue) {
-        var multiplicand = BigDecimal.valueOf(type.amountPerUnit());
-        var value = internalValue.multiply(multiplicand, MathContext.DECIMAL128);
-        value = value.setScale(0, RoundingMode.UP);
-        return value.longValue();
-    }
-
-    private BigDecimal convertToInternalValue(long externalValue) {
-        var divisor = BigDecimal.valueOf(type.amountPerUnit());
-        return BigDecimal.valueOf(externalValue).divide(divisor, MathContext.DECIMAL128);
-    }
-
     @Override
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
         if (type.unit() != null) {
@@ -429,16 +422,27 @@ public class NumberEntryWidget implements ICompositeWidget {
     @Override
     public boolean onMouseWheel(Point mousePos, double delta) {
         if (textFieldBounds.contains(mousePos.getX(), mousePos.getY())) {
-            if (getValueInternal().isPresent()) {
+            double value = getValueInternal();
+            if (!Double.isNaN(value)) {
                 if (delta < 0) {
                     addQty(-1);
                 } else if (delta > 0) {
                     addQty(1);
                 }
-
                 return true;
             }
         }
         return false;
+    }
+
+    private long convertToExternalValue(double internalValue) {
+        double multiplicand = type.amountPerUnit();
+        double value = internalValue * multiplicand;
+        return (long) Math.ceil(value);
+    }
+
+    private double convertToInternalValue(long externalValue) {
+        double divisor = type.amountPerUnit();
+        return externalValue / divisor;
     }
 }
