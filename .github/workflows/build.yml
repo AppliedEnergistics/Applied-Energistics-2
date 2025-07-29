@@ -42,13 +42,6 @@ jobs:
         if: github.event_name != 'pull_request'
       #- name: Run Game Tests
       #  run: ./gradlew runGametest
-      - name: Upload new Source Text Strings to Crowdin
-        run: ./gradlew uploadToCrowdin
-        env:
-          GIT_BRANCH: master
-          CROWDIN_TOKEN: ${{ secrets.CROWDIN_TOKEN }}
-        continue-on-error: true
-        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
       - uses: actions/upload-artifact@v4
         with:
           name: dist
