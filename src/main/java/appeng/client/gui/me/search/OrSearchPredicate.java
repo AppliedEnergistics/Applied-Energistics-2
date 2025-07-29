@@ -8,7 +8,7 @@ import appeng.menu.me.common.GridInventoryEntry;
 final class OrSearchPredicate implements Predicate<GridInventoryEntry> {
     private final List<Predicate<GridInventoryEntry>> terms;
 
-    private OrSearchPredicate(List<Predicate<GridInventoryEntry>> terms) {
+    public OrSearchPredicate(List<Predicate<GridInventoryEntry>> terms) {
         this.terms = terms;
     }
 

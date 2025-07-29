@@ -77,7 +77,11 @@ public class RepoSearch {
             } else if (part.startsWith("*")) {
                 predicateFilters.add(new ItemIdSearchPredicate(part.substring(1)));
             } else {
-                predicateFilters.add(new NameSearchPredicate(part));
+                predicateFilters.add(
+                        new OrSearchPredicate(
+                                new ArrayList<>(List.of(
+                                        new NameSearchPredicate(part),
+                                        new TooltipsSearchPredicate(part, tooltipCache)))));
             }
         }
 
