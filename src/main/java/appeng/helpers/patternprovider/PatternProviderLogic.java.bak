@@ -64,7 +64,6 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.parts.PartHelper;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
@@ -76,7 +75,6 @@ import appeng.core.localization.PlayerMessages;
 import appeng.core.settings.TickRates;
 import appeng.helpers.InterfaceLogicHost;
 import appeng.me.helpers.MachineSource;
-import appeng.parts.p2p.PatternProviderP2PTunnelPart;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.PlayerInternalInventory;
@@ -468,29 +466,16 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
     @Nullable
     private PatternProviderTarget findAdapter(Direction side) {
-        var thisBe = host.getBlockEntity();
-
-        if (thisBe.getLevel() instanceof ServerLevel server) {
-            var neighborPos = thisBe.getBlockPos().relative(side);
-
-            // Prefer a pattern provider P2P tunnel when configured as input
-            var part = PartHelper.getPart(server, neighborPos, side.getOpposite());
-            if (part instanceof PatternProviderP2PTunnelPart tunnel && !tunnel.isOutput()) {
-                return tunnel.getExposedTarget();
-            }
-
-            if (targetCaches[side.get3DDataValue()] == null) {
-                targetCaches[side.get3DDataValue()] = new PatternProviderTargetCache(
-                        server,
-                        neighborPos,
-                        side.getOpposite(),
-                        actionSource);
-            }
-
-            return targetCaches[side.get3DDataValue()].find();
+        if (targetCaches[side.get3DDataValue()] == null) {
+            var thisBe = host.getBlockEntity();
+            targetCaches[side.get3DDataValue()] = new PatternProviderTargetCache(
+                    (ServerLevel) thisBe.getLevel(),
+                    thisBe.getBlockPos().relative(side),
+                    side.getOpposite(),
+                    actionSource);
         }
 
-        return null;
+        return targetCaches[side.get3DDataValue()].find();
     }
 
     private boolean adapterAcceptsAll(PatternProviderTarget target, KeyCounter[] inputHolder) {

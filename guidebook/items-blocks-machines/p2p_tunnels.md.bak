@@ -72,13 +72,6 @@ P2P tunnels with certain items:
 - Fluid P2P tunnels are selected by right-clicking with a bucket or bottle.
 - Energy P2P tunnels are selected by right-clicking with almost any energy-containing item.
 - Light P2P tunnels are selected by right-clicking with a torch or glowstone
-- Pattern Provider P2P tunnels are selected by right-clicking with a <ItemLink id="memory_card" />
-
-The Pattern Provider P2P tunnel is used together with a <ItemLink id="pattern_provider" />.
-Place its input side against the provider and link the tunnel to one or more
-outputs with a <ItemLink id="memory_card" />. When the provider pushes items into
-the tunnel, they will be forwarded to the connected outputs in a round-robin
-fashion, letting several machines share the crafting load.
 
 Some tunnel types have quirks. For instance, ME P2P tunnels' channels cannot pass through other ME P2P tunnels, and
 Energy P2P tunnels indirectly extract a 2.5% tax on FE flowing through themselves by increasing their

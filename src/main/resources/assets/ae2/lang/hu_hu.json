@@ -329,5 +329,6 @@
   "waila.ae2.Locked": "Zárolva",
   "waila.ae2.P2PUnlinked": "Nincs Összekötve",
   "waila.ae2.Showing": "Mutatott tárgy",
-  "waila.ae2.Unlocked": "Feloldva"
+  "waila.ae2.Unlocked": "Feloldva",
+  "item.ae2.pattern_p2p_tunnel": "Pattern Provider P2P Tunnel"
 }

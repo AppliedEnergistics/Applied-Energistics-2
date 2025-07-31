@@ -46,3 +46,6 @@ build
 
 # Explicit ignores
 Thumbs.db
+
+src/generated/resources/assets/ae2/lang/en_us.json
+src/generated/resources/data/ae2/advancement/main/p2p.json
