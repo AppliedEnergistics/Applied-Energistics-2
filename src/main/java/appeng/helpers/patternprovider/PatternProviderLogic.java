@@ -129,7 +129,11 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     }
 
     public PatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host, int patternInventorySize) {
-        this.patternInventory = new AppEngInternalInventory(this, patternInventorySize);
+        var inv = new AppEngInternalInventory(this, patternInventorySize);
+        for (int i = 0; i < inv.size(); i++) {
+            inv.setMaxStackSize(i, 1);
+        }
+        this.patternInventory = inv;
         this.host = host;
         this.mainNode = mainNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
