@@ -77,7 +77,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
             modePanels.put(mode, panel);
         }
 
-        var encodeBtn = new ActionButton(ActionItems.ENCODE, act -> menu.encode());
+        var encodeBtn = new ActionButton(ActionItems.ENCODE, act -> menu.encode(hasShiftDown()));
         widgets.add("encodePattern", encodeBtn);
     }
 

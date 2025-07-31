@@ -187,7 +187,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
 
         this.encodedPatternSlot.setStackLimit(1);
 
-        registerClientAction(ACTION_ENCODE, this::encode);
+        registerClientAction(ACTION_ENCODE, Boolean.class, this::encode);
         registerClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, ResourceLocation.class,
                 encodingLogic::setStonecuttingRecipeId);
         registerClientAction(ACTION_CLEAR, this::clear);
@@ -262,9 +262,9 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         }
     }
 
-    public void encode() {
+    public void encode(boolean hasShiftDown) {
         if (isClientSide()) {
-            sendClientAction(ACTION_ENCODE);
+            sendClientAction(ACTION_ENCODE, hasShiftDown);
             return;
         }
 
@@ -291,7 +291,12 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
                 }
             }
 
-            this.encodedPatternSlot.set(encodedPattern);
+            ItemStack stackToAdd = encodeOutput.isEmpty() ? encodedPattern : encodeOutput;
+            if (hasShiftDown && !this.getPlayerInventory().add(stackToAdd)) {
+                this.encodedPatternSlot.set(stackToAdd);
+            } else if (!hasShiftDown) {
+                this.encodedPatternSlot.set(encodedPattern);
+            }
         } else {
             clearPattern();
         }
