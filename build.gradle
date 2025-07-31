@@ -440,8 +440,11 @@ publishing {
     }
     repositories {
         maven {
-            name = "Local"
-            url = file("build/repo").toURI()
+            url = "https://maven.gtceu.com"
+            credentials {
+                username = System.getenv("MAVEN_USER")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
         }
     }
 }
