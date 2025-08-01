@@ -177,12 +177,15 @@ public abstract class ExternalStorageFacade implements MEStorage {
 
             return switch (actionable) {
                 case SIMULATE -> {
+                    // Query amount before the stack potentially gets modified
+                    int amountInSlot = stackInInventorySlot.getCount();
                     int extracted = wrapHandlerExtract(handler, slot, maxExtract, true);
                     // Heuristic for simulation: looping in case of simulations is pointless, since the state of the
                     // underlying inventory does not change after a simulated extraction. To still support
                     // inventories that report stacks that are larger than maxStackSize, we use this heuristic
-                    if (extracted == itemKey.getMaxStackSize() && maxExtract > itemKey.getMaxStackSize()) {
-                        yield maxExtract;
+                    if (extracted == itemKey.getMaxStackSize() && maxExtract > itemKey.getMaxStackSize()
+                            && amountInSlot > itemKey.getMaxStackSize()) {
+                        yield Math.min(amountInSlot, maxExtract);
                     } else {
                         yield extracted;
                     }
