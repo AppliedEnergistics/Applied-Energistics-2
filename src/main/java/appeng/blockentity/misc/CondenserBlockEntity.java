@@ -170,6 +170,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     private void setStoredPower(double storedPower) {
         this.storedPower = storedPower;
+        this.setChanged();
     }
 
     public InternalInventory getExternalInv() {

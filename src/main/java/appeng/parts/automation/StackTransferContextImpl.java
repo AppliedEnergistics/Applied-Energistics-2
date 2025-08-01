@@ -79,7 +79,7 @@ class StackTransferContextImpl implements StackTransferContext {
 
     @Override
     public boolean isKeyTypeEnabled(AEKeyType space) {
-        return keyTypes.isEmpty() || keyTypes.contains(space);
+        return keyTypes.isEmpty() || isInverted || keyTypes.contains(space);
     }
 
     @Override
