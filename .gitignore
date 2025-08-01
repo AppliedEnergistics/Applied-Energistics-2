@@ -48,4 +48,4 @@ build
 Thumbs.db
 
 src/generated/resources/assets/ae2/lang/en_us.json
-src/generated/resources/data/ae2/advancement/main/p2p.json
+src/generated/resources/data/ae2/tags/item/p2p_attunements/pattern_p2p_tunnel.json

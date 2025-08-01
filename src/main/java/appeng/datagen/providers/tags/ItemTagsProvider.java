@@ -276,5 +276,8 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .addTag(ConventionTags.GLASS_CABLE)
                 .addTag(ConventionTags.SMART_CABLE)
                 .addTag(ConventionTags.SMART_DENSE_CABLE);
+
+        tag(P2PTunnelAttunement.getAttunementTag(AEParts.PATTERN_P2P_TUNNEL))
+                .addTag(ConventionTags.PATTERN_PROVIDER);
     }
 }
