@@ -84,3 +84,24 @@ jobs:
           asset_path: ${{ needs.build.outputs.API_PATH }}
           asset_name: ${{ needs.build.outputs.API_NAME }}
           asset_content_type: application/zip
+
+  deploy-maven:
+    name: Deploy to GTCEu Maven
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+      - name: Unpack build artifact
+        run: tar axf build.tar.zst
+      - name: Validate artifacts exist
+        run: test -d ./build
+      - name: Publish to GTCEu Maven
+        uses: AppliedEnergistics/maven-publish-action@main
+        with:
+          local-repository-path: build/repo
+          remote-repository-url: https://maven.gtceu.com/
+          remote-repository-username: ${{ secrets.MAVEN_USER }}
+          remote-repository-password: ${{ secrets.MAVEN_PASSWORD }}
