@@ -122,6 +122,9 @@ dependencies {
     compileOnly 'org.jetbrains:annotations:24.1.0'
     testCompileOnly 'org.jetbrains:annotations:24.1.0'
 
+    // Used for Rendering
+    modImplementation "curse.maven:glodium-957920:5226922"
+
     // Annotation Processors
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
@@ -201,6 +204,12 @@ allprojects {
                 includeGroup "mcjty"
             }
         }
+
+        maven {
+            name = "TerraformersMC"
+            url = "https://maven.terraformersmc.com/"
+        }
+
         maven { url = 'https://repo.spongepowered.org/maven' }
     }
 

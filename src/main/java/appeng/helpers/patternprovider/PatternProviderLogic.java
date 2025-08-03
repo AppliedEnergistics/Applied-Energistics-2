@@ -92,7 +92,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     public static final String NBT_SEND_DIRECTION = "sendDirection";
     public static final String NBT_RETURN_INV = "returnInv";
 
-    private final PatternProviderLogicHost host;
+    public final PatternProviderLogicHost host;
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
     private final ConfigManager configManager = new ConfigManager(this::configChanged);

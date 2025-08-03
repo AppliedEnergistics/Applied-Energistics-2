@@ -18,12 +18,16 @@
 
 package appeng.menu.me.crafting;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.CpuSelectionMode;
 import appeng.api.networking.IGrid;
@@ -32,8 +36,14 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.CraftingBlockEntity;
+import appeng.blockentity.crafting.PatternProviderBlockEntity;
+import appeng.client.render.BlockHighlightHandler;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.BlockHighlightPacket;
 import appeng.core.sync.packets.CraftingStatusPacket;
+import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
+import appeng.me.service.CraftingService;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
@@ -81,7 +91,6 @@ public class CraftingCPUMenu extends AEBaseMenu {
         if (te instanceof CraftingBlockEntity) {
             this.setCPU(((CraftingBlockEntity) te).getCluster());
         }
-
         if (this.getGrid() == null && isServerSide()) {
             this.setValidMenu(false);
         }
@@ -169,4 +178,31 @@ public class CraftingCPUMenu extends AEBaseMenu {
         return this.grid;
     }
 
+    public void highlight(AEKey what) {
+        if (isServerSide() && grid != null) {
+            CraftingService service = (CraftingService) grid.getCraftingService();
+            var patterns = service.getCraftingFor(what);
+            Set<BlockEntity> bePositions = new HashSet<>();
+            for (var pattern : patterns) {
+                var provider = service.getProviders(pattern);
+                for (var providerPos : provider) {
+                    if (providerPos instanceof PatternProviderLogic host) {
+                        var be = host.host.getBlockEntity();
+                        if (be != null)
+                            bePositions.add(be);
+                    }
+                }
+            }
+            if (!bePositions.isEmpty()) {
+                for (var pos : bePositions) {
+                    var ppBe = (PatternProviderBlockEntity) pos;
+                    var packet = new BlockHighlightPacket(
+                            ppBe.getBlockPos(),
+                            ppBe.getLevel().dimension(),
+                            BlockHighlightHandler.getTime(ppBe.getBlockPos(), this.getPlayer().getOnPos()));
+                    NetworkHandler.instance().sendTo(packet, (ServerPlayer) this.getPlayer());
+                }
+            }
+        }
+    }
 }

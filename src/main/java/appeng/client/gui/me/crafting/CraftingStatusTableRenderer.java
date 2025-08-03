@@ -21,6 +21,7 @@ package appeng.client.gui.me.crafting;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 import appeng.api.client.AEKeyRendering;
@@ -81,6 +82,14 @@ public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingS
         if (entry.getPendingAmount() > 0) {
             lines.add(GuiText.Scheduled.text(
                     entry.getWhat().formatAmount(entry.getPendingAmount(), AmountFormat.FULL)));
+        }
+
+        if (Screen.hasShiftDown()) {
+            lines.add(GuiText.Highlight.text(
+                    ""));
+        } else {
+            lines.add(GuiText.Highlight.text(
+                    "Shift-"));
         }
 
         return lines;

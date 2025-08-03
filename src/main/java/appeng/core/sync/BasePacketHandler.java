@@ -25,6 +25,7 @@ import java.util.function.Function;
 import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.core.sync.packets.AssemblerAnimationPacket;
+import appeng.core.sync.packets.BlockHighlightPacket;
 import appeng.core.sync.packets.BlockTransitionEffectPacket;
 import appeng.core.sync.packets.ClearPatternAccessTerminalPacket;
 import appeng.core.sync.packets.ColorApplicatorSelectColorPacket;
@@ -80,6 +81,8 @@ public class BasePacketHandler {
         ITEM_TRANSITION_EFFECT(ItemTransitionEffectPacket.class, ItemTransitionEffectPacket::new),
 
         BLOCK_TRANSITION_EFFECT(BlockTransitionEffectPacket.class, BlockTransitionEffectPacket::new),
+        BLOCK_HIGHLIGHT(BlockHighlightPacket.class, BlockHighlightPacket::new),
+        BLOCK_HIGHLIGHT_WHAT(BlockHighlightPacket.HighlightWhat.class, BlockHighlightPacket.HighlightWhat::new),
 
         GUI_DATA_SYNC(GuiDataSyncPacket.class, GuiDataSyncPacket::new),
 
