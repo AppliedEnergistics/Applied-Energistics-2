@@ -22,8 +22,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
+
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -36,9 +37,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.CraftingBlockEntity;
-import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.client.render.BlockHighlightHandler;
-import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.BlockHighlightPacket;
 import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.helpers.patternprovider.PatternProviderLogic;
@@ -186,21 +185,28 @@ public class CraftingCPUMenu extends AEBaseMenu {
             for (var pattern : patterns) {
                 var provider = service.getProviders(pattern);
                 for (var providerPos : provider) {
-                    if (providerPos instanceof PatternProviderLogic host) {
-                        var be = host.host.getBlockEntity();
-                        if (be != null)
-                            bePositions.add(be);
-                    }
+                    var be = providerPos instanceof PatternProviderLogic ppl ? ppl.host.getBlockEntity() // This weird
+                                                                                                         // thing
+                                                                                                         // because
+                                                                                                         // there is no
+                                                                                                         // easy way to
+                                                                                                         // get a BE
+                                                                                                         // with the
+                                                                                                         // current code
+                            : providerPos instanceof MEPatternBufferPartMachine ppbm
+                                    ? ppbm.getLevel().getBlockEntity(ppbm.getPos())
+                                    : null;
+                    if (be != null)
+                        bePositions.add(be);
                 }
             }
             if (!bePositions.isEmpty()) {
-                for (var pos : bePositions) {
-                    var ppBe = (PatternProviderBlockEntity) pos;
+                for (var be : bePositions) {
                     var packet = new BlockHighlightPacket(
-                            ppBe.getBlockPos(),
-                            ppBe.getLevel().dimension(),
-                            BlockHighlightHandler.getTime(ppBe.getBlockPos(), this.getPlayer().getOnPos()));
-                    NetworkHandler.instance().sendTo(packet, (ServerPlayer) this.getPlayer());
+                            be.getBlockPos(),
+                            be.getLevel().dimension(),
+                            BlockHighlightHandler.getTime(be.getBlockPos(), this.getPlayer().getOnPos()));
+                    sendPacketToClient(packet);
                 }
             }
         }

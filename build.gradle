@@ -122,8 +122,10 @@ dependencies {
     compileOnly 'org.jetbrains:annotations:24.1.0'
     testCompileOnly 'org.jetbrains:annotations:24.1.0'
 
-    // Used for Rendering
+    // Core dependecies
     modImplementation "curse.maven:glodium-957920:5226922"
+    modImplementation "com.gregtechceu.gtceu:gtceu-${minecraft_version}:${gtm_version}"
+    modImplementation "curse.maven:ldlib-626676:6792104"
 
     // Annotation Processors
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
@@ -208,6 +210,14 @@ allprojects {
         maven {
             name = "TerraformersMC"
             url = "https://maven.terraformersmc.com/"
+        }
+
+        maven {
+            name = 'GTCEu Maven'
+            url = 'https://maven.gtceu.com'
+            content {
+                includeGroup 'com.gregtechceu.gtceu'
+            }
         }
 
         maven { url = 'https://repo.spongepowered.org/maven' }
