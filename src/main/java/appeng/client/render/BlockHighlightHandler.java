@@ -25,6 +25,6 @@ public class BlockHighlightHandler {
     }
 
     public static long getTime(BlockPos be, BlockPos player) {
-        return System.currentTimeMillis() + (long) (600 * be.distSqr(player));
+        return System.currentTimeMillis() + Math.min(15000L, (long) (600 * be.distSqr(player)));
     }
 }
