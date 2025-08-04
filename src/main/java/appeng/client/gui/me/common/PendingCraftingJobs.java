@@ -3,9 +3,15 @@ package appeng.client.gui.me.common;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.time.DurationFormatUtils;
+
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -14,8 +20,10 @@ import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.packets.CraftingJobStatusPacket;
 import appeng.items.tools.powered.WirelessTerminalItem;
+import appeng.util.NumberUtil;
 import appeng.util.SearchInventoryEvent;
 
 /**
@@ -40,6 +48,7 @@ public final class PendingCraftingJobs {
             AEKey what,
             long requestedAmount,
             long remainingAmount,
+            long elapsedTime,
             CraftingJobStatusPacket.Status status) {
 
         AELog.debug("Crafting job " + id + " for " + requestedAmount
@@ -62,6 +71,22 @@ public final class PendingCraftingJobs {
                         && !(minecraft.screen instanceof MEStorageScreen<?>)
                         && minecraft.player != null && hasNotificationEnablingItem(minecraft.player)) {
                     minecraft.getToasts().addToast(new FinishedJobToast(what, requestedAmount));
+                    var amount = Component.literal(NumberUtil.formatNumber(requestedAmount))
+                            .withStyle(ChatFormatting.GREEN)
+                            .withStyle(style -> style.withHoverEvent(
+                                    new HoverEvent(
+                                            HoverEvent.Action.SHOW_TEXT,
+                                            Component.literal("§a" + requestedAmount))));
+                    var item = what.getDisplayName().copy().withStyle(ChatFormatting.AQUA);
+                    var duration = Component.literal(DurationFormatUtils.formatDuration(
+                            TimeUnit.NANOSECONDS.toMillis(elapsedTime),
+                            "HH:mm:ss"))
+                            .withStyle(ChatFormatting.GREEN);
+                    minecraft.player.sendSystemMessage(PlayerMessages.CraftJobFinished.text(
+                            amount,
+                            item,
+                            duration));
+
                 }
             }
         }

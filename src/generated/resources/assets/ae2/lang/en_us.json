@@ -203,6 +203,7 @@
   "chat.ae2.ClickToTeleport": "Click to teleport into plot",
   "chat.ae2.CommunicationError": "Error Communicating with Network.",
   "chat.ae2.CompassTestSection": "Section [y=%d-%d] %d: %b",
+  "chat.ae2.CraftJobFinished": "Crafting of %s * [%s] finished in %s.",
   "chat.ae2.DeviceNotLinked": "Device is not linked.",
   "chat.ae2.DeviceNotPowered": "Device is low on power.",
   "chat.ae2.HighlightedBlock": "Highlighted block at %s §rin %s",

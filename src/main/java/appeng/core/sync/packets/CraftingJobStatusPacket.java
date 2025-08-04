@@ -24,6 +24,7 @@ public class CraftingJobStatusPacket extends BasePacket {
     private AEKey what;
     private long requestedAmount;
     private long remainingAmount;
+    private long elapsedTime;
     private Status status;
 
     public CraftingJobStatusPacket(FriendlyByteBuf stream) {
@@ -32,10 +33,11 @@ public class CraftingJobStatusPacket extends BasePacket {
         this.what = AEKey.readKey(stream);
         this.requestedAmount = stream.readLong();
         this.remainingAmount = stream.readLong();
+        this.elapsedTime = stream.readLong();
     }
 
     public CraftingJobStatusPacket(UUID jobId, AEKey what, long requestedAmount, long remainingAmount,
-            Status status) {
+            long elapsedTime, Status status) {
         var data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeInt(getPacketID());
         data.writeUUID(jobId);
@@ -43,6 +45,7 @@ public class CraftingJobStatusPacket extends BasePacket {
         AEKey.writeKey(data, what);
         data.writeLong(requestedAmount);
         data.writeLong(remainingAmount);
+        data.writeLong(elapsedTime);
         this.configureWrite(data);
     }
 
@@ -54,7 +57,7 @@ public class CraftingJobStatusPacket extends BasePacket {
             }
         }
 
-        PendingCraftingJobs.jobStatus(jobId, what, requestedAmount, remainingAmount, status);
+        PendingCraftingJobs.jobStatus(jobId, what, requestedAmount, remainingAmount, elapsedTime, status);
     }
 
     public enum Status {
