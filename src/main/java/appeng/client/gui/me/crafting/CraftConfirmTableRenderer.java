@@ -56,7 +56,9 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
         }
         // Same check as above because we want the percentage to be the last element
         if (entry.storedAmount() > 0) {
-            var percentage = NumberUtil.createPercentageComponent(entry.storedAmount(), entry.availableAmount());
+            var percentage = NumberUtil.createPercentageComponent(
+                    entry.missingAmount() == 0 ? entry.storedAmount() : entry.missingAmount(),
+                    entry.availableAmount());
             lines.add(GuiText.UsedAmount.text().withStyle(percentage.getStyle()).append(percentage));
         }
         return lines;
@@ -86,7 +88,9 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
         }
         // Same check as above because we want the percentage to be the last element
         if (entry.storedAmount() > 0) {
-            var percentage = NumberUtil.createPercentageComponent(entry.storedAmount(), entry.availableAmount());
+            var percentage = NumberUtil.createPercentageComponent(
+                    entry.missingAmount() == 0 ? entry.storedAmount() : entry.missingAmount(),
+                    entry.availableAmount());
             lines.add(GuiText.UsedAmount.text().withStyle(percentage.getStyle()).append(percentage));
         }
 

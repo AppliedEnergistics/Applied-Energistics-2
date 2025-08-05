@@ -40,8 +40,13 @@ public class NumberUtil {
         if (max <= 0)
             return Component.literal("0%").withStyle(ChatFormatting.GREEN);
 
-        double percentage = Math.max(0.0, Math.min(1.0, current / max));
-        String percentageText = String.format("%.2f%%", percentage * 100);
+        double percentage = current / max;
+        String percentageText = formatNumber(percentage * 100) + "%";
+
+        if (percentage > 1.0) {
+            return Component.literal(percentageText)
+                    .withStyle(Style.EMPTY.withColor(0xFF0000)); // red
+        }
 
         int red, green, blue = 0;
         if (percentage <= 0.33) {
