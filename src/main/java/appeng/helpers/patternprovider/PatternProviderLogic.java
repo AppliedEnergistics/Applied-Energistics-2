@@ -57,6 +57,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
+import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
@@ -65,6 +66,9 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.IConfigManager;
 import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
@@ -72,6 +76,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.settings.TickRates;
 import appeng.helpers.InterfaceLogicHost;
+import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.MachineSource;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
@@ -81,7 +86,7 @@ import appeng.util.inv.PlayerInternalInventory;
 /**
  * Shared code between the pattern provider block and part.
  */
-public class PatternProviderLogic implements InternalInventoryHost, ICraftingProvider {
+public class PatternProviderLogic implements InternalInventoryHost, ICraftingProvider, IUpgradeableObject {
     private static final Logger LOGGER = LoggerFactory.getLogger(PatternProviderLogic.class);
 
     public static final String NBT_MEMORY_CARD_PATTERNS = "patterns";
@@ -96,6 +101,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
     private final ConfigManager configManager = new ConfigManager(this::configChanged);
+    private final IUpgradeInventory upgrades;
 
     private int priority;
 
@@ -141,6 +147,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                 .addService(ICraftingProvider.class, this);
         this.actionSource = new MachineSource(mainNode::getNode);
 
+        this.upgrades = UpgradeInventories.forMachine(host.getTerminalIcon().getItem(), 1, this::onUpgradesChanged);
         this.configManager.registerSetting(Settings.BLOCKING_MODE, YesNo.NO);
         this.configManager.registerSetting(Settings.PATTERN_ACCESS_TERMINAL, YesNo.YES);
         this.configManager.registerSetting(Settings.LOCK_CRAFTING_MODE, LockCraftingMode.NONE);
@@ -164,6 +171,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
     public void writeToNBT(CompoundTag tag) {
         this.configManager.writeToNBT(tag);
+        this.upgrades.writeToNBT(tag, "upgrades");
         this.patternInventory.writeToNBT(tag, NBT_MEMORY_CARD_PATTERNS);
         tag.putInt(NBT_PRIORITY, this.priority);
         if (unlockEvent == UnlockCraftingEvent.REDSTONE_POWER) {
@@ -193,6 +201,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
     public void readFromNBT(CompoundTag tag) {
         this.configManager.readFromNBT(tag);
+        this.upgrades.readFromNBT(tag, "upgrades");
         this.patternInventory.readFromNBT(tag, NBT_MEMORY_CARD_PATTERNS);
         this.priority = tag.getInt(NBT_PRIORITY);
 
@@ -232,6 +241,15 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
     public IConfigManager getConfigManager() {
         return this.configManager;
+    }
+
+    public void onUpgradesChanged() {
+        this.host.saveChanges();
+    }
+
+    @Override
+    public IUpgradeInventory getUpgrades() {
+        return upgrades;
     }
 
     @Override
@@ -383,6 +401,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
     private void onPushPatternSuccess(IPatternDetails pattern) {
         resetCraftingLock();
+        tryAutoCompleteCraft(pattern);
 
         var lockMode = configManager.getSetting(Settings.LOCK_CRAFTING_MODE);
         switch (lockMode) {
@@ -403,6 +422,17 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                 saveChanges();
             }
         }
+    }
+
+    private void tryAutoCompleteCraft(IPatternDetails pattern) {
+        if (!upgrades.isInstalled(AEItems.AUTO_COMPLETE_CARD))
+            return;
+        getGrid().getCraftingService().getCpus().stream()
+                .filter(ICraftingCPU::isBusy)
+                .map(cpu -> (CraftingCPUCluster) cpu)
+                .filter(cluster -> cluster.craftingLogic.getJob().getTasks().get(pattern).value <= 1)
+                .findFirst()
+                .ifPresent(ICraftingCPU::cancelJob);
     }
 
     /**
@@ -571,6 +601,12 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                     this.host.getBlockEntity().getBlockPos());
         }
 
+        for (var upgrade : this.upgrades) {
+            if (!upgrade.isEmpty()) {
+                drops.add(upgrade);
+            }
+        }
+
         this.returnInv.addDrops(drops, this.host.getBlockEntity().getLevel(), this.host.getBlockEntity().getBlockPos());
     }
 
@@ -578,6 +614,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         this.patternInventory.clear();
         this.sendList.clear();
         this.returnInv.clear();
+        this.upgrades.clear();
     }
 
     public PatternProviderReturnInventory getReturnInv() {

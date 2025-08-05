@@ -145,7 +145,11 @@ public class ExecutingCraftingJob {
         return data;
     }
 
-    static class TaskProgress {
-        long value = 0;
+    public static class TaskProgress {
+        public long value = 0;
+    }
+
+    public Map<IPatternDetails, TaskProgress> getTasks() {
+        return tasks;
     }
 }

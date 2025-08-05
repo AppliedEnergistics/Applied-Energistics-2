@@ -20,17 +20,20 @@ package appeng.menu.implementations;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.ItemLike;
 
 import appeng.api.config.LockCraftingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.stacks.GenericStack;
+import appeng.api.upgrades.IUpgradeInventory;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.helpers.patternprovider.PatternProviderReturnInventory;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
+import appeng.menu.ToolboxMenu;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.RestrictedInputSlot;
@@ -46,6 +49,7 @@ public class PatternProviderMenu extends AEBaseMenu {
             .build("pattern_provider");
 
     protected final PatternProviderLogic logic;
+    private final ToolboxMenu toolbox;
 
     @GuiSync(3)
     public YesNo blockingMode = YesNo.NO;
@@ -68,6 +72,7 @@ public class PatternProviderMenu extends AEBaseMenu {
         this.createPlayerInventorySlots(playerInventory);
 
         this.logic = host.getLogic();
+        this.toolbox = new ToolboxMenu(this);
 
         var patternInv = logic.getPatternInv();
         for (int x = 0; x < patternInv.size(); x++) {
@@ -78,6 +83,7 @@ public class PatternProviderMenu extends AEBaseMenu {
 
         // Show first few entries of the return inv
         var returnInv = logic.getReturnInv().createMenuWrapper();
+        this.setupUpgrades(host.getUpgrades());
         for (int i = 0; i < PatternProviderReturnInventory.NUMBER_OF_SLOTS; i++) {
             if (i < returnInv.size()) {
                 this.addSlot(new AppEngSlot(returnInv, i), SlotSemantics.STORAGE);
@@ -93,6 +99,7 @@ public class PatternProviderMenu extends AEBaseMenu {
             lockCraftingMode = logic.getConfigManager().getSetting(Settings.LOCK_CRAFTING_MODE);
             craftingLockedReason = logic.getCraftingLockedReason();
             unlockStack = logic.getUnlockStack();
+            toolbox.tick();
         }
 
         super.broadcastChanges();
@@ -120,5 +127,17 @@ public class PatternProviderMenu extends AEBaseMenu {
 
     public YesNo getShowInAccessTerminal() {
         return showInAccessTerminal;
+    }
+
+    public IUpgradeInventory getUpgrades() {
+        return this.logic.getUpgrades();
+    }
+
+    public boolean hasUpgrade(ItemLike upgradeCard) {
+        return getUpgrades().isInstalled(upgradeCard);
+    }
+
+    public ToolboxMenu getToolbox() {
+        return toolbox;
     }
 }

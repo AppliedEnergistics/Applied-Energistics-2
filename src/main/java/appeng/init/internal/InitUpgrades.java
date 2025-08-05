@@ -35,6 +35,7 @@ public final class InitUpgrades {
         // Block and part interface have different translation keys, but support the
         // same upgrades
         String interfaceGroup = GuiText.Interface.getTranslationKey();
+        String patternProviderGroup = GuiText.PatternProvider.getTranslationKey();
         String itemIoBusGroup = GuiText.IOBuses.getTranslationKey();
         String storageCellGroup = GuiText.StorageCells.getTranslationKey();
         String portableCellGroup = GuiText.PortableCells.getTranslationKey();
@@ -45,6 +46,10 @@ public final class InitUpgrades {
         Upgrades.add(AEItems.CRAFTING_CARD, AEBlocks.INTERFACE, 1, interfaceGroup);
         Upgrades.add(AEItems.FUZZY_CARD, AEParts.INTERFACE, 1, interfaceGroup);
         Upgrades.add(AEItems.FUZZY_CARD, AEBlocks.INTERFACE, 1, interfaceGroup);
+
+        // Pattern Provider
+        Upgrades.add(AEItems.AUTO_COMPLETE_CARD, AEBlocks.PATTERN_PROVIDER, 1, patternProviderGroup);
+        Upgrades.add(AEItems.AUTO_COMPLETE_CARD, AEParts.PATTERN_PROVIDER, 1, patternProviderGroup);
 
         // IO Port!
         Upgrades.add(AEItems.SPEED_CARD, AEBlocks.IO_PORT, 3);

@@ -18,21 +18,28 @@
 
 package appeng.client.gui.implementations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.LockCraftingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
+import appeng.api.upgrades.Upgrades;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.ToggleButton;
+import appeng.client.gui.widgets.ToolboxPanel;
+import appeng.client.gui.widgets.UpgradesPanel;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigButtonPacket;
+import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.PatternProviderMenu;
 
 public class PatternProviderScreen<C extends PatternProviderMenu> extends AEBaseScreen<C> {
@@ -45,7 +52,9 @@ public class PatternProviderScreen<C extends PatternProviderMenu> extends AEBase
     public PatternProviderScreen(C menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
         super(menu, playerInventory, title, style);
-
+        this.widgets.add("upgrades", new UpgradesPanel(
+                menu.getSlots(SlotSemantics.UPGRADE),
+                this::getCompatibleUpgrades));
         this.blockingModeButton = new ServerSettingToggleButton<>(Settings.BLOCKING_MODE, YesNo.NO);
         this.addToLeftToolbar(this.blockingModeButton);
 
@@ -53,6 +62,10 @@ public class PatternProviderScreen<C extends PatternProviderMenu> extends AEBase
         this.addToLeftToolbar(lockCraftingModeButton);
 
         widgets.addOpenPriorityButton();
+
+        if (menu.getToolbox().isPresent()) {
+            this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolbox().getName()));
+        }
 
         this.showInPatternAccessTerminalButton = new ToggleButton(Icon.PATTERN_ACCESS_SHOW,
                 Icon.PATTERN_ACCESS_HIDE,
@@ -77,5 +90,16 @@ public class PatternProviderScreen<C extends PatternProviderMenu> extends AEBase
     private void selectNextPatternProviderMode() {
         final boolean backwards = isHandlingRightClick();
         NetworkHandler.instance().sendToServer(new ConfigButtonPacket(Settings.PATTERN_ACCESS_TERMINAL, backwards));
+    }
+
+    /**
+     * Gets the tooltip text that is shown for empty slots of the upgrade panel to indicate which upgrades are
+     * compatible.
+     */
+    private List<Component> getCompatibleUpgrades() {
+        var list = new ArrayList<Component>();
+        list.add(GuiText.CompatibleUpgrades.text());
+        list.addAll(Upgrades.getTooltipLinesForMachine(menu.getUpgrades().getUpgradableItem()));
+        return list;
     }
 }

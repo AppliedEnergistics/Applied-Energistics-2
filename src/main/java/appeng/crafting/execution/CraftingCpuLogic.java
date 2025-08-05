@@ -407,6 +407,10 @@ public class CraftingCpuLogic {
         return this.job != null;
     }
 
+    public ExecutingCraftingJob getJob() {
+        return this.job;
+    }
+
     @Nullable
     public GenericStack getFinalJobOutput() {
         return this.job != null ? this.job.finalOutput : null;

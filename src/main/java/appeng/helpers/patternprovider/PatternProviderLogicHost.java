@@ -32,6 +32,8 @@ import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGrid;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.helpers.IPriorityHost;
@@ -43,7 +45,8 @@ import appeng.menu.locator.MenuLocator;
 /**
  * Interface to be implemented by blocks or parts wanting to host a pattern provider.
  */
-public interface PatternProviderLogicHost extends IConfigurableObject, IPriorityHost, PatternContainer {
+public interface PatternProviderLogicHost
+        extends IConfigurableObject, IPriorityHost, PatternContainer, IUpgradeableObject {
     PatternProviderLogic getLogic();
 
     /**
@@ -58,6 +61,11 @@ public interface PatternProviderLogicHost extends IConfigurableObject, IPriority
     @Override
     default IConfigManager getConfigManager() {
         return getLogic().getConfigManager();
+    }
+
+    @Override
+    default IUpgradeInventory getUpgrades() {
+        return getLogic().getUpgrades();
     }
 
     @Override

@@ -164,6 +164,7 @@ public enum GuiText implements LocalizationEnum {
     PatternAccessTerminalHint("Show Or Hide on Pattern Access Terminal."),
     PatternAccessTerminalShort("Pattern A. Terminal"),
     PatternEncoding("Pattern Encoding"),
+    PatternProvider("ME Pattern Provider"),
     Patterns("Patterns"),
     Pink("Pink"),
     PortableCell("Portable Cell"),
