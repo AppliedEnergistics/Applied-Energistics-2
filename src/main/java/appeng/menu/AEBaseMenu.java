@@ -71,6 +71,7 @@ import appeng.menu.slot.DisabledSlot;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.InaccessibleSlot;
 import appeng.menu.slot.RestrictedInputSlot;
+import appeng.parts.AEBasePart;
 import appeng.util.ConfigMenuInventory;
 
 public abstract class AEBaseMenu extends AbstractContainerMenu {
@@ -308,6 +309,12 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             if (this.blockEntity != null
                     && this.blockEntity.getLevel().getBlockEntity(this.blockEntity.getBlockPos()) != this.blockEntity) {
                 this.setValidMenu(false);
+            }
+            if (this.part instanceof AEBasePart basePart) {
+                var host = basePart.getHost();
+                if (host == null || !host.isInWorld() || host.getPart(basePart.getSide()) != basePart) {
+                    setValidMenu(false);
+                }
             }
 
             if (dataSync.hasChanges()) {
