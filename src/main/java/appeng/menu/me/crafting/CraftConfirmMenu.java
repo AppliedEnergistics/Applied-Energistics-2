@@ -79,7 +79,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     private ICraftingCPU selectedCpu;
 
     private AEKey whatToCraft;
-    private int amount;
+    private long amount;
     private Future<ICraftingPlan> job;
     private ICraftingPlan result;
 
@@ -163,7 +163,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
         }
     }
 
-    public boolean planJob(AEKey what, int amount, CalculationStrategy strategy) {
+    public boolean planJob(AEKey what, long amount, CalculationStrategy strategy) {
         if (this.job != null) {
             this.job.cancel(true);
         }

@@ -79,6 +79,8 @@ public final class InitBuiltInModels {
                 () -> new CraftingCubeModel(new CraftingUnitModelProvider(CraftingUnitType.STORAGE_64K)));
         addBuiltInModel("block/crafting/256k_storage_formed",
                 () -> new CraftingCubeModel(new CraftingUnitModelProvider(CraftingUnitType.STORAGE_256K)));
+        addBuiltInModel("block/crafting/singularity_storage_formed",
+                () -> new CraftingCubeModel(new CraftingUnitModelProvider(CraftingUnitType.SINGULARITY)));
         addBuiltInModel("block/crafting/accelerator_formed",
                 () -> new CraftingCubeModel(new CraftingUnitModelProvider(CraftingUnitType.ACCELERATOR)));
         addBuiltInModel("block/crafting/monitor_formed",

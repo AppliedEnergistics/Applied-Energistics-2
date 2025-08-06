@@ -57,7 +57,7 @@ class CreativeCellInventory implements StorageCell {
     @Override
     public void getAvailableStacks(KeyCounter out) {
         for (AEKey key : this.configured) {
-            out.add(key, Integer.MAX_VALUE);
+            out.add(key, Long.MAX_VALUE);
         }
     }
 

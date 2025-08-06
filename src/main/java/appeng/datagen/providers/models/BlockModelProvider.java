@@ -116,6 +116,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         craftingModel(AEBlocks.CRAFTING_STORAGE_16K, "16k_storage");
         craftingModel(AEBlocks.CRAFTING_STORAGE_64K, "64k_storage");
         craftingModel(AEBlocks.CRAFTING_STORAGE_256K, "256k_storage");
+        craftingModel(AEBlocks.CRAFTING_STORAGE_SINGULARITY, "singularity_storage");
 
         simpleBlockAndItem(AEBlocks.CELL_WORKBENCH, models().cubeBottomTop(
                 modelPath(AEBlocks.CELL_WORKBENCH),

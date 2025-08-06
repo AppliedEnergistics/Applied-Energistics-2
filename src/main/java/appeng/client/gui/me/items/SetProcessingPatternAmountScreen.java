@@ -100,6 +100,6 @@ public class SetProcessingPatternAmountScreen<C extends PatternEncodingTermMenu>
     }
 
     private long getMaxAmount() {
-        return Integer.MAX_VALUE;
+        return Long.MAX_VALUE;
     }
 }

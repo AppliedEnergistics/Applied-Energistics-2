@@ -137,7 +137,7 @@ public final class AEBlockEntities {
     public static final BlockEntityType<CraftingBlockEntity> CRAFTING_STORAGE = create("crafting_storage",
             CraftingBlockEntity.class, CraftingBlockEntity::new, AEBlocks.CRAFTING_STORAGE_1K,
             AEBlocks.CRAFTING_STORAGE_4K, AEBlocks.CRAFTING_STORAGE_16K, AEBlocks.CRAFTING_STORAGE_64K,
-            AEBlocks.CRAFTING_STORAGE_256K);
+            AEBlocks.CRAFTING_STORAGE_256K, AEBlocks.CRAFTING_STORAGE_SINGULARITY);
     public static final BlockEntityType<CraftingMonitorBlockEntity> CRAFTING_MONITOR = create("crafting_monitor",
             CraftingMonitorBlockEntity.class, CraftingMonitorBlockEntity::new, AEBlocks.CRAFTING_MONITOR);
     public static final BlockEntityType<PatternProviderBlockEntity> PATTERN_PROVIDER = create(

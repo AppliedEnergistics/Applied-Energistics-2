@@ -28,17 +28,17 @@ import appeng.menu.me.crafting.CraftAmountMenu;
 
 public class ConfirmAutoCraftPacket extends BasePacket {
 
-    private final int amount;
+    private final long amount;
     private final boolean craftMissingAmount;
     private final boolean autoStart;
 
     public ConfirmAutoCraftPacket(FriendlyByteBuf stream) {
         this.autoStart = stream.readBoolean();
         this.craftMissingAmount = stream.readBoolean();
-        this.amount = stream.readInt();
+        this.amount = stream.readLong();
     }
 
-    public ConfirmAutoCraftPacket(int craftAmt, boolean craftMissingAmount, boolean autoStart) {
+    public ConfirmAutoCraftPacket(long craftAmt, boolean craftMissingAmount, boolean autoStart) {
         this.amount = craftAmt;
         this.craftMissingAmount = craftMissingAmount;
         this.autoStart = autoStart;
@@ -47,7 +47,7 @@ public class ConfirmAutoCraftPacket extends BasePacket {
         data.writeInt(this.getPacketID());
         data.writeBoolean(autoStart);
         data.writeBoolean(craftMissingAmount);
-        data.writeInt(this.amount);
+        data.writeLong(this.amount);
         this.configureWrite(data);
     }
 

@@ -324,7 +324,7 @@ public class NumberEntryWidget implements ICompositeWidget {
         if (textValue.startsWith("=")) {
             textValue = textValue.substring(1);
         }
-        return NumberUtil.parse(textValue);
+        return Math.min(Math.pow(2, 60), NumberUtil.parse(textValue));
     }
 
     /*

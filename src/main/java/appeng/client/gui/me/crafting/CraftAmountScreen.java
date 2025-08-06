@@ -51,7 +51,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountMenu> {
 
         this.amountToCraft = widgets.addNumberEntryWidget("amountToCraft", NumberEntryType.UNITLESS);
         this.amountToCraft.setMinValue(1);
-        this.amountToCraft.setMaxValue(Integer.MAX_VALUE);
+        this.amountToCraft.setMaxValue(Long.MAX_VALUE);
         this.amountToCraft.setLongValue(1);
         this.amountToCraft.setTextFieldStyle(style.getWidget("amountToCraftInput"));
         this.amountToCraft.setHideValidationIcon(true);
@@ -72,11 +72,11 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountMenu> {
         }
 
         this.next.setMessage(hasShiftDown() ? GuiText.Start.text() : GuiText.Next.text());
-        this.next.active = this.amountToCraft.getIntValue().orElse(0) > 0;
+        this.next.active = this.amountToCraft.getLongValue().orElse(0) > 0;
     }
 
     private void confirm() {
-        int amount = this.amountToCraft.getIntValue().orElse(0);
+        long amount = this.amountToCraft.getLongValue().orElse(0);
         boolean craftMissingAmount = this.amountToCraft.startsWithEquals();
         if (amount <= 0) {
             return;

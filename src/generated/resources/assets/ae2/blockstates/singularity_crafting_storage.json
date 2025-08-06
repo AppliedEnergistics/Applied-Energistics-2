@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "ae2:block/crafting/singularity_storage"
+    },
+    "formed=true": {
+      "model": "ae2:block/crafting/singularity_storage_formed"
+    }
+  }
+}

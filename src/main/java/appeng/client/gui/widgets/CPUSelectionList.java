@@ -82,7 +82,8 @@ public class CPUSelectionList implements ICompositeWidget {
             tooltipLines.add(getCpuName(cpu));
 
             // Show the amount of storage in the Crafting CPU
-            tooltipLines.add(ButtonToolTips.CpuStatusStorage.text(Tooltips.ofBytes(cpu.storage()))
+            // We can add "B" to the end since the lowest crafting storage is 1K
+            tooltipLines.add(ButtonToolTips.CpuStatusStorage.text(NumberUtil.formatNumber(cpu.storage()) + "B")
                     // Vanilla text formatting is broken and inherits the color of the 1st placeholder in the text
                     .withStyle(ChatFormatting.GRAY));
 
