@@ -18,8 +18,10 @@
 
 package appeng.menu.implementations;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
@@ -43,9 +46,12 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.util.IConfigurableObject;
+import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.core.AELog;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.sync.packets.ClearPatternAccessTerminalPacket;
 import appeng.core.sync.packets.PatternAccessTerminalPacket;
 import appeng.helpers.InventoryAction;
@@ -278,6 +284,54 @@ public class PatternAccessTermMenu extends AEBaseMenu {
                 if (player.getAbilities().instabuild && carried.isEmpty()) {
                     setCarried(is.isEmpty() ? ItemStack.EMPTY : is.copy());
                 }
+            }
+        }
+    }
+
+    public void quickMovePattern(ServerPlayer player, int clickedSlot, List<Long> allowedPatternContainers) {
+        if (clickedSlot < 0 || clickedSlot >= this.slots.size()) {
+            return;
+        }
+        Slot sourceSlot = getSlot(clickedSlot);
+        if (!isPlayerSideSlot(sourceSlot)) {
+            return;
+        }
+        ItemStack sourceStack = sourceSlot.getItem();
+        if (sourceStack.getCount() != 1) {
+            return;
+        }
+        var pattern = PatternDetailsHelper.decodePattern(sourceStack, player.level());
+        if (pattern == null) {
+            return;
+        }
+        boolean molecularAssemblerPattern = pattern instanceof IMolecularAssemblerSupportedPattern;
+
+        // Collect possible targets
+        List<ContainerTracker> targets = new ArrayList<>();
+        for (var id : allowedPatternContainers) {
+            var inv = this.byId.get(id.longValue());
+            // Check pattern container exists and is visible
+            if (inv != null && isVisible(inv.container)) {
+                var icon = inv.group.icon();
+                // Keep molecular assembler if pattern is supported by molecular assembler
+                boolean molecularAssembler = icon != null && icon.equals(AEItemKey.of(AEBlocks.MOLECULAR_ASSEMBLER));
+                if (molecularAssemblerPattern == molecularAssembler) {
+                    targets.add(inv);
+                }
+            }
+        }
+
+        // For now, limit to pattern containers in the same group
+        if (targets.stream().map(t -> t.group).distinct().count() != 1) {
+            return;
+        }
+
+        // Try to insert in each container until we succeed
+        for (var target : targets) {
+            var targetContainer = new FilteredInternalInventory(target.server, new PatternSlotFilter());
+            if (targetContainer.addItems(sourceStack).isEmpty()) {
+                sourceSlot.set(ItemStack.EMPTY);
+                return;
             }
         }
     }

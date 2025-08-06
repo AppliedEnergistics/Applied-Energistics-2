@@ -329,7 +329,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
      * Check if a given slot is considered to be "on the player side" for the purposes of shift-clicking items back and
      * forth between the opened menu and the player's inventory.
      */
-    private boolean isPlayerSideSlot(Slot slot) {
+    public boolean isPlayerSideSlot(Slot slot) {
         if (slot.container == playerInventory) {
             return true;
         }

@@ -51,6 +51,7 @@ import appeng.core.sync.packets.MouseWheelPacket;
 import appeng.core.sync.packets.NetworkStatusPacket;
 import appeng.core.sync.packets.PartLeftClickPacket;
 import appeng.core.sync.packets.PatternAccessTerminalPacket;
+import appeng.core.sync.packets.QuickMovePatternPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 
@@ -100,6 +101,8 @@ public class BasePacketHandler {
 
         PATTERN_PROVIDER_CLEAR(ClearPatternAccessTerminalPacket.class, ClearPatternAccessTerminalPacket::new),
         PATTERN_PROVIDER_UPDATE(PatternAccessTerminalPacket.class, PatternAccessTerminalPacket::new),
+
+        QUICK_MOVE_PATTERN(QuickMovePatternPacket.class, QuickMovePatternPacket::new),
 
         NETWORK_STATUS(NetworkStatusPacket.class, NetworkStatusPacket::new),
 
