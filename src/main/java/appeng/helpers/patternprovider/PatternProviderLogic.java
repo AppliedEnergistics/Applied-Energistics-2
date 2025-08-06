@@ -430,7 +430,10 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         getGrid().getCraftingService().getCpus().stream()
                 .filter(ICraftingCPU::isBusy)
                 .map(cpu -> (CraftingCPUCluster) cpu)
-                .filter(cluster -> cluster.craftingLogic.getJob().getTasks().get(pattern).value <= 1)
+                .filter(cluster -> {
+                    var task = cluster.craftingLogic.getJob().getTasks().get(pattern);
+                    return task != null && task.value <= 1;
+                })
                 .findFirst()
                 .ifPresent(ICraftingCPU::cancelJob);
     }
