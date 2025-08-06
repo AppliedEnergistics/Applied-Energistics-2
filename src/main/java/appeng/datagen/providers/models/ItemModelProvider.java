@@ -95,6 +95,7 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         flatSingleLayer(AEItems.NETHER_QUARTZ_KNIFE, "item/nether_quartz_cutting_knife");
         flatSingleLayer(AEItems.NETHER_QUARTZ_WRENCH, "item/nether_quartz_wrench");
         flatSingleLayer(AEItems.NETWORK_TOOL, "item/network_tool");
+        flatSingleLayer(AEItems.PATTERN_BOX, "item/pattern_box");
         portableCell(AEItems.PORTABLE_ITEM_CELL1K, "item", "1k");
         portableCell(AEItems.PORTABLE_ITEM_CELL4K, "item", "4k");
         portableCell(AEItems.PORTABLE_ITEM_CELL16K, "item", "16k");

@@ -1,6 +1,6 @@
 {
   "$schema": "../schema.json",
-  "includes": ["palette.json", "toolbox.json"],
+  "includes": ["palette.json", "toolbox.json", "patternbox.json"],
   "widgets": {
     "verticalToolbar": {
       "left": -2,

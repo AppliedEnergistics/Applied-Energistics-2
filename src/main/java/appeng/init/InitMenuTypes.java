@@ -55,6 +55,7 @@ import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingCPUMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
 import appeng.menu.me.items.CraftingTermMenu;
+import appeng.menu.me.items.PatternBoxMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.menu.me.items.WirelessCraftingTermMenu;
 import appeng.menu.me.networktool.NetworkStatusMenu;
@@ -95,6 +96,7 @@ public final class InitMenuTypes {
                 PatternAccessTermMenu.TYPE,
                 PatternProviderMenu.TYPE,
                 PatternEncodingTermMenu.TYPE,
+                PatternBoxMenu.TYPE,
                 PriorityMenu.TYPE,
                 QNBMenu.TYPE,
                 QuartzKnifeMenu.TYPE,

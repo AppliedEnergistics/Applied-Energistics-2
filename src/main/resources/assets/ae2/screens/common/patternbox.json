@@ -1,0 +1,28 @@
+{
+  "$schema": "../schema.json",
+  "slots": {
+    "PATTERNBOX": {
+      "$comment": "Only relevant if the patternbox is present",
+      "top": 14,
+      "left": -88,
+      "grid": "BREAK_AFTER_3COLS"
+    }
+  },
+  "images": {
+    "patternbox": {
+      "texture": "guis/patternbox.png",
+      "textureWidth": 256,
+      "textureHeight": 256,
+      "srcRect": [0, 0, 68, 176]
+    }
+  },
+  "widgets": {
+    "patternbox": {
+      "$comment": "The patternbox found on some screens",
+      "top": 6,
+      "left": -96,
+      "width": 68,
+      "height": 176
+    }
+  }
+}

@@ -32,6 +32,7 @@ import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.helpers.patternprovider.PatternProviderReturnInventory;
 import appeng.menu.AEBaseMenu;
+import appeng.menu.PatternBoxMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.ToolboxMenu;
 import appeng.menu.guisync.GuiSync;
@@ -50,6 +51,7 @@ public class PatternProviderMenu extends AEBaseMenu {
 
     protected final PatternProviderLogic logic;
     private final ToolboxMenu toolbox;
+    private final PatternBoxMenu patternBox;
 
     @GuiSync(3)
     public YesNo blockingMode = YesNo.NO;
@@ -73,6 +75,7 @@ public class PatternProviderMenu extends AEBaseMenu {
 
         this.logic = host.getLogic();
         this.toolbox = new ToolboxMenu(this);
+        this.patternBox = new PatternBoxMenu(this);
 
         var patternInv = logic.getPatternInv();
         for (int x = 0; x < patternInv.size(); x++) {
@@ -100,6 +103,7 @@ public class PatternProviderMenu extends AEBaseMenu {
             craftingLockedReason = logic.getCraftingLockedReason();
             unlockStack = logic.getUnlockStack();
             toolbox.tick();
+            patternBox.tick();
         }
 
         super.broadcastChanges();
@@ -139,5 +143,9 @@ public class PatternProviderMenu extends AEBaseMenu {
 
     public ToolboxMenu getToolbox() {
         return toolbox;
+    }
+
+    public PatternBoxMenu getPatternBox() {
+        return patternBox;
     }
 }

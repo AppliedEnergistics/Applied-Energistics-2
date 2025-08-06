@@ -65,6 +65,7 @@ import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ISortSource;
+import appeng.client.gui.widgets.PatternBoxPanel;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
@@ -188,6 +189,10 @@ public class MEStorageScreen<C extends MEStorageMenu>
                 menu.getHost()));
         if (menu.getToolbox().isPresent()) {
             this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolbox().getName()));
+        }
+
+        if (menu.getPatternBox().isPresent()) {
+            this.widgets.add("patternbox", new PatternBoxPanel(style, menu.getPatternBox().getName()));
         }
 
         // Restore previous search term

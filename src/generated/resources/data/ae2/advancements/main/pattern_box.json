@@ -1,0 +1,38 @@
+{
+  "parent": "ae2:main/controller",
+  "criteria": {
+    "pattern_box": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:pattern_box"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "achievement.ae2.PatternBox.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "ae2:pattern_box"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "achievement.ae2.PatternBox"
+    }
+  },
+  "requirements": [
+    [
+      "pattern_box"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

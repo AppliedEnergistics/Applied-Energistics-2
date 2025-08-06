@@ -63,6 +63,7 @@ class StyleManagerTest {
         assertThat(style.getText()).hasSize(2);
         assertThat(style.getSlots()).containsOnlyKeys(
                 SlotSemantics.TOOLBOX.id(),
+                SlotSemantics.PATTERNBOX.id(),
                 SlotSemantics.PLAYER_INVENTORY.id(),
                 SlotSemantics.PLAYER_HOTBAR.id(),
                 SlotSemantics.CONFIG.id(),

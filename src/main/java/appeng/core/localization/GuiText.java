@@ -166,6 +166,8 @@ public enum GuiText implements LocalizationEnum {
     PatternEncoding("Pattern Encoding"),
     PatternProvider("ME Pattern Provider"),
     Patterns("Patterns"),
+    PatternBox("Pattern Box"),
+    PatternStorage("Pattern Storage"),
     Pink("Pink"),
     PortableCell("Portable Cell"),
     PowerInputRate("Energy Generation: %s"),

@@ -31,6 +31,7 @@ import appeng.api.upgrades.Upgrades;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.PatternBoxPanel;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.ToggleButton;
@@ -65,6 +66,10 @@ public class PatternProviderScreen<C extends PatternProviderMenu> extends AEBase
 
         if (menu.getToolbox().isPresent()) {
             this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolbox().getName()));
+        }
+
+        if (menu.getPatternBox().isPresent()) {
+            this.widgets.add("patternbox", new PatternBoxPanel(style, menu.getPatternBox().getName()));
         }
 
         this.showInPatternAccessTerminalButton = new ToggleButton(Icon.PATTERN_ACCESS_SHOW,

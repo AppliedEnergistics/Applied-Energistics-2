@@ -404,6 +404,21 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .addCriterion("network_tool", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.NETWORK_TOOL))
                 .save(consumer, "ae2:main/network_tool");
 
+        var patternBox = Advancement.Builder.advancement()
+                .display(
+                        AEItems.PATTERN_BOX,
+                        localization.component("achievement.ae2.PatternBox", "Pattern Storage!"),
+                        localization.component("achievement.ae2.PatternBox.desc", "Craft a Pattern Box"),
+                        null /* background */,
+                        FrameType.TASK,
+                        true /* showToast */,
+                        true /* announceChat */,
+                        false /* hidden */
+                )
+                .parent(controller)
+                .addCriterion("pattern_box", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PATTERN_BOX))
+                .save(consumer, "ae2:main/pattern_box");
+
         var p2p = Advancement.Builder.advancement()
                 .display(
                         AEParts.ME_P2P_TUNNEL,

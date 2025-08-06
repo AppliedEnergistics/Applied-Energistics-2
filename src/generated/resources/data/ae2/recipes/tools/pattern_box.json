@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "ae2:blank_pattern"
+    },
+    "c": {
+      "tag": "forge:chests/wooden"
+    },
+    "e": {
+      "item": "ae2:engineering_processor"
+    }
+  },
+  "pattern": [
+    "cb",
+    "be"
+  ],
+  "result": {
+    "item": "ae2:pattern_box"
+  },
+  "show_notification": true
+}

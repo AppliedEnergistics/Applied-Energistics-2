@@ -61,6 +61,7 @@ import appeng.client.gui.me.crafting.CraftingCPUScreen;
 import appeng.client.gui.me.crafting.CraftingStatusScreen;
 import appeng.client.gui.me.crafting.SetStockAmountScreen;
 import appeng.client.gui.me.items.CraftingTermScreen;
+import appeng.client.gui.me.items.PatternBoxScreen;
 import appeng.client.gui.me.items.PatternEncodingTermScreen;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.client.gui.me.networktool.NetworkToolScreen;
@@ -98,6 +99,7 @@ import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingCPUMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
 import appeng.menu.me.items.CraftingTermMenu;
+import appeng.menu.me.items.PatternBoxMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.menu.me.items.WirelessCraftingTermMenu;
 import appeng.menu.me.networktool.NetworkStatusMenu;
@@ -148,6 +150,7 @@ public final class InitScreens {
         register(CraftConfirmMenu.TYPE, CraftConfirmScreen::new, "/screens/craft_confirm.json");
         register(CraftingStatusMenu.TYPE, CraftingStatusScreen::new, "/screens/crafting_status.json");
         register(SpatialAnchorMenu.TYPE, SpatialAnchorScreen::new, "/screens/spatial_anchor.json");
+        register(PatternBoxMenu.TYPE, PatternBoxScreen::new, "/screens/pattern_box.json");
 
         // Terminals
         InitScreens.<MEStorageMenu, MEStorageScreen<MEStorageMenu>>register(

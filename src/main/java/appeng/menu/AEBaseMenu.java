@@ -338,6 +338,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         return slotSemantic == SlotSemantics.PLAYER_INVENTORY
                 || slotSemantic == SlotSemantics.PLAYER_HOTBAR
                 || slotSemantic == SlotSemantics.TOOLBOX
+                || slotSemantic == SlotSemantics.PATTERNBOX
                 // The crafting grid in the crafting terminal also shift-clicks into the network
                 || slotSemantic == SlotSemantics.CRAFTING_GRID;
     }

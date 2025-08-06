@@ -893,6 +893,16 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
                 .save(consumer, AppEng.makeId("tools/network_tool"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEItems.PATTERN_BOX)
+                .pattern("cb")
+                .pattern("be")
+                .define('c', ConventionTags.CHEST)
+                .define('b', AEItems.BLANK_PATTERN)
+                .define('e', AEItems.ENGINEERING_PROCESSOR)
+                .unlockedBy("has_chest", has(ConventionTags.CHEST))
+                .unlockedBy("has_blank_pattern", has(AEItems.BLANK_PATTERN))
+                .save(consumer, AppEng.makeId("tools/pattern_box"));
+
         addPaintBalls(consumer);
 
     }

@@ -80,6 +80,7 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
 
         // The screen JSON includes the toolbox, but we don't actually have a need for it here
         setSlotsHidden(SlotSemantics.TOOLBOX, true);
+        setSlotsHidden(SlotSemantics.PATTERNBOX, true);
     }
 
     private void switchToAeSearch() {

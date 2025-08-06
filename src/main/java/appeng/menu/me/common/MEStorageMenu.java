@@ -77,6 +77,7 @@ import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.ChannelPowerSrc;
 import appeng.menu.AEBaseMenu;
+import appeng.menu.PatternBoxMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.ToolboxMenu;
 import appeng.menu.guisync.GuiSync;
@@ -112,6 +113,7 @@ public class MEStorageMenu extends AEBaseMenu
     private final List<RestrictedInputSlot> viewCellSlots;
     private final IConfigManager clientCM;
     private final ToolboxMenu toolboxMenu;
+    private final PatternBoxMenu patternBox;
     private final ITerminalHost host;
     @GuiSync(98)
     public boolean hasPower = false;
@@ -208,6 +210,7 @@ public class MEStorageMenu extends AEBaseMenu
         }
 
         this.toolboxMenu = new ToolboxMenu(this);
+        this.patternBox = new PatternBoxMenu(this);
 
         setupUpgrades(host.getUpgrades());
 
@@ -218,6 +221,10 @@ public class MEStorageMenu extends AEBaseMenu
 
     public ToolboxMenu getToolbox() {
         return toolboxMenu;
+    }
+
+    public PatternBoxMenu getPatternBox() {
+        return patternBox;
     }
 
     protected boolean hideViewCells() {
@@ -243,6 +250,7 @@ public class MEStorageMenu extends AEBaseMenu
     @Override
     public void broadcastChanges() {
         toolboxMenu.tick();
+        patternBox.tick();
 
         if (isServerSide()) {
             // Close the screen if the backing network inventory has changed

@@ -33,7 +33,7 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.core.localization.GuiText;
 
 /**
- * A 3x3 toolbox panel attached to the player inventory.
+ * A 3x3 pattern panel attached to the player inventory.
  */
 public class ToolboxPanel implements ICompositeWidget {
 

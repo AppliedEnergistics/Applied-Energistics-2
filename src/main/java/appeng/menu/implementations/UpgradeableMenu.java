@@ -36,6 +36,7 @@ import appeng.api.util.IConfigurableObject;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.menu.AEBaseMenu;
+import appeng.menu.PatternBoxMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.ToolboxMenu;
 import appeng.menu.guisync.GuiSync;
@@ -56,12 +57,14 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
     public SchedulingMode schedulingMode = SchedulingMode.DEFAULT;
 
     private final ToolboxMenu toolbox;
+    private final PatternBoxMenu patternbox;
 
     public UpgradeableMenu(MenuType<?> menuType, int id, Inventory ip, T host) {
         super(menuType, id, ip, host);
         this.host = host;
 
         this.toolbox = new ToolboxMenu(this);
+        this.patternbox = new PatternBoxMenu(this);
 
         // The real inventory needs to be sent to the client before the upgrade slots
         // since some blocks, such as the cell workbench, have a variable number of
@@ -113,6 +116,10 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
         return toolbox;
     }
 
+    public PatternBoxMenu getPatternbox() {
+        return patternbox;
+    }
+
     @Override
     public void broadcastChanges() {
         if (isServerSide() && getHost() instanceof IConfigurableObject configurableObject) {
@@ -120,6 +127,7 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
         }
 
         toolbox.tick();
+        patternbox.tick();
 
         for (Object o : this.slots) {
             if (o instanceof OptionalFakeSlot fs) {

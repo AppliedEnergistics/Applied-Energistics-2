@@ -64,6 +64,7 @@ import appeng.items.storage.ViewCellItem;
 import appeng.items.tools.GuideItem;
 import appeng.items.tools.MemoryCardItem;
 import appeng.items.tools.NetworkToolItem;
+import appeng.items.tools.PatternBoxItem;
 import appeng.items.tools.fluix.FluixAxeItem;
 import appeng.items.tools.fluix.FluixHoeItem;
 import appeng.items.tools.fluix.FluixPickaxeItem;
@@ -172,6 +173,7 @@ public final class AEItems {
     ///
 
     public static final ItemDefinition<NetworkToolItem> NETWORK_TOOL = item("Network Tool", AEItemIds.NETWORK_TOOL, p -> new NetworkToolItem(p.stacksTo(1)));
+    public static final ItemDefinition<PatternBoxItem> PATTERN_BOX = item("Pattern Box", AEItemIds.PATTERN_BOX, p -> new PatternBoxItem(p.stacksTo(1)));
     public static final ItemDefinition<MemoryCardItem> MEMORY_CARD = item("Memory Card", AEItemIds.MEMORY_CARD, p -> new MemoryCardItem(p.stacksTo(1)));
 
     public static final ItemDefinition<FacadeItem> FACADE = item("Cable Facade", AEItemIds.FACADE, FacadeItem::new);
