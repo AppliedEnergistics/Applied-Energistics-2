@@ -34,6 +34,7 @@ import appeng.api.stacks.GenericStack;
 class ProcessingPatternEncoding {
     private static final String NBT_INPUTS = "in";
     private static final String NBT_OUTPUTS = "out";
+    private static final String NBT_AUTHOR = "author";
 
     public static GenericStack[] getProcessingInputs(CompoundTag nbt) {
         return getMixedList(nbt, NBT_INPUTS, AEProcessingPattern.MAX_INPUT_SLOTS);
@@ -41,6 +42,10 @@ class ProcessingPatternEncoding {
 
     public static GenericStack[] getProcessingOutputs(CompoundTag nbt) {
         return getMixedList(nbt, NBT_OUTPUTS, AEProcessingPattern.MAX_OUTPUT_SLOTS);
+    }
+
+    public static String getAuthor(CompoundTag nbt) {
+        return nbt.getString(NBT_AUTHOR);
     }
 
     public static GenericStack[] getMixedList(CompoundTag nbt, String nbtKey, int maxSize) {
@@ -65,9 +70,10 @@ class ProcessingPatternEncoding {
     }
 
     public static void encodeProcessingPattern(CompoundTag tag, GenericStack[] sparseInputs,
-            GenericStack[] sparseOutputs) {
+            GenericStack[] sparseOutputs, String author) {
         tag.put(NBT_INPUTS, encodeStackList(sparseInputs));
         tag.put(NBT_OUTPUTS, encodeStackList(sparseOutputs));
+        tag.putString(NBT_AUTHOR, author);
     }
 
     private static ListTag encodeStackList(GenericStack[] stacks) {

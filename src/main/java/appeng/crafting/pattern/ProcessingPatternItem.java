@@ -38,7 +38,7 @@ public class ProcessingPatternItem extends EncodedPatternItem {
         }
     }
 
-    public ItemStack encode(GenericStack[] sparseInputs, GenericStack[] sparseOutputs) {
+    public ItemStack encode(GenericStack[] sparseInputs, GenericStack[] sparseOutputs, String author) {
         if (Arrays.stream(sparseInputs).noneMatch(Objects::nonNull)) {
             throw new IllegalArgumentException("At least one input must be non-null.");
         }
@@ -46,7 +46,7 @@ public class ProcessingPatternItem extends EncodedPatternItem {
                 "The first (primary) output must be non-null.");
 
         var stack = new ItemStack(this);
-        ProcessingPatternEncoding.encodeProcessingPattern(stack.getOrCreateTag(), sparseInputs, sparseOutputs);
+        ProcessingPatternEncoding.encodeProcessingPattern(stack.getOrCreateTag(), sparseInputs, sparseOutputs, author);
         return stack;
     }
 }

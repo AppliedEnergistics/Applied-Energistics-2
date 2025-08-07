@@ -678,7 +678,8 @@ public final class TestPlots {
                             ingredients,
                             recipe.getResultItem(node.getLevel().registryAccess()),
                             false,
-                            false);
+                            false,
+                            "Dev");
 
                     for (ItemStack ingredient : ingredients) {
                         var key = AEItemKey.of(ingredient);
@@ -744,7 +745,8 @@ public final class TestPlots {
                     pp.getLogic().getPatternInv().addItems(
                             PatternDetailsHelper.encodeProcessingPattern(
                                     new GenericStack[] { input },
-                                    new GenericStack[] { output }));
+                                    new GenericStack[] { output },
+                                    "Dev"));
                     pp.getLogic().getConfigManager().putSetting(Settings.BLOCKING_MODE, YesNo.YES);
                 });
         plot.drive(new BlockPos(2, 0, -1))
@@ -899,7 +901,7 @@ public final class TestPlots {
             for (int i = 2; i < 9; ++i)
                 sparseInputs[i] = ItemStack.EMPTY;
             var encodedPattern = PatternDetailsHelper.encodeCraftingPattern(recipe, sparseInputs, undamaged.toStack(),
-                    true, false);
+                    true, false, "Dev");
             var patternDetails = PatternDetailsHelper.decodePattern(encodedPattern, level);
 
             // Push it to the assembler

@@ -99,7 +99,8 @@ public final class AutoCraftingTestPlots {
                             null, null, null
                     },
                     true,
-                    false));
+                    false,
+                    "Dev"));
             // Crafting pattern table with substitutions enabled and some items that are NOT in storage,
             // and an actual sparse pattern
             patterns.add(encodeCraftingPattern(
@@ -110,7 +111,8 @@ public final class AutoCraftingTestPlots {
                             Items.CRIMSON_PLANKS, Items.OAK_PLANKS, Items.OAK_PLANKS
                     },
                     true,
-                    false));
+                    false,
+                    "Dev"));
 
             // This isn't a real sensible pattern, but we need some pattern that results in fluid being crafted
             // to check how the terminal behaves
@@ -121,7 +123,8 @@ public final class AutoCraftingTestPlots {
                     },
                     new GenericStack[] {
                             new GenericStack(AEFluidKey.of(Fluids.WATER), AEFluidKey.AMOUNT_BUCKET)
-                    }));
+                    },
+                    "Dev"));
 
             // Add ingredients to network storage
             var networkInv = grid.getStorageService().getInventory();
@@ -178,7 +181,8 @@ public final class AutoCraftingTestPlots {
                     },
                     new GenericStack[] {
                             new GenericStack(AEItemKey.of(Items.OBSIDIAN), 1)
-                    });
+                    },
+                    "Dev");
             provider.getLogic().getPatternInv().addItems(pattern);
         });
         plot.cable("-1 0 0")
@@ -212,7 +216,8 @@ public final class AutoCraftingTestPlots {
     private static ItemStack encodeCraftingPattern(ServerLevel level,
             Object[] ingredients,
             boolean allowSubstitutions,
-            boolean allowFluidSubstitutions) {
+            boolean allowFluidSubstitutions,
+            String author) {
 
         // Allow a mixed input of items or item stacks as ingredients
         var stacks = Arrays.stream(ingredients)
@@ -243,7 +248,8 @@ public final class AutoCraftingTestPlots {
                 stacks,
                 result,
                 allowSubstitutions,
-                allowFluidSubstitutions);
+                allowFluidSubstitutions,
+                author);
     }
 
     private static void craftingCube(PlotBuilder plot) {
@@ -285,7 +291,8 @@ public final class AutoCraftingTestPlots {
                     },
                     new GenericStack[] {
                             GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_DUST.stack())
-                    });
+                    },
+                    "Dev");
             provider.getLogic().getPatternInv().addItems(pattern);
         });
         for (var pos : inscriberPos) {
@@ -340,7 +347,8 @@ public final class AutoCraftingTestPlots {
                     },
                     new GenericStack[] {
                             GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_DUST.stack())
-                    });
+                    },
+                    "Dev");
             provider.getLogic().getPatternInv().addItems(pattern);
         });
         plot.blockEntity(chestPos, AEBlocks.SKY_STONE_CHEST, skyChest -> {
@@ -401,7 +409,8 @@ public final class AutoCraftingTestPlots {
                     },
                     new GenericStack[] {
                             GenericStack.fromItemStack(new ItemStack(Items.STICK))
-                    });
+                    },
+                    "Dev");
             provider.getLogic().getPatternInv().addItems(pattern);
         });
         plot.cable("0 0 -4");

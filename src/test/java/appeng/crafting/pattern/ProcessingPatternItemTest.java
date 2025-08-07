@@ -36,7 +36,8 @@ class ProcessingPatternItemTest {
                 },
                 new GenericStack[] {
                         GenericStack.fromItemStack(new ItemStack(Items.STICK))
-                });
+                },
+                "Dev");
         var encodedTag = encoded.getTag();
 
         var inputTag = encodedTag.getList("in", Tag.TAG_COMPOUND).getCompound(0);
@@ -60,7 +61,8 @@ class ProcessingPatternItemTest {
                 },
                 new GenericStack[] {
                         GenericStack.fromItemStack(new ItemStack(Items.STICK))
-                });
+                },
+                "Dev");
         var encodedTag = encoded.getTag();
 
         var inputTag = encodedTag.getList("out", Tag.TAG_COMPOUND).getCompound(0);
@@ -82,7 +84,8 @@ class ProcessingPatternItemTest {
                 },
                 new GenericStack[] {
                         GenericStack.fromItemStack(new ItemStack(Items.STICK))
-                });
+                },
+                "Dev");
         var encodedTag = encoded.getTag();
 
         var inputTag = encodedTag.getList("in", Tag.TAG_COMPOUND).getCompound(0);

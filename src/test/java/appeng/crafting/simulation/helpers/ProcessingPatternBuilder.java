@@ -116,6 +116,11 @@ public class ProcessingPatternBuilder {
             public GenericStack[] getOutputs() {
                 return outputs;
             }
+
+            @Override
+            public String getAuthor() {
+                return "Dev";
+            }
         };
     }
 }

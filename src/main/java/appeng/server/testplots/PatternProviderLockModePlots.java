@@ -499,7 +499,8 @@ public final class PatternProviderLockModePlots {
     private static ItemStack createPattern() {
         return PatternDetailsHelper.encodeProcessingPattern(
                 new GenericStack[] { new GenericStack(AEItemKey.of(Blocks.OAK_LOG), 1) },
-                new GenericStack[] { TWO_PLANK });
+                new GenericStack[] { TWO_PLANK },
+                "Dev");
     }
 
     private static IPatternDetails createPatternDetails(PatternProviderLogicHost host) {

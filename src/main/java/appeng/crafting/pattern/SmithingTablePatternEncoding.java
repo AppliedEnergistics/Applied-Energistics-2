@@ -37,6 +37,7 @@ class SmithingTablePatternEncoding {
     private static final String NBT_OUTPUT = "out";
     private static final String NBT_SUBSITUTE = "substitute";
     private static final String NBT_RECIPE_ID = "recipe";
+    private static final String NBT_AUTHOR = "author";
 
     public static AEItemKey getTemplate(CompoundTag nbt) {
         Objects.requireNonNull(nbt, "Pattern must have a template tag.");
@@ -70,14 +71,21 @@ class SmithingTablePatternEncoding {
         return new ResourceLocation(nbt.getString(NBT_RECIPE_ID));
     }
 
+    public static String getAuthor(CompoundTag nbt) {
+        Objects.requireNonNull(nbt, "Pattern must have a tag.");
+
+        return nbt.getString(NBT_AUTHOR);
+    }
+
     public static void encode(CompoundTag tag, SmithingRecipe recipe, AEItemKey template, AEItemKey base,
             AEItemKey addition,
-            AEItemKey output, boolean allowSubstitution) {
+            AEItemKey output, boolean allowSubstitution, String author) {
         tag.put(NBT_TEMPLATE, template.toTag());
         tag.put(NBT_BASE, base.toTag());
         tag.put(NBT_ADDITION, addition.toTag());
         tag.put(NBT_OUTPUT, output.toTag());
         tag.putBoolean(NBT_SUBSITUTE, allowSubstitution);
         tag.putString(NBT_RECIPE_ID, recipe.getId().toString());
+        tag.putString(NBT_AUTHOR, author);
     }
 }

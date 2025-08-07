@@ -99,7 +99,8 @@ class CraftingPatternItemTest {
                 },
                 new ItemStack(Items.STICK),
                 true,
-                true);
+                true,
+                "Dev");
     }
 
     private AECraftingPattern decode(CompoundTag tag) {

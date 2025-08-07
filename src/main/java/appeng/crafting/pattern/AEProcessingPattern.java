@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.crafting.IPatternDetails.IInput;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -39,10 +38,13 @@ public class AEProcessingPattern implements IPatternDetails {
     private final GenericStack[] sparseInputs, sparseOutputs;
     private final Input[] inputs;
     private final GenericStack[] condensedOutputs;
+    private final String author;
 
     public AEProcessingPattern(AEItemKey definition) {
         this.definition = definition;
         var tag = Objects.requireNonNull(definition.getTag());
+
+        this.author = ProcessingPatternEncoding.getAuthor(tag);
 
         this.sparseInputs = ProcessingPatternEncoding.getProcessingInputs(tag);
         this.sparseOutputs = ProcessingPatternEncoding.getProcessingOutputs(tag);
@@ -79,6 +81,11 @@ public class AEProcessingPattern implements IPatternDetails {
     @Override
     public GenericStack[] getOutputs() {
         return condensedOutputs;
+    }
+
+    @Override
+    public String getAuthor() {
+        return author;
     }
 
     public GenericStack[] getSparseInputs() {

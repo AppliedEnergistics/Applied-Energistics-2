@@ -54,10 +54,10 @@ public class SmithingTablePatternItem extends EncodedPatternItem {
     }
 
     public ItemStack encode(SmithingRecipe recipe, AEItemKey template, AEItemKey base, AEItemKey addition,
-            AEItemKey out, boolean allowSubstitutes) {
+            AEItemKey out, boolean allowSubstitutes, String author) {
         var stack = new ItemStack(this);
         SmithingTablePatternEncoding.encode(stack.getOrCreateTag(), recipe, template, base, addition, out,
-                allowSubstitutes);
+                allowSubstitutes, author);
         return stack;
     }
 
@@ -68,6 +68,7 @@ public class SmithingTablePatternItem extends EncodedPatternItem {
         var base = SmithingTablePatternEncoding.getBase(tag);
         var addition = SmithingTablePatternEncoding.getAddition(tag);
         var output = SmithingTablePatternEncoding.getOutput(tag);
+        var author = SmithingTablePatternEncoding.getAuthor(tag);
         if (template == null || base == null || addition == null || output == null) {
             return false; // Either input or output item was removed
         }
@@ -95,7 +96,7 @@ public class SmithingTablePatternItem extends EncodedPatternItem {
         // Yay we found a match, reencode the pattern
         AELog.debug("Re-Encoding pattern from %s -> %s", recipeId, recipe.getId());
         SmithingTablePatternEncoding.encode(tag, recipe, template, base, addition, output,
-                SmithingTablePatternEncoding.canSubstitute(tag));
+                SmithingTablePatternEncoding.canSubstitute(tag), author);
         return true;
     }
 }

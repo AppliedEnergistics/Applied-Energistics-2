@@ -99,8 +99,8 @@ public final class PatternDetailsHelper {
      * @return A new encoded pattern.
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks, or no primary output
      */
-    public static ItemStack encodeProcessingPattern(GenericStack[] in, GenericStack[] out) {
-        return AEItems.PROCESSING_PATTERN.asItem().encode(in, out);
+    public static ItemStack encodeProcessingPattern(GenericStack[] in, GenericStack[] out, String author) {
+        return AEItems.PROCESSING_PATTERN.asItem().encode(in, out, author);
     }
 
     /**
@@ -116,8 +116,9 @@ public final class PatternDetailsHelper {
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks.
      */
     public static ItemStack encodeCraftingPattern(CraftingRecipe recipe, ItemStack[] in,
-            ItemStack out, boolean allowSubstitutes, boolean allowFluidSubstitutes) {
-        return AEItems.CRAFTING_PATTERN.asItem().encode(recipe, in, out, allowSubstitutes, allowFluidSubstitutes);
+            ItemStack out, boolean allowSubstitutes, boolean allowFluidSubstitutes, String author) {
+        return AEItems.CRAFTING_PATTERN.asItem().encode(recipe, in, out, allowSubstitutes, allowFluidSubstitutes,
+                author);
     }
 
     /**
@@ -132,11 +133,11 @@ public final class PatternDetailsHelper {
      *                         recipe.
      */
     public static ItemStack encodeStonecuttingPattern(StonecutterRecipe recipe, AEItemKey in, AEItemKey out,
-            boolean allowSubstitutes) {
+            boolean allowSubstitutes, String author) {
         Preconditions.checkNotNull(recipe, "recipe");
         Preconditions.checkNotNull(in, "in");
         Preconditions.checkNotNull(out, "out");
-        return AEItems.STONECUTTING_PATTERN.asItem().encode(recipe, in, out, allowSubstitutes);
+        return AEItems.STONECUTTING_PATTERN.asItem().encode(recipe, in, out, allowSubstitutes, author);
     }
 
     /**
@@ -158,12 +159,14 @@ public final class PatternDetailsHelper {
             AEItemKey base,
             AEItemKey addition,
             AEItemKey out,
-            boolean allowSubstitutes) {
+            boolean allowSubstitutes,
+            String author) {
         Preconditions.checkNotNull(recipe, "recipe");
         Preconditions.checkNotNull(recipe, "template");
         Preconditions.checkNotNull(base, "base");
         Preconditions.checkNotNull(addition, "addition");
         Preconditions.checkNotNull(out, "out");
-        return AEItems.SMITHING_TABLE_PATTERN.asItem().encode(recipe, template, base, addition, out, allowSubstitutes);
+        return AEItems.SMITHING_TABLE_PATTERN.asItem().encode(recipe, template, base, addition, out, allowSubstitutes,
+                author);
     }
 }

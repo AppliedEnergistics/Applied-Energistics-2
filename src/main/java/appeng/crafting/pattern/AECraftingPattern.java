@@ -58,6 +58,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     private final AEItemKey definition;
     public final boolean canSubstitute;
     public final boolean canSubstituteFluids;
+    private final String author;
     private final CraftingRecipe recipe;
     private final CraftingContainer testFrame;
     private final CraftingContainer specialRecipeTestFrame;
@@ -79,6 +80,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         this.canSubstitute = CraftingPatternEncoding.canSubstitute(tag);
         this.canSubstituteFluids = CraftingPatternEncoding.canSubstituteFluids(tag);
         this.sparseInputs = CraftingPatternEncoding.getCraftingInputs(tag);
+        this.author = CraftingPatternEncoding.getAuthor(tag);
 
         // Find recipe
         var recipeId = CraftingPatternEncoding.getRecipeId(tag);
@@ -146,6 +148,11 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
     @Override
     public GenericStack[] getOutputs() {
         return outputsArray;
+    }
+
+    @Override
+    public String getAuthor() {
+        return author;
     }
 
     /**

@@ -344,9 +344,10 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         if (result.isEmpty() || currentRecipe == null) {
             return null;
         }
+        var author = this.getActionSource().player().get().getGameProfile().getName();
 
         return PatternDetailsHelper.encodeCraftingPattern(this.currentRecipe, ingredients, result, isSubstitute(),
-                isSubstituteFluids());
+                isSubstituteFluids(), author);
     }
 
     @Nullable
@@ -373,7 +374,8 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             return null;
         }
 
-        return PatternDetailsHelper.encodeProcessingPattern(inputs, outputs);
+        var author = this.getPlayer().getGameProfile().getName();
+        return PatternDetailsHelper.encodeProcessingPattern(inputs, outputs, author);
     }
 
     @Nullable
@@ -398,9 +400,10 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         }
 
         var output = AEItemKey.of(recipe.assemble(container, level.registryAccess()));
+        var author = this.getPlayer().getGameProfile().getName();
 
         return PatternDetailsHelper.encodeSmithingTablePattern(recipe, template, base, addition, output,
-                encodingLogic.isSubstitution());
+                encodingLogic.isSubstitution(), author);
     }
 
     @Nullable
@@ -427,8 +430,10 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         }
 
         var output = AEItemKey.of(recipe.getResultItem(level.registryAccess()));
+        var author = this.getPlayer().getGameProfile().getName();
 
-        return PatternDetailsHelper.encodeStonecuttingPattern(recipe, input, output, encodingLogic.isSubstitution());
+        return PatternDetailsHelper.encodeStonecuttingPattern(recipe, input, output, encodingLogic.isSubstitution(),
+                author);
     }
 
     /**

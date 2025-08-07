@@ -146,11 +146,12 @@ public final class MemoryCardTestPlots {
             // Create arbitrary processing+crafting patterns
             var processingPattern = PatternDetailsHelper.encodeProcessingPattern(
                     new GenericStack[] { new GenericStack(AEFluidKey.of(Fluids.WATER), 1) },
-                    new GenericStack[] { new GenericStack(AEFluidKey.of(Fluids.LAVA), 1) });
+                    new GenericStack[] { new GenericStack(AEFluidKey.of(Fluids.LAVA), 1) },
+                    "Dev");
             var craftingPattern = CraftingPatternHelper.encodeShapelessCraftingRecipe(
-                    helper.getLevel(), Items.OAK_LOG.getDefaultInstance());
+                    helper.getLevel(), "Dev", Items.OAK_LOG.getDefaultInstance());
             var differentCraftingPattern = CraftingPatternHelper.encodeShapelessCraftingRecipe(
-                    helper.getLevel(), Items.SPRUCE_LOG.getDefaultInstance());
+                    helper.getLevel(), "Dev", Items.SPRUCE_LOG.getDefaultInstance());
 
             var from = (PatternProviderBlockEntity) helper.getBlockEntity(BlockPos.ZERO.east());
             var to = helper.getPart(BlockPos.ZERO, Direction.WEST, PatternProviderPart.class);

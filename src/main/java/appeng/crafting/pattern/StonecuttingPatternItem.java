@@ -53,9 +53,10 @@ public class StonecuttingPatternItem extends EncodedPatternItem {
         }
     }
 
-    public ItemStack encode(StonecutterRecipe recipe, AEItemKey in, AEItemKey out, boolean allowSubstitutes) {
+    public ItemStack encode(StonecutterRecipe recipe, AEItemKey in, AEItemKey out, boolean allowSubstitutes,
+            String author) {
         var stack = new ItemStack(this);
-        StonecuttingPatternEncoding.encode(stack.getOrCreateTag(), recipe, in, out, allowSubstitutes);
+        StonecuttingPatternEncoding.encode(stack.getOrCreateTag(), recipe, in, out, allowSubstitutes, author);
         return stack;
     }
 
@@ -64,6 +65,7 @@ public class StonecuttingPatternItem extends EncodedPatternItem {
 
         var input = StonecuttingPatternEncoding.getInput(tag);
         var output = StonecuttingPatternEncoding.getOutput(tag);
+        var author = StonecuttingPatternEncoding.getAuthor(tag);
         if (input == null || output == null) {
             return false; // Either input or output item was removed
         }
@@ -83,7 +85,7 @@ public class StonecuttingPatternItem extends EncodedPatternItem {
                 // Yay we found a match, reencode the pattern
                 AELog.debug("Re-Encoding pattern from %s -> %s", recipeId, potentialRecipe.getId());
                 StonecuttingPatternEncoding.encode(tag, potentialRecipe, input, output,
-                        StonecuttingPatternEncoding.canSubstitute(tag));
+                        StonecuttingPatternEncoding.canSubstitute(tag), author);
             }
         }
 

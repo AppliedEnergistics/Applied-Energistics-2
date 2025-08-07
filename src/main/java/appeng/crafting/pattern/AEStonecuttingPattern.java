@@ -58,6 +58,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     private final ItemStack output;
     private final IInput[] inputs;
     private final GenericStack[] outputs;
+    private final String author;
 
     /**
      * We cache results of isValid(...) calls for stacks that don't have NBT.
@@ -70,6 +71,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
 
         this.input = StonecuttingPatternEncoding.getInput(tag);
         this.canSubstitute = StonecuttingPatternEncoding.canSubstitute(tag);
+        this.author = StonecuttingPatternEncoding.getAuthor(tag);
 
         // Find recipe
         var recipeId = StonecuttingPatternEncoding.getRecipeId(tag);
@@ -124,6 +126,11 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     @Override
     public GenericStack[] getOutputs() {
         return outputs;
+    }
+
+    @Override
+    public String getAuthor() {
+        return author;
     }
 
     /**

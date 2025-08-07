@@ -40,6 +40,7 @@ class CraftingPatternEncoding {
     private static final String NBT_SUBSITUTE = "substitute";
     private static final String NBT_SUBSITUTE_FLUIDS = "substituteFluids";
     private static final String NBT_RECIPE_ID = "recipe";
+    private static final String NBT_AUTHOR = "author";
 
     public static GenericStack[] getCraftingInputs(CompoundTag nbt) {
         Objects.requireNonNull(nbt, "Pattern must have a tag.");
@@ -82,13 +83,20 @@ class CraftingPatternEncoding {
         return ItemStack.of(nbt.getCompound(NBT_OUTPUTS));
     }
 
+    public static String getAuthor(CompoundTag nbt) {
+        Objects.requireNonNull(nbt, "Pattern must have a tag.");
+
+        return nbt.getString(NBT_AUTHOR);
+    }
+
     public static void encodeCraftingPattern(CompoundTag tag, CraftingRecipe recipe, ItemStack[] sparseInputs,
-            ItemStack output, boolean allowSubstitution, boolean allowFluidSubstitution) {
+            ItemStack output, boolean allowSubstitution, boolean allowFluidSubstitution, String author) {
         tag.put(NBT_INPUTS, encodeItemStackList(sparseInputs));
         tag.putBoolean(NBT_SUBSITUTE, allowSubstitution);
         tag.putBoolean(NBT_SUBSITUTE_FLUIDS, allowFluidSubstitution);
         tag.put(NBT_OUTPUTS, output.save(new CompoundTag()));
         tag.putString(NBT_RECIPE_ID, recipe.getId().toString());
+        tag.putString(NBT_AUTHOR, author);
     }
 
     private static ListTag encodeItemStackList(ItemStack[] stacks) {

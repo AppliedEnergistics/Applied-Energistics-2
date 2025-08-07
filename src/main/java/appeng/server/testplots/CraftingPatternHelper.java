@@ -9,7 +9,7 @@ import appeng.api.crafting.PatternDetailsHelper;
 import appeng.menu.AutoCraftingMenu;
 
 public class CraftingPatternHelper {
-    public static ItemStack encodeShapelessCraftingRecipe(Level level, ItemStack... inputs) {
+    public static ItemStack encodeShapelessCraftingRecipe(Level level, String author, ItemStack... inputs) {
         var container = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
         for (int i = 0; i < inputs.length; i++) {
             container.setItem(i, inputs[i].copy());
@@ -28,7 +28,8 @@ public class CraftingPatternHelper {
                 actualInputs,
                 recipe.getResultItem(level.registryAccess()),
                 false,
-                false);
+                false,
+                author);
     }
 
 }

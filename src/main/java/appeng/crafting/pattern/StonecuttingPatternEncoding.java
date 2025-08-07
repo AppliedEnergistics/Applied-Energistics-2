@@ -35,6 +35,7 @@ class StonecuttingPatternEncoding {
     private static final String NBT_OUTPUT = "out";
     private static final String NBT_SUBSITUTE = "substitute";
     private static final String NBT_RECIPE_ID = "recipe";
+    private static final String NBT_AUTHOR = "author";
 
     public static AEItemKey getInput(CompoundTag nbt) {
         Objects.requireNonNull(nbt, "Pattern must have an in tag.");
@@ -58,11 +59,18 @@ class StonecuttingPatternEncoding {
         return new ResourceLocation(nbt.getString(NBT_RECIPE_ID));
     }
 
+    public static String getAuthor(CompoundTag nbt) {
+        Objects.requireNonNull(nbt, "Pattern must have a tag.");
+
+        return nbt.getString(NBT_AUTHOR);
+    }
+
     public static void encode(CompoundTag tag, StonecutterRecipe recipe, AEItemKey input, AEItemKey output,
-            boolean allowSubstitution) {
+            boolean allowSubstitution, String author) {
         tag.put(NBT_INPUT, input.toTag());
         tag.put(NBT_OUTPUT, output.toTag());
         tag.putBoolean(NBT_SUBSITUTE, allowSubstitution);
         tag.putString(NBT_RECIPE_ID, recipe.getId().toString());
+        tag.putString(NBT_AUTHOR, author);
     }
 }

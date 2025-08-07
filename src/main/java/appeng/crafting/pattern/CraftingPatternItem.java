@@ -59,10 +59,10 @@ public class CraftingPatternItem extends EncodedPatternItem {
     }
 
     public ItemStack encode(CraftingRecipe recipe, ItemStack[] in, ItemStack out, boolean allowSubstitutes,
-            boolean allowFluidSubstitutes) {
+            boolean allowFluidSubstitutes, String author) {
         var stack = new ItemStack(this);
         CraftingPatternEncoding.encodeCraftingPattern(stack.getOrCreateTag(), recipe, in, out, allowSubstitutes,
-                allowFluidSubstitutes);
+                allowFluidSubstitutes, author);
         return stack;
     }
 
@@ -71,6 +71,7 @@ public class CraftingPatternItem extends EncodedPatternItem {
 
         var ingredients = CraftingPatternEncoding.getCraftingInputs(tag);
         var product = CraftingPatternEncoding.getCraftingResult(tag);
+        var author = CraftingPatternEncoding.getAuthor(tag);
         if (product.isEmpty()) {
             return false;
         }
@@ -98,7 +99,8 @@ public class CraftingPatternItem extends EncodedPatternItem {
                     .map(stack -> stack.what() instanceof AEItemKey itemKey ? itemKey.toStack() : ItemStack.EMPTY)
                     .toArray(ItemStack[]::new);
             CraftingPatternEncoding.encodeCraftingPattern(tag, potentialRecipe, in, product,
-                    CraftingPatternEncoding.canSubstitute(tag), CraftingPatternEncoding.canSubstituteFluids(tag));
+                    CraftingPatternEncoding.canSubstitute(tag), CraftingPatternEncoding.canSubstituteFluids(tag),
+                    author);
         }
 
         AELog.debug("Failed to recover encoded crafting pattern for recipe %s", currentRecipeId);
