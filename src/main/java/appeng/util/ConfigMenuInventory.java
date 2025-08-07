@@ -106,7 +106,7 @@ public class ConfigMenuInventory implements InternalInventory {
         // Try items last
         var what = AEItemKey.of(stack);
         if (inv.isAllowed(what)) {
-            return new GenericStack(what, stack.getCount());
+            return new GenericStack(what, unwrapped != null ? unwrapped.amount() : stack.getCount());
         }
 
         return null;
