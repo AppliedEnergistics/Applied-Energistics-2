@@ -32,15 +32,15 @@ public class NumberUtil {
     /**
      * Creates a Component displaying a percentage with coloring.
      *
-     * @param current The current amount.
-     * @param max     The maximum amount.
+     * @param available The available amount.
+     * @param requested The requested amount.
      * @return Colored Component based on percentage.
      */
-    public static Component createPercentageComponent(double current, double max) {
-        if (max <= 0)
+    public static Component createPercentageComponent(double available, double requested, boolean hasMissing) {
+        if (requested <= 0)
             return Component.literal("0%").withStyle(ChatFormatting.GREEN);
 
-        double percentage = current / max;
+        double percentage = available / requested + (hasMissing ? 1 : 0);
         String percentageText = formatNumber(percentage * 100) + "%";
 
         if (percentage > 1.0) {

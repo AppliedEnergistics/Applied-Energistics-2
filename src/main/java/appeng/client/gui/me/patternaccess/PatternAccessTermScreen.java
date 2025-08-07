@@ -62,6 +62,7 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.PatternBoxPanel;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
@@ -159,6 +160,10 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                 ShowPatternProviders.VISIBLE);
 
         this.addToLeftToolbar(showPatternProviders);
+
+        if (menu.getPatternBox().isPresent()) {
+            this.widgets.add("patternbox", new PatternBoxPanel(style, menu.getPatternBox().getName()));
+        }
 
         this.searchField = widgets.addTextField("search");
         this.searchField.setResponder(str -> this.refreshList());

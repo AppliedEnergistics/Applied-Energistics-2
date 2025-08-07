@@ -113,6 +113,12 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', AEItems.ADVANCED_CARD)
                 .unlockedBy("has_advanced_card", has(AEItems.ADVANCED_CARD))
                 .save(consumer, AppEng.makeId("materials/cardenergy"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEItems.AUTO_COMPLETE_CARD)
+                .requires(AEItems.ADVANCED_CARD)
+                .requires(AEItems.CRAFTING_CARD)
+                .unlockedBy("has_advanced_card", has(AEItems.ADVANCED_CARD))
+                .unlockedBy("has_crafting_card", has(AEItems.CRAFTING_CARD))
+                .save(consumer, AppEng.makeId("materials/auto_complete_card"));
 
         // ====================================================
         // Misc Materials

@@ -12,6 +12,7 @@ item_ids:
 - ae2:16k_crafting_storage
 - ae2:64k_crafting_storage
 - ae2:256k_crafting_storage
+- ae2:singularity_crafting_storage
 - ae2:crafting_accelerator
 - ae2:crafting_monitor
 - ae2:crafting_unit
@@ -76,9 +77,11 @@ of the other components. They are also a base ingredient in the other components
   <BlockImage id="64k_crafting_storage" scale="4" />
 
   <BlockImage id="256k_crafting_storage" scale="4" />
+
+  <BlockImage id="singularity_crafting_storage" scale="4" />
 </Row>
 
-(Required) Crafting storages are available in all the standard cell sizes (1k, 4k, 16k, 64k, 256k). They store the ingredients and
+(Required) Crafting storages are available in all the standard cell sizes (1k, 4k, 16k, 64k, 256k) and <ItemLink id="ae2:singularity_crafting_storage" />(More on that below).
 intermediate ingredients involved in a craft, so larger or more storages are required for the CPU to handle crafting jobs
 with more ingredients.
 
@@ -117,3 +120,12 @@ distributing the ingredient batches between the surrounding assemblers.
 The screen can be colored with a <ItemLink id="color_applicator" />.
 
 <RecipeFor id="crafting_monitor" />
+
+# Singularity Crafting Storage
+
+<BlockImage id="singularity_crafting_storage" scale="4" />
+
+The singularity crafting storage is a special crafting storage that provides MAX_LONG(2^63-1) bytes of storage.
+
+Very powerful indeed, but also somewhat dangerous, since if you want to use this, it needs to be the only crafting storage in this cpu multiblock,
+otherwise you won't be able to select this cpu when trying to craft something.

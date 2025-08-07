@@ -58,7 +58,8 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
         if (entry.storedAmount() > 0) {
             var percentage = NumberUtil.createPercentageComponent(
                     entry.missingAmount() == 0 ? entry.storedAmount() : entry.missingAmount(),
-                    entry.availableAmount());
+                    entry.availableAmount(),
+                    entry.missingAmount() > 0);
             lines.add(GuiText.UsedAmount.text().withStyle(percentage.getStyle()).append(percentage));
         }
         return lines;
@@ -90,7 +91,8 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
         if (entry.storedAmount() > 0) {
             var percentage = NumberUtil.createPercentageComponent(
                     entry.missingAmount() == 0 ? entry.storedAmount() : entry.missingAmount(),
-                    entry.availableAmount());
+                    entry.availableAmount(),
+                    entry.missingAmount() > 0);
             lines.add(GuiText.UsedAmount.text().withStyle(percentage.getStyle()).append(percentage));
         }
 

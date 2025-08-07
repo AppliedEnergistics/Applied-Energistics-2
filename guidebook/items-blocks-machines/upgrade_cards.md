@@ -18,6 +18,7 @@ item_ids:
 - ae2:crafting_card
 - ae2:equal_distribution_card
 - ae2:energy_card
+- ae2:auto_complete_card
 ---
 
 # Upgrade Cards
@@ -40,6 +41,8 @@ item_ids:
   <ItemImage id="equal_distribution_card" scale="2" />
 
   <ItemImage id="energy_card" scale="2" />
+
+  <ItemImage id="auto_complete_card" scale="2" />
 </Row>
 
 Upgrade cards change the behavior of AE2 [devices](../ae2-mechanics/devices.md) and machines, increasing their speed, improving their
@@ -168,3 +171,12 @@ Energy cards add more energy storage to certain tools like portable terminals, a
 more efficient.
 
 <RecipeFor id="energy_card" />
+
+## Auto Complete Card
+
+<ItemImage id="auto_complete_card" scale="2" />
+
+Auto Complete cards let the device send crafting requests to your [autocrafting](../ae2-mechanics/autocrafting.md)
+system to get the items it desires.
+
+<RecipeFor id="auto_complete_card" />
