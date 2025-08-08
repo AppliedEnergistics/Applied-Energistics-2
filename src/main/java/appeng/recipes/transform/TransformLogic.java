@@ -64,7 +64,7 @@ public final class TransformLogic {
                 if (missingIngredients.stream().noneMatch(i -> i.test(entity.getItem())))
                     continue;
             } else {
-                if (!missingIngredients.getFirst().test(entity.getItem()))
+                if (!recipe.catalyst.test(entity.getItem()))
                     continue;
             }
 
@@ -133,11 +133,8 @@ public final class TransformLogic {
                 var recipe = holder.value();
                 if (!(recipe.circumstance.isFluid(fluid)))
                     continue;
-                for (var ingredient : recipe.ingredients) {
-                    for (var stack : ingredient.getItems()) {
-                        ret.add(stack.getItem());
-                    }
-                    break; // only process first ingredient (they're all required anyway)
+                for (var stack : recipe.catalyst.getItems()) {
+                    ret.add(stack.getItem());
                 }
             }
             return ret;
@@ -152,11 +149,8 @@ public final class TransformLogic {
                 var recipe = holder.value();
                 if (!recipe.circumstance.isFluid())
                     continue;
-                for (var ingredient : recipe.ingredients) {
-                    for (var stack : ingredient.getItems()) {
-                        ret.add(stack.getItem());
-                    }
-                    break; // only process first ingredient (they're all required anyway)
+                for (var stack : recipe.catalyst.getItems()) {
+                    ret.add(stack.getItem());
                 }
             }
             anyFluidCache = ret;
@@ -176,7 +170,8 @@ public final class TransformLogic {
                     for (var stack : ingredient.getItems()) {
                         ret.add(stack.getItem());
                     }
-                    // ingredients that aren't processed may be destroyed in the explosion, so process all of them.
+                    // ingredients that aren't processed may be destroyed in the explosion, so
+                    // process all of them.
                 }
             }
             explosionCache = ret;
