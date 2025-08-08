@@ -58,12 +58,18 @@ public final class TransformRecipe implements Recipe<TransformRecipeInput> {
     public final NonNullList<Ingredient> ingredients;
     public final ItemStack output;
     public final TransformCircumstance circumstance;
+    public final Ingredient catalyst;
+
+    public Ingredient getCatalyst() {
+        return catalyst;
+    }
 
     public TransformRecipe(NonNullList<Ingredient> ingredients, ItemStack output,
             TransformCircumstance circumstance) {
         this.ingredients = ingredients;
         this.output = output;
         this.circumstance = circumstance;
+        this.catalyst = ingredients.getFirst();
     }
 
     @Override
