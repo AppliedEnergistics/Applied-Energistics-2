@@ -26,6 +26,8 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 
+import appeng.recipes.AERecipeTypes;
+
 public final class TransformLogic {
     public static boolean canTransformInFluid(ItemEntity entity, FluidState fluid) {
         return getTransformableItems(entity.level(), fluid.getType()).contains(entity.getItem().getItem());
@@ -47,7 +49,7 @@ public final class TransformLogic {
         List<ItemEntity> itemEntities = level.getEntities(null, region).stream()
                 .filter(e -> e instanceof ItemEntity && !e.isRemoved()).map(e -> (ItemEntity) e).toList();
 
-        for (var holder : level.getRecipeManager().byType(TransformRecipe.TYPE)) {
+        for (var holder : level.getRecipeManager().byType(AERecipeTypes.TRANSFORM)) {
             var recipe = holder.value();
             if (!circumstancePredicate.test(recipe.circumstance))
                 continue;
@@ -127,7 +129,7 @@ public final class TransformLogic {
     private static Set<Item> getTransformableItems(Level level, Fluid fluid) {
         return fluidCache.computeIfAbsent(fluid, f -> {
             Set<Item> ret = Collections.newSetFromMap(new IdentityHashMap<>());
-            for (var holder : level.getRecipeManager().getAllRecipesFor(TransformRecipe.TYPE)) {
+            for (var holder : level.getRecipeManager().getAllRecipesFor(AERecipeTypes.TRANSFORM)) {
                 var recipe = holder.value();
                 if (!(recipe.circumstance.isFluid(fluid)))
                     continue;
@@ -146,7 +148,7 @@ public final class TransformLogic {
         Set<Item> ret = anyFluidCache;
         if (ret == null) {
             ret = Collections.newSetFromMap(new IdentityHashMap<>());
-            for (var holder : level.getRecipeManager().getAllRecipesFor(TransformRecipe.TYPE)) {
+            for (var holder : level.getRecipeManager().getAllRecipesFor(AERecipeTypes.TRANSFORM)) {
                 var recipe = holder.value();
                 if (!recipe.circumstance.isFluid())
                     continue;
@@ -166,7 +168,7 @@ public final class TransformLogic {
         Set<Item> ret = explosionCache;
         if (ret == null) {
             ret = Collections.newSetFromMap(new IdentityHashMap<>());
-            for (var holder : level.getRecipeManager().getAllRecipesFor(TransformRecipe.TYPE)) {
+            for (var holder : level.getRecipeManager().getAllRecipesFor(AERecipeTypes.TRANSFORM)) {
                 var recipe = holder.value();
                 if (!recipe.circumstance.isExplosion())
                     continue;
