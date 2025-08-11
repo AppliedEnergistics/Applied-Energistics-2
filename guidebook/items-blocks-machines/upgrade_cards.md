@@ -176,7 +176,7 @@ more efficient.
 
 <ItemImage id="auto_complete_card" scale="2" />
 
-Auto Complete cards let the device send crafting requests to your [autocrafting](../ae2-mechanics/autocrafting.md)
-system to get the items it desires.
+Auto Complete cards are an upgrade for Pattern Providers,
+they mark a craft as complete once it has pushed all required pattern inputs.
 
 <RecipeFor id="auto_complete_card" />
