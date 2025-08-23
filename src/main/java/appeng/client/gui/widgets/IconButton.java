@@ -33,6 +33,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.TextureTransform;
 
 public abstract class IconButton extends Button implements ITooltip {
 
@@ -41,6 +42,13 @@ public abstract class IconButton extends Button implements ITooltip {
     private boolean disableClickSound = false;
 
     private boolean disableBackground = false;
+
+    private TextureTransform transform = TextureTransform.NONE;
+
+    public IconButton setTransform(TextureTransform transform) {
+        this.transform = transform;
+        return this;
+    }
 
     public IconButton(OnPress onPress) {
         super(0, 0, 16, 16, Component.empty(), onPress, Button.DEFAULT_NARRATION);
@@ -79,7 +87,7 @@ public abstract class IconButton extends Button implements ITooltip {
                 if (item != null) {
                     guiGraphics.renderItem(new ItemStack(item), getX(), getY(), 0, 20);
                 } else if (icon != null) {
-                    Blitter blitter = icon.getBlitter();
+                    Blitter blitter = icon.getBlitter().transform(this.transform);
                     if (!this.active) {
                         blitter.opacity(0.5f);
                     }
