@@ -529,7 +529,6 @@ public class CraftingCpuLogic {
     public void setSuspended(boolean suspended) {
         if (job != null && job.suspended != suspended) {
             job.suspended = suspended;
-            cluster.markDirty();
         }
     }
 
