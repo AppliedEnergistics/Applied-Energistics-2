@@ -105,6 +105,7 @@ public final class ConventionTags {
 
     public static final TagKey<Item> STONE = Tags.Items.STONES;
     public static final TagKey<Item> GLASS = Tags.Items.GLASS_BLOCKS;
+    public static final TagKey<Item> GLASS_CHEAP = Tags.Items.GLASS_BLOCKS_CHEAP;
     public static final TagKey<Block> GLASS_BLOCK = Tags.Blocks.GLASS_BLOCKS;
 
     public static final TagKey<Item> GLASS_CABLE = tag("ae2:glass_cable");

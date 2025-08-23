@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "c:glass_blocks"
+      "tag": "c:glass_blocks/cheap"
     },
     "b": {
       "item": "ae2:fluix_glass_cable"
