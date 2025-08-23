@@ -38,7 +38,7 @@ import appeng.menu.me.common.IncrementalUpdateHelper;
  */
 public class CraftingStatus {
 
-    public static final CraftingStatus EMPTY = new CraftingStatus(true, 0, 0, 0, Collections.emptyList());
+    public static final CraftingStatus EMPTY = new CraftingStatus(true, 0, 0, 0, Collections.emptyList(), false);
 
     /**
      * True if this status update replaces any previous status information. Otherwise it should be considered an
@@ -63,13 +63,16 @@ public class CraftingStatus {
 
     private final List<CraftingStatusEntry> entries;
 
+    private final boolean suspended;
+
     public CraftingStatus(boolean fullStatus, long elapsedTime, long remainingItemCount, long startItemCount,
-            List<CraftingStatusEntry> entries) {
+            List<CraftingStatusEntry> entries, boolean suspended) {
         this.fullStatus = fullStatus;
         this.elapsedTime = elapsedTime;
         this.remainingItemCount = remainingItemCount;
         this.startItemCount = startItemCount;
         this.entries = ImmutableList.copyOf(entries);
+        this.suspended = suspended;
     }
 
     public boolean isFullStatus() {
@@ -92,12 +95,17 @@ public class CraftingStatus {
         return entries;
     }
 
+    public boolean isSuspended() {
+        return suspended;
+    }
+
     public void write(RegistryFriendlyByteBuf buffer) {
         buffer.writeBoolean(fullStatus);
         buffer.writeVarLong(elapsedTime);
         buffer.writeVarLong(remainingItemCount);
         buffer.writeVarLong(startItemCount);
         CraftingStatusEntry.LIST_STREAM_CODEC.encode(buffer, entries);
+        buffer.writeBoolean(suspended);
     }
 
     public static CraftingStatus read(RegistryFriendlyByteBuf buffer) {
@@ -106,7 +114,9 @@ public class CraftingStatus {
         long remainingItemCount = buffer.readVarLong();
         long startItemCount = buffer.readVarLong();
         var entries = CraftingStatusEntry.LIST_STREAM_CODEC.decode(buffer);
-        return new CraftingStatus(fullStatus, elapsedTime, remainingItemCount, startItemCount, List.copyOf(entries));
+        boolean suspended = buffer.readBoolean();
+        return new CraftingStatus(fullStatus, elapsedTime, remainingItemCount, startItemCount, List.copyOf(entries),
+                suspended);
     }
 
     public static CraftingStatus create(IncrementalUpdateHelper changes, CraftingCpuLogic logic) {
@@ -141,13 +151,15 @@ public class CraftingStatus {
         long elapsedTime = logic.getElapsedTimeTracker().getElapsedTime();
         long remainingItems = logic.getElapsedTimeTracker().getRemainingItemCount();
         long startItems = logic.getElapsedTimeTracker().getStartItemCount();
+        boolean suspended = logic.isSuspended();
 
         return new CraftingStatus(
                 full,
                 elapsedTime,
                 remainingItems,
                 startItems,
-                newEntries.build());
+                newEntries.build(),
+                suspended);
     }
 
 }
